@@ -1,0 +1,178 @@
+/*
+ * Creation preview — WorldView.
+ *
+ * The stage hole is a flexible square that the Pixi rig draws into; the facts
+ * column wraps under it in a narrow pane and sits beside it on a TV. Container
+ * query, not viewport query (architecture §4.6).
+ */
+
+.preview {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-4, 1rem);
+  background: var(--color-bg, #0d0b1a);
+  color: var(--color-text, #f4f1ff);
+  overflow: hidden;
+}
+
+.preview__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5rem);
+}
+
+.preview__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: clamp(1rem, 2.8cqi, 2rem);
+  font-weight: 700;
+}
+
+.preview__hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: clamp(0.8rem, 1.9cqi, 1.25rem);
+}
+
+.preview__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+@container (min-width: 46rem) {
+  .preview__body {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .preview__stage {
+    flex: 1 1 45%;
+  }
+
+  .preview__facts {
+    flex: 1 1 55%;
+  }
+}
+
+.preview__stage {
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  border: 2px dashed var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 18px);
+  background: radial-gradient(
+    circle at 50% 75%,
+    var(--color-surface-raised, #221d44) 0%,
+    var(--color-surface-sunken, #120f26) 70%
+  );
+  color: var(--color-border, #3a3468);
+}
+
+.preview__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.preview__fact {
+  padding: var(--space-3, 0.75rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #191534);
+}
+
+.preview__fact-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0 0 var(--space-1, 0.25rem);
+  font-size: clamp(1rem, 2.4cqi, 1.6rem);
+  font-weight: 800;
+}
+
+.preview__fact-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: clamp(0.8rem, 1.8cqi, 1.15rem);
+  line-height: 1.35;
+}
+
+.preview__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.preview__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-2, 0.5rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+}
+
+.preview__stat-name {
+  flex: 1 1 auto;
+  font-size: clamp(0.75rem, 1.6cqi, 1rem);
+  text-transform: capitalize;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.preview__stat-value {
+  font-size: clamp(1rem, 2.2cqi, 1.5rem);
+}
+
+.preview__palette,
+.preview__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: clamp(0.85rem, 2cqi, 1.3rem);
+  font-weight: 600;
+}
+
+.preview__palette-chip {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 3px solid;
+  border-radius: var(--radius-pill, 999px);
+}
+
+.preview__waiting {
+  margin: 0;
+  font-size: clamp(0.9rem, 2cqi, 1.3rem);
+}
+
+.preview__done {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

@@ -1,0 +1,595 @@
+/**
+ * PlayerPanel — PlayerView for everything that is not character creation.
+ *
+ * This is the private controller (spec §2): your sheet, your six slots, and
+ * the one decision the game is waiting on from you. It is the screen an
+ * 8-year-old touches most, so:
+ *
+ *   - Only legal actions are ever rendered. The server has already filtered
+ *     species-gated choices out of the prompt (architecture §5), so a choice
+ *     that reaches here is legal by definition — we never re-check it and we
+ *     never draw a disabled one (spec §7.2).
+ *   - Selecting is not committing. Tap to choose, tap again to confirm
+ *     (spec §11). "Change" is always available until then.
+ *   - There is no timer anywhere in this file, and there never will be.
+ *
+ * Laid out for the ~40% pane of Travel Mode first (roadmap): the identity strip
+ * and the prompt are pinned, the sheet and inventory scroll under them.
+ */
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { ReactElement } from "react";
+import { INVENTORY_SLOTS, STAT_IDS, speak } from "@kad/shared";
+import type {
+  ClientIntent,
+  InventoryEntry,
+  ItemCatalog,
+  PartyMember,
+  Prompt,
+} from "@kad/shared";
+import { useIsMyPrompt, useItems, useMe, useParty, usePrompt, useRunState, useSend } from "../store";
+import { Button } from "../ui/Button";
+import { Spinner } from "../ui/Spinner";
+import { Icon } from "./icons";
+import { useEnsureContent } from "./content";
+import "./shared.css";
+import "./PlayerPanel.css";
+
+/** Stable-ish identity for a prompt, so a new one clears any pending choice. */
+function promptKey(prompt: Prompt | null): string {
+  if (prompt === null) return "none";
+  switch (prompt.kind) {
+    case "choice":
+      return `choice:${prompt.sceneId}:${prompt.options.map((o) => o.id).join(",")}`;
+    case "roll":
+      return `roll:${prompt.sceneId}:${prompt.characterId}`;
+    case "item_swap":
+      return `swap:${prompt.characterId}:${prompt.incomingItemId}`;
+    case "ready":
+      return `ready:${prompt.forPlayerIds.join(",")}`;
+  }
+}
+
+function nameOfCharacter(party: PartyMember[], characterId: string): string {
+  return party.find((m) => m.character.id === characterId)?.character.name ?? "Someone";
+}
+
+function nameOfPlayer(party: PartyMember[], playerId: string): string {
+  return party.find((m) => m.playerId === playerId)?.character.name ?? "Someone";
+}
+
+/** What the table is waiting on, when it is not waiting on you. */
+function waitingLine(prompt: Prompt, party: PartyMember[]): string {
+  switch (prompt.kind) {
+    case "roll":
+      return `${nameOfCharacter(party, prompt.characterId)} is rolling.`;
+    case "choice": {
+      if (prompt.forPlayerIds.length === 0) return "The party is deciding.";
+      const names = prompt.forPlayerIds.map((id) => nameOfPlayer(party, id));
+      return `Waiting for ${names.join(" and ")}.`;
+    }
+    case "item_swap":
+      return `${nameOfCharacter(party, prompt.characterId)} found something.`;
+    case "ready": {
+      const waiting = party.filter((m) => !m.ready).map((m) => m.character.name);
+      return waiting.length === 0 ? "Everyone is ready." : `Waiting for ${waiting.join(" and ")}.`;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sheet
+// ---------------------------------------------------------------------------
+
+function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
+  const { character } = me;
+  const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
+  return (
+    <header className="sheet">
+      <span className="sheet__portrait" aria-hidden="true">
+        <Icon name={character.species} size="1.9rem" />
+      </span>
+      <span className="sheet__id">
+        <span className="sheet__name">{character.name}</span>
+        <span className="sheet__meta kad-muted">
+          <Icon name={character.class} />
+          <span>Level {character.level}</span>
+          <span aria-hidden="true">·</span>
+          <span className="sheet__tier">{character.tier}</span>
+        </span>
+      </span>
+      <span className="sheet__hp">
+        <span className="sheet__hp-label">
+          <Icon name="heart" />
+          <span>
+            {me.hp}/{character.maxHp}
+          </span>
+        </span>
+        <span className="sheet__hp-track" aria-hidden="true">
+          <span className="sheet__hp-fill" style={{ inlineSize: `${String(hpPct * 100)}%` }} />
+        </span>
+      </span>
+    </header>
+  );
+}
+
+function StatRow({ me }: { me: PartyMember }): ReactElement {
+  const { character } = me;
+  return (
+    <ul className="stat-row">
+      {STAT_IDS.map((stat) => (
+        <li className="stat-row__item" key={stat}>
+          <Icon name={stat} />
+          <span className="stat-row__name">{stat}</span>
+          <b className="stat-row__value">{character.stats[stat]}</b>
+        </li>
+      ))}
+      <li className="stat-row__item">
+        <Icon name="guard" />
+        <span className="stat-row__name">guard</span>
+        <b className="stat-row__value">{character.guard}</b>
+      </li>
+      <li className="stat-row__item">
+        <Icon name="steps" />
+        <span className="stat-row__name">steps</span>
+        <b className="stat-row__value">{character.steps}</b>
+      </li>
+    </ul>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Inventory — spec §9.1: six slots, icon grid, quest items outside the budget
+// ---------------------------------------------------------------------------
+
+function InventoryGrid({
+  entries,
+  questItems,
+  items,
+  selectedIndex,
+  onSelect,
+}: {
+  entries: InventoryEntry[];
+  questItems: string[];
+  items: ItemCatalog | null;
+  selectedIndex: number | null;
+  onSelect: (index: number | null) => void;
+}): ReactElement {
+  const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => entries[i] ?? null);
+  return (
+    <div className="inv">
+      <h3 className="inv__heading">
+        <Icon name="bag" />
+        <span>Your things</span>
+      </h3>
+      <ul className="inv__grid">
+        {slots.map((entry, index) => {
+          const def = entry === null ? undefined : items?.[entry.itemId];
+          const selected = selectedIndex === index;
+          if (entry === null) {
+            return (
+              <li className="inv__slot inv__slot--empty" key={`empty-${String(index)}`}>
+                <span className="inv__empty-mark" aria-hidden="true" />
+                <span className="inv__slot-name kad-muted">Empty</span>
+              </li>
+            );
+          }
+          return (
+            <li className="inv__slot" key={`${entry.itemId}-${String(index)}`}>
+              <button
+                type="button"
+                className={`inv__button kad-tap kad-focusable${selected ? " inv__button--on" : ""}`}
+                aria-pressed={selected}
+                onClick={() => onSelect(selected ? null : index)}
+              >
+                <Icon name={def?.icon ?? entry.kind} size="1.7rem" />
+                <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
+                {/* Kind is a glyph as well as a word — never colour (spec §11). */}
+                <span className="inv__kind">
+                  <Icon name={entry.kind} />
+                  <span>{entry.kind}</span>
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {questItems.length === 0 ? null : (
+        <div className="inv__quest">
+          <h4 className="inv__quest-heading">
+            <Icon name="quest" />
+            <span>Story things (they never take a slot)</span>
+          </h4>
+          <ul className="inv__quest-list">
+            {questItems.map((itemId) => (
+              <li className="kad-chip" key={itemId}>
+                <Icon name={items?.[itemId]?.icon ?? "quest"} />
+                <span>{items?.[itemId]?.name ?? itemId}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+export function PlayerPanel(): ReactElement {
+  useEnsureContent();
+  const state = useRunState();
+  const me = useMe();
+  const party = useParty();
+  const myPrompt = usePrompt();
+  const isMyPrompt = useIsMyPrompt();
+  const items = useItems();
+  const send = useSend();
+
+  const [pendingChoice, setPendingChoice] = useState<string | null>(null);
+  const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const globalPrompt = state?.prompt ?? null;
+  const key = promptKey(myPrompt ?? globalPrompt);
+
+  // A new question always starts from a clean slate — no stale selection can
+  // ever be confirmed against the wrong prompt.
+  useEffect(() => {
+    setPendingChoice(null);
+    setPendingDrop(undefined);
+    setBusy(false);
+  }, [key]);
+
+  // spec §11 — choice text is spoken, same as narration.
+  useEffect(() => {
+    if (myPrompt === null) return;
+    if (myPrompt.kind === "choice") speak(myPrompt.options.map((o) => o.label).join(". "));
+    if (myPrompt.kind === "roll") speak(myPrompt.prompt);
+  }, [myPrompt]);
+
+  const dispatch = useCallback(
+    async (intent: ClientIntent) => {
+      setBusy(true);
+      try {
+        await send(intent);
+      } finally {
+        setBusy(false);
+      }
+    },
+    [send],
+  );
+
+  const chosenOption = useMemo(() => {
+    if (myPrompt === null || myPrompt.kind !== "choice" || pendingChoice === null) return null;
+    return myPrompt.options.find((o) => o.id === pendingChoice) ?? null;
+  }, [myPrompt, pendingChoice]);
+
+  if (state === null || me === null) {
+    return (
+      <div className="player player--loading" role="status">
+        <Spinner />
+        <span>Finding your character…</span>
+      </div>
+    );
+  }
+
+  const myVote =
+    myPrompt !== null && myPrompt.kind === "choice" ? myPrompt.votes?.[me.playerId] ?? null : null;
+
+  const selectedEntry = selectedSlot === null ? null : me.character.inventory[selectedSlot] ?? null;
+  const selectedDef = selectedEntry === null ? undefined : items?.[selectedEntry.itemId];
+
+  return (
+    <section className="player">
+      <IdentityStrip me={me} />
+
+      {me.down ? (
+        <p className="player__down" role="status">
+          <Icon name="down" />
+          <span>Knocked down — a friend can help you up.</span>
+        </p>
+      ) : null}
+
+      <div className="player__prompt">
+        {/* ---------------- choice / vote (spec §6.1) ---------------- */}
+        {myPrompt !== null && myPrompt.kind === "choice" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name={myPrompt.vote ? "vote" : "hand"} />
+              <span>{myPrompt.vote ? "Everyone votes" : "What do you do?"}</span>
+            </h3>
+
+            <ul className="prompt__options">
+              {myPrompt.options.map((option) => {
+                const voters =
+                  myPrompt.votes === undefined
+                    ? []
+                    : Object.entries(myPrompt.votes)
+                        .filter(([, choiceId]) => choiceId === option.id)
+                        .map(([playerId]) => nameOfPlayer(party, playerId));
+                const selected = pendingChoice === option.id || myVote === option.id;
+                return (
+                  <li key={option.id}>
+                    <button
+                      type="button"
+                      className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                      aria-pressed={selected}
+                      onClick={() => setPendingChoice(option.id)}
+                    >
+                      <span className="choice__icon">
+                        <Icon name={option.icon} size="1.8rem" />
+                      </span>
+                      <span className="choice__label">{option.label}</span>
+                      {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
+                      {voters.length === 0 ? null : (
+                        <span className="choice__votes">
+                          <Icon name="vote" />
+                          <span>{voters.join(", ")}</span>
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* Nothing is final until this bar is tapped (spec §11). */}
+            {chosenOption === null ? null : (
+              <div className="confirm">
+                <p className="confirm__what">
+                  <Icon name={chosenOption.icon} />
+                  <span>{chosenOption.label}</span>
+                </p>
+                <div className="confirm__actions">
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    icon={<Icon name="back" />}
+                    onClick={() => setPendingChoice(null)}
+                  >
+                    Change
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    icon={<Icon name="check" />}
+                    disabled={busy}
+                    onClick={() => void dispatch({ type: "CHOOSE", choiceId: chosenOption.id })}
+                  >
+                    {busy ? "Sending…" : "Do it!"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {/* ---------------- roll (spec §4.1) ---------------- */}
+        {myPrompt !== null && myPrompt.kind === "roll" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name="d20" />
+              <span>{myPrompt.prompt}</span>
+            </h3>
+            <p className="prompt__sub kad-muted">
+              <Icon name={myPrompt.stat} />
+              <span className="prompt__stat">{myPrompt.stat}</span>
+              <span aria-hidden="true">·</span>
+              <span>beat {myPrompt.tn}</span>
+            </p>
+            <Button
+              variant="primary"
+              size="lg"
+              icon={<Icon name="d20" />}
+              disabled={busy}
+              onClick={() => void dispatch({ type: "ROLL" })}
+            >
+              {busy ? "Rolling…" : "Roll!"}
+            </Button>
+          </div>
+        ) : null}
+
+        {/* ---------------- item swap (spec §9.1) ---------------- */}
+        {myPrompt !== null && myPrompt.kind === "item_swap" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name={items?.[myPrompt.incomingItemId]?.icon ?? "bag"} />
+              <span>You found {items?.[myPrompt.incomingItemId]?.name ?? "something"}!</span>
+            </h3>
+            <p className="prompt__sub kad-muted">
+              {items?.[myPrompt.incomingItemId]?.text ?? "Your bag is full. Keep it, or leave it?"}
+            </p>
+
+            <ul className="prompt__options">
+              {me.character.inventory.map((entry) => {
+                const def = items?.[entry.itemId];
+                const selected = pendingDrop === entry.itemId;
+                return (
+                  <li key={entry.itemId}>
+                    <button
+                      type="button"
+                      className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                      aria-pressed={selected}
+                      onClick={() => setPendingDrop(entry.itemId)}
+                    >
+                      <span className="choice__icon">
+                        <Icon name={def?.icon ?? entry.kind} size="1.8rem" />
+                      </span>
+                      <span className="choice__label">Drop {def?.name ?? entry.itemId}</span>
+                    </button>
+                  </li>
+                );
+              })}
+              <li>
+                <button
+                  type="button"
+                  className={`choice kad-tap kad-focusable${pendingDrop === null ? " choice--on" : ""}`}
+                  aria-pressed={pendingDrop === null}
+                  onClick={() => setPendingDrop(null)}
+                >
+                  <span className="choice__icon">
+                    <Icon name="close" size="1.8rem" />
+                  </span>
+                  <span className="choice__label">Leave it behind</span>
+                </button>
+              </li>
+            </ul>
+
+            {pendingDrop === undefined ? null : (
+              <div className="confirm">
+                <p className="confirm__what">
+                  <Icon name={pendingDrop === null ? "close" : "bag"} />
+                  <span>
+                    {pendingDrop === null
+                      ? "Leave it behind"
+                      : `Drop ${items?.[pendingDrop]?.name ?? pendingDrop}`}
+                  </span>
+                </p>
+                <div className="confirm__actions">
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    icon={<Icon name="back" />}
+                    onClick={() => setPendingDrop(undefined)}
+                  >
+                    Change
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    icon={<Icon name="check" />}
+                    disabled={busy}
+                    onClick={() =>
+                      void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: pendingDrop })
+                    }
+                  >
+                    {busy ? "Sending…" : "Yes, do that"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {/* ---------------- ready (lobby, rest, chapter end) ---------------- */}
+        {(myPrompt !== null && myPrompt.kind === "ready") || state.phase === "lobby" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name="ready" />
+              <span>{me.ready ? "You're ready" : "Ready when you are"}</span>
+            </h3>
+            <Button
+              variant={me.ready ? "secondary" : "primary"}
+              size="lg"
+              icon={<Icon name={me.ready ? "back" : "ready"} />}
+              disabled={busy}
+              onClick={() => void dispatch({ type: "READY", ready: !me.ready })}
+            >
+              {me.ready ? "Wait, not yet" : "I'm ready!"}
+            </Button>
+            <ul className="prompt__party">
+              {party.map((member) => (
+                <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
+                  <Icon name={member.ready ? "check" : "waiting"} />
+                  <span>{member.character.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {/* ---------------- chapter finished ---------------- */}
+        {state.phase === "chapter_complete" && myPrompt === null ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name="trophy" />
+              <span>Chapter finished!</span>
+            </h3>
+            <Button
+              variant="primary"
+              size="lg"
+              icon={<Icon name="forward" />}
+              disabled={busy}
+              onClick={() => void dispatch({ type: "ADVANCE" })}
+            >
+              Keep going
+            </Button>
+          </div>
+        ) : null}
+
+        {/* ---------------- someone else's turn ---------------- */}
+        {myPrompt === null && !isMyPrompt && globalPrompt !== null ? (
+          <p className="player__waiting" role="status">
+            <Icon name="waiting" />
+            <span>{waitingLine(globalPrompt, party)}</span>
+          </p>
+        ) : null}
+
+        {myPrompt === null && globalPrompt === null && state.phase !== "lobby" && state.phase !== "chapter_complete" ? (
+          <p className="player__waiting" role="status">
+            <Icon name="waiting" />
+            <span>Listen to the story…</span>
+          </p>
+        ) : null}
+      </div>
+
+      <div className="player__scroll kad-scroll">
+        <StatRow me={me} />
+
+        <InventoryGrid
+          entries={me.character.inventory}
+          questItems={me.character.questItems}
+          items={items}
+          selectedIndex={selectedSlot}
+          onSelect={setSelectedSlot}
+        />
+
+        {/* Using an item is a decision like any other: select, then confirm. */}
+        {selectedEntry === null ? null : (
+          <div className="item-detail">
+            <p className="item-detail__title">
+              <Icon name={selectedDef?.icon ?? selectedEntry.kind} />
+              <span>{selectedDef?.name ?? selectedEntry.itemId}</span>
+            </p>
+            <p className="item-detail__text kad-muted">
+              {selectedDef?.text ?? "You are not sure what this does yet."}
+            </p>
+            <div className="confirm__actions">
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<Icon name="close" />}
+                onClick={() => setSelectedSlot(null)}
+              >
+                Close
+              </Button>
+              {selectedEntry.kind === "consumable" ? (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="consumable" />}
+                  disabled={busy}
+                  onClick={() => {
+                    const itemId = selectedEntry.itemId;
+                    setSelectedSlot(null);
+                    void dispatch({ type: "USE_ITEM", itemId });
+                  }}
+                >
+                  Use it
+                </Button>
+              ) : (
+                <p className="item-detail__passive kad-chip">
+                  <Icon name="trinket" />
+                  <span>Always on</span>
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
