@@ -16,10 +16,9 @@ import type {
   RoomMode,
   RunState,
 } from "@kad/shared";
-import { compare } from "fast-json-patch";
-import type { JsonPatchOp } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
+import { diff } from "../json-patch.ts";
 import { newId } from "../ids.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
@@ -204,7 +203,7 @@ async function markConnected(
     updatedAt: iso(nowMs),
     party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: true } : m)),
   };
-  const patch = compare(state, next) as JsonPatchOp[];
+  const patch = diff(state, next);
   const event: EventRecord = {
     seq: next.seq,
     runId: next.runId,

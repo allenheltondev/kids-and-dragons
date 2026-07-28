@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { ChannelMessage, JsonPatchOp, RunState } from "@kad/shared";
+import type { ChannelMessage } from "@kad/shared";
+import { applyOps } from "../json-patch.ts";
 import type { EngineContext, IntentInput } from "../engine/port.ts";
 import {
   makeHarness,
@@ -141,7 +142,6 @@ describe("applyAction — patches and broadcast", () => {
   it("applying the broadcast patches to the old state reproduces the new state", async () => {
     // The client mirror is only ever updated by patch (client contract), so a
     // patch that does not reconstruct the server's state is a desync.
-    const { applyPatch, deepClone } = await import("fast-json-patch");
     const harness = makeHarness();
     const room = await setup(harness);
     const playerId = room.player.principal.playerId;
@@ -151,10 +151,10 @@ describe("applyAction — patches and broadcast", () => {
     await applyAction({ runId: room.runId, playerId, seq: 0, intent: choose("east") }, harness.deps);
     await applyAction({ runId: room.runId, playerId, seq: 1, intent: choose("ridge") }, harness.deps);
 
-    let mirror = deepClone(before) as RunState;
+    let mirror = before;
     for (const message of room.received) {
       if (message.kind !== "patch") continue;
-      mirror = applyPatch(mirror, message.patch as JsonPatchOp[]).newDocument;
+      mirror = applyOps(mirror, message.patch);
     }
     expect(mirror).toEqual(await harness.repo.getState(room.runId));
   });

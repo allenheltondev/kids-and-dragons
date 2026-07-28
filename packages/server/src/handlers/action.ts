@@ -19,16 +19,15 @@
  *    game logic (§4.2).
  */
 
-import { compare } from "fast-json-patch";
 import type {
   ActionRequest,
   ActionResponse,
   Chapter,
-  JsonPatchOp,
   RunState,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
+import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 
 export interface ActionInput extends ActionRequest {
@@ -117,7 +116,7 @@ export async function applyAction(
   // every published patch takes a client from seq-1 to seq, whatever the engine
   // did internally.
   const next: RunState = { ...result.state, seq: nextSeq, updatedAt: iso(nowMs) };
-  const patch = compare(state, next) as JsonPatchOp[];
+  const patch = diff(state, next);
 
   const event: EventRecord = {
     seq: nextSeq,
@@ -181,7 +180,7 @@ function resolveChapter(
 /** Equal ignoring the two fields the transport owns. */
 function sameDomainState(a: RunState, b: RunState): boolean {
   const strip = (s: RunState): RunState => ({ ...s, seq: 0, updatedAt: "" });
-  return compare(strip(a), strip(b)).length === 0;
+  return diff(strip(a), strip(b)).length === 0;
 }
 
 /**

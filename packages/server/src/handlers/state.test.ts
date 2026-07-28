@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { applyPatch, deepClone } from "fast-json-patch";
-import type { JsonPatchOp, RunState } from "@kad/shared";
+import type { RunState } from "@kad/shared";
+import { applyOps } from "../json-patch.ts";
 import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { createRoom } from "./room.ts";
@@ -48,9 +48,9 @@ describe("getState — reconnect (architecture §4.3)", () => {
     expect(result.value.state).toBeUndefined();
     expect(result.value.events?.map((e) => e.seq)).toEqual([3, 4, 5]);
 
-    let mirror = deepClone(atSeq2) as RunState;
+    let mirror: RunState = atSeq2;
     for (const event of result.value.events ?? []) {
-      mirror = applyPatch(mirror, event.patch as JsonPatchOp[]).newDocument;
+      mirror = applyOps(mirror, event.patch);
     }
     expect(mirror).toEqual(await harness.repo.getState(runId));
   });

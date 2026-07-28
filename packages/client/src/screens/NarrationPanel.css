@@ -1,41 +1,46 @@
 /*
  * Narration — WorldView.
  *
- * Type scale is container-relative (`cqi`), so one rule serves a 3-metre TV and
- * a 60%-height phone pane. `max-width` in `ch` keeps the measure readable at
- * both ends — long lines are what actually breaks reading, not size.
+ * Sits over the art at the bottom of the pane, which is why it is positioned
+ * (the Pixi canvas is absolute; a static sibling would paint under it) and why
+ * its backdrop is a gradient rather than a fill — the scene has to stay visible
+ * above the text.
+ *
+ * Type is `em` against `.kad-surface`, so the same rule reads from a sofa and
+ * inside a 60%-height portrait pane. `--kad-measure` caps the line length,
+ * which is what actually governs readability once the size is right.
  */
 
 .narration {
-  container-type: inline-size;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: clamp(0.5rem, 1.6cqi, 1.5rem);
-  width: 100%;
-  height: 100%;
-  padding: clamp(0.75rem, 2.4cqi, 2.5rem);
+  justify-content: flex-end;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
   background: linear-gradient(
     to top,
-    var(--color-surface, #191534) 0%,
-    color-mix(in srgb, var(--color-surface, #191534) 82%, transparent) 70%,
-    transparent 100%
+    var(--kad-bg, #0d0b1a) 0%,
+    color-mix(in srgb, var(--kad-bg, #0d0b1a) 80%, transparent) 45%,
+    transparent 80%
   );
-  color: var(--color-text, #f4f1ff);
   overflow-y: auto;
 }
 
 .narration__head {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1, 0.25rem);
+  gap: var(--space-1, 0.25em);
 }
 
 .narration__chapter {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(0.7rem, 1.6cqi, 1.1rem);
+  font-size: var(--font-size-sm, 0.875em);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -43,25 +48,25 @@
 .narration__title {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(1.05rem, 2.8cqi, 2.2rem);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
 }
 
 .narration__body {
   margin: 0;
-  max-width: 46ch;
-  font-size: clamp(1.05rem, 3.2cqi, 2.6rem);
+  max-inline-size: var(--kad-measure, 34em);
+  font-size: var(--font-size-2xl, 2em);
   font-weight: 500;
-  line-height: 1.32;
+  line-height: 1.3;
   text-wrap: pretty;
 }
 
 .narration__choices {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(0.35rem, 1.2cqi, 0.9rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -71,18 +76,18 @@
 .narration__prompt {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  padding: clamp(0.3rem, 1cqi, 0.75rem) clamp(0.6rem, 1.6cqi, 1.25rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-pill, 999px);
-  background: var(--color-surface-sunken, #120f26);
-  font-size: clamp(0.85rem, 2cqi, 1.6rem);
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #080711);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 600;
 }
 
 .narration__prompt {
   align-self: flex-start;
-  border-color: var(--color-accent, #ffc95c);
-  color: var(--color-accent, #ffc95c);
+  border-color: var(--color-accent, #f5c86c);
+  color: var(--color-accent, #f5c86c);
 }

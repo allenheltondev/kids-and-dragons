@@ -8,9 +8,9 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { applyPatch, deepClone } from "fast-json-patch";
 import { applyIntent, createRunState } from "@kad/shared";
-import type { ChannelMessage, ClientIntent, JsonPatchOp, RunState } from "@kad/shared";
+import type { ChannelMessage, ClientIntent, RunState } from "@kad/shared";
+import { applyOps, deepClone } from "../json-patch.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
@@ -47,7 +47,7 @@ describe("create-room → join → intent → broadcast", () => {
     expect(hostJoin.value.playerId).toBe("p_1");
     expect(guestJoin.value.playerId).toBe("p_2");
 
-    const initial = deepClone(hostJoin.value.state) as RunState;
+    const initial: RunState = deepClone(hostJoin.value.state);
     expect(initial.phase).toBe("lobby");
 
     // --- play --------------------------------------------------------------
@@ -102,10 +102,10 @@ describe("create-room → join → intent → broadcast", () => {
     expect(kinds).toContain("ROLL");
 
     // A phone that applied every patch is byte-identical to the server.
-    let mirror = deepClone(initial) as RunState;
+    let mirror: RunState = initial;
     for (const message of patches) {
       if (message.kind !== "patch") continue;
-      mirror = applyPatch(mirror, message.patch as JsonPatchOp[]).newDocument;
+      mirror = applyOps(mirror, message.patch);
     }
     expect(mirror).toEqual(final);
   });
@@ -133,9 +133,9 @@ describe("create-room → join → intent → broadcast", () => {
     expect(caught.ok).toBe(true);
     if (!caught.ok || !atRefresh) return;
 
-    let mirror = deepClone(atRefresh) as RunState;
+    let mirror: RunState = atRefresh;
     for (const event of caught.value.events ?? []) {
-      mirror = applyPatch(mirror, event.patch as JsonPatchOp[]).newDocument;
+      mirror = applyOps(mirror, event.patch);
     }
     expect(mirror).toEqual(await harness.repo.getState(runId));
     expect(mirror.sceneId).toBe("scene_clearing");
