@@ -1,0 +1,140 @@
+{
+  "$comment": "Machine-readable contract for docs/asset-brief.md. The verifier reads this file. Where the brief and this file disagree, this file wins.",
+
+  "canvas": { "width": 1024, "height": 1024, "originX": 512, "originY": 900 },
+
+  "tolerance": {
+    "edgeMarginPx": 8,
+    "originYTolerancePx": 12,
+    "alphaThreshold": 8,
+    "recompositeIouMin": 0.999,
+    "recompositeMeanRgbDeltaMax": 2.0,
+    "minSeamOverlapPx": 2000,
+    "silhouetteHeightPx": 120,
+    "minSignaturePxAtSilhouette": 40,
+    "maxCornerAlpha": 4,
+    "paletteHueToleranceDeg": 30,
+    "jointDriftToleranceNormalizedPx": 70
+  },
+  "$jointDriftComment": "~7% of canvas height. Below this a rigger nudges a joint once per tier and moves on; above ~15% a limb visibly detaches from the torso and the tier needs its own skeleton. Set from that boundary, not from what current assets happen to score - real tiers land at 20-64px, growth-part artifacts at 110-170px.",
+
+
+  "structuralAdjacency": [
+    ["head", "body"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"]
+  ],
+  "$structuralAdjacencyComment": "Cross-tier joint registration is measured on these pairs only. mane/horn/wings/tail are growth parts - they get dramatically larger between tiers, which moves the centroid of their seam band without moving the actual attachment point. Including them measures growth, not drift.",
+
+
+  "zOrder": [
+    "wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "horn"
+  ],
+
+  "adjacency": [
+    ["head", "mane"],
+    ["head", "horn"],
+    ["head", "body"],
+    ["body", "mane"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "wings"]
+  ],
+
+  "tiers": ["fledgling", "sworn", "radiant", "mythic"],
+
+  "paletteRule": {
+    "$comment": "Derived from the approved unicorn/fledgling, not imposed on it. Each species picks one mane hue H; every other slot follows. Values are HSV.",
+    "coat": { "hue": "H", "sat": 0.07, "val": 0.95 },
+    "mane": { "hue": "H", "sat": "0.35-0.70", "val": "0.30-0.62" },
+    "accent": { "hue": "85-170 degrees from H", "sat": 0.50, "val": 0.88 },
+    "marking": { "hue": "H", "sat": 0.20, "val": 0.88 },
+    "outline": { "hue": "H+10", "sat": 0.50, "val": 0.23 },
+    "notes": [
+      "Mane is the dominant colour mass; its hue is the species identity.",
+      "Accent is lighter and brighter than the mane, and sits on the signature part only.",
+      "Mane hues are spread across the wheel so three party members are distinguishable at 120px.",
+      "Warm species (kitsune/bigfoot/manticore) separate by saturation and value, not hue.",
+      "Hex values below are targets, not exact requirements - see tolerance.paletteHueToleranceDeg."
+    ]
+  },
+
+  "species": [
+    {
+      "id": "unicorn",
+      "signature": "horn",
+      "bipedal": false,
+      "maneHue": 300,
+      "parts": ["body", "head", "mane", "horn", "arm_l", "arm_r", "leg_l", "leg_r", "tail"],
+      "palette": { "coat": "#F2E1F2", "mane": "#853A85", "accent": "#709FE0", "marking": "#E0B4E0", "outline": "#3B1D36" }
+    },
+    {
+      "id": "dragonling",
+      "signature": "wings",
+      "bipedal": false,
+      "maneHue": 145,
+      "parts": ["body", "head", "mane", "wings", "arm_l", "arm_r", "leg_l", "leg_r", "tail"],
+      "palette": { "coat": "#E1F2E8", "mane": "#2B6B46", "accent": "#E09F70", "marking": "#B4E0C6", "outline": "#1D3B2E" }
+    },
+    {
+      "id": "griffin",
+      "signature": "wings",
+      "bipedal": false,
+      "maneHue": 205,
+      "parts": ["body", "head", "mane", "wings", "arm_l", "arm_r", "leg_l", "leg_r", "tail"],
+      "palette": { "coat": "#E1EBF2", "mane": "#4D728C", "accent": "#E0C470", "marking": "#B4CEE0", "outline": "#1D2A3B" }
+    },
+    {
+      "id": "bigfoot",
+      "signature": "mane",
+      "bipedal": true,
+      "maneHue": 30,
+      "parts": ["body", "head", "mane", "arm_l", "arm_r", "leg_l", "leg_r"],
+      "palette": { "coat": "#F2EAE1", "mane": "#4C3F32", "accent": "#70E09F", "marking": "#E0CAB4", "outline": "#3B311D" }
+    },
+    {
+      "id": "kitsune",
+      "signature": "tail",
+      "bipedal": false,
+      "maneHue": 18,
+      "parts": ["body", "head", "mane", "arm_l", "arm_r", "leg_l", "leg_r", "tail"],
+      "palette": { "coat": "#F2E6E1", "mane": "#9E512F", "accent": "#70CEE0", "marking": "#E0C1B4", "outline": "#3B2B1D" }
+    },
+    {
+      "id": "manticore",
+      "signature": "tail",
+      "bipedal": false,
+      "maneHue": 350,
+      "parts": ["body", "head", "mane", "arm_l", "arm_r", "leg_l", "leg_r", "tail"],
+      "palette": { "coat": "#F2E1E4", "mane": "#662E37", "accent": "#96E070", "marking": "#E0B4BB", "outline": "#3B1D1D" }
+    }
+  ],
+
+  "gear": [
+    { "class": "thornguard", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
+    { "class": "duskrunner", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
+    { "class": "starweaver", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
+    { "class": "songkeeper", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] }
+  ],
+
+  "effects": [
+    { "id": "heal_bloom", "frames": 12, "size": 256 },
+    { "id": "impact_strike", "frames": 8, "size": 256 },
+    { "id": "burst_star", "frames": 12, "size": 256 },
+    { "id": "revive_lift", "frames": 12, "size": 256 },
+    { "id": "transform_flash", "frames": 18, "size": 256 }
+  ],
+
+  "biomes": ["bramblewood", "frostpeak", "emberhollow", "sunken_market", "cloudreach"],
+
+  "globalPalette": {
+    "outline": "#3A2A1E",
+    "darkest": "#2B2118",
+    "lightest": "#FFF6E8"
+  }
+}

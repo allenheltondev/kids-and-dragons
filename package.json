@@ -1,0 +1,10 @@
+{
+  "name": "kids-and-dragons",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "art:verify": "python tools/art/verify.py",
+    "art:verify:strict": "python tools/art/verify.py --strict"
+  }
+}

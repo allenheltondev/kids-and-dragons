@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+
+# art workflow — nothing reaches assets/ without passing verify + human review
+staging/
+
+# build output
+dist/
+.aws-sam/
+cdk.out/
+
+# local
+.env
+.env.local
+*.local
+.DS_Store
