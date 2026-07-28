@@ -1,0 +1,358 @@
+/*
+ * Design tokens, reset, and surface scaffolding.
+ *
+ * Dark-first, because the two real contexts are a TV in a dim living room and a
+ * phone held at arm's length in a car (spec §2). Everything here is sized to be
+ * legible in both, which is the whole reason the type scale is *container*
+ * relative rather than viewport relative: the same <PlayerPanel/> renders at
+ * 40% of a phone in Travel Mode and at full screen in Party Mode, and it has to
+ * read at both (architecture §4.6 rule 2).
+ *
+ * ---------------------------------------------------------------------------
+ * TOKEN VOCABULARY — the screens agent uses these names, not raw values.
+ * ---------------------------------------------------------------------------
+ *
+ * Color
+ *   --kad-bg              page / deepest background
+ *   --kad-bg-sunken       inset wells, tracks, empty slots
+ *   --kad-bg-raised       panels and cards sitting on the page
+ *   --kad-bg-overlay      scrim behind full-bleed overlays (dice, cutscenes)
+ *   --kad-border          hairline separator
+ *   --kad-border-strong   focused / selected outline
+ *   --kad-ink             primary text
+ *   --kad-ink-dim         secondary text
+ *   --kad-ink-faint       tertiary text, disabled
+ *   --kad-accent          primary action / brand violet
+ *   --kad-accent-ink      text on --kad-accent
+ *   --kad-accent-soft     tinted accent wash
+ *   --kad-gold            rewards, XP, level-up
+ *   --kad-danger          errors, damage
+ *   --kad-success         success, healing
+ *   --kad-warn            caution
+ *   --kad-down            knocked-down state (spec §7.3 — never "dead")
+ *   --kad-stat-might / -quick / -clever / -heart   the four stats (spec §4.1)
+ *
+ * Space (a 4px-derived ramp, expressed in em so it scales with the surface)
+ *   --kad-space-1 … --kad-space-7
+ *
+ * Radius
+ *   --kad-radius-sm | -md | -lg | -xl | -pill
+ *
+ * Type scale (em-relative to the surface's computed root size)
+ *   --kad-text-xs | -sm | -md | -lg | -xl | -2xl | -3xl
+ *   --kad-weight-normal | -bold | -black
+ *   --kad-font-ui | --kad-font-display
+ *
+ * Sizing
+ *   --kad-touch-min       minimum interactive box. NEVER go below this.
+ *   --kad-icon-sm | -md | -lg   icon box sizes (spec §11 — icons carry text)
+ *   --kad-measure         max line length for narration
+ *
+ * Elevation / motion
+ *   --kad-shadow-sm | -md | -lg
+ *   --kad-dur-fast | -base | -slow | -dice
+ *   --kad-ease | --kad-ease-out
+ *
+ * Layout (set by the shells in layout/ — surfaces must not redefine them)
+ *   --kad-world-share | --kad-player-share
+ *   --kad-safe-top | -bottom | -left | -right
+ *
+ * Unprefixed aliases (--color-text, --space-3, --font-size-lg, --radius-md,
+ * --shadow-lg, --touch-min) resolve to the same values; see the alias block
+ * below the token definitions.
+ */
+
+:root {
+  /* --- color ------------------------------------------------------------ */
+  --kad-bg: #0d0b1a;
+  --kad-bg-sunken: #080711;
+  --kad-bg-raised: #1a1730;
+  --kad-bg-overlay: rgba(8, 7, 17, 0.82);
+  --kad-border: rgba(190, 178, 255, 0.16);
+  --kad-border-strong: rgba(190, 178, 255, 0.55);
+
+  --kad-ink: #f4f0ff;
+  --kad-ink-dim: #b9b0d8;
+  --kad-ink-faint: #7d7599;
+
+  --kad-accent: #8b6cf5;
+  --kad-accent-ink: #0d0b1a;
+  --kad-accent-soft: rgba(139, 108, 245, 0.18);
+  --kad-gold: #f5c86c;
+  --kad-danger: #ff6b81;
+  --kad-success: #5fd6a0;
+  --kad-warn: #f5a86c;
+  --kad-down: #6c7ab0;
+
+  /* Stat colors are paired with icons everywhere; color alone never carries
+     meaning (spec §11 — colorblind-safe). */
+  --kad-stat-might: #ff8f6b;
+  --kad-stat-quick: #6bd6ff;
+  --kad-stat-clever: #c98bff;
+  --kad-stat-heart: #ff6bab;
+
+  /* --- space ------------------------------------------------------------ */
+  --kad-space-1: 0.25em;
+  --kad-space-2: 0.5em;
+  --kad-space-3: 0.75em;
+  --kad-space-4: 1em;
+  --kad-space-5: 1.5em;
+  --kad-space-6: 2em;
+  --kad-space-7: 3em;
+
+  /* --- radius ----------------------------------------------------------- */
+  --kad-radius-sm: 0.375em;
+  --kad-radius-md: 0.75em;
+  --kad-radius-lg: 1.25em;
+  --kad-radius-xl: 1.75em;
+  --kad-radius-pill: 999em;
+
+  /* --- type ------------------------------------------------------------- */
+  --kad-font-ui: ui-rounded, "SF Pro Rounded", "Segoe UI Variable", "Segoe UI",
+    system-ui, -apple-system, sans-serif;
+  --kad-font-display: var(--kad-font-ui);
+
+  --kad-text-xs: 0.75em;
+  --kad-text-sm: 0.875em;
+  --kad-text-md: 1em;
+  --kad-text-lg: 1.25em;
+  --kad-text-xl: 1.5em;
+  --kad-text-2xl: 2em;
+  --kad-text-3xl: 2.75em;
+
+  --kad-weight-normal: 500;
+  --kad-weight-bold: 700;
+  --kad-weight-black: 800;
+
+  /* --- sizing ----------------------------------------------------------- */
+  /* spec §11: "assumes a small hand and imprecise taps — and stays that way in
+     Travel Mode's compressed layout". 3em against the surface's own scale, with
+     a hard 44px floor so a squeezed container can never shrink it away. */
+  --kad-touch-min: max(2.75em, 44px);
+  --kad-icon-sm: 1.25em;
+  --kad-icon-md: 1.75em;
+  --kad-icon-lg: 2.5em;
+  --kad-measure: 34em;
+
+  /* --- elevation / motion ----------------------------------------------- */
+  --kad-shadow-sm: 0 0.125em 0.5em rgba(0, 0, 0, 0.35);
+  --kad-shadow-md: 0 0.5em 1.5em rgba(0, 0, 0, 0.45);
+  --kad-shadow-lg: 0 1em 3em rgba(0, 0, 0, 0.55);
+
+  --kad-dur-fast: 120ms;
+  --kad-dur-base: 260ms;
+  --kad-dur-slow: 520ms;
+  /* spec §2.2 — the roll takes over the screen for about this long. */
+  --kad-dice: 1500ms;
+  --kad-ease: cubic-bezier(0.32, 0.72, 0.28, 1);
+  --kad-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- layout, owned by layout/ ----------------------------------------- */
+  --kad-world-share: 60%;
+  --kad-player-share: 40%;
+  --kad-safe-top: env(safe-area-inset-top, 0px);
+  --kad-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --kad-safe-left: env(safe-area-inset-left, 0px);
+  --kad-safe-right: env(safe-area-inset-right, 0px);
+
+  color-scheme: dark;
+}
+
+/*
+ * Unprefixed aliases.
+ *
+ * The screens were written against a shorter vocabulary (`--color-text`,
+ * `--space-3`, `--font-size-lg`) before this file existed. Rather than reach
+ * into another author's stylesheets, both spellings resolve to one palette —
+ * the aliases below are the single definition, not a second set of values.
+ * `--kad-*` is canonical; new code should use it.
+ */
+:root {
+  --color-bg: var(--kad-bg);
+  --color-surface: var(--kad-bg-raised);
+  --color-surface-raised: var(--kad-bg-raised);
+  --color-surface-sunken: var(--kad-bg-sunken);
+  --color-border: var(--kad-border);
+  --color-focus: var(--kad-gold);
+  --color-text: var(--kad-ink);
+  --color-text-muted: var(--kad-ink-dim);
+  --color-primary: var(--kad-accent);
+  --color-on-primary: var(--kad-accent-ink);
+  --color-accent: var(--kad-gold);
+  --color-danger: var(--kad-danger);
+  --color-success: var(--kad-success);
+  --color-warn: var(--kad-warn);
+
+  --space-1: var(--kad-space-1);
+  --space-2: var(--kad-space-2);
+  --space-3: var(--kad-space-3);
+  --space-4: var(--kad-space-4);
+  --space-5: var(--kad-space-5);
+  --space-6: var(--kad-space-6);
+  --space-7: var(--kad-space-7);
+
+  --font-size-xs: var(--kad-text-xs);
+  --font-size-sm: var(--kad-text-sm);
+  --font-size-md: var(--kad-text-md);
+  --font-size-lg: var(--kad-text-lg);
+  --font-size-xl: var(--kad-text-xl);
+  --font-size-2xl: var(--kad-text-2xl);
+  --font-size-3xl: var(--kad-text-3xl);
+
+  --radius-sm: var(--kad-radius-sm);
+  --radius-md: var(--kad-radius-md);
+  --radius-lg: var(--kad-radius-lg);
+  --radius-xl: var(--kad-radius-xl);
+  --radius-pill: var(--kad-radius-pill);
+
+  --shadow-sm: var(--kad-shadow-sm);
+  --shadow-md: var(--kad-shadow-md);
+  --shadow-lg: var(--kad-shadow-lg);
+
+  --touch-min: var(--kad-touch-min);
+}
+
+/* --------------------------------------------------------------------------
+ * Reset
+ * ----------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--kad-bg);
+  color: var(--kad-ink);
+  font-family: var(--kad-font-ui);
+  font-weight: var(--kad-weight-normal);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* The board is a canvas; browser text selection and the iOS magnifier get in
+     the way of taps far more than they help an 8-year-old. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 0.15em solid var(--kad-border-strong);
+  outline-offset: 0.15em;
+}
+
+/* spec §11 has no hover-only affordances anywhere; hover is decoration only and
+   is scoped to devices that actually have a pointer. */
+@media (hover: none) {
+  .kad-hover-only {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Surface scaffolding
+ *
+ * `.kad-surface` is what makes mode-agnostic sizing possible. Each surface is a
+ * size container, and its root font-size is derived from its own width. Every
+ * token above is in `em`, so the entire component tree scales with the pane it
+ * lands in — a TV-sized WorldView and a 60%-of-a-phone WorldView are the same
+ * components at two scales, with no viewport units anywhere inside
+ * (architecture §4.6 rule 2).
+ * ----------------------------------------------------------------------- */
+
+.kad-surface {
+  container-type: size;
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  /* 2.6cqw: ~10px on a 390px phone pane, ~50px on a 1920px TV. Clamped so a
+     tiny pane stays readable and a huge one stays sane. */
+  font-size: clamp(15px, 2.6cqw, 34px);
+}
+
+.kad-surface--world {
+  container-name: world;
+  background: radial-gradient(
+      120% 90% at 50% 15%,
+      #241f45 0%,
+      var(--kad-bg) 62%,
+      var(--kad-bg-sunken) 100%
+    );
+}
+
+.kad-surface--player {
+  container-name: player;
+  background: var(--kad-bg);
+  /* The player pane is text and buttons, so it scales off the smaller axis to
+     avoid enormous type on a landscape tablet. */
+  font-size: clamp(15px, min(2.6cqw, 5.5cqh), 30px);
+}
+
+/* Full-bleed layer inside a surface (dice, cutscenes, lobby). Percentages, not
+   viewport units — see the comments in layout/WorldView.tsx. */
+.kad-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  pointer-events: none;
+}
+
+.kad-layer > * {
+  pointer-events: auto;
+}
+
+.kad-scrim {
+  background: var(--kad-bg-overlay);
+  backdrop-filter: blur(0.15em);
+}

@@ -1,0 +1,88 @@
+/*
+ * Narration — WorldView.
+ *
+ * Type scale is container-relative (`cqi`), so one rule serves a 3-metre TV and
+ * a 60%-height phone pane. `max-width` in `ch` keeps the measure readable at
+ * both ends — long lines are what actually breaks reading, not size.
+ */
+
+.narration {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.6cqi, 1.5rem);
+  width: 100%;
+  height: 100%;
+  padding: clamp(0.75rem, 2.4cqi, 2.5rem);
+  background: linear-gradient(
+    to top,
+    var(--color-surface, #191534) 0%,
+    color-mix(in srgb, var(--color-surface, #191534) 82%, transparent) 70%,
+    transparent 100%
+  );
+  color: var(--color-text, #f4f1ff);
+  overflow-y: auto;
+}
+
+.narration__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25rem);
+}
+
+.narration__chapter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: clamp(0.7rem, 1.6cqi, 1.1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.narration__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: clamp(1.05rem, 2.8cqi, 2.2rem);
+  font-weight: 700;
+}
+
+.narration__body {
+  margin: 0;
+  max-width: 46ch;
+  font-size: clamp(1.05rem, 3.2cqi, 2.6rem);
+  font-weight: 500;
+  line-height: 1.32;
+  text-wrap: pretty;
+}
+
+.narration__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.35rem, 1.2cqi, 0.9rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.narration__choice,
+.narration__prompt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  padding: clamp(0.3rem, 1cqi, 0.75rem) clamp(0.6rem, 1.6cqi, 1.25rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-surface-sunken, #120f26);
+  font-size: clamp(0.85rem, 2cqi, 1.6rem);
+  font-weight: 600;
+}
+
+.narration__prompt {
+  align-self: flex-start;
+  border-color: var(--color-accent, #ffc95c);
+  color: var(--color-accent, #ffc95c);
+}

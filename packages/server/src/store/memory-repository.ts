@@ -1,0 +1,377 @@
+/**
+ * In-memory `GameRepository`, optionally mirrored to a JSON file under `.data/`.
+ *
+ * The records carry the **real** `PK`/`SK`/`GSI1PK`/`GSI1SK` attributes from
+ * architecture §3, and every read is expressed as a partition lookup plus a
+ * sort-key prefix range — i.e. as things DynamoDB can actually do. Nothing here
+ * scans the table, so `DynamoRepository` can be a mechanical translation rather
+ * than a redesign. Where the semantics matter (conditional room creation,
+ * transactional commit, TTL) the local store reproduces them exactly.
+ *
+ * Persistence is a dev-only convenience: `npm run dev:server` restarts on every
+ * save under `tsx watch`, and losing the household + characters on each restart
+ * would make multi-device testing (§7) miserable.
+ */
+
+import fs from "node:fs/promises";
+import path from "node:path";
+import type {
+  Character,
+  DeviceBinding,
+  Household,
+  PlayerProfile,
+  RunState,
+} from "@kad/shared";
+import type {
+  ChapterProgressRecord,
+  CommitInput,
+  EventRecord,
+  GameRepository,
+  RoomRecord,
+  RunRecord,
+} from "./repository.ts";
+import {
+  ACCT,
+  CHAPTER_SK,
+  CHAR_SK,
+  DEVICE_SK,
+  EVT_SK,
+  GSI1_DEVICE,
+  GSI1_RUN,
+  HH,
+  META,
+  PLAYER_SK,
+  PREFIX,
+  ROOM,
+  RUN,
+  RUN_SK,
+  STATE,
+} from "./keys.ts";
+
+/** One row. Mirrors a DynamoDB item: keys are attributes, not metadata. */
+interface TableItem {
+  PK: string;
+  SK: string;
+  GSI1PK?: string;
+  GSI1SK?: string;
+  /** Epoch seconds, TTL attribute. Only rooms carry it today. */
+  ttl?: number;
+  entity: string;
+  data: unknown;
+}
+
+export interface MemoryRepositoryOptions {
+  /** Absolute path to the JSON mirror. Omit for a pure in-memory store. */
+  filePath?: string;
+  now?: () => number;
+}
+
+export class MemoryRepository implements GameRepository {
+  private readonly items = new Map<string, TableItem>();
+  private readonly filePath: string | undefined;
+  private readonly now: () => number;
+  private flushTimer: ReturnType<typeof setTimeout> | null = null;
+  private writing: Promise<void> = Promise.resolve();
+
+  constructor(options: MemoryRepositoryOptions = {}) {
+    this.filePath = options.filePath;
+    this.now = options.now ?? Date.now;
+  }
+
+  /** Loads the JSON mirror if it exists. A corrupt mirror starts empty — dev
+   * data is disposable, and refusing to boot over it would be worse. */
+  static async open(options: MemoryRepositoryOptions = {}): Promise<MemoryRepository> {
+    const repo = new MemoryRepository(options);
+    if (options.filePath) await repo.load(options.filePath);
+    return repo;
+  }
+
+  private async load(filePath: string): Promise<void> {
+    let raw: string;
+    try {
+      raw = await fs.readFile(filePath, "utf8");
+    } catch {
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw) as { items?: TableItem[] };
+      for (const item of parsed.items ?? []) {
+        if (item && typeof item.PK === "string" && typeof item.SK === "string") {
+          this.items.set(rowKey(item.PK, item.SK), item);
+        }
+      }
+    } catch {
+      console.warn(`[store] ignoring corrupt dev table at ${filePath}`);
+    }
+  }
+
+  /** Waits for any pending mirror write. Tests and shutdown call this. */
+  async flush(): Promise<void> {
+    if (this.flushTimer) {
+      clearTimeout(this.flushTimer);
+      this.flushTimer = null;
+      this.scheduleWrite();
+    }
+    await this.writing;
+  }
+
+  // --- table primitives -----------------------------------------------------
+
+  private put(item: TableItem): void {
+    this.items.set(rowKey(item.PK, item.SK), item);
+    this.persist();
+  }
+
+  private get(pk: string, sk: string): TableItem | undefined {
+    const item = this.items.get(rowKey(pk, sk));
+    if (!item) return undefined;
+    if (this.isExpired(item)) return undefined;
+    return item;
+  }
+
+  /** A Query: one partition, sort keys ascending, optional prefix. */
+  private query(pk: string, skPrefix = ""): TableItem[] {
+    const out: TableItem[] = [];
+    for (const item of this.items.values()) {
+      if (item.PK !== pk) continue;
+      if (!item.SK.startsWith(skPrefix)) continue;
+      if (this.isExpired(item)) continue;
+      out.push(item);
+    }
+    return out.sort((a, b) => (a.SK < b.SK ? -1 : a.SK > b.SK ? 1 : 0));
+  }
+
+  /** A GSI1 Query. */
+  private queryIndex(gsi1pk: string): TableItem[] {
+    const out: TableItem[] = [];
+    for (const item of this.items.values()) {
+      if (item.GSI1PK !== gsi1pk) continue;
+      if (this.isExpired(item)) continue;
+      out.push(item);
+    }
+    return out.sort((a, b) => ((a.GSI1SK ?? "") < (b.GSI1SK ?? "") ? -1 : 1));
+  }
+
+  private isExpired(item: TableItem): boolean {
+    return item.ttl !== undefined && item.ttl * 1000 <= this.now();
+  }
+
+  private persist(): void {
+    if (!this.filePath) return;
+    if (this.flushTimer) return;
+    // Debounced: an action writes two rows, and a burst of intents writes many.
+    // The mirror only has to be current by the next restart.
+    this.flushTimer = setTimeout(() => {
+      this.flushTimer = null;
+      this.scheduleWrite();
+    }, 25);
+    this.flushTimer.unref?.();
+  }
+
+  private scheduleWrite(): void {
+    const filePath = this.filePath;
+    if (!filePath) return;
+    const snapshot = { version: 1, items: [...this.items.values()] };
+    this.writing = this.writing.then(async () => {
+      const tmp = `${filePath}.${process.pid}.tmp`;
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(tmp, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+      // Rename is atomic on the same filesystem: a killed dev server never
+      // leaves a half-written table behind.
+      await fs.rename(tmp, filePath);
+    }).catch((err: unknown) => {
+      console.warn(`[store] could not write dev table: ${String(err)}`);
+    });
+  }
+
+  // --- household, players, devices ------------------------------------------
+
+  async putHousehold(household: Household): Promise<void> {
+    this.put({ PK: HH(household.id), SK: META, entity: "household", data: household });
+  }
+
+  async getHousehold(householdId: string): Promise<Household | null> {
+    return (this.get(HH(householdId), META)?.data as Household | undefined) ?? null;
+  }
+
+  async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
+    this.put({
+      PK: ACCT(cognitoSub),
+      SK: HH(householdId),
+      entity: "account",
+      data: { cognitoSub, householdId },
+    });
+  }
+
+  async listHouseholdsForAccount(cognitoSub: string): Promise<string[]> {
+    return this.query(ACCT(cognitoSub), "HH#").map((i) => i.SK.slice("HH#".length));
+  }
+
+  async putPlayer(player: PlayerProfile): Promise<void> {
+    this.put({
+      PK: HH(player.householdId),
+      SK: PLAYER_SK(player.id),
+      entity: "player",
+      data: player,
+    });
+  }
+
+  async getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null> {
+    return (
+      (this.get(HH(householdId), PLAYER_SK(playerId))?.data as PlayerProfile | undefined) ?? null
+    );
+  }
+
+  async listPlayers(householdId: string): Promise<PlayerProfile[]> {
+    return this.query(HH(householdId), PREFIX.player).map((i) => i.data as PlayerProfile);
+  }
+
+  async putDevice(device: DeviceBinding): Promise<void> {
+    this.put({
+      PK: HH(device.householdId),
+      SK: DEVICE_SK(device.deviceId),
+      GSI1PK: GSI1_DEVICE(device.deviceId),
+      GSI1SK: HH(device.householdId),
+      entity: "device",
+      data: device,
+    });
+  }
+
+  async getDeviceById(deviceId: string): Promise<DeviceBinding | null> {
+    const hit = this.queryIndex(GSI1_DEVICE(deviceId))[0];
+    return (hit?.data as DeviceBinding | undefined) ?? null;
+  }
+
+  async listDevices(householdId: string): Promise<DeviceBinding[]> {
+    return this.query(HH(householdId), PREFIX.device).map((i) => i.data as DeviceBinding);
+  }
+
+  async revokeDevice(householdId: string, deviceId: string): Promise<void> {
+    const item = this.get(HH(householdId), DEVICE_SK(deviceId));
+    if (!item) return;
+    const device = item.data as DeviceBinding;
+    this.put({ ...item, data: { ...device, revoked: true } });
+  }
+
+  // --- characters ------------------------------------------------------------
+
+  async putCharacter(character: Character): Promise<void> {
+    this.put({
+      PK: HH(character.householdId),
+      SK: CHAR_SK(character.id),
+      entity: "character",
+      data: character,
+    });
+  }
+
+  async getCharacter(householdId: string, characterId: string): Promise<Character | null> {
+    return (
+      (this.get(HH(householdId), CHAR_SK(characterId))?.data as Character | undefined) ?? null
+    );
+  }
+
+  async listCharacters(householdId: string): Promise<Character[]> {
+    return this.query(HH(householdId), PREFIX.character).map((i) => i.data as Character);
+  }
+
+  // --- runs, state, events ---------------------------------------------------
+
+  async putRun(run: RunRecord): Promise<void> {
+    this.put({
+      PK: HH(run.householdId),
+      SK: RUN_SK(run.id),
+      GSI1PK: GSI1_RUN(run.id),
+      GSI1SK: HH(run.householdId),
+      entity: "run",
+      data: run,
+    });
+  }
+
+  async getRun(runId: string): Promise<RunRecord | null> {
+    const hit = this.queryIndex(GSI1_RUN(runId))[0];
+    return (hit?.data as RunRecord | undefined) ?? null;
+  }
+
+  async listRuns(householdId: string): Promise<RunRecord[]> {
+    return this.query(HH(householdId), PREFIX.run).map((i) => i.data as RunRecord);
+  }
+
+  async putChapterProgress(progress: ChapterProgressRecord): Promise<void> {
+    this.put({
+      PK: RUN(progress.runId),
+      SK: CHAPTER_SK(progress.index),
+      entity: "chapter-progress",
+      data: progress,
+    });
+  }
+
+  async listChapterProgress(runId: string): Promise<ChapterProgressRecord[]> {
+    return this.query(RUN(runId), PREFIX.chapter).map((i) => i.data as ChapterProgressRecord);
+  }
+
+  async getState(runId: string): Promise<RunState | null> {
+    return (this.get(RUN(runId), STATE)?.data as RunState | undefined) ?? null;
+  }
+
+  async putState(state: RunState): Promise<void> {
+    this.put({ PK: RUN(state.runId), SK: STATE, entity: "state", data: state });
+  }
+
+  async commit(input: CommitInput): Promise<boolean> {
+    const { runId, expectedSeq, state, event } = input;
+    const current = (this.get(RUN(runId), STATE)?.data as RunState | undefined) ?? null;
+    // Both conditions of the real TransactWriteItems: the state has not moved,
+    // and this seq has not already been written.
+    if (!current || current.seq !== expectedSeq) return false;
+    if (this.items.has(rowKey(RUN(runId), EVT_SK(event.seq)))) return false;
+
+    this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
+    this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
+    return true;
+  }
+
+  async listEvents(runId: string, sinceSeq: number, limit = 200): Promise<EventRecord[]> {
+    const rows = this.query(RUN(runId), PREFIX.event);
+    const out: EventRecord[] = [];
+    for (const row of rows) {
+      const event = row.data as EventRecord;
+      if (event.seq <= sinceSeq) continue;
+      out.push(event);
+      if (out.length >= limit) break;
+    }
+    return out;
+  }
+
+  // --- rooms -----------------------------------------------------------------
+
+  async putRoomIfAbsent(room: RoomRecord): Promise<boolean> {
+    const key = rowKey(ROOM(room.code), META);
+    const existing = this.items.get(key);
+    // An *expired* room's code is free again, which is the whole point of the
+    // 6-hour TTL (§3): four letters is a small space and codes must recycle.
+    if (existing && !this.isExpired(existing)) return false;
+    this.put({
+      PK: ROOM(room.code),
+      SK: META,
+      GSI1PK: GSI1_RUN(room.runId),
+      GSI1SK: ROOM(room.code),
+      ttl: room.ttl,
+      entity: "room",
+      data: room,
+    });
+    return true;
+  }
+
+  async getRoom(code: string): Promise<RoomRecord | null> {
+    return (this.get(ROOM(code), META)?.data as RoomRecord | undefined) ?? null;
+  }
+
+  async deleteRoom(code: string): Promise<void> {
+    this.items.delete(rowKey(ROOM(code), META));
+    this.persist();
+  }
+}
+
+function rowKey(pk: string, sk: string): string {
+  return `${pk} ${sk}`;
+}
