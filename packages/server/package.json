@@ -1,0 +1,20 @@
+{
+  "name": "@kad/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/dev-server.ts",
+  "scripts": {
+    "dev": "tsx watch src/dev-server.ts",
+    "start": "tsx src/dev-server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kad/shared": "*",
+    "express": "^5.2.1",
+    "fast-json-patch": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
+  }
+}
