@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/rules.schema.json",
+  "title": "RulesContent",
+  "description": "content/rules.json. Mirrors packages/shared/src/types/domain.ts RulesContent; where the two disagree the TypeScript type wins. Values come from spec §4, §5, §7.1 and §8.1.",
+
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "baseStats",
+    "creationPoints",
+    "baseMaxHp",
+    "baseGuard",
+    "baseSteps",
+    "difficultyTn",
+    "levelXp",
+    "tierLevels",
+    "species",
+    "classes"
+  ],
+
+  "properties": {
+    "$comment": { "type": "string" },
+
+    "version": { "type": "integer", "minimum": 1 },
+
+    "baseStats": { "$ref": "#/$defs/stats" },
+
+    "creationPoints": { "type": "integer", "minimum": 0, "maximum": 10 },
+    "baseMaxHp": { "type": "integer", "minimum": 1 },
+    "baseGuard": { "type": "integer", "minimum": 1 },
+    "baseSteps": { "type": "integer", "minimum": 1 },
+
+    "difficultyTn": {
+      "description": "spec §4.1 — easy 8 / normal 12 / hard 16.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["easy", "normal", "hard"],
+      "properties": {
+        "easy": { "type": "integer", "minimum": 1, "maximum": 25 },
+        "normal": { "type": "integer", "minimum": 1, "maximum": 25 },
+        "hard": { "type": "integer", "minimum": 1, "maximum": 25 }
+      }
+    },
+
+    "levelXp": {
+      "description": "levelXp[n] is the total XP needed to reach level n+1, so levelXp[0] is 0. Levels 1-10, hence exactly 10 entries. Monotonicity is checked by tools/content/validate.mjs.",
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": { "type": "integer", "minimum": 0 }
+    },
+
+    "tierLevels": {
+      "description": "spec §8.1 — the level at which each appearance tier is reached.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fledgling", "sworn", "radiant", "mythic"],
+      "properties": {
+        "fledgling": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "sworn": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "radiant": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "mythic": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+
+    "species": {
+      "description": "All six, keyed by SpeciesId. Missing or unknown keys are a build failure — the creation flow reads this map directly.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unicorn", "dragonling", "griffin", "bigfoot", "kitsune", "manticore"],
+      "properties": {
+        "unicorn": { "type": "object", "$ref": "#/$defs/species", "properties": { "id": { "const": "unicorn" } } },
+        "dragonling": { "type": "object", "$ref": "#/$defs/species", "properties": { "id": { "const": "dragonling" } } },
+        "griffin": { "type": "object", "$ref": "#/$defs/species", "properties": { "id": { "const": "griffin" } } },
+        "bigfoot": { "type": "object", "$ref": "#/$defs/species", "properties": { "id": { "const": "bigfoot" } } },
+        "kitsune": { "type": "object", "$ref": "#/$defs/species", "properties": { "id": { "const": "kitsune" } } },
+        "manticore": { "type": "object", "$ref": "#/$defs/species", "properties": { "id": { "const": "manticore" } } }
+      }
+    },
+
+    "classes": {
+      "description": "All four, keyed by ClassId, one per stat.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["thornguard", "duskrunner", "starweaver", "songkeeper"],
+      "properties": {
+        "thornguard": { "type": "object", "$ref": "#/$defs/class", "properties": { "id": { "const": "thornguard" }, "stat": { "const": "might" } } },
+        "duskrunner": { "type": "object", "$ref": "#/$defs/class", "properties": { "id": { "const": "duskrunner" }, "stat": { "const": "quick" } } },
+        "starweaver": { "type": "object", "$ref": "#/$defs/class", "properties": { "id": { "const": "starweaver" }, "stat": { "const": "clever" } } },
+        "songkeeper": { "type": "object", "$ref": "#/$defs/class", "properties": { "id": { "const": "songkeeper" }, "stat": { "const": "heart" } } }
+      }
+    }
+  },
+
+  "$defs": {
+    "statId": {
+      "description": "The four stats and nothing else. spec §4.1.",
+      "enum": ["might", "quick", "clever", "heart"]
+    },
+
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["might", "quick", "clever", "heart"],
+      "properties": {
+        "might": { "type": "integer" },
+        "quick": { "type": "integer" },
+        "clever": { "type": "integer" },
+        "heart": { "type": "integer" }
+      }
+    },
+
+    "slug": {
+      "description": "An icon slug, not a path. The client resolves it to inline SVG (spec §11, 'icons before text').",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "minLength": 1
+    },
+
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "minLength": 1
+    },
+
+    "ability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "text", "icon"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "icon": { "$ref": "#/$defs/slug" }
+      }
+    },
+
+    "species": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "blurb", "passive", "worldAbility", "combatAction"],
+      "properties": {
+        "id": { "enum": ["unicorn", "dragonling", "griffin", "bigfoot", "kitsune", "manticore"] },
+        "name": { "type": "string", "minLength": 1 },
+        "blurb": { "type": "string", "minLength": 1 },
+        "passive": {
+          "description": "A flat stat bonus or extra max HP. A passive that grants neither is a mistake, so one of the two is required.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["amount", "text"],
+          "anyOf": [
+            { "type": "object", "required": ["stat"], "properties": { "stat": { "$ref": "#/$defs/statId" } } },
+            { "type": "object", "required": ["maxHp"], "properties": { "maxHp": { "type": "integer" } } }
+          ],
+          "properties": {
+            "stat": { "$ref": "#/$defs/statId" },
+            "amount": { "type": "integer", "minimum": 1, "maximum": 3 },
+            "maxHp": { "type": "integer", "minimum": 1, "maximum": 5 },
+            "text": { "type": "string", "minLength": 1 }
+          }
+        },
+        "worldAbility": { "$ref": "#/$defs/ability" },
+        "combatAction": {
+          "description": "The combat-flavored version of the world ability, once per encounter (spec §7.2).",
+          "$ref": "#/$defs/ability"
+        }
+      }
+    },
+
+    "class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "stat", "role", "blurb", "baseSteps", "signature", "unlocks"],
+      "properties": {
+        "id": { "enum": ["thornguard", "duskrunner", "starweaver", "songkeeper"] },
+        "name": { "type": "string", "minLength": 1 },
+        "stat": { "$ref": "#/$defs/statId" },
+        "role": { "type": "string", "minLength": 1 },
+        "blurb": { "type": "string", "minLength": 1 },
+        "baseSteps": {
+          "description": "spec §7.1 — base 4 steps, Duskrunner 6.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "signature": { "$ref": "#/$defs/ability" },
+        "unlocks": {
+          "description": "Actions unlocked at levels beyond the signature, keyed by level as a string.",
+          "type": "object",
+          "propertyNames": { "pattern": "^([2-9]|10)$" },
+          "additionalProperties": { "$ref": "#/$defs/ability" }
+        }
+      }
+    }
+  }
+}
