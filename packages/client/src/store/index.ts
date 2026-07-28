@@ -307,8 +307,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
         const task = (async () => {
           if (stored) {
+            // No `sinceSeq`: attaching is always a cold start — the mirror did
+            // not survive the refresh, so we want the snapshot. Sending 0 would
+            // mean "caught up through seq 0", and a room still sitting at seq 0
+            // would correctly answer with an empty event list and no state
+            // (architecture §4.3).
             const response = await deps.api.fetchState(
-              { runId: stored.runId, code: roomCode, sinceSeq: 0 },
+              { runId: stored.runId, code: roomCode },
               stored.sessionToken || undefined,
             );
             if (!response.state) throw new ApiError(410, "That room has expired.");
@@ -323,7 +328,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             return;
           }
 
-          const response = await deps.api.fetchState({ code: roomCode, sinceSeq: 0 });
+          const response = await deps.api.fetchState({ code: roomCode });
           if (!response.state) throw new ApiError(404, "No such room.");
           const display: ClientSession = {
             runId: response.state.runId,

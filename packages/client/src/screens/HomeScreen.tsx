@@ -141,7 +141,7 @@ export function HomeScreen(): ReactElement {
                   onChange={() => setMode(m)}
                 />
                 <span className="home__mode-icon" aria-hidden="true">
-                  <Icon name={MODE_ICON[m]} size="2rem" />
+                  <Icon name={MODE_ICON[m]} size="2em" />
                 </span>
                 <span className="home__mode-text">
                   <span className="home__mode-name">
@@ -216,10 +216,12 @@ export function HomeScreen(): ReactElement {
         </section>
 
         {busy !== null ? (
-          <p className="home__busy kad-row" role="status">
+          /* A div, not a p: Spinner renders a div, and a block element inside
+             a <p> is invalid HTML that React warns about at runtime. */
+          <div className="home__busy kad-row" role="status">
             <Spinner />
             <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
-          </p>
+          </div>
         ) : null}
 
         {error !== null ? (

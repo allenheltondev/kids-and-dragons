@@ -121,7 +121,7 @@ function SpeciesStep({
           key={def.id}
           selected={chosen === def.id}
           onSelect={() => onChoose(def.id)}
-          icon={<Icon name={def.id} size="2.2rem" />}
+          icon={<Icon name={def.id} size="2.2em" />}
           title={def.name}
         >
           <span className="creation-card__blurb kad-muted">{def.blurb}</span>
@@ -160,7 +160,7 @@ function ClassStep({
           key={def.id}
           selected={chosen === def.id}
           onSelect={() => onChoose(def.id)}
-          icon={<Icon name={def.id} size="2.2rem" />}
+          icon={<Icon name={def.id} size="2.2em" />}
           title={def.name}
         >
           <span className="creation-card__line kad-muted">
@@ -215,7 +215,7 @@ function StatsStep({
           return (
             <li className="creation-stat" key={stat}>
               <span className="creation-stat__icon">
-                <Icon name={stat} size="1.8rem" />
+                <Icon name={stat} size="1.8em" />
               </span>
               <span className="creation-stat__name">{stat}</span>
               <span className="creation-stat__value" aria-label={`${stat} ${String(total)}`}>
@@ -235,7 +235,7 @@ function StatsStep({
                     className="creation-step-btn kad-tap kad-focusable"
                     onClick={() => onRemove(stat)}
                   >
-                    <Icon name="minus" size="1.4rem" label={`Take a point off ${stat}`} />
+                    <Icon name="minus" size="1.4em" label={`Take a point off ${stat}`} />
                   </button>
                 ) : null}
                 {remaining > 0 ? (
@@ -244,7 +244,7 @@ function StatsStep({
                     className="creation-step-btn creation-step-btn--add kad-tap kad-focusable"
                     onClick={() => onAdd(stat)}
                   >
-                    <Icon name="plus" size="1.4rem" label={`Add a point to ${stat}`} />
+                    <Icon name="plus" size="1.4em" label={`Add a point to ${stat}`} />
                   </button>
                 ) : null}
               </span>

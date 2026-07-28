@@ -5,9 +5,9 @@
  * the biggest thing on it, with a QR beside it (architecture §4.5 step 2 —
  * scan and you are already you, no "who are you?" step).
  *
- * Sized entirely in container units: this renders full-screen on a TV and in
- * the ~60% portrait pane of Travel Mode, and never knows which
- * (architecture §4.6).
+ * Sized entirely in `em` against `.kad-surface`, whose own font-size comes from
+ * its container width: this renders full-screen on a TV and in the ~60%
+ * portrait pane of Travel Mode, and never knows which (architecture §4.6).
  */
 
 import { useEffect, useState } from "react";
@@ -62,7 +62,7 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
   return (
     <li className={`lobby-member${member.ready ? " lobby-member--ready" : ""}`}>
       <span className="lobby-member__portrait" aria-hidden="true">
-        <Icon name={character.species} size="2.4rem" />
+        <Icon name={character.species} size="2.4em" />
       </span>
       <span className="lobby-member__text">
         <span className="lobby-member__name">{character.name}</span>
@@ -111,7 +111,12 @@ export function LobbyContent(): ReactElement {
         <span>Everyone in?</span>
       </h2>
 
-      <div className="lobby__join">
+      {/* The code is the biggest thing on an idle screen (spec §2.1), but the
+          moment somebody is actually in the room the party matters more — and
+          in Travel Mode the whole lobby has to fit a 60%-height phone pane.
+          Once anyone has joined, the code and QR step down to a strip so a
+          full three-person party is on screen without scrolling. */}
+      <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
         <div className="lobby__code-block">
           <p className="lobby__code-label kad-muted">Room code</p>
           <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
@@ -129,7 +134,7 @@ export function LobbyContent(): ReactElement {
         <div className="lobby__qr-block">
           {qr === null ? (
             <div className="lobby__qr lobby__qr--empty">
-              <Icon name="qr" size="3rem" />
+              <Icon name="qr" size="3em" />
             </div>
           ) : (
             <img className="lobby__qr" src={qr} alt={`QR code to join room ${code ?? ""}`} />
@@ -149,10 +154,12 @@ export function LobbyContent(): ReactElement {
           </span>
         </h3>
         {party.length === 0 ? (
-          <p className="lobby__waiting kad-row" role="status">
+          /* A div, not a p — Spinner renders a block, which is invalid inside
+             a <p> and warns at runtime. */
+          <div className="lobby__waiting kad-row" role="status">
             <Spinner />
             <span>Waiting for the first player…</span>
-          </p>
+          </div>
         ) : (
           <ul className="lobby__lineup">
             {party.map((member) => (

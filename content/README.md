@@ -49,6 +49,11 @@ it handles anything.
 - **Trinkets stay small on purpose.** +1 to a stat, +1 step, +2 max HP, one reroll per encounter —
   and nothing bigger, ever. The level-up transformation is the reward the game is built around and
   no item may compete with it (spec §9.3).
+- **`levelXp` holds the nine thresholds *above* level 1.** `levelXp[n]` is the total XP needed to
+  reach level `n + 2`, and the cap is `levelXp.length + 1`. That is what `levelForXp()` and
+  `maxLevel()` in `packages/shared/src/rules.ts` implement, and it is why the array does not start
+  with a `0` — a leading zero would hand every character level 2 for free. (The comment on
+  `RulesContent.levelXp` in `domain.ts` reads `n + 1`; the implementation is the one that runs.)
 - **XP is a chapter award.** `xpAward` is the payout; the single `grantXp` in the reference chapter
   is a small exploration bonus, kept small so that exploring and talking stay worth about as much as
   fighting (spec §8.1).

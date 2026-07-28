@@ -211,6 +211,10 @@ export function createScene(app: Application): PartyScene {
 
   return {
     resize(width, height) {
+      // A ResizeObserver callback can land after teardown — strict mode's
+      // mount/unmount/remount does it on every save. Pixi nulls a destroyed
+      // object's transform, so touching `scale` here would throw.
+      if (destroyed) return;
       viewport = { width, height };
       // Contain, not cover: the party must never be cropped out of a short pane.
       fitScale = Math.min(width / DESIGN.width, height / DESIGN.height);

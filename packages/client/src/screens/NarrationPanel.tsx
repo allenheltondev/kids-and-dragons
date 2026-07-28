@@ -52,18 +52,42 @@ export function NarrationPanel(): ReactElement | null {
   const prompt = state?.prompt ?? null;
   const choices = prompt !== null && prompt.kind === "choice" ? prompt.options : null;
 
-  // One utterance per scene, not per render. The key covers a narration swap
-  // inside the same scene (the live LLM layer can replace it — spec §10.2).
-  const spokenKey = useRef<string | null>(null);
-  const spokenText = choices === null
-    ? narration
-    : `${narration} ${choices.map((c) => c.label).join(". ")}`;
+  /*
+   * Everything read aloud is read here, and only here.
+   *
+   * WorldView exists on exactly one surface per player in both modes — a TV in
+   * Party Mode, the top pane in Travel Mode — so putting the `speak()` calls on
+   * the shared surface gives one voice. If PlayerPanel also spoke its choices,
+   * a Travel Mode phone (which renders both surfaces) would say every line
+   * twice.
+   *
+   * One utterance per scene, not per render. The key covers a narration swap
+   * inside the same scene, which the live LLM layer can do (spec §10.2).
+   */
+  const spokenNarration = useRef<string | null>(null);
   useEffect(() => {
-    const key = `${sceneId ?? "-"}:${spokenText}`;
-    if (spokenText.trim() === "" || spokenKey.current === key) return;
-    spokenKey.current = key;
-    speak(spokenText);
-  }, [sceneId, spokenText]);
+    const key = `${sceneId ?? "-"}:${narration}`;
+    if (narration.trim() === "" || spokenNarration.current === key) return;
+    spokenNarration.current = key;
+    // A new scene's narration replaces the last one rather than queueing behind it.
+    speak(narration, { source: "narration", interrupt: true });
+  }, [sceneId, narration]);
+
+  const choiceText = choices === null ? "" : choices.map((c) => c.label).join(". ");
+  const spokenChoices = useRef<string | null>(null);
+  useEffect(() => {
+    if (choiceText === "" || spokenChoices.current === choiceText) return;
+    spokenChoices.current = choiceText;
+    speak(choiceText, { source: "choice" });
+  }, [choiceText]);
+
+  const rollText = prompt !== null && prompt.kind === "roll" ? prompt.prompt : "";
+  const spokenRoll = useRef<string | null>(null);
+  useEffect(() => {
+    if (rollText === "" || spokenRoll.current === rollText) return;
+    spokenRoll.current = rollText;
+    speak(rollText, { source: "prompt" });
+  }, [rollText]);
 
   if (state === null) return null;
 

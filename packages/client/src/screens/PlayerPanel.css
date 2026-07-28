@@ -6,10 +6,16 @@
  * it fits here it fits on a TV, never the other way round (roadmap).
  */
 
+/*
+ * Flex rather than fixed grid rows: the knocked-down banner comes and goes
+ * (spec §7.3), and a row template would hand the scroller `auto` whenever it
+ * was absent — which quietly breaks scrolling in the smallest pane, the one
+ * case this file exists to get right.
+ */
 .player {
   container-type: inline-size;
-  display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   background: var(--color-bg, #0d0b1a);
@@ -27,6 +33,7 @@
 /* --- Identity strip ---------------------------------------------------- */
 
 .sheet {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: var(--space-3, 0.75em);
@@ -102,6 +109,7 @@
 }
 
 .player__down {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
@@ -115,7 +123,17 @@
 
 /* --- Prompt ------------------------------------------------------------ */
 
+/*
+ * The prompt wins the pane. It takes what it needs up to 70% of the height and
+ * scrolls inside that — a four-option choice must never push the confirm bar
+ * off the bottom of a 40%-of-a-phone pane, and the sheet below is reference
+ * material that can always be scrolled to.
+ */
 .player__prompt {
+  flex: 0 1 auto;
+  max-block-size: 70%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-3, 0.75em);
   border-bottom: 0.08em solid var(--color-border, #3a3468);
 }
@@ -258,6 +276,8 @@
 /* --- Sheet + inventory ------------------------------------------------- */
 
 .player__scroll {
+  flex: 1 1 auto;
+  min-block-size: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-3, 0.75em);

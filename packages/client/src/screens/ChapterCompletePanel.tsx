@@ -81,7 +81,7 @@ export function ChapterCompletePanel(): ReactElement {
           return (
             <li className="complete-card" key={member.playerId}>
               <span className="complete-card__portrait" aria-hidden="true">
-                <Icon name={member.character.species} size="2rem" />
+                <Icon name={member.character.species} size="2em" />
               </span>
               <span className="complete-card__text">
                 <span className="complete-card__name">{member.character.name}</span>

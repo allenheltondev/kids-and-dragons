@@ -26,7 +26,12 @@ export interface IconProps {
    * then it is decorative and hidden from the screen reader.
    */
   label?: string;
-  /** Any CSS length. Defaults to `1em` so icons track their label's size. */
+  /**
+   * Any CSS length, including a token (`var(--kad-icon-md)`). Defaults to `1em`
+   * so an icon tracks the size of the text beside it — which is what makes one
+   * icon set work on a phone pane and on a TV (theme.css scales each surface's
+   * font-size from its own width).
+   */
   size?: number | string;
   className?: string;
 }
@@ -380,6 +385,107 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M5.4 20.4l3-3M18.6 20.4l-3-3" />
     </g>
   ),
+
+  // --- Content icons -----------------------------------------------------
+  // Every `icon` string in content/rules.json, content/items.json and the
+  // chapters resolves to something here. A name that does not still renders
+  // (the fallback glyph), which is why a new item can ship before its art does.
+  acorn: (
+    <g {...S}>
+      <path d="M6 8.6h12a1.1 1.1 0 0 0 0-2.2C17.2 4 15 2.6 12 2.6S6.8 4 6 6.4a1.1 1.1 0 0 0 0 2.2z" />
+      <path d="M7 8.6c0 5.6 2.2 12.8 5 12.8s5-7.2 5-12.8" />
+    </g>
+  ),
+  bead: (
+    <g {...S}>
+      <path d="M3 12h18" />
+      <circle cx="6.8" cy="12" r="2.6" />
+      <circle cx="12" cy="12" r="3" fill="currentColor" />
+      <circle cx="17.2" cy="12" r="2.6" />
+    </g>
+  ),
+  boot: (
+    <g {...S}>
+      <path d="M6 3.4h4.6v8.8l6.2 2.4a3.2 3.2 0 0 1 2 3v3H6z" />
+      <path d="M6 16.6h12.8" />
+    </g>
+  ),
+  cake: (
+    <g {...S}>
+      <path d="M4.4 20.6v-5.4a2 2 0 0 1 2-2h11.2a2 2 0 0 1 2 2v5.4z" />
+      <path d="M4.4 16.6c1.6 1.4 3.2 1.4 4.8 0s3.2-1.4 4.8 0 3.2 1.4 4.8 0" />
+      <path d="M12 13.2V9.6" />
+      <circle cx="12" cy="7.6" r="1.6" fill="currentColor" />
+    </g>
+  ),
+  charm: (
+    <g {...S}>
+      <path d="M9.4 3.4h5.2l-1.2 3.2a4.6 4.6 0 1 1-2.8 0z" />
+      <circle cx="12" cy="14.4" r="1.6" fill="currentColor" />
+    </g>
+  ),
+  crown: (
+    <g {...S}>
+      <path d="M3.4 18.6h17.2l1.2-10.4-5.6 3.8L12 5l-4.2 7-5.6-3.8z" />
+      <path d="M6.6 21.4h10.8" />
+    </g>
+  ),
+  drop: (
+    <g {...S}>
+      <path d="M12 3c3.7 4.7 5.7 7.6 5.7 10.2a5.7 5.7 0 0 1-11.4 0C6.3 10.6 8.3 7.7 12 3z" />
+    </g>
+  ),
+  feather: (
+    <g {...S}>
+      <path d="M18.8 3.4c-6.2.4-10.7 3.4-12 8.4-.6 2.4-1.4 4-3.2 6.2l1.6 1.6c2-1.6 3.6-2.5 6-3 5-1 7.9-5.4 7.6-13.2z" />
+      <path d="M6.4 19.2L15.4 9" />
+    </g>
+  ),
+  lantern: (
+    <g {...S}>
+      <path d="M9 3.4h6M10.4 3.4v2.4M13.6 3.4v2.4" />
+      <path d="M8 5.8h8l1.3 10.4a2 2 0 0 1-2 2.2H8.7a2 2 0 0 1-2-2.2z" />
+      <path d="M10 20.6h4M11 10v4.4M13 10v4.4" />
+    </g>
+  ),
+  leaf: (
+    <g {...S}>
+      <path d="M20.4 3.6C10.6 3.6 4.6 7.8 4.6 14.4c0 2 .6 3.7 1.7 5.1 8.2-.4 13.7-5.8 14.1-15.9z" />
+      <path d="M6.3 19.5L15 10.4" />
+    </g>
+  ),
+  note: (
+    <g {...S}>
+      <path d="M10.6 17.4V4.6l7.8-1.6v12" />
+      <circle cx="7.6" cy="17.4" r="3" />
+    </g>
+  ),
+  pin: (
+    <g {...S}>
+      <path d="M12 21.6v-8.4" />
+      <path d="M8.2 3.4h7.6l-1.2 5.4 2.6 2.8H6.8l2.6-2.8z" />
+    </g>
+  ),
+  ribbon: (
+    <g {...S}>
+      <path d="M11.4 12L5.4 7.4v9.2z" />
+      <path d="M12.6 12l6-4.6v9.2z" />
+      <circle cx="12" cy="12" r="2.2" fill="currentColor" />
+    </g>
+  ),
+  thorn: (
+    <g {...S}>
+      <path d="M3.6 20.4c6.4-.6 11-3.8 13.6-9.6" />
+      <path d="M7.6 16.2l-3.4-1.4 1.2 3.6M12 12.6l-3.2-1.8.7 3.7M15.6 7.8l-2.8-2.3.2 3.8" />
+      <path d="M17.2 10.8l3.2-2.4-3.8-.6z" fill="currentColor" />
+    </g>
+  ),
+  whistle: (
+    <g {...S}>
+      <path d="M4.6 9h9.6l5.8-2.6v9.4L14.2 13H9.4v3.6a2.4 2.4 0 0 1-4.8 0z" />
+      <circle cx="9.4" cy="11" r="1.2" fill="currentColor" />
+    </g>
+  ),
 };
 
 /**
@@ -403,6 +509,8 @@ const ALIASES: Record<string, string> = {
   key: "quest",
   item: "bag",
   inventory: "bag",
+  shield: "guard",
+  moon: "rest",
   // Interface synonyms.
   roll: "d20",
   die: "d20",
@@ -436,8 +544,8 @@ export function Icon({ name, label, size = DEFAULT_SIZE, className }: IconProps)
     <svg
       className={className === undefined ? "kad-icon" : `kad-icon ${className}`}
       viewBox="0 0 24 24"
-      width={size}
-      height={size}
+      // Sized in CSS rather than by attribute so `size` may be a var() token.
+      style={{ inlineSize: size, blockSize: size }}
       role={decorative ? undefined : "img"}
       aria-hidden={decorative ? true : undefined}
       aria-label={label}
