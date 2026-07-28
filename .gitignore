@@ -11,6 +11,10 @@ staging/
 dist/
 .aws-sam/
 cdk.out/
+*.tsbuildinfo
+
+# local dev-server table (DynamoDB Local's stand-in)
+.data/
 
 # local
 .env
