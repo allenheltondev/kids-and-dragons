@@ -135,7 +135,6 @@ export interface JoinRoomInput {
    * token and never sees a display name.
    */
   principal: DeviceIdentity;
-  userAgent?: string;
 }
 
 export async function joinRoom(

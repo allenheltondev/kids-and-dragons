@@ -225,7 +225,11 @@ export interface RulesContent {
   baseSteps: number;
   /** TN by difficulty. spec §4.1. */
   difficultyTn: Record<Difficulty, number>;
-  /** xpThreshold[n] is the total XP needed to reach level n+1. */
+  /**
+   * The thresholds *above* level 1: `levelXp[n]` is the total XP needed to
+   * reach level `n + 2`, so nine entries cap the game at level 10 (spec §8.1)
+   * and a character with 0 XP is level 1 rather than level 2.
+   */
   levelXp: number[];
   /** Level at which each tier is reached. */
   tierLevels: Record<TierId, number>;

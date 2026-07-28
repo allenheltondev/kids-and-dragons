@@ -129,8 +129,11 @@ function checkRules(rep, file, rules) {
   const f = rel(file);
   let ok = true;
 
-  if (rules.levelXp[0] !== 0) {
-    rep.fail(f, "/levelXp/0", `level 1 must cost 0 XP, got ${rules.levelXp[0]}`);
+  // levelXp[n] is the total XP for level n+2 and maxLevel is length+1 - the
+  // convention levelForXp()/maxLevel() in packages/shared/src/rules.ts implement.
+  // A leading 0 would hand everyone level 2 for free.
+  if (rules.levelXp[0] <= 0) {
+    rep.fail(f, "/levelXp/0", `level 2 must cost more than 0 XP, got ${rules.levelXp[0]}`, "levelXp holds the thresholds *above* level 1; it does not start with a 0.");
     ok = false;
   }
   for (let i = 1; i < rules.levelXp.length; i += 1) {
@@ -138,8 +141,8 @@ function checkRules(rep, file, rules) {
       rep.fail(
         f,
         `/levelXp/${i}`,
-        `XP thresholds must increase: level ${i + 1} needs ${rules.levelXp[i]}, ` +
-          `level ${i} already needed ${rules.levelXp[i - 1]}`,
+        `XP thresholds must increase: level ${i + 2} needs ${rules.levelXp[i]}, ` +
+          `level ${i + 1} already needed ${rules.levelXp[i - 1]}`,
       );
       ok = false;
     }
@@ -158,7 +161,11 @@ function checkRules(rep, file, rules) {
       ok = false;
     }
   }
-  const maxLevel = rules.levelXp.length;
+  const maxLevel = rules.levelXp.length + 1;
+  if (rules.tierLevels.fledgling !== 1) {
+    rep.fail(f, "/tierLevels/fledgling", `every character starts at fledgling, so it must be level 1, got ${rules.tierLevels.fledgling}`);
+    ok = false;
+  }
   if (rules.tierLevels.mythic > maxLevel) {
     rep.fail(f, "/tierLevels/mythic", `mythic is at level ${rules.tierLevels.mythic}, but levelXp only reaches level ${maxLevel}`);
     ok = false;
@@ -346,8 +353,22 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
       }
     }
 
+    // Requirements *hide* a choice rather than greying it out (architecture §5),
+    // so a scene where every choice is gated shows some parties nothing to tap.
+    // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts.
+    const gated = (c) => c.requiresSpecies !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined;
+    if ((scene.choices ?? []).length > 0 && scene.choices.every(gated)) {
+      fail(`/scenes/${id}/choices`, "every choice is gated - a party matching none of the requirements sees nothing to tap");
+    }
+
+    const choiceIds = new Set();
     (scene.choices ?? []).forEach((choice, i) => {
       const at = `/scenes/${id}/choices/${i}`;
+
+      // The client keys on choice ids and the server matches intents against
+      // them, so a duplicate inside one scene is ambiguous.
+      if (choiceIds.has(choice.id)) fail(`${at}/id`, `duplicate choice id "${choice.id}" in this scene`);
+      choiceIds.add(choice.id);
 
       if (!choice.icon?.trim()) fail(`${at}/icon`, "icon slug is empty - no interactive element ships without an icon (spec §11)");
 
@@ -365,6 +386,15 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
         }
       }
     });
+
+    // spec §4.1 - three target numbers and no others, so a kid learns one scale.
+    // A warning, not a failure: an author may deliberately want an in-between TN.
+    if (scene.type === "check" && rules && !Object.values(rules.difficultyTn).includes(scene.tn)) {
+      rep.warn(
+        `${f} /scenes/${id}/tn is ${scene.tn}`,
+        `spec §4.1 has three difficulties: ${Object.entries(rules.difficultyTn).map(([k, v]) => `${k} ${v}`).join(", ")}.`,
+      );
+    }
 
     // spec §7.1 - 3 players vs 2-4 enemies, never more.
     if (scene.type === "encounter") {

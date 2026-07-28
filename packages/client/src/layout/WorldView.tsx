@@ -32,7 +32,7 @@ import {
   NarrationPanel,
 } from "../screens";
 import { PixiStage } from "../world/PixiStage";
-import { useGameStore, usePresentation, useRunState } from "../store";
+import { useGameStore, useMe, usePresentation, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 
 /**
@@ -58,7 +58,14 @@ const PRESENTATION_MS: Record<Presentation["kind"], number> = {
 
 export function WorldView(): React.JSX.Element {
   const phase = useRunState()?.phase ?? "lobby";
+  const me = useMe();
+  // A display client has no player (spec §2.1), so it never has a character and
+  // must never be parked on the creation preview waiting for one.
+  const isDisplay = (useSession()?.playerId ?? "") === "";
   const [rolling, setRolling] = useState(false);
+
+  // Same trigger PlayerView uses: "I have no character yet", not the run phase.
+  const creating = (phase === "lobby" || phase === "creation") && me === null && !isDisplay;
 
   /**
    * Registering here — rather than in a shell — is what keeps rule 1 intact.
@@ -91,8 +98,13 @@ export function WorldView(): React.JSX.Element {
     <div className="kad-surface kad-surface--world" data-surface="world">
       <PixiStage />
 
-      {phase === "lobby" && <LobbyContent />}
-      {phase === "creation" && <CreationPreview />}
+      {/* The preview is a view of *this device's* draft, so it belongs on
+          screen only while this device is still choosing. Once your character
+          exists you want the lobby — the party filling up, and who the room is
+          still waiting on. Keying it off the phase alone would leave everyone
+          who finished first staring at "pick a species". */}
+      {creating ? <CreationPreview /> : null}
+      {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 

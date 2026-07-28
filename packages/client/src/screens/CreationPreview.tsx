@@ -60,10 +60,11 @@ export function CreationPreview(): ReactElement {
           <Icon name="party" />
           <span>Making heroes</span>
         </h2>
-        <p className="preview__hint kad-muted" role="status">
+        {/* A div, not a p — Spinner renders a block, invalid inside a <p>. */}
+        <div className="preview__hint kad-muted" role="status">
           {draft.submitting ? <Spinner /> : null}
           <span>{draft.submitting ? "Bringing them to life…" : STEP_HINT[draft.step]}</span>
-        </p>
+        </div>
       </header>
 
       <div className="preview__body">
