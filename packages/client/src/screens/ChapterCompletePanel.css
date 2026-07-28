@@ -1,15 +1,19 @@
-/* Chapter complete — WorldView. Readable across a room, and in a 60% pane. */
+/*
+ * Chapter complete — WorldView.
+ *
+ * Positioned over the canvas (the party is still standing there), scrimmed so
+ * the numbers stay readable. `em` against `.kad-surface`; no viewport units.
+ */
 
 .complete {
-  container-type: inline-size;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4, 1rem);
-  width: 100%;
-  height: 100%;
-  padding: var(--space-4, 1rem);
-  background: var(--color-bg, #0d0b1a);
-  color: var(--color-text, #f4f1ff);
+  gap: var(--space-4, 1em);
+  padding: var(--space-4, 1em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
+  color: var(--color-text, #f4f0ff);
   overflow-y: auto;
 }
 
@@ -17,36 +21,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   text-align: center;
 }
 
 .complete__heading {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(1.3rem, 4.4cqi, 3.2rem);
+  font-size: var(--font-size-2xl, 2em);
   font-weight: 800;
-  color: var(--color-accent, #ffc95c);
+  color: var(--color-accent, #f5c86c);
 }
 
 .complete__xp {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  padding: clamp(0.35rem, 1.4cqi, 1rem) clamp(0.8rem, 3cqi, 2rem);
-  border: 3px solid var(--color-accent, #ffc95c);
-  border-radius: var(--radius-pill, 999px);
-  font-size: clamp(1rem, 3cqi, 2.2rem);
+  padding: var(--space-2, 0.5em) var(--space-5, 1.5em);
+  border: 0.1em solid var(--color-accent, #f5c86c);
+  border-radius: var(--radius-pill, 999em);
+  font-size: var(--font-size-xl, 1.5em);
   font-weight: 700;
 }
 
 .complete__party {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-  gap: var(--space-3, 0.75rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16em), 1fr));
+  gap: var(--space-3, 0.75em);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -55,33 +59,33 @@
 .complete-card {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-3, 0.75rem);
-  padding: var(--space-3, 0.75rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-lg, 18px);
-  background: var(--color-surface, #191534);
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface, #1a1730);
 }
 
 .complete-card__portrait {
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
+  inline-size: 2.6em;
+  block-size: 2.6em;
   flex: 0 0 auto;
-  border-radius: var(--radius-md, 12px);
-  background: var(--color-surface-sunken, #120f26);
-  color: var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #080711);
+  color: var(--color-accent, #f5c86c);
 }
 
 .complete-card__text {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5rem);
-  min-width: 0;
+  gap: var(--space-2, 0.5em);
+  min-inline-size: 0;
 }
 
 .complete-card__name {
-  font-size: clamp(1rem, 2.4cqi, 1.6rem);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 800;
   overflow-wrap: anywhere;
 }
@@ -91,7 +95,7 @@
 .complete__quest-list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -100,9 +104,9 @@
 .complete__quest-heading {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
-  margin: 0 0 var(--space-2, 0.5rem);
-  font-size: clamp(0.95rem, 2.2cqi, 1.4rem);
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-2, 0.5em);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
 }
 
@@ -110,7 +114,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: auto 0 0;
-  font-size: clamp(0.85rem, 1.9cqi, 1.2rem);
+  font-size: var(--font-size-md, 1em);
 }

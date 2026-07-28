@@ -1,53 +1,51 @@
 /*
  * The dice.
  *
- * This is the one deliberate exception to "container-relative only": spec §2.2
- * says the roll *takes over* the phone for its moment and then hands the
- * stacked layout back, which a pane-bound element cannot do. So the backdrop is
- * fixed, and everything inside it is sized against that backdrop with `cqmin` —
- * the die is still one rule for a TV and for a phone.
+ * Fills its *surface*, not the viewport (WorldView rule 2): in Travel Mode the
+ * shell hands the world pane 100% of the stack for the roll's ~1.5s and takes
+ * it back afterwards (spec §2.2), so `position: absolute` gets the full-screen
+ * takeover without a single `vh`. A `100vh` overlay here would hang off the
+ * bottom of the pane and swallow PlayerView.
  */
 
 .dice {
-  container-type: size;
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 60;
+  z-index: 2;
   display: grid;
   place-items: center;
-  padding: var(--space-4, 1rem);
-  background: color-mix(in srgb, var(--color-bg, #0d0b1a) 88%, transparent);
-  backdrop-filter: blur(6px);
-  animation: dice-fade 180ms ease-out;
+  padding: var(--space-4, 1em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
+  backdrop-filter: blur(0.15em);
+  animation: dice-fade var(--kad-dur-fast, 120ms) ease-out;
 }
 
 .dice__card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(0.4rem, 2cqmin, 1.25rem);
-  padding: clamp(0.75rem, 3cqmin, 2rem);
-  border-radius: var(--radius-xl, 28px);
-  color: var(--color-text, #f4f1ff);
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
   text-align: center;
 }
 
 .dice__who {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(0.9rem, 3.4cqmin, 2rem);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 600;
 }
 
 .dice__stat {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1, 0.25rem);
+  gap: var(--space-1, 0.25em);
   padding: 0.1em 0.6em;
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-pill, 999px);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-pill, 999em);
   text-transform: capitalize;
 }
 
@@ -57,25 +55,27 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: clamp(8rem, 42cqmin, 26rem);
-  height: clamp(8rem, 42cqmin, 26rem);
-  color: var(--color-primary, #7c5cff);
+  /* The centrepiece: ~135px on a phone that has handed the roll the whole
+     screen, ~300px on a TV. */
+  inline-size: 9em;
+  block-size: 9em;
+  color: var(--color-primary, #8b6cf5);
   animation: dice-tumble 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 1 forwards;
 }
 
 .dice__die-art {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .dice__die-number {
   position: relative;
-  font-size: clamp(2.4rem, 15cqmin, 9rem);
+  font-size: 3.6em;
   font-weight: 800;
   line-height: 1;
-  color: var(--color-text, #f4f1ff);
+  color: var(--color-text, #f4f0ff);
 }
 
 .dice__die--settled {
@@ -85,22 +85,22 @@
 .dice__maths {
   display: flex;
   align-items: baseline;
-  gap: clamp(0.25rem, 1.6cqmin, 0.9rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(1.1rem, 5cqmin, 3rem);
+  font-size: var(--font-size-2xl, 2em);
   font-weight: 700;
   opacity: 0;
-  transition: opacity 200ms ease-out;
+  transition: opacity var(--kad-dur-base, 260ms) ease-out;
 }
 
 .dice__tn,
 .dice__outcome {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
   opacity: 0;
-  transition: opacity 200ms ease-out 60ms;
+  transition: opacity var(--kad-dur-base, 260ms) ease-out 60ms;
 }
 
 .dice__card--settled .dice__maths,
@@ -111,33 +111,34 @@
 
 .dice__term,
 .dice__op {
-  color: var(--color-text-muted, #b7b0d8);
+  color: var(--color-text-muted, #b9b0d8);
 }
 
 .dice__total {
   font-size: 1.35em;
-  color: var(--color-accent, #ffc95c);
+  color: var(--color-accent, #f5c86c);
 }
 
 .dice__tn {
-  font-size: clamp(0.8rem, 3cqmin, 1.6rem);
-  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b9b0d8);
 }
 
+/* Outcome is a word and a shape; the colour is the third signal (spec §11). */
 .dice__outcome {
-  padding: clamp(0.3rem, 1.4cqmin, 0.8rem) clamp(0.8rem, 3cqmin, 1.8rem);
-  border: 3px solid currentColor;
-  border-radius: var(--radius-pill, 999px);
-  font-size: clamp(1rem, 4.4cqmin, 2.6rem);
+  padding: var(--space-2, 0.5em) var(--space-5, 1.5em);
+  border: 0.1em solid currentColor;
+  border-radius: var(--radius-pill, 999em);
+  font-size: var(--font-size-xl, 1.5em);
   font-weight: 800;
 }
 
 .dice__outcome--good {
-  color: var(--color-success, #4ad991);
+  color: var(--color-success, #5fd6a0);
 }
 
 .dice__outcome--bad {
-  color: var(--color-text-muted, #b7b0d8);
+  color: var(--color-text-muted, #b9b0d8);
 }
 
 /* --- Motion ------------------------------------------------------------ */
@@ -169,7 +170,8 @@
   }
 }
 
-/* spec §11 — the roll must still resolve, it just stops spinning. */
+/* theme.css already neutralises animation globally under reduced motion; this
+   makes the intent explicit at the one place it matters most. */
 @media (prefers-reduced-motion: reduce) {
   .dice,
   .dice__die,

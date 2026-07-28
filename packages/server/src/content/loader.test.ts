@@ -52,11 +52,15 @@ describe("loadContent", () => {
     expect(content.chapter("nope")).toBeNull();
   });
 
-  it("caches by root and reloads after clearContentCache", async () => {
+  it("reads the tree once per root and re-reads only after a cache clear", async () => {
     const root = await tree(good());
-    expect(await loadContent(root)).toBe(await loadContent(root));
+    const first = await loadContent(root);
+    // The cache key is the resolved path, so a trailing separator is the same
+    // root — content is loaded at startup and must not be re-read per request.
+    expect(await loadContent(root + path.sep)).toBe(first);
+
     clearContentCache();
-    expect(await loadContent(root)).not.toBe(await loadContent(root + path.sep));
+    expect(await loadContent(root)).not.toBe(first);
   });
 
   it("fails loudly when a file is missing", async () => {
