@@ -1,0 +1,9 @@
+{
+  "$comment": "Campaign shape is packages/shared/src/types/chapter.ts Campaign. `chapters` lists chapter ids in play order; content:validate checks each one exists and that their `index` values run 1..n with no gaps.",
+  "_note": "REFERENCE CONTENT, NOT THE AUTHORED CAMPAIGN. This campaign and its one chapter exist to prove the loader, the schema, and the renderer end to end (roadmap Chapter 0/3). Allen hand-writes the real first chapter himself, deliberately, to learn what the format needs — when that lands, this becomes the engine's fixture and nothing more. Do not treat any of it as the story of record.",
+
+  "id": "the-hollow-crown",
+  "title": "The Hollow Crown",
+  "blurb": "Something borrowed the crown out of the old shrine, and now the whole wood hums all night and nobody can sleep. Find it, and find out why.",
+  "chapters": ["bramblewood-01"]
+}
