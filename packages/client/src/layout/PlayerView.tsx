@@ -29,7 +29,13 @@ export function PlayerView(): React.JSX.Element {
 
   // No party member for this device means no character yet — the creation flow
   // owns the screen until there is one (spec §5).
-  const creating = phase === "creation" && me === null;
+  //
+  // The trigger is "I have no character", not the run phase. A brand-new room
+  // sits in `lobby` until the first CREATE_CHARACTER arrives, so gating on
+  // `phase === "creation"` would leave the first player with nothing to tap and
+  // no way to reach it. It also covers the late joiner who walks into a lobby
+  // where everyone else is already made.
+  const creating = (phase === "lobby" || phase === "creation") && me === null;
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">

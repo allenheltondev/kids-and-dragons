@@ -216,7 +216,7 @@ def save(im: Image.Image, path: str) -> str:
 # ----------------------------------------------------------------------------- sheets
 
 
-def load_set(species: dict, tier: str, thr: int):
+def load_set(species: dict, tier: str):
     """Returns (assembled, {part: image}) for a delivered set, or None."""
     base = os.path.join(ROOT, "assets", "characters", species["id"], tier)
     asm_path = os.path.join(base, "assembled.png")
@@ -344,7 +344,6 @@ def main() -> int:
         mf = json.load(f)
 
     canvas, tol = mf["canvas"], mf["tolerance"]
-    thr = tol["alphaThreshold"]
 
     print(f"{BOLD}Kids & Dragons - contact sheets{RESET}")
     print(f"{DIM}manifest: {os.path.relpath(MANIFEST, ROOT)}   out: {os.path.relpath(REVIEW, ROOT)}{RESET}")
@@ -360,7 +359,7 @@ def main() -> int:
             if args and not any(a == sp["id"] or a == f'{sp["id"]}/{tier}' for a in args):
                 continue
             matched += 1
-            loaded = load_set(sp, tier, thr)
+            loaded = load_set(sp, tier)
             if loaded is None:
                 skipped.append(f'{sp["id"]}/{tier}')
                 continue

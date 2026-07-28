@@ -91,6 +91,8 @@
 }
 
 .home__mode {
+  /* Contains the visually-hidden radio below. */
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-3, 0.75em);

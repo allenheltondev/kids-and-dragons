@@ -45,11 +45,11 @@
     },
 
     "levelXp": {
-      "description": "levelXp[n] is the total XP needed to reach level n+1, so levelXp[0] is 0. Levels 1-10, hence exactly 10 entries. Monotonicity is checked by tools/content/validate.mjs.",
+      "description": "The thresholds above level 1: levelXp[n] is the total XP needed to reach level n+2, and maxLevel is levelXp.length + 1 (packages/shared/src/rules.ts). Levels 1-10 therefore means exactly 9 entries, none of them 0. Monotonicity is checked by tools/content/validate.mjs.",
       "type": "array",
-      "minItems": 10,
-      "maxItems": 10,
-      "items": { "type": "integer", "minimum": 0 }
+      "minItems": 9,
+      "maxItems": 9,
+      "items": { "type": "integer", "minimum": 1 }
     },
 
     "tierLevels": {

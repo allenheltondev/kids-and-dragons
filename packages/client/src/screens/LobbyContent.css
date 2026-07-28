@@ -105,10 +105,40 @@
   font-size: var(--font-size-sm, 0.875em);
 }
 
+/* Compact: everything on one line, sized so three party rows still fit the
+   Travel Mode pane. The QR stays — a fourth person can still walk in — it just
+   stops being the headline. */
+.lobby__join--compact {
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.lobby__join--compact .lobby__code-label {
+  margin-block-end: 0.15em;
+}
+
+.lobby__join--compact .lobby__code-letter {
+  font-size: 1.5em;
+  border-radius: var(--radius-md, 0.75em);
+}
+
+.lobby__join--compact .lobby__qr {
+  inline-size: 3.6em;
+  block-size: 3.6em;
+}
+
+.lobby__join--compact .lobby__qr-hint {
+  display: none;
+}
+
 .lobby__party {
   display: flex;
   flex-direction: column;
   gap: var(--space-3, 0.75em);
+  /* Takes what the join strip leaves, and no less than the lineup needs. */
+  flex: 1 1 auto;
   min-block-size: 0;
 }
 

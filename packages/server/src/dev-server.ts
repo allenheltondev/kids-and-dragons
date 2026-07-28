@@ -189,8 +189,17 @@ async function main(): Promise<void> {
     const deps = await withRuntime(base, res);
     if (!deps) return;
 
-    const runId = typeof req.query.runId === "string" ? req.query.runId : "";
-    if (!runId) return sendError(res, 400, "ILLEGAL", "runId is required");
+    // A room code resolves to a run without any identity at all, which is how
+    // the TV attaches: it is a pure display client (spec §2.1) that may be
+    // hard-refreshed at any time and has no player, no device, and no token.
+    let runId = typeof req.query.runId === "string" ? req.query.runId : "";
+    if (!runId) {
+      const code = typeof req.query.code === "string" ? req.query.code.toUpperCase() : "";
+      if (!code) return sendError(res, 400, "ILLEGAL", "runId or code is required");
+      const room = await base.repo.getRoom(code);
+      if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+      runId = room.runId;
+    }
     const raw = req.query.sinceSeq;
     const sinceSeq = typeof raw === "string" && raw !== "" ? Number(raw) : undefined;
 
@@ -211,18 +220,17 @@ async function main(): Promise<void> {
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);
 
-    // Snapshot first, then subscribe from that snapshot's seq. Anything
-    // published in between is covered by the channel's replay buffer, so the
-    // client never sees a patch it cannot apply.
+    // Snapshot on connect, then patches from that snapshot's seq. Anything
+    // published between the read and the attach is covered by the channel's
+    // replay buffer, so the client never sees a patch it cannot apply — and
+    // `attach` owns teardown when the phone walks out of Wi-Fi range.
     const snapshot: ChannelMessage = {
       kind: "snapshot",
       seq: state.seq,
       runId: state.runId,
       state,
     };
-    const detach = channel.attach(code, res, { sinceSeq: state.seq });
-    res.write(`id: ${snapshot.seq}\nevent: snapshot\ndata: ${JSON.stringify(snapshot)}\n\n`);
-    req.on("close", detach);
+    channel.attach(code, res, { preamble: snapshot, sinceSeq: state.seq });
   });
 
   // -------------------------------------------------------------------------

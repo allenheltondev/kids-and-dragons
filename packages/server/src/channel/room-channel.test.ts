@@ -82,7 +82,8 @@ describe("LocalSseChannel", () => {
     const frame = sink.chunks.at(-1) ?? "";
     // `id:` is what the browser echoes back as Last-Event-ID after a drop.
     expect(frame).toContain("id: 7\n");
-    expect(frame).toContain("event: patch\n");
+    // Unnamed on purpose — a named event never reaches `onmessage`.
+    expect(frame).not.toContain("event: ");
     expect(frame.endsWith("\n\n")).toBe(true);
     expect(JSON.parse(frame.slice(frame.indexOf("data: ") + 6))).toEqual(patch(7));
 
@@ -105,5 +106,23 @@ describe("LocalSseChannel", () => {
     expect(channel.subscriberCount("ABCD")).toBe(1);
     sink.close();
     expect(channel.subscriberCount("ABCD")).toBe(0);
+  });
+
+  it("writes the connect snapshot before any replayed patch", async () => {
+    const channel = new LocalSseChannel();
+    const snapshot = { kind: "snapshot" as const, seq: 2, runId: "r_1", state: {} as never };
+    // A patch published between reading the snapshot and attaching: it must
+    // arrive *after* the snapshot it applies on top of, or it is lost.
+    await channel.publish("ABCD", patch(3));
+
+    const sink = fakeSink();
+    channel.attach("ABCD", sink, { preamble: snapshot, sinceSeq: 2 });
+
+    // Frames are unnamed, so the kind lives in the payload — assert on that
+    // rather than on an `event:` line an EventSource's onmessage never sees.
+    const kinds = sink.chunks
+      .filter((c) => c.startsWith("id: "))
+      .map((c) => JSON.parse(c.split("data: ")[1]!).kind);
+    expect(kinds).toEqual(["snapshot", "patch"]);
   });
 });

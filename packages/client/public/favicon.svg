@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kids and Dragons">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8b7cf6"/>
+      <stop offset="1" stop-color="#4c3fa8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0d0b1a"/>
+  <!-- The d20: one die, one roll type, the centerpiece of the screen (spec §4.1). -->
+  <path d="M32 8 55 21v22L32 56 9 43V21z" fill="url(#g)"/>
+  <path d="M32 8 45 30H19zM19 30h26l-13 26zM9 21l10 9-10 13zM55 21 45 30l10 13z" fill="#ffffff" opacity="0.16"/>
+  <path d="M32 8 55 21v22L32 56 9 43V21z" fill="none" stroke="#ffe8a3" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="32" y="39" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#ffe8a3">20</text>
+</svg>

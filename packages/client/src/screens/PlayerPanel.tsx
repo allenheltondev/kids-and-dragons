@@ -19,7 +19,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactElement } from "react";
-import { INVENTORY_SLOTS, STAT_IDS, speak } from "@kad/shared";
+import { INVENTORY_SLOTS, STAT_IDS } from "@kad/shared";
 import type {
   ClientIntent,
   InventoryEntry,
@@ -87,7 +87,7 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   return (
     <header className="sheet">
       <span className="sheet__portrait" aria-hidden="true">
-        <Icon name={character.species} size="1.9rem" />
+        <Icon name={character.species} size="1.9em" />
       </span>
       <span className="sheet__id">
         <span className="sheet__name">{character.name}</span>
@@ -182,7 +182,7 @@ function InventoryGrid({
                 aria-pressed={selected}
                 onClick={() => onSelect(selected ? null : index)}
               >
-                <Icon name={def?.icon ?? entry.kind} size="1.7rem" />
+                <Icon name={def?.icon ?? entry.kind} size="1.7em" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
                 <span className="inv__kind">
@@ -243,12 +243,14 @@ export function PlayerPanel(): ReactElement {
     setBusy(false);
   }, [key]);
 
-  // spec §11 — choice text is spoken, same as narration.
-  useEffect(() => {
-    if (myPrompt === null) return;
-    if (myPrompt.kind === "choice") speak(myPrompt.options.map((o) => o.label).join(". "));
-    if (myPrompt.kind === "roll") speak(myPrompt.prompt);
-  }, [myPrompt]);
+  /*
+   * Nothing is spoken from here on purpose. Narration, choice labels and roll
+   * prompts all go through `speak()` in NarrationPanel — the shared surface,
+   * which every player has exactly one of in either mode. Speaking them here as
+   * well would make a Travel Mode phone (both surfaces, one device) say every
+   * line twice. spec §11's requirement is that the text *flows through the
+   * seam*, not that every component calls it.
+   */
 
   const dispatch = useCallback(
     async (intent: ClientIntent) => {
@@ -320,7 +322,7 @@ export function PlayerPanel(): ReactElement {
                       onClick={() => setPendingChoice(option.id)}
                     >
                       <span className="choice__icon">
-                        <Icon name={option.icon} size="1.8rem" />
+                        <Icon name={option.icon} size="1.8em" />
                       </span>
                       <span className="choice__label">{option.label}</span>
                       {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
@@ -416,7 +418,7 @@ export function PlayerPanel(): ReactElement {
                       onClick={() => setPendingDrop(entry.itemId)}
                     >
                       <span className="choice__icon">
-                        <Icon name={def?.icon ?? entry.kind} size="1.8rem" />
+                        <Icon name={def?.icon ?? entry.kind} size="1.8em" />
                       </span>
                       <span className="choice__label">Drop {def?.name ?? entry.itemId}</span>
                     </button>
@@ -431,7 +433,7 @@ export function PlayerPanel(): ReactElement {
                   onClick={() => setPendingDrop(null)}
                 >
                   <span className="choice__icon">
-                    <Icon name="close" size="1.8rem" />
+                    <Icon name="close" size="1.8em" />
                   </span>
                   <span className="choice__label">Leave it behind</span>
                 </button>

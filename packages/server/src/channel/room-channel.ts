@@ -98,8 +98,18 @@ export class LocalSseChannel implements RoomChannel {
   /**
    * Attaches an HTTP response as an SSE subscriber. Returns the unsubscribe so
    * the route can also drop it on server shutdown.
+   *
+   * A `preamble` (the snapshot a client gets on connect) is written before any
+   * replayed patch, which is the whole reason it is passed in here rather than
+   * written by the caller afterwards: a patch published between reading the
+   * snapshot and attaching would otherwise reach the client *before* the
+   * snapshot that it applies on top of, and be lost.
    */
-  attach(roomCode: string, sink: SseSink, options: { sinceSeq?: number } = {}): Unsubscribe {
+  attach(
+    roomCode: string,
+    sink: SseSink,
+    options: { sinceSeq?: number; preamble?: ChannelMessage } = {},
+  ): Unsubscribe {
     sink.writeHead(200, {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
@@ -114,9 +124,16 @@ export class LocalSseChannel implements RoomChannel {
     const send = (message: ChannelMessage): void => {
       // `id:` is what the browser echoes back as Last-Event-ID after a drop,
       // so it must be the seq the client has applied — §4.3.
-      sink.write(`id: ${message.seq}\nevent: ${message.kind}\ndata: ${JSON.stringify(message)}\n\n`);
+      //
+      // Deliberately *unnamed* (no `event:` field). A named SSE event only
+      // reaches an `addEventListener` for that name — `onmessage` never sees
+      // it — so naming these would mean every transport adapter has to know
+      // the message kinds up front. `ChannelMessage.kind` already carries the
+      // discriminator inside the payload, where the ordering logic reads it.
+      sink.write(`id: ${message.seq}\ndata: ${JSON.stringify(message)}\n\n`);
     };
 
+    if (options.preamble) send(options.preamble);
     if (options.sinceSeq !== undefined) {
       const missed = this.replay(roomCode, options.sinceSeq);
       for (const message of missed ?? []) send(message);
