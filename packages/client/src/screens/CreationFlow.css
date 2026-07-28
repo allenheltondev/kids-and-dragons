@@ -1,0 +1,334 @@
+/*
+ * Character creation — PlayerView.
+ *
+ * Designed for the constrained case first (roadmap "Travel layout first"): a
+ * ~40%-height portrait pane. Head and foot are fixed, the middle scrolls, and
+ * the primary action is always on screen without scrolling to find it.
+ */
+
+.creation {
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg, #0d0b1a);
+  color: var(--color-text, #f4f1ff);
+}
+
+.creation--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75rem);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.creation__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem) var(--space-2, 0.5rem);
+  border-bottom: 2px solid var(--color-border, #3a3468);
+}
+
+.creation__progress {
+  display: flex;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+}
+
+.creation__pip {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999px);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: 0.9rem;
+}
+
+.creation__pip--done {
+  border-color: var(--color-success, #4ad991);
+  color: var(--color-success, #4ad991);
+}
+
+.creation__pip--on {
+  border-color: var(--color-primary, #7c5cff);
+  color: var(--color-text, #f4f1ff);
+  transform: scale(1.12);
+}
+
+.creation__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: var(--font-size-xl, 1.5rem);
+  font-weight: 800;
+}
+
+.creation__body {
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+}
+
+.creation__foot {
+  display: flex;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  border-top: 2px solid var(--color-border, #3a3468);
+  background: var(--color-surface, #191534);
+}
+
+/* The primary action always takes the room that is left. */
+.creation__foot > :last-child {
+  flex: 1 1 auto;
+}
+
+/* --- Option cards ------------------------------------------------------ */
+
+.creation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-3, 0.75rem);
+}
+
+.creation-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-3, 0.75rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 18px);
+  background: var(--color-surface, #191534);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.creation-card--on {
+  border-color: var(--color-primary, #7c5cff);
+  box-shadow: inset 0 0 0 2px var(--color-primary, #7c5cff);
+}
+
+.creation-card__icon {
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-accent, #ffc95c);
+}
+
+.creation-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25rem);
+  min-width: 0;
+}
+
+.creation-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  font-size: var(--font-size-lg, 1.25rem);
+  font-weight: 700;
+}
+
+.creation-card__blurb {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.35;
+}
+
+.creation-card__line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.3;
+}
+
+/* --- Stats ------------------------------------------------------------- */
+
+.creation-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+}
+
+.creation-stats__budget {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  padding: var(--space-2, 0.5rem);
+  border: 2px dashed var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 12px);
+  color: var(--color-accent, #ffc95c);
+  font-size: var(--font-size-lg, 1.25rem);
+  font-weight: 700;
+}
+
+.creation-stats__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.creation-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #191534);
+}
+
+.creation-stat__icon {
+  color: var(--color-accent, #ffc95c);
+}
+
+.creation-stat__name {
+  flex: 1 1 auto;
+  font-size: var(--font-size-lg, 1.25rem);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.creation-stat__value {
+  min-width: 2ch;
+  font-size: var(--font-size-xl, 1.5rem);
+  font-weight: 800;
+  text-align: right;
+}
+
+.creation-stat__bonus {
+  font-size: 0.72rem;
+}
+
+.creation-stat__controls {
+  display: flex;
+  gap: var(--space-2, 0.5rem);
+}
+
+.creation-step-btn {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  cursor: pointer;
+}
+
+.creation-step-btn--add {
+  border-color: var(--color-primary, #7c5cff);
+  background: var(--color-primary, #7c5cff);
+  color: var(--color-on-primary, #ffffff);
+}
+
+/* --- Appearance -------------------------------------------------------- */
+
+.creation-appearance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+}
+
+.creation-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.creation-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  padding: 0 0 var(--space-2, 0.5rem);
+  font-size: var(--font-size-md, 1rem);
+  font-weight: 700;
+}
+
+.creation-swatches,
+.creation-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5rem);
+}
+
+.creation-swatch,
+.creation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-surface, #191534);
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.creation-swatch--on,
+.creation-chip--on {
+  border-color: var(--color-primary, #7c5cff);
+  box-shadow: inset 0 0 0 2px var(--color-primary, #7c5cff);
+}
+
+/* The swatch is the colour; the name and the check carry the meaning (spec §11). */
+.creation-swatch__chip {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid;
+  border-radius: var(--radius-pill, 999px);
+}
+
+/* --- Name -------------------------------------------------------------- */
+
+.creation-name {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+}
+
+.creation-name__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+}
+
+.creation-name__input {
+  width: 100%;
+  min-height: var(--touch-min, 3rem);
+  padding: var(--space-3, 0.75rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  font: inherit;
+  font-size: var(--font-size-lg, 1.25rem);
+}
+
+.creation-name__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: var(--font-size-md, 1rem);
+}

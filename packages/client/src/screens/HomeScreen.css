@@ -1,0 +1,219 @@
+/* HomeScreen — full page, so it is the one screen allowed to fill its host. */
+
+.home {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 100%;
+  padding: var(--space-5, 1.5rem) var(--space-4, 1rem) var(--space-7, 3rem);
+  background: var(--color-bg, #0d0b1a);
+  color: var(--color-text, #f4f1ff);
+  overflow-y: auto;
+}
+
+.home__inner {
+  width: 100%;
+  max-width: 34rem;
+  gap: var(--space-5, 1.5rem);
+}
+
+.home__masthead {
+  text-align: center;
+}
+
+.home__title {
+  margin: 0;
+  font-size: var(--font-size-2xl, 2rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.home__tagline {
+  margin: var(--space-2, 0.5rem) 0 0;
+  font-size: var(--font-size-md, 1rem);
+}
+
+.home__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+}
+
+.home__label,
+.home__card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25rem);
+  font-weight: 700;
+}
+
+.home__text-input {
+  width: 100%;
+  min-height: var(--touch-min, 3rem);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  font: inherit;
+  font-size: var(--font-size-lg, 1.25rem);
+}
+
+.home__text-input::placeholder {
+  color: var(--color-text-muted, #b7b0d8);
+  opacity: 0.7;
+}
+
+.home__hint {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.home__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  padding: var(--space-4, 1rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 18px);
+  background: var(--color-surface, #191534);
+  box-shadow: var(--shadow-lg, 0 12px 32px rgba(0, 0, 0, 0.45));
+}
+
+/* --- Mode choice ------------------------------------------------------- */
+
+.home__modes {
+  display: grid;
+  gap: var(--space-3, 0.75rem);
+}
+
+.home__mode {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-3, 0.75rem);
+  border: 2px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-raised, #221d44);
+  cursor: pointer;
+}
+
+/* Selection is border weight + a check glyph, never colour alone (spec §11). */
+.home__mode--on {
+  border-color: var(--color-primary, #7c5cff);
+  box-shadow: inset 0 0 0 2px var(--color-primary, #7c5cff);
+}
+
+.home__mode-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.home__mode:focus-within {
+  outline: 3px solid var(--color-focus, #ffc95c);
+  outline-offset: 2px;
+}
+
+.home__mode-icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-primary, #7c5cff);
+}
+
+.home__mode-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25rem);
+  min-width: 0;
+}
+
+.home__mode-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  font-size: var(--font-size-lg, 1.25rem);
+  font-weight: 700;
+}
+
+.home__mode-blurb {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.35;
+}
+
+/* --- Room code entry --------------------------------------------------- */
+
+.home__code {
+  position: relative;
+  display: block;
+}
+
+/*
+ * The input sits on top of the boxes, transparent: the caret and the native
+ * keyboard behave, and the boxes below do the drawing.
+ */
+.home__code-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--color-accent, #ffc95c);
+  font: inherit;
+  font-size: var(--font-size-2xl, 2rem);
+  letter-spacing: 2.2em;
+  text-indent: 1.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.home__code-input:focus-visible {
+  outline: none;
+}
+
+.home__code-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2, 0.5rem);
+}
+
+.home__code-box {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 4;
+  min-height: var(--touch-min, 3rem);
+  border: 3px solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface-sunken, #120f26);
+  font-size: var(--font-size-2xl, 2rem);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.home__code-input:focus + .home__code-boxes .home__code-box--next {
+  border-color: var(--color-accent, #ffc95c);
+}
+
+.home__busy {
+  justify-content: center;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.home__error {
+  align-self: center;
+  white-space: normal;
+  text-align: center;
+}
