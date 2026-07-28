@@ -6,7 +6,7 @@
   align-items: flex-start;
   width: 100%;
   min-height: 100%;
-  padding: var(--space-5, 1.5rem) var(--space-4, 1rem) var(--space-7, 3rem);
+  padding: var(--space-5, 1.5em) var(--space-4, 1em) var(--space-7, 3em);
   background: var(--color-bg, #0d0b1a);
   color: var(--color-text, #f4f1ff);
   overflow-y: auto;
@@ -14,8 +14,8 @@
 
 .home__inner {
   width: 100%;
-  max-width: 34rem;
-  gap: var(--space-5, 1.5rem);
+  max-width: 34em;
+  gap: var(--space-5, 1.5em);
 }
 
 .home__masthead {
@@ -24,42 +24,42 @@
 
 .home__title {
   margin: 0;
-  font-size: var(--font-size-2xl, 2rem);
+  font-size: var(--font-size-2xl, 2em);
   font-weight: 800;
   letter-spacing: 0.01em;
 }
 
 .home__tagline {
-  margin: var(--space-2, 0.5rem) 0 0;
-  font-size: var(--font-size-md, 1rem);
+  margin: var(--space-2, 0.5em) 0 0;
+  font-size: var(--font-size-md, 1em);
 }
 
 .home__field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
 }
 
 .home__label,
 .home__card-title {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: var(--font-size-lg, 1.25rem);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
 }
 
 .home__text-input {
   width: 100%;
-  min-height: var(--touch-min, 3rem);
-  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-md, 12px);
+  min-height: var(--touch-min, 3em);
+  padding: var(--space-3, 0.75em) var(--space-4, 1em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   color: var(--color-text, #f4f1ff);
   font: inherit;
-  font-size: var(--font-size-lg, 1.25rem);
+  font-size: var(--font-size-lg, 1.25em);
 }
 
 .home__text-input::placeholder {
@@ -69,34 +69,34 @@
 
 .home__hint {
   margin: 0;
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--font-size-sm, 0.875em);
 }
 
 .home__card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4, 1rem);
-  padding: var(--space-4, 1rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-lg, 18px);
+  gap: var(--space-4, 1em);
+  padding: var(--space-4, 1em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 1.25em);
   background: var(--color-surface, #191534);
-  box-shadow: var(--shadow-lg, 0 12px 32px rgba(0, 0, 0, 0.45));
+  box-shadow: var(--shadow-lg, 0 1em 3em rgba(0, 0, 0, 0.45));
 }
 
 /* --- Mode choice ------------------------------------------------------- */
 
 .home__modes {
   display: grid;
-  gap: var(--space-3, 0.75rem);
+  gap: var(--space-3, 0.75em);
 }
 
 .home__mode {
   display: flex;
   align-items: center;
-  gap: var(--space-3, 0.75rem);
-  padding: var(--space-3, 0.75rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-md, 12px);
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-raised, #221d44);
   cursor: pointer;
 }
@@ -104,7 +104,7 @@
 /* Selection is border weight + a check glyph, never colour alone (spec §11). */
 .home__mode--on {
   border-color: var(--color-primary, #7c5cff);
-  box-shadow: inset 0 0 0 2px var(--color-primary, #7c5cff);
+  box-shadow: inset 0 0 0 0.08em var(--color-primary, #7c5cff);
 }
 
 .home__mode-radio {
@@ -116,17 +116,17 @@
 }
 
 .home__mode:focus-within {
-  outline: 3px solid var(--color-focus, #ffc95c);
-  outline-offset: 2px;
+  outline: 0.12em solid var(--color-focus, #ffc95c);
+  outline-offset: 0.15em;
 }
 
 .home__mode-icon {
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: 3em;
+  height: 3em;
   flex: 0 0 auto;
-  border-radius: var(--radius-md, 12px);
+  border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   color: var(--color-primary, #7c5cff);
 }
@@ -134,20 +134,20 @@
 .home__mode-text {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1, 0.25rem);
+  gap: var(--space-1, 0.25em);
   min-width: 0;
 }
 
 .home__mode-name {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
-  font-size: var(--font-size-lg, 1.25rem);
+  gap: var(--space-2, 0.5em);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
 }
 
 .home__mode-blurb {
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--font-size-sm, 0.875em);
   line-height: 1.35;
 }
 
@@ -173,7 +173,7 @@
   color: transparent;
   caret-color: var(--color-accent, #ffc95c);
   font: inherit;
-  font-size: var(--font-size-2xl, 2rem);
+  font-size: var(--font-size-2xl, 2em);
   letter-spacing: 2.2em;
   text-indent: 1.05em;
   text-transform: uppercase;
@@ -187,18 +187,18 @@
 .home__code-boxes {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
 }
 
 .home__code-box {
   display: grid;
   place-items: center;
   aspect-ratio: 3 / 4;
-  min-height: var(--touch-min, 3rem);
-  border: 3px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-md, 12px);
+  min-height: var(--touch-min, 3em);
+  border: 0.12em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
-  font-size: var(--font-size-2xl, 2rem);
+  font-size: var(--font-size-2xl, 2em);
   font-weight: 800;
   text-transform: uppercase;
 }

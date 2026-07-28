@@ -1,43 +1,47 @@
 /*
  * Lobby — WorldView.
  *
- * Container-relative throughout (architecture §4.6): `cqi` is 1% of the
- * *container* inline size, so the same rules give a wall-sized code on a TV and
- * a readable one in a 60%-height phone pane. No viewport units anywhere.
+ * Sized in `em` against `.kad-surface`, whose font-size is derived from its own
+ * container width (theme.css): one rule renders a wall-sized room code on a TV
+ * and a readable one in a 60%-height phone pane. No viewport units, and no
+ * `rem` either — `rem` would pin this subtree to the document and defeat the
+ * whole scheme (architecture §4.6 rule 2).
+ *
+ * Positioned, not in flow: the Pixi canvas is `position: absolute` beneath, and
+ * a static sibling would paint *under* it.
  */
 
 .lobby {
-  container-type: inline-size;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4, 1rem);
-  width: 100%;
-  height: 100%;
-  padding: var(--space-4, 1rem);
-  background: var(--color-bg, #0d0b1a);
-  color: var(--color-text, #f4f1ff);
+  gap: var(--space-4, 1em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
   overflow: hidden;
 }
 
 .lobby__heading {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(1.1rem, 3.4cqi, 2.2rem);
-  font-weight: 700;
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
 }
 
 .lobby__join {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-5, 1.5rem);
+  gap: var(--space-5, 1.5em);
   flex-wrap: wrap;
-  padding: var(--space-4, 1rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-lg, 18px);
-  background: var(--color-surface, #191534);
+  padding: var(--space-4, 1em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface, #1a1730);
+  box-shadow: var(--shadow-md, 0 0.5em 1.5em rgba(0, 0, 0, 0.45));
 }
 
 .lobby__code-block {
@@ -45,42 +49,43 @@
 }
 
 .lobby__code-label {
-  margin: 0 0 var(--space-2, 0.5rem);
-  font-size: clamp(0.75rem, 1.8cqi, 1.25rem);
+  margin: 0 0 var(--space-2, 0.5em);
+  font-size: var(--font-size-sm, 0.875em);
   text-transform: uppercase;
   letter-spacing: 0.14em;
 }
 
 .lobby__code {
   display: flex;
-  gap: clamp(0.25rem, 1.2cqi, 1rem);
+  gap: 0.14em;
   margin: 0;
 }
 
+/* The single biggest thing on an idle shared screen (spec §2.1). */
 .lobby__code-letter {
   display: grid;
   place-items: center;
-  min-width: clamp(2.4rem, 11cqi, 9rem);
-  padding: clamp(0.2rem, 1.2cqi, 1rem) clamp(0.3rem, 1.4cqi, 1.2rem);
-  border: 3px solid var(--color-primary, #7c5cff);
-  border-radius: var(--radius-lg, 18px);
-  background: var(--color-surface-sunken, #120f26);
-  font-size: clamp(2rem, 9cqi, 8rem);
+  min-inline-size: 1.1em;
+  padding: 0.1em 0.16em;
+  border: 0.06em solid var(--color-primary, #8b6cf5);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface-sunken, #080711);
+  font-size: 3.4em;
   font-weight: 800;
-  line-height: 1;
+  line-height: 1.05;
 }
 
 .lobby__qr-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
 }
 
 .lobby__qr {
-  width: clamp(6rem, 20cqi, 16rem);
-  height: clamp(6rem, 20cqi, 16rem);
-  border-radius: var(--radius-md, 12px);
+  inline-size: 8em;
+  block-size: 8em;
+  border-radius: var(--radius-md, 0.75em);
   background: #ffffff;
   image-rendering: pixelated;
 }
@@ -88,81 +93,81 @@
 .lobby__qr--empty {
   display: grid;
   place-items: center;
-  background: var(--color-surface-sunken, #120f26);
-  color: var(--color-text-muted, #b7b0d8);
+  background: var(--color-surface-sunken, #080711);
+  color: var(--color-text-muted, #b9b0d8);
 }
 
 .lobby__qr-hint {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(0.75rem, 1.7cqi, 1.1rem);
+  font-size: var(--font-size-sm, 0.875em);
 }
 
 .lobby__party {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3, 0.75rem);
-  min-height: 0;
+  gap: var(--space-3, 0.75em);
+  min-block-size: 0;
 }
 
 .lobby__party-heading {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: clamp(1rem, 2.4cqi, 1.6rem);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
 }
 
 .lobby__lineup {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-  gap: var(--space-3, 0.75rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13em), 1fr));
+  gap: var(--space-3, 0.75em);
   margin: 0;
   padding: 0;
   list-style: none;
   overflow-y: auto;
-  min-height: 0;
+  min-block-size: 0;
 }
 
 .lobby-member {
   display: flex;
   align-items: center;
-  gap: var(--space-3, 0.75rem);
-  padding: var(--space-3, 0.75rem);
-  border: 2px solid var(--color-border, #3a3468);
-  border-radius: var(--radius-md, 12px);
-  background: var(--color-surface, #191534);
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #1a1730);
 }
 
-/* Ready is border + chip; the chip carries the icon and the word. */
+/* Ready is a border *and* a chip; the chip carries the icon and the word. */
 .lobby-member--ready {
-  border-color: var(--color-success, #4ad991);
+  border-color: var(--color-success, #5fd6a0);
 }
 
 .lobby-member__portrait {
   display: grid;
   place-items: center;
-  width: 3.4rem;
-  height: 3.4rem;
+  inline-size: 2.6em;
+  block-size: 2.6em;
   flex: 0 0 auto;
-  border-radius: var(--radius-md, 12px);
-  background: var(--color-surface-sunken, #120f26);
-  color: var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #080711);
+  color: var(--color-accent, #f5c86c);
 }
 
 .lobby-member__text {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1, 0.25rem);
-  min-width: 0;
+  gap: var(--space-1, 0.25em);
+  min-inline-size: 0;
   flex: 1 1 auto;
 }
 
 .lobby-member__name {
-  font-size: clamp(1rem, 2.2cqi, 1.5rem);
+  font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
   overflow-wrap: anywhere;
 }
@@ -170,18 +175,18 @@
 .lobby-member__meta {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5rem);
-  font-size: var(--font-size-sm, 0.875rem);
+  gap: var(--space-2, 0.5em);
+  font-size: var(--font-size-sm, 0.875em);
 }
 
 .lobby-member__status {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--space-1, 0.25rem);
+  gap: var(--space-1, 0.25em);
 }
 
 .lobby__waiting {
   justify-content: center;
-  color: var(--color-text-muted, #b7b0d8);
+  color: var(--color-text-muted, #b9b0d8);
 }
