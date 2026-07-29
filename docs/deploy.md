@@ -131,7 +131,7 @@ API bundle, which is load-bearing — see below.
 
 | Resource | Notes |
 |---|---|
-| **DynamoDB** `kad-<stage>` | Single table, GSI1, TTL on `ttl`, PITR on. `DeletionPolicy: Retain`. |
+| **DynamoDB** `kad-<stage>` | Single table, GSI1, TTL on `ttl`. `DeletionPolicy: Retain`. |
 | **SSM SecureString** `/kad/<stage>/token-signing-key` | Signs device, session, and viewer tokens. Not a stack resource — see below. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
@@ -334,9 +334,13 @@ binding precisely so revocation is immediate. Characters are untouched; they
 belong to the household.
 
 **Somebody wants their anonymous characters back after seven days.** They are
-gone, and that is the design. PITR is on, so a restore to a point before the
-sweep is technically possible — but it restores the *whole table*, which is
-almost never the right trade.
+gone, and that is the design. There is no backup to go to: point-in-time
+recovery is off, because the only restore it offers is the *whole table* at
+once, which trades one family's session for everyone else's — not a trade
+anybody would actually make at the table.
+
+The recoverable path is the one the game already offers, and it runs before the
+loss rather than after it: sign in, and the household stops being a guest.
 
 **Rolling back.** `sam deploy` produces a changeset per deploy; CloudFormation
 rolls back a failed one on its own. A bad *client* bundle is faster to fix by
