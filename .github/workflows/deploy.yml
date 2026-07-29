@@ -1,105 +1,77 @@
-# Deploys.
-#
-#   pull request   → the **Staging** environment → the `kad-staging` stack
-#   push to main   → the **Production** environment → the `kad-prod` stack
-#
-# Both run `scripts/deploy.sh`, which is the same command you run from a laptop.
-# The workflow's only job is to be that laptop: assume a role, install the two
-# CLIs, and hand over. A deploy path that exists only in YAML is one nobody can
-# reproduce when it breaks at 8pm.
-#
-# Two names for one thing, deliberately kept apart:
-#
-#   `Staging` / `Production`   the GitHub environment — where the role ARN and
-#                              any protection rules live
-#   `staging` / `prod`         the AWS stage — the stack name, the table name,
-#                              `StageName` in the template
-#
-# They are not the same string and pretending otherwise is how the OIDC `sub`
-# claim stops matching the trust policy. The mapping happens once, in the
-# "Resolve target" step, and everything downstream uses its output.
-#
-# Credentials come from GitHub's OIDC provider, traded for a short-lived role
-# session — there are no AWS keys stored anywhere. The role ARN lives on the
-# GitHub environment rather than on the repository, and each role trusts only
-# its own environment (`infra/github-oidc.yaml`), so a pull-request deploy
-# cannot reach production even if this file were edited in that pull request.
-# That last part is the reason the scoping is worth doing: without it, "deploy
-# staging on PR" is an arbitrary code execution path into the production
-# account.
+name: Deploy (staging)
 
-name: Deploy
+# Staging, from every pull request. Mirrors the shape used in
+# allenheltondev/content-tracking: one workflow per environment, the role ARN
+# on a GitHub environment, OIDC for credentials.
+#
+# The environment is `Staging` and the AWS stage is `staging` — the same word in
+# two different registries. GitHub matches the environment name exactly (a
+# mismatch quietly creates a new, empty one), and the OIDC `sub` claim carries
+# it verbatim into the role's trust policy.
 
 on:
   pull_request:
-  push:
     branches: [main]
-  # For redeploying without a commit — recovering a stack, or applying a
-  # parameter change like WebAuthnRelyingPartyId.
   workflow_dispatch:
-    inputs:
-      environment:
-        description: Which environment to deploy
-        type: choice
-        options: [Staging, Production]
-        default: Staging
 
 concurrency:
-  # Two deploys of one stack at once is a CloudFormation error at best. Queued
-  # rather than cancelled: a half-finished deploy should be allowed to finish.
-  group: deploy-${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
+  # A single global group, not one per branch: every pull request deploys to the
+  # *same* staging stack, so concurrent runs have to queue rather than race two
+  # CloudFormation updates against one another.
+  group: deploy-staging
   cancel-in-progress: false
 
 permissions:
+  id-token: write
   contents: read
-  id-token: write # the OIDC token itself
+
+env:
+  AWS_REGION: us-east-1
+  STACK_NAME: kad-staging
+  STAGE: staging
 
 jobs:
   deploy:
-    name: ${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
+    name: sam deploy staging
+    # Dependabot pull requests run with a separate secret store that cannot see
+    # AWS_DEPLOY_ROLE_ARN, so OIDC fails before anything useful happens. CI still
+    # gates the merge, and the post-merge production deploy exercises the bump.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
-    # Must match the environment name in Settings → Environments *exactly*, or
-    # GitHub quietly creates a new one — which has no secret in it, and the job
-    # fails at the credentials step looking like an AWS problem.
-    environment: ${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
+    environment:
+      name: Staging
+      # Surfaces on the pull request as "Deployed to Staging" with a link, so a
+      # reviewer can open the thing rather than reconstruct its URL.
+      url: ${{ steps.outputs.outputs.site-url }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v7
 
-      - name: Resolve target
-        id: target
-        env:
-          ENVIRONMENT: ${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
-        run: |
-          case "$ENVIRONMENT" in
-            Production) STAGE=prod ;;
-            Staging)    STAGE=staging ;;
-            *) echo "::error::unknown environment '$ENVIRONMENT'"; exit 1 ;;
-          esac
-          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
-          echo "stack=kad-$STAGE" >> "$GITHUB_OUTPUT"
-          echo "Deploying the $ENVIRONMENT environment to the kad-$STAGE stack."
-
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
 
-      # The art gate is Python. `deploy.sh` runs it, and this workflow does not
-      # skip the checks — see the note on the deploy step.
-      - uses: actions/setup-python@v5
+      # The art gate is Python, and `deploy.sh` runs it — see the note on the
+      # deploy step for why the checks are not skipped here.
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
-      - uses: aws-actions/setup-sam@v2
+      - name: Set up AWS SAM CLI
+        uses: aws-actions/setup-sam@v3
         with:
           use-installer: true
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@6.2.2
         with:
-          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
-          aws-region: us-east-1
-          role-session-name: kad-deploy-${{ github.run_id }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: GitHubActions-KidsAndDragons-StagingDeploy
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Install dependencies
         run: |
@@ -107,34 +79,59 @@ jobs:
           python -m pip install --disable-pip-version-check pillow numpy
 
       - name: Deploy
-        run: ./scripts/deploy.sh ${{ steps.target.outputs.stage }}
+        # `scripts/deploy.sh` is the same command that runs from a laptop: it
+        # runs the checks, bundles the Lambdas, deploys the stack, uploads the
+        # client and the art, and invalidates CloudFront — in that order, so a
+        # deploy that fails partway leaves the previous version serving.
+        #
+        # `KAD_SKIP_CHECKS` is deliberately unset. `ci.yml` runs the same suite
+        # on the same commit, but in a parallel workflow that cannot gate this
+        # one — so skipping would let a red commit reach a stack.
+        run: ./scripts/deploy.sh staging
         env:
-          # `KAD_SKIP_CHECKS` is deliberately *not* set.
-          #
-          # `ci.yml` runs the same suite on the same commit, so this looks like
-          # pure duplication — but the two workflows run in parallel and neither
-          # can gate the other. Skipping here would mean a push to main deploys
-          # to prod while its tests are still running, and a red test would
-          # arrive after the family is already playing the build it failed on.
-          #
-          # A couple of minutes per deploy buys "nothing reaches a stack that
-          # did not pass on that exact commit", which is the whole reason the
-          # checks are the first thing `deploy.sh` does.
-          #
-          # Passkeys are bound to a domain for the life of the credential, and
-          # `sam deploy` reverts any parameter it is not given. Set this as an
-          # environment *variable* once the distribution exists, or every deploy
-          # silently turns passkeys off. Empty is fine and simply means
-          # email-code sign-in only.
+          # Passkeys bind to a domain for the life of the credential, and
+          # `sam deploy` reverts any parameter it is not given. Empty is a
+          # complete state: email-code sign-in only.
           WEBAUTHN_RP_ID: ${{ vars.WEBAUTHN_RP_ID }}
 
-      - name: Where it went
+      - name: Diagnose failed deploy
+        if: ${{ failure() }}
         run: |
-          URL=$(aws cloudformation describe-stacks \
-            --stack-name "${{ steps.target.outputs.stack }}" \
-            --query "Stacks[0].Outputs[?OutputKey=='SiteUrl'].OutputValue" --output text)
+          echo "Deploy failed. CloudFormation diagnostics for ${STACK_NAME}."
+
+          echo "==== describe-stack-events (latest 40) ===="
+          aws cloudformation describe-stack-events \
+            --stack-name "$STACK_NAME" --region "$AWS_REGION" \
+            --query "StackEvents[:40].[Timestamp,LogicalResourceId,ResourceStatus,ResourceStatusReason]" \
+            --output table || true
+
+          echo "==== list-stack-resources ===="
+          aws cloudformation list-stack-resources \
+            --stack-name "$STACK_NAME" --region "$AWS_REGION" \
+            --query "StackResourceSummaries[*].[LogicalResourceId,ResourceType,ResourceStatus]" \
+            --output table || true
+
+      - name: Read stack outputs
+        id: outputs
+        run: |
+          OUTPUTS=$(aws cloudformation describe-stacks \
+            --stack-name "$STACK_NAME" --region "$AWS_REGION" \
+            --query "Stacks[0].Outputs" --output json)
+          read_out() { echo "$OUTPUTS" | jq -r --arg k "$1" '.[] | select(.OutputKey==$k) | .OutputValue'; }
           {
-            echo "### ${{ steps.target.outputs.stack }} is live"
-            echo ""
-            echo "$URL"
+            echo "site-url=$(read_out SiteUrl)"
+            echo "api-endpoint=$(read_out ApiEndpoint)"
+            echo "table-name=$(read_out TableName)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Write deployment summary
+        run: |
+          {
+            echo "## Kids & Dragons staging deploy"
+            echo
+            echo "- **Stack:** \`${STACK_NAME}\`"
+            echo "- **Region:** \`${AWS_REGION}\`"
+            echo "- **Open it:** ${{ steps.outputs.outputs.site-url }}"
+            echo "- **Table:** \`${{ steps.outputs.outputs.table-name }}\`"
+            echo "- **Commit:** \`${{ github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"

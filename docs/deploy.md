@@ -43,12 +43,30 @@ by hand after a green run; it is not used by CI.)
 
 ## Turning the automated deploys on
 
-Three steps, once. Until they are done the workflow runs and fails at the
-credentials step, which is the correct failure — it cannot deploy to an account
-that has not agreed to let it.
+The deploy workflows mirror `allenheltondev/content-tracking`: one workflow per
+environment, the role ARN on a GitHub environment, OIDC for credentials, secret
+named **`AWS_DEPLOY_ROLE_ARN`**.
 
-**1. Deploy the bootstrap stack by hand.** It grants the permission, so it
-cannot be granted by the thing it grants:
+**1. Point a deploy role at this repository.** There are two ways, and if you
+already deploy other repos from Actions the first is almost certainly right.
+
+*Reuse the role you already have.* That is what `content-tracking` does — its
+role lives in the account, not in the repo, and the repo only knows the ARN. An
+OIDC role trusts specific `sub` claims, so it will refuse a repository it has
+never heard of, however valid the token. Add these two to the existing role's
+trust policy:
+
+```
+repo:allenheltondev/kids-and-dragons:environment:Staging
+repo:allenheltondev/kids-and-dragons:environment:Production
+```
+
+If the policy uses `StringLike`, a single `repo:allenheltondev/kids-and-dragons:*`
+covers both — at the cost of letting a pull-request deploy assume the same role
+a production deploy uses.
+
+*Or create dedicated roles.* [`infra/github-oidc.yaml`](../infra/github-oidc.yaml)
+makes one role per environment, each trusting only its own:
 
 ```bash
 aws cloudformation deploy \
@@ -58,42 +76,35 @@ aws cloudformation deploy \
   --parameter-overrides GitHubOwner=<you> GitHubRepo=kids-and-dragons
 ```
 
-If `token.actions.githubusercontent.com` already exists in the account — an
-account may hold only one — add `CreateOidcProvider=false`.
+Add `CreateOidcProvider=false` if `token.actions.githubusercontent.com` already
+exists in the account — and an account may hold only one, so if you deploy
+anything else from Actions, it does. Its two outputs are not interchangeable:
+`StagingRoleArn` belongs to Staging and `ProdRoleArn` to Production.
 
-**2. Create two GitHub environments**, named **`Staging`** and **`Production`**,
-and set `AWS_DEPLOYMENT_ROLE_ARN` on each — `StagingRoleArn` on Staging,
-`ProdRoleArn` on Production.
+**2. Set `AWS_DEPLOY_ROLE_ARN`** on the `Staging` and `Production` environments.
 
-Those names are load-bearing in two places, and both fail confusingly if they
-drift. `deploy.yml` matches on them exactly (a mismatch makes GitHub create a
-*different* environment, with no secret in it), and the OIDC `sub` claim carries
-the name as configured, matched with `StringEquals` in the trust policy — so
-`Staging` and `staging` are different principals. If you rename an environment,
-redeploy the bootstrap stack with the new
-`StagingEnvironmentName` / `ProdEnvironmentName`.
+Those names are load-bearing twice over, and both fail confusingly when they
+drift. The workflows match on them exactly — a mismatch makes GitHub create a
+*different* environment with no secret in it — and the OIDC `sub` claim carries
+the name as configured, matched with `StringEquals`, so `Staging` and `staging`
+are different principals.
 
-**The two ARNs are not interchangeable.** Each role trusts exactly one
-environment, so the same ARN in both leaves one of them failing with
-*"Not authorized to perform sts:AssumeRoleWithWebIdentity"*. That message means
-the trust boundary is working, not that it is misconfigured.
+Worth adding on Production: a required reviewer. That turns "merged to main"
+into "merged to main, and somebody pressed go", which is the version of this you
+want on a Tuesday evening.
 
-Worth adding on Production: a required reviewer. That turns "merged to main" into
-"merged to main, and somebody pressed go", which is the version of this you want
-on a Tuesday evening.
-
-**3. Once the distribution exists**, set a repository variable
-`WEBAUTHN_RP_ID` to its domain to enable passkeys — see below.
+**3. Once the distribution exists**, set a repository variable `WEBAUTHN_RP_ID`
+to its domain to enable passkeys — see below.
 
 ### When the deploy fails at the credentials step
 
-Two different errors, two different causes, and they are easy to confuse
-because both look like "AWS is broken" and neither is.
+Two different errors, two different causes, and they are easy to confuse because
+both look like "AWS is broken" and neither is.
 
 | Error | Means |
 |---|---|
-| `Could not load credentials from any providers` | The secret resolved to **empty** — `deploy.yml`'s `environment:` does not match a real environment, so GitHub used a fresh empty one. Check the spelling and the case. |
-| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | The secret is fine and AWS **refused the token**. The role's trust policy names a different environment than the one the job ran in — usually a case difference, or the two ARNs swapped between environments. Redeploy the bootstrap stack, and check each environment holds *its own* role. |
+| `Could not load credentials from any providers` | The secret resolved to **empty** — either the environment name does not match, or the secret is under a different name. Check both. |
+| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | The secret is fine and AWS **refused the token**. The role's trust policy does not list this repository and environment — the usual cause is an ARN borrowed from another repo's role. |
 
 Both were hit while building this, in that order. The second one is the trust
 boundary doing its job; it is supposed to be unforgiving.
