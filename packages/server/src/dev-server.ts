@@ -7,7 +7,7 @@
  *   this file            →  Lambda entry points (one per route)
  *   MemoryRepository     →  DynamoRepository
  *   LocalSseChannel      →  AppSyncEventsChannel
- *   DevIdentity          →  Cognito + KMS-signed device tokens
+ *   DevIdentity          →  Cognito + signed device tokens
  *
  * Everything under `handlers/` is already transport-free and stays untouched by
  * that move. What lives here and nowhere else: HTTP shapes, static files,

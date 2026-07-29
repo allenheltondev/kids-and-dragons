@@ -15,7 +15,7 @@
  * login screen.
  *
  * Roadmap Chapter 1 owns the real implementation: Cognito for the household,
- * KMS-signed JWTs for devices, rotation on every use with a 30-day sliding
+ * signed JWTs for devices, rotation on every use with a 30-day sliding
  * expiry, revocation from the owner's device. `DevIdentity` below is the local
  * stand-in and is **unsigned** — it is a base64 envelope, not a credential. It
  * exists so that the rest of the server can be written against the final shape

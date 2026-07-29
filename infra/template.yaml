@@ -3,9 +3,9 @@ Transform: AWS::Serverless-2016-10-31
 
 # Kids & Dragons — the whole stack, architecture §2.
 #
-# One template, one region, two environments (`dev` and `prod`) distinguished
-# only by stack name. No staging: it is a family game, and `dev` plus a careful
-# deploy is enough (§7).
+# One template, one region, three stacks distinguished only by stack name:
+# `staging` from every pull request, `prod` from main, and `dev` for a stack you
+# drive by hand from a laptop (§7).
 #
 # The shape, top to bottom:
 #
@@ -14,7 +14,7 @@ Transform: AWS::Serverless-2016-10-31
 #   AppSync Events                 room/<code>; IAM publishes, players subscribe
 #   DynamoDB                       one table, one GSI, architecture §3
 #   Cognito                        optional sign-in, email OTP then passkey
-#   KMS                            signs device and session tokens
+#   Secrets Manager                the secret that signs device and session tokens
 #
 # Deploy with `npm run infra:deploy` — that runs `infra/build.mjs` first, which
 # is what produces the CodeUri directories below. `sam build` is not used.
@@ -95,6 +95,9 @@ Resources:
     Properties:
       TableName: !Sub "kad-${StageName}"
       BillingMode: PAY_PER_REQUEST
+      # No `SSESpecification`, which is not the same as no encryption: DynamoDB
+      # encrypts at rest unconditionally, and the default is an AWS-owned key at
+      # no cost. Naming a key here is what would create one.
       AttributeDefinitions:
         - AttributeName: PK
           AttributeType: S
@@ -132,35 +135,39 @@ Resources:
   # Token signing — architecture §4.5
   # ---------------------------------------------------------------------------
 
-  SigningKey:
-    Type: AWS::KMS::Key
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
+  # This stack creates no KMS key of its own. Every encrypted thing in it uses
+  # an Amazon-managed key: the table gets the AWS-owned DynamoDB default, the
+  # bucket gets SSE-S3, and the signing secret below gets `aws/secretsmanager`.
+  #
+  # That constrains the token format, and it is worth being explicit about why.
+  # Signing needs an *asymmetric* key, and every `aws/*` managed key is symmetric
+  # and encryption-only — KMS will not sign with one. So tokens are HS256 over a
+  # shared secret rather than ES256 over a private key that never leaves KMS.
+  # The trust boundary is unchanged (both signer and verifier are Lambdas in this
+  # stack); what is given up is the ability for some future outside verifier to
+  # check a token without also being able to mint one. See token-identity.ts.
+  TokenSigningSecret:
+    Type: AWS::SecretsManager::Secret
     Properties:
       Description: !Sub "Kids & Dragons device and session token signing (${StageName})"
-      # ES256. Asymmetric so verification needs only the public half, which the
-      # Lambdas fetch once per container and then check locally — a Verify call
-      # per request would put a network round trip in front of every tap.
-      KeySpec: ECC_NIST_P256
-      KeyUsage: SIGN_VERIFY
-      # A revoked device is revoked by a flag in the table, not by rotating this
-      # key. Rotation here would sign every phone out at once.
-      PendingWindowInDays: 30
-      KeyPolicy:
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AccountRoot
-            Effect: Allow
-            Principal:
-              AWS: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
-            Action: "kms:*"
-            Resource: "*"
-
-  SigningKeyAlias:
-    Type: AWS::KMS::Alias
-    Properties:
-      AliasName: !Sub "alias/kad-tokens-${StageName}"
-      TargetKeyId: !Ref SigningKey
+      # CloudFormation generates it at create time and nobody — including
+      # whoever runs the deploy — ever sees the value. 64 characters from a
+      # 62-symbol alphabet is ~380 bits, comfortably past what HMAC-SHA256 can
+      # use. `KmsKeyId` is deliberately absent: that is what selects
+      # `aws/secretsmanager`.
+      GenerateSecretString:
+        PasswordLength: 64
+        ExcludePunctuation: true
+      # Note the absence of `Retain`, unlike the table, the pool, and the old
+      # signing key. Losing this secret signs every phone out — they re-pair by
+      # QR in about ten seconds — which is a categorically smaller loss than a
+      # family's characters, and not worth the cost of retaining: a retained
+      # secret keeps its name reserved, and staging is torn down and recreated
+      # often enough that a name collision would be a weekly nuisance.
+      #
+      # For the same reason there is no explicit `Name`. A deleted secret sits in
+      # a 30-day recovery window still holding its name, so a fixed one would
+      # make "delete the stack, deploy it again" fail for a month.
 
   # ---------------------------------------------------------------------------
   # Optional sign-in — architecture §4.5
@@ -325,14 +332,15 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
-          KMS_KEY_ID: !Ref SigningKey
+          TOKEN_SECRET_ID: !Ref TokenSigningSecret
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref Table
-        - Statement:
-            - Effect: Allow
-              Action: kms:GetPublicKey
-              Resource: !GetAtt SigningKey.Arn
+        # No `kms:Decrypt` alongside this, and none is needed: the
+        # `aws/secretsmanager` key policy already allows the account's principals
+        # to use it for requests arriving via Secrets Manager.
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref TokenSigningSecret
 
   ChannelAuthorizerPermission:
     Type: AWS::Lambda::Permission
@@ -375,7 +383,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
-          KMS_KEY_ID: !Ref SigningKey
+          TOKEN_SECRET_ID: !Ref TokenSigningSecret
           USER_POOL_ID: !Ref UserPool
           USER_POOL_CLIENT_ID: !Ref UserPoolClient
           APPSYNC_HTTP_DOMAIN: !GetAtt EventApi.Dns.Http
@@ -383,12 +391,9 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref TokenSigningSecret
         - Statement:
-            - Effect: Allow
-              Action:
-                - kms:Sign
-                - kms:GetPublicKey
-              Resource: !GetAtt SigningKey.Arn
             - Effect: Allow
               # Publishing to a room. The server is authoritative for everything
               # that matters (§4.1), and this is the only principal that can say
@@ -444,6 +449,11 @@ Resources:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
+              # SSE-S3: keys Amazon manages, free, and with no per-object KMS
+              # call. The objects here are a public SPA and its art — `aws:kms`
+              # would add a request charge per file for no secrecy that the
+              # CloudFront distribution in front of them does not already give
+              # away.
               SSEAlgorithm: AES256
       OwnershipControls:
         Rules:
