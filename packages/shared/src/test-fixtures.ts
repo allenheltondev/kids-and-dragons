@@ -74,6 +74,11 @@ export function makeRules(overrides: Partial<RulesContent> = {}): RulesContent {
     baseSteps: 4,
     difficultyTn: { easy: 8, normal: 12, hard: 16 },
     // Levels 2..10 — nine thresholds.
+    //
+    // Deliberately *not* the shipped curve in content/rules.json, and not drift:
+    // this is round arithmetic chosen so a test can assert "300 XP is level 2"
+    // without encoding a balance decision. Retuning the real curve is a content
+    // change and must not turn thirty assertions red.
     levelXp: [300, 700, 1200, 1800, 2500, 3300, 4200, 5200, 6300],
     tierLevels: { fledgling: 1, sworn: 4, radiant: 7, mythic: 10 },
     species: {

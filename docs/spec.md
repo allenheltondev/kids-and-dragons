@@ -223,7 +223,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 ### 8.1 Leveling
 
-XP is awarded per chapter completed, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
+XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
 
 Each level grants a stat point and, at some levels, a new class action. **Four levels are appearance tiers:**
 
@@ -236,7 +236,68 @@ Each level grants a stat point and, at some levels, a new class action. **Four l
 
 Hitting a tier plays a **transformation cutscene** — the whole party stops to watch. This is the single most important moment in the game and gets the most animation budget.
 
-### 8.2 Carryover — the commitment rule
+**One tier per campaign.** Three campaigns take a character from creation to Mythic:
+
+| | Campaign 1 | Campaign 2 | Campaign 3 |
+|---|---|---|---|
+| Levels | 1 → 4 | 4 → 7 | 7 → 10 |
+| Ends at | **Sworn** | **Radiant** | **Mythic** |
+
+Interleaving the tiers (1/4/7/10) with the class unlocks (3/6/9) gives three bands of three, each one *breathe → new move → new look*. The new action always lands the level before the transformation, so a new toy gets one chapter of play before the party stops to watch you change. The tier itself lands one chapter before the campaign's finale, so the climax is fought as the new thing rather than the new thing being a trophy for winning.
+
+#### The curve
+
+| | L2 | L3 | L4 | L5 | L6 | L7 | L8 | L9 | L10 |
+|---|---|---|---|---|---|---|---|---|---|
+| **Total XP** | 100 | 300 | 700 | 1100 | 1700 | 2600 | 3500 | 4700 | 6300 |
+| **Step cost** | 100 | 200 | 400 | 400 | 600 | 900 | 900 | 1200 | 1600 |
+
+Superlinear on purpose — the last level costs 16× the first, which is what makes the early ones cheap. **Level 2 arrives at the end of the first chapter she ever plays**, before she has decided whether she likes this. The doubled steps at 400/400 and 900/900 sit on the tier boundaries: crossing into a new tier should not also be the moment the climb visibly steepens.
+
+Chapter awards escalate to match, roughly **100–150 → 300 → 600** per chapter across the three campaigns. Because campaigns run 4–8 chapters, the number to author against is the **campaign total** — about 700, 1900, and 3700 — not the per-chapter figure. A short campaign just uses bigger numbers.
+
+Two things fall out of the escalation, both wanted: replaying an early campaign with a late-game character earns almost nothing, so there is no grinding a easy arc to Mythic; and the numbers themselves getting bigger signals "we are playing at a higher level now" without anyone explaining it.
+
+#### Why it stops at 10
+
+Resolution is `d20 + stat` against a target number (§4.1). Push a modifier past about 12 and the die stops deciding anything — hard checks succeed on a 2, and the game quietly stops being about rolling. **The d20 is the real cap, not the number 10.** More levels could only be spent on stats that break it, or on nothing at all.
+
+Games that go to 50 or 100 do it because level is their *only* progression currency, and they pay for it with levels you cannot feel. This game has five — the stat point, the class action, the tier, the six inventory slots, and souvenirs — so every one of its ten levels can do something visible. At one 30-minute sitting a week, that is a level roughly every fortnight, each of which changes something.
+
+The tier count is also an art budget, not a rules number: four tiers across six species with per-class overlays is already the largest art line in the project.
+
+#### After level 10
+
+Progression continues sideways, never upward.
+
+- **XP keeps counting.** Past 6300 it accrues forever and shows on the sheet as a plain number with nothing mechanical attached. An ever-climbing number is real, and it costs nothing.
+- **A new hero.** The data model already holds several characters per player. A Mythic character can retire into the world as a standing legend in the lobby while its owner rolls something new and runs the whole arc again with a different toy.
+- **Breadth.** More items, more biomes, more class actions past 9 — as sidegrades, never upgrades.
+
+### 8.2 Chapter outcomes
+
+A chapter ends when play reaches a scene with nowhere left to go, and a chapter may have several such endings. Each one declares its outcome:
+
+| Outcome | XP | What it means |
+|---|---|---|
+| **Success** | full `xpAward` | The chapter's goal was met. |
+| **Setback** | half, rounded down | It was not. The story continues down a different path. |
+
+A setback is not a loss screen and not a retry. Play carries on from wherever the story went — the same principle as a failed check or a party wipe, which branch rather than stop (§6.1, §7.3). Which endings are setbacks is **authored**, not emergent: a chapter that should always succeed simply has no setback ending.
+
+Halving rather than zeroing matters. A family that hits two setbacks should fall behind the pacing, not off it.
+
+**Play matters, party-wide.** A chapter may declare optional objectives — find the hidden shrine, finish with nobody knocked down, resolve it without a fight — that pay a bonus to **the whole party or to nobody**. Never to an individual. Bonuses are capped at 25% of the chapter's `xpAward`.
+
+Both caps exist to protect the pacing above: with setbacks at half and bonuses at a quarter, a campaign lands within about 25% of its intended total, which moves a tier by at most a chapter. Uncapped, "Sworn ends campaign 1" stops being true.
+
+#### Why XP is never individual
+
+The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Award XP per player and the eight-year-old who rolls badly for a few weeks is a visibly smaller creature standing between two Sworn adults, on the television, every session. That is not a difficulty setting; that is a child being shown she is the worst one at the table.
+
+Uniform party XP is what keeps everybody transforming on the same evening. It is also what makes the pacing above a promise rather than an average.
+
+### 8.3 Carryover — the commitment rule
 
 A character's level, stats, and inventory are stored as a **committed snapshot** plus a set of **provisional gains** earned during the current campaign.
 
@@ -245,7 +306,23 @@ A character's level, stats, and inventory are stored as a **committed snapshot**
 
 The souvenir is the point. A failed campaign still leaves a visible mark, so the time spent produced something. It is purely cosmetic and never mechanical — it can't become a consolation-prize power creep.
 
-Campaign failure requires actively failing multiple chapters. It should be rare and it should feel like a story, not a punishment.
+**A campaign fails at three setbacks** (§8.2), tunable per campaign. Across 4–8 chapters that means a genuinely bad run — "actively failing multiple chapters," not one unlucky evening — which is what keeps failure rare and story-shaped rather than punishing.
+
+#### Reverting past a transformation
+
+The worst case the commitment rule permits: she reaches level 4 mid-campaign, the party stops, the camera pushes in, she becomes **Sworn** — and two chapters later the campaign fails and she reverts to Fledgling.
+
+The rule stays as it is. Tier can't be exempted, because it's derived from level and exempting it would let a character's body outrun the level that earned it. Instead, **a campaign that reached a new tier before failing produces a tier-flavored souvenir**: she goes back to Fledgling and keeps something visible that says she was Sworn once. Purely cosmetic, honest about what happened, and it needs no machinery that `failCampaign()` doesn't already have.
+
+### 8.4 Joining a party already underway
+
+A character created after the party has been playing — a friend for one evening, a sibling joining for good — starts at **level 1 or at the party's tier floor** (1, 4, 7, or 10). Nothing in between, and the family chooses at creation, defaulting to joining.
+
+The two options exist because the two situations pull opposite ways. A guest starting at level 1 beside a Radiant party has ten hit points and one action, and spends the evening as a passenger. A sibling starting at party level never plays a Fledgling and never earns Sworn, which may be exactly the arc they wanted.
+
+The tier floor is the right number because it makes a joined character **arithmetically identical** to one that earned the level: three creation points plus one per level, with class unlocks derived from level as they already are. No shortcut and no handicap. It also preserves what matters — you skip only the transformations you were never going to earn, and every one still ahead of you is yours. Join at Radiant and Mythic is still two campaigns away.
+
+Starting XP is the **threshold for that level**, not zero, or the next chapter's award drops the character straight back to level 1.
 
 ---
 

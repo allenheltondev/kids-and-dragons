@@ -15,6 +15,29 @@ schemas/
   rules|items|chapter|campaign.schema.json     JSON Schema, draft 2020-12
 ```
 
+## Authoring XP
+
+Three campaigns take a character from creation to Mythic, one tier each ([spec §8.1](../docs/spec.md#81-leveling)).
+Because campaigns run 4–8 chapters, the number to author against is the **campaign total**, not the
+per-chapter award — a four-chapter campaign simply uses larger ones.
+
+| Campaign | Levels | Total XP across its chapters | Roughly, per chapter |
+|---|---|---|---|
+| 1st | 1 → 4 (**Sworn**) | ~700 | 100 for the first, ~150 after |
+| 2nd | 4 → 7 (**Radiant**) | ~1900 | ~300 |
+| 3rd | 7 → 10 (**Mythic**) | ~3700 | ~600 |
+
+Two rules that keep the pacing a promise rather than an average:
+
+- A **setback** ending pays half, and **bonus objectives** are capped at 25% of `xpAward`. Together
+  those hold a campaign within about 25% of its intended total, which moves a tier by at most one
+  chapter.
+- Aim the tier to land **one chapter before the campaign's finale**, so the climax is played as the
+  new thing rather than rewarded with it.
+
+The first chapter of the first campaign is special: award 100, so level 2 arrives at the end of the
+very first sitting.
+
 The TypeScript types in `packages/shared/src/types/` are the contract. The schemas are kept in
 lockstep with them; **where the two disagree, the TS types win** and the schema is the thing that
 needs fixing.
