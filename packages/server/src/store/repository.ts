@@ -89,6 +89,16 @@ export interface CommitInput {
   expectedSeq: number;
   state: RunState;
   event: EventRecord;
+  /**
+   * Character rows this turn owes, written in the **same** conditional
+   * transaction as the state and the event.
+   *
+   * Not a convenience. XP is folded into a character by the same intent that
+   * ends a chapter, and writing it separately means a turn that loses the seq
+   * race — or hits a transient failure and is retried — can still leave the
+   * award on the character. Either the whole turn lands or none of it does.
+   */
+  characters?: Character[];
 }
 
 export interface GameRepository {

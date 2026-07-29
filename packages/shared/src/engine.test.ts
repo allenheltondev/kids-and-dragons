@@ -135,6 +135,62 @@ describe("CREATE_CHARACTER", () => {
     expect(unicorn.down).toBe(false);
   });
 
+  it("hands the persistence layer the unresolved character", () => {
+    /*
+     * `state.party` holds the *resolved* view, whose stats already include the
+     * species passive. Storing that as `committed` and resolving again applies
+     * the passive twice — a unicorn permanently a point of Heart up, with
+     * nothing on screen to say so. So the engine publishes the real character
+     * beside the state, and this is the assertion that keeps them apart.
+     */
+    const result = applyIntent(newRun(), { playerId: "p_1", intent: CREATE_UNICORN }, ctx());
+
+    expect(result.created?.committed.stats.heart).toBe(4); // 1 base + 3 assigned
+    expect(result.state.party[0]?.character.stats.heart).toBe(5); // + 1 species
+  });
+
+  it("gives characters from different runs different ids", () => {
+    // `c_<playerId>` alone repeats for every character a player ever makes, so
+    // a second hero in a later campaign collided with the first: the store
+    // skipped the write, and chapter completion swapped the old one back in.
+    const first = applyIntent(newRun(), { playerId: "p_1", intent: CREATE_UNICORN }, ctx());
+    const second = applyIntent(
+      { ...newRun(), runId: "r_2" },
+      { playerId: "p_1", intent: CREATE_UNICORN },
+      ctx(),
+    );
+
+    expect(first.created?.id).not.toBe(second.created?.id);
+  });
+
+  it("refuses a starting level above the party's own tier floor", () => {
+    /*
+     * `startingLevel` arrives from a phone and buys levels, actions and stat
+     * points outright (spec §8.4). `newCharacter` only knows the tier floors
+     * the rules define, so without this check a hand-written client in a
+     * level-1 party could ask for 10 and be seated at Mythic.
+     */
+    const result = applyIntent(
+      seatedParty(),
+      { playerId: "p_3", intent: { ...CREATE_GRIFFIN, startingLevel: 10 } as ClientIntent },
+      ctx(),
+    );
+
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.error?.message).toMatch(/tier floor/);
+  });
+
+  it("allows joining at level 1 alongside a level-1 party", () => {
+    const result = applyIntent(
+      seatedParty(),
+      { playerId: "p_3", intent: { ...CREATE_GRIFFIN, startingLevel: 1 } as ClientIntent },
+      ctx(),
+    );
+
+    expect(result.error).toBeUndefined();
+    expect(result.created?.committed.level).toBe(1);
+  });
+
   it("returns ILLEGAL instead of throwing on a bad creation payload", () => {
     const result = applyIntent(
       newRun(),
@@ -299,7 +355,10 @@ describe("checks", () => {
       stat: "quick",
       tn: 12,
       // Windstep the griffin duskrunner: 1 base + 3 assigned + 1 species = 5 Quick.
-      characterId: "c_p_2",
+      // Read off the party rather than spelled out: character ids are scoped to
+      // the run (see doCreateCharacter), and what this test cares about is
+      // *which* character was nominated, not how ids are built.
+      characterId: state.party[1]!.character.id,
     });
   });
 
@@ -526,7 +585,7 @@ describe("items in play", () => {
     state = applyEffects(state, [{ type: "grantItem", itemId: "ribbon", to: "p_1" }], context);
     expect(state.prompt).toEqual({
       kind: "item_swap",
-      characterId: "c_p_1",
+      characterId: state.party[0]!.character.id,
       incomingItemId: "ribbon",
     });
 

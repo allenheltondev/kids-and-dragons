@@ -520,7 +520,7 @@ export class DynamoRepository implements GameRepository {
   }
 
   async commit(input: CommitInput): Promise<boolean> {
-    const { runId, expectedSeq, state, event } = input;
+    const { runId, expectedSeq, state, event, characters = [] } = input;
     try {
       /*
        * The two writes that must never come apart: append `EVT#<seq>` and
@@ -559,6 +559,21 @@ export class DynamoRepository implements GameRepository {
                 ExpressionAttributeValues: { ":expected": expectedSeq },
               },
             },
+            // Unconditional, and safe because the two above are not: if the run
+            // has moved on, the whole transaction is rejected and these never
+            // land. That is the entire point of putting them here.
+            ...characters.map((character) => ({
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: HH(character.householdId),
+                  SK: CHAR_SK(character.id),
+                  entity: "character",
+                  v: CHARACTER_VERSION,
+                  data: character,
+                } satisfies TableItem,
+              },
+            })),
           ],
         }),
       );

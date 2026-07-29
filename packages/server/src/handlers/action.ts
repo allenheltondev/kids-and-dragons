@@ -20,6 +20,7 @@
  */
 
 import type {
+  Character,
   ActionRequest,
   ActionResponse,
   Chapter,
@@ -29,7 +30,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
-import { foldChapterXp, persistNewCharacters } from "./progression.ts";
+import { foldChapterXp, newCharacterWrite } from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId" | "role">;
@@ -113,19 +114,26 @@ export async function applyAction(
   }
 
   /*
-   * Progression, before the diff.
+   * Progression, computed here and committed below.
    *
    * The engine is pure and cannot reach the store, so this is where a character
-   * created at the table gets written to the household and where a completed
-   * chapter's XP actually becomes a level (progression.ts). It runs here, ahead
-   * of `diff()`, so a re-resolved character rides out on this turn's patch —
-   * afterwards it would persist correctly and show nobody.
+   * created at the table becomes a household row and where a completed
+   * chapter's XP becomes a level (progression.ts). Two things about the timing
+   * are load-bearing:
+   *
+   * It runs *before* `diff()`, so a re-resolved character rides out on this
+   * turn's patch — afterwards it would persist correctly and show nobody.
+   *
+   * And it only *computes* the rows. They are written by `repo.commit()` in the
+   * same conditional transaction as the state and the event, so a turn that
+   * loses the seq race cannot leave its XP behind on a character.
    */
-  if (input.intent.type === "CREATE_CHARACTER") {
-    await persistNewCharacters(result.state, deps, auth.run.householdId);
+  const characters: Character[] = [];
+  if (result.created) {
+    characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
   }
   if (result.presentation?.kind === "CHAPTER_COMPLETE") {
-    await foldChapterXp(result.state, deps, auth.run.householdId);
+    characters.push(...(await foldChapterXp(result.state, deps, auth.run.householdId)));
   }
 
   // A no-op intent (a re-tap, a READY that was already true) writes nothing.
@@ -160,6 +168,7 @@ export async function applyAction(
     expectedSeq: state.seq,
     state: next,
     event,
+    ...(characters.length > 0 ? { characters } : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the
