@@ -45,7 +45,7 @@ by hand after a green run; it is not used by CI.)
 
 The deploy workflows mirror `allenheltondev/content-tracking`: one workflow per
 environment, the role ARN on a GitHub environment, OIDC for credentials, secret
-named **`AWS_DEPLOY_ROLE_ARN`**.
+named **`AWS_DEPLOYMENT_ROLE_ARN`**.
 
 **1. Point a deploy role at this repository.** There are two ways, and if you
 already deploy other repos from Actions the first is almost certainly right.
@@ -81,7 +81,7 @@ exists in the account — and an account may hold only one, so if you deploy
 anything else from Actions, it does. Its two outputs are not interchangeable:
 `StagingRoleArn` belongs to Staging and `ProdRoleArn` to Production.
 
-**2. Set `AWS_DEPLOY_ROLE_ARN`** on the `Staging` and `Production` environments.
+**2. Set `AWS_DEPLOYMENT_ROLE_ARN`** on the `Staging` and `Production` environments.
 
 Those names are load-bearing twice over, and both fail confusingly when they
 drift. The workflows match on them exactly — a mismatch makes GitHub create a
