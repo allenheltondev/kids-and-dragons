@@ -16,6 +16,7 @@
 
 import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
+import { ModeSwitch } from "./ModeSwitch";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -24,6 +25,16 @@ export interface PartyLayoutProps {
 export function PartyLayout({ surface }: PartyLayoutProps): React.JSX.Element {
   return (
     <div className={`kad-party kad-party--${surface}`}>
+      {/* The laptop dying is exactly when you need this, and the TV cannot
+          offer it — a display client has no input at all (spec §2.1), so it
+          rides on the phone. In flow rather than floating: a floating control
+          overlapped whatever was beneath it, and what is beneath it on a phone
+          is the primary action of every screen. */}
+      {surface === "player" ? (
+        <div className="kad-party__bar">
+          <ModeSwitch />
+        </div>
+      ) : null}
       {surface === "world" ? <WorldView /> : <PlayerView />}
     </div>
   );

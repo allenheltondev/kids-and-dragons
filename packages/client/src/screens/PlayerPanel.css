@@ -461,3 +461,20 @@
   border-block-start: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
   opacity: 0.75;
 }
+
+/* The scene's question, echoed above your answers. Clamped: it is a reminder
+   of what you are choosing between, not the narration itself — the world view
+   is where you go to read it properly. aria-hidden because the world already
+   speaks it (spec §11), and hearing every line twice is worse than not at all. */
+.player__echo {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  padding: var(--space-3, 0.75em) var(--space-4, 1em) 0;
+  color: var(--color-text-muted, #b9b0d8);
+  font-size: var(--font-size-md, 1em);
+  line-height: 1.35;
+}

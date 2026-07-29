@@ -5,7 +5,7 @@
  *   /            → home: create or join a room
  *   /tv/:code    → Party Mode WorldView. A pure display client with no
  *                  authority, refreshable at any time (spec §2.1).
- *   /p/:code     → PlayerView in Party Mode, or the stacked
+ *   /p/:code     → PlayerView in Party Mode, or the toggled
  *                  WorldView+PlayerView in Travel Mode. The route does not say
  *                  which — the room's mode does, and only the layout shell
  *                  reads it.

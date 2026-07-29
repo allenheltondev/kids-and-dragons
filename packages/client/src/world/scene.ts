@@ -52,7 +52,7 @@ export interface PartyScene {
   setParty(members: readonly PartyMember[]): void;
   /**
    * Frame something. Unconditional on every surface (architecture §4.6 rule 3):
-   * a 10×8 grid in a 60%-height portrait pane is unreadable at full extent, and
+   * a 10×8 grid on a phone is unreadable at full extent, and
    * the TV gets the same camera for free. Combat drives this in Chapter 4; the
    * seam exists now so it isn't retrofitted through the render loop later.
    */

@@ -288,8 +288,8 @@ type RoomMode = "party" | "travel";
 //   /tv/:code    → <WorldView />
 //   /p/:code     → <PlayerView />
 //
-// Travel Mode: every device gets both
-//   /p/:code     → <StackedLayout><WorldView /><PlayerView /></StackedLayout>
+// Travel Mode: every device gets both, one at a time behind a toggle
+//   /p/:code     → <TravelLayout><WorldView /><PlayerView /></TravelLayout>
 ```
 
 Three rules keep this from forking into two apps:
@@ -298,9 +298,14 @@ Three rules keep this from forking into two apps:
 2. **All sizing is container-relative.** No viewport units inside either surface — they must render correctly at full screen *and* at 60% of a phone.
 3. **The focus camera is unconditional.** Combat always auto-frames the active actor, on every surface. Party Mode simply has more room to breathe.
 
-Practically: **build Travel Mode's stacked layout first.** It's the constrained case. Anything that
-fits there fits on a TV; the reverse is not true, and discovering that late means reworking the grid,
+Practically: **build Travel Mode's layout first.** It's the constrained case. Anything that fits
+there fits on a TV; the reverse is not true, and discovering that late means reworking the grid,
 the dice, and the action bar.
+
+The shell owns three things the surfaces are not allowed to know: which surface is showing, that a
+turn should bring your controls forward, and that a roll belongs to the world for its moment. Both
+surfaces stay **mounted** while hidden — unmounting the world would tear down the Pixi context on
+every toggle and drop the presentation gate it registers, which is what animates the dice at all.
 
 ---
 
