@@ -1,0 +1,50 @@
+version = 0.1
+
+# `sam deploy` defaults. `scripts/deploy.sh` is the thing you actually run —
+# it builds the Lambda bundles and the client first, because `sam build` is not
+# in the deploy path (see infra/build.mjs for why).
+
+# `prod` and `default` are the same stack. Both exist because `deploy.sh prod`
+# passes `--config-env prod`, while a bare `sam deploy` with no config-env falls
+# back to `default` — and a missing section is not a warning, it is SAM
+# proceeding with no stack name.
+[prod.deploy.parameters]
+stack_name = "kad-prod"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = false
+fail_on_empty_changeset = false
+parameter_overrides = "StageName=prod"
+
+[default.deploy.parameters]
+stack_name = "kad-prod"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+# Lets SAM manage its own artifact bucket instead of us owning one more thing.
+resolve_s3 = true
+confirm_changeset = true
+fail_on_empty_changeset = false
+parameter_overrides = "StageName=prod"
+
+[staging.deploy.parameters]
+stack_name = "kad-staging"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+# Deployed by a workflow with nobody watching.
+confirm_changeset = false
+fail_on_empty_changeset = false
+parameter_overrides = "StageName=staging"
+
+[dev.deploy.parameters]
+stack_name = "kad-dev"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = true
+fail_on_empty_changeset = false
+parameter_overrides = "StageName=dev"
+
+[default.sync.parameters]
+watch = false

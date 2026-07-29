@@ -35,13 +35,21 @@ import {
   saveSession,
   type KeyValueStorage,
 } from "./persistence";
-import { api as defaultApi, eventsUrl as defaultEventsUrl, ApiError, type Api } from "../sync/client";
+import {
+  api as defaultApi,
+  eventsUrl as defaultEventsUrl,
+  ApiError,
+  type Api,
+  type ClientConfig,
+} from "../sync/client";
 import {
   MessageSequencer,
   openChannel as defaultOpenChannel,
   type Channel,
+  type EventSourceLike,
   type PresentationGate,
 } from "../sync/channel";
+import { appSyncEventSource } from "../sync/appsync-socket";
 import { navigate } from "../router";
 
 /**
@@ -140,6 +148,12 @@ interface Runtime {
   resyncing: Promise<void> | null;
   /** In-flight attach, so React 19's double-invoked effect joins once. */
   attaching: Promise<void> | null;
+  /**
+   * Which realtime transport this deployment uses, resolved once from
+   * `/api/config` (architecture §4.4). `null` — the local dev answer — means
+   * SSE against the dev server's `/events/<code>`.
+   */
+  realtime: Promise<ClientConfig["realtime"] | null> | null;
 }
 
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
@@ -151,7 +165,47 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       content: null,
       resyncing: null,
       attaching: null,
+      realtime: null,
     };
+
+    /**
+     * Which transport to open, asked once per page load.
+     *
+     * The seam already existed on the server (`RoomChannel`) and in the
+     * sequencer (`EventSourceLike`); this is the third and last place that has
+     * to know both exist. Failing the lookup falls back to SSE rather than
+     * throwing — on a laptop that is simply the right answer, and in prod a
+     * `/api/config` that cannot be reached means the API is down, which the
+     * reconnect loop already handles better than a hard failure here would.
+     */
+    function realtimeConfig(): Promise<ClientConfig["realtime"] | null> {
+      runtime.realtime ??= deps.api
+        .fetchConfig()
+        .then((config) => config?.realtime ?? null)
+        .catch(() => null);
+      return runtime.realtime;
+    }
+
+    /**
+     * The `createEventSource` for this session, or `undefined` for SSE.
+     *
+     * A viewer token and a session token are the same thing to the transport —
+     * the authorizer accepts either and checks that it names this room — so the
+     * TV and a phone open the channel through identical code.
+     */
+    async function transportFor(
+      session: ClientSession,
+    ): Promise<((url: string) => EventSourceLike) | undefined> {
+      const realtime = await realtimeConfig();
+      if (!realtime) return undefined;
+      return appSyncEventSource({
+        httpDomain: realtime.httpDomain,
+        realtimeDomain: realtime.realtimeDomain,
+        namespace: realtime.namespace,
+        roomCode: session.roomCode,
+        token: session.sessionToken,
+      });
+    }
 
     /** The one and only writer of `state`. */
     function makeSequencer(): MessageSequencer {
@@ -189,11 +243,22 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       return task;
     }
 
-    function connect(session: ClientSession, snapshot: RunState, seq: number): void {
+    async function connect(
+      session: ClientSession,
+      snapshot: RunState,
+      seq: number,
+    ): Promise<void> {
       disconnect();
       const sequencer = makeSequencer();
       runtime.sequencer = sequencer;
+      // The mirror is seeded *before* the transport is resolved, so the surface
+      // has state to render during the one config fetch of a page load rather
+      // than a blank screen.
       sequencer.reset(snapshot, seq);
+
+      const createEventSource = await transportFor(session);
+      // A `leave()` or a second attach can land during that await.
+      if (runtime.sequencer !== sequencer) return;
 
       runtime.channel = deps.openChannel({
         url: (sinceSeq) =>
@@ -201,6 +266,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         sequencer,
         onStatus: (connection) => set({ connection }),
         resync,
+        ...(createEventSource ? { createEventSource } : {}),
       });
     }
 
@@ -212,21 +278,21 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.resyncing = null;
     }
 
-    function establish(session: ClientSession, snapshot: RunState): void {
+    async function establish(session: ClientSession, snapshot: RunState): Promise<void> {
       saveSession(session, deps.storage);
       set({ session, error: null, pendingCode: null });
-      connect(session, snapshot, snapshot.seq);
+      await connect(session, snapshot, snapshot.seq);
     }
 
     /**
      * Take a seat from whatever seated us — create or join, they answer with
      * the same shape — and keep the device binding that came with it.
      */
-    function adopt(
+    async function adopt(
       roomCode: string,
       seated: JoinRoomResponse & { deviceToken?: string },
       displayName: string,
-    ): ClientSession {
+    ): Promise<ClientSession> {
       const identity = loadIdentity(deps.storage);
       saveIdentity(
         {
@@ -245,7 +311,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         mode: seated.mode,
         sessionToken: seated.sessionToken,
       };
-      establish(session, seated.state);
+      await establish(session, seated.state);
       deps.navigate({ name: "player", code: roomCode }, { replace: true });
       return session;
     }
@@ -321,7 +387,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
           const roomCode = room.code;
-          return adopt(roomCode, room, displayName);
+          return await adopt(roomCode, room, displayName);
         } catch (error) {
           return failWith(error);
         }
@@ -341,7 +407,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             // time rather than a new one.
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
-          return adopt(roomCode, joined, displayName);
+          return await adopt(roomCode, joined, displayName);
         } catch (error) {
           return failWith(error);
         }
@@ -376,7 +442,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               stored.sessionToken || undefined,
             );
             if (!response.state) throw new ApiError(410, "That room has expired.");
-            establish(stored, response.state);
+            await establish(stored, response.state);
             return;
           }
 
@@ -387,19 +453,25 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             return;
           }
 
-          const response = await deps.api.fetchState({ code: roomCode });
-          if (!response.state) throw new ApiError(404, "No such room.");
+          /*
+           * `watch` rather than `state`, because in prod the channel is
+           * authorised per subscriber and a screen with no token is a screen
+           * that never receives a patch. The token it hands back names this
+           * room and nothing else — it cannot act, and `playerId: ""` below is
+           * still what actually denies authority (spec §2.1).
+           */
+          const response = await deps.api.watchRoom(roomCode);
           const display: ClientSession = {
-            runId: response.state.runId,
+            runId: response.runId,
             roomCode,
             playerId: "", // no player on this device — it is a screen, not a seat
-            mode: response.state.mode,
-            sessionToken: "",
+            mode: response.mode,
+            sessionToken: response.viewerToken,
           };
           // Deliberately not persisted: a display client has nothing worth
           // storing, and it recovers from the URL alone.
           set({ session: display, error: null, pendingCode: null });
-          connect(display, response.state, response.state.seq);
+          await connect(display, response.state, response.state.seq);
         })()
           .catch((error: unknown) => {
             const message = error instanceof Error ? error.message : "Could not reach the game.";

@@ -25,6 +25,17 @@ jobs:
     name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
 
+    # The prod store gets tested against a real DynamoDB, not a mock. The whole
+    # justification for the in-memory store is that swapping in DynamoRepository
+    # is a wiring change rather than a re-modelling exercise
+    # (packages/server/src/store/contract.test.ts), and that claim is worth
+    # nothing unless one suite runs against both.
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
+
     steps:
       - uses: actions/checkout@v4
 
@@ -49,8 +60,27 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # KAD_DDB_ENDPOINT switches the repository contract suite from "memory
+      # only" to "memory and DynamoDB". Without it those cases skip, which is
+      # what keeps `npm test` a two-second command on a laptop.
       - name: Test
         run: npm test
+        env:
+          KAD_DDB_ENDPOINT: http://localhost:8000
+          AWS_REGION: us-east-1
+
+      # The stack is code too. cfn-lint applies the SAM transform, so this
+      # catches a bad property on a Serverless resource — the class of mistake
+      # you would otherwise find eight minutes into a deploy.
+      - name: Lint the stack
+        run: |
+          python -m pip install --disable-pip-version-check cfn-lint
+          npm run infra:lint
+
+      # A Lambda bundle that does not build is a deploy that fails after the
+      # checks have already passed. It costs seconds here.
+      - name: Bundle Lambdas
+        run: npm run infra:build
 
       # Content is data (roadmap, "Content as data"), so it gets checked like code:
       # schemas first, then the cross-file rules a schema cannot express.

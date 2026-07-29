@@ -40,6 +40,7 @@ import {
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
+import { KeepsakeOffer } from "./SignInFlow";
 import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
@@ -565,6 +566,16 @@ export function PlayerPanel(): ReactElement {
               <Icon name="trophy" />
               <span>Chapter finished!</span>
             </h3>
+            {/*
+             * The one moment the keepsake offer earns its place (roadmap open
+             * item 5): the characters they just played are on screen, the
+             * sitting is over, and nobody is mid-decision. Offering it at the
+             * start would undo the point of anonymous play.
+             *
+             * It sits *above* "Back to the lobby" but is not in the way of it —
+             * the lobby button is still the primary action and still one tap.
+             */}
+            <KeepsakeOffer />
             <Button
               variant="primary"
               size="lg"

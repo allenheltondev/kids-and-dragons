@@ -1,0 +1,247 @@
+/*
+ * The keepsake flow.
+ *
+ * A panel over the player surface rather than a route, because the game is
+ * still running behind it and closing this must not cost anyone their place.
+ * Everything is `em` against the surface — the same panel renders at 40% of a
+ * phone in Travel Mode and full-height in Party Mode.
+ */
+
+.keepsake {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--kad-space-4);
+  background: var(--kad-bg-overlay);
+  backdrop-filter: blur(0.2em);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.keepsake__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kad-space-3);
+  inline-size: 100%;
+  max-inline-size: 24em;
+  padding: var(--kad-space-5) var(--kad-space-4) var(--kad-space-4);
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-xl);
+  background: var(--kad-bg-raised);
+  box-shadow: var(--kad-shadow-lg);
+  text-align: center;
+  /* Push the panel down from the close button rather than clipping it. */
+  margin-block: auto;
+}
+
+.keepsake__close {
+  position: absolute;
+  inset-block-start: var(--kad-space-2);
+  inset-inline-end: var(--kad-space-2);
+  /* Still a full touch target — it is the most likely thing to be tapped. */
+  min-inline-size: var(--kad-touch-min);
+  min-block-size: var(--kad-touch-min);
+}
+
+.keepsake__title {
+  margin: 0;
+  font-size: var(--kad-text-xl);
+  font-weight: var(--kad-weight-black);
+  line-height: 1.2;
+  color: var(--kad-ink);
+  text-wrap: balance;
+}
+
+.keepsake__body {
+  margin: 0;
+  max-inline-size: var(--kad-measure);
+  font-size: var(--kad-text-md);
+  color: var(--kad-ink-dim);
+  text-wrap: pretty;
+}
+
+.keepsake__body--note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  color: var(--kad-success);
+}
+
+.keepsake__fine {
+  margin: 0;
+  font-size: var(--kad-text-xs);
+  color: var(--kad-ink-faint);
+}
+
+/* --- the party being kept ------------------------------------------------ */
+
+.keepsake__party {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keepsake__member {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  padding: var(--kad-space-1) var(--kad-space-3);
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-pill);
+  font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-bold);
+}
+
+/* The same colour as this player's flame in the lantern, so the picture and
+   the list are visibly the same three people. */
+.keepsake__dot {
+  inline-size: 0.7em;
+  block-size: 0.7em;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.keepsake__dot--lg {
+  inline-size: 1em;
+  block-size: 1em;
+}
+
+/* --- the "which one of you is this phone?" picker ------------------------ */
+
+.keepsake__choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keepsake__choice-sub {
+  font-weight: var(--kad-weight-normal);
+  color: var(--kad-ink-dim);
+}
+
+/* --- form ---------------------------------------------------------------- */
+
+.keepsake__form {
+  display: contents;
+}
+
+.keepsake__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-bold);
+  color: var(--kad-ink-dim);
+}
+
+.keepsake__input {
+  inline-size: 100%;
+  min-block-size: var(--kad-touch-min);
+  padding: var(--kad-space-2) var(--kad-space-3);
+  border: 0.1em solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-sunken);
+  color: var(--kad-ink);
+  font-size: var(--kad-text-lg);
+  text-align: center;
+  /* This is the one place in the app where selecting text is the point — the
+     body sets `user-select: none` for the board. */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.keepsake__input:focus-visible {
+  border-color: var(--kad-border-strong);
+}
+
+.keepsake__input::placeholder {
+  color: var(--kad-ink-faint);
+}
+
+.keepsake__input--code {
+  font-size: var(--kad-text-2xl);
+  font-weight: var(--kad-weight-black);
+  /* Six digits read as six digits, not as a word. */
+  letter-spacing: 0.25em;
+  /* letter-spacing adds a trailing gap after the last glyph, which visually
+     shifts centred text left. Give it back. */
+  text-indent: 0.25em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- actions ------------------------------------------------------------- */
+
+.keepsake__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--kad-space-2);
+  inline-size: 100%;
+  margin-block-start: var(--kad-space-1);
+}
+
+.keepsake__error {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  inline-size: 100%;
+  padding: var(--kad-space-2) var(--kad-space-3);
+  border-radius: var(--kad-radius-md);
+  background: color-mix(in srgb, var(--kad-danger) 18%, transparent);
+  color: var(--kad-danger);
+  font-size: var(--kad-text-sm);
+  text-align: start;
+}
+
+/* --- the entry point, on the chapter-complete panel ----------------------- */
+
+.keepsake-offer {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-3);
+  inline-size: 100%;
+  padding: var(--kad-space-3);
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-lg);
+  background: var(--kad-bg-raised);
+  text-align: start;
+}
+
+.keepsake-offer__lantern {
+  inline-size: 3.2em;
+  flex: 0 0 auto;
+}
+
+.keepsake-offer__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-1);
+  min-inline-size: 0;
+}
+
+.keepsake-offer__lead {
+  margin: 0;
+  font-size: var(--kad-text-md);
+  font-weight: var(--kad-weight-bold);
+}
+
+.keepsake-offer__sub {
+  margin: 0;
+  font-size: var(--kad-text-sm);
+  color: var(--kad-ink-dim);
+}

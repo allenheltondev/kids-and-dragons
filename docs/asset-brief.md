@@ -361,3 +361,64 @@ substitute.
 | Mythic aura | Separate effect layer, engine-composited. See §4.5. |
 | Quadruped vs bipedal | Quadruped for all except bigfoot. See §2.2. |
 | Mane as a layer | Required separate file for every species. See §4.4. |
+
+---
+
+## 8. The keepsake lantern 🔺
+
+**Status: shipping as vector, open to commission.** The game ships an SVG
+version today — `packages/client/src/screens/KeepsakeLantern.tsx` — which is
+correct per §2 of [art-pipeline.md](./art-pipeline.md): UI is vector, never
+raster. This section exists so that a commissioned illustrated version can
+replace it without a second round of specifying what the picture is *for*.
+
+### 8.1 What it is
+
+The single piece of art in the optional sign-in flow
+([architecture §4.5](./architecture.md#45-accounts-devices-and-joining)). A
+hanging lantern holding **one flame per party member**, each flame tinted with
+that character's `appearance.accent` — the same colour the character itself is
+drawn in.
+
+### 8.2 What it is for, which decides everything else
+
+The screen asks a family whether to keep three characters a child spent an
+evening with. It is not an account prompt with a picture on it. So:
+
+| Must | Must not |
+|---|---|
+| Read as an **object from the world** — something that could hang in the Bramblewood | Read as interface furniture: padlock, shield, cloud, key, badge |
+| Be **warm and lit**. It is an invitation, not a warning | Suggest danger, loss, or a countdown |
+| Look **calm when empty**. Nobody being kept yet is an ordinary state | Look broken, error-ish, or "missing" with no flames |
+| Take the party's colours as **input** | Have the party's colours baked in |
+
+The empty state is the one most likely to be got wrong. An unlit lantern is
+already the right picture; earlier drafts drew an explicit wick and it read as
+a stray glyph at small sizes.
+
+### 8.3 Technical contract
+
+Different from the character contract in §3 — this is UI, so **none** of the
+registration, canvas, or rig rules apply.
+
+- **Format:** SVG, or a Rive rig if it is animated beyond the CSS below.
+- **Colour:** every fixed colour must be a token from `styles/theme.css`
+  (`--kad-gold` for the metalwork, `--kad-bg-sunken` for the glass). No literal
+  hex except in a gradient stop that references a token.
+- **Flames:** must be *addressable* — one node per flame, fillable from outside,
+  1 to 6 of them, positioned so each stays inside the glass at every count.
+- **Aspect:** taller than wide, and not by much more than 1.5:1. It sits above a
+  headline and a button on a 390px phone, and every unit of width costs 1.5 of
+  height. The current draft is 120 × 176.
+- **Legibility:** must read at **3.2em** (the small card on the chapter-complete
+  panel) as well as at 5.5em (the flow itself). At the small size the flames are
+  a few pixels each — silhouette carries it, detail does not.
+- **Motion:** a slow sway from the hanger and an independent per-flame flicker.
+  Decorative only, so `prefers-reduced-motion` stops it and nothing is lost.
+
+### 8.4 Acceptance
+
+`npm test` covers the mechanical part — one flame per member, distinct
+positions, all inside the glass at 1–6, unique gradient ids, an accessible
+label naming the characters. The taste gate is §6.2 as usual: does it look like
+it belongs in the same world as the unicorn?

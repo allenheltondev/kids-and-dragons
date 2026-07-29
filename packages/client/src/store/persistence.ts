@@ -88,7 +88,7 @@ export function clearSession(code: string, storage: KeyValueStorage = defaultSto
 /**
  * The stand-in for Chapter 1's household + device binding.
  *
- * A real `DEVICE#<deviceId>` item and a KMS-signed token replace this; keeping
+ * A real `DEVICE#<deviceId>` item and a signed token replace this; keeping
  * the ids stable per browser now means the join call already looks like the one
  * that ships, and a refresh already rejoins as the same player.
  */
@@ -147,5 +147,51 @@ export function saveIdentity(identity: LocalIdentity, storage: KeyValueStorage =
   }
 }
 
+/**
+ * That this browser's household has been claimed by an account (§4.5).
+ *
+ * Stored so the keepsake offer does not come back every chapter once somebody
+ * has already said yes. Deliberately *not* a source of truth: the server owns
+ * whether a household is a guest, and this is only ever used to decide whether
+ * to make an offer. The worst a stale value can do is skip an offer, or make
+ * one that turns out to be a no-op — both of which are quiet.
+ */
+export interface AccountRecord {
+  householdId: string;
+  email: string;
+  /** ISO, for "kept since March". */
+  claimedAt: string;
+}
+
+const ACCOUNT_KEY = "kad.account";
+
+export function loadAccount(storage: KeyValueStorage = defaultStorage()): AccountRecord | null {
+  const raw = storage.getItem(ACCOUNT_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<AccountRecord>;
+    if (typeof parsed.householdId !== "string" || typeof parsed.email !== "string") return null;
+    return {
+      householdId: parsed.householdId,
+      email: parsed.email,
+      claimedAt: typeof parsed.claimedAt === "string" ? parsed.claimedAt : "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function saveAccount(
+  account: AccountRecord,
+  storage: KeyValueStorage = defaultStorage(),
+): void {
+  try {
+    storage.setItem(ACCOUNT_KEY, JSON.stringify(account));
+  } catch {
+    /* non-fatal: the household is claimed server-side either way */
+  }
+}
+
 export const SESSION_KEY_PREFIX = SESSION_PREFIX;
 export const DEVICE_IDENTITY_KEY = DEVICE_KEY;
+export const ACCOUNT_RECORD_KEY = ACCOUNT_KEY;

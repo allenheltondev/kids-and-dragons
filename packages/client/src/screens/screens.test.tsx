@@ -23,6 +23,7 @@ import {
   LobbyContent,
   NarrationPanel,
   PlayerPanel,
+  SignInFlow,
   hasIcon,
 } from "./index";
 
@@ -35,6 +36,7 @@ const SCREENS = {
   CreationFlow,
   PlayerPanel,
   DiceOverlay,
+  SignInFlow,
 };
 
 /** Every `icon:` string reachable from a content file. */
