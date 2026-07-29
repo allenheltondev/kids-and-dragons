@@ -8,6 +8,7 @@
 import type {
   ActionRequest,
   ActionResponse,
+  Campaign,
   CreateRoomRequest,
   CreateRoomResponse,
   ItemCatalog,
@@ -58,6 +59,7 @@ export interface Api {
   fetchState(query: StateQuery, token?: string): Promise<StateResponse>;
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
+  loadCampaign(id: string): Promise<Campaign>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -147,5 +149,9 @@ export const api: Api = {
 
   loadItems() {
     return request<ItemCatalog>("/content/items.json");
+  },
+
+  loadCampaign(id) {
+    return request<Campaign>(`/content/campaigns/${id}.json`);
   },
 };

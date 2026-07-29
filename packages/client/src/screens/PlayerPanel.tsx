@@ -27,7 +27,16 @@ import type {
   PartyMember,
   Prompt,
 } from "@kad/shared";
-import { useIsMyPrompt, useItems, useMe, useParty, usePrompt, useRunState, useSend } from "../store";
+import {
+  useCampaign,
+  useIsMyPrompt,
+  useItems,
+  useMe,
+  useParty,
+  usePrompt,
+  useRunState,
+  useSend,
+} from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -225,7 +234,14 @@ export function PlayerPanel(): ReactElement {
   const myPrompt = usePrompt();
   const isMyPrompt = useIsMyPrompt();
   const items = useItems();
+  const campaign = useCampaign();
   const send = useSend();
+
+  // Nobody starts until everybody is in and ready — an empty party would
+  // otherwise let one person start the chapter alone.
+  const everyoneReady = party.length > 0 && party.every((member) => member.ready);
+  const inLobby = state?.phase === "lobby" || state?.phase === "creation";
+  const firstChapterId = campaign?.chapters[0] ?? null;
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -477,7 +493,11 @@ export function PlayerPanel(): ReactElement {
         ) : null}
 
         {/* ---------------- ready (lobby, rest, chapter end) ---------------- */}
-        {(myPrompt !== null && myPrompt.kind === "ready") || state.phase === "lobby" ? (
+        {/* "creation" is a run-level phase the engine sets on the first
+            CREATE_CHARACTER and never clears — being made is a fact about a
+            player, not about the room. Anyone who already has a character is
+            waiting in the lobby, whatever the run calls the phase. */}
+        {(myPrompt !== null && myPrompt.kind === "ready") || inLobby ? (
           <div className="prompt">
             <h3 className="prompt__title">
               <Icon name="ready" />
@@ -500,6 +520,22 @@ export function PlayerPanel(): ReactElement {
                 </li>
               ))}
             </ul>
+
+            {/* Somebody has to say go. It appears only once the whole party is
+                ready, so it can't be tapped out from under anyone, and the
+                chapter it names comes from the campaign file — content is data
+                (roadmap, "Content as data"). */}
+            {inLobby && everyoneReady && firstChapterId !== null ? (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<Icon name="forward" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "START_CHAPTER", chapterId: firstChapterId })}
+              >
+                Begin the adventure
+              </Button>
+            ) : null}
           </div>
         ) : null}
 

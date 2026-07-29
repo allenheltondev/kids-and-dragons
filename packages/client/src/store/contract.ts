@@ -8,6 +8,7 @@
  */
 
 import type {
+  Campaign,
   ClientIntent,
   ItemCatalog,
   PartyMember,
@@ -48,6 +49,12 @@ export interface GameStore {
   error: string | null;
   rules: RulesContent | null;
   items: ItemCatalog | null;
+  /**
+   * The campaign in play. Loaded like the rest of the content — the client
+   * needs it to name the chapter it is asking the server to start, and adding
+   * a campaign must never mean deploying game code.
+   */
+  campaign: Campaign | null;
 
   /** Loads content/rules.json and content/items.json. Idempotent. */
   loadContent(): Promise<void>;
@@ -73,6 +80,7 @@ export interface GameStore {
  *   useSend()        — (intent: ClientIntent) => Promise<void>
  *   useRules()       — RulesContent | null
  *   useItems()       — ItemCatalog | null
+ *   useCampaign()    — Campaign | null
  *   usePresentation(kind, handler) — subscribe to one presentation kind
  */
 export type MaybeMember = PartyMember | null;
