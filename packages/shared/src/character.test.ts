@@ -7,6 +7,7 @@ import {
   failCampaign,
   newCharacter,
   resolveCharacter,
+  spendStatPoint,
   startCampaign,
 } from "./character.js";
 import type { Character, Stats } from "./types/domain.js";
@@ -62,6 +63,70 @@ describe("newCharacter (spec §5)", () => {
 
   it("rejects an empty name", () => {
     expect(() => newCharacter({ ...creation(), name: "   " })).toThrow(/name is required/);
+  });
+
+  it("starts at level 1 with nothing banked when no starting level is asked for", () => {
+    expect(newCharacter(creation()).committed.unspentPoints).toBe(0);
+  });
+});
+
+describe("joining a party already underway (spec §8.4)", () => {
+  it("starts a tier-floor join at that level's XP threshold, not zero", () => {
+    const joined = newCharacter({ ...creation(), startingLevel: 7 }).committed;
+    expect(joined.level).toBe(7);
+    // The fixture curve's total for level 7. Zero here is the bug this whole
+    // test exists for — see the next test.
+    expect(joined.xp).toBe(3300);
+    expect(joined.tier).toBe("radiant");
+  });
+
+  it("does not collapse back to level 1 on the next chapter award", () => {
+    // The subtle failure: level is derived from XP, so a level-7 character
+    // carrying 0 XP is *re-derived* as level 1 the moment any XP lands.
+    const joined = newCharacter({ ...creation(), startingLevel: 7 });
+    const after = awardXp(startCampaign(joined, "r_1"), rules, 300);
+    expect(effectiveProgress(after.character).level).toBe(7);
+    expect(after.leveledTo).toBeUndefined();
+  });
+
+  it("owns every class action its level already unlocked", () => {
+    const joined = newCharacter({ ...creation(), startingLevel: 7 }).committed;
+    // songkeeper unlocks at 3 and 6; a level-7 join skipped both level-ups and
+    // must still arrive holding them.
+    expect(joined.unlockedActions).toEqual(["rally", "soothe", "chorus"]);
+  });
+
+  it("banks one point per skipped level, so a level-7 join has six to spend", () => {
+    expect(newCharacter({ ...creation(), startingLevel: 7 }).committed.unspentPoints).toBe(6);
+    expect(newCharacter({ ...creation(), startingLevel: 4 }).committed.unspentPoints).toBe(3);
+    expect(newCharacter({ ...creation(), startingLevel: 10 }).committed.unspentPoints).toBe(9);
+  });
+
+  it("is arithmetically identical to a character that earned the level", () => {
+    // The claim spec §8.4 makes, asserted whole: no shortcut and no handicap.
+    // Any extra XP, point, or action given to a joiner shows up right here.
+    const joined = newCharacter({ ...creation(), startingLevel: 4 });
+    const earned = awardXp(newCharacter(creation()), rules, 1200).character;
+    expect(joined.committed).toEqual(earned.committed);
+  });
+
+  it("rejects a level between the tier floors", () => {
+    // A phone can send any number; 5 would mean a stat point and an action
+    // nobody at the table agreed to.
+    expect(() => newCharacter({ ...creation(), startingLevel: 5 })).toThrow(/tier floor/);
+    expect(() => newCharacter({ ...creation(), startingLevel: 0 })).toThrow(/tier floor/);
+    expect(() => newCharacter({ ...creation(), startingLevel: 11 })).toThrow(/tier floor/);
+    expect(() => newCharacter({ ...creation(), startingLevel: 4.5 })).toThrow(/tier floor/);
+  });
+
+  it("reads the legal floors out of content instead of hardcoding 1/4/7/10", () => {
+    // Retuning the tiers is a content change; it must not need a code deploy.
+    const retuned = makeRules({ tierLevels: { fledgling: 1, sworn: 3, radiant: 6, mythic: 9 } });
+    const atSix = newCharacter({ ...creation(), rules: retuned, startingLevel: 6 });
+    expect(atSix.committed.level).toBe(6);
+    expect(() => newCharacter({ ...creation(), rules: retuned, startingLevel: 4 })).toThrow(
+      /tier floor/,
+    );
   });
 });
 
@@ -303,5 +368,100 @@ describe("awardXp (spec §8.1)", () => {
     const result = awardXp(makeCharacter(), rules, 300);
     expect(result.character.committed.xp).toBe(300);
     expect(result.character.provisional).toBeNull();
+  });
+
+  it("banks a stat point for every level gained, not one per award", () => {
+    // A generous chapter can cross several levels at once; each one owes a
+    // point. Banking one per *call* would quietly rob a character of two.
+    const start = startCampaign(makeCharacter(), "r_1");
+    const threeLevels = awardXp(start, rules, 1200);
+    expect(threeLevels.leveledTo).toBe(4);
+    expect(threeLevels.character.provisional?.unspentPoints).toBe(3);
+  });
+
+  it("banks nothing for an award that does not reach the next level", () => {
+    // Half XP from a setback (§8.2) routinely lands short of a level.
+    const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 100);
+    expect(result.character.provisional?.unspentPoints).toBe(0);
+  });
+
+  it("banks onto whatever a joined character already had", () => {
+    const joined = startCampaign(newCharacter({ ...creation(), startingLevel: 4 }), "r_1");
+    const result = awardXp(joined, rules, 600); // 1200 → 1800, level 4 → 5
+    expect(effectiveProgress(result.character).level).toBe(5);
+    expect(effectiveProgress(result.character).unspentPoints).toBe(4);
+  });
+});
+
+describe("spendStatPoint (spec §8.1)", () => {
+  /** A character with one banked point and no campaign in flight. */
+  function withAPoint(): Character {
+    return awardXp(makeCharacter(), rules, 300).character;
+  }
+
+  it("moves a banked point onto the chosen stat", () => {
+    const spent = spendStatPoint(withAPoint(), rules, "might");
+    expect(spent.committed.stats.might).toBe(2); // 1 stored + the point
+    expect(spent.committed.unspentPoints).toBe(0);
+    // Only the chosen stat moves.
+    expect(spent.committed.stats.heart).toBe(4);
+  });
+
+  it("refuses to spend a point that was never earned", () => {
+    // Loudly, not silently: a no-op looks exactly like a successful tap on a
+    // phone, and the player would spend the evening believing they got it.
+    expect(() => spendStatPoint(makeCharacter(), rules, "might")).toThrow(/no unspent stat points/);
+  });
+
+  it("spends each point only once", () => {
+    const once = spendStatPoint(withAPoint(), rules, "quick");
+    expect(() => spendStatPoint(once, rules, "quick")).toThrow(/no unspent stat points/);
+  });
+
+  it("rejects a stat id the rules do not know", () => {
+    expect(() => spendStatPoint(withAPoint(), rules, "luck" as never)).toThrow(/unknown stat/);
+  });
+
+  it("writes to provisional while a campaign is in flight, leaving committed alone", () => {
+    const banked = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 300).character;
+    const spent = spendStatPoint(banked, rules, "clever");
+    expect(spent.provisional?.stats.clever).toBe(2);
+    expect(spent.provisional?.unspentPoints).toBe(0);
+    expect(spent.committed.stats.clever).toBe(1);
+    expect(spent.committed.unspentPoints ?? 0).toBe(0);
+  });
+
+  it("reverts the earned point and the stat it bought together", () => {
+    // The reason unspentPoints lives inside CharacterProgress. Anywhere else,
+    // this character keeps the +1 Clever after the campaign that paid for it
+    // failed — a permanent stat nobody earned.
+    const banked = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 300).character;
+    const spent = spendStatPoint(banked, rules, "clever");
+    const failed = failCampaign(spent, "cracked_pendant", "2026-08-01");
+    expect(failed.committed.stats.clever).toBe(1);
+    expect(failed.committed.unspentPoints ?? 0).toBe(0);
+  });
+
+  it("keeps the point when the campaign succeeds", () => {
+    const banked = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 300).character;
+    const done = commitCampaign(spendStatPoint(banked, rules, "clever"));
+    expect(done.committed.stats.clever).toBe(2);
+    expect(done.committed.unspentPoints).toBe(0);
+  });
+
+  it("never mutates the character it was handed", () => {
+    const before = withAPoint();
+    const snapshot = JSON.parse(JSON.stringify(before)) as Character;
+    spendStatPoint(before, rules, "might");
+    expect(before).toEqual(snapshot);
+  });
+
+  it("tolerates a character stored before points existed", () => {
+    // Records already in DynamoDB have no unspentPoints field; reading it as
+    // NaN would corrupt the stat block on the first Rest scene.
+    const legacy = makeCharacter();
+    delete (legacy.committed as { unspentPoints?: number }).unspentPoints;
+    expect(() => spendStatPoint(legacy, rules, "might")).toThrow(/no unspent stat points/);
+    expect(awardXp(legacy, rules, 300).character.committed.unspentPoints).toBe(1);
   });
 });
