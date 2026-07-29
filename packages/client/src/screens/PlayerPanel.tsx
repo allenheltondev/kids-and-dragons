@@ -240,6 +240,8 @@ export function PlayerPanel(): ReactElement {
   // Nobody starts until everybody is in and ready — an empty party would
   // otherwise let one person start the chapter alone.
   const everyoneReady = party.length > 0 && party.every((member) => member.ready);
+  // Only for the mode-switch control at the very bottom; see the note there.
+  const mode = state?.mode ?? "party";
   const inLobby = state?.phase === "lobby" || state?.phase === "creation";
   const firstChapterId = campaign?.chapters[0] ?? null;
 
@@ -627,6 +629,30 @@ export function PlayerPanel(): ReactElement {
             </div>
           </div>
         )}
+
+        {/*
+          The mid-session mode switch (spec §2.2, roadmap chapter 2): the
+          laptop dies and a phone absorbs the WorldView.
+
+          This is the one place a component names the room mode, and it is a
+          deliberate exception to the rule in PlayerView/WorldView. Mode here is
+          the *subject* of a control, not a branch in how anything renders —
+          nothing above reads it, and the layout still changes only because the
+          shell reacted to the state coming back. It sits at the very bottom,
+          after the inventory, because it is an adult fixing a problem rather
+          than anything a player does during a scene.
+        */}
+        <div className="player__mode">
+          <Button
+            variant="ghost"
+            size="md"
+            icon={<Icon name={mode === "party" ? "travel" : "party"} />}
+            disabled={busy}
+            onClick={() => void dispatch({ type: "SET_MODE", mode: mode === "party" ? "travel" : "party" })}
+          >
+            {mode === "party" ? "No TV? Put the world on the phones" : "Move the world back to the TV"}
+          </Button>
+        </div>
       </div>
     </section>
   );
