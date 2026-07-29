@@ -127,6 +127,14 @@ export function createCognitoClient(
         await call("SignUp", {
           ClientId: config.clientId,
           Username: username,
+          // A password nobody will ever see, type, or need.
+          //
+          // Cognito requires PASSWORD among the pool's allowed first auth
+          // factors (it refuses to create a pool without it) and SignUp wants a
+          // value that satisfies the policy. Sign-in is the emailed code, so
+          // this secret is generated here, sent once, and dropped — there is
+          // nothing to store, nothing to remember, and nothing to leak.
+          Password: throwawayPassword(),
           UserAttributes: [{ Name: "email", Value: username }],
         });
       } catch (err) {
@@ -270,6 +278,22 @@ function encodeCredential(credential: PublicKeyCredential): Record<string, unkno
     },
     clientExtensionResults: credential.getClientExtensionResults(),
   };
+}
+
+/**
+ * A password that exists only to satisfy Cognito's sign-up validator.
+ *
+ * 32 bytes of CSPRNG, plus one character from each class the default policy
+ * insists on. It is never persisted, never displayed, and never used to sign in
+ * — the emailed code does that — so the only property that matters is that
+ * nobody, including us, can guess it afterwards.
+ */
+function throwawayPassword(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  let raw = "";
+  for (const byte of bytes) raw += String.fromCharCode(byte);
+  return `Aa1!${btoa(raw).replace(/[+/=]/g, "")}`;
 }
 
 function toB64url(buffer: ArrayBuffer): string {

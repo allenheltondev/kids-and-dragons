@@ -135,7 +135,7 @@ API bundle, which is load-bearing — see below.
 | **KMS** ECC_NIST_P256 | Signs device, session, and viewer tokens. `Retain`. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
-| **HTTP API** + 3 Lambdas | `api`, `channel-authorizer`, `sweep`. |
+| **HTTP API** + 4 Lambdas | `api`, `channel-authorizer`, `sweep`, and the inline Cognito `PreSignUp` trigger. |
 | **S3 + CloudFront** | SPA, art, content. OAC — the bucket is not public. |
 
 The three stateful resources are `Retain` on purpose: a family's characters are
@@ -193,13 +193,26 @@ or CloudFormation's output to say so.
 from `WEBAUTHN_RP_ID`. Empty is a fine and complete state; it means email codes
 only.
 
-### Verify on the first deploy
+### There is a password in the pool, and nobody will ever see it
 
-Cognito's passwordless sign-up flow is the one part of this stack that has not
-been exercised end to end here. Check that `SignUp` for a new email is accepted
-**without** a `Password` parameter against the deployed pool before wiring the
-sign-in screen to it; if the pool insists on one, the fix is a `PreSignUp` Lambda
-trigger auto-confirming the user, not a password field in the UI.
+Two things Cognito insists on for a pool that is meant to be passwordless, both
+found the first time this stack was deployed for real:
+
+**`PASSWORD` must be an allowed first auth factor.** Leave it out and the pool
+will not create at all — *"PASSWORD should be configured as one of the allowed
+first auth factors"*. It is listed alongside `EMAIL_OTP`, and nothing uses it:
+the client generates 32 random bytes for `SignUp`, sends them once, and drops
+them. No screen has a password field, and sign-in is the emailed code.
+
+**Sign-up needs auto-confirming.** Otherwise a new user sits `UNCONFIRMED`
+behind a second emailed code, and the first sign-in of every new family fails.
+A `PreSignUp` trigger (ten lines, inline in the template) confirms them. That is
+not a shortcut past verifying the address — the OTP *is* the verification, since
+nobody reaches a signed-in state without reading a message sent to that inbox.
+
+The consequence worth knowing: password auth is technically enabled on the pool.
+Using it would require guessing a discarded 32-byte secret, so it is not a way
+in — but it is why `AllowedFirstAuthFactors` reads the way it does.
 
 ---
 
