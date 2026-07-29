@@ -103,7 +103,7 @@ Resources:
                 # production role, and the two environments would be one.
                 token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${StagingEnvironmentName}"
       ManagedPolicyArns:
-        # Deploying this stack means creating IAM roles, KMS keys, a user pool
+        # Deploying this stack means creating IAM roles, a secret, a user pool
         # and a distribution — there is no small policy that covers it honestly.
         # Scoped instead by *who can assume it*: one repository, one
         # environment, for the length of one job.

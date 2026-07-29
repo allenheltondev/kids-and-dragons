@@ -55,7 +55,7 @@ phones and the TV are in a synced room, and all three spikes have a written verd
   with the party rather than with a form (`KeepsakeLantern`, asset-brief §8).
 - Anonymous households with a 7-day expiry, and the single write that claims one
 - Household creation, player profiles, `role: adult | child`
-- Device pairing via QR, long-lived KMS-signed device tokens, sliding expiry, revocation
+- Device pairing via QR, long-lived signed device tokens, sliding expiry, revocation
 - Creation flow: species → class → stats → appearance → name
 - Character data model, `resolveCharacter()`, persistence to DynamoDB
 - Live WorldView preview driven by phone selections

@@ -132,17 +132,44 @@ API bundle, which is load-bearing — see below.
 | Resource | Notes |
 |---|---|
 | **DynamoDB** `kad-<stage>` | Single table, GSI1, TTL on `ttl`, PITR on. `DeletionPolicy: Retain`. |
-| **KMS** ECC_NIST_P256 | Signs device, session, and viewer tokens. `Retain`. |
+| **Secrets Manager** token secret | 64 characters CloudFormation generates; signs device, session, and viewer tokens. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
 | **HTTP API** + 4 Lambdas | `api`, `channel-authorizer`, `sweep`, and the inline Cognito `PreSignUp` trigger. |
 | **S3 + CloudFront** | SPA, art, content. OAC — the bucket is not public. |
 
-The three stateful resources are `Retain` on purpose: a family's characters are
+The table and the user pool are `Retain` on purpose: a family's characters are
 not recreatable, and `sam delete` on the wrong stack should not be able to take
 them. The flip side is that tearing a stack down properly means deleting the
-table, key, and user pool by hand afterwards — **including on staging**, which
-is now created and destroyed far more often than prod.
+table and the pool by hand afterwards — **including on staging**, which is now
+created and destroyed far more often than prod.
+
+The signing secret is deliberately *not* retained, which is the one place the
+two rules differ. Losing it signs every phone out, and they re-pair by QR in
+about ten seconds — nothing like losing a character. Retaining it would cost
+more than it saves: a secret keeps its name reserved for a 30-day recovery
+window after deletion, so a retained one would make "delete staging, deploy it
+again" fail for a month. For the same reason the template lets CloudFormation
+name it rather than fixing the name itself.
+
+### No KMS keys, on purpose
+
+Nothing in this stack creates a KMS key. Everything encrypted uses an
+Amazon-managed one — DynamoDB's AWS-owned default, SSE-S3 on the bucket, and
+`aws/secretsmanager` for the signing secret — which is free, needs no key policy,
+and needs no `kms:Decrypt` grant on the Lambdas: the managed key already allows
+account principals when the request arrives via Secrets Manager.
+
+The one thing this rules out is asymmetric signing. Every `aws/*` managed key is
+symmetric and encryption-only, so tokens are HS256 over a shared secret rather
+than ES256 over a private key that never leaves KMS. Architecture §4.5 has what
+that trades away; the short version is that both the signer and the verifier are
+Lambdas in this same stack, so a public half had nobody to serve.
+
+If a *stack that was already deployed* is being upgraded past this change, every
+device token issued by the old key stops verifying — phones re-pair by scanning
+the room QR, and nothing else is affected. Characters, households, and sign-ins
+all live in the table and the pool.
 
 ### Cost
 
@@ -239,8 +266,8 @@ npm run dev            # dev server on :8787, Vite on :5173
 ```
 
 `MemoryRepository`, `LocalSseChannel`, and `DevIdentity` stand in for DynamoDB,
-AppSync, and KMS. The dev identity is **unsigned** — a base64 envelope, not a
-credential — and is never deployed.
+AppSync, and the signed tokens. The dev identity is **unsigned** — a base64
+envelope, not a credential — and is never deployed.
 
 To run the repository contract suite against a real DynamoDB rather than only the
 in-memory store:

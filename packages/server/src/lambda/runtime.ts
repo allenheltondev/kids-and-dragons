@@ -3,13 +3,13 @@
  *
  * This is the file `dev-server.ts` promised: the move to Lambda is
  * `MemoryRepository → DynamoRepository`, `LocalSseChannel →
- * AppSyncEventsChannel`, `DevIdentity → KmsIdentity`, and nothing under
+ * AppSyncEventsChannel`, `DevIdentity → TokenIdentity`, and nothing under
  * `handlers/` changes. Everything env-shaped lives here so the handlers stay
  * pure functions of `(request, deps)` and remain testable without AWS.
  *
- * Built once per container and reused across invocations — the DynamoDB and KMS
- * clients, the content files, and above all the KMS public key, which would
- * otherwise cost a network round trip on every single request.
+ * Built once per container and reused across invocations — the AWS clients, the
+ * content files, and above all the token signing secret, which would otherwise
+ * cost a network round trip on every single request.
  */
 
 import { CognitoJwtVerifier } from "aws-jwt-verify";
@@ -17,8 +17,8 @@ import { AppSyncEventsChannel } from "../channel/appsync-events-channel.ts";
 import { loadContent, type ContentStore } from "../content/loader.ts";
 import { loadSharedRuntime } from "../engine/shared-engine.ts";
 import type { HandlerDeps } from "../handlers/deps.ts";
-import { KmsIdentity } from "../kms-identity.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
+import { secretsManagerSource, TokenIdentity } from "../token-identity.ts";
 
 /**
  * Read at module load so a missing variable fails the **first** invocation
@@ -56,7 +56,10 @@ async function build(): Promise<HandlerDeps> {
     }),
     content: await content(),
     engine: shared.engine,
-    identity: new KmsIdentity({ repo, keyId: requiredEnv("KMS_KEY_ID") }),
+    identity: new TokenIdentity({
+      repo,
+      secret: secretsManagerSource(requiredEnv("TOKEN_SECRET_ID")),
+    }),
     rng: shared.rng,
     random: cryptoRandom,
     now: () => Date.now(),

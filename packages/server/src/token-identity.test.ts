@@ -1,45 +1,24 @@
-import { generateKeyPairSync, sign as nodeSign, randomBytes, verify as nodeVerify } from "node:crypto";
-import { GetPublicKeyCommand, KMSClient, SignCommand } from "@aws-sdk/client-kms";
-import { describe, expect, it } from "vitest";
-import { DEVICE_TOKEN_TTL_MS, derToJose, KmsIdentity } from "./kms-identity.ts";
+import { createHmac } from "node:crypto";
+import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
+import { describe, expect, it, vi } from "vitest";
 import { MemoryRepository } from "./store/memory-repository.ts";
 import { makeClock, T0 } from "./test-support.ts";
+import { DEVICE_TOKEN_TTL_MS, secretsManagerSource, TokenIdentity } from "./token-identity.ts";
 
 /**
- * A real P-256 keypair standing in for the KMS key. `Sign` produces a genuine
- * DER-encoded ECDSA signature and `GetPublicKey` a genuine SPKI, so everything
- * these tests exercise — the DER→JOSE conversion, the local verification, the
- * forgery rejections — is the same arithmetic that runs in prod. Only the API
- * call is faked.
+ * The same shape the stack produces: 64 characters CloudFormation generated and
+ * Secrets Manager holds. Nothing here fakes the crypto — `createHmac` is the
+ * same call that runs in prod, and only the `GetSecretValue` round trip is
+ * stubbed out.
  */
-const { privateKey, publicKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
-
-function fakeKms(): KMSClient {
-  return {
-    async send(command: unknown) {
-      if (command instanceof GetPublicKeyCommand) {
-        return { PublicKey: new Uint8Array(publicKey.export({ format: "der", type: "spki" })) };
-      }
-      if (command instanceof SignCommand) {
-        const message = Buffer.from(command.input.Message as Uint8Array);
-        return {
-          Signature: new Uint8Array(
-            nodeSign("sha256", message, { key: privateKey, dsaEncoding: "der" }),
-          ),
-        };
-      }
-      throw new Error("unexpected KMS command");
-    },
-  } as unknown as KMSClient;
-}
+const SECRET = "n7QpVzL2xR8mKdY4wFbT6sJhC3gNaE5uP9rZvXqW1oHiUlBtDkSyMcAfGjOe0Z2";
 
 function setup(startMs = T0) {
   const clock = makeClock(startMs);
   const repo = new MemoryRepository({ now: clock.now });
-  const identity = new KmsIdentity({
+  const identity = new TokenIdentity({
     repo,
-    keyId: "alias/kad-tokens",
-    client: fakeKms(),
+    secret: () => Promise.resolve(SECRET),
     now: clock.now,
   });
   return { clock, repo, identity };
@@ -52,33 +31,90 @@ function tamper(token: string, payload: object): string {
   return `${header}.${Buffer.from(JSON.stringify(payload)).toString("base64url")}.${signature}`;
 }
 
-describe("derToJose", () => {
-  it("produces 64 fixed-width bytes for every signature, not most of them", () => {
-    /*
-     * The bug this exists to prevent: DER drops leading zero bytes and adds a
-     * 0x00 sign byte when the high bit is set, so r or s is shorter or longer
-     * than 32 bytes roughly one time in 256. A naive slice verifies almost
-     * always, and the failure surfaces months later as "her phone sometimes
-     * has to re-pair."
-     */
-    for (let i = 0; i < 300; i++) {
-      const message = randomBytes(32);
-      const der = nodeSign("sha256", message, { key: privateKey, dsaEncoding: "der" });
-      const jose = derToJose(new Uint8Array(der));
+describe("the signature itself", () => {
+  it("is an HS256 JWT over header.payload, verifiable by anything holding the secret", async () => {
+    // The interop check. If this drifts, the tokens are still self-consistent —
+    // we sign and verify them with the same code — but they have quietly stopped
+    // being JWTs, and the next thing to read one (a log viewer, an API Gateway
+    // authorizer, a debugging session) sees nonsense.
+    const { identity } = setup();
+    const { token } = await identity.issueDeviceToken(device);
+    const [header, payload, signature] = token.split(".") as [string, string, string];
 
-      expect(jose).toHaveLength(64);
-      expect(
-        nodeVerify("sha256", message, { key: publicKey, dsaEncoding: "ieee-p1363" }, jose),
-      ).toBe(true);
-    }
+    expect(JSON.parse(Buffer.from(header, "base64url").toString("utf8"))).toEqual({
+      alg: "HS256",
+      typ: "JWT",
+    });
+    const expected = createHmac("sha256", SECRET).update(`${header}.${payload}`).digest("base64url");
+    expect(signature).toBe(expected);
   });
 
-  it("rejects something that is not a DER signature", () => {
-    expect(() => derToJose(new Uint8Array([1, 2, 3]))).toThrow(/bad DER/);
+  it("refuses a token signed with a different secret", async () => {
+    const { identity } = setup();
+    const { token } = await identity.issueDeviceToken(device);
+
+    const other = new TokenIdentity({
+      repo: new MemoryRepository(),
+      secret: () => Promise.resolve(`${SECRET}x`),
+    });
+    expect(await other.resolveDevice(token)).toBeNull();
+  });
+
+  it("refuses a truncated signature rather than throwing", async () => {
+    // `timingSafeEqual` throws on a length mismatch, so the length check ahead
+    // of it is load-bearing: without it this is a 500 on a malformed token.
+    const { identity } = setup();
+    const { token } = await identity.issueDeviceToken(device);
+    const [header, payload, signature] = token.split(".") as [string, string, string];
+
+    expect(await identity.resolveDevice(`${header}.${payload}.${signature.slice(0, 10)}`)).toBeNull();
+  });
+
+  it("fetches the secret once, however many tokens it signs", async () => {
+    const source = vi.fn(() => Promise.resolve(SECRET));
+    const identity = new TokenIdentity({ repo: new MemoryRepository(), secret: source });
+
+    const { token } = await identity.issueDeviceToken(device);
+    await identity.resolveDevice(token);
+    await identity.resolveDevice(token);
+
+    expect(source).toHaveBeenCalledOnce();
+  });
+
+  it("does not cache a failed fetch", async () => {
+    // A throttled cold start must not poison the container for its whole life.
+    let attempts = 0;
+    const identity = new TokenIdentity({
+      repo: new MemoryRepository(),
+      secret: () => {
+        attempts++;
+        return attempts === 1 ? Promise.reject(new Error("throttled")) : Promise.resolve(SECRET);
+      },
+    });
+
+    await expect(identity.issueDeviceToken(device)).rejects.toThrow(/throttled/);
+    expect(await identity.issueDeviceToken(device)).toMatchObject({ token: expect.any(String) });
   });
 });
 
-describe("KmsIdentity — device tokens", () => {
+describe("secretsManagerSource", () => {
+  it("asks for the secret it was given and returns its string value", async () => {
+    const send = vi.fn((command: GetSecretValueCommand) => {
+      expect(command.input.SecretId).toBe("arn:aws:secretsmanager:us-east-1:1:secret:kad");
+      return Promise.resolve({ SecretString: SECRET });
+    });
+
+    const source = secretsManagerSource("arn:aws:secretsmanager:us-east-1:1:secret:kad", { send });
+    expect(await source()).toBe(SECRET);
+  });
+
+  it("fails loudly on a binary-only secret rather than signing with nothing", async () => {
+    const source = secretsManagerSource("kad", { send: () => Promise.resolve({}) });
+    await expect(source()).rejects.toThrow(/no string value/);
+  });
+});
+
+describe("TokenIdentity — device tokens", () => {
   it("issues a token that resolves to the player who owns the device", async () => {
     const { identity } = setup();
     const { token, deviceId } = await identity.issueDeviceToken(device);
@@ -211,7 +247,7 @@ describe("KmsIdentity — device tokens", () => {
   });
 });
 
-describe("KmsIdentity — session tokens", () => {
+describe("TokenIdentity — session tokens", () => {
   it("round-trips the run it is scoped to", async () => {
     const { identity, clock } = setup();
     const expiresAt = clock.now() + 6 * 3600_000;
