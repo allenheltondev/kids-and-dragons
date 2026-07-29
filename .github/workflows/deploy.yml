@@ -1,21 +1,32 @@
 # Deploys.
 #
-#   pull request   → the **staging** stack
-#   push to main   → the **prod** stack
+#   pull request   → the **Staging** environment → the `kad-staging` stack
+#   push to main   → the **Production** environment → the `kad-prod` stack
 #
 # Both run `scripts/deploy.sh`, which is the same command you run from a laptop.
 # The workflow's only job is to be that laptop: assume a role, install the two
 # CLIs, and hand over. A deploy path that exists only in YAML is one nobody can
 # reproduce when it breaks at 8pm.
 #
+# Two names for one thing, deliberately kept apart:
+#
+#   `Staging` / `Production`   the GitHub environment — where the role ARN and
+#                              any protection rules live
+#   `staging` / `prod`         the AWS stage — the stack name, the table name,
+#                              `StageName` in the template
+#
+# They are not the same string and pretending otherwise is how the OIDC `sub`
+# claim stops matching the trust policy. The mapping happens once, in the
+# "Resolve target" step, and everything downstream uses its output.
+#
 # Credentials come from GitHub's OIDC provider, traded for a short-lived role
 # session — there are no AWS keys stored anywhere. The role ARN lives on the
-# GitHub *environment* (`staging` / `prod`) rather than on the repository, and
-# the roles themselves only trust their own environment
-# (`infra/github-oidc.yaml`), so a pull-request deploy cannot reach prod even if
-# this file were edited in that pull request. That last part is the reason the
-# scoping is worth doing: without it, "deploy staging on PR" is an arbitrary
-# code execution path into your production account.
+# GitHub environment rather than on the repository, and each role trusts only
+# its own environment (`infra/github-oidc.yaml`), so a pull-request deploy
+# cannot reach production even if this file were edited in that pull request.
+# That last part is the reason the scoping is worth doing: without it, "deploy
+# staging on PR" is an arbitrary code execution path into the production
+# account.
 
 name: Deploy
 
@@ -28,15 +39,15 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Which stack to deploy
+        description: Which environment to deploy
         type: choice
-        options: [staging, prod]
-        default: staging
+        options: [Staging, Production]
+        default: Staging
 
 concurrency:
   # Two deploys of one stack at once is a CloudFormation error at best. Queued
   # rather than cancelled: a half-finished deploy should be allowed to finish.
-  group: deploy-${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+  group: deploy-${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
   cancel-in-progress: false
 
 permissions:
@@ -45,12 +56,29 @@ permissions:
 
 jobs:
   deploy:
-    name: ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+    name: ${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
     runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+    # Must match the environment name in Settings → Environments *exactly*, or
+    # GitHub quietly creates a new one — which has no secret in it, and the job
+    # fails at the credentials step looking like an AWS problem.
+    environment: ${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve target
+        id: target
+        env:
+          ENVIRONMENT: ${{ github.event_name == 'push' && 'Production' || inputs.environment || 'Staging' }}
+        run: |
+          case "$ENVIRONMENT" in
+            Production) STAGE=prod ;;
+            Staging)    STAGE=staging ;;
+            *) echo "::error::unknown environment '$ENVIRONMENT'"; exit 1 ;;
+          esac
+          echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+          echo "stack=kad-$STAGE" >> "$GITHUB_OUTPUT"
+          echo "Deploying the $ENVIRONMENT environment to the kad-$STAGE stack."
 
       - uses: actions/setup-node@v4
         with:
@@ -79,7 +107,7 @@ jobs:
           python -m pip install --disable-pip-version-check pillow numpy
 
       - name: Deploy
-        run: ./scripts/deploy.sh ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+        run: ./scripts/deploy.sh ${{ steps.target.outputs.stage }}
         env:
           # `KAD_SKIP_CHECKS` is deliberately *not* set.
           #
@@ -102,9 +130,11 @@ jobs:
 
       - name: Where it went
         run: |
-          STACK="kad-${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}"
-          URL=$(aws cloudformation describe-stacks --stack-name "$STACK" \
+          URL=$(aws cloudformation describe-stacks \
+            --stack-name "${{ steps.target.outputs.stack }}" \
             --query "Stacks[0].Outputs[?OutputKey=='SiteUrl'].OutputValue" --output text)
-          echo "### $STACK is live" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "$URL" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "### ${{ steps.target.outputs.stack }} is live"
+            echo ""
+            echo "$URL"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -13,6 +13,13 @@ AWSTemplateFormatVersion: "2010-09-09"
 #     --capabilities CAPABILITY_NAMED_IAM \
 #     --parameter-overrides GitHubOwner=allenheltondev GitHubRepo=kids-and-dragons
 #
+# The two roles are **not interchangeable**: each trusts exactly one GitHub
+# environment. `StagingRoleArn` goes in the Staging environment's
+# AWS_DEPLOYMENT_ROLE_ARN and `ProdRoleArn` in Production's. Putting one ARN in
+# both leaves whichever environment does not match failing with
+# "Not authorized to perform sts:AssumeRoleWithWebIdentity" — which is the trust
+# boundary working, not a misconfiguration of it.
+#
 # No access keys anywhere. GitHub presents a short-lived OIDC token, AWS trades
 # it for temporary credentials, and there is no long-lived secret in the
 # repository that could leak.
@@ -27,6 +34,20 @@ Parameters:
   GitHubRepo:
     Type: String
     Default: kids-and-dragons
+
+  # The GitHub environment names, exactly as they appear in
+  # Settings → Environments. Parameters rather than literals because the OIDC
+  # `sub` claim carries the name **as configured**, matched here with
+  # StringEquals — so `Staging` and `staging` are different principals, and a
+  # rename in the GitHub UI silently stops every deploy until this stack is
+  # updated to match.
+  StagingEnvironmentName:
+    Type: String
+    Default: Staging
+
+  ProdEnvironmentName:
+    Type: String
+    Default: Production
 
   CreateOidcProvider:
     Type: String
@@ -69,9 +90,9 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
                 # Scoped to the GitHub *environment*, not just the repository.
-                # Without this a workflow job targeting `staging` could assume
-                # the prod role, and the two environments would be one.
-                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:staging"
+                # Without this a workflow job targeting Staging could assume the
+                # production role, and the two environments would be one.
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${StagingEnvironmentName}"
       ManagedPolicyArns:
         # Deploying this stack means creating IAM roles, KMS keys, a user pool
         # and a distribution — there is no small policy that covers it honestly.
@@ -95,16 +116,16 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:prod"
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${ProdEnvironmentName}"
       ManagedPolicyArns:
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/PowerUserAccess"
         - !Sub "arn:${AWS::Partition}:iam::aws:policy/IAMFullAccess"
 
 Outputs:
   StagingRoleArn:
-    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the `staging` GitHub environment
+    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Staging environment (not Production)
     Value: !GetAtt StagingDeployRole.Arn
 
   ProdRoleArn:
-    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the `prod` GitHub environment
+    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Production environment (not Staging)
     Value: !GetAtt ProdDeployRole.Arn
