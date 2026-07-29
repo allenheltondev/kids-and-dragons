@@ -1,0 +1,1392 @@
+schema_version: "1.0"
+document_type: red_sky_creature_canon
+title: "The Realm of Red Sky Creature Canon"
+updated: "2026-07-29"
+
+purpose: >-
+  Canonical, agent-readable reference for the peoples, creatures, legendary
+  beings, and unresolved inhabitants of the Realm of Red Sky. Use this file
+  when planning stories, encounters, dialogue, character artwork, creature
+  artwork, regional scenes, or game content.
+
+agent_instructions:
+  - Treat entries with canon_status "confirmed" or "newly_defined" as canon.
+  - Treat entries with canon_status "intentionally_undefined" as protected mysteries. Do not supply an answer unless explicitly asked to develop that mystery.
+  - Do not invent additional homelands for playable peoples.
+  - Do not portray an entire sapient people as inherently good, evil, hostile, foolish, or untrustworthy.
+  - For sapient peoples, standard_behavior describes common cultural practices, not mandatory personality traits.
+  - Dangerous creatures are dangerous because of predation, territoriality, magical instability, or environmental pressure; they are not morally evil by default.
+  - Mount RedSky is not a dragonling homeland or civilization.
+  - Adult dragons on Mount RedSky are rare, solitary legendary beasts and are not automatically related to dragonlings.
+  - The Exchange has no native or dominant people.
+  - The Bone Yard has no normal permanent settlement.
+  - Preserve the distinctions between MossHome and the wider Enchanted Woods.
+  - Preserve the distinctions between the central Plains, Eastern Plains, and Sunward Fields.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+
+controlled_values:
+  canon_status:
+    confirmed: "Established through direct worldbuilding decisions."
+    newly_defined: "Added as canon in this creature inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
+  classification:
+    playable_people: "Sapient people available as a player-character species."
+    supporting_people: "Sapient people used primarily for NPCs and world population."
+    cultural_order: "A learned role or tradition that can include members of multiple peoples."
+    legendary_beast: "Rare, individually significant creature; usually not a population."
+    ambient_creature: "Non-sapient or semi-sapient wildlife that normally avoids conflict."
+    dangerous_creature: "Non-sapient or semi-sapient creature likely to create danger."
+    supernatural_manifestation: "A magical event or animated phenomenon rather than a biological species."
+    unresolved: "Intentionally unspecified entity or population."
+  sapience:
+    sapient: "Person-level intelligence, language, culture, and moral agency."
+    semi_sapient: "Problem solving and communication beyond ordinary wildlife without a full civilization."
+    animal: "Wildlife-level cognition."
+    variable: "Varies by individual, age, or manifestation."
+    unknown: "Not established."
+  danger_level:
+    none: "Not normally dangerous."
+    low: "May inconvenience or frighten but rarely causes serious harm."
+    moderate: "Can harm unprepared travelers."
+    high: "A serious threat requiring planning, escape, or cooperation."
+    legendary: "Potentially realm-changing or suitable for a major story climax."
+    unknown: "Deliberately not established."
+
+world_rules:
+  moral_alignment: >-
+    Species does not determine morality. Villains should be named individuals,
+    mixed-species factions, or supernatural threats defined by choices and goals.
+  travel_and_migration: >-
+    A homeland identifies cultural origin and population concentration, not an
+    absolute border. Individuals may live, work, study, or travel elsewhere.
+  conflict_design: >-
+    Encounters should usually permit more than combat. Appropriate alternatives
+    include observation, conversation, bargaining, rescue, distraction, escape,
+    environmental problem-solving, and restoring a damaged habitat.
+  child_hero_tone: >-
+    The realm can contain danger, loss, and frightening mysteries, but descriptions
+    should remain suitable for a child-centered adventure. Emphasize courage,
+    curiosity, consequences, cooperation, and repair over gore or cruelty.
+
+locations:
+  - id: sky_islands
+    name: "Sky Islands"
+    location_type: region
+    canon_note: "Drifting islands whose cultures navigate by wind, stars, and recurring routes."
+
+  - id: enchanted_woods
+    name: "Enchanted Woods"
+    location_type: region
+    canon_note: "Ancient living forest that remembers how visitors treat it."
+
+  - id: mosshome
+    name: "MossHome"
+    location_type: settlement
+    parent_location: enchanted_woods
+    canon_note: "Bigfoot settlement built in harmony with living ancient trees."
+
+  - id: whispering_marsh
+    name: "Whispering Marsh"
+    location_type: region
+    canon_note: "Mist-covered wetlands where memories and voices collect."
+
+  - id: the_expanse
+    name: "The Expanse"
+    location_type: forbidden_region
+    canon_note: "Barren northern waste. What lives or lies beyond it is intentionally unknown."
+
+  - id: mount_redsky
+    name: "Mount RedSky"
+    location_type: legendary_region
+    canon_note: "Active volcano, source of powerful gemstones, and territory of rare solitary legendary beasts."
+
+  - id: red_sky_foothills
+    name: "Red Sky Foothills"
+    location_type: region
+    canon_note: "Volcanic hills, cooled lava tubes, crystal veins, and the dragonling homeland."
+
+  - id: the_plains
+    name: "The Plains"
+    location_type: region
+    canon_note: "Central open country crossed by old roads and caravans."
+
+  - id: sunward_fields
+    name: "Sunward Fields"
+    location_type: region
+    canon_note: "Rolling meadows and farms that feed much of the realm."
+
+  - id: the_exchange
+    name: "The Exchange"
+    location_type: city
+    canon_note: "Neutral coastal hub where all peoples, paths, stories, and trade converge."
+
+  - id: glacier_of_origins
+    name: "Glacier of Origins"
+    location_type: legendary_region
+    canon_note: "Ancient glacier where the Great River begins and old memories remain frozen."
+
+  - id: frostfang_peaks
+    name: "Frostfang Peaks"
+    location_type: region
+    canon_note: "High frozen mountains and the griffin homeland."
+
+  - id: eastern_plains
+    name: "Eastern Plains"
+    location_type: region
+    canon_note: "Wide open country east of the Great River and the manticore homeland."
+
+  - id: stone_crossing
+    name: "Stone Crossing"
+    location_type: landmark
+    canon_note: "A narrow and strategically important crossing of the Great River."
+
+  - id: bone_yard
+    name: "The Bone Yard"
+    location_type: forbidden_region
+    canon_note: "River-delta island where the remains of enormous ancient creatures collect and sleep."
+
+  - id: mermaid_cove
+    name: "Mermaid Cove"
+    location_type: region
+    canon_note: "Warm reefs protected by merfolk, selkies, and an ancient alliance."
+
+  - id: skullwater_cave
+    name: "Skullwater Cave"
+    location_type: gateway
+    canon_note: "Skull-shaped opening into a much larger underground world."
+
+  - id: great_river
+    name: "The Great River"
+    location_type: waterway
+    canon_note: "Glacial river flowing south through the realm and carrying faint fragments of memory."
+
+  - id: open_sea
+    name: "The Open Sea"
+    location_type: region
+    canon_note: "Ocean surrounding the realm."
+
+  - id: the_whirlpool
+    name: "The Whirlpool"
+    location_type: legendary_landmark
+    canon_note: "Powerful whirlpool near Mermaid Cove and the Bone Yard; its deeper cause remains unknown."
+
+entities:
+  # ---------------------------------------------------------------------------
+  # PLAYABLE PEOPLES
+  # ---------------------------------------------------------------------------
+
+  - id: dragonling
+    name: "Dragonling"
+    classification: playable_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: true
+    primary_locations: [red_sky_foothills]
+    secondary_locations: [the_exchange, the_plains, sunward_fields]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: >-
+      Young dragon-like people adapted to the tremors, ash, caves, and crystal
+      fields of the Red Sky Foothills.
+    visual_identity:
+      - "Compact, expressive dragon-like form with scales, horns, and a clearly youthful silhouette."
+      - "Colors and markings may vary widely between individuals."
+      - "Clothing and equipment favor climbing, heat protection, and cave travel."
+    visual_constraints:
+      - "Use the established player-character design for exact wing, horn, and body configuration."
+      - "Do not visually imply that all dragonlings are children of Mount RedSky's adult dragons."
+    scale: small_to_medium
+    movement: "Ground travel and strong climbing; any flight capability follows the established player design."
+    communication: "Spoken language, gesture, warning calls, and communal crystal chimes."
+    social_structure: >-
+      Family homes and small settlements occupy cooled lava tubes, sheltered
+      valleys, and cliffside caves throughout the foothills.
+    cultural_norms:
+      - "Watch the mountain closely and share warnings quickly."
+      - "Gather gemstones released by natural eruptions rather than cutting into living veins."
+      - "Value practical courage: preparedness and helping others are more admired than recklessness."
+    standard_behavior: >-
+      Dragonling communities monitor tremors, ash, heat, and crystal changes.
+      Individuals commonly explore caves, collect cooled gemstones, trade with
+      caravans, and help maintain eruption routes and warning systems.
+    common_abilities:
+      - "Heat tolerance"
+      - "Cave navigation"
+      - "Sensitivity to volcanic changes"
+    common_story_uses:
+      - "Local guide to the foothills"
+      - "Hero conflicted about entering forbidden gemstone caves"
+      - "Witness to unusual changes in Mount RedSky"
+    canon_constraints:
+      - "Mount RedSky itself is not the dragonling homeland."
+      - "Claims of descent from legend dragons are unverified cultural stories, not established fact."
+
+  - id: bigfoot
+    name: "Bigfoot"
+    classification: playable_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: true
+    primary_locations: [mosshome]
+    secondary_locations: [enchanted_woods, whispering_marsh, the_exchange]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: >-
+      Large, shaggy forest people known for observation, natural history,
+      living construction, and quietly maintained knowledge.
+    visual_identity:
+      - "Tall, broad, shaggy silhouette with expressive face and hands."
+      - "Natural accessories made from fallen wood, woven grasses, stones, and cultivated moss."
+      - "MossHome residents may carry botanical tools, seed pouches, or history tokens."
+    scale: large
+    movement: "Powerful ground travel, climbing, and quiet movement through dense forest."
+    communication: "Spoken language, low calls across the forest, gesture, and ecological records."
+    social_structure: >-
+      Extended families live throughout MossHome and maintain relationships with
+      neighboring forest communities.
+    cultural_norms:
+      - "Observe before acting."
+      - "Build with living systems rather than destroying them."
+      - "Record history in gardens, moss patterns, tree rings, and arranged stones."
+    standard_behavior: >-
+      Bigfoots tend forest paths and living structures, study changes in plants
+      and wildlife, preserve community history, and intervene when the forest is
+      damaged or behaving unusually.
+    common_abilities:
+      - "Exceptional strength"
+      - "Quiet forest movement"
+      - "Tracking and ecological knowledge"
+    common_story_uses:
+      - "Forest historian"
+      - "Guide through changing paths"
+      - "Hero who notices an environmental clue others miss"
+    canon_constraints:
+      - "Do not portray Bigfoots as primitive, unintelligent, or universally reclusive."
+
+  - id: manticore
+    name: "Manticore"
+    classification: playable_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: true
+    primary_locations: [eastern_plains]
+    secondary_locations: [stone_crossing, the_plains, the_exchange]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: >-
+      Proud, formidable plains people who travel in family prides, maintain
+      routes, and guard travelers crossing the open east.
+    visual_identity:
+      - "Lion-like body and a distinctive powerful tail."
+      - "A formidable silhouette balanced by expressive, approachable features."
+      - "Trail markers, travel gear, badges, or woven pride colors distinguish families."
+    visual_constraints:
+      - "Use the established player-character design for exact face, wing, and tail anatomy."
+      - "Do not make threatening anatomy a shorthand for evil."
+    scale: medium_to_large
+    movement: "Fast over open ground; any flight capability follows the established player design."
+    communication: "Spoken language, long-distance calls, formal introductions, and trail signs."
+    social_structure: >-
+      Mobile extended families called prides travel established circuits and
+      gather seasonally at shared meeting grounds.
+    cultural_norms:
+      - "Announce intentions clearly when approaching another group."
+      - "Protect peaceful travelers within one's claimed route."
+      - "Use riddles, challenges, and elaborate introductions to test attention and confidence."
+    standard_behavior: >-
+      Manticores patrol roads, repair trail markers, investigate unusual tracks,
+      escort caravans, and exchange news between isolated settlements.
+    common_abilities:
+      - "Speed and endurance"
+      - "Powerful defensive anatomy"
+      - "Long-distance observation"
+    common_story_uses:
+      - "Road guardian"
+      - "Caravan escort"
+      - "Hero confronting unfair assumptions about appearance"
+    canon_constraints:
+      - "Manticores are not an inherently hostile or villainous people."
+
+  - id: griffin
+    name: "Griffin"
+    classification: playable_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: true
+    primary_locations: [frostfang_peaks]
+    secondary_locations: [glacier_of_origins, eastern_plains, the_exchange]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: >-
+      Eagle-and-lion people of the Frostfang aeries who serve as scouts,
+      rescuers, messengers, and guardians of the northern horizon.
+    visual_identity:
+      - "Raptor head, wings, and forequarters combined with a powerful feline body."
+      - "Cold-weather plumage and practical flight gear."
+      - "Aerie, rescue, and watch roles may be shown through bands, packs, or insignia."
+    scale: medium_to_large
+    movement: "Powerful flight, mountain climbing, and controlled dives."
+    communication: "Spoken language, aerial signals, calls, and distant watch signals."
+    social_structure: >-
+      Cliffside aerie communities share watch, rescue, teaching, and messenger duties.
+    cultural_norms:
+      - "Answer calls for rescue."
+      - "Take watch duties seriously."
+      - "Report signs from the Expanse rather than pursuing them alone."
+    standard_behavior: >-
+      Griffins patrol passes, carry messages, rescue stranded travelers, teach
+      young fliers, and watch for unexplained movement north of the peaks.
+    common_abilities:
+      - "Sustained flight"
+      - "Exceptional distant vision"
+      - "Cold and high-altitude endurance"
+    common_story_uses:
+      - "Northern scout"
+      - "Mountain rescuer"
+      - "Curious young hero tempted to investigate the forbidden north"
+
+  - id: unicorn
+    name: "Unicorn"
+    classification: playable_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: true
+    primary_locations: [enchanted_woods]
+    secondary_locations: [mosshome, sunward_fields, the_exchange]
+    danger_level: none
+    rarity: uncommon
+    short_description: >-
+      Magical forest people who tend hidden glades, shifting paths, wounded
+      magic, and the ancient promises remembered by the Enchanted Woods.
+    visual_identity:
+      - "Equine form with a single magical horn and an expressive, youthful face."
+      - "Natural color and marking variation; magic may appear as subtle light, plants, or path-like motifs."
+      - "Adornment favors living flowers, woven leaves, and keepsakes tied to promises."
+    scale: medium_to_large
+    movement: "Fast ground travel through forest paths and open meadows."
+    communication: "Spoken language, posture, horn magic, and changes in nearby plant life."
+    social_structure: >-
+      Small glade communities linked by magical paths and shared obligations to the forest.
+    cultural_norms:
+      - "Repair damaged magic and broken trust."
+      - "Take promises seriously."
+      - "Guide lost travelers who have treated the forest kindly."
+    standard_behavior: >-
+      Unicorns inspect changes in paths and glades, help restore damaged places,
+      mediate promises, and investigate disturbances the forest appears to remember.
+    common_abilities:
+      - "Sensitivity to magic and broken promises"
+      - "Healing or restorative magic"
+      - "Finding and opening hidden forest paths"
+    common_story_uses:
+      - "Magical guide"
+      - "Restorer of a damaged place"
+      - "Impulsive young hero who is too confident in reading the truth"
+    canon_constraints:
+      - "Unicorns are not universally calm, elegant, wise, or correct."
+
+  - id: kitsune
+    name: "Kitsune"
+    classification: playable_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: true
+    primary_locations: [sky_islands]
+    secondary_locations: [the_exchange, enchanted_woods, frostfang_peaks]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: >-
+      Fox-like people of the drifting Sky Islands who use wind, stories,
+      navigation, and illusion to connect moving communities.
+    visual_identity:
+      - "Fox-like form with expressive ears, tail or tails, and light travel clothing."
+      - "Wind, cloud, star, and temple motifs."
+      - "Young kitsune generally have one tail; additional tails signify magical maturity and self-understanding."
+    scale: small_to_medium
+    movement: "Agile ground movement, island-to-island travel using established conveyances, and wind-assisted magic."
+    communication: "Spoken language, stories, wind signals, lanterns, and controlled illusion."
+    social_structure: >-
+      Temple-like villages on drifting islands maintain long-distance relationships
+      through recurring wind routes.
+    cultural_norms:
+      - "Describe destinations by when they can be reached, not only where they are."
+      - "Use cleverness to reveal choices rather than simply fooling others."
+      - "Preserve stories that help communities recognize recurring routes."
+    standard_behavior: >-
+      Kitsune chart wind patterns, maintain island stabilizing sites, carry
+      stories between islands, prepare for storms, and use illusions for teaching,
+      communication, protection, and play.
+    common_abilities:
+      - "Illusion"
+      - "Wind sensitivity"
+      - "Agility and indirect problem-solving"
+    common_story_uses:
+      - "Wind navigator"
+      - "Messenger carrying incomplete or symbolic information"
+      - "Hero whose clever solution creates an unexpected consequence"
+    canon_constraints:
+      - "Do not portray every kitsune as dishonest or mischievous."
+
+  # ---------------------------------------------------------------------------
+  # SUPPORTING PEOPLES AND CULTURAL ORDERS
+  # ---------------------------------------------------------------------------
+
+  - id: centaur
+    name: "Centaur"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [the_plains]
+    secondary_locations: [eastern_plains, sunward_fields, the_exchange, stone_crossing]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: "Traveling plains people who guide caravans and preserve the realm's oldest overland routes."
+    visual_identity:
+      - "Humanoid upper body and equine lower body."
+      - "Travel gear, route maps, messenger packs, and caravan colors."
+    scale: large
+    movement: "Fast, enduring ground travel."
+    communication: "Spoken language, trail signs, bells, and caravan signals."
+    social_structure: "Traveling bands, route-keeping families, and seasonal gatherings."
+    standard_behavior: >-
+      Centaurs guide travelers, carry news, maintain camps and road markers, and
+      redirect caravans when weather or magic changes familiar routes.
+    common_abilities: ["Endurance", "Navigation", "Caravan coordination"]
+    common_story_uses: ["Guide", "Courier", "Witness to trouble along the roads"]
+
+  - id: faun
+    name: "Faun"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [sunward_fields]
+    secondary_locations: [the_plains, the_exchange, enchanted_woods]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: "Hooved farming people associated with orchards, music, communal work, and seasonal celebrations."
+    visual_identity:
+      - "Humanoid form with goat-like legs, ears, and variable horns."
+      - "Practical farm clothing, tools, instruments, and sun motifs."
+    scale: medium
+    movement: "Sure-footed ground travel and agile jumping."
+    communication: "Spoken language, music, work songs, and field signals."
+    social_structure: "Farm households, village cooperatives, and seasonal work groups."
+    standard_behavior: >-
+      Fauns plant, harvest, repair irrigation and fences, organize shared meals,
+      and use music to coordinate work and celebrate seasonal changes.
+    common_abilities: ["Farming", "Music", "Agility"]
+    common_story_uses: ["Farmer", "Festival organizer", "Neighbor facing a practical local problem"]
+
+  - id: harvest_sprite
+    name: "Harvest Sprite"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: semi_sapient
+    playable: false
+    primary_locations: [sunward_fields]
+    secondary_locations: [enchanted_woods, the_plains]
+    danger_level: none
+    rarity: common_but_easily_missed
+    short_description: "Tiny field spirits who tend overlooked plants and reward careful stewardship."
+    visual_identity:
+      - "Tiny luminous or plant-like figures."
+      - "Features and colors change with crop and season."
+    scale: tiny
+    movement: "Quick hopping, fluttering, or darting movement through vegetation."
+    communication: "Simple speech, chimes, gestures, arranged seeds, and plant growth."
+    social_structure: "Small cooperative groups centered on particular fields or orchards."
+    standard_behavior: >-
+      Harvest sprites tend unharvested patches, recover dropped seeds, hide from
+      careless workers, and assist communities that leave food and habitat for
+      small creatures.
+    common_abilities: ["Plant tending", "Concealment", "Minor growth magic"]
+    common_story_uses: ["Environmental clue", "Tiny helper", "Indicator of a field's health"]
+
+  - id: frogfolk
+    name: "Frogfolk"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [whispering_marsh]
+    secondary_locations: [great_river, the_exchange]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: "Amphibious marsh people who maintain safe channels, reed settlements, and mist markers."
+    visual_identity:
+      - "Amphibious humanoid form with broad eyes and varied frog-like colors."
+      - "Reed-woven clothing, floating packs, pole boats, and mist lanterns."
+    scale: small_to_medium
+    movement: "Swimming, powerful jumping, and careful movement over mud and reeds."
+    communication: "Spoken language, rhythmic calls, water taps, and lantern signals."
+    social_structure: "Stilt and reed settlements connected by marked water routes."
+    standard_behavior: >-
+      Frogfolk mark safe channels, monitor water levels, collect useful marsh
+      plants, guide respectful travelers, and close routes when the whispers grow dangerous.
+    common_abilities: ["Swimming", "Jumping", "Marsh navigation"]
+    common_story_uses: ["Marsh guide", "Boat keeper", "First witness to a changed waterway"]
+
+  - id: boggart
+    name: "Boggart"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [whispering_marsh]
+    secondary_locations: [enchanted_woods, the_exchange]
+    danger_level: low
+    rarity: uncommon
+    short_description: "Small marsh-dwelling people who collect lost objects, secrets, and unusual sounds."
+    visual_identity:
+      - "Small, wiry silhouettes with marsh-colored skin, fur, or plant-like coverings."
+      - "Collections of buttons, keys, shells, bells, and other found objects."
+    scale: small
+    movement: "Quick movement through roots, reeds, shallow water, and hidden burrows."
+    communication: "Spoken language, imitation, whistles, and traded objects."
+    social_structure: "Solitary homes and small family groups linked by exchange networks."
+    standard_behavior: >-
+      Boggarts collect things the marsh has swallowed, trade information indirectly,
+      avoid large groups, and test whether strangers pay attention before offering help.
+    common_abilities: ["Finding lost objects", "Sound imitation", "Concealment"]
+    common_story_uses: ["Unreliable-looking but truthful witness", "Keeper of a missing object", "Information trader"]
+    canon_constraints:
+      - "Boggarts may be secretive or irritating, but they are not inherently malicious."
+
+  - id: yeti
+    name: "Yeti"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [glacier_of_origins]
+    secondary_locations: [frostfang_peaks]
+    danger_level: none
+    rarity: uncommon
+    short_description: "Patient ice-dwelling people who preserve and interpret memories trapped in the glacier."
+    visual_identity:
+      - "Large fur-covered form adapted to snow and ice."
+      - "Layered cold-weather wraps, memory tokens, ice tools, and carved walking staffs."
+    scale: large
+    movement: "Powerful ground movement over snow, ice, and steep glacial terrain."
+    communication: "Spoken language, low carrying calls, carvings, and tactile memory rituals."
+    social_structure: "Small kin groups and isolated memory-keeping shelters."
+    standard_behavior: >-
+      Yetis inspect the glacier for exposed memories, guide visitors away from
+      unstable ice, preserve old accounts, and deliberate carefully before acting.
+    common_abilities: ["Cold endurance", "Ice travel", "Reading some memories preserved in ice"]
+    common_story_uses: ["Keeper of old knowledge", "Glacier guide", "Interpreter of an incomplete memory"]
+
+  - id: merfolk
+    name: "Merfolk"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [mermaid_cove]
+    secondary_locations: [open_sea, the_exchange, great_river]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: "Aquatic reef people who maintain Mermaid Cove and uphold an ancient alliance with the land."
+    visual_identity:
+      - "Aquatic humanoid form with fish-like tail and broad regional variation."
+      - "Coral, shell, woven kelp, current, and song motifs."
+    scale: medium
+    movement: "Fast, agile swimming; limited land mobility unless aided by established magic or equipment."
+    communication: "Spoken language, underwater song, gesture, and current-borne signals."
+    social_structure: "Reef communities, current patrols, and song circles."
+    standard_behavior: >-
+      Merfolk patrol reefs, rescue swimmers, repair coral, exchange news with
+      selkies, and participate in songs that help prevent the whirlpool from widening.
+    common_abilities: ["Underwater breathing", "Swimming", "Current and song magic"]
+    common_story_uses: ["Reef guardian", "Keeper of an old treaty", "Messenger warning of a changed current"]
+
+  - id: selkie
+    name: "Selkie"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [mermaid_cove]
+    secondary_locations: [open_sea, the_exchange]
+    danger_level: none
+    rarity: uncommon
+    short_description: "Seal-shifting coastal people who move easily between sea communities and the land."
+    visual_identity:
+      - "Seal form and land-going form connected by a personally significant seal coat."
+      - "Travel-worn coastal clothing, waterproof satchels, and navigation keepsakes."
+    scale: medium
+    movement: "Powerful swimming and capable ground travel while in an appropriate form."
+    communication: "Spoken language, seal calls, gesture, and coastal marker signs."
+    social_structure: "Mobile families and small coastal gathering groups."
+    standard_behavior: >-
+      Selkies carry messages and small goods between sea and land, observe
+      coastal changes, assist stranded travelers, and carefully guard their coats.
+    common_abilities: ["Shapechanging", "Swimming", "Coastal navigation"]
+    common_story_uses: ["Sea-land courier", "Guide along the coast", "Witness connecting two communities"]
+    canon_constraints:
+      - "A selkie's coat is part of their autonomy and must not be treated casually."
+
+  - id: stone_troll
+    name: "Stone Troll"
+    classification: supporting_people
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [stone_crossing, skullwater_cave]
+    secondary_locations: [great_river, eastern_plains]
+    danger_level: none
+    rarity: uncommon
+    short_description: "Massive stone-skinned people known for patient judgment, masonry, bridgekeeping, and gateway stewardship."
+    visual_identity:
+      - "Large humanoid form with stone-like skin, lichen, cracks, and mineral variation."
+      - "Masonry tools, bridge markers, carved tokens, and practical work gear."
+    scale: very_large
+    movement: "Slow, powerful ground movement and excellent stability in strong currents."
+    communication: "Spoken language, carved marks, drumlike stone taps, and formal toll questions."
+    social_structure: "Small families and work groups assigned to crossings, bridges, and cave entrances."
+    standard_behavior: >-
+      Stone trolls inspect bridges, repair stonework, monitor river currents and
+      cave movement, and request stories, riddles, assistance, or promises as tolls.
+    common_abilities: ["Great strength", "Stoneworking", "Resistance to impact and current"]
+    common_story_uses: ["Bridgekeeper", "Patient judge", "Guardian who requires a non-monetary toll"]
+    canon_constraints:
+      - "Stone trolls are not default enemies and do not habitually eat travelers."
+
+  - id: witch_order
+    name: "Witches"
+    classification: cultural_order
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [whispering_marsh]
+    secondary_locations: [enchanted_woods, the_exchange, sunward_fields]
+    danger_level: none
+    rarity: uncommon
+    short_description: "A cross-species magical tradition rather than a separate people."
+    visual_identity:
+      - "No required body type; a witch may belong to any sapient people."
+      - "Personal tools, ingredients, notebooks, charms, and practical clothing reflect individual practice."
+    scale: variable
+    movement: "Determined by the witch's people and individual magic."
+    communication: "Ordinary language, written practice, ritual, signs, and magical methods."
+    social_structure: "Mentors, apprentices, solitary practitioners, and loose correspondence networks."
+    standard_behavior: >-
+      Witches study specific forms of magic, trade remedies and information,
+      investigate supernatural disruptions, and disagree frequently about responsible practice.
+    common_abilities: ["Learned magic", "Ritual", "Potion and charm making", "Specialized lore"]
+    common_story_uses: ["Expert with incomplete knowledge", "Mentor", "Rival practitioner", "Cause or solver of a magical problem"]
+    canon_constraints:
+      - "Witch is a learned role, not a species, gender, or moral alignment."
+
+  # ---------------------------------------------------------------------------
+  # LEGENDARY BEASTS
+  # ---------------------------------------------------------------------------
+
+  - id: legend_dragon
+    name: "Legend Dragon"
+    classification: legendary_beast
+    canon_status: confirmed
+    sapience: sapient
+    playable: false
+    primary_locations: [mount_redsky]
+    secondary_locations: []
+    danger_level: legendary
+    rarity: extremely_rare
+    short_description: >-
+      An ancient, solitary dragon powerful enough to claim territory on or
+      beneath Mount RedSky.
+    visual_identity:
+      - "Enormous dragon silhouette visibly shaped by age and volcanic surroundings."
+      - "Individual design should be unique; legend dragons are characters, not interchangeable enemies."
+      - "Scales may show heat, ash, mineral, or gemstone effects without becoming part of the mountain itself."
+    scale: colossal
+    movement: "Varies by individual; may include flight, climbing, tunneling, or movement through volcanic chambers."
+    communication: "Fully sapient speech, symbolism, territorial signs, and displays of power."
+    social_structure: "Solitary. No legend-dragon settlement or civilization is established on Mount RedSky."
+    standard_behavior: >-
+      A legend dragon guards a claimed lair or purpose, monitors intrusions, and
+      may warn, test, bargain with, drive away, or attack trespassers depending
+      on the individual and circumstances.
+    common_abilities:
+      - "Overwhelming physical power"
+      - "Ancient knowledge"
+      - "Individual elemental or magical abilities"
+    common_story_uses:
+      - "Legendary guardian"
+      - "Dangerous source of ancient knowledge"
+      - "Powerful individual whose goals are not immediately understood"
+    canon_constraints:
+      - "Legend dragons are not the rulers or parents of dragonling society."
+      - "No specific legend dragon has yet been named or designed."
+      - "Do not assume a legend dragon is evil, friendly, asleep, or responsible for the volcano without story-specific canon."
+
+  # ---------------------------------------------------------------------------
+  # AMBIENT CREATURES
+  # ---------------------------------------------------------------------------
+
+  - id: embermoth
+    name: "Embermoth"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [red_sky_foothills]
+    secondary_locations: [mount_redsky]
+    danger_level: low
+    rarity: common_in_homeland
+    short_description: "Warm-bodied moth with smoky wings and ember-like markings."
+    visual_identity:
+      - "Broad dark wings edged with orange-red light."
+      - "Soft glow rather than open flame."
+      - "Small groups resemble drifting sparks."
+    scale: tiny_to_small
+    movement: "Fluttering flight, usually in warm updrafts."
+    communication: "Scent, wing vibration, and pulsing light."
+    social_structure: "Loose swarms around heat vents and newly exposed crystal."
+    diet_or_sustenance: "Mineral-rich dust, ash flowers, and heat-loving lichens."
+    standard_behavior: >-
+      Embermoths gather near warm cracks before noticeable volcanic changes.
+      They avoid loud movement and are harmless unless a large frightened swarm
+      obscures vision.
+    ecological_role: "Pollinator and early natural indicator of volcanic activity."
+    common_story_uses: ["Environmental clue", "Atmospheric artwork", "Warning that the mountain is changing"]
+
+  - id: mosshorn
+    name: "Mosshorn"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [enchanted_woods]
+    secondary_locations: [mosshome]
+    danger_level: none
+    rarity: uncommon
+    short_description: "Gentle deer-like forest animal whose antlers support living moss, ferns, and flowers."
+    visual_identity:
+      - "Deer-like body with antlers shaped like small living branches."
+      - "Moss and seasonal plants grow naturally across the antlers and shoulders."
+      - "Healthy individuals blend into the forest without disappearing completely."
+    scale: medium
+    movement: "Quiet walking and swift bounding through stable forest paths."
+    communication: "Posture, soft calls, and changes in antler plants."
+    social_structure: "Small family groups."
+    diet_or_sustenance: "Leaves, fruit, fungi, and magical forest growth."
+    standard_behavior: >-
+      Mosshorns avoid conflict, follow healthy paths, and leave areas where the
+      forest's magic has become damaged. They sometimes approach calm caretakers.
+    ecological_role: "Seed carrier and visible indicator of forest health."
+    common_story_uses: ["Guide toward a safe path", "Sign of ecological trouble", "Peaceful background creature"]
+
+  - id: jackalope
+    name: "Jackalope"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [the_plains]
+    secondary_locations: [sunward_fields, eastern_plains]
+    danger_level: none
+    rarity: common
+    short_description: "Fast rabbit-like plains animal with small branching antlers."
+    visual_identity:
+      - "Rabbit body, long ears, and delicate antlers."
+      - "Coat colors reflect grasses, soil, and local crops."
+      - "Young jackalopes have soft antler buds."
+    scale: small
+    movement: "Rapid zigzag running, bounding, and burrowing."
+    communication: "Foot thumps, ear position, and short calls."
+    social_structure: "Loose warrens and feeding groups."
+    diet_or_sustenance: "Grass, grain, roots, and fallen fruit."
+    standard_behavior: >-
+      Jackalopes flee from danger, investigate unattended food, and gather near
+      well-maintained roads where predators are easier to spot.
+    ecological_role: "Common prey animal, seed spreader, and familiar plains wildlife."
+    common_story_uses: ["Background life", "Harmless chase", "Clue that a nearby predator has disturbed a warren"]
+
+  - id: cloud_whale
+    name: "Cloud Whale"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: semi_sapient
+    playable: false
+    primary_locations: [sky_islands]
+    secondary_locations: [open_sea]
+    danger_level: low
+    rarity: rare
+    short_description: "Enormous gentle sky-swimmer that follows the same high wind currents as the drifting islands."
+    visual_identity:
+      - "Whale-like form adapted to the sky, with broad fins and cloud-soft edges."
+      - "Subtle star, rain, or wind markings."
+      - "Large enough to pass beside a small Sky Island."
+    scale: colossal
+    movement: "Slow swimming motion through open air and cloud banks."
+    communication: "Deep songs carried over great distances."
+    social_structure: "Solitary travelers and small migrating pods."
+    diet_or_sustenance: "Airborne magical particles, cloud plankton, and storm energy."
+    standard_behavior: >-
+      Cloud whales follow predictable seasonal currents, sing near storms, avoid
+      settlements, and occasionally shelter smaller fliers in their wake.
+    ecological_role: "Long-range storm indicator and living landmark for Sky Island navigation."
+    common_story_uses: ["Majestic background creature", "Navigation clue", "Rescue or migration story"]
+    canon_constraints:
+      - "Cloud whales are not mounts, pets, or ordinary combat opponents."
+
+  - id: snowhorn_goat
+    name: "Snowhorn Goat"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [frostfang_peaks]
+    secondary_locations: [glacier_of_origins]
+    danger_level: low
+    rarity: common_in_homeland
+    short_description: "Sure-footed mountain goat with translucent ice-colored horns."
+    visual_identity:
+      - "Dense pale coat and glassy blue-white horns."
+      - "Compact, powerful legs and oversized climbing hooves."
+    scale: medium
+    movement: "Exceptional climbing, leaping, and balance on narrow ice and rock."
+    communication: "Calls, hoof taps, and horn contact."
+    social_structure: "Small herds led by experienced pathfinders."
+    diet_or_sustenance: "Mountain grass, lichen, and mineral deposits."
+    standard_behavior: >-
+      Snowhorn goats follow safe mountain lines, defend young with short charges,
+      and abandon routes before avalanches or ice breaks.
+    ecological_role: "Mountain grazer and natural indicator of safe or unstable paths."
+    common_story_uses: ["Trail clue", "Rescue target", "Peaceful mountain scene"]
+
+  - id: silver_otter
+    name: "Silver Otter"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [great_river]
+    secondary_locations: [stone_crossing, mermaid_cove]
+    danger_level: none
+    rarity: common
+    short_description: "Playful river otter with water-shedding silver-blue fur."
+    visual_identity:
+      - "Sleek otter form with silver or blue highlights."
+      - "Often carries a favorite polished stone or shell."
+    scale: small
+    movement: "Fast swimming, diving, sliding, and agile riverbank movement."
+    communication: "Chirps, splashes, posture, and object exchange."
+    social_structure: "Family groups along calm banks and protected channels."
+    diet_or_sustenance: "Fish, shellfish, river insects, and aquatic plants."
+    standard_behavior: >-
+      Silver otters play in safe currents, collect polished objects, avoid
+      polluted or magically disturbed water, and sometimes return dropped items.
+    ecological_role: "Indicator of healthy river water and familiar riverside wildlife."
+    common_story_uses: ["River health clue", "Lighthearted interaction", "Finder of a small lost object"]
+
+  - id: reefglider
+    name: "Reefglider"
+    classification: ambient_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [mermaid_cove]
+    secondary_locations: [open_sea]
+    danger_level: none
+    rarity: common_in_homeland
+    short_description: "Bright manta-like reef animal that glides through warm currents in coordinated groups."
+    visual_identity:
+      - "Broad ray-like body with colorful coral patterns."
+      - "Trailing luminous fins used for group signaling."
+    scale: medium
+    movement: "Graceful underwater gliding and short leaps above the surface."
+    communication: "Color pulses, fin position, and synchronized movement."
+    social_structure: "Large coordinated schools."
+    diet_or_sustenance: "Plankton and tiny magical organisms around healthy coral."
+    standard_behavior: >-
+      Reefgliders circle healthy reefs, avoid violent currents, and gather near
+      merfolk song circles. A sudden mass departure signals danger or reef damage.
+    ecological_role: "Reef grazer and visible indicator of current and coral health."
+    common_story_uses: ["Underwater atmosphere", "Current warning", "Guide toward healthy coral"]
+
+  # ---------------------------------------------------------------------------
+  # DANGEROUS CREATURES AND MANIFESTATIONS
+  # ---------------------------------------------------------------------------
+
+  - id: glassback_crab
+    name: "Glassback Crab"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [red_sky_foothills]
+    secondary_locations: [mount_redsky]
+    danger_level: moderate
+    rarity: uncommon
+    short_description: "Large territorial crab-like burrower with a translucent mineral shell."
+    visual_identity:
+      - "Broad crab body with a crystal-like shell that refracts nearby color."
+      - "Heavy digging claws and heat-darkened legs."
+    scale: medium_to_large
+    movement: "Sideways scuttling, sudden charges, and rapid digging through loose volcanic soil."
+    communication: "Claw clicks, ground vibration, and flashes through the shell."
+    social_structure: "Usually solitary except during brief nesting periods."
+    diet_or_sustenance: "Minerals, heat-loving roots, and small burrowing creatures."
+    standard_behavior: >-
+      Glassback crabs defend warm burrows and exposed mineral deposits. They
+      threaten before charging and usually stop pursuing once an intruder leaves.
+    encounter_options: ["Retreat from its territory", "Distract it with mineral-rich stone", "Locate and avoid the burrow", "Fight defensively"]
+    common_story_uses: ["Cave obstacle", "Mistaken gemstone formation", "Sign of a newly warmed tunnel"]
+
+  - id: cinder_wolf
+    name: "Cinder Wolf"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [red_sky_foothills]
+    secondary_locations: [the_plains]
+    danger_level: moderate
+    rarity: uncommon
+    short_description: "Lean pack predator with ash-dark fur and heat glowing faintly beneath its coat."
+    visual_identity:
+      - "Wolf-like form with charcoal fur, ember-colored eyes, and faint cracks of warm light."
+      - "Heat effect remains subtle unless frightened or attacking."
+    scale: medium
+    movement: "Fast ground pursuit, coordinated pack movement, and excellent travel over warm rock."
+    communication: "Howls, posture, scent, and low heat pulses visible to the pack."
+    social_structure: "Small family packs."
+    diet_or_sustenance: "Ordinary prey supplemented by heat and mineral salts."
+    standard_behavior: >-
+      Cinder wolves avoid settled areas when prey is plentiful. Tremors, eruptions,
+      injury, or loss of habitat can drive packs toward roads and settlements.
+    encounter_options: ["Provide an escape route", "Distract with food or scent", "Protect livestock without cornering the pack", "Fight if attacked"]
+    common_story_uses: ["Displaced predator", "Night pursuit", "Evidence of volcanic disruption"]
+    canon_constraints:
+      - "Cinder wolves are animals, not servants of an evil force by default."
+
+  - id: mire_mimic
+    name: "Mire Mimic"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [whispering_marsh]
+    secondary_locations: []
+    danger_level: moderate
+    rarity: uncommon
+    short_description: "Patient marsh predator that resembles a safe patch of ground, log, or abandoned boat."
+    visual_identity:
+      - "Low mud-and-root body capable of flattening into familiar marsh shapes."
+      - "Small eye clusters and reed-like sensory whiskers are visible when alert."
+    scale: medium_to_large
+    movement: "Very slow stalking followed by a sudden lunge or suction-like pull."
+    communication: "Vibration, water ripples, and crude imitation of nearby sounds."
+    social_structure: "Solitary."
+    diet_or_sustenance: "Fish, marsh animals, and magical residue trapped in mud."
+    standard_behavior: >-
+      Mire mimics remain motionless beside frequently used paths, retreat from
+      fire and strong vibration, and abandon hunting sites repeatedly marked by frogfolk.
+    encounter_options: ["Recognize subtle visual clues", "Probe the path from a distance", "Drive it away with vibration", "Rescue a trapped creature"]
+    common_story_uses: ["Navigation hazard", "Rescue encounter", "Reason a familiar route has been closed"]
+
+  - id: will_o_wisp
+    name: "Will-o'-Wisp"
+    classification: supernatural_manifestation
+    canon_status: newly_defined
+    sapience: variable
+    playable: false
+    primary_locations: [whispering_marsh]
+    secondary_locations: [enchanted_woods]
+    danger_level: moderate
+    rarity: uncommon
+    short_description: "A floating light formed when a strong memory becomes tangled in marsh magic."
+    visual_identity:
+      - "Small floating light with a shifting center that may briefly suggest a face, object, or scene."
+      - "Color and motion reflect the memory that formed it."
+    scale: tiny
+    movement: "Silent floating, darting, circling, and deliberate leading."
+    communication: "Repeated words, borrowed voices, images, and emotional impressions."
+    social_structure: "No stable society; may gather where memories overlap."
+    diet_or_sustenance: "Sustained by attention, repeated memory, and marsh magic."
+    standard_behavior: >-
+      Some wisps repeat a memory harmlessly. Others lure travelers toward the
+      place connected to that memory, even when the route is unsafe. A wisp does
+      not necessarily understand the danger it creates.
+    encounter_options: ["Identify the repeated memory", "Refuse to follow blindly", "Resolve or release the memory", "Use protective marsh guidance"]
+    common_story_uses: ["Misdirection", "Emotional clue", "Fragment of an older event"]
+    canon_constraints:
+      - "A will-o'-wisp is not automatically the ghost of a dead person."
+
+  - id: frost_wyrm
+    name: "Frost Wyrm"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [frostfang_peaks]
+    secondary_locations: [glacier_of_origins]
+    danger_level: high
+    rarity: rare
+    short_description: "Large serpentine ice predator that burrows through deep snow and fractured glacier ice."
+    visual_identity:
+      - "Long low body, digging forelimbs, ice-ridged scales, and a wedge-shaped head."
+      - "Frost breath appears as defensive freezing mist rather than dragon-like fire."
+    scale: large
+    movement: "Snow burrowing, ice climbing, and short explosive lunges."
+    communication: "Subsonic rumbles, ice scraping, and scent."
+    social_structure: "Solitary adults; young may remain near a nesting tunnel."
+    diet_or_sustenance: "Mountain animals and magical cold stored in deep ice."
+    standard_behavior: >-
+      Frost wyrms avoid griffin aeries but defend nesting tunnels aggressively.
+      Unusual warmth or glacial cracking can force them onto established paths.
+    encounter_options: ["Detect its tunnel", "Avoid the nest", "Redirect it toward colder terrain", "Escape by air or stable rock", "Fight only with preparation"]
+    common_story_uses: ["Mountain chase", "Blocked pass", "Sign that the glacier is warming or shifting"]
+
+  - id: river_drake
+    name: "River Drake"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: semi_sapient
+    playable: false
+    primary_locations: [great_river]
+    secondary_locations: [stone_crossing]
+    danger_level: moderate
+    rarity: uncommon
+    short_description: "Long-bodied freshwater drake that claims deep pools, bridge shadows, and narrow currents."
+    visual_identity:
+      - "Sleek amphibious dragon-like body with fins, short limbs, and river-stone coloring."
+      - "Smaller and less powerful than a legendary dragon."
+    scale: large
+    movement: "Fast swimming, riverbank scrambling, and short lunges from water."
+    communication: "Water slaps, growls, posture, and simple object placement."
+    social_structure: "Usually solitary with a defined stretch of river."
+    diet_or_sustenance: "Fish, shellfish, and magical residue carried from the glacier."
+    standard_behavior: >-
+      River drakes defend deep water and favorite resting shelves. They may block
+      boats or demand dropped food but can learn routines and recognize familiar keepers.
+    encounter_options: ["Wait for it to move", "Offer food away from the crossing", "Use a route known to stone trolls", "Calm or redirect it", "Fight if cornered"]
+    common_story_uses: ["Bridge complication", "River rescue", "Creature displaced by changed currents"]
+
+  - id: bone_crawler
+    name: "Bone Crawler"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [bone_yard]
+    secondary_locations: []
+    danger_level: moderate
+    rarity: uncommon
+    short_description: "Pale scavenger that constructs protective shells from loose fossil fragments."
+    visual_identity:
+      - "Low many-legged body mostly hidden beneath an irregular shell of old bone."
+      - "Bone shell should look assembled, not like an animated skeleton."
+    scale: small_to_medium
+    movement: "Scuttling, burrowing, and sudden rolling beneath a closed shell."
+    communication: "Shell rattles, scent, and ground tapping."
+    social_structure: "Loose feeding groups without coordinated society."
+    diet_or_sustenance: "Fungi, mineral residue, and organic matter beneath old remains."
+    standard_behavior: >-
+      Bone crawlers hide from large creatures, defend feeding sites, and swarm
+      objects carrying fresh magical energy. They do not intentionally animate bones.
+    ecological_role: "Scavenger that helps keep the Bone Yard from accumulating ordinary decay."
+    encounter_options: ["Remain still until they pass", "Remove or conceal fresh magic", "Create a harmless alternate food source", "Defend against a swarm"]
+    common_story_uses: ["Bone Yard atmosphere", "Swarm obstacle", "Indicator that new magical energy entered the island"]
+
+  - id: echo_hunter
+    name: "Echo Hunter"
+    classification: dangerous_creature
+    canon_status: newly_defined
+    sapience: animal
+    playable: false
+    primary_locations: [skullwater_cave]
+    secondary_locations: []
+    danger_level: high
+    rarity: rare
+    short_description: "Blind underground predator that maps tunnels and tracks movement through sound."
+    visual_identity:
+      - "Pale low-slung body, no functional eyes, broad listening frills, and long gripping limbs."
+      - "Designed for darkness without gore or grotesque human features."
+    scale: large
+    movement: "Wall climbing, ceiling clinging, and sudden movement toward sharp sound."
+    communication: "Clicks, returned echoes, and vibrations through stone."
+    social_structure: "Solitary territorial hunters."
+    diet_or_sustenance: "Underground animals and mineral-rich cave growth."
+    standard_behavior: >-
+      Echo hunters remain still while listening, investigate repeated sounds, and
+      retreat from overwhelming layered noise. They rarely approach the cave mouth
+      unless driven upward by a deeper disturbance.
+    encounter_options: ["Move quietly", "Throw sound away from the group", "Use controlled echoes", "Drive it back with layered noise", "Fight with careful coordination"]
+    common_story_uses: ["Stealth encounter", "Evidence of pressure from deeper underground", "Guardian of an abandoned tunnel"]
+
+  - id: restless_remains
+    name: "Restless Remains"
+    classification: supernatural_manifestation
+    canon_status: newly_defined
+    sapience: variable
+    playable: false
+    primary_locations: [bone_yard]
+    secondary_locations: []
+    danger_level: high
+    rarity: extremely_rare
+    short_description: "Ancient bones temporarily animated when the Bone Yard's rest is seriously disturbed."
+    visual_identity:
+      - "Movement assembled from existing enormous remains rather than a standardized skeleton species."
+      - "Magic should appear as current, vibration, light, or shadow joining the bones."
+      - "Each manifestation reflects the remains and cause involved."
+    scale: variable
+    movement: "Awkward or powerful movement determined by the animated remains."
+    communication: "Usually none; rare manifestations may repeat fragments of memory."
+    social_structure: "None."
+    standard_behavior: >-
+      The remains stay dormant under normal conditions. When grave magic, theft,
+      a broken promise, or another major disturbance awakens them, they move to
+      remove, reclaim, expose, or stop the cause.
+    encounter_options: ["Identify and reverse the disturbance", "Return a stolen object", "Complete an interrupted rite", "Escape", "Defend while another hero resolves the cause"]
+    common_story_uses: ["Proof that something is deeply wrong", "Major set piece", "Mystery with a non-combat solution"]
+    canon_constraints:
+      - "The Bone Yard is not routinely full of wandering undead."
+      - "Restless remains must have a specific story cause."
+
+open_canon_slots:
+  - id: expanse_inhabitants
+    canon_status: intentionally_undefined
+    location: the_expanse
+    known_facts:
+      - "No confirmed resident people or creature species."
+      - "Griffins watch the northern horizon for unexplained signs."
+      - "Even experienced travelers do not claim reliable knowledge of what lies beyond."
+    do_not_define_without_request:
+      - "Whether the Expanse is truly lifeless"
+      - "What caused its condition"
+      - "Whether observed shapes, lights, or tracks belong to creatures"
+
+  - id: whirlpool_entity
+    canon_status: intentionally_undefined
+    location: the_whirlpool
+    known_facts:
+      - "Merfolk songs help prevent the whirlpool from widening."
+      - "An ancient alliance connects Mermaid Cove with peoples on land."
+    do_not_define_without_request:
+      - "Whether a creature is imprisoned beneath it"
+      - "The creature's species, appearance, motive, or name"
+      - "The exact terms of the ancient alliance"
+
+  - id: skullwater_deep_peoples
+    canon_status: intentionally_undefined
+    location: skullwater_cave
+    known_facts:
+      - "Skullwater Cave opens into a much larger underground world."
+      - "Surface and underground peoples once traded."
+      - "Stone trolls maintain or watch parts of the entrance."
+    do_not_define_without_request:
+      - "Which sapient peoples live below"
+      - "Why regular surface contact ended"
+      - "What is pushing rare predators toward the entrance"
+
+  - id: bone_yard_caretakers
+    canon_status: intentionally_undefined
+    location: bone_yard
+    known_facts:
+      - "There is no ordinary permanent settlement."
+      - "The remains normally stay at rest."
+    do_not_define_without_request:
+      - "Whether formal gravekeepers exist"
+      - "Which people perform funerary visits or rites"
+      - "Who, if anyone, claims authority over the island"
+
+  - id: additional_mount_redsky_legendary_beasts
+    canon_status: intentionally_undefined
+    location: mount_redsky
+    known_facts:
+      - "Rare solitary legendary beasts may survive there."
+      - "Legend dragons are one confirmed possibility."
+    do_not_define_without_request:
+      - "A full species roster"
+      - "Permanent communities or a governing civilization"
+      - "A direct biological relationship to dragonlings"
+
+world_phenomena:
+  - id: living_gem_veins
+    locations: [mount_redsky, red_sky_foothills]
+    canon_status: confirmed
+    description: >-
+      Mount RedSky's eruptions create valuable gemstones. Dragonlings interpret
+      changes in gemstone color and pattern as one way the mountain communicates.
+    behavior: >-
+      Gathering cooled gemstones released naturally is accepted. Cutting deeply
+      into active or living veins can disturb the mountain.
+
+  - id: forest_memory
+    locations: [enchanted_woods, mosshome]
+    canon_status: confirmed
+    description: "The Enchanted Woods remembers how visitors treat it."
+    behavior: >-
+      Helpful travelers may find safer or shorter paths. Destructive travelers
+      may find paths returning them to the harm they caused.
+
+  - id: marsh_memories
+    locations: [whispering_marsh]
+    canon_status: confirmed
+    description: "Memories carried by water and magic collect in the marsh mist."
+    behavior: >-
+      Whispers may repeat warnings, secrets, ordinary moments, or emotionally
+      important fragments. A voice in the marsh does not prove its speaker is dead.
+
+  - id: glacial_memory
+    locations: [glacier_of_origins]
+    canon_status: confirmed
+    description: "Ancient memories remain preserved within the deepest glacier ice."
+    behavior: "Some yetis can interpret exposed fragments, but no memory is guaranteed to be complete or objective."
+
+  - id: river_memory
+    locations: [great_river]
+    canon_status: confirmed
+    description: "The Great River carries faint fragments of memory south from the Glacier of Origins."
+    behavior: "Fragments may influence dreams, impressions, magic, or marsh whispers without providing a complete historical record."
+
+  - id: merfolk_containment_song
+    locations: [mermaid_cove, the_whirlpool]
+    canon_status: confirmed
+    description: "Merfolk songs help keep the great whirlpool from widening."
+    behavior: "The song is a maintained practice connected to an ancient alliance, not a single permanent spell."
+
+regional_population_index:
+  sky_islands:
+    primary_people: [kitsune]
+    supporting_people: []
+    ambient_creatures: [cloud_whale]
+    dangerous_creatures: []
+    unresolved: []
+
+  enchanted_woods:
+    primary_people: [unicorn]
+    supporting_people: [bigfoot, harvest_sprite]
+    ambient_creatures: [mosshorn]
+    dangerous_creatures: [will_o_wisp]
+    unresolved: []
+
+  mosshome:
+    primary_people: [bigfoot]
+    supporting_people: []
+    ambient_creatures: [mosshorn]
+    dangerous_creatures: []
+    unresolved: []
+
+  whispering_marsh:
+    primary_people: [frogfolk, boggart]
+    supporting_people: [witch_order]
+    ambient_creatures: []
+    dangerous_creatures: [mire_mimic, will_o_wisp]
+    unresolved: []
+
+  the_expanse:
+    primary_people: []
+    supporting_people: []
+    ambient_creatures: []
+    dangerous_creatures: []
+    unresolved: [expanse_inhabitants]
+
+  mount_redsky:
+    primary_people: []
+    supporting_people: []
+    ambient_creatures: [embermoth]
+    dangerous_creatures: [glassback_crab]
+    legendary_beasts: [legend_dragon]
+    unresolved: [additional_mount_redsky_legendary_beasts]
+
+  red_sky_foothills:
+    primary_people: [dragonling]
+    supporting_people: []
+    ambient_creatures: [embermoth]
+    dangerous_creatures: [glassback_crab, cinder_wolf]
+    unresolved: []
+
+  the_plains:
+    primary_people: [centaur]
+    supporting_people: [manticore]
+    ambient_creatures: [jackalope]
+    dangerous_creatures: [cinder_wolf]
+    unresolved: []
+
+  sunward_fields:
+    primary_people: [faun, harvest_sprite]
+    supporting_people: []
+    ambient_creatures: [jackalope]
+    dangerous_creatures: []
+    unresolved: []
+
+  the_exchange:
+    primary_people: []
+    supporting_people:
+      [dragonling, bigfoot, manticore, griffin, unicorn, kitsune, centaur, faun, frogfolk, merfolk, selkie]
+    ambient_creatures: []
+    dangerous_creatures: []
+    unresolved: []
+    note: "Mixed population; no native or dominant people."
+
+  glacier_of_origins:
+    primary_people: [yeti]
+    supporting_people: [griffin]
+    ambient_creatures: [snowhorn_goat]
+    dangerous_creatures: [frost_wyrm]
+    unresolved: []
+
+  frostfang_peaks:
+    primary_people: [griffin]
+    supporting_people: [yeti]
+    ambient_creatures: [snowhorn_goat]
+    dangerous_creatures: [frost_wyrm]
+    unresolved: []
+
+  eastern_plains:
+    primary_people: [manticore]
+    supporting_people: [centaur, stone_troll]
+    ambient_creatures: [jackalope]
+    dangerous_creatures: []
+    unresolved: []
+
+  stone_crossing:
+    primary_people: [stone_troll]
+    supporting_people: [centaur, manticore]
+    ambient_creatures: [silver_otter]
+    dangerous_creatures: [river_drake]
+    unresolved: []
+
+  bone_yard:
+    primary_people: []
+    supporting_people: []
+    ambient_creatures: []
+    dangerous_creatures: [bone_crawler, restless_remains]
+    unresolved: [bone_yard_caretakers]
+    note: "Restless remains are rare manifestations, not normal wildlife."
+
+  mermaid_cove:
+    primary_people: [merfolk, selkie]
+    supporting_people: []
+    ambient_creatures: [reefglider, silver_otter]
+    dangerous_creatures: []
+    unresolved: [whirlpool_entity]
+
+  skullwater_cave:
+    primary_people: [stone_troll]
+    supporting_people: []
+    ambient_creatures: []
+    dangerous_creatures: [echo_hunter]
+    unresolved: [skullwater_deep_peoples]
+
+  great_river:
+    primary_people: []
+    supporting_people: [frogfolk, stone_troll, merfolk]
+    ambient_creatures: [silver_otter]
+    dangerous_creatures: [river_drake]
+    unresolved: []
+
+current_content_gaps:
+  - "No named individual characters are canon."
+  - "No villainous faction is canon."
+  - "No formal governments or political borders are canon."
+  - "No exact population numbers are canon."
+  - "No exact biological relationship between dragonlings and legend dragons is canon."
+  - "The established player-character artwork remains authoritative for anatomy not specified here."
+  - "The underground world, Expanse, whirlpool entity, and Bone Yard caretakers remain intentionally unresolved."
