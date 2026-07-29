@@ -20,6 +20,7 @@ export function makeCharacter(overrides: Partial<ResolvedCharacter> = {}): Resol
     xp: 0,
     tier: "fledgling",
     stats: { might: 2, quick: 3, clever: 3, heart: 5 },
+    unspentPoints: 0,
     maxHp: 10,
     steps: 4,
     guard: 11,
