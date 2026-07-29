@@ -29,6 +29,7 @@ import { LocalSseChannel } from "./channel/room-channel.ts";
 import { ContentError, loadContent, type ContentStore } from "./content/loader.ts";
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { applyAction } from "./handlers/action.ts";
+import { setPresence } from "./handlers/presence.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom } from "./handlers/room.ts";
@@ -178,6 +179,16 @@ async function main(): Promise<void> {
         ? { householdId: session.householdId, playerId: session.playerId, role: session.role }
         : undefined) ?? (await resolvePrincipal(req, base))?.principal;
 
+    /*
+     * No principal, no action. Binding the token when one is *present* is not
+     * enough: omitting it entirely would fall through to trusting the body's
+     * playerId, and party player IDs are in the room state every client holds.
+     * The check has to be "prove who you are", not "don't lie if you tell me".
+     */
+    if (!principal) {
+      return sendError(res, 401, "FORBIDDEN", "this action needs a room session token");
+    }
+
     const response = await applyAction(
       {
         runId: body.runId,
@@ -239,7 +250,26 @@ async function main(): Promise<void> {
       runId: state.runId,
       state,
     };
-    channel.attach(code, res, { preamble: snapshot, sinceSeq: state.seq });
+    const detach = channel.attach(code, res, { preamble: snapshot, sinceSeq: state.seq });
+
+    /*
+     * The stream is the only evidence of who is still at the table. A phone
+     * that closes its tab or walks out of Wi-Fi never sends anything again, so
+     * without this its party member stays `connected` forever and every
+     * ready-gate waits on a device that is gone (see handlers/presence.ts).
+     *
+     * A display client carries no session and is nobody's presence.
+     */
+    const viewer = await resolveSession(req, base);
+    if (viewer && viewer.runId === room.runId) {
+      const runId = room.runId;
+      const playerId = viewer.playerId;
+      void setPresence({ runId, playerId, connected: true }, base);
+      res.on("close", () => {
+        detach();
+        void setPresence({ runId, playerId, connected: false }, base).catch(() => undefined);
+      });
+    }
   });
 
   // -------------------------------------------------------------------------
@@ -375,7 +405,11 @@ async function resolvePrincipal(
 async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIdentity | null> {
   const header = req.get("authorization") ?? "";
   const match = /^Bearer\s+(.+)$/i.exec(header.trim());
-  const token = match?.[1] ?? (typeof req.body?.sessionToken === "string" ? req.body.sessionToken : "");
+  // `EventSource` cannot set headers, so the SSE stream has nowhere to put its
+  // token but the query string. Everything else uses the header.
+  const query = typeof req.query?.token === "string" ? req.query.token : "";
+  const body = typeof req.body?.sessionToken === "string" ? req.body.sessionToken : "";
+  const token = match?.[1] ?? (query || body);
   if (!token) return null;
   return deps.identity.resolveSession(token);
 }

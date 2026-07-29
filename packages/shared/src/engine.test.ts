@@ -78,7 +78,26 @@ function walk(
   return result;
 }
 
+/**
+ * Two characters, both ready — the state a chapter can actually start from.
+ * The server enforces the readiness the lobby UI shows, so a fixture that
+ * skips it is a fixture that cannot start a chapter.
+ */
 function seatedParty(context = ctx()): RunState {
+  return walk(
+    newRun(),
+    [
+      { playerId: "p_1", intent: CREATE_UNICORN },
+      { playerId: "p_2", intent: CREATE_GRIFFIN },
+      { playerId: "p_1", intent: { type: "READY", ready: true } },
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+    ],
+    context,
+  ).state;
+}
+
+/** Seated but not ready, for the tests that are about seating itself. */
+function seatedPartyNotReady(context = ctx()): RunState {
   return walk(
     newRun(),
     [
@@ -218,7 +237,15 @@ describe("species gating at the prompt (architecture §5)", () => {
   const started = (context: EngineContext, party: { playerId: string; intent: ClientIntent }[]) =>
     walk(
       newRun(),
-      [...party, { playerId: party[0]!.playerId, intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      [
+        ...party,
+        // The server requires the readiness the lobby shows before it starts.
+        ...party.map((seat) => ({
+          playerId: seat.playerId,
+          intent: { type: "READY", ready: true } as ClientIntent,
+        })),
+        { playerId: party[0]!.playerId, intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+      ],
       context,
     ).state;
 
@@ -695,5 +722,54 @@ describe("a late joiner", () => {
     // they have no character, and the server refuses the only thing they can do.
     expect(result.error).toBeUndefined();
     expect(result.state.party.some((m) => m.playerId === "p_3")).toBe(true);
+  });
+
+  it("does not drag the rest of the party off the scene they are playing", () => {
+    const context = ctx();
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } }],
+      context,
+    ).state;
+
+    const result = applyIntent(started, { playerId: "p_3", intent: CREATE_UNICORN }, context);
+
+    // Flipping the run to "creation" would pull every other phone off the
+    // scene while leaving sceneId and the open prompt in place.
+    expect(result.state.phase).toBe(started.phase);
+    expect(result.state.sceneId).toBe(started.sceneId);
+    expect(result.state.prompt).toEqual(started.prompt);
+  });
+});
+
+describe("START_CHAPTER guards", () => {
+  it("refuses to start until everybody is ready", () => {
+    const context = ctx();
+    const result = applyIntent(
+      seatedPartyNotReady(context),
+      { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } },
+      context,
+    );
+    expect(result.error?.code).toBe("ILLEGAL");
+  });
+
+  it("refuses to restart from the middle of a chapter", () => {
+    const context = ctx();
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } }],
+      context,
+    ).state;
+
+    const result = applyIntent(
+      started,
+      { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } },
+      context,
+    );
+
+    // The UI never offers this, but the UI is not the authority: a stale tap
+    // would otherwise reset flags and XP and throw away the evening.
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.state.sceneId).toBe(started.sceneId);
   });
 });

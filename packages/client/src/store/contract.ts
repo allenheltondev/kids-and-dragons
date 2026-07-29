@@ -60,8 +60,16 @@ export interface GameStore {
   loadContent(): Promise<void>;
   createRoom(mode: RoomMode, displayName: string): Promise<ClientSession>;
   joinRoom(code: string, displayName: string): Promise<ClientSession>;
-  /** Fire an intent at the server. Resolves once the server has accepted it. */
-  send(intent: ClientIntent): Promise<void>;
+  /**
+   * Fire an intent at the server. Resolves `true` when the server accepted it
+   * and `false` when it did not — a rejection is a normal part of the protocol
+   * (architecture §4.2), not an exception, so it does not throw.
+   *
+   * Callers that discard work on success have to check: a creation flow that
+   * resets on a resolved promise throws away five screens of a child's choices
+   * the one time the phone was on a bad connection.
+   */
+  send(intent: ClientIntent): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;
@@ -77,7 +85,7 @@ export interface GameStore {
  *   useParty()       — PartyMember[]
  *   usePrompt()      — Prompt | null, already filtered to "is this for me?"
  *   useIsMyPrompt()  — boolean
- *   useSend()        — (intent: ClientIntent) => Promise<void>
+ *   useSend()        — (intent: ClientIntent) => Promise<boolean>
  *   useRules()       — RulesContent | null
  *   useItems()       — ItemCatalog | null
  *   useCampaign()    — Campaign | null
