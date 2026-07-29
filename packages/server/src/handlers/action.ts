@@ -29,6 +29,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { foldChapterXp, persistNewCharacters } from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId" | "role">;
@@ -109,6 +110,22 @@ export async function applyAction(
     // An illegal intent leaves the run exactly where it was. No seq is burned:
     // a rejected tap must not force everyone else to resync.
     return { ok: false, seq: state.seq, error: result.error };
+  }
+
+  /*
+   * Progression, before the diff.
+   *
+   * The engine is pure and cannot reach the store, so this is where a character
+   * created at the table gets written to the household and where a completed
+   * chapter's XP actually becomes a level (progression.ts). It runs here, ahead
+   * of `diff()`, so a re-resolved character rides out on this turn's patch —
+   * afterwards it would persist correctly and show nobody.
+   */
+  if (input.intent.type === "CREATE_CHARACTER") {
+    await persistNewCharacters(result.state, deps, auth.run.householdId);
+  }
+  if (result.presentation?.kind === "CHAPTER_COMPLETE") {
+    await foldChapterXp(result.state, deps, auth.run.householdId);
   }
 
   // A no-op intent (a re-tap, a READY that was already true) writes nothing.

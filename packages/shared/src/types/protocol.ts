@@ -25,6 +25,12 @@ export type ClientIntent =
       /** Points the player assigned, before species bonus. */
       stats: Stats;
       appearance: Appearance;
+      /**
+       * Joining a party already underway (spec §8.4) — 1, or the party's tier
+       * floor. Absent means 1. Validated in `newCharacter()`, never trusted:
+       * it arrives from a phone and decides how strong the character is.
+       */
+      startingLevel?: number;
     }
   | { type: "START_CHAPTER"; chapterId: string }
   | { type: "CHOOSE"; choiceId: string }
