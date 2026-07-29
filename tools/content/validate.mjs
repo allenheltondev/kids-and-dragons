@@ -331,6 +331,21 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
     }
   }
 
+  // spec §8.2 - the ending scene declares whether the chapter succeeded, and a
+  // chapter may have several endings. `outcome` anywhere else is read by nothing:
+  // play carries straight on past that scene, so an author who wrote it there
+  // meant it to halve the award and would silently get the full one.
+  const isEnding = new Set(endings);
+  for (const [id, scene] of Object.entries(scenes)) {
+    if (scene.outcome !== undefined && !isEnding.has(id)) {
+      fail(
+        `/scenes/${id}/outcome`,
+        `outcome "${scene.outcome}" on a scene that is not an ending - the chapter does not stop here, so nothing reads it`,
+        "Only a scene with an empty `choices` array ends the chapter (spec §8.2).",
+      );
+    }
+  }
+
   // --- every itemId exists in the catalog, and is used as the right kind
   const speciesIds = new Set(Object.keys(rules?.species ?? {}));
   const flagsSet = new Set();
@@ -412,12 +427,54 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
     }
   }
 
+  // --- bonus objectives (spec §8.2)
+  const objectives = chapter.objectives ?? [];
+  const objectiveIds = new Set();
+  let bonusTotal = 0;
+
+  objectives.forEach((objective, i) => {
+    const at = `/objectives/${i}`;
+
+    // The completion screen keys on the id and RunState.bonuses records it, so
+    // two objectives with one id are indistinguishable in the itemised list.
+    if (objectiveIds.has(objective.id)) fail(`${at}/id`, `duplicate objective id "${objective.id}" in this chapter`);
+    objectiveIds.add(objective.id);
+
+    // An objective watches a flag; it never sets one. Pointed at a flag nothing
+    // sets, it can never be earned - the party is offered a bonus the chapter
+    // has no way to pay. Almost always a typo, exactly like a gated choice.
+    if (!flagsSet.has(objective.flag)) {
+      fail(
+        `${at}/flag`,
+        `flag "${objective.flag}" is never set by any effect in this chapter, so this objective can never be earned`,
+        flagsSet.size ? `flags set here: ${[...flagsSet].join(", ")}` : "no setFlag effects in this chapter at all",
+      );
+    }
+
+    bonusTotal += objective.xp;
+  });
+
+  // spec §8.2 - bonuses are capped at 25% of xpAward, and the cap is on the
+  // total rather than on each one: four objectives paying a quarter each would
+  // pay the whole award twice over. The cap is what keeps "Sworn ends campaign 1"
+  // (§8.1) a promise rather than an average. The engine clamps to the same
+  // ceiling at the table; this is the half that fails the build instead.
+  const bonusCap = Math.floor(chapter.xpAward * 0.25);
+  if (bonusTotal > bonusCap) {
+    fail(
+      "/objectives",
+      `bonus objectives total ${bonusTotal} XP, over the 25% cap of ${bonusCap} for an xpAward of ${chapter.xpAward}`,
+      "The engine clamps the overflow to nothing at the table, so the last objectives would pay 0 (spec §8.2).",
+    );
+  }
+
   if (biomes && !biomes.includes(chapter.biome)) {
     fail("/biome", `biome "${chapter.biome}" is not in assets/manifest.json`, `known biomes: ${biomes.join(", ")}`);
   }
 
   if (ok) {
-    rep.ok(`${f}  graph  (${ids.size} scenes, ${endings.length} ending${endings.length === 1 ? "" : "s"}, all reachable, all goto/itemId resolve)`);
+    const bonusNote = objectives.length ? `, ${objectives.length} objective(s) within the ${bonusCap} XP cap` : "";
+    rep.ok(`${f}  graph  (${ids.size} scenes, ${endings.length} ending${endings.length === 1 ? "" : "s"}${bonusNote}, all reachable, all goto/itemId resolve)`);
   }
   return ok;
 }

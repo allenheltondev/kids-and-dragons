@@ -6,7 +6,7 @@
  */
 
 import type { ResolvedCharacter, StatId } from "./domain.js";
-import type { SceneId, SceneType } from "./chapter.js";
+import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -87,7 +87,42 @@ export interface RunState {
   /** Story flags set by effects, scoped to the run. */
   flags: Record<string, boolean>;
   xpEarned: number;
+  /**
+   * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null
+   * while one is still being played.
+   *
+   * The client needs it to play a different ending beat, and the persistence
+   * layer needs it to count setbacks toward the three that fail a campaign
+   * (§8.3). It is *not* derivable from `xpEarned`, because bonus objectives and
+   * `grantXp` effects mean a successful chapter and a setback can pay the same
+   * number.
+   *
+   * Optional, along with `bonuses`, because RunState is persisted and shipped
+   * as plain JSON: a run written before these fields existed has to keep
+   * loading, and a Friday-evening session must not end because the shape of the
+   * object changed under it. `createRunState` always writes both.
+   */
+  chapterOutcome?: ChapterOutcome | null;
+  /**
+   * The bonus objectives this run met, itemised for the completion screen.
+   * Their XP is already folded into `xpEarned`; this is the breakdown, not a
+   * second pot.
+   */
+  bonuses?: EarnedBonus[];
   updatedAt: string;
+}
+
+/**
+ * One bonus objective the party earned, as paid.
+ *
+ * `xp` is what was actually awarded rather than what the chapter asked for:
+ * the engine clamps against the 25% ceiling (spec §8.2), and a screen that
+ * itemised the authored number would not add up to `xpEarned`.
+ */
+export interface EarnedBonus {
+  id: string;
+  label: string;
+  xp: number;
 }
 
 export interface RoomSummary {
