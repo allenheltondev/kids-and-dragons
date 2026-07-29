@@ -9,12 +9,15 @@ import {
   isPartyDown,
 } from "./engine.js";
 import type { EngineContext, EngineResult } from "./engine.js";
+import { currentActor, legalActions, type LegalAction } from "./encounter.js";
+import { planEnemyTurn } from "./enemy-ai.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
 import type { RunState } from "./types/state.js";
 import type { Chapter, ChapterObjective, ChapterOutcome, StoryScene } from "./types/chapter.js";
-import { APPEARANCE, makeChapter, makeItems, makeRules } from "./test-fixtures.js";
+import { APPEARANCE, makeChapter,
+  makeMap, makeItems, makeRules } from "./test-fixtures.js";
 
 const rules = makeRules();
 const items = makeItems();
@@ -29,11 +32,108 @@ function ctx(overrides: Partial<EngineContext> = {}): EngineContext {
     rules,
     items,
     chapter: makeChapter(),
+    // The board the fixture chapter's encounter runs on. Without it the engine
+    // has nowhere to put anybody and refuses the fight (NOT_FOUND) — which is
+    // the check working, since a deployed bundle whose maps went missing should
+    // say so rather than invent terrain.
+    map: (id) => (id === MAP.id ? MAP : null),
+    abilities: {},
     rng: makeRng("test"),
     now: "2026-07-28T12:00:00.000Z",
     householdId: "h_1",
     ...overrides,
   };
+}
+
+const MAP = makeMap();
+
+/**
+ * Plays a fight to its end, the party attacking whatever it can reach.
+ *
+ * The chapter-walk tests used to get past the encounter for free: the engine
+ * handed out an automatic victory (the `TODO(chapter-4)` placeholder), so
+ * "readied up" and "won" were the same event. Now a fight is a fight, and a test
+ * that wants to see what is on the other side of it has to have one.
+ *
+ * Deliberately not clever — it takes the first legal attack each turn and ends
+ * the turn. Combat *rules* are `encounter.test.ts`'s job; this only needs to
+ * reach the far side.
+ */
+function fightToTheEnd(state: RunState, context: EngineContext): RunState {
+  let current = state;
+  for (let guard = 0; guard < 400; guard++) {
+    const encounter = current.encounter;
+    if (!encounter) return current;
+
+    const actor = currentActor(encounter);
+    if (!actor) return current;
+    const member = current.party.find((m) => m.character.id === actor.id);
+    if (!member) return current;
+
+    const combatContext = {
+      rules: context.rules,
+      abilities: context.abilities ?? {},
+      rng: context.rng,
+    };
+    const steps: ClientIntent[] = [];
+
+    /*
+     * The party walks in with `planEnemyTurn`, which is not a joke: its input is
+     * a board, an acting figure and a list of targets, and it never asks which
+     * side anybody is on. Pointing it the other way gives "walk at the nearest
+     * one you can reach and hit it", which is exactly what a test needs to get
+     * across a 10-tile board — and it means this helper cannot drift away from
+     * the movement rules the real fight uses.
+     */
+    const at = encounter.board.actors.find((a) => a.id === actor.id);
+    if (at) {
+      const plan = planEnemyTurn({
+        board: encounter.board,
+        enemy: { id: actor.id, at: { x: at.x, y: at.y }, steps: actor.steps },
+        party: encounter.combatants
+          .filter((c) => c.side === "enemy")
+          .map((c) => {
+            const spot = encounter.board.actors.find((a) => a.id === c.id);
+            return {
+              id: c.id,
+              at: { x: spot?.x ?? 0, y: spot?.y ?? 0 },
+              hp: c.hp,
+              maxHp: c.maxHp,
+              down: c.down,
+            };
+          }),
+      });
+      if (plan.moveTo) steps.push({ type: "MOVE", to: plan.moveTo } as ClientIntent);
+    }
+
+    for (const intent of steps) {
+      const moved = applyIntent(current, { playerId: member.playerId, intent }, context);
+      if (moved.error) break;
+      current = moved.state;
+    }
+
+    // Whatever is now in reach. `legalActions` is the authority on that, so the
+    // helper cannot swing at something the real game would refuse.
+    const after = current.encounter;
+    const attack = after
+      ? legalActions(after, combatContext).find((a: LegalAction) => a.targets.length > 0)
+      : undefined;
+
+    const finish: ClientIntent[] = attack
+      ? [
+          { type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets[0]! } as ClientIntent,
+          { type: "END_TURN" } as ClientIntent,
+        ]
+      : [{ type: "END_TURN" } as ClientIntent];
+
+    for (const intent of finish) {
+      const result = applyIntent(current, { playerId: member.playerId, intent }, context);
+      if (result.error) return current;
+      current = result.state;
+      if (!current.encounter) return current;
+    }
+  }
+  return current;
 }
 
 const CREATE_UNICORN: ClientIntent = {
@@ -74,6 +174,19 @@ function walk(
     result = applyIntent(result.state, step, context);
     if (result.error) {
       throw new Error(`${step.intent.type} rejected: ${result.error.code} ${result.error.message}`);
+    }
+    /*
+     * A fight that has started gets played out here rather than in every test
+     * that happens to walk past one.
+     *
+     * These walks used to cross the encounter for free — the engine handed out
+     * an automatic victory (the `TODO(chapter-4)` placeholder), so readying up
+     * and winning were one event. Now they are not, and a test about the *rest*
+     * scene on the far side should not have to spell out sixteen combat turns
+     * to get there. Combat's own rules are `encounter.test.ts`'s subject.
+     */
+    if (result.state.encounter) {
+      result = { ...result, state: fightToTheEnd(result.state, context) };
     }
   }
   return result;
@@ -438,11 +551,23 @@ describe("a full walk of a chapter", () => {
     // The shrine's onEnter fired: a slot-free quest item and a story flag.
     expect(result.state.flags["found_shrine"]).toBe(true);
 
-    // Encounter — TODO(chapter-4): resolved as an auto-victory placeholder.
+    // The encounter waits for the party to ready up before the board goes up.
     expect(result.state.phase).toBe("encounter");
     expect(result.state.prompt).toMatchObject({ kind: "ready" });
+    expect(result.state.encounter).toBeFalsy();
 
-    const afterFight = applyIntent(result.state, { playerId: "p_1", intent: { type: "ADVANCE" } }, context);
+    // Ready up, and the fight is real — `walk` plays it out (see its comment).
+    // ADVANCE used to cross this for free, back when the engine handed out an
+    // automatic victory.
+    const afterFight = walk(
+      result.state,
+      [
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    );
+    expect(afterFight.state.encounter).toBeFalsy();
     expect(afterFight.state.sceneId).toBe("scene_camp");
     expect(afterFight.state.sceneType).toBe("rest");
 
@@ -494,7 +619,8 @@ describe("a full walk of a chapter", () => {
         { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
         { playerId: "p_2", intent: { type: "ROLL" } },
         { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
-        { playerId: "p_1", intent: { type: "ADVANCE" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
         { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
         { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "low" } },
       ],
@@ -507,9 +633,17 @@ describe("a full walk of a chapter", () => {
     expect(settled.state.flags["took_low"]).toBeUndefined();
   });
 
-  it("resolves an encounter on a full ready-up too", () => {
+  it("waits for the whole party before putting the board up", () => {
+    /*
+     * One phone readying is not the fight starting. This used to be the test
+     * for the auto-victory placeholder — a full ready-up *resolved* the
+     * encounter, because there was no board to put up. Now it builds one, and
+     * a half-ready party must not have a fight begin around it: whoever is
+     * still on the character sheet would find their figure already taking
+     * damage.
+     */
     const context = ctx({ rng: fixedRng(20) });
-    const inFight = walk(
+    const half = walk(
       seatedParty(context),
       [
         { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
@@ -520,10 +654,49 @@ describe("a full walk of a chapter", () => {
       ],
       context,
     ).state;
-    expect(inFight.phase).toBe("encounter");
+    expect(half.phase).toBe("encounter");
+    expect(half.encounter).toBeFalsy();
 
-    const done = applyIntent(inFight, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
-    expect(done.state.sceneId).toBe("scene_camp");
+    const begun = applyIntent(half, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
+    expect(begun.error).toBeUndefined();
+    expect(begun.state.encounter).toBeTruthy();
+    expect(begun.presentation).toMatchObject({ kind: "ENCOUNTER_BEGAN", mapId: "thicket" });
+    // Whoever won initiative is on the clock, and it is a real figure.
+    expect(begun.state.encounter?.order.length).toBe(5); // 2 heroes + 3 wisps
+  });
+
+  it("refuses a combat intent from a player whose turn it is not", () => {
+    // The authority check every combat intent goes through. Without it any phone
+    // could drive anybody's figure, including a monster's.
+    const context = ctx({ rng: fixedRng(20) });
+    const begun = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+      ],
+      context,
+    ).state;
+    const started = applyIntent(begun, { playerId: "p_1", intent: { type: "READY", ready: true } }, context);
+    const fighting = applyIntent(
+      started.state,
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+      context,
+    ).state;
+
+    const acting = fighting.encounter ? currentActor(fighting.encounter) : null;
+    const owner = fighting.party.find((m) => m.character.id === acting?.id);
+    const other = fighting.party.find((m) => m.playerId !== owner?.playerId);
+    if (!owner || !other) throw new Error("expected the turn to belong to one of two players");
+
+    const stolen = applyIntent(
+      fighting,
+      { playerId: other.playerId, intent: { type: "END_TURN" } },
+      context,
+    );
+    expect(stolen.error?.code).toBe("FORBIDDEN");
   });
 });
 
@@ -780,6 +953,18 @@ describe("the end of a chapter", () => {
       } else if (prompt?.kind === "roll") {
         const owner = state.party.find((m) => m.character.id === prompt.characterId)!;
         state = applyIntent(state, { playerId: owner.playerId, intent: { type: "ROLL" } }, context).state;
+      } else if (prompt?.kind === "ready") {
+        // An encounter. Everybody readies, the board goes up, and `walk` plays
+        // the fight out. ADVANCE used to do this for free, back when the engine
+        // handed out an automatic victory.
+        state = walk(
+          state,
+          state.party.map((m) => ({
+            playerId: m.playerId,
+            intent: { type: "READY", ready: true } as ClientIntent,
+          })),
+          context,
+        ).state;
       } else {
         state = applyIntent(state, { playerId: "p_1", intent: { type: "ADVANCE" } }, context).state;
       }
@@ -841,7 +1026,11 @@ function playToEnding(context: EngineContext): EngineResult {
       { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
       { playerId: "p_2", intent: { type: "ROLL" } },
       { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
-      { playerId: "p_1", intent: { type: "ADVANCE" } },
+      // The encounter. Both phones ready up, the board goes up, and `walk`
+      // fights it out — a single ADVANCE used to cross it, back when the engine
+      // handed out an automatic victory.
+      { playerId: "p_1", intent: { type: "READY", ready: true } },
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
       { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
       { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } },
       { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "high" } },
