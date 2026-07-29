@@ -175,8 +175,17 @@ Every character rig exposes the same state machine so game code never special-ca
 Inputs: `move`, `attack`, `cast`, `hurt`, `helpUp`, `celebrate`, `transform` (triggers);
 `knockedDown`, `facing` (bool/number).
 
-`tools/art/verify-rig.ts` asserts every `.riv` exposes exactly this interface. A rig missing
-`celebrate` fails CI rather than failing at the table.
+**`tools/art/verify-rig.ts` does not exist yet.** This paragraph used to claim it asserted the
+interface above; it never did. Until it is written, nothing checks a `.riv` against this table, so a
+rig missing `celebrate` fails at the table rather than in CI — which is the exact inversion this
+pipeline exists to prevent. Treat the table as a contract enforced by review, and write the tool
+before the first rig lands. `asset-brief.md` §9.7 asks for the clip list to be moved into
+`manifest.json` as `rigContract`, which is what such a tool would read.
+
+The same gap swallowed six effect sheets: `verify.py` walked `manifest.species` and never opened
+`assets/effects/`, so `aura_*` sheets shipped with no manifest entry and nothing noticed. That half
+is now closed (`check_effects`), and it is the reason to be suspicious of any claim in this document
+that a check exists — grep for it.
 
 ### 6.2 Palette slots
 
