@@ -28,3 +28,8 @@ infra/.build/
 # playwright
 test-results/
 playwright-report/
+
+# scratch git worktrees for background agents — each is a full checkout of this
+# repo *inside* this repo, created and reaped by the tooling. `.claude/` itself
+# is tracked (settings.json lives there), so this has to be ignored by path.
+.claude/worktrees/
