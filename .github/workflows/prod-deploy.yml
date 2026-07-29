@@ -1,0 +1,150 @@
+name: Deploy (production)
+
+# Production, on every push to main. Sibling of deploy.yml, kept as a separate
+# file rather than one workflow with conditionals — which is how
+# allenheltondev/content-tracking does it, and it reads far better than a
+# ternary in six places.
+#
+# The environment is `Production` and the AWS stage is `prod`. They are
+# deliberately different words: GitHub matches the environment name exactly, and
+# the OIDC `sub` claim carries it verbatim into the role's trust policy, while
+# `prod` is what names the stack, the table, and `StageName` in the template.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  # Queued, never cancelled: a half-applied CloudFormation update is a worse
+  # state than a slow one, and this is the stack the family actually plays on.
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  STACK_NAME: kad-prod
+  STAGE: prod
+
+jobs:
+  deploy:
+    name: sam deploy production
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: ${{ steps.outputs.outputs.site-url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      # The art gate is Python, and `deploy.sh` runs it — see the note on the
+      # deploy step for why the checks are not skipped here.
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Set up AWS SAM CLI
+        uses: aws-actions/setup-sam@v3
+        with:
+          use-installer: true
+
+      - name: Show the OIDC subject this job presents
+        # Prints the `sub` and `aud` claims — the two things AWS matches a trust
+        # policy against — and nothing else. Neither is a secret, and the token
+        # itself is never echoed.
+        #
+        # Worth keeping. `AssumeRoleWithWebIdentity` returns the same "Not
+        # authorized" whether the trust policy names a different repository, a
+        # different environment, different casing, or the ARN simply has a typo
+        # in it — AWS will not say which. Printing the exact string the role has
+        # to accept, right above the failure, turns that guess into a diff.
+        run: |
+          TOKEN=$(curl -sS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r '.value')
+          PAYLOAD=$(echo "$TOKEN" | cut -d. -f2 | tr '_-' '/+')
+          while [ $(( ${#PAYLOAD} % 4 )) -ne 0 ]; do PAYLOAD="${PAYLOAD}="; done
+          echo "$PAYLOAD" | base64 -d 2>/dev/null \
+            | jq -r '"The role trust policy must accept:\n  sub: \(.sub)\n  aud: \(.aud)"'
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@6.2.2
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
+          role-session-name: GitHubActions-KidsAndDragons-ProductionDeploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check pillow numpy
+
+      - name: Deploy
+        # `scripts/deploy.sh` is the same command that runs from a laptop: it
+        # runs the checks, bundles the Lambdas, deploys the stack, uploads the
+        # client and the art, and invalidates CloudFront — in that order, so a
+        # deploy that fails partway leaves the previous version serving.
+        #
+        # `KAD_SKIP_CHECKS` is deliberately unset. `ci.yml` runs the same suite
+        # on the same commit, but in a parallel workflow that cannot gate this
+        # one — so skipping would let a red commit reach a stack.
+        run: ./scripts/deploy.sh prod
+        env:
+          # Passkeys bind to a domain for the life of the credential, and
+          # `sam deploy` reverts any parameter it is not given. Empty is a
+          # complete state: email-code sign-in only.
+          WEBAUTHN_RP_ID: ${{ vars.WEBAUTHN_RP_ID }}
+
+      - name: Diagnose failed deploy
+        if: ${{ failure() }}
+        run: |
+          echo "Deploy failed. CloudFormation diagnostics for ${STACK_NAME}."
+
+          echo "==== describe-stack-events (latest 40) ===="
+          aws cloudformation describe-stack-events \
+            --stack-name "$STACK_NAME" --region "$AWS_REGION" \
+            --query "StackEvents[:40].[Timestamp,LogicalResourceId,ResourceStatus,ResourceStatusReason]" \
+            --output table || true
+
+          echo "==== list-stack-resources ===="
+          aws cloudformation list-stack-resources \
+            --stack-name "$STACK_NAME" --region "$AWS_REGION" \
+            --query "StackResourceSummaries[*].[LogicalResourceId,ResourceType,ResourceStatus]" \
+            --output table || true
+
+      - name: Read stack outputs
+        id: outputs
+        run: |
+          OUTPUTS=$(aws cloudformation describe-stacks \
+            --stack-name "$STACK_NAME" --region "$AWS_REGION" \
+            --query "Stacks[0].Outputs" --output json)
+          read_out() { echo "$OUTPUTS" | jq -r --arg k "$1" '.[] | select(.OutputKey==$k) | .OutputValue'; }
+          {
+            echo "site-url=$(read_out SiteUrl)"
+            echo "api-endpoint=$(read_out ApiEndpoint)"
+            echo "table-name=$(read_out TableName)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Write deployment summary
+        run: |
+          {
+            echo "## Kids \& Dragons production deploy"
+            echo
+            echo "- **Stack:** \`${STACK_NAME}\`"
+            echo "- **Region:** \`${AWS_REGION}\`"
+            echo "- **Open it:** ${{ steps.outputs.outputs.site-url }}"
+            echo "- **Table:** \`${{ steps.outputs.outputs.table-name }}\`"
+            echo "- **Commit:** \`${{ github.sha }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

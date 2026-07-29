@@ -72,6 +72,7 @@ describe("MemoryRepository", () => {
       id: "h_1",
       displayName: "Home",
       ownerSub: "sub",
+      guest: false,
       createdAt: "2026-01-01T00:00:00.000Z",
     });
     await repo.putPlayer({
@@ -161,6 +162,7 @@ describe("MemoryRepository", () => {
       id: "h_1",
       displayName: "Home",
       ownerSub: "sub",
+      guest: false,
       createdAt: "2026-01-01T00:00:00.000Z",
     });
     await repo.putState(state("r_1", 3));
@@ -186,3 +188,11 @@ describe("MemoryRepository", () => {
     expect(await repo.getHousehold("h_1")).toBeNull();
   });
 });
+
+/*
+ * The guest-household lifecycle used to be tested here. It now lives in
+ * `contract.test.ts`, which runs the same cases against this store *and*
+ * against DynamoDB — the interlock between claiming and sweeping is exactly the
+ * kind of thing where a local-only test would pass while prod lost a family's
+ * characters.
+ */

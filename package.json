@@ -20,7 +20,12 @@
     "art:verify:strict": "python3 tools/art/verify.py --strict",
     "art:sheet": "python3 tools/art/sheet.py",
     "build": "npm run build --workspace @kad/client",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "infra:build": "node infra/build.mjs",
+    "infra:lint": "cfn-lint infra/template.yaml --region us-east-1 --ignore-checks I3011",
+    "infra:deploy": "./scripts/deploy.sh",
+    "ddb:local": "docker run --rm -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -inMemory -sharedDb",
+    "test:ddb": "KAD_DDB_ENDPOINT=http://localhost:8000 vitest run packages/server/src/store/contract.test.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.0",
@@ -28,6 +33,7 @@
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "concurrently": "^10.0.4",
+    "esbuild": "^0.28.1",
     "tsx": "^4.23.1",
     "typescript": "~5.9.0",
     "vitest": "^4.1.10"

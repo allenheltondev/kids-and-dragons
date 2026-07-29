@@ -14,8 +14,9 @@ Chapter 3 possible; everything after it is informed by watching her play.
 Prove the three things that could invalidate the whole design, before building on them.
 
 **Claude**
-- Repo scaffolding: Vite + React + TS, Pixi, SAM/CDK stack, DynamoDB Local, CI
-- CloudFront + S3 deploy pipeline, one command to prod
+- Repo scaffolding: Vite + React + TS, Pixi, **SAM stack** (`infra/template.yaml`), DynamoDB Local, CI
+- CloudFront + S3 deploy pipeline, one command to prod (`./scripts/deploy.sh`), and
+  the same command from CI — staging on every pull request, prod on merge to main
 - **`assets/manifest.json` + `npm run art:verify`** — the contract and the gate, written *before* any asset is commissioned ([art-pipeline.md §3](./art-pipeline.md#3-division-of-labor))
 - `npm run art:sheet` contact sheet generator
 - **Spike A — the brief:** commission `unicorn/fledgling` from Codex against [asset-brief.md](./asset-brief.md). Does it pass `art:verify` without hand-fixing? Every correction becomes a brief edit.
@@ -42,10 +43,19 @@ phones and the TV are in a synced room, and all three spikes have a written verd
 
 ## Chapter 1 — Accounts & character creation
 
+> **Amended.** Accounts turned out to be the wrong default. Anonymous play is now
+> the entry path — a household exists the moment somebody starts a game — and
+> signing in is an *optional* later step that claims the household they are
+> already in. See [architecture §4.5](./architecture.md#45-accounts-devices-and-joining).
+
 **Claude**
-- Cognito user pool, custom sign-up/sign-in UI (email + passkey). No hosted UI.
+- Cognito user pool, custom sign-in UI (emailed code, then a passkey). No hosted UI.
+  The browser talks to Cognito directly, so no credential reaches our Lambda.
+- **The keepsake flow** — offered at the end of a chapter, never before. It leads
+  with the party rather than with a form (`KeepsakeLantern`, asset-brief §8).
+- Anonymous households with a 7-day expiry, and the single write that claims one
 - Household creation, player profiles, `role: adult | child`
-- Device pairing via QR, long-lived KMS-signed device tokens, rotation, revocation
+- Device pairing via QR, long-lived signed device tokens, sliding expiry, revocation
 - Creation flow: species → class → stats → appearance → name
 - Character data model, `resolveCharacter()`, persistence to DynamoDB
 - Live WorldView preview driven by phone selections
@@ -236,7 +246,9 @@ changes nothing about whether the game works.
 | **AI-optional invariant** | Tested in CI, not assumed. |
 | **Mode-agnostic surfaces** | `WorldView` and `PlayerView` never read the room mode. Container-relative sizing only — no viewport units inside either. |
 | **Travel layout first** | Any new screen is designed for a phone before it's designed for a TV. |
-| **No password for a child** | `role: child` devices authenticate by binding only, and can never pair another device. |
+| **No password for a child** | `role: child` devices authenticate by binding only, can never pair another device, and can never claim a household. |
+| **Play before signing in** | Nothing requires an account. Sign-in only ever *keeps* what anonymous play already created — it is never a gate in front of it. |
+| **One suite, both stores** | `MemoryRepository` and `DynamoRepository` pass the same contract test. A bug found at the table has to be reproducible on a laptop. |
 | **Three-device dev loop** | If a change hasn't been seen on a TV **and** in three-phone Travel Mode, it isn't done. |
 
 ---
@@ -260,4 +272,6 @@ Not blocking, but decide before they bite:
 1. **TV hardware** — confirm what you're actually running the display client on. Laptop over HDMI is assumed.
 2. **Sound source** — licensed pack, AI-generated, or commissioned. Affects Chapter 8 scope.
 3. **Her device** — does she have her own phone, or does she borrow one? If she borrows, device binding needs a "switch player" affordance on adult devices, which is a small Chapter 1 addition rather than a later retrofit.
-4. **Multiple households** — the model supports an adult belonging to more than one (a cousin's game, a school friend). Not building it now, but the `ACCT#<sub>` → `HH#<hhId>` mapping is one-to-many so it stays open.
+4. **Multiple households** — the model supports an adult belonging to more than one (a cousin's game, a school friend). Not building it now, but the `ACCT#<sub>` → `HH#<hhId>` mapping is one-to-many so it stays open. `linkAccount` currently picks the first; a picker is the missing piece.
+5. ~~**When to offer the sign-in**~~ — decided and built: the end-of-chapter summary, with the characters they just played on screen. Offering it up front would undo the point of anonymous play. What is *not* decided is whether the TV should show the same beat; it currently cannot, because `RunState` carries no household-level flag and the claim happens outside any run.
+6. **The guest window is 7 days** — long enough for "again next weekend", short enough that the table is not a graveyard of one-off sessions. It is one constant (`GUEST_HOUSEHOLD_TTL_MS`) if watching real use says otherwise.

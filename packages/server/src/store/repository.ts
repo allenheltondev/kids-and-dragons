@@ -83,6 +83,52 @@ export interface GameRepository {
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
 
+  /**
+   * Claim a guest household for a signed-in account (§4.5). Writes the
+   * `ACCT#<sub>` pointer, sets `ownerSub`, clears `guest`/`expiresAt`, and drops
+   * the household out of the guest sweep index — so the characters somebody just
+   * made anonymously simply stop being scheduled for deletion.
+   *
+   * Nothing is copied and no id changes: the household the party is *already
+   * playing in* becomes the permanent one. Idempotent, and a no-op on a
+   * household that is already claimed by this sub.
+   *
+   * Returns `false` if the household is already claimed by a **different**
+   * account — one family's guest session cannot be stolen by the next person to
+   * sign in on that phone — or if the sweeper has already begun deleting it.
+   */
+  claimHousehold(householdId: string, cognitoSub: string): Promise<boolean>;
+
+  /**
+   * Guest households whose `expiresAt` has passed. One GSI1 query against the
+   * `GUEST` partition — never a scan. Drives the sweeper (`lambda/sweep.ts`).
+   */
+  listExpiredGuestHouseholds(nowIso: string, limit?: number): Promise<Household[]>;
+
+  /**
+   * Deletes a household and everything under it — players, devices, characters,
+   * runs, and each run's state and event log. Only the sweeper calls this, and
+   * only for expired guests; a claimed household has no delete path at all.
+   *
+   * **The expiry check is part of this call, not the caller's job.** Reading a
+   * household, deciding it is an expired guest, and then deleting it is a race
+   * with exactly one loser worth caring about: an adult who signs in during the
+   * gap gets a successful claim and then has the household deleted out from
+   * under them, which is the one failure this whole feature exists to avoid.
+   * So the delete is gated on a conditional write proving the household is
+   * *still* an unclaimed, expired guest at the moment deletion begins.
+   *
+   * Returns `false` when that condition fails — somebody claimed it in time.
+   *
+   * Deletion is ordered so that an interrupted sweep is safe: the household is
+   * first marked (which is what makes `claimHousehold` start refusing), then its
+   * contents go, and the `META` row — the only thing carrying the `GUEST` index
+   * entry — goes last. A sweep that dies halfway leaves a household that is
+   * still discoverable by the next one, rather than orphaned rows nothing can
+   * find.
+   */
+  deleteGuestHousehold(householdId: string, nowIso: string): Promise<boolean>;
+
   putPlayer(player: PlayerProfile): Promise<void>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;
   listPlayers(householdId: string): Promise<PlayerProfile[]>;

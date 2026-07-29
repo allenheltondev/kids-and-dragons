@@ -1,0 +1,140 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+# The bootstrap stack: how GitHub Actions is allowed to deploy.
+#
+# **Optional.** If the account already has a role that other repositories deploy
+# with — the way `allenheltondev/content-tracking` does, where the role lives in
+# the account and the repo only knows its ARN — the smaller change is to add
+# this repository's two `sub` claims to that role instead:
+#
+#   repo:<owner>/kids-and-dragons:environment:Staging
+#   repo:<owner>/kids-and-dragons:environment:Production
+#
+# Use this template when you would rather have roles dedicated to this project.
+# Deployed **once, by hand**, before any automated deploy can work — it is the
+# thing that grants the permission, so it cannot be granted by the thing it
+# grants. Its outputs are the `AWS_DEPLOYMENT_ROLE_ARN` secrets you set on the
+# `Staging` and `Production` GitHub environments.
+#
+#   aws cloudformation deploy \
+#     --template-file infra/github-oidc.yaml \
+#     --stack-name kad-github-oidc \
+#     --capabilities CAPABILITY_NAMED_IAM \
+#     --parameter-overrides GitHubOwner=allenheltondev GitHubRepo=kids-and-dragons
+#
+# The two roles are **not interchangeable**: each trusts exactly one GitHub
+# environment. `StagingRoleArn` goes in the Staging environment's
+# AWS_DEPLOYMENT_ROLE_ARN and `ProdRoleArn` in Production's. Putting one ARN in
+# both leaves whichever environment does not match failing with
+# "Not authorized to perform sts:AssumeRoleWithWebIdentity" — which is the trust
+# boundary working, not a misconfiguration of it.
+#
+# No access keys anywhere. GitHub presents a short-lived OIDC token, AWS trades
+# it for temporary credentials, and there is no long-lived secret in the
+# repository that could leak.
+
+Description: GitHub Actions OIDC provider and per-environment deploy roles for Kids & Dragons
+
+Parameters:
+  GitHubOwner:
+    Type: String
+    Description: The GitHub user or org that owns the repository.
+
+  GitHubRepo:
+    Type: String
+    Default: kids-and-dragons
+
+  # The GitHub environment names, exactly as they appear in
+  # Settings → Environments. Parameters rather than literals because the OIDC
+  # `sub` claim carries the name **as configured**, matched here with
+  # StringEquals — so `Staging` and `staging` are different principals, and a
+  # rename in the GitHub UI silently stops every deploy until this stack is
+  # updated to match.
+  StagingEnvironmentName:
+    Type: String
+    Default: Staging
+
+  ProdEnvironmentName:
+    Type: String
+    Default: Production
+
+  CreateOidcProvider:
+    Type: String
+    Default: "true"
+    AllowedValues: ["true", "false"]
+    Description: >-
+      An AWS account may hold only one provider per URL. Set false if
+      token.actions.githubusercontent.com already exists in this account —
+      creating a second one fails the whole stack.
+
+Conditions:
+  ShouldCreateProvider: !Equals [!Ref CreateOidcProvider, "true"]
+
+Resources:
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: ShouldCreateProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      # AWS has verified this provider's certificate chain since 2023 and no
+      # longer pins a thumbprint, but the field is still required.
+      ThumbprintList:
+        - ffffffffffffffffffffffffffffffffffffffff
+
+  StagingDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: kad-deploy-staging
+      Description: Deploys the Kids & Dragons staging stack from GitHub Actions
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                # Scoped to the GitHub *environment*, not just the repository.
+                # Without this a workflow job targeting Staging could assume the
+                # production role, and the two environments would be one.
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${StagingEnvironmentName}"
+      ManagedPolicyArns:
+        # Deploying this stack means creating IAM roles, a secret, a user pool
+        # and a distribution — there is no small policy that covers it honestly.
+        # Scoped instead by *who can assume it*: one repository, one
+        # environment, for the length of one job.
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/PowerUserAccess"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/IAMFullAccess"
+
+  ProdDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: kad-deploy-prod
+      Description: Deploys the Kids & Dragons prod stack from GitHub Actions
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${ProdEnvironmentName}"
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/PowerUserAccess"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/IAMFullAccess"
+
+Outputs:
+  StagingRoleArn:
+    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Staging environment (not Production)
+    Value: !GetAtt StagingDeployRole.Arn
+
+  ProdRoleArn:
+    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Production environment (not Staging)
+    Value: !GetAtt ProdDeployRole.Arn

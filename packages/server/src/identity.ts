@@ -15,7 +15,7 @@
  * login screen.
  *
  * Roadmap Chapter 1 owns the real implementation: Cognito for the household,
- * KMS-signed JWTs for devices, rotation on every use with a 30-day sliding
+ * signed JWTs for devices, rotation on every use with a 30-day sliding
  * expiry, revocation from the owner's device. `DevIdentity` below is the local
  * stand-in and is **unsigned** — it is a base64 envelope, not a credential. It
  * exists so that the rest of the server can be written against the final shape
@@ -32,6 +32,16 @@ export interface DeviceIdentity {
   householdId: string;
   playerId: string;
   role: Role;
+  /**
+   * A fresh token, when this resolve renewed a sliding expiry (§4.5). Present
+   * on a small fraction of requests and never twice for the same token.
+   *
+   * Entry points hand it back as the `x-kad-device-token` response header, which
+   * is the only reason the field is on the *resolved principal* rather than
+   * buried in the identity implementation: a device that is never told about its
+   * new token eventually expires while being used every week.
+   */
+  rotatedToken?: string;
 }
 
 /** What a room-session token resolves to. Scoped to one run, short-lived. */
@@ -64,6 +74,30 @@ export interface IssueSessionTokenInput {
   expiresAt: number;
 }
 
+/**
+ * What a **display client** gets. The TV is not a player: it has no device
+ * binding, no profile, and nothing it is allowed to do (spec §2.1) — it may be
+ * hard-refreshed at any time and simply reattaches to whatever the room says.
+ *
+ * It still needs a credential, because in prod the realtime channel is
+ * authorised per subscriber. So it gets one that names a room and nothing else.
+ * Keeping it a separate type from `SessionIdentity` is what stops a display
+ * token ever satisfying a code path that expects a player.
+ */
+export interface ViewerIdentity {
+  runId: string;
+  roomCode: string;
+  /** Epoch millis. Never outlives the room. */
+  expiresAt: number;
+}
+
+export interface IssueViewerTokenInput {
+  runId: string;
+  roomCode: string;
+  /** Epoch millis. */
+  expiresAt: number;
+}
+
 export interface IdentityService {
   /** `null` for an unknown, malformed, or revoked token. Never throws. */
   resolveDevice(token: string): Promise<DeviceIdentity | null>;
@@ -71,6 +105,9 @@ export interface IdentityService {
   issueDeviceToken(input: IssueDeviceTokenInput): Promise<{ token: string; deviceId: string }>;
   issueSessionToken(input: IssueSessionTokenInput): Promise<string>;
   resolveSession(token: string): Promise<SessionIdentity | null>;
+  /** Read-only, room-scoped, no player. For the TV. */
+  issueViewerToken(input: IssueViewerTokenInput): Promise<string>;
+  resolveViewer(token: string): Promise<ViewerIdentity | null>;
 }
 
 // ---------------------------------------------------------------------------
@@ -79,6 +116,7 @@ export interface IdentityService {
 
 const DEVICE_PREFIX = "kaddev.d1.";
 const SESSION_PREFIX = "kaddev.s1.";
+const VIEWER_PREFIX = "kaddev.v1.";
 
 interface DevDeviceClaims {
   deviceId: string;
@@ -153,6 +191,17 @@ export class DevIdentity implements IdentityService {
 
   async resolveSession(token: string): Promise<SessionIdentity | null> {
     const claims = decode<SessionIdentity>(token, SESSION_PREFIX);
+    if (!claims) return null;
+    if (claims.expiresAt <= this.now()) return null;
+    return claims;
+  }
+
+  async issueViewerToken(input: IssueViewerTokenInput): Promise<string> {
+    return VIEWER_PREFIX + encode(input);
+  }
+
+  async resolveViewer(token: string): Promise<ViewerIdentity | null> {
+    const claims = decode<ViewerIdentity>(token, VIEWER_PREFIX);
     if (!claims) return null;
     if (claims.expiresAt <= this.now()) return null;
     return claims;
