@@ -62,9 +62,13 @@ tools/              the art gate and the content validator
 | `npm run content:validate` | schemas, plus unresolved `goto`, unreachable scenes, unknown `itemId` |
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:sheet` | regenerates the review contact sheets |
+| `npm run e2e` | three browser contexts playing a chapter against the real stack |
 | `npm run build` | the client bundle |
 
-All of them run in CI on every push.
+All of them run in CI on every push. The e2e suite is its own job — minutes
+rather than seconds, and a red e2e means something different from a red unit
+test. Locally it needs a Chromium; point `KAD_CHROMIUM` at one if Playwright's
+own download isn't there.
 
 ---
 
