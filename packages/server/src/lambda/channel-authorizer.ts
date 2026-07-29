@@ -15,7 +15,7 @@
  */
 
 import { DynamoRepository } from "../store/dynamo-repository.ts";
-import { secretsManagerSource, TokenIdentity } from "../token-identity.ts";
+import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
 import { requiredEnv } from "./runtime.ts";
 
 /** What AppSync sends. Only the fields this function reads. */
@@ -39,17 +39,22 @@ export interface ChannelAuthorizerResult {
 const DENY: ChannelAuthorizerResult = { isAuthorized: false };
 
 /**
- * Cached for the life of the container. The signing secret is fetched once and
+ * Cached for the life of the container. The signing key is fetched once and
  * every verification after that is local arithmetic — this function sits in
  * front of every subscribe, so a network round trip here is a network round trip
  * on every phone that reconnects.
+ *
+ * Read-only, deliberately: no `createIfMissing`. This function only ever sees
+ * tokens the API has already issued, so it cannot legitimately be the first to
+ * want the key, and a parameter that is missing here means something is wrong
+ * rather than new.
  */
 let identity: TokenIdentity | null = null;
 
 function service(): TokenIdentity {
   identity ??= new TokenIdentity({
     repo: new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") }),
-    secret: secretsManagerSource(requiredEnv("TOKEN_SECRET_ID")),
+    secret: ssmParameterSource(requiredEnv("TOKEN_KEY_PARAMETER")),
   });
   return identity;
 }

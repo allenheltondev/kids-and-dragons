@@ -14,7 +14,7 @@ Transform: AWS::Serverless-2016-10-31
 #   AppSync Events                 room/<code>; IAM publishes, players subscribe
 #   DynamoDB                       one table, one GSI, architecture §3
 #   Cognito                        optional sign-in, email OTP then passkey
-#   Secrets Manager                the secret that signs device and session tokens
+#   SSM SecureString               the key that signs device and session tokens
 #
 # Deploy with `npm run infra:deploy` — that runs `infra/build.mjs` first, which
 # is what produces the CodeUri directories below. `sam build` is not used.
@@ -80,6 +80,12 @@ Globals:
         NODE_OPTIONS: --enable-source-maps
         # Content ships inside the bundle; see infra/build.mjs.
         KAD_CONTENT_DIR: /var/task/content
+        # The SecureString holding the token signing key. Set here rather than
+        # per-function so that this path is written down exactly once — the two
+        # IAM statements that grant access to it build the ARN from the same two
+        # pieces, and a path that drifts between them fails at the first token
+        # with an AccessDenied that names neither.
+        TOKEN_KEY_PARAMETER: !Sub "/kad/${StageName}/token-signing-key"
 
 Resources:
   # ---------------------------------------------------------------------------
@@ -135,39 +141,30 @@ Resources:
   # Token signing — architecture §4.5
   # ---------------------------------------------------------------------------
 
-  # This stack creates no KMS key of its own. Every encrypted thing in it uses
-  # an Amazon-managed key: the table gets the AWS-owned DynamoDB default, the
-  # bucket gets SSE-S3, and the signing secret below gets `aws/secretsmanager`.
+  # There is no resource here, and that is the point of this block.
+  #
+  # This stack creates no KMS key of its own. Every encrypted thing in it uses an
+  # Amazon-managed key: the table gets the AWS-owned DynamoDB default, the bucket
+  # gets SSE-S3, and the token signing key gets `aws/ssm`.
   #
   # That constrains the token format, and it is worth being explicit about why.
   # Signing needs an *asymmetric* key, and every `aws/*` managed key is symmetric
   # and encryption-only — KMS will not sign with one. So tokens are HS256 over a
-  # shared secret rather than ES256 over a private key that never leaves KMS.
-  # The trust boundary is unchanged (both signer and verifier are Lambdas in this
+  # shared key rather than ES256 over a private key that never leaves KMS. The
+  # trust boundary is unchanged (both signer and verifier are Lambdas in this
   # stack); what is given up is the ability for some future outside verifier to
   # check a token without also being able to mint one. See token-identity.ts.
-  TokenSigningSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Description: !Sub "Kids & Dragons device and session token signing (${StageName})"
-      # CloudFormation generates it at create time and nobody — including
-      # whoever runs the deploy — ever sees the value. 64 characters from a
-      # 62-symbol alphabet is ~380 bits, comfortably past what HMAC-SHA256 can
-      # use. `KmsKeyId` is deliberately absent: that is what selects
-      # `aws/secretsmanager`.
-      GenerateSecretString:
-        PasswordLength: 64
-        ExcludePunctuation: true
-      # Note the absence of `Retain`, unlike the table, the pool, and the old
-      # signing key. Losing this secret signs every phone out — they re-pair by
-      # QR in about ten seconds — which is a categorically smaller loss than a
-      # family's characters, and not worth the cost of retaining: a retained
-      # secret keeps its name reserved, and staging is torn down and recreated
-      # often enough that a name collision would be a weekly nuisance.
-      #
-      # For the same reason there is no explicit `Name`. A deleted secret sits in
-      # a 30-day recovery window still holding its name, so a fixed one would
-      # make "delete the stack, deploy it again" fail for a month.
+  #
+  # The key lives in a Parameter Store **SecureString** at the name below, which
+  # CloudFormation cannot declare: `AWS::SSM::Parameter` takes `String` and
+  # `StringList`, and has never supported `SecureString`. So the API function
+  # mints 32 random bytes into it on first use, with `Overwrite: false` so that
+  # racing cold starts converge on one key. What stays in the template is the
+  # name and the permissions — the part worth reviewing.
+  #
+  # Consequence to know: the parameter outlives the stack. That is deliberate
+  # (delete and recreate staging, and every paired phone still works) and it is
+  # on the teardown list in docs/deploy.md.
 
   # ---------------------------------------------------------------------------
   # Optional sign-in — architecture §4.5
@@ -332,15 +329,27 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
-          TOKEN_SECRET_ID: !Ref TokenSigningSecret
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref Table
-        # No `kms:Decrypt` alongside this, and none is needed: the
-        # `aws/secretsmanager` key policy already allows the account's principals
-        # to use it for requests arriving via Secrets Manager.
-        - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: !Ref TokenSigningSecret
+        # `GetParameter` and nothing else. This function verifies tokens; it
+        # never mints one, and it must not be able to create the key either —
+        # if the parameter is missing here, something is wrong (token-identity.ts).
+        - Statement:
+            - Effect: Allow
+              Action: ssm:GetParameter
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/token-signing-key"
+            - Effect: Allow
+              # Decrypting a SecureString written under the Amazon-managed
+              # `aws/ssm` key. Scoped by `ViaService` rather than by key ARN
+              # because an AWS-managed key's id is not knowable at template time
+              # — this grant cannot be used against any other key, and cannot be
+              # used except through Parameter Store.
+              Action: kms:Decrypt
+              Resource: "*"
+              Condition:
+                StringEquals:
+                  kms:ViaService: !Sub "ssm.${AWS::Region}.amazonaws.com"
 
   ChannelAuthorizerPermission:
     Type: AWS::Lambda::Permission
@@ -383,7 +392,6 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
-          TOKEN_SECRET_ID: !Ref TokenSigningSecret
           USER_POOL_ID: !Ref UserPool
           USER_POOL_CLIENT_ID: !Ref UserPoolClient
           APPSYNC_HTTP_DOMAIN: !GetAtt EventApi.Dns.Http
@@ -391,9 +399,26 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
-        - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: !Ref TokenSigningSecret
         - Statement:
+            - Effect: Allow
+              # The one principal that may create the signing key, on the one
+              # parameter it is allowed to create. `PutParameter` looks like a
+              # write worth worrying about until you notice this function is
+              # also the only thing that ever *signs* with the key — it cannot
+              # reach anything it did not already hold.
+              Action:
+                - ssm:GetParameter
+                - ssm:PutParameter
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/token-signing-key"
+            - Effect: Allow
+              # See the note on the authorizer's copy of this.
+              Action:
+                - kms:Decrypt
+                - kms:Encrypt
+              Resource: "*"
+              Condition:
+                StringEquals:
+                  kms:ViaService: !Sub "ssm.${AWS::Region}.amazonaws.com"
             - Effect: Allow
               # Publishing to a room. The server is authoritative for everything
               # that matters (§4.1), and this is the only principal that can say
