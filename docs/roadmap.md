@@ -171,6 +171,19 @@ The largest chapter. Budget accordingly.
 - Provisional/committed state machine covering level, stats, **and inventory** together
 - Souvenir generation on failure, tier-flavored when the run reached a new tier before failing;
   quest-item clearing at campaign end
+- **Campaign completion, which nothing triggers yet.** `handlers/progression.ts` folds a chapter's
+  XP into `provisional` and stops there, because `commitCampaign()` and `failCampaign()` have no
+  caller and the engine has no notion of a campaign ending — a campaign is currently just a list of
+  chapter ids. Until this lands, gains go provisional and stay there: the commitment rule is armed
+  in one direction only
+- **Write `ChapterProgressRecord`, and count setbacks off it.** `putChapterProgress()` has no caller
+  either, so no chapter outcome survives its run. §8.3's three-setback rule needs the count to
+  persist across weeks, not just across one evening's `RunState`. The record carries `outcome`
+  already; nothing fills it in
+- **Normalise stored characters on read.** `getCharacter`/`listCharacters` cast raw DynamoDB items
+  straight to `Character` — every field trusted, no defaulting, no version. That is why
+  `CharacterProgress.unspentPoints` had to be optional, and this chapter adds more fields to the
+  same stored shape, so the pressure only grows. See the note below
 - **The transformation cutscene** — party stops, camera pushes in, tier swap, full-screen moment
 - Character sheet with tier history
 
@@ -187,6 +200,16 @@ she picked up two sessions ago is still in her bag.
 > Building both against one state machine is meaningfully less work than retrofitting items into it.
 
 > This is the emotional payload of the entire project. Give it more polish than it seems to deserve.
+
+> **On normalising characters.** The failure mode is not hostile input — nothing but our own Lambda
+> ever writes these items. It is *our own schema changes* landing on rows written by an older
+> version, which is a migration problem wearing a validation costume. So: an `assertCharacter()` in
+> the shared package, hand-written in the same style as `assertRulesContent()` and for the same
+> stated reason (no ajv in the shared bundle), called at the repository boundary in **both** stores
+> so the contract suite covers it. Default what is merely missing, throw on what is structurally
+> impossible, and have `listCharacters` skip-and-log a broken one rather than failing the whole
+> list — matching `resolveCharacter`'s existing rule that a stale save must not take the table down
+> mid-session.
 
 > The XP curve and the one-tier-per-campaign frame (spec §8.1) are already in `content/rules.json`.
 > Author chapter awards against the **campaign total** — roughly 700, 1900, 3700 — rather than a
