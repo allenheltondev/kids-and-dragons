@@ -171,6 +171,21 @@ The largest chapter. Budget accordingly.
 - Provisional/committed state machine covering level, stats, **and inventory** together
 - Souvenir generation on failure, tier-flavored when the run reached a new tier before failing;
   quest-item clearing at campaign end
+- **Campaign completion, which nothing triggers yet.** `handlers/progression.ts` folds a chapter's
+  XP into `provisional` and stops there, because `commitCampaign()` and `failCampaign()` have no
+  caller and the engine has no notion of a campaign ending — a campaign is currently just a list of
+  chapter ids. Until this lands, gains go provisional and stay there: the commitment rule is armed
+  in one direction only
+- **Write `ChapterProgressRecord`, and count setbacks off it.** `putChapterProgress()` has no caller
+  either, so no chapter outcome survives its run. §8.3's three-setback rule needs the count to
+  persist across weeks, not just across one evening's `RunState`. The record carries `outcome`
+  already; nothing fills it in
+- **Normalise stored characters on read, and stamp a version** ([architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate)).
+  `getCharacter`/`listCharacters` cast raw DynamoDB items straight to `Character` — every field
+  trusted, no defaulting, no version. That is why `CharacterProgress.unspentPoints` had to be
+  optional, and this chapter adds more fields to the same stored shape, so the pressure only grows.
+  Do it before there is data worth keeping; the migration ladder is far cheaper to start at v1 than
+  to retrofit onto rows nobody can date
 - **The transformation cutscene** — party stops, camera pushes in, tier swap, full-screen moment
 - Character sheet with tier history
 
@@ -187,6 +202,13 @@ she picked up two sessions ago is still in her bag.
 > Building both against one state machine is meaningfully less work than retrofitting items into it.
 
 > This is the emotional payload of the entire project. Give it more polish than it seems to deserve.
+
+> **On normalising characters** — the full plan is [architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate).
+> Short version: a `v` on the storage envelope rather than the domain type, a chain of small
+> read-time migration steps, write-back on the next natural write rather than on read, defaults for
+> what is missing and a throw for what is structurally impossible, and `assertCharacter()`
+> hand-written beside `assertRulesContent()` for the reason that one already gives — no ajv in a
+> bundle that ships to a phone.
 
 > The XP curve and the one-tier-per-campaign frame (spec §8.1) are already in `content/rules.json`.
 > Author chapter awards against the **campaign total** — roughly 700, 1900, 3700 — rather than a

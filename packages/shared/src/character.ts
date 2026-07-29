@@ -26,10 +26,11 @@ import type {
   ResolvedCharacter,
   RulesContent,
   SpeciesId,
+  StatId,
   Stats,
   TierId,
 } from "./types/domain.js";
-import { getClass, getSpecies, levelForXp, tierForLevel } from "./rules.js";
+import { getClass, getSpecies, levelForXp, maxLevel, tierForLevel } from "./rules.js";
 
 /** Thrown for creation payloads that break the rules. Callers map it to ILLEGAL. */
 export class CharacterRuleError extends Error {
@@ -107,7 +108,26 @@ function cloneProgress(progress: CharacterProgress): CharacterProgress {
     tier: progress.tier,
     unlockedActions: [...progress.unlockedActions],
     inventory: progress.inventory.map((e) => ({ ...e })),
+    // Normalized on the way through: a character stored before unspent points
+    // existed comes back without the field, and the arithmetic downstream must
+    // never see `undefined + 1`.
+    unspentPoints: progress.unspentPoints ?? 0,
   };
+}
+
+/**
+ * Writes progress to `provisional` when a campaign is in flight and to
+ * `committed` otherwise. Every mutation in this module goes through here so
+ * there is exactly one answer to "is this gain revertible?" — a second copy of
+ * this branch is how a stat point earned mid-campaign ends up permanent.
+ */
+function writeProgress(character: Character, next: CharacterProgress): Character {
+  return character.provisional
+    ? {
+        ...character,
+        provisional: { ...next, runId: character.provisional.runId } as ProvisionalProgress,
+      }
+    : { ...character, committed: next };
 }
 
 // ---------------------------------------------------------------------------
@@ -129,14 +149,21 @@ export interface NewCharacterInput {
   stats: Stats;
   appearance: Appearance;
   rules: RulesContent;
+  /**
+   * Joining a party already underway (spec §8.4): level 1, or the party's tier
+   * floor — 1, 4, 7, 10 and nothing in between. Defaults to 1.
+   */
+  startingLevel?: number;
   /** ISO timestamp; the caller owns the clock so the engine stays pure. */
   now: string;
 }
 
 /**
- * Builds a level-1 character. This runs on the server against a payload from a
- * phone, so every arithmetic claim in it is checked: the creation budget is
- * exactly `rules.creationPoints` (spec §5 step 3) and nothing goes negative.
+ * Builds a new character, at level 1 or at a tier floor (spec §8.4). This runs
+ * on the server against a payload from a phone, so every arithmetic claim in it
+ * is checked: the creation budget is exactly `rules.creationPoints` (spec §5
+ * step 3), nothing goes negative, and the starting level is one of the four the
+ * spec allows rather than any number the client felt like sending.
  */
 export function newCharacter(input: NewCharacterInput): Character {
   const { rules } = input;
@@ -176,16 +203,28 @@ export function newCharacter(input: NewCharacterInput): Character {
     );
   }
 
+  const level = startingLevel(input);
   const classDef = getClass(rules, input.class);
   const committed: CharacterProgress = {
-    level: 1,
-    xp: 0,
+    level,
+    // The threshold, never 0. A level-7 character carrying 0 XP is one chapter
+    // award away from being level 1 again, because level is derived from XP and
+    // not the other way around (spec §8.4).
+    xp: xpForLevel(rules, level),
     stats,
-    tier: tierForLevel(rules, 1),
-    // The signature action is yours from level 1 (spec §4.3); level unlocks are
-    // appended by awardXp and recomputed defensively in resolveCharacter.
-    unlockedActions: [classDef.signature.id],
+    tier: tierForLevel(rules, level),
+    // The signature action is yours from level 1 (spec §4.3); a character that
+    // joins above 1 also owns everything its level already unlocked, exactly as
+    // if it had earned them. Later unlocks are appended by awardXp and
+    // recomputed defensively in resolveCharacter.
+    unlockedActions: [
+      ...new Set([classDef.signature.id, ...levelUnlocks(rules, input.class, level)]),
+    ],
     inventory: [],
+    // One point per level gained, the same as if those levels had been earned
+    // (spec §8.4 "arithmetically identical") — so a level-7 join sits down with
+    // six points to spend and no other compensation of any kind.
+    unspentPoints: level - 1,
   };
 
   return {
@@ -202,6 +241,41 @@ export function newCharacter(input: NewCharacterInput): Character {
     souvenirs: [],
     createdAt: input.now,
   };
+}
+
+/**
+ * spec §8.4 — a joining character starts at level 1 or at the party's tier
+ * floor, "nothing in between". The floors are read out of content rather than
+ * spelled 1/4/7/10 here, so retuning the tiers cannot leave this check behind.
+ * An out-of-range value is rejected as hard as a bad creation budget is: it
+ * arrives from a phone and decides how strong the character is forever.
+ */
+function startingLevel(input: NewCharacterInput): number {
+  const level = input.startingLevel ?? 1;
+  const floors = [...new Set([1, ...Object.values(input.rules.tierLevels)])].sort((a, b) => a - b);
+  if (!Number.isInteger(level) || !floors.includes(level)) {
+    throw new CharacterRuleError(
+      `character: startingLevel must be 1 or a tier floor (${floors.join(", ")}) — ` +
+        `got ${String(input.startingLevel)}`,
+    );
+  }
+  return level;
+}
+
+/**
+ * Total XP a level is worth. `levelXp[n]` is the total needed to *reach* level
+ * `n + 2`, so level 1 is the zero case and every other level is a lookup —
+ * derived rather than duplicated so a retuned curve moves the join with it.
+ */
+function xpForLevel(rules: RulesContent, level: number): number {
+  if (level <= 1) return 0;
+  const threshold = rules.levelXp[level - 2];
+  if (threshold === undefined) {
+    throw new CharacterRuleError(
+      `character: rules define no XP for level ${level} (the curve stops at ${maxLevel(rules)})`,
+    );
+  }
+  return threshold;
 }
 
 // ---------------------------------------------------------------------------
@@ -284,6 +358,9 @@ export function resolveCharacter(
     // Derived, never trusted from storage: a hand-edited tier can't lie.
     tier: tierForLevel(rules, level),
     stats,
+    // Normalized here so the badge has one number to read, whichever half of
+    // the character it came from and however old the stored record is.
+    unspentPoints: progress.unspentPoints ?? 0,
     maxHp,
     steps,
     // Quick governs dodging (spec §4.1), so it is what an attacker rolls against.
@@ -295,6 +372,8 @@ export function resolveCharacter(
     questItems: [...character.questItems],
     souvenirs: character.souvenirs.map((s) => ({ ...s })),
     isProvisional: Boolean(character.provisional),
+    // Always the committed half, never `progress` — see the field's note.
+    committedLevel: character.committed.level,
   };
 }
 
@@ -316,8 +395,9 @@ export interface AwardXpResult {
  *
  * It writes to `provisional` when a campaign is in flight and to `committed`
  * otherwise — meaning: call `startCampaign()` first, always, or the gain is
- * immediate and cannot be reverted. The stat point each level grants is *not*
- * assigned here; the player spends it at a Rest scene (spec §6.1).
+ * immediate and cannot be reverted. The stat point each level grants is banked
+ * as `unspentPoints`, not assigned to a stat here; the player chooses where it
+ * goes at a Rest scene, via `spendStatPoint()` (spec §6.1, §8.1).
  */
 export function awardXp(
   character: Character,
@@ -338,18 +418,53 @@ export function awardXp(
     level,
     tier,
     unlockedActions: [...unlocked],
+    // One point per level *gained*, not one per award: a big chapter that jumps
+    // three levels owes three points, and a level that a setback's half award
+    // failed to reach owes none (spec §8.1).
+    unspentPoints: (before.unspentPoints ?? 0) + Math.max(0, level - before.level),
   };
 
-  const updated: Character = character.provisional
-    ? {
-        ...character,
-        provisional: { ...next, runId: character.provisional.runId } as ProvisionalProgress,
-      }
-    : { ...character, committed: next };
-
   return {
-    character: updated,
+    character: writeProgress(character, next),
     ...(level > before.level ? { leveledTo: level } : {}),
     ...(tier !== before.tier && level > before.level ? { newTier: tier } : {}),
   };
+}
+
+/**
+ * Spends one banked stat point on `stat`. Levelling banks the point (spec
+ * §8.1); this is the Rest scene where the player decides what it becomes.
+ *
+ * Follows `awardXp` into `provisional` while a campaign is in flight, which is
+ * the whole reason `unspentPoints` sits next to `stats`: revert has to take the
+ * point and the stat it bought at the same time, or a failed campaign leaves
+ * behind a permanent +1 nobody earned (spec §8.3).
+ *
+ * Both refusals are hard errors rather than no-ops. A spend that silently does
+ * nothing looks, on a phone, exactly like a spend that worked.
+ */
+export function spendStatPoint(
+  character: Character,
+  rules: RulesContent,
+  stat: StatId,
+): Character {
+  // The stat id crosses the wire as a string; a typo must not quietly create a
+  // fifth stat on the sheet that nothing else in the game reads.
+  if (!STAT_IDS.includes(stat) || typeof rules.baseStats[stat] !== "number") {
+    throw new CharacterRuleError(`character: unknown stat "${String(stat)}"`);
+  }
+
+  const before = effectiveProgress(character);
+  const available = before.unspentPoints ?? 0;
+  if (available < 1) {
+    throw new CharacterRuleError("character: no unspent stat points to spend");
+  }
+
+  const next: CharacterProgress = {
+    ...cloneProgress(before),
+    stats: { ...before.stats, [stat]: before.stats[stat] + 1 },
+    unspentPoints: available - 1,
+  };
+
+  return writeProgress(character, next);
 }
