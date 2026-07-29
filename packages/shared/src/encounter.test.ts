@@ -191,6 +191,9 @@ function hero(input: HeroInput): ResolvedCharacter {
   return {
     id: input.id,
     ownerPlayerId: "p_1",
+    // Combat never reads this; it is here because `ResolvedCharacter` promises
+    // it (spec §8.1 — the point a level owes, waiting to be spent at a Rest).
+    unspentPoints: 0,
     name: input.id,
     species: "unicorn",
     class: "thornguard",
