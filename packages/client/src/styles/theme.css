@@ -316,9 +316,20 @@ ol {
   inline-size: 100%;
   block-size: 100%;
   overflow: hidden;
-  /* 2.6cqw: ~10px on a 390px phone pane, ~50px on a 1920px TV. Clamped so a
-     tiny pane stays readable and a huge one stays sane. */
-  font-size: clamp(15px, 2.6cqw, 34px);
+  /*
+   * Scale with the pane, but scale *slowly*. The trap here is treating a TV as
+   * a very large phone: at 2.6cqw a 1280px pane lands on a 33px root, every
+   * token is in `em`, and a character name renders at 50px and wraps one
+   * letter per line while the third party member falls off the bottom.
+   *
+   * A TV is watched from a couch and wants big text — but it also wants the
+   * extra width spent on *layout*, letting the lineup grid go wide rather than
+   * inflating every glyph. The cap keeps a 1280px pane near 22px, which is
+   * comfortably readable across a room and still lets three party cards sit
+   * side by side. Both bounds bite in practice: 15px on a phone pane, the cap
+   * on anything TV-sized.
+   */
+  font-size: clamp(15px, min(1.9cqw, 4.4cqh), 23px);
 }
 
 .kad-surface--world {
@@ -336,7 +347,7 @@ ol {
   background: var(--kad-bg);
   /* The player pane is text and buttons, so it scales off the smaller axis to
      avoid enormous type on a landscape tablet. */
-  font-size: clamp(15px, min(2.6cqw, 5.5cqh), 30px);
+  font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
 }
 
 /* Full-bleed layer inside a surface (dice, cutscenes, lobby). Percentages, not

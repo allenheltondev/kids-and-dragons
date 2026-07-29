@@ -8,18 +8,26 @@
  * protocol regression fails here rather than at the table.
  */
 
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Browser, type Page } from "@playwright/test";
 
 const NAMES = ["Allen", "Sam", "Rosie"] as const;
 
-/** Walk one phone through character creation (spec §5). */
+/**
+ * Walk one phone through character creation (spec §5).
+ *
+ * Every click carries an explicit timeout. Without one, Playwright's default
+ * is the whole test budget, so a single unactionable control burns five
+ * minutes and reports "test timed out" with no clue which step it died on.
+ */
+const TAP = { timeout: 20_000 } as const;
+
 async function createCharacter(page: Page, species: string, name: string): Promise<void> {
-  await page.getByRole("button", { name: new RegExp(species, "i") }).first().click();
-  await page.getByRole("button", { name: /^next$/i }).click();
+  await page.getByRole("button", { name: new RegExp(species, "i") }).first().click(TAP);
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
   // Class — take whichever is first; every class is legal with every species.
-  await page.locator(".creation-choice, .creation-card, button").filter({ hasText: /thornguard|duskrunner|starweaver|songkeeper/i }).first().click();
-  await page.getByRole("button", { name: /^next$/i }).click();
+  await page.locator(".creation-choice, .creation-card, button").filter({ hasText: /thornguard|duskrunner|starweaver|songkeeper/i }).first().click(TAP);
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
   // Stats: spend every creation point. The "+" control is *hidden* once the
   // budget is gone, which is the assertion — nothing greyed out (spec §11).
@@ -28,27 +36,27 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   for (let i = 0; i < 12; i++) {
     const adds = page.getByRole("button", { name: /add a point to/i });
     if ((await adds.count()) === 0) break;
-    await adds.first().click();
+    await adds.first().click(TAP);
     await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(
       i === 2 ? 0 : 4,
       { timeout: 5_000 },
     );
   }
   await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(0);
-  await page.getByRole("button", { name: /^next$/i }).click();
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
   // Appearance: a colour and an accent, both deliberate taps — nothing is
   // preselected, so "Next" stays inert until the choice is actually made.
   const fieldsets = page.locator(".creation-fieldset");
-  await fieldsets.nth(0).locator(".creation-swatch").first().click();
-  await fieldsets.nth(1).locator(".creation-swatch").first().click();
-  await page.getByRole("button", { name: /^next$/i }).click();
+  await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
+  await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
   // Name. "Surprise me" has to be there — typing must never be required
   // (spec §5.5) — but the test types, so it can assert on the result later.
   await expect(page.getByRole("button", { name: /surprise me/i })).toBeVisible();
-  await page.getByPlaceholder("Tap to type").fill(name);
-  await page.getByRole("button", { name: /that's me/i }).click();
+  await page.getByPlaceholder("Tap to type").fill(name, TAP);
+  await page.getByRole("button", { name: /that's me/i }).click(TAP);
 }
 
 /** The server's view, so the test asserts on authority rather than on pixels. */
@@ -86,11 +94,27 @@ async function answerPrompt(page: Page, heroes: readonly string[]): Promise<bool
   return true;
 }
 
+/**
+ * Contexts are closed at the end of every test. Playwright would otherwise
+ * hold them until the worker exits, and each open phone keeps an SSE stream
+ * to the dev server: by the third spec there are nine, all multiplexed through
+ * one Vite proxy, and later tests start losing races against socket limits.
+ */
 test.describe("first playable", () => {
+  const openContexts: { close(): Promise<void> }[] = [];
+
+  async function phone(browser: Browser, width = 390, height = 844): Promise<Page> {
+    const context = await browser.newContext({ viewport: { width, height } });
+    openContexts.push(context);
+    return context.newPage();
+  }
+
+  test.afterEach(async () => {
+    await Promise.all(openContexts.splice(0).map((c) => c.close().catch(() => undefined)));
+  });
+
   test("travel mode: three phones, one room, a character each", async ({ browser }) => {
-    const phones = await Promise.all(
-      NAMES.map(() => browser.newContext({ viewport: { width: 390, height: 844 } }).then((c) => c.newPage())),
-    );
+    const phones = [await phone(browser), await phone(browser), await phone(browser)];
     const [host, ...others] = phones as [Page, Page, Page];
 
     await host.goto("/");
@@ -131,9 +155,7 @@ test.describe("first playable", () => {
   });
 
   test("three players take a chapter from the lobby to the end", async ({ browser }) => {
-    const phones = await Promise.all(
-      NAMES.map(() => browser.newContext({ viewport: { width: 390, height: 844 } }).then((c) => c.newPage())),
-    );
+    const phones = [await phone(browser), await phone(browser), await phone(browser)];
     const [host] = phones as [Page, ...Page[]];
 
     await host.goto("/");
@@ -202,7 +224,7 @@ test.describe("first playable", () => {
   });
 
   test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {
-    const host = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+    const host = await phone(browser);
     await host.goto("/");
     await host.fill('input[placeholder="Type your name"]', "Allen");
     await host.getByText("Travel Mode").click();
@@ -213,23 +235,23 @@ test.describe("first playable", () => {
     // The QR encodes this URL, so scanning it is the same as opening it on a
     // phone that has never seen the app. Being asked to retype the code you
     // just scanned would make the QR pointless.
-    const scanned = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+    const scanned = await phone(browser);
     await scanned.goto(`/p/${code}`);
     await expect(scanned.getByLabel(/room code/i)).toHaveValue(code);
   });
 
   test("party mode: the TV attaches with no identity at all", async ({ browser }) => {
-    const phone = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
-    await phone.goto("/");
-    await phone.fill('input[placeholder="Type your name"]', "Allen");
-    await phone.getByText("Party Mode").click();
-    await phone.getByRole("button", { name: /start a game/i }).click();
-    await expect(phone).toHaveURL(/\/p\/[A-Z]{4}$/);
-    const code = new URL(phone.url()).pathname.split("/").pop()!;
+    const controller = await phone(browser);
+    await controller.goto("/");
+    await controller.fill('input[placeholder="Type your name"]', "Allen");
+    await controller.getByText("Party Mode").click();
+    await controller.getByRole("button", { name: /start a game/i }).click();
+    await expect(controller).toHaveURL(/\/p\/[A-Z]{4}$/);
+    const code = new URL(controller.url()).pathname.split("/").pop()!;
 
     // A fresh context — no localStorage, no device token, no player. The TV is
     // a pure display client and must attach on the room code alone (spec §2.1).
-    const tv = await (await browser.newContext({ viewport: { width: 1280, height: 720 } })).newPage();
+    const tv = await phone(browser, 1280, 720);
     const tvErrors: string[] = [];
     tv.on("pageerror", (e) => tvErrors.push(e.message));
     await tv.goto(`/tv/${code}`);
@@ -237,7 +259,7 @@ test.describe("first playable", () => {
     // room, so assert on the letters rather than the string.
     await expect(tv.getByText(/room code/i).first()).toBeVisible({ timeout: 10_000 });
 
-    await createCharacter(phone, "unicorn", "Sparklehoof");
+    await createCharacter(controller, "unicorn", "Sparklehoof");
     // The TV never asked for this and has no session — it arrived over the
     // room channel alone.
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible({ timeout: 15_000 });
