@@ -28,6 +28,17 @@
  * - **No cleverness about walls, chokepoints, or turn order.** It walks at
  *   somebody and swings.
  *
+ * **If encounters ever play too soft, do not make this policy cleverer.** The
+ * door left open is a *second sentence* for a specific creature — "the wolf
+ * always goes for whoever moved last", "the sentinel never leaves the bridge" —
+ * selected by a `behaviour` field on `EnemySpec` in types/chapter.ts, which is
+ * content-authored, so a new one is a chapter edit rather than a deploy. Two
+ * readable sentences stay predictable and give a chapter author a real dial. One
+ * sentence with exceptions bolted on does not: the moment a monster's choice
+ * depends on something she cannot see on the board, positioning stops being a
+ * decision and goes back to being a guess. The test that pins `hp`/`maxHp`
+ * unread is the tripwire for the most tempting version of getting this wrong.
+ *
  * **It never targets a knocked-down hero (§7.3).** She is down, not dead, and
  * lying on the grid waiting for a Help Up. An enemy that keeps hitting a fallen
  * friend is both cruel and, worse for this module, unreadable — the picture on
