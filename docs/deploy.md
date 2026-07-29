@@ -131,7 +131,15 @@ two-second command on a laptop.
 ## Operating it
 
 **Where the logs are.** `/aws/lambda/kad-*`, JSON-formatted, 30-day retention.
-The sweeper logs a one-line summary per run: scanned, deleted, failed.
+The sweeper logs a one-line summary per run: scanned, deleted, spared, failed.
+`spared` counts households somebody claimed between the index query and the
+delete — not an error, a save.
+
+**A client connects but never updates.** That is the realtime path, not the API:
+the snapshot arrives over HTTP and the patches do not. Check the
+`kad-channel-authorizer` logs — a deny there means the token names a different
+room, the room has expired, or the device was revoked. `sync/appsync-socket.ts`
+logs `closed before subscribing` on the browser side for the same case.
 
 **A room is stuck.** Rooms expire on their own after six hours. `getRoom` filters
 expired rooms at read time rather than waiting for the TTL sweep, so a stale code

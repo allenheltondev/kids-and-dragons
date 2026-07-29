@@ -22,6 +22,8 @@ const BATCH = 25;
 export interface SweepResult {
   scanned: number;
   deleted: string[];
+  /** Claimed between the index query and the delete. Not an error — a save. */
+  spared: string[];
   failed: { householdId: string; reason: string }[];
 }
 
@@ -30,39 +32,38 @@ export async function handler(): Promise<SweepResult> {
   const nowIso = new Date().toISOString();
 
   const expired = await repo.listExpiredGuestHouseholds(nowIso, BATCH);
-  const result: SweepResult = { scanned: expired.length, deleted: [], failed: [] };
+  const result: SweepResult = { scanned: expired.length, deleted: [], spared: [], failed: [] };
 
   for (const household of expired) {
-    /*
-     * Re-read before deleting. The list came from an index query that may be
-     * moments old, and the interesting race is a real one: somebody signs in
-     * during the seconds between the query and the delete, and this function
-     * would otherwise delete the household they just claimed — losing exactly
-     * the characters the sign-in was for.
-     */
-    const current = await repo.getHousehold(household.id);
-    if (!current || !current.guest) {
-      console.log(`[sweep] skipping ${household.id}: claimed since the query`);
-      continue;
-    }
-    if (current.expiresAt && current.expiresAt > nowIso) {
-      console.log(`[sweep] skipping ${household.id}: expiry moved`);
-      continue;
-    }
-
     try {
-      await repo.deleteHousehold(current.id);
-      result.deleted.push(current.id);
+      /*
+       * The expiry check lives inside the delete, on purpose. An earlier
+       * version read the household back here and skipped it if it had been
+       * claimed — which reads like a guard and is not one: a sign-in landing
+       * between that read and the delete still lost the characters, and it is
+       * the exact window a family hits by signing in the moment they are
+       * reminded the game is about to forget them.
+       *
+       * `deleteGuestHousehold` gates the whole operation on a conditional
+       * write instead, and returns false when the claim got there first.
+       */
+      const deleted = await repo.deleteGuestHousehold(household.id, nowIso);
+      if (deleted) result.deleted.push(household.id);
+      else {
+        console.log(`[sweep] sparing ${household.id}: claimed since the index query`);
+        result.spared.push(household.id);
+      }
     } catch (err) {
       // One bad household must not stop the rest of the sweep.
       const reason = err instanceof Error ? err.message : String(err);
-      console.error(`[sweep] could not delete ${current.id}: ${reason}`);
-      result.failed.push({ householdId: current.id, reason });
+      console.error(`[sweep] could not delete ${household.id}: ${reason}`);
+      result.failed.push({ householdId: household.id, reason });
     }
   }
 
   console.log(
-    `[sweep] scanned ${result.scanned}, deleted ${result.deleted.length}, failed ${result.failed.length}`,
+    `[sweep] scanned ${result.scanned}, deleted ${result.deleted.length}, ` +
+      `spared ${result.spared.length}, failed ${result.failed.length}`,
   );
   return result;
 }

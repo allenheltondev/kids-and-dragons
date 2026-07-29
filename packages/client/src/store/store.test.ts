@@ -63,6 +63,15 @@ function harness(state: RunState = makeState()): Harness {
       sessionToken: "tok_1",
       state,
     })),
+    // How a display client attaches (§4.5): a viewer token plus the snapshot,
+    // in one call. The TV cannot subscribe to the prod channel without it.
+    watchRoom: vi.fn(async () => ({
+      runId: state.runId,
+      mode: state.mode,
+      expiresAt: "2026-07-05T00:00:00.000Z",
+      viewerToken: "tok_view",
+      state,
+    })),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
@@ -393,7 +402,14 @@ describe("display clients (spec §2.1)", () => {
     await h.store.getState().attach("abcd", "display");
 
     const session = h.store.getState().session;
-    expect(session).toMatchObject({ runId: "r_1", roomCode: "ABCD", playerId: "", sessionToken: "" });
+    // A viewer token, not a session token: it names the room and nothing else,
+    // and `playerId: ""` is what actually denies authority.
+    expect(session).toMatchObject({
+      runId: "r_1",
+      roomCode: "ABCD",
+      playerId: "",
+      sessionToken: "tok_view",
+    });
     expect(h.api.joinRoom).not.toHaveBeenCalled();
     expect(h.storage.getItem("kad.session.ABCD")).toBeNull();
     expect(h.store.getState().state?.runId).toBe("r_1");
@@ -543,4 +559,72 @@ describe("isPromptForPlayer", () => {
 // A store built per test; nothing leaks between them.
 beforeEach(() => {
   vi.clearAllMocks();
+});
+
+describe("choosing a transport (architecture §4.4)", () => {
+  /*
+   * The regression this exists for: the server was switched to publish through
+   * AppSync Events while the client still opened an `EventSource` against the
+   * dev server's `/events/<code>`, which no Lambda serves. Every check passed —
+   * locally SSE is the only transport there is — and in production every phone
+   * and TV would have 404ed forever and silently never applied a patch.
+   */
+  const REALTIME = {
+    region: "us-east-1",
+    realtime: {
+      httpDomain: "abc.appsync-api.us-east-1.amazonaws.com",
+      realtimeDomain: "abc.appsync-realtime-api.us-east-1.amazonaws.com",
+      namespace: "room",
+    },
+    auth: { userPoolId: "us-east-1_abc", clientId: "c" },
+  };
+
+  it("opens the AppSync socket where the deployment has one", async () => {
+    const h = harness();
+    h.api.fetchConfig.mockResolvedValue(REALTIME);
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    expect(h.channelOptions().createEventSource).toBeTypeOf("function");
+  });
+
+  it("falls back to SSE on a laptop, where /api/config does not exist", async () => {
+    const h = harness();
+    // `fetchConfig` already resolves null — the local-dev answer.
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    // Undefined means openChannel uses its own EventSource default.
+    expect(h.channelOptions().createEventSource).toBeUndefined();
+  });
+
+  it("falls back to SSE rather than failing when the config cannot be read", async () => {
+    const h = harness();
+    h.api.fetchConfig.mockRejectedValue(new Error("offline"));
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    expect(h.store.getState().session).not.toBeNull();
+    expect(h.channelOptions().createEventSource).toBeUndefined();
+  });
+
+  it("asks for the config once, however many rooms are joined", async () => {
+    const h = harness();
+    h.api.fetchConfig.mockResolvedValue(REALTIME);
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.store.getState().leave();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    expect(h.api.fetchConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it("gives the TV the same transport as a phone, on its viewer token", async () => {
+    const h = harness();
+    h.api.fetchConfig.mockResolvedValue(REALTIME);
+
+    await h.store.getState().attach("ABCD", "display");
+
+    expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD");
+    expect(h.channelOptions().createEventSource).toBeTypeOf("function");
+  });
 });

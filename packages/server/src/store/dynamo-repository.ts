@@ -84,6 +84,11 @@ export const GSI1_NAME = "GSI1";
 /** BatchWriteItem's hard limit. */
 const BATCH_SIZE = 25;
 
+/** Retries per chunk before a sweep gives up and says so. */
+const MAX_BATCH_ATTEMPTS = 6;
+
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
 export interface DynamoRepositoryOptions {
   tableName: string;
   /** Injected by tests (DynamoDB Local); defaults to the ambient credentials. */
@@ -159,16 +164,46 @@ export class DynamoRepository implements GameRepository {
     );
   }
 
+  /**
+   * Deletes every key, and does not return until they are actually gone.
+   *
+   * `BatchWriteItem` can return **200 with work left undone**: under partial
+   * throttling it hands back the requests it declined in `UnprocessedItems`.
+   * Treating that as success is quietly destructive here — the sweeper deletes
+   * a household's rows and then its `META` row, so a dropped chunk leaves
+   * characters and event logs behind with nothing pointing at them and no index
+   * entry for a later sweep to rediscover them by. Orphaned forever, and
+   * invisible.
+   *
+   * So: retry what came back, with backoff, and throw rather than return if it
+   * still will not finish. A sweep that fails loudly is recoverable; one that
+   * lies is not.
+   */
   private async deleteAll(keys: { PK: string; SK: string }[]): Promise<void> {
     for (let i = 0; i < keys.length; i += BATCH_SIZE) {
       const chunk = keys.slice(i, i + BATCH_SIZE);
-      await this.doc.send(
-        new BatchWriteCommand({
-          RequestItems: {
-            [this.table]: chunk.map((Key) => ({ DeleteRequest: { Key } })),
-          },
-        }),
-      );
+      let pending: Record<string, unknown[]> = {
+        [this.table]: chunk.map((Key) => ({ DeleteRequest: { Key } })),
+      };
+
+      for (let attempt = 0; ; attempt++) {
+        const out = await this.doc.send(
+          new BatchWriteCommand({ RequestItems: pending as never }),
+        );
+        const unprocessed = out.UnprocessedItems ?? {};
+        const left = unprocessed[this.table] ?? [];
+        if (left.length === 0) break;
+
+        if (attempt >= MAX_BATCH_ATTEMPTS) {
+          throw new Error(
+            `BatchWriteItem left ${String(left.length)} deletes unprocessed after ` +
+              `${String(attempt + 1)} attempts on ${this.table}`,
+          );
+        }
+        pending = { [this.table]: left as unknown[] };
+        // Exponential with jitter: a retry storm is what caused the throttle.
+        await sleep(2 ** attempt * 50 * (0.5 + Math.random()));
+      }
     }
   }
 
@@ -207,8 +242,16 @@ export class DynamoRepository implements GameRepository {
           Key: { PK: HH(householdId), SK: META },
           UpdateExpression:
             "SET #d.#owner = :sub, #d.#guest = :no REMOVE #d.#expires, GSI1PK, GSI1SK",
+          /*
+           * `attribute_not_exists(sweeping)` is the other half of the sweeper's
+           * conditional delete. Once a sweep has begun, claiming has to fail —
+           * otherwise the claim succeeds against a household whose characters
+           * are already being deleted, and the family is told their party is
+           * kept while it disappears.
+           */
           ConditionExpression:
-            "attribute_exists(PK) AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null OR #d.#owner = :sub)",
+            "attribute_exists(PK) AND attribute_not_exists(sweeping) " +
+            "AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null OR #d.#owner = :sub)",
           ExpressionAttributeNames: {
             "#d": "data",
             "#owner": "ownerSub",
@@ -243,10 +286,40 @@ export class DynamoRepository implements GameRepository {
     return items.map((i) => i.data as Household);
   }
 
-  async deleteHousehold(householdId: string): Promise<void> {
-    // Runs first. They live in their own partitions and are only reachable
-    // *through* the household, so removing the household rows first would leave
-    // every event log behind with nothing pointing at it.
+  async deleteGuestHousehold(householdId: string, nowIso: string): Promise<boolean> {
+    /*
+     * Phase 1 — claim the right to delete, conditionally.
+     *
+     * This single write is what makes the whole operation safe. It is the point
+     * at which a concurrent `claimHousehold` either has already won (this
+     * condition fails, and nothing is deleted) or has already lost (it will
+     * fail on `attribute_not_exists(sweeping)` from here on).
+     *
+     * Deliberately *not* conditional on `sweeping` being absent: a sweep that
+     * died halfway leaves the marker set, and refusing to re-enter would strand
+     * that household forever.
+     */
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET sweeping = :yes",
+          ConditionExpression:
+            "attribute_exists(PK) AND #d.#guest = :true AND #d.#expires <= :now",
+          ExpressionAttributeNames: { "#d": "data", "#guest": "guest", "#expires": "expiresAt" },
+          ExpressionAttributeValues: { ":yes": true, ":true": true, ":now": nowIso },
+        }),
+      );
+    } catch (err) {
+      // Claimed in time, already gone, or expiry moved. All mean "leave it".
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+
+    // Phase 2 — the contents. Runs live in their own partitions and are only
+    // reachable *through* the household, so they go before anything in the
+    // household partition is touched.
     for (const run of await this.listRuns(householdId)) {
       const runItems = await this.partition(RUN(run.id));
       await this.deleteAll(runItems.map(({ PK, SK }) => ({ PK, SK })));
@@ -261,8 +334,18 @@ export class DynamoRepository implements GameRepository {
         }),
       );
     }
+
+    // Phase 3 — everything else in the household partition, `META` last. It
+    // carries the GUEST index entry, so until it goes an interrupted sweep is
+    // still discoverable by the next one.
     const items = await this.partition(HH(householdId));
-    await this.deleteAll(items.map(({ PK, SK }) => ({ PK, SK })));
+    await this.deleteAll(
+      items.filter((i) => i.SK !== META).map(({ PK, SK }) => ({ PK, SK })),
+    );
+    await this.doc.send(
+      new DeleteCommand({ TableName: this.table, Key: { PK: HH(householdId), SK: META } }),
+    );
+    return true;
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
