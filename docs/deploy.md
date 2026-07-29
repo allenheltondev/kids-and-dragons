@@ -8,9 +8,15 @@ Companion to [architecture.md §2](./architecture.md#2-aws-topology) and
 
 | When | What happens |
 |---|---|
-| You open or push to a pull request | the **staging** stack is deployed |
-| The pull request merges to `main` | the **prod** stack is deployed |
+| You open or push to a pull request | the **Staging** environment → the `kad-staging` stack |
+| The pull request merges to `main` | the **Production** environment → the `kad-prod` stack |
 | You need a redeploy without a commit | Actions → Deploy → Run workflow |
+
+Two naming schemes meet here and are deliberately kept apart: the **GitHub
+environment** (`Staging` / `Production`) is where the role ARN and any
+protection rules live, and the **AWS stage** (`staging` / `prod`) names the
+stack, the table, and `StageName` in the template. The workflow maps one to the
+other in a single step.
 
 Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 
@@ -55,12 +61,24 @@ aws cloudformation deploy \
 If `token.actions.githubusercontent.com` already exists in the account — an
 account may hold only one — add `CreateOidcProvider=false`.
 
-**2. Create two GitHub environments**, `staging` and `prod`, and set
-`AWS_DEPLOYMENT_ROLE_ARN` on each from the stack's `StagingRoleArn` and
-`ProdRoleArn` outputs. The roles trust *their own environment only*, so the
-secret is not interchangeable and a pull request cannot reach prod.
+**2. Create two GitHub environments**, named **`Staging`** and **`Production`**,
+and set `AWS_DEPLOYMENT_ROLE_ARN` on each — `StagingRoleArn` on Staging,
+`ProdRoleArn` on Production.
 
-Worth adding on `prod`: a required reviewer. That turns "merged to main" into
+Those names are load-bearing in two places, and both fail confusingly if they
+drift. `deploy.yml` matches on them exactly (a mismatch makes GitHub create a
+*different* environment, with no secret in it), and the OIDC `sub` claim carries
+the name as configured, matched with `StringEquals` in the trust policy — so
+`Staging` and `staging` are different principals. If you rename an environment,
+redeploy the bootstrap stack with the new
+`StagingEnvironmentName` / `ProdEnvironmentName`.
+
+**The two ARNs are not interchangeable.** Each role trusts exactly one
+environment, so the same ARN in both leaves one of them failing with
+*"Not authorized to perform sts:AssumeRoleWithWebIdentity"*. That message means
+the trust boundary is working, not that it is misconfigured.
+
+Worth adding on Production: a required reviewer. That turns "merged to main" into
 "merged to main, and somebody pressed go", which is the version of this you want
 on a Tuesday evening.
 
