@@ -215,9 +215,9 @@ function hero(input: HeroInput): ResolvedCharacter {
   };
 }
 
-/** `guard - rules.baseGuard` is the Quick this monster rolls with (see the module). */
+/** Quick is authored now, not inferred from Guard (see the module). */
 function wisp(overrides: Partial<EnemySpec> = {}): EnemySpec {
-  return { id: "wisp", count: 1, hp: 6, guard: 11, steps: 5, attack: 3, ...overrides };
+  return { id: "wisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3, ...overrides };
 }
 
 function setup(input: Partial<EncounterSetup> = {}): EncounterSetup {

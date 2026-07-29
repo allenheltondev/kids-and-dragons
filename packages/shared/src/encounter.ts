@@ -426,16 +426,19 @@ function enemyId(specId: string, ordinal: number): ActorId {
 }
 
 /**
- * How nimble a monster is. `EnemySpec` carries four numbers and Quick is not
- * one of them, but `resolveCharacter` builds Guard as `baseGuard + quick`, so
- * an authored Guard has already said it: a dodgier monster is a faster one.
- * Inferring keeps `EnemySpec` at four numbers an author can hold in their head
- * rather than five, and keeps monsters and characters rolling the same
- * initiative. Clamped at 0 so a deliberately flimsy enemy does not roll
- * negative and land behind the furniture.
+ * How nimble a monster is — authored on `EnemySpec`, on the same scale as a
+ * character's Quick so both roll the same initiative.
+ *
+ * This used to be inferred as `guard - baseGuard`, on the reasoning that
+ * `resolveCharacter` builds Guard that way so an authored Guard had already
+ * said it. It had not: that makes armour and speed one dial, so an armoured
+ * brute necessarily acts first and a slow tank cannot be authored. The
+ * Bramblewisp showed the other end of it — 5 steps, guard 11, and therefore an
+ * inferred Quick of 0, making the fastest thing in the chapter the last to
+ * move. Clamped at 0 so a flimsy enemy does not roll negative.
  */
-function enemyQuick(rules: RulesContent, spec: EnemySpec): number {
-  return Math.max(0, spec.guard - rules.baseGuard);
+function enemyQuick(spec: EnemySpec): number {
+  return Math.max(0, Math.floor(spec.quick));
 }
 
 /**
@@ -557,7 +560,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       initiative: 0,
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
-    seats.push({ id, side: "enemy", quick: enemyQuick(ctx.rules, spec) });
+    seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
   }
 
   // placeActor is the one that refuses two figures on a tile or a spawn in a

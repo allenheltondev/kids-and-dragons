@@ -244,7 +244,7 @@
     "enemySpec": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "count", "hp", "guard", "steps", "attack"],
+      "required": ["id", "count", "hp", "guard", "quick", "steps", "attack"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
         "name": { "type": "string", "minLength": 1 },
@@ -256,6 +256,11 @@
         },
         "hp": { "type": "integer", "minimum": 1 },
         "guard": { "type": "integer", "minimum": 1 },
+        "quick": {
+          "$comment": "Initiative, same scale as a character's Quick (spec §7.2). Authored, never inferred from guard — see EnemySpec in types/chapter.ts.",
+          "type": "integer",
+          "minimum": 0
+        },
         "steps": { "type": "integer", "minimum": 0 },
         "attack": { "type": "integer", "minimum": 0 },
         "art": { "type": "string", "minLength": 1 }
