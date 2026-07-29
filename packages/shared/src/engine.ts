@@ -560,9 +560,13 @@ function doCreateCharacter(
   intent: Extract<ClientIntent, { type: "CREATE_CHARACTER" }>,
   ctx: EngineContext,
 ): Presentation | undefined {
-  if (draft.phase !== "lobby" && draft.phase !== "creation") {
-    throw new Illegal("ILLEGAL", "characters are created before the chapter starts");
-  }
+  /*
+   * Deliberately allowed at any phase. Refusing once the chapter has started
+   * strands anyone who joins late — their phone has no character, so it offers
+   * the creation flow, and the server then refuses the only thing they can do.
+   * Someone arriving mid-chapter walking on as a new party member is a much
+   * better answer than a phone that says "finding your character" forever.
+   */
   if (memberByPlayer(draft, playerId)) {
     throw new Illegal("ILLEGAL", `player "${playerId}" already has a character in this run`);
   }
@@ -744,8 +748,23 @@ function resolveEncounter(draft: RunState, ctx: EngineContext): Presentation | u
 function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefined {
   if (draft.phase === "encounter") return resolveEncounter(draft, ctx);
   if (draft.phase === "chapter_complete") {
-    // The chapter is over and the run is intact. Nothing to advance to; the
-    // server starts the next chapter.
+    /*
+     * Back to the lobby. Picking the *next* chapter is roadmap Chapter 5 (it
+     * rides on the same commitment machinery as levelling), so there is
+     * nowhere else to advance to yet — but the completion screen offers a
+     * button, and a button that does nothing is worse than no button. The
+     * lobby is somewhere real: the party is intact, everyone re-readies, and
+     * the run can start a chapter again.
+     */
+    draft.phase = "lobby";
+    draft.chapterId = null;
+    draft.sceneId = null;
+    draft.sceneType = null;
+    draft.narration = "";
+    draft.art = null;
+    draft.prompt = null;
+    draft.lastRoll = null;
+    for (const member of draft.party) member.ready = false;
     return undefined;
   }
   if (draft.prompt) {

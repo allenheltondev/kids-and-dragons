@@ -45,6 +45,30 @@ describe("applyAction — the seq gate (architecture §4.2)", () => {
     expect(state?.flags.east).toBe(true);
   });
 
+  it("refuses to act for another player when a principal is present", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const me = room.player.principal;
+
+    // Party player IDs are in the room state every client already holds, so
+    // without a principal the body's playerId is the only claim being made.
+    const response = await applyAction(
+      {
+        runId: room.runId,
+        playerId: "p_somebody_else",
+        seq: 0,
+        intent: choose("east"),
+        principal: { householdId: me.householdId, playerId: me.playerId, role: me.role },
+      },
+      harness.deps,
+    );
+
+    expect(response.ok).toBe(false);
+    expect(response.error?.code).toBe("FORBIDDEN");
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.seq).toBe(0);
+  });
+
   it("rejects a stale seq without touching the run", async () => {
     const harness = makeHarness();
     const room = await setup(harness);

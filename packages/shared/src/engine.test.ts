@@ -635,3 +635,65 @@ describe("SET_MODE", () => {
     expect(result.state.mode).toBe("party");
   });
 });
+
+describe("the end of a chapter", () => {
+  it("ADVANCE returns the party to the lobby rather than doing nothing", () => {
+    const context = ctx();
+    const start = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } }],
+      context,
+    );
+
+    let state = start.state;
+    // Walk whatever is left of the chapter until it completes.
+    for (let guard = 0; guard < 20 && state.phase !== "chapter_complete"; guard++) {
+      const prompt = state.prompt;
+      if (prompt?.kind === "choice") {
+        for (const member of state.party) {
+          state = applyIntent(
+            state,
+            { playerId: member.playerId, intent: { type: "CHOOSE", choiceId: prompt.options[0]!.id } },
+            context,
+          ).state;
+          if (state.phase === "chapter_complete") break;
+        }
+      } else if (prompt?.kind === "roll") {
+        const owner = state.party.find((m) => m.character.id === prompt.characterId)!;
+        state = applyIntent(state, { playerId: owner.playerId, intent: { type: "ROLL" } }, context).state;
+      } else {
+        state = applyIntent(state, { playerId: "p_1", intent: { type: "ADVANCE" } }, context).state;
+      }
+    }
+    expect(state.phase).toBe("chapter_complete");
+
+    const result = applyIntent(state, { playerId: "p_1", intent: { type: "ADVANCE" } }, context);
+    expect(result.error).toBeUndefined();
+
+    // The completion screen offers a button; it has to land somewhere real.
+    expect(result.state.phase).toBe("lobby");
+    expect(result.state.chapterId).toBeNull();
+    expect(result.state.prompt).toBeNull();
+    expect(result.state.party).toHaveLength(2);
+    expect(result.state.party.every((m) => !m.ready)).toBe(true);
+  });
+});
+
+describe("a late joiner", () => {
+  it("can still make a character after the chapter has started", () => {
+    const context = ctx();
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } }],
+      context,
+    ).state;
+    expect(started.phase).not.toBe("lobby");
+
+    const result = applyIntent(started, { playerId: "p_3", intent: CREATE_UNICORN }, context);
+
+    // Refusing here strands them: their phone offers the creation flow because
+    // they have no character, and the server refuses the only thing they can do.
+    expect(result.error).toBeUndefined();
+    expect(result.state.party.some((m) => m.playerId === "p_3")).toBe(true);
+  });
+});

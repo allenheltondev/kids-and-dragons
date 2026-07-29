@@ -187,15 +187,22 @@ test.describe("first playable", () => {
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
     await expect(host.getByText(/the story|what do you do/i).first()).toBeVisible();
 
-    // Play it the way a table does: whoever the game is asking, answers.
-    // The route through the chapter depends on real dice, so the number of
-    // turns varies from run to run.
+    /*
+     * Play it the way a table does: whoever the game is asking, answers. The
+     * route through the chapter depends on real dice, so the number of turns
+     * varies from run to run.
+     *
+     * The state is re-read after *every* action, not once per turn. The
+     * completion screen's own button is live — it takes the party back to the
+     * lobby — so a phone tapping it is enough to move the run past
+     * `chapter_complete` before the end of the turn.
+     */
+    let completed: { phase: string; xpEarned: number } | null = null;
     let quiet = 0;
-    for (let turn = 0; turn < 60; turn++) {
-      const state = await serverState(code);
-      if (state.phase === "chapter_complete") break;
 
+    for (let turn = 0; turn < 60 && completed === null; turn++) {
       let acted = false;
+
       for (const page of phones) {
         const roll = page.getByRole("button", { name: /^roll/i });
         if ((await roll.count()) > 0 && (await roll.first().isVisible().catch(() => false))) {
@@ -203,9 +210,17 @@ test.describe("first playable", () => {
           // The roll is the centrepiece and takes its ~1.5s (spec §2.2).
           await page.waitForTimeout(2600);
           acted = true;
+        } else if (await answerPrompt(page, heroes)) {
+          acted = true;
+        } else {
           continue;
         }
-        if (await answerPrompt(page, heroes)) acted = true;
+
+        const state = await serverState(code);
+        if (state.phase === "chapter_complete") {
+          completed = state;
+          break;
+        }
       }
 
       // A quiet turn is normal — a roll is animating, or a patch is in flight.
@@ -213,14 +228,12 @@ test.describe("first playable", () => {
       // which is the thing worth failing on.
       quiet = acted ? 0 : quiet + 1;
       if (quiet > 0) await host.waitForTimeout(1_200);
-      expect(quiet, `stuck at ${state.phase}: nobody has anything to tap`).toBeLessThan(4);
+      expect(quiet, "stuck: nobody has anything to tap").toBeLessThan(4);
     }
 
-    const final = await serverState(code);
-    expect(final.phase).toBe("chapter_complete");
+    expect(completed, "the chapter never finished").not.toBeNull();
     // XP is awarded per chapter, not per enemy — exploring counts (spec §8.1).
-    expect(final.xpEarned).toBeGreaterThan(0);
-    await expect(host.getByText(/\b\d+\b/).first()).toBeVisible();
+    expect(completed!.xpEarned).toBeGreaterThan(0);
   });
 
   test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {

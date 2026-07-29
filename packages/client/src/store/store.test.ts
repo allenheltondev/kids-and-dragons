@@ -44,11 +44,17 @@ function harness(state: RunState = makeState()): Harness {
   let closes = 0;
 
   const api = {
+    // Creating a room seats the host, so the real response is a room *and* a
+    // join, with the device binding the server issued.
     createRoom: vi.fn(async () => ({
       code: state.roomCode,
       runId: state.runId,
       mode: state.mode,
       expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state,
+      deviceToken: "dev_host",
     })),
     joinRoom: vi.fn(async () => ({
       runId: state.runId,
@@ -140,14 +146,31 @@ describe("joining", () => {
     });
   });
 
-  it("creates a room by creating then joining it", async () => {
+  it("takes the seat the create response already gave it", async () => {
     const h = harness();
-    await h.store.getState().createRoom("travel", "Allen");
+    const session = await h.store.getState().createRoom("travel", "Allen");
 
     expect(h.api.createRoom).toHaveBeenCalledWith(
       expect.objectContaining({ mode: "travel", householdId: expect.stringMatching(/^hh_/) }),
     );
-    expect(h.api.joinRoom).toHaveBeenCalled();
+    // Joining again would seat a *second* player and orphan the first.
+    expect(h.api.joinRoom).not.toHaveBeenCalled();
+    expect(session.playerId).toBe("p_host");
+  });
+
+  it("keeps the device binding, and presents it when joining later", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    // Without this the same phone rejoins as a stranger and its character is
+    // orphaned (architecture §4.5).
+    expect(h.api.joinRoom).toHaveBeenCalledWith(
+      "ABCD",
+      expect.objectContaining({ deviceToken: "dev_host" }),
+    );
   });
 
   it("surfaces a failure and does not leave a half-built session", async () => {
