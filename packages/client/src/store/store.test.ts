@@ -61,6 +61,12 @@ function harness(state: RunState = makeState()): Harness {
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
+    loadCampaign: vi.fn(async () => ({
+      id: "the-hollow-crown",
+      title: "The Hollow Crown",
+      blurb: "",
+      chapters: ["bramblewood-01"],
+    })),
   };
 
   const storage = memoryStorage();

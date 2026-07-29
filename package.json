@@ -19,7 +19,8 @@
     "art:verify": "python3 tools/art/verify.py",
     "art:verify:strict": "python3 tools/art/verify.py --strict",
     "art:sheet": "python3 tools/art/sheet.py",
-    "build": "npm run build --workspace @kad/client"
+    "build": "npm run build --workspace @kad/client",
+    "e2e": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.0",
