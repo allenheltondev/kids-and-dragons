@@ -282,6 +282,14 @@ interface RoomChannel {
 `AppSyncEventsChannel` is the v1 implementation; `LocalSseChannel` is the dev one.
 Swapping to Momento Topics or API Gateway WebSockets means writing one new class.
 
+**There is a matching seam in the browser**, and it has to move at the same time.
+`sync/channel.ts` owns ordering, backoff and resync against an `EventSourceLike`;
+`sync/appsync-socket.ts` and a plain `EventSource` are the two implementations,
+chosen from whether `/api/config` reports a realtime endpoint. Changing the
+server's publisher without changing the client's subscriber produces a
+deployment where every check passes and no client ever receives a patch — the
+publish succeeds, and nobody is listening.
+
 The two directions are authorised differently, and that split *is* the security
 model: **IAM** for publish, so only the API Lambda's execution role can say
 anything on a channel, and a **Lambda authorizer** for connect and subscribe, so

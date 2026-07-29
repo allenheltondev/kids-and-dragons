@@ -58,6 +58,12 @@ interface TableItem {
   GSI1SK?: string;
   /** Epoch seconds, TTL attribute. Only rooms carry it today. */
   ttl?: number;
+  /**
+   * Set on a household `META` row once the sweeper has begun deleting it, which
+   * is what makes `claimHousehold` start refusing. A top-level attribute rather
+   * than a field on `data` so the domain type stays free of storage bookkeeping.
+   */
+  sweeping?: boolean;
   entity: string;
   data: unknown;
 }
@@ -213,6 +219,9 @@ export class MemoryRepository implements GameRepository {
   async claimHousehold(householdId: string, cognitoSub: string): Promise<boolean> {
     const item = this.get(HH(householdId), META);
     if (!item) return false;
+    // Deletion has already begun. Succeeding here would tell a family their
+    // party is kept while it is being deleted out from under them.
+    if (item.sweeping) return false;
     const household = item.data as Household;
     // Already someone else's. Signing in on a borrowed phone must not hand you
     // that family's characters.
@@ -231,24 +240,42 @@ export class MemoryRepository implements GameRepository {
       .map((i) => i.data as Household);
   }
 
-  async deleteHousehold(householdId: string): Promise<void> {
-    // Runs first: they live in their own partitions and are only reachable
-    // through the household, so deleting the household row first would orphan
-    // every event log under it.
+  async deleteGuestHousehold(householdId: string, nowIso: string): Promise<boolean> {
+    /*
+     * Phase 1 — the same conditional gate the real store uses, and the reason
+     * the sweeper cannot delete a household somebody just claimed. Not
+     * conditional on `sweeping` being absent: an interrupted sweep must be
+     * re-enterable or that household is stranded forever.
+     */
+    const meta = this.get(HH(householdId), META);
+    if (!meta) return false;
+    const household = meta.data as Household;
+    if (!household.guest) return false;
+    if (!household.expiresAt || household.expiresAt > nowIso) return false;
+    this.put({ ...meta, sweeping: true });
+
+    // Phase 2 — runs first: they live in their own partitions and are only
+    // reachable through the household, so deleting the household row first
+    // would orphan every event log under it.
     for (const run of await this.listRuns(householdId)) {
       for (const item of this.query(RUN(run.id))) {
         this.items.delete(rowKey(item.PK, item.SK));
       }
       this.items.delete(rowKey(ROOM(run.roomCode), META));
     }
-    const household = await this.getHousehold(householdId);
-    if (household?.ownerSub) {
+    if (household.ownerSub) {
       this.items.delete(rowKey(ACCT(household.ownerSub), HH(householdId)));
     }
+
+    // Phase 3 — the rest of the household partition, META last: it carries the
+    // GUEST index entry, so an interrupted sweep stays discoverable.
     for (const item of this.query(HH(householdId))) {
+      if (item.SK === META) continue;
       this.items.delete(rowKey(item.PK, item.SK));
     }
+    this.items.delete(rowKey(HH(householdId), META));
     this.persist();
+    return true;
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {

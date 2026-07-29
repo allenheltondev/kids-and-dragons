@@ -95,7 +95,7 @@ export interface GameRepository {
    *
    * Returns `false` if the household is already claimed by a **different**
    * account — one family's guest session cannot be stolen by the next person to
-   * sign in on that phone.
+   * sign in on that phone — or if the sweeper has already begun deleting it.
    */
   claimHousehold(householdId: string, cognitoSub: string): Promise<boolean>;
 
@@ -109,8 +109,25 @@ export interface GameRepository {
    * Deletes a household and everything under it — players, devices, characters,
    * runs, and each run's state and event log. Only the sweeper calls this, and
    * only for expired guests; a claimed household has no delete path at all.
+   *
+   * **The expiry check is part of this call, not the caller's job.** Reading a
+   * household, deciding it is an expired guest, and then deleting it is a race
+   * with exactly one loser worth caring about: an adult who signs in during the
+   * gap gets a successful claim and then has the household deleted out from
+   * under them, which is the one failure this whole feature exists to avoid.
+   * So the delete is gated on a conditional write proving the household is
+   * *still* an unclaimed, expired guest at the moment deletion begins.
+   *
+   * Returns `false` when that condition fails — somebody claimed it in time.
+   *
+   * Deletion is ordered so that an interrupted sweep is safe: the household is
+   * first marked (which is what makes `claimHousehold` start refusing), then its
+   * contents go, and the `META` row — the only thing carrying the `GUEST` index
+   * entry — goes last. A sweep that dies halfway leaves a household that is
+   * still discoverable by the next one, rather than orphaned rows nothing can
+   * find.
    */
-  deleteHousehold(householdId: string): Promise<void>;
+  deleteGuestHousehold(householdId: string, nowIso: string): Promise<boolean>;
 
   putPlayer(player: PlayerProfile): Promise<void>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;

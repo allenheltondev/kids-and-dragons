@@ -16,6 +16,7 @@ import type {
   JoinRoomResponse,
   RoomMode,
   RulesContent,
+  RunState,
   StateResponse,
 } from "@kad/shared";
 
@@ -87,9 +88,25 @@ export interface LinkAccountResponse {
   playerId?: string;
 }
 
+/**
+ * How a display client attaches — architecture §4.5, "The TV, which is nobody".
+ *
+ * It has no device and no player, but the realtime channel is authorised per
+ * subscriber in prod, so it still needs something to present. This is where it
+ * gets it: a token naming one room, valid until that room expires.
+ */
+export interface WatchRoomResponse {
+  runId: string;
+  mode: RoomMode;
+  expiresAt: string;
+  viewerToken: string;
+  state: RunState;
+}
+
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
+  watchRoom(code: string): Promise<WatchRoomResponse>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   fetchState(query: StateQuery, token?: string): Promise<StateResponse>;
   loadRules(): Promise<RulesContent>;
@@ -166,6 +183,14 @@ export const api: Api = {
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify(body),
+    });
+  },
+
+  watchRoom(code) {
+    return request<WatchRoomResponse>(`/api/room/${encodeURIComponent(code)}/watch`, {
+      method: "POST",
+      headers: JSON_HEADERS,
+      body: JSON.stringify({}),
     });
   },
 

@@ -34,7 +34,7 @@ import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
-import { createRoom, joinRoom } from "./handlers/room.ts";
+import { createRoom, joinRoom, watchRoom } from "./handlers/room.ts";
 import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
@@ -164,6 +164,25 @@ async function main(): Promise<void> {
       expiresAt: room.expiresAt,
       ...(joiner.deviceToken ? { deviceToken: joiner.deviceToken } : {}),
     });
+  });
+
+  /*
+   * How a display client attaches (§4.5). It needs no token *here* — the SSE
+   * stream is open to anyone who knows the code — but the route exists locally
+   * anyway, because in prod the channel is authorised per subscriber and the TV
+   * gets its viewer token from exactly this call. A client path that only runs
+   * against AWS is a client path that is never tested.
+   */
+  app.post("/api/room/:code/watch", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const code = String(req.params.code ?? "").toUpperCase();
+    const result = await watchRoom({ code }, deps);
+    if (!result.ok) {
+      return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    }
+    res.json(result.value);
   });
 
   // -------------------------------------------------------------------------

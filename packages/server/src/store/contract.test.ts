@@ -228,6 +228,49 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.claimHousehold("h_nope", "sub_a")).toBe(false);
       });
 
+      it("refuses to sweep a household that was claimed first", async () => {
+        /*
+         * The race the sweeper used to lose. Reading the household, deciding it
+         * is an expired guest, and *then* deleting it is not a guard — a
+         * sign-in landing in that gap got a successful claim and then had the
+         * characters deleted anyway, which is the one failure the whole feature
+         * exists to prevent. The condition has to live in the delete.
+         */
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+        await repo.putCharacter(character("c_1"));
+
+        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+        expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
+
+        // Nothing was touched.
+        expect(await repo.getHousehold("h_1")).toMatchObject({ guest: false });
+        expect(await repo.getCharacter("h_1", "c_1")).not.toBeNull();
+      });
+
+      it("refuses to claim a household the sweeper has already started on", async () => {
+        // The other side of the same interlock. Succeeding here would tell a
+        // family their party is kept while it is being deleted.
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+        await repo.deleteGuestHousehold("h_1", new Date(now).toISOString());
+
+        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(false);
+      });
+
+      it("will not sweep a guest whose expiry has not passed", async () => {
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now + DAY).toISOString()));
+        expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
+        expect(await repo.getHousehold("h_1")).not.toBeNull();
+      });
+
+      it("will not sweep a household that was never a guest", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        expect(await repo.deleteGuestHousehold("h_1", new Date().toISOString())).toBe(false);
+        expect(await repo.getHousehold("h_1")).not.toBeNull();
+      });
+
       it("deletes runs, rooms, and the account pointer with the household", async () => {
         await repo.putHousehold(guest("h_1", new Date(Date.now() - DAY).toISOString()));
         await repo.putPlayer(player("p_1"));
@@ -243,9 +286,8 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         await repo.putState(state("r_1", 0));
         await repo.commit({ runId: "r_1", expectedSeq: 0, state: state("r_1", 1), event: event("r_1", 1) });
         await repo.putRoomIfAbsent(room());
-        await repo.claimHousehold("h_1", "sub_a");
 
-        await repo.deleteHousehold("h_1");
+        expect(await repo.deleteGuestHousehold("h_1", new Date().toISOString())).toBe(true);
 
         expect(await repo.getHousehold("h_1")).toBeNull();
         expect(await repo.listPlayers("h_1")).toEqual([]);
@@ -256,7 +298,13 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.getState("r_1")).toBeNull();
         expect(await repo.listEvents("r_1", 0)).toEqual([]);
         expect(await repo.getRoom("ABCD")).toBeNull();
-        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual([]);
+        /*
+         * No account pointer is asserted here, because a swept household cannot
+         * have one: the pointer is only ever written by `claimHousehold`, which
+         * also clears `guest` — and a household that is not a guest is one this
+         * call refuses outright. The pointer cleanup inside it is belt and
+         * braces for a future path, not a case reachable today.
+         */
       });
     });
 
