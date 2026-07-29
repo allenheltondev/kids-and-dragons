@@ -413,10 +413,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return task;
       },
 
-      async send(intent: ClientIntent) {
+      async send(intent: ClientIntent): Promise<boolean> {
         const session = get().session;
-        if (!session) return;
-        if (!session.playerId) return; // display clients send nothing, ever
+        if (!session) return false;
+        if (!session.playerId) return false; // display clients send nothing, ever
 
         const post = (): Promise<ActionResponse> =>
           deps.api.postAction(
@@ -449,12 +449,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             response = await post();
           }
 
-          if (response.ok) return;
+          if (response.ok) return true;
           set({ error: response.error?.message ?? "That isn't allowed right now." });
+          return false;
         } catch (error) {
           set({
             error: error instanceof Error ? error.message : "Could not reach the game.",
           });
+          return false;
         }
       },
 
@@ -542,7 +544,7 @@ export function useIsMyPrompt(): boolean {
   );
 }
 
-export function useSend(): (intent: ClientIntent) => Promise<void> {
+export function useSend(): (intent: ClientIntent) => Promise<boolean> {
   return useGameStore((store) => store.send);
 }
 

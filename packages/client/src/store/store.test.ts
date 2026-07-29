@@ -319,6 +319,22 @@ describe("send", () => {
     expect(h.store.getState().error).toBe("behind");
   });
 
+  it("reports whether the server accepted the intent", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    await expect(h.store.getState().send({ type: "ROLL" })).resolves.toBe(true);
+
+    h.api.postAction.mockResolvedValueOnce({
+      ok: false,
+      seq: 1,
+      error: { code: "ILLEGAL", message: "Not your turn." },
+    });
+    // A caller that discards work on success has to be able to tell — the
+    // creation flow resets five screens of choices on a `true`.
+    await expect(h.store.getState().send({ type: "ROLL" })).resolves.toBe(false);
+  });
+
   it("shows an ILLEGAL rejection to the player, and dismisses it", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");

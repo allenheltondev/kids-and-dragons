@@ -595,7 +595,14 @@ function doCreateCharacter(
     connected: true,
     ready: false,
   });
-  draft.phase = "creation";
+  /*
+   * Only the lobby becomes "creation". A late joiner seats mid-chapter, and
+   * flipping the whole run to `creation` there would drag every other phone
+   * off the scene it is playing — while leaving `sceneId` and the open prompt
+   * in place, so the party would be answering a question nothing is showing.
+   * Their arrival is their business; the run keeps doing what it was doing.
+   */
+  if (draft.phase === "lobby") draft.phase = "creation";
   return undefined;
 }
 
@@ -610,6 +617,19 @@ function doStartChapter(
   }
   if (draft.party.length === 0) {
     throw new Illegal("ILLEGAL", "a chapter needs at least one character");
+  }
+  /*
+   * The UI only offers "Begin the adventure" from a ready lobby, but the UI is
+   * not the authority (architecture §4.1). Without these two guards a stale
+   * tap — or any hand-rolled client — could restart the chapter from the
+   * middle of a scene, resetting flags and XP and throwing away the evening's
+   * progress.
+   */
+  if (draft.phase !== "lobby" && draft.phase !== "creation") {
+    throw new Illegal("ILLEGAL", "a chapter starts from the lobby");
+  }
+  if (!draft.party.every((member) => member.ready)) {
+    throw new Illegal("ILLEGAL", "everybody has to be ready first");
   }
 
   draft.campaignId = chapter.campaignId;

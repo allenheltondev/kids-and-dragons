@@ -60,6 +60,9 @@ describe("create-room → join → intent → broadcast", () => {
 
     await send("p_1", character("Sparklehoof", "unicorn", "songkeeper"));
     await send("p_2", character("Thistle", "bigfoot", "thornguard"));
+    // The server requires the readiness the lobby shows before it will start.
+    await send("p_1", { type: "READY", ready: true });
+    await send("p_2", { type: "READY", ready: true });
     await send("p_1", { type: "START_CHAPTER", chapterId: "bramblewood-01" });
 
     let state = await harness.repo.getState(runId);
@@ -125,11 +128,15 @@ describe("create-room → join → intent → broadcast", () => {
       return applyAction({ runId, playerId: "p_1", seq, intent }, harness.deps);
     };
     await send(character("Sparklehoof", "unicorn", "songkeeper"));
-    // The TV is refreshed here, holding seq 1.
+    await send({ type: "READY", ready: true });
+    // The TV is refreshed here, holding the seq it last applied.
     const atRefresh = await harness.repo.getState(runId);
     await send({ type: "START_CHAPTER", chapterId: "bramblewood-01" });
 
-    const caught = await getState({ runId, sinceSeq: 1 }, harness.deps);
+    // Ask from the seq the mirror actually holds. A hardcoded number here
+    // silently replays an event the mirror already had the moment anything
+    // upstream adds a step.
+    const caught = await getState({ runId, sinceSeq: atRefresh?.seq ?? 0 }, harness.deps);
     expect(caught.ok).toBe(true);
     if (!caught.ok || !atRefresh) return;
 

@@ -385,7 +385,7 @@ export function CreationFlow(): ReactElement {
     setSubmitting(true);
     patchCreationDraft({ submitting: true });
     try {
-      await send({
+      const accepted = await send({
         type: "CREATE_CHARACTER",
         name: draft.name.trim(),
         species: draft.species,
@@ -395,6 +395,14 @@ export function CreationFlow(): ReactElement {
         stats: draft.assigned,
         appearance: draft.appearance,
       });
+      // Only throw the draft away once the character actually exists. A
+      // rejected intent resolves normally, so resetting unconditionally would
+      // wipe five screens of choices because the phone blinked.
+      if (!accepted) {
+        patchCreationDraft({ submitting: false });
+        setError("That didn't send. Try again?");
+        return;
+      }
       resetCreationDraft();
     } catch (err) {
       patchCreationDraft({ submitting: false });
