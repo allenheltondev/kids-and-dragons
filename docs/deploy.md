@@ -314,9 +314,14 @@ two-second command on a laptop.
 ## Operating it
 
 **Where the logs are.** `/aws/lambda/kad-*`, JSON-formatted, 30-day retention.
-The sweeper logs a one-line summary per run: scanned, deleted, spared, failed.
-`spared` counts households somebody claimed between the index query and the
-delete — not an error, a save.
+The sweeper runs once a day and logs a one-line summary per run: scanned,
+deleted, spared, failed. `spared` counts households somebody claimed between the
+index query and the delete — not an error, a save. Expect most days to read
+`scanned 0` and nothing else.
+
+A run deletes at most 25 households, so a backlog past that drains the next day
+rather than in one go. If you ever want it faster, `GuestSweepSchedule` is a
+stack parameter — `rate(6 hours)` was the old default.
 
 **A client connects but never updates.** That is the realtime path, not the API:
 the snapshot arrives over HTTP and the patches do not. Check the

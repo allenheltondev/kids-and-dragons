@@ -33,11 +33,20 @@ Parameters:
 
   GuestSweepSchedule:
     Type: String
-    Default: rate(6 hours)
+    Default: rate(24 hours)
     Description: >-
-      How often expired anonymous households are deleted. Anything up to a day is
-      fine — the guest TTL is 7 days and the sweeper only ever deletes households
-      already past it.
+      How often expired anonymous households are deleted.
+
+      The frequency is not what makes the promise true — the 7-day guest TTL is,
+      and the sweeper only ever deletes households already past it. All this
+      controls is how long a household sits deleted-in-principle before it is
+      deleted in fact, and a day of that is invisible to anyone: nobody is
+      watching for their characters to disappear on the seventh evening.
+
+      Daily also keeps the batch limit honest. 25 households a run is 25 a day
+      rather than 100, which is still far more than this game will ever produce
+      — and if it somehow is not, the backlog drains a day later rather than
+      never.
 
   LogRetentionDays:
     Type: Number
@@ -460,6 +469,14 @@ Resources:
           Properties:
             ScheduleExpression: !Ref GuestSweepSchedule
             Description: Sweep expired guest households
+            # Named per stage, and it has to be. Left out, SAM names the
+            # schedule after its own logical id — `SweepFunctionSchedule`, with
+            # no stage in it — and puts it in EventBridge Scheduler's `default`
+            # group, where names are unique per account and region. Staging and
+            # prod both deploy to us-east-1 in one account, so the second of
+            # them to reach this resource would fail on a name the first had
+            # taken.
+            Name: !Sub "kad-sweep-${StageName}"
 
   # ---------------------------------------------------------------------------
   # Hosting — architecture §1, §7
