@@ -30,6 +30,7 @@ import { ContentError, loadContent, type ContentStore } from "./content/loader.t
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { applyAction } from "./handlers/action.ts";
 import { setPresence } from "./handlers/presence.ts";
+import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom } from "./handlers/room.ts";
@@ -66,6 +67,7 @@ async function main(): Promise<void> {
     filePath: path.join(dataDir(), "dev-table.json"),
   });
   const channel = new LocalSseChannel();
+  const presence = new PresenceTracker();
   const identity = new DevIdentity(repo);
 
   const base: BaseDeps = {
@@ -263,7 +265,9 @@ async function main(): Promise<void> {
       runId: state.runId,
       state,
     };
-    const detach = channel.attach(code, res, { preamble: snapshot, sinceSeq: state.seq });
+    // `attach` owns its own teardown on close, and its detach is idempotent —
+    // the close handler below is only about presence.
+    channel.attach(code, res, { preamble: snapshot, sinceSeq: state.seq });
 
     /*
      * The stream is the only evidence of who is still at the table. A phone
@@ -277,10 +281,16 @@ async function main(): Promise<void> {
     if (viewer && viewer.runId === room.runId) {
       const runId = room.runId;
       const playerId = viewer.playerId;
-      void setPresence({ runId, playerId, connected: true }, base);
+      // Counted, not toggled: a refresh overlaps two streams and the old one
+      // often closes last, which would mark a player away while they are
+      // sitting right there (see presence-tracker.ts).
+      if (presence.open(runId, playerId)) {
+        void setPresence({ runId, playerId, connected: true }, base);
+      }
       res.on("close", () => {
-        detach();
-        void setPresence({ runId, playerId, connected: false }, base).catch(() => undefined);
+        if (presence.close(runId, playerId)) {
+          void setPresence({ runId, playerId, connected: false }, base).catch(() => undefined);
+        }
       });
     }
   });
