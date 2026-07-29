@@ -191,6 +191,30 @@ describe("CREATE_CHARACTER", () => {
     expect(result.created?.committed.level).toBe(1);
   });
 
+  it("caps the join tier on committed progress, not gains still in flight", () => {
+    /*
+     * Found in review. The effective level includes a campaign's provisional
+     * gains, so a party that had *just* crossed into Sworn mid-campaign would
+     * let a newcomer join at 4 — written straight into their own committed
+     * snapshot. The campaign then fails, the veterans revert to 3, and the
+     * newcomer keeps a tier nobody actually earned.
+     */
+    const state = seatedParty();
+    // The party has reached Sworn, but only provisionally.
+    for (const member of state.party) {
+      member.character = { ...member.character, level: 4, committedLevel: 1 };
+    }
+
+    const result = applyIntent(
+      state,
+      { playerId: "p_3", intent: { ...CREATE_GRIFFIN, startingLevel: 4 } as ClientIntent },
+      ctx(),
+    );
+
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.error?.message).toMatch(/tier floor/);
+  });
+
   it("returns ILLEGAL instead of throwing on a bad creation payload", () => {
     const result = applyIntent(
       newRun(),

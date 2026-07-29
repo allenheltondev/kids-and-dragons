@@ -132,7 +132,23 @@ export async function applyAction(
   if (result.created) {
     characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
   }
-  if (result.presentation?.kind === "CHAPTER_COMPLETE") {
+  /*
+   * Keyed off the phase transition, not the presentation.
+   *
+   * A chapter can finish without a CHAPTER_COMPLETE presentation ever being
+   * returned: when a check's branch lands on an ending scene, `doRoll` keeps
+   * the ROLL presentation on purpose — the dice are the centrepiece of the
+   * screen — and says so in a comment. Watching for the presentation therefore
+   * missed every chapter that ends straight off a roll, and the ADVANCE that
+   * follows leaves `chapter_complete` without a second chance, so the whole
+   * award was silently lost.
+   *
+   * The before/after phase cannot miss a path in, and cannot fire twice: the
+   * run has to have been somewhere else a moment ago.
+   */
+  const finishedChapter =
+    state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
+  if (finishedChapter) {
     characters.push(...(await foldChapterXp(result.state, deps, auth.run.householdId)));
   }
 

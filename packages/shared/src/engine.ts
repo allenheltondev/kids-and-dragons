@@ -749,7 +749,10 @@ function doCreateCharacter(
  */
 function partyTierFloor(draft: RunState, ctx: EngineContext): number {
   if (draft.party.length === 0) return 1;
-  const highest = Math.max(...draft.party.map((m) => m.character.level));
+  // `committedLevel`, not `level`. The effective level includes gains from the
+  // campaign in flight, and those can still be given back — capping on them
+  // would let a newcomer bank a tier the party has not actually kept yet.
+  const highest = Math.max(...draft.party.map((m) => m.character.committedLevel));
   return ctx.rules.tierLevels[tierForLevel(ctx.rules, highest)] ?? 1;
 }
 

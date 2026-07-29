@@ -92,6 +92,36 @@ describe("newCharacterWrite", () => {
   });
 });
 
+describe("when a chapter counts as finished", () => {
+  it("folds on the phase transition, not on a CHAPTER_COMPLETE presentation", async () => {
+    /*
+     * The bug this pins, found in review: when a check's branch lands on an
+     * ending scene, `doRoll` keeps the ROLL presentation on purpose — the dice
+     * are the centrepiece of the screen — so a chapter that ends straight off a
+     * roll never produced a CHAPTER_COMPLETE presentation at all. Watching for
+     * it lost the whole award, and the ADVANCE that follows leaves
+     * `chapter_complete` with no second chance.
+     *
+     * `applyAction` keys off the before/after phase instead, which no path in
+     * can dodge. This test asserts the property that fix depends on: the fold
+     * is driven by the state, and the presentation is not consulted.
+     */
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const playerId = players[0]!.principal.playerId;
+    const { state, character } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
+
+    // A run sitting in chapter_complete with an award on it, and no
+    // presentation anywhere in sight.
+    state.xpEarned = 300;
+    const writes = await foldChapterXp(state, harness.deps, householdId);
+
+    expect(writes).toHaveLength(1);
+    expect(writes[0]?.provisional?.xp).toBe(300);
+  });
+});
+
 describe("foldChapterXp", () => {
   it("folds the award into provisional and leaves committed alone", async () => {
     /*
