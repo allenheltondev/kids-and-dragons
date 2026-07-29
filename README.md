@@ -63,7 +63,7 @@ to the same behaviour:
 | `GameRepository` | `MemoryRepository` | `DynamoRepository` |
 | `RoomChannel` (publish) | `LocalSseChannel` | `AppSyncEventsChannel` |
 | `EventSourceLike` (subscribe) | `EventSource` over SSE | `sync/appsync-socket.ts` |
-| `IdentityService` | `DevIdentity` *(unsigned — never deployed)* | `KmsIdentity` |
+| `IdentityService` | `DevIdentity` *(unsigned — never deployed)* | `TokenIdentity` |
 | entry point | `dev-server.ts` | `lambda/http.ts` |
 
 ## Checks
@@ -100,7 +100,7 @@ infrastructure and persistence it deploys onto:
 - accounts and character creation
 - rooms, server-authoritative state, JSON Patch sync, reconnect, both presentation modes
 - the chapter loader, scene renderer, choices, species gating, and the dice roll
-- the AWS stack in SAM: DynamoDB, AppSync Events, Cognito, KMS, S3 + CloudFront, `./scripts/deploy.sh`
+- the AWS stack in SAM: DynamoDB, AppSync Events, Cognito, Secrets Manager, S3 + CloudFront, `./scripts/deploy.sh`
 - **anonymous play by default**, with optional sign-in that claims the household you are
   already playing in. Nobody signs up to play; signing in is how you keep what you played.
   Unclaimed households are swept after 7 days.

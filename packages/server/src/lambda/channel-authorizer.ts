@@ -14,9 +14,8 @@
  * separating them and four letters is a small space.
  */
 
-import { KMSClient } from "@aws-sdk/client-kms";
-import { KmsIdentity } from "../kms-identity.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
+import { secretsManagerSource, TokenIdentity } from "../token-identity.ts";
 import { requiredEnv } from "./runtime.ts";
 
 /** What AppSync sends. Only the fields this function reads. */
@@ -40,18 +39,17 @@ export interface ChannelAuthorizerResult {
 const DENY: ChannelAuthorizerResult = { isAuthorized: false };
 
 /**
- * Cached for the life of the container. The KMS public key is fetched once and
+ * Cached for the life of the container. The signing secret is fetched once and
  * every verification after that is local arithmetic — this function sits in
  * front of every subscribe, so a network round trip here is a network round trip
  * on every phone that reconnects.
  */
-let identity: KmsIdentity | null = null;
+let identity: TokenIdentity | null = null;
 
-function service(): KmsIdentity {
-  identity ??= new KmsIdentity({
+function service(): TokenIdentity {
+  identity ??= new TokenIdentity({
     repo: new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") }),
-    keyId: requiredEnv("KMS_KEY_ID"),
-    client: new KMSClient({}),
+    secret: secretsManagerSource(requiredEnv("TOKEN_SECRET_ID")),
   });
   return identity;
 }
@@ -63,10 +61,10 @@ export async function handler(
 }
 
 /** Just the two token kinds a client can present. */
-type Resolver = Pick<KmsIdentity, "resolveSession" | "resolveViewer">;
+type Resolver = Pick<TokenIdentity, "resolveSession" | "resolveViewer">;
 
 /**
- * The decision itself, free of KMS and the environment so it can be tested
+ * The decision itself, free of AWS and the environment so it can be tested
  * exhaustively — which for the one function standing between a family's session
  * and every other family's is worth more than the indirection costs.
  */

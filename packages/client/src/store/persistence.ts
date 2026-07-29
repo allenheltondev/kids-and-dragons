@@ -88,7 +88,7 @@ export function clearSession(code: string, storage: KeyValueStorage = defaultSto
 /**
  * The stand-in for Chapter 1's household + device binding.
  *
- * A real `DEVICE#<deviceId>` item and a KMS-signed token replace this; keeping
+ * A real `DEVICE#<deviceId>` item and a signed token replace this; keeping
  * the ids stable per browser now means the join call already looks like the one
  * that ships, and a refresh already rejoins as the same player.
  */

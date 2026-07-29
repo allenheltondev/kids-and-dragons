@@ -75,9 +75,10 @@ cross-origin request, which is why the stack configures no CORS policy at all.
         ┌───────────┼──────────────┬────────────────────┐
         │           │              │                    │
   ┌─────▼─────┐ ┌───▼───────┐ ┌────▼─────────┐ ┌────────▼────────┐
-  │ DynamoDB  │ │ KMS       │ │ Cognito      │ │ Lambda: sweep   │
-  │ (1 table) │ │ (ES256    │ │ (optional    │ │ (scheduled —    │
-  │           │ │  signing) │ │  sign-in)    │ │  guest expiry)  │
+  │ DynamoDB  │ │ Secrets   │ │ Cognito      │ │ Lambda: sweep   │
+  │ (1 table) │ │ Manager   │ │ (optional    │ │ (scheduled —    │
+  │           │ │ (token    │ │  sign-in)    │ │  guest expiry)  │
+  │           │ │  secret)  │ │              │ │                 │
   └─────▲─────┘ └───────────┘ └──────────────┘ └────────┬────────┘
         └────────────────────────────────────────────────┘
 ```
@@ -369,12 +370,25 @@ characters the sign-in was for.
 
 #### The device token
 
-An ES256 JWT signed by a KMS key that never leaves KMS, with a **30-day sliding
-expiry**: past halfway, a resolve mints a fresh one and returns it in the
-`x-kad-device-token` response header. Verification is local — the public half is
-fetched once per container — because it happens on every request from every
-phone, and a `Verify` API call there would put a network round trip in front of
-every tap at the table.
+An HS256 JWT with a **30-day sliding expiry**: past halfway, a resolve mints a
+fresh one and returns it in the `x-kad-device-token` response header. Both
+signing and verification are local arithmetic — the secret is fetched once per
+container — because verification happens on every request from every phone, and
+a network round trip there would sit in front of every tap at the table.
+
+The secret is 64 random characters CloudFormation generates at stack-create time
+and hands to Secrets Manager, encrypted under the Amazon-managed
+`aws/secretsmanager` key. **This stack creates no KMS key of its own**, and that
+constraint is what picks the algorithm: signing requires an asymmetric key, and
+every `aws/*` managed key is symmetric and encryption-only.
+
+The version of this that used an asymmetric KMS key was strictly more
+capability, so it is worth naming what was given up: with a public half, a
+verifier could check a token without being able to mint one. Nothing does. Both
+the signer and the verifier are Lambdas in this stack, so the shared secret draws
+the same boundary, and the only cost is that a future outside verifier — an API
+Gateway JWT authorizer was the one candidate ever considered — would have to be
+trusted with the secret rather than handed a public key.
 
 Deliberately *not* rotated on every single use. Rotation only helps if the
 predecessor is invalidated, and invalidating it means a phone whose response was
