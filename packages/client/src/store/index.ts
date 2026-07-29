@@ -13,6 +13,7 @@ import { useEffect, useRef } from "react";
 import { create } from "zustand";
 import type { StateCreator } from "zustand";
 import type {
+  ActionResponse,
   Campaign,
   ClientIntent,
   ItemCatalog,
@@ -373,31 +374,42 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       },
 
       async send(intent: ClientIntent) {
-        const { session, state } = get();
+        const session = get().session;
         if (!session) return;
         if (!session.playerId) return; // display clients send nothing, ever
 
-        try {
-          const response = await deps.api.postAction(
+        const post = (): Promise<ActionResponse> =>
+          deps.api.postAction(
             {
               runId: session.runId,
               playerId: session.playerId,
               // Last-seen server seq. The server rejects a stale intent rather
               // than applying it out of order (architecture §4.2).
-              seq: state?.seq ?? runtime.sequencer?.seq ?? 0,
+              seq: get().state?.seq ?? runtime.sequencer?.seq ?? 0,
               intent,
             },
             session.sessionToken,
           );
 
-          if (response.ok) return;
+        try {
+          let response = await post();
 
           if (response.error?.code === "STALE_SEQ") {
-            // We were behind, not wrong. Catch up and let the player retap;
-            // replaying the intent blind is how you double-spend a turn.
+            /*
+             * Behind, not wrong — and with three people tapping at once, being
+             * a beat behind is the normal case, not an error case. A rejected
+             * intent never applied, so catching up and sending it once more
+             * cannot double-apply it, and the engine still refuses anything
+             * that is no longer legal.
+             *
+             * The alternative is a tap that silently does nothing, which at a
+             * table with an 8-year-old is the worst outcome available.
+             */
             await resync(runtime.sequencer?.seq ?? 0);
-            return;
+            response = await post();
           }
+
+          if (response.ok) return;
           set({ error: response.error?.message ?? "That isn't allowed right now." });
         } catch (error) {
           set({

@@ -11,7 +11,7 @@
  * child walks: she opens the app and taps her avatar.
  */
 
-import { useCallback, useId, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
@@ -49,9 +49,17 @@ export function HomeScreen(): ReactElement {
   const createRoom = useGameStore((s) => s.createRoom);
   const joinRoom = useGameStore((s) => s.joinRoom);
 
+  /**
+   * Set when a `/p/:code` URL was opened without a stored session — which is
+   * exactly what scanning the lobby QR does. Scanning and then being asked to
+   * retype the code you just scanned would make the QR pointless, so it seeds
+   * the field and the join section leads.
+   */
+  const pendingCode = useGameStore((s) => s.pendingCode);
+
   const [displayName, setDisplayName] = useState("");
   const [mode, setMode] = useState<RoomMode>("party");
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,6 +73,14 @@ export function HomeScreen(): ReactElement {
   const onCodeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setCode(normalizeCode(e.target.value));
   }, []);
+
+  // `attach()` resolves the URL after this screen has already mounted, so the
+  // lazy initial value above can miss it. Seed once, and never over anything
+  // already typed.
+  useEffect(() => {
+    if (pendingCode === null) return;
+    setCode((current) => (current === "" ? normalizeCode(pendingCode) : current));
+  }, [pendingCode]);
 
   const start = useCallback(async () => {
     setError(null);

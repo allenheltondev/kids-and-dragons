@@ -155,12 +155,21 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
-    for (const page of phones) await page.getByRole("button", { name: /i'm ready/i }).click();
-    await host.getByRole("button", { name: /begin the adventure/i }).click();
+    for (const page of phones) {
+      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
+      // Assert the tap actually took. A ready that silently fails to register
+      // is the exact failure worth catching here, and without this the test
+      // just hangs later with nothing to say about why.
+      await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
+    }
+    await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
     await expect(host.getByText(/the story|what do you do/i).first()).toBeVisible();
 
     // Play it the way a table does: whoever the game is asking, answers.
-    for (let turn = 0; turn < 40; turn++) {
+    // The route through the chapter depends on real dice, so the number of
+    // turns varies from run to run.
+    let quiet = 0;
+    for (let turn = 0; turn < 60; turn++) {
       const state = await serverState(code);
       if (state.phase === "chapter_complete") break;
 
@@ -176,7 +185,13 @@ test.describe("first playable", () => {
         }
         if (await answerPrompt(page, heroes)) acted = true;
       }
-      expect(acted, "somebody must always have something to tap").toBe(true);
+
+      // A quiet turn is normal — a roll is animating, or a patch is in flight.
+      // Several in a row means the game is genuinely stuck waiting on nobody,
+      // which is the thing worth failing on.
+      quiet = acted ? 0 : quiet + 1;
+      if (quiet > 0) await host.waitForTimeout(1_200);
+      expect(quiet, `stuck at ${state.phase}: nobody has anything to tap`).toBeLessThan(4);
     }
 
     const final = await serverState(code);
@@ -184,6 +199,23 @@ test.describe("first playable", () => {
     // XP is awarded per chapter, not per enemy — exploring counts (spec §8.1).
     expect(final.xpEarned).toBeGreaterThan(0);
     await expect(host.getByText(/\b\d+\b/).first()).toBeVisible();
+  });
+
+  test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {
+    const host = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+    await host.goto("/");
+    await host.fill('input[placeholder="Type your name"]', "Allen");
+    await host.getByText("Travel Mode").click();
+    await host.getByRole("button", { name: /start a game/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
+    const code = new URL(host.url()).pathname.split("/").pop()!;
+
+    // The QR encodes this URL, so scanning it is the same as opening it on a
+    // phone that has never seen the app. Being asked to retype the code you
+    // just scanned would make the QR pointless.
+    const scanned = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+    await scanned.goto(`/p/${code}`);
+    await expect(scanned.getByLabel(/room code/i)).toHaveValue(code);
   });
 
   test("party mode: the TV attaches with no identity at all", async ({ browser }) => {

@@ -261,7 +261,7 @@ describe("send", () => {
     expect(h.store.getState().state).toBe(before);
   });
 
-  it("resyncs on STALE_SEQ rather than retrying the intent", async () => {
+  it("catches up and sends the intent again on STALE_SEQ", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");
     h.api.fetchState.mockClear();
@@ -273,9 +273,27 @@ describe("send", () => {
 
     await h.store.getState().send({ type: "ROLL" });
 
-    expect(h.api.postAction).toHaveBeenCalledTimes(1); // no retry loop
+    // Resync, then exactly one more attempt. A rejected intent never applied,
+    // so re-sending it cannot double-apply; a tap that silently does nothing
+    // is the outcome worth avoiding.
     expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+    expect(h.api.postAction).toHaveBeenCalledTimes(2);
     expect(h.store.getState().error).toBeNull(); // being behind is not a player error
+  });
+
+  it("does not retry forever when the catch-up still leaves it stale", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.api.postAction.mockResolvedValue({
+      ok: false,
+      seq: 9,
+      error: { code: "STALE_SEQ", message: "behind" },
+    });
+
+    await h.store.getState().send({ type: "ROLL" });
+
+    expect(h.api.postAction).toHaveBeenCalledTimes(2); // one retry, never a loop
+    expect(h.store.getState().error).toBe("behind");
   });
 
   it("shows an ILLEGAL rejection to the player, and dismisses it", async () => {
