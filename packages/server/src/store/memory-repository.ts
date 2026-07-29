@@ -419,7 +419,7 @@ export class MemoryRepository implements GameRepository {
   }
 
   async commit(input: CommitInput): Promise<boolean> {
-    const { runId, expectedSeq, state, event } = input;
+    const { runId, expectedSeq, state, event, characters = [] } = input;
     const current = (this.get(RUN(runId), STATE)?.data as RunState | undefined) ?? null;
     // Both conditions of the real TransactWriteItems: the state has not moved,
     // and this seq has not already been written.
@@ -428,6 +428,18 @@ export class MemoryRepository implements GameRepository {
 
     this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
+    // Written only once both checks above have passed, mirroring the real
+    // transaction: a commit that loses the seq race must leave characters
+    // untouched, or a losing turn still banks its XP.
+    for (const character of characters) {
+      this.put({
+        PK: HH(character.householdId),
+        SK: CHAR_SK(character.id),
+        entity: "character",
+        v: CHARACTER_VERSION,
+        data: character,
+      });
+    }
     return true;
   }
 

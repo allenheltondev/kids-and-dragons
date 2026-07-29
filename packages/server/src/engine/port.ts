@@ -19,6 +19,7 @@
  */
 
 import type {
+  Character,
   Chapter,
   ClientIntent,
   ItemCatalog,
@@ -56,6 +57,12 @@ export interface ApplyIntentResult {
   presentation?: Presentation | undefined;
   /** Set when the intent was illegal. The handler maps it onto ActionResponse. */
   error?: { code: "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN"; message: string } | undefined;
+  /**
+   * The unresolved `Character` a CREATE_CHARACTER intent built, for the handler
+   * to persist. It cannot come out of `state.party`, which holds only the
+   * resolved view — see `EngineResult.created` in engine.ts.
+   */
+  created?: Character | undefined;
 }
 
 export interface CreateRunStateInput {

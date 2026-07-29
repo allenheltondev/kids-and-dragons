@@ -51,6 +51,7 @@ import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter } from "./character.js";
+import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 
@@ -81,6 +82,27 @@ export interface EngineResult {
   state: RunState;
   presentation?: Presentation;
   error?: EngineError;
+  /**
+   * The unresolved `Character` built by CREATE_CHARACTER, for the persistence
+   * layer to store.
+   *
+   * It has to travel beside the state rather than in it for the same reason
+   * `completeChapter` defers `awardXp`: `RunState.party` holds **resolved**
+   * characters, and a resolved character cannot be turned back into the one it
+   * came from. The species passive is already folded into its stats, so saving
+   * it as `committed` and resolving again would apply the passive twice — a
+   * unicorn permanently a point of Heart better than she should be, with
+   * nothing on screen to say so.
+   */
+  created?: Character;
+}
+
+/**
+ * The out-channel for things persistence needs and `RunState` cannot carry.
+ * Mutable, created per intent, and read only by the handler that applies it.
+ */
+interface EngineEffects {
+  created?: Character;
 }
 
 export interface IntentEnvelope {
@@ -549,10 +571,15 @@ export function applyIntent(
   }
 
   const draft = draftOf(state);
+  const effects: EngineEffects = {};
   try {
-    const presentation = dispatch(draft, envelope, ctx);
+    const presentation = dispatch(draft, envelope, ctx, effects);
     touch(draft, ctx);
-    return presentation ? { state: draft, presentation } : { state: draft };
+    return {
+      state: draft,
+      ...(presentation ? { presentation } : {}),
+      ...(effects.created ? { created: effects.created } : {}),
+    };
   } catch (e) {
     if (e instanceof Illegal) return err(state, e.code, e.message);
     // A rules violation from character.ts (a hand-rolled creation payload, say)
@@ -568,6 +595,7 @@ function dispatch(
   draft: RunState,
   envelope: IntentEnvelope,
   ctx: EngineContext,
+  effects: EngineEffects,
 ): Presentation | undefined {
   const { playerId, intent } = envelope;
   switch (intent.type) {
@@ -581,7 +609,7 @@ function dispatch(
       return doReady(draft, playerId, intent.ready, ctx);
 
     case "CREATE_CHARACTER":
-      return doCreateCharacter(draft, playerId, intent, ctx);
+      return doCreateCharacter(draft, playerId, intent, ctx, effects);
 
     case "START_CHAPTER":
       return doStartChapter(draft, intent.chapterId, ctx);
@@ -628,6 +656,7 @@ function doCreateCharacter(
   playerId: string,
   intent: Extract<ClientIntent, { type: "CREATE_CHARACTER" }>,
   ctx: EngineContext,
+  effects: EngineEffects,
 ): Presentation | undefined {
   /*
    * Deliberately allowed at any phase. Refusing once the chapter has started
@@ -640,10 +669,36 @@ function doCreateCharacter(
     throw new Illegal("ILLEGAL", `player "${playerId}" already has a character in this run`);
   }
 
+  /*
+   * `startingLevel` arrives from a phone and buys levels, actions and stat
+   * points outright (spec §8.4), so it is checked against *this party* and not
+   * merely against the tier floors the rules define. `newCharacter` enforces
+   * "1 or a tier floor"; only the engine can enforce "and not a floor above the
+   * people you are sitting down with", because only the engine has the party.
+   *
+   * Without this, a hand-written client in a level-1 party could ask for 10 and
+   * get it — the joining rule is a convenience for a friend at the table, and a
+   * convenience that hands out nine free stat points is a different feature.
+   */
+  const joinCap = partyTierFloor(draft, ctx);
+  if (intent.startingLevel !== undefined && intent.startingLevel > joinCap) {
+    throw new Illegal(
+      "ILLEGAL",
+      `startingLevel ${intent.startingLevel} is above this party's tier floor (${joinCap})`,
+    );
+  }
+
   const character: Character = newCharacter({
-    // The run assigns a stable placeholder id; persistence may re-key it when
-    // the character is written to the household (architecture §3).
-    id: `c_${playerId}`,
+    /*
+     * Scoped to the run, not just the player. `c_<playerId>` alone repeats for
+     * every character that player ever makes, so a second hero in a later
+     * campaign would collide with the first: the store would skip the write as
+     * already-present, and the next chapter completion would load the *old*
+     * character and quietly swap it into the party. Including the run id keeps
+     * it unique while staying derived rather than random — the engine is pure
+     * and a replay has to rebuild the same id (architecture §4.1).
+     */
+    id: `c_${draft.runId}_${playerId}`,
     householdId: ctx.householdId ?? "",
     ownerPlayerId: playerId,
     name: intent.name,
@@ -659,6 +714,10 @@ function doCreateCharacter(
     rules: ctx.rules,
     now: ctx.now,
   });
+
+  // The persistence layer needs the unresolved character; `draft.party` is
+  // about to hold only the resolved view of it. See `EngineResult.created`.
+  effects.created = character;
 
   const resolved = resolveCharacter(character, ctx.rules, ctx.items);
   draft.party.push({
@@ -678,6 +737,20 @@ function doCreateCharacter(
    */
   if (draft.phase === "lobby") draft.phase = "creation";
   return undefined;
+}
+
+/**
+ * The highest level a newcomer may join at: the tier floor of the strongest
+ * character already in the party, or 1 when nobody is here yet (spec §8.4).
+ *
+ * The *floor* rather than the party's actual level, deliberately — joining a
+ * party of level-9 Radiants seats you at 7, with two levels still ahead of you
+ * and the Mythic transformation yours to earn.
+ */
+function partyTierFloor(draft: RunState, ctx: EngineContext): number {
+  if (draft.party.length === 0) return 1;
+  const highest = Math.max(...draft.party.map((m) => m.character.level));
+  return ctx.rules.tierLevels[tierForLevel(ctx.rules, highest)] ?? 1;
 }
 
 function doStartChapter(
