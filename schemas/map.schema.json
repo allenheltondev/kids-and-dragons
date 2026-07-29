@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons/schemas/map.schema.json",
+  "title": "Encounter map",
+  "description": "content/maps/*.json. Mirrors packages/shared/src/types/chapter.ts EncounterMap; where the two disagree the TypeScript type wins. Terrain is ASCII so a map can be reviewed in a diff. The rules a schema cannot express — spawns landing on open tiles, spawns inside the board, enough of them for a full party and a full enemy group — are enforced by tools/content/validate.mjs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "rows", "partySpawns", "enemySpawns"],
+  "properties": {
+    "$comment": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "rows": {
+      "$comment": "10x8, the board in spec 7.1. Fixed because the camera, the reachable-tile highlight and the four-round pacing are all tuned to it.",
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": { "type": "string", "pattern": "^[.#]{10}$" }
+    },
+    "partySpawns": {
+      "$comment": "Three players (spec 7.1). A fourth chair is allowed for, so four is the cap.",
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/tile" }
+    },
+    "enemySpawns": {
+      "$comment": "2-4 enemies, never more (spec 7.1), so four spawn points is the most a map ever needs.",
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/tile" }
+    }
+  },
+  "$defs": {
+    "tile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "integer", "minimum": 0, "maximum": 9 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 7 }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { makeChapter, makeItems, makeRules } from "../test-support.ts";
+import { makeChapter, makeItems, makeMap, makeRules } from "../test-support.ts";
 import { ContentError, clearContentCache, loadContent } from "./loader.ts";
 
 const tempDirs: string[] = [];
@@ -17,6 +17,7 @@ async function tree(files: {
   rules?: unknown;
   items?: unknown;
   chapters?: Record<string, unknown> | null;
+  maps?: Record<string, unknown> | null;
 }): Promise<string> {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "kad-content-"));
   tempDirs.push(root);
@@ -29,6 +30,13 @@ async function tree(files: {
       await write(path.join(dir, `${name}.json`), body);
     }
   }
+  if (files.maps !== null) {
+    const dir = path.join(root, "maps");
+    await fs.mkdir(dir, { recursive: true });
+    for (const [name, body] of Object.entries(files.maps ?? {})) {
+      await write(path.join(dir, `${name}.json`), body);
+    }
+  }
   return root;
 }
 
@@ -37,7 +45,15 @@ async function write(file: string, body: unknown): Promise<void> {
 }
 
 function good() {
-  return { rules: makeRules(), items: makeItems(), chapters: { "bramblewood-01": makeChapter() } };
+  return {
+    rules: makeRules(),
+    items: makeItems(),
+    chapters: { "bramblewood-01": makeChapter() },
+    // The fixture chapter has an encounter, and an encounter without its board
+    // is a chapter that cannot be played past its first fight — so the loader
+    // refuses it. That is the check working, not the fixture being fussy.
+    maps: { thicket: makeMap() },
+  };
 }
 
 describe("loadContent", () => {

@@ -22,6 +22,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type {
   Chapter,
+  EncounterMap,
   ItemCatalog,
   ItemDef,
   RulesContent,
@@ -60,6 +61,14 @@ export interface ContentStore {
   /** `null` for an unknown id — the caller decides whether that is fatal. */
   chapter(id: string): Chapter | null;
   chapterIds(): string[];
+  /**
+   * A battle map by id, as referenced by `EncounterScene.map`. `null` for an
+   * unknown id; `content:validate` already refuses a chapter that names one, so
+   * a miss at runtime means the deployed bundle and the deployed content
+   * disagree — which the engine reports as NOT_FOUND rather than guessing a
+   * board.
+   */
+  map(id: string): EncounterMap | null;
 }
 
 class LoadedContent implements ContentStore {
@@ -68,6 +77,7 @@ class LoadedContent implements ContentStore {
     private readonly _rules: RulesContent,
     private readonly _items: ItemCatalog,
     private readonly _chapters: ReadonlyMap<string, Chapter>,
+    private readonly _maps: ReadonlyMap<string, EncounterMap>,
   ) {}
 
   rules(): RulesContent {
@@ -80,6 +90,10 @@ class LoadedContent implements ContentStore {
 
   chapter(id: string): Chapter | null {
     return this._chapters.get(id) ?? null;
+  }
+
+  map(id: string): EncounterMap | null {
+    return this._maps.get(id) ?? null;
   }
 
   chapterIds(): string[] {
@@ -152,13 +166,52 @@ async function readAll(root: string): Promise<ContentStore> {
     chapters.set(chapter.id, chapter);
   }
 
+  const maps = new Map<string, EncounterMap>();
+  const mapsDir = path.join(root, "maps");
+  let mapFiles: string[] = [];
+  try {
+    mapFiles = (await fs.readdir(mapsDir)).filter((f) => f.endsWith(".json")).sort();
+  } catch {
+    // No maps/ at all is fine — a content set with no encounters in it is a
+    // legitimate thing to load, and `checkChapter` is what catches an encounter
+    // that names a map nothing provides.
+  }
+  for (const file of mapFiles) {
+    const map = await readJson<EncounterMap>(path.join(mapsDir, file), problems);
+    if (!map) continue;
+    const mapProblems = checkMap(map, `maps/${file}`);
+    if (mapProblems.length > 0) {
+      problems.push(...mapProblems);
+      continue;
+    }
+    if (maps.has(map.id)) {
+      problems.push(`maps/${file}: duplicate map id "${map.id}"`);
+      continue;
+    }
+    maps.set(map.id, map);
+  }
+
+  // Every encounter's map has to exist, and only now can we know. A missing
+  // board is a chapter that cannot be played past its first fight, so it fails
+  // the load rather than the session.
+  for (const chapter of chapters.values()) {
+    for (const [sceneId, scene] of Object.entries(chapter.scenes)) {
+      if (scene.type !== "encounter") continue;
+      if (!maps.has(scene.map)) {
+        problems.push(
+          `chapters/${chapter.id}.json: scene "${sceneId}" names map "${scene.map}", which is not in maps/`,
+        );
+      }
+    }
+  }
+
   if (rules) problems.push(...checkRules(rules));
   if (items) problems.push(...checkItems(items));
 
   if (!rules || !items || problems.length > 0) {
     throw new ContentError(root, problems);
   }
-  return new LoadedContent(root, rules, items, chapters);
+  return new LoadedContent(root, rules, items, chapters, maps);
 }
 
 async function readJson<T>(file: string, problems: string[]): Promise<T | null> {
@@ -224,6 +277,65 @@ function checkItems(items: ItemCatalog): string[] {
       problems.push(`items.json: "${id}" has an invalid kind (${String(item.kind)})`);
     }
     if (typeof item.name !== "string") problems.push(`items.json: "${id}" has no name`);
+  }
+  return problems;
+}
+
+/**
+ * The map invariants a JSON Schema cannot state.
+ *
+ * The schema already fixes the board at 10×8 and the alphabet at `.`/`#`. What
+ * it cannot see is whether the map is *playable*: a spawn on a bramble tile
+ * would throw out of `placeActor` at the moment the fight starts, which is a
+ * crash at the table for a mistake visible in the file.
+ */
+function checkMap(map: EncounterMap, label: string): string[] {
+  const problems: string[] = [];
+  if (typeof map.id !== "string" || map.id === "") problems.push(`${label}: missing id`);
+  if (!Array.isArray(map.rows) || map.rows.length === 0) {
+    problems.push(`${label}: missing rows`);
+    return problems;
+  }
+
+  const height = map.rows.length;
+  const width = map.rows[0]?.length ?? 0;
+  for (const [y, row] of map.rows.entries()) {
+    if (typeof row !== "string" || row.length !== width) {
+      problems.push(`${label}: row ${y} is ${String(row?.length)} tiles wide, expected ${width}`);
+    } else if (/[^.#]/.test(row)) {
+      problems.push(`${label}: row ${y} has characters other than "." and "#"`);
+    }
+  }
+
+  const seen = new Set<string>();
+  for (const [kind, spawns] of [
+    ["partySpawns", map.partySpawns],
+    ["enemySpawns", map.enemySpawns],
+  ] as const) {
+    if (!Array.isArray(spawns)) {
+      problems.push(`${label}: missing ${kind}`);
+      continue;
+    }
+    for (const [i, at] of spawns.entries()) {
+      const where = `${label}: ${kind}[${i}]`;
+      if (at?.x === undefined || at?.y === undefined) {
+        problems.push(`${where} needs an x and a y`);
+        continue;
+      }
+      if (at.x < 0 || at.x >= width || at.y < 0 || at.y >= height) {
+        problems.push(`${where} at (${at.x}, ${at.y}) is off a ${width}×${height} board`);
+        continue;
+      }
+      if (map.rows[at.y]?.[at.x] !== ".") {
+        problems.push(`${where} at (${at.x}, ${at.y}) stands on a blocked tile`);
+      }
+      // Two figures cannot share a tile (grid.ts), and a duplicate spawn would
+      // only fail once a fight had that many bodies in it — which is to say on
+      // the map with four enemies and not on the one with two.
+      const key = `${at.x},${at.y}`;
+      if (seen.has(key)) problems.push(`${where} at (${at.x}, ${at.y}) repeats an earlier spawn`);
+      seen.add(key);
+    }
   }
   return problems;
 }

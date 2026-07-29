@@ -149,6 +149,29 @@ export interface EnemySpec {
   art?: string;
 }
 
+/**
+ * A battle map — `content/maps/<id>.json`, referenced by `EncounterScene.map`.
+ *
+ * Terrain is ASCII on purpose: `.` open, `#` blocked, one character per tile,
+ * one string per row. It is the only representation a person can author, review
+ * in a pull request, and eyeball for "is this actually playable" without a tool
+ * — and `grid.ts`'s `parseBoard()` already reads exactly this shape.
+ *
+ * Spawns are authored rather than derived because the engine refuses to guess a
+ * formation (see `EncounterSetup`). `EnemySpec.count` is expanded against
+ * `enemySpawns` in order, so a map decides where a fight starts and the chapter
+ * decides what is in it.
+ */
+export interface EncounterMap {
+  id: string;
+  /** 8 rows of 10 characters — the board in spec §7.1. */
+  rows: string[];
+  /** Where the party stands. At least three; §7.1 seats three players. */
+  partySpawns: { x: number; y: number }[];
+  /** At least four, the most enemies §7.1 allows. Consumed in order. */
+  enemySpawns: { x: number; y: number }[];
+}
+
 export interface EncounterScene {
   type: "encounter";
   map: string;
