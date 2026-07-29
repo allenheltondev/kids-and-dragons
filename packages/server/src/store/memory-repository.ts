@@ -14,6 +14,8 @@
  */
 
 import fs from "node:fs/promises";
+import { CHARACTER_VERSION, migrateCharacter } from "@kad/shared";
+import { readAll } from "./character-io.ts";
 import path from "node:path";
 import type {
   Character,
@@ -58,6 +60,13 @@ interface TableItem {
   GSI1SK?: string;
   /** Epoch seconds, TTL attribute. Only rooms carry it today. */
   ttl?: number;
+  /**
+   * Schema version of `data`, per entity (architecture §3.2). A top-level
+   * attribute rather than a field on `data`, so the domain type never learns
+   * that it is stored and nothing above the repository can branch on it.
+   * Absent means a row written before versioning — v0.
+   */
+  v?: number;
   /**
    * Set on a household `META` row once the sweeper has begun deleting it, which
    * is what makes `claimHousehold` start refusing. A top-level attribute rather
@@ -344,18 +353,23 @@ export class MemoryRepository implements GameRepository {
       PK: HH(character.householdId),
       SK: CHAR_SK(character.id),
       entity: "character",
+      // Stamped on every write, so a row's version is a fact rather than an
+      // inference from which fields happen to be present (architecture §3.2).
+      v: CHARACTER_VERSION,
       data: character,
     });
   }
 
   async getCharacter(householdId: string, characterId: string): Promise<Character | null> {
-    return (
-      (this.get(HH(householdId), CHAR_SK(characterId))?.data as Character | undefined) ?? null
-    );
+    const item = this.get(HH(householdId), CHAR_SK(characterId));
+    if (!item) return null;
+    // Same migration path as DynamoRepository, on purpose — the contract suite
+    // runs against both, so this is the only way it covers either.
+    return migrateCharacter(item.data, item.v);
   }
 
   async listCharacters(householdId: string): Promise<Character[]> {
-    return this.query(HH(householdId), PREFIX.character).map((i) => i.data as Character);
+    return readAll(this.query(HH(householdId), PREFIX.character), householdId);
   }
 
   // --- runs, state, events ---------------------------------------------------
