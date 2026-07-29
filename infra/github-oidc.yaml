@@ -2,10 +2,19 @@ AWSTemplateFormatVersion: "2010-09-09"
 
 # The bootstrap stack: how GitHub Actions is allowed to deploy.
 #
+# **Optional.** If the account already has a role that other repositories deploy
+# with — the way `allenheltondev/content-tracking` does, where the role lives in
+# the account and the repo only knows its ARN — the smaller change is to add
+# this repository's two `sub` claims to that role instead:
+#
+#   repo:<owner>/kids-and-dragons:environment:Staging
+#   repo:<owner>/kids-and-dragons:environment:Production
+#
+# Use this template when you would rather have roles dedicated to this project.
 # Deployed **once, by hand**, before any automated deploy can work — it is the
 # thing that grants the permission, so it cannot be granted by the thing it
-# grants. Its outputs are the `AWS_DEPLOYMENT_ROLE_ARN` secrets you set on the
-# `staging` and `prod` GitHub environments.
+# grants. Its outputs are the `AWS_DEPLOY_ROLE_ARN` secrets you set on the
+# `Staging` and `Production` GitHub environments.
 #
 #   aws cloudformation deploy \
 #     --template-file infra/github-oidc.yaml \
@@ -15,7 +24,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 #
 # The two roles are **not interchangeable**: each trusts exactly one GitHub
 # environment. `StagingRoleArn` goes in the Staging environment's
-# AWS_DEPLOYMENT_ROLE_ARN and `ProdRoleArn` in Production's. Putting one ARN in
+# AWS_DEPLOY_ROLE_ARN and `ProdRoleArn` in Production's. Putting one ARN in
 # both leaves whichever environment does not match failing with
 # "Not authorized to perform sts:AssumeRoleWithWebIdentity" — which is the trust
 # boundary working, not a misconfiguration of it.
@@ -123,9 +132,9 @@ Resources:
 
 Outputs:
   StagingRoleArn:
-    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Staging environment (not Production)
+    Description: Set as AWS_DEPLOY_ROLE_ARN on the Staging environment (not Production)
     Value: !GetAtt StagingDeployRole.Arn
 
   ProdRoleArn:
-    Description: Set as AWS_DEPLOYMENT_ROLE_ARN on the Production environment (not Staging)
+    Description: Set as AWS_DEPLOY_ROLE_ARN on the Production environment (not Staging)
     Value: !GetAtt ProdDeployRole.Arn

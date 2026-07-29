@@ -1,24 +1,24 @@
-name: Deploy (staging)
+name: Deploy (production)
 
-# Staging, from every pull request. Mirrors the shape used in
-# allenheltondev/content-tracking: one workflow per environment, the role ARN
-# on a GitHub environment, OIDC for credentials.
+# Production, on every push to main. Sibling of deploy.yml, kept as a separate
+# file rather than one workflow with conditionals — which is how
+# allenheltondev/content-tracking does it, and it reads far better than a
+# ternary in six places.
 #
-# The environment is `Staging` and the AWS stage is `staging` — the same word in
-# two different registries. GitHub matches the environment name exactly (a
-# mismatch quietly creates a new, empty one), and the OIDC `sub` claim carries
-# it verbatim into the role's trust policy.
+# The environment is `Production` and the AWS stage is `prod`. They are
+# deliberately different words: GitHub matches the environment name exactly, and
+# the OIDC `sub` claim carries it verbatim into the role's trust policy, while
+# `prod` is what names the stack, the table, and `StageName` in the template.
 
 on:
-  pull_request:
+  push:
     branches: [main]
   workflow_dispatch:
 
 concurrency:
-  # A single global group, not one per branch: every pull request deploys to the
-  # *same* staging stack, so concurrent runs have to queue rather than race two
-  # CloudFormation updates against one another.
-  group: deploy-staging
+  # Queued, never cancelled: a half-applied CloudFormation update is a worse
+  # state than a slow one, and this is the stack the family actually plays on.
+  group: deploy-production
   cancel-in-progress: false
 
 permissions:
@@ -27,21 +27,15 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  STACK_NAME: kad-staging
-  STAGE: staging
+  STACK_NAME: kad-prod
+  STAGE: prod
 
 jobs:
   deploy:
-    name: sam deploy staging
-    # Dependabot pull requests run with a separate secret store that cannot see
-    # AWS_DEPLOY_ROLE_ARN, so OIDC fails before anything useful happens. CI still
-    # gates the merge, and the post-merge production deploy exercises the bump.
-    if: github.actor != 'dependabot[bot]'
+    name: sam deploy production
     runs-on: ubuntu-latest
     environment:
-      name: Staging
-      # Surfaces on the pull request as "Deployed to Staging" with a link, so a
-      # reviewer can open the thing rather than reconstruct its URL.
+      name: Production
       url: ${{ steps.outputs.outputs.site-url }}
 
     steps:
@@ -70,7 +64,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@6.2.2
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          role-session-name: GitHubActions-KidsAndDragons-StagingDeploy
+          role-session-name: GitHubActions-KidsAndDragons-ProductionDeploy
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Install dependencies
@@ -87,7 +81,7 @@ jobs:
         # `KAD_SKIP_CHECKS` is deliberately unset. `ci.yml` runs the same suite
         # on the same commit, but in a parallel workflow that cannot gate this
         # one — so skipping would let a red commit reach a stack.
-        run: ./scripts/deploy.sh staging
+        run: ./scripts/deploy.sh prod
         env:
           # Passkeys bind to a domain for the life of the credential, and
           # `sam deploy` reverts any parameter it is not given. Empty is a
@@ -127,7 +121,7 @@ jobs:
       - name: Write deployment summary
         run: |
           {
-            echo "## Kids & Dragons staging deploy"
+            echo "## Kids \& Dragons production deploy"
             echo
             echo "- **Stack:** \`${STACK_NAME}\`"
             echo "- **Region:** \`${AWS_REGION}\`"
