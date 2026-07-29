@@ -374,6 +374,45 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.listEvents("r_1", 0)).toHaveLength(1);
       });
 
+      it("writes a character in the same transaction as the run", async () => {
+        await repo.putState(state("r_1", 0));
+        const hero = { ...character("h_1"), id: "c_win" };
+
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            characters: [hero],
+          }),
+        ).toBe(true);
+        expect((await repo.getCharacter("h_1", "c_win"))?.id).toBe("c_win");
+      });
+
+      it("leaves characters untouched when the commit loses the seq race", async () => {
+        /*
+         * The reason character writes belong in this transaction at all. XP is
+         * folded into a character by the same intent that ends a chapter, so
+         * writing it separately means the phone that loses the race still banks
+         * its award — and a retry after a transient failure banks it twice.
+         */
+        await repo.putState(state("r_1", 0));
+        await repo.commit({ runId: "r_1", expectedSeq: 0, state: state("r_1", 1), event: event("r_1", 1) });
+
+        const loser = { ...character("h_1"), id: "c_loser" };
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            characters: [loser],
+          }),
+        ).toBe(false);
+        expect(await repo.getCharacter("h_1", "c_loser")).toBeNull();
+      });
+
       it("refuses to commit against a run that has no state", async () => {
         expect(
           await repo.commit({

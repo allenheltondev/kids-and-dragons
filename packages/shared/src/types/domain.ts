@@ -97,6 +97,18 @@ export interface CharacterProgress {
   tier: TierId;
   unlockedActions: string[];
   inventory: InventoryEntry[];
+  /**
+   * Stat points earned by levelling and not yet spent (spec §8.1 — a level
+   * grants a point, the player spends it at a Rest scene). It lives *here*, in
+   * the same object as `stats`, so a failed campaign reverts the point and
+   * whatever it was spent on together; anywhere else and a level-up spent
+   * mid-campaign would survive the revert as a permanent stat.
+   *
+   * Optional only because characters written to the store before this field
+   * existed come back without it (`getCharacter` casts, it does not migrate).
+   * Read it as `?? 0`; everything in character.ts writes it as a number.
+   */
+  unspentPoints?: number;
 }
 
 export interface ProvisionalProgress extends CharacterProgress {
@@ -143,6 +155,19 @@ export interface ResolvedCharacter {
   tier: TierId;
   /** Base + species + trinkets. */
   stats: Stats;
+  /**
+   * Stat points waiting to be spent, so the "you have a point waiting" badge
+   * (spec §8.1) can render off the resolved view instead of reaching around
+   * `resolveCharacter()` into the stored halves and re-deriving
+   * `provisional ?? committed` for itself.
+   *
+   * Required here while `CharacterProgress.unspentPoints` is optional, and the
+   * asymmetry is deliberate: the stored shape has to admit records written
+   * before the field existed, but `resolveCharacter()` always produces a
+   * number, so the resolved view should say so rather than making every reader
+   * of a fully-derived character write `?? 0`.
+   */
+  unspentPoints: number;
   maxHp: number;
   steps: number;
   guard: number;
@@ -155,6 +180,18 @@ export interface ResolvedCharacter {
   souvenirs: Souvenir[];
   /** True when the effective state came from an in-flight campaign. */
   isProvisional: boolean;
+  /**
+   * The level this character keeps if the campaign fails — `committed.level`,
+   * not the effective one above.
+   *
+   * Exposed because the resolved view otherwise hides the distinction
+   * entirely, and one decision genuinely needs it: a newcomer joining at the
+   * party's tier floor (spec §8.4) writes that level straight into their own
+   * *committed* snapshot. Capping on a veteran's provisional level would let
+   * the campaign fail, revert the veterans, and leave the newcomer permanently
+   * a tier above the people who earned it.
+   */
+  committedLevel: number;
 }
 
 // ---------------------------------------------------------------------------

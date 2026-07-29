@@ -42,12 +42,51 @@ export interface Choice {
   effects?: Effect[];
 }
 
+/**
+ * How a chapter ended — spec §8.2. Success pays the full `xpAward`, a setback
+ * pays half, rounded down.
+ *
+ * Absent means `"success"`, and that is load-bearing rather than lazy: every
+ * chapter authored before setbacks existed ends successfully, and none of them
+ * should have to be edited to keep doing so.
+ *
+ * A setback is not a loss screen and not a retry. Play simply ended at that
+ * ending, the same way a failed check or a party wipe branches rather than
+ * stops (§6.1, §7.3).
+ */
+export type ChapterOutcome = "success" | "setback";
+
+/**
+ * An optional objective that pays a bonus to the whole party or to nobody —
+ * never to an individual, because uniform party XP is what keeps everybody
+ * transforming on the same evening (spec §8.2, "Why XP is never individual").
+ *
+ * It rides on the flag machinery that already exists: author a `setFlag`
+ * effect wherever the thing happens, and point `flag` at it. There is
+ * deliberately no second way to say "the party did the thing".
+ */
+export interface ChapterObjective {
+  id: string;
+  /** Shown on the completion screen, so it reads as a sentence to an 8-year-old. */
+  label: string;
+  /** Paid when this run flag is set at the moment the chapter completes. */
+  flag: string;
+  /**
+   * Bonus XP for the whole party. The objectives of one chapter may total no
+   * more than 25% of its `xpAward` (spec §8.2) — enforced at authoring time by
+   * tools/content/validate.mjs and clamped again in the engine.
+   */
+  xp: number;
+}
+
 export interface StoryScene {
   type: "story";
   art?: string;
   narration: string;
   onEnter?: Effect[];
   choices: Choice[];
+  /** Only read when this scene ends the chapter — see `EndingScene`. */
+  outcome?: ChapterOutcome;
 }
 
 export interface CheckScene {
@@ -71,6 +110,8 @@ export interface ChoicePointScene {
   onEnter?: Effect[];
   /** Party votes; ties broken by the active turn marker. spec §6.1. */
   choices: Choice[];
+  /** Only read when this scene ends the chapter — see `EndingScene`. */
+  outcome?: ChapterOutcome;
 }
 
 export interface RestScene {
@@ -81,6 +122,8 @@ export interface RestScene {
   /** Heals the party by this much on entry. */
   heal?: number;
   choices: Choice[];
+  /** Only read when this scene ends the chapter — see `EndingScene`. */
+  outcome?: ChapterOutcome;
 }
 
 export interface EnemySpec {
@@ -115,6 +158,19 @@ export type Scene =
 
 export type SceneType = Scene["type"];
 
+/**
+ * The scenes that can be a chapter's ending, and therefore the only ones whose
+ * `outcome` is ever read.
+ *
+ * A chapter ends at a scene with nowhere left to go, and the only representable
+ * way to say that is an empty `choices` array (content/README.md) — so a check
+ * or an encounter can never be one, since both always carry two branches. A
+ * chapter may have several endings, which is exactly why the outcome is
+ * declared on the scene rather than on the chapter: spec §8.2 wants "which
+ * endings are setbacks" to be authored, not inferred.
+ */
+export type EndingScene = StoryScene | ChoicePointScene | RestScene;
+
 export interface LlmHints {
   tone: string;
   vocabulary: string;
@@ -132,6 +188,8 @@ export interface Chapter {
   xpAward: number;
   entry: SceneId;
   scenes: Record<SceneId, Scene>;
+  /** Optional bonus objectives, spec §8.2. Absent is the normal case. */
+  objectives?: ChapterObjective[];
   llmHints?: LlmHints;
 }
 
