@@ -251,6 +251,7 @@
           "count": 3,
           "hp": 6,
           "guard": 11,
+          "quick": 3,
           "steps": 5,
           "attack": 3,
           "art": "enemies/bramblewood/wisp"
