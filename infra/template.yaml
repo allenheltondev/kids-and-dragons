@@ -48,11 +48,6 @@ Parameters:
       — and if it somehow is not, the backlog drains a day later rather than
       never.
 
-  LogRetentionDays:
-    Type: Number
-    Default: 30
-    Description: CloudWatch retention. Logs cost more than this game does.
-
   WebAuthnRelyingPartyId:
     Type: String
     Default: ""
@@ -617,25 +612,16 @@ Resources:
 
   # ---------------------------------------------------------------------------
   # Logs
+  #
+  # No `AWS::Logs::LogGroup` resources and no `RetentionInDays`, deliberately.
+  # Lambda creates `/aws/lambda/<function>` on the first invocation, and
+  # retention is managed account-wide by a utility outside this repo — declaring
+  # it here would mean a redeploy quietly resetting whatever that utility had
+  # decided.
+  #
+  # `LoggingConfig` in Globals stays: format and levels are a property of the
+  # application, not of how long anyone keeps the output.
   # ---------------------------------------------------------------------------
-
-  ApiFunctionLogs:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/lambda/${ApiFunction}"
-      RetentionInDays: !Ref LogRetentionDays
-
-  ChannelAuthorizerLogs:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/lambda/${ChannelAuthorizerFunction}"
-      RetentionInDays: !Ref LogRetentionDays
-
-  SweepFunctionLogs:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/aws/lambda/${SweepFunction}"
-      RetentionInDays: !Ref LogRetentionDays
 
 Outputs:
   SiteUrl:
