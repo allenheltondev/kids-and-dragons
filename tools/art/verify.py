@@ -446,6 +446,37 @@ def verify_set(rep: Report, mf: dict, species: dict, tier: str):
     return parts, assembled
 
 
+def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
+    """Canonical NPCs and creatures are single, non-rigged runtime cutouts."""
+    entity_id = entity["id"]
+    label = f"entity/{entity_id}"
+    print(f"\n{BOLD}{label}{RESET}")
+
+    path = os.path.join(ROOT, "assets", "entities", entity_id, "assembled.png")
+    if not os.path.exists(path):
+        rep.fail(f"{label} assembled.png", "present", "missing")
+        return
+
+    if entity.get("primaryBiome") not in mf["biomes"]:
+        rep.fail(
+            f"{label} primary biome",
+            "an id in manifest.biomes",
+            entity.get("primaryBiome"),
+        )
+    else:
+        rep.ok(f"{label} primary biome  {entity['primaryBiome']}")
+
+    if not entity.get("canonicalLocations"):
+        rep.fail(f"{label} canonical locations", "at least one location", "none")
+    else:
+        rep.ok(
+            f"{label} canonical locations  "
+            f"{', '.join(entity['canonicalLocations'])}"
+        )
+
+    check_format(rep, path, mf["canvas"], mf["tolerance"])
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -489,6 +520,11 @@ def main() -> int:
             check_cross_tier(rep, sp, per_tier,
                              mf.get("structuralAdjacency", mf["adjacency"]),
                              mf["canvas"], mf["tolerance"])
+
+    for entity in mf.get("entities", []):
+        if args and entity["id"] not in args:
+            continue
+        verify_entity(rep, mf, entity)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:
