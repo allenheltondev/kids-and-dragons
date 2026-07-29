@@ -8,6 +8,7 @@
  */
 
 import type { Appearance, ClassId, SpeciesId, Stats } from "./domain.js";
+import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 
 // ---------------------------------------------------------------------------
@@ -72,7 +73,13 @@ export type Presentation =
   | { kind: "REVIVE"; targetId: string }
   | { kind: "LEVEL_UP"; characterId: string; level: number }
   | { kind: "TRANSFORM"; characterId: string; tier: string }
-  | { kind: "CHAPTER_COMPLETE"; chapterId: string; xp: number };
+  /**
+   * `outcome` is the one thing on a presentation that a client cannot recompute
+   * from the patch alone in time to use it: the ending beat has to be chosen
+   * *before* the state lands (see the WorldView's play-then-apply order above),
+   * and a setback plays a different one (spec §8.2).
+   */
+  | { kind: "CHAPTER_COMPLETE"; chapterId: string; xp: number; outcome: ChapterOutcome };
 
 export interface ServerMessage {
   seq: number;

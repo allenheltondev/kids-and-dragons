@@ -14,7 +14,9 @@
  *     behind the couch and sent a stale tap gets a code back and resyncs.
  *   - **There is no game over.** A party wipe branches the story (spec §7.3),
  *     an encounter loss goes to `onDefeat`, and no state here can terminate a
- *     run unhappily.
+ *     run unhappily. A chapter *setback* (spec §8.2) is not a counterexample:
+ *     it is an authored ending that pays half the award, with no retry, no
+ *     losing phase, and the party intact on the other side of it.
  *
  * Not in scope: tactical combat. Roadmap chapter 4 owns the grid, turn order
  * and enemy AI. Encounter scenes here resolve through a clearly marked
@@ -27,9 +29,19 @@ import type {
   ResolvedCharacter,
   RulesContent,
 } from "./types/domain.js";
-import type { Branch, Chapter, Choice, Effect, Scene, SceneId } from "./types/chapter.js";
+import type {
+  Branch,
+  Chapter,
+  ChapterOutcome,
+  Choice,
+  Effect,
+  EndingScene,
+  Scene,
+  SceneId,
+} from "./types/chapter.js";
 import type {
   DiceRoll,
+  EarnedBonus,
   PartyMember,
   Prompt,
   RoomMode,
@@ -104,6 +116,8 @@ export function createRunState(input: CreateRunInput): RunState {
     lastRoll: null,
     flags: {},
     xpEarned: 0,
+    chapterOutcome: null,
+    bonuses: [],
     updatedAt: input.now,
   };
 }
@@ -323,16 +337,69 @@ function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMem
   );
 }
 
-function completeChapter(draft: RunState, ctx: EngineContext): Presentation {
+/**
+ * Pays the chapter's bonus objectives, and returns them itemised.
+ *
+ * An objective is met when the flag it watches is set at the moment the chapter
+ * completes (spec §8.2). It deliberately reuses the flag machinery the whole
+ * chapter format already runs on, so "the party did the thing" has exactly one
+ * spelling: `setFlag` wherever it happens, and an objective pointed at it.
+ *
+ * `!== true` rather than a truthiness test, because `setFlag` can carry
+ * `value: false` — an author who explicitly *unsets* a flag later in the
+ * chapter (the shrine you found and then lost) means the objective is not met,
+ * and `flags[f]` being `false` must not read as met.
+ *
+ * The 25% ceiling is the same one tools/content/validate.mjs enforces at build
+ * time, applied again here on purpose. Validation stops a malformed chapter
+ * reaching the repo; this stops one that is already at the table — hand-edited
+ * content, or a chapter served from cache after the cap changed — from
+ * quietly distorting the pacing that spec §8.1 promises. The budget is shared
+ * across every objective, not granted per objective, because four objectives
+ * each paying a quarter would pay the whole award again.
+ */
+function awardObjectives(draft: RunState, chapter: Chapter): EarnedBonus[] {
+  let budget = Math.floor(chapter.xpAward * 0.25);
+  const earned: EarnedBonus[] = [];
+  for (const objective of chapter.objectives ?? []) {
+    if (draft.flags[objective.flag] !== true) continue;
+    // Clamped, and still recorded even if the clamp takes it to nothing: the
+    // party *did* the thing, and a completion screen that silently dropped it
+    // would be lying about the evening. Only unvalidated content gets here.
+    const xp = Math.max(0, Math.min(objective.xp, budget));
+    budget -= xp;
+    draft.xpEarned += xp;
+    earned.push({ id: objective.id, label: objective.label, xp });
+  }
+  return earned;
+}
+
+function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext): Presentation {
   const chapter = requireChapter(ctx);
+  // Absent means success (spec §8.2). Every chapter authored before setbacks
+  // existed ends successfully, and none of them should need editing to say so.
+  const outcome: ChapterOutcome = scene.outcome ?? "success";
+
   draft.phase = "chapter_complete";
   draft.prompt = null;
+  draft.chapterOutcome = outcome;
+
   // XP is per chapter, not per kill (spec §8.1). The engine only *records* it;
   // folding it into a character's provisional progress is the persistence
   // layer's job via character.awardXp(), because RunState holds resolved
   // characters and cannot express the committed/provisional split.
-  draft.xpEarned += chapter.xpAward;
-  return { kind: "CHAPTER_COMPLETE", chapterId: chapter.id, xp: draft.xpEarned };
+  //
+  // A setback pays half, rounded down, rather than nothing (§8.2). That is the
+  // whole point of the number: a family that hits two setbacks should fall
+  // behind the pacing, not off it.
+  draft.xpEarned += outcome === "setback" ? Math.floor(chapter.xpAward / 2) : chapter.xpAward;
+  // Objectives pay on a setback too. §8.2 defines them by what the party did on
+  // the way ("find the hidden shrine, finish with nobody knocked down"), not by
+  // which ending they arrived at — and the evening a chapter goes wrong is the
+  // worst one to also take away what did go right.
+  draft.bonuses = awardObjectives(draft, chapter);
+
+  return { kind: "CHAPTER_COMPLETE", chapterId: chapter.id, xp: draft.xpEarned, outcome };
 }
 
 /** Opens the prompt a scene is waiting on. Returns a completion presentation
@@ -348,8 +415,10 @@ function openScenePrompt(
     case "rest":
     case "choice_point": {
       if (scene.choices.length === 0) {
-        // A scene with no way out is the chapter's ending (see chapter-graph).
-        return completeChapter(draft, ctx);
+        // A scene with no way out is the chapter's ending (see chapter-graph),
+        // and a chapter may have several — which is why the scene, not the
+        // chapter, says whether this one is a success or a setback (§8.2).
+        return completeChapter(draft, scene, ctx);
       }
       // Hidden, never disabled (architecture §5). A scene where this comes back
       // empty is an authoring bug that validateChapter reports as a DEAD_END.
@@ -635,6 +704,12 @@ function doStartChapter(
   draft.campaignId = chapter.campaignId;
   draft.chapterId = chapter.id;
   draft.xpEarned = 0;
+  // Cleared with the XP they belong to. Left behind, the previous chapter's
+  // setback and its bonus list would still be on the state the moment this one
+  // starts, so a phone that renders from `chapterOutcome` would open the
+  // evening's second chapter under the first one's ending banner.
+  draft.chapterOutcome = null;
+  draft.bonuses = [];
   draft.flags = {};
   draft.lastRoll = null;
   for (const member of draft.party) member.ready = false;
