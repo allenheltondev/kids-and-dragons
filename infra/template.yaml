@@ -183,22 +183,35 @@ Resources:
       MfaConfiguration: "OFF"
       Policies:
         SignInPolicy:
-          # No password, ever — for anyone. An adult signs in with a code sent to
-          # their email and may then register a passkey for one tap after that.
-          # A child never signs in at all; her phone is bound by QR (§4.5).
+          # PASSWORD is here because Cognito refuses to create the pool without
+          # it — "PASSWORD should be configured as one of the allowed first auth
+          # factors" — and not because anything uses it.
           #
-          # PASSWORD is deliberately absent rather than merely unused: leaving it
-          # allowed is how a password ends up in a pool that promised not to have
-          # one.
+          # Nothing in this game ever asks for a password. Sign-in is an emailed
+          # code, then optionally a passkey; the client signs a user up with a
+          # random secret it discards immediately (`sync/auth.ts`), and no screen
+          # has a password field. This entry satisfies Cognito's validator and
+          # changes nothing a family sees.
           AllowedFirstAuthFactors: !If
             - Passkeys
-            - [EMAIL_OTP, WEB_AUTHN]
-            - [EMAIL_OTP]
+            - [PASSWORD, EMAIL_OTP, WEB_AUTHN]
+            - [PASSWORD, EMAIL_OTP]
       WebAuthnRelyingPartyID: !If
         - Passkeys
         - !Ref WebAuthnRelyingPartyId
         - !Ref AWS::NoValue
       WebAuthnUserVerification: !If [Passkeys, preferred, !Ref AWS::NoValue]
+      # Sign-up is a step the player never sees: the client calls SignUp and then
+      # immediately starts the email-code challenge. Without this trigger the new
+      # user sits UNCONFIRMED behind a *second* emailed code, and sign-in fails
+      # for everyone who has never played before.
+      #
+      # Auto-confirming is not a shortcut past verifying the address. The email
+      # code *is* the verification — nobody reaches a signed-in state without
+      # reading a message sent to that inbox. All this removes is a redundant
+      # confirmation round trip in front of it.
+      LambdaConfig:
+        PreSignUp: !GetAtt PreSignUpFunction.Arn
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -214,6 +227,33 @@ Resources:
           AttributeDataType: String
           Required: true
           Mutable: true
+
+  PreSignUpFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Auto-confirms sign-ups so the emailed code is the only step
+      # Inline, and CommonJS: it is ten lines that will never change, and giving
+      # it a bundle would put a build step between the user pool and a function
+      # whose whole body is two assignments.
+      InlineCode: |
+        exports.handler = async (event) => {
+          event.response.autoConfirmUser = true;
+          if (event.request.userAttributes?.email) {
+            event.response.autoVerifyEmail = true;
+          }
+          return event;
+        };
+      Handler: index.handler
+      MemorySize: 128
+      Timeout: 5
+
+  PreSignUpPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt PreSignUpFunction.Arn
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt UserPool.Arn
 
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient

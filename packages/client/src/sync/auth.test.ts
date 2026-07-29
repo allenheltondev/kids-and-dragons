@@ -52,6 +52,11 @@ describe("requestCode", () => {
     // Normalised once, at the edge: Cognito treats the username as opaque, so
     // "Allen@" and "allen@" would otherwise be two households.
     expect(calls[0]?.body["Username"]).toBe("allen@example.com");
+    // Cognito will not create a pool without PASSWORD among its allowed first
+    // auth factors, and SignUp then wants a value. It is generated, sent once,
+    // and dropped — never shown, never stored, never used to sign in.
+    const password = String(calls[0]?.body["Password"] ?? "");
+    expect(password.length).toBeGreaterThan(20);
     expect(calls[1]?.body["AuthFlow"]).toBe("USER_AUTH");
     expect((calls[1]?.body["AuthParameters"] as Record<string, string>)["PREFERRED_CHALLENGE"]).toBe(
       "EMAIL_OTP",
@@ -61,6 +66,14 @@ describe("requestCode", () => {
       session: "sess_1",
       destination: "a***@e***.com",
     });
+  });
+
+  it("never sends the same throwaway password twice", async () => {
+    const a = fakeCognito({ SignUp: {}, InitiateAuth: CHALLENGE });
+    const b = fakeCognito({ SignUp: {}, InitiateAuth: CHALLENGE });
+    await a.client.requestCode("allen@example.com");
+    await b.client.requestCode("allen@example.com");
+    expect(a.calls[0]?.body["Password"]).not.toBe(b.calls[0]?.body["Password"]);
   });
 
   it("treats an existing user as the normal case, not an error", async () => {
