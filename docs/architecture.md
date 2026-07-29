@@ -638,8 +638,8 @@ CI runs the integration suite with the live layer stubbed out — this invariant
 | Env | Purpose | Deployed by |
 |---|---|---|
 | local | Vite + the dev server + DynamoDB Local. Live LLM off by default. | `npm run dev` |
-| `staging` | A real stack, on real AWS, from every pull request. | `.github/workflows/deploy.yml` |
-| `prod` | The real thing. One stack, one region. | the same workflow, on push to `main` |
+| `staging` | A real stack, on real AWS, from every pull request. | the `Staging` GitHub environment |
+| `prod` | The real thing. One stack, one region. | the `Production` environment, on push to `main` |
 | `dev` | An optional fourth stack for driving by hand. | `./scripts/deploy.sh dev` |
 
 > Revised. This section previously said "no staging — it's a family game, `dev`
