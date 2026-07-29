@@ -213,6 +213,72 @@ This makes the rule impossible to get subtly wrong: there is no code path that p
 a failed campaign's gains, and inventory rides along with levels for free because it lives inside
 the same two objects.
 
+### 3.2 Stored shapes change — how they migrate
+
+Every item is an envelope — `PK`, `SK`, optional GSI keys, optional `ttl`, `entity`, `data` — with
+the domain object inside `data`. Today `getCharacter()` casts `data` straight to `Character`, which
+means every field is trusted and nothing defaults. `CharacterProgress.unspentPoints` is optional
+purely because of this: a required field would have TypeScript promising a number where an older row
+returns `undefined`, and `undefined + 1` corrupts a stat block at the first Rest scene.
+
+The failure mode is worth naming precisely, because it changes the solution. **Nothing but our own
+Lambda ever writes these items.** There is no hostile input to defend against and no third-party
+producer to disagree with. What actually breaks is *our own schema changes landing on rows written
+by an older version* — a migration problem wearing a validation costume.
+
+#### Lifetime decides the burden
+
+Not every record needs a migration path, because most of them expire on their own:
+
+| Record | Lives for | Needs migration? |
+|---|---|---|
+| Room | 6 hours (TTL) | **No** — wait a day and every row is new |
+| Guest household and its contents | 7 days | **No** — the sweeper handles it |
+| Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
+| `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
+| Character, household, player profile | forever | **Yes**, permanently |
+
+So the permanent burden is three record types, and only one of them — the character — is under
+active development. That is a small enough surface to do this by hand and keep it readable.
+
+#### The shape of it
+
+**A `v` on the envelope, not on the domain type.** It sits next to `entity`, where the storage
+concerns already live. `Character` does not learn that it is stored, and nothing above the
+repository can branch on a version — which is the property that keeps migration from leaking into
+the engine.
+
+**Migrate lazily, on read.** A chain of small steps, each one taking a row from `v: n` to `v: n+1`,
+run from whatever the row says up to current. No batch job, no maintenance window, no scan over
+live data. For a table this size a scan would work, but it is a machine that has to be written,
+tested and then operated on the evening it fails — where read-time migration is a function with
+unit tests.
+
+**Write back on the next natural write, never on read.** A read-triggered write doubles the cost of
+every load and can thrash when several phones resolve the same character at once. Characters are
+already written at chapter completion, so a row self-heals within one session of play; until then it
+is migrated in memory on every read, which is correct if slightly wasteful.
+
+**Two tiers of failure, because they are not alike.** A merely *missing* field gets a default — that
+is our own debt and the player should not feel it. A *structurally impossible* row — no `committed`,
+`stats` missing a stat — throws, because playing on would produce silently wrong numbers, which is
+worse than stopping. `listCharacters()` skips and logs a broken row rather than failing the whole
+list, matching the rule `resolveCharacter()` already follows: a stale save must not take the table
+down mid-session.
+
+**Hand-written, no schema library.** `assertRulesContent()` in `rules.ts` is the precedent and the
+reason still holds — no ajv in a bundle that ships to a phone. `assertCharacter()` belongs beside
+it, called at the repository boundary in **both** stores so the contract suite covers it once and
+tests both.
+
+#### Retiring a step
+
+A migration step can only be deleted once no row at that version remains, and with `v` on the
+envelope that is a question you can actually answer rather than guess. In practice they are ten
+lines each and the file will stay short for years, so the honest default is to keep them — the cost
+of an unnecessary step is a function nobody calls, and the cost of deleting one too early is a
+character that silently loads wrong.
+
 ---
 
 ## 4. Sync protocol
