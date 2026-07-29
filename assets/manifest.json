@@ -130,7 +130,40 @@
     { "id": "transform_flash", "frames": 18, "size": 256 }
   ],
 
-  "biomes": ["bramblewood", "frostpeak", "emberhollow", "sunken_market", "cloudreach"],
+  "biomes": [
+    "sky_islands",
+    "enchanted_woods",
+    "mosshome",
+    "whispering_marsh",
+    "exchange",
+    "sunward_fields",
+    "plains",
+    "eastern_plains",
+    "stone_crossing",
+    "red_sky_foothills",
+    "mount_red_sky",
+    "expanse",
+    "frostfang_peaks",
+    "glacier_of_origins",
+    "skullwater_cave",
+    "mermaid_cove",
+    "bone_yard"
+  ],
+
+  "biomeFamilies": {
+    "sky_islands": ["sky_islands"],
+    "enchanted_forest": ["enchanted_woods", "mosshome"],
+    "whispering_marsh": ["whispering_marsh"],
+    "cliffside_exchange": ["exchange"],
+    "open_plains": ["sunward_fields", "plains", "eastern_plains"],
+    "great_river": ["stone_crossing"],
+    "red_sky_volcanic": ["red_sky_foothills", "mount_red_sky"],
+    "expanse": ["expanse"],
+    "frozen_north": ["frostfang_peaks", "glacier_of_origins"],
+    "skullwater_caverns": ["skullwater_cave"],
+    "mermaid_cove": ["mermaid_cove"],
+    "bone_yard": ["bone_yard"]
+  },
 
   "globalPalette": {
     "outline": "#3A2A1E",

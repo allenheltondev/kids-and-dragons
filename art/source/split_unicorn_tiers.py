@@ -270,6 +270,15 @@ def split_tier(tier: str) -> None:
         masks[b] |= common
         seam_info.append((a, b, int((masks[a] & masks[b]).sum()), radius_used))
 
+    if tier == "radiant":
+        # The radiant horn grows through the mane and its dilated seam mask
+        # intentionally carries a few violet mane pixels. Mark those pixels as
+        # shared mane overdraw so palette sampling sees only the blue horn,
+        # while recomposition and animation-safe overlap remain unchanged.
+        blue_horn = (hue_degrees >= 185) & (hue_degrees <= 245)
+        violet_overdraw = masks["horn"] & content & saturated & ~blue_horn
+        masks["mane"] |= violet_overdraw
+
     parts_dir.mkdir(parents=True, exist_ok=True)
     layers = {}
     for name in PART_NAMES:
