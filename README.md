@@ -7,7 +7,8 @@ chapters.
 She taps, she doesn't type. Nobody dies. The party is persistent.
 
 The design lives in [`docs/spec.md`](docs/spec.md); the stack and protocol in
-[`docs/architecture.md`](docs/architecture.md); the build order in [`docs/roadmap.md`](docs/roadmap.md).
+[`docs/architecture.md`](docs/architecture.md); the build order in [`docs/roadmap.md`](docs/roadmap.md);
+how it gets to AWS in [`docs/deploy.md`](docs/deploy.md).
 
 ---
 
@@ -41,17 +42,28 @@ Any surface can be hard-refreshed at any time without losing the session.
 ```
 packages/shared     the contract and the engine — types, rules, dice,
                     resolveCharacter, inventory, chapter graph, state machine
-packages/server     the local dev server: rooms, event log, JSON Patch
-                    broadcast over SSE, handlers shaped like the Lambdas
-                    they become
+packages/server     rooms, event log, JSON Patch broadcast. One set of
+                    transport-free handlers behind two entry points: the
+                    local dev server, and the Lambdas in src/lambda/.
 packages/client     React + Pixi. WorldView and PlayerView, composed by a
                     layout shell that is the only thing that knows the mode.
+infra/              the SAM template and the Lambda bundler
 content/            rules, items, campaigns, chapters — the game as data
 schemas/            JSON Schema for all of the above, enforced in CI
 assets/             commissioned character art + manifest.json, the contract
 art/                art source, review sheets, and the split scripts
 tools/              the art gate and the content validator
 ```
+
+Each seam has a dev implementation and a prod one, and one test suite holds them
+to the same behaviour:
+
+| Seam | Local | AWS |
+|---|---|---|
+| `GameRepository` | `MemoryRepository` | `DynamoRepository` |
+| `RoomChannel` | `LocalSseChannel` | `AppSyncEventsChannel` |
+| `IdentityService` | `DevIdentity` *(unsigned — never deployed)* | `KmsIdentity` |
+| entry point | `dev-server.ts` | `lambda/http.ts` |
 
 ## Checks
 
@@ -63,7 +75,13 @@ tools/              the art gate and the content validator
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:sheet` | regenerates the review contact sheets |
 | `npm run e2e` | three browser contexts playing a chapter against the real stack |
+| `npm run infra:lint` | the SAM template, with the transform applied |
+| `npm run infra:build` | bundles the Lambdas — a deploy that would fail, failing here |
 | `npm run build` | the client bundle |
+
+`npm test` runs the repository contract suite against the in-memory store. Point
+`KAD_DDB_ENDPOINT` at a DynamoDB (`npm run ddb:local`, then `npm run test:ddb`)
+and the same suite runs against `DynamoRepository` too. CI always does both.
 
 All of them run in CI on every push. The e2e suite is its own job — minutes
 rather than seconds, and a red e2e means something different from a red unit
@@ -74,17 +92,22 @@ own download isn't there.
 
 ## What's built
 
-Roadmap **Chapter 0 through Chapter 3** — the first playable — running locally:
+Roadmap **Chapter 0 through Chapter 3** — the first playable — running locally, plus the
+infrastructure and persistence it deploys onto:
 
-- accounts and character creation (a local identity stand-in, not yet Cognito)
+- accounts and character creation
 - rooms, server-authoritative state, JSON Patch sync, reconnect, both presentation modes
 - the chapter loader, scene renderer, choices, species gating, and the dice roll
+- the AWS stack in SAM: DynamoDB, AppSync Events, Cognito, KMS, S3 + CloudFront, `./scripts/deploy.sh`
+- **anonymous play by default**, with optional sign-in that claims the household you are
+  already playing in. Nobody signs up to play; signing in is how you keep what you played.
+  Unclaimed households are swept after 7 days.
 
 **Not built yet:** tactical combat (Chapter 4) — an encounter scene currently resolves through its
 `onVictory` branch as a marked placeholder so a chapter stays walkable end to end. Also outstanding:
-AWS deployment, Cognito and device tokens, Rive rigs (the client composites static tier PNGs with
-procedural motion in the meantime), progression and inventory commitment at the campaign boundary,
-the authoring tools, and the live LLM layer.
+the sign-in **screen** (the server side is done and tested; the client has no UI for it yet), Rive
+rigs (the client composites static tier PNGs with procedural motion in the meantime), progression and
+inventory commitment at the campaign boundary, the authoring tools, and the live LLM layer.
 
 The art contract is real and enforced: all six species are approved across all four tiers, 382
 mechanical checks green. Anything that fails to load still draws a clearly-placeholder silhouette

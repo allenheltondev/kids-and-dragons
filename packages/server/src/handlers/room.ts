@@ -178,6 +178,46 @@ export async function joinRoom(
   });
 }
 
+export interface WatchRoomResult {
+  runId: string;
+  mode: RoomMode;
+  expiresAt: string;
+  /** Read-only, room-scoped, expires with the room. */
+  viewerToken: string;
+  state: RunState;
+}
+
+/**
+ * How a display client attaches — the TV in Party Mode (spec §2.1).
+ *
+ * It has no device, no player, and no token, and that is the design: the TV is
+ * a screen, and screens do not sign in. But in prod the realtime channel is
+ * authorised per subscriber, so it still needs *something* to present, and this
+ * is where it gets it: a token naming this room and nothing else.
+ *
+ * Deliberately not a `joinRoom` variant. A viewer is not a party member — it
+ * must not appear in `party`, must not affect presence, and must not satisfy any
+ * check that expects a player. Sharing the code path is exactly how it would
+ * end up doing one of those by accident.
+ */
+export async function watchRoom(
+  input: { code: string },
+  deps: HandlerDeps,
+): Promise<HandlerResult<WatchRoomResult>> {
+  const room = await deps.repo.getRoom(input.code);
+  if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
+
+  const state = await deps.repo.getState(room.runId);
+  if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+
+  const viewerToken = await deps.identity.issueViewerToken({
+    runId: room.runId,
+    roomCode: room.code,
+    expiresAt: Date.parse(room.expiresAt),
+  });
+  return ok({ runId: room.runId, mode: room.mode, expiresAt: room.expiresAt, viewerToken, state });
+}
+
 /**
  * Flips `connected` on this player's party member and broadcasts the patch.
  *

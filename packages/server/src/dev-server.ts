@@ -24,10 +24,11 @@ import os from "node:os";
 import path from "node:path";
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
-import type { ChannelMessage, Role, RoomMode } from "@kad/shared";
+import type { ChannelMessage, RoomMode } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { ContentError, loadContent, type ContentStore } from "./content/loader.ts";
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
+import { addPlayer, createGuestHousehold } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
@@ -36,15 +37,11 @@ import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom } from "./handlers/room.ts";
 import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
-import { newId } from "./ids.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
-
-/** Assigned round-robin so three characters are never the same colour. */
-const PLAYER_COLORS = ["#7FD4C1", "#F2A65A", "#9A8CF2", "#E86A92", "#63B4E8", "#B7D96B"];
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
 type BaseDeps = Omit<HandlerDeps, "engine" | "rng">;
@@ -96,12 +93,19 @@ async function main(): Promise<void> {
     const mode = readMode(req.body?.mode);
     if (!mode) return sendError(res, 400, "ILLEGAL", "mode must be \"party\" or \"travel\"");
 
-    // Dev-only bootstrap: no Cognito, so the first request also creates the
-    // household and its owner. In prod the household already exists and the
-    // device token already names a player.
+    // Anonymous play (§4.5): a device nobody has seen before gets a household on
+    // the spot. It is a real household — the only thing it lacks is an owner,
+    // and the only consequence is that it expires unless somebody signs in.
     const existing = await resolvePrincipal(req, base);
     const host =
-      existing ?? (await bootstrapHousehold(base, String(req.body?.displayName ?? "Host")));
+      existing ??
+      (await createGuestHousehold(
+        {
+          displayName: String(req.body?.displayName ?? "Host"),
+          userAgent: req.get("user-agent"),
+        },
+        base,
+      ));
 
     const created = await createRoom(
       {
@@ -136,15 +140,19 @@ async function main(): Promise<void> {
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
 
     const existing = await resolvePrincipal(req, base);
-    // Dev-only: an unbound device gets a player created for it on the spot, so
-    // a phone that has never seen this laptop can still join in one tap.
+    // An unbound device joining a room gets a player created for it on the spot,
+    // so a phone that has never seen this game can still join in one tap.
     const joiner =
       existing ??
-      (await bootstrapPlayer(base, room.householdId, {
-        displayName: String(req.body?.displayName ?? "Player"),
-        role: req.body?.role === "child" ? "child" : "adult",
-        userAgent: req.get("user-agent"),
-      }));
+      (await addPlayer(
+        {
+          householdId: room.householdId,
+          displayName: String(req.body?.displayName ?? "Player"),
+          role: req.body?.role === "child" ? "child" : "adult",
+          userAgent: req.get("user-agent"),
+        },
+        base,
+      ));
 
     const joined = await joinRoom({ code, principal: joiner.principal }, deps);
     if (!joined.ok) return sendError(res, statusFor(joined.error), joined.error.code, joined.error.message);
@@ -352,63 +360,20 @@ async function main(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// Dev-only bootstrap — the stand-in for Cognito + QR pairing (§4.5).
-// Every function below this line disappears when roadmap Chapter 1 lands.
+// Identity plumbing (§4.5)
 // ---------------------------------------------------------------------------
 
-interface BootstrappedPrincipal {
+interface ResolvedPrincipal {
   principal: DeviceIdentity;
-  /** Present only when a new device was just bound. */
+  /** Present only when a new device was just bound, and never again after. */
   deviceToken?: string;
-}
-
-async function bootstrapHousehold(
-  deps: BaseDeps,
-  displayName: string,
-): Promise<BootstrappedPrincipal> {
-  const householdId = newId("h");
-  await deps.repo.putHousehold({
-    id: householdId,
-    displayName: `${displayName}'s household`,
-    // No Cognito locally, so there is no real sub. Named so it is obvious in
-    // the dev table that this household was never authenticated.
-    ownerSub: `dev-${householdId}`,
-    createdAt: iso(deps.now()),
-  });
-  return bootstrapPlayer(deps, householdId, { displayName, role: "adult" });
-}
-
-async function bootstrapPlayer(
-  deps: BaseDeps,
-  householdId: string,
-  input: { displayName: string; role: Role; userAgent?: string | undefined },
-): Promise<BootstrappedPrincipal> {
-  const existing = await deps.repo.listPlayers(householdId);
-  const playerId = newId("p");
-  await deps.repo.putPlayer({
-    id: playerId,
-    householdId,
-    displayName: input.displayName,
-    color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? "#7FD4C1",
-    role: input.role,
-  });
-  const { token, deviceId } = await deps.identity.issueDeviceToken({
-    householdId,
-    playerId,
-    role: input.role,
-    ...(input.userAgent ? { userAgent: input.userAgent } : {}),
-  });
-  return {
-    principal: { deviceId, householdId, playerId, role: input.role },
-    deviceToken: token,
-  };
 }
 
 /** Header first, body second — a real client always sends the header. */
 async function resolvePrincipal(
   req: Request,
   deps: BaseDeps,
-): Promise<BootstrappedPrincipal | null> {
+): Promise<ResolvedPrincipal | null> {
   const token = req.get("x-kad-device-token") ?? req.body?.deviceToken;
   if (typeof token !== "string" || token === "") return null;
   const principal = await deps.identity.resolveDevice(token);

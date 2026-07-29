@@ -174,7 +174,8 @@ export async function seedHousehold(
   await harness.repo.putHousehold({
     id: householdId,
     displayName: "Test household",
-    ownerSub: "dev-h_test",
+    ownerSub: "sub-test",
+    guest: false,
     createdAt: new Date(harness.clock.now()).toISOString(),
   });
 
