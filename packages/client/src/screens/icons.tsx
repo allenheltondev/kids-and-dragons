@@ -486,6 +486,27 @@ const GLYPHS: Record<string, ReactElement> = {
       <circle cx="9.4" cy="11" r="1.2" fill="currentColor" />
     </g>
   ),
+
+  // --- Keeping your characters (architecture §4.5) ----------------------
+  // The one adult-facing corner of the game, so these read as *stationery and
+  // keepsakes* rather than as security furniture. No padlocks and no shields:
+  // this is a memory box, not a login.
+  envelope: (
+    <g {...S}>
+      <rect x="2.8" y="5.4" width="18.4" height="13.2" rx="2.4" />
+      <path d="M3.4 7l7.4 5.4a2 2 0 0 0 2.4 0L20.6 7" />
+    </g>
+  ),
+  passkey: (
+    <g {...S}>
+      {/* A key whose bow is a small flame — the same mote the lantern holds,
+          so "one tap next time" and "kept" are visibly the same idea. */}
+      <path d="M9.6 4.2c1.9 2.2 3.2 3.3 3.2 5.3a3.2 3.2 0 0 1-6.4 0c0-1.2.6-2 1.3-2.6.2.7.7 1.2 1.3 1.2.5 0 .8-.4.8-1 0-1-.8-1.8-.2-2.9z" />
+      <path d="M9.6 12.8v6.8" />
+      <path d="M9.6 15.6h2.6M9.6 18.2h2" />
+      <circle cx="16.4" cy="16.4" r="2.6" />
+    </g>
+  ),
 };
 
 /**
@@ -528,6 +549,13 @@ const ALIASES: Record<string, string> = {
   story: "scroll",
   encounter: "swords",
   choice_point: "vote",
+  // Keeping your characters. `keepsake` is the lantern because the lantern is
+  // the motif the whole flow is built on (see KeepsakeLantern.tsx).
+  keepsake: "lantern",
+  mail: "envelope",
+  email: "envelope",
+  code: "envelope",
+  signin: "lantern",
 };
 
 const DEFAULT_SIZE = "1em";
