@@ -11,9 +11,9 @@
  * disagreeing about the rules.
  */
 
-import { makeChapter, makeItems, makeRules } from "../../shared/src/test-fixtures.ts";
+import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
-import type { Chapter, ItemCatalog, Role, RulesContent, RunState } from "@kad/shared";
+import type { Chapter, EncounterMap, ItemCatalog, Role, RulesContent, RunState } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import type { ContentStore } from "./content/loader.ts";
 import type { ApplyIntentResult, Engine, EngineContext, IntentInput } from "./engine/port.ts";
@@ -21,7 +21,7 @@ import type { HandlerDeps } from "./handlers/deps.ts";
 import { DevIdentity, type DeviceIdentity } from "./identity.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
-export { makeChapter, makeItems, makeRules };
+export { makeChapter, makeItems, makeMap, makeRules };
 
 export const T0 = Date.parse("2026-07-04T18:00:00.000Z");
 
@@ -45,17 +45,24 @@ export function makeClock(start = T0): TestClock {
 }
 
 export function makeContent(
-  overrides: { rules?: RulesContent; items?: ItemCatalog; chapters?: Chapter[] } = {},
+  overrides: {
+    rules?: RulesContent;
+    items?: ItemCatalog;
+    chapters?: Chapter[];
+    maps?: EncounterMap[];
+  } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
   const items = overrides.items ?? makeItems();
   const chapters = new Map((overrides.chapters ?? [makeChapter()]).map((c) => [c.id, c]));
+  const maps = new Map((overrides.maps ?? [makeMap()]).map((m) => [m.id, m]));
   return {
     root: "<fixture>",
     rules: () => rules,
     items: () => items,
     chapter: (id) => chapters.get(id) ?? null,
     chapterIds: () => [...chapters.keys()],
+    map: (id) => maps.get(id) ?? null,
   };
 }
 

@@ -1,0 +1,30 @@
+{
+  "$comment": "The Bramblewisp fight in chapters/bramblewood-01.json. Reference content, like the chapter that uses it — it exists so the grid, the camera and the encounter loop have something real to run on. Read the layout: brambles down the middle in two broken lines, so the party can go around either side or squeeze through the gap, and the wisps start on the far side of them. That is the whole positioning lesson of spec 7 in one map — the fastest route is not the safest one.",
+
+  "id": "thicket",
+
+  "rows": [
+    "..........",
+    "..#....#..",
+    "..#....#..",
+    "..........",
+    "..........",
+    "..#....#..",
+    "..#....#..",
+    ".........."
+  ],
+
+  "partySpawns": [
+    { "x": 0, "y": 3 },
+    { "x": 0, "y": 4 },
+    { "x": 1, "y": 3 },
+    { "x": 1, "y": 4 }
+  ],
+
+  "enemySpawns": [
+    { "x": 9, "y": 3 },
+    { "x": 9, "y": 4 },
+    { "x": 8, "y": 2 },
+    { "x": 8, "y": 5 }
+  ]
+}

@@ -250,7 +250,64 @@ function effectsOf(scene, sceneId) {
   return out;
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes) {
+/**
+ * A map's playability, which the schema cannot see.
+ *
+ * The schema fixes the board at 10×8 and the alphabet at `.`/`#`. What it cannot
+ * check is whether the figures can actually stand where the map says: a spawn on
+ * a bramble tile throws out of `placeActor` at the instant the fight begins,
+ * which is a crash at the table for a mistake plainly visible in the file.
+ */
+function checkMap(rep, file, map) {
+  const at = rel(file);
+  const seen = new Map();
+  for (const kind of ["partySpawns", "enemySpawns"]) {
+    (map[kind] ?? []).forEach((spawn, i) => {
+      const where = `/${kind}/${i}`;
+      if (map.rows?.[spawn.y]?.[spawn.x] !== ".") {
+        rep.fail(at, where, `spawn at (${spawn.x}, ${spawn.y}) stands on a blocked tile`, "Spawns must be on \".\" — the figure is placed there before anyone moves.");
+        return;
+      }
+      // Two figures cannot share a tile (grid.ts). A duplicate only fails once a
+      // fight has that many bodies in it, so it would surface on the four-enemy
+      // map and not the two-enemy one.
+      const key = `${spawn.x},${spawn.y}`;
+      if (seen.has(key)) {
+        rep.fail(at, where, `spawn at (${spawn.x}, ${spawn.y}) repeats ${seen.get(key)}`, "Every spawn point needs its own tile.");
+      }
+      seen.set(key, where);
+    });
+  }
+
+  // A board with no way from one side to the other is a fight nobody can reach.
+  // Cheap flood fill from the first party spawn over the open tiles.
+  const first = map.partySpawns?.[0];
+  if (first && map.rows) {
+    const open = (x, y) => map.rows[y]?.[x] === ".";
+    const seenTiles = new Set([`${first.x},${first.y}`]);
+    const queue = [first];
+    while (queue.length) {
+      const { x, y } = queue.pop();
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx, ny = y + dy;
+          const key = `${nx},${ny}`;
+          if ((dx || dy) && open(nx, ny) && !seenTiles.has(key)) {
+            seenTiles.add(key);
+            queue.push({ x: nx, y: ny });
+          }
+        }
+      }
+    }
+    (map.enemySpawns ?? []).forEach((spawn, i) => {
+      if (!seenTiles.has(`${spawn.x},${spawn.y}`)) {
+        rep.fail(at, `/enemySpawns/${i}`, `no route from the party to (${spawn.x}, ${spawn.y})`, "A walled-off enemy can never be reached, and the encounter can never be won.");
+      }
+    });
+  }
+}
+
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -421,6 +478,16 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
       if (total < 2 || total > 4) {
         fail(`/scenes/${id}/enemies`, `${total} enemies - encounters are 2 to 4, never more (spec §7.1)`);
       }
+      // The board this fight happens on. Without it the encounter has nowhere to
+      // put anybody, and the failure lands mid-chapter at the table rather than
+      // here — so the map is a build-time reference like an itemId, not a path.
+      if (mapIds && !mapIds.has(scene.map)) {
+        fail(
+          `/scenes/${id}/map`,
+          `map "${scene.map}" is not in content/maps/`,
+          mapIds.size ? `maps available: ${[...mapIds].sort().join(", ")}` : "content/maps/ is empty",
+        );
+      }
     }
   }
 
@@ -539,7 +606,7 @@ function main() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
 
-  for (const name of ["rules", "items", "chapter", "campaign"]) {
+  for (const name of ["rules", "items", "chapter", "campaign", "map"]) {
     const path = join(SCHEMAS, `${name}.schema.json`);
     if (!existsSync(path)) {
       rep.fail(rel(path), "", "schema is missing");
@@ -570,6 +637,20 @@ function main() {
     biomes = manifest?.biomes ?? null;
   }
 
+  // --- maps, before chapters: an encounter is checked against them
+  console.log(`\n${BOLD}maps${RESET}`);
+  const mapFiles = listJson(join(CONTENT, "maps"));
+  const mapIds = new Set();
+  for (const file of mapFiles) {
+    const map = readJson(rep, file);
+    if (!map) continue;
+    if (!validateAgainstSchema(rep, ajv, "map", file, map)) continue;
+    checkMap(rep, file, map);
+    if (mapIds.has(map.id)) rep.fail(rel(file), "/id", `duplicate map id "${map.id}"`);
+    mapIds.add(map.id);
+  }
+  if (mapFiles.length) rep.ok(`content/maps  ${mapFiles.length} map(s)  (10×8 board, spawns open and reachable)`);
+
   // --- chapters
   console.log(`\n${BOLD}chapters${RESET}`);
   const chapterFiles = listJson(join(CONTENT, "chapters"));
@@ -587,7 +668,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes);
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds);
     chaptersById.set(chapter.id, chapter);
   }
 

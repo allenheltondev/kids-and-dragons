@@ -21,7 +21,7 @@ import type {
   SpeciesId,
   Stats,
 } from "./types/domain.js";
-import type { Chapter } from "./types/chapter.js";
+import type { Chapter, EncounterMap } from "./types/chapter.js";
 
 function ability(id: string) {
   return { id, name: id, text: `${id} does a thing.`, icon: `icons/${id}.svg` };
@@ -226,6 +226,30 @@ export function makeCharacter(input: MakeCharacterInput = {}): Character {
  *                                        └─defeat→ camp
  *   camp (rest, heals) → ridge (choice_point) → ending (no choices)
  */
+/**
+ * The board `makeChapter()`'s encounter runs on. Wide open on purpose — a
+ * fixture should not make a test's outcome depend on a wall the test never
+ * mentioned. `grid.test.ts` owns terrain.
+ */
+export function makeMap(): EncounterMap {
+  return {
+    id: "thicket",
+    rows: Array.from({ length: 8 }, () => ".".repeat(10)),
+    partySpawns: [
+      { x: 0, y: 3 },
+      { x: 0, y: 4 },
+      { x: 1, y: 3 },
+      { x: 1, y: 4 },
+    ],
+    enemySpawns: [
+      { x: 9, y: 3 },
+      { x: 9, y: 4 },
+      { x: 8, y: 2 },
+      { x: 8, y: 5 },
+    ],
+  };
+}
+
 export function makeChapter(): Chapter {
   return {
     id: "bramblewood-01",
@@ -285,7 +309,7 @@ export function makeChapter(): Chapter {
       },
       encounter_wisps: {
         type: "encounter",
-        map: "maps/bramblewood/thicket",
+        map: "thicket",
         narration: "Three wisps rise out of the bracken.",
         enemies: [{ id: "wisp", count: 3, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }],
         onVictory: { goto: "scene_camp" },
