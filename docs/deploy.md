@@ -132,7 +132,7 @@ API bundle, which is load-bearing — see below.
 | Resource | Notes |
 |---|---|
 | **DynamoDB** `kad-<stage>` | Single table, GSI1, TTL on `ttl`, PITR on. `DeletionPolicy: Retain`. |
-| **Secrets Manager** token secret | 64 characters CloudFormation generates; signs device, session, and viewer tokens. |
+| **SSM SecureString** `/kad/<stage>/token-signing-key` | Signs device, session, and viewer tokens. Not a stack resource — see below. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
 | **HTTP API** + 4 Lambdas | `api`, `channel-authorizer`, `sweep`, and the inline Cognito `PreSignUp` trigger. |
@@ -140,36 +140,64 @@ API bundle, which is load-bearing — see below.
 
 The table and the user pool are `Retain` on purpose: a family's characters are
 not recreatable, and `sam delete` on the wrong stack should not be able to take
-them. The flip side is that tearing a stack down properly means deleting the
-table and the pool by hand afterwards — **including on staging**, which is now
-created and destroyed far more often than prod.
+them. The signing key is not a stack resource at all, so it survives for a
+different reason — nothing in the stack owns it.
 
-The signing secret is deliberately *not* retained, which is the one place the
-two rules differ. Losing it signs every phone out, and they re-pair by QR in
-about ten seconds — nothing like losing a character. Retaining it would cost
-more than it saves: a secret keeps its name reserved for a 30-day recovery
-window after deletion, so a retained one would make "delete staging, deploy it
-again" fail for a month. For the same reason the template lets CloudFormation
-name it rather than fixing the name itself.
+The flip side of both is that tearing a stack down properly means three things by
+hand afterwards — **including on staging**, which is now created and destroyed
+far more often than prod:
+
+```bash
+aws dynamodb delete-table --table-name kad-staging
+aws cognito-idp delete-user-pool --user-pool-id <from the stack outputs>
+aws ssm delete-parameter --name /kad/staging/token-signing-key
+```
+
+Leaving the parameter behind is harmless and usually what you want: redeploy the
+same stage and every paired phone still works. Delete it and they re-pair by QR,
+which takes about ten seconds and costs nothing else.
 
 ### No KMS keys, on purpose
 
 Nothing in this stack creates a KMS key. Everything encrypted uses an
 Amazon-managed one — DynamoDB's AWS-owned default, SSE-S3 on the bucket, and
-`aws/secretsmanager` for the signing secret — which is free, needs no key policy,
-and needs no `kms:Decrypt` grant on the Lambdas: the managed key already allows
-account principals when the request arrives via Secrets Manager.
+`aws/ssm` for the token signing key — all free, and none of them needing a key
+policy of ours.
+
+The Lambdas do carry a `kms:Decrypt` grant for the SecureString, scoped by
+`kms:ViaService` to Parameter Store rather than by key ARN, because an
+AWS-managed key's id is not knowable at template time. It is arguably redundant
+— the managed key's own policy already admits account principals arriving
+through SSM — but the failure it guards against is an `AccessDenied` on the first
+token of a fresh stack, which names neither the key nor the parameter.
 
 The one thing this rules out is asymmetric signing. Every `aws/*` managed key is
-symmetric and encryption-only, so tokens are HS256 over a shared secret rather
+symmetric and encryption-only, so tokens are HS256 over a shared key rather
 than ES256 over a private key that never leaves KMS. Architecture §4.5 has what
 that trades away; the short version is that both the signer and the verifier are
 Lambdas in this same stack, so a public half had nobody to serve.
 
+### Where the signing key comes from
+
+Not from CloudFormation, which cannot make one: `AWS::SSM::Parameter` supports
+`String` and `StringList` and has never supported `SecureString`. The two usual
+workarounds are a step in `deploy.sh` — which puts stack state outside the
+template and quietly breaks the by-hand `sam deploy` path documented above — and
+a custom resource, which is a fourth Lambda, a role, and a response protocol that
+hangs the stack for an hour when you get it wrong.
+
+So the API function mints it instead: 32 random bytes on the first token it ever
+signs, written with `Overwrite: false` so that three phones opening a fresh stack
+at once converge on one key rather than one key per container. The template still
+owns the parameter's name and who may read it, which is the part worth reviewing.
+The channel authorizer gets `ssm:GetParameter` and no `PutParameter` — it only
+ever verifies tokens the API already issued, so it cannot legitimately be first,
+and failing there is the correct answer.
+
 If a *stack that was already deployed* is being upgraded past this change, every
-device token issued by the old key stops verifying — phones re-pair by scanning
-the room QR, and nothing else is affected. Characters, households, and sign-ins
-all live in the table and the pool.
+device token issued by the old KMS key stops verifying — phones re-pair by
+scanning the room QR, and nothing else is affected. Characters, households, and
+sign-ins all live in the table and the pool.
 
 ### Cost
 

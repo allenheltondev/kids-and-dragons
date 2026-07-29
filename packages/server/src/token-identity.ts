@@ -1,10 +1,10 @@
 /**
  * `TokenIdentity` — the prod `IdentityService`, architecture §4.5.
  *
- * HS256 JWTs, signed with a secret this stack never chooses and nobody ever
- * types: CloudFormation generates 64 random characters at create time and hands
- * them to Secrets Manager, which holds them under the **Amazon-managed**
- * `aws/secretsmanager` key. We create no KMS key of our own.
+ * HS256 JWTs, signed with a key this stack never chooses and nobody ever types:
+ * the API function mints 32 random bytes the first time it needs one and parks
+ * them in a Parameter Store **SecureString**, encrypted under the
+ * **Amazon-managed** `aws/ssm` key. We create no KMS key of our own.
  *
  * That is a deliberate step down from the asymmetric ES256 this used to be. An
  * AWS-managed key cannot sign — every `aws/*` key is symmetric and
@@ -18,8 +18,8 @@
  *
  * What it buys, beyond removing the key: signing is now local arithmetic. The
  * old `Sign` call put a KMS round trip in front of every pairing and every
- * session start; an HMAC costs microseconds. The secret is fetched once per
- * container, exactly as the public key used to be.
+ * session start; an HMAC costs microseconds. The key is fetched once per
+ * container, exactly as the public half used to be.
  *
  * Two token kinds, matching the two layers of identity in §4.5:
  *
@@ -34,8 +34,8 @@
  * every library, log viewer, and debugging session already understands.
  */
 
-import { createHmac, timingSafeEqual } from "node:crypto";
-import { GetSecretValueCommand, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { GetParameterCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import type { Role } from "@kad/shared";
 import {
   hashToken,
@@ -106,7 +106,7 @@ export interface TokenIdentityOptions {
   /**
    * Where the signing secret comes from. A function rather than a value because
    * fetching it is async and must not happen at module load: a cold start that
-   * cannot reach Secrets Manager should fail the request it is serving, and then
+   * cannot reach Parameter Store should fail the request it is serving, and then
    * try again on the next one — not poison the container.
    */
   secret: SecretSource;
@@ -314,29 +314,106 @@ export class TokenIdentity implements IdentityService {
   }
 }
 
-/**
- * The prod secret source: one `GetSecretValue`, on the first token of a
- * container's life.
- *
- * There is no `kms:Decrypt` grant anywhere in the template for this, and that is
- * not an omission. The secret is encrypted under the Amazon-managed
- * `aws/secretsmanager` key, whose policy already allows principals in the
- * account to use it *when the request arrives via Secrets Manager* — so
- * `secretsmanager:GetSecretValue` on the one secret is the whole permission.
- */
-export interface SecretsManagerLike {
-  send(command: GetSecretValueCommand): Promise<{ SecretString?: string | undefined }>;
+// ---------------------------------------------------------------------------
+// The prod key source: a Parameter Store SecureString
+//
+// One `GetParameter` on the first token of a container's life, and then never
+// again for the life of that container.
+//
+// The parameter is **not** a stack resource, and that is not an oversight:
+// CloudFormation cannot create a SecureString at all — `AWS::SSM::Parameter`
+// takes `String` and `StringList` and nothing else. The ways around that are a
+// step in `deploy.sh` (which puts stack state outside the template, and breaks
+// the documented `sam deploy` path) or a custom resource (a fourth Lambda, a
+// role, and a response protocol that hangs the stack for an hour when it is
+// got wrong). Minting it here is smaller than either: the template still owns
+// the *name* and the *permissions*, which is the part that has to be reviewed.
+//
+// It also outlives the stack, which is the behaviour we want. Deleting and
+// recreating staging keeps every paired phone working, where a stack-owned
+// secret would sign them all out — and it is one line to delete by hand on a
+// real teardown (docs/deploy.md).
+// ---------------------------------------------------------------------------
+
+/** 256 bits, the block size HMAC-SHA256 actually uses. */
+const KEY_BYTES = 32;
+
+export interface SsmLike {
+  send(
+    command: GetParameterCommand | PutParameterCommand,
+  ): Promise<{ Parameter?: { Value?: string | undefined } | undefined }>;
 }
 
-export function secretsManagerSource(
-  secretId: string,
-  client: SecretsManagerLike = new SecretsManagerClient({}),
+export interface SsmSourceOptions {
+  client?: SsmLike;
+  /**
+   * Mint the key if the parameter is not there yet. **The API function only.**
+   *
+   * The channel authorizer is read-only by design (its whole policy is), and
+   * cannot legitimately be first: it only ever verifies tokens the API has
+   * already issued, so a missing parameter there means something is wrong and
+   * failing is the right answer.
+   */
+  createIfMissing?: boolean;
+}
+
+export function ssmParameterSource(
+  parameterName: string,
+  options: SsmSourceOptions = {},
 ): SecretSource {
+  const client = options.client ?? new SSMClient({});
+
   return async () => {
-    const out = await client.send(new GetSecretValueCommand({ SecretId: secretId }));
-    if (!out.SecretString) throw new Error(`secret ${secretId} has no string value`);
-    return out.SecretString;
+    const existing = await readParameter(client, parameterName);
+    if (existing) return existing;
+    if (!options.createIfMissing) {
+      throw new Error(`signing key parameter ${parameterName} does not exist`);
+    }
+
+    const minted = randomBytes(KEY_BYTES).toString("base64url");
+    try {
+      await client.send(
+        new PutParameterCommand({
+          Name: parameterName,
+          Value: minted,
+          Type: "SecureString",
+          // No `KeyId`: that is what selects the Amazon-managed `aws/ssm` key.
+          Overwrite: false,
+          Description: "Kids & Dragons device and session token signing key",
+        }),
+      );
+      return minted;
+    } catch (err) {
+      if (errorName(err) !== "ParameterAlreadyExists") throw err;
+      /*
+       * Two cold containers raced, which on a first deploy is likely rather than
+       * exotic — a family opens the app on three phones at once. `Overwrite:
+       * false` is what makes the race safe: exactly one write lands, and the
+       * loser adopts the winner's key. Overwriting instead would leave the two
+       * containers signing with different keys, and every token minted by one
+       * would be rejected by the other.
+       */
+      const won = await readParameter(client, parameterName);
+      if (!won) throw new Error(`signing key parameter ${parameterName} vanished mid-race`);
+      return won;
+    }
   };
+}
+
+async function readParameter(client: SsmLike, name: string): Promise<string | null> {
+  try {
+    const out = await client.send(
+      new GetParameterCommand({ Name: name, WithDecryption: true }),
+    );
+    return out.Parameter?.Value ?? null;
+  } catch (err) {
+    if (errorName(err) === "ParameterNotFound") return null;
+    throw err;
+  }
+}
+
+function errorName(err: unknown): string {
+  return typeof err === "object" && err !== null && "name" in err ? String(err.name) : "";
 }
 
 // ---------------------------------------------------------------------------
