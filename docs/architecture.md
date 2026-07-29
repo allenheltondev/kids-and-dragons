@@ -364,10 +364,20 @@ promised she would never need.
 #### If nobody signs in
 
 The scheduled sweeper deletes the household and everything under it once
-`expiresAt` passes. It re-reads each household immediately before deleting,
-because the interesting race is real: somebody signing in during the seconds
-between the index query and the delete would otherwise lose exactly the
-characters the sign-in was for.
+`expiresAt` passes. It runs **daily**, which is deliberately unhurried: the
+7-day TTL is what makes the promise true, and the schedule only decides how long
+a household sits deleted-in-principle before it is deleted in fact. Nobody is
+watching for their characters to vanish on the seventh evening.
+
+The delete is gated on a **conditional write**, not on a re-read. An earlier
+version read each household back immediately before deleting and skipped the
+claimed ones, which reads like a guard and is not one — a sign-in landing
+between that read and the delete still lost the characters, and that is the
+exact window a family hits by signing in the moment they are reminded the game
+is about to forget them. `deleteGuestHousehold` marks the household first and
+refuses if the claim got there ahead of it; `claimHousehold` refuses in the
+other direction. Whichever arrives second loses, and the family keeps their
+characters either way.
 
 #### The device token
 
