@@ -1,0 +1,571 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+# Kids & Dragons — the whole stack, architecture §2.
+#
+# One template, one region, two environments (`dev` and `prod`) distinguished
+# only by stack name. No staging: it is a family game, and `dev` plus a careful
+# deploy is enough (§7).
+#
+# The shape, top to bottom:
+#
+#   CloudFront ──┬── S3            the SPA, art assets, and content
+#                └── HTTP API      /api/* → one Lambda over handlers/
+#   AppSync Events                 room/<code>; IAM publishes, players subscribe
+#   DynamoDB                       one table, one GSI, architecture §3
+#   Cognito                        optional sign-in, email OTP then passkey
+#   KMS                            signs device and session tokens
+#
+# Deploy with `npm run infra:deploy` — that runs `infra/build.mjs` first, which
+# is what produces the CodeUri directories below. `sam build` is not used.
+
+Description: Kids & Dragons — API, realtime, storage, auth, and CDN
+
+Parameters:
+  StageName:
+    Type: String
+    Default: prod
+    AllowedValues: [dev, prod]
+    Description: Which of the two environments in architecture §7 this stack is.
+
+  GuestSweepSchedule:
+    Type: String
+    Default: rate(6 hours)
+    Description: >-
+      How often expired anonymous households are deleted. Anything up to a day is
+      fine — the guest TTL is 7 days and the sweeper only ever deletes households
+      already past it.
+
+  LogRetentionDays:
+    Type: Number
+    Default: 30
+    Description: CloudWatch retention. Logs cost more than this game does.
+
+  WebAuthnRelyingPartyId:
+    Type: String
+    Default: ""
+    Description: >-
+      The domain passkeys are bound to — the CloudFront domain, or a custom one.
+      Leave empty on the first deploy and sign-in is email-OTP only; fill it in
+      from the SiteUrl output and deploy again to turn passkeys on.
+
+      It cannot default to the distribution's own domain: the user pool would
+      then depend on CloudFront, which depends on the API, which depends on the
+      user pool, and CloudFormation refuses the cycle. A passkey is bound to a
+      domain for the life of the credential, so this is worth getting right once
+      rather than automatically.
+
+Conditions:
+  # Passkeys need a relying-party domain. Without one, email OTP alone.
+  Passkeys: !Not [!Equals [!Ref WebAuthnRelyingPartyId, ""]]
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Handler: index.handler
+    Architectures: [arm64]
+    MemorySize: 512
+    # Long enough for a cold start plus a transactional write; short enough that
+    # a wedged invocation cannot quietly bill for a quarter of an hour.
+    Timeout: 15
+    LoggingConfig:
+      LogFormat: JSON
+      ApplicationLogLevel: INFO
+      SystemLogLevel: WARN
+    Environment:
+      Variables:
+        NODE_OPTIONS: --enable-source-maps
+        # Content ships inside the bundle; see infra/build.mjs.
+        KAD_CONTENT_DIR: /var/task/content
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # Data — architecture §3
+  # ---------------------------------------------------------------------------
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    # A family's characters are not recreatable. Keep the table if the stack is
+    # ever torn down by accident.
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub "kad-${StageName}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        # Three jobs, one index (store/keys.ts): device id → household, run id →
+        # household, and the GUEST partition the sweeper reads.
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        # Rooms only. Everything else that expires does so through the GUEST
+        # index and the sweeper — see the long note in store/keys.ts.
+        AttributeName: ttl
+        Enabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  # ---------------------------------------------------------------------------
+  # Token signing — architecture §4.5
+  # ---------------------------------------------------------------------------
+
+  SigningKey:
+    Type: AWS::KMS::Key
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Description: !Sub "Kids & Dragons device and session token signing (${StageName})"
+      # ES256. Asymmetric so verification needs only the public half, which the
+      # Lambdas fetch once per container and then check locally — a Verify call
+      # per request would put a network round trip in front of every tap.
+      KeySpec: ECC_NIST_P256
+      KeyUsage: SIGN_VERIFY
+      # A revoked device is revoked by a flag in the table, not by rotating this
+      # key. Rotation here would sign every phone out at once.
+      PendingWindowInDays: 30
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AccountRoot
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+
+  SigningKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/kad-tokens-${StageName}"
+      TargetKeyId: !Ref SigningKey
+
+  # ---------------------------------------------------------------------------
+  # Optional sign-in — architecture §4.5
+  #
+  # Nobody has to have an account. This exists so that a family who wants to keep
+  # their characters can claim the household they are already playing in.
+  # ---------------------------------------------------------------------------
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      UserPoolName: !Sub "kad-${StageName}"
+      # Passwordless first-factor sign-in (email OTP, passkeys) needs the
+      # Essentials tier. Its free tier is far above a household.
+      UserPoolTier: ESSENTIALS
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      MfaConfiguration: "OFF"
+      Policies:
+        SignInPolicy:
+          # No password, ever — for anyone. An adult signs in with a code sent to
+          # their email and may then register a passkey for one tap after that.
+          # A child never signs in at all; her phone is bound by QR (§4.5).
+          #
+          # PASSWORD is deliberately absent rather than merely unused: leaving it
+          # allowed is how a password ends up in a pool that promised not to have
+          # one.
+          AllowedFirstAuthFactors: !If
+            - Passkeys
+            - [EMAIL_OTP, WEB_AUTHN]
+            - [EMAIL_OTP]
+      WebAuthnRelyingPartyID: !If
+        - Passkeys
+        - !Ref WebAuthnRelyingPartyId
+        - !Ref AWS::NoValue
+      WebAuthnUserVerification: !If [Passkeys, preferred, !Ref AWS::NoValue]
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      EmailConfiguration:
+        # Cognito's own sender caps at 50 emails a day, which is roughly 49 more
+        # than this will ever need. Swap to SES if that stops being true.
+        EmailSendingAccount: COGNITO_DEFAULT
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Sub "kad-web-${StageName}"
+      # A browser cannot keep a secret.
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        # USER_AUTH is the choice-based flow that carries EMAIL_OTP and
+        # WEB_AUTHN. Deliberately no SRP and no USER_PASSWORD: there are no
+        # passwords in this pool, and leaving those enabled would invite one.
+        - ALLOW_USER_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      SupportedIdentityProviders: [COGNITO]
+      # No hosted UI, so no domain and no OAuth flows — the sign-in screen is
+      # ours (§4.5) and talks to Cognito's API directly from the browser.
+      PreventUserExistenceErrors: ENABLED
+      EnableTokenRevocation: true
+      AccessTokenValidity: 60
+      IdTokenValidity: 60
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+
+  # ---------------------------------------------------------------------------
+  # Realtime — architecture §4.4
+  # ---------------------------------------------------------------------------
+
+  EventApi:
+    Type: AWS::AppSync::Api
+    Properties:
+      Name: !Sub "kad-rooms-${StageName}"
+      EventConfig:
+        AuthProviders:
+          - AuthType: AWS_IAM
+          - AuthType: AWS_LAMBDA
+            LambdaAuthorizerConfig:
+              AuthorizerUri: !GetAtt ChannelAuthorizerFunction.Arn
+              # Short. The authorizer already caps this per token, but a room
+              # lives six hours and a revoked device must not linger behind a
+              # cached yes.
+              AuthorizerResultTtlInSeconds: 300
+        # Clients connect and subscribe with their room token; only the game
+        # Lambda's execution role can publish. That split is the security model.
+        ConnectionAuthModes:
+          - AuthType: AWS_LAMBDA
+        DefaultPublishAuthModes:
+          - AuthType: AWS_IAM
+        DefaultSubscribeAuthModes:
+          - AuthType: AWS_LAMBDA
+
+  RoomNamespace:
+    Type: AWS::AppSync::ChannelNamespace
+    Properties:
+      ApiId: !GetAtt EventApi.ApiId
+      # `room/<code>` — the room *is* the channel (§4.4).
+      Name: room
+
+  ChannelAuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/channel-authorizer
+      Description: Decides who may subscribe to room/<code>
+      # Only needs to read device bindings and verify a signature. No publish, no
+      # writes — deliberately the smallest policy in the stack.
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          KMS_KEY_ID: !Ref SigningKey
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              Action: kms:GetPublicKey
+              Resource: !GetAtt SigningKey.Arn
+
+  ChannelAuthorizerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt ChannelAuthorizerFunction.Arn
+      Principal: appsync.amazonaws.com
+      # Scoped by account rather than by the API's ARN on purpose: naming the API
+      # here would make this permission depend on EventApi, which depends on this
+      # function, which CloudFormation reports as a circular reference.
+      SourceAccount: !Ref AWS::AccountId
+
+  # ---------------------------------------------------------------------------
+  # API — architecture §4.2
+  # ---------------------------------------------------------------------------
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      # No CORS configuration at all, on purpose. CloudFront is the only front
+      # door and serves the SPA and /api/* from one domain, so the browser never
+      # makes a cross-origin request — and in dev, Vite proxies for the same
+      # reason. A permissive CORS policy here would only widen who can call this.
+      DefaultRouteSettings:
+        # A phone reconnecting retries; a wedged client must not be able to spend
+        # the account. Generous for three players, cheap insurance otherwise.
+        ThrottlingBurstLimit: 100
+        ThrottlingRateLimit: 50
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/api
+      Description: Rooms, actions, state, and the optional sign-in link
+      # The engine, content parsing, and a JSON Patch diff per action. 1024MB is
+      # also the point where Lambda's vCPU allocation stops being the thing
+      # deciding how long a dice roll takes.
+      MemorySize: 1024
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          KMS_KEY_ID: !Ref SigningKey
+          USER_POOL_ID: !Ref UserPool
+          USER_POOL_CLIENT_ID: !Ref UserPoolClient
+          APPSYNC_HTTP_DOMAIN: !GetAtt EventApi.Dns.Http
+          APPSYNC_REALTIME_DOMAIN: !GetAtt EventApi.Dns.Realtime
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              Action:
+                - kms:Sign
+                - kms:GetPublicKey
+              Resource: !GetAtt SigningKey.Arn
+            - Effect: Allow
+              # Publishing to a room. The server is authoritative for everything
+              # that matters (§4.1), and this is the only principal that can say
+              # anything on a channel.
+              Action: appsync:EventPublish
+              Resource: !Sub "${EventApi.ApiArn}/*"
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            # One catch-all: the function routes internally (lambda/http.ts), so
+            # adding a route is a code change rather than a stack change.
+            Path: /{proxy+}
+            Method: ANY
+
+  # ---------------------------------------------------------------------------
+  # Anonymous play expiry — the sweeper
+  # ---------------------------------------------------------------------------
+
+  SweepFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/sweep
+      Description: Deletes anonymous households nobody signed in to keep
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Events:
+        Schedule:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: !Ref GuestSweepSchedule
+            Description: Sweep expired guest households
+
+  # ---------------------------------------------------------------------------
+  # Hosting — architecture §1, §7
+  # ---------------------------------------------------------------------------
+
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "kad-site-${StageName}-${AWS::AccountId}"
+      # Reachable only through CloudFront, via the OAC below.
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${SiteBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${Distribution}"
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "kad-site-${StageName}"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # The SPA owns its routes (`/tv/<code>`, `/p/<code>`), so a deep link has to
+  # reach index.html. Doing that with CloudFront's custom error responses would
+  # rewrite the *API's* 404s too — they are a distribution-wide setting — which
+  # is how "no open room ABCD" silently becomes a blank page. A viewer-request
+  # function on the SPA behavior alone keeps the API's errors intact.
+  SpaRouterFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "kad-spa-router-${StageName}"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Serve index.html for client-side routes
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var uri = event.request.uri;
+          // Anything with an extension is a real file: the bundle, an art asset,
+          // a chapter. Everything else is a route the SPA resolves itself.
+          if (uri.indexOf(".") === -1) {
+            event.request.uri = "/index.html";
+          }
+          return event.request;
+        }
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub "Kids & Dragons (${StageName})"
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        DefaultRootObject: index.html
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: site
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+            # Empty rather than absent: OAC replaces the legacy origin access
+            # identity, but CloudFront still wants the S3 origin block itself.
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+          - Id: api
+            DomainName: !Sub "${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [TLSv1.2]
+        DefaultCacheBehavior:
+          TargetOriginId: site
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          # Managed-CachingOptimized
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # Managed-SecurityHeadersPolicy
+          ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt SpaRouterFunction.FunctionARN
+        CacheBehaviors:
+          - PathPattern: /api/*
+            TargetOriginId: api
+            ViewerProtocolPolicy: https-only
+            Compress: true
+            AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+            # Managed-CachingDisabled. Every one of these is a mutation or a
+            # read of state that changes on every tap.
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            # Managed-AllViewerExceptHostHeader — forwards Authorization and
+            # x-kad-device-token while letting the origin see its own host,
+            # which API Gateway requires.
+            OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+          - PathPattern: /content/*
+            TargetOriginId: site
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: true
+            AllowedMethods: [GET, HEAD, OPTIONS]
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          - PathPattern: /assets/*
+            TargetOriginId: site
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: true
+            AllowedMethods: [GET, HEAD, OPTIONS]
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+
+  # ---------------------------------------------------------------------------
+  # Logs
+  # ---------------------------------------------------------------------------
+
+  ApiFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ApiFunction}"
+      RetentionInDays: !Ref LogRetentionDays
+
+  ChannelAuthorizerLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ChannelAuthorizerFunction}"
+      RetentionInDays: !Ref LogRetentionDays
+
+  SweepFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${SweepFunction}"
+      RetentionInDays: !Ref LogRetentionDays
+
+Outputs:
+  SiteUrl:
+    Description: Open this on the TV and on every phone
+    Value: !Sub "https://${Distribution.DomainName}"
+
+  SiteBucketName:
+    Description: Sync the client bundle, assets, and content here
+    Value: !Ref SiteBucket
+
+  DistributionId:
+    Description: For cache invalidation after a deploy
+    Value: !Ref Distribution
+
+  ApiEndpoint:
+    Description: The HTTP API's own domain; CloudFront is the one clients use
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+
+  TableName:
+    Value: !Ref Table
+
+  UserPoolId:
+    Value: !Ref UserPool
+
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+
+  EventApiHttpDomain:
+    Value: !GetAtt EventApi.Dns.Http
+
+  EventApiRealtimeDomain:
+    Value: !GetAtt EventApi.Dns.Realtime

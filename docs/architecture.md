@@ -15,13 +15,13 @@ chapter schema, and LLM integration.
 | UI chrome | **React + CSS** | Menus, character sheets, choice buttons. Never inside the canvas. |
 | State | **Zustand** | Small, no boilerplate, easy to mirror server state into. |
 | Backend | **AWS Lambda (Node 22, TypeScript)** | |
-| Auth | **Cognito user pool** (household owners) + **device-bound tokens** (players) | Free at this scale, AWS-native. Custom UI, not the hosted one. See §4.5. |
+| Auth | **Anonymous by default**; optional **Cognito user pool** + **device-bound tokens** | Nobody signs up to play. Signing in is how you *keep* what you played. Custom UI, not the hosted one. See §4.5. |
 | Realtime | **AWS AppSync Events** | Managed pub/sub. Room = channel. No connection table to maintain. |
 | Data | **DynamoDB, single table** | |
 | Assets & hosting | **S3 + CloudFront** | |
 | LLM | **Claude on Claude Platform on AWS** | Anthropic-operated, SigV4 auth, IAM, Marketplace billing, same-day feature parity. |
 | Art assets | **Commissioned from a coding agent** | We own the contract ([asset-brief.md](./asset-brief.md)) and the CI gate, not a generation pipeline. |
-| IaC | **AWS SAM or CDK** | Author's preference; either is fine. |
+| IaC | **AWS SAM** — [`infra/template.yaml`](../infra/template.yaml) | One template, one region, two stacks. See [deploy.md](./deploy.md). |
 
 ### 1.1 Why AppSync Events over API Gateway WebSockets
 
@@ -45,36 +45,53 @@ Requires `AWS_REGION` and `ANTHROPIC_AWS_WORKSPACE_ID`; neither has a default.
 
 ## 2. AWS topology
 
+Everything below is [`infra/template.yaml`](../infra/template.yaml). CloudFront is
+the only front door: it serves the SPA, the art, and the chapter JSON from S3, and
+proxies `/api/*` to the HTTP API. One origin means the browser never makes a
+cross-origin request, which is why the stack configures no CORS policy at all.
+
 ```
                           ┌──────────────┐
-   TV browser ────────────│              │
-                          │  CloudFront  │──── S3 (SPA bundle + art assets)
-   Phone browsers ────────│              │
+   TV browser ────────────│              │──── S3   /            SPA bundle
+                          │  CloudFront  │         /assets/*     art
+   Phone browsers ────────│              │         /content/*    chapters, rules
                           └──────┬───────┘
-                                 │
+                                 │ /api/*
                     ┌────────────┴────────────┐
                     │                         │
             ┌───────▼────────┐      ┌─────────▼─────────┐
-            │  API Gateway   │      │  AppSync Events   │
-            │  (HTTP API)    │      │  (realtime)       │
-            └───────┬────────┘      └─────────▲─────────┘
-                    │                         │ publish
-            ┌───────▼─────────────────────────┴───────┐
-            │        Lambda: game-action              │
-            │  validate → apply → persist → broadcast │
-            └───────┬─────────────────────────────────┘
+            │  HTTP API      │      │  AppSync Events   │
+            │                │      │  room/<code>      │
+            └───────┬────────┘      └────▲────────▲─────┘
+                    │              IAM   │        │  AWS_LAMBDA
+                    │            publish │        │  connect + subscribe
+            ┌───────▼─────────────────────┴───┐ ┌─┴──────────────────────┐
+            │  Lambda: api                    │ │ Lambda: channel-       │
+            │  rooms · actions · state · auth │ │ authorizer             │
+            │  validate → apply → persist →   │ │ is this token for      │
+            │  broadcast                      │ │ this room?             │
+            └───────┬─────────────────────────┘ └────────────────────────┘
                     │
-        ┌───────────┼───────────────┐
-        │           │               │
-  ┌─────▼─────┐ ┌───▼──────────┐ ┌──▼──────────────┐
-  │ DynamoDB  │ │ Lambda: llm  │ │ Lambda: room    │
-  │ (1 table) │ │ (proxy)      │ │ (create/join)   │
-  └───────────┘ └───┬──────────┘ └─────────────────┘
-                    │
-              Claude Platform on AWS
+        ┌───────────┼──────────────┬────────────────────┐
+        │           │              │                    │
+  ┌─────▼─────┐ ┌───▼───────┐ ┌────▼─────────┐ ┌────────▼────────┐
+  │ DynamoDB  │ │ KMS       │ │ Cognito      │ │ Lambda: sweep   │
+  │ (1 table) │ │ (ES256    │ │ (optional    │ │ (scheduled —    │
+  │           │ │  signing) │ │  sign-in)    │ │  guest expiry)  │
+  └─────▲─────┘ └───────────┘ └──────────────┘ └────────┬────────┘
+        └────────────────────────────────────────────────┘
 ```
 
-**The Anthropic credential never leaves Lambda.** The browser has no path to it.
+Three functions rather than one per route. The split that matters is **blast
+radius**, not URL: every HTTP route needs the same three permissions (table, key,
+publish), so splitting them further would buy nothing and cost cold starts on a
+game where a two-second pause is fatal to momentum. The other two are genuinely
+different — the authorizer can only read and verify, the sweeper can only delete
+— and each carries the smallest policy that lets it work.
+
+The LLM proxy (§6) is roadmap Chapter 7 and is not in the stack yet. When it
+lands, **the Anthropic credential never leaves Lambda** — the browser has no path
+to it.
 
 ---
 
@@ -84,8 +101,8 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 
 | Entity | PK | SK | Notes |
 |---|---|---|---|
-| Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Lookup on sign-in. An adult may own/belong to more than one. |
-| Household | `HH#<hhId>` | `META` | The family. Owner sub, display name, created date. |
+| Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. |
+| Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name. |
 | Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, `role: adult \| child`. |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
@@ -95,11 +112,39 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** |
 
-GSI1 indexes devices by device ID (`GSI1PK = DEVICE#<deviceId>`, `GSI1SK = HH#<hhId>`) so a returning
-phone resolves straight to its household and player without a scan.
+GSI1 does three jobs, all of them lookups that would otherwise be scans:
+
+| `GSI1PK` | `GSI1SK` | On | Answers |
+|---|---|---|---|
+| `DEVICE#<deviceId>` | `HH#<hhId>` | device items | a returning phone → its household and player |
+| `RUN#<runId>` | `HH#<hhId>` | run items | a runId alone → the household that owns it |
+| `GUEST` | `<expiresAt>#<hhId>` | **guest** household items only | which anonymous households may be swept |
 
 Note that **characters hang off the household, not off a run.** That was already true and is what makes
 persistence across sessions fall out for free — the only thing that was ever session-scoped is the room.
+
+### 3.0 Anonymous households and how they expire
+
+An anonymous household is an ordinary household with `guest: true` and an
+`expiresAt`. Everything below the auth layer reads it as a household and cannot
+tell the difference — which is the point, because it means anonymous play is not
+a second code path that can rot.
+
+Expiry is deliberately **not** a `ttl` attribute on each item. DynamoDB TTL is
+per item, but a household's rows span partitions it does not know about at write
+time — `RUN#<runId>` is a different partition from `HH#<hhId>` — so every writer
+would have to be told whether the household it is writing under is still a guest.
+Worse, a warm Lambda would *cache* that answer, and a stale "yes, guest" after
+somebody signed in would quietly re-arm deletion of a household they had just
+claimed.
+
+So expiry is one row's problem instead. Only the household `META` item carries a
+`GUEST` index entry; a scheduled Lambda queries that partition for entries whose
+sort key has passed and deletes the household and its runs. Claiming a household
+is then a **single conditional write** that removes the index entry — and a
+claimed household is not merely skipped by the sweeper, it is invisible to it.
+
+Rooms keep their own per-item `ttl`, because a room genuinely is one row.
 
 ### 3.1 Character item — the commitment rule in data
 
@@ -234,31 +279,106 @@ interface RoomChannel {
 }
 ```
 
-`AppSyncEventsChannel` is the v1 implementation. Swapping to Momento Topics or API Gateway
-WebSockets means writing one new class.
+`AppSyncEventsChannel` is the v1 implementation; `LocalSseChannel` is the dev one.
+Swapping to Momento Topics or API Gateway WebSockets means writing one new class.
+
+The two directions are authorised differently, and that split *is* the security
+model: **IAM** for publish, so only the API Lambda's execution role can say
+anything on a channel, and a **Lambda authorizer** for connect and subscribe, so
+a phone or a TV can listen to its own room and nothing else. `AppSyncEventsChannel`
+therefore implements `publish` and throws on `subscribe` — browsers subscribe over
+AppSync's WebSocket directly, no server-side caller has ever needed to listen, and
+a plausible no-op would hide that until updates silently stopped arriving.
+
+The authorizer's load-bearing rule is that a subscribe must name the room its
+token was issued for. Without it any valid session token would be a licence to
+watch every family's game, since the four-letter code is the only thing
+separating them.
 
 ### 4.5 Accounts, devices, and joining
 
-Two layers of identity, deliberately separated:
+**Nobody signs up to play.** Somebody taps "start a game" and a household exists,
+with real characters in it. The only thing it lacks is an owner, and the only
+consequence is an expiry date. Signing in is optional, comes later, and is how
+you *keep* what you already played — never a gate in front of it.
+
+Four layers of identity, deliberately separated:
 
 | Layer | Lifetime | Auth |
 |---|---|---|
-| **Household account** | Permanent | Cognito user pool — email + passkey. Adults only. |
-| **Player profile** | Permanent | A device-bound long-lived token. **No password, ever.** |
-| **Room session** | ≤ 6 hours | Short-lived token scoped to a run. |
+| **Household** | 7 days anonymous → permanent when claimed | None, then a Cognito sub. |
+| **Account** *(optional)* | Permanent | Cognito user pool — emailed code, then a passkey. Adults only. |
+| **Player profile** | As long as its household | A device-bound long-lived token. **No password, ever.** |
+| **Room session** | ≤ 6 hours | Short-lived token scoped to one run. |
 
-#### First run — household setup
+#### Anonymous play, which is the default
 
-1. An adult signs up (email → passkey). Cognito issues a sub; we create `HH#<hhId>` and an `ACCT#<sub>` pointer.
-2. They add player profiles for everyone: name, color, avatar, `role: adult | child`.
-3. Each other device is bound by scanning a **pairing QR** from the owner's device. Binding creates a `DEVICE#<deviceId>` item and issues that device a **long-lived signed token** naming its `playerId`.
+1. A device nobody has seen before calls `POST /api/room`. The server creates
+   `HH#<hhId>` with `guest: true` and an `expiresAt` seven days out, one adult
+   player profile, and one `DEVICE#<deviceId>` binding.
+2. It gets a **device token** back and stores it in `localStorage`. It is that
+   player from then on.
+3. Everyone else joins by scanning the code. An unbound phone gets a profile and
+   a token of its own on the spot.
+
+Seven days rather than the room's six hours on purpose: the room ending is not
+the session being forgotten. A family that plays on Tuesday can still decide on
+Saturday that they want to keep the unicorn.
+
+#### Signing in, which is optional
+
+The browser talks to Cognito directly — no hosted UI, no credential through our
+Lambda. First time: a six-digit code by email, so there is no password to invent
+and none to forget between Tuesday nights. Then the browser may register a
+**passkey** on that device for one tap after.
+
+It then calls `POST /api/auth/link` with the resulting ID token. The server
+verifies it against the pool's JWKS and **claims the household the party is
+already playing in**: `ownerSub` set, `guest` cleared, the `GUEST` index entry
+dropped. Nothing is copied and no id changes, so every client's state stays
+valid and a character created ten minutes ago is the same row afterwards.
+
+Three cases, and they are genuinely different:
+
+| Situation | What happens |
+|---|---|
+| Playing anonymously right now | That household becomes theirs. *This is the case the design is for.* |
+| Existing account, fresh phone | Their household and its players come back; `POST /api/auth/device` binds this phone to whichever player they say they are. |
+| New account, no game yet | A permanent household is created and this device becomes its first adult. |
+
+A guest household already owned by **somebody else** is not claimable, so signing
+in on a borrowed phone never hands you that family's game. A `role: child` device
+cannot claim at all — household ownership must not sit behind a credential we
+promised she would never need.
+
+#### If nobody signs in
+
+The scheduled sweeper deletes the household and everything under it once
+`expiresAt` passes. It re-reads each household immediately before deleting,
+because the interesting race is real: somebody signing in during the seconds
+between the index query and the delete would otherwise lose exactly the
+characters the sign-in was for.
+
+#### The device token
+
+An ES256 JWT signed by a KMS key that never leaves KMS, with a **30-day sliding
+expiry**: past halfway, a resolve mints a fresh one and returns it in the
+`x-kad-device-token` response header. Verification is local — the public half is
+fetched once per container — because it happens on every request from every
+phone, and a `Verify` API call there would put a network round trip in front of
+every tap at the table.
+
+Deliberately *not* rotated on every single use. Rotation only helps if the
+predecessor is invalidated, and invalidating it means a phone whose response was
+lost to dropped Wi-Fi is locked out of the game it is holding. Revocation — the
+property that actually matters when a phone goes missing — is immediate either
+way, because it is a flag on the device item checked on every resolve.
 
 #### Every run after
 
-A bound device opens the app and **it is already that player.** No login screen, no avatar picker with a password behind it — her phone knows it's her phone. Tap "play."
-
-The device token is a JWT signed with a KMS-held key, rotated on every use with a 30-day sliding
-expiry. Stored in `localStorage`; if it's missing or expired, the device falls back to re-pairing.
+A bound device opens the app and **it is already that player.** No login screen,
+no avatar picker with a password behind it — her phone knows it's her phone. Tap
+"play."
 
 #### Recovery and revocation
 
@@ -268,13 +388,26 @@ expiry. Stored in `localStorage`; if it's missing or expired, the device falls b
 
 #### Joining a session
 
-1. Host device calls `POST /room` with `{ runId, mode: "party" | "travel" }` → 4-letter code (unambiguous alphabet: no I/O/0/1).
+1. Host device calls `POST /room` with `{ mode: "party" | "travel" }` → 4-letter code (unambiguous alphabet: no I/O/0/1).
 2. In **Party Mode** the TV renders the code + QR; in **Travel Mode** the host's phone does.
 3. Other devices scan → `POST /room/ABCD/join`, presenting their **device token**. The server resolves device → player → household, verifies the household owns the run, and issues a room-scoped session token.
 4. Because identity is resolved from the device, **there is no "who are you?" step.** You scan, and your character is already on the board.
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.
+
+#### The TV, which is nobody
+
+A display client has no device, no player, and no token, because a screen does
+not sign in (spec §2.1). Locally that costs nothing — it just opens the stream.
+In prod the realtime channel is authorised per subscriber, so it needs *something*
+to present: `POST /room/ABCD/watch` returns a **viewer token** naming that room
+and nothing else, valid until the room expires.
+
+It is a separate type from a session token rather than a session token with the
+fields blanked out, so that a display credential can never satisfy a code path
+expecting a player. A viewer is not in `party`, is not counted for presence, and
+cannot act.
 
 ### 4.6 Client surfaces and modes
 

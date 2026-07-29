@@ -59,6 +59,16 @@ const SEQ_WIDTH = 12;
  */
 export const EVT_SK = (seq: number) => `EVT#${String(seq).padStart(SEQ_WIDTH, "0")}`;
 
+/**
+ * The upper bound of the event range, for `SK BETWEEN :lo AND :hi`.
+ *
+ * A DynamoDB key condition cannot combine `SK > :lo` with `begins_with(SK, …)`,
+ * so replaying "events after N" is expressed as a range whose top is the largest
+ * key the padding can produce. Derived from `SEQ_WIDTH` rather than written out,
+ * so widening the padding cannot silently truncate a replay.
+ */
+export const EVT_SK_MAX = `EVT#${"9".repeat(SEQ_WIDTH)}`;
+
 export function seqFromEvtSk(sk: string): number {
   return Number.parseInt(sk.slice(PREFIX.event.length), 10);
 }
@@ -67,3 +77,27 @@ export function seqFromEvtSk(sk: string): number {
 export const GSI1_DEVICE = (deviceId: string) => `DEVICE#${deviceId}`;
 /** GSI1: run id → household, so a runId alone resolves its owner. */
 export const GSI1_RUN = (runId: string) => `RUN#${runId}`;
+
+/**
+ * GSI1: every **guest** household, sorted by when it may be swept.
+ *
+ * Anonymous play has to expire, and the obvious way to do that — a `ttl`
+ * attribute on every item — does not work here. DynamoDB TTL is per item, but a
+ * household's items span partitions it does not know about at write time
+ * (`RUN#<runId>` is a different partition from `HH#<hhId>`), so every writer
+ * would have to be told whether the household it is writing under is still a
+ * guest. Worse, that decision would be *cached* in a warm Lambda, and a stale
+ * "yes, guest" verdict after someone signed in would quietly re-arm the deletion
+ * of a household they had just claimed.
+ *
+ * So expiry is one row's problem instead. Only the household META item carries
+ * the index entry, a scheduled sweeper queries this partition for entries whose
+ * sort key has passed, and claiming a household is a **single write** that drops
+ * the entry (`REMOVE GSI1PK, GSI1SK`). Nothing else in the table has to know
+ * anonymous play exists.
+ */
+export const GSI1_GUEST = "GUEST";
+
+/** ISO first so a lexicographic range query is a chronological one. */
+export const GSI1_GUEST_SK = (expiresAt: string, householdId: string) =>
+  `${expiresAt}#${householdId}`;

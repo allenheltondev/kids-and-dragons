@@ -13,6 +13,9 @@ dist/
 cdk.out/
 *.tsbuildinfo
 
+# bundled Lambda artifacts — infra/build.mjs regenerates these on every deploy
+infra/.build/
+
 # local dev-server table (DynamoDB Local's stand-in)
 .data/
 

@@ -72,6 +72,7 @@ describe("MemoryRepository", () => {
       id: "h_1",
       displayName: "Home",
       ownerSub: "sub",
+      guest: false,
       createdAt: "2026-01-01T00:00:00.000Z",
     });
     await repo.putPlayer({
@@ -161,6 +162,7 @@ describe("MemoryRepository", () => {
       id: "h_1",
       displayName: "Home",
       ownerSub: "sub",
+      guest: false,
       createdAt: "2026-01-01T00:00:00.000Z",
     });
     await repo.putState(state("r_1", 3));
@@ -184,5 +186,105 @@ describe("MemoryRepository", () => {
     await fs.writeFile(filePath, "{ this is not json", "utf8");
     const repo = await MemoryRepository.open({ filePath });
     expect(await repo.getHousehold("h_1")).toBeNull();
+  });
+});
+
+/**
+ * Anonymous play, and the one write that makes it permanent (§4.5).
+ *
+ * These are storage semantics rather than handler logic on purpose: whether a
+ * household is swept is decided by whether one row carries a GSI1 entry, and if
+ * that ever stops being true the sweeper starts deleting families' characters.
+ */
+describe("MemoryRepository — guest households", () => {
+  const DAY = 24 * 3600_000;
+
+  function guest(id: string, expiresAt: string) {
+    return {
+      id,
+      displayName: "Guests",
+      ownerSub: null,
+      guest: true,
+      expiresAt,
+      createdAt: "2026-07-04T18:00:00.000Z",
+    };
+  }
+
+  it("lists only guests whose expiry has passed", async () => {
+    const repo = new MemoryRepository();
+    const now = Date.parse("2026-07-11T18:00:00.000Z");
+    await repo.putHousehold(guest("h_stale", new Date(now - DAY).toISOString()));
+    await repo.putHousehold(guest("h_fresh", new Date(now + DAY).toISOString()));
+    await repo.putHousehold({
+      id: "h_owned",
+      displayName: "Home",
+      ownerSub: "sub",
+      guest: false,
+      createdAt: "2026-07-04T18:00:00.000Z",
+    });
+
+    const expired = await repo.listExpiredGuestHouseholds(new Date(now).toISOString());
+    expect(expired.map((h) => h.id)).toEqual(["h_stale"]);
+  });
+
+  it("claiming drops the household out of the sweep index for good", async () => {
+    const repo = new MemoryRepository();
+    const now = Date.parse("2026-07-11T18:00:00.000Z");
+    await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+
+    expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+
+    const household = await repo.getHousehold("h_1");
+    expect(household).toMatchObject({ guest: false, ownerSub: "sub_a" });
+    expect(household).not.toHaveProperty("expiresAt");
+    // The sweeper's only input is this query. An already-expired household that
+    // somebody claimed in time must vanish from it immediately.
+    expect(await repo.listExpiredGuestHouseholds(new Date(now).toISOString())).toEqual([]);
+    expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_1"]);
+  });
+
+  it("is idempotent for the same account and refuses a different one", async () => {
+    const repo = new MemoryRepository();
+    await repo.putHousehold(guest("h_1", "2026-07-11T18:00:00.000Z"));
+
+    expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+    expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+    // Signing in on a phone you borrowed must not hand you that family's game.
+    expect(await repo.claimHousehold("h_1", "sub_b")).toBe(false);
+    expect((await repo.getHousehold("h_1"))?.ownerSub).toBe("sub_a");
+  });
+
+  it("deletes runs, rooms, and the account pointer along with the household", async () => {
+    const repo = new MemoryRepository();
+    await repo.putHousehold(guest("h_1", "2026-07-11T18:00:00.000Z"));
+    await repo.putPlayer({
+      id: "p_1",
+      householdId: "h_1",
+      displayName: "Allen",
+      color: "#7FD4C1",
+      role: "adult",
+    });
+    await repo.putRun({
+      id: "r_1",
+      householdId: "h_1",
+      roomCode: "ABCD",
+      campaignId: null,
+      status: "active",
+      createdAt: "2026-07-04T18:00:00.000Z",
+    });
+    await repo.putState(state("r_1", 1));
+    await repo.putRoomIfAbsent(room());
+    await repo.claimHousehold("h_1", "sub_a");
+
+    await repo.deleteHousehold("h_1");
+
+    expect(await repo.getHousehold("h_1")).toBeNull();
+    expect(await repo.listPlayers("h_1")).toEqual([]);
+    expect(await repo.getRun("r_1")).toBeNull();
+    // The run's own partition goes too — it is a different partition and only
+    // reachable through the household, so leaving it behind orphans it forever.
+    expect(await repo.getState("r_1")).toBeNull();
+    expect(await repo.getRoom("ABCD")).toBeNull();
+    expect(await repo.listHouseholdsForAccount("sub_a")).toEqual([]);
   });
 });
