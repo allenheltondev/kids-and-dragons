@@ -16,7 +16,6 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   gap: var(--space-2, 0.5em);
   padding: var(--space-4, 1em);
   color: var(--color-text, #f4f0ff);
@@ -27,6 +26,16 @@
     transparent 80%
   );
   overflow-y: auto;
+}
+
+/*
+ * Bottom-aligned by an auto margin, not `justify-content: flex-end`. With
+ * flex-end an overflowing column is clipped at its *start* and the top cannot
+ * be scrolled to — in a 60%-height Travel Mode pane that silently ate the
+ * first line of every long scene.
+ */
+.narration > :first-child {
+  margin-block-start: auto;
 }
 
 .narration__head {

@@ -87,7 +87,10 @@
 .complete-card__name {
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 800;
-  overflow-wrap: anywhere;
+  /* break-word, not `anywhere`: `anywhere` also collapses the element's
+     min-content width to a single character, so a flex column holding a
+     name shrinks to nothing and the name wraps one letter per line. */
+  overflow-wrap: break-word;
 }
 
 .complete-card__chips,
