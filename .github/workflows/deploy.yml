@@ -1,0 +1,95 @@
+# Deploys.
+#
+#   pull request   → the **staging** stack
+#   push to main   → the **prod** stack
+#
+# Both run `scripts/deploy.sh`, which is the same command you run from a laptop.
+# The workflow's only job is to be that laptop: assume a role, install the two
+# CLIs, and hand over. A deploy path that exists only in YAML is one nobody can
+# reproduce when it breaks at 8pm.
+#
+# Credentials come from GitHub's OIDC provider, traded for a short-lived role
+# session — there are no AWS keys stored anywhere. The role ARN lives on the
+# GitHub *environment* (`staging` / `prod`) rather than on the repository, and
+# the roles themselves only trust their own environment
+# (`infra/github-oidc.yaml`), so a pull-request deploy cannot reach prod even if
+# this file were edited in that pull request. That last part is the reason the
+# scoping is worth doing: without it, "deploy staging on PR" is an arbitrary
+# code execution path into your production account.
+
+name: Deploy
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  # For redeploying without a commit — recovering a stack, or applying a
+  # parameter change like WebAuthnRelyingPartyId.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Which stack to deploy
+        type: choice
+        options: [staging, prod]
+        default: staging
+
+concurrency:
+  # Two deploys of one stack at once is a CloudFormation error at best. Queued
+  # rather than cancelled: a half-finished deploy should be allowed to finish.
+  group: deploy-${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # the OIDC token itself
+
+jobs:
+  deploy:
+    name: ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: kad-deploy-${{ github.run_id }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy
+        run: ./scripts/deploy.sh ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
+        env:
+          # The checks already ran on this exact commit in `ci.yml`, which is a
+          # required check on the pull request. Running the whole suite again —
+          # including the Python art gate — would add minutes to every deploy to
+          # re-prove something already proven.
+          KAD_SKIP_CHECKS: "1"
+          # Passkeys are bound to a domain for the life of the credential, and
+          # `sam deploy` reverts any parameter it is not given. Set this as an
+          # environment *variable* once the distribution exists, or every deploy
+          # silently turns passkeys off. Empty is fine and simply means
+          # email-code sign-in only.
+          WEBAUTHN_RP_ID: ${{ vars.WEBAUTHN_RP_ID }}
+
+      - name: Where it went
+        run: |
+          STACK="kad-${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}"
+          URL=$(aws cloudformation describe-stacks --stack-name "$STACK" \
+            --query "Stacks[0].Outputs[?OutputKey=='SiteUrl'].OutputValue" --output text)
+          echo "### $STACK is live" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "$URL" >> "$GITHUB_STEP_SUMMARY"
