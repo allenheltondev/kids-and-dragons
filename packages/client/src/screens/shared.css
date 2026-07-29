@@ -1,0 +1,88 @@
+/*
+ * Utilities shared by every screen.
+ *
+ * Design tokens come from styles/theme.css. Every var() here carries the value
+ * it was designed against as a fallback, so screens/ renders correctly on its
+ * own and any token the theme does not define degrades instead of collapsing.
+ */
+
+.kad-icon {
+  display: inline-block;
+  flex: 0 0 auto;
+  vertical-align: -0.125em;
+}
+
+/* A vertical rhythm helper. Gap only — no margins to collapse. */
+.kad-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1em);
+  min-height: 0;
+}
+
+.kad-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  min-width: 0;
+}
+
+.kad-muted {
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/*
+ * A status chip. Always icon + word: spec §11 forbids conveying status by
+ * colour alone, so the colour is decoration on top of a shape and a label.
+ */
+.kad-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  font-size: var(--font-size-sm, 0.875em);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.kad-chip--ok {
+  border-color: var(--color-success, #4ad991);
+  color: var(--color-success, #4ad991);
+}
+
+.kad-chip--warn {
+  border-color: var(--color-accent, #ffc95c);
+  color: var(--color-accent, #ffc95c);
+}
+
+.kad-chip--bad {
+  border-color: var(--color-danger, #ff6b6b);
+  color: var(--color-danger, #ff6b6b);
+}
+
+/* The only scrolling idiom in PlayerView. Momentum on, scrollbars out of the way. */
+.kad-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
+
+/*
+ * Every tappable thing in screens/ is at least this big (spec §11, "big touch
+ * targets"), including in Travel Mode where PlayerView is ~40% of a phone.
+ */
+.kad-tap {
+  min-height: var(--touch-min, 3em);
+  min-width: var(--touch-min, 3em);
+}
+
+.kad-focusable:focus-visible {
+  outline: 0.12em solid var(--color-focus, #ffc95c);
+  outline-offset: 0.15em;
+}

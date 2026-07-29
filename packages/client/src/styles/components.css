@@ -1,0 +1,345 @@
+/*
+ * Layout shells and the shared primitives in ui/.
+ *
+ * Everything below is built from the tokens in theme.css. Two things to keep
+ * straight while reading:
+ *
+ *   - `.kad-travel` and `.kad-party` are layout SHELLS and may use viewport
+ *     units. They are the only rules in the client that do.
+ *   - Everything from `.kad-surface` inward is em/%/cq only, because those
+ *     subtrees render at two wildly different scales (architecture §4.6 rule 2).
+ */
+
+/* ==========================================================================
+ * Shells
+ * ======================================================================== */
+
+.kad-travel,
+.kad-party,
+.kad-boot {
+  /* dvh, not vh: the iOS URL bar collapsing must not crop the action bar. */
+  block-size: 100dvh;
+  inline-size: 100%;
+  padding: var(--kad-safe-top) var(--kad-safe-right) var(--kad-safe-bottom) var(--kad-safe-left);
+  background: var(--kad-bg);
+  overflow: hidden;
+}
+
+.kad-travel {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The toggle. Always present, never scrolls away: it is the only way back to
+   whichever surface you are not looking at. */
+.kad-travel__bar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--kad-space-2);
+  flex: 0 0 auto;
+  /* Chrome, not content: it sits outside `.kad-surface` and so does not scale
+     with the pane. Fixed and modest, so the surfaces get the screen. */
+  font-size: 0.95rem;
+  padding: var(--kad-space-2);
+  border-block-end: 1px solid var(--kad-border);
+  background: var(--kad-bg-sunken);
+}
+
+.kad-travel__tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  flex: 1 1 0;
+  min-block-size: var(--kad-touch-min);
+  padding: var(--kad-space-2) var(--kad-space-2);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  border-radius: var(--kad-radius-md);
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Selected is a fill *and* a border, never colour alone (spec §11). */
+.kad-travel__tab--on {
+  border-color: var(--kad-accent);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+}
+
+/* "You are needed over here" while you are looking at the world. */
+.kad-travel__nudge {
+  color: var(--kad-accent);
+  font-size: 0.8em;
+  line-height: 1;
+}
+
+.kad-mode-switch {
+  flex: 0 0 auto;
+  font-size: 0.85em;
+  opacity: 0.65;
+}
+
+/* One surface at a time. Hidden, not unmounted: the world holds the Pixi
+   context and registers the presentation gate (see layout/TravelLayout.tsx). */
+.kad-travel__pane {
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.kad-travel__pane[data-showing="false"] {
+  display: none;
+}
+
+.kad-party {
+  display: block;
+}
+
+.kad-boot {
+  display: grid;
+  place-items: center;
+  color: var(--kad-ink-dim);
+}
+
+/* The canvas fills its surface and nothing more. */
+.kad-stage {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* ==========================================================================
+ * Primitives
+ * ======================================================================== */
+
+.kad-sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Button ------------------------------------------------------------- */
+
+.kad-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  min-block-size: var(--kad-touch-min);
+  min-inline-size: var(--kad-touch-min);
+  padding: var(--kad-space-2) var(--kad-space-4);
+  border-radius: var(--kad-radius-md);
+  font-weight: var(--kad-weight-bold);
+  font-size: var(--kad-text-md);
+  line-height: 1.1;
+  text-align: center;
+  transition:
+    transform var(--kad-dur-fast) var(--kad-ease),
+    background-color var(--kad-dur-fast) var(--kad-ease),
+    box-shadow var(--kad-dur-fast) var(--kad-ease);
+}
+
+.kad-button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.kad-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.kad-button--block {
+  inline-size: 100%;
+}
+
+.kad-button--lg {
+  font-size: var(--kad-text-lg);
+  padding: var(--kad-space-3) var(--kad-space-5);
+  min-block-size: calc(var(--kad-touch-min) * 1.25);
+}
+
+.kad-button--primary {
+  background: var(--kad-accent);
+  color: var(--kad-accent-ink);
+  box-shadow: var(--kad-shadow-sm);
+}
+
+.kad-button--secondary {
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+  box-shadow: inset 0 0 0 1px var(--kad-border);
+}
+
+.kad-button--ghost {
+  background: transparent;
+  color: var(--kad-ink-dim);
+}
+
+.kad-button--danger {
+  background: var(--kad-danger);
+  color: var(--kad-accent-ink);
+}
+
+.kad-button[aria-pressed="true"] {
+  box-shadow: 0 0 0 0.15em var(--kad-border-strong);
+}
+
+.kad-button__icon {
+  font-size: var(--kad-icon-md);
+  line-height: 1;
+  display: inline-flex;
+}
+
+/* --- Panel -------------------------------------------------------------- */
+
+.kad-panel {
+  background: var(--kad-bg-raised);
+  border-radius: var(--kad-radius-lg);
+  box-shadow: var(--kad-shadow-md);
+  padding: var(--kad-space-4);
+  max-inline-size: 100%;
+}
+
+.kad-panel--quiet {
+  background: var(--kad-bg-sunken);
+  box-shadow: none;
+  border: 1px solid var(--kad-border);
+}
+
+.kad-panel--raised {
+  box-shadow: var(--kad-shadow-lg);
+}
+
+.kad-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kad-space-3);
+  margin-block-end: var(--kad-space-3);
+}
+
+.kad-panel__title {
+  font-size: var(--kad-text-lg);
+  font-weight: var(--kad-weight-black);
+  letter-spacing: 0.01em;
+}
+
+/* --- Spinner ------------------------------------------------------------ */
+
+.kad-spinner {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kad-space-2);
+  color: var(--kad-ink-dim);
+}
+
+.kad-spinner__ring {
+  inline-size: var(--kad-icon-lg);
+  block-size: var(--kad-icon-lg);
+  border-radius: 50%;
+  border: 0.18em solid var(--kad-accent-soft);
+  border-block-start-color: var(--kad-accent);
+  animation: kad-spin 900ms linear infinite;
+}
+
+.kad-spinner--sm .kad-spinner__ring {
+  inline-size: var(--kad-icon-md);
+  block-size: var(--kad-icon-md);
+}
+
+.kad-spinner--lg .kad-spinner__ring {
+  inline-size: calc(var(--kad-icon-lg) * 1.6);
+  block-size: calc(var(--kad-icon-lg) * 1.6);
+}
+
+.kad-spinner__label {
+  font-size: var(--kad-text-sm);
+}
+
+@keyframes kad-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- ErrorToast --------------------------------------------------------- */
+
+.kad-toast {
+  position: fixed;
+  /* A shell-level element, so viewport units are fair game here. */
+  inset-block-end: calc(var(--kad-safe-bottom) + 1rem);
+  inset-inline: 1rem;
+  margin-inline: auto;
+  max-inline-size: 30rem;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  box-shadow: var(--kad-shadow-lg);
+  border: 1px solid var(--kad-danger);
+  color: var(--kad-ink);
+  font-size: 1rem;
+  animation: kad-toast-in var(--kad-dur-base) var(--kad-ease-out);
+}
+
+.kad-toast__icon {
+  display: grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--kad-danger);
+  color: var(--kad-accent-ink);
+  font-weight: var(--kad-weight-black);
+}
+
+.kad-toast__text {
+  flex: 1 1 auto;
+}
+
+@keyframes kad-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* Party Mode's slim chrome for the mid-session mode switch, mirroring the
+   Travel bar. In flow, never floating: on a phone the thing underneath a
+   floating control is the primary action of whatever screen you are on. */
+.kad-party--player {
+  display: flex;
+  flex-direction: column;
+}
+
+.kad-party__bar {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  padding: var(--kad-space-1) var(--kad-space-2);
+  border-block-end: 1px solid var(--kad-border);
+  background: var(--kad-bg-sunken);
+  font-size: 0.95rem;
+}
+
+.kad-party--player > .kad-surface {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}

@@ -1,0 +1,115 @@
+# Kids & Dragons CI.
+#
+# One workflow, on purpose. This is a family project, not a platform team — a single
+# file you can read top to bottom beats a matrix of reusable workflows nobody edits.
+#
+# It enforces the two cross-cutting rules from docs/roadmap.md that only CI can:
+#   * schema validation — a malformed chapter fails the build, never the play session
+#   * the art gate — "the agent says it's finished" is not an acceptance criterion
+#     (docs/art-pipeline.md §3)
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: typecheck, test, content, art, build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 22 — the same runtime the Lambdas use (architecture §1).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Python 3.11 for the art tooling. Pillow and numpy are the verifier's only
+      # dependencies and it prints exactly that if they are missing.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install art dependencies
+        run: python -m pip install --disable-pip-version-check pillow numpy
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      # Content is data (roadmap, "Content as data"), so it gets checked like code:
+      # schemas first, then the cross-file rules a schema cannot express.
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Verify art assets
+        run: npm run art:verify
+
+      - name: Build
+        run: npm run build
+
+      # The contact sheets are the human gate's input (art-pipeline.md §3.2). They do
+      # not gate the build — nothing here decides whether the art looks right — but
+      # having them on every run means a reviewer never has to build them by hand.
+      - name: Contact sheets
+        run: npm run art:sheet
+
+      - name: Upload contact sheets
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: art-review-sheets
+          path: art/review/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  e2e:
+    # The roadmap's dev loop says a change isn't done until it has been seen on
+    # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
+    # holds three browser contexts against the real dev server: real room
+    # codes, real SSE, real server-rolled dice. It is a separate job because it
+    # is minutes rather than seconds, and because a red e2e means something
+    # quite different from a red unit test.
+    name: end to end
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # playwright.config.ts starts `npm run dev` itself and waits for Vite.
+      - name: Play a chapter
+        run: npx playwright test
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
