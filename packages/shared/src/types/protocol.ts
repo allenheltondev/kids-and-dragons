@@ -38,7 +38,20 @@ export type ClientIntent =
   | { type: "ADVANCE" }
   | { type: "USE_ITEM"; itemId: string }
   | { type: "RESOLVE_ITEM_SWAP"; dropItemId: string | null }
-  | { type: "SET_MODE"; mode: RoomMode };
+  | { type: "SET_MODE"; mode: RoomMode }
+  /**
+   * Combat, spec §7.2 — move up to your steps, then take one action.
+   *
+   * Three intents rather than one because they are three different taps with
+   * three different undo stories: a move is committed the moment the figure
+   * arrives, an action is committed once a target is confirmed, and ending a
+   * turn is the only one that hands control to somebody else. Folding them
+   * together would make "I moved and then changed my mind about who to hit" a
+   * protocol error instead of a normal thing an eight-year-old does.
+   */
+  | { type: "MOVE"; to: { x: number; y: number } }
+  | { type: "COMBAT_ACTION"; abilityId: string; targetId?: string; targetTile?: { x: number; y: number } }
+  | { type: "END_TURN" };
 
 export interface ActionRequest {
   runId: string;
@@ -73,6 +86,15 @@ export type Presentation =
   | { kind: "SCENE_ENTER"; sceneId: string; art?: string }
   | { kind: "ROLL"; roll: DiceRoll }
   | { kind: "CHOICE_MADE"; choiceId: string; byPlayerId: string }
+  /**
+   * A fight has started: the board is up and initiative is rolled.
+   *
+   * Carried as a presentation rather than left to the patch because the client
+   * has to play the "everyone takes their places" beat *before* the new state
+   * lands, exactly like a chapter's ending beat below — a board that simply
+   * appears mid-scene reads as a glitch.
+   */
+  | { kind: "ENCOUNTER_BEGAN"; mapId: string; firstActorId: string | null }
   | { kind: "ATTACK"; sourceId: string; targetId: string; roll: DiceRoll; damage: number }
   | { kind: "HEAL"; targetId: string; amount: number }
   | { kind: "DOWN"; targetId: string }
