@@ -165,6 +165,11 @@
 .lobby-member {
   display: flex;
   align-items: center;
+  /* The status chip is nowrap and the name column is not, so in a narrow card
+     flex hands the whole shortfall to the name — three cards on a TV row is
+     enough to squeeze it to one letter per line. Letting the chip drop to its
+     own line, and floor the name column, keeps names whole at every width. */
+  flex-wrap: wrap;
   gap: var(--space-3, 0.75em);
   padding: var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
@@ -192,14 +197,17 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1, 0.25em);
-  min-inline-size: 0;
+  min-inline-size: 6em;
   flex: 1 1 auto;
 }
 
 .lobby-member__name {
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
-  overflow-wrap: anywhere;
+  /* break-word, not `anywhere`: `anywhere` also collapses the element's
+     min-content width to a single character, so a flex column holding a
+     name shrinks to nothing and the name wraps one letter per line. */
+  overflow-wrap: break-word;
 }
 
 .lobby-member__meta {
@@ -214,6 +222,8 @@
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-1, 0.25em);
+  flex: 0 0 auto;
+  margin-inline-start: auto;
 }
 
 .lobby__waiting {
