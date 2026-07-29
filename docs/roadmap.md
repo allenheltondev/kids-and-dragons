@@ -154,13 +154,23 @@ The largest chapter. Budget accordingly.
 ## Chapter 5 — Progression, inventory & the transformation
 
 **Claude**
-- XP → level, stat point spend, action unlocks
+- XP → level, stat point spend, action unlocks. `CharacterProgress.unspentPoints`, inside the
+  provisional/committed pair so a failed campaign reverts earned *and* spent points together
+- **Chapter outcomes** (spec §8.2): a terminal scene declares `success` or `setback`; a setback
+  pays half XP and branches rather than retrying. This is what makes campaign failure — and
+  therefore the whole souvenir system — reachable at all; today `completeChapter()` is the engine's
+  only exit
+- **Bonus objectives** — optional, party-wide or nobody, capped at 25% of `xpAward`
+- Campaign setback counter, defaulting to failure at three
+- **Joining a party already underway** (spec §8.4): `startingLevel` of 1 or a tier floor, starting
+  XP set to that level's threshold, validated server-side against the party's committed level
 - **Inventory**: 6 slots, three item kinds, `content/items.json` catalog + schema validation
 - Item grants from chapters, full-slot swap-or-leave prompt, quest items outside the slot budget
 - Consumables usable in combat; trinket passives folded into `resolveCharacter()`
 - **Trading at Rest scenes** — drag on your phone, tap to accept on theirs
 - Provisional/committed state machine covering level, stats, **and inventory** together
-- Souvenir generation on failure; quest-item clearing at campaign end
+- Souvenir generation on failure, tier-flavored when the run reached a new tier before failing;
+  quest-item clearing at campaign end
 - **The transformation cutscene** — party stops, camera pushes in, tier swap, full-screen moment
 - Character sheet with tier history
 
@@ -177,6 +187,10 @@ she picked up two sessions ago is still in her bag.
 > Building both against one state machine is meaningfully less work than retrofitting items into it.
 
 > This is the emotional payload of the entire project. Give it more polish than it seems to deserve.
+
+> The XP curve and the one-tier-per-campaign frame (spec §8.1) are already in `content/rules.json`.
+> Author chapter awards against the **campaign total** — roughly 700, 1900, 3700 — rather than a
+> per-chapter number, since campaigns run 4–8 chapters.
 
 ---
 

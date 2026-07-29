@@ -1,5 +1,5 @@
 {
-  "$comment": "Rules as data — roadmap 'Content as data'. Values come from spec.md §4 (stats, species, classes), §5 (creation points), §7.1 (steps), §8.1 (levels and tiers). Shape is packages/shared/src/types/domain.ts RulesContent; where this file and the docs disagree, the TS type wins. levelXp holds the nine thresholds above level 1 — levelXp[n] is the total XP needed to reach level n+2, per levelForXp()/maxLevel() in packages/shared/src/rules.ts. Icons are short slugs, never file paths: the client resolves them to inline SVG so every element has an icon (spec §11).",
+  "$comment": "Rules as data — roadmap 'Content as data'. Values come from spec.md §4 (stats, species, classes), §5 (creation points), §7.1 (steps), §8.1 (levels and tiers). Shape is packages/shared/src/types/domain.ts RulesContent; where this file and the docs disagree, the TS type wins. levelXp holds the nine thresholds above level 1 — levelXp[n] is the total XP needed to reach level n+2, per levelForXp()/maxLevel() in packages/shared/src/rules.ts. The curve is superlinear on purpose (spec §8.1): level 2 costs 100 so it lands at the end of the first chapter ever played, and level 10 costs 1600. The doubled steps at 400/400 and 900/900 sit on the tier boundaries. Icons are short slugs, never file paths: the client resolves them to inline SVG so every element has an icon (spec §11).",
 
   "version": 1,
 
@@ -12,7 +12,7 @@
 
   "difficultyTn": { "easy": 8, "normal": 12, "hard": 16 },
 
-  "levelXp": [300, 700, 1200, 1800, 2500, 3300, 4200, 5200, 6300],
+  "levelXp": [100, 300, 700, 1100, 1700, 2600, 3500, 4700, 6300],
 
   "tierLevels": { "fledgling": 1, "sworn": 4, "radiant": 7, "mythic": 10 },
 
