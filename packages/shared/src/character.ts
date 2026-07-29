@@ -372,6 +372,8 @@ export function resolveCharacter(
     questItems: [...character.questItems],
     souvenirs: character.souvenirs.map((s) => ({ ...s })),
     isProvisional: Boolean(character.provisional),
+    // Always the committed half, never `progress` — see the field's note.
+    committedLevel: character.committed.level,
   };
 }
 
