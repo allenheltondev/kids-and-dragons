@@ -287,7 +287,7 @@ export function makeChapter(): Chapter {
         type: "encounter",
         map: "maps/bramblewood/thicket",
         narration: "Three wisps rise out of the bracken.",
-        enemies: [{ id: "wisp", count: 3, hp: 6, guard: 11, steps: 5, attack: 3 }],
+        enemies: [{ id: "wisp", count: 3, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }],
         onVictory: { goto: "scene_camp" },
         onDefeat: { goto: "scene_camp", narration: "They take your lantern and vanish." },
       },

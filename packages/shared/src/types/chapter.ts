@@ -132,6 +132,18 @@ export interface EnemySpec {
   count: number;
   hp: number;
   guard: number;
+  /**
+   * Initiative, on the same scale as a character's Quick (§7.2 — highest first,
+   * rerolled each encounter).
+   *
+   * Authored rather than inferred from `guard`. Deriving the two from one
+   * number makes armour and speed the same dial, which quietly forbids a whole
+   * archetype: a heavily-armoured brute would necessarily act *first*, and a
+   * slow tank could not be written at all. The Bramblewisp is the other end of
+   * the same bug — 5 steps and a low guard would have made the fastest thing in
+   * the chapter the last to move.
+   */
+  quick: number;
   steps: number;
   attack: number;
   art?: string;
