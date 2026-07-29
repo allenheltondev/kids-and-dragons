@@ -46,6 +46,13 @@
     },
     "entry": { "$ref": "#/$defs/sceneId" },
 
+    "objectives": {
+      "description": "Optional bonus objectives (spec §8.2). They pay the whole party or nobody, never an individual. The 25%-of-xpAward ceiling on their total is a cross-field rule and is enforced by tools/content/validate.mjs.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/objective" }
+    },
+
     "scenes": {
       "type": "object",
       "minProperties": 1,
@@ -162,7 +169,7 @@
             "type": "object",
             "required": ["flag"],
             "properties": {
-              "flag": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+              "flag": { "$ref": "#/$defs/flag" },
               "value": { "type": "boolean" }
             }
           }
@@ -171,6 +178,31 @@
     },
 
     "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+
+    "flag": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+
+    "outcome": {
+      "description": "How this ending ends the chapter (spec §8.2): success pays the full xpAward, setback pays half, rounded down. Absent means success, so existing content needs no edit. Only read on a scene with an empty `choices` array — the validator rejects it anywhere else.",
+      "enum": ["success", "setback"]
+    },
+
+    "objective": {
+      "description": "ChapterObjective in chapter.ts. `flag` is watched, not set — author a setFlag effect wherever the thing happens and point at it. There is no second mechanism.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "flag", "xp"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": {
+          "$comment": "Shown on the completion screen, so it is held to the same length as a choice label.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "flag": { "$ref": "#/$defs/flag" },
+        "xp": { "type": "integer", "minimum": 1, "maximum": 500 }
+      }
+    },
 
     "choice": {
       "description": "Choice in chapter.ts. `goto` is required — a choice that leads nowhere is the single most common authoring mistake and it must fail the build, not the table.",
@@ -189,7 +221,7 @@
             { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/speciesId" } }
           ]
         },
-        "requiresFlag": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "requiresFlag": { "$ref": "#/$defs/flag" },
         "requiresItem": { "$ref": "#/$defs/itemId" },
         "effects": { "$ref": "#/$defs/effects" }
       }
@@ -271,7 +303,8 @@
         "art": { "type": "string", "minLength": 1 },
         "narration": { "type": "string", "minLength": 1 },
         "onEnter": { "$ref": "#/$defs/effects" },
-        "choices": { "$ref": "#/$defs/choices" }
+        "choices": { "$ref": "#/$defs/choices" },
+        "outcome": { "$ref": "#/$defs/outcome" }
       }
     },
 
@@ -309,7 +342,8 @@
         "art": { "type": "string", "minLength": 1 },
         "narration": { "type": "string", "minLength": 1 },
         "onEnter": { "$ref": "#/$defs/effects" },
-        "choices": { "allOf": [{ "$ref": "#/$defs/choices" }, { "type": "array", "minItems": 2 }] }
+        "choices": { "allOf": [{ "$ref": "#/$defs/choices" }, { "type": "array", "minItems": 2 }] },
+        "outcome": { "$ref": "#/$defs/outcome" }
       }
     },
 
@@ -323,7 +357,8 @@
         "narration": { "type": "string", "minLength": 1 },
         "onEnter": { "$ref": "#/$defs/effects" },
         "heal": { "type": "integer", "minimum": 0, "maximum": 20 },
-        "choices": { "$ref": "#/$defs/choices" }
+        "choices": { "$ref": "#/$defs/choices" },
+        "outcome": { "$ref": "#/$defs/outcome" }
       }
     },
 
