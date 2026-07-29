@@ -86,5 +86,6 @@ AWS deployment, Cognito and device tokens, Rive rigs (the client composites stat
 procedural motion in the meantime), progression and inventory commitment at the campaign boundary,
 the authoring tools, and the live LLM layer.
 
-The art contract is real and enforced: only the unicorn is approved so far, in all four tiers. The
-other five species render as clearly-placeholder silhouettes rather than pretending.
+The art contract is real and enforced: all six species are approved across all four tiers, 382
+mechanical checks green. Anything that fails to load still draws a clearly-placeholder silhouette
+rather than a broken image.

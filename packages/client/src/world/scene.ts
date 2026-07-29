@@ -17,9 +17,10 @@
  * centred — actors are positioned by where their feet touch the floor, so a
  * Mythic unicorn and a Fledgling one stand on the same line.
  *
- * Only `unicorn` art exists today, in all four tiers. Every other species gets
- * an obviously-unfinished silhouette: a placeholder that looks like a
- * placeholder is a to-do, a broken image is a bug report.
+ * All six species are delivered in all four tiers. Anything that fails to load
+ * still gets an obviously-unfinished silhouette rather than a broken image: a
+ * placeholder that looks like a placeholder is a to-do, a broken image is a
+ * bug report.
  * ---------------------------------------------------------------------------
  */
 
@@ -37,15 +38,8 @@ const GROUND_Y = DESIGN.height * 0.82;
 /** A character's drawn height in design units at zoom 1. */
 const ACTOR_HEIGHT = DESIGN.height * 0.46;
 
-/** Everything Allen has delivered so far. Extend as tiers land. */
-const SPECIES_WITH_ART: ReadonlySet<SpeciesId> = new Set<SpeciesId>(["unicorn"]);
-
 export function characterArtUrl(species: SpeciesId, tier: TierId): string {
   return `/assets/characters/${species}/${tier}/assembled.png`;
-}
-
-export function hasArt(species: SpeciesId): boolean {
-  return SPECIES_WITH_ART.has(species);
 }
 
 export type FocusTarget =
@@ -180,22 +174,27 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
+    /*
+     * Always try to load; the placeholder is the fallback. There used to be a
+     * hardcoded list of "species Allen has delivered" here, which is a fact
+     * about the repo that goes stale the moment art lands — and it did, the
+     * day all six species were approved. Asking for the file and keeping the
+     * placeholder when it isn't there cannot go stale.
+     */
     const { species, tier, id } = member.character;
-    if (hasArt(species)) {
-      void Assets.load<Texture>(characterArtUrl(species, tier))
-        .then((texture) => {
-          if (destroyed || !actors.has(id)) return;
-          const sprite = new Sprite(texture);
-          sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
-          art.removeChildren();
-          placeholder.destroy();
-          art.addChild(sprite);
-        })
-        .catch(() => {
-          /* keep the placeholder: a missing tier must never blank the stage */
-        });
-    }
+    void Assets.load<Texture>(characterArtUrl(species, tier))
+      .then((texture) => {
+        if (destroyed || !actors.has(id)) return;
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+        sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
+        art.removeChildren();
+        placeholder.destroy();
+        art.addChild(sprite);
+      })
+      .catch(() => {
+        /* keep the placeholder: a missing tier must never blank the stage */
+      });
 
     return {
       container,
