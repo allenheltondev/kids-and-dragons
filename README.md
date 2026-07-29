@@ -61,7 +61,8 @@ to the same behaviour:
 | Seam | Local | AWS |
 |---|---|---|
 | `GameRepository` | `MemoryRepository` | `DynamoRepository` |
-| `RoomChannel` | `LocalSseChannel` | `AppSyncEventsChannel` |
+| `RoomChannel` (publish) | `LocalSseChannel` | `AppSyncEventsChannel` |
+| `EventSourceLike` (subscribe) | `EventSource` over SSE | `sync/appsync-socket.ts` |
 | `IdentityService` | `DevIdentity` *(unsigned — never deployed)* | `KmsIdentity` |
 | entry point | `dev-server.ts` | `lambda/http.ts` |
 
