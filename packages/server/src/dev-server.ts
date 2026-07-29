@@ -213,11 +213,24 @@ async function main(): Promise<void> {
     // the TV attaches: it is a pure display client (spec §2.1) that may be
     // hard-refreshed at any time and has no player, no device, and no token.
     let runId = typeof req.query.runId === "string" ? req.query.runId : "";
-    if (!runId) {
-      const code = typeof req.query.code === "string" ? req.query.code.toUpperCase() : "";
-      if (!code) return sendError(res, 400, "ILLEGAL", "runId or code is required");
+    const code = typeof req.query.code === "string" ? req.query.code.toUpperCase() : "";
+    if (!runId && !code) return sendError(res, 400, "ILLEGAL", "runId or code is required");
+
+    /*
+     * The room is what expires, not the run: rooms carry a 6-hour TTL
+     * (architecture §3) and run state has none. So whenever a caller names a
+     * code — which a stored session always does — the room has to still be
+     * open, even if the caller also knows the runId. Skipping that check
+     * restores a session whose SSE endpoint 404s and whose token is dead,
+     * leaving a phone showing an old game it cannot play instead of saying
+     * the room is gone.
+     */
+    if (code) {
       const room = await base.repo.getRoom(code);
       if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+      if (runId && room.runId !== runId) {
+        return sendError(res, 404, "NOT_FOUND", `room ${code} is not that run`);
+      }
       runId = room.runId;
     }
     const raw = req.query.sinceSeq;

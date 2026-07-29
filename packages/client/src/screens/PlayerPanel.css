@@ -451,3 +451,13 @@
 .item-detail__passive {
   margin: 0;
 }
+
+/* The mid-session mode switch. Last thing in the panel on purpose: it is an
+   adult recovering from a dead laptop, not a move anyone makes in a scene. */
+.player__mode {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-4, 1em);
+  border-block-start: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  opacity: 0.75;
+}

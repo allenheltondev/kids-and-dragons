@@ -304,6 +304,24 @@ describe("send", () => {
     expect(h.store.getState().error).toBeNull(); // being behind is not a player error
   });
 
+  it("retries at the seq the server reported, not the mirror's", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.api.postAction.mockResolvedValueOnce({
+      ok: false,
+      seq: 9,
+      error: { code: "STALE_SEQ", message: "behind" },
+    });
+
+    await h.store.getState().send({ type: "ROLL" });
+
+    // The mirror can legitimately still be behind: a patch carrying a dice
+    // roll waits out the WorldView animation. Re-posting the mirror's seq
+    // would be rejected as stale a second time and the tap would vanish.
+    const retry = h.api.postAction.mock.calls.at(-1)?.[0];
+    expect(retry?.seq).toBe(9);
+  });
+
   it("does not retry forever when the catch-up still leaves it stale", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");
