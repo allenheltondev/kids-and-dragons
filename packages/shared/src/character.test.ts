@@ -200,6 +200,29 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     expect(resolved.guard).toBe(rules.baseGuard + resolved.stats.quick);
   });
 
+  it("surfaces the waiting stat point, so the badge needs no second source", () => {
+    // spec §8.1 — a point is spent at a Rest scene, and the badge that reminds
+    // an eight-year-old it is waiting has to come off the resolved view. If it
+    // is missing here the client has to reach past resolveCharacter() into the
+    // stored halves and re-derive `provisional ?? committed` itself.
+    const banked = awardXp(makeCharacter(), rules, 300).character;
+    expect(resolveCharacter(banked, rules, items).unspentPoints).toBe(1);
+    expect(resolveCharacter(makeCharacter(), rules, items).unspentPoints).toBe(0);
+  });
+
+  it("reads the waiting point from the in-flight campaign, not the committed half", () => {
+    const banked = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 1200).character;
+    expect(resolveCharacter(banked, rules, items).unspentPoints).toBe(3);
+    expect(banked.committed.unspentPoints ?? 0).toBe(0);
+  });
+
+  it("resolves a character stored before points existed to 0, never undefined", () => {
+    // The resolved view promises a number even though the stored one cannot.
+    const legacy = makeCharacter();
+    delete (legacy.committed as { unspentPoints?: number }).unspentPoints;
+    expect(resolveCharacter(legacy, rules, items).unspentPoints).toBe(0);
+  });
+
   it("reads provisional over committed and says so", () => {
     const started = startCampaign(makeCharacter({ level: 1 }), "r_88c");
     const bumped = awardXp(started, rules, 1200).character;

@@ -358,6 +358,9 @@ export function resolveCharacter(
     // Derived, never trusted from storage: a hand-edited tier can't lie.
     tier: tierForLevel(rules, level),
     stats,
+    // Normalized here so the badge has one number to read, whichever half of
+    // the character it came from and however old the stored record is.
+    unspentPoints: progress.unspentPoints ?? 0,
     maxHp,
     steps,
     // Quick governs dodging (spec §4.1), so it is what an attacker rolls against.
