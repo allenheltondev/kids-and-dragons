@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { newCharacter, resolveCharacter, type Character, type RunState } from "@kad/shared";
 import { makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
-import { foldChapterXp, persistNewCharacters } from "./progression.ts";
+import { foldChapterXp, newCharacterWrite } from "./progression.ts";
 
 /**
  * A run holding one resolved character, exactly as the engine would leave it
@@ -48,23 +48,26 @@ function setup(harness: TestHarness, householdId: string, playerId: string) {
   return { state, character, rules, items };
 }
 
-describe("persistNewCharacters", () => {
-  it("writes a character built at the table into the household", async () => {
-    // The gap this closes: putCharacter had no caller at all, so a character
-    // created in a run lived in RunState and was gone when the run ended —
-    // which is the opposite of "characters hang off the household".
+describe("newCharacterWrite", () => {
+  it("returns the engine's unresolved character, not the resolved view", async () => {
+    /*
+     * The bug this pins, found in review: a `ResolvedCharacter` already has the
+     * species passive folded into its stats, so rebuilding a `Character` from a
+     * party member saved the passive as part of the base — and the next
+     * `resolveCharacter()` applied it again, leaving a unicorn permanently a
+     * point of Heart up with nothing on screen to say so. The engine hands over
+     * the real character; this must pass it through untouched.
+     */
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
-    const { state } = setup(harness, householdId, playerId);
+    const { character } = setup(harness, householdId, playerId);
 
-    await persistNewCharacters(state, harness.deps, householdId);
+    const writes = await newCharacterWrite(character, harness.deps, householdId);
 
-    const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
-    expect(stored).not.toBeNull();
-    expect(stored?.name).toBe("Pip");
-    expect(stored?.committed.level).toBe(1);
-    expect(stored?.provisional).toBeNull();
+    expect(writes).toEqual([character]);
+    // 2 assigned + 1 base, with the unicorn's +1 Heart *not* baked in.
+    expect(writes[0]?.committed.stats.heart).toBe(3);
   });
 
   it("does not overwrite a character the household already has", async () => {
@@ -77,7 +80,7 @@ describe("persistNewCharacters", () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
-    const { state, character } = setup(harness, householdId, playerId);
+    const { character } = setup(harness, householdId, playerId);
 
     const veteran: Character = {
       ...character,
@@ -85,11 +88,7 @@ describe("persistNewCharacters", () => {
     };
     await harness.repo.putCharacter(veteran);
 
-    await persistNewCharacters(state, harness.deps, householdId);
-
-    const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
-    expect(stored?.committed.level).toBe(7);
-    expect(stored?.committed.xp).toBe(2600);
+    expect(await newCharacterWrite(character, harness.deps, householdId)).toEqual([]);
   });
 });
 
@@ -104,11 +103,13 @@ describe("foldChapterXp", () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
-    const { state } = setup(harness, householdId, playerId);
-    await persistNewCharacters(state, harness.deps, householdId);
+    const { state, character } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
 
     state.xpEarned = 300;
-    await foldChapterXp(state, harness.deps, householdId);
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
 
     const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
     expect(stored?.committed.level).toBe(1);
@@ -122,11 +123,13 @@ describe("foldChapterXp", () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
-    const { state } = setup(harness, householdId, playerId);
-    await persistNewCharacters(state, harness.deps, householdId);
+    const { state, character } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
 
     state.xpEarned = 300;
-    await foldChapterXp(state, harness.deps, householdId);
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
 
     const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
     expect(stored?.provisional?.unspentPoints).toBe(1);
@@ -142,12 +145,14 @@ describe("foldChapterXp", () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
-    const { state } = setup(harness, householdId, playerId);
-    await persistNewCharacters(state, harness.deps, householdId);
+    const { state, character } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
     expect(state.party[0]?.character.level).toBe(1);
 
     state.xpEarned = 300;
-    await foldChapterXp(state, harness.deps, householdId);
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
 
     expect(state.party[0]?.character.level).toBe(2);
     expect(state.party[0]?.character.xp).toBe(300);
@@ -163,6 +168,7 @@ describe("foldChapterXp", () => {
     const rules = harness.deps.content.rules();
     const items = harness.deps.content.items();
 
+    const built: Character[] = [];
     const party = players.map((p) => {
       const playerId = p.principal.playerId;
       const character = newCharacter({
@@ -177,6 +183,7 @@ describe("foldChapterXp", () => {
         rules,
         now: new Date(T0).toISOString(),
       });
+      built.push(character);
       return {
         character: resolveCharacter(character, rules, items),
         playerId,
@@ -187,10 +194,12 @@ describe("foldChapterXp", () => {
       };
     });
     const state = { runId: "r_1", xpEarned: 0, party } as unknown as RunState;
-    await persistNewCharacters(state, harness.deps, householdId);
+    for (const c of built) await harness.repo.putCharacter(c);
 
     state.xpEarned = 700;
-    await foldChapterXp(state, harness.deps, householdId);
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
 
     for (const member of state.party) {
       const stored = await harness.repo.getCharacter(householdId, member.character.id);
@@ -203,10 +212,12 @@ describe("foldChapterXp", () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
-    const { state } = setup(harness, householdId, playerId);
-    await persistNewCharacters(state, harness.deps, householdId);
+    const { state, character } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
 
-    await foldChapterXp(state, harness.deps, householdId);
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
 
     const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
     expect(stored?.provisional).toBeNull();
@@ -221,7 +232,8 @@ describe("foldChapterXp", () => {
     const { state } = setup(harness, householdId, players[0]!.principal.playerId);
 
     state.xpEarned = 300;
-    await expect(foldChapterXp(state, harness.deps, householdId)).resolves.toBeUndefined();
+    // Nothing to write, nothing thrown, and the party snapshot untouched.
+    await expect(foldChapterXp(state, harness.deps, householdId)).resolves.toEqual([]);
     expect(state.party[0]?.character.level).toBe(1);
   });
 });
