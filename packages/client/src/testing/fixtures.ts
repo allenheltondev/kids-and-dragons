@@ -31,6 +31,7 @@ export function makeCharacter(overrides: Partial<ResolvedCharacter> = {}): Resol
     questItems: [],
     souvenirs: [],
     isProvisional: false,
+    committedLevel: 1,
     ...overrides,
   };
 }

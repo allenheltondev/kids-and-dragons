@@ -180,6 +180,18 @@ export interface ResolvedCharacter {
   souvenirs: Souvenir[];
   /** True when the effective state came from an in-flight campaign. */
   isProvisional: boolean;
+  /**
+   * The level this character keeps if the campaign fails — `committed.level`,
+   * not the effective one above.
+   *
+   * Exposed because the resolved view otherwise hides the distinction
+   * entirely, and one decision genuinely needs it: a newcomer joining at the
+   * party's tier floor (spec §8.4) writes that level straight into their own
+   * *committed* snapshot. Capping on a veteran's provisional level would let
+   * the campaign fail, revert the veterans, and leave the newcomer permanently
+   * a tier above the people who earned it.
+   */
+  committedLevel: number;
 }
 
 // ---------------------------------------------------------------------------

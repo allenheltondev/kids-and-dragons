@@ -353,7 +353,11 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
 
   for (const [id, scene] of Object.entries(scenes)) {
     for (const [effect, at] of effectsOf(scene, id)) {
-      if (effect.type === "setFlag") flagsSet.add(effect.flag);
+      // Only a flag some effect can set *true* counts as settable. `setFlag`
+      // carries an optional `value`, and both the choice gate and
+      // `awardObjectives` test for true — so a flag whose only effect sets it
+      // false is, for every consumer, a flag nothing ever sets.
+      if (effect.type === "setFlag" && (effect.value ?? true) === true) flagsSet.add(effect.flag);
       if (!effect.itemId) continue;
       const item = items?.[effect.itemId];
       if (!item) {
@@ -423,7 +427,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
   // A choice gated on a flag nothing ever sets is invisible forever. Almost always a typo.
   for (const [flag, at] of flagsRequired) {
     if (!flagsSet.has(flag)) {
-      fail(at, `flag "${flag}" is never set by any effect in this chapter`, flagsSet.size ? `flags set here: ${[...flagsSet].join(", ")}` : "no setFlag effects in this chapter at all");
+      fail(at, `flag "${flag}" is never set to true by any effect in this chapter`, flagsSet.size ? `flags set here: ${[...flagsSet].join(", ")}` : "no setFlag effects in this chapter at all");
     }
   }
 
@@ -446,7 +450,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes) {
     if (!flagsSet.has(objective.flag)) {
       fail(
         `${at}/flag`,
-        `flag "${objective.flag}" is never set by any effect in this chapter, so this objective can never be earned`,
+        `flag "${objective.flag}" is never set to true by any effect in this chapter, so this objective can never be earned`,
         flagsSet.size ? `flags set here: ${[...flagsSet].join(", ")}` : "no setFlag effects in this chapter at all",
       );
     }

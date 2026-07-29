@@ -47,6 +47,7 @@ function member(playerId: string, name: string, accent: string): PartyMember {
       questItems: [],
       souvenirs: [],
       isProvisional: false,
+    committedLevel: 1,
     },
   };
 }
