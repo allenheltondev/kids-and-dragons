@@ -10,6 +10,7 @@
  */
 
 import type {
+  ChapterOutcome,
   Character,
   ClientIntent,
   DeviceBinding,
@@ -36,6 +37,21 @@ export interface ChapterProgressRecord {
   index: number;
   chapterId: string;
   status: "active" | "complete" | "abandoned";
+  /**
+   * How it ended, once it has (spec §8.2). Orthogonal to `status`: a chapter
+   * can be `complete` and still a setback, and the two answer different
+   * questions — `status` is lifecycle, this is what happened.
+   *
+   * Absent means success, matching the scene-level default, so chapters
+   * recorded before setbacks existed read correctly rather than needing a
+   * migration.
+   *
+   * This is what §8.3's "a campaign fails at three setbacks" counts. The engine
+   * surfaces the outcome on `RunState` and in the CHAPTER_COMPLETE
+   * presentation; persisting it here is what lets the count survive a run
+   * ending, which it must, because the three chapters are spread across weeks.
+   */
+  outcome?: ChapterOutcome;
   branch?: string;
   xpEarned: number;
   updatedAt: string;
