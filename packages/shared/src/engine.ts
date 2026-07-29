@@ -651,6 +651,11 @@ function doCreateCharacter(
     class: intent.class,
     stats: intent.stats,
     appearance: intent.appearance,
+    // A late joiner seats at the party's tier floor rather than level 1, so a
+    // friend who sits down in campaign three is playable rather than a
+    // passenger (spec §8.4). `newCharacter` rejects anything that is not 1 or
+    // a tier floor, so an arbitrary number from a phone cannot buy levels.
+    ...(intent.startingLevel === undefined ? {} : { startingLevel: intent.startingLevel }),
     rules: ctx.rules,
     now: ctx.now,
   });
