@@ -30,8 +30,9 @@
     },
     "title": { "type": "string", "minLength": 1 },
     "biome": {
-      "description": "Selects backdrop, palette, tile set and music. Launch set: spec §6.2.",
-      "enum": ["bramblewood", "frostpeak", "emberhollow", "sunken_market", "cloudreach"]
+      "description": "Selects backdrop, palette, tile set and music. Membership is validated against assets/manifest.json.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
     },
     "estimatedMinutes": {
       "description": "A chapter is one sitting: ~30 minutes, spec §3 of the design principles.",

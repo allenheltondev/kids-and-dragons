@@ -232,7 +232,7 @@ export function makeChapter(): Chapter {
     campaignId: "the-hollow-crown",
     index: 1,
     title: "The Rustling Path",
-    biome: "bramblewood",
+    biome: "enchanted_woods",
     estimatedMinutes: 20,
     xpAward: 300,
     entry: "scene_clearing",
