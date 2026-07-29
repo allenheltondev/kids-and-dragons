@@ -21,4 +21,5 @@ export * from "./inventory.js";
 export * from "./chapter-graph.js";
 export * from "./grid.js";
 export * from "./engine.js";
+export * from "./enemy-ai.js";
 export * from "./speak.js";
