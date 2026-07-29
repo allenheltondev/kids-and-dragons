@@ -446,6 +446,81 @@ def verify_set(rep: Report, mf: dict, species: dict, tier: str):
     return parts, assembled
 
 
+def check_effects(rep: Report, mf: dict) -> None:
+    """Effect sheets — declared, present, and the size they say they are.
+
+    This check exists because it was missing. Six `aura_*` sheets shipped with
+    no manifest entry at all and nothing noticed, because `verify.py` walked
+    `mf["species"]` and never opened `assets/effects/`. A gate that cannot see a
+    directory is not a gate over that directory, however many other checks pass.
+
+    Both directions matter. An undeclared sheet is dead weight the renderer will
+    never load; a declared sheet with no file is a runtime 404 in the middle of
+    a fight, which is worse. So neither side is allowed to be longer than the
+    other.
+    """
+    directory = os.path.join(ROOT, "assets", "effects")
+    if not os.path.isdir(directory):
+        rep.warn("assets/effects/ is missing", "No effect sheets to check.")
+        return
+
+    on_disk = {
+        f[: -len(".sheet.png")]
+        for f in os.listdir(directory)
+        if f.endswith(".sheet.png")
+    }
+    declared = {e["id"]: e for e in mf.get("effects", [])}
+
+    for eid in sorted(on_disk - set(declared)):
+        rep.fail(f"effects/{eid}  undeclared",
+                 "an entry in manifest.effects[]",
+                 "a sheet on disk that the manifest never mentions")
+    for eid in sorted(set(declared) - on_disk):
+        rep.fail(f"effects/{eid}  missing sheet",
+                 f"assets/effects/{eid}.sheet.png",
+                 "declared in the manifest, not on disk")
+
+    for eid in sorted(on_disk & set(declared)):
+        entry = declared[eid]
+        frames, size = entry.get("frames"), entry.get("size")
+        label = f"effects/{eid}"
+
+        # The sidecar is what the renderer reads at runtime, so a manifest that
+        # disagrees with it describes an animation nobody will ever play.
+        side = os.path.join(directory, f"{eid}.json")
+        if os.path.exists(side):
+            with open(side, encoding="utf-8") as f:
+                meta = json.load(f)
+            for key in ("frames", "fps", "size"):
+                if key in meta and key in entry and meta[key] != entry[key]:
+                    rep.fail(f"{label}  {key} disagrees with its sidecar",
+                             f"{key}={meta[key]} (from {eid}.json)", f"{key}={entry[key]}")
+        else:
+            rep.fail(f"{label}  no sidecar", f"assets/effects/{eid}.json", "missing")
+
+        # A strip is frames laid left to right at `size` square. Getting this
+        # wrong shows up as a sprite sampling half of the next frame.
+        img = load_rgba(os.path.join(directory, f"{eid}.sheet.png"))
+        h, w = img.shape[0], img.shape[1]
+        if (w, h) != (frames * size, size):
+            rep.fail(f"{label}  sheet is the wrong size",
+                     f"{frames * size}x{size}  ({frames} frames of {size}px)", f"{w}x{h}")
+            continue
+
+        # An empty frame is a dropped frame, and it reads as a stutter rather
+        # than as a missing file.
+        blanks = [
+            i for i in range(frames)
+            if not opaque_mask(img[:, i * size : (i + 1) * size], 8).any()
+        ]
+        if blanks:
+            rep.fail(f"{label}  {len(blanks)} blank frame(s)",
+                     "every frame has visible pixels", f"frames {blanks[:6]} are empty")
+            continue
+
+        rep.ok(f"{label}  {frames} frames @ {entry.get('fps', '?')}fps, {size}px")
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -489,6 +564,10 @@ def main() -> int:
             check_cross_tier(rep, sp, per_tier,
                              mf.get("structuralAdjacency", mf["adjacency"]),
                              mf["canvas"], mf["tolerance"])
+
+    # Not gated on `args`: the effect sheets are shared by every species, so
+    # narrowing to one character should not stop checking them.
+    check_effects(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

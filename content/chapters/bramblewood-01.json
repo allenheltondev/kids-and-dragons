@@ -254,7 +254,7 @@
           "quick": 3,
           "steps": 5,
           "attack": 3,
-          "art": "enemies/bramblewood/wisp"
+          "art": "enemies/will_o_wisp"
         }
       ],
       "onVictory": {
