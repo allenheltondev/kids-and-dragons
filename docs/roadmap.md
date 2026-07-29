@@ -241,7 +241,7 @@ changes nothing about whether the game works.
 
 **Allen**
 - Music and sound selection
-- Remaining 4 biomes
+- Realm of Red Sky environment review: 17 destination backdrops across 12 terrain families
 - Full campaign content pass
 
 **Done when:** it feels like a product instead of a prototype.
