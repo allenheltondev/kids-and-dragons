@@ -20,11 +20,24 @@
  * ===========================================================================
  */
 
-import { CreationFlow, PlayerPanel } from "../screens";
+import { useEffect } from "react";
+import { CreationFlow, PlayerPanel, SignInFlow } from "../screens";
 import { useMe } from "../store";
+import { useKeepsakeStore } from "../store/keepsake";
 
 export function PlayerView(): React.JSX.Element {
   const me = useMe();
+
+  /*
+   * Ask once whether this deployment can offer sign-in at all (§4.5). It is a
+   * single cached GET that 404s on a laptop, and asking here rather than at the
+   * moment of the offer means the button is never a step that has to wait for
+   * a network round trip to find out whether it exists.
+   */
+  const check = useKeepsakeStore((s) => s.check);
+  useEffect(() => {
+    void check();
+  }, [check]);
 
   // No party member for this device means no character yet — the creation flow
   // owns the screen until there is one (spec §5).
@@ -40,6 +53,10 @@ export function PlayerView(): React.JSX.Element {
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
       {creating ? <CreationFlow /> : <PlayerPanel />}
+      {/* A panel over the surface, not a route: the game keeps running behind
+          it and closing it costs nobody their place. Renders nothing until
+          somebody opens it. */}
+      <SignInFlow />
     </div>
   );
 }

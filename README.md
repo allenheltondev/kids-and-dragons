@@ -102,12 +102,14 @@ infrastructure and persistence it deploys onto:
 - **anonymous play by default**, with optional sign-in that claims the household you are
   already playing in. Nobody signs up to play; signing in is how you keep what you played.
   Unclaimed households are swept after 7 days.
+- the keepsake flow — offered at the end of a chapter, with the characters you just played
+  drawn as lights in a lantern. Emailed code, then an optional passkey. No password anywhere.
 
 **Not built yet:** tactical combat (Chapter 4) — an encounter scene currently resolves through its
 `onVictory` branch as a marked placeholder so a chapter stays walkable end to end. Also outstanding:
-the sign-in **screen** (the server side is done and tested; the client has no UI for it yet), Rive
-rigs (the client composites static tier PNGs with procedural motion in the meantime), progression and
-inventory commitment at the campaign boundary, the authoring tools, and the live LLM layer.
+Rive rigs (the client composites static tier PNGs with procedural motion in the meantime),
+progression and inventory commitment at the campaign boundary, the authoring tools, and the live
+LLM layer.
 
 The art contract is real and enforced: all six species are approved across all four tiers, 382
 mechanical checks green. Anything that fails to load still draws a clearly-placeholder silhouette
