@@ -14,6 +14,16 @@ confirm_changeset = true
 fail_on_empty_changeset = false
 parameter_overrides = "StageName=prod"
 
+[staging.deploy.parameters]
+stack_name = "kad-staging"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+# Deployed by a workflow with nobody watching.
+confirm_changeset = false
+fail_on_empty_changeset = false
+parameter_overrides = "StageName=staging"
+
 [dev.deploy.parameters]
 stack_name = "kad-dev"
 region = "us-east-1"

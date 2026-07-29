@@ -78,6 +78,7 @@ to the same behaviour:
 | `npm run e2e` | three browser contexts playing a chapter against the real stack |
 | `npm run infra:lint` | the SAM template, with the transform applied |
 | `npm run infra:build` | bundles the Lambdas — a deploy that would fail, failing here |
+| `npm run infra:deploy` | checks, bundle, stack, upload, invalidate — one command to prod |
 | `npm run build` | the client bundle |
 
 `npm test` runs the repository contract suite against the in-memory store. Point

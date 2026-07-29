@@ -635,12 +635,28 @@ CI runs the integration suite with the live layer stubbed out — this invariant
 
 ## 7. Environments
 
-| Env | Purpose |
-|---|---|
-| `dev` | Local Vite + SAM local + DynamoDB Local. Live LLM off by default. |
-| `prod` | The real thing. One stack, one region. |
+| Env | Purpose | Deployed by |
+|---|---|---|
+| local | Vite + the dev server + DynamoDB Local. Live LLM off by default. | `npm run dev` |
+| `staging` | A real stack, on real AWS, from every pull request. | `.github/workflows/deploy.yml` |
+| `prod` | The real thing. One stack, one region. | the same workflow, on push to `main` |
+| `dev` | An optional fourth stack for driving by hand. | `./scripts/deploy.sh dev` |
 
-No staging. It's a family game; `dev` and a careful deploy is enough.
+> Revised. This section previously said "no staging — it's a family game, `dev`
+> and a careful deploy is enough". That held while deploying was a command
+> somebody typed. Once deploys happen from CI, the thing that stops a bad one
+> reaching a Tuesday night is having somewhere it lands first, and a pull
+> request is exactly the moment to look at it.
+
+Both automated stacks are deployed by the *same* `scripts/deploy.sh` a laptop
+runs. The workflow's job is only to be that laptop — assume a role, install the
+CLIs, hand over — because a deploy path that exists only in YAML is one nobody
+can reproduce when it breaks.
+
+**Credentials.** GitHub trades a short-lived OIDC token for an IAM role; no AWS
+keys are stored. The roles trust one repository *and one environment*
+(`infra/github-oidc.yaml`), so a pull-request deploy cannot reach prod even
+though the workflow file is editable from within that pull request.
 
 **Local multi-device testing:** Vite dev server bound to `0.0.0.0`, phones on the same LAN hitting
 the laptop's IP. This is how nearly all development happens — you need three real devices in the

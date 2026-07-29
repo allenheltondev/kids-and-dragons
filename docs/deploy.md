@@ -1,22 +1,68 @@
 # Deploying
 
-One template ([`infra/template.yaml`](../infra/template.yaml)), one region, two
-stacks. Companion to [architecture.md §2](./architecture.md#2-aws-topology) and
+One template ([`infra/template.yaml`](../infra/template.yaml)), one region.
+Companion to [architecture.md §2](./architecture.md#2-aws-topology) and
 [§7](./architecture.md#7-environments).
 
+**Normally you do not deploy by hand at all:**
+
+| When | What happens |
+|---|---|
+| You open or push to a pull request | the **staging** stack is deployed |
+| The pull request merges to `main` | the **prod** stack is deployed |
+| You need a redeploy without a commit | Actions → Deploy → Run workflow |
+
+Both run `scripts/deploy.sh`, which is also what you run from a laptop:
+
 ```bash
-./scripts/deploy.sh          # prod
-./scripts/deploy.sh dev      # the dev stack
+./scripts/deploy.sh              # prod
+./scripts/deploy.sh staging      # staging
+./scripts/deploy.sh dev          # a fourth stack, for driving by hand
 ```
 
-That is the whole thing. It runs the checks, bundles the Lambdas, deploys the
-stack, uploads the client and the art, and invalidates CloudFront — in that
-order, so a deploy that fails partway leaves the previous version serving rather
-than a new bundle talking to an API that does not exist yet.
+It runs the checks, bundles the Lambdas, deploys the stack, uploads the client
+and the art, and invalidates CloudFront — in that order, so a deploy that fails
+partway leaves the previous version serving rather than a new bundle talking to
+an API that does not exist yet. (CI sets `KAD_SKIP_CHECKS=1`, because `ci.yml`
+already ran them on that exact commit.)
 
 ---
 
-## What you need once
+## Turning the automated deploys on
+
+Three steps, once. Until they are done the workflow runs and fails at the
+credentials step, which is the correct failure — it cannot deploy to an account
+that has not agreed to let it.
+
+**1. Deploy the bootstrap stack by hand.** It grants the permission, so it
+cannot be granted by the thing it grants:
+
+```bash
+aws cloudformation deploy \
+  --template-file infra/github-oidc.yaml \
+  --stack-name kad-github-oidc \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --parameter-overrides GitHubOwner=<you> GitHubRepo=kids-and-dragons
+```
+
+If `token.actions.githubusercontent.com` already exists in the account — an
+account may hold only one — add `CreateOidcProvider=false`.
+
+**2. Create two GitHub environments**, `staging` and `prod`, and set
+`AWS_DEPLOYMENT_ROLE_ARN` on each from the stack's `StagingRoleArn` and
+`ProdRoleArn` outputs. The roles trust *their own environment only*, so the
+secret is not interchangeable and a pull request cannot reach prod.
+
+Worth adding on `prod`: a required reviewer. That turns "merged to main" into
+"merged to main, and somebody pressed go", which is the version of this you want
+on a Tuesday evening.
+
+**3. Once the distribution exists**, set a repository variable
+`WEBAUTHN_RP_ID` to its domain to enable passkeys — see below.
+
+---
+
+## What you need once, to deploy by hand
 
 - **An AWS account** and credentials with permission to create the stack.
 - **AWS SAM CLI** and the **AWS CLI**. `sam --version`, `aws sts get-caller-identity`.
@@ -46,7 +92,8 @@ API bundle, which is load-bearing — see below.
 The three stateful resources are `Retain` on purpose: a family's characters are
 not recreatable, and `sam delete` on the wrong stack should not be able to take
 them. The flip side is that tearing a stack down properly means deleting the
-table, key, and user pool by hand afterwards.
+table, key, and user pool by hand afterwards — **including on staging**, which
+is now created and destroyed far more often than prod.
 
 ### Cost
 
@@ -54,6 +101,11 @@ Everything here is within, or a rounding error above, the always-free tier at
 three-players-on-a-Tuesday scale. The one line item worth knowing about is
 Cognito **Essentials**, which passwordless sign-in requires; its free tier is
 10,000 monthly active users. CloudFront is `PriceClass_100`.
+
+Staging roughly doubles that, which is to say it is still approximately nothing
+— but it is a second CloudFront distribution, and a distribution takes several
+minutes to create the first time. The first pull-request deploy is slow; the
+rest are not.
 
 ---
 
@@ -66,17 +118,31 @@ depend on CloudFront, which depends on the API, which depends on the pool, and
 CloudFormation refuses the cycle.
 
 So the first deploy comes up with **email-OTP sign-in only**, which works
-completely. `deploy.sh` notices and prints the follow-up:
+completely. `deploy.sh` notices and prints the follow-up. Set it as a repository
+variable rather than passing it once:
 
-```bash
-sam deploy --config-env prod \
-  --parameter-overrides "WebAuthnRelyingPartyId=d111111abcdef8.cloudfront.net"
+```
+Settings → Secrets and variables → Actions → Variables
+WEBAUTHN_RP_ID = d111111abcdef8.cloudfront.net
 ```
 
 After that, sign-in offers "remember this device" and subsequent sign-ins are one
 tap. Put a custom domain in front before you do this if you ever intend to have
 one — moving the relying-party ID invalidates every passkey registered against
 the old one.
+
+### Why it is a variable and not a one-off flag
+
+`sam deploy` does **not** carry previous parameter values forward: anything left
+out of `--parameter-overrides` reverts to the template default. Set the
+relying-party ID once by hand and the next automated deploy would quietly revert
+it to empty, `AllowedFirstAuthFactors` would drop `WEB_AUTHN`, and every
+registered passkey would stop being offered — with nothing in the diff, the logs,
+or CloudFormation's output to say so.
+
+`deploy.sh` therefore passes every parameter on every deploy, and reads this one
+from `WEBAUTHN_RP_ID`. Empty is a fine and complete state; it means email codes
+only.
 
 ### Verify on the first deploy
 
