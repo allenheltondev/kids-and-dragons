@@ -7,7 +7,7 @@
   "title": "The Rustling Path",
   "biome": "bramblewood",
   "estimatedMinutes": 25,
-  "xpAward": 300,
+  "xpAward": 100,
 
   "entry": "scene_hedge_wall",
 
