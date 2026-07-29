@@ -36,6 +36,7 @@ function member(playerId: string, name: string, accent: string): PartyMember {
       xp: 0,
       tier: "fledgling",
       stats: { might: 1, quick: 2, clever: 2, heart: 4 },
+      unspentPoints: 0,
       maxHp: 10,
       steps: 4,
       guard: 10,

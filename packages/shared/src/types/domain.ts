@@ -155,6 +155,19 @@ export interface ResolvedCharacter {
   tier: TierId;
   /** Base + species + trinkets. */
   stats: Stats;
+  /**
+   * Stat points waiting to be spent, so the "you have a point waiting" badge
+   * (spec §8.1) can render off the resolved view instead of reaching around
+   * `resolveCharacter()` into the stored halves and re-deriving
+   * `provisional ?? committed` for itself.
+   *
+   * Required here while `CharacterProgress.unspentPoints` is optional, and the
+   * asymmetry is deliberate: the stored shape has to admit records written
+   * before the field existed, but `resolveCharacter()` always produces a
+   * number, so the resolved view should say so rather than making every reader
+   * of a fully-derived character write `?? 0`.
+   */
+  unspentPoints: number;
   maxHp: number;
   steps: number;
   guard: number;
