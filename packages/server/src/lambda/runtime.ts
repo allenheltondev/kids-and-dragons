@@ -8,7 +8,7 @@
  * pure functions of `(request, deps)` and remain testable without AWS.
  *
  * Built once per container and reused across invocations — the AWS clients, the
- * content files, and above all the token signing secret, which would otherwise
+ * content files, and above all the token signing key, which would otherwise
  * cost a network round trip on every single request.
  */
 
@@ -18,7 +18,7 @@ import { loadContent, type ContentStore } from "../content/loader.ts";
 import { loadSharedRuntime } from "../engine/shared-engine.ts";
 import type { HandlerDeps } from "../handlers/deps.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
-import { secretsManagerSource, TokenIdentity } from "../token-identity.ts";
+import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
 
 /**
  * Read at module load so a missing variable fails the **first** invocation
@@ -58,7 +58,8 @@ async function build(): Promise<HandlerDeps> {
     engine: shared.engine,
     identity: new TokenIdentity({
       repo,
-      secret: secretsManagerSource(requiredEnv("TOKEN_SECRET_ID")),
+      // The only function allowed to mint the key — see token-identity.ts.
+      secret: ssmParameterSource(requiredEnv("TOKEN_KEY_PARAMETER"), { createIfMissing: true }),
     }),
     rng: shared.rng,
     random: cryptoRandom,

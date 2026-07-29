@@ -1,17 +1,51 @@
 import { createHmac } from "node:crypto";
-import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
+import { GetParameterCommand, PutParameterCommand } from "@aws-sdk/client-ssm";
 import { describe, expect, it, vi } from "vitest";
 import { MemoryRepository } from "./store/memory-repository.ts";
 import { makeClock, T0 } from "./test-support.ts";
-import { DEVICE_TOKEN_TTL_MS, secretsManagerSource, TokenIdentity } from "./token-identity.ts";
+import { DEVICE_TOKEN_TTL_MS, ssmParameterSource, TokenIdentity } from "./token-identity.ts";
 
 /**
- * The same shape the stack produces: 64 characters CloudFormation generated and
- * Secrets Manager holds. Nothing here fakes the crypto — `createHmac` is the
- * same call that runs in prod, and only the `GetSecretValue` round trip is
- * stubbed out.
+ * The same shape the stack produces: base64url over 32 random bytes, held in a
+ * Parameter Store SecureString. Nothing here fakes the crypto — `createHmac` is
+ * the same call that runs in prod, and only the SSM round trip is stubbed out.
  */
 const SECRET = "n7QpVzL2xR8mKdY4wFbT6sJhC3gNaE5uP9rZvXqW1oHiUlBtDkSyMcAfGjOe0Z2";
+
+const PARAM = "/kad/staging/token-signing-key";
+
+/** An SSM that behaves like the real one for the four cases that matter. */
+function fakeSsm(initial?: string) {
+  let stored = initial;
+  const puts: string[] = [];
+  const named = (name: string) => Object.assign(new Error(name), { name });
+
+  return {
+    puts,
+    get value() {
+      return stored;
+    },
+    client: {
+      send(command: GetParameterCommand | PutParameterCommand) {
+        if (command instanceof GetParameterCommand) {
+          expect(command.input.Name).toBe(PARAM);
+          // The whole point of a SecureString: an undecrypted read hands back
+          // ciphertext, which would sign tokens nothing can verify.
+          expect(command.input.WithDecryption).toBe(true);
+          if (stored === undefined) return Promise.reject(named("ParameterNotFound"));
+          return Promise.resolve({ Parameter: { Value: stored } });
+        }
+        puts.push(String(command.input.Value));
+        expect(command.input.Type).toBe("SecureString");
+        // Without this the race below silently picks a winner per container.
+        expect(command.input.Overwrite).toBe(false);
+        if (stored !== undefined) return Promise.reject(named("ParameterAlreadyExists"));
+        stored = String(command.input.Value);
+        return Promise.resolve({});
+      },
+    },
+  };
+}
 
 function setup(startMs = T0) {
   const clock = makeClock(startMs);
@@ -97,20 +131,66 @@ describe("the signature itself", () => {
   });
 });
 
-describe("secretsManagerSource", () => {
-  it("asks for the secret it was given and returns its string value", async () => {
-    const send = vi.fn((command: GetSecretValueCommand) => {
-      expect(command.input.SecretId).toBe("arn:aws:secretsmanager:us-east-1:1:secret:kad");
-      return Promise.resolve({ SecretString: SECRET });
-    });
+describe("ssmParameterSource", () => {
+  it("reads an existing key and writes nothing", async () => {
+    const ssm = fakeSsm(SECRET);
+    const source = ssmParameterSource(PARAM, { client: ssm.client, createIfMissing: true });
 
-    const source = secretsManagerSource("arn:aws:secretsmanager:us-east-1:1:secret:kad", { send });
     expect(await source()).toBe(SECRET);
+    expect(ssm.puts).toEqual([]);
   });
 
-  it("fails loudly on a binary-only secret rather than signing with nothing", async () => {
-    const source = secretsManagerSource("kad", { send: () => Promise.resolve({}) });
-    await expect(source()).rejects.toThrow(/no string value/);
+  it("mints a key on a fresh stack, since CloudFormation cannot create one", async () => {
+    const ssm = fakeSsm();
+    const source = ssmParameterSource(PARAM, { client: ssm.client, createIfMissing: true });
+
+    const minted = await source();
+    // 32 bytes of base64url, and it is what actually landed in the parameter —
+    // a mint that returns one value and stores another would work perfectly on
+    // one container and reject that container's tokens everywhere else.
+    expect(minted).toHaveLength(43);
+    expect(ssm.value).toBe(minted);
+  });
+
+  it("adopts the winner's key when two cold starts race", async () => {
+    /*
+     * The failure this prevents is not a crash. Both containers succeed, each
+     * signing with its own key, and every token minted by one is rejected by the
+     * other — which reads at the table as "it logs her out at random".
+     */
+    const ssm = fakeSsm();
+    const source = () =>
+      ssmParameterSource(PARAM, { client: ssm.client, createIfMissing: true })();
+
+    const [first, second] = await Promise.all([source(), source()]);
+
+    expect(first).toBe(second);
+    expect(ssm.value).toBe(first);
+    expect(ssm.puts).toHaveLength(2);
+  });
+
+  it("refuses to mint without createIfMissing, so only the API can", async () => {
+    // The channel authorizer's configuration. It has no ssm:PutParameter either;
+    // this is the same rule stated where it can be tested.
+    const ssm = fakeSsm();
+    const source = ssmParameterSource(PARAM, { client: ssm.client });
+
+    await expect(source()).rejects.toThrow(/does not exist/);
+    expect(ssm.puts).toEqual([]);
+  });
+
+  it("does not mistake a real SSM failure for a missing parameter", async () => {
+    // Throttling and AccessDenied must surface. Swallowing either would mint a
+    // second key over a perfectly good one.
+    const denied = Object.assign(new Error("AccessDeniedException"), {
+      name: "AccessDeniedException",
+    });
+    const source = ssmParameterSource(PARAM, {
+      client: { send: () => Promise.reject(denied) },
+      createIfMissing: true,
+    });
+
+    await expect(source()).rejects.toThrow(/AccessDenied/);
   });
 });
 

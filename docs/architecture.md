@@ -75,10 +75,11 @@ cross-origin request, which is why the stack configures no CORS policy at all.
         ┌───────────┼──────────────┬────────────────────┐
         │           │              │                    │
   ┌─────▼─────┐ ┌───▼───────┐ ┌────▼─────────┐ ┌────────▼────────┐
-  │ DynamoDB  │ │ Secrets   │ │ Cognito      │ │ Lambda: sweep   │
-  │ (1 table) │ │ Manager   │ │ (optional    │ │ (scheduled —    │
-  │           │ │ (token    │ │  sign-in)    │ │  guest expiry)  │
-  │           │ │  secret)  │ │              │ │                 │
+  │ DynamoDB  │ │ SSM       │ │ Cognito      │ │ Lambda: sweep   │
+  │ (1 table) │ │ (Secure-  │ │ (optional    │ │ (scheduled —    │
+  │           │ │  String:  │ │  sign-in)    │ │  guest expiry)  │
+  │           │ │  token    │ │              │ │                 │
+  │           │ │  key)     │ │              │ │                 │
   └─────▲─────┘ └───────────┘ └──────────────┘ └────────┬────────┘
         └────────────────────────────────────────────────┘
 ```
@@ -376,11 +377,18 @@ signing and verification are local arithmetic — the secret is fetched once per
 container — because verification happens on every request from every phone, and
 a network round trip there would sit in front of every tap at the table.
 
-The secret is 64 random characters CloudFormation generates at stack-create time
-and hands to Secrets Manager, encrypted under the Amazon-managed
-`aws/secretsmanager` key. **This stack creates no KMS key of its own**, and that
-constraint is what picks the algorithm: signing requires an asymmetric key, and
-every `aws/*` managed key is symmetric and encryption-only.
+The key is 32 random bytes the API function mints the first time it needs one,
+parked in a Parameter Store **SecureString** at `/kad/<stage>/token-signing-key`
+and encrypted under the Amazon-managed `aws/ssm` key. **This stack creates no KMS
+key of its own**, and that constraint is what picks the algorithm: signing
+requires an asymmetric key, and every `aws/*` managed key is symmetric and
+encryption-only.
+
+Why the application mints it rather than the template: CloudFormation cannot
+declare a SecureString at all — `AWS::SSM::Parameter` takes `String` and
+`StringList` and never grew the third. The write uses `Overwrite: false`, so
+three phones opening the app at once on a fresh stack converge on one key
+instead of each container signing with its own.
 
 The version of this that used an asymmetric KMS key was strictly more
 capability, so it is worth naming what was given up: with a public half, a
