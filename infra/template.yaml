@@ -134,8 +134,12 @@ Resources:
         # index and the sweeper — see the long note in store/keys.ts.
         AttributeName: ttl
         Enabled: true
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: true
+      # No point-in-time recovery, deliberately. The only restore it offers is
+      # the whole table at a moment in time, which for a shared family table
+      # means trading everyone else's evening for one recovered character — a
+      # trade nobody would make. `DeletionPolicy: Retain` above is the guard
+      # that actually matters, and it guards the accident that could plausibly
+      # happen: `sam delete` pointed at the wrong stack.
 
   # ---------------------------------------------------------------------------
   # Token signing — architecture §4.5
