@@ -33,7 +33,7 @@ import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom } from "./handlers/room.ts";
 import { getState } from "./handlers/state.ts";
-import { DevIdentity, type DeviceIdentity } from "./identity.ts";
+import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
 import { newId } from "./ids.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
@@ -167,7 +167,16 @@ async function main(): Promise<void> {
     if (typeof body.runId !== "string" || typeof body.playerId !== "string" || !body.intent) {
       return sendError(res, 400, "ILLEGAL", "expected { runId, playerId, seq, intent }");
     }
-    const principal = (await resolvePrincipal(req, base))?.principal;
+    // Prefer the room session token; a device token still works for the dev
+    // bootstrap paths that have not joined yet.
+    const session = await resolveSession(req, base);
+    if (session && session.runId !== body.runId) {
+      return sendError(res, 403, "FORBIDDEN", "that session belongs to another run");
+    }
+    const principal =
+      (session
+        ? { householdId: session.householdId, playerId: session.playerId, role: session.role }
+        : undefined) ?? (await resolvePrincipal(req, base))?.principal;
 
     const response = await applyAction(
       {
@@ -351,6 +360,24 @@ async function resolvePrincipal(
   if (typeof token !== "string" || token === "") return null;
   const principal = await deps.identity.resolveDevice(token);
   return principal ? { principal } : null;
+}
+
+/**
+ * The room-scoped token issued at join, presented as `Authorization: Bearer`.
+ *
+ * This is what actually authenticates play. Without it `applyAction` receives
+ * no principal at all and falls back to trusting the `playerId` in the request
+ * body — and party player IDs are in the room state every client already has,
+ * so any phone in the room could roll and choose as anybody else. It is a
+ * family game, but "she taps and it moves someone else's character" is a bad
+ * evening, and the fix is a token we were already issuing and never reading.
+ */
+async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIdentity | null> {
+  const header = req.get("authorization") ?? "";
+  const match = /^Bearer\s+(.+)$/i.exec(header.trim());
+  const token = match?.[1] ?? (typeof req.body?.sessionToken === "string" ? req.body.sessionToken : "");
+  if (!token) return null;
+  return deps.identity.resolveSession(token);
 }
 
 // ---------------------------------------------------------------------------

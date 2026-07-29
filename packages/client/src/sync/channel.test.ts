@@ -224,6 +224,58 @@ describe("MessageSequencer", () => {
       expect(sequencer.seq).toBe(2);
     });
 
+    it("discards a gated patch that a snapshot has already superseded", async () => {
+      let release = (): void => {};
+      const gate = () => new Promise<void>((resolve) => (release = resolve));
+      const { sequencer } = harness({ gate });
+      sequencer.reset(makeState({ seq: 1, narration: "one" }), 1);
+
+      sequencer.ingest(patch(2, "two", roll));
+      expect(sequencer.seq).toBe(1);
+
+      // A reconnect mid-animation: the server's own view already includes the
+      // patch being held, and then some.
+      sequencer.ingest({
+        kind: "snapshot",
+        seq: 9,
+        runId: "r_1",
+        state: makeState({ seq: 9, narration: "resynced" }),
+      });
+      expect(sequencer.seq).toBe(9);
+
+      release();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      // The stale patch is dropped rather than replayed on top of the
+      // snapshot: seq never walks backwards and nothing is applied twice.
+      expect(sequencer.seq).toBe(9);
+      expect(sequencer.state?.narration).toBe("resynced");
+    });
+
+    it("still applies a gated patch the snapshot did not cover", async () => {
+      let release = (): void => {};
+      const gate = () => new Promise<void>((resolve) => (release = resolve));
+      const { sequencer } = harness({ gate });
+      sequencer.reset(makeState({ seq: 1, narration: "one" }), 1);
+
+      sequencer.ingest(patch(2, "two", roll));
+      // A snapshot at the seq *before* the held patch leaves it still valid.
+      sequencer.ingest({
+        kind: "snapshot",
+        seq: 1,
+        runId: "r_1",
+        state: makeState({ seq: 1, narration: "one" }),
+      });
+
+      release();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(sequencer.seq).toBe(2);
+      expect(sequencer.state?.narration).toBe("two");
+    });
+
     it("holds later messages behind the gated one, then drains them in order", async () => {
       let release = (): void => {};
       const gate = () => new Promise<void>((resolve) => (release = resolve));

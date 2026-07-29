@@ -30,12 +30,20 @@ import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 
+/** The part of an identity that authorises an action. */
+export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId" | "role">;
+
 export interface ActionInput extends ActionRequest {
   /**
    * Resolved from the session or device token when there is one. Present in
    * prod (authorizer), optional in local dev.
    */
-  principal?: DeviceIdentity | undefined;
+  /**
+   * Who is acting, as resolved by the transport. A room session token and a
+   * device binding both answer this; only the household and the player matter
+   * here, so the narrower shape is what the handler asks for.
+   */
+  principal?: ActingPrincipal | undefined;
 }
 
 export async function applyAction(
