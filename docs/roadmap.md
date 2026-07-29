@@ -15,7 +15,8 @@ Prove the three things that could invalidate the whole design, before building o
 
 **Claude**
 - Repo scaffolding: Vite + React + TS, Pixi, **SAM stack** (`infra/template.yaml`), DynamoDB Local, CI
-- CloudFront + S3 deploy pipeline, one command to prod (`./scripts/deploy.sh`)
+- CloudFront + S3 deploy pipeline, one command to prod (`./scripts/deploy.sh`), and
+  the same command from CI — staging on every pull request, prod on merge to main
 - **`assets/manifest.json` + `npm run art:verify`** — the contract and the gate, written *before* any asset is commissioned ([art-pipeline.md §3](./art-pipeline.md#3-division-of-labor))
 - `npm run art:sheet` contact sheet generator
 - **Spike A — the brief:** commission `unicorn/fledgling` from Codex against [asset-brief.md](./asset-brief.md). Does it pass `art:verify` without hand-fixing? Every correction becomes a brief edit.

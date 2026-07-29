@@ -3,7 +3,13 @@
 # One command to prod — roadmap Chapter 0.
 #
 #   ./scripts/deploy.sh              → the prod stack
-#   ./scripts/deploy.sh dev          → the dev stack
+#   ./scripts/deploy.sh staging      → the staging stack
+#   ./scripts/deploy.sh dev          → a stack you drive by hand
+#
+# `.github/workflows/deploy.yml` calls this same script — staging on every pull
+# request, prod on every push to main — so what runs from a laptop and what runs
+# from CI are the same steps in the same order, and there is no deploy path that
+# is only ever exercised by one of them.
 #
 # Order matters and is not arbitrary:
 #
@@ -28,32 +34,55 @@ for tool in sam aws node npm; do
 done
 
 case "$CONFIG_ENV" in
-  default|prod) STACK="kad-prod" ;;
-  dev)          STACK="kad-dev" ;;
-  *) echo "error: unknown environment '$CONFIG_ENV' (expected 'dev' or 'prod')" >&2; exit 1 ;;
+  default|prod) STACK="kad-prod";    STAGE="prod" ;;
+  staging)      STACK="kad-staging"; STAGE="staging" ;;
+  dev)          STACK="kad-dev";     STAGE="dev" ;;
+  *) echo "error: unknown environment '$CONFIG_ENV' (expected dev, staging or prod)" >&2; exit 1 ;;
 esac
 
 say() { printf "\n\033[1;36m==> %s\033[0m\n" "$1"; }
 
 # ---------------------------------------------------------------------------
 
-say "Checks"
-# The two cross-cutting rules only CI and this script enforce: content is
-# validated before it can be deployed, and the art contract is mechanical.
-npm run typecheck
-npm test
-npm run content:validate
-npm run art:verify
+# CI has already run every one of these on the same commit, and running them
+# twice buys nothing but minutes. Never set this by hand — the whole point of
+# the order in this file is that a broken chapter fails here and not at the
+# table.
+if [ "${KAD_SKIP_CHECKS:-}" = "1" ]; then
+  say "Checks — skipped (already run by CI on this commit)"
+else
+  say "Checks"
+  npm run typecheck
+  npm test
+  npm run content:validate
+  npm run art:verify
+fi
 
 say "Bundling Lambdas"
 node infra/build.mjs
 
 say "Deploying the stack ($STACK)"
+
+# Every parameter, every time.
+#
+# `sam deploy` does not carry previous values forward: a parameter left out of
+# `--parameter-overrides` reverts to the template default. That is quiet and
+# specific here — WebAuthnRelyingPartyId defaults to empty, and empty means
+# `AllowedFirstAuthFactors` drops WEB_AUTHN, so an automated deploy would turn
+# everybody's passkeys off and nothing would say so. Passing it explicitly on
+# every deploy is what stops that.
+PARAMS="StageName=$STAGE"
+if [ -n "${WEBAUTHN_RP_ID:-}" ]; then
+  PARAMS="$PARAMS WebAuthnRelyingPartyId=$WEBAUTHN_RP_ID"
+fi
+
 sam deploy \
   --template-file infra/template.yaml \
   --config-file "$ROOT/infra/samconfig.toml" \
   --config-env "$CONFIG_ENV" \
-  --no-fail-on-empty-changeset
+  --parameter-overrides $PARAMS \
+  --no-fail-on-empty-changeset \
+  ${CI:+--no-confirm-changeset}
 
 outputs() {
   aws cloudformation describe-stacks \
