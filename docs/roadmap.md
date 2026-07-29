@@ -46,11 +46,12 @@ phones and the TV are in a synced room, and all three spikes have a written verd
 > the entry path — a household exists the moment somebody starts a game — and
 > signing in is an *optional* later step that claims the household they are
 > already in. See [architecture §4.5](./architecture.md#45-accounts-devices-and-joining).
-> The server side of this is built and tested; the sign-in screen is not.
 
 **Claude**
-- ~~Cognito user pool, custom sign-up/sign-in UI (email + passkey). No hosted UI.~~
-  Pool built (email OTP, then passkey); **the sign-in UI is outstanding**
+- Cognito user pool, custom sign-in UI (emailed code, then a passkey). No hosted UI.
+  The browser talks to Cognito directly, so no credential reaches our Lambda.
+- **The keepsake flow** — offered at the end of a chapter, never before. It leads
+  with the party rather than with a form (`KeepsakeLantern`, asset-brief §8).
 - Anonymous households with a 7-day expiry, and the single write that claims one
 - Household creation, player profiles, `role: adult | child`
 - Device pairing via QR, long-lived KMS-signed device tokens, sliding expiry, revocation
@@ -271,5 +272,5 @@ Not blocking, but decide before they bite:
 2. **Sound source** — licensed pack, AI-generated, or commissioned. Affects Chapter 8 scope.
 3. **Her device** — does she have her own phone, or does she borrow one? If she borrows, device binding needs a "switch player" affordance on adult devices, which is a small Chapter 1 addition rather than a later retrofit.
 4. **Multiple households** — the model supports an adult belonging to more than one (a cousin's game, a school friend). Not building it now, but the `ACCT#<sub>` → `HH#<hhId>` mapping is one-to-many so it stays open. `linkAccount` currently picks the first; a picker is the missing piece.
-5. **When to offer the sign-in** — the server is ready, the screen is not. The moment that argues for itself is the end-of-chapter summary, with the characters they just played on screen: "keep Sparklehoof?" Offering it up front would undo the point of anonymous play.
+5. ~~**When to offer the sign-in**~~ — decided and built: the end-of-chapter summary, with the characters they just played on screen. Offering it up front would undo the point of anonymous play. What is *not* decided is whether the TV should show the same beat; it currently cannot, because `RunState` carries no household-level flag and the claim happens outside any run.
 6. **The guest window is 7 days** — long enough for "again next weekend", short enough that the table is not a graveyard of one-off sessions. It is one constant (`GUEST_HOUSEHOLD_TTL_MS`) if watching real use says otherwise.

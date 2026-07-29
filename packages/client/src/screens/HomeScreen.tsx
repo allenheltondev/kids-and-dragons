@@ -15,9 +15,11 @@ import { useCallback, useEffect, useId, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
+import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
+import { SignInFlow } from "./SignInFlow";
 import "./shared.css";
 import "./HomeScreen.css";
 
@@ -65,6 +67,15 @@ export function HomeScreen(): ReactElement {
 
   const nameFieldId = useId();
   const nameHintId = useId();
+
+  // Whether this deployment has a user pool at all. Asked once, here, because
+  // HomeScreen is the first thing a fresh phone renders (§4.5).
+  const checkKeepsake = useKeepsakeStore((s) => s.check);
+  const openKeepsake = useKeepsakeStore((s) => s.open);
+  const signInAvailable = useKeepsakeStore((s) => s.available) === true;
+  useEffect(() => {
+    void checkKeepsake();
+  }, [checkKeepsake]);
 
   const trimmedName = displayName.trim();
   const nameReady = trimmedName.length > 0;
@@ -246,7 +257,30 @@ export function HomeScreen(): ReactElement {
             <span>{error}</span>
           </p>
         ) : null}
+
+        {/*
+         * The new-phone path (§4.5). Deliberately last, small, and phrased for
+         * the person it is for: an adult setting up a replacement phone, not a
+         * child opening the app. Everyone else never needs it — a bound device
+         * already knows who it is, and an unbound one just plays.
+         *
+         * Renders nothing where sign-in cannot work, which includes local dev.
+         */}
+        {signInAvailable ? (
+          <button
+            className="home__restore"
+            type="button"
+            onClick={() => {
+              openKeepsake("restore");
+            }}
+          >
+            <Icon name="lantern" />
+            <span>I&rsquo;ve played before on another phone</span>
+          </button>
+        ) : null}
       </div>
+
+      <SignInFlow />
     </main>
   );
 }

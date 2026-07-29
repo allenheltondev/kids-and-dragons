@@ -16,6 +16,11 @@
  * | `CreationPreview`      | WorldView  | phase === "creation"                 |
  * | `CreationFlow`         | PlayerView | phase === "creation" and I have none |
  * | `PlayerPanel`          | PlayerView | otherwise                            |
+ * | `SignInFlow`           | PlayerView | somebody opened the keepsake offer   |
+ *
+ * `KeepsakeOffer` is the one exception to the no-props rule being *interesting*:
+ * it also takes none, and renders nothing at all unless the deployment can
+ * actually offer sign-in and this household has not already been claimed.
  */
 
 export { HomeScreen } from "./HomeScreen";
@@ -26,6 +31,8 @@ export { ChapterCompletePanel } from "./ChapterCompletePanel";
 export { CreationPreview } from "./CreationPreview";
 export { CreationFlow } from "./CreationFlow";
 export { PlayerPanel } from "./PlayerPanel";
+export { SignInFlow, KeepsakeOffer } from "./SignInFlow";
+export { KeepsakeLantern, type KeepsakeLanternProps, type LanternMote } from "./KeepsakeLantern";
 
 /** Shared by every screen, and by anything else that renders game content. */
 export { Icon, hasIcon, statIcon, speciesIcon, classIcon, itemKindIcon } from "./icons";

@@ -219,3 +219,31 @@
   white-space: normal;
   text-align: center;
 }
+
+/*
+ * "I've played before on another phone" — the new-phone path (§4.5).
+ *
+ * Quiet on purpose. It is for an adult setting up a replacement handset, and
+ * for nobody else: a bound phone already knows who it is, and an unbound one
+ * just plays. Making it loud would put an account question in front of a child
+ * opening the app, which is the exact thing anonymous play exists to avoid.
+ */
+.home__restore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  inline-size: 100%;
+  /* Quiet, but still a full-size target — spec §11 has no exceptions for the
+     controls an adult uses. */
+  min-block-size: var(--kad-touch-min);
+  padding: var(--kad-space-2) var(--kad-space-3);
+  border-radius: var(--kad-radius-md);
+  color: var(--kad-ink-faint);
+  font-size: var(--kad-text-sm);
+}
+
+.home__restore:active {
+  color: var(--kad-ink-dim);
+  background: var(--kad-bg-raised);
+}
