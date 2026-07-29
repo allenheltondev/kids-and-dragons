@@ -8,7 +8,7 @@
  *   no session          → <HomeScreen/>
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
  *   /p/:code   party    → PartyLayout player
- *   /p/:code   travel   → TravelLayout       (both surfaces, stacked)
+ *   /p/:code   travel   → TravelLayout       (both surfaces, one at a time)
  */
 
 import { useEffect } from "react";

@@ -140,8 +140,11 @@ test.describe("first playable", () => {
     }
 
     // Every phone sees the whole party: Travel Mode has no private channel,
-    // which is a deliberate trade (spec §2.2).
+    // which is a deliberate trade (spec §2.2). The world is one tap away —
+    // Travel Mode shows one surface at a time, and creating a character leaves
+    // you on your own controls.
     for (const page of phones) {
+      await page.getByRole("button", { name: /^world$/i }).click();
       for (const hero of heroes) {
         await expect(page.getByText(hero).first()).toBeVisible({ timeout: 15_000 });
       }
@@ -149,9 +152,38 @@ test.describe("first playable", () => {
 
     // A hard refresh recovers on any surface (architecture §4.3).
     await host.reload();
+    await host.getByRole("button", { name: /^world$/i }).click();
     for (const hero of heroes) {
       await expect(host.getByText(hero).first()).toBeVisible({ timeout: 15_000 });
     }
+  });
+
+  test("travel mode: your turn comes to you, and the world is one tap back", async ({ browser }) => {
+    const solo = await phone(browser);
+    await solo.goto("/");
+    await solo.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await solo.getByText("Travel Mode").click();
+    await solo.getByRole("button", { name: /start a game/i }).click();
+    await expect(solo).toHaveURL(/\/p\/[A-Z]{4}$/);
+
+    // Creation is a turn: a phone with no character must not land on the world
+    // with the only thing it can do hidden behind a toggle.
+    await expect(solo.getByRole("button", { name: /unicorn/i }).first()).toBeVisible();
+    await createCharacter(solo, "unicorn", "Sparklehoof");
+
+    await solo.getByRole("button", { name: /i'm ready/i }).click();
+    await solo.getByRole("button", { name: /begin the adventure/i }).click();
+
+    // The scene opens a choice, so the controls come forward on their own...
+    await expect(solo.getByRole("button", { name: /what do you do/i }).or(solo.locator(".prompt"))).toBeVisible();
+    // ...carrying the question they are answers to.
+    await expect(solo.locator(".player__echo")).toBeVisible();
+
+    // ...and the world is one tap away for the art and the detail.
+    await solo.getByRole("button", { name: /^world$/i }).click();
+    await expect(solo.getByText(/the story/i).first()).toBeVisible();
+    // Still your turn, and the tab says so without relying on colour.
+    await expect(solo.locator(".kad-travel__nudge")).toBeVisible();
   });
 
   test("three players take a chapter from the lobby to the end", async ({ browser }) => {

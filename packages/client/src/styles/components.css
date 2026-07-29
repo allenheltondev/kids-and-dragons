@@ -30,25 +30,69 @@
   flex-direction: column;
 }
 
-/* The 60/40 ↔ 40/60 shift (spec §2.2). Animated on flex-basis, which
-   interpolates everywhere, unlike grid-template-rows. */
-.kad-travel__world,
-.kad-travel__player {
+/* The toggle. Always present, never scrolls away: it is the only way back to
+   whichever surface you are not looking at. */
+.kad-travel__bar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--kad-space-2);
   flex: 0 0 auto;
-  min-block-size: 0;
-  transition: flex-basis var(--kad-dur-slow) var(--kad-ease);
-  will-change: flex-basis;
-}
-
-.kad-travel__world {
-  flex-basis: var(--kad-world-share);
-  position: relative;
+  /* Chrome, not content: it sits outside `.kad-surface` and so does not scale
+     with the pane. Fixed and modest, so the surfaces get the screen. */
+  font-size: 0.95rem;
+  padding: var(--kad-space-2);
   border-block-end: 1px solid var(--kad-border);
+  background: var(--kad-bg-sunken);
 }
 
-.kad-travel__player {
-  flex-basis: var(--kad-player-share);
+.kad-travel__tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  flex: 1 1 0;
+  min-block-size: var(--kad-touch-min);
+  padding: var(--kad-space-2) var(--kad-space-2);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  border-radius: var(--kad-radius-md);
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Selected is a fill *and* a border, never colour alone (spec §11). */
+.kad-travel__tab--on {
+  border-color: var(--kad-accent);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+}
+
+/* "You are needed over here" while you are looking at the world. */
+.kad-travel__nudge {
+  color: var(--kad-accent);
+  font-size: 0.8em;
+  line-height: 1;
+}
+
+.kad-mode-switch {
+  flex: 0 0 auto;
+  font-size: 0.85em;
+  opacity: 0.65;
+}
+
+/* One surface at a time. Hidden, not unmounted: the world holds the Pixi
+   context and registers the presentation gate (see layout/TravelLayout.tsx). */
+.kad-travel__pane {
   position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.kad-travel__pane[data-showing="false"] {
+  display: none;
 }
 
 .kad-party {
@@ -275,4 +319,27 @@
     opacity: 0;
     transform: translateY(0.5rem);
   }
+}
+
+/* Party Mode's slim chrome for the mid-session mode switch, mirroring the
+   Travel bar. In flow, never floating: on a phone the thing underneath a
+   floating control is the primary action of whatever screen you are on. */
+.kad-party--player {
+  display: flex;
+  flex-direction: column;
+}
+
+.kad-party__bar {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  padding: var(--kad-space-1) var(--kad-space-2);
+  border-block-end: 1px solid var(--kad-border);
+  background: var(--kad-bg-sunken);
+  font-size: 0.95rem;
+}
+
+.kad-party--player > .kad-surface {
+  flex: 1 1 auto;
+  min-block-size: 0;
 }

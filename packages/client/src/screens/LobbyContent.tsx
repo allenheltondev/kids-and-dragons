@@ -113,7 +113,7 @@ export function LobbyContent(): ReactElement {
 
       {/* The code is the biggest thing on an idle screen (spec §2.1), but the
           moment somebody is actually in the room the party matters more — and
-          in Travel Mode the whole lobby has to fit a 60%-height phone pane.
+          in Travel Mode the whole lobby has to fit a phone.
           Once anyone has joined, the code and QR step down to a strip so a
           full three-person party is on screen without scrolling. */}
       <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
