@@ -21,21 +21,21 @@
  */
 
 import { CreationFlow, PlayerPanel } from "../screens";
-import { useMe, useRunState } from "../store";
+import { useMe } from "../store";
 
 export function PlayerView(): React.JSX.Element {
-  const phase = useRunState()?.phase ?? "lobby";
   const me = useMe();
 
   // No party member for this device means no character yet — the creation flow
   // owns the screen until there is one (spec §5).
   //
-  // The trigger is "I have no character", not the run phase. A brand-new room
+  // The trigger is "I have no character", and nothing else. A brand-new room
   // sits in `lobby` until the first CREATE_CHARACTER arrives, so gating on
-  // `phase === "creation"` would leave the first player with nothing to tap and
-  // no way to reach it. It also covers the late joiner who walks into a lobby
-  // where everyone else is already made.
-  const creating = (phase === "lobby" || phase === "creation") && me === null;
+  // `phase === "creation"` would leave the first player with nothing to tap.
+  // Gating on the lobby phases at all would strand someone who joins after the
+  // chapter has started — the engine seats a late character at any phase, so
+  // this offers the flow at any phase too.
+  const creating = me === null;
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">

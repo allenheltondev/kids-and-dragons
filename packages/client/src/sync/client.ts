@@ -43,6 +43,18 @@ export interface LocalJoinRequest extends JoinRoomRequest {
 export interface CreateRoomInput extends Omit<CreateRoomRequest, "householdId"> {
   householdId: string;
   mode: RoomMode;
+  displayName?: string;
+  deviceToken?: string;
+}
+
+/**
+ * Creating a room also seats the host, so the response carries a full join
+ * alongside the room itself — plus the dev stand-in for QR pairing, the device
+ * binding this browser should keep (architecture §4.5). Joining a second time
+ * to get all that would seat a *second* player and orphan the first.
+ */
+export interface LocalCreateRoomResponse extends CreateRoomResponse, JoinRoomResponse {
+  deviceToken?: string;
 }
 
 export interface StateQuery {
@@ -53,7 +65,7 @@ export interface StateQuery {
 }
 
 export interface Api {
-  createRoom(body: CreateRoomInput): Promise<CreateRoomResponse>;
+  createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   fetchState(query: StateQuery, token?: string): Promise<StateResponse>;
@@ -108,7 +120,7 @@ export function eventsUrl(code: string, sinceSeq: number, token?: string): strin
 
 export const api: Api = {
   createRoom(body) {
-    return request<CreateRoomResponse>("/api/room", {
+    return request<LocalCreateRoomResponse>("/api/room", {
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify(body),

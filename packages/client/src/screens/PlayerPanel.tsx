@@ -553,7 +553,7 @@ export function PlayerPanel(): ReactElement {
               disabled={busy}
               onClick={() => void dispatch({ type: "ADVANCE" })}
             >
-              Keep going
+              Back to the lobby
             </Button>
           </div>
         ) : null}

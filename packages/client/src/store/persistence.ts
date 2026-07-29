@@ -96,6 +96,13 @@ export interface LocalIdentity {
   householdId: string;
   playerId: string;
   displayName: string;
+  /**
+   * The device binding the server issued (architecture §4.5). Presenting it on
+   * a later join is what makes this device *the same player* rather than a new
+   * one — without it every room mints a fresh profile and the character that
+   * belongs to this phone is orphaned.
+   */
+  deviceToken?: string;
 }
 
 function randomId(prefix: string): string {
@@ -116,6 +123,7 @@ export function loadIdentity(storage: KeyValueStorage = defaultStorage()): Local
           householdId: parsed.householdId,
           playerId: parsed.playerId,
           displayName: typeof parsed.displayName === "string" ? parsed.displayName : "",
+          ...(typeof parsed.deviceToken === "string" ? { deviceToken: parsed.deviceToken } : {}),
         };
       }
     } catch {

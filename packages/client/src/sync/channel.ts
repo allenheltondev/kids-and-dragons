@@ -158,7 +158,14 @@ export class MessageSequencer {
   private resume(message: ServerMessage): void {
     this.draining = false;
     if (this.disposed) return;
-    this.apply(message);
+    /*
+     * The world can move while an animation plays. A reconnect or a resync can
+     * land a snapshot mid-gate, and that snapshot already contains this patch —
+     * applying it again would duplicate an `add` into an array, throw on a
+     * `remove`, and walk `lastSeq` backwards. A patch is only ever valid as the
+     * very next step from where the mirror actually is.
+     */
+    if (message.seq === this.lastSeq + 1) this.apply(message);
     this.drain();
   }
 

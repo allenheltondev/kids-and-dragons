@@ -16,6 +16,7 @@ import type {
   ActionResponse,
   Campaign,
   ClientIntent,
+  JoinRoomResponse,
   ItemCatalog,
   PartyMember,
   Presentation,
@@ -217,6 +218,38 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       connect(session, snapshot, snapshot.seq);
     }
 
+    /**
+     * Take a seat from whatever seated us — create or join, they answer with
+     * the same shape — and keep the device binding that came with it.
+     */
+    function adopt(
+      roomCode: string,
+      seated: JoinRoomResponse & { deviceToken?: string },
+      displayName: string,
+    ): ClientSession {
+      const identity = loadIdentity(deps.storage);
+      saveIdentity(
+        {
+          ...identity,
+          displayName,
+          playerId: seated.playerId,
+          ...(seated.deviceToken ? { deviceToken: seated.deviceToken } : {}),
+        },
+        deps.storage,
+      );
+
+      const session: ClientSession = {
+        runId: seated.runId,
+        roomCode,
+        playerId: seated.playerId,
+        mode: seated.mode,
+        sessionToken: seated.sessionToken,
+      };
+      establish(session, seated.state);
+      deps.navigate({ name: "player", code: roomCode }, { replace: true });
+      return session;
+    }
+
     function failWith(error: unknown): never {
       const message =
         error instanceof ApiError
@@ -269,13 +302,26 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return task;
       },
 
+      /**
+       * Creating a room seats the host in it, so the response *is* a join.
+       * Joining again on top of it would seat a second player, leave an orphan
+       * profile behind in every room, and throw away the device binding the
+       * server issued — after which this browser rejoins as a stranger instead
+       * of recovering its own character (architecture §4.5).
+       */
       async createRoom(mode: RoomMode, displayName: string) {
         set({ connection: "connecting", error: null });
         const identity = loadIdentity(deps.storage);
         saveIdentity({ ...identity, displayName }, deps.storage);
         try {
-          const room = await deps.api.createRoom({ householdId: identity.householdId, mode });
-          return await get().joinRoom(room.code, displayName);
+          const room = await deps.api.createRoom({
+            householdId: identity.householdId,
+            mode,
+            displayName,
+            ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
+          });
+          const roomCode = room.code;
+          return adopt(roomCode, room, displayName);
         } catch (error) {
           return failWith(error);
         }
@@ -291,17 +337,11 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           const joined = await deps.api.joinRoom(roomCode, {
             playerId: identity.playerId,
             displayName,
+            // Presenting the binding is what makes this the same player as last
+            // time rather than a new one.
+            ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
-          const session: ClientSession = {
-            runId: joined.runId,
-            roomCode,
-            playerId: joined.playerId,
-            mode: joined.mode,
-            sessionToken: joined.sessionToken,
-          };
-          establish(session, joined.state);
-          deps.navigate({ name: "player", code: roomCode }, { replace: true });
-          return session;
+          return adopt(roomCode, joined, displayName);
         } catch (error) {
           return failWith(error);
         }
