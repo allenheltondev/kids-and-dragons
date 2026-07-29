@@ -8,7 +8,8 @@ Machine-readable companion: `assets/manifest.json`. Where the two overlap, **the
 it is what the verifier reads.
 
 > **Revision 4.** `unicorn/fledgling` is **approved** and is now the reference for the entire cast —
-> for style, construction, and colour. Sections marked 🔺 changed in rev 2; 🔺🔺 in rev 3.
+> for style, construction, and colour. Sections marked 🔺 changed in rev 2; 🔺🔺 in rev 3;
+> 🔺🔺🔺 is new in rev 5, which adds §9 — combat animation, the enemy roster, and effects.
 > The Realm of Red Sky map replaces the former five-biome roster. Its seventeen named
 > destinations and twelve shared terrain families are authoritative in §4.5.
 >
@@ -476,3 +477,502 @@ registration, canvas, or rig rules apply.
 positions, all inside the glass at 1–6, unique gradient ids, an accessible
 label naming the characters. The taste gate is §6.2 as usual: does it look like
 it belongs in the same world as the unicorn?
+
+---
+
+## 9. Combat animation and effects 🔺🔺🔺
+
+**Status: open to commission. This is roadmap Chapter 4's art, and it is the first section of
+this brief that specifies *motion* rather than *pictures*.** §1–§8 got a cast onto the screen. This
+section gets them into a fight and back out of it with nobody dead.
+
+Read `packages/shared/src/encounter.ts` before you start — its header is the other half of this
+document. It defines **ten effect verbs** (`attack`, `damage`, `heal`, `revive`, `rollBonus`,
+`moveSelf`, `shove`, `skipTurn`, `protect`, `goFirst`), and *those ten verbs are the entire
+vocabulary a fight can express.* Nothing in this section exists that no verb can trigger, and
+nothing a verb can trigger is missing from it. When you are tempted to add a clip, find the verb
+first. If there isn't one, the clip is somebody else's chapter.
+
+The roadmap's Chapter 4 line reads "combat animations for all 4 classes (attack, cast, hurt, down,
+revive)". **That line is wrong in a way that costs money**, and §9.1 is the correction.
+
+### 9.1 What moves is a species, not a class
+
+Spec §4.2/§4.3 keep species and class on separate layers, and the rig follows: `art-pipeline.md`
+§6 puts **one skeleton per species**, reused across all four tiers. So a unicorn songkeeper and a
+unicorn thornguard are the same body, the same skeleton, and the same clips. They differ in the
+gear that hangs off two bones and in which clip a given button fires.
+
+| Layer | Owns | Count |
+|---|---|---|
+| **Species rig** | Every clip. Every pose. All of the motion in the game. | **6** — one per species |
+| **Tier skin** | Nothing that moves. A skin swap on an identical skeleton (§3.2). | 0 clips |
+| **Class / gear layer** | `overlay_torso` and `prop_held` parented to the torso and hand bones — they inherit motion for free (§4.3). | 0 clips |
+| **Content** | Which clip and which sheet an ability id maps to. A table, not art. | 0 clips |
+
+Nine clips make a fight (§9.2: `walk`, `attack`, `cast`, `hurt`, `guard`, `leap`, `down`, `lift`,
+`revive` — `idle`, `celebrate` and `transform` already exist or belong to Chapter 5). Read the
+roadmap line as per-class-per-tier and the commission is 6 species × 4 tiers × 4 classes × 9 clips
+= **864.** Read the layers correctly and it is 6 × 9 = **54.** That factor of sixteen is the entire
+reason §4.3 makes gear overlays register against a species-agnostic torso position, and the reason
+§3.2 makes joints hold still across tiers. You are now spending that saving.
+
+**The whole commission, then:**
+
+| Deliverable | Count | Note |
+|---|---|---|
+| Hero rig clips | **54** | 6 species × 9 clips. Three of the nine are new states (§9.2). |
+| Enemy rig clips | **41** | 8 enemies × 5 clips, plus `mire_mimic`'s second idle (§9.5) |
+| Enemy part-sets | **8** | §3's contract, four shared body plans, no tiers |
+| New effect sheets | **6** | §9.4 |
+| **Total clips** | **95** | Against 864 if the split is read wrong |
+
+**What the class actually contributes** is a lookup, which belongs in content and is listed here
+only so you can see that no art hangs off it:
+
+| Class | Signature | Rig clip | Effect sheet |
+|---|---|---|---|
+| `thornguard` | Brace (`protect`) | `guard` | `guard_ward` |
+| `duskrunner` | First Strike (`goFirst`) | **none** | **none** |
+| `starweaver` | Burst (`attack` ×area) | `cast` | `burst_star` |
+| `songkeeper` | Rally (`heal` or `revive`) | `cast` | `heal_bloom` or `revive_lift` |
+
+| Species action (`rules.json`) | Verbs | Rig clip | Effect sheet |
+|---|---|---|---|
+| Mending Light | `heal` | `cast` | `heal_bloom` |
+| Gliding Leap | `moveSelf` | `leap` | `dust_scuff` ×2 (takeoff tile, landing tile) |
+| Sky Watch | `rollBonus` ×allies | `cast` | `bonus_spark` on each ally |
+| Ground Smash | `shove` ×adjacent | `attack` | `dust_scuff` at each shoved enemy |
+| Fox Fire | `skipTurn` | `cast` | `daze_swirl` |
+| Pounce | `moveSelf` + `attack` | `leap` then `attack` | `dust_scuff` ×2, then `impact_strike` |
+
+First Strike is the proof the split is right: it is a class signature with **no clip and no sheet**,
+because it is `timing: "initiative"` — it happens before any figure has had a turn, and the only
+place it can be shown is the turn-order strip, which is vector UI. A class that needs no art at all
+is not a gap; it is the layering working.
+
+The level-3 and level-6 unlocks in `rules.json` need **nothing new**, and that falls out for free:
+they are built from the same ten verbs, so Shove is `attack` + `dust_scuff`, Soothe and Chorus are
+`cast` + `heal_bloom`, Glimmer is `cast` + `bonus_spark`, Twin Step is two moves. Of the level-9
+abilities, Bramble Wall is terrain (a hazard tile in §4.5's tile sheet, not a character clip) and
+Encore is a second turn cursor — a UI beat. Neither is animated here.
+
+### 9.2 The clip list, and where the timing comes from
+
+**Derive the budget before authoring a single pose.** Spec §7.1 tunes an encounter to **~6 minutes
+and ~4 rounds**, with 3 players against 2–4 enemies:
+
+```
+360s ÷ (4 rounds × 6 figures) ≈ 15s of wall clock per turn
+```
+
+Almost all of that 15s belongs to a human. §11 forbids timers on decisions, so an 8-year-old gets
+to sit and think, and every second of animation is a second she is *not* being asked to choose.
+Give motion **a quarter of the turn — 3.75s** — and the rest of the arithmetic is forced:
+
+- The dice roll already takes **1.5s** and takes over the screen while it does it (§2.2). It is not
+  yours to spend.
+- That leaves **2.25s** for move + action + reaction, on every turn that rolls.
+
+So clips are quoted in **ticks, where one tick is one frame at the manifest's 12fps** — the same
+clock the effect sheets run on. Rive interpolates at 60fps; author to a 12ths-of-a-second grid
+anyway, because an effect that starts on a tick boundary can never drift against the clip that
+triggered it.
+
+| Clip | Ticks | Seconds | Derived from |
+|---|---|---|---|
+| `idle` | 24, looped | 2.0 | Unchanged from `art-pipeline.md` §6.1 |
+| `walk` | 4 per cycle, 2 steps per cycle | 0.167 / step | 4 steps = 0.67s, a Duskrunner's 6 = 1.0s. A move must never outlast the roll. |
+| `attack` | 8, **impact event at tick 3** | 0.667 | §6.1's "~0.6s", snapped to the 12fps grid |
+| `cast` | 10, **release event at tick 4** | 0.833 | Two ticks longer than `attack` on purpose: a cast that is the same length as a swing reads as a swing |
+| `hurt` | 5 | 0.417 | Starts on the impact event, ends with the attack clip. Adds nothing to the turn. |
+| `guard` | 6, then hold | 0.5 | Brace lasts until your next turn (`encounter.ts`), so the clip is a plant and a hold, not a loop |
+| `leap` | 11 — 3 crouch, 5 airborne, 3 land | 0.917 | The engine translates the figure during the airborne 5; the sheet's `dust_scuff` plays on ticks 3 and 8 |
+| `down` | 6 fall, then a 24-tick loop | 0.5 + loop | §9.3 |
+| `lift` | 10, **contact event at tick 6** | 0.833 | §9.3 |
+| `revive` | 10, started by the lift's contact event | 0.833 | §9.3 |
+| `celebrate` | 24 | 2.0 | Unchanged. Plays after the fight, so it is outside the budget. |
+| `transform` | Chapter 5's, unchanged | — | Not this commission |
+
+Worst realistic turn: roll 18 + a 6-step move 12 + `attack` 8 with `impact_strike` running from
+tick 3 (3 ticks of tail) = **41 ticks = 3.4s**, inside the 3.75s. **If you need a longer clip,
+something else in the same turn has to get shorter.** Say which, and why, rather than adding.
+
+Three clips are new — `guard`, `leap`, `lift` — and all three are required on **every** species
+rig, including species with no ability that fires them. `art-pipeline.md` §6.1's rule is that game
+code never special-cases a species, and a state machine that is present on two rigs and absent on
+four is that special case, permanently, for one clip's worth of saving.
+
+`shove` gets **no clip at all**, and this is the one place the temptation is strongest. A shoved
+figure is translated across tiles by the engine and kicks up `dust_scuff` where it lands, and its
+rig keeps playing `idle`. A flinch would be wrong, not merely expensive: `shove` deals no damage in
+`encounter.ts`, and to an 8-year-old a flinch *is* damage. Translation is unambiguous and free. If
+the table reads the slide as a voluntary move, the fix is a 6-tick `stagger` add-on, not a change
+to the effect.
+
+### 9.3 Knocked down, and the hand up
+
+Spec §7.3 is the load-bearing rule of the whole game — **nobody dies** — and §1's second design
+principle is not "death is rare", it is that zero HP is a different thing entirely. This beat is
+where the art either backs that up or quietly contradicts it.
+
+**`art-pipeline.md` §6.1 says the `down` state is "held, not looped". That is wrong and this
+section overrides it.** A frozen pose reads as a corpse. Author it as:
+
+- **6 ticks of fall**, ending with the head toward viewer-left — the same direction as the standing
+  pose in §2.5, so three downed figures on a grid all lie the same way and can be counted at a
+  glance.
+- **A 24-tick breathing loop at half the amplitude of `idle`**, plus a blink roughly every 3
+  seconds. Half, because she must be able to tell down from standing across a room; still
+  breathing, because the promise is that this character is fine.
+- A silhouette that is **unmistakably horizontal**: no more than 50% of the standing height and at
+  least 140% of the standing width. At 64px (§9.6) that is the only signal that survives.
+- Opaque mass kept in the **lower 40% of the canvas**, so a figure standing on the tile behind
+  cannot hide the one on the floor.
+
+**Forbidden vocabulary, exhaustively:** skulls, tombstones, X eyes, halos, ghosts, rising souls,
+red pools, and anything drifting upward and away. Every one of them is a death idiom, and one of
+them on screen undoes a rule the game spends nine chapters keeping.
+
+**The lift is a hero move, not a mercy** (spec §4.3), and it is two clips synchronised by an event:
+
+1. The helper plays `lift` (10 ticks) — reach down, **contact at tick 6**.
+2. The contact event, *not the button press*, starts the downed figure's `revive`. Two clips
+   playing near each other look like two clips playing near each other; a hand arriving and a
+   friend coming up with it looks like the thing that happened.
+3. `revive_lift` plays on the **downed figure's tile** — never between the two, because an effect
+   belongs to exactly one square (§9.6).
+4. `revive` ends with **two ticks of wobble** before settling into `idle`. `encounter.ts` brings
+   them back at exactly **1 HP**. A clean confident stand teaches her they are fine and she will
+   walk them straight back into the fight.
+
+Songkeeper's Rally does the same thing from across the board, so `revive_lift` must read as **light
+arriving from above** rather than as a hand — one sheet has to serve both the adjacent Help Up and
+the ranged Rally, and only the overhead reading works for both.
+
+`heal` never lifts anybody (§7.3, and `encounter.ts` enforces it), so **`heal_bloom` and
+`revive_lift` must not resemble each other.** Different axis, different colour: a bloom at body
+height in the recipient's accent hue versus a vertical column from the ground to above the head in
+warm off-white (`globalPalette.lightest`). If a child could confuse them, one of the two rules the
+game is built on stops being legible.
+
+### 9.4 Effects — mapping the ten verbs
+
+Five sheets exist, of which **four are combat sheets** — `transform_flash` belongs to Chapter 5's
+cutscene. The ten verbs plus two moments the verbs imply rather than name (a *miss* is the same
+verb as a hit and the opposite information; a *knockdown* is the `down` event that damage produces)
+come to eleven moments needing **ten sheets**, because `moveSelf` and `shove` share one. **Six are
+missing.**
+
+| Verb | Sheet | Status |
+|---|---|---|
+| `attack` — hit | `impact_strike` | exists, 8 |
+| `attack` — miss | **`miss_veer`** | **new, 8** |
+| `damage` (area) | `burst_star` | exists, 12 |
+| `heal` | `heal_bloom` | exists, 12 |
+| `revive` | `revive_lift` | exists, 12 |
+| `rollBonus` | **`bonus_spark`** | **new, 8** |
+| `moveSelf` | **`dust_scuff`** | **new, 8** |
+| `shove` | `dust_scuff` | same sheet |
+| `skipTurn` | **`daze_swirl`** | **new, 12** |
+| `protect` | **`guard_ward`** | **new, 8** |
+| `goFirst` | — | **nothing.** Initiative-time; the turn-order strip is vector UI |
+| (the `down` event) | **`down_settle`** | **new, 12** |
+
+**A miss gets its own sheet because absence is not a signal.** `resolveAttack` produces a real
+miss result and `hurt` simply does not play; if nothing else marks it, the child is left reading a
+d20 to find out whether the swing landed. `miss_veer` is a wide arc and a scatter of chips that
+passes *beside* the target's silhouette rather than through it.
+
+**Frames are 8 or 12 and nothing else, inside a fight.** At 12fps those are 0.667s and 1.0s, which
+is exactly what §9.2's budget affords — and it is why the four existing combat sheets are already
+8s and 12s. `transform_flash`'s 18 frames (1.5s) is the exception that proves it: that one plays
+when the fighting has stopped. **No new combat sheet may exceed 12 frames.**
+
+Every new sheet inherits the §4.5 effect contract — horizontal strip, 256×256 frames, 12fps, real
+alpha, jitter permitted — plus these, which are new and mechanically checked in §9.7:
+
+- **Tile-scoped.** ≥ 70% of the sheet's total opaque alpha mass falls inside the centre 128×128 of
+  the 256px frame. A 256 frame is **two tiles wide** at §4.5's 128px tiles, so an effect that
+  spreads its energy evenly reads as having hit three squares. 70% is where the approved
+  `impact_strike` sits — the loosest of the five and the one that reads correctly, so it sets the
+  floor. `aura_<species>` is exempt (`tileScoped: false`): an aura is character-scale by design.
+- **Fade in, fade out.** First and last frame ≤ 3% opaque coverage, so a sheet can be composited
+  additively without a pop at either end. `impact_strike` measures 2.5% and 1.8%; that is why the
+  number is 3 and not 2.
+- **Keep the top clear.** ≤ 15% of opaque mass in the **top 64px band** of the frame. Damage
+  numbers float there and they are the one piece of text in a fight she actually needs.
+  `impact_strike` measures 13%.
+- **Tintable sheets carry luminance, not colour.** `bonus_spark`, `daze_swirl` and `guard_ward` are
+  tinted at runtime from a character's `accent` slot — Fox Fire's "little blue flames" are the
+  kitsune's teal, and the same sheet has to serve a future daze from any source. So: every opaque
+  pixel at HSV saturation ≤ 0.15, and let the multiply do the colouring. The four narrative sheets
+  (`impact_strike`, `heal_bloom`, `burst_star`, `revive_lift`) are **not** tintable — see §9.3 on
+  why `heal_bloom` and `revive_lift` must stay visibly different colours.
+
+**One principle decides everything this section does not say: effects mark transitions, vector pips
+carry duration.** A sprite sheet fires once, at the instant a verb resolves. Anything that persists
+— braced, dazed, holding a +2, lying down, whose turn it is — is a status, and statuses are vector,
+shape-and-icon, colourblind-safe (§11), and owned by the UI rather than by this brief. That is why
+there is no looping "dazed" sheet here and why you should not add one.
+
+### 9.5 The enemy roster
+
+Enemy designs come from `docs/red-sky-creature-canon.yaml` and **nothing else.** Obey its
+`agent_instructions` literally. Two consequences you will feel immediately:
+
+- *"Dangerous creatures are dangerous because of predation, territoriality, magical instability, or
+  environmental pressure; they are not morally evil by default."* No villain shorthand. No
+  glowing-red-eyes-as-morality, no spikes-for-menace, no snarl held as a resting face. A cinder
+  wolf on the board is a displaced animal defending itself, and it should be possible to feel sorry
+  for it.
+- *"Encounters should usually permit more than combat."* Every one of these creatures appears in
+  scenes where the party talks to it, avoids it, or feeds it. The idle pose has to work in a story
+  scene as well as a fight, so it is a **wary, alert, readable animal**, not a combat stance.
+
+Deliver each as `assets/enemies/<canon_id>/` with `assembled.png` and `parts/`, on the **same
+technical contract as §3** — 1024×1024, origin (512, 900), full-canvas registered layers, seam
+overdraw, real alpha. **No tier level in the path**: enemies do not level, so there is nothing for
+§3.2's cross-tier registration to compare and the directory is one deep instead of two. No runtime
+recolour either — §4.4's three slots are player choices, and nobody chooses a wolf.
+
+To keep `zOrder` and `adjacency` from needing eight new declarations, every enemy names one of four
+**body plans**:
+
+| Plan | Parts | Used by |
+|---|---|---|
+| `quadruped` | `body` `head` `ruff` `limb_fl` `limb_fr` `limb_bl` `limb_br` `tail` | `cinder_wolf`, `echo_hunter` |
+| `low_shell` | `body` `shell` `claw_l` `claw_r` `leg_l` `leg_r` | `glassback_crab`, `mire_mimic`, `bone_crawler` |
+| `serpentine` | `head` `neck` `body` `coil` `limb_l` `limb_r` `fin` | `frost_wyrm`, `river_drake` |
+| `floating` | `core` `halo` `trail` | `will_o_wisp` |
+
+A plan's part list is the **minimum**. Two enemies have a signature the plan does not contain —
+`mire_mimic`'s `whiskers` and `echo_hunter`'s `frills` — and each adds exactly that one part,
+seamed to `head`, and declares it in its manifest entry. Nobody else adds anything: a plan shared by
+three creatures that all bend it is not a plan.
+
+**Scale is relative to a hero, because a hero is the only fixed reference on the board.** Every
+delivered `fledgling` measures **821px** of drawn height on the 1024 canvas and the `mythic` sets
+land between 794 and 879, so **820px is one hero.** Feet sit at y=900 and §3 forbids opaque pixels
+within 8px of the edge, which puts a hard ceiling of **890px** — about 1.09 heroes — on anything that stands on a
+tile. Heights below are that fraction of 820, ±40px (≈4% of canvas height, the point at which a
+size difference stops being legible at all):
+
+| Canon `scale` | Height | Why |
+|---|---|---|
+| `tiny` | 205px | A quarter of a hero. Reads as a thing you could catch. |
+| `small_to_medium` | 450px | Knee-high. Dangerous in numbers, not alone. |
+| `medium` | 615px | Three-quarters. An even fight. |
+| `medium_to_large` | 740px | Just under eye level. Bigger than you. |
+| `large` | 860px | Over a hero's head, and 30px under the ceiling. |
+
+| Canon id | Danger | Plan | Signature | Height | What the canon dictates |
+|---|---|---|---|---|---|
+| `glassback_crab` | moderate | `low_shell` | `shell` | 740 | Translucent mineral shell that refracts nearby colour — the one enemy whose accent is *borrowed* from the biome behind it. Canon: "threaten before charging", so its `attack` windup runs to **tick 4** instead of 3. She should see it coming. |
+| `cinder_wolf` | moderate | `quadruped` | `ruff` | 615 | Charcoal fur, ember eyes, "faint cracks of warm light", and — canon, explicitly — "heat effect remains subtle unless frightened or attacking". So the glow brightens **only** in `attack` and `hurt`, and is nearly out in `idle`. Packs: ship `ruff` plus one `ruff_alt`. |
+| `mire_mimic` | moderate | `low_shell` | `whiskers` | 740 | Its whole identity is a two-state read: a flat mud-and-root body imitating safe ground, then "small eye clusters and reed-like sensory whiskers visible when alert". So it gets **six** clips — `idle` starts in the disguised pose and self-transitions to alert on its first trigger. Same five inputs as every other rig; no engine special case. |
+| `frost_wyrm` | high | `serpentine` | `head` | 860 | Wedge head, ice-ridged scales, digging forelimbs. Canon draws a line under it: frost breath is **defensive freezing mist, not dragon fire**. Movement is short explosive lunges, so `attack` is a lunge and `move` is a snow-burrowing surge. |
+| `river_drake` | moderate | `serpentine` | `fin` | 860 | River-stone colouring, "smaller and less powerful than a legendary dragon" — do not let it drift toward the legend dragon silhouette. Semi-sapient and it "can learn routines and recognize familiar keepers": its idle should read as a toll-collector, not a predator. |
+| `bone_crawler` | moderate | `low_shell` | `shell` | 450 | Canon is emphatic: the bone shell "should look **assembled**, not like an animated skeleton", and they "do not intentionally animate bones". Pale many-legged body mostly hidden under it. Its `move` is the "sudden rolling beneath a closed shell". Appears up to §7.1's four at once, so ship `shell` plus `shell_alt`. |
+| `echo_hunter` | high | `quadruped` | `frills` | 860 | Blind, pale, broad listening frills, long gripping limbs, and canon's own constraint: "designed for darkness **without gore or grotesque human features**". §2.4's face rule is unavailable — there are no eyes to carry the read — so the frills are the head and they must be the thing you recognise at 64px. Its canon ceiling-clinging belongs in scene art: the grid has no ceiling, so its `move` is a ground scuttle. |
+| `will_o_wisp` | moderate | `floating` | `core` | 205 | Classification is `supernatural_manifestation`, but the canon's own `regional_population_index` files it under `dangerous_creatures` for the Enchanted Woods and the marsh — **and `content/chapters/bramblewood-01.json` already fights three of them**, so it is required, not optional. "Colour and motion reflect the memory that formed it" makes it the one enemy authored luminance-only and tinted at runtime, exactly like a tintable sheet (§9.4). It hovers: draw the body above the anchor and put a **ground shadow at (512, 900)** so she can still tell which square it is standing on. Canon: it is not automatically a ghost, and it does not necessarily understand the danger it causes. |
+| `legend_dragon` | legendary | — | — | — | **Do not produce this. See §9.5.1.** |
+
+Excluded, with the reason in each case:
+
+- **Ambient creatures** (`embermoth`, `mosshorn`, `jackalope`, `cloud_whale`, `snowhorn_goat`,
+  `silver_otter`, `reefglider`) are not enemies — the classification says they "normally avoid
+  conflict", and canon says outright that cloud whales are "not mounts, pets, or ordinary combat
+  opponents". They are scene props, and they belong to §4.5's prop sets.
+- **`restless_remains`** is not commissionable as a roster sprite. Canon: movement is "assembled
+  from existing enormous remains rather than a standardised skeleton species", "each manifestation
+  reflects the remains and cause involved", `scale: variable`, and it "must have a specific story
+  cause". There is no height to author to and no reusable silhouette. Commission it per story, once
+  a story exists.
+- **Every sapient people** — including `stone_troll`, `boggart` and the witches — is off this
+  roster by `world_rules.moral_alignment`: villains are named individuals or mixed factions, and
+  none is canon yet (`current_content_gaps`).
+
+#### 9.5.1 Why the legendary beast is blocked
+
+Two independent blocks, and both are in the canon rather than in your way:
+
+1. **Canon forbids the generic version.** "Individual design should be unique; legend dragons are
+   characters, not interchangeable enemies", and "no specific legend dragon has yet been named or
+   designed". A roster sprite is *precisely* the interchangeable enemy that sentence rules out.
+2. **`colossal` does not fit the board.** The ceiling above is 890px — 1.09 heroes — and
+   `grid.ts`/`encounter.ts` place an actor on **exactly one tile**, with no concept of a footprint.
+   A colossal dragon is therefore either hero-sized, which breaks canon, or multi-tile, which
+   breaks the engine.
+
+So the entry exists to hold the contract, not the work. When a named individual is written and
+`grid.ts` grows a footprint, it will need: a **2048×2048** canvas at a **2×2** tile footprint, its
+own body plan, and clips beyond the enemy minimum — canon gives it "fully sapient speech" and
+"displays of power", which means a `display` clip and a speaking idle. **Not now.** Flag it in your
+report rather than guessing at it.
+
+#### 9.5.2 Enemy clips — the minimum set, and what is missing on purpose
+
+Five clips per enemy: **`idle`, `move`, `attack`, `hurt`, `down`.** That is not a simplification —
+it is everything `encounter.ts` can actually do to a monster. Each exclusion is a line of code:
+
+| Excluded | Why |
+|---|---|
+| `cast` | `beginEncounter` gives every enemy `actions: [ATTACK_ID]`. No enemy has an ability with any other verb. When enemy AI grows one, that pass owns the clip. |
+| `revive`, `lift` | "There is no Help Up for monsters" — a downed enemy is `removeActor`'d off the board. |
+| `guard` | `protect` is only reachable through Brace, a class signature. Enemies have no class. |
+| `leap` | `moveSelf` exists only on two species actions, both of them heroes'. |
+| `celebrate` | A party wipe branches the story and the scene changes (§7.3). Nothing plays a monster victory dance. |
+| `transform` | Tiers are character progression. Enemies have none in the manifest. |
+
+**The enemy `down` is a different clip from a hero's, and this is the most important thing in the
+roster.** A beaten enemy is removed from the board, so its `down` is a **one-shot exit — 12 ticks,
+ending at alpha 0** — and it must read as *leaving*, not dying. That is not squeamishness; it is
+what the canon already says every one of these animals does: the crab "usually stops pursuing once
+an intruder leaves", the mimic "retreats from fire and strong vibration", the echo hunter "retreats
+from overwhelming layered noise", the wolf pack avoids people when it can. So: stagger, break off,
+and go — under the shell, into the mud, down the tunnel, out of frame. Nothing collapses and stays
+there.
+
+### 9.6 Reading a fight at 64 pixels
+
+The product decides this, not taste. §7.1 puts a **10×8 grid** on the board; §2.2 auto-frames it,
+because the whole board on a phone has unreadable tiles. Work the framing through:
+
+```
+10 tiles × 128px (§4.5)        = a 1280px board
+TV at 1920 wide                = 192px per tile — generous
+Phone at 390 wide, whole board =  39px per tile — the reason the focus camera exists
+Focus camera, 5 tiles across   =  78px per tile
+A figure is ~820/1024 of its canvas → ~64px of drawn height
+```
+
+Five tiles is the floor because it holds the active figure plus everything within a two-step reach,
+which is what a turn is about. **So combat art has to survive 64px** — roughly half the 120px
+§3 legibility floor, and that changes three things:
+
+1. **Enemy signatures get a harder floor than heroes'.** §3 asks for ≥ 40 opaque signature pixels
+   at 120px tall. Coverage scales with area, so the equivalent at 64px is 11px — not enough.
+   Require **≥ 24 opaque signature pixels when the enemy is scaled to 64px tall**, which is about
+   84px at 120px, a little over twice §3's ask. The asymmetry is deliberate: heroes are shapes she
+   chose and has watched for weeks, and they are separated by the mane hues of §2.3. An enemy is a
+   thing she has never seen, and she has to name it in the second it appears.
+2. **Two values, not three.** At 64px §2.2's two-tones-plus-highlight collapses. Every enemy needs
+   to work as **one dark mass plus one accent**, and the accent goes on the signature part only.
+   Check it by desaturating and squinting, not by looking at the full-size render.
+3. **Whose turn it is comes from three signals, none of them yours alone.** §11 forbids colour as
+   the only carrier. The three are: the focus camera centring the figure (position), a vector ring
+   under it (UI), and the turn-order strip (UI). **Your job is not to fight them:** no `idle` may
+   displace a figure more than **6% of tile height** — 8px at a 128px tile, 5px at the phone's
+   78px — because the ring is 4px thick and a body drifting out of its own ring is worse than no
+   ring at all.
+
+And two rules that follow from "what just hit whom":
+
+- **An effect belongs to exactly one square.** That is the §9.4 centre-energy rule, and the
+  behavioural half of it is that the sheet plays on the **target's** tile — never between attacker
+  and target, never at a midpoint. Three players and up to four enemies means neighbouring tiles
+  are usually occupied, and an effect that straddles two of them is a question.
+- **Damage numbers own the top of the frame** (§9.4's top-band rule). They are the only text in a
+  fight she has to read, and an effect drawn behind a number is a number that does not exist.
+
+### 9.7 Manifest entries this section needs
+
+`assets/manifest.json` is the contract and it **wins** over this document (§0). None of the
+following exists yet, so nothing in §9 is enforceable until it is added. **Specifying it is this
+brief's job; adding it is the manifest's owner's job.** Do not commission against §9 alone.
+
+1. **`effects[]` — six new entries**, each `size: 256`, `fps: 12`:
+   `miss_veer` (8), `bonus_spark` (8, `tintable: true`), `dust_scuff` (8), `daze_swirl`
+   (12, `tintable: true`), `guard_ward` (8, `tintable: true`), `down_settle` (12).
+2. **`effects[]` — six entries for art that already shipped undeclared.** The six
+   `aura_<species>` sheets are on disk (12 frames, 256px) and named in §4.5, but the manifest does
+   not list them, and `art-pipeline.md` §3.1 promises "nothing present is undeclared". Add them with
+   `tileScoped: false`.
+3. **`fps` on every `effects[]` entry.** Each sheet's sidecar `.json` carries `fps: 12`; the
+   manifest does not, so nothing can catch a sheet that claims 24.
+4. **`enemyPlans`** — the four body plans of §9.5, each with its own `parts`, `zOrder` and
+   `adjacency`. The existing top-level `zOrder`/`adjacency` are the hero part list and cannot
+   describe a crab.
+5. **`enemies[]`** — nine entries: `id`, `plan`, `signature`, `heightPx`, `anchor`
+   (`"feet"` | `"hover"`), `variants` (the `_alt` parts for pack creatures), and
+   `deferred: true` on `legend_dragon` so the verifier neither expects it nor forgets it.
+6. **`rigContract`** — the clip table of §9.2 as data: per-clip `ticks`, event ticks, and the
+   hero/enemy clip sets. `art-pipeline.md` §6.1 claims `tools/art/verify-rig.ts` asserts this
+   interface; **that file does not exist**, and it has nothing to read until this block does.
+7. **`tolerance` additions**, all with their reasons in §9.4/§9.6:
+   `effectCentreEnergyMin: 0.70`, `effectEndFrameCoverageMax: 0.03`,
+   `effectTopBandCoverageMax: 0.15`, `effectTopBandPx: 64`, `tintableMaxSaturation: 0.15`,
+   `enemyHeightTolerancePx: 40`, `combatSilhouetteHeightPx: 64`,
+   `minEnemySignaturePxAtCombatSilhouette: 24`, `idleDisplacementMaxTileFraction: 0.06`.
+
+One naming collision to resolve while you are in there: the shipping chapter points at
+`enemies/bramblewood/wisp`, while the canon id is `will_o_wisp` and §9.5 puts assets at
+`assets/enemies/<canon_id>/`. Biome-scoped enemy paths were a Bramblewood-era idea and the canon
+retired it the same way §4.5 retired the five-biome roster — one wisp is not three wisps because it
+turned up in three places. **Move the chapter, not the convention.**
+
+### 9.8 Acceptance
+
+#### 9.8.1 Mechanical — `npm run art:verify`
+
+Today the verifier walks `mf["species"]` and nothing else: **it does not open
+`assets/effects/` at all**, which is how six aura sheets shipped undeclared. Every check below is
+decidable from the files and the manifest, and none of them exists yet:
+
+| Check | Rule |
+|---|---|
+| Sheet geometry | `<id>.sheet.png` is exactly `frames × size` wide and `size` tall. Not "about". |
+| Sidecar agreement | `<id>.json`'s `frames`/`fps`/`size` equal the manifest's. |
+| No orphans | Nothing in `assets/effects/` is undeclared, and nothing declared is missing. |
+| No dead frames | Every frame has ≥ 1 opaque pixel. A blank frame mid-sheet is a visible hole at 12fps. |
+| Fade in / out | First and last frame ≤ `effectEndFrameCoverageMax`. |
+| Tile-scoped | ≥ `effectCentreEnergyMin` of opaque mass inside the centre 128×128, unless `tileScoped: false`. |
+| Top band clear | ≤ `effectTopBandCoverageMax` of opaque mass in the top `effectTopBandPx`. |
+| Tint safety | `tintable` sheets: every opaque pixel at HSV saturation ≤ `tintableMaxSaturation`. |
+| Combat frame budget | Any effect not marked out-of-combat has `frames` ≤ 12. |
+| Enemy sets | Per §3 for the plan's part list: canvas, format, alpha, edge margin, per-pixel recomposite, seam overdraw, origin. |
+| Enemy height | Drawn height within `enemyHeightTolerancePx` of the entry's `heightPx`. |
+| Enemy silhouette | ≥ `minEnemySignaturePxAtCombatSilhouette` opaque signature pixels at `combatSilhouetteHeightPx`. |
+| Hover anchor | `anchor: "hover"` enemies have opaque pixels within 24px of (512, 900) — the ground shadow. Without it there is no way to tell which tile it is on. |
+| Rig interface | Every rig exposes exactly `rigContract`'s clips and inputs for its kind, with clip lengths in ticks. Needs `tools/art/verify-rig.ts`, which §9.7 notes does not exist. |
+
+**Iterate to green before submitting**, exactly as §6.1. Cross-tier registration does not apply to
+enemies and the verifier must not ask for it.
+
+#### 9.8.2 Human — the taste gate
+
+§6.2 still applies to every enemy and every pose. These are the questions only combat raises, and
+the first one is the gate:
+
+- **Freeze a recording of a real fight at any frame. Can an 8-year-old answer three questions from
+  that single frame — whose turn is it, what just hit whom, who is down?** If it takes motion to
+  answer, it fails; she looks away and looks back.
+- With the **sound off and the numbers hidden**, does a hit read as a hit and a miss as a miss?
+- Does the downed character **look alive**? Would a five-year-old watching over her shoulder ask
+  whether they are dead? That question is the failure.
+- Is the lift a **hero move** (§4.3) — does the helper look like they did something brave, rather
+  than performing a mercy?
+- Could you feel **sorry** for the cinder wolf? Canon says these animals are not evil; a design
+  that reads as evil has failed a rule, not a preference.
+- Is anything here frightening enough that she would rather not play? The canon's `child_hero_tone`
+  allows danger and frightening mysteries. It does not allow gore, cruelty, or dread.
+- Does the gear survive the pose extremes — `prop_held` at the `attack` impact tick, the `cast`
+  release, the `guard` hold, and mid-`leap` — on the slimmest (kitsune) and bulkiest (bigfoot)
+  bodies alike (§4.3)? No script can see this; it is why the gate exists.
+
+#### 9.8.3 Order of work
+
+Same discipline as §6.3, and for the same reason — **stop at each gate:**
+
+1. **One species rig, the nine combat clips** — the unicorn, since it is the approved reference, and
+   confirm `idle` and `celebrate` still hold against the new timings. **Stop.** This is where the
+   §9.2 budget gets proved or corrected, and every correction is an edit to §9.2 before anything
+   else is authored.
+2. **The six new effect sheets**, played against that rig at 12fps on a real 78px tile. **Stop.**
+3. **One enemy** — `cinder_wolf`, because `quadruped` is the plan two enemies share and the ember
+   rule in §9.5 is the fiddliest thing in the roster. **Stop.**
+4. The remaining five species rigs.
+5. The remaining seven enemies.
+
+Steps 1–3 are three assets and they will find every mistake in this section. Steps 4–5 are ninety.
