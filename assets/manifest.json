@@ -122,12 +122,20 @@
     { "class": "songkeeper", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] }
   ],
 
+  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile.",
+
   "effects": [
-    { "id": "heal_bloom", "frames": 12, "size": 256 },
-    { "id": "impact_strike", "frames": 8, "size": 256 },
-    { "id": "burst_star", "frames": 12, "size": 256 },
-    { "id": "revive_lift", "frames": 12, "size": 256 },
-    { "id": "transform_flash", "frames": 18, "size": 256 }
+    { "id": "aura_bigfoot", "frames": 12, "fps": 12, "size": 256, "tileScoped": false },
+    { "id": "aura_dragonling", "frames": 12, "fps": 12, "size": 256, "tileScoped": false },
+    { "id": "aura_griffin", "frames": 12, "fps": 12, "size": 256, "tileScoped": false },
+    { "id": "aura_kitsune", "frames": 12, "fps": 12, "size": 256, "tileScoped": false },
+    { "id": "aura_manticore", "frames": 12, "fps": 12, "size": 256, "tileScoped": false },
+    { "id": "aura_unicorn", "frames": 12, "fps": 12, "size": 256, "tileScoped": false },
+    { "id": "burst_star", "frames": 12, "fps": 12, "size": 256 },
+    { "id": "heal_bloom", "frames": 12, "fps": 12, "size": 256 },
+    { "id": "impact_strike", "frames": 8, "fps": 12, "size": 256 },
+    { "id": "revive_lift", "frames": 12, "fps": 12, "size": 256 },
+    { "id": "transform_flash", "frames": 18, "fps": 12, "size": 256 }
   ],
 
   "biomes": [
