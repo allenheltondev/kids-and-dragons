@@ -97,6 +97,18 @@ export interface CharacterProgress {
   tier: TierId;
   unlockedActions: string[];
   inventory: InventoryEntry[];
+  /**
+   * Stat points earned by levelling and not yet spent (spec §8.1 — a level
+   * grants a point, the player spends it at a Rest scene). It lives *here*, in
+   * the same object as `stats`, so a failed campaign reverts the point and
+   * whatever it was spent on together; anywhere else and a level-up spent
+   * mid-campaign would survive the revert as a permanent stat.
+   *
+   * Optional only because characters written to the store before this field
+   * existed come back without it (`getCharacter` casts, it does not migrate).
+   * Read it as `?? 0`; everything in character.ts writes it as a number.
+   */
+  unspentPoints?: number;
 }
 
 export interface ProvisionalProgress extends CharacterProgress {
