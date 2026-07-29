@@ -7,8 +7,10 @@ and self-verify the assets is here. Nothing in it requires reading the rest of t
 Machine-readable companion: `assets/manifest.json`. Where the two overlap, **the manifest wins** —
 it is what the verifier reads.
 
-> **Revision 3.** `unicorn/fledgling` is **approved** and is now the reference for the entire cast —
+> **Revision 4.** `unicorn/fledgling` is **approved** and is now the reference for the entire cast —
 > for style, construction, and colour. Sections marked 🔺 changed in rev 2; 🔺🔺 in rev 3.
+> The Realm of Red Sky map replaces the former five-biome roster. Its seventeen named
+> destinations and twelve shared terrain families are authoritative in §4.5.
 >
 > **Match the approved unicorn.** Where this document and `assets/characters/unicorn/fledgling/`
 > disagree, the unicorn wins and the document is wrong — say so rather than following the text.
@@ -216,7 +218,7 @@ assets/
   effects/
       <name>.sheet.png           horizontal strip, N frames of 256×256
       <name>.json                { "frames": N, "fps": 12, "size": 256 }
-  biomes/<biome>/
+  biomes/<destination>/
       bg.webp                    1920×1080
       tiles.png                  see §4.5
       props/*.png
@@ -287,10 +289,62 @@ parts. Keep marking hue clearly distinct from coat hue so it can be isolated at 
 
 ### 4.5 Biomes, effects, tiles
 
-- **Backdrops** — 1920×1080 WebP: `bramblewood`, `frostpeak`, `emberhollow`, `sunken_market`, `cloudreach`. Composed so the lower third stays visually quiet — the combat grid sits there.
-- **Tile sets** — 128×128 tiles in a 4×4 grid sheet: floor ×4, blocked ×4, hazard ×2, edge/transition ×6.
-- **Effects** — horizontal sprite strips, 256×256 frames, 12fps. Frame-to-frame jitter is acceptable here and only here.
-- 🔺 **Mythic aura is a separate effect**, not baked into part layers. Deliver as `effects/aura_<species>.sheet.png`; the engine composites it behind the character.
+The authoritative world reference is `art/reference/realm_of_red_sky.png`. The former five-biome
+roster is retired; do not produce aliases or compatibility assets for it.
+
+- **Destinations** — every named destination below gets its own `assets/biomes/<destination>/`
+  directory, 1920×1080 WebP backdrop, and transparent prop set.
+- **Backdrop composition** — keep the lower third visually quiet because the combat grid sits
+  there. A destination must be recognizable from its silhouette, lighting, and two or three large
+  landmarks rather than dense surface detail.
+- **Tile families** — destinations in the same family may share the same base `tiles.png`. Copy
+  that family sheet into each destination directory so runtime lookup remains
+  `biomes/<destination>/tiles.png`.
+- **Tile sets** — 128×128 tiles in a 4×4 grid sheet: floor ×4, blocked ×4, hazard ×2,
+  edge/transition ×6.
+- **Effects** — horizontal sprite strips, 256×256 frames, 12fps. Frame-to-frame jitter is
+  acceptable here and only here.
+- 🔺 **Mythic aura is a separate effect**, not baked into part layers. Deliver as
+  `effects/aura_<species>.sheet.png`; the engine composites it behind the character.
+
+#### Destination roster
+
+| Destination | Asset ID | Tile family | Visual identity |
+|---|---|---|---|
+| Sky Islands | `sky_islands` | `sky_islands` | Floating stone islands, wind, open blue sky, elevated temples |
+| Enchanted Woods | `enchanted_woods` | `enchanted_forest` | Ancient dense canopy, deep greens, blue bioluminescent growth |
+| MossHome | `mosshome` | `enchanted_forest` | Living-tree settlement, wooden towers, moss, blue lantern growth |
+| Whispering Marsh | `whispering_marsh` | `whispering_marsh` | Mist, dark roots, shallow water, spirit lights |
+| The Exchange | `exchange` | `cliffside_exchange` | Cliffside port city, blue-roofed towers, docks, trade roads |
+| The Sunward Fields | `sunward_fields` | `open_plains` | Warm rolling farms, hedgerows, golden-green pasture |
+| The Plains | `plains` | `open_plains` | Broad grassland, caravan roads, low hills, open horizon |
+| The Eastern Plains | `eastern_plains` | `open_plains` | Windswept grassland, river influence, sparse woods |
+| Stone Crossing | `stone_crossing` | `great_river` | Narrow stone bridge, strong current, steep riverbanks |
+| Red Sky Foothills | `red_sky_foothills` | `red_sky_volcanic` | Volcanic hills, crystal veins, ash, hidden cave mouths |
+| Mount Red Sky | `mount_red_sky` | `red_sky_volcanic` | Active volcano, lava channels, smoke column, gem-lit rock |
+| The Expanse | `expanse` | `expanse` | Barren cracked plateau, dead spires, severe empty horizon |
+| Frostfang Peaks | `frostfang_peaks` | `frozen_north` | Jagged alpine snowfields, dark stone, cutting wind |
+| Glacier of Origins | `glacier_of_origins` | `frozen_north` | Blue-white glacier, ancient ice, meltwater river source |
+| Skullwater Cave | `skullwater_cave` | `skullwater_caverns` | Skull-shaped coastal entrance, black rock, underground water |
+| Mermaid Cove | `mermaid_cove` | `mermaid_cove` | Warm turquoise tides, coral reefs, sheltered tropical shore |
+| The Bone Yard | `bone_yard` | `bone_yard` | Colossal fossils, rib arches, dark sand, pale weathered bone |
+
+#### Shared terrain families
+
+| Family | Destinations |
+|---|---|
+| `sky_islands` | `sky_islands` |
+| `enchanted_forest` | `enchanted_woods`, `mosshome` |
+| `whispering_marsh` | `whispering_marsh` |
+| `cliffside_exchange` | `exchange` |
+| `open_plains` | `sunward_fields`, `plains`, `eastern_plains` |
+| `great_river` | `stone_crossing` |
+| `red_sky_volcanic` | `red_sky_foothills`, `mount_red_sky` |
+| `expanse` | `expanse` |
+| `frozen_north` | `frostfang_peaks`, `glacier_of_origins` |
+| `skullwater_caverns` | `skullwater_cave` |
+| `mermaid_cove` | `mermaid_cove` |
+| `bone_yard` | `bone_yard` |
 
 ---
 
