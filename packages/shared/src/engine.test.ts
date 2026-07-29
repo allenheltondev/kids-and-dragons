@@ -13,6 +13,7 @@ import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
 import type { RunState } from "./types/state.js";
+import type { Chapter, ChapterObjective, ChapterOutcome, StoryScene } from "./types/chapter.js";
 import { APPEARANCE, makeChapter, makeItems, makeRules } from "./test-fixtures.js";
 
 const rules = makeRules();
@@ -390,7 +391,15 @@ describe("a full walk of a chapter", () => {
     expect(secondVote.state.phase).toBe("chapter_complete");
     expect(secondVote.state.prompt).toBeNull();
     expect(secondVote.state.xpEarned).toBe(300);
-    expect(secondVote.presentation).toMatchObject({ kind: "CHAPTER_COMPLETE", xp: 300 });
+    // The fixture's ending declares no outcome, so it is a success and pays in
+    // full — the guarantee that every chapter written before spec §8.2 keeps
+    // working without being edited.
+    expect(secondVote.presentation).toMatchObject({
+      kind: "CHAPTER_COMPLETE",
+      xp: 300,
+      outcome: "success",
+    });
+    expect(secondVote.state.chapterOutcome).toBe("success");
   });
 
   it("breaks a tied vote toward the first player in party order", () => {
@@ -703,6 +712,198 @@ describe("the end of a chapter", () => {
     expect(result.state.prompt).toBeNull();
     expect(result.state.party).toHaveLength(2);
     expect(result.state.party.every((m) => !m.ready)).toBe(true);
+  });
+});
+
+/**
+ * The fixture chapter with an outcome, an award, or objectives bolted onto it.
+ * Built by spreading rather than by editing test-fixtures.ts, so every other
+ * suite keeps playing a chapter with none of these fields — which is the case
+ * that has to keep working.
+ */
+function chapterWith(patch: {
+  outcome?: ChapterOutcome;
+  xpAward?: number;
+  objectives?: ChapterObjective[];
+  /** Effects on the ending scene itself, for flags decided at the last moment. */
+  endingOnEnter?: StoryScene["onEnter"];
+}): Chapter {
+  const base = makeChapter();
+  const ending = base.scenes["scene_ending"] as StoryScene;
+  return {
+    ...base,
+    xpAward: patch.xpAward ?? base.xpAward,
+    ...(patch.objectives ? { objectives: patch.objectives } : {}),
+    scenes: {
+      ...base.scenes,
+      scene_ending: {
+        ...ending,
+        ...(patch.outcome ? { outcome: patch.outcome } : {}),
+        ...(patch.endingOnEnter ? { onEnter: patch.endingOnEnter } : {}),
+      },
+    },
+  };
+}
+
+/**
+ * Plays `context.chapter` from the lobby to its ending, taking the high road
+ * at the vote. Along the way the shrine sets `found_shrine` and the winning
+ * choice sets `took_high` — the two flags the objective tests watch.
+ */
+function playToEnding(context: EngineContext): EngineResult {
+  return walk(
+    seatedParty(context),
+    [
+      { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: context.chapter!.id } },
+      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+      { playerId: "p_2", intent: { type: "ROLL" } },
+      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+      { playerId: "p_1", intent: { type: "ADVANCE" } },
+      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } },
+      { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "high" } },
+    ],
+    context,
+  );
+}
+
+describe("chapter outcomes (spec §8.2)", () => {
+  it("pays half the award, rounded down, at a setback ending", () => {
+    const context = ctx({ chapter: chapterWith({ outcome: "setback", xpAward: 101 }), rng: fixedRng(20) });
+    const result = playToEnding(context);
+
+    // 101 is deliberately odd: rounding this up or to nearest would pay 51 and
+    // hand a family that failed the chapter more than the spec allows.
+    expect(result.state.xpEarned).toBe(50);
+    expect(result.state.chapterOutcome).toBe("setback");
+    expect(result.presentation).toMatchObject({ kind: "CHAPTER_COMPLETE", outcome: "setback", xp: 50 });
+  });
+
+  it("does not turn a setback into a game over or a retry", () => {
+    const context = ctx({ chapter: chapterWith({ outcome: "setback" }), rng: fixedRng(20) });
+    const ended = playToEnding(context);
+
+    // Play simply stopped at that ending. There is no losing phase to land in,
+    // nothing offers the chapter again, and the party is still standing —
+    // exactly like a failed check or a wipe (§6.1, §7.3).
+    expect(ended.state.phase).toBe("chapter_complete");
+    expect(ended.state.party).toHaveLength(2);
+    expect(ended.state.party.some((m) => m.down)).toBe(false);
+
+    const onward = applyIntent(ended.state, { playerId: "p_1", intent: { type: "ADVANCE" } }, context);
+    expect(onward.error).toBeUndefined();
+    expect(onward.state.phase).toBe("lobby");
+  });
+
+  it("starts the next chapter without the last one's ending hanging around", () => {
+    const context = ctx({ chapter: chapterWith({ outcome: "setback" }), rng: fixedRng(20) });
+    const ended = playToEnding(context);
+    expect(ended.state.chapterOutcome).toBe("setback");
+
+    const restarted = walk(
+      ended.state,
+      [
+        { playerId: "p_1", intent: { type: "ADVANCE" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: context.chapter!.id } },
+      ],
+      context,
+    );
+
+    // Left behind, a phone rendering from chapterOutcome would open the second
+    // chapter of the evening under the first one's setback banner.
+    expect(restarted.state.chapterOutcome).toBeNull();
+    expect(restarted.state.bonuses).toEqual([]);
+    expect(restarted.state.xpEarned).toBe(0);
+  });
+});
+
+describe("bonus objectives (spec §8.2)", () => {
+  const HIGH_ROAD: ChapterObjective = {
+    id: "high_road",
+    label: "Took the high road",
+    flag: "took_high",
+    xp: 30,
+  };
+  const SHRINE: ChapterObjective = {
+    id: "shrine",
+    label: "Found the shrine",
+    flag: "found_shrine",
+    xp: 30,
+  };
+
+  it("pays every objective whose flag is set, itemised, on top of the award", () => {
+    const context = ctx({
+      chapter: chapterWith({ objectives: [SHRINE, HIGH_ROAD] }),
+      rng: fixedRng(20),
+    });
+    const result = playToEnding(context);
+
+    // 300 award + 30 + 30. One number for the whole party, never per player —
+    // there is no per-character XP anywhere for an objective to land in (§8.2,
+    // "Why XP is never individual").
+    expect(result.state.xpEarned).toBe(360);
+    expect(result.state.bonuses).toEqual([
+      { id: "shrine", label: "Found the shrine", xp: 30 },
+      { id: "high_road", label: "Took the high road", xp: 30 },
+    ]);
+    // The breakdown has to add up to the total, or the completion screen
+    // itemises to a different number than the one above it.
+    expect(result.state.bonuses!.reduce((n, b) => n + b.xp, 0)).toBe(
+      result.state.xpEarned - context.chapter!.xpAward,
+    );
+  });
+
+  it("pays nothing for an objective the party did not meet", () => {
+    const missed: ChapterObjective = { id: "low_road", label: "Took the low road", flag: "took_low", xp: 30 };
+    const context = ctx({ chapter: chapterWith({ objectives: [missed] }), rng: fixedRng(20) });
+    const result = playToEnding(context);
+
+    // The walk votes "high", so took_low is never set. An objective that paid
+    // out on an unset flag would pay every bonus in every chapter.
+    expect(result.state.bonuses).toEqual([]);
+    expect(result.state.xpEarned).toBe(300);
+  });
+
+  it("does not pay an objective whose flag was explicitly unset", () => {
+    const context = ctx({
+      chapter: chapterWith({
+        objectives: [{ id: "almost", label: "Kept the lantern lit", flag: "lantern_lit", xp: 30 }],
+        endingOnEnter: [{ type: "setFlag", flag: "lantern_lit", value: false }],
+      }),
+      rng: fixedRng(20),
+    });
+    const result = playToEnding(context);
+
+    // `setFlag` carries a value, so a flag can be set to false — the lantern
+    // you lit and then lost. A truthiness check would read `false` as "present
+    // in flags" and pay for it.
+    expect(result.state.flags["lantern_lit"]).toBe(false);
+    expect(result.state.bonuses).toEqual([]);
+    expect(result.state.xpEarned).toBe(300);
+  });
+
+  it("clamps the bonuses at 25% of the award however much a chapter asks for", () => {
+    const greedy = chapterWith({
+      xpAward: 100,
+      objectives: [
+        { ...SHRINE, xp: 60 },
+        { ...HIGH_ROAD, xp: 60 },
+      ],
+    });
+    const result = playToEnding(ctx({ chapter: greedy, rng: fixedRng(20) }));
+
+    // tools/content/validate.mjs would never let this chapter into the repo,
+    // but a hand-edited or stale one must not distort the pacing at the table:
+    // 25 XP is the whole budget, and it is shared, not granted per objective.
+    expect(result.state.xpEarned).toBe(125);
+    expect(result.state.bonuses).toEqual([
+      { id: "shrine", label: "Found the shrine", xp: 25 },
+      // Still listed at nothing: the party did do it, and dropping it would
+      // misreport the evening rather than just the arithmetic.
+      { id: "high_road", label: "Took the high road", xp: 0 },
+    ]);
   });
 });
 
