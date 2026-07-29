@@ -15,6 +15,7 @@ export * from "./types/protocol.js";
 
 export * from "./rules.js";
 export * from "./character.js";
+export * from "./migrate.js";
 export * from "./dice.js";
 export * from "./inventory.js";
 export * from "./chapter-graph.js";
