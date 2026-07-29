@@ -4,6 +4,19 @@ version = 0.1
 # it builds the Lambda bundles and the client first, because `sam build` is not
 # in the deploy path (see infra/build.mjs for why).
 
+# `prod` and `default` are the same stack. Both exist because `deploy.sh prod`
+# passes `--config-env prod`, while a bare `sam deploy` with no config-env falls
+# back to `default` — and a missing section is not a warning, it is SAM
+# proceeding with no stack name.
+[prod.deploy.parameters]
+stack_name = "kad-prod"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+confirm_changeset = false
+fail_on_empty_changeset = false
+parameter_overrides = "StageName=prod"
+
 [default.deploy.parameters]
 stack_name = "kad-prod"
 region = "us-east-1"
