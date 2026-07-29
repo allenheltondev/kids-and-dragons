@@ -418,14 +418,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         if (!session) return false;
         if (!session.playerId) return false; // display clients send nothing, ever
 
-        const post = (): Promise<ActionResponse> =>
+        const post = (seq?: number): Promise<ActionResponse> =>
           deps.api.postAction(
             {
               runId: session.runId,
               playerId: session.playerId,
               // Last-seen server seq. The server rejects a stale intent rather
               // than applying it out of order (architecture §4.2).
-              seq: get().state?.seq ?? runtime.sequencer?.seq ?? 0,
+              seq: seq ?? get().state?.seq ?? runtime.sequencer?.seq ?? 0,
               intent,
             },
             session.sessionToken,
@@ -446,7 +446,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
              * table with an 8-year-old is the worst outcome available.
              */
             await resync(runtime.sequencer?.seq ?? 0);
-            response = await post();
+            /*
+             * Retry at the seq the *server* reported, not the mirror's. The
+             * mirror may still be behind on purpose: a patch carrying a dice
+             * roll sits behind the WorldView animation for its ~1.5s, so in
+             * Travel Mode — where the same phone renders both surfaces — the
+             * catch-up has landed but `state.seq` has not moved yet. Re-posting
+             * the mirror's seq would be rejected as stale a second time and the
+             * tap would vanish after all.
+             */
+            response = await post(response.seq);
           }
 
           if (response.ok) return true;
