@@ -85,6 +85,19 @@ on a Tuesday evening.
 **3. Once the distribution exists**, set a repository variable
 `WEBAUTHN_RP_ID` to its domain to enable passkeys — see below.
 
+### When the deploy fails at the credentials step
+
+Two different errors, two different causes, and they are easy to confuse
+because both look like "AWS is broken" and neither is.
+
+| Error | Means |
+|---|---|
+| `Could not load credentials from any providers` | The secret resolved to **empty** — `deploy.yml`'s `environment:` does not match a real environment, so GitHub used a fresh empty one. Check the spelling and the case. |
+| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | The secret is fine and AWS **refused the token**. The role's trust policy names a different environment than the one the job ran in — usually a case difference, or the two ARNs swapped between environments. Redeploy the bootstrap stack, and check each environment holds *its own* role. |
+
+Both were hit while building this, in that order. The second one is the trust
+boundary doing its job; it is supposed to be unforgiving.
+
 ---
 
 ## What you need once, to deploy by hand
