@@ -1,0 +1,216 @@
+{
+  "$comment": "Rules as data — roadmap 'Content as data'. Values come from spec.md §4 (stats, species, classes), §5 (creation points), §7.1 (steps), §8.1 (levels and tiers). Shape is packages/shared/src/types/domain.ts RulesContent; where this file and the docs disagree, the TS type wins. levelXp holds the nine thresholds above level 1 — levelXp[n] is the total XP needed to reach level n+2, per levelForXp()/maxLevel() in packages/shared/src/rules.ts. Icons are short slugs, never file paths: the client resolves them to inline SVG so every element has an icon (spec §11).",
+
+  "version": 1,
+
+  "baseStats": { "might": 1, "quick": 1, "clever": 1, "heart": 1 },
+  "creationPoints": 3,
+
+  "baseMaxHp": 10,
+  "baseGuard": 11,
+  "baseSteps": 4,
+
+  "difficultyTn": { "easy": 8, "normal": 12, "hard": 16 },
+
+  "levelXp": [300, 700, 1200, 1800, 2500, 3300, 4200, 5200, 6300],
+
+  "tierLevels": { "fledgling": 1, "sworn": 4, "radiant": 7, "mythic": 10 },
+
+  "species": {
+    "unicorn": {
+      "id": "unicorn",
+      "name": "Unicorn",
+      "blurb": "Gentle, stubborn, and impossible to scratch. Thorns lean away when a unicorn walks by.",
+      "passive": { "stat": "heart", "amount": 1, "text": "+1 Heart. You are the one everybody comes to when they are hurt." },
+      "worldAbility": {
+        "id": "mend",
+        "name": "Mend",
+        "text": "Heal a small wound between fights, and walk through thorns and brambles without a scratch.",
+        "icon": "hand"
+      },
+      "combatAction": {
+        "id": "mending_light",
+        "name": "Mending Light",
+        "text": "Touch a friend standing next to you. They get 3 HP back.",
+        "icon": "hand"
+      }
+    },
+
+    "dragonling": {
+      "id": "dragonling",
+      "name": "Dragonling",
+      "blurb": "Small, warm, and much stronger than it looks. Wings still a little too big for it.",
+      "passive": { "stat": "might", "amount": 1, "text": "+1 Might. Heavy things are just things." },
+      "worldAbility": {
+        "id": "glide",
+        "name": "Glide",
+        "text": "Cross a gap, a chasm, or a river the party cannot walk around.",
+        "icon": "wing"
+      },
+      "combatAction": {
+        "id": "gliding_leap",
+        "name": "Gliding Leap",
+        "text": "Sail over anything in your way and land on any open tile within 6 steps.",
+        "icon": "wing"
+      }
+    },
+
+    "griffin": {
+      "id": "griffin",
+      "name": "Griffin",
+      "blurb": "Half eagle, half lion, all opinions. Sees the whole map before anyone else does.",
+      "passive": { "stat": "quick", "amount": 1, "text": "+1 Quick. You are usually already there." },
+      "worldAbility": {
+        "id": "skyward",
+        "name": "Skyward",
+        "text": "Fly up and show the party the path ahead, with its hazards and its treasure.",
+        "icon": "eye"
+      },
+      "combatAction": {
+        "id": "sky_watch",
+        "name": "Sky Watch",
+        "text": "Circle overhead and call out where the enemies are going. Every friend gets +2 on their next roll.",
+        "icon": "eye"
+      }
+    },
+
+    "bigfoot": {
+      "id": "bigfoot",
+      "name": "Bigfoot",
+      "blurb": "Enormous, shy, and very good at hugs. Doors are a suggestion.",
+      "passive": { "amount": 2, "maxHp": 2, "text": "+2 max HP. There is simply more of you." },
+      "worldAbility": {
+        "id": "smash",
+        "name": "Smash",
+        "text": "Break a barrier, lift something enormous, or carry a friend who cannot walk.",
+        "icon": "fist"
+      },
+      "combatAction": {
+        "id": "ground_smash",
+        "name": "Ground Smash",
+        "text": "Slam both hands down. Every enemy next to you is shoved back 2 steps.",
+        "icon": "fist"
+      }
+    },
+
+    "kitsune": {
+      "id": "kitsune",
+      "name": "Kitsune",
+      "blurb": "A fox with too many tails and a plan for everything. Nobody is quite sure how many tails.",
+      "passive": { "stat": "clever", "amount": 1, "text": "+1 Clever. You notice the thing nobody else noticed." },
+      "worldAbility": {
+        "id": "beguile",
+        "name": "Beguile",
+        "text": "Charm someone into helping, or slip past a guard without being seen.",
+        "icon": "spark"
+      },
+      "combatAction": {
+        "id": "fox_fire",
+        "name": "Fox Fire",
+        "text": "Little blue flames dance around one enemy. It is so busy watching them that it skips its next turn.",
+        "icon": "spark"
+      }
+    },
+
+    "manticore": {
+      "id": "manticore",
+      "name": "Manticore",
+      "blurb": "Lion, wings, and a curling tail. Grumpy in the morning, loyal all day.",
+      "passive": { "stat": "quick", "amount": 1, "text": "+1 Quick. Nothing is really out of reach." },
+      "worldAbility": {
+        "id": "leap",
+        "name": "Leap",
+        "text": "Reach a high ledge, or drop down from any height and land just fine.",
+        "icon": "arrow"
+      },
+      "combatAction": {
+        "id": "pounce",
+        "name": "Pounce",
+        "text": "Jump to any open tile within 6 steps and attack the moment you land.",
+        "icon": "arrow"
+      }
+    }
+  },
+
+  "classes": {
+    "thornguard": {
+      "id": "thornguard",
+      "name": "Thornguard",
+      "stat": "might",
+      "role": "Front line",
+      "blurb": "You stand in front. That is the whole job, and it is a big one.",
+      "baseSteps": 4,
+      "signature": {
+        "id": "brace",
+        "name": "Brace",
+        "text": "Take a hit that was meant for a friend standing next to you.",
+        "icon": "shield"
+      },
+      "unlocks": {
+        "3": { "id": "shove", "name": "Shove", "text": "Push an enemy back 2 steps and step into its place.", "icon": "fist" },
+        "6": { "id": "bramble_wall", "name": "Bramble Wall", "text": "Grow thorns on two tiles. Enemies have to go around.", "icon": "thorn" },
+        "9": { "id": "unbreakable", "name": "Unbreakable", "text": "Until your next turn, you and every friend beside you take 1 less damage from every hit.", "icon": "shield" }
+      }
+    },
+
+    "duskrunner": {
+      "id": "duskrunner",
+      "name": "Duskrunner",
+      "stat": "quick",
+      "role": "Skirmisher",
+      "blurb": "Everywhere at once, never where the trouble lands.",
+      "baseSteps": 6,
+      "signature": {
+        "id": "first_strike",
+        "name": "First Strike",
+        "text": "Go before anybody else on the first round.",
+        "icon": "arrow"
+      },
+      "unlocks": {
+        "3": { "id": "vanish", "name": "Vanish", "text": "Slip out of sight. The next enemy that swings at you misses.", "icon": "moon" },
+        "6": { "id": "twin_step", "name": "Twin Step", "text": "Move, attack, and then move again.", "icon": "wing" },
+        "9": { "id": "storm_of_blades", "name": "Storm of Blades", "text": "Attack two different enemies standing next to you.", "icon": "arrow" }
+      }
+    },
+
+    "starweaver": {
+      "id": "starweaver",
+      "name": "Starweaver",
+      "stat": "clever",
+      "role": "Caster",
+      "blurb": "You pull little pieces of the sky down and put them where they are needed.",
+      "baseSteps": 4,
+      "signature": {
+        "id": "burst",
+        "name": "Burst",
+        "text": "Hit every enemy inside a 2x2 square of tiles.",
+        "icon": "spark"
+      },
+      "unlocks": {
+        "3": { "id": "glimmer", "name": "Glimmer", "text": "A friend anywhere on the board gets +2 on their next roll.", "icon": "star" },
+        "6": { "id": "tanglelight", "name": "Tanglelight", "text": "Ribbons of light wrap one enemy. It cannot move on its next turn.", "icon": "thorn" },
+        "9": { "id": "starfall", "name": "Starfall", "text": "Every enemy on the board takes 2 damage. Once per fight.", "icon": "star" }
+      }
+    },
+
+    "songkeeper": {
+      "id": "songkeeper",
+      "name": "Songkeeper",
+      "stat": "heart",
+      "role": "Support",
+      "blurb": "You keep everybody standing, and you make it look like a hero move. Because it is.",
+      "baseSteps": 4,
+      "signature": {
+        "id": "rally",
+        "name": "Rally",
+        "text": "Heal a friend, or lift a knocked-down friend back up from across the board.",
+        "icon": "hand"
+      },
+      "unlocks": {
+        "3": { "id": "soothe", "name": "Soothe", "text": "A friend within 4 steps gets 3 HP back.", "icon": "flame" },
+        "6": { "id": "chorus", "name": "Chorus", "text": "Every friend gets 2 HP back and +1 on their next roll.", "icon": "note" },
+        "9": { "id": "encore", "name": "Encore", "text": "A friend takes another action right now. Once per fight.", "icon": "note" }
+      }
+    }
+  }
+}

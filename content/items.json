@@ -1,0 +1,106 @@
+{
+  "sunbloom_draught": {
+    "kind": "consumable",
+    "icon": "potion",
+    "name": "Sunbloom Draught",
+    "text": "Heal 4 HP.",
+    "effect": { "type": "heal", "amount": 4 }
+  },
+  "honeycake": {
+    "kind": "consumable",
+    "icon": "cake",
+    "name": "Honeycake",
+    "text": "Still warm. Heal 2 HP.",
+    "effect": { "type": "heal", "amount": 2 }
+  },
+  "mosslight_jar": {
+    "kind": "consumable",
+    "icon": "lantern",
+    "name": "Mosslight Jar",
+    "text": "Soft green light. +3 on your next roll.",
+    "effect": { "type": "rollBonus", "amount": 3 }
+  },
+  "brave_whistle": {
+    "kind": "consumable",
+    "icon": "whistle",
+    "name": "Brave Whistle",
+    "text": "One loud note. +2 on your next roll.",
+    "effect": { "type": "rollBonus", "amount": 2 }
+  },
+  "thunder_acorn": {
+    "kind": "consumable",
+    "icon": "acorn",
+    "name": "Thunder Acorn",
+    "text": "Throw it. It cracks like thunder. 3 damage.",
+    "effect": { "type": "damage", "amount": 3 }
+  },
+
+  "river_charm": {
+    "kind": "trinket",
+    "icon": "charm",
+    "name": "River Charm",
+    "text": "+1 step.",
+    "passive": { "type": "stepBonus", "amount": 1 }
+  },
+  "thistle_pin": {
+    "kind": "trinket",
+    "icon": "pin",
+    "name": "Thistle Pin",
+    "text": "+1 Might.",
+    "passive": { "type": "statBonus", "stat": "might", "amount": 1 }
+  },
+  "owlfeather_clasp": {
+    "kind": "trinket",
+    "icon": "feather",
+    "name": "Owlfeather Clasp",
+    "text": "+1 Clever.",
+    "passive": { "type": "statBonus", "stat": "clever", "amount": 1 }
+  },
+  "songbird_ribbon": {
+    "kind": "trinket",
+    "icon": "ribbon",
+    "name": "Songbird Ribbon",
+    "text": "+1 Heart.",
+    "passive": { "type": "statBonus", "stat": "heart", "amount": 1 }
+  },
+  "quickfoot_lace": {
+    "kind": "trinket",
+    "icon": "boot",
+    "name": "Quickfoot Lace",
+    "text": "+1 Quick.",
+    "passive": { "type": "statBonus", "stat": "quick", "amount": 1 }
+  },
+  "hearthstone_bead": {
+    "kind": "trinket",
+    "icon": "bead",
+    "name": "Hearthstone Bead",
+    "text": "+2 max HP.",
+    "passive": { "type": "maxHpBonus", "amount": 2 }
+  },
+  "luckstone": {
+    "kind": "trinket",
+    "icon": "star",
+    "name": "Luckstone",
+    "text": "Roll a 1? Roll it again. Once each fight.",
+    "passive": { "type": "rerollOnes", "perEncounter": 1 }
+  },
+
+  "rusted_key": {
+    "kind": "quest",
+    "icon": "key",
+    "name": "Rusted Key",
+    "text": "It opens something, somewhere."
+  },
+  "torn_map_east": {
+    "kind": "quest",
+    "icon": "map",
+    "name": "Torn Map (East Half)",
+    "text": "Half a map, drawn in berry juice. Somebody has the other half."
+  },
+  "hollow_crown_shard": {
+    "kind": "quest",
+    "icon": "crown",
+    "name": "Shard of the Hollow Crown",
+    "text": "A curl of cold silver. It hums when you are close to the rest of it."
+  }
+}

@@ -42,26 +42,31 @@ Any browser can be the TV client, so **a tablet propped on the table is just a s
 
 ### 2.2 Travel Mode — on the road
 
-No shared screen. Every phone renders **both** surfaces, stacked in portrait:
+No shared screen. Every phone renders **both** surfaces, one at a time, with a toggle:
 
 ```
 ┌─────────────────┐
-│                 │
-│   WorldView     │  ~60% — map, art, narration
-│   (shared)      │         identical on every phone
-│                 │
+│ [World] [You] ● │  the toggle, always there
 ├─────────────────┤
-│   PlayerView    │  ~40% — your sheet, your actions
-│   (yours)       │
+│                 │
+│  one surface,   │  World — shared, identical on every phone
+│  whole screen   │  You   — your sheet, your actions
+│                 │
 └─────────────────┘
 ```
+
+This started as a 60/40 stack and that was wrong on a phone: neither half had
+the room it needed, the party lineup fell off the bottom of one and the six
+inventory slots off the bottom of the other. One surface at a time gives each
+of them the whole screen, and the toggle costs a tap.
 
 Design consequences, all of which we accept:
 
 - **No private information channel.** Every phone shows the same world. That's fine — this game has no hidden information by design. It does mean **hidden-role or secret-objective mechanics are permanently off the table**, and that's a deliberate trade.
-- **The grid needs a focus camera.** A 10×8 board in a 60%-height portrait pane has unreadable tiles at full extent. Combat gets an auto-framing camera that follows the active actor, with pinch-zoom and pan to override. This is good for the TV too — Party Mode gets it for free.
-- **The dice take over.** On the TV the roll is the centerpiece; on a phone it becomes a full-screen overlay for its ~1.5s, then dismisses back to the stacked layout.
-- **PlayerView expands on your turn.** When it's your turn, the split shifts to ~40/60 in favor of controls, then relaxes back. Tapping the world pane always restores it.
+- **The grid needs a focus camera.** A 10×8 board on a phone has unreadable tiles at full extent. Combat gets an auto-framing camera that follows the active actor, with pinch-zoom and pan to override. This is good for the TV too — Party Mode gets it for free.
+- **The dice take over.** On the TV the roll is the centerpiece; on a phone it takes the world for its ~1.5s wherever you were, then returns you.
+- **Your turn comes to you.** Being asked something pushes your controls in front of you automatically — and so does having no character yet, because creation is the first turn anyone takes. The toggle keeps a marker on "You" while you are looking at the world, so a turn can never sit unnoticed behind it.
+- **The question travels with the answers.** The scene's narration is echoed above your choices, because the question and its answers would otherwise sit on opposite sides of a toggle and an 8-year-old would flip back and forth to work out what she is choosing between. The world view remains where you go to read it properly.
 
 Mode is chosen per-room at creation and can be switched mid-session — a phone that had a TV can absorb WorldView if the laptop dies.
 

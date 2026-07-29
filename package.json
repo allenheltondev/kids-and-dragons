@@ -3,8 +3,33 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "art:verify": "python tools/art/verify.py",
-    "art:verify:strict": "python tools/art/verify.py --strict"
+    "dev": "concurrently -n server,client -c blue,magenta \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "npm run dev --workspace @kad/server",
+    "dev:client": "npm run dev --workspace @kad/client",
+    "typecheck": "tsc --noEmit -p packages/shared && tsc --noEmit -p packages/server && tsc --noEmit -p packages/client",
+    "test": "vitest run",
+    "content:validate": "node tools/content/validate.mjs",
+    "art:verify": "python3 tools/art/verify.py",
+    "art:verify:strict": "python3 tools/art/verify.py --strict",
+    "art:sheet": "python3 tools/art/sheet.py",
+    "build": "npm run build --workspace @kad/client",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.0",
+    "@types/node": "^22.10.2",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "concurrently": "^10.0.4",
+    "tsx": "^4.23.1",
+    "typescript": "~5.9.0",
+    "vitest": "^4.1.10"
   }
 }

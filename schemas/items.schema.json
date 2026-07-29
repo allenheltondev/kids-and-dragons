@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/items.schema.json",
+  "title": "ItemCatalog",
+  "description": "content/items.json. Mirrors packages/shared/src/types/domain.ts ItemCatalog — a bare Record<itemId, ItemDef>, so there is nowhere to put a comment; the notes live in content/README.md. Item kinds and their behaviour: spec §9.2.",
+
+  "type": "object",
+  "minProperties": 1,
+  "propertyNames": { "$ref": "#/$defs/itemId" },
+  "additionalProperties": { "$ref": "#/$defs/itemDef" },
+
+  "$defs": {
+    "itemId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "minLength": 1
+    },
+
+    "statId": { "enum": ["might", "quick", "clever", "heart"] },
+
+    "slug": {
+      "description": "Icon slug, not a path — one icon namespace for rules, choices and items alike.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "minLength": 1
+    },
+
+    "itemDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "text", "icon"],
+      "properties": {
+        "kind": { "enum": ["consumable", "trinket", "quest"] },
+        "name": { "type": "string", "minLength": 1 },
+        "text": {
+          "description": "One short sentence a kid can read off a phone. Keep it under a line.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
+        },
+        "icon": { "$ref": "#/$defs/slug" },
+        "effect": { "$ref": "#/$defs/effect" },
+        "passive": { "$ref": "#/$defs/passive" }
+      },
+
+      "allOf": [
+        {
+          "$comment": "A consumable does something when you tap it, and nothing while it sits in the bag.",
+          "if": { "properties": { "kind": { "const": "consumable" } }, "required": ["kind"] },
+          "then": { "type": "object", "required": ["effect"], "properties": { "effect": { "$ref": "#/$defs/effect" }, "passive": false } }
+        },
+        {
+          "$comment": "A trinket is passive and always on (spec §9.2). It never has a use-effect.",
+          "if": { "properties": { "kind": { "const": "trinket" } }, "required": ["kind"] },
+          "then": { "type": "object", "required": ["passive"], "properties": { "passive": { "$ref": "#/$defs/passive" }, "effect": false } }
+        },
+        {
+          "$comment": "Quest items are story keys: slot-free, never usable in combat (spec §9.2).",
+          "if": { "properties": { "kind": { "const": "quest" } }, "required": ["kind"] },
+          "then": { "type": "object", "properties": { "effect": false, "passive": false } }
+        }
+      ]
+    },
+
+    "effect": {
+      "description": "Immediate effect of using a consumable. ItemEffect in domain.ts.",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["type", "amount"],
+      "properties": {
+        "type": { "enum": ["heal", "rollBonus", "damage"] },
+        "amount": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+
+    "passive": {
+      "description": "Always-on effect of a trinket. ItemPassive in domain.ts. Deliberately small: nothing here may compete with the level-up transformation (spec §9.3).",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["statBonus", "stepBonus", "maxHpBonus", "rerollOnes"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "statBonus" } }, "required": ["type"] },
+          "then": {
+            "type": "object",
+            "required": ["stat", "amount"],
+            "properties": {
+              "stat": { "$ref": "#/$defs/statId" },
+              "amount": { "type": "integer", "minimum": 1, "maximum": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "stepBonus" } }, "required": ["type"] },
+          "then": {
+            "type": "object",
+            "required": ["amount"],
+            "properties": { "amount": { "type": "integer", "minimum": 1, "maximum": 1 } }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "maxHpBonus" } }, "required": ["type"] },
+          "then": {
+            "type": "object",
+            "required": ["amount"],
+            "properties": { "amount": { "type": "integer", "minimum": 1, "maximum": 2 } }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "rerollOnes" } }, "required": ["type"] },
+          "then": {
+            "type": "object",
+            "required": ["perEncounter"],
+            "properties": { "perEncounter": { "type": "integer", "minimum": 1, "maximum": 1 } }
+          }
+        }
+      ]
+    }
+  }
+}

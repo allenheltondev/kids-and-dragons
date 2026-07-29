@@ -76,7 +76,7 @@ into its own player with the character still there.** No login screen for her, e
 - Server-authoritative state, JSON Patch broadcast, event log
 - Reconnect from `sinceSeq`, hard-refresh recovery on any surface
 - **`WorldView` / `PlayerView` split** — neither knows the mode; container-relative sizing throughout
-- **Travel Mode stacked layout first**, Party Mode second (see note)
+- **Travel Mode layout first**, Party Mode second (see note)
 - Mid-session mode switch (laptop dies → a phone absorbs WorldView)
 - Lobby: three characters standing in a scene, idle animations, ready-up
 
@@ -87,9 +87,9 @@ into its own player with the character still there.** No login screen for her, e
 **Done when:** the same session plays correctly on a TV + two phones **and** on three phones with
 no TV, and you can hard-refresh anything without losing state.
 
-> **Build the stacked Travel layout before the TV layout.** It's the constrained case — anything
-> that fits in a 60%-height portrait pane fits on a TV, and the reverse is not true. Doing it the
-> other way around means reworking the grid, the dice, and the action bar later.
+> **Build the Travel layout before the TV layout.** It's the constrained case — anything that fits
+> a phone fits on a TV, and the reverse is not true. Doing it the other way around means reworking
+> the grid, the dice, and the action bar later.
 
 ---
 
@@ -235,7 +235,7 @@ changes nothing about whether the game works.
 | **Server-authoritative** | Dice roll in Lambda. Always. |
 | **AI-optional invariant** | Tested in CI, not assumed. |
 | **Mode-agnostic surfaces** | `WorldView` and `PlayerView` never read the room mode. Container-relative sizing only — no viewport units inside either. |
-| **Travel layout first** | Any new screen is designed in the 60%-height portrait pane before it's designed for a TV. |
+| **Travel layout first** | Any new screen is designed for a phone before it's designed for a TV. |
 | **No password for a child** | `role: child` devices authenticate by binding only, and can never pair another device. |
 | **Three-device dev loop** | If a change hasn't been seen on a TV **and** in three-phone Travel Mode, it isn't done. |
 
