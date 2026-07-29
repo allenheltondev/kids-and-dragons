@@ -1,0 +1,123 @@
+/*
+ * Chapter complete — WorldView.
+ *
+ * Positioned over the canvas (the party is still standing there), scrimmed so
+ * the numbers stay readable. `em` against `.kad-surface`; no viewport units.
+ */
+
+.complete {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1em);
+  padding: var(--space-4, 1em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
+  color: var(--color-text, #f4f0ff);
+  overflow-y: auto;
+}
+
+.complete__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  text-align: center;
+}
+
+.complete__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-2xl, 2em);
+  font-weight: 800;
+  color: var(--color-accent, #f5c86c);
+}
+
+.complete__xp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-5, 1.5em);
+  border: 0.1em solid var(--color-accent, #f5c86c);
+  border-radius: var(--radius-pill, 999em);
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 700;
+}
+
+.complete__party {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16em), 1fr));
+  gap: var(--space-3, 0.75em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.complete-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface, #1a1730);
+}
+
+.complete-card__portrait {
+  display: grid;
+  place-items: center;
+  inline-size: 2.6em;
+  block-size: 2.6em;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #080711);
+  color: var(--color-accent, #f5c86c);
+}
+
+.complete-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  min-inline-size: 0;
+}
+
+.complete-card__name {
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+  /* break-word, not `anywhere`: `anywhere` also collapses the element's
+     min-content width to a single character, so a flex column holding a
+     name shrinks to nothing and the name wraps one letter per line. */
+  overflow-wrap: break-word;
+}
+
+.complete-card__chips,
+.complete-card__loot,
+.complete__quest-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.complete__quest-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-2, 0.5em);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+}
+
+.complete__next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+  margin: auto 0 0;
+  font-size: var(--font-size-md, 1em);
+}

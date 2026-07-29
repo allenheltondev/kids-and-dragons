@@ -1,0 +1,178 @@
+/*
+ * Creation preview — WorldView.
+ *
+ * Positioned over the Pixi canvas with a transparent stage hole: the rig draws
+ * *through* this panel, which is why nothing in the middle column has a
+ * background. Everything else is a card so the text stays readable whatever is
+ * behind it.
+ *
+ * `em` against `.kad-surface`, no viewport units (architecture §4.6 rule 2).
+ */
+
+.preview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
+  overflow: hidden;
+}
+
+.preview__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+}
+
+.preview__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
+}
+
+.preview__hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+}
+
+.preview__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1em);
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+/* Side by side once the pane is wide enough to hold both — a TV, or a phone
+   turned landscape. Container query, never a media query. */
+@container (min-width: 44em) {
+  .preview__body {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .preview__stage {
+    flex: 1 1 45%;
+  }
+
+  .preview__facts {
+    flex: 1 1 55%;
+  }
+}
+
+/* Deliberately empty and deliberately transparent — the character is drawn
+   here by the Pixi stage underneath (spec §5). */
+.preview__stage {
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  border: 0.08em dashed var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-lg, 1.25em);
+  color: var(--color-border, rgba(190, 178, 255, 0.16));
+}
+
+.preview__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  min-block-size: 0;
+  overflow-y: auto;
+}
+
+.preview__fact {
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #1a1730);
+}
+
+.preview__fact-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-1, 0.25em);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+}
+
+.preview__fact-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.35;
+}
+
+.preview__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.preview__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #080711);
+}
+
+.preview__stat-name {
+  flex: 1 1 auto;
+  font-size: var(--font-size-sm, 0.875em);
+  text-transform: capitalize;
+  color: var(--color-text-muted, #b9b0d8);
+}
+
+.preview__stat-value {
+  font-size: var(--font-size-lg, 1.25em);
+}
+
+.preview__palette,
+.preview__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 600;
+}
+
+.preview__palette-chip {
+  inline-size: 1.2em;
+  block-size: 1.2em;
+  border: 0.16em solid;
+  border-radius: var(--radius-pill, 999em);
+}
+
+.preview__waiting {
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+}
+
+.preview__done {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

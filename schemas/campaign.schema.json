@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/campaign.schema.json",
+  "title": "Campaign",
+  "description": "content/campaigns/*.json. Mirrors packages/shared/src/types/chapter.ts Campaign; where the two disagree the TypeScript type wins. A campaign is a story arc of 4-8 chapters and the unit of the carryover commitment rule (spec §6, §8.2).",
+
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "blurb", "chapters"],
+
+  "properties": {
+    "$comment": { "type": "string" },
+    "_note": {
+      "description": "Author-facing note that survives into the shipped JSON. Ignored by the loader.",
+      "type": "string"
+    },
+
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "blurb": { "type": "string", "minLength": 1 },
+
+    "chapters": {
+      "description": "Chapter ids in play order. Each must exist under content/chapters/ and their `index` values must run 1..n with no gaps — checked by tools/content/validate.mjs.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+    }
+  }
+}

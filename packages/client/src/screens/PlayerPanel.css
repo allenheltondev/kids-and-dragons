@@ -1,0 +1,480 @@
+/*
+ * PlayerPanel — the controller.
+ *
+ * Built for the smallest case it must survive: ~40% of a phone in Travel Mode.
+ * Identity strip and prompt are pinned; sheet and inventory scroll beneath. If
+ * it fits here it fits on a TV, never the other way round (roadmap).
+ */
+
+/*
+ * Flex rather than fixed grid rows: the knocked-down banner comes and goes
+ * (spec §7.3), and a row template would hand the scroller `auto` whenever it
+ * was absent — which quietly breaks scrolling in the smallest pane, the one
+ * case this file exists to get right.
+ */
+.player {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg, #0d0b1a);
+  color: var(--color-text, #f4f1ff);
+}
+
+.player--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75em);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/* --- Identity strip ---------------------------------------------------- */
+
+.sheet {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-bottom: 0.08em solid var(--color-border, #3a3468);
+  background: var(--color-surface, #191534);
+}
+
+.sheet__portrait {
+  display: grid;
+  place-items: center;
+  width: 2.6em;
+  height: 2.6em;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-accent, #ffc95c);
+}
+
+.sheet__id {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.sheet__name {
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+  /* break-word, not `anywhere`: `anywhere` also collapses the element's
+     min-content width to a single character, so a flex column holding a
+     name shrinks to nothing and the name wraps one letter per line. */
+  overflow-wrap: break-word;
+}
+
+.sheet__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.sheet__tier {
+  text-transform: capitalize;
+}
+
+.sheet__hp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  align-items: flex-end;
+  min-width: 6em;
+}
+
+.sheet__hp-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  font-weight: 700;
+}
+
+/* HP reads as a number first and a bar second — never a bare colour. */
+.sheet__hp-track {
+  display: block;
+  width: 6em;
+  height: 0.6em;
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #120f26);
+  overflow: hidden;
+}
+
+.sheet__hp-fill {
+  display: block;
+  block-size: 100%;
+  background: var(--color-success, #4ad991);
+}
+
+.player__down {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-bottom: 0.08em solid var(--color-accent, #ffc95c);
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 16%, transparent);
+  color: var(--color-accent, #ffc95c);
+  font-weight: 700;
+}
+
+/* --- Prompt ------------------------------------------------------------ */
+
+/*
+ * The prompt wins the pane. It takes what it needs up to 70% of the height and
+ * scrolls inside that — a four-option choice must never push the confirm bar
+ * off the bottom of a 40%-of-a-phone pane, and the sheet below is reference
+ * material that can always be scrolled to.
+ */
+.player__prompt {
+  flex: 0 1 auto;
+  max-block-size: 70%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-3, 0.75em);
+  border-bottom: 0.08em solid var(--color-border, #3a3468);
+}
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+}
+
+.prompt__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.prompt__sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+}
+
+.prompt__stat {
+  text-transform: capitalize;
+}
+
+.prompt__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prompt__party {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Every choice is icon + label, and full width for imprecise taps (spec §1.5). */
+.choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  width: 100%;
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface, #191534);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice--on {
+  border-color: var(--color-primary, #7c5cff);
+  box-shadow: inset 0 0 0 0.08em var(--color-primary, #7c5cff);
+}
+
+.choice__icon {
+  display: grid;
+  place-items: center;
+  width: 2.8em;
+  height: 2.8em;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-accent, #ffc95c);
+}
+
+.choice__label {
+  flex: 1 1 auto;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.choice__votes {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  padding: var(--space-1, 0.25em) var(--space-2, 0.5em);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-primary, #7c5cff);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface-raised, #221d44);
+}
+
+.confirm__what {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+}
+
+.confirm__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+}
+
+.confirm__actions > :last-child {
+  flex: 1 1 auto;
+}
+
+.player__waiting {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-md, 1em);
+}
+
+/* --- Sheet + inventory ------------------------------------------------- */
+
+.player__scroll {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5em, 1fr));
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat-row__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #191534);
+}
+
+.stat-row__name {
+  flex: 1 1 auto;
+  font-size: var(--font-size-sm, 0.875em);
+  text-transform: capitalize;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.stat-row__value {
+  font-size: var(--font-size-lg, 1.25em);
+}
+
+.inv__heading,
+.inv__quest-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-2, 0.5em);
+  font-size: var(--font-size-md, 1em);
+  font-weight: 700;
+}
+
+.inv__quest-heading {
+  font-size: var(--font-size-sm, 0.875em);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/* Six slots, always six — an empty slot is information (spec §9.1). */
+.inv__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@container (min-width: 30em) {
+  .inv__grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.inv__slot {
+  display: flex;
+}
+
+.inv__button,
+.inv__slot--empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1, 0.25em);
+  width: 100%;
+  min-height: 4.5em;
+  padding: var(--space-2, 0.5em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #191534);
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.inv__button {
+  cursor: pointer;
+}
+
+.inv__button--on {
+  border-color: var(--color-primary, #7c5cff);
+  box-shadow: inset 0 0 0 0.08em var(--color-primary, #7c5cff);
+}
+
+.inv__slot--empty {
+  border-style: dashed;
+  background: transparent;
+}
+
+.inv__empty-mark {
+  width: 1.5em;
+  height: 1.5em;
+  border: 0.08em dashed var(--color-border, #3a3468);
+  border-radius: var(--radius-sm, 0.375em);
+}
+
+.inv__slot-name {
+  font-size: 0.72em;
+  line-height: 1.15;
+  /* break-word, not `anywhere`: `anywhere` also collapses the element's
+     min-content width to a single character, so a flex column holding a
+     name shrinks to nothing and the name wraps one letter per line. */
+  overflow-wrap: break-word;
+}
+
+.inv__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  font-size: 0.62em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.inv__quest {
+  margin-top: var(--space-2, 0.5em);
+}
+
+.inv__quest-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-primary, #7c5cff);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface-raised, #221d44);
+}
+
+.item-detail__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+}
+
+.item-detail__text {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.35;
+}
+
+.item-detail__passive {
+  margin: 0;
+}
+
+/* The mid-session mode switch. Last thing in the panel on purpose: it is an
+   adult recovering from a dead laptop, not a move anyone makes in a scene. */
+.player__mode {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-4, 1em);
+  border-block-start: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  opacity: 0.75;
+}
+
+/* The scene's question, echoed above your answers. Clamped: it is a reminder
+   of what you are choosing between, not the narration itself — the world view
+   is where you go to read it properly. aria-hidden because the world already
+   speaks it (spec §11), and hearing every line twice is worse than not at all. */
+.player__echo {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  padding: var(--space-3, 0.75em) var(--space-4, 1em) 0;
+  color: var(--color-text-muted, #b9b0d8);
+  font-size: var(--font-size-md, 1em);
+  line-height: 1.35;
+}

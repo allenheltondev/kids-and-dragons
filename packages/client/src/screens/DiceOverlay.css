@@ -1,0 +1,181 @@
+/*
+ * The dice.
+ *
+ * Fills its *surface*, not the viewport (WorldView rule 2): in Travel Mode the
+ * shell hands the world pane 100% of the stack for the roll's ~1.5s and takes
+ * it back afterwards (spec §2.2), so `position: absolute` gets the full-screen
+ * takeover without a single `vh`. A `100vh` overlay here would hang off the
+ * bottom of the pane and swallow PlayerView.
+ */
+
+.dice {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4, 1em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
+  backdrop-filter: blur(0.15em);
+  animation: dice-fade var(--kad-dur-fast, 120ms) ease-out;
+}
+
+.dice__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
+  text-align: center;
+}
+
+.dice__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 600;
+}
+
+.dice__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  padding: 0.1em 0.6em;
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-pill, 999em);
+  text-transform: capitalize;
+}
+
+/* --- The die ----------------------------------------------------------- */
+
+.dice__die {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* The centrepiece: ~135px on a phone that has handed the roll the whole
+     screen, ~300px on a TV. */
+  inline-size: 9em;
+  block-size: 9em;
+  color: var(--color-primary, #8b6cf5);
+  animation: dice-tumble 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 1 forwards;
+}
+
+.dice__die-art {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.dice__die-number {
+  position: relative;
+  font-size: 3.6em;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-text, #f4f0ff);
+}
+
+.dice__die--settled {
+  animation: dice-land 320ms cubic-bezier(0.2, 1.4, 0.4, 1) 1;
+}
+
+.dice__maths {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-2xl, 2em);
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity var(--kad-dur-base, 260ms) ease-out;
+}
+
+.dice__tn,
+.dice__outcome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  opacity: 0;
+  transition: opacity var(--kad-dur-base, 260ms) ease-out 60ms;
+}
+
+.dice__card--settled .dice__maths,
+.dice__card--settled .dice__tn,
+.dice__card--settled .dice__outcome {
+  opacity: 1;
+}
+
+.dice__term,
+.dice__op {
+  color: var(--color-text-muted, #b9b0d8);
+}
+
+.dice__total {
+  font-size: 1.35em;
+  color: var(--color-accent, #f5c86c);
+}
+
+.dice__tn {
+  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b9b0d8);
+}
+
+/* Outcome is a word and a shape; the colour is the third signal (spec §11). */
+.dice__outcome {
+  padding: var(--space-2, 0.5em) var(--space-5, 1.5em);
+  border: 0.1em solid currentColor;
+  border-radius: var(--radius-pill, 999em);
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
+}
+
+.dice__outcome--good {
+  color: var(--color-success, #5fd6a0);
+}
+
+.dice__outcome--bad {
+  color: var(--color-text-muted, #b9b0d8);
+}
+
+/* --- Motion ------------------------------------------------------------ */
+
+@keyframes dice-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dice-tumble {
+  0% {
+    transform: scale(0.5) rotate(-140deg);
+  }
+  60% {
+    transform: scale(1.08) rotate(200deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+@keyframes dice-land {
+  0% {
+    transform: scale(1.16);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* theme.css already neutralises animation globally under reduced motion; this
+   makes the intent explicit at the one place it matters most. */
+@media (prefers-reduced-motion: reduce) {
+  .dice,
+  .dice__die,
+  .dice__die--settled {
+    animation: none;
+  }
+}
