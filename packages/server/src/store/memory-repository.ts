@@ -37,6 +37,8 @@ import {
   DEVICE_SK,
   EVT_SK,
   GSI1_DEVICE,
+  GSI1_GUEST,
+  GSI1_GUEST_SK,
   GSI1_RUN,
   HH,
   META,
@@ -141,11 +143,12 @@ export class MemoryRepository implements GameRepository {
     return out.sort((a, b) => (a.SK < b.SK ? -1 : a.SK > b.SK ? 1 : 0));
   }
 
-  /** A GSI1 Query. */
-  private queryIndex(gsi1pk: string): TableItem[] {
+  /** A GSI1 Query. `skBelow` is the `GSI1SK < :v` range condition. */
+  private queryIndex(gsi1pk: string, skBelow?: string): TableItem[] {
     const out: TableItem[] = [];
     for (const item of this.items.values()) {
       if (item.GSI1PK !== gsi1pk) continue;
+      if (skBelow !== undefined && !((item.GSI1SK ?? "") < skBelow)) continue;
       if (this.isExpired(item)) continue;
       out.push(item);
     }
@@ -187,11 +190,65 @@ export class MemoryRepository implements GameRepository {
   // --- household, players, devices ------------------------------------------
 
   async putHousehold(household: Household): Promise<void> {
-    this.put({ PK: HH(household.id), SK: META, entity: "household", data: household });
+    this.put({
+      PK: HH(household.id),
+      SK: META,
+      // Only guests are indexed. A claimed household has no GSI1 entry at all,
+      // which is precisely what makes it invisible to the sweeper.
+      ...(household.guest && household.expiresAt
+        ? {
+            GSI1PK: GSI1_GUEST,
+            GSI1SK: GSI1_GUEST_SK(household.expiresAt, household.id),
+          }
+        : {}),
+      entity: "household",
+      data: household,
+    });
   }
 
   async getHousehold(householdId: string): Promise<Household | null> {
     return (this.get(HH(householdId), META)?.data as Household | undefined) ?? null;
+  }
+
+  async claimHousehold(householdId: string, cognitoSub: string): Promise<boolean> {
+    const item = this.get(HH(householdId), META);
+    if (!item) return false;
+    const household = item.data as Household;
+    // Already someone else's. Signing in on a borrowed phone must not hand you
+    // that family's characters.
+    if (household.ownerSub && household.ownerSub !== cognitoSub) return false;
+
+    const { expiresAt: _dropped, ...rest } = household;
+    // Dropping GSI1PK/GSI1SK is the whole promotion: no sweep entry, no sweep.
+    await this.putHousehold({ ...rest, ownerSub: cognitoSub, guest: false });
+    await this.putAccountPointer(cognitoSub, householdId);
+    return true;
+  }
+
+  async listExpiredGuestHouseholds(nowIso: string, limit = 25): Promise<Household[]> {
+    return this.queryIndex(GSI1_GUEST, GSI1_GUEST_SK(nowIso, ""))
+      .slice(0, limit)
+      .map((i) => i.data as Household);
+  }
+
+  async deleteHousehold(householdId: string): Promise<void> {
+    // Runs first: they live in their own partitions and are only reachable
+    // through the household, so deleting the household row first would orphan
+    // every event log under it.
+    for (const run of await this.listRuns(householdId)) {
+      for (const item of this.query(RUN(run.id))) {
+        this.items.delete(rowKey(item.PK, item.SK));
+      }
+      this.items.delete(rowKey(ROOM(run.roomCode), META));
+    }
+    const household = await this.getHousehold(householdId);
+    if (household?.ownerSub) {
+      this.items.delete(rowKey(ACCT(household.ownerSub), HH(householdId)));
+    }
+    for (const item of this.query(HH(householdId))) {
+      this.items.delete(rowKey(item.PK, item.SK));
+    }
+    this.persist();
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
@@ -288,7 +345,10 @@ export class MemoryRepository implements GameRepository {
   }
 
   async getRun(runId: string): Promise<RunRecord | null> {
-    const hit = this.queryIndex(GSI1_RUN(runId))[0];
+    // Filtered by entity because the *room* item is indexed under the same
+    // GSI1PK (see `putRoomIfAbsent`) — `RUN#<id>` resolves to both the run and
+    // the room that points at it, and only one of them is a RunRecord.
+    const hit = this.queryIndex(GSI1_RUN(runId)).find((i) => i.entity === "run");
     return (hit?.data as RunRecord | undefined) ?? null;
   }
 

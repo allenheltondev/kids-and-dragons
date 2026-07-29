@@ -83,6 +83,35 @@ export interface GameRepository {
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
 
+  /**
+   * Claim a guest household for a signed-in account (§4.5). Writes the
+   * `ACCT#<sub>` pointer, sets `ownerSub`, clears `guest`/`expiresAt`, and drops
+   * the household out of the guest sweep index — so the characters somebody just
+   * made anonymously simply stop being scheduled for deletion.
+   *
+   * Nothing is copied and no id changes: the household the party is *already
+   * playing in* becomes the permanent one. Idempotent, and a no-op on a
+   * household that is already claimed by this sub.
+   *
+   * Returns `false` if the household is already claimed by a **different**
+   * account — one family's guest session cannot be stolen by the next person to
+   * sign in on that phone.
+   */
+  claimHousehold(householdId: string, cognitoSub: string): Promise<boolean>;
+
+  /**
+   * Guest households whose `expiresAt` has passed. One GSI1 query against the
+   * `GUEST` partition — never a scan. Drives the sweeper (`lambda/sweep.ts`).
+   */
+  listExpiredGuestHouseholds(nowIso: string, limit?: number): Promise<Household[]>;
+
+  /**
+   * Deletes a household and everything under it — players, devices, characters,
+   * runs, and each run's state and event log. Only the sweeper calls this, and
+   * only for expired guests; a claimed household has no delete path at all.
+   */
+  deleteHousehold(householdId: string): Promise<void>;
+
   putPlayer(player: PlayerProfile): Promise<void>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;
   listPlayers(householdId: string): Promise<PlayerProfile[]>;

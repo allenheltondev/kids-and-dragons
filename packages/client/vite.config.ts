@@ -25,5 +25,15 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    /*
+     * Not Vite's default of `assets`. In production the SPA, the commissioned
+     * art, and the chapter JSON all sit in one S3 bucket behind one
+     * distribution, and the art is already served at `/assets/*` — in dev by the
+     * dev server, in prod by CloudFront, deliberately at the same URL. Leaving
+     * this at the default would drop hashed JS chunks into that same prefix, so
+     * a deploy syncing the bundle and a deploy syncing the art would each want
+     * to delete the other's files.
+     */
+    assetsDir: "bundle",
   },
 });
