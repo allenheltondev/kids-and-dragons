@@ -57,6 +57,12 @@ jobs:
           node-version: 22
           cache: npm
 
+      # The art gate is Python. `deploy.sh` runs it, and this workflow does not
+      # skip the checks — see the note on the deploy step.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
@@ -68,16 +74,25 @@ jobs:
           role-session-name: kad-deploy-${{ github.run_id }}
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check pillow numpy
 
       - name: Deploy
         run: ./scripts/deploy.sh ${{ github.event_name == 'push' && 'prod' || inputs.environment || 'staging' }}
         env:
-          # The checks already ran on this exact commit in `ci.yml`, which is a
-          # required check on the pull request. Running the whole suite again —
-          # including the Python art gate — would add minutes to every deploy to
-          # re-prove something already proven.
-          KAD_SKIP_CHECKS: "1"
+          # `KAD_SKIP_CHECKS` is deliberately *not* set.
+          #
+          # `ci.yml` runs the same suite on the same commit, so this looks like
+          # pure duplication — but the two workflows run in parallel and neither
+          # can gate the other. Skipping here would mean a push to main deploys
+          # to prod while its tests are still running, and a red test would
+          # arrive after the family is already playing the build it failed on.
+          #
+          # A couple of minutes per deploy buys "nothing reaches a stack that
+          # did not pass on that exact commit", which is the whole reason the
+          # checks are the first thing `deploy.sh` does.
+          #
           # Passkeys are bound to a domain for the life of the credential, and
           # `sam deploy` reverts any parameter it is not given. Set this as an
           # environment *variable* once the distribution exists, or every deploy

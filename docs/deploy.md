@@ -23,8 +23,15 @@ Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 It runs the checks, bundles the Lambdas, deploys the stack, uploads the client
 and the art, and invalidates CloudFront — in that order, so a deploy that fails
 partway leaves the previous version serving rather than a new bundle talking to
-an API that does not exist yet. (CI sets `KAD_SKIP_CHECKS=1`, because `ci.yml`
-already ran them on that exact commit.)
+an API that does not exist yet.
+
+The checks run **again** in the deploy workflow even though `ci.yml` ran them on
+the same commit. The two workflows run in parallel and neither can gate the
+other, so skipping would mean a push to `main` deploying to prod while its tests
+are still going — and a red test arriving after the family is already playing
+the build it failed on. Two minutes buys "nothing reaches a stack that did not
+pass on that exact commit". (`KAD_SKIP_CHECKS=1` exists for re-running a deploy
+by hand after a green run; it is not used by CI.)
 
 ---
 
