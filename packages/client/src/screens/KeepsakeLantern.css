@@ -1,0 +1,141 @@
+/*
+ * The keepsake lantern.
+ *
+ * Sized in `em` against whatever surface it lands in, like everything else —
+ * this renders at 40% of a phone in Travel Mode and at full width on a TV, and
+ * has to be a picture at both (architecture §4.6 rule 2).
+ *
+ * Motion is a slow sway and an independent flicker per flame. It is decoration
+ * with no state in it, so `prefers-reduced-motion` (handled globally in
+ * theme.css) simply stops it and nothing is lost.
+ */
+
+.kad-lantern {
+  /*
+   * Deliberately modest. The lantern is 1.47× as tall as it is wide, so every
+   * em of width costs one and a half of height — at 9em it pushed "Keep them"
+   * off the bottom of a 390px phone, which is a picture winning an argument
+   * against the button it exists to introduce.
+   */
+  inline-size: 5.5em;
+  block-size: auto;
+  max-inline-size: 100%;
+  overflow: visible;
+}
+
+/* --- metalwork ---------------------------------------------------------- */
+
+.kad-lantern__metal {
+  fill: none;
+  stroke: var(--kad-gold);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kad-lantern__glass {
+  stroke: var(--kad-gold);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  opacity: 0.92;
+}
+
+.kad-lantern__shine {
+  stroke: var(--kad-ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.14;
+}
+
+/* --- the lights --------------------------------------------------------- */
+
+.kad-lantern__mote-glow {
+  opacity: 0.22;
+  filter: blur(0.06em);
+}
+
+.kad-lantern__mote-flame {
+  /* The flame is the player's colour at full strength; the core is a light
+     centre so a dark player colour still reads as *lit* rather than as a hole. */
+  opacity: 0.95;
+}
+
+.kad-lantern__mote-core {
+  opacity: 0.85;
+}
+
+/* --- motion ------------------------------------------------------------- */
+
+.kad-lantern__body {
+  /* Swing from the hanger, not from the middle, or it reads as a pendulum
+     rather than something hanging.
+     `transform-box: view-box` is what makes those coordinates mean viewBox
+     units; without it the origin is resolved against the element's own bounding
+     box and the lantern pivots around its own belly. */
+  transform-box: view-box;
+  transform-origin: 60px 12px;
+  animation: kad-lantern-sway 7s var(--kad-ease) infinite;
+}
+
+.kad-lantern__mote {
+  transform-box: view-box;
+  animation: kad-lantern-flicker 3.4s var(--kad-ease) infinite;
+}
+
+.kad-lantern__halo {
+  animation: kad-lantern-breathe 5.5s var(--kad-ease) infinite;
+}
+
+/* Nothing to give off light yet. Dimmed rather than removed, so the empty
+   lantern still reads as an object and not as a failed image. */
+.kad-lantern--empty .kad-lantern__halo {
+  opacity: 0.3;
+}
+
+/* Already kept: the lantern banks down. Still warm, no longer asking. */
+.kad-lantern--kept .kad-lantern__halo {
+  opacity: 0.55;
+}
+
+.kad-lantern--kept .kad-lantern__body {
+  animation-duration: 11s;
+}
+
+@keyframes kad-lantern-sway {
+  0%,
+  100% {
+    transform: rotate(-1.6deg);
+  }
+  50% {
+    transform: rotate(1.6deg);
+  }
+}
+
+@keyframes kad-lantern-flicker {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  /* User units, not `em`: inside SVG an `em` resolves against an inherited
+     font-size that has nothing to do with the viewBox, so the flicker would
+     scale with the surrounding text instead of with the drawing. */
+  40% {
+    transform: translateY(-1.6px) scale(1.06);
+    opacity: 0.88;
+  }
+  70% {
+    transform: translateY(0.7px) scale(0.97);
+    opacity: 1;
+  }
+}
+
+@keyframes kad-lantern-breathe {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}

@@ -16,6 +16,7 @@ import type {
   JoinRoomResponse,
   RoomMode,
   RulesContent,
+  RunState,
   StateResponse,
 } from "@kad/shared";
 
@@ -64,14 +65,64 @@ export interface StateQuery {
   sinceSeq?: number;
 }
 
+/**
+ * Served rather than baked into the bundle, so the same artifact can be
+ * deployed to a second stack without a rebuild (see `lambda/http.ts`). Absent
+ * in local dev, where there is no user pool — which is exactly how the sign-in
+ * offer knows not to appear.
+ */
+export interface ClientConfig {
+  region: string;
+  realtime: { httpDomain: string; realtimeDomain: string; namespace: string };
+  auth: { userPoolId: string; clientId: string };
+}
+
+/** What `POST /api/auth/link` gives back — architecture §4.5. */
+export interface LinkAccountResponse {
+  householdId: string;
+  /** True when a guest household just became permanent. The thing worth saying. */
+  claimed: boolean;
+  players: { id: string; displayName: string; color: string; role: string }[];
+  characters: { id: string; name: string; species: string; ownerPlayerId: string }[];
+  deviceToken?: string;
+  playerId?: string;
+}
+
+/**
+ * How a display client attaches — architecture §4.5, "The TV, which is nobody".
+ *
+ * It has no device and no player, but the realtime channel is authorised per
+ * subscriber in prod, so it still needs something to present. This is where it
+ * gets it: a token naming one room, valid until that room expires.
+ */
+export interface WatchRoomResponse {
+  runId: string;
+  mode: RoomMode;
+  expiresAt: string;
+  viewerToken: string;
+  state: RunState;
+}
+
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
+  watchRoom(code: string): Promise<WatchRoomResponse>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   fetchState(query: StateQuery, token?: string): Promise<StateResponse>;
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
   loadCampaign(id: string): Promise<Campaign>;
+
+  /** `null` when the deployment has no user pool, i.e. local dev. */
+  fetchConfig(): Promise<ClientConfig | null>;
+  /** Claims the household this device is playing in for a signed-in account. */
+  linkAccount(idToken: string, deviceToken?: string): Promise<LinkAccountResponse>;
+  /** Binds this device to an existing player — the new-phone path (§4.5). */
+  adoptDevice(
+    idToken: string,
+    householdId: string,
+    playerId: string,
+  ): Promise<{ deviceToken: string; playerId: string }>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -135,6 +186,14 @@ export const api: Api = {
     });
   },
 
+  watchRoom(code) {
+    return request<WatchRoomResponse>(`/api/room/${encodeURIComponent(code)}/watch`, {
+      method: "POST",
+      headers: JSON_HEADERS,
+      body: JSON.stringify({}),
+    });
+  },
+
   /**
    * `ActionRequest.seq` carries the client's last-seen server seq so the server
    * can reject a stale intent (architecture §4.2). The store never retries a
@@ -165,5 +224,44 @@ export const api: Api = {
 
   loadCampaign(id) {
     return request<Campaign>(`/content/campaigns/${id}.json`);
+  },
+
+  // --- optional sign-in (architecture §4.5) --------------------------------
+
+  async fetchConfig() {
+    try {
+      return await request<ClientConfig>("/api/config");
+    } catch {
+      /*
+       * The dev server has no `/api/config` and no user pool, so this 404s on a
+       * laptop — which is the correct answer, not a failure. Sign-in is offered
+       * only where it can actually work; locally, anonymous play is all there
+       * is, and that is the whole point of anonymous play.
+       */
+      return null;
+    }
+  },
+
+  linkAccount(idToken, deviceToken) {
+    return request<LinkAccountResponse>("/api/auth/link", {
+      method: "POST",
+      headers: {
+        ...JSON_HEADERS,
+        ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}),
+      },
+      // The *Cognito* id token, not a room session token — this is the one
+      // request in the client that carries an account credential.
+      token: idToken,
+      body: JSON.stringify({}),
+    });
+  },
+
+  adoptDevice(idToken, householdId, playerId) {
+    return request<{ deviceToken: string; playerId: string }>("/api/auth/device", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, playerId }),
+    });
   },
 };

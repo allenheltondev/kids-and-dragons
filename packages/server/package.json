@@ -10,11 +10,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1097.0",
+    "@aws-sdk/client-ssm": "^3.1097.0",
+    "@aws-sdk/credential-provider-node": "^3.972.74",
+    "@aws-sdk/lib-dynamodb": "^3.1097.0",
     "@kad/shared": "*",
+    "@smithy/hash-node": "^4.4.15",
+    "@smithy/protocol-http": "^5.5.15",
+    "@smithy/signature-v4": "^5.6.11",
+    "aws-jwt-verify": "^5.2.1",
     "express": "^5.2.1",
     "fast-json-patch": "^3.1.1"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.162",
     "@types/express": "^5.0.6"
   }
 }

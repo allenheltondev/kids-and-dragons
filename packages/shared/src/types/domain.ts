@@ -170,10 +170,34 @@ export interface PlayerProfile {
   role: Role;
 }
 
+/**
+ * The family — and the unit persistence hangs off. Characters, players, devices,
+ * and runs all live under one household (§3), which is what makes "the character
+ * is still there next Tuesday" fall out for free.
+ *
+ * A household is born one of two ways:
+ *
+ *   **anonymous** — the first person to start a game gets `guest: true` and an
+ *   `expiresAt`. Everything under it is swept once that passes. Nobody signs up
+ *   to play; that is the point.
+ *
+ *   **claimed** — an adult signs in, and the household they are already playing
+ *   in becomes theirs: `guest: false`, `ownerSub` set, `expiresAt` gone. Nothing
+ *   moves and no ids change, so a character created ten minutes ago as a guest
+ *   is the same character afterwards.
+ *
+ * There is no third state, and no separate "anonymous" code path above this
+ * type — every read below the auth layer sees an ordinary household either way.
+ */
 export interface Household {
   id: string;
   displayName: string;
-  ownerSub: string;
+  /** The Cognito sub of the adult who claimed it. `null` while anonymous. */
+  ownerSub: string | null;
+  /** True until an account claims it. Guests are swept; claimed ones never are. */
+  guest: boolean;
+  /** ISO. Present only while `guest` — when the sweeper may delete everything. */
+  expiresAt?: string;
   createdAt: string;
 }
 
