@@ -20,6 +20,7 @@
  */
 
 import type {
+  Character,
   ActionRequest,
   ActionResponse,
   Chapter,
@@ -29,6 +30,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { foldChapterXp, newCharacterWrite } from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId" | "role">;
@@ -111,6 +113,45 @@ export async function applyAction(
     return { ok: false, seq: state.seq, error: result.error };
   }
 
+  /*
+   * Progression, computed here and committed below.
+   *
+   * The engine is pure and cannot reach the store, so this is where a character
+   * created at the table becomes a household row and where a completed
+   * chapter's XP becomes a level (progression.ts). Two things about the timing
+   * are load-bearing:
+   *
+   * It runs *before* `diff()`, so a re-resolved character rides out on this
+   * turn's patch — afterwards it would persist correctly and show nobody.
+   *
+   * And it only *computes* the rows. They are written by `repo.commit()` in the
+   * same conditional transaction as the state and the event, so a turn that
+   * loses the seq race cannot leave its XP behind on a character.
+   */
+  const characters: Character[] = [];
+  if (result.created) {
+    characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
+  }
+  /*
+   * Keyed off the phase transition, not the presentation.
+   *
+   * A chapter can finish without a CHAPTER_COMPLETE presentation ever being
+   * returned: when a check's branch lands on an ending scene, `doRoll` keeps
+   * the ROLL presentation on purpose — the dice are the centrepiece of the
+   * screen — and says so in a comment. Watching for the presentation therefore
+   * missed every chapter that ends straight off a roll, and the ADVANCE that
+   * follows leaves `chapter_complete` without a second chance, so the whole
+   * award was silently lost.
+   *
+   * The before/after phase cannot miss a path in, and cannot fire twice: the
+   * run has to have been somewhere else a moment ago.
+   */
+  const finishedChapter =
+    state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
+  if (finishedChapter) {
+    characters.push(...(await foldChapterXp(result.state, deps, auth.run.householdId)));
+  }
+
   // A no-op intent (a re-tap, a READY that was already true) writes nothing.
   // Burning a seq on it would churn every client's mirror for no reason. The
   // engine stamps seq and updatedAt on every accepted intent, so "did anything
@@ -143,6 +184,7 @@ export async function applyAction(
     expectedSeq: state.seq,
     state: next,
     event,
+    ...(characters.length > 0 ? { characters } : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the

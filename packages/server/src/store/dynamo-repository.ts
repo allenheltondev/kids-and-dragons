@@ -20,6 +20,8 @@
  */
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { CHARACTER_VERSION, migrateCharacter } from "@kad/shared";
+import { readAll } from "./character-io.ts";
 import {
   BatchWriteCommand,
   DeleteCommand,
@@ -75,6 +77,13 @@ interface TableItem {
   GSI1SK?: string;
   /** Epoch seconds, DynamoDB's TTL attribute. Only rooms carry it. */
   ttl?: number;
+  /**
+   * Schema version of `data`, per entity (architecture §3.2). A top-level
+   * attribute rather than a field on `data`, so the domain type never learns
+   * that it is stored and nothing above the repository can branch on it.
+   * Absent means a row written before versioning — v0.
+   */
+  v?: number;
   entity: string;
   data: unknown;
 }
@@ -437,20 +446,25 @@ export class DynamoRepository implements GameRepository {
       PK: HH(character.householdId),
       SK: CHAR_SK(character.id),
       entity: "character",
+      // Stamped on every write, so a row's version is a fact rather than an
+      // inference from which fields happen to be present (architecture §3.2).
+      v: CHARACTER_VERSION,
       data: character,
     });
   }
 
   async getCharacter(householdId: string, characterId: string): Promise<Character | null> {
-    return (
-      ((await this.get(HH(householdId), CHAR_SK(characterId)))?.data as Character | undefined) ??
-      null
-    );
+    const item = await this.get(HH(householdId), CHAR_SK(characterId));
+    if (!item) return null;
+    // Migrated on read, never on write (architecture §3.2): the row is upgraded
+    // in memory now and rewritten at the next natural write, so a character
+    // self-heals within a session rather than costing a write on every load.
+    return migrateCharacter(item.data, item.v);
   }
 
   async listCharacters(householdId: string): Promise<Character[]> {
     const items = await this.partition(HH(householdId), PREFIX.character);
-    return items.map((i) => i.data as Character);
+    return readAll(items, householdId);
   }
 
   // --- runs, state, events ---------------------------------------------------
@@ -506,7 +520,7 @@ export class DynamoRepository implements GameRepository {
   }
 
   async commit(input: CommitInput): Promise<boolean> {
-    const { runId, expectedSeq, state, event } = input;
+    const { runId, expectedSeq, state, event, characters = [] } = input;
     try {
       /*
        * The two writes that must never come apart: append `EVT#<seq>` and
@@ -545,6 +559,21 @@ export class DynamoRepository implements GameRepository {
                 ExpressionAttributeValues: { ":expected": expectedSeq },
               },
             },
+            // Unconditional, and safe because the two above are not: if the run
+            // has moved on, the whole transaction is rejected and these never
+            // land. That is the entire point of putting them here.
+            ...characters.map((character) => ({
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: HH(character.householdId),
+                  SK: CHAR_SK(character.id),
+                  entity: "character",
+                  v: CHARACTER_VERSION,
+                  data: character,
+                } satisfies TableItem,
+              },
+            })),
           ],
         }),
       );

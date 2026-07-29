@@ -14,7 +14,9 @@
  *     behind the couch and sent a stale tap gets a code back and resyncs.
  *   - **There is no game over.** A party wipe branches the story (spec §7.3),
  *     an encounter loss goes to `onDefeat`, and no state here can terminate a
- *     run unhappily.
+ *     run unhappily. A chapter *setback* (spec §8.2) is not a counterexample:
+ *     it is an authored ending that pays half the award, with no retry, no
+ *     losing phase, and the party intact on the other side of it.
  *
  * Not in scope: tactical combat. Roadmap chapter 4 owns the grid, turn order
  * and enemy AI. Encounter scenes here resolve through a clearly marked
@@ -27,9 +29,19 @@ import type {
   ResolvedCharacter,
   RulesContent,
 } from "./types/domain.js";
-import type { Branch, Chapter, Choice, Effect, Scene, SceneId } from "./types/chapter.js";
+import type {
+  Branch,
+  Chapter,
+  ChapterOutcome,
+  Choice,
+  Effect,
+  EndingScene,
+  Scene,
+  SceneId,
+} from "./types/chapter.js";
 import type {
   DiceRoll,
+  EarnedBonus,
   PartyMember,
   Prompt,
   RoomMode,
@@ -39,6 +51,7 @@ import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter } from "./character.js";
+import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 
@@ -69,6 +82,27 @@ export interface EngineResult {
   state: RunState;
   presentation?: Presentation;
   error?: EngineError;
+  /**
+   * The unresolved `Character` built by CREATE_CHARACTER, for the persistence
+   * layer to store.
+   *
+   * It has to travel beside the state rather than in it for the same reason
+   * `completeChapter` defers `awardXp`: `RunState.party` holds **resolved**
+   * characters, and a resolved character cannot be turned back into the one it
+   * came from. The species passive is already folded into its stats, so saving
+   * it as `committed` and resolving again would apply the passive twice — a
+   * unicorn permanently a point of Heart better than she should be, with
+   * nothing on screen to say so.
+   */
+  created?: Character;
+}
+
+/**
+ * The out-channel for things persistence needs and `RunState` cannot carry.
+ * Mutable, created per intent, and read only by the handler that applies it.
+ */
+interface EngineEffects {
+  created?: Character;
 }
 
 export interface IntentEnvelope {
@@ -104,6 +138,8 @@ export function createRunState(input: CreateRunInput): RunState {
     lastRoll: null,
     flags: {},
     xpEarned: 0,
+    chapterOutcome: null,
+    bonuses: [],
     updatedAt: input.now,
   };
 }
@@ -323,16 +359,69 @@ function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMem
   );
 }
 
-function completeChapter(draft: RunState, ctx: EngineContext): Presentation {
+/**
+ * Pays the chapter's bonus objectives, and returns them itemised.
+ *
+ * An objective is met when the flag it watches is set at the moment the chapter
+ * completes (spec §8.2). It deliberately reuses the flag machinery the whole
+ * chapter format already runs on, so "the party did the thing" has exactly one
+ * spelling: `setFlag` wherever it happens, and an objective pointed at it.
+ *
+ * `!== true` rather than a truthiness test, because `setFlag` can carry
+ * `value: false` — an author who explicitly *unsets* a flag later in the
+ * chapter (the shrine you found and then lost) means the objective is not met,
+ * and `flags[f]` being `false` must not read as met.
+ *
+ * The 25% ceiling is the same one tools/content/validate.mjs enforces at build
+ * time, applied again here on purpose. Validation stops a malformed chapter
+ * reaching the repo; this stops one that is already at the table — hand-edited
+ * content, or a chapter served from cache after the cap changed — from
+ * quietly distorting the pacing that spec §8.1 promises. The budget is shared
+ * across every objective, not granted per objective, because four objectives
+ * each paying a quarter would pay the whole award again.
+ */
+function awardObjectives(draft: RunState, chapter: Chapter): EarnedBonus[] {
+  let budget = Math.floor(chapter.xpAward * 0.25);
+  const earned: EarnedBonus[] = [];
+  for (const objective of chapter.objectives ?? []) {
+    if (draft.flags[objective.flag] !== true) continue;
+    // Clamped, and still recorded even if the clamp takes it to nothing: the
+    // party *did* the thing, and a completion screen that silently dropped it
+    // would be lying about the evening. Only unvalidated content gets here.
+    const xp = Math.max(0, Math.min(objective.xp, budget));
+    budget -= xp;
+    draft.xpEarned += xp;
+    earned.push({ id: objective.id, label: objective.label, xp });
+  }
+  return earned;
+}
+
+function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext): Presentation {
   const chapter = requireChapter(ctx);
+  // Absent means success (spec §8.2). Every chapter authored before setbacks
+  // existed ends successfully, and none of them should need editing to say so.
+  const outcome: ChapterOutcome = scene.outcome ?? "success";
+
   draft.phase = "chapter_complete";
   draft.prompt = null;
+  draft.chapterOutcome = outcome;
+
   // XP is per chapter, not per kill (spec §8.1). The engine only *records* it;
   // folding it into a character's provisional progress is the persistence
   // layer's job via character.awardXp(), because RunState holds resolved
   // characters and cannot express the committed/provisional split.
-  draft.xpEarned += chapter.xpAward;
-  return { kind: "CHAPTER_COMPLETE", chapterId: chapter.id, xp: draft.xpEarned };
+  //
+  // A setback pays half, rounded down, rather than nothing (§8.2). That is the
+  // whole point of the number: a family that hits two setbacks should fall
+  // behind the pacing, not off it.
+  draft.xpEarned += outcome === "setback" ? Math.floor(chapter.xpAward / 2) : chapter.xpAward;
+  // Objectives pay on a setback too. §8.2 defines them by what the party did on
+  // the way ("find the hidden shrine, finish with nobody knocked down"), not by
+  // which ending they arrived at — and the evening a chapter goes wrong is the
+  // worst one to also take away what did go right.
+  draft.bonuses = awardObjectives(draft, chapter);
+
+  return { kind: "CHAPTER_COMPLETE", chapterId: chapter.id, xp: draft.xpEarned, outcome };
 }
 
 /** Opens the prompt a scene is waiting on. Returns a completion presentation
@@ -348,8 +437,10 @@ function openScenePrompt(
     case "rest":
     case "choice_point": {
       if (scene.choices.length === 0) {
-        // A scene with no way out is the chapter's ending (see chapter-graph).
-        return completeChapter(draft, ctx);
+        // A scene with no way out is the chapter's ending (see chapter-graph),
+        // and a chapter may have several — which is why the scene, not the
+        // chapter, says whether this one is a success or a setback (§8.2).
+        return completeChapter(draft, scene, ctx);
       }
       // Hidden, never disabled (architecture §5). A scene where this comes back
       // empty is an authoring bug that validateChapter reports as a DEAD_END.
@@ -480,10 +571,15 @@ export function applyIntent(
   }
 
   const draft = draftOf(state);
+  const effects: EngineEffects = {};
   try {
-    const presentation = dispatch(draft, envelope, ctx);
+    const presentation = dispatch(draft, envelope, ctx, effects);
     touch(draft, ctx);
-    return presentation ? { state: draft, presentation } : { state: draft };
+    return {
+      state: draft,
+      ...(presentation ? { presentation } : {}),
+      ...(effects.created ? { created: effects.created } : {}),
+    };
   } catch (e) {
     if (e instanceof Illegal) return err(state, e.code, e.message);
     // A rules violation from character.ts (a hand-rolled creation payload, say)
@@ -499,6 +595,7 @@ function dispatch(
   draft: RunState,
   envelope: IntentEnvelope,
   ctx: EngineContext,
+  effects: EngineEffects,
 ): Presentation | undefined {
   const { playerId, intent } = envelope;
   switch (intent.type) {
@@ -512,7 +609,7 @@ function dispatch(
       return doReady(draft, playerId, intent.ready, ctx);
 
     case "CREATE_CHARACTER":
-      return doCreateCharacter(draft, playerId, intent, ctx);
+      return doCreateCharacter(draft, playerId, intent, ctx, effects);
 
     case "START_CHAPTER":
       return doStartChapter(draft, intent.chapterId, ctx);
@@ -559,6 +656,7 @@ function doCreateCharacter(
   playerId: string,
   intent: Extract<ClientIntent, { type: "CREATE_CHARACTER" }>,
   ctx: EngineContext,
+  effects: EngineEffects,
 ): Presentation | undefined {
   /*
    * Deliberately allowed at any phase. Refusing once the chapter has started
@@ -571,10 +669,36 @@ function doCreateCharacter(
     throw new Illegal("ILLEGAL", `player "${playerId}" already has a character in this run`);
   }
 
+  /*
+   * `startingLevel` arrives from a phone and buys levels, actions and stat
+   * points outright (spec §8.4), so it is checked against *this party* and not
+   * merely against the tier floors the rules define. `newCharacter` enforces
+   * "1 or a tier floor"; only the engine can enforce "and not a floor above the
+   * people you are sitting down with", because only the engine has the party.
+   *
+   * Without this, a hand-written client in a level-1 party could ask for 10 and
+   * get it — the joining rule is a convenience for a friend at the table, and a
+   * convenience that hands out nine free stat points is a different feature.
+   */
+  const joinCap = partyTierFloor(draft, ctx);
+  if (intent.startingLevel !== undefined && intent.startingLevel > joinCap) {
+    throw new Illegal(
+      "ILLEGAL",
+      `startingLevel ${intent.startingLevel} is above this party's tier floor (${joinCap})`,
+    );
+  }
+
   const character: Character = newCharacter({
-    // The run assigns a stable placeholder id; persistence may re-key it when
-    // the character is written to the household (architecture §3).
-    id: `c_${playerId}`,
+    /*
+     * Scoped to the run, not just the player. `c_<playerId>` alone repeats for
+     * every character that player ever makes, so a second hero in a later
+     * campaign would collide with the first: the store would skip the write as
+     * already-present, and the next chapter completion would load the *old*
+     * character and quietly swap it into the party. Including the run id keeps
+     * it unique while staying derived rather than random — the engine is pure
+     * and a replay has to rebuild the same id (architecture §4.1).
+     */
+    id: `c_${draft.runId}_${playerId}`,
     householdId: ctx.householdId ?? "",
     ownerPlayerId: playerId,
     name: intent.name,
@@ -582,9 +706,18 @@ function doCreateCharacter(
     class: intent.class,
     stats: intent.stats,
     appearance: intent.appearance,
+    // A late joiner seats at the party's tier floor rather than level 1, so a
+    // friend who sits down in campaign three is playable rather than a
+    // passenger (spec §8.4). `newCharacter` rejects anything that is not 1 or
+    // a tier floor, so an arbitrary number from a phone cannot buy levels.
+    ...(intent.startingLevel === undefined ? {} : { startingLevel: intent.startingLevel }),
     rules: ctx.rules,
     now: ctx.now,
   });
+
+  // The persistence layer needs the unresolved character; `draft.party` is
+  // about to hold only the resolved view of it. See `EngineResult.created`.
+  effects.created = character;
 
   const resolved = resolveCharacter(character, ctx.rules, ctx.items);
   draft.party.push({
@@ -604,6 +737,23 @@ function doCreateCharacter(
    */
   if (draft.phase === "lobby") draft.phase = "creation";
   return undefined;
+}
+
+/**
+ * The highest level a newcomer may join at: the tier floor of the strongest
+ * character already in the party, or 1 when nobody is here yet (spec §8.4).
+ *
+ * The *floor* rather than the party's actual level, deliberately — joining a
+ * party of level-9 Radiants seats you at 7, with two levels still ahead of you
+ * and the Mythic transformation yours to earn.
+ */
+function partyTierFloor(draft: RunState, ctx: EngineContext): number {
+  if (draft.party.length === 0) return 1;
+  // `committedLevel`, not `level`. The effective level includes gains from the
+  // campaign in flight, and those can still be given back — capping on them
+  // would let a newcomer bank a tier the party has not actually kept yet.
+  const highest = Math.max(...draft.party.map((m) => m.character.committedLevel));
+  return ctx.rules.tierLevels[tierForLevel(ctx.rules, highest)] ?? 1;
 }
 
 function doStartChapter(
@@ -635,6 +785,12 @@ function doStartChapter(
   draft.campaignId = chapter.campaignId;
   draft.chapterId = chapter.id;
   draft.xpEarned = 0;
+  // Cleared with the XP they belong to. Left behind, the previous chapter's
+  // setback and its bonus list would still be on the state the moment this one
+  // starts, so a phone that renders from `chapterOutcome` would open the
+  // evening's second chapter under the first one's ending banner.
+  draft.chapterOutcome = null;
+  draft.bonuses = [];
   draft.flags = {};
   draft.lastRoll = null;
   for (const member of draft.party) member.ready = false;
