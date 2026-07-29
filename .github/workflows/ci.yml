@@ -77,3 +77,39 @@ jobs:
           path: art/review/
           if-no-files-found: ignore
           retention-days: 14
+
+  e2e:
+    # The roadmap's dev loop says a change isn't done until it has been seen on
+    # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
+    # holds three browser contexts against the real dev server: real room
+    # codes, real SSE, real server-rolled dice. It is a separate job because it
+    # is minutes rather than seconds, and because a red e2e means something
+    # quite different from a red unit test.
+    name: end to end
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # playwright.config.ts starts `npm run dev` itself and waits for Vite.
+      - name: Play a chapter
+        run: npx playwright test
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7

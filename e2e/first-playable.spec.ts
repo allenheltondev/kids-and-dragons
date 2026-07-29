@@ -51,6 +51,41 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await page.getByRole("button", { name: /that's me/i }).click();
 }
 
+/** The server's view, so the test asserts on authority rather than on pixels. */
+async function serverState(code: string): Promise<{ phase: string; xpEarned: number }> {
+  const response = await fetch(`http://localhost:8787/api/state?code=${code}`);
+  const body = (await response.json()) as { state: { phase: string; xpEarned: number } };
+  return body.state;
+}
+
+/**
+ * Answer whatever this phone is being asked, if anything. Returns whether it
+ * acted. Choices are select-then-confirm (spec §11), and an option already
+ * carrying a voter's name is this player's own vote — tapping it again would
+ * just re-cast it.
+ */
+async function answerPrompt(page: Page, heroes: readonly string[]): Promise<boolean> {
+  const options = await page.locator(".prompt button").all();
+  const fresh: typeof options = [];
+  for (const option of options) {
+    const label = (await option.innerText().catch(() => "")).trim();
+    if (!label) continue;
+    if (/do it!|yes, do that|wait, not yet|change/i.test(label)) continue;
+    if (heroes.some((hero) => label.includes(hero))) continue;
+    fresh.push(option);
+  }
+  if (fresh.length === 0) return false;
+
+  await fresh[0]!.click().catch(() => {});
+  // The confirm can vanish under us — another player's answer can resolve the
+  // prompt between the tap and the confirm. That is the game working, not a
+  // failure, so a missed confirm is fine; the next turn re-reads the state.
+  const confirm = page.getByRole("button", { name: /do it!|yes, do that/i });
+  await confirm.first().click({ timeout: 3_000 }).catch(() => {});
+  await page.waitForTimeout(600);
+  return true;
+}
+
 test.describe("first playable", () => {
   test("travel mode: three phones, one room, a character each", async ({ browser }) => {
     const phones = await Promise.all(
@@ -93,6 +128,62 @@ test.describe("first playable", () => {
     for (const hero of heroes) {
       await expect(host.getByText(hero).first()).toBeVisible({ timeout: 15_000 });
     }
+  });
+
+  test("three players take a chapter from the lobby to the end", async ({ browser }) => {
+    const phones = await Promise.all(
+      NAMES.map(() => browser.newContext({ viewport: { width: 390, height: 844 } }).then((c) => c.newPage())),
+    );
+    const [host] = phones as [Page, ...Page[]];
+
+    await host.goto("/");
+    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await host.getByText("Travel Mode").click();
+    await host.getByRole("button", { name: /start a game/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
+    const code = new URL(host.url()).pathname.split("/").pop()!;
+
+    for (const [i, page] of phones.slice(1).entries()) {
+      await page.goto("/");
+      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
+      await page.getByLabel(/room code/i).fill(code);
+      await page.getByRole("button", { name: /join a game/i }).click();
+    }
+
+    // One of each so the chapter's species-gated choices are all reachable.
+    const species = ["unicorn", "griffin", "bigfoot"];
+    const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
+    for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
+
+    for (const page of phones) await page.getByRole("button", { name: /i'm ready/i }).click();
+    await host.getByRole("button", { name: /begin the adventure/i }).click();
+    await expect(host.getByText(/the story|what do you do/i).first()).toBeVisible();
+
+    // Play it the way a table does: whoever the game is asking, answers.
+    for (let turn = 0; turn < 40; turn++) {
+      const state = await serverState(code);
+      if (state.phase === "chapter_complete") break;
+
+      let acted = false;
+      for (const page of phones) {
+        const roll = page.getByRole("button", { name: /^roll/i });
+        if ((await roll.count()) > 0 && (await roll.first().isVisible().catch(() => false))) {
+          await roll.first().click();
+          // The roll is the centrepiece and takes its ~1.5s (spec §2.2).
+          await page.waitForTimeout(2600);
+          acted = true;
+          continue;
+        }
+        if (await answerPrompt(page, heroes)) acted = true;
+      }
+      expect(acted, "somebody must always have something to tap").toBe(true);
+    }
+
+    const final = await serverState(code);
+    expect(final.phase).toBe("chapter_complete");
+    // XP is awarded per chapter, not per enemy — exploring counts (spec §8.1).
+    expect(final.xpEarned).toBeGreaterThan(0);
+    await expect(host.getByText(/\b\d+\b/).first()).toBeVisible();
   });
 
   test("party mode: the TV attaches with no identity at all", async ({ browser }) => {

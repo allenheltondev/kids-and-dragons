@@ -13,6 +13,7 @@ import { useEffect, useRef } from "react";
 import { create } from "zustand";
 import type { StateCreator } from "zustand";
 import type {
+  Campaign,
   ClientIntent,
   ItemCatalog,
   PartyMember,
@@ -40,6 +41,13 @@ import {
   type PresentationGate,
 } from "../sync/channel";
 import { navigate } from "../router";
+
+/**
+ * The campaign the lobby starts. One campaign exists today; choosing between
+ * several is roadmap Chapter 5's problem, and the id lives here rather than in
+ * a component so there is exactly one place to change when it is.
+ */
+const LAUNCH_CAMPAIGN = "the-hollow-crown";
 
 // ---------------------------------------------------------------------------
 // Store surface
@@ -227,15 +235,25 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       error: null,
       rules: null,
       items: null,
+      campaign: null,
       pendingCode: null,
 
       async loadContent() {
-        if (get().rules && get().items) return;
+        if (get().rules && get().items && get().campaign) return;
         if (runtime.content) return runtime.content;
 
         const task = (async () => {
-          const [rules, items] = await Promise.all([deps.api.loadRules(), deps.api.loadItems()]);
-          set({ rules, items });
+          // The campaign is loaded alongside the rules because the lobby needs
+          // to name the chapter it asks the server to start, and content must
+          // never require a deploy of game code. LAUNCH_CAMPAIGN is the only
+          // hardcoded id in the client; picking between campaigns is roadmap
+          // Chapter 5's problem.
+          const [rules, items, campaign] = await Promise.all([
+            deps.api.loadRules(),
+            deps.api.loadItems(),
+            deps.api.loadCampaign(LAUNCH_CAMPAIGN),
+          ]);
+          set({ rules, items, campaign });
         })()
           .catch((error: unknown) => {
             set({
@@ -482,6 +500,10 @@ export function useRules(): RulesContent | null {
 
 export function useItems(): ItemCatalog | null {
   return useGameStore((store) => store.items);
+}
+
+export function useCampaign(): Campaign | null {
+  return useGameStore((store) => store.campaign);
 }
 
 export function useError(): string | null {

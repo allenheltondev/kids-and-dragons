@@ -12,9 +12,10 @@ const CHROMIUM = process.env.KAD_CHROMIUM ?? undefined;
 
 export default defineConfig({
   testDir: "./e2e",
-  // Three players each walking a five-step creation flow is a lot of real
-  // interaction — the travel-mode spec spends most of its budget there.
-  timeout: 180_000,
+  // Three players each walking a five-step creation flow, and then a whole
+  // chapter with real roll animations, is a lot of genuine interaction — the
+  // playthrough spends about two minutes of this on its own.
+  timeout: 300_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
   workers: 1,

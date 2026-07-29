@@ -21,3 +21,7 @@ cdk.out/
 .env.local
 *.local
 .DS_Store
+
+# playwright
+test-results/
+playwright-report/
