@@ -559,7 +559,7 @@ and served as a static asset from CloudFront.
   "campaignId": "the-hollow-crown",
   "index": 1,
   "title": "The Rustling Path",
-  "biome": "bramblewood",
+  "biome": "enchanted_woods",
   "estimatedMinutes": 28,
   "xpAward": 300,
 
