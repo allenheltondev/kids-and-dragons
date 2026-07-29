@@ -313,11 +313,16 @@ two-second command on a laptop.
 
 ## Operating it
 
-**Where the logs are.** `/aws/lambda/kad-*`, JSON-formatted, 30-day retention.
-The sweeper runs once a day and logs a one-line summary per run: scanned,
-deleted, spared, failed. `spared` counts households somebody claimed between the
-index query and the delete — not an error, a save. Expect most days to read
-`scanned 0` and nothing else.
+**Where the logs are.** `/aws/lambda/kad-*`, JSON-formatted. The stack declares
+no log groups and sets no retention: Lambda creates each group on the function's
+first invocation, and retention is handled account-wide by a utility outside this
+repo. Setting `RetentionInDays` here would mean every deploy quietly overwriting
+whatever that utility had decided.
+
+**What the sweeper says.** It runs once a day and logs a one-line summary per
+run: scanned, deleted, spared, failed. `spared` counts households somebody
+claimed between the index query and the delete — not an error, a save. Expect
+most days to read `scanned 0` and nothing else.
 
 A run deletes at most 25 households, so a backlog past that drains the next day
 rather than in one go. If you ever want it faster, `GuestSweepSchedule` is a
