@@ -243,8 +243,6 @@
       "type": "encounter",
       "map": "thicket",
       "art": "bg/bramblewood/stream",
-      "$comment": "Gated until the combat UI lands (docs/briefs/combat-rendering.md). The engine can run this fight today, but no phone can play it — a party routed here had nothing to tap and the chapter dead-ended at the table. Delete the autoResolve line to turn the fight on.",
-      "autoResolve": "victory",
       "narration": "The wisps scatter into the thicket and start a game of tag that nobody agreed to play.",
       "enemies": [
         {

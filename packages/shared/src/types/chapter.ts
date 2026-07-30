@@ -244,4 +244,11 @@ export interface Campaign {
   title: string;
   blurb: string;
   chapters: string[];
+  /**
+   * Setbacks before the campaign fails — spec §8.3's "fails at three
+   * setbacks, tunable per campaign". Absent means three; authored here so a
+   * short, gentle campaign can afford one and a long one can afford four
+   * without either touching code.
+   */
+  setbackLimit?: number;
 }

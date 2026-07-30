@@ -22,6 +22,14 @@
 # Uploading the SPA *after* the stack means a deploy that fails at step 3 leaves
 # the previous version serving, rather than a new bundle talking to an API that
 # does not exist yet.
+#
+# KAD_PREBUILT=1 turns this into a ship-only run: steps 2 and 4's build halves
+# are skipped and whatever is already in infra/.build/ and packages/client/dist/
+# is deployed as-is. The prod workflow sets it after downloading CI's build
+# artifact, so production ships the exact bytes CI tested. The ordering above
+# still holds — both directories are *verified* up front, before sam deploy, so
+# a ship with no artifact fails before it can push empty CodeUris at the stack.
+# Never set it by hand unless you have just put a real build in both places.
 
 set -euo pipefail
 
@@ -71,8 +79,27 @@ else
   fi
 fi
 
-say "Bundling Lambdas"
-node infra/build.mjs
+if [ "${KAD_PREBUILT:-}" = "1" ]; then
+  say "Ship-only run (KAD_PREBUILT=1) — verifying the prebuilt artifact"
+  # Fail loudly *before* sam deploy: an empty or missing directory here means
+  # the artifact was never downloaded (or was uploaded without its dot-dirs),
+  # and shipping it would mean empty CodeUris and a blank client. The three
+  # subdirectories are the template's CodeUri values (infra/template.yaml).
+  for dir in \
+      infra/.build/api \
+      infra/.build/channel-authorizer \
+      infra/.build/sweep \
+      packages/client/dist; do
+    if [ ! -d "$dir" ] || [ -z "$(ls -A "$dir" 2>/dev/null)" ]; then
+      echo "error: KAD_PREBUILT=1 but $dir is missing or empty." >&2
+      echo "       Download the CI build artifact first, or unset KAD_PREBUILT to build here." >&2
+      exit 1
+    fi
+  done
+else
+  say "Bundling Lambdas"
+  node infra/build.mjs
+fi
 
 say "Deploying the stack ($STACK)"
 
@@ -116,8 +143,12 @@ if [ -z "$BUCKET" ] || [ "$BUCKET" = "None" ]; then
   exit 1
 fi
 
-say "Building the client"
-npm run build
+if [ "${KAD_PREBUILT:-}" = "1" ]; then
+  say "Building the client — skipped (KAD_PREBUILT=1: shipping the verified artifact)"
+else
+  say "Building the client"
+  npm run build
+fi
 
 say "Uploading to $BUCKET"
 

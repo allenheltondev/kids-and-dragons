@@ -15,6 +15,7 @@ import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/tes
 import { makeRng } from "@kad/shared";
 import type {
   AbilityCatalog,
+  Campaign,
   Chapter,
   EncounterMap,
   ItemCatalog,
@@ -59,6 +60,7 @@ export function makeContent(
     chapters?: Chapter[];
     maps?: EncounterMap[];
     abilities?: AbilityCatalog;
+    campaigns?: Campaign[];
   } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
@@ -71,6 +73,11 @@ export function makeContent(
   // tolerant path (`legalActions` skips what it cannot look up) is the one the
   // handler tests should be walking. `encounter.test.ts` owns the catalog.
   const abilities = overrides.abilities ?? {};
+  // Empty by default, deliberately: an unknown campaign means the campaign
+  // boundary never fires (loader.ts `campaign()`), so every handler test
+  // written before campaigns existed keeps its exact behaviour — XP folds
+  // provisionally and nothing commits. Tests about the boundary pass one in.
+  const campaigns = new Map((overrides.campaigns ?? []).map((c) => [c.id, c]));
   return {
     root: "<fixture>",
     rules: () => rules,
@@ -79,6 +86,7 @@ export function makeContent(
     chapterIds: () => [...chapters.keys()],
     map: (id) => maps.get(id) ?? null,
     abilities: () => abilities,
+    campaign: (id) => campaigns.get(id) ?? null,
   };
 }
 

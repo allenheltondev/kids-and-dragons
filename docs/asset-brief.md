@@ -618,19 +618,22 @@ triggered it.
 | `hurt` | 5 | 0.417 | Starts on the impact event, ends with the attack clip. Adds nothing to the turn. |
 | `guard` | 6, then hold | 0.5 | Brace lasts until your next turn (`encounter.ts`), so the clip is a plant and a hold, not a loop |
 | `leap` | 11 — 3 crouch, 5 airborne, 3 land | 0.917 | The engine translates the figure during the airborne 5; the sheet's `dust_scuff` plays on ticks 3 and 8 |
-| `down` | 6 fall, then a 24-tick loop | 0.5 + loop | §9.3 |
+| `down` | 6 fall, then `down_loop` (24, looped) | 0.5 + loop | §9.3. The loop is its own Rive animation, named in the manifest (`loopClip`), and ships with `down` — a rig delivering one without the other fails. |
 | `lift` | 10, **contact event at tick 6** | 0.833 | §9.3 |
-| `revive` | 10, started by the lift's contact event | 0.833 | §9.3 |
+| `revive` | 10, started by the lift's contact event | 0.833 | §9.3. Runs to tick 15 where the lift ends at 10; the verifier charges the overhang to the Help Up turn. |
 | `celebrate` | 24 | 2.0 | Unchanged. Plays after the fight, so it is outside the budget. |
-| `transform` | Chapter 5's, unchanged | — | Not this commission |
+| `transform` | 24, **flash event at tick 4** | 2.0 | Chapter 5's, and not this commission. The event is where `transform_flash`'s white-out starts; §9.4 names the sheet and the manifest decides the tick (its `$comment` carries the reasoning). |
 
 Worst realistic turn: **not the attack.** Roll 18 + a 6-step move 12 + `attack` 8 with
 `impact_strike` running from the tick-3 impact (2 ticks of tail past the clip) = **40 ticks**. The
 real ceiling is the **cast**: roll 18 + move 12 + `cast` 10 + a 12-frame sheet running from the
 tick-4 release (5 ticks of tail) = **45 ticks — `turnBudgetTicks` exactly, zero headroom.** The
 budget is spent at 100%, so any clip or effect that grows by a single tick fails the gate (the
-manifest's `$turnBudgetComment` carries the same arithmetic). **If you need a longer clip,
-something else in the same turn has to get shorter.** Say which, and why, rather than adding.
+manifest's `$turnBudgetComment` carries the same arithmetic). A concurrent clip is measured too,
+not waved through: `revive` overhangs the lift by 5 ticks (contact at 6 + 10 ticks = 15, against
+the lift's 10), and the verifier charges whatever runs past the host — the Help Up turn is
+move 12 + `lift` 10 + `revive_lift`'s 7-tick tail = 29 ticks, well inside. **If you need a longer
+clip, something else in the same turn has to get shorter.** Say which, and why, rather than adding.
 
 Three clips are new — `guard`, `leap`, `lift` — and all three are required on **every** species
 rig, including species with no ability that fires them. `art-pipeline.md` §6.1's rule is that game
@@ -656,9 +659,10 @@ section overrides it.** A frozen pose reads as a corpse. Author it as:
 - **6 ticks of fall**, ending with the head toward viewer-left — the same direction as the standing
   pose in §2.5, so three downed figures on a grid all lie the same way and can be counted at a
   glance.
-- **A 24-tick breathing loop at half the amplitude of `idle`**, plus a blink roughly every 3
-  seconds. Half, because she must be able to tell down from standing across a room; still
-  breathing, because the promise is that this character is fine.
+- **A 24-tick breathing loop at half the amplitude of `idle`** — exported as its own animation,
+  named `down_loop` (the manifest's `down.loopClip`), and required alongside `down` — plus a blink
+  roughly every 3 seconds. Half, because she must be able to tell down from standing across a room;
+  still breathing, because the promise is that this character is fine.
 - A silhouette that is **unmistakably horizontal**: no more than 50% of the standing height and at
   least 140% of the standing width. At 64px (§9.6) that is the only signal that survives.
 - Opaque mass kept in the **lower 40% of the canvas**, so a figure standing on the tile behind
@@ -725,6 +729,14 @@ when the fighting has stopped. **No new combat sheet may exceed 12 frames.**
 
 Every new sheet inherits the §4.5 effect contract — horizontal strip, 256×256 frames, 12fps, real
 alpha, jitter permitted — plus these, which are new and mechanically checked in §9.7:
+
+- **A declared start.** Every `effects[]` entry in the manifest carries
+  `startsOn: { clip, event }` — the rig clip event that fires it — or `startsOn: null` for an
+  ambient loop (the auras start with the figure, not with an event). The verifier derives every
+  effect/clip sync check and every effect-tail charge in the turn budget from this field, so
+  coverage is **every delivered sheet**, not a shortlist somebody hardcoded; an entry that declares
+  neither is a failure. The reverse gap — a clip event no sheet consumes yet, like `leap`'s `dust`
+  waiting on `dust_scuff` — is a warning, because undelivered work is tolerated, not hidden.
 
 - **Tile-scoped.** ≥ 70% of the sheet's total opaque alpha mass falls inside the centre 128×128 of
   the 256px frame. A 256 frame is **two tiles wide** at §4.5's 128px tiles, so an effect that
@@ -989,9 +1001,9 @@ long as somebody remembers it. Rows marked ✅ run in `npm run art:verify` or `n
 | Top band clear | ✅ | ≤ `effectTopBandCoverageMax` of opaque mass in the top `effectTopBandPx`. Tile-scoped in-combat effects only: those are the ones playing at the moment a number appears. |
 | Tint safety | ✅ | `tintable` sheets: 99th-percentile HSV saturation over opaque pixels ≤ `tintableMaxSaturation`. A percentile rather than a maximum, because one stray exporter pixel is not a colour decision. |
 | Combat frame budget | ✅ | Any effect not marked `outOfCombat` has `frames` ≤ `combatEffectMaxFrames`. |
-| Rig contract coherent | ✅ | Every clip a set requires is defined and every clip defined is required; event ticks inside their clips; no duplicate input names; every clip reachable. |
-| Turn budget | ✅ | The worst realistic turn — move, longest action, the roll if it takes one, effect tail — fits `turnBudgetTicks`. Re-derived from the clips, not quoted. |
-| Effect / clip sync | ✅ | Every sheet fired by a clip event has that event, and runs at `rigContract.tickFps`. |
+| Rig contract coherent | ✅ | Every clip a set requires is defined and every clip defined is required; event ticks inside their clips; no duplicate input names; every clip reachable; a hand-off loop (`down.loopClip`) has both a name and a length. |
+| Turn budget | ✅ | The worst realistic turn — move, longest action, the roll if it takes one, effect tail, and any concurrent clip's overhang past its host — fits `turnBudgetTicks`. Re-derived from the clips and the manifest's `startsOn` data, not quoted. |
+| Effect / clip sync | ✅ | Every delivered sheet's `startsOn` names a real clip event and runs at `rigContract.tickFps` — derived from the manifest, so coverage is all delivered sheets, not a hardcoded three. `startsOn: null` (ambient) is skipped out loud; an event no sheet or concurrent clip consumes is a warning. |
 | Rig interface | ✅ | Every rig exposes exactly `rigContract`'s clips and inputs for its kind, with lengths in ticks. The comparison is written and tested, and the `.riv` reader runs the real Rive runtime headlessly — a rig on disk is genuinely opened and compared, not taken on faith (`art-pipeline.md` §6.1). The one caveat: no rig is delivered yet, so the read path has never met a real delivery, and a `.riv` that cannot be opened is reported as a **failure** rather than skipped. |
 | Enemy sets | ✗ | Per §3 for the plan's part list: canvas, format, alpha, edge margin, per-pixel recomposite, seam overdraw, origin. Needs §9.7 items 4–5. |
 | Enemy height | ✗ | Drawn height within `enemyHeightTolerancePx` of the entry's `heightPx`. Needs §9.7 items 4–5. |

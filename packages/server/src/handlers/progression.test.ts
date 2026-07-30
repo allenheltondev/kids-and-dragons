@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { newCharacter, resolveCharacter, type Character, type RunState } from "@kad/shared";
-import { makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
-import { foldChapterXp, newCharacterWrite } from "./progression.ts";
+import {
+  newCharacter,
+  resolveCharacter,
+  type Campaign,
+  type Character,
+  type RunState,
+} from "@kad/shared";
+import { makeChapter } from "../../../shared/src/test-fixtures.ts";
+import { makeContent, makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
+import { foldChapterXp, newCharacterWrite, settleChapterCompletion } from "./progression.ts";
 
 /**
  * A run holding one resolved character, exactly as the engine would leave it
@@ -311,5 +318,248 @@ describe("foldChapterXp", () => {
     // Nothing to write, nothing thrown, and the party snapshot untouched.
     await expect(foldChapterXp(state, harness.deps, householdId)).resolves.toEqual([]);
     expect(state.party[0]?.character.level).toBe(1);
+  });
+});
+
+describe("settleChapterCompletion — the campaign boundary", () => {
+  /**
+   * A harness whose content knows the fixture campaign. `chapters` controls
+   * where the boundary is: with two entries, "bramblewood-01" (the fixture
+   * chapter) is NOT the last chapter; with one, it is.
+   */
+  function campaignHarness(campaign: Partial<Campaign> = {}) {
+    return makeHarness({
+      content: makeContent({
+        campaigns: [
+          {
+            id: "the-hollow-crown",
+            title: "The Hollow Crown",
+            blurb: "",
+            chapters: ["bramblewood-01", "bramblewood-02"],
+            ...campaign,
+          },
+        ],
+      }),
+    });
+  }
+
+  /** The setup() run, dressed as a mid-campaign chapter completion. */
+  function completing(
+    state: RunState,
+    overrides: Partial<RunState> = {},
+  ): RunState {
+    Object.assign(state as object, {
+      campaignId: "the-hollow-crown",
+      chapterId: makeChapter().id,
+      chapterOutcome: "success",
+      ...overrides,
+    });
+    return state;
+  }
+
+  it("records the chapter and the attempt on an ordinary completion", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    completing(state);
+    state.xpEarned = 300;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.chapterProgress).toMatchObject({
+      runId: "r_1",
+      chapterId: "bramblewood-01",
+      status: "complete",
+      outcome: "success",
+      xpEarned: 300,
+    });
+    expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 0 });
+    // Mid-campaign: the gains stay provisional. Committing early is the bug
+    // the whole commitment rule exists to prevent.
+    expect(settlement.characters[0]?.provisional?.xp).toBe(300);
+    expect(settlement.characters[0]?.committed.xp).toBe(0);
+  });
+
+  it("counts a setback, and half-XP still folds provisionally", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    completing(state, { chapterOutcome: "setback" });
+    state.xpEarned = 150;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.chapterProgress?.outcome).toBe("setback");
+    expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 1 });
+    expect(settlement.characters[0]?.provisional?.xp).toBe(150);
+  });
+
+  it("fails the campaign at the third setback: revert to committed, keep a souvenir", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    // Two setbacks already on the books, from earlier evenings.
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: "the-hollow-crown",
+      status: "active",
+      setbacks: 2,
+      updatedAt: new Date(T0).toISOString(),
+    });
+    completing(state, { chapterOutcome: "setback" });
+    state.xpEarned = 150;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.campaignProgress).toMatchObject({ status: "failed", setbacks: 3 });
+    const [failed] = settlement.characters;
+    // The revert: provisional gone, committed exactly what it was, and the
+    // attempt leaves a visible mark (spec §8.3).
+    expect(failed?.provisional).toBeNull();
+    expect(failed?.committed.xp).toBe(0);
+    expect(failed?.souvenirs).toHaveLength(1);
+    expect(failed?.souvenirs[0]?.id).toBe("the-hollow-crown");
+    // The phones see the revert on this same patch, not next chapter.
+    expect(state.party[0]?.character.xp).toBe(0);
+    expect(state.party[0]?.character.level).toBe(1);
+  });
+
+  it("flavors the souvenir with the tier the attempt reached (spec §8.3)", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    // She was Sworn, provisionally — the fixture curve's tier 2 starts at
+    // level 4, so seed a provisional that got there this campaign.
+    const rules = harness.deps.content.rules();
+    const level4Xp = rules.levelXp[3]!;
+    await harness.repo.putCharacter(character);
+    const seeded = await harness.repo.getCharacter(householdId, character.id);
+    await harness.repo.putCharacter({
+      ...seeded!,
+      provisional: {
+        ...seeded!.committed,
+        xp: level4Xp,
+        level: 4,
+        tier: "sworn",
+        runId: "the-hollow-crown",
+      },
+    });
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: "the-hollow-crown",
+      status: "active",
+      setbacks: 2,
+      updatedAt: new Date(T0).toISOString(),
+    });
+    completing(state, { chapterOutcome: "setback" });
+    state.xpEarned = 10;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    const [failed] = settlement.characters;
+    expect(failed?.souvenirs[0]?.id).toBe("the-hollow-crown#sworn");
+    expect(failed?.committed.tier).toBe("fledgling");
+  });
+
+  it("commits the campaign at its final chapter: the gains become who you are", async () => {
+    // One chapter long, so the fixture chapter IS the boundary.
+    const harness = campaignHarness({ chapters: ["bramblewood-01"] });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    completing(state);
+    state.xpEarned = 300;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.campaignProgress).toMatchObject({ status: "complete", setbacks: 0 });
+    const [committed] = settlement.characters;
+    expect(committed?.provisional).toBeNull();
+    expect(committed?.committed.xp).toBe(300);
+    expect(committed?.committed.level).toBe(2);
+    // Quest items are campaign-scoped either way (§9.2).
+    expect(committed?.questItems).toEqual([]);
+  });
+
+  it("a zero-XP final chapter still commits the campaign", async () => {
+    // The boundary cannot be "whoever happened to earn something": a final
+    // chapter that awards nothing still ends the campaign, and the provisional
+    // gains from every chapter before it still have to become permanent.
+    const harness = campaignHarness({ chapters: ["bramblewood-01"] });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    const seeded = await harness.repo.getCharacter(householdId, character.id);
+    await harness.repo.putCharacter({
+      ...seeded!,
+      provisional: { ...seeded!.committed, xp: 300, level: 2, runId: "the-hollow-crown" },
+    });
+    completing(state);
+    state.xpEarned = 0;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.campaignProgress?.status).toBe("complete");
+    expect(settlement.characters[0]?.committed.xp).toBe(300);
+    expect(settlement.characters[0]?.provisional).toBeNull();
+  });
+
+  it("a finished attempt does not haunt the next one", async () => {
+    // The failed attempt's setbacks belong to the failed attempt. Counting
+    // them again would make a replayed campaign insta-fail on its first
+    // stumble, which is not a story anybody authored.
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: "the-hollow-crown",
+      status: "failed",
+      setbacks: 3,
+      updatedAt: new Date(T0).toISOString(),
+    });
+    completing(state, { chapterOutcome: "setback" });
+    state.xpEarned = 150;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 1 });
+    expect(settlement.characters[0]?.provisional?.xp).toBe(150);
+  });
+
+  it("an unknown campaign settles XP and the chapter record only", async () => {
+    // Committing on a guess would make gains permanent that a failed campaign
+    // was supposed to take back — the safe failure keeps them provisional.
+    const harness = makeHarness(); // content with no campaigns at all
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    completing(state);
+    state.xpEarned = 300;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.campaignProgress).toBeUndefined();
+    expect(settlement.chapterProgress?.outcome).toBe("success");
+    expect(settlement.characters[0]?.provisional?.xp).toBe(300);
+    expect(settlement.characters[0]?.committed.xp).toBe(0);
+  });
+
+  it("respects a campaign's own setback limit", async () => {
+    const harness = campaignHarness({ setbackLimit: 1 });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    completing(state, { chapterOutcome: "setback" });
+    state.xpEarned = 150;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+
+    expect(settlement.campaignProgress).toMatchObject({ status: "failed", setbacks: 1 });
+    expect(settlement.characters[0]?.provisional).toBeNull();
   });
 });

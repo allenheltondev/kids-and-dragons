@@ -88,6 +88,9 @@ Resources:
     Properties:
       RoleName: kad-deploy-staging
       Description: Deploys the Kids & Dragons staging stack from GitHub Actions
+      Tags:
+        - Key: kad:stage
+          Value: staging
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -102,19 +105,15 @@ Resources:
                 # Without this a workflow job targeting Staging could assume the
                 # production role, and the two environments would be one.
                 token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${StagingEnvironmentName}"
-      ManagedPolicyArns:
-        # Deploying this stack means creating IAM roles, a secret, a user pool
-        # and a distribution — there is no small policy that covers it honestly.
-        # Scoped instead by *who can assume it*: one repository, one
-        # environment, for the length of one job.
-        - !Sub "arn:${AWS::Partition}:iam::aws:policy/PowerUserAccess"
-        - !Sub "arn:${AWS::Partition}:iam::aws:policy/IAMFullAccess"
 
   ProdDeployRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: kad-deploy-prod
       Description: Deploys the Kids & Dragons prod stack from GitHub Actions
+      Tags:
+        - Key: kad:stage
+          Value: prod
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -126,9 +125,200 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
                 token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubOwner}/${GitHubRepo}:environment:${ProdEnvironmentName}"
-      ManagedPolicyArns:
-        - !Sub "arn:${AWS::Partition}:iam::aws:policy/PowerUserAccess"
-        - !Sub "arn:${AWS::Partition}:iam::aws:policy/IAMFullAccess"
+
+  # What a deploy may actually touch — replacing the PowerUserAccess +
+  # IAMFullAccess pair both roles used to carry. One policy, attached to both
+  # roles, because the two stacks are the same template under different names:
+  # every resource is prefixed `kad-` / `kad-site-` (infra/template.yaml), and
+  # CloudFormation prefixes every name it generates — function names, role
+  # names — with the stack name, which is `kad-staging` or `kad-prod`. So the
+  # boundary this draws is *"cannot touch a non-kad resource"*: generous with
+  # actions inside each service+name scope (enumerating exotic actions buys
+  # nothing but AccessDenied roulette), strict about which resources those
+  # actions can reach. This matters most for the staging role, which is
+  # assumable from a workflow that runs repository-controlled code on every
+  # collaborator PR.
+  #
+  # Validated by use: the first real deploy after tightening this is the test.
+  # If it fails, the workflow's "Diagnose failed deploy" step prints the stack
+  # events — an over-tight policy shows up there as CREATE_FAILED/UPDATE_FAILED
+  # with "API: <service>:<Action> ... is not authorized to perform" in
+  # ResourceStatusReason, naming the exact action and ARN to add below. An
+  # AccessDenied *before* any stack event (during `sam deploy`'s changeset or
+  # upload phase) means the cloudformation or S3 statements instead.
+  DeployPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: kad-deploy
+      Description: Everything a Kids & Dragons stack deploy touches, and nothing off the kad-* prefix
+      Roles:
+        - !Ref StagingDeployRole
+        - !Ref ProdDeployRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          # The stacks themselves, plus SAM's own bookkeeping stack:
+          # `resolve_s3 = true` (infra/samconfig.toml) has SAM manage its
+          # artifact bucket through a stack named aws-sam-cli-managed-default,
+          # which a deploy reads on every run and creates on the first.
+          - Sid: CloudFormationKadStacks
+            Effect: Allow
+            Action: cloudformation:*
+            Resource:
+              - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/kad-${!aws:PrincipalTag/kad:stage}/*"
+              - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/aws-sam-cli-managed-default*/*"
+
+          # Deploying a template with `Transform: AWS::Serverless-2016-10-31`
+          # requires CreateChangeSet on the transform's own pseudo-ARN.
+          - Sid: CloudFormationSamTransform
+            Effect: Allow
+            Action: cloudformation:CreateChangeSet
+            Resource: !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31"
+
+          # Read-only calls sam makes against a template *body* — there is no
+          # resource ARN to name for these.
+          - Sid: CloudFormationTemplateReads
+            Effect: Allow
+            Action:
+              - cloudformation:GetTemplateSummary
+              - cloudformation:ValidateTemplate
+            Resource: "*"
+
+          # The site buckets (create/update via CloudFormation, then the three
+          # `aws s3 sync --delete` calls in deploy.sh) and SAM's artifact
+          # bucket, where every deploy uploads the Lambda bundles.
+          - Sid: S3KadBuckets
+            Effect: Allow
+            Action: s3:*
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::kad-site-${!aws:PrincipalTag/kad:stage}-*"
+              - !Sub "arn:${AWS::Partition}:s3:::kad-site-${!aws:PrincipalTag/kad:stage}-*/*"
+              - !Sub "arn:${AWS::Partition}:s3:::aws-sam-cli-managed-default*"
+              - !Sub "arn:${AWS::Partition}:s3:::aws-sam-cli-managed-default*/*"
+
+          # The execution roles SAM generates for the four functions and the
+          # sweep schedule — all named <stack>-<LogicalId>-<random>, so the
+          # kad- prefix holds. PassRole is what hands a role to Lambda and to
+          # EventBridge Scheduler at create time.
+          - Sid: IamKadRoles
+            Effect: Allow
+            Action:
+              - iam:AttachRolePolicy
+              - iam:CreateRole
+              - iam:DeleteRole
+              - iam:DeleteRolePolicy
+              - iam:DetachRolePolicy
+              - iam:GetRole
+              - iam:GetRolePolicy
+              - iam:ListAttachedRolePolicies
+              - iam:ListRolePolicies
+              - iam:ListRoleTags
+              - iam:PassRole
+              - iam:PutRolePolicy
+              - iam:TagRole
+              - iam:UntagRole
+              - iam:UpdateAssumeRolePolicy
+              - iam:UpdateRole
+              - iam:UpdateRoleDescription
+            Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/kad-${!aws:PrincipalTag/kad:stage}-*"
+
+          # role/kad-* unavoidably matches the two deploy roles in this very
+          # template. Without this deny, the staging role — assumable from
+          # repository-controlled code on any collaborator PR — could
+          # PutRolePolicy on *itself* and mint whatever the statement above
+          # withheld. These roles are only ever managed by the by-hand deploy
+          # of this bootstrap stack, never by the pipeline.
+          - Sid: DenyTouchingTheDeployRolesThemselves
+            Effect: Deny
+            Action: iam:*
+            Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/kad-deploy-*"
+
+          - Sid: LambdaKadFunctions
+            Effect: Allow
+            Action: lambda:*
+            Resource: !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:kad-${!aws:PrincipalTag/kad:stage}-*"
+
+          # table/kad-* also matches the GSI ARNs (table/kad-*/index/*) — IAM
+          # wildcards cross "/".
+          - Sid: DynamoKadTables
+            Effect: Allow
+            Action: dynamodb:*
+            Resource:
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}"
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}/index/*"
+
+          # The token-signing SecureString lives at /kad/<stage>/…. Nothing in
+          # the deploy path writes it today (the API function mints it at
+          # runtime), but the teardown documented in docs/deploy.md deletes it,
+          # and scoping it here costs nothing.
+          - Sid: SsmKadParameters
+            Effect: Allow
+            Action: ssm:*
+            Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${!aws:PrincipalTag/kad:stage}/*"
+
+          # The sweep schedule is EventBridge Scheduler (ScheduleV2 in the
+          # template), named kad-sweep-<stage> in the default group — not a
+          # classic events:* rule, so no events statement is needed.
+          - Sid: SchedulerKadSchedules
+            Effect: Allow
+            Action: scheduler:*
+            Resource: !Sub "arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/default/kad-sweep-${!aws:PrincipalTag/kad:stage}"
+
+          # The stack declares no log groups (retention is managed outside this
+          # repo), but Lambda's groups are /aws/lambda/kad-* and diagnosing a
+          # deploy sometimes needs to read them from the workflow.
+          - Sid: LogsKadGroups
+            Effect: Allow
+            Action: logs:*
+            Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kad-${!aws:PrincipalTag/kad:stage}-*"
+
+          # These resources carry generated ids rather than kad-* names. Broad
+          # lifecycle permissions are therefore usable only when CloudFormation
+          # is calling on the role's behalf; a workflow cannot invoke them
+          # directly against another stack's resources.
+          - Sid: CloudFrontViaCloudFormation
+            Effect: Allow
+            Action: cloudfront:*
+            Resource: "*"
+            Condition: &ViaCloudFormation
+              ForAnyValue:StringEquals:
+                aws:CalledVia: cloudformation.amazonaws.com
+
+          - Sid: CognitoViaCloudFormation
+            Effect: Allow
+            Action: cognito-idp:*
+            Resource: "*"
+            Condition: *ViaCloudFormation
+
+          - Sid: AppSyncViaCloudFormation
+            Effect: Allow
+            Action: appsync:*
+            Resource: "*"
+            Condition: *ViaCloudFormation
+
+          - Sid: ApiGatewayViaCloudFormation
+            Effect: Allow
+            Action: apigateway:*
+            Resource: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}::*"
+            Condition: *ViaCloudFormation
+
+          # deploy.sh has exactly two direct calls after the stack update. Both
+          # are limited to the stack matching this role's kad:stage principal tag.
+          - Sid: InvalidateThisStageDistribution
+            Effect: Allow
+            Action: cloudfront:CreateInvalidation
+            Resource: !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/*"
+            Condition:
+              StringEquals:
+                "aws:ResourceTag/aws:cloudformation:stack-name": "kad-${aws:PrincipalTag/kad:stage}"
+
+          - Sid: DescribeThisStageUserPool
+            Effect: Allow
+            Action: cognito-idp:DescribeUserPool
+            Resource: !Sub "arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
+            Condition:
+              StringEquals:
+                "aws:ResourceTag/aws:cloudformation:stack-name": "kad-${aws:PrincipalTag/kad:stage}"
 
 Outputs:
   StagingRoleArn:

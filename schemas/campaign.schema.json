@@ -25,6 +25,11 @@
       "minItems": 1,
       "uniqueItems": true,
       "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+    },
+    "setbackLimit": {
+      "description": "Setbacks before the campaign fails — spec §8.3's 'fails at three setbacks, tunable per campaign'. Absent means 3.",
+      "type": "integer",
+      "minimum": 1
     }
   }
 }
