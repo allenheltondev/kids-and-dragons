@@ -52,9 +52,55 @@ jobs:
           block = []
           for line in source[start:end + 1]:
               block.append(line[10:] if line.startswith('          ') else line)
-          Path('/tmp/apply-pr-5-fixes.sh').write_text('\n'.join(block) + '\n')
+          script = '\n'.join(block) + '\n'
+          bad = "replace_once(\n    engine,\n    '''          ): Presentation | undefined {"
+          bad_start = script.index(bad)
+          next_section = script.index(
+              "\n# ------------------------------------------------------------------\n# Encounter legality",
+              bad_start,
+          )
+          script = script[:bad_start] + script[next_section + 1:]
+          Path('/tmp/apply-pr-5-fixes.sh').write_text(script)
           PY
           bash /tmp/apply-pr-5-fixes.sh
+
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('packages/shared/src/engine.ts')
+          text = path.read_text()
+          old = '''function doUseItem(
+            draft: RunState,
+            playerId: string,
+            itemId: string,
+            ctx: EngineContext,
+          ): Presentation | undefined {
+            const member = memberByPlayer(draft, playerId);
+            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+
+            const def = ctx.items[itemId];
+          '''
+          new = '''function doUseItem(
+            draft: RunState,
+            playerId: string,
+            itemId: string,
+            ctx: EngineContext,
+          ): Presentation | undefined {
+            const member = memberByPlayer(draft, playerId);
+            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+            if (draft.encounter) {
+              // Inventory effects currently write RunState.party, while combat HP and
+              // turn economy live in EncounterState. Refuse rather than consume an item
+              // whose effect would be overwritten when the fight settles.
+              throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
+            }
+
+            const def = ctx.items[itemId];
+          '''
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one doUseItem prefix, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1))
+          PY
 
       - name: Install dependencies
         run: npm ci
@@ -92,11 +138,6 @@ jobs:
     name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
 
-    # The prod store gets tested against a real DynamoDB, not a mock. The whole
-    # justification for the in-memory store is that swapping in DynamoRepository
-    # is a wiring change rather than a re-modelling exercise
-    # (packages/server/src/store/contract.test.ts), and that claim is worth
-    # nothing unless one suite runs against both.
     services:
       dynamodb:
         image: amazon/dynamodb-local:latest
@@ -106,14 +147,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Node 22 — the same runtime the Lambdas use (architecture §1).
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      # Python 3.11 for the art tooling. Pillow and numpy are the verifier's only
-      # dependencies and it prints exactly that if they are missing.
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -127,49 +165,32 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      # KAD_DDB_ENDPOINT switches the repository contract suite from "memory
-      # only" to "memory and DynamoDB". Without it those cases skip, which is
-      # what keeps `npm test` a two-second command on a laptop.
       - name: Test
         run: npm test
         env:
           KAD_DDB_ENDPOINT: http://localhost:8000
           AWS_REGION: us-east-1
 
-      # The stack is code too. cfn-lint applies the SAM transform, so this
-      # catches a bad property on a Serverless resource — the class of mistake
-      # you would otherwise find eight minutes into a deploy.
       - name: Lint the stack
         run: |
           python -m pip install --disable-pip-version-check cfn-lint
           npm run infra:lint
 
-      # A Lambda bundle that does not build is a deploy that fails after the
-      # checks have already passed. It costs seconds here.
       - name: Bundle Lambdas
         run: npm run infra:build
 
-      # Content is data (roadmap, "Content as data"), so it gets checked like code:
-      # schemas first, then the cross-file rules a schema cannot express.
       - name: Validate content
         run: npm run content:validate
 
       - name: Verify art assets
         run: npm run art:verify
 
-      # The rig contract is checked separately from the pixels because it needs
-      # no image decoding and no delivered art — it is arithmetic over
-      # manifest.rigContract, and it should go red the moment a clip grows past
-      # the turn budget rather than when the first .riv shows up.
       - name: Verify rig contract
         run: npm run art:verify:rig
 
       - name: Build
         run: npm run build
 
-      # The contact sheets are the human gate's input (art-pipeline.md §3.2). They do
-      # not gate the build — nothing here decides whether the art looks right — but
-      # having them on every run means a reviewer never has to build them by hand.
       - name: Contact sheets
         run: npm run art:sheet
 
@@ -183,12 +204,6 @@ jobs:
           retention-days: 14
 
   e2e:
-    # The roadmap's dev loop says a change isn't done until it has been seen on
-    # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
-    # holds three browser contexts against the real dev server: real room
-    # codes, real SSE, real server-rolled dice. It is a separate job because it
-    # is minutes rather than seconds, and because a red e2e means something
-    # quite different from a red unit test.
     name: end to end
     runs-on: ubuntu-latest
 
@@ -206,7 +221,6 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      # playwright.config.ts starts `npm run dev` itself and waits for Vite.
       - name: Play a chapter
         run: npx playwright test
 
