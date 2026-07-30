@@ -1,13 +1,3 @@
-# Kids & Dragons CI.
-#
-# One workflow, on purpose. This is a family project, not a platform team — a single
-# file you can read top to bottom beats a matrix of reusable workflows nobody edits.
-#
-# It enforces the two cross-cutting rules from docs/roadmap.md that only CI can:
-#   * schema validation — a malformed chapter fails the build, never the play session
-#   * the art gate — "the agent says it's finished" is not an acceptance criterion
-#     (docs/art-pipeline.md §3)
-
 name: CI
 
 on:
@@ -49,17 +39,23 @@ jobs:
           source = Path('.github/workflows/fix-pr-5.yml').read_text().splitlines()
           start = next(i for i, line in enumerate(source) if line.strip() == "python3 <<'PY'")
           end = next(i for i in range(start + 1, len(source)) if source[i].strip() == 'PY')
-          block = []
-          for line in source[start:end + 1]:
-              block.append(line[10:] if line.startswith('          ') else line)
+          block = [line[10:] if line.startswith('          ') else line for line in source[start:end + 1]]
           script = '\n'.join(block) + '\n'
-          bad = "replace_once(\n    engine,\n    '''          ): Presentation | undefined {"
-          bad_start = script.index(bad)
-          next_section = script.index(
+
+          def remove_call(marker: str, next_section: str) -> None:
+              global script
+              at = script.index(marker)
+              after = script.index(next_section, at)
+              script = script[:at] + script[after + 1:]
+
+          remove_call(
+              "replace_once(\n    engine,\n    '''          ): Presentation | undefined {",
               "\n# ------------------------------------------------------------------\n# Encounter legality",
-              bad_start,
           )
-          script = script[:bad_start] + script[next_section + 1:]
+          remove_call(
+              "replace_once(\n    encounter,\n    '''  } else if (ability.target.kind === \"tile\") {",
+              "\n# ------------------------------------------------------------------\n# Authored Pounce",
+          )
           Path('/tmp/apply-pr-5-fixes.sh').write_text(script)
           PY
           bash /tmp/apply-pr-5-fixes.sh
@@ -67,9 +63,16 @@ jobs:
           python3 <<'PY'
           from pathlib import Path
 
-          path = Path('packages/shared/src/engine.ts')
-          text = path.read_text()
-          old = '''function doUseItem(
+          def replace_once(path: str, old: str, new: str) -> None:
+              file = Path(path)
+              text = file.read_text()
+              if text.count(old) != 1:
+                  raise SystemExit(f'{path}: expected one stable match, found {text.count(old)}')
+              file.write_text(text.replace(old, new, 1))
+
+          replace_once(
+              'packages/shared/src/engine.ts',
+              '''function doUseItem(
             draft: RunState,
             playerId: string,
             itemId: string,
@@ -79,8 +82,8 @@ jobs:
             if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
 
             const def = ctx.items[itemId];
-          '''
-          new = '''function doUseItem(
+          ''',
+              '''function doUseItem(
             draft: RunState,
             playerId: string,
             itemId: string,
@@ -89,17 +92,39 @@ jobs:
             const member = memberByPlayer(draft, playerId);
             if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
             if (draft.encounter) {
-              // Inventory effects currently write RunState.party, while combat HP and
-              // turn economy live in EncounterState. Refuse rather than consume an item
-              // whose effect would be overwritten when the fight settles.
               throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
             }
 
             const def = ctx.items[itemId];
-          '''
-          if text.count(old) != 1:
-              raise SystemExit(f'expected one doUseItem prefix, found {text.count(old)}')
-          path.write_text(text.replace(old, new, 1))
+          ''',
+          )
+
+          replace_once(
+              'packages/shared/src/encounter.ts',
+              '''  } else if (ability.target.kind === "tile") {
+            const tile = request.targetTile;
+            if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+              return { ok: false, reason: "that is not a legal tile" };
+            }
+            point = { x: tile.x, y: tile.y };
+          }
+          ''',
+              '''  } else if (ability.target.kind === "tile") {
+            const tile = request.targetTile;
+            if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+              return { ok: false, reason: "that is not a legal tile" };
+            }
+            point = { x: tile.x, y: tile.y };
+            if (ability.target.followUp) {
+              const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
+              if (!request.targetId || !option?.targets.includes(request.targetId)) {
+                return { ok: false, reason: "that is not a legal target from that tile" };
+              }
+              targetId = request.targetId;
+            }
+          }
+          ''',
+          )
           PY
 
       - name: Install dependencies
@@ -121,81 +146,47 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout HEAD^ -- .github/workflows/ci.yml
           git rm .github/workflows/fix-pr-5.yml
-          git add packages/shared/src/engine.ts \
-                  packages/shared/src/encounter.ts \
-                  packages/shared/src/types/protocol.ts \
-                  packages/shared/src/engine.test.ts \
-                  packages/shared/src/encounter.test.ts \
-                  packages/client/src/layout/WorldView.tsx \
-                  content/abilities.json \
-                  schemas/abilities.schema.json \
-                  tools/content/validate.mjs \
-                  .github/workflows/ci.yml
+          git add packages/shared/src/engine.ts packages/shared/src/encounter.ts \
+            packages/shared/src/types/protocol.ts packages/shared/src/engine.test.ts \
+            packages/shared/src/encounter.test.ts packages/client/src/layout/WorldView.tsx \
+            content/abilities.json schemas/abilities.schema.json tools/content/validate.mjs \
+            .github/workflows/ci.yml
           git commit -m "fix: preserve combat events and action legality"
           git push origin HEAD:claude/combat-foundations-dxz34k
 
   build:
     name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
-
     services:
       dynamodb:
         image: amazon/dynamodb-local:latest
-        ports:
-          - 8000:8000
-
+        ports: ["8000:8000"]
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Install Node dependencies
-        run: npm ci
-
-      - name: Install art dependencies
-        run: python -m pip install --disable-pip-version-check pillow numpy
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
+      - run: npm ci
+      - run: python -m pip install --disable-pip-version-check pillow numpy
+      - run: npm run typecheck
+      - run: npm test
         env:
           KAD_DDB_ENDPOINT: http://localhost:8000
           AWS_REGION: us-east-1
-
-      - name: Lint the stack
-        run: |
+      - run: |
           python -m pip install --disable-pip-version-check cfn-lint
           npm run infra:lint
-
-      - name: Bundle Lambdas
-        run: npm run infra:build
-
-      - name: Validate content
-        run: npm run content:validate
-
-      - name: Verify art assets
-        run: npm run art:verify
-
-      - name: Verify rig contract
-        run: npm run art:verify:rig
-
-      - name: Build
-        run: npm run build
-
-      - name: Contact sheets
-        run: npm run art:sheet
-
-      - name: Upload contact sheets
-        uses: actions/upload-artifact@v4
+      - run: npm run infra:build
+      - run: npm run content:validate
+      - run: npm run art:verify
+      - run: npm run art:verify:rig
+      - run: npm run build
+      - run: npm run art:sheet
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: art-review-sheets
@@ -206,26 +197,16 @@ jobs:
   e2e:
     name: end to end
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
-      - name: Install Node dependencies
-        run: npm ci
-
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Play a chapter
-        run: npx playwright test
-
-      - name: Upload traces
-        uses: actions/upload-artifact@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-traces
