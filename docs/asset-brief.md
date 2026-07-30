@@ -7,7 +7,7 @@ and self-verify the assets is here. Nothing in it requires reading the rest of t
 Machine-readable companion: `assets/manifest.json`. Where the two overlap, **the manifest wins** —
 it is what the verifier reads.
 
-> **Revision 4.** `unicorn/fledgling` is **approved** and is now the reference for the entire cast —
+> **Revision 5.** `unicorn/fledgling` is **approved** and is now the reference for the entire cast —
 > for style, construction, and colour. Sections marked 🔺 changed in rev 2; 🔺🔺 in rev 3;
 > 🔺🔺🔺 is new in rev 5, which adds §9 — combat animation, the enemy roster, and effects.
 > The Realm of Red Sky map replaces the former five-biome roster. Its seventeen named
@@ -26,8 +26,10 @@ assembled position — so stacking all parts of a character reproduces the assem
 exactly. Run `python tools/art/verify.py` until it is green. Then produce a contact sheet for
 human review.
 
-🔺 **Start clean.** Any existing content under `assets/characters/` and `art/generated/` is from a
-rejected revision. Delete it and regenerate from this document. Do not patch it.
+🔺 **Delivered.** The character cast under `assets/characters/` is the **approved, shipped** set —
+all six species, all four tiers, 474 mechanical checks green. This brief remains the contract for
+reproducing or extending it. **Do not delete approved sets**; a rev-1 instruction to "start clean"
+used to live here and no longer applies to anything in the tree.
 
 The four things that will fail you, in order of likelihood:
 
@@ -257,7 +259,8 @@ Every later tier is produced conditioned on the approved `fledgling` image, not 
 
 ### 4.3 Gear overlays
 
-Four classes × three tiers (no gear at `fledgling`) = **12 sets.**
+Four classes × three tiers (no gear at `fledgling`) = **12 sets.** All 12 are declared in the
+manifest; **3 are delivered** (`songkeeper`, all three tiers) and 9 are still to come.
 
 | Class | Visual theme |
 |---|---|
@@ -389,11 +392,12 @@ A human reviews for what no script can decide:
 
 Do **not** batch all 24 characters. Deliver in this order and **stop for review at each gate**:
 
-1. `unicorn/fledgling` — full set, plus `assembled.png`. **Stop.**
-2. Remaining three unicorn tiers. **Stop** — this is the cross-tier consistency test.
-3. One gear set (`songkeeper`, three tiers) on the unicorn. **Stop.**
-4. Remaining five species, all tiers.
-5. Remaining gear, effects, biomes, tiles.
+1. `unicorn/fledgling` — full set, plus `assembled.png`. **Stop.** *(Delivered and approved.)*
+2. Remaining three unicorn tiers. **Stop** — this is the cross-tier consistency test. *(Delivered.)*
+3. One gear set (`songkeeper`, three tiers) on the unicorn. **Stop.** *(Delivered.)*
+4. Remaining five species, all tiers. *(Delivered — the full 24-set cast is in.)*
+5. Remaining gear, effects, biomes, tiles. *(Partial: biomes and tiles are delivered; effects stand
+   at 11 of 17 — §9.4's six combat sheets remain; gear stands at 3 of 12 — §4.3.)*
 
 🔺 Revision 1 produced `sworn` before `fledgling` was reviewed. Don't. A character approved at
 gate 1 defines all later tiers; producing them early guarantees rework.
@@ -573,11 +577,15 @@ because it is `timing: "initiative"` — it happens before any figure has had a 
 place it can be shown is the turn-order strip, which is vector UI. A class that needs no art at all
 is not a gap; it is the layering working.
 
-The level-3 and level-6 unlocks in `rules.json` need **nothing new**, and that falls out for free:
-they are built from the same ten verbs, so Shove is `attack` + `dust_scuff`, Soothe and Chorus are
-`cast` + `heal_bloom`, Glimmer is `cast` + `bonus_spark`, Twin Step is two moves. Of the level-9
-abilities, Bramble Wall is terrain (a hazard tile in §4.5's tile sheet, not a character clip) and
-Encore is a second turn cursor — a UI beat. Neither is animated here.
+The **authored** unlocks in `rules.json` need **nothing new**, and that falls out for free: they
+are built from the same ten verbs, so Shove is `attack` + `dust_scuff`, Soothe and Chorus are
+`cast` + `heal_bloom`, Glimmer is `cast` + `bonus_spark`. The other half of the unlock table is in
+`content/abilities.json`'s `$deferred` — Vanish is the lone level-3, Bramble Wall, Twin Step and
+Tanglelight are level-6, and all four level-9s wait too — and each of those waits on an **engine
+verb**, not on art: Twin Step is two moves (`dust_scuff` again), Bramble Wall (the thornguard
+level-6) is terrain — a hazard tile in §4.5's tile sheet, not a character clip — and Encore
+(level-9) is a second turn cursor, a UI beat. Nothing in `$deferred` names a clip the nine do not
+already cover.
 
 ### 9.2 The clip list, and where the timing comes from
 
@@ -616,8 +624,12 @@ triggered it.
 | `celebrate` | 24 | 2.0 | Unchanged. Plays after the fight, so it is outside the budget. |
 | `transform` | Chapter 5's, unchanged | — | Not this commission |
 
-Worst realistic turn: roll 18 + a 6-step move 12 + `attack` 8 with `impact_strike` running from
-tick 3 (3 ticks of tail) = **41 ticks = 3.4s**, inside the 3.75s. **If you need a longer clip,
+Worst realistic turn: **not the attack.** Roll 18 + a 6-step move 12 + `attack` 8 with
+`impact_strike` running from the tick-3 impact (2 ticks of tail past the clip) = **40 ticks**. The
+real ceiling is the **cast**: roll 18 + move 12 + `cast` 10 + a 12-frame sheet running from the
+tick-4 release (5 ticks of tail) = **45 ticks — `turnBudgetTicks` exactly, zero headroom.** The
+budget is spent at 100%, so any clip or effect that grows by a single tick fails the gate (the
+manifest's `$turnBudgetComment` carries the same arithmetic). **If you need a longer clip,
 something else in the same turn has to get shorter.** Say which, and why, rather than adding.
 
 Three clips are new — `guard`, `leap`, `lift` — and all three are required on **every** species
@@ -752,7 +764,8 @@ Enemy designs come from `docs/red-sky-creature-canon.yaml` and **nothing else.**
   scenes where the party talks to it, avoids it, or feeds it. The idle pose has to work in a story
   scene as well as a fight, so it is a **wary, alert, readable animal**, not a combat stance.
 
-Deliver each as `assets/enemies/<canon_id>/` with `assembled.png` and `parts/`, on the **same
+Deliver each as `assets/entities/<canon_id>/` — the same directory §6.4 uses for every canonical
+creature, and the one `verify.py` checks — with `assembled.png` and `parts/`, on the **same
 technical contract as §3** — 1024×1024, origin (512, 900), full-canvas registered layers, seam
 overdraw, real alpha. **No tier level in the path**: enemies do not level, so there is nothing for
 §3.2's cross-tier registration to compare and the directory is one deep instead of two. No runtime
@@ -920,7 +933,7 @@ enforced; the rest are not, and §9 is not enforceable for them. Do not commissi
 5. **`enemies[]`** — nine entries: `id`, `plan`, `signature`, `heightPx`, `anchor`
    (`"feet"` | `"hover"`), `variants` (the `_alt` parts for pack creatures), and
    `deferred: true` on `legend_dragon`. *Not added, for the same reason as item 4 — and note the
-   canonical roster shipped 26 entities under `entities[]`, so whoever adds this should reconcile
+   canonical roster shipped 27 entities under `entities[]`, so whoever adds this should reconcile
    the two rather than open a second list of the same creatures.*
 6. ✅ **`rigContract`** — the clip table of §9.2 as data: per-clip `ticks`, event ticks, hero/enemy
    clip sets, the input list, and `turnBudgetTicks`. Two flags the table above does not state are
@@ -951,11 +964,11 @@ continuous effect that faded at both ends would pulse to nothing once a second),
 `outOfCombat: true` plays between turns (exempt from the 12-frame budget and from the damage-number
 band, because a cutscene has nothing else on the screen).
 
-One naming collision to resolve while you are in there: the shipping chapter points at
-`enemies/bramblewood/wisp`, while the canon id is `will_o_wisp` and §9.5 puts assets at
-`assets/enemies/<canon_id>/`. Biome-scoped enemy paths were a Bramblewood-era idea and the canon
-retired it the same way §4.5 retired the five-biome roster — one wisp is not three wisps because it
-turned up in three places. **Move the chapter, not the convention.**
+One naming collision, now resolved the right way round: the shipping chapter used to point at a
+biome-scoped `enemies/bramblewood/wisp` path; it now reads `"art": "enemies/will_o_wisp"` — the
+canonical id, per §9.5. The chapter moved, not the convention. (The `art` field on an enemy spec
+is currently inert in the client — nothing renders an encounter yet — so the id is a contract
+waiting for the combat UI, not a live lookup.)
 
 ### 9.8 Acceptance
 
@@ -979,7 +992,7 @@ long as somebody remembers it. Rows marked ✅ run in `npm run art:verify` or `n
 | Rig contract coherent | ✅ | Every clip a set requires is defined and every clip defined is required; event ticks inside their clips; no duplicate input names; every clip reachable. |
 | Turn budget | ✅ | The worst realistic turn — move, longest action, the roll if it takes one, effect tail — fits `turnBudgetTicks`. Re-derived from the clips, not quoted. |
 | Effect / clip sync | ✅ | Every sheet fired by a clip event has that event, and runs at `rigContract.tickFps`. |
-| Rig interface | ⚠️ | Every rig exposes exactly `rigContract`'s clips and inputs for its kind, with lengths in ticks. The comparison is written and tested; the `.riv` reader is not, because the Rive runtime cannot start headlessly — `art-pipeline.md` §6.1 has the detail. A `.riv` on disk is reported as a **failure** rather than passed silently, so this cannot quietly become a lie. |
+| Rig interface | ✅ | Every rig exposes exactly `rigContract`'s clips and inputs for its kind, with lengths in ticks. The comparison is written and tested, and the `.riv` reader runs the real Rive runtime headlessly — a rig on disk is genuinely opened and compared, not taken on faith (`art-pipeline.md` §6.1). The one caveat: no rig is delivered yet, so the read path has never met a real delivery, and a `.riv` that cannot be opened is reported as a **failure** rather than skipped. |
 | Enemy sets | ✗ | Per §3 for the plan's part list: canvas, format, alpha, edge margin, per-pixel recomposite, seam overdraw, origin. Needs §9.7 items 4–5. |
 | Enemy height | ✗ | Drawn height within `enemyHeightTolerancePx` of the entry's `heightPx`. Needs §9.7 items 4–5. |
 | Enemy silhouette | ✗ | ≥ `minEnemySignaturePxAtCombatSilhouette` opaque signature pixels at `combatSilhouetteHeightPx`. Needs §9.7 items 4–5. |

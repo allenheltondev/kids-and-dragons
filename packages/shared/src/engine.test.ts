@@ -533,6 +533,44 @@ describe("checks", () => {
 });
 
 describe("a full walk of a chapter", () => {
+  it("a gated encounter resolves through onVictory without raising a board", () => {
+    /*
+     * The chapter-4 gate (types/chapter.ts `autoResolve`). Combat is engine-
+     * complete but the phones have no combat UI yet, so a chapter routed into
+     * a fight dead-ended: state advanced, prompt empty, nothing to tap. A
+     * scene marked `autoResolve: "victory"` flows through its victory branch
+     * — the old placeholder behaviour, opt-in per scene and authored in
+     * content — with the encounter's narration kept in front of the
+     * destination's so the beat still reads.
+     */
+    const chapter = makeChapter();
+    const scene = chapter.scenes["encounter_wisps"];
+    if (scene?.type !== "encounter") throw new Error("fixture moved");
+    scene.autoResolve = "victory";
+    const context = ctx({ rng: fixedRng(20), chapter });
+
+    const result = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+      ],
+      context,
+    );
+
+    // Straight through to the far side: no ready prompt, no board, and the
+    // party never saw a phase it has no UI for.
+    expect(result.state.sceneId).toBe("scene_camp");
+    expect(result.state.sceneType).toBe("rest");
+    expect(result.state.encounter).toBeFalsy();
+    expect(result.state.prompt).toMatchObject({ kind: "choice" });
+    // The gated scene's narration still reads, ahead of the destination's.
+    expect(result.state.narration).toContain("Three wisps rise out of the bracken.");
+    expect(result.state.narration).toContain("A hollow out of the wind.");
+  });
+
   it("goes entry → check → shrine → encounter → rest → vote → ending", () => {
     const context = ctx({ rng: fixedRng(20) });
     const state = seatedParty(context);

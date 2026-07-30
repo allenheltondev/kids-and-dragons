@@ -57,6 +57,18 @@ export interface WebSocketLike {
 /** The `aws-appsync-event-ws` protocol name, plus the auth-bearing one. */
 const WS_PROTOCOL = "aws-appsync-event-ws";
 
+/**
+ * How long to sit in total silence before declaring the socket dead. AppSync
+ * sends `ka` keepalives on the cadence its `connection_ack` names (usually
+ * every minute against a 5-minute timeout), so a healthy connection is never
+ * quiet for long — but a half-open one (phone slept, hotspot swapped, NAT
+ * timed out) stays "connected" forever, receives nothing, and never fires
+ * `onclose`. The `connection_ack`'s own `connectionTimeoutMs` replaces this
+ * default when present; the fallback is deliberately generous so a slow but
+ * live link is never killed by us.
+ */
+const DEFAULT_IDLE_TIMEOUT_MS = 5 * 60_000;
+
 export function channelPath(namespace: string, roomCode: string): string {
   return `/${namespace}/${roomCode.toUpperCase()}`;
 }
@@ -97,7 +109,29 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
     `header-${b64url(JSON.stringify(auth))}`,
   ]);
 
+  // The silence watchdog. Reset by *every* inbound frame — data and `ka`
+  // alike — and fatal when it fires: `fail` hands the socket to `openChannel`,
+  // whose existing backoff reconnects.
+  let idleTimeoutMs = DEFAULT_IDLE_TIMEOUT_MS;
+  let watchdog: ReturnType<typeof setTimeout> | null = null;
+
+  const clearWatchdog = (): void => {
+    if (watchdog !== null) {
+      clearTimeout(watchdog);
+      watchdog = null;
+    }
+  };
+
+  const armWatchdog = (): void => {
+    clearWatchdog();
+    if (closed) return;
+    watchdog = setTimeout(() => {
+      fail(new Error(`no frame received in ${String(idleTimeoutMs)}ms — connection presumed dead`));
+    }, idleTimeoutMs);
+  };
+
   const fail = (reason: unknown): void => {
+    clearWatchdog();
     if (closed) return;
     // One error shape out, whatever went wrong: `openChannel` reconnects with
     // backoff and does not care why.
@@ -105,6 +139,7 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
   };
 
   socket.onopen = () => {
+    armWatchdog();
     try {
       socket.send(JSON.stringify({ type: "connection_init" }));
     } catch (err) {
@@ -113,7 +148,10 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
   };
 
   socket.onmessage = (event) => {
-    let message: { type?: string; event?: unknown; errors?: unknown };
+    // Any frame at all proves the link is alive.
+    armWatchdog();
+
+    let message: { type?: string; event?: unknown; errors?: unknown; connectionTimeoutMs?: unknown };
     try {
       message = JSON.parse(event.data) as typeof message;
     } catch {
@@ -122,6 +160,12 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
 
     switch (message.type) {
       case "connection_ack":
+        // The ack names how long AppSync itself will tolerate silence; trust
+        // it over our default and re-arm on the new deadline.
+        if (typeof message.connectionTimeoutMs === "number" && message.connectionTimeoutMs > 0) {
+          idleTimeoutMs = message.connectionTimeoutMs;
+          armWatchdog();
+        }
         socket.send(
           JSON.stringify({
             type: "subscribe",
@@ -176,6 +220,7 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
 
   function close(): void {
     closed = true;
+    clearWatchdog();
     adapter.onopen = null;
     adapter.onmessage = null;
     adapter.onerror = null;

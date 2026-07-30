@@ -182,6 +182,17 @@ export interface EncounterScene {
   onVictory: Branch;
   /** Never a game over — the story branches. spec §7.3. */
   onDefeat: Branch;
+  /**
+   * The chapter-4 gate. The engine's combat is built and tested, but until the
+   * phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a
+   * scene nobody can tap — the table dead-ends with the state advanced and
+   * nothing to press. A scene carrying this resolves straight through
+   * `onVictory` (the pre-combat placeholder behaviour, now opt-in per scene
+   * and authored in content rather than hardcoded in the engine). Turning a
+   * fight on is deleting one line of JSON, chapter by chapter, as the UI
+   * lands.
+   */
+  autoResolve?: "victory";
 }
 
 export type Scene =

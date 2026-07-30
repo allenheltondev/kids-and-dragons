@@ -487,6 +487,21 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
+      # The deploy syncs with --delete, so without versioning the previous
+      # client bundle is *gone* the moment a bad one lands — the rollback
+      # story was "roll forward and wait". Noncurrent versions are kept for
+      # 30 days: long enough to restore last week's site, short enough that
+      # a bucket of build outputs never becomes a bill.
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-previous-deploys
+            Status: Enabled
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 30
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:

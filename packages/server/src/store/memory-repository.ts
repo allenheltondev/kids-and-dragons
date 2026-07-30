@@ -133,9 +133,16 @@ export class MemoryRepository implements GameRepository {
   }
 
   // --- table primitives -----------------------------------------------------
+  //
+  // Every item is cloned across the boundary, both ways. DynamoDB serializes
+  // on write and deserializes on read, so nothing a caller holds is ever the
+  // stored object; the Map used to hand out live references, which let a
+  // handler that mutated a loaded record corrupt the dev store while behaving
+  // correctly in prod — a divergence the contract suite structurally cannot
+  // see, because it runs the same handler against both.
 
   private put(item: TableItem): void {
-    this.items.set(rowKey(item.PK, item.SK), item);
+    this.items.set(rowKey(item.PK, item.SK), structuredClone(item));
     this.persist();
   }
 
@@ -143,7 +150,7 @@ export class MemoryRepository implements GameRepository {
     const item = this.items.get(rowKey(pk, sk));
     if (!item) return undefined;
     if (this.isExpired(item)) return undefined;
-    return item;
+    return structuredClone(item);
   }
 
   /** A Query: one partition, sort keys ascending, optional prefix. */
@@ -153,7 +160,7 @@ export class MemoryRepository implements GameRepository {
       if (item.PK !== pk) continue;
       if (!item.SK.startsWith(skPrefix)) continue;
       if (this.isExpired(item)) continue;
-      out.push(item);
+      out.push(structuredClone(item));
     }
     return out.sort((a, b) => (a.SK < b.SK ? -1 : a.SK > b.SK ? 1 : 0));
   }
@@ -165,7 +172,7 @@ export class MemoryRepository implements GameRepository {
       if (item.GSI1PK !== gsi1pk) continue;
       if (skBelow !== undefined && !((item.GSI1SK ?? "") < skBelow)) continue;
       if (this.isExpired(item)) continue;
-      out.push(item);
+      out.push(structuredClone(item));
     }
     return out.sort((a, b) => ((a.GSI1SK ?? "") < (b.GSI1SK ?? "") ? -1 : 1));
   }
@@ -270,7 +277,13 @@ export class MemoryRepository implements GameRepository {
       for (const item of this.query(RUN(run.id))) {
         this.items.delete(rowKey(item.PK, item.SK));
       }
-      this.items.delete(rowKey(ROOM(run.roomCode), META));
+      // Conditional like the Dynamo sweep: codes recycle, so the code may now
+      // name a different household's live room. Only ours to take if it still
+      // points at this run.
+      const room = this.get(ROOM(run.roomCode), META);
+      if ((room?.data as { runId?: string } | undefined)?.runId === run.id) {
+        this.items.delete(rowKey(ROOM(run.roomCode), META));
+      }
     }
     if (household.ownerSub) {
       this.items.delete(rowKey(ACCT(household.ownerSub), HH(householdId)));
@@ -335,6 +348,14 @@ export class MemoryRepository implements GameRepository {
     return (hit?.data as DeviceBinding | undefined) ?? null;
   }
 
+  async getDevice(householdId: string, deviceId: string): Promise<DeviceBinding | null> {
+    // Memory is always consistent, so this differs from `getDeviceById` only
+    // in shape — but both stores must expose it or the contract suite cannot
+    // hold them to the same behaviour.
+    const item = this.get(HH(householdId), DEVICE_SK(deviceId));
+    return (item?.data as DeviceBinding | undefined) ?? null;
+  }
+
   async listDevices(householdId: string): Promise<DeviceBinding[]> {
     return this.query(HH(householdId), PREFIX.device).map((i) => i.data as DeviceBinding);
   }
@@ -344,6 +365,15 @@ export class MemoryRepository implements GameRepository {
     if (!item) return;
     const device = item.data as DeviceBinding;
     this.put({ ...item, data: { ...device, revoked: true } });
+  }
+
+  async touchDevice(householdId: string, deviceId: string, lastSeen: string): Promise<void> {
+    const item = this.get(HH(householdId), DEVICE_SK(deviceId));
+    if (!item) return;
+    const device = item.data as DeviceBinding;
+    // Only `lastSeen`, mirroring the Dynamo update expression — `revoked` and
+    // everything else on the item must be untouchable from this path.
+    this.put({ ...item, data: { ...device, lastSeen } });
   }
 
   // --- characters ------------------------------------------------------------

@@ -198,6 +198,21 @@ describe("the ability catalog", () => {
     );
   });
 
+  it("rejects an effect verb the engine does not implement", async () => {
+    /*
+     * The bug this pins, found in review: the catalog is cast to its type, not
+     * deeply validated, so an authored `{"type":"stun"}` sailed through and
+     * became `undefined` out of `applyEffect`'s switch — a TypeError in the
+     * middle of somebody's turn. It has to be a startup failure with the
+     * ability's name on it, never a 500 at the table.
+     */
+    const catalog = abilities();
+    catalog.abilities.brace.effects = [{ effect: { type: "stun" } }] as never;
+    await expect(loadContent(await tree({ ...good(), abilities: catalog }))).rejects.toThrow(
+      /effect verb the engine does not implement \(stun\)/,
+    );
+  });
+
   it("rejects a nameless, iconless or untimed ability", async () => {
     const bare = { id: "x", target: { kind: "self" }, effects: [{ effect: { type: "revive" } }] };
     const root = await tree({ ...good(), abilities: { version: 1, abilities: { x: bare } } });

@@ -34,15 +34,83 @@ const memoryStorage = (): KeyValueStorage => {
 
 const fallback = memoryStorage();
 
+/**
+ * Sessions are useless once the room they name has long expired, but they used
+ * to live in localStorage forever — one abandoned entry per room ever joined.
+ * Anything older than this is swept on the first storage access of a page load.
+ * A week comfortably outlives any room (they expire in hours) while still being
+ * "cleans itself up" rather than "grows forever".
+ */
+const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Resolved once per page load: the probe writes to disk, and every default-
+    argument call of the functions below was repeating it. */
+let resolvedDefault: KeyValueStorage | null = null;
+
 export function defaultStorage(): KeyValueStorage {
+  if (resolvedDefault) return resolvedDefault;
   try {
-    if (typeof localStorage === "undefined") return fallback;
+    if (typeof localStorage === "undefined") {
+      resolvedDefault = fallback;
+      return resolvedDefault;
+    }
     // Touch it: iOS private mode has the object but throws on write.
     localStorage.setItem("kad.probe", "1");
     localStorage.removeItem("kad.probe");
-    return localStorage;
+    pruneSessions(localStorage);
+    resolvedDefault = localStorage;
   } catch {
-    return fallback;
+    resolvedDefault = fallback;
+  }
+  return resolvedDefault;
+}
+
+/** Sweep expired `kad.session.*` entries. Only ever called on real Storage —
+    the in-memory fallback dies with the page anyway. */
+function pruneSessions(storage: Storage): void {
+  try {
+    const stale: string[] = [];
+    const now = Date.now();
+    for (let i = 0; i < storage.length; i += 1) {
+      const key = storage.key(i);
+      if (key === null || !key.startsWith(SESSION_PREFIX)) continue;
+      const savedAt = readSavedAt(storage.getItem(key));
+      if (savedAt === null) {
+        // Written before entries carried a timestamp: stamp it now so the
+        // clock starts, rather than deleting a session that may be live.
+        stampSavedAt(storage, key, now);
+        continue;
+      }
+      if (now - savedAt > SESSION_MAX_AGE_MS) stale.push(key);
+    }
+    // Removal after the scan — deleting while iterating shifts `key(i)`.
+    for (const key of stale) storage.removeItem(key);
+  } catch {
+    /* housekeeping only; never worth failing a page load over */
+  }
+}
+
+function readSavedAt(raw: string | null): number | null {
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) return null;
+    const savedAt = (parsed as Record<string, unknown>)["savedAt"];
+    return typeof savedAt === "number" ? savedAt : null;
+  } catch {
+    return null;
+  }
+}
+
+function stampSavedAt(storage: KeyValueStorage, key: string, now: number): void {
+  const raw = storage.getItem(key);
+  if (!raw) return;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) return;
+    storage.setItem(key, JSON.stringify({ ...parsed, savedAt: now }));
+  } catch {
+    /* not JSON — leave it; loadSession already treats it as absent */
   }
 }
 
@@ -75,7 +143,12 @@ export function loadSession(code: string, storage: KeyValueStorage = defaultStor
 
 export function saveSession(session: ClientSession, storage: KeyValueStorage = defaultStorage()): void {
   try {
-    storage.setItem(sessionKey(session.roomCode), JSON.stringify(session));
+    // `savedAt` is what pruneSessions() ages entries by. isSession() ignores
+    // it, so a loaded session round-trips cleanly.
+    storage.setItem(
+      sessionKey(session.roomCode),
+      JSON.stringify({ ...session, savedAt: Date.now() }),
+    );
   } catch {
     /* out of quota: the session is recoverable by rejoining, so never fatal */
   }

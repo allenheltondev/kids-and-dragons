@@ -351,6 +351,52 @@ describe("send", () => {
     expect(h.store.getState().error).toBe("behind");
   });
 
+  it("resyncs when the broadcast an ok response promised never arrives", async () => {
+    /*
+     * The recovery contract for a server whose publish failed after the
+     * commit: the acting phone would otherwise wait forever on a patch that
+     * never left, with the state quietly advanced server-side. An ok response
+     * that names a seq ahead of the mirror arms a watchdog; if the channel
+     * has not caught up within the grace period, the client resyncs.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = harness(makeState({ seq: 7 }));
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.fetchState.mockClear();
+      // Committed as seq 8, but no broadcast will follow.
+      h.api.postAction.mockResolvedValueOnce({ ok: true, seq: 8 });
+
+      await h.store.getState().send({ type: "READY", ready: true });
+      expect(h.api.fetchState).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(4_100);
+      expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not resync when the broadcast arrives in time", async () => {
+    vi.useFakeTimers();
+    try {
+      const state = makeState({ seq: 7 });
+      const h = harness(state);
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.fetchState.mockClear();
+      h.api.postAction.mockResolvedValueOnce({ ok: true, seq: 8 });
+
+      await h.store.getState().send({ type: "READY", ready: true });
+      // The patch lands on the channel like it normally would.
+      h.publish(patch(8, [{ op: "replace", path: "/seq", value: 8 }]));
+
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(h.api.fetchState).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("reports whether the server accepted the intent", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");

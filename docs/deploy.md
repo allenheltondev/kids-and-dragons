@@ -9,8 +9,8 @@ Companion to [architecture.md §2](./architecture.md#2-aws-topology) and
 | When | What happens |
 |---|---|
 | You open or push to a pull request | the **Staging** environment → the `kad-staging` stack |
-| The pull request merges to `main` | the **Production** environment → the `kad-prod` stack |
-| You need a redeploy without a commit | Actions → Deploy → Run workflow |
+| CI completes green on `main` | the **Production** environment → the `kad-prod` stack |
+| You need a redeploy without a commit | Actions → **Deploy (staging)** or **Deploy (production)** → Run workflow |
 
 Two naming schemes meet here and are deliberately kept apart: the **GitHub
 environment** (`Staging` / `Production`) is where the role ARN and any
@@ -26,18 +26,35 @@ Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 ./scripts/deploy.sh dev          # a fourth stack, for driving by hand
 ```
 
-It runs the checks, bundles the Lambdas, deploys the stack, uploads the client
-and the art, and invalidates CloudFront — in that order, so a deploy that fails
-partway leaves the previous version serving rather than a new bundle talking to
-an API that does not exist yet.
+It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`,
+`art:verify:rig`, and `infra:lint` when `cfn-lint` is installed — then bundles
+the Lambdas, deploys the stack, uploads the client and the art, and invalidates
+CloudFront — in that order, so a deploy that fails partway leaves the previous
+version serving rather than a new bundle talking to an API that does not exist
+yet. It also exports `AWS_REGION=us-east-1` unless one is already set, so a
+laptop with a different profile default still reads the stack that actually
+exists.
 
-The checks run **again** in the deploy workflow even though `ci.yml` ran them on
-the same commit. The two workflows run in parallel and neither can gate the
-other, so skipping would mean a push to `main` deploying to prod while its tests
-are still going — and a red test arriving after the family is already playing
-the build it failed on. Two minutes buys "nothing reaches a stack that did not
-pass on that exact commit". (`KAD_SKIP_CHECKS=1` exists for re-running a deploy
-by hand after a green run; it is not used by CI.)
+The two automated paths trust CI differently, and the difference is deliberate.
+**Staging runs in parallel with CI** on every pull request, so `deploy.sh` runs
+the checks itself — a broken chapter fails the deploy, never the table.
+**Production waits for CI**: `prod-deploy.yml` triggers on `workflow_run`, only
+once the CI workflow for a `main` commit has completed *and passed*, and it
+checks out the exact SHA CI tested rather than whatever `main` has moved on to.
+A guard job refuses any run whose SHA is no longer the tip of `main` — CI runs
+finish in their own order, not commit order, so without it an older commit's
+green run could queue up behind a newer one's and put the older bytes live
+*last*. When a run is skipped as stale, the newer commit's own CI run owns the
+next deploy; if that run is red, prod deliberately stays where it is.
+On that path the checks are skipped (`KAD_SKIP_CHECKS=1`), because CI just ran a
+strictly larger set — e2e, `cfn-lint`, and the rig contract included — on the
+same commit, and re-running the smaller set would buy minutes of nothing. What
+production adds instead is a **strict art gate** (`art:verify:strict`, which
+fails on *undelivered* art — noise on a PR where sets land over time, a real
+regression in prod). Both workflows finish by `curl`ing the site URL, so a
+deploy that succeeded into a broken bundle is caught before the family finds
+out. A **manual dispatch** of either workflow has no green CI run to lean on,
+so it keeps the checks.
 
 ---
 
@@ -144,8 +161,10 @@ them. The signing key is not a stack resource at all, so it survives for a
 different reason — nothing in the stack owns it.
 
 The flip side of both is that tearing a stack down properly means three things by
-hand afterwards — **including on staging**, which is now created and destroyed
-far more often than prod:
+hand afterwards. To be clear about what actually happens day to day: **staging is
+a single long-lived stack that every pull request updates in place** — no
+automation creates or destroys it, so the commands below are for the rare manual
+teardown, not part of any workflow:
 
 ```bash
 aws dynamodb delete-table --table-name kad-staging
@@ -355,4 +374,7 @@ loss rather than after it: sign in, and the household stops being a guest.
 **Rolling back.** `sam deploy` produces a changeset per deploy; CloudFormation
 rolls back a failed one on its own. A bad *client* bundle is faster to fix by
 redeploying than by reverting S3, since `index.html` is served `no-cache` and the
-hashed bundle under `/bundle/*` is immutable.
+hashed bundle under `/bundle/*` is immutable. Versioning is enabled on the site
+bucket, so the previous client and assets remain recoverable object versions
+after a sync — but roll-forward stays the primary story; the versions are a
+safety net, not a deploy path.

@@ -149,6 +149,52 @@ describe("foldChapterXp", () => {
     expect(stored?.provisional?.runId).toBe("r_1");
   });
 
+  it("keeps provisional gains across rooms in the same campaign", async () => {
+    /*
+     * The bug this pins, found in review: provisional was scoped to `runId`,
+     * and a run is a *room* — one evening. `startCampaign()` re-seeds from
+     * `committed` whenever the identity changes, so Saturday's fresh room
+     * silently threw away Tuesday's provisional levels, and with
+     * `commitCampaign()` not yet wired, `committed` never advances — every
+     * character was permanently level 1 plus one sitting's XP. The scope is the
+     * campaign: a new room continuing the same campaign accrues on top.
+     */
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const playerId = players[0]!.principal.playerId;
+    const { state, character } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
+
+    // Tuesday: room r_1, chapter one of the campaign.
+    (state as { campaignId?: string | null }).campaignId = "the-hollow-crown";
+    state.xpEarned = 300;
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
+
+    // Saturday: a brand-new room, same campaign, next chapter.
+    state.runId = "r_2";
+    state.xpEarned = 400;
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
+
+    const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
+    expect(stored?.provisional?.xp).toBe(700);
+    expect(stored?.committed.xp).toBe(0);
+
+    // A one-off chapter has no campaign; there the run really is the scope,
+    // and a different run correctly starts over from committed.
+    (state as { campaignId?: string | null }).campaignId = null;
+    state.runId = "r_3";
+    state.xpEarned = 100;
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
+    const oneOff = await harness.repo.getCharacter(householdId, `c_${playerId}`);
+    expect(oneOff?.provisional?.xp).toBe(100);
+  });
+
   it("banks the stat point the level owes", async () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);

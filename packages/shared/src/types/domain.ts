@@ -71,6 +71,16 @@ export interface InventoryEntry {
 /** The six-slot limit from spec §9.1. Quest items never count against it. */
 export const INVENTORY_SLOTS = 6;
 
+/**
+ * The most characters a run will seat. The table this game is built for is
+ * three (spec §1); four leaves room for a guest without asking every map to
+ * budget spawn tiles for a crowd. Every map's `partySpawns` is validated
+ * against this, and `CREATE_CHARACTER` refuses past it — the pair is what
+ * keeps "a 5th phone joins" an error at the door instead of a crash at the
+ * first encounter.
+ */
+export const MAX_PARTY = 4;
+
 // ---------------------------------------------------------------------------
 // Characters — architecture §3.1
 // ---------------------------------------------------------------------------
