@@ -162,9 +162,25 @@ export interface GameRepository {
   putDevice(device: DeviceBinding): Promise<void>;
   /** GSI1 lookup — a returning phone resolves without knowing its household. */
   getDeviceById(deviceId: string): Promise<DeviceBinding | null>;
+  /**
+   * Primary-key lookup, **strongly consistent**. The revocation check reads
+   * through this, never the GSI: an index read is eventually consistent, so a
+   * just-revoked phone could resolve against a pre-revocation copy — and then
+   * write that copy back, erasing the revocation. §4.5's "that token is dead
+   * immediately" is only true of a read that cannot be stale.
+   */
+  getDevice(householdId: string, deviceId: string): Promise<DeviceBinding | null>;
   listDevices(householdId: string): Promise<DeviceBinding[]>;
   /** Revocation is a flag, not a delete: characters must survive it (§4.5). */
   revokeDevice(householdId: string, deviceId: string): Promise<void>;
+  /**
+   * Updates `lastSeen` and nothing else. A full `putDevice` on every resolve
+   * was the other half of the revocation race: whatever the item held between
+   * read and write — `revoked` above all — got flattened back to the copy in
+   * hand. A single-attribute update cannot clobber a flag it never touches.
+   * A missing device is a no-op, not an error.
+   */
+  touchDevice(householdId: string, deviceId: string, lastSeen: string): Promise<void>;
 
   // --- characters (household-scoped, never run-scoped — §3) ----------------
   putCharacter(character: Character): Promise<void>;

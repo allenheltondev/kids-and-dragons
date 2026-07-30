@@ -48,9 +48,11 @@ export async function handler(
     return await route(req);
   } catch (err) {
     // The error shape matches `ActionResponse.error` so the client has exactly
-    // one parser for every failure it can see.
+    // one parser for every failure it can see. The *message* stays generic on
+    // purpose: an unexpected throw carries SDK detail and filesystem paths,
+    // which belong in the log line above and nowhere a phone can see.
     console.error("[error]", req.method, req.path, err);
-    return error(500, "ILLEGAL", err instanceof Error ? err.message : String(err));
+    return error(500, "ILLEGAL", "something went wrong on our side; try again");
   }
 }
 
