@@ -1,0 +1,955 @@
+name: Apply PR 5 review fixes
+
+on:
+  push:
+    branches:
+      - claude/combat-foundations-dxz34k
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/combat-foundations-dxz34k
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Apply review fixes
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          def read(path: str) -> str:
+              return Path(path).read_text()
+
+          def write(path: str, text: str) -> None:
+              Path(path).write_text(text)
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              text = read(path)
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"{path}: expected one match, found {count}: {old[:100]!r}")
+              write(path, text.replace(old, new, 1))
+
+          def replace_section(path: str, start: str, end: str, replacement: str) -> None:
+              text = read(path)
+              start_at = text.find(start)
+              if start_at < 0:
+                  raise SystemExit(f"{path}: missing section start {start!r}")
+              end_at = text.find(end, start_at)
+              if end_at < 0:
+                  raise SystemExit(f"{path}: missing section end {end!r}")
+              write(path, text[:start_at] + replacement.rstrip() + "\n\n" + text[end_at:])
+
+          # ------------------------------------------------------------------
+          # Protocol: preserve ordered combat events as one presentation.
+          # ------------------------------------------------------------------
+          protocol = "packages/shared/src/types/protocol.ts"
+          replace_once(
+              protocol,
+              'import type { RoomMode, RunState, DiceRoll } from "./state.js";\n',
+              'import type { RoomMode, RunState, DiceRoll } from "./state.js";\n'
+              'import type { EncounterEvent } from "../encounter.js";\n',
+          )
+          replace_once(
+              protocol,
+              '  | { kind: "ENCOUNTER_BEGAN"; mapId: string; firstActorId: string | null }\n',
+              '  | {\n'
+              '      kind: "ENCOUNTER_BEGAN";\n'
+              '      mapId: string;\n'
+              '      firstActorId: string | null;\n'
+              '      /** Enemy turns that resolved before the first player could act. */\n'
+              '      events?: readonly EncounterEvent[];\n'
+              '      /** A branch reached if those opening turns immediately ended the fight. */\n'
+              '      after?: Presentation;\n'
+              '    }\n'
+              '  | {\n'
+              '      kind: "COMBAT_SEQUENCE";\n'
+              '      /** Every move, roll and state-changing effect, in resolution order. */\n'
+              '      events: readonly EncounterEvent[];\n'
+              '      /** A scene transition that must wait until the combat beats finish. */\n'
+              '      after?: Presentation;\n'
+              '    }\n',
+          )
+
+          # ------------------------------------------------------------------
+          # Engine: reject combat items and carry encounter events to clients.
+          # ------------------------------------------------------------------
+          engine = "packages/shared/src/engine.ts"
+          replace_once(
+              engine,
+              '  type EncounterState,\n  type EnemyPlacement,\n',
+              '  type EncounterState,\n  type EncounterEvent,\n  type EnemyPlacement,\n',
+          )
+
+          replace_section(
+              engine,
+              "function doReady(",
+              "function doCreateCharacter(",
+              '''function doReady(
+            draft: RunState,
+            playerId: string,
+            ready: boolean,
+            ctx: EngineContext,
+          ): Presentation | undefined {
+            const member = memberByPlayer(draft, playerId);
+            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+            member.ready = ready;
+
+            if (
+              draft.phase === "encounter" &&
+              draft.prompt?.kind === "ready" &&
+              draft.party.every((m) => m.ready || !m.connected)
+            ) {
+              // Capture the board identity before settlement can branch away from the
+              // encounter scene. Opening monster turns are part of this presentation,
+              // not invisible mutations hidden inside its patch.
+              const events = startEncounter(draft, ctx);
+              const mapId = encounterMapId(draft, ctx);
+              const firstActorId = draft.encounter ? currentActorId(draft.encounter) : null;
+              const after = settleEncounter(draft, ctx);
+              return {
+                kind: "ENCOUNTER_BEGAN",
+                mapId,
+                firstActorId,
+                ...(events.length > 0 ? { events } : {}),
+                ...(after ? { after } : {}),
+              };
+            }
+            return undefined;
+          }''',
+          )
+
+          replace_once(
+              engine,
+              "function startEncounter(draft: RunState, ctx: EngineContext): void {",
+              "function startEncounter(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {",
+          )
+          replace_once(
+              engine,
+              '''  // Whoever the initiative roll put first might be a monster, so the fight has
+            // to be walked forward before anybody's phone is asked for anything.
+            runEnemyTurns(draft, ctx);
+          }
+          ''',
+              '''  // Whoever the initiative roll put first might be a monster, so the fight has
+            // to be walked forward before anybody's phone is asked for anything.
+            return runEnemyTurns(draft, ctx);
+          }
+          ''',
+          )
+
+          replace_section(
+              engine,
+              "function doCombatMove(",
+              "/** The slice of `EngineContext` a combat call needs. */",
+              '''function doCombatMove(
+            draft: RunState,
+            playerId: string,
+            to: Position,
+            _ctx: EngineContext,
+          ): Presentation | undefined {
+            const encounter = requireTurn(draft, playerId);
+            const result = moveTo(encounter, to);
+            // A refusal is a stale phone, not a cheat: the highlight it tapped was drawn
+            // from a board that has since moved on. Say so and let it resync.
+            if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
+            draft.encounter = result.state;
+            return combatPresentation(result.events);
+          }
+
+          function doCombatAction(
+            draft: RunState,
+            playerId: string,
+            intent: Extract<ClientIntent, { type: "COMBAT_ACTION" }>,
+            ctx: EngineContext,
+          ): Presentation | undefined {
+            const encounter = requireTurn(draft, playerId);
+            const request: CombatActionRequest = {
+              abilityId: intent.abilityId,
+              ...(intent.targetId ? { targetId: intent.targetId } : {}),
+              ...(intent.targetTile ? { targetTile: intent.targetTile } : {}),
+            };
+            const result = performAction(encounter, combatCtx(ctx), request);
+            if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
+            draft.encounter = result.state;
+            // The fight may have just ended on that swing. The branch waits behind
+            // the ordered roll/damage/down events rather than replacing them.
+            return combatPresentation(result.events, settleEncounter(draft, ctx));
+          }
+
+          function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
+            const encounter = requireTurn(draft, playerId);
+            draft.encounter = endTurn(encounter);
+            // Handing over may hand over to a monster, and monsters do not wait to be
+            // asked. Their entire run is one ordered animation queue.
+            const events = runEnemyTurns(draft, ctx);
+            return combatPresentation(events, settleEncounter(draft, ctx));
+          }''',
+          )
+
+          replace_once(
+              engine,
+              '''function combatCtx(ctx: EngineContext) {
+            return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+          }
+          ''',
+              '''function combatCtx(ctx: EngineContext) {
+            return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+          }
+
+          /** Keeps combat spectacle ordered without making it authoritative state. */
+          function combatPresentation(
+            events: readonly EncounterEvent[],
+            after?: Presentation,
+          ): Presentation | undefined {
+            if (events.length === 0) return after;
+            return {
+              kind: "COMBAT_SEQUENCE",
+              events,
+              ...(after ? { after } : {}),
+            };
+          }
+          ''',
+          )
+
+          replace_section(
+              engine,
+              "function runEnemyTurns(",
+              "/** The map the scene in play names. Only called where the scene is an encounter. */",
+              '''function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
+            let encounter = draft.encounter;
+            const events: EncounterEvent[] = [];
+            if (!encounter) return events;
+
+            for (let guard = 0; guard < MAX_ENEMY_TURNS; guard++) {
+              if (encounterOutcome(encounter) !== "ongoing") break;
+              const actor = currentActor(encounter);
+              if (!actor || actor.side !== "enemy") break;
+
+              const plan = planEnemyTurn({
+                board: encounter.board,
+                enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: actor.steps },
+                party: encounter.combatants
+                  .filter((c) => c.side === "party")
+                  .map((c) => ({
+                    id: c.id,
+                    at: positionOfActor(encounter!, c.id),
+                    hp: c.hp,
+                    maxHp: c.maxHp,
+                    down: c.down,
+                  })),
+              });
+
+              if (plan.moveTo) {
+                const moved = moveTo(encounter, plan.moveTo);
+                // A refusal is the AI and the grid disagreeing, which is a bug rather
+                // than a decision — but it must not strand the turn.
+                if (moved.ok) {
+                  encounter = moved.state;
+                  events.push(...moved.events);
+                }
+              }
+              if (plan.attack) {
+                const swung = performAction(encounter, combatCtx(ctx), {
+                  abilityId: ATTACK_ABILITY,
+                  targetId: plan.attack,
+                });
+                if (swung.ok) {
+                  encounter = swung.state;
+                  events.push(...swung.events);
+                }
+              }
+              encounter = endTurn(encounter);
+            }
+
+            draft.encounter = encounter;
+            return events;
+          }''',
+          )
+
+          replace_once(
+              engine,
+              '''          ): Presentation | undefined {
+            const member = memberByPlayer(draft, playerId);
+            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+
+            const def = ctx.items[itemId];
+          ''',
+              '''          ): Presentation | undefined {
+            const member = memberByPlayer(draft, playerId);
+            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+            if (draft.encounter) {
+              // Inventory effects currently write RunState.party, while combat HP and
+              // turn economy live in EncounterState. Refuse rather than consume an item
+              // whose effect would be overwritten when the fight settles.
+              throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
+            }
+
+            const def = ctx.items[itemId];
+          ''',
+          )
+
+          # ------------------------------------------------------------------
+          # Encounter legality: no no-op actions; tile + one follow-up target.
+          # ------------------------------------------------------------------
+          encounter = "packages/shared/src/encounter.ts"
+          replace_once(
+              encounter,
+              '''  /** A tile target must be somewhere you could actually stand. */
+            readonly openTileOnly?: boolean;
+          ''',
+              '''  /** A tile target must be somewhere you could actually stand. */
+            readonly openTileOnly?: boolean;
+            /**
+             * A second figure selected after landing on a tile. Pounce uses this to
+             * pair one legal landing tile with one adjacent enemy rather than hitting
+             * everyone nearby or allowing a jump that has nobody to attack.
+             */
+            readonly followUp?: {
+              readonly kind: "ally" | "enemy";
+              readonly range?: number | "adjacent" | "board";
+              readonly state?: "down" | "standing" | "any";
+            };
+          ''',
+          )
+          replace_once(
+              encounter,
+              '''  /** Tiles it may be pointed at. Empty unless the ability targets a tile. */
+            readonly tiles: readonly Position[];
+            /** True when the request must carry a `targetId` or `targetTile`. */
+          ''',
+              '''  /** Tiles it may be pointed at. Empty unless the ability targets a tile. */
+            readonly tiles: readonly Position[];
+            /**
+             * Figure choices paired with a tile. Present only when an action requires
+             * both, so the client cannot combine a legal tile with the wrong target.
+             */
+            readonly tileTargets?: readonly {
+              readonly tile: Position;
+              readonly targets: readonly ActorId[];
+            }[];
+            /** True when the request must carry a target. Some actions require both. */
+          ''',
+          )
+
+          replace_section(
+              encounter,
+              "export function legalActions(",
+              "function rangeOf(",
+              '''export function legalActions(state: EncounterState, ctx: EncounterContext): readonly LegalAction[] {
+            const actor = currentActor(state);
+            if (!actor || state.actionTaken) return [];
+
+            const out: LegalAction[] = [];
+            for (const abilityId of actor.actions) {
+              const ability = abilityFor(ctx, abilityId);
+              if (!ability) continue;
+              // First Strike is a signature, not a button (see AbilityTiming).
+              if (ability.timing !== "action") continue;
+              if (ability.oncePerEncounter && actor.spent.includes(abilityId)) continue;
+
+              const directTargets = legalTargetsFor(state, actor, ability.target).filter((targetId) =>
+                wouldAbilityDoAnything(state, actor, ability, targetId, positionOf(state, targetId)),
+              );
+              const tileTargets = legalTileTargetsFor(state, actor, ability);
+              const tiles = tileTargets.map((option) => option.tile);
+              const targets = ability.target.followUp
+                ? [...new Set(tileTargets.flatMap((option) => option.targets))]
+                : directTargets;
+              const needsTarget = ability.target.kind !== "none" && ability.target.kind !== "self";
+              if (needsTarget && targets.length === 0 && tiles.length === 0) continue;
+              if (!needsTarget && !hasAnyAudience(state, actor, ability, positionOf(state, actor.id))) {
+                continue;
+              }
+
+              out.push({
+                abilityId,
+                name: ability.name,
+                icon: ability.icon,
+                targets,
+                tiles,
+                ...(ability.target.followUp ? { tileTargets } : {}),
+                needsTarget,
+              });
+            }
+            return out;
+          }''',
+          )
+
+          replace_section(
+              encounter,
+              "function legalTargetsFor(",
+              "function legalTilesFor(",
+              '''function legalTargetsFor(
+            state: EncounterState,
+            actor: Combatant,
+            rule: TargetRule,
+          ): readonly ActorId[] {
+            if (rule.kind === "self") return [actor.id];
+            if (rule.kind !== "ally" && rule.kind !== "enemy") return [];
+
+            const from = positionOf(state, actor.id);
+            const want: AbilitySide = rule.kind === "ally" ? "ally" : "enemy";
+            return state.combatants
+              .filter((c) => {
+                if (c.id === actor.id) return false;
+                if (!isFriendly(actor, c, want)) return false;
+                if (!matchesState(c, rule)) return false;
+                return inRange(from, positionOf(state, c.id), rule);
+              })
+              .map((c) => c.id);
+          }''',
+          )
+
+          replace_section(
+              encounter,
+              "function legalTilesFor(",
+              "/**\n * Everyone a single effect lands on.",
+              '''function legalTilesFor(
+            state: EncounterState,
+            actor: Combatant,
+            ability: CombatAbility,
+          ): readonly Position[] {
+            const rule = ability.target;
+            if (rule.kind !== "tile") return [];
+            const from = positionOf(state, actor.id);
+            if (!from) return [];
+            const range = rangeOf(rule);
+            const out: Position[] = [];
+            for (let y = 0; y < state.board.height; y++) {
+              for (let x = 0; x < state.board.width; x++) {
+                const at = { x, y };
+                if (samePosition(at, from)) continue;
+                if (range !== "board" && stepsBetween(from, at) > range) continue;
+                if (rule.openTileOnly !== false && !isOpen(state.board, at)) continue;
+                out.push(at);
+              }
+            }
+            return out;
+          }
+
+          function legalTileTargetsFor(
+            state: EncounterState,
+            actor: Combatant,
+            ability: CombatAbility,
+          ): readonly { readonly tile: Position; readonly targets: readonly ActorId[] }[] {
+            if (ability.target.kind !== "tile") return [];
+            const followUp = ability.target.followUp;
+
+            return legalTilesFor(state, actor, ability).flatMap((tile) => {
+              if (!followUp) {
+                return wouldAbilityDoAnything(state, actor, ability, null, tile)
+                  ? [{ tile, targets: [] }]
+                  : [];
+              }
+
+              const preview = previewStateForTile(state, actor.id, ability, tile);
+              const previewActor = combatantById(preview, actor.id);
+              if (!previewActor) return [];
+              const followRule: TargetRule = {
+                kind: followUp.kind,
+                ...(followUp.range === undefined ? {} : { range: followUp.range }),
+                ...(followUp.state === undefined ? {} : { state: followUp.state }),
+              };
+              const targets = legalTargetsFor(preview, previewActor, followRule).filter((targetId) =>
+                wouldAbilityDoAnything(state, actor, ability, targetId, tile),
+              );
+              return targets.length > 0 ? [{ tile, targets }] : [];
+            });
+          }
+
+          function canMoveSelf(state: EncounterState, actorId: ActorId, point: Position | null): boolean {
+            const from = positionOf(state, actorId);
+            return Boolean(point && from && !samePosition(from, point) && isOpen(state.board, point));
+          }
+
+          function previewStateForTile(
+            state: EncounterState,
+            actorId: ActorId,
+            ability: CombatAbility,
+            point: Position | null,
+          ): EncounterState {
+            const moves = ability.effects.some((spec) => spec.effect.type === "moveSelf");
+            if (!moves || !canMoveSelf(state, actorId, point) || !point) return state;
+            return { ...state, board: moveActor(state.board, actorId, point) };
+          }
+
+          function effectWouldChange(
+            state: EncounterState,
+            actorId: ActorId,
+            recipientId: ActorId,
+            effect: AbilityEffect,
+            point: Position | null,
+          ): boolean {
+            const recipient = combatantById(state, recipientId);
+            if (!recipient) return false;
+
+            switch (effect.type) {
+              case "attack":
+                return !recipient.down && effect.damage > 0;
+              case "damage":
+                return !recipient.down && effect.amount > 0;
+              case "heal":
+                return !recipient.down && recipient.hp < recipient.maxHp && effect.amount > 0;
+              case "revive":
+                return recipient.down;
+              case "rollBonus":
+                return effect.amount > recipient.rollBonus;
+              case "moveSelf":
+                return canMoveSelf(state, actorId, point);
+              case "skipTurn":
+                return !recipient.down && !recipient.skipNextTurn;
+              case "protect":
+                return !recipient.down && recipient.protectedBy !== actorId;
+              case "goFirst":
+                return false;
+              case "shove": {
+                const from = positionOf(state, actorId);
+                const start = positionOf(state, recipientId);
+                if (!from || !start || effect.steps < 1) return false;
+                const dx = Math.sign(start.x - from.x);
+                const dy = Math.sign(start.y - from.y);
+                if (dx === 0 && dy === 0) return false;
+                return isOpen(state.board, { x: start.x + dx, y: start.y + dy });
+              }
+            }
+          }
+
+          /** Would this ability make a meaningful state change for this selection? */
+          function wouldAbilityDoAnything(
+            state: EncounterState,
+            actor: Combatant,
+            ability: CombatAbility,
+            targetId: ActorId | null,
+            point: Position | null,
+          ): boolean {
+            const nonMovement = ability.effects.filter((spec) => spec.effect.type !== "moveSelf");
+            if (nonMovement.length === 0) {
+              return ability.effects.some((spec) => spec.effect.type === "moveSelf") &&
+                canMoveSelf(state, actor.id, point);
+            }
+
+            const preview = previewStateForTile(state, actor.id, ability, point);
+            return nonMovement.some((spec) =>
+              audienceFor(preview, actor.id, ability, spec, targetId, point).some((recipientId) => {
+                const recipient = combatantById(preview, recipientId);
+                if (!recipient) return false;
+                if (spec.when === "down" && !recipient.down) return false;
+                if (spec.when === "standing" && recipient.down) return false;
+                return effectWouldChange(preview, actor.id, recipientId, spec.effect, point);
+              }),
+            );
+          }''',
+          )
+
+          replace_section(
+              encounter,
+              "/** Would this ability do anything at all from where the actor stands? */",
+              "// ---------------------------------------------------------------------------\n// Taking a turn",
+              '''/** Would this ability do anything at all from where the actor stands? */
+          function hasAnyAudience(
+            state: EncounterState,
+            actor: Combatant,
+            ability: CombatAbility,
+            point: Position | null,
+          ): boolean {
+            return wouldAbilityDoAnything(state, actor, ability, null, point);
+          }
+
+          // ---------------------------------------------------------------------------
+          // Taking a turn''',
+          )
+
+          replace_once(
+              encounter,
+              '''  } else if (ability.target.kind === "tile") {
+            const tile = request.targetTile;
+            if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+              return { ok: false, reason: "that is not a legal tile" };
+            }
+            point = { x: tile.x, y: tile.y };
+          }
+          ''',
+              '''  } else if (ability.target.kind === "tile") {
+            const tile = request.targetTile;
+            if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+              return { ok: false, reason: "that is not a legal tile" };
+            }
+            point = { x: tile.x, y: tile.y };
+            if (ability.target.followUp) {
+              const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
+              if (!request.targetId || !option?.targets.includes(request.targetId)) {
+                return { ok: false, reason: "that is not a legal target from that tile" };
+              }
+              targetId = request.targetId;
+            }
+          }
+          ''',
+          )
+
+          # ------------------------------------------------------------------
+          # Authored Pounce and schema/validator support for the paired target.
+          # ------------------------------------------------------------------
+          abilities = "content/abilities.json"
+          replace_once(
+              abilities,
+              '''      "$comment": "\\"Jump to any open tile within 6 steps and attack the moment you land.\\" Land first, then swing at whatever is now beside her — the attack has to resolve against the board *after* the jump, which is why `moveSelf` comes first and the attack is scoped to `adjacent` rather than to a target chosen before she moved.",
+              "target": { "kind": "tile", "range": 6, "openTileOnly": true, "affects": "enemy" },
+              "effects": [
+                { "effect": { "type": "moveSelf" } },
+                { "effect": { "type": "attack", "damage": 3 }, "to": "adjacent" }
+              ],
+          ''',
+              '''      "$comment": "\\"Jump to any open tile within 6 steps and attack the moment you land.\\" The landing tile and one adjacent enemy are selected together. That preserves the singular attack on the card and prevents spending Pounce on an empty landing.",
+              "target": {
+                "kind": "tile",
+                "range": 6,
+                "openTileOnly": true,
+                "affects": "enemy",
+                "followUp": { "kind": "enemy", "range": "adjacent" }
+              },
+              "effects": [
+                { "effect": { "type": "moveSelf" } },
+                { "effect": { "type": "attack", "damage": 3 } }
+              ],
+          ''',
+          )
+
+          schema = "schemas/abilities.schema.json"
+          replace_once(
+              schema,
+              '''        "openTileOnly": { "type": "boolean" },
+                "affects": { "enum": ["ally", "enemy"] },
+          ''',
+              '''        "openTileOnly": { "type": "boolean" },
+                "followUp": {
+                  "$comment": "A second figure chosen after a tile action lands. Currently used by Pounce to choose one adjacent enemy.",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind"],
+                  "properties": {
+                    "kind": { "enum": ["ally", "enemy"] },
+                    "range": {
+                      "anyOf": [
+                        { "type": "integer", "minimum": 1, "maximum": 10 },
+                        { "enum": ["adjacent", "board"] }
+                      ]
+                    },
+                    "state": { "enum": ["down", "standing", "any"] }
+                  }
+                },
+                "affects": { "enum": ["ally", "enemy"] },
+          ''',
+          )
+
+          validator = "tools/content/validate.mjs"
+          replace_once(
+              validator,
+              '''    if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {
+                rep.fail(f, `/abilities/${id}/effects`, `"${id}" scopes an effect to its target, and its target is a ${t.kind === "none" ? "nothing" : "tile"}`, "\\"target\\" means the one figure that was pointed at. On a tile or on nothing it lands on nobody.");
+                ok = false;
+              }
+          ''',
+              '''    if (scopes.has("target") && (t.kind === "none" || (t.kind === "tile" && !t.followUp))) {
+                rep.fail(f, `/abilities/${id}/effects`, `"${id}" scopes an effect to its target, and its target is a ${t.kind === "none" ? "nothing" : "tile without a follow-up figure"}`, "\\"target\\" means the one figure that was pointed at. Add a followUp to a tile action, or use an area scope.");
+                ok = false;
+              }
+              if (t.followUp && t.kind !== "tile") {
+                rep.fail(f, `/abilities/${id}/target/followUp`, `"${id}" has a follow-up target without first targeting a tile`, "followUp pairs a figure with a landing tile; use a normal ally/enemy target otherwise.");
+                ok = false;
+              }
+              if (t.followUp && !movesSelf) {
+                rep.fail(f, `/abilities/${id}/effects`, `"${id}" chooses a follow-up relative to a tile but never moves there`, "Add moveSelf before the targeted effect so range is measured from the landing tile.");
+                ok = false;
+              }
+          ''',
+          )
+
+          # ------------------------------------------------------------------
+          # Client duration gate: do not apply the patch before the sequence ends.
+          # ------------------------------------------------------------------
+          world = "packages/client/src/layout/WorldView.tsx"
+          replace_once(
+              world,
+              '''  ENCOUNTER_BEGAN: 1200,
+            ATTACK: 700,
+          ''',
+              '''  ENCOUNTER_BEGAN: 1200,
+            COMBAT_SEQUENCE: 350,
+            ATTACK: 700,
+          ''',
+          )
+          replace_once(
+              world,
+              '''export function WorldView(): React.JSX.Element {
+          ''',
+              '''function presentationDuration(presentation: Presentation): number {
+            const base = PRESENTATION_MS[presentation.kind] ?? 0;
+            if (presentation.kind === "COMBAT_SEQUENCE") {
+              const sequence = Math.max(base, presentation.events.length * 350);
+              return sequence + (presentation.after ? presentationDuration(presentation.after) : 0);
+            }
+            if (presentation.kind === "ENCOUNTER_BEGAN") {
+              const opening = (presentation.events?.length ?? 0) * 350;
+              return base + opening + (presentation.after ? presentationDuration(presentation.after) : 0);
+            }
+            return base;
+          }
+
+          export function WorldView(): React.JSX.Element {
+          ''',
+          )
+          replace_once(
+              world,
+              '        setTimeout(resolve, PRESENTATION_MS[event.presentation.kind] ?? 0);\n',
+              '        setTimeout(resolve, presentationDuration(event.presentation));\n',
+          )
+
+          # ------------------------------------------------------------------
+          # Regression tests.
+          # ------------------------------------------------------------------
+          encounter_test = "packages/shared/src/encounter.test.ts"
+          replace_once(
+              encounter_test,
+              '''    target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy" },
+                effects: [
+                  { effect: { type: "moveSelf" } },
+                  { effect: { type: "attack", damage: 3 }, to: "adjacent" },
+                ],
+          ''',
+              '''    target: {
+                  kind: "tile",
+                  range: 6,
+                  openTileOnly: true,
+                  affects: "enemy",
+                  followUp: { kind: "enemy", range: "adjacent" },
+                },
+                effects: [
+                  { effect: { type: "moveSelf" } },
+                  { effect: { type: "attack", damage: 3 } },
+                ],
+          ''',
+          )
+
+          old_pounce_test = '''  it("lands a Pounce and swings from where it landed", () => {
+            // Two effects in order, the second collecting from the actor's new tile.
+            // Catches an audience computed once, up front, before the leap.
+            const state = beginEncounter(
+              setup({
+                party: [{ character: hero({ id: "c_man", quick: 9, actions: ["pounce"] }), at: { x: 0, y: 0 } }],
+                enemies: [{ spec: wisp({ guard: 8 }), at: { x: 5, y: 2 } }],
+              }),
+              ctxWith(ALWAYS_HIT),
+            );
+
+            const pounced = ok(
+              performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 } }),
+            );
+
+            expect(positionOf(pounced.state, "c_man")).toEqual({ x: 4, y: 2 });
+            expect(hpOf(pounced.state, "wisp#1")).toBe(3);
+          });
+          '''
+          new_pounce_test = '''  it("pairs a Pounce landing with one adjacent enemy", () => {
+            const state = beginEncounter(
+              setup({
+                party: [{ character: hero({ id: "c_man", quick: 9, actions: ["pounce"] }), at: { x: 0, y: 0 } }],
+                enemies: [
+                  { spec: wisp({ guard: 8 }), at: { x: 5, y: 2 } },
+                  { spec: wisp({ guard: 8 }), at: { x: 4, y: 3 } },
+                ],
+              }),
+              ctxWith(ALWAYS_HIT),
+            );
+
+            const offered = legalActions(state, ctxWith(ALWAYS_HIT)).find((a) => a.abilityId === "pounce");
+            expect(offered?.tiles).toContainEqual({ x: 4, y: 2 });
+            expect(offered?.tiles).not.toContainEqual({ x: 1, y: 0 });
+            expect(offered?.tileTargets?.find((entry) => entry.tile.x === 4 && entry.tile.y === 2)?.targets)
+              .toEqual(["wisp#1", "wisp#2"]);
+
+            const pounced = ok(
+              performAction(state, ctxWith(ALWAYS_HIT), {
+                abilityId: "pounce",
+                targetTile: { x: 4, y: 2 },
+                targetId: "wisp#2",
+              }),
+            );
+
+            expect(positionOf(pounced.state, "c_man")).toEqual({ x: 4, y: 2 });
+            expect(hpOf(pounced.state, "wisp#1")).toBe(6);
+            expect(hpOf(pounced.state, "wisp#2")).toBe(3);
+          });
+
+          it("omits targeted abilities whose selected effect would be a no-op", () => {
+            const healing = beginEncounter(
+              setup({
+                party: [
+                  { character: hero({ id: "c_healer", quick: 9, actions: ["mending_light"] }), at: { x: 1, y: 2 } },
+                  { character: hero({ id: "c_full", quick: 5 }), at: { x: 1, y: 1 } },
+                ],
+                enemies: [{ spec: wisp(), at: { x: 6, y: 4 } }],
+              }),
+              ctxWith(ALWAYS_HIT),
+            );
+            expect(legalActions(healing, ctxWith(ALWAYS_HIT)).some((a) => a.abilityId === "mending_light"))
+              .toBe(false);
+
+            const fox = beginEncounter(
+              setup({
+                party: [{ character: hero({ id: "c_fox", quick: 9, actions: ["fox_fire"] }), at: { x: 1, y: 2 } }],
+                enemies: [{ spec: wisp(), at: { x: 4, y: 2 } }],
+              }),
+              ctxWith(ALWAYS_HIT),
+            );
+            const alreadyDazed: EncounterState = {
+              ...fox,
+              combatants: fox.combatants.map((c) =>
+                c.id === "wisp#1" ? { ...c, skipNextTurn: true } : c,
+              ),
+            };
+            expect(legalActions(alreadyDazed, ctxWith(ALWAYS_HIT)).some((a) => a.abilityId === "fox_fire"))
+              .toBe(false);
+          });
+          '''
+          replace_once(encounter_test, old_pounce_test, new_pounce_test)
+
+          engine_test = "packages/shared/src/engine.test.ts"
+          replace_once(
+              engine_test,
+              'import { currentActor, legalActions, type LegalAction } from "./encounter.js";\n',
+              'import { beginEncounter, currentActor, legalActions, type LegalAction } from "./encounter.js";\n',
+          )
+          replace_once(
+              engine_test,
+              'import { makeRng } from "./dice.js";\n',
+              'import { makeRng } from "./dice.js";\nimport { parseBoard } from "./grid.js";\n',
+          )
+          engine_regressions = r'''
+
+          function isolatedEngineFight(withHealingItem = false, enemyAt = { x: 2, y: 1 }): RunState {
+            const base = seatedPartyNotReady();
+            const original = base.party[0]!;
+            const character = {
+              ...original.character,
+              inventory: withHealingItem
+                ? [{ itemId: "sunbloom_draught", kind: "consumable" as const }]
+                : [],
+            };
+            const member = {
+              ...original,
+              character,
+              hp: character.maxHp,
+              down: false,
+              ready: false,
+            };
+            const encounter = beginEncounter(
+              {
+                board: parseBoard(["....", "....", "...."]),
+                party: [{ character, at: { x: 0, y: 1 }, hp: member.hp }],
+                enemies: [
+                  {
+                    spec: { id: "wisp", count: 1, hp: 6, guard: 8, quick: 0, steps: 4, attack: 3 },
+                    at: enemyAt,
+                  },
+                ],
+              },
+              { rules, abilities: {}, rng: fixedRng(10) },
+            );
+            return {
+              ...base,
+              phase: "encounter",
+              chapterId: "bramblewood-01",
+              sceneId: "encounter_wisps",
+              sceneType: "encounter",
+              prompt: null,
+              party: [member],
+              encounter,
+            };
+          }
+
+          describe("combat integration regressions", () => {
+            it("rejects healing items during a fight without consuming them", () => {
+              const state = isolatedEngineFight(true);
+              const before = state.party[0]!.character.inventory;
+              const result = applyIntent(
+                state,
+                { playerId: state.party[0]!.playerId, intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+                ctx(),
+              );
+
+              expect(result.error).toMatchObject({ code: "ILLEGAL" });
+              expect(result.error?.message).toMatch(/during a fight/);
+              expect(result.state.party[0]!.character.inventory).toEqual(before);
+            });
+
+            it("publishes movement and consecutive enemy effects in ordered combat sequences", () => {
+              const moving = isolatedEngineFight(false, { x: 3, y: 1 });
+              const moved = applyIntent(
+                moving,
+                { playerId: moving.party[0]!.playerId, intent: { type: "MOVE", to: { x: 1, y: 1 } } },
+                ctx(),
+              );
+              expect(moved.presentation).toMatchObject({
+                kind: "COMBAT_SEQUENCE",
+                events: [{ type: "moved", actorId: moving.party[0]!.character.id, to: { x: 1, y: 1 } }],
+              });
+
+              const adjacent = isolatedEngineFight(false, { x: 1, y: 1 });
+              const ended = applyIntent(
+                adjacent,
+                { playerId: adjacent.party[0]!.playerId, intent: { type: "END_TURN" } },
+                ctx({ rng: fixedRng(20) }),
+              );
+              expect(ended.presentation?.kind).toBe("COMBAT_SEQUENCE");
+              if (ended.presentation?.kind === "COMBAT_SEQUENCE") {
+                expect(ended.presentation.events.map((event) => event.type)).toEqual(
+                  expect.arrayContaining(["roll", "damage"]),
+                );
+              }
+            });
+          });
+          '''
+          write(engine_test, read(engine_test).rstrip() + engine_regressions + "\n")
+          PY
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-pr-5.yml
+          git add packages/shared/src/engine.ts \
+                  packages/shared/src/encounter.ts \
+                  packages/shared/src/types/protocol.ts \
+                  packages/shared/src/engine.test.ts \
+                  packages/shared/src/encounter.test.ts \
+                  packages/client/src/layout/WorldView.tsx \
+                  content/abilities.json \
+                  schemas/abilities.schema.json \
+                  tools/content/validate.mjs
+          git commit -m "fix: preserve combat events and action legality"
+          git push origin HEAD:claude/combat-foundations-dxz34k
