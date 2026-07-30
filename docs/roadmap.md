@@ -203,15 +203,19 @@ The largest chapter. Budget accordingly.
 - Provisional/committed state machine covering level, stats, **and inventory** together
 - Souvenir generation on failure, tier-flavored when the run reached a new tier before failing;
   quest-item clearing at campaign end
-- **Campaign completion, which nothing triggers yet.** `handlers/progression.ts` folds a chapter's
-  XP into `provisional` and stops there, because `commitCampaign()` and `failCampaign()` have no
-  caller and the engine has no notion of a campaign ending — a campaign is currently just a list of
-  chapter ids. Until this lands, gains go provisional and stay there: the commitment rule is armed
-  in one direction only
-- **Write `ChapterProgressRecord`, and count setbacks off it.** `putChapterProgress()` has no caller
-  either, so no chapter outcome survives its run. §8.3's three-setback rule needs the count to
-  persist across weeks, not just across one evening's `RunState`. The record carries `outcome`
-  already; nothing fills it in
+- ~~**Campaign completion, which nothing triggers yet.**~~ — built:
+  `settleChapterCompletion()` (`handlers/progression.ts`) runs on every chapter completion and
+  decides the boundary. Completing a campaign's final chapter calls `commitCampaign()` for the
+  whole party; the setback limit (`Campaign.setbackLimit`, spec §8.3's three by default) calls
+  `failCampaign()` — revert to committed, tier-flavored souvenir when the attempt reached a new
+  tier, quest items cleared. All of it rides the same seq-gated `repo.commit()` as the state and
+  the event. The commitment rule is armed in both directions
+- ~~**Write `ChapterProgressRecord`, and count setbacks off it.**~~ — built, with one correction
+  to the plan: chapter records are written on every completion (outcome, XP, same transaction),
+  but the *count* lives in its own household-scoped `CampaignProgressRecord`, because a count
+  derived from per-run chapter rows can never be scoped to an attempt — a second try at a failed
+  campaign would inherit the first try's setbacks and insta-fail. The counter record carries the
+  attempt (`active` → `complete`/`failed`), and a finished attempt starts the next one at zero
 - ~~**Normalise stored characters on read, and stamp a version**~~ ([architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate))
   — decided and built: `migrateCharacter()` in `packages/shared/src/migrate.ts` runs the ladder on
   every read in both stores, `putCharacter` stamps `v: CHARACTER_VERSION` on every write, and

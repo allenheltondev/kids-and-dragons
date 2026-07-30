@@ -383,6 +383,82 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.listChapterProgress("r_1")).toHaveLength(1);
       });
 
+      it("keeps the campaign setback counter under the household", async () => {
+        // §8.3 counts across the weeks a campaign takes — runs come and go,
+        // the counter has to outlive every one of them.
+        expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toBeNull();
+        await repo.putCampaignProgress({
+          householdId: "h_1",
+          campaignId: "hollow-crown",
+          status: "active",
+          setbacks: 2,
+          updatedAt: "2026-07-04T18:00:00.000Z",
+        });
+        expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toMatchObject({
+          status: "active",
+          setbacks: 2,
+        });
+        // Scoped by household — a neighbour's campaign is not this one's.
+        expect(await repo.getCampaignProgress("h_other", "hollow-crown")).toBeNull();
+      });
+
+      it("progress rows ride the commit, and lose with it", async () => {
+        /*
+         * The setback counter is a read-modify-write: read it, decide the
+         * campaign's fate, write it back. The seq gate on the commit is what
+         * serializes that against two phones completing the chapter at once —
+         * a counter written by a *losing* commit would count the same setback
+         * twice, or fail a campaign nobody actually failed.
+         */
+        await repo.putState(state("r_1", 0));
+        const progress = {
+          chapterProgress: {
+            runId: "r_1",
+            index: 1,
+            chapterId: "bramblewood-01",
+            status: "complete" as const,
+            outcome: "setback" as const,
+            xpEarned: 150,
+            updatedAt: "2026-07-04T18:00:00.000Z",
+          },
+          campaignProgress: {
+            householdId: "h_1",
+            campaignId: "hollow-crown",
+            status: "active" as const,
+            setbacks: 1,
+            updatedAt: "2026-07-04T18:00:00.000Z",
+          },
+        };
+
+        // A losing commit must leave both rows unwritten.
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 7,
+            state: state("r_1", 8),
+            event: event("r_1", 8),
+            ...progress,
+          }),
+        ).toBe(false);
+        expect(await repo.listChapterProgress("r_1")).toEqual([]);
+        expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toBeNull();
+
+        // The winning commit lands all of it together.
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            ...progress,
+          }),
+        ).toBe(true);
+        expect((await repo.listChapterProgress("r_1"))[0]).toMatchObject({ outcome: "setback" });
+        expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toMatchObject({
+          setbacks: 1,
+        });
+      });
+
       it("advances state and event together, once", async () => {
         await repo.putState(state("r_1", 0));
 
