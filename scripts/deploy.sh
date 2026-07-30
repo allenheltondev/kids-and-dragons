@@ -29,6 +29,11 @@ CONFIG_ENV="${1:-default}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+# The stack lives in us-east-1 (infra/samconfig.toml). CI exports AWS_REGION;
+# a laptop may not, and without it `describe-stacks` silently reads the
+# profile's default region and reports a stack that deployed fine as missing.
+export AWS_REGION="${AWS_REGION:-us-east-1}"
+
 for tool in sam aws node npm; do
   command -v "$tool" >/dev/null 2>&1 || { echo "error: $tool is not installed" >&2; exit 1; }
 done
@@ -56,6 +61,14 @@ else
   npm test
   npm run content:validate
   npm run art:verify
+  npm run art:verify:rig
+  # cfn-lint is a pip install, so a laptop may not have it. CI always does
+  # (ci.yml), which keeps the stack linted on every path that gates a merge.
+  if command -v cfn-lint >/dev/null 2>&1; then
+    npm run infra:lint
+  else
+    say "infra:lint — skipped (cfn-lint not installed; CI runs it)"
+  fi
 fi
 
 say "Bundling Lambdas"
@@ -71,22 +84,25 @@ say "Deploying the stack ($STACK)"
 # `AllowedFirstAuthFactors` drops WEB_AUTHN, so an automated deploy would turn
 # everybody's passkeys off and nothing would say so. Passing it explicitly on
 # every deploy is what stops that.
-PARAMS="StageName=$STAGE"
+# An array, not a word-split string: a value with a space becomes an error
+# from sam rather than a silently malformed override.
+PARAMS=("StageName=$STAGE")
 if [ -n "${WEBAUTHN_RP_ID:-}" ]; then
-  PARAMS="$PARAMS WebAuthnRelyingPartyId=$WEBAUTHN_RP_ID"
+  PARAMS+=("WebAuthnRelyingPartyId=$WEBAUTHN_RP_ID")
 fi
 
 sam deploy \
   --template-file infra/template.yaml \
   --config-file "$ROOT/infra/samconfig.toml" \
   --config-env "$CONFIG_ENV" \
-  --parameter-overrides $PARAMS \
+  --parameter-overrides "${PARAMS[@]}" \
   --no-fail-on-empty-changeset \
   ${CI:+--no-confirm-changeset}
 
 outputs() {
   aws cloudformation describe-stacks \
     --stack-name "$STACK" \
+    --region "$AWS_REGION" \
     --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" \
     --output text
 }
