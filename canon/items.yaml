@@ -1,0 +1,123 @@
+schema_version: "2.0"
+document_type: red_sky_item_canon
+title: "The Realm of Red Sky Item Canon"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for named items, artifacts, and materials
+  in the Realm of Red Sky. Use this file when planning loot, crafting systems,
+  quest objectives, item artwork, or any game content involving collectible or
+  usable objects.
+
+agent_instructions:
+  - Items are game objects that exist within the world's internal logic and must maintain consistency with biome, creature, and location canon.
+  - Do not invent items that contradict established environmental or creature behavior.
+  - Items referencing creatures must use valid creature IDs from the creature canon.
+  - Items referencing locations must use valid biome or location IDs.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions."
+    intentionally_undefined: "A protected mystery or open design slot."
+  category:
+    crafting_material: "A raw or processed material used in creation."
+    quest_artifact: "A unique object tied to a specific quest or storyline."
+    adventuring_gear: "A practical tool or piece of equipment for exploration."
+  rarity:
+    common: "Widely available with modest effort."
+    uncommon: "Requires specific knowledge or location."
+    rare: "Difficult to obtain; limited sources."
+    legendary: "Unique or nearly unique; tied to major lore."
+
+item_ids:
+  - crimson_shard
+  - crystal_heart
+  - marsh_lantern
+
+items:
+  - id: item.crimson_shard
+    asset_id: crimson_shard
+    title: "Crimson Shard"
+    canon_status: confirmed
+    category: crafting_material
+    rarity: rare
+    featured: false
+    tags: [material, fire, crafting, rare]
+    short_description: >-
+      A jagged fragment of solidified ember energy, pulsing with volcanic heat.
+    visual_identity: >-
+      Glowing red-orange crystalline shard with internal flame patterns.
+    acquisition: >-
+      Found near glassback crab burrows in the Red Sky Foothills where volcanic
+      minerals are exposed by burrowing activity.
+    common_story_uses: >-
+      Weapon forging, quest objectives, tribute.
+    canon_constraints: >-
+      Burns unprotected hands. Must be stored in enchanted containers.
+    standard_behavior: >-
+      Emits faint warmth and light, intensifies near other shards.
+    relationships:
+      found_in: [red_sky_foothills]
+      dropped_by: [glassback_crab]
+      quests: [shattered_sky_rite]
+      factions: []
+
+  - id: item.crystal_heart
+    asset_id: crystal_heart
+    title: "Crystal Heart"
+    canon_status: confirmed
+    category: quest_artifact
+    rarity: legendary
+    featured: false
+    tags: [artifact, crystal, magical, legendary]
+    short_description: >-
+      A perfectly formed crystal containing a rhythmic inner glow, said to be a
+      fragment of the world's original heart.
+    visual_identity: >-
+      Heart-shaped violet crystal with a pulsing inner light, suspended in
+      mid-air when uncontained.
+    acquisition: >-
+      Found deep within the caverns near Skullwater Cave, in crystal formations
+      that pulse with ancient energy.
+    common_story_uses: >-
+      Major quest objective, world-lore revelation, power source.
+    canon_constraints: >-
+      Only one exists. Cannot be destroyed by conventional means.
+    standard_behavior: >-
+      Pulses in sync with nearby crystal formations.
+    relationships:
+      found_in: [skullwater_cave]
+      dropped_by: []
+      quests: [crystal_heart_retrieval]
+      factions: []
+
+  - id: item.marsh_lantern
+    asset_id: marsh_lantern
+    title: "Marsh Lantern"
+    canon_status: confirmed
+    category: adventuring_gear
+    rarity: common
+    featured: false
+    tags: [tool, light, swamp, common]
+    short_description: >-
+      A ghostly green lantern that cuts through supernatural fog and reveals
+      hidden paths.
+    visual_identity: >-
+      Wrought iron frame containing a floating green-blue wisp of captured
+      bioluminescence.
+    acquisition: >-
+      Crafted from bioluminescent materials gathered in the Whispering Marsh,
+      often using mire mimic shed tissue as a light source.
+    common_story_uses: >-
+      Navigation tool, marsh exploration, spirit interaction.
+    canon_constraints: >-
+      Only functions in foggy or dark environments. Attracts minor spirits.
+    standard_behavior: >-
+      Flickers when spirits are nearby, burns steady when the path is safe.
+    relationships:
+      found_in: [whispering_marsh]
+      dropped_by: []
+      quests: []
+      factions: []
