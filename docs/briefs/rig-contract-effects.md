@@ -1,6 +1,22 @@
 # Brief: make the effect↔rig sync data, not code
 
-**Status: open.** Written during the 2026-07 pass, which fixed the rig
+**Status: done, except the golden `.riv` fixture.** The 2026-07-30 pass landed
+everything below that is decidable without the Rive editor: `startsOn` is in
+the manifest for every effect (null for the six auras) and for both concurrent
+clips, `EFFECT_SYNC` is deleted and every pairing derived from the manifest,
+`checkTurnBudget` charges concurrent overhangs (worst turn still cast at
+exactly 45/45), `down`'s hand-off loop is named `down_loop` and required with
+its host, and `transform` gained the `flash` event (tick 4, rationale in its
+manifest `$comment`) so `transform_flash` has a start. `guard` still declares
+no event — `guard_ward` is not in the manifest yet (asset-brief §9.7 item 1),
+and the startsOn rule means it cannot arrive without declaring one. **The one
+remaining item is "The fixture that makes it real" below**: authoring the
+golden `.riv` needs the Rive editor, which no agent pass has. Until it exists,
+`introspectRiv` still rests on one garbage-bytes test, exactly as written
+there. (The two provenance tolerances stay put by design — they move only on a
+re-export of `heal_bloom`/`impact_strike`.)
+
+Written during the 2026-07 pass, which fixed the rig
 verifier's bugs (wrong Rive input-type codes, the broken wasm load path, the
 false "cannot run headlessly" claim — `tools/art/verify-rig.ts` now genuinely
 opens a `.riv`) but deliberately left three contract-shape problems for a

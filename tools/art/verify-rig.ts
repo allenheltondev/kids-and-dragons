@@ -25,12 +25,15 @@
  *      per turn from spec §7.1's six-minute encounter, and the arithmetic there
  *      is load-bearing: a clip that grows silently is a turn that grows
  *      silently, and the cost lands on an eight-year-old's attention.
- *   3. **The effects and the clips agree.** An effect sheet that syncs to an
- *      animation event starts on an event the clip really exposes and runs on
- *      the contract's tick clock, so the two cannot drift. A sheet is allowed
- *      to keep playing after its clip ends — burst_star's tail does, by design
- *      — but the tail is not waved through: it is charged against the turn
- *      budget in check #2, tick for tick.
+ *   3. **The effects and the clips agree.** Which sheet fires on which clip
+ *      event is contract, not code: every entry in `manifest.effects[]` carries
+ *      `startsOn: { clip, event }` (or `startsOn: null` for an ambient loop),
+ *      and every declared pairing is checked — the event exists, the sheet runs
+ *      on the contract's tick clock. A sheet is allowed to keep playing after
+ *      its clip ends — burst_star's tail does, by design — but the tail is not
+ *      waved through: it is charged against the turn budget in check #2, tick
+ *      for tick, and so is a concurrent clip (`revive`) that overhangs the clip
+ *      that hosts it.
  *   4. **A rig that ships is compared against the contract, clip by clip** —
  *      missing clips, clips nobody asked for, clip lengths that disagree with
  *      the tick table, missing or wrongly-typed state-machine inputs. And if the
@@ -76,6 +79,17 @@ const RESET = tty ? "[0m" : "";
 // The shape of the contract, as this tool reads it
 // ---------------------------------------------------------------------------
 
+/**
+ * A start declared against a host clip's event — how a concurrent clip
+ * (`hurt`, `revive`) and every one-shot effect sheet say when they begin.
+ * For an effect, `null` is the ambient case (the tier auras): it starts with
+ * the figure, not with an event, and says so rather than saying nothing.
+ */
+interface StartsOn {
+  clip: string;
+  event: string;
+}
+
 interface Clip {
   ticks: number;
   /** Event name → the tick it fires on, or several ticks. */
@@ -85,17 +99,23 @@ interface Clip {
   hold?: boolean;
   /** A one-shot that hands off to a loop of this length. `down`. */
   loopTicks?: number;
+  /** The name of the loop it hands off to — a second Rive animation, required
+   *  alongside its host wherever a set requires the host. `down` → `down_loop`. */
+  loopClip?: string;
   /** Plays outside a turn, so it is not charged against the turn budget. */
   outOfCombat?: boolean;
   /** The action this clip plays for is preceded by a d20 (dice.ts). */
   rolls?: boolean;
   /** Overlaps another clip rather than following it. `hurt`, `revive`. */
   concurrent?: boolean;
+  /** The host event that starts a concurrent clip. Required with `concurrent`,
+   *  because without it the clip's overhang past its host is unmeasurable. */
+  startsOn?: StartsOn;
   /** Not this commission. Absence from a rig is not a failure. */
   deferred?: boolean;
 }
 
-interface RigContract {
+export interface RigContract {
   tickFps: number;
   inputs: { triggers: string[]; booleans: string[]; numbers: string[] };
   clips: Record<string, Clip>;
@@ -103,14 +123,16 @@ interface RigContract {
   turnBudgetTicks: number;
 }
 
-interface EffectEntry {
+export interface EffectEntry {
   id: string;
   frames: number;
   fps: number;
   size: number;
   tileScoped?: boolean;
-  tintable?: boolean;
+  loop?: boolean;
   outOfCombat?: boolean;
+  /** The clip event that fires this sheet, or null for an ambient loop. */
+  startsOn?: StartsOn | null;
 }
 
 interface Manifest {
@@ -121,45 +143,61 @@ interface Manifest {
 }
 
 /**
- * Which effect sheet is fired by which clip event.
- *
- * Lives here rather than in the manifest because it is a claim about *this
- * tool's* reading of §9.2 and §9.6, and putting it in the contract would make
- * it look like something a rigger authors. When the client actually drives Rive,
- * this table is what it should be built from — and at that point it moves.
+ * The tick a `startsOn` fires at, or undefined when the host clip or event does
+ * not exist — a fact the *caller* turns into a failure, because "the pairing is
+ * broken" is a different message in a sync check than in a budget check.
+ * A multi-tick event starts the consumer at its first firing.
  */
-const EFFECT_SYNC: { effect: string; clip: string; event: string }[] = [
-  { effect: "impact_strike", clip: "attack", event: "impact" },
-  { effect: "burst_star", clip: "cast", event: "release" },
-  { effect: "revive_lift", clip: "lift", event: "contact" },
-];
+function startsOnTick(contract: RigContract, s: StartsOn): number | undefined {
+  const at = contract.clips[s.clip]?.events?.[s.event];
+  if (at === undefined) return undefined;
+  return Array.isArray(at) ? Math.min(...at) : at;
+}
 
 // ---------------------------------------------------------------------------
 // report
 // ---------------------------------------------------------------------------
 
-class Report {
+/**
+ * Exported, and the writer is injectable, for one reason: the effect-sync and
+ * turn-budget checks are judged by tests against a Report they can read without
+ * this file printing through the test run.
+ */
+export class Report {
   passed = 0;
   readonly failures: string[] = [];
   readonly warnings: string[] = [];
 
+  // Not a parameter property — Node runs this file with type stripping, and
+  // strip-only mode refuses `constructor(private ...)` because it is code.
+  private readonly log: (line: string) => void;
+
+  constructor(log: (line: string) => void = (line) => console.log(line)) {
+    this.log = log;
+  }
+
   ok(label: string): void {
     this.passed += 1;
-    console.log(`  ${GREEN}pass${RESET}  ${label}`);
+    this.log(`  ${GREEN}pass${RESET}  ${label}`);
   }
 
   fail(label: string, expected: string, actual: string, hint?: string): void {
     this.failures.push(label);
-    console.log(`  ${RED}FAIL${RESET}  ${label}`);
-    console.log(`        expected: ${expected}`);
-    console.log(`        actual:   ${actual}`);
-    if (hint) console.log(`        ${DIM}${hint}${RESET}`);
+    this.log(`  ${RED}FAIL${RESET}  ${label}`);
+    this.log(`        expected: ${expected}`);
+    this.log(`        actual:   ${actual}`);
+    if (hint) this.log(`        ${DIM}${hint}${RESET}`);
   }
 
   warn(label: string, detail?: string): void {
     this.warnings.push(label);
-    console.log(`  ${YELLOW}warn${RESET}  ${label}`);
-    if (detail) console.log(`        ${detail}`);
+    this.log(`  ${YELLOW}warn${RESET}  ${label}`);
+    if (detail) this.log(`        ${detail}`);
+  }
+
+  /** A dim aside — something deliberately skipped, said out loud. Not a pass. */
+  note(label: string): void {
+    this.log(`  ${DIM}${label}${RESET}`);
   }
 }
 
@@ -224,6 +262,28 @@ function checkClipTicks(rep: Report, contract: RigContract): void {
         "one or the other",
         "both",
         "loopTicks is the one-shot-into-loop pattern. A looping or holding clip has nothing to hand off to.",
+      );
+      ok = false;
+    }
+    // A hand-off loop is a second Rive animation, so it needs a name *and* a
+    // length. loopTicks without loopClip is the unnamed animation that would
+    // make the first correct `down` delivery fail as an unknown clip; loopClip
+    // without loopTicks is a required animation nobody knows the length of.
+    if ((clip.loopClip !== undefined) !== (clip.loopTicks !== undefined)) {
+      rep.fail(
+        `clip ${name}  ${clip.loopClip !== undefined ? "loopClip without loopTicks" : "loopTicks without loopClip"}`,
+        "loopClip and loopTicks together — the hand-off loop's name and its length",
+        clip.loopClip !== undefined ? `loopClip "${clip.loopClip}", no length` : `loopTicks ${clip.loopTicks}, no name`,
+        "The loop is its own animation in the rig. A contract that names it without a length, or times it without a name, is a clip a rigger has to guess at.",
+      );
+      ok = false;
+    }
+    if (clip.loopClip !== undefined && clip.loopClip in contract.clips) {
+      rep.fail(
+        `clip ${name}  loopClip "${clip.loopClip}"`,
+        "a name no other clip already owns",
+        "also an entry in rigContract.clips",
+        "The companion requirement and the set requirement would fight over one animation.",
       );
       ok = false;
     }
@@ -339,17 +399,17 @@ function checkSets(rep: Report, contract: RigContract): void {
 /**
  * Every trigger drives a clip, and every clip that needs driving has a trigger.
  *
- * `idle` is the default state and has no trigger; `down` is driven by the
- * `knockedDown` boolean rather than a trigger, and `revive` is started by the
- * lift's contact event rather than by the state machine. Those three are the
- * documented exceptions (art-pipeline §6.1, asset-brief §9.3) and they are named
- * here so a fourth one cannot be added by accident.
+ * `idle` is the default state and has no trigger, and `down` is driven by the
+ * `knockedDown` boolean rather than a trigger — those two are the documented
+ * exceptions (art-pipeline §6.1, asset-brief §9.3) and they are named here so a
+ * third one cannot be added by accident. A concurrent clip with a `startsOn`
+ * (`hurt`, `revive`) needs no entry: the contract itself says its host's event
+ * starts it, and data the contract carries beats a list this file remembers.
  */
 function checkTriggerCoverage(rep: Report, contract: RigContract): void {
   const NO_TRIGGER: Record<string, string> = {
     idle: "the default state",
     down: "driven by the knockedDown boolean",
-    revive: "started by the lift's contact event",
   };
   // §6.1 names the walk trigger `move`, and the clip is `walk`.
   const CLIP_FOR_TRIGGER: Record<string, string> = { move: "walk", helpUp: "lift" };
@@ -369,8 +429,11 @@ function checkTriggerCoverage(rep: Report, contract: RigContract): void {
       ok = false;
     }
   }
-  for (const name of Object.keys(contract.clips)) {
+  for (const [name, clip] of Object.entries(contract.clips)) {
     if (driven.has(name) || name in NO_TRIGGER) continue;
+    // Started by its host clip's event, not by the state machine — checked for
+    // coherence in checkTurnBudget, which is where the start tick is load-bearing.
+    if (clip.concurrent && clip.startsOn) continue;
     rep.fail(
       `clip ${name}  unreachable`,
       "a trigger, or a documented reason not to have one",
@@ -396,13 +459,24 @@ function checkTriggerCoverage(rep: Report, contract: RigContract): void {
  * "raise the budget" — it is spec §7.1's six minutes, and the six minutes are
  * the design.
  *
- * `rolls` and `concurrent` come off the contract rather than out of this
- * function, and the first version of this check is why. It charged the roll's
- * 18 ticks against every clip, which put Help Up 2 ticks over budget for a d20
- * it never throws — a failure invented by the measurement. Which clip follows a
- * roll is an engine fact (`dice.ts`), so it belongs next to the clip.
+ * `rolls`, `concurrent` and every start tick come off the contract rather than
+ * out of this function, and the first version of this check is why. It charged
+ * the roll's 18 ticks against every clip, which put Help Up 2 ticks over budget
+ * for a d20 it never throws — a failure invented by the measurement. Which clip
+ * follows a roll is an engine fact (`dice.ts`), so it belongs next to the clip;
+ * which event starts an effect or a concurrent clip is `startsOn` in the
+ * manifest, so the tails and overhangs measured here are the manifest's own.
+ *
+ * A concurrent clip is excluded from the action list but not from the bill: it
+ * overlaps its host, and any part of it past the host's end is time the turn
+ * still has to wait for. `hurt` (impact tick 3 + 5 ticks) ends inside the
+ * attack; `revive` (contact tick 6 + 10 ticks) ends at 15 where the lift ends
+ * at 10, and those 5 ticks are charged to the Help Up turn. The first version
+ * excluded `concurrent` unconditionally — harmless at 2026's numbers, invisible
+ * the day someone retimed `lift`, which is the failure mode this tool exists
+ * to prevent.
  */
-function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntry[]): void {
+export function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntry[]): void {
   if (
     !Number.isInteger(contract.tickFps) ||
     contract.tickFps < 1 ||
@@ -424,6 +498,32 @@ function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntr
   // baseSteps), and `walk` is one two-step cycle.
   const MOVE_TICKS = 3 * ticks("walk");
 
+  // Concurrent clips first: each must say what starts it, or its overhang is
+  // unmeasurable and the budget is back to taking `concurrent` on faith.
+  let startsOk = true;
+  const overhangs = new Map<string, { name: string; ticks: number }>();
+  for (const [name, clip] of Object.entries(contract.clips)) {
+    if (!clip.concurrent) continue;
+    const s = clip.startsOn;
+    const from = s ? startsOnTick(contract, s) : undefined;
+    if (!s || from === undefined) {
+      rep.fail(
+        `turn budget  concurrent clip "${name}"`,
+        'startsOn naming a real host event, e.g. { "clip": "lift", "event": "contact" }',
+        s ? `startsOn names "${s.clip}.${s.event}", which does not exist` : "no startsOn",
+        "A concurrent clip with no measurable start is an overhang charged to nothing — the unverifiable assertion this field replaced.",
+      );
+      startsOk = false;
+      continue;
+    }
+    const over = from + clip.ticks - 1 - ticks(s.clip);
+    const prior = overhangs.get(s.clip);
+    if (over > 0 && (!prior || over > prior.ticks)) {
+      overhangs.set(s.clip, { name, ticks: over });
+    }
+  }
+  if (!startsOk) return;
+
   // `walk` needs no special case: it is `loop: true` and loops are excluded,
   // because a loop has no length of its own — the move already charges it above
   // as MOVE_TICKS, cycle by cycle.
@@ -438,15 +538,22 @@ function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntr
   let worst = { total: 0, detail: "" };
   for (const [name, clip] of actionClips) {
     // An effect fired by this clip's event runs from that tick; anything past
-    // the clip's own end is tail the turn still has to wait for.
+    // the clip's own end is tail the turn still has to wait for. Same for a
+    // concurrent clip riding on this one — both run at once after the host
+    // ends, so the turn waits for whichever runs longer, not for the sum.
     let tail = 0;
-    for (const sync of EFFECT_SYNC) {
-      if (sync.clip !== name) continue;
-      const effect = effects.find((e) => e.id === sync.effect);
-      const at = clip.events?.[sync.event];
-      if (!effect || at === undefined) continue;
-      const from = Array.isArray(at) ? Math.min(...at) : at;
+    let tailNote = "effect tail";
+    for (const effect of effects) {
+      const s = effect.startsOn;
+      if (!s || s.clip !== name) continue;
+      const from = startsOnTick(contract, s);
+      if (from === undefined) continue; // a broken pairing is checkEffectSync's failure, once
       tail = Math.max(tail, from + effect.frames - 1 - clip.ticks);
+    }
+    const over = overhangs.get(name);
+    if (over && over.ticks > tail) {
+      tail = over.ticks;
+      tailNote = `${over.name} overhang`;
     }
     const roll = clip.rolls ? ROLL_TICKS : 0;
     const total = roll + MOVE_TICKS + clip.ticks + Math.max(0, tail);
@@ -455,7 +562,7 @@ function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntr
         total,
         detail:
           `${roll > 0 ? `roll ${roll} + ` : ""}move ${MOVE_TICKS} + ${name} ${clip.ticks}` +
-          `${tail > 0 ? ` + ${tail} tick(s) of effect tail` : ""}`,
+          `${tail > 0 ? ` + ${tail} tick(s) of ${tailNote}` : ""}`,
       };
     }
   }
@@ -477,40 +584,58 @@ function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntr
 /**
  * An effect that syncs to a clip event runs on the same clock as the clip.
  *
- * Two things can be wrong. The event can be missing, in which case the sheet has
- * nothing to start it and the renderer would have to guess. Or the sheet can run
- * at a different fps from the contract's tick, in which case the two drift —
- * slowly, and only visibly on the third or fourth swing, which is the worst way
- * for a timing bug to present.
+ * The pairings come from the manifest — every entry in `manifest.effects[]`
+ * declares `startsOn: { clip, event }`, or `startsOn: null` for an ambient
+ * loop — so coverage is every delivered sheet, not the three a hardcoded table
+ * used to know about. Three things can be wrong. The entry can dodge the
+ * question by declaring no `startsOn` at all, which is the old silence back.
+ * The named clip or event can be missing, in which case the sheet has nothing
+ * to start it and the renderer would have to guess. Or the sheet can run at a
+ * different fps from the contract's tick, in which case the two drift —
+ * slowly, and only visibly on the third or fourth swing, which is the worst
+ * way for a timing bug to present.
+ *
+ * The reverse direction is a warning, not a failure: a clip event no effect
+ * consumes (`leap`'s `dust`) is usually a sheet that has not been commissioned
+ * yet (asset-brief §9.7 item 1), and this tool tolerates undelivered work.
  */
-function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntry[]): void {
+export function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntry[]): void {
   let ok = true;
-  // Counted so the pass line cannot claim more than was verified. An effect
-  // missing from the manifest is a warning and a skip — this tool tolerates
-  // undelivered work — but a pass line that says "3 sheet(s)" after checking
-  // two is the same overstatement in miniature that this file exists to stop.
+  // Counted so the pass line cannot claim more than was verified — a pass line
+  // that says "5 sheet(s)" after checking four is the same overstatement in
+  // miniature that this file exists to stop.
   let checked = 0;
-  let skipped = 0;
-  for (const { effect: id, clip: clipName, event } of EFFECT_SYNC) {
-    const effect = effects.find((e) => e.id === id);
-    const clip = contract.clips[clipName];
-    if (!effect) {
-      rep.warn(`effect sync  "${id}" is not in manifest.effects[]`, "Nothing to sync; skipped.");
-      skipped += 1;
+  const ambient: string[] = [];
+  for (const effect of effects) {
+    const s = effect.startsOn;
+    if (s === null) {
+      // Declared ambient: it starts with the figure, not with an event.
+      ambient.push(effect.id);
       continue;
     }
-    checked += 1;
-    if (!clip) {
-      rep.fail(`effect sync  ${id}`, `a clip "${clipName}"`, "no such clip");
+    if (s === undefined) {
+      rep.fail(
+        `effect sync  ${effect.id}`,
+        'startsOn: { "clip", "event" } — or startsOn: null for an ambient loop',
+        "no startsOn at all",
+        "Which event fires which sheet is contract, not code. An entry that answers neither way is a sheet nothing checks.",
+      );
       ok = false;
       continue;
     }
-    const at = clip.events?.[event];
+    checked += 1;
+    const clip = contract.clips[s.clip];
+    if (!clip) {
+      rep.fail(`effect sync  ${effect.id}`, `a clip "${s.clip}"`, "no such clip");
+      ok = false;
+      continue;
+    }
+    const at = clip.events?.[s.event];
     if (at === undefined) {
       rep.fail(
-        `effect sync  ${id}`,
-        `${clipName} exposes an event "${event}"`,
-        `${clipName} exposes ${Object.keys(clip.events ?? {}).join(", ") || "no events"}`,
+        `effect sync  ${effect.id}`,
+        `${s.clip} exposes an event "${s.event}"`,
+        `${s.clip} exposes ${Object.keys(clip.events ?? {}).join(", ") || "no events"}`,
         "art-pipeline §6.1: the impact frame is exposed as an event so effects sync. Without it the renderer guesses.",
       );
       ok = false;
@@ -518,7 +643,7 @@ function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntr
     }
     if (effect.fps !== contract.tickFps) {
       rep.fail(
-        `effect sync  ${id}`,
+        `effect sync  ${effect.id}`,
         `${contract.tickFps}fps, the contract's tick`,
         `${effect.fps}fps`,
         "A sheet on a different clock drifts against the clip that fired it — invisibly at first.",
@@ -526,12 +651,35 @@ function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntr
       ok = false;
     }
   }
+
+  // Events nothing consumes — no effect and no concurrent clip starts on them.
+  // A warning, because the usual reason is a sheet §9.7 specifies that nobody
+  // has commissioned yet; the day it lands with its startsOn, this goes quiet.
+  const consumed = new Set<string>();
+  for (const effect of effects) {
+    if (effect.startsOn) consumed.add(`${effect.startsOn.clip}.${effect.startsOn.event}`);
+  }
+  for (const clip of Object.values(contract.clips)) {
+    if (clip.concurrent && clip.startsOn) {
+      consumed.add(`${clip.startsOn.clip}.${clip.startsOn.event}`);
+    }
+  }
+  for (const [clipName, clip] of Object.entries(contract.clips)) {
+    for (const event of Object.keys(clip.events ?? {})) {
+      if (consumed.has(`${clipName}.${event}`)) continue;
+      rep.warn(
+        `event ${clipName}.${event} has no consumer`,
+        "No effect or concurrent clip starts on it. Fine while its sheet (asset-brief §9.7 item 1) is uncommissioned; dead weight if that never lands.",
+      );
+    }
+  }
+
+  if (ambient.length > 0) {
+    rep.note(`effect sync  ${ambient.length} ambient loop(s) skipped (startsOn: null): ${ambient.join(", ")}`);
+  }
   // Nothing checked is not a pass, however clean the nothing was.
   if (ok && checked > 0) {
-    rep.ok(
-      `effect sync  ${checked} sheet(s) start on an event and share the tick` +
-        (skipped > 0 ? ` (${skipped} skipped: not in the manifest)` : ""),
-    );
+    rep.ok(`effect sync  ${checked} sheet(s) declare their start, hit a real event, and share the tick`);
   }
 }
 
@@ -569,9 +717,12 @@ export interface RigProblem {
  * is the first rig somebody delivers.
  *
  * `kind` selects the set: a hero rig needs all twelve clips, an enemy rig five
- * (§9.5.2). A clip marked `deferred` in the contract may be absent — that is
- * `transform`, which is Chapter 5's — but if a rig ships it anyway it is still
- * checked, because a wrong `transform` is worse than no `transform`.
+ * (§9.5.2) — plus, for either kind, the hand-off loop of any set clip that
+ * names one (`down` → `down_loop`), because a one-shot into a loop is two Rive
+ * animations however the set counts it. A clip marked `deferred` in the
+ * contract may be absent — that is `transform`, which is Chapter 5's — but if
+ * a rig ships it anyway it is still checked, because a wrong `transform` is
+ * worse than no `transform`.
  */
 export function compareRigToContract(
   rig: RigIntrospection,
@@ -610,6 +761,49 @@ export function compareRigToContract(
 
   const byName = new Map(rig.clips.map((c) => [c.name, c]));
 
+  // Hand-off loops. `down` is a one-shot into a 24-tick loop, which Rive
+  // expresses as two animations — so the contract names the second one
+  // (`loopClip: "down_loop"`) and it is required wherever its host is, at
+  // `loopTicks` long, looping. Named here so the unknown-clip check below can
+  // recognise it: the first *correct* `down` delivery must not fail for
+  // shipping an animation the contract demanded.
+  const companions = new Map<string, { host: string; spec: Clip }>();
+  for (const name of required) {
+    const spec = contract.clips[name];
+    if (spec?.loopClip) companions.set(spec.loopClip, { host: name, spec });
+  }
+  for (const [name, { host, spec }] of companions) {
+    const found = byName.get(name);
+    if (!found) {
+      // A deferred host may be absent with its loop; a delivered host without
+      // its loop is a figure that falls and then freezes — §9.3's corpse.
+      if (spec.deferred && !byName.has(host)) continue;
+      problems.push({
+        label: `clip "${name}"`,
+        expected: `present (${spec.loopTicks ?? "?"} ticks) — the loop "${host}" hands off to`,
+        actual: "missing",
+        hint: `The contract's ${host}.loopClip names it: a one-shot into a loop is two Rive animations, and the loop ships with its host. Without it the figure freezes on ${host}'s last frame, which §9.3 forbids.`,
+      });
+      continue;
+    }
+    if (spec.loopTicks !== undefined && found.ticks !== spec.loopTicks) {
+      problems.push({
+        label: `clip "${name}"  length`,
+        expected: `${spec.loopTicks} ticks at ${contract.tickFps}fps`,
+        actual: `${found.ticks} ticks`,
+        hint: "§9.2 derives every tick count from the turn budget. Changing one is a budget change, not a rig detail.",
+      });
+    }
+    if (!found.loop) {
+      problems.push({
+        label: `clip "${name}"  loop`,
+        expected: "looping",
+        actual: "one-shot",
+        hint: `A hand-off loop that plays once is a breathing figure that stops breathing — the frozen ${host} pose §9.3 forbids, one loop later.`,
+      });
+    }
+  }
+
   for (const name of required) {
     const spec = contract.clips[name];
     const found = byName.get(name);
@@ -642,7 +836,8 @@ export function compareRigToContract(
     // `loop` and `hold` are opposites and both are stated in the contract, so a
     // rig that loops a hold clip (or holds a loop) is checkable. `down` is
     // neither: it is a one-shot that hands off to a loop, which Rive expresses
-    // as two clips, so it is not asserted here.
+    // as two clips — the hand-off half (`down_loop`) is judged in the companion
+    // block above, and the fall's own flag stays unasserted here.
     const wantsLoop = spec.loop === true;
     const wantsHold = spec.hold === true;
     if ((wantsLoop || wantsHold) && found.loop !== wantsLoop) {
@@ -663,6 +858,8 @@ export function compareRigToContract(
   // reason why) or work nobody costed.
   for (const clip of rig.clips) {
     if (required.includes(clip.name)) continue;
+    // A named hand-off loop is contract, not surplus — judged above.
+    if (companions.has(clip.name)) continue;
     if (clip.name in contract.clips) {
       problems.push({
         label: `clip "${clip.name}"  not in the ${kind} set`,
