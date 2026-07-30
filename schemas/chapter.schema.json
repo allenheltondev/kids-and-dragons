@@ -373,6 +373,7 @@
       "additionalProperties": false,
       "required": ["type", "map", "enemies", "onVictory", "onDefeat"],
       "properties": {
+        "$comment": { "type": "string" },
         "type": { "const": "encounter" },
         "map": { "type": "string", "minLength": 1 },
         "art": { "type": "string", "minLength": 1 },
@@ -383,6 +384,10 @@
         "onDefeat": {
           "description": "Losing branches the story; it is never a game over (spec §7.3), which is why it is required.",
           "$ref": "#/$defs/branch"
+        },
+        "autoResolve": {
+          "description": "The chapter-4 gate (chapter.ts). The engine's combat is built, but until the phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a scene nobody can tap — so a gated encounter resolves straight through onVictory. Turning the fight on is deleting this line.",
+          "const": "victory"
         }
       }
     }

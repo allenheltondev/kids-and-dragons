@@ -147,6 +147,50 @@ describe("applyAction — patches and broadcast", () => {
     }
   });
 
+  it("retries a failed publish once, and still returns ok when both fail", async () => {
+    /*
+     * The commit has already landed when the publish runs, so a publish
+     * failure must never become a 500 — the acting phone would retry an
+     * action that took and bounce off STALE_SEQ. One retry covers the
+     * transient blip; past that the response still names the committed seq,
+     * which is what the client's broadcast watchdog resyncs against.
+     */
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const playerId = room.player.principal.playerId;
+
+    const realPublish = harness.channel.publish.bind(harness.channel);
+    let attempts = 0;
+    harness.channel.publish = async (code, message) => {
+      attempts += 1;
+      if (attempts === 1) throw new Error("transient blip");
+      return realPublish(code, message);
+    };
+
+    const first = await applyAction(
+      { runId: room.runId, playerId, seq: 0, intent: choose("east") },
+      harness.deps,
+    );
+    expect(first).toEqual({ ok: true, seq: 1 });
+    expect(attempts).toBe(2);
+    // The retry delivered: subscribers got the patch after all.
+    expect(room.received.map((m) => m.seq)).toEqual([1]);
+
+    // Both attempts down: the action still succeeded — the state advanced and
+    // the response says to where. Broadcasting is the part that failed.
+    harness.channel.publish = async () => {
+      throw new Error("channel down");
+    };
+    const second = await applyAction(
+      { runId: room.runId, playerId, seq: 1, intent: choose("shrine") },
+      harness.deps,
+    );
+    expect(second).toEqual({ ok: true, seq: 2 });
+    expect(room.received.map((m) => m.seq)).toEqual([1]);
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.seq).toBe(2);
+  });
+
   it("writes the same patch to the event log that it broadcast", async () => {
     const harness = makeHarness();
     const room = await setup(harness);

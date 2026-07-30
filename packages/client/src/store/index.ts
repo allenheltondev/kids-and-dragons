@@ -147,6 +147,16 @@ interface Runtime {
   content: Promise<void> | null;
   resyncing: Promise<void> | null;
   /**
+   * Watchdog for a broadcast the server owes us. A successful action response
+   * names the seq it committed; the patch normally arrives on the channel a
+   * beat later. If it never does — the server's publish failed after the
+   * commit — nothing else would notice until the *next* message opened a gap,
+   * and between scenes that next message can be minutes away. This timer is
+   * the recovery contract: response says N, sequencer still behind N after a
+   * grace period, resync.
+   */
+  broadcastWatchdog: ReturnType<typeof setTimeout> | null;
+  /**
    * In-flight attach, so React 19's double-invoked effect joins once — keyed
    * by room code, because "an attach is running" is not the same fact as "an
    * attach *to this room* is running". Handing back the old promise for a new
@@ -161,6 +171,15 @@ interface Runtime {
   realtime: Promise<ClientConfig["realtime"] | null> | null;
 }
 
+/**
+ * How long an action's committed patch may take to arrive on the channel
+ * before the client stops waiting and resyncs. Generous next to the
+ * sequencer's 750ms gap timer, because this timer's normal fate is to be
+ * cleared: it has to outlast an ordinary broadcast plus a presentation-gated
+ * beat, so it only ever fires when the broadcast genuinely never left.
+ */
+const BROADCAST_GRACE_MS = 4_000;
+
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
     const runtime: Runtime = {
@@ -171,6 +190,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       resyncing: null,
       attaching: null,
       realtime: null,
+      broadcastWatchdog: null,
     };
 
     /**
@@ -281,6 +301,28 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.sequencer?.dispose();
       runtime.sequencer = null;
       runtime.resyncing = null;
+      if (runtime.broadcastWatchdog) {
+        clearTimeout(runtime.broadcastWatchdog);
+        runtime.broadcastWatchdog = null;
+      }
+    }
+
+    /**
+     * Hold the server to the broadcast its action response promised (see the
+     * field's comment on Runtime). One timer, latest target wins — every ok
+     * response re-arms it, and it disarms itself when the sequencer has caught
+     * up, which is the overwhelmingly normal case.
+     */
+    function expectBroadcast(seq: number): void {
+      const sequencer = runtime.sequencer;
+      if (!sequencer || sequencer.seq >= seq) return;
+      if (runtime.broadcastWatchdog) clearTimeout(runtime.broadcastWatchdog);
+      runtime.broadcastWatchdog = setTimeout(() => {
+        runtime.broadcastWatchdog = null;
+        const current = runtime.sequencer;
+        if (!current || current.seq >= seq) return;
+        void resync(current.seq);
+      }, BROADCAST_GRACE_MS);
     }
 
     async function establish(session: ClientSession, snapshot: RunState): Promise<void> {
@@ -550,7 +592,18 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             response = await post(response.seq);
           }
 
-          if (response.ok) return true;
+          if (response.ok) {
+            /*
+             * The response names the seq the server committed; the patch is
+             * supposed to follow on the channel. If the server's publish
+             * failed after the commit, that patch never comes — and the tap
+             * would look like it did nothing while the state quietly
+             * advanced. The watchdog turns "the broadcast never arrived"
+             * into a resync instead of a mystery.
+             */
+            expectBroadcast(response.seq);
+            return true;
+          }
           set({ error: response.error?.message ?? "That isn't allowed right now." });
           return false;
         } catch (error) {
