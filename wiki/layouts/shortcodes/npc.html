@@ -1,0 +1,4 @@
+{{/* NPC Reference Shortcode — renders entity reference card (inline or block mode) */}}
+{{- $id := .Get "id" -}}
+{{- $mode := .Get "mode" | default "inline" -}}
+{{- partial "entity-card.html" (dict "id" $id "type" "npc" "prefix" "npcs" "mode" $mode "page" .Page) -}}

@@ -1,0 +1,224 @@
+schema_version: "2.0"
+document_type: red_sky_playable_people_canon
+title: "The Realm of Red Sky Playable Peoples"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for the six player-character species of
+  the Realm of Red Sky. Use this file when planning character artwork, species
+  descriptions, homeland references, story roles, dialogue, or any game content
+  involving playable peoples.
+
+agent_instructions:
+  - Do not invent additional homelands for playable peoples.
+  - Do not portray an entire sapient people as inherently good, evil, hostile, foolish, or untrustworthy.
+  - For sapient peoples, standard_behavior describes common cultural practices, not mandatory personality traits.
+  - A homeland identifies cultural origin and population concentration, not an absolute border. Individuals may live, work, study, or travel elsewhere.
+  - Species does not determine morality. Villains should be named individuals, mixed-species factions, or supernatural threats defined by choices and goals.
+  - Mount RedSky is not a dragonling homeland or civilization.
+  - The Exchange has no native or dominant people.
+  - Preserve the distinctions between MossHome and the wider Enchanted Woods.
+  - Preserve the distinctions between the central Plains, Eastern Plains, and Sunward Fields.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions and creature canon."
+    intentionally_undefined: "A protected mystery or open design slot."
+  scale:
+    small_to_medium: "Between knee and waist height."
+    medium: "Person-sized."
+    medium_to_large: "Between person and horse sized."
+    large: "Horse-to-wagon sized."
+
+species_ids:
+  - unicorn
+  - dragonling
+  - griffin
+  - bigfoot
+  - kitsune
+  - manticore
+
+characters:
+  - id: character.unicorn
+    asset_id: unicorn
+    species_manifest_id: unicorn
+    title: "Unicorn"
+    canon_status: confirmed
+    featured: true
+    tags: [playable, forest, magic, healer]
+    scale: medium_to_large
+    signature_part: horn
+    bipedal: false
+    short_description: >-
+      Magical forest people who tend hidden glades, shifting paths, wounded
+      magic, and the ancient promises remembered by the Enchanted Woods.
+    visual_identity: >-
+      Equine form with a single magical horn and an expressive youthful face.
+      Natural color and marking variation; magic appears as subtle light, plants,
+      or path-like motifs.
+    common_story_uses: >-
+      Magical guide, restorer of a damaged place, impulsive young hero too
+      confident in reading the truth.
+    canon_constraints: >-
+      Unicorns are not universally calm, elegant, wise, or correct.
+    standard_behavior: >-
+      Inspects changes in paths and glades, helps restore damaged places,
+      mediates promises, investigates disturbances the forest remembers.
+    relationships:
+      primary_locations: [enchanted_woods]
+      secondary_locations: [mosshome, sunward_fields, the_exchange]
+      creatures: []
+      items: []
+
+  - id: character.dragonling
+    asset_id: dragonling
+    species_manifest_id: dragonling
+    title: "Dragonling"
+    canon_status: confirmed
+    featured: false
+    tags: [playable, volcanic, explorer, heat-resistant]
+    scale: small_to_medium
+    signature_part: wings
+    bipedal: false
+    short_description: >-
+      Young dragon-like people adapted to the tremors, ash, caves, and crystal
+      fields of the Red Sky Foothills.
+    visual_identity: >-
+      Compact expressive dragon-like form with scales, horns, and a clearly
+      youthful silhouette. Colors and markings may vary widely.
+    common_story_uses: >-
+      Local guide to the foothills, hero conflicted about entering forbidden
+      gemstone caves, witness to unusual changes in Mount RedSky.
+    canon_constraints: >-
+      Mount RedSky itself is not the dragonling homeland. Claims of descent from
+      legend dragons are unverified cultural stories.
+    standard_behavior: >-
+      Communities monitor tremors, ash, heat, and crystal changes. Individuals
+      explore caves, collect gemstones, trade with caravans.
+    relationships:
+      primary_locations: [red_sky_foothills]
+      secondary_locations: [the_exchange, plains, sunward_fields]
+      creatures: []
+      items: []
+
+  - id: character.griffin
+    asset_id: griffin
+    species_manifest_id: griffin
+    title: "Griffin"
+    canon_status: confirmed
+    featured: false
+    tags: [playable, mountain, flight, scout]
+    scale: medium_to_large
+    signature_part: wings
+    bipedal: false
+    short_description: >-
+      Eagle-and-lion people of the Frostfang aeries who serve as scouts,
+      rescuers, messengers, and guardians of the northern horizon.
+    visual_identity: >-
+      Raptor head, wings, and forequarters combined with a powerful feline body.
+      Cold-weather plumage and practical flight gear.
+    common_story_uses: >-
+      Northern scout, mountain rescuer, curious young hero tempted to investigate
+      the forbidden north.
+    canon_constraints: >-
+      Answer calls for rescue, take watch duties seriously, report signs from
+      the Expanse.
+    standard_behavior: >-
+      Patrols passes, carries messages, rescues stranded travelers, watches for
+      unexplained movement north of the peaks.
+    relationships:
+      primary_locations: [frostfang_peaks]
+      secondary_locations: [glacier_of_origins, eastern_plains, the_exchange]
+      creatures: []
+      items: []
+
+  - id: character.bigfoot
+    asset_id: bigfoot
+    species_manifest_id: bigfoot
+    title: "Bigfoot"
+    canon_status: confirmed
+    featured: false
+    tags: [playable, forest, strong, observer]
+    scale: large
+    signature_part: mane
+    bipedal: true
+    short_description: >-
+      Large, shaggy forest people known for observation, natural history, living
+      construction, and quietly maintained knowledge.
+    visual_identity: >-
+      Tall, broad, shaggy silhouette with expressive face and hands. Natural
+      accessories made from fallen wood, woven grasses, stones, and cultivated moss.
+    common_story_uses: >-
+      Forest historian, guide through changing paths, hero who notices an
+      environmental clue others miss.
+    canon_constraints: >-
+      Do not portray Bigfoots as primitive, unintelligent, or universally reclusive.
+    standard_behavior: >-
+      Tends forest paths and living structures, studies changes in plants and
+      wildlife, preserves community history.
+    relationships:
+      primary_locations: [mosshome]
+      secondary_locations: [enchanted_woods, whispering_marsh, the_exchange]
+      creatures: []
+      items: []
+
+  - id: character.kitsune
+    asset_id: kitsune
+    species_manifest_id: kitsune
+    title: "Kitsune"
+    canon_status: confirmed
+    featured: false
+    tags: [playable, sky, illusion, clever]
+    scale: small_to_medium
+    signature_part: tail
+    bipedal: false
+    short_description: >-
+      Fox-like people of the drifting Sky Islands who use wind, stories,
+      navigation, and illusion to connect moving communities.
+    visual_identity: >-
+      Fox-like form with expressive ears, tail or tails, and light travel
+      clothing. Wind, cloud, star, and temple motifs.
+    common_story_uses: >-
+      Wind navigator, messenger carrying incomplete or symbolic information,
+      hero whose clever solution creates an unexpected consequence.
+    canon_constraints: >-
+      Do not portray every kitsune as dishonest or mischievous.
+    standard_behavior: >-
+      Charts wind patterns, maintains island stabilizing sites, carries stories
+      between islands, uses illusions for teaching and play.
+    relationships:
+      primary_locations: [sky_islands]
+      secondary_locations: [the_exchange, enchanted_woods, frostfang_peaks]
+      creatures: []
+      items: []
+
+  - id: character.manticore
+    asset_id: manticore
+    species_manifest_id: manticore
+    title: "Manticore"
+    canon_status: confirmed
+    featured: false
+    tags: [playable, plains, guardian, proud]
+    scale: medium_to_large
+    signature_part: tail
+    bipedal: false
+    short_description: >-
+      Proud, formidable plains people who travel in family prides, maintain
+      routes, and guard travelers crossing the open east.
+    visual_identity: >-
+      Lion-like body and a distinctive powerful tail. A formidable silhouette
+      balanced by expressive, approachable features.
+    common_story_uses: >-
+      Road guardian, caravan escort, hero confronting unfair assumptions about
+      appearance.
+    canon_constraints: >-
+      Manticores are not an inherently hostile or villainous people.
+    standard_behavior: >-
+      Patrols roads, repairs trail markers, investigates unusual tracks, escorts
+      caravans, exchanges news between settlements.
+    relationships:
+      primary_locations: [eastern_plains]
+      secondary_locations: [stone_crossing, plains, the_exchange]
+      creatures: []
+      items: []

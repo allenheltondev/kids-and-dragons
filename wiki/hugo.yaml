@@ -1,0 +1,81 @@
+baseURL: ""
+title: "Realm of Red Sky — World Encyclopedia"
+theme: "github.com/imfing/hextra"
+
+module:
+  imports:
+    - path: "github.com/imfing/hextra"
+
+  mounts:
+    - source: content
+      target: content
+    - source: ../assets
+      target: static/assets  # mount repo assets into Hugo static
+
+params:
+  search:
+    enable: false  # disabled in favor of Pagefind
+  theme:
+    default: dark
+  navbar:
+    displayTitle: true
+    displayLogo: true
+
+# Section ordering weights for sidebar navigation
+menu:
+  sidebar:
+    - identifier: world
+      name: World
+      weight: 10
+    - identifier: biomes
+      name: Biomes
+      weight: 20
+    - identifier: locations
+      name: Locations
+      weight: 30
+    - identifier: creatures
+      name: Creatures
+      weight: 40
+    - identifier: characters
+      name: Characters
+      weight: 50
+    - identifier: npcs
+      name: NPCs
+      weight: 60
+    - identifier: factions
+      name: Factions
+      weight: 70
+    - identifier: items
+      name: Items
+      weight: 80
+    - identifier: mechanics
+      name: Mechanics
+      weight: 90
+    - identifier: quests
+      name: Quests
+      weight: 100
+    - identifier: campaigns
+      name: Campaigns
+      weight: 110
+    - identifier: history
+      name: History
+      weight: 120
+    - identifier: art
+      name: Art
+      weight: 130
+    - identifier: development
+      name: Development
+      weight: 140
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true  # required for HTML comment markers to pass through
+
+outputs:
+  home:
+    - HTML
+  section:
+    - HTML
+  page:
+    - HTML
