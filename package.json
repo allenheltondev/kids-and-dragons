@@ -27,7 +27,8 @@
     "infra:lint": "cfn-lint infra/template.yaml --region us-east-1 --ignore-checks I3011",
     "infra:deploy": "./scripts/deploy.sh",
     "ddb:local": "docker run --rm -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -inMemory -sharedDb",
-    "test:ddb": "KAD_DDB_ENDPOINT=http://localhost:8000 vitest run packages/server/src/store/contract.test.ts"
+    "test:ddb": "KAD_DDB_ENDPOINT=http://localhost:8000 vitest run packages/server/src/store/contract.test.ts",
+    "spike:rive": "npm run spike:rive --workspace @kad/client"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.0",
