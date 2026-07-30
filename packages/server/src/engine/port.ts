@@ -19,6 +19,8 @@
  */
 
 import type {
+  AbilityCatalog,
+  EncounterMap,
   Character,
   Chapter,
   ClientIntent,
@@ -36,6 +38,18 @@ export interface EngineContext {
   items: ItemCatalog;
   /** `null` before a chapter has started (lobby, character creation). */
   chapter: Chapter | null;
+  /**
+   * The board an encounter scene names, by id. A lookup rather than a value
+   * because a chapter can hold several fights, and the engine should not have to
+   * be handed every map a chapter might reach.
+   */
+  map?: (id: string) => EncounterMap | null;
+  /**
+   * Combat abilities by id — authored content, like the item catalog. Attack,
+   * Help Up and Ready are built into `encounter.ts`, so an absent catalog still
+   * gives a playable fight.
+   */
+  abilities?: AbilityCatalog;
   /** Characters belong to a household (§3), so creation needs to know which. */
   householdId?: string;
   /** Seeded per action so a replay of the event log re-rolls identically. */

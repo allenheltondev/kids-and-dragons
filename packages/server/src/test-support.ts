@@ -11,9 +11,17 @@
  * disagreeing about the rules.
  */
 
-import { makeChapter, makeItems, makeRules } from "../../shared/src/test-fixtures.ts";
+import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
-import type { Chapter, ItemCatalog, Role, RulesContent, RunState } from "@kad/shared";
+import type {
+  AbilityCatalog,
+  Chapter,
+  EncounterMap,
+  ItemCatalog,
+  Role,
+  RulesContent,
+  RunState,
+} from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import type { ContentStore } from "./content/loader.ts";
 import type { ApplyIntentResult, Engine, EngineContext, IntentInput } from "./engine/port.ts";
@@ -21,7 +29,7 @@ import type { HandlerDeps } from "./handlers/deps.ts";
 import { DevIdentity, type DeviceIdentity } from "./identity.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
-export { makeChapter, makeItems, makeRules };
+export { makeChapter, makeItems, makeMap, makeRules };
 
 export const T0 = Date.parse("2026-07-04T18:00:00.000Z");
 
@@ -45,17 +53,32 @@ export function makeClock(start = T0): TestClock {
 }
 
 export function makeContent(
-  overrides: { rules?: RulesContent; items?: ItemCatalog; chapters?: Chapter[] } = {},
+  overrides: {
+    rules?: RulesContent;
+    items?: ItemCatalog;
+    chapters?: Chapter[];
+    maps?: EncounterMap[];
+    abilities?: AbilityCatalog;
+  } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
   const items = overrides.items ?? makeItems();
   const chapters = new Map((overrides.chapters ?? [makeChapter()]).map((c) => [c.id, c]));
+  const maps = new Map((overrides.maps ?? [makeMap()]).map((m) => [m.id, m]));
+  // Empty by default, so a fight in a handler test offers exactly Attack, Help
+  // Up and Ready. `makeRules()`'s class actions are named but not defined, which
+  // is the same state a save written against newer content is in, and the
+  // tolerant path (`legalActions` skips what it cannot look up) is the one the
+  // handler tests should be walking. `encounter.test.ts` owns the catalog.
+  const abilities = overrides.abilities ?? {};
   return {
     root: "<fixture>",
     rules: () => rules,
     items: () => items,
     chapter: (id) => chapters.get(id) ?? null,
     chapterIds: () => [...chapters.keys()],
+    map: (id) => maps.get(id) ?? null,
+    abilities: () => abilities,
   };
 }
 

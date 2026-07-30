@@ -132,9 +132,44 @@ export interface EnemySpec {
   count: number;
   hp: number;
   guard: number;
+  /**
+   * Initiative, on the same scale as a character's Quick (§7.2 — highest first,
+   * rerolled each encounter).
+   *
+   * Authored rather than inferred from `guard`. Deriving the two from one
+   * number makes armour and speed the same dial, which quietly forbids a whole
+   * archetype: a heavily-armoured brute would necessarily act *first*, and a
+   * slow tank could not be written at all. The Bramblewisp is the other end of
+   * the same bug — 5 steps and a low guard would have made the fastest thing in
+   * the chapter the last to move.
+   */
+  quick: number;
   steps: number;
   attack: number;
   art?: string;
+}
+
+/**
+ * A battle map — `content/maps/<id>.json`, referenced by `EncounterScene.map`.
+ *
+ * Terrain is ASCII on purpose: `.` open, `#` blocked, one character per tile,
+ * one string per row. It is the only representation a person can author, review
+ * in a pull request, and eyeball for "is this actually playable" without a tool
+ * — and `grid.ts`'s `parseBoard()` already reads exactly this shape.
+ *
+ * Spawns are authored rather than derived because the engine refuses to guess a
+ * formation (see `EncounterSetup`). `EnemySpec.count` is expanded against
+ * `enemySpawns` in order, so a map decides where a fight starts and the chapter
+ * decides what is in it.
+ */
+export interface EncounterMap {
+  id: string;
+  /** 8 rows of 10 characters — the board in spec §7.1. */
+  rows: string[];
+  /** Where the party stands. At least three; §7.1 seats three players. */
+  partySpawns: { x: number; y: number }[];
+  /** At least four, the most enemies §7.1 allows. Consumed in order. */
+  enemySpawns: { x: number; y: number }[];
 }
 
 export interface EncounterScene {
