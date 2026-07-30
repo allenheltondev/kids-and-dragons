@@ -78,7 +78,26 @@ interface CameraState {
   zoom: number;
 }
 
-const LERP = 0.12;
+/*
+ * Smoothing rates for the exponential-approach helper below, in 1/seconds.
+ * Each is derived from the per-60fps-frame fraction the scene was tuned with
+ * (rate = -ln(1 - fraction) × 60), so the feel at 60fps is unchanged — but a
+ * 30fps mini-PC and a 120Hz phone now converge at the same speed instead of
+ * half and double it.
+ */
+const CAMERA_RATE = 7.7; // was 0.12/frame
+const DOWN_RATE = 11.9; // was 0.18/frame
+const BOB_RATE = 13.4; // was 0.2/frame
+const FADE_RATE = 9.8; // was 0.15/frame
+
+/**
+ * Move `current` toward `target` by a fixed *rate* rather than a fixed
+ * per-frame fraction: `1 - e^(-rate·dt)` is the frame-rate-independent form of
+ * "close X% of the gap each frame".
+ */
+function approach(current: number, target: number, rate: number, dtSeconds: number): number {
+  return current + (target - current) * (1 - Math.exp(-rate * dtSeconds));
+}
 
 export function createScene(app: Application): PartyScene {
   const stage = app.stage;
@@ -91,6 +110,9 @@ export function createScene(app: Application): PartyScene {
   backdrop.addChild(backdropArt);
 
   const actorsLayer = new Container();
+  // Painter's order by zIndex, so the depth stagger in layoutActors() reads
+  // right: the nearer (lower) actor draws in front, whatever order they joined.
+  actorsLayer.sortableChildren = true;
   camera.addChild(actorsLayer);
 
   const actors = new Map<string, Actor>();
@@ -114,6 +136,8 @@ export function createScene(app: Application): PartyScene {
       actor.y = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
       actor.container.x = actor.x;
       actor.container.y = actor.y;
+      // Feet further down the screen = nearer the viewer = drawn in front.
+      actor.container.zIndex = actor.y;
     });
   }
 
@@ -141,9 +165,9 @@ export function createScene(app: Application): PartyScene {
 
     camWant = resolveCamera();
     camNow = {
-      x: camNow.x + (camWant.x - camNow.x) * LERP,
-      y: camNow.y + (camWant.y - camNow.y) * LERP,
-      zoom: camNow.zoom + (camWant.zoom - camNow.zoom) * LERP,
+      x: approach(camNow.x, camWant.x, CAMERA_RATE, dt),
+      y: approach(camNow.y, camWant.y, CAMERA_RATE, dt),
+      zoom: approach(camNow.zoom, camWant.zoom, CAMERA_RATE, dt),
     };
     applyCamera();
 
@@ -151,15 +175,15 @@ export function createScene(app: Application): PartyScene {
       if (actor.down) {
         // spec §7.3 — knocked down, never dead. They lie on the grid and wait
         // for someone to come get them.
-        actor.art.rotation += (-1.25 - actor.art.rotation) * 0.18;
-        actor.art.y += (ACTOR_HEIGHT * 0.18 - actor.art.y) * 0.18;
-        actor.art.alpha += (0.75 - actor.art.alpha) * 0.18;
+        actor.art.rotation = approach(actor.art.rotation, -1.25, DOWN_RATE, dt);
+        actor.art.y = approach(actor.art.y, ACTOR_HEIGHT * 0.18, DOWN_RATE, dt);
+        actor.art.alpha = approach(actor.art.alpha, 0.75, DOWN_RATE, dt);
         continue;
       }
       const bob = Math.sin(elapsed * 1.6 + actor.phase);
-      actor.art.rotation += (bob * 0.02 - actor.art.rotation) * 0.2;
+      actor.art.rotation = approach(actor.art.rotation, bob * 0.02, BOB_RATE, dt);
       actor.art.y = bob * ACTOR_HEIGHT * 0.012;
-      actor.art.alpha += ((actor.connected ? 1 : 0.5) - actor.art.alpha) * 0.15;
+      actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
     }
   }
 
@@ -174,6 +198,18 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
+    const { species, tier, id } = member.character;
+    const actor: Actor = {
+      container,
+      art,
+      characterId: id,
+      phase: Math.random() * Math.PI * 2,
+      down: member.down,
+      connected: member.connected,
+      x: 0,
+      y: GROUND_Y,
+    };
+
     /*
      * Always try to load; the placeholder is the fallback. There used to be a
      * hardcoded list of "species Allen has delivered" here, which is a fact
@@ -181,10 +217,12 @@ export function createScene(app: Application): PartyScene {
      * day all six species were approved. Asking for the file and keeping the
      * placeholder when it isn't there cannot go stale.
      */
-    const { species, tier, id } = member.character;
     void Assets.load<Texture>(characterArtUrl(species, tier))
       .then((texture) => {
-        if (destroyed || !actors.has(id)) return;
+        // Identity, not id: a character who left and rejoined mid-load has a
+        // *new* actor under the same id, and this stale resolve would draw
+        // into containers that were destroyed with the old one.
+        if (destroyed || actors.get(id) !== actor) return;
         const sprite = new Sprite(texture);
         sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
         sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
@@ -196,16 +234,7 @@ export function createScene(app: Application): PartyScene {
         /* keep the placeholder: a missing tier must never blank the stage */
       });
 
-    return {
-      container,
-      art,
-      characterId: id,
-      phase: Math.random() * Math.PI * 2,
-      down: member.down,
-      connected: member.connected,
-      x: 0,
-      y: GROUND_Y,
-    };
+    return actor;
   }
 
   return {

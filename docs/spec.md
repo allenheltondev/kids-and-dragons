@@ -179,7 +179,7 @@ World  →  Campaign  →  Chapter  →  Scene
 
 ### 6.2 Biomes
 
-Each chapter declares a biome, which selects backdrop art, ambient palette, tile set, and music. Launch set: **Bramblewood**, **Frostpeak**, **Emberhollow**, **Sunken Market**, **Cloudreach**.
+Each chapter declares a biome, which selects backdrop art, ambient palette, tile set, and music. The launch set is the **Realm of Red Sky** roster — seventeen named destinations across twelve shared terrain families, authoritative in [asset-brief §4.5](./asset-brief.md#45-biomes-effects-tiles). (An earlier five-biome roster is retired.) The reference chapter plays in `enchanted_woods`.
 
 ---
 

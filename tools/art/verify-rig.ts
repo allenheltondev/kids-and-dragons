@@ -7,10 +7,13 @@
  * about is where the edge is, because a tool that overstates itself is how the
  * original claim happened:
  *
- *     `compareRigToContract()` is complete and tested. What is *not* proven is
- *     the twenty lines that turn a `.riv` into its input — see
- *     `introspectRiv()`, which explains why, and which fails loudly rather than
- *     passing a rig it could not read.
+ *     `compareRigToContract()` is complete and tested, and `introspectRiv()`
+ *     runs the real Rive runtime headlessly (see its note for how, and for the
+ *     false claim that used to live there). What is *not* yet proven is the
+ *     pairing of the two against a rig somebody actually delivered — no `.riv`
+ *     exists in the tree, so the first delivery is still the first full
+ *     rehearsal, and introspection fails loudly rather than passing a rig it
+ *     could not read.
  *
  * Everything decidable from the manifest and the files that exist today is
  * enforced, and that turns out to be most of what actually bites:
@@ -23,8 +26,11 @@
  *      is load-bearing: a clip that grows silently is a turn that grows
  *      silently, and the cost lands on an eight-year-old's attention.
  *   3. **The effects and the clips agree.** An effect sheet that syncs to an
- *      animation event has to be no longer than the clip that fires it, or it
- *      is still playing after the swing has finished.
+ *      animation event starts on an event the clip really exposes and runs on
+ *      the contract's tick clock, so the two cannot drift. A sheet is allowed
+ *      to keep playing after its clip ends — burst_star's tail does, by design
+ *      — but the tail is not waved through: it is charged against the turn
+ *      budget in check #2, tick for tick.
  *   4. **A rig that ships is compared against the contract, clip by clip** —
  *      missing clips, clips nobody asked for, clip lengths that disagree with
  *      the tick table, missing or wrongly-typed state-machine inputs. And if the
@@ -161,6 +167,34 @@ class Report {
 // checks
 // ---------------------------------------------------------------------------
 
+/**
+ * The clock itself is data, so it is checked like data.
+ *
+ * Every downstream number is derived from `tickFps` (the roll's 1.5s becomes
+ * ticks by multiplying it) or compared against `turnBudgetTicks`. Arithmetic on
+ * a zero, a negative or a fraction does not crash — it produces failures that
+ * *look* like clip problems, which is worse. So the clock is checked first, and
+ * `checkTurnBudget` declines to measure against a clock this check has failed.
+ */
+function checkContractClock(rep: Report, contract: RigContract): void {
+  let ok = true;
+  for (const [name, value] of [
+    ["tickFps", contract.tickFps],
+    ["turnBudgetTicks", contract.turnBudgetTicks],
+  ] as const) {
+    if (!Number.isInteger(value) || value < 1) {
+      rep.fail(
+        `rigContract.${name}`,
+        "a positive whole number",
+        String(value),
+        "Every other number in the contract is stated in ticks of this clock. A broken clock breaks them all at once.",
+      );
+      ok = false;
+    }
+  }
+  if (ok) rep.ok(`clock  ${contract.tickFps}fps tick, ${contract.turnBudgetTicks}-tick turn budget`);
+}
+
 /** Every tick in the contract is a whole number of frames, and positive. */
 function checkClipTicks(rep: Report, contract: RigContract): void {
   let ok = true;
@@ -178,6 +212,19 @@ function checkClipTicks(rep: Report, contract: RigContract): void {
     // stops where it finished, and a rigger reading both would have to guess.
     if (clip.loop && clip.hold) {
       rep.fail(`clip ${name}  loop and hold`, "one or the other", "both");
+      ok = false;
+    }
+    // Nor can loopTicks coexist with either. loopTicks means "play once, then
+    // hand off to a loop this long" (`down`) — a clip that already loops never
+    // reaches the hand-off, and a clip that holds is *defined* by not handing
+    // off. Both combinations are two contradictory instructions to one rigger.
+    if (clip.loopTicks !== undefined && (clip.loop || clip.hold)) {
+      rep.fail(
+        `clip ${name}  ${clip.loop ? "loop" : "hold"} and loopTicks`,
+        "one or the other",
+        "both",
+        "loopTicks is the one-shot-into-loop pattern. A looping or holding clip has nothing to hand off to.",
+      );
       ok = false;
     }
   }
@@ -356,6 +403,18 @@ function checkTriggerCoverage(rep: Report, contract: RigContract): void {
  * roll is an engine fact (`dice.ts`), so it belongs next to the clip.
  */
 function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntry[]): void {
+  if (
+    !Number.isInteger(contract.tickFps) ||
+    contract.tickFps < 1 ||
+    !Number.isInteger(contract.turnBudgetTicks) ||
+    contract.turnBudgetTicks < 1
+  ) {
+    // checkContractClock has already failed the run. Deriving ROLL_TICKS from a
+    // broken tickFps would only bury that one real failure under arithmetic
+    // noise dressed up as clip problems.
+    return;
+  }
+
   const ticks = (name: string) => contract.clips[name]?.ticks ?? 0;
 
   // The dice roll takes 1.5s of the turn and owns the screen while it does
@@ -365,8 +424,11 @@ function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntr
   // baseSteps), and `walk` is one two-step cycle.
   const MOVE_TICKS = 3 * ticks("walk");
 
+  // `walk` needs no special case: it is `loop: true` and loops are excluded,
+  // because a loop has no length of its own — the move already charges it above
+  // as MOVE_TICKS, cycle by cycle.
   const actionClips = Object.entries(contract.clips).filter(
-    ([name, c]) => !c.outOfCombat && !c.loop && !c.concurrent && name !== "walk",
+    ([, c]) => !c.outOfCombat && !c.loop && !c.concurrent,
   );
   if (actionClips.length === 0) {
     rep.fail("turn budget", "at least one action clip to measure", "none");
@@ -423,13 +485,21 @@ function checkTurnBudget(rep: Report, contract: RigContract, effects: EffectEntr
  */
 function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntry[]): void {
   let ok = true;
+  // Counted so the pass line cannot claim more than was verified. An effect
+  // missing from the manifest is a warning and a skip — this tool tolerates
+  // undelivered work — but a pass line that says "3 sheet(s)" after checking
+  // two is the same overstatement in miniature that this file exists to stop.
+  let checked = 0;
+  let skipped = 0;
   for (const { effect: id, clip: clipName, event } of EFFECT_SYNC) {
     const effect = effects.find((e) => e.id === id);
     const clip = contract.clips[clipName];
     if (!effect) {
       rep.warn(`effect sync  "${id}" is not in manifest.effects[]`, "Nothing to sync; skipped.");
+      skipped += 1;
       continue;
     }
+    checked += 1;
     if (!clip) {
       rep.fail(`effect sync  ${id}`, `a clip "${clipName}"`, "no such clip");
       ok = false;
@@ -456,7 +526,13 @@ function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntr
       ok = false;
     }
   }
-  if (ok) rep.ok(`effect sync  ${EFFECT_SYNC.length} sheet(s) start on an event and share the tick`);
+  // Nothing checked is not a pass, however clean the nothing was.
+  if (ok && checked > 0) {
+    rep.ok(
+      `effect sync  ${checked} sheet(s) start on an event and share the tick` +
+        (skipped > 0 ? ` (${skipped} skipped: not in the manifest)` : ""),
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -466,7 +542,13 @@ function checkEffectSync(rep: Report, contract: RigContract, effects: EffectEntr
 /** What a `.riv` has to tell us. Deliberately small and free of Rive types. */
 export interface RigIntrospection {
   clips: { name: string; ticks: number; loop: boolean }[];
-  inputs: { name: string; kind: "trigger" | "boolean" | "number" }[];
+  /**
+   * `null` means the default artboard has no state machine at all — a
+   * different fact from a machine with zero inputs (`[]`), and it gets a
+   * different failure: "add a state machine" is one fix, "add eleven inputs"
+   * is eleven, and only one of them is what actually happened.
+   */
+  inputs: { name: string; kind: "trigger" | "boolean" | "number" }[] | null;
 }
 
 /** One thing wrong with a rig, ready to hand to `Report.fail`. */
@@ -506,6 +588,24 @@ export function compareRigToContract(
         actual: "not in rigContract.sets",
       },
     ];
+  }
+
+  // Rive is perfectly happy to store two animations with one name, and the
+  // Map below would keep whichever the rigger exported last — so a duplicate
+  // of a correct clip would shadow a wrong one, or the other way round, and
+  // which of the two this tool judged would be export order. Caught here,
+  // before the Map flattens the evidence.
+  const seenClipNames = new Set<string>();
+  for (const clip of rig.clips) {
+    if (seenClipNames.has(clip.name)) {
+      problems.push({
+        label: `clip "${clip.name}"  duplicated`,
+        expected: "one animation per name",
+        actual: "the rig defines it more than once",
+        hint: "Only one of them can ever be checked or played, and which one is export order. Delete or rename the others.",
+      });
+    }
+    seenClipNames.add(clip.name);
   }
 
   const byName = new Map(rig.clips.map((c) => [c.name, c]));
@@ -583,6 +683,19 @@ export function compareRigToContract(
   // Inputs. Every declared input has to be there and be the right kind: the
   // client fires these by name, and a trigger the rig calls a boolean is a tap
   // that does nothing.
+  //
+  // No state machine at all is its own failure, reported once. Reporting it as
+  // eleven missing inputs would be technically true and practically useless —
+  // the rigger's fix is one machine, and the message should be the fix.
+  if (rig.inputs === null) {
+    problems.push({
+      label: "state machine",
+      expected: "a state machine on the default artboard, exposing the contract's inputs",
+      actual: "the default artboard has no state machine",
+      hint: "The client drives every rig through the default artboard's first state machine (art-pipeline §6.1). Without one there is nothing to fire an input at.",
+    });
+    return problems;
+  }
   const inputByName = new Map(rig.inputs.map((i) => [i.name, i]));
   for (const [kindName, names] of [
     ["trigger", contract.inputs.triggers],
@@ -614,90 +727,229 @@ export function compareRigToContract(
 }
 
 /**
+ * Rive's SMIInput type codes, read off the runtime instead of memorised.
+ *
+ * An earlier version hardcoded `{56: number, 59: trigger, 122: boolean}` —
+ * two of the three were wrong for the runtime actually installed (2.39.1 says
+ * bool=59, number=56, trigger=58), and nothing could have noticed, because the
+ * codes are private to a build and the introspection never ran (see
+ * `introspectRiv`'s note). The runtime publishes them as `SMIInput.bool`,
+ * `.number` and `.trigger` statics precisely so nobody has to know them, so
+ * this asks. Pure and exported for the unit tests; the statics themselves
+ * arrive from wasm at the one call site.
+ */
+export function riveInputKinds(smi: {
+  bool: number;
+  number: number;
+  trigger: number;
+}): Record<number, "trigger" | "boolean" | "number"> {
+  return { [smi.trigger]: "trigger", [smi.bool]: "boolean", [smi.number]: "number" };
+}
+
+/**
+ * A Rive animation's playable length, restated on the contract's tick clock.
+ *
+ * Rive quotes `duration` in frames at the animation's own `fps`, so a rig
+ * authored at 60fps is comparable to a tick table written at 12. But duration
+ * is not always the playable length: an animation can set a *work area* —
+ * `workStart`/`workEnd`, in frames — and then only that window plays, with the
+ * frames outside it being the animator's scratch space. A rig that keeps its
+ * blocking poses after the work area would otherwise measure as "too long" for
+ * a clip that plays exactly to spec.
+ *
+ * The 2.39.1 runtime signals a set work area with the `enableWorkArea` flag;
+ * the published `.d.ts` omits that flag, so where it is absent this falls back
+ * to the other signal the API has, `workEnd > 0` (an unset work area reads 0).
+ *
+ * Pure and exported for the unit tests. `tickFps` is a parameter rather than a
+ * read off the contract because `introspectRiv` deliberately knows nothing
+ * about the contract, so that `compareRigToContract` is the only thing with an
+ * opinion.
+ */
+export function riveClipTicks(
+  anim: {
+    duration: number;
+    fps: number;
+    workStart: number;
+    workEnd: number;
+    enableWorkArea?: boolean;
+  },
+  tickFps: number,
+): number {
+  const workAreaSet =
+    anim.enableWorkArea === undefined ? anim.workEnd > 0 : anim.enableWorkArea === true;
+  const frames = workAreaSet ? anim.workEnd - anim.workStart : anim.duration;
+  return anim.fps > 0 ? Math.round((frames / anim.fps) * tickFps) : 0;
+}
+
+/** The runtime's animation timing surface, as `riveClipTicks` wants it. */
+interface RiveAnimTiming {
+  duration: number;
+  fps: number;
+  workStart: number;
+  workEnd: number;
+  enableWorkArea?: boolean;
+}
+
+/**
  * A `.riv` → `RigIntrospection`, or an explanation of why not.
  *
- * `@rive-app/canvas-advanced` is a dependency and the code below is the real
- * call sequence, but be clear about the state of it: **the runtime cannot
- * initialise headlessly.** It is an emscripten WebGL build that compiles shaders
- * in its factory, so under plain Node it dies before any file is parsed —
- * `document is not defined`, and a DOM shim only gets as far as
- * `getShaderInfoLog is not a function`. Making it run needs a real GL context
- * (`headless-gl`, or a Mesa-backed one in CI), which is a native dependency and
- * a decision about the build rather than about this file.
+ * This comment used to claim the runtime **cannot initialise headlessly** —
+ * that it is a WebGL build which dies compiling shaders, and that fixing it
+ * means `headless-gl` or a Mesa context in CI. That was false, and worth being
+ * precise about because the falsehood shaped this file: `canvas-advanced` is
+ * the *Canvas2D* build, and under plain Node a missing WebGL context costs one
+ * printed warning ("Image mesh will not be drawn") — which is about rendering
+ * image meshes, and this function renders nothing. The claim survived because
+ * the import's catch below used to blame *every* failure on the package not
+ * being installed, so the real error was never seen. Two small things are
+ * genuinely needed headlessly:
  *
- * So this returns a reason, and `checkRigFiles` turns that into a **failure**.
- * That is deliberate and it is the whole design: an unreadable rig must cost
- * somebody a red build, because the alternative — the state this file replaced —
- * is a document claiming a check that never ran.
+ *   1. A `document` stub, installed **before** the module is imported — the
+ *      emscripten preamble reads `document.currentScript` at module-eval time,
+ *      and the factory later touches `createElement`, `body` and
+ *      `addEventListener`. (Installed once, module-wide; this is a CLI, so it
+ *      is not restored.)
+ *   2. The wasm handed over as bytes (`wasmBinary`) rather than as a path via
+ *      `locateFile` — the path gets `fetch()`ed, and Node's fetch does not
+ *      read local files.
+ *
+ * Everything from `runtime.load` onward is wrapped per call: a corrupt-but-
+ * parseable `.riv` must come back as a reason string for `checkRigFiles` to
+ * fail *that* rig with, not as an unhandled rejection that takes every other
+ * rig down with it. And every wasm handle is deleted in the `finally`, because
+ * these are refcounted C++ objects, not garbage-collected JS.
+ *
+ * An unreadable rig is still a **failure**, not a pass — that part of the
+ * original design stands. An unreadable rig must cost somebody a red build,
+ * because the alternative — the state this file replaced — is a document
+ * claiming a check that never ran.
  */
-export async function introspectRiv(bytes: Uint8Array): Promise<RigIntrospection | string> {
+export async function introspectRiv(
+  bytes: Uint8Array,
+  tickFps: number,
+): Promise<RigIntrospection | string> {
+  // (1) above. The stub must predate the import, not just the factory call.
+  const g = globalThis as { document?: unknown };
+  if (typeof g.document === "undefined") {
+    g.document = {
+      currentScript: null,
+      createElement: () => ({ style: {}, getContext: () => null, addEventListener: () => {} }),
+      body: { appendChild: () => {}, removeChild: () => {} },
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    };
+  }
+
   let Rive: typeof import("@rive-app/canvas-advanced").default;
   try {
     ({ default: Rive } = await import("@rive-app/canvas-advanced"));
-  } catch {
-    return "@rive-app/canvas-advanced is not installed (npm install)";
+  } catch (err) {
+    // Only a resolution failure means "not installed". Blaming the install for
+    // every error is how the headless-GL myth above went unquestioned: the one
+    // message everybody saw was about npm, so nobody read the real exception.
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ERR_MODULE_NOT_FOUND" || code === "MODULE_NOT_FOUND") {
+      return "@rive-app/canvas-advanced is not installed (npm install)";
+    }
+    return `@rive-app/canvas-advanced failed to load: ${(err as Error).message}`;
   }
 
   let runtime: Awaited<ReturnType<typeof Rive>>;
   try {
-    const wasm = fileURLToPath(
+    const wasmPath = fileURLToPath(
       new URL("../../node_modules/@rive-app/canvas-advanced/rive.wasm", import.meta.url),
     );
-    runtime = await Rive({ locateFile: () => wasm });
+    const wasm = readFileSync(wasmPath);
+    runtime = await Rive({
+      // (2) above: the bytes, not the path. `locateFile` is still passed
+      // because the options type requires it — with `wasmBinary` present the
+      // runtime never calls it.
+      locateFile: () => wasmPath,
+      wasmBinary: wasm.buffer.slice(wasm.byteOffset, wasm.byteOffset + wasm.byteLength) as ArrayBuffer,
+    });
   } catch (err) {
-    return (
-      `the Rive runtime could not start headlessly (${(err as Error).message}). ` +
-      "It is a WebGL build and needs a real GL context — see introspectRiv()'s note."
-    );
+    return `the Rive runtime failed to start: ${(err as Error).message}`;
   }
 
-  const file = await runtime.load(bytes);
-  if (!file) return "not a readable Rive file";
+  // Every wasm object taken from here on is registered and deleted in the
+  // finally, newest first. `delete()` is probed for rather than typed, because
+  // the published types under-declare it and a leak is worse than a cast.
+  const handles: unknown[] = [];
+  const track = <T>(h: T): T => {
+    handles.push(h);
+    return h;
+  };
 
-  const artboard = file.defaultArtboard();
-  const clips: RigIntrospection["clips"] = [];
-  for (let i = 0; i < artboard.animationCount(); i++) {
-    const anim = artboard.animationByIndex(i);
-    // `duration` and `fps` live on the *instance*, not the animation — the
-    // animation itself carries only the name and the loop type. Worth knowing
-    // because reading them off the wrong object is a silent zero.
-    const instance = new runtime.LinearAnimationInstance(anim, artboard);
-    // Rive stores duration in frames at the animation's own fps. Restate it on
-    // the contract's clock, so a rig authored at 60fps is comparable to a tick
-    // table written at 12.
-    const ticks =
-      instance.fps > 0 ? Math.round((instance.duration / instance.fps) * TICK_FPS_FALLBACK) : 0;
-    clips.push({ name: anim.name, ticks, loop: anim.loopValue !== 0 });
-    instance.delete();
-  }
+  try {
+    const file = track(await runtime.load(bytes));
+    if (!file) return "not a readable Rive file";
 
-  const inputs: RigIntrospection["inputs"] = [];
-  if (artboard.stateMachineCount() > 0) {
-    const machine = new runtime.StateMachineInstance(artboard.stateMachineByIndex(0), artboard);
-    for (let i = 0; i < machine.inputCount(); i++) {
-      const input = machine.input(i);
-      inputs.push({ name: input.name, kind: RIVE_INPUT_KINDS[input.type] ?? "number" });
+    const artboard = track(file.defaultArtboard());
+
+    const clips: RigIntrospection["clips"] = [];
+    for (let i = 0; i < artboard.animationCount(); i++) {
+      const anim = track(artboard.animationByIndex(i));
+      // Where the timing lives depends on who you ask: the 2.39.1 runtime puts
+      // `duration`/`fps`/`workStart`/`workEnd` on the *animation*, its own
+      // `.d.ts` swears they are on the *instance*. Reading the wrong object is
+      // a silent `undefined`, so ask the animation first and fall back to an
+      // instance if it does not answer.
+      let timing = anim as unknown as RiveAnimTiming;
+      if (typeof timing.duration !== "number") {
+        timing = track(
+          new runtime.LinearAnimationInstance(anim, artboard),
+        ) as unknown as RiveAnimTiming;
+      }
+      clips.push({
+        name: anim.name,
+        ticks: riveClipTicks(timing, tickFps),
+        loop: anim.loopValue !== 0,
+      });
+    }
+
+    // The contract's inputs are read off the *first state machine of the
+    // default artboard*. That is not a shortcut, it is the contract: the client
+    // drives every rig identically (art-pipeline §6.1), so machine 0 of the
+    // default artboard is the one interface it will ever bind, until the docs
+    // say otherwise. `inputs` stays `null` when there is no machine at all —
+    // `compareRigToContract` turns that into its own single failure instead of
+    // one per missing input.
+    let inputs: RigIntrospection["inputs"] = null;
+    if (artboard.stateMachineCount() > 0) {
+      const machine = track(
+        new runtime.StateMachineInstance(track(artboard.stateMachineByIndex(0)), artboard),
+      );
+      const kinds = riveInputKinds(runtime.SMIInput);
+      inputs = [];
+      for (let i = 0; i < machine.inputCount(); i++) {
+        const input = track(machine.input(i));
+        // An unrecognised code maps to "number" on purpose: it then fails the
+        // kind check loudly instead of vanishing, and the failure names the rig.
+        inputs.push({ name: input.name, kind: kinds[input.type] ?? "number" });
+      }
+    }
+
+    return { clips, inputs };
+  } catch (err) {
+    // A .riv Rive can parse but this code cannot walk — a wasm abort, a handle
+    // that came back null, an API drift. One bad file must report as one bad
+    // file, not abandon the rigs after it in the loop.
+    return `introspection failed: ${(err as Error).message}`;
+  } finally {
+    for (const h of handles.reverse()) {
+      const candidate = h as { delete?: () => void } | null | undefined;
+      if (candidate && typeof candidate.delete === "function") {
+        try {
+          candidate.delete();
+        } catch {
+          // A handle that will not delete cleanly must not mask the result the
+          // try block already produced.
+        }
+      }
     }
   }
-
-  return { clips, inputs };
 }
-
-/** Rive's SMIInput type codes. */
-const RIVE_INPUT_KINDS: Record<number, "trigger" | "boolean" | "number"> = {
-  56: "number",
-  59: "trigger",
-  122: "boolean",
-};
-
-/**
- * The tick clock used to restate a Rive duration.
- *
- * Read off the contract at the call site would be better; it is a constant here
- * because `introspectRiv` deliberately knows nothing about the contract, so that
- * `compareRigToContract` is the only thing with an opinion.
- */
-const TICK_FPS_FALLBACK = 12;
 
 /**
  * Which rigs exist, and how each one measures up.
@@ -726,12 +978,22 @@ async function checkRigFiles(
   }
 
   if (found.length === 0) {
-    const word = strict ? "FAIL" : "not yet delivered";
-    console.log(
-      `  ${strict ? RED : DIM}${word}${RESET}  ${DIM}no .riv in any of ${dirs} species/tier directories${RESET}`,
-    );
-    if (strict) rep.failures.push("no rigs delivered");
-    else rep.ok("rig files  none delivered yet; the contract is checked and waiting");
+    if (strict) {
+      rep.fail(
+        "rig files",
+        "at least one .riv under assets/characters/ (--strict: undelivered work fails)",
+        `none in any of ${dirs} species/tier directories`,
+      );
+    } else {
+      // Tolerated, but not a *pass*: nothing was verified, and counting
+      // "nothing to verify" as a passed check is the same overstatement in
+      // miniature that let §6.1 claim a check nobody ran. The exit code stays
+      // 0 — undelivered work is reported and tolerated — but the summary line
+      // must count only checks that checked something.
+      console.log(
+        `  ${DIM}not yet delivered  no .riv in any of ${dirs} species/tier directories; the contract above is checked and waiting${RESET}`,
+      );
+    }
     return { found: 0, read: 0 };
   }
 
@@ -739,7 +1001,7 @@ async function checkRigFiles(
   for (const { rel, path } of found) {
     // Every character rig is a hero rig. Enemy rigs will live somewhere else and
     // pick the other set; there is nowhere to put one yet (asset-brief §9.7).
-    const rig = await introspectRiv(readFileSync(path));
+    const rig = await introspectRiv(readFileSync(path), contract.tickFps);
     if (typeof rig === "string") {
       rep.fail(
         `rig ${rel}`,
@@ -753,7 +1015,9 @@ async function checkRigFiles(
     const problems = compareRigToContract(rig, contract, "hero");
     for (const p of problems) rep.fail(`rig ${rel}  ${p.label}`, p.expected, p.actual, p.hint);
     if (problems.length === 0) {
-      rep.ok(`rig ${rel}  ${rig.clips.length} clips, ${rig.inputs.length} inputs, matches the hero set`);
+      rep.ok(
+        `rig ${rel}  ${rig.clips.length} clips, ${rig.inputs?.length ?? 0} inputs, matches the hero set`,
+      );
     }
   }
   return { found: found.length, read };
@@ -768,7 +1032,16 @@ async function main(): Promise<number> {
     console.error(`error: no manifest at ${MANIFEST}`);
     return 2;
   }
-  const mf = JSON.parse(readFileSync(MANIFEST, "utf8")) as Manifest;
+  // Malformed JSON is the same class of problem as a missing manifest — the
+  // tool has nothing to check — so it gets the same exit (2, "could not run")
+  // and a message, not a stack trace an artist has to decode.
+  let mf: Manifest;
+  try {
+    mf = JSON.parse(readFileSync(MANIFEST, "utf8")) as Manifest;
+  } catch (err) {
+    console.error(`error: assets/manifest.json is not valid JSON: ${(err as Error).message}`);
+    return 2;
+  }
 
   console.log(`${BOLD}Kids & Dragons - rig verify${RESET}`);
   console.log(`${DIM}manifest: assets/manifest.json   contract: asset-brief.md §9.2${RESET}`);
@@ -783,6 +1056,7 @@ async function main(): Promise<number> {
   const rep = new Report();
 
   console.log(`\n${BOLD}contract${RESET}`);
+  checkContractClock(rep, contract);
   checkClipTicks(rep, contract);
   checkEventTicks(rep, contract);
   checkInputs(rep, contract);

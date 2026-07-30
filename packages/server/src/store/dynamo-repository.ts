@@ -103,16 +103,25 @@ export interface DynamoRepositoryOptions {
   /** Injected by tests (DynamoDB Local); defaults to the ambient credentials. */
   client?: DynamoDBClient;
   indexName?: string;
+  /**
+   * Injected by tests, like everywhere else the server tells time (`deps.ts`).
+   * The room-code TTL comparisons read this — `MemoryRepository` already did,
+   * and a fake clock that expires a room in one store but not the other is a
+   * contract suite lying to itself.
+   */
+  now?: () => number;
 }
 
 export class DynamoRepository implements GameRepository {
   private readonly doc: DynamoDBDocumentClient;
   private readonly table: string;
   private readonly index: string;
+  private readonly now: () => number;
 
   constructor(options: DynamoRepositoryOptions) {
     this.table = options.tableName;
     this.index = options.indexName ?? GSI1_NAME;
+    this.now = options.now ?? Date.now;
     this.doc = DynamoDBDocumentClient.from(options.client ?? new DynamoDBClient({}), {
       marshallOptions: {
         // Optional fields (`userAgent`, `presentation`, `avatar`) are absent
@@ -332,7 +341,28 @@ export class DynamoRepository implements GameRepository {
     for (const run of await this.listRuns(householdId)) {
       const runItems = await this.partition(RUN(run.id));
       await this.deleteAll(runItems.map(({ PK, SK }) => ({ PK, SK })));
-      await this.deleteRoom(run.roomCode);
+      /*
+       * Conditional, because codes recycle by design (`putRoomIfAbsent` frees
+       * an expired one — four letters is a small space). A 7-day-old guest's
+       * run can hold a code that now names a *different* household's live
+       * room; an unconditional delete here would end that family's evening
+       * from a background Lambda. Only the room still pointing at this run is
+       * this sweep's to take.
+       */
+      try {
+        await this.doc.send(
+          new DeleteCommand({
+            TableName: this.table,
+            Key: { PK: ROOM(run.roomCode), SK: META },
+            ConditionExpression: "#d.#run = :runId",
+            ExpressionAttributeNames: { "#d": "data", "#run": "runId" },
+            ExpressionAttributeValues: { ":runId": run.id },
+          }),
+        );
+      } catch (err) {
+        // Recycled or already gone — either way it is not ours to delete.
+        if (!isConditionalFailure(err)) throw err;
+      }
     }
     const household = await this.getHousehold(householdId);
     if (household?.ownerSub) {
@@ -415,6 +445,20 @@ export class DynamoRepository implements GameRepository {
     return (items[0]?.data as DeviceBinding | undefined) ?? null;
   }
 
+  async getDevice(householdId: string, deviceId: string): Promise<DeviceBinding | null> {
+    // ConsistentRead, deliberately: this is the read revocation depends on
+    // (see the port's comment). A GSI cannot serve a consistent read at all,
+    // which is why this exists beside `getDeviceById`.
+    const out = await this.doc.send(
+      new GetCommand({
+        TableName: this.table,
+        Key: { PK: HH(householdId), SK: DEVICE_SK(deviceId) },
+        ConsistentRead: true,
+      }),
+    );
+    return ((out.Item as TableItem | undefined)?.data as DeviceBinding | undefined) ?? null;
+  }
+
   async listDevices(householdId: string): Promise<DeviceBinding[]> {
     const items = await this.partition(HH(householdId), PREFIX.device);
     return items.map((i) => i.data as DeviceBinding);
@@ -435,6 +479,24 @@ export class DynamoRepository implements GameRepository {
       );
     } catch (err) {
       // Revoking a device that is not there is the state the caller wanted.
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async touchDevice(householdId: string, deviceId: string, lastSeen: string): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: DEVICE_SK(deviceId) },
+          UpdateExpression: "SET #d.#seen = :t",
+          ConditionExpression: "attribute_exists(PK)",
+          ExpressionAttributeNames: { "#d": "data", "#seen": "lastSeen" },
+          ExpressionAttributeValues: { ":t": lastSeen },
+        }),
+      );
+    } catch (err) {
+      // A device deleted mid-flight has nothing to keep honest.
       if (!isConditionalFailure(err)) throw err;
     }
   }
@@ -631,7 +693,7 @@ export class DynamoRepository implements GameRepository {
            */
           ConditionExpression: "attribute_not_exists(PK) OR #ttl <= :now",
           ExpressionAttributeNames: { "#ttl": "ttl" },
-          ExpressionAttributeValues: { ":now": Math.floor(Date.now() / 1000) },
+          ExpressionAttributeValues: { ":now": Math.floor(this.now() / 1000) },
         }),
       );
       return true;
@@ -647,7 +709,7 @@ export class DynamoRepository implements GameRepository {
     // Reads are not eventual even though the sweep is: an expired room must read
     // as gone the moment it expires, or a phone restores a session whose token
     // is already dead (§3).
-    if (item.ttl !== undefined && item.ttl * 1000 <= Date.now()) return null;
+    if (item.ttl !== undefined && item.ttl * 1000 <= this.now()) return null;
     return (item.data as RoomRecord | undefined) ?? null;
   }
 

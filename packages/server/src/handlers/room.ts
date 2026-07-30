@@ -44,7 +44,7 @@ const MAX_CODE_ATTEMPTS = 12;
 export function generateRoomCode(random: () => number): string {
   let code = "";
   for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
-    const index = Math.floor(random() * ROOM_CODE_ALPHABET.length) % ROOM_CODE_ALPHABET.length;
+    const index = Math.floor(random() * ROOM_CODE_ALPHABET.length);
     code += ROOM_CODE_ALPHABET[index] ?? ROOM_CODE_ALPHABET[0];
   }
   return code;

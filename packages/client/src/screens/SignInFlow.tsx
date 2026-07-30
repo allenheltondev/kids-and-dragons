@@ -102,7 +102,9 @@ interface Mote {
  * snapshot, so a store-driven render cannot be steered by `setState`.
  */
 export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
-  const store = useKeepsakeStore();
+  // A selector, not the whole store: subscribing to everything re-renders the
+  // offer on every keystroke of the email step behind it.
+  const close = useKeepsakeStore((s) => s.close);
 
   return (
     <>
@@ -145,7 +147,7 @@ export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
         </Button>
         {/* "Not now" rather than "No thanks": the offer comes back next time,
             and saying so is what makes declining it cheap. */}
-        <Button variant="ghost" icon={<Icon name="back" />} onClick={store.close}>
+        <Button variant="ghost" icon={<Icon name="back" />} onClick={close}>
           Not now
         </Button>
       </div>

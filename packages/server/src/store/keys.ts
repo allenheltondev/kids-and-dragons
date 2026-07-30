@@ -69,10 +69,6 @@ export const EVT_SK = (seq: number) => `EVT#${String(seq).padStart(SEQ_WIDTH, "0
  */
 export const EVT_SK_MAX = `EVT#${"9".repeat(SEQ_WIDTH)}`;
 
-export function seqFromEvtSk(sk: string): number {
-  return Number.parseInt(sk.slice(PREFIX.event.length), 10);
-}
-
 /** GSI1: device id → household. */
 export const GSI1_DEVICE = (deviceId: string) => `DEVICE#${deviceId}`;
 /** GSI1: run id → household, so a runId alone resolves its owner. */

@@ -66,6 +66,13 @@ export const DEVICE_TOKEN_TTL_MS = 30 * 24 * 3600_000;
  */
 export const DEVICE_TOKEN_REFRESH_AFTER_MS = DEVICE_TOKEN_TTL_MS / 2;
 
+/**
+ * How stale `lastSeen` may get before a resolve refreshes it. An hour keeps the
+ * owner's device screen honest to the evening while keeping the write out of
+ * the per-request path — resolve is on every API call.
+ */
+export const LAST_SEEN_STALE_MS = 3600_000;
+
 const ALG = "HS256";
 
 interface DeviceClaims {
@@ -162,13 +169,16 @@ export class TokenIdentity implements IdentityService {
     const claims = await this.verify<DeviceClaims>(token, "device");
     if (!claims) return null;
 
-    const binding = await this.repo.getDeviceById(claims.sub);
     /*
-     * The signature alone is not enough. Revocation has to be able to kill a
-     * token that is still cryptographically valid — "lost phone → the owner
-     * revokes it from their own device, that token is dead immediately" (§4.5)
-     * only works if every resolve reads the binding.
+     * By primary key, strongly consistent — never the GSI. The signature alone
+     * is not enough: revocation has to be able to kill a token that is still
+     * cryptographically valid — "lost phone → the owner revokes it from their
+     * own device, that token is dead immediately" (§4.5) only works if every
+     * resolve reads the binding, and only if that read cannot be a stale index
+     * copy from before the revocation. The token carries the household, so the
+     * key is right there in the claims.
      */
+    const binding = await this.repo.getDevice(claims.hh, claims.sub);
     if (!binding || binding.revoked) return null;
     if (binding.householdId !== claims.hh) return null;
     if (binding.playerId !== claims.pid) return null;
@@ -187,8 +197,16 @@ export class TokenIdentity implements IdentityService {
         deviceId: binding.deviceId,
         ...(binding.userAgent ? { userAgent: binding.userAgent } : {}),
       }));
-    } else {
-      await this.repo.putDevice({ ...binding, lastSeen: new Date(nowMs).toISOString() });
+    } else if (nowMs - Date.parse(binding.lastSeen) >= LAST_SEEN_STALE_MS) {
+      /*
+       * `touchDevice`, not `putDevice`: a full put wrote back whatever the item
+       * held at read time, which is how a revocation could be erased by the
+       * very phone it was aimed at. And only when meaningfully stale — the
+       * device screen shows "last used Tuesday", not "last used 340ms ago", so
+       * a write on every single request bought nothing but doubled write cost
+       * on the API's hottest path.
+       */
+      await this.repo.touchDevice(binding.householdId, binding.deviceId, new Date(nowMs).toISOString());
     }
 
     return {

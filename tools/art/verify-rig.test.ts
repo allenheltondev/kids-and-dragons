@@ -2,22 +2,31 @@
  * `compareRigToContract` — the judgement half of the rig verifier.
  *
  * These tests exist because of the shape of the problem. `introspectRiv` turns a
- * `.riv` into a `RigIntrospection` and cannot currently run headlessly (see its
- * note), so if the comparison logic lived inside it, the first exercise it ever
- * got would be the first rig somebody delivered — at which point a false pass is
- * indistinguishable from a real one, and a false failure sends an artist back to
- * re-export art that was fine.
+ * `.riv` into a `RigIntrospection` through the real Rive runtime — which *does*
+ * run headlessly (an earlier version of both files claimed otherwise; see its
+ * note for what actually happened) — but it can only ever be exercised against
+ * a real `.riv`, and none has been delivered yet. If the comparison logic lived
+ * inside it, the first exercise it ever got would be the first rig somebody
+ * delivered — at which point a false pass is indistinguishable from a real one,
+ * and a false failure sends an artist back to re-export art that was fine.
  *
  * So the introspection is a thin adapter and everything with an opinion is here,
- * fed fabricated rigs. The contract is the real one out of `assets/manifest.json`
- * on purpose: a test against a fixture contract would keep passing after somebody
+ * fed fabricated rigs — plus the adapter's two pure helpers (`riveInputKinds`,
+ * `riveClipTicks`), which are the parts of it that can be wrong without wasm in
+ * the room. The contract is the real one out of `assets/manifest.json` on
+ * purpose: a test against a fixture contract would keep passing after somebody
  * renamed a clip.
  */
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { compareRigToContract, type RigIntrospection } from "./verify-rig.ts";
+import {
+  compareRigToContract,
+  riveClipTicks,
+  riveInputKinds,
+  type RigIntrospection,
+} from "./verify-rig.ts";
 
 const MANIFEST = fileURLToPath(new URL("../../assets/manifest.json", import.meta.url));
 const contract = (JSON.parse(readFileSync(MANIFEST, "utf8")) as {
@@ -25,7 +34,11 @@ const contract = (JSON.parse(readFileSync(MANIFEST, "utf8")) as {
 }).rigContract;
 
 /** A rig that satisfies the contract for `kind`, built from the contract itself. */
-function goodRig(kind: "hero" | "enemy"): RigIntrospection {
+// The return type narrows `inputs` to non-null: a good rig by definition has a
+// state machine, and the tests below poke at its inputs without null checks.
+function goodRig(
+  kind: "hero" | "enemy",
+): RigIntrospection & { inputs: NonNullable<RigIntrospection["inputs"]> } {
   const clips = (contract.sets[kind] ?? []).map((name) => {
     const spec = contract.clips[name];
     return { name, ticks: spec?.ticks ?? 0, loop: spec?.loop === true };
@@ -154,6 +167,31 @@ describe("clips", () => {
     expect(labels(rig)).toEqual(['clip "celebrate"', 'clip "celebrait"  unknown']);
   });
 
+  it("reports a clip defined twice, even when the surviving copy looks right", () => {
+    /*
+     * Rive will happily export two animations with one name, and the comparison
+     * keys clips by name — so before this check, the last duplicate silently won
+     * and the rig passed on whichever copy export order happened to favour. Both
+     * copies here match the contract exactly; the duplication itself is the bug,
+     * because nothing guarantees the *played* copy is the *checked* copy.
+     */
+    const rig = goodRig("hero");
+    const attack = rig.clips.find((c) => c.name === "attack");
+    if (!attack) throw new Error("bad fixture");
+    rig.clips.push({ ...attack });
+    expect(labels(rig)).toEqual(['clip "attack"  duplicated']);
+  });
+
+  it("reports a duplicate and still judges the copy that would win", () => {
+    // The last copy is the one the Map keeps, so its wrong length is reported
+    // alongside the duplication — one export, both facts.
+    const rig = goodRig("hero");
+    const attack = rig.clips.find((c) => c.name === "attack");
+    if (!attack) throw new Error("bad fixture");
+    rig.clips.push({ ...attack, ticks: attack.ticks + 1 });
+    expect(labels(rig)).toEqual(['clip "attack"  duplicated', 'clip "attack"  length']);
+  });
+
   it("reports a hero clip on an enemy rig as the wrong set, not as unknown", () => {
     // A different message on purpose: `cast` is a real clip with a documented
     // reason for not being an enemy's (§9.5.2), so the fix is to argue with the
@@ -200,6 +238,21 @@ describe("state machine inputs", () => {
     expect(labels(rig, "enemy")).toEqual(['input "celebrate"']);
   });
 
+  it("reports a rig with no state machine as one failure, not one per input", () => {
+    /*
+     * `inputs: null` is `introspectRiv`'s way of saying "the default artboard
+     * has no state machine at all" — a different fact from a machine with zero
+     * inputs, which is the empty array. The fix for a missing machine is one
+     * machine; a message listing eleven missing inputs points the rigger at
+     * eleven fixes that are not the fix.
+     */
+    const rig = goodRig("hero");
+    const problems = compareRigToContract({ clips: rig.clips, inputs: null }, contract, "hero");
+    expect(problems).toHaveLength(1);
+    expect(problems[0]?.label).toBe("state machine");
+    expect(problems[0]?.actual).toContain("no state machine");
+  });
+
   it("ignores an extra input the contract does not name", () => {
     // Unlike an extra clip. An input costs nothing unfired, and a rigger's own
     // scratch input is not a defect — where an unasked-for *clip* is animation
@@ -221,7 +274,9 @@ describe("an unknown kind", () => {
 describe("an empty rig", () => {
   it("reports every required clip and input rather than throwing", () => {
     // The shape a failed introspection would produce if it ever returned instead
-    // of erroring. It must be a legible list, not a crash.
+    // of erroring. It must be a legible list, not a crash. `inputs: []` is a
+    // state machine with nothing on it — a machine that is missing outright is
+    // `inputs: null` and one failure, tested above.
     const problems = compareRigToContract({ clips: [], inputs: [] }, contract, "hero");
     const required = contract.sets.hero ?? [];
     const deferred = required.filter((c) => contract.clips[c]?.deferred).length;
@@ -230,5 +285,70 @@ describe("an empty rig", () => {
       contract.inputs.booleans.length +
       contract.inputs.numbers.length;
     expect(problems).toHaveLength(required.length - deferred + inputs);
+  });
+});
+
+describe("riveInputKinds", () => {
+  it("builds the code table from the runtime's statics, not from memory", () => {
+    /*
+     * These literals are what @rive-app/canvas-advanced 2.39.1 actually reports
+     * for SMIInput.bool/.number/.trigger, verified by running the runtime. The
+     * hardcoded table this replaced said 59=trigger and 122=boolean — wrong on
+     * both counts for the installed build, and unnoticeable until a rig
+     * shipped. The point of the helper is that the codes come in as data.
+     */
+    expect(riveInputKinds({ bool: 59, number: 56, trigger: 58 })).toEqual({
+      59: "boolean",
+      56: "number",
+      58: "trigger",
+    });
+  });
+
+  it("follows the statics wherever a future build moves them", () => {
+    expect(riveInputKinds({ bool: 1, number: 2, trigger: 3 })).toEqual({
+      1: "boolean",
+      2: "number",
+      3: "trigger",
+    });
+  });
+});
+
+describe("riveClipTicks", () => {
+  it("restates a duration on the contract's clock", () => {
+    // 24 frames at 24fps is one second; one second on a 12-tick clock is 12.
+    const anim = { duration: 24, fps: 24, workStart: 0, workEnd: 0, enableWorkArea: false };
+    expect(riveClipTicks(anim, 12)).toBe(12);
+  });
+
+  it("uses the work area, not the raw duration, when one is enabled", () => {
+    /*
+     * An animator's scratch frames outside the work area are not part of the
+     * clip. Measuring `duration` here would call a to-spec clip "too long" and
+     * send someone hunting a length problem that does not exist.
+     */
+    const anim = { duration: 60, fps: 60, workStart: 12, workEnd: 52, enableWorkArea: true };
+    expect(riveClipTicks(anim, 12)).toBe(8); // (52-12) frames at 60fps = 8 ticks
+  });
+
+  it("ignores a work area the animation carries but has not enabled", () => {
+    const anim = { duration: 24, fps: 12, workStart: 2, workEnd: 20, enableWorkArea: false };
+    expect(riveClipTicks(anim, 12)).toBe(24);
+  });
+
+  it("falls back to workEnd > 0 when the build has no enableWorkArea flag", () => {
+    // The published .d.ts omits the flag; on such a surface an unset work area
+    // reads workEnd 0, and a set one reads its end frame.
+    expect(riveClipTicks({ duration: 100, fps: 12, workStart: 2, workEnd: 14 }, 12)).toBe(12);
+    expect(riveClipTicks({ duration: 100, fps: 12, workStart: 0, workEnd: 0 }, 12)).toBe(100);
+  });
+
+  it("rounds to the nearest whole tick", () => {
+    // 20 frames at 30fps is 0.667s = 8 ticks exactly; 21 frames is 8.4 → 8.
+    expect(riveClipTicks({ duration: 20, fps: 30, workStart: 0, workEnd: 0 }, 12)).toBe(8);
+    expect(riveClipTicks({ duration: 21, fps: 30, workStart: 0, workEnd: 0 }, 12)).toBe(8);
+  });
+
+  it("answers 0 rather than Infinity for a zero-fps animation", () => {
+    expect(riveClipTicks({ duration: 24, fps: 0, workStart: 0, workEnd: 0 }, 12)).toBe(0);
   });
 });

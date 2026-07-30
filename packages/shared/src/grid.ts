@@ -262,6 +262,20 @@ export function actorAt(board: Board, at: Position): Actor | null {
   return board.actors.find((a) => a.x === at.x && a.y === at.y) ?? null;
 }
 
+/**
+ * `actorAt` as a one-shot index, for the flood fills below. A linear scan per
+ * lookup is free at seven actors — but the floods ask for every neighbour of
+ * every frontier tile, and the enemy planner runs floods per candidate tile,
+ * so the scans multiply where nothing else does. Build once, look up O(1).
+ */
+function actorIndex(board: Board): Map<number, Actor> {
+  const index = new Map<number, Actor>();
+  for (const actor of board.actors) {
+    index.set(indexOf(board, actor.x, actor.y), actor);
+  }
+  return index;
+}
+
 export function actorById(board: Board, id: ActorId): Actor | null {
   return board.actors.find((a) => a.id === id) ?? null;
 }
@@ -373,7 +387,8 @@ export function reachableTiles(
   const limit = Math.floor(steps);
   if (!Number.isFinite(limit) || limit < 1 || !inBounds(board, from)) return [];
 
-  const mover = actorAt(board, from);
+  const actors = actorIndex(board);
+  const mover = actors.get(indexOf(board, from.x, from.y)) ?? null;
   const seen = new Set<number>([indexOf(board, from.x, from.y)]);
   const found: ReachableTile[] = [];
   let frontier: Position[] = [from];
@@ -387,7 +402,7 @@ export function reachableTiles(
         const key = indexOf(board, at.x, at.y);
         if (seen.has(key)) continue;
         if (!isPassable(board, at)) continue;
-        const standing = actorAt(board, at);
+        const standing = actors.get(key) ?? null;
         if (!canCross(mover, standing)) continue;
         seen.add(key);
         next.push(at);
@@ -418,9 +433,10 @@ export function findPath(board: Board, from: Position, to: Position): readonly P
   // You cannot end on a wall or on somebody, ally or not.
   if (!isOpen(board, to)) return null;
 
-  const mover = actorAt(board, from);
+  const actors = actorIndex(board);
   const start = indexOf(board, from.x, from.y);
   const goal = indexOf(board, to.x, to.y);
+  const mover = actors.get(start) ?? null;
   const cameFrom = new Map<number, number>([[start, start]]);
   let frontier: Position[] = [from];
 
@@ -433,7 +449,7 @@ export function findPath(board: Board, from: Position, to: Position): readonly P
         const key = indexOf(board, at.x, at.y);
         if (cameFrom.has(key)) continue;
         if (!isPassable(board, at)) continue;
-        if (!canCross(mover, actorAt(board, at))) continue;
+        if (!canCross(mover, actors.get(key) ?? null)) continue;
         cameFrom.set(key, indexOf(board, tile.x, tile.y));
         if (key === goal) return rebuild(board, cameFrom, start, goal);
         next.push(at);
@@ -442,6 +458,73 @@ export function findPath(board: Board, from: Position, to: Position): readonly P
     frontier = next;
   }
   return null;
+}
+
+/**
+ * Every shortest walk from one origin, computed once.
+ *
+ * `findPath` answers one destination per flood, and the enemy planner asks
+ * about every candidate attack tile around every hero — dozens of destinations
+ * from the *same* origin, which was dozens of identical floods per monster per
+ * turn. This runs the flood once and answers each destination by lookup.
+ *
+ * The expansion is byte-for-byte the same as `findPath`'s — same crossing
+ * rule, same direction order, same first-visit-wins parents — so `pathTo`
+ * returns the identical path `findPath` would have. That is not an
+ * optimisation detail: plans replay (architecture §4.1), and a field that
+ * picked even a different-but-equal path would fork a replay from its record.
+ */
+export interface WalkField {
+  /** Steps to walk there, or Infinity when no route exists. */
+  dist(to: Position): number;
+  /** The same answer `findPath(board, from, to)` gives, from the shared flood. */
+  pathTo(to: Position): readonly Position[] | null;
+}
+
+export function walkField(board: Board, from: Position): WalkField {
+  const unreachable: WalkField = { dist: () => Infinity, pathTo: () => null };
+  if (!inBounds(board, from)) return unreachable;
+
+  const actors = actorIndex(board);
+  const start = indexOf(board, from.x, from.y);
+  const mover = actors.get(start) ?? null;
+  const cameFrom = new Map<number, number>([[start, start]]);
+  const distance = new Map<number, number>([[start, 0]]);
+  let frontier: Position[] = [from];
+
+  for (let cost = 1; frontier.length > 0; cost++) {
+    const next: Position[] = [];
+    for (const tile of frontier) {
+      for (const dir of STEP_DIRECTIONS) {
+        const at = { x: tile.x + dir.x, y: tile.y + dir.y };
+        if (!inBounds(board, at)) continue;
+        const key = indexOf(board, at.x, at.y);
+        if (cameFrom.has(key)) continue;
+        if (!isPassable(board, at)) continue;
+        if (!canCross(mover, actors.get(key) ?? null)) continue;
+        cameFrom.set(key, indexOf(board, tile.x, tile.y));
+        distance.set(key, cost);
+        next.push(at);
+      }
+    }
+    frontier = next;
+  }
+
+  return {
+    dist(to: Position): number {
+      if (!inBounds(board, to)) return Infinity;
+      return distance.get(indexOf(board, to.x, to.y)) ?? Infinity;
+    },
+    pathTo(to: Position): readonly Position[] | null {
+      if (!inBounds(board, to)) return null;
+      if (samePosition(from, to)) return [{ x: from.x, y: from.y }];
+      // Same rule as findPath: you cannot end on a wall or on somebody.
+      if (!isOpen(board, to)) return null;
+      const goal = indexOf(board, to.x, to.y);
+      if (!cameFrom.has(goal)) return null;
+      return rebuild(board, cameFrom, start, goal);
+    },
+  };
 }
 
 function rebuild(

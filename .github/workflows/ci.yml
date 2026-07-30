@@ -18,12 +18,21 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancel superseded runs on pull requests only. On main, a CI run gates the
+  # production deploy (prod-deploy.yml triggers on its completion), so
+  # cancelling an in-flight main run would silently drop a deploy.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# This workflow only reads the repo. Stated explicitly so a future step that
+# wants to write (the one-time PR-repair pattern) has to say so out loud.
+permissions:
+  contents: read
 
 jobs:
   build:
     name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     # The prod store gets tested against a real DynamoDB, not a mock. The whole
     # justification for the in-memory store is that swapping in DynamoRepository
@@ -35,6 +44,10 @@ jobs:
         image: amazon/dynamodb-local:latest
         ports:
           - 8000:8000
+
+    # dynamodb-local ships no HEALTHCHECK, and GitHub only waits on containers
+    # that define one — so without the wait step below, `npm test` can race a
+    # port that is not listening yet and fail intermittently.
 
     steps:
       - uses: actions/checkout@v4
@@ -63,6 +76,15 @@ jobs:
       # KAD_DDB_ENDPOINT switches the repository contract suite from "memory
       # only" to "memory and DynamoDB". Without it those cases skip, which is
       # what keeps `npm test` a two-second command on a laptop.
+      - name: Wait for DynamoDB Local
+        run: |
+          for i in $(seq 1 30); do
+            curl -s -o /dev/null http://localhost:8000 && exit 0
+            sleep 1
+          done
+          echo "::error::DynamoDB Local never came up on :8000"
+          exit 1
+
       - name: Test
         run: npm test
         env:
@@ -124,6 +146,7 @@ jobs:
     # quite different from a red unit test.
     name: end to end
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -136,12 +159,28 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      # ~1-2 minutes of download per run without the cache. Keyed on the lock
+      # file because that is what pins @playwright/test, whose version decides
+      # which browser build it wants.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+
+      # OS-level deps are not cached with the browser; install them either way.
+      - name: Install Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       # playwright.config.ts starts `npm run dev` itself and waits for Vite.
       - name: Play a chapter
-        run: npx playwright test
+        run: npm run e2e
 
       - name: Upload traces
         uses: actions/upload-artifact@v4

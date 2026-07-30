@@ -312,7 +312,10 @@ async function main(): Promise<void> {
       // often closes last, which would mark a player away while they are
       // sitting right there (see presence-tracker.ts).
       if (presence.open(runId, playerId)) {
-        void setPresence({ runId, playerId, connected: true }, base);
+        // The same .catch as the close path below — Node treats an unhandled
+        // rejection as fatal, and a repo hiccup on stream-open must not take
+        // the whole dev server down mid-session.
+        void setPresence({ runId, playerId, connected: true }, base).catch(() => undefined);
       }
       res.on("close", () => {
         if (presence.close(runId, playerId)) {

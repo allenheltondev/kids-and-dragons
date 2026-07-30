@@ -27,8 +27,9 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
+  # deploy.sh derives the stack and stage from its argument; this copy exists
+  # only for the diagnostic and summary steps below.
   STACK_NAME: kad-staging
-  STAGE: staging
 
 jobs:
   deploy:
@@ -39,6 +40,7 @@ jobs:
     # the bump for real.
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     environment:
       name: Staging
       # Surfaces on the pull request as "Deployed to Staging" with a link, so a
@@ -47,10 +49,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -58,12 +60,12 @@ jobs:
       # The art gate is Python, and `deploy.sh` runs it — see the note on the
       # deploy step for why the checks are not skipped here.
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Set up AWS SAM CLI
-        uses: aws-actions/setup-sam@v3
+        uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
 
@@ -87,7 +89,7 @@ jobs:
             | jq -r '"The role trust policy must accept:\n  sub: \(.sub)\n  aud: \(.aud)"'
 
       - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@6.2.2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
           role-session-name: GitHubActions-KidsAndDragons-StagingDeploy
@@ -153,6 +155,11 @@ jobs:
             echo "::error::the stack has no SiteUrl output — the deploy may have succeeded but there is no address to open"
             exit 1
           fi
+          # A stack output proves CloudFormation is happy, not that the site
+          # serves. One request through CloudFront catches the bundle that
+          # throws on load path zero — before a reviewer opens the link.
+          curl -fsS --retry 3 --retry-delay 5 -o /dev/null "$SITE_URL"
+
           echo "::notice title=Staging is live::${SITE_URL}"
           echo
           echo "  ┌──────────────────────────────────────────────────────────"
@@ -170,5 +177,7 @@ jobs:
             echo "- **Region:** \`${AWS_REGION}\`"
             echo "- **Open it:** ${{ steps.outputs.outputs.site-url }}"
             echo "- **Table:** \`${{ steps.outputs.outputs.table-name }}\`"
-            echo "- **Commit:** \`${{ github.sha }}\`"
+            # On pull_request, github.sha is the ephemeral merge commit — a SHA
+            # nobody can check out. Report the head of the PR branch instead.
+            echo "- **Commit:** \`${{ github.event.pull_request.head.sha || github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"

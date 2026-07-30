@@ -30,6 +30,7 @@
  * appear on a phone, and combat-only items still refuse outside a fight.
  */
 
+import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import type {
   Character,
   ItemCatalog,
@@ -199,11 +200,14 @@ export function createRunState(input: CreateRunInput): RunState {
 
 /**
  * RunState is plain JSON by construction (it ships over the wire as one), so a
- * round trip is a correct and dependency-free deep clone. Every exported entry
- * point clones once and mutates a draft; nothing observable is shared.
+ * structured clone is a correct and dependency-free deep clone. Every exported
+ * entry point clones once and mutates a draft; nothing observable is shared.
+ * `structuredClone` rather than a JSON round trip: same semantics for a
+ * JSON-only document, without serializing the whole encounter to a string and
+ * back on every single tap.
  */
 function draftOf(state: RunState): RunState {
-  return JSON.parse(JSON.stringify(state)) as RunState;
+  return structuredClone(state);
 }
 
 /** Internal control flow for "this intent cannot be applied". Never escapes. */
@@ -290,7 +294,7 @@ function targetsFor(
  * give anyway — and falls through to the swap prompt when nobody has room.
  */
 function preferredHolder(members: PartyMember[]): PartyMember | undefined {
-  return members.find((m) => m.character.inventory.length < 6) ?? members[0];
+  return members.find((m) => m.character.inventory.length < INVENTORY_SLOTS) ?? members[0];
 }
 
 function damage(member: PartyMember, amount: number): void {
@@ -522,6 +526,23 @@ function openScenePrompt(
     }
 
     case "encounter": {
+      if (scene.autoResolve === "victory") {
+        /*
+         * The chapter-4 gate (types/chapter.ts). No phone can play a fight yet,
+         * so a gated encounter flows through its victory branch the way the
+         * old placeholder did — with the scene's own narration kept in front
+         * of the branch's, so the beat still reads even though the board
+         * never goes up.
+         */
+        const narration = [scene.narration, scene.onVictory.narration]
+          .filter(Boolean)
+          .join("\n\n");
+        return takeBranch(
+          draft,
+          { ...scene.onVictory, ...(narration ? { narration } : {}) },
+          ctx,
+        );
+      }
       // An encounter waits on a ready-up before the board goes up. That pause
       // is deliberate: three phones have to swap to a combat UI, and a fight
       // beginning around somebody still on their character sheet would have
@@ -742,6 +763,16 @@ function doCreateCharacter(
   }
 
   /*
+   * A ceiling, because nothing else is one. Every map budgets `partySpawns`
+   * against this number (the content validator holds them to it), so a party
+   * that outgrows it reaches an encounter it cannot start. The table this game
+   * is built for seats three; six is "the cousins are visiting", not a raid.
+   */
+  if (draft.party.length >= MAX_PARTY) {
+    throw new Illegal("ILLEGAL", `the party is full (${MAX_PARTY})`);
+  }
+
+  /*
    * `startingLevel` arrives from a phone and buys levels, actions and stat
    * points outright (spec §8.4), so it is checked against *this party* and not
    * merely against the tier floors the rules define. `newCharacter` enforces
@@ -904,7 +935,18 @@ function doChoose(
     const voters = prompt.forPlayerIds.length > 0
       ? prompt.forPlayerIds
       : draft.party.map((m) => m.playerId);
-    const outstanding = voters.filter((id) => votes[id] === undefined);
+    /*
+     * A vote a disconnected player has not cast is not outstanding. The
+     * ready-gate already tolerates absence (`m.ready || !m.connected`) for
+     * exactly this reason; a vote that did not was a deadlock — one phone dies
+     * mid-vote and the chapter waits forever on a tap that can never come.
+     * Their vote still counts if it landed before the disconnect.
+     */
+    const outstanding = voters.filter((id) => {
+      if (votes[id] !== undefined) return false;
+      const member = draft.party.find((m) => m.playerId === id);
+      return member ? member.connected : false;
+    });
     if (outstanding.length > 0) {
       return { kind: "CHOICE_MADE", choiceId, byPlayerId: playerId };
     }
@@ -1006,8 +1048,21 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   if (!map) throw new Illegal("NOT_FOUND", `map "${scene.map}" is not loaded`);
 
   const party: PartyPlacement[] = draft.party.map((member, i) => {
-    const at = map.partySpawns[i % map.partySpawns.length];
-    if (!at) throw new Illegal("ILLEGAL", `map "${map.id}" has no party spawns`);
+    /*
+     * No modulo. Wrapping member 4 onto spawn 0 read as graceful and was the
+     * opposite: two figures on one tile is a state `placeActor` refuses with a
+     * plain `Error`, which escapes `applyIntent`'s Illegal-only catch as a 500
+     * — and then does so again on every retry, so a 5th phone joining before
+     * READY bricked the chapter with no in-game recovery. Refusing the fight
+     * loudly here keeps it a visible error a table can react to.
+     */
+    const at = map.partySpawns[i];
+    if (!at) {
+      throw new Illegal(
+        "ILLEGAL",
+        `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${draft.party.length}`,
+      );
+    }
     return { character: member.character, at, hp: member.hp, down: member.down };
   });
 

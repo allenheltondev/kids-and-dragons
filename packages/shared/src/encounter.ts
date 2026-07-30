@@ -188,6 +188,25 @@ export type AbilityEffect =
   /** First Strike. Read once, when order is rolled; never on a turn. */
   | { readonly type: "goFirst" };
 
+/**
+ * The verbs the engine implements, as data the content loader can hold
+ * `abilities.json` to. The union above is a compile-time fact and the catalog
+ * is a runtime file; without this list between them, an authored
+ * `{"type":"stun"}` sailed through the cast and became a TypeError mid-fight.
+ */
+export const EFFECT_VERBS: readonly AbilityEffect["type"][] = [
+  "attack",
+  "damage",
+  "heal",
+  "revive",
+  "rollBonus",
+  "moveSelf",
+  "shove",
+  "skipTurn",
+  "protect",
+  "goFirst",
+];
+
 export interface AbilityEffectSpec {
   readonly effect: AbilityEffect;
   /** Defaults to `"target"`. */
@@ -843,12 +862,19 @@ function legalTilesFor(
   const from = positionOf(state, actor.id);
   if (!from) return [];
   const range = rangeOf(rule);
+  // `stepsBetween` is Chebyshev distance, so "within range" is literally a
+  // square box around the actor — scan that box instead of the whole board.
+  // Same tiles out, an order of magnitude fewer `isOpen` scans in for the
+  // range-1 and range-2 abilities that dominate a fight.
+  const x0 = range === "board" ? 0 : Math.max(0, from.x - range);
+  const x1 = range === "board" ? state.board.width - 1 : Math.min(state.board.width - 1, from.x + range);
+  const y0 = range === "board" ? 0 : Math.max(0, from.y - range);
+  const y1 = range === "board" ? state.board.height - 1 : Math.min(state.board.height - 1, from.y + range);
   const out: Position[] = [];
-  for (let y = 0; y < state.board.height; y++) {
-    for (let x = 0; x < state.board.width; x++) {
+  for (let y = y0; y <= y1; y++) {
+    for (let x = x0; x <= x1; x++) {
       const at = { x, y };
       if (samePosition(at, from)) continue;
-      if (range !== "board" && stepsBetween(from, at) > range) continue;
       if (rule.openTileOnly !== false && !isOpen(state.board, at)) continue;
       out.push(at);
     }
@@ -879,8 +905,11 @@ function legalTileTargetsFor(
       ...(followUp.range === undefined ? {} : { range: followUp.range }),
       ...(followUp.state === undefined ? {} : { state: followUp.state }),
     };
+    // The preview is per-tile, not per-target — pass it in rather than letting
+    // `wouldAbilityDoAnything` rebuild the board once for every candidate
+    // standing on it. On a range-6 Pounce that is ~50 fewer board clones.
     const targets = legalTargetsFor(preview, previewActor, followRule).filter((targetId) =>
-      wouldAbilityDoAnything(state, actor, ability, targetId, tile),
+      wouldAbilityDoAnything(state, actor, ability, targetId, tile, preview),
     );
     return targets.length > 0 ? [{ tile, targets }] : [];
   });
@@ -943,13 +972,18 @@ function effectWouldChange(
   }
 }
 
-/** Would this ability make a meaningful state change for this selection? */
+/**
+ * Would this ability make a meaningful state change for this selection?
+ * `knownPreview` lets a caller that already built the post-move board for this
+ * tile share it across every target it checks on that tile.
+ */
 function wouldAbilityDoAnything(
   state: EncounterState,
   actor: Combatant,
   ability: CombatAbility,
   targetId: ActorId | null,
   point: Position | null,
+  knownPreview?: EncounterState,
 ): boolean {
   const nonMovement = ability.effects.filter((spec) => spec.effect.type !== "moveSelf");
   if (nonMovement.length === 0) {
@@ -957,7 +991,7 @@ function wouldAbilityDoAnything(
       canMoveSelf(state, actor.id, point);
   }
 
-  const preview = previewStateForTile(state, actor.id, ability, point);
+  const preview = knownPreview ?? previewStateForTile(state, actor.id, ability, point);
   return nonMovement.some((spec) =>
     audienceFor(preview, actor.id, ability, spec, targetId, point).some((recipientId) => {
       const recipient = combatantById(preview, recipientId);
@@ -1041,9 +1075,6 @@ function hasAnyAudience(
 
 // ---------------------------------------------------------------------------
 // Taking a turn
-
-// ---------------------------------------------------------------------------
-// Taking a turn
 // ---------------------------------------------------------------------------
 
 /**
@@ -1118,19 +1149,19 @@ export function performAction(
     targetId = request.targetId;
     point = positionOf(state, targetId);
   } else if (ability.target.kind === "tile") {
-  const tile = request.targetTile;
-  if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
-    return { ok: false, reason: "that is not a legal tile" };
-  }
-  point = { x: tile.x, y: tile.y };
-  if (ability.target.followUp) {
-    const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
-    if (!request.targetId || !option?.targets.includes(request.targetId)) {
-      return { ok: false, reason: "that is not a legal target from that tile" };
+    const tile = request.targetTile;
+    if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+      return { ok: false, reason: "that is not a legal tile" };
     }
-    targetId = request.targetId;
+    point = { x: tile.x, y: tile.y };
+    if (ability.target.followUp) {
+      const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
+      if (!request.targetId || !option?.targets.includes(request.targetId)) {
+        return { ok: false, reason: "that is not a legal target from that tile" };
+      }
+      targetId = request.targetId;
+    }
   }
-}
 
   const events: EncounterEvent[] = [];
   let working = state;
@@ -1285,6 +1316,17 @@ function applyEffect(
     case "goFirst":
       // Read by `openingOrderFor` when order is rolled; nothing to do on a turn.
       return { state, rolled: false };
+
+    default:
+      /*
+       * TypeScript believes this switch is exhaustive, and for *compiled* code
+       * it is — but the effect came out of `abilities.json`, which is cast to
+       * the catalog type rather than deeply validated. The loader refuses
+       * unknown verbs at startup now, so reaching here means a validated verb
+       * with no arm — still a bug, but a no-op turn beats a TypeError that
+       * 500s the fight for everyone at the table.
+       */
+      return { state, rolled: false };
   }
 }
 
@@ -1317,8 +1359,12 @@ function dealDamage(
     const protector = combatantById(state, protectorId);
     const here = positionOf(state, targetId);
     const there = positionOf(state, protectorId);
-    working = updateCombatant(working, targetId, (c) => ({ ...c, protectedBy: null }));
     if (protector && !protector.down && here && there && areAdjacent(here, there)) {
+      // Spent only when it absorbs. A Thornguard shoved out of position lets
+      // the hit through, but the promise is still standing — they step back
+      // in and it holds. Clearing it either way charged the ability for a hit
+      // it never took, which is not what the card says.
+      working = updateCombatant(working, targetId, (c) => ({ ...c, protectedBy: null }));
       events.push({ type: "protected", actorId: targetId, byId: protectorId });
       victimId = protectorId;
     }

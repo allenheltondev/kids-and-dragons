@@ -36,24 +36,34 @@ character, and that only works if the character is a tree of transformable parts
 
 ```
 assets/
+  manifest.json                  the one manifest — part lists, canvas, tolerances,
+                                 palette slots, rigContract (asset-brief is its prose half)
   characters/
     <species>/
       <tier>/                    fledgling | sworn | radiant | mythic
+        assembled.png            the reference the parts must recomposite to
         parts/                   cut PNGs, transparent, registered to a common canvas
-          body.png  head.png  horn.png
+          body.png  head.png  mane.png
           arm_l.png arm_r.png  leg_l.png leg_r.png
-          wing_l.png wing_r.png  tail.png
-        rig.riv                  Rive file: skeleton + state machine
-        manifest.json            part list, pivots, palette slots
+          tail.png  wings.png  horn.png     ← per species: mane is universal
+                                              (the recolor slot, asset-brief §4.4),
+                                              horn is the unicorn's, wings the flyers'
+        rig.riv                  not yet delivered — zero .riv in the repo; the
+                                 contract it must meet is manifest.rigContract (§6.1)
   gear/
     <class>/<tier>/              overlay parts, same registration
+  entities/
+    <entity-id>/assembled.png    canonical non-player creatures — single cutouts,
+                                 no parts, no tiers (asset-brief §6.4)
   effects/
     <name>.sheet.png + .json     sprite sheets — jitter is invisible here
   biomes/
-    <biome>/  bg.webp  tiles.png  props/
-  ui/
-    icons/*.svg                  never raster
+    <destination>/  bg.webp  tiles.png  props/
 ```
+
+There is deliberately **one** manifest, at the top of `assets/` — not one per character directory
+— so the contract cannot fork per asset. UI icons never live here at all: they are inline SVG in
+the client, resolved from slugs (spec §11).
 
 **Registration is the load-bearing constraint.** Every part of every tier of every species is
 authored against the same canvas size and the same origin. A `sworn` horn must drop onto a
@@ -80,28 +90,46 @@ not outsource the gate — if anything it raises the bar, because the failure mo
 four pixels, a canvas that's 1023 wide, a missing `tail.png`) are exactly the kind that look fine
 in a preview and break at runtime.
 
-So the tooling shrinks from four commands to two:
+So the tooling is five commands:
 
 | Command | Does |
 |---|---|
-| `npm run art:verify` | Checks `assets/` against `assets/manifest.json`: missing files, wrong canvas, bad registration, alpha violations, orphans. **Runs in CI. Blocking.** |
-| `npm run art:sheet` | Builds an HTML contact sheet from `staging/` for the human review pass. |
+| `npm run art:verify` | Checks `assets/` against `assets/manifest.json`: pixels, canvas, registration, alpha, orphans, effect composition. **Runs in CI. Blocking.** |
+| `npm run art:verify:strict` | The same, but *undelivered* art fails too. Runs prod-only in the deploy workflow — on a PR, sets landing over time are not a regression. |
+| `npm run art:verify:rig` | The rig contract (`tools/art/verify-rig.ts`, §6.1): clip table coherence, the turn budget, effect/clip sync, and any delivered `.riv` against `rigContract`. **Runs in CI.** |
+| `npm run art:verify:rig:strict` | The same, but *missing* rigs fail. Off until the first rig is authored. |
+| `npm run art:sheet` | Writes PNG contact sheets from `assets/` to `art/review/` for the human review pass (`tools/art/sheet.py`). |
 
-`staging/` is gitignored. Nothing enters `assets/` without passing both the verifier and an eye.
+Nothing counts as accepted without passing both the verifier and an eye on the contact sheet.
 
-### 3.1 What the verifier checks
+### 3.1 What the verifiers check
 
 Everything in this list is mechanically decidable, and every item is a real failure mode that a
-preview image will not reveal:
+preview image will not reveal. Be precise about *which command* holds each rule, because "the
+verifier checks it" has been claimed loosely in this document before and the fix was a grep.
 
-1. **Existence** — every asset the manifest declares is present; nothing present is undeclared.
-2. **Canvas** — exact pixel dimensions, per the manifest. Not "about right."
-3. **Format** — PNG, RGBA, 8-bit, sRGB, non-interlaced.
-4. **Alpha** — part layers have genuine transparency, not white or near-white background. Checks corner pixels and total opaque coverage.
-5. **Registration** — recompositing all part layers reproduces `assembled.png` within a per-pixel tolerance. **This is the one that matters most**, and it is the one a human eye will never catch.
+**`art:verify` (`tools/art/verify.py`) — pixels.** It walks the manifest's `species` × `tiers`,
+its `entities[]`, and its `effects[]`:
+
+1. **Canvas** — exact pixel dimensions, per the manifest. Not "about right."
+2. **Format** — PNG, RGBA, 8-bit, sRGB, non-interlaced.
+3. **Alpha** — part layers have genuine transparency, not white or near-white background. Checks corner pixels and total opaque coverage.
+4. **Registration** — recompositing all part layers reproduces `assembled.png` within a per-pixel tolerance. **This is the one that matters most**, and it is the one a human eye will never catch.
+5. **Seams and silhouette** — joint overdraw between adjacent parts, and signature legibility at 120px.
 6. **Bounds** — no part's opaque region touches the canvas edge (guarantees room for rig rotation without clipping).
-7. **Rig contract** — every `.riv` exposes the exact state machine in §6.1.
-8. **Naming** — filenames match the manifest's expected set exactly, case-sensitive.
+7. **Naming** — a set's filenames match the manifest's expected part list exactly, case-sensitive; nothing in `assets/effects/` is undeclared.
+8. **Cross-tier registration, palette, origin** — the same character rules across all four tiers.
+9. **Effect composition** — frame geometry, sidecar agreement, fades, tile-scoped centre mass, top-band clearance, tint safety (asset-brief §9.4).
+
+**`art:verify:rig` (`tools/art/verify-rig.ts`) — motion.** The rig-contract rules — every clip
+defined and required, event ticks inside their clips, the 45-tick turn budget re-derived, effect/clip
+sync, and any delivered `.riv` compared clip-by-clip against `rigContract` — live in **this**
+command, not in `art:verify` (§6.1 has the full list).
+
+**Known blind spots, named honestly.** `verify.py` does not walk `assets/gear/` or the contents of
+`assets/biomes/`: the manifest declares 12 gear sets and 3 are delivered, and the gate is green.
+An existence check for both is being wired up separately; until it lands, gear and biome
+completeness are review-sheet facts, not CI facts.
 
 Failures print the offending file, the expected value, and the actual value. The agent should be
 able to run this itself and iterate to green without a human in the loop.
@@ -153,32 +181,39 @@ in what shape*; the brief answers *what it should look like*.
 
 ## 6. Rigging in Rive
 
-One `.riv` per species/tier. Same skeleton across all tiers of a species, so a tier change is a
-**skin swap on an identical rig** — which is what makes the transformation cutscene possible.
+**Six rigs are authored — one skeleton per species — and each is exported per tier as a skin-bound
+`.riv` into that tier's directory**, so there are 6 skeletons' worth of animation work and 24
+`.riv` files on disk (`assets/characters/<species>/<tier>/`, which is where `verify-rig.ts` looks
+for them). Same skeleton across all tiers of a species, so a tier change is a **skin swap on an
+identical rig** — which is what makes the transformation cutscene possible. When §9's budget says
+"6 rigs", it is counting the authoring; the export count is 24.
 
 ### 6.1 Required state machine
 
 Every character rig exposes the same state machine so game code never special-cases a species:
 
-| State | Trigger | Notes |
-|---|---|---|
-| `idle` | default | Breathing loop. Must look alive when nothing is happening. |
-| `walk` | `move` | Plays during grid movement, looped for the duration. |
-| `attack` | `attack` | ~0.6s. Impact frame exposed as an event so effects sync. |
-| `cast` | `cast` | Starweaver/Songkeeper variant. |
-| `hurt` | `hurt` | Short, non-gory flinch. |
-| `down` | `knockedDown` (bool) | Lying pose. Held, not looped. |
-| `revive` | `helpUp` | `down` → `idle` transition. |
-| `celebrate` | `celebrate` | Victory and level-up. |
-| `transform` | `transform` | Tier change. The most animated moment in the game. |
+| Clip | Ticks (12fps) | Started by | Notes |
+|---|---|---|---|
+| `idle` | 24, looped | default | Breathing loop. Must look alive when nothing is happening. |
+| `walk` | 4 per cycle, looped | `move` | Two steps per cycle; loops for the duration of a grid move. |
+| `attack` | 8 | `attack` | Preceded by the roll (`rolls`). **`impact` event at tick 3** so effects sync. |
+| `cast` | 10 | `cast` | Preceded by the roll. **`release` event at tick 4.** Two ticks longer than `attack` on purpose. |
+| `hurt` | 5 | `hurt` | Concurrent — starts on the attacker's `impact` event and adds nothing to the turn. |
+| `guard` | 6, then hold | `guard` | A plant and a hold, not a loop — Brace lasts until your next turn. |
+| `leap` | 11 | `leap` | 3 crouch, 5 airborne, 3 land; **`dust` events at ticks 3 and 8.** |
+| `down` | 6 fall + 24-tick loop | `knockedDown` (bool) | **Not held** — a breathing loop at half `idle`'s amplitude. A frozen pose reads as a corpse (asset-brief §9.3). |
+| `lift` | 10 | `helpUp` | The helper's reach-down. **`contact` event at tick 6.** |
+| `revive` | 10 | the lift's `contact` event | Concurrent with `lift` — the contact, not the button press, brings the downed figure up. |
+| `celebrate` | 24 | `celebrate` | Victory and level-up. Out of combat, so outside the turn budget. |
+| `transform` | 24 | `transform` | Tier change, the most animated moment in the game. Chapter 5's; declared but deferred. |
 
-Inputs: `move`, `attack`, `cast`, `hurt`, `helpUp`, `celebrate`, `transform` (triggers);
-`knockedDown`, `facing` (bool/number).
+Inputs: `move`, `attack`, `cast`, `hurt`, `guard`, `leap`, `helpUp`, `celebrate`, `transform`
+(nine triggers); `knockedDown` (bool); `facing` (number).
 
-**`tools/art/verify-rig.ts` exists** (`npm run art:verify:rig`), and the table above now lives in
-`assets/manifest.json` as `rigContract` — with per-clip tick counts and event ticks, which this table
-does not carry. **The manifest wins over this document**, same as everywhere else; `asset-brief.md`
-§9.2 is where the timings come from and why.
+This table is a restatement of `assets/manifest.json`'s `rigContract`, which carries the same
+twelve clips with their ticks, events and flags as data. **The manifest wins over this document**,
+same as everywhere else; `asset-brief.md` §9.2 is where the timings come from and why.
+`tools/art/verify-rig.ts` (`npm run art:verify:rig`) enforces it.
 
 Be precise about what the tool does, because for months this paragraph claimed it enforced an
 interface it had never seen:
@@ -193,17 +228,18 @@ interface it had never seen:
 
 **Where the edge actually is.** `compareRigToContract()` is complete and covered by
 `verify-rig.test.ts` — nineteen cases, each verified to fail when the corresponding rule is removed.
-What is *not* proven is the twenty-line adapter that turns a `.riv` into its input, and the reason is
-worth writing down so nobody re-discovers it: `@rive-app/canvas-advanced` is a dependency and the call
-sequence is real, but **the runtime cannot initialise headlessly.** It is an emscripten WebGL build
-that compiles shaders in its factory, so under plain Node it dies before any file is parsed —
-`document is not defined`, and a DOM shim only reaches `getShaderInfoLog is not a function`. Making it
-run needs a real GL context (`headless-gl`, or Mesa in CI), which is a native dependency and a
-decision about the build rather than about this file.
+And the `.riv` reader is real: an earlier revision of this paragraph claimed the Rive runtime could
+not initialise headlessly (WebGL, shader compilation, `getShaderInfoLog`), and that claim was tested
+and found **false** — `@rive-app/canvas-advanced` 2.39.1 is the Canvas2D build, and it starts under
+plain Node with a tiny document stub and the wasm binary handed to it directly. So a `.riv` on disk
+is genuinely opened, its clips and state-machine inputs read, and the result compared to
+`rigContract` clip by clip.
 
-So a `.riv` on disk is reported as a **failure** — "I could not read this" is information and silence
-is not. Review it against `rigContract` by hand and say so in the PR. Nothing about that failure is a
-judgement on the rig; it is the tool declining to pretend.
+The remaining honest caveat is younger and smaller: **no `.riv` exists in the repo yet**, so the
+read path has never met a real delivery — the first rig is still its first full rehearsal. A `.riv`
+the runtime cannot open is reported as a **failure**, not skipped: "I could not read this" is
+information and silence is not, and silence is exactly the state that let this paragraph carry a
+false claim for as long as it did.
 
 Two gaps of exactly this shape have now been closed, and they are the reason to be suspicious of any
 claim in this document that a check exists — **grep for it**. `verify.py` walked `manifest.species`
@@ -260,9 +296,9 @@ paragraph you add, and that paragraph saves you twenty-three repeats of the same
 | Character part-sets | 24 | 6 species × 4 tiers |
 | Gear overlay sets | 12 | 4 classes × 3 tiers (fledgling has no gear) |
 | Rigs | 6 | One skeleton per species, reused across tiers |
-| Effect sheets | ~20 | Attacks, heals, impacts, auras, transformation |
-| Biome backdrops | 5 | Plus prop sets |
-| Tile sets | 5 | One per biome |
+| Effect sheets | 17 | 11 delivered (attacks, heals, auras, transformation) + 6 specified in asset-brief §9.4 |
+| Biome backdrops | 17 | The Realm of Red Sky destinations (asset-brief §4.5), plus prop sets. Shipped. |
+| Tile sets | 12 | One per terrain family, copied into each destination directory. |
 | UI icons | ~60 | SVG, hand-authored or traced |
 
 With generation commissioned, the human time redistributes rather than disappearing:
