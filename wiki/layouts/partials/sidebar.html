@@ -1,0 +1,45 @@
+{{/* Sidebar navigation partial — hierarchical, scalable to 1000+ pages.
+     Top level: entity type sections. Second level: individual entity pages.
+     Only the current section is expanded to keep the DOM manageable. */}}
+<aside class="wiki-sidebar" aria-label="Encyclopedia navigation">
+  <nav class="wiki-sidebar__nav">
+    <ul class="wiki-sidebar__sections" role="tree">
+      {{ $currentSection := .CurrentSection }}
+      {{ range .Site.Sections }}
+        {{ $isActive := or (eq . $currentSection) (.IsAncestor $currentSection) }}
+        <li class="wiki-sidebar__section{{ if $isActive }} wiki-sidebar__section--active{{ end }}" role="treeitem" aria-expanded="{{ if $isActive }}true{{ else }}false{{ end }}">
+          <a href="{{ .RelPermalink }}" class="wiki-sidebar__section-link{{ if $isActive }} wiki-sidebar__section-link--active{{ end }}">
+            {{ .Title }}
+          </a>
+          {{/* Only expand child pages for the active section to keep DOM small */}}
+          {{ if $isActive }}
+            {{ $pages := .Pages.ByTitle }}
+            {{ if $pages }}
+            <ul class="wiki-sidebar__pages" role="group">
+              {{ range $pages }}
+              <li class="wiki-sidebar__page" role="treeitem">
+                <a href="{{ .RelPermalink }}" class="wiki-sidebar__page-link{{ if eq $.RelPermalink .RelPermalink }} wiki-sidebar__page-link--current{{ end }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>
+                  {{ .Title }}
+                </a>
+                {{/* Support 3rd level nesting */}}
+                {{ if .Sections }}
+                <ul class="wiki-sidebar__subpages" role="group">
+                  {{ range .Sections }}
+                  <li class="wiki-sidebar__page" role="treeitem">
+                    <a href="{{ .RelPermalink }}" class="wiki-sidebar__page-link{{ if eq $.RelPermalink .RelPermalink }} wiki-sidebar__page-link--current{{ end }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>
+                      {{ .Title }}
+                    </a>
+                  </li>
+                  {{ end }}
+                </ul>
+                {{ end }}
+              </li>
+              {{ end }}
+            </ul>
+            {{ end }}
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+  </nav>
+</aside>

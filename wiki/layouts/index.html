@@ -1,0 +1,176 @@
+{{ define "main" }}
+<div class="wiki-homepage">
+
+  {{/* ===== Hero Section: Title & Subtitle ===== */}}
+  <header class="wiki-hero">
+    <h1 class="wiki-hero__title">{{ .Title }}</h1>
+    <p class="wiki-hero__subtitle">{{ .Params.subtitle | default "World Encyclopedia" }}</p>
+  </header>
+
+  {{/* ===== Search Section ===== */}}
+  <section class="wiki-search-section" aria-label="Search">
+    <div class="wiki-card">
+      <div id="search" class="wiki-search-container">
+        {{/* Pagefind UI will be injected here */}}
+      </div>
+    </div>
+    <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+    <script src="/pagefind/pagefind-ui.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        new PagefindUI({ element: "#search", showSubResults: true });
+      });
+    </script>
+  </section>
+
+  {{/* ===== World Overview ===== */}}
+  <section class="wiki-overview-section" aria-label="World Overview">
+    <h2 class="wiki-heading">World Overview</h2>
+    <div class="wiki-card">
+      <p>
+        The Realm of Red Sky is a vast fantasy world of crimson-tinged horizons,
+        ancient magic, and untold mysteries. From the volcanic Crimson Highlands to
+        the mist-shrouded Whispering Marsh, every biome teems with unique creatures,
+        storied characters, and legendary artifacts. This encyclopedia serves as the
+        canonical reference for all entities, relationships, and lore within the realm.
+      </p>
+    </div>
+  </section>
+
+  {{/* ===== Featured Region ===== */}}
+  <section class="wiki-featured-section" aria-label="Featured Region">
+    <h2 class="wiki-heading">Featured Region</h2>
+    {{- $featuredBiome := false -}}
+    {{/* First look for a biome with featured: true */}}
+    {{- range where site.RegularPages "Params.type" "biome" -}}
+      {{- if .Params.featured -}}
+        {{- if not $featuredBiome -}}
+          {{- $featuredBiome = . -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{/* Fall back to first alphabetically by Canon_ID */}}
+    {{- if not $featuredBiome -}}
+      {{- $biomes := sort (where site.RegularPages "Params.type" "biome") ".Params.id" "asc" -}}
+      {{- if $biomes -}}
+        {{- $featuredBiome = index $biomes 0 -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if $featuredBiome -}}
+    <div class="wiki-card wiki-card--featured wiki-featured">
+      <span class="wiki-badge wiki-badge--biome wiki-badge--featured">Featured Biome</span>
+      <h3 class="wiki-card__title">
+        <a href="{{ $featuredBiome.RelPermalink }}">{{ $featuredBiome.Title }}</a>
+      </h3>
+      <p class="wiki-card__description">
+        {{ with $featuredBiome.Params.short_description }}{{ . }}{{ else }}Explore this region of the Realm of Red Sky.{{ end }}
+      </p>
+      {{- with $featuredBiome.Params.tags }}
+      <div class="wiki-featured__tags">
+        {{- range . }}
+        <span class="wiki-tag">{{ . }}</span>
+        {{- end }}
+      </div>
+      {{- end }}
+    </div>
+    {{- else -}}
+    <div class="wiki-card">
+      <p class="wiki-muted">No biomes available yet.</p>
+    </div>
+    {{- end -}}
+  </section>
+
+  {{/* ===== Featured Creature ===== */}}
+  <section class="wiki-featured-section" aria-label="Featured Creature">
+    <h2 class="wiki-heading">Featured Creature</h2>
+    {{- $featuredCreature := false -}}
+    {{/* First look for a creature with featured: true */}}
+    {{- range where site.RegularPages "Params.type" "creature" -}}
+      {{- if .Params.featured -}}
+        {{- if not $featuredCreature -}}
+          {{- $featuredCreature = . -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{/* Fall back to first alphabetically by Canon_ID */}}
+    {{- if not $featuredCreature -}}
+      {{- $creatures := sort (where site.RegularPages "Params.type" "creature") ".Params.id" "asc" -}}
+      {{- if $creatures -}}
+        {{- $featuredCreature = index $creatures 0 -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if $featuredCreature -}}
+    <div class="wiki-card wiki-card--featured wiki-featured">
+      <span class="wiki-badge wiki-badge--creature wiki-badge--featured">Featured Creature</span>
+      <h3 class="wiki-card__title">
+        <a href="{{ $featuredCreature.RelPermalink }}">{{ $featuredCreature.Title }}</a>
+      </h3>
+      <p class="wiki-card__description">
+        {{ with $featuredCreature.Params.short_description }}{{ . }}{{ else }}Discover this creature of the Realm of Red Sky.{{ end }}
+      </p>
+      {{- with $featuredCreature.Params.tags }}
+      <div class="wiki-featured__tags">
+        {{- range . }}
+        <span class="wiki-tag">{{ . }}</span>
+        {{- end }}
+      </div>
+      {{- end }}
+    </div>
+    {{- else -}}
+    <div class="wiki-card">
+      <p class="wiki-muted">No creatures available yet.</p>
+    </div>
+    {{- end -}}
+  </section>
+
+  {{/* ===== Recently Updated Pages ===== */}}
+  <section class="wiki-recent-section" aria-label="Recently Updated">
+    <h2 class="wiki-heading">Recently Updated</h2>
+    {{- $recentPages := first 5 (sort site.RegularPages ".Params.lastReviewed" "desc") -}}
+    {{- if $recentPages -}}
+    <ul class="wiki-entity-list">
+      {{- range $recentPages }}
+      <li class="wiki-entity-list__item">
+        <div class="wiki-entity-list__info">
+          <div class="wiki-entity-list__name">
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+          </div>
+          <div class="wiki-entity-list__meta">
+            {{- with .Params.type }}<span class="wiki-badge wiki-badge--{{ . }}">{{ . }}</span>{{ end }}
+            {{- with .Params.lastReviewed }} · Updated {{ . }}{{ end }}
+          </div>
+        </div>
+      </li>
+      {{- end }}
+    </ul>
+    {{- else -}}
+    <div class="wiki-card">
+      <p class="wiki-muted">No pages available yet.</p>
+    </div>
+    {{- end -}}
+  </section>
+
+  {{/* ===== Canon Statistics ===== */}}
+  <section class="wiki-stats-section" aria-label="Canon Statistics">
+    <h2 class="wiki-heading">Canon Statistics</h2>
+    <div class="wiki-stats">
+      {{- range (site.RegularPages.GroupByParam "type") }}
+      <div class="wiki-stats__item">
+        <div class="wiki-stats__count">{{ len .Pages }}</div>
+        <div class="wiki-stats__label">{{ .Key | humanize | pluralize }}</div>
+      </div>
+      {{- end }}
+    </div>
+  </section>
+
+  {{/* ===== World Map Placeholder ===== */}}
+  <section class="wiki-map-section" aria-label="World Map">
+    <h2 class="wiki-heading">World Map</h2>
+    <div class="wiki-map-placeholder">
+      <p>🗺️ Interactive World Map</p>
+      <p class="wiki-muted">An interactive map of the Realm of Red Sky is planned for a future update.</p>
+    </div>
+  </section>
+
+</div>
+{{ end }}

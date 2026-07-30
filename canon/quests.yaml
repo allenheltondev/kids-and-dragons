@@ -1,0 +1,108 @@
+schema_version: "2.0"
+document_type: red_sky_quest_canon
+title: "The Realm of Red Sky Quest Canon"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for quests and objectives in the Realm of
+  Red Sky. Use this file when planning quest content, objective design, reward
+  structures, or any game content involving player missions and goals.
+
+agent_instructions:
+  - Quests should allow multiple approaches per world rules, not just combat. Appropriate alternatives include observation, conversation, bargaining, rescue, distraction, escape, environmental problem-solving, and restoring a damaged habitat.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - These quest entries are placeholder designs pending explicit canon approval. They may be used for chapter-scoped content but carry no canon weight outside that scope.
+  - Do not treat quest narratives referencing non-canon factions or named characters as established canon.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions."
+    intentionally_undefined: "The quest concept exists as a design placeholder but is not yet canon."
+  quest_type:
+    main_story: "A quest tied to the primary campaign narrative."
+    side_quest: "An optional quest providing additional depth or rewards."
+  difficulty:
+    easy: "Suitable for beginning players with minimal preparation."
+    moderate: "Requires some planning and capability."
+    hard: "A serious challenge requiring coordination and preparation."
+    legendary: "Campaign-defining difficulty."
+
+quest_ids:
+  - shattered_sky_rite
+  - crystal_heart_retrieval
+
+quests:
+  - id: quest.shattered_sky_rite
+    asset_id: shattered_sky_rite
+    title: "The Shattered Sky Rite"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      This quest references non-canon factions and named characters. It is a
+      placeholder design for chapter-scoped content pending canon approval.
+    quest_type: main_story
+    difficulty: hard
+    featured: true
+    tags: [main-quest, ritual, highlands, epic]
+    short_description: >-
+      Perform an ancient ritual atop a highland fortress to glimpse the truth
+      behind the eternal red sky.
+    visual_identity: >-
+      A dramatic ritual scene atop a tower with crimson lightning and swirling sky.
+    common_story_uses: >-
+      Campaign climax, faction loyalty test, world-lore reveal.
+    canon_constraints: >-
+      Requires all three Crimson Shards. Can only be attempted once per
+      playthrough.
+    standard_behavior: >-
+      Multi-stage quest with combat, puzzle, and dialogue phases.
+    objectives:
+      - Gather three Crimson Shards from the foothills
+      - Earn trust to access the ritual forge
+      - Ascend the citadel during an ember storm
+      - Complete the Shattered Sky Rite
+    rewards:
+      - Vision of the world before the red sky
+    relationships:
+      locations: [redspire_citadel]
+      items: [crimson_shard]
+      factions: [skywardens]
+      campaigns: [dawn_of_the_red_sky]
+      creatures: []
+
+  - id: quest.crystal_heart_retrieval
+    asset_id: crystal_heart_retrieval
+    title: "Crystal Heart Retrieval"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      This quest references non-canon factions and named characters. It is a
+      placeholder design for chapter-scoped content pending canon approval.
+    quest_type: side_quest
+    difficulty: moderate
+    featured: false
+    tags: [side-quest, exploration, underground, mystery]
+    short_description: >-
+      Descend into the deepest cavern reaches to retrieve the legendary Crystal
+      Heart before a rival faction claims it.
+    visual_identity: >-
+      A glowing crystal chamber deep underground with a floating heart-shaped gem.
+    common_story_uses: >-
+      Exploration arc, faction rivalry, artifact recovery.
+    canon_constraints: >-
+      The Crystal Heart cannot leave the caverns without consequence. Choices
+      have lasting impact.
+    standard_behavior: >-
+      Branching quest with stealth, combat, or negotiation paths.
+    objectives:
+      - Find the entrance to the deep caverns
+      - Navigate the singing crystal maze
+      - Negotiate with or bypass the cavern guardians
+      - Retrieve the Crystal Heart
+    rewards:
+      - Crystal Heart artifact
+    relationships:
+      locations: [crystal_font]
+      items: [crystal_heart]
+      factions: [deep_hollow_cult]
+      campaigns: [echoes_beneath]
+      creatures: []

@@ -1,0 +1,16 @@
+creatures:
+  - id: "creature.no_title"
+    status: "draft"
+    tags: ["forest"]
+    classification: "Unknown Beast"
+
+  - title: "No ID Creature"
+    status: "reviewed"
+    tags: ["water"]
+    classification: "Spirit"
+
+  - id: "creature.valid_one"
+    title: "Valid Creature"
+    status: "reviewed"
+    tags: ["valid"]
+    classification: "Test Entity"

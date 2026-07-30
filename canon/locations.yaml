@@ -1,0 +1,129 @@
+schema_version: "2.0"
+document_type: red_sky_location_canon
+title: "The Realm of Red Sky Location Canon"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for named locations within biomes of the
+  Realm of Red Sky. Use this file when planning dungeon layouts, points of
+  interest, quest destinations, location artwork, or any game content involving
+  specific named places that exist within the broader biome regions.
+
+agent_instructions:
+  - Locations exist within biomes; the biome canon owns environmental identity and ecology.
+  - Do not invent new locations without explicit canon approval.
+  - Locations controlled by non-canon factions inherit the faction's intentionally_undefined status.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions."
+    intentionally_undefined: "The location concept exists but details are not yet canon."
+  location_type:
+    fortress: "A defensible structure or military installation."
+    underground_sanctum: "A hidden or subterranean sacred space."
+    ancient_ruins: "Remnants of an older civilization or structure."
+
+location_ids:
+  - redspire_citadel
+  - crystal_font
+  - hollow_gate
+
+locations:
+  - id: location.redspire_citadel
+    asset_id: redspire_citadel
+    title: "Redspire Citadel"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      This location is tied to the Skywardens faction which is not yet canon.
+      The location design is a placeholder for chapter-scoped content.
+    location_type: fortress
+    parent_biome: red_sky_foothills
+    featured: true
+    tags: [fortress, skywardens, highlands, hub]
+    short_description: >-
+      A towering obsidian fortress perched on the highest peak of the foothills,
+      headquarters of the Skywardens.
+    visual_identity: >-
+      Black stone tower with violet-lit windows, crimson banners, lightning rods
+      crackling with energy.
+    common_story_uses: >-
+      Hub location, quest start and end point, safe haven, faction headquarters.
+    canon_constraints: >-
+      Always accessible to players. Cannot be destroyed in narrative.
+    standard_behavior: >-
+      Bustling with activity during day, eerily quiet at night except for the forge.
+    relationships:
+      biome: [red_sky_foothills]
+      factions: [skywardens]
+      quests: [shattered_sky_rite]
+      campaigns: [dawn_of_the_red_sky]
+      creatures: []
+      items: []
+
+  - id: location.crystal_font
+    asset_id: crystal_font
+    title: "The Crystal Font"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      This location is tied to the Deep Hollow Cult faction which is not yet
+      canon. The location design is a placeholder for chapter-scoped content.
+    location_type: underground_sanctum
+    parent_biome: skullwater_cave
+    featured: false
+    tags: [underground, sacred, crystal, cult-base]
+    short_description: >-
+      A hidden cathedral deep within the caverns where resonance rituals are
+      conducted.
+    visual_identity: >-
+      Vast cavern with a central crystal fountain emanating violet light,
+      surrounded by carved pillars.
+    common_story_uses: >-
+      Dungeon location, quest objective, faction base, boss arena.
+    canon_constraints: >-
+      Hidden — requires navigation or guidance to find. Magical wards prevent
+      scrying.
+    standard_behavior: >-
+      Crystal formations here grow faster than elsewhere, reshaping the space
+      over weeks.
+    relationships:
+      biome: [skullwater_cave]
+      factions: [deep_hollow_cult]
+      quests: [crystal_heart_retrieval]
+      campaigns: [echoes_beneath]
+      creatures: []
+      items: [crystal_heart]
+
+  - id: location.hollow_gate
+    asset_id: hollow_gate
+    title: "The Hollow Gate"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      An unresolved mystery location. Its purpose and history are intentionally
+      protected pending future canon development.
+    location_type: ancient_ruins
+    parent_biome: whispering_marsh
+    featured: false
+    tags: [ruins, marsh, portal, mysterious]
+    short_description: >-
+      A crumbling stone archway in the heart of the Whispering Marsh, said to be
+      a sealed portal to the world before the red sky.
+    visual_identity: >-
+      Moss-covered stone arch with faintly glowing runes, surrounded by dead
+      trees in a circle of still water.
+    common_story_uses: >-
+      Mystery location, late-game revelation, lore discovery, potential future
+      content.
+    canon_constraints: >-
+      Cannot be opened in current campaign arc. Serves as foreshadowing only.
+    standard_behavior: >-
+      Runes glow brighter when the red sky intensifies, whispers grow louder
+      near it.
+    relationships:
+      biome: [whispering_marsh]
+      factions: []
+      quests: []
+      campaigns: []
+      creatures: []
+      items: []

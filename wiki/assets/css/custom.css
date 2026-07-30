@@ -1,0 +1,1469 @@
+/* ==========================================================================
+ * World Encyclopedia — Custom Styles
+ *
+ * RPG-codex visual identity for the Realm of Red Sky encyclopedia.
+ * Overrides Hextra theme defaults with the game's established color palette
+ * from packages/client/src/styles/theme.css.
+ *
+ * Color palette (dark mode — default):
+ *   Background base:   #0d0b1a
+ *   Background raised: #1a1730
+ *   Violet accent:     #8b6cf5
+ *   Text primary:      #f4f0ff  (on #0d0b1a ≈ 15.8:1)
+ *   Text secondary:    #b9b0d8  (on #0d0b1a ≈ 8.5:1)
+ *   Gold highlight:    #f5c86c
+ *   Border:            rgba(190, 178, 255, 0.16)
+ *
+ * WCAG AA compliance: all text meets 4.5:1 minimum contrast ratio.
+ * ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * 1. CSS Custom Properties
+ * ----------------------------------------------------------------------- */
+
+:root {
+  /* Palette — dark mode (default) */
+  --wiki-bg: #0d0b1a;
+  --wiki-bg-raised: #1a1730;
+  --wiki-bg-sunken: #080711;
+  --wiki-accent: #8b6cf5;
+  --wiki-accent-hover: #a78bff;
+  --wiki-accent-soft: rgba(139, 108, 245, 0.18);
+  --wiki-text: #f4f0ff;
+  --wiki-text-secondary: #b9b0d8;
+  --wiki-text-faint: #7d7599;
+  --wiki-gold: #f5c86c;
+  --wiki-gold-soft: rgba(245, 200, 108, 0.15);
+  --wiki-border: rgba(190, 178, 255, 0.16);
+  --wiki-border-strong: rgba(190, 178, 255, 0.55);
+  --wiki-danger: #ff6b81;
+  --wiki-success: #5fd6a0;
+  --wiki-warn: #f5a86c;
+
+  /* Typography */
+  --wiki-font-heading: "Crimson Text", Georgia, serif;
+  --wiki-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --wiki-font-mono: ui-monospace, "Cascadia Code", "Fira Code", monospace;
+
+  /* Spacing */
+  --wiki-space-xs: 0.25rem;
+  --wiki-space-sm: 0.5rem;
+  --wiki-space-md: 1rem;
+  --wiki-space-lg: 1.5rem;
+  --wiki-space-xl: 2rem;
+  --wiki-space-2xl: 3rem;
+
+  /* Radius */
+  --wiki-radius-sm: 4px;
+  --wiki-radius-md: 8px;
+  --wiki-radius-lg: 12px;
+
+  /* Shadows */
+  --wiki-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --wiki-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --wiki-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.55);
+
+  /* Transitions */
+  --wiki-transition: 200ms ease;
+
+  /* Sizing */
+  --wiki-touch-min: 44px;
+  --wiki-infobox-width: 280px;
+}
+
+.dark {
+  --wiki-bg: #0d0b1a;
+  --wiki-bg-raised: #1a1730;
+  --wiki-bg-sunken: #080711;
+  --wiki-accent: #8b6cf5;
+  --wiki-accent-hover: #a78bff;
+  --wiki-text: #f4f0ff;
+  --wiki-text-secondary: #b9b0d8;
+  --wiki-text-faint: #7d7599;
+  --wiki-gold: #f5c86c;
+  --wiki-border: rgba(190, 178, 255, 0.16);
+  --wiki-border-strong: rgba(190, 178, 255, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+ * 2. Typography
+ * ----------------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6,
+.wiki-heading {
+  font-family: var(--wiki-font-heading);
+  color: var(--wiki-text);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+body,
+.wiki-body {
+  font-family: var(--wiki-font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--wiki-text);
+}
+
+code, pre, .wiki-mono {
+  font-family: var(--wiki-font-mono);
+}
+
+/* --------------------------------------------------------------------------
+ * 3. Base Element Styling
+ * ----------------------------------------------------------------------- */
+
+.content {
+  background-color: var(--wiki-bg);
+  color: var(--wiki-text);
+}
+
+/* Override Hextra body/page backgrounds */
+body {
+  background-color: var(--wiki-bg);
+}
+
+.dark body {
+  background-color: var(--wiki-bg);
+}
+
+/* Links */
+a {
+  color: var(--wiki-accent);
+  text-decoration: none;
+  transition: color var(--wiki-transition);
+}
+
+a:hover {
+  color: var(--wiki-accent-hover);
+  text-decoration: underline;
+}
+
+a:visited {
+  color: var(--wiki-accent);
+}
+
+/* Selections */
+::selection {
+  background-color: var(--wiki-accent-soft);
+  color: var(--wiki-text);
+}
+
+/* Paragraphs and secondary text */
+p {
+  color: var(--wiki-text);
+  margin-bottom: var(--wiki-space-md);
+}
+
+.text-secondary,
+.wiki-muted {
+  color: var(--wiki-text-secondary);
+}
+
+.text-faint {
+  color: var(--wiki-text-faint);
+}
+
+/* Horizontal rules */
+hr {
+  border: none;
+  border-top: 1px solid var(--wiki-border);
+  margin: var(--wiki-space-xl) 0;
+}
+
+/* Blockquotes — styled as lore callouts */
+blockquote {
+  border-left: 3px solid var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+  padding: var(--wiki-space-md) var(--wiki-space-lg);
+  margin: var(--wiki-space-lg) 0;
+  border-radius: 0 var(--wiki-radius-md) var(--wiki-radius-md) 0;
+  font-style: italic;
+  color: var(--wiki-text-secondary);
+}
+
+blockquote p {
+  color: var(--wiki-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+ * 4. Card Components
+ * ----------------------------------------------------------------------- */
+
+.wiki-card {
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  padding: var(--wiki-space-lg);
+  box-shadow: var(--wiki-shadow-sm);
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+.wiki-card:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-md);
+  transform: translateY(-1px);
+}
+
+.wiki-card--featured {
+  border-color: var(--wiki-gold);
+  box-shadow: 0 0 0 1px var(--wiki-gold-soft),
+              var(--wiki-shadow-sm);
+}
+
+.wiki-card--featured:hover {
+  box-shadow: 0 0 0 1px var(--wiki-gold),
+              var(--wiki-shadow-md);
+}
+
+.wiki-card__title {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--wiki-text);
+  margin-bottom: var(--wiki-space-sm);
+}
+
+.wiki-card__description {
+  color: var(--wiki-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Hextra card overrides */
+.hextra-card {
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  box-shadow: var(--wiki-shadow-sm);
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition);
+}
+
+.hextra-card:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-md);
+}
+
+/* --------------------------------------------------------------------------
+ * 5. Infobox Sidebar
+ * ----------------------------------------------------------------------- */
+
+.wiki-infobox {
+  width: var(--wiki-infobox-width);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  padding: var(--wiki-space-lg);
+  float: right;
+  margin-left: var(--wiki-space-xl);
+  margin-bottom: var(--wiki-space-lg);
+  box-shadow: var(--wiki-shadow-sm);
+}
+
+.wiki-infobox__portrait {
+  width: 100%;
+  border-radius: var(--wiki-radius-sm);
+  margin-bottom: var(--wiki-space-md);
+  border: 1px solid var(--wiki-border);
+}
+
+.wiki-infobox__title {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--wiki-text);
+  text-align: center;
+  margin-bottom: var(--wiki-space-md);
+  padding-bottom: var(--wiki-space-sm);
+  border-bottom: 1px solid var(--wiki-border);
+}
+
+.wiki-infobox__field {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--wiki-space-xs) 0;
+  border-bottom: 1px solid var(--wiki-border);
+  font-size: 0.875rem;
+}
+
+.wiki-infobox__field:last-child {
+  border-bottom: none;
+}
+
+.wiki-infobox__label {
+  color: var(--wiki-text-secondary);
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-right: var(--wiki-space-sm);
+}
+
+.wiki-infobox__value {
+  color: var(--wiki-text);
+  text-align: right;
+}
+
+.wiki-infobox__value a {
+  color: var(--wiki-accent);
+}
+
+/* --------------------------------------------------------------------------
+ * 6. Entity Type Badges & Tags
+ * ----------------------------------------------------------------------- */
+
+.wiki-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--wiki-space-xs) var(--wiki-space-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--wiki-radius-sm);
+  background-color: var(--wiki-accent-soft);
+  color: var(--wiki-accent);
+  border: 1px solid rgba(139, 108, 245, 0.3);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.wiki-badge--creature {
+  background-color: rgba(255, 107, 171, 0.12);
+  color: #ff8bab;
+  border-color: rgba(255, 107, 171, 0.3);
+}
+
+.wiki-badge--biome {
+  background-color: rgba(95, 214, 160, 0.12);
+  color: #5fd6a0;
+  border-color: rgba(95, 214, 160, 0.3);
+}
+
+.wiki-badge--item {
+  background-color: var(--wiki-gold-soft);
+  color: var(--wiki-gold);
+  border-color: rgba(245, 200, 108, 0.3);
+}
+
+.wiki-badge--npc,
+.wiki-badge--character {
+  background-color: rgba(107, 214, 255, 0.12);
+  color: #6bd6ff;
+  border-color: rgba(107, 214, 255, 0.3);
+}
+
+.wiki-badge--quest {
+  background-color: rgba(201, 139, 255, 0.12);
+  color: #c98bff;
+  border-color: rgba(201, 139, 255, 0.3);
+}
+
+.wiki-badge--location {
+  background-color: rgba(255, 143, 107, 0.12);
+  color: #ff8f6b;
+  border-color: rgba(255, 143, 107, 0.3);
+}
+
+.wiki-badge--featured {
+  background-color: var(--wiki-gold-soft);
+  color: var(--wiki-gold);
+  border-color: var(--wiki-gold);
+}
+
+/* Tags */
+.wiki-tag {
+  display: inline-block;
+  padding: var(--wiki-space-xs) var(--wiki-space-sm);
+  font-size: 0.75rem;
+  color: var(--wiki-text-secondary);
+  background-color: rgba(190, 178, 255, 0.08);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-sm);
+  margin-right: var(--wiki-space-xs);
+  margin-bottom: var(--wiki-space-xs);
+  transition: background-color var(--wiki-transition);
+}
+
+.wiki-tag:hover {
+  background-color: rgba(190, 178, 255, 0.15);
+  color: var(--wiki-text);
+}
+
+/* --------------------------------------------------------------------------
+ * 7. Entity List Items
+ * ----------------------------------------------------------------------- */
+
+.wiki-entity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.wiki-entity-list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--wiki-space-md);
+  padding: var(--wiki-space-md);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  margin-bottom: var(--wiki-space-sm);
+  background-color: var(--wiki-bg-raised);
+  transition: border-color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.wiki-entity-list__item:hover {
+  border-color: var(--wiki-border-strong);
+  background-color: rgba(26, 23, 48, 0.8);
+}
+
+.wiki-entity-list__thumb {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: var(--wiki-radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--wiki-border);
+}
+
+.wiki-entity-list__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wiki-entity-list__name {
+  font-family: var(--wiki-font-heading);
+  font-weight: 600;
+  color: var(--wiki-text);
+  margin-bottom: 2px;
+}
+
+.wiki-entity-list__name a {
+  color: inherit;
+}
+
+.wiki-entity-list__name a:hover {
+  color: var(--wiki-accent);
+}
+
+.wiki-entity-list__meta {
+  font-size: 0.8125rem;
+  color: var(--wiki-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+ * 8. Breadcrumb Navigation
+ * ----------------------------------------------------------------------- */
+
+.wiki-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--wiki-space-xs);
+  padding: var(--wiki-space-md) 0;
+  font-size: 0.8125rem;
+  color: var(--wiki-text-secondary);
+  margin-bottom: var(--wiki-space-lg);
+}
+
+.wiki-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.wiki-breadcrumb__item a {
+  color: var(--wiki-text-secondary);
+  min-height: var(--wiki-touch-min);
+  min-width: var(--wiki-touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: var(--wiki-space-xs) var(--wiki-space-sm);
+  border-radius: var(--wiki-radius-sm);
+  transition: color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.wiki-breadcrumb__item a:hover {
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+  text-decoration: none;
+}
+
+.wiki-breadcrumb__separator {
+  color: var(--wiki-text-faint);
+  margin: 0 var(--wiki-space-xs);
+  user-select: none;
+}
+
+.wiki-breadcrumb__current {
+  color: var(--wiki-text);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+ * 9. Section Index Styling
+ * ----------------------------------------------------------------------- */
+
+.wiki-section-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--wiki-space-lg);
+  padding: var(--wiki-space-lg) 0;
+}
+
+.wiki-section-index__card {
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  padding: var(--wiki-space-lg);
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+.wiki-section-index__card:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-md);
+  transform: translateY(-2px);
+}
+
+.wiki-section-index__card-title {
+  font-family: var(--wiki-font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--wiki-text);
+  margin-bottom: var(--wiki-space-sm);
+}
+
+.wiki-section-index__card-title a {
+  color: inherit;
+}
+
+.wiki-section-index__card-title a:hover {
+  color: var(--wiki-accent);
+}
+
+.wiki-section-index__card-count {
+  font-size: 0.75rem;
+  color: var(--wiki-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------------------------------------------------
+ * 10. Gallery Grid
+ * ----------------------------------------------------------------------- */
+
+.wiki-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--wiki-space-md);
+  margin: var(--wiki-space-xl) 0;
+}
+
+.wiki-gallery__item {
+  position: relative;
+  border-radius: var(--wiki-radius-md);
+  overflow: hidden;
+  border: 1px solid var(--wiki-border);
+  aspect-ratio: 1;
+  background-color: var(--wiki-bg-sunken);
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition);
+}
+
+.wiki-gallery__item:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-md);
+}
+
+.wiki-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--wiki-transition);
+}
+
+.wiki-gallery__item:hover img {
+  transform: scale(1.03);
+}
+
+.wiki-gallery__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  background: linear-gradient(transparent, rgba(13, 11, 26, 0.85));
+  color: var(--wiki-text);
+  font-size: 0.8125rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 11. AI Context Section
+ * ----------------------------------------------------------------------- */
+
+.wiki-ai-context {
+  background-color: var(--wiki-bg-sunken);
+  border: 1px solid var(--wiki-border);
+  border-left: 3px solid var(--wiki-accent);
+  border-radius: var(--wiki-radius-md);
+  padding: var(--wiki-space-lg);
+  margin: var(--wiki-space-xl) 0;
+}
+
+.wiki-ai-context__heading {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.125rem;
+  color: var(--wiki-accent);
+  margin-bottom: var(--wiki-space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--wiki-space-sm);
+}
+
+.wiki-ai-context__heading::before {
+  content: "🤖";
+  font-size: 1rem;
+}
+
+.wiki-ai-context__field {
+  margin-bottom: var(--wiki-space-sm);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.wiki-ai-context__label {
+  font-weight: 700;
+  color: var(--wiki-text);
+  margin-right: var(--wiki-space-sm);
+}
+
+.wiki-ai-context__value {
+  color: var(--wiki-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+ * 12. Shortcode Card Styling
+ * ----------------------------------------------------------------------- */
+
+/* Inline shortcode (within paragraph text) */
+.wiki-shortcode-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wiki-space-sm);
+  padding: 2px var(--wiki-space-sm);
+  border-radius: var(--wiki-radius-sm);
+  background-color: var(--wiki-accent-soft);
+  border: 1px solid rgba(139, 108, 245, 0.2);
+  text-decoration: none;
+  transition: background-color var(--wiki-transition),
+              border-color var(--wiki-transition);
+  vertical-align: middle;
+}
+
+.wiki-shortcode-inline:hover {
+  background-color: rgba(139, 108, 245, 0.25);
+  border-color: var(--wiki-accent);
+  text-decoration: none;
+}
+
+.wiki-shortcode-inline__thumb {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: var(--wiki-radius-sm);
+  object-fit: cover;
+}
+
+.wiki-shortcode-inline__name {
+  color: var(--wiki-accent);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Block shortcode (standalone card) */
+.wiki-shortcode-block {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--wiki-space-md);
+  padding: var(--wiki-space-md);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  margin: var(--wiki-space-lg) 0;
+  text-decoration: none;
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition);
+}
+
+.wiki-shortcode-block:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-sm);
+  text-decoration: none;
+}
+
+.wiki-shortcode-block__thumb {
+  width: 120px;
+  height: 120px;
+  min-width: 120px;
+  border-radius: var(--wiki-radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--wiki-border);
+}
+
+.wiki-shortcode-block__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.wiki-shortcode-block__name {
+  font-family: var(--wiki-font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--wiki-text);
+  margin-bottom: var(--wiki-space-xs);
+}
+
+.wiki-shortcode-block__summary {
+  font-size: 0.875rem;
+  color: var(--wiki-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--wiki-space-sm);
+}
+
+.wiki-shortcode-block__link {
+  font-size: 0.8125rem;
+  color: var(--wiki-accent);
+  font-weight: 600;
+}
+
+/* Shortcode placeholder (unresolved Canon_ID) */
+.wiki-shortcode-placeholder {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wiki-space-sm);
+  padding: var(--wiki-space-xs) var(--wiki-space-sm);
+  border-radius: var(--wiki-radius-sm);
+  background-color: rgba(255, 107, 129, 0.1);
+  border: 1px dashed var(--wiki-danger);
+  color: var(--wiki-danger);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
+/* Generic type placeholder icon */
+.wiki-shortcode-icon-placeholder {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--wiki-bg-sunken);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-sm);
+  color: var(--wiki-text-faint);
+  font-size: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 13. Responsive Breakpoint (≤768px)
+ * ----------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Single-column layout */
+  body {
+    font-size: 16px;
+  }
+
+  .wiki-infobox {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: var(--wiki-space-lg);
+  }
+
+  .wiki-section-index {
+    grid-template-columns: 1fr;
+  }
+
+  .wiki-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .wiki-shortcode-block {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wiki-shortcode-block__thumb {
+    width: 100%;
+    height: 160px;
+    min-width: unset;
+  }
+
+  /* Tap targets — 44×44px minimum */
+  .wiki-breadcrumb__item a,
+  .wiki-tag,
+  .wiki-badge,
+  nav a,
+  button,
+  [role="button"],
+  .wiki-entity-list__item a {
+    min-height: var(--wiki-touch-min);
+    min-width: var(--wiki-touch-min);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Stack entity list items vertically if needed */
+  .wiki-entity-list__item {
+    flex-wrap: wrap;
+  }
+
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.375rem; }
+  h3 { font-size: 1.125rem; }
+}
+
+/* --------------------------------------------------------------------------
+ * 14. Light Mode Overrides
+ *
+ * Derives a complementary palette that preserves the violet accent identity
+ * while ensuring readability on light backgrounds.
+ *
+ * Contrast checks (light mode):
+ *   Primary text #1a1033 on #f8f6fc ≈ 14.5:1 ✓
+ *   Secondary text #4a4266 on #f8f6fc ≈ 7.2:1 ✓
+ *   Accent #6b4fd4 on #f8f6fc ≈ 5.1:1 ✓ (darker violet for light bg)
+ * ----------------------------------------------------------------------- */
+
+:root:not(.dark),
+html:not(.dark) {
+  --wiki-bg: #f8f6fc;
+  --wiki-bg-raised: #ffffff;
+  --wiki-bg-sunken: #efeaf8;
+  --wiki-accent: #6b4fd4;
+  --wiki-accent-hover: #5a3dbf;
+  --wiki-accent-soft: rgba(107, 79, 212, 0.1);
+  --wiki-text: #1a1033;
+  --wiki-text-secondary: #4a4266;
+  --wiki-text-faint: #7a7290;
+  --wiki-gold: #b8860b;
+  --wiki-gold-soft: rgba(184, 134, 11, 0.1);
+  --wiki-border: rgba(100, 80, 160, 0.15);
+  --wiki-border-strong: rgba(100, 80, 160, 0.4);
+  --wiki-danger: #d63031;
+  --wiki-success: #00a676;
+  --wiki-warn: #d68910;
+  --wiki-shadow-sm: 0 2px 8px rgba(100, 80, 160, 0.1);
+  --wiki-shadow-md: 0 4px 16px rgba(100, 80, 160, 0.15);
+  --wiki-shadow-lg: 0 8px 32px rgba(100, 80, 160, 0.2);
+}
+
+/* Light mode specific overrides */
+:root:not(.dark) body,
+html:not(.dark) body {
+  background-color: var(--wiki-bg);
+  color: var(--wiki-text);
+}
+
+:root:not(.dark) blockquote,
+html:not(.dark) blockquote {
+  border-left-color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+}
+
+:root:not(.dark) .wiki-gallery__caption,
+html:not(.dark) .wiki-gallery__caption {
+  background: linear-gradient(transparent, rgba(248, 246, 252, 0.9));
+  color: var(--wiki-text);
+}
+
+:root:not(.dark) .wiki-badge,
+html:not(.dark) .wiki-badge {
+  background-color: rgba(107, 79, 212, 0.08);
+  color: var(--wiki-accent);
+  border-color: rgba(107, 79, 212, 0.25);
+}
+
+:root:not(.dark) .wiki-badge--creature,
+html:not(.dark) .wiki-badge--creature {
+  background-color: rgba(200, 50, 100, 0.08);
+  color: #a03060;
+  border-color: rgba(200, 50, 100, 0.25);
+}
+
+:root:not(.dark) .wiki-badge--biome,
+html:not(.dark) .wiki-badge--biome {
+  background-color: rgba(0, 140, 90, 0.08);
+  color: #006848;
+  border-color: rgba(0, 140, 90, 0.25);
+}
+
+:root:not(.dark) .wiki-badge--item,
+html:not(.dark) .wiki-badge--item {
+  background-color: rgba(184, 134, 11, 0.08);
+  color: #8b6914;
+  border-color: rgba(184, 134, 11, 0.25);
+}
+
+:root:not(.dark) .wiki-badge--npc,
+:root:not(.dark) .wiki-badge--character,
+html:not(.dark) .wiki-badge--npc,
+html:not(.dark) .wiki-badge--character {
+  background-color: rgba(0, 120, 180, 0.08);
+  color: #005f8a;
+  border-color: rgba(0, 120, 180, 0.25);
+}
+
+:root:not(.dark) .wiki-badge--featured,
+html:not(.dark) .wiki-badge--featured {
+  background-color: rgba(184, 134, 11, 0.1);
+  color: #8b6914;
+  border-color: var(--wiki-gold);
+}
+
+/* --------------------------------------------------------------------------
+ * 15. Accessibility — Focus States & Tap Targets
+ * ----------------------------------------------------------------------- */
+
+/* Visible focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--wiki-accent);
+  outline-offset: 2px;
+  border-radius: var(--wiki-radius-sm);
+}
+
+/* Skip-to-content link (if added in layout) */
+.wiki-skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--wiki-space-md);
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  background-color: var(--wiki-accent);
+  color: var(--wiki-bg);
+  font-weight: 700;
+  border-radius: var(--wiki-radius-sm);
+  z-index: 9999;
+  transition: top var(--wiki-transition);
+}
+
+.wiki-skip-link:focus {
+  top: var(--wiki-space-md);
+}
+
+/* Ensure all interactive elements meet 44×44px tap target */
+nav a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.wiki-breadcrumb__item a {
+  min-height: var(--wiki-touch-min);
+  min-width: var(--wiki-touch-min);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .wiki-card,
+  .wiki-infobox,
+  .wiki-entity-list__item,
+  .wiki-shortcode-block {
+    border: 1px solid CanvasText;
+  }
+
+  .wiki-badge {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 16. Hextra Sidebar & Navigation Overrides
+ * ----------------------------------------------------------------------- */
+
+/* Sidebar navigation styling */
+.sidebar-container,
+nav.sidebar {
+  background-color: var(--wiki-bg);
+  border-right: 1px solid var(--wiki-border);
+}
+
+.sidebar-container a,
+nav.sidebar a {
+  color: var(--wiki-text-secondary);
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  border-radius: var(--wiki-radius-sm);
+  min-height: var(--wiki-touch-min);
+  display: flex;
+  align-items: center;
+  transition: color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.sidebar-container a:hover,
+nav.sidebar a:hover {
+  color: var(--wiki-text);
+  background-color: var(--wiki-accent-soft);
+}
+
+.sidebar-container a.active,
+nav.sidebar a.active,
+.sidebar-container a[aria-current="page"],
+nav.sidebar a[aria-current="page"] {
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+  font-weight: 600;
+}
+
+/* Navbar overrides */
+.nav-container,
+header nav {
+  background-color: var(--wiki-bg);
+  border-bottom: 1px solid var(--wiki-border);
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--wiki-border);
+  color: var(--wiki-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+ * 17. Homepage Specifics
+ * ----------------------------------------------------------------------- */
+
+.wiki-hero {
+  text-align: center;
+  padding: var(--wiki-space-2xl) 0;
+  margin-bottom: var(--wiki-space-xl);
+}
+
+.wiki-hero__title {
+  font-family: var(--wiki-font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--wiki-text);
+  margin-bottom: var(--wiki-space-sm);
+  letter-spacing: -0.02em;
+}
+
+.wiki-hero__subtitle {
+  font-size: 1.25rem;
+  color: var(--wiki-text-secondary);
+  font-weight: 400;
+}
+
+/* Canon statistics grid */
+.wiki-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--wiki-space-md);
+  margin: var(--wiki-space-xl) 0;
+}
+
+.wiki-stats__item {
+  text-align: center;
+  padding: var(--wiki-space-md);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+}
+
+.wiki-stats__count {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--wiki-accent);
+}
+
+.wiki-stats__label {
+  font-size: 0.75rem;
+  color: var(--wiki-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: var(--wiki-space-xs);
+}
+
+/* World map placeholder */
+.wiki-map-placeholder {
+  border: 2px dashed var(--wiki-border);
+  border-radius: var(--wiki-radius-lg);
+  padding: var(--wiki-space-2xl);
+  text-align: center;
+  color: var(--wiki-text-faint);
+  margin: var(--wiki-space-xl) 0;
+  background-color: var(--wiki-bg-sunken);
+}
+
+/* --------------------------------------------------------------------------
+ * 18. Relationship Cards
+ * ----------------------------------------------------------------------- */
+
+.wiki-relationship-card {
+  display: flex;
+  align-items: center;
+  gap: var(--wiki-space-md);
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  background-color: var(--wiki-bg-raised);
+  text-decoration: none;
+  transition: border-color var(--wiki-transition),
+              background-color var(--wiki-transition);
+  min-height: var(--wiki-touch-min);
+}
+
+.wiki-relationship-card:hover {
+  border-color: var(--wiki-border-strong);
+  background-color: rgba(139, 108, 245, 0.05);
+  text-decoration: none;
+}
+
+.wiki-relationship-card__thumb {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  max-width: 96px;
+  border-radius: var(--wiki-radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--wiki-border);
+}
+
+.wiki-relationship-card__name {
+  font-weight: 600;
+  color: var(--wiki-text);
+  font-size: 0.9375rem;
+}
+
+.wiki-relationship-card__type {
+  font-size: 0.75rem;
+  color: var(--wiki-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* --------------------------------------------------------------------------
+ * 19. Content Area Overrides
+ * ----------------------------------------------------------------------- */
+
+/* Ensure content area images have proper styling */
+.content img,
+article img {
+  border-radius: var(--wiki-radius-md);
+  border: 1px solid var(--wiki-border);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Hero/landscape images (min 600px on desktop) */
+.wiki-hero-image {
+  width: 100%;
+  min-width: min(600px, 100%);
+  border-radius: var(--wiki-radius-lg);
+  border: 1px solid var(--wiki-border);
+  margin-bottom: var(--wiki-space-xl);
+  box-shadow: var(--wiki-shadow-md);
+}
+
+/* Thumbnail constraint */
+.wiki-thumbnail {
+  min-width: 200px;
+  max-width: 100%;
+  border-radius: var(--wiki-radius-md);
+  border: 1px solid var(--wiki-border);
+}
+
+/* Code blocks */
+pre {
+  background-color: var(--wiki-bg-sunken) !important;
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  padding: var(--wiki-space-md);
+}
+
+code {
+  font-family: var(--wiki-font-mono);
+  font-size: 0.875em;
+  background-color: rgba(190, 178, 255, 0.08);
+  padding: 0.125em 0.375em;
+  border-radius: var(--wiki-radius-sm);
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+ * 20. Homepage Layout
+ * ----------------------------------------------------------------------- */
+
+.wiki-homepage {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--wiki-space-lg);
+}
+
+.wiki-homepage section {
+  margin-bottom: var(--wiki-space-2xl);
+}
+
+/* Search input */
+.wiki-search-input {
+  width: 100%;
+  padding: var(--wiki-space-md) var(--wiki-space-lg);
+  font-size: 1rem;
+  font-family: var(--wiki-font-body);
+  color: var(--wiki-text);
+  background-color: var(--wiki-bg-sunken);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  outline: none;
+  transition: border-color var(--wiki-transition), box-shadow var(--wiki-transition);
+  min-height: var(--wiki-touch-min);
+}
+
+.wiki-search-input:focus {
+  border-color: var(--wiki-accent);
+  box-shadow: 0 0 0 3px var(--wiki-accent-soft);
+}
+
+.wiki-search-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Featured section spacing */
+.wiki-featured-section .wiki-card--featured {
+  padding: var(--wiki-space-xl);
+}
+
+.wiki-featured__tags {
+  margin-top: var(--wiki-space-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wiki-space-xs);
+}
+
+/* Recent section list */
+.wiki-recent-section .wiki-entity-list__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--wiki-space-sm);
+  margin-top: var(--wiki-space-xs);
+}
+
+/* Stats section title alignment */
+.wiki-stats-section .wiki-stats {
+  margin-top: var(--wiki-space-lg);
+}
+
+/* Responsive homepage */
+@media (max-width: 768px) {
+  .wiki-homepage {
+    padding: var(--wiki-space-md);
+  }
+
+  .wiki-hero__title {
+    font-size: 1.75rem;
+  }
+
+  .wiki-hero__subtitle {
+    font-size: 1rem;
+  }
+
+  .wiki-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 21. Wiki Sidebar Navigation
+ *
+ * Hierarchical sidebar with collapsible sections. Only the active section
+ * expands to show child pages, keeping DOM small for 1000+ page scalability.
+ * ----------------------------------------------------------------------- */
+
+.wiki-sidebar {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: var(--wiki-space-lg) var(--wiki-space-md);
+  border-right: 1px solid var(--wiki-border);
+  background-color: var(--wiki-bg);
+  width: 260px;
+  min-width: 260px;
+  flex-shrink: 0;
+}
+
+.wiki-sidebar__nav {
+  font-size: 0.875rem;
+}
+
+.wiki-sidebar__sections {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.wiki-sidebar__section {
+  margin-bottom: var(--wiki-space-xs);
+}
+
+.wiki-sidebar__section-link {
+  display: flex;
+  align-items: center;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  color: var(--wiki-text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: var(--wiki-radius-sm);
+  min-height: var(--wiki-touch-min);
+  transition: color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.wiki-sidebar__section-link:hover {
+  color: var(--wiki-text);
+  background-color: var(--wiki-accent-soft);
+  text-decoration: none;
+}
+
+.wiki-sidebar__section-link--active {
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+}
+
+.wiki-sidebar__pages {
+  list-style: none;
+  padding: 0;
+  margin: var(--wiki-space-xs) 0 var(--wiki-space-sm) var(--wiki-space-md);
+  border-left: 1px solid var(--wiki-border);
+}
+
+.wiki-sidebar__page {
+  margin: 0;
+}
+
+.wiki-sidebar__page-link {
+  display: flex;
+  align-items: center;
+  padding: var(--wiki-space-xs) var(--wiki-space-md);
+  color: var(--wiki-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  border-radius: var(--wiki-radius-sm);
+  min-height: var(--wiki-touch-min);
+  transition: color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.wiki-sidebar__page-link:hover {
+  color: var(--wiki-text);
+  background-color: var(--wiki-accent-soft);
+  text-decoration: none;
+}
+
+.wiki-sidebar__page-link--current {
+  color: var(--wiki-accent);
+  font-weight: 600;
+  background-color: var(--wiki-accent-soft);
+}
+
+.wiki-sidebar__subpages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 var(--wiki-space-md);
+  border-left: 1px solid var(--wiki-border);
+}
+
+/* Content wrapper layout with sidebar */
+.content-wrapper {
+  display: flex;
+  min-height: calc(100vh - 120px);
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--wiki-space-lg) var(--wiki-space-xl);
+  max-width: 900px;
+}
+
+/* Responsive: hide sidebar on mobile */
+@media (max-width: 768px) {
+  .wiki-sidebar {
+    display: none;
+  }
+
+  .main-content {
+    padding: var(--wiki-space-md);
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 22. Breadcrumb List Style (updated partial uses <ol>)
+ * ----------------------------------------------------------------------- */
+
+.wiki-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+}
+
+.wiki-breadcrumb__list .wiki-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.wiki-breadcrumb__link {
+  color: var(--wiki-text-secondary);
+  min-height: var(--wiki-touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: var(--wiki-space-xs) var(--wiki-space-sm);
+  border-radius: var(--wiki-radius-sm);
+  transition: color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.wiki-breadcrumb__link:hover {
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+  text-decoration: none;
+}
+
+.wiki-breadcrumb__item--current {
+  color: var(--wiki-text);
+  font-weight: 600;
+}
+
+.wiki-breadcrumb__item--current span[aria-current="page"] {
+  padding: var(--wiki-space-xs) var(--wiki-space-sm);
+}
