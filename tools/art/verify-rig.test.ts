@@ -13,25 +13,34 @@
  * So the introspection is a thin adapter and everything with an opinion is here,
  * fed fabricated rigs — plus the adapter's two pure helpers (`riveInputKinds`,
  * `riveClipTicks`), which are the parts of it that can be wrong without wasm in
- * the room. The contract is the real one out of `assets/manifest.json` on
- * purpose: a test against a fixture contract would keep passing after somebody
- * renamed a clip.
+ * the room, and the two manifest-driven checks (`checkEffectSync`,
+ * `checkTurnBudget`), judged through a `Report` whose writer is injected so the
+ * run stays quiet. The contract and effects are the real ones out of
+ * `assets/manifest.json` on purpose: a test against a fixture contract would
+ * keep passing after somebody renamed a clip or repointed a sheet.
  */
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  checkEffectSync,
+  checkTurnBudget,
   compareRigToContract,
+  Report,
   riveClipTicks,
   riveInputKinds,
+  type EffectEntry,
+  type RigContract,
   type RigIntrospection,
 } from "./verify-rig.ts";
 
 const MANIFEST = fileURLToPath(new URL("../../assets/manifest.json", import.meta.url));
-const contract = (JSON.parse(readFileSync(MANIFEST, "utf8")) as {
-  rigContract: Parameters<typeof compareRigToContract>[1];
-}).rigContract;
+const manifest = JSON.parse(readFileSync(MANIFEST, "utf8")) as {
+  rigContract: RigContract;
+  effects: EffectEntry[];
+};
+const contract = manifest.rigContract;
 
 /** A rig that satisfies the contract for `kind`, built from the contract itself. */
 // The return type narrows `inputs` to non-null: a good rig by definition has a
@@ -43,6 +52,12 @@ function goodRig(
     const spec = contract.clips[name];
     return { name, ticks: spec?.ticks ?? 0, loop: spec?.loop === true };
   });
+  // A set clip that names a hand-off loop (`down` → `down_loop`) requires it
+  // delivered too — a second Rive animation, looping, at `loopTicks` long.
+  for (const name of contract.sets[kind] ?? []) {
+    const spec = contract.clips[name];
+    if (spec?.loopClip) clips.push({ name: spec.loopClip, ticks: spec.loopTicks ?? 0, loop: true });
+  }
   const inputs = [
     ...contract.inputs.triggers.map((name) => ({ name, kind: "trigger" as const })),
     ...contract.inputs.booleans.map((name) => ({ name, kind: "boolean" as const })),
@@ -61,12 +76,13 @@ describe("a rig that matches the contract", () => {
     expect(compareRigToContract(goodRig("hero"), contract, "hero")).toEqual([]);
   });
 
-  it("passes clean for an enemy, with five clips and not twelve", () => {
-    // §9.5.2: an enemy gets idle, walk, attack, hurt, down. If this ever needs
-    // the hero set, the contract changes first — the excluded six each have a
-    // reason there and every reason is an engine fact.
+  it("passes clean for an enemy, with six animations and not the hero's set", () => {
+    // §9.5.2: an enemy gets idle, walk, attack, hurt, down — five set clips,
+    // and `down`'s hand-off loop rides along as the sixth animation. If this
+    // ever needs the hero set, the contract changes first — the excluded six
+    // each have a reason there and every reason is an engine fact.
     const rig = goodRig("enemy");
-    expect(rig.clips).toHaveLength(5);
+    expect(rig.clips).toHaveLength(6);
     expect(compareRigToContract(rig, contract, "enemy")).toEqual([]);
   });
 
@@ -204,6 +220,65 @@ describe("clips", () => {
   });
 });
 
+describe("the down/down_loop hand-off", () => {
+  /*
+   * `down` is a one-shot into a named loop — two Rive animations for one
+   * contract row. The name comes from `down.loopClip`, so these tests read it
+   * from the manifest rather than repeating the string: rename the loop there
+   * and they follow.
+   */
+  const loopName = contract.clips.down?.loopClip ?? "";
+
+  it("names the loop in the contract, so the pairing is checkable at all", () => {
+    expect(loopName).toBe("down_loop");
+    expect(contract.clips.down?.loopTicks).toBe(24);
+  });
+
+  it("fails a rig that delivers down without its loop", () => {
+    // The exact false comfort §9.3 forbids: the figure falls, then freezes —
+    // and a frozen pose reads as a corpse.
+    const rig = goodRig("hero");
+    rig.clips = rig.clips.filter((c) => c.name !== loopName);
+    const [problem] = compareRigToContract(rig, contract, "hero");
+    expect(problem?.label).toBe(`clip "${loopName}"`);
+    expect(problem?.expected).toContain("24 ticks");
+  });
+
+  it("does not report the loop as unknown when only its host is missing", () => {
+    // The loop is contract, not surplus: a rig missing `down` is missing
+    // `down`, and shipping `down_loop` was right, not extra.
+    const rig = goodRig("hero");
+    rig.clips = rig.clips.filter((c) => c.name !== "down");
+    expect(labels(rig)).toEqual(['clip "down"']);
+  });
+
+  it("checks the loop's length against loopTicks", () => {
+    const rig = goodRig("hero");
+    const loop = rig.clips.find((c) => c.name === loopName);
+    if (!loop) throw new Error("bad fixture");
+    loop.ticks = 12;
+    const [problem] = compareRigToContract(rig, contract, "hero");
+    expect(problem?.label).toBe(`clip "${loopName}"  length`);
+    expect(problem?.expected).toContain("24 ticks");
+  });
+
+  it("requires the loop to actually loop", () => {
+    // A breathing loop that plays once is a figure that stops breathing —
+    // §9.3's frozen pose, arriving one loop later.
+    const rig = goodRig("hero");
+    const loop = rig.clips.find((c) => c.name === loopName);
+    if (!loop) throw new Error("bad fixture");
+    loop.loop = false;
+    expect(labels(rig)).toEqual([`clip "${loopName}"  loop`]);
+  });
+
+  it("requires the loop on enemy rigs too, since their set has down", () => {
+    const rig = goodRig("enemy");
+    rig.clips = rig.clips.filter((c) => c.name !== loopName);
+    expect(labels(rig, "enemy")).toEqual([`clip "${loopName}"`]);
+  });
+});
+
 describe("state machine inputs", () => {
   it("reports one that is missing", () => {
     const rig = goodRig("hero");
@@ -280,11 +355,178 @@ describe("an empty rig", () => {
     const problems = compareRigToContract({ clips: [], inputs: [] }, contract, "hero");
     const required = contract.sets.hero ?? [];
     const deferred = required.filter((c) => contract.clips[c]?.deferred).length;
+    // A non-deferred set clip that names a hand-off loop is two missing
+    // animations, not one. (A deferred host's loop may be absent with it.)
+    const companions = required.filter(
+      (c) => contract.clips[c]?.loopClip && !contract.clips[c]?.deferred,
+    ).length;
     const inputs =
       contract.inputs.triggers.length +
       contract.inputs.booleans.length +
       contract.inputs.numbers.length;
-    expect(problems).toHaveLength(required.length - deferred + inputs);
+    expect(problems).toHaveLength(required.length - deferred + companions + inputs);
+  });
+});
+
+/*
+ * The two data-driven checks below are judged through a quiet Report — the
+ * writer is injected, so the test run stays legible — and, like everything
+ * else in this file, against fixtures built *from* the real manifest, so drift
+ * between the manifest and these expectations breaks tests rather than hiding.
+ */
+
+/** Run a check quietly, keeping the printed lines for the assertions that need them. */
+function quietly(
+  run: (rep: Report) => void,
+): { failures: string[]; warnings: string[]; passed: number; lines: string[] } {
+  const lines: string[] = [];
+  const rep = new Report((line) => lines.push(line));
+  run(rep);
+  return { failures: rep.failures, warnings: rep.warnings, passed: rep.passed, lines };
+}
+
+describe("checkEffectSync, derived from the manifest's startsOn", () => {
+  it("passes the real manifest: every declared pairing hits a real event", () => {
+    const { failures } = quietly((rep) => checkEffectSync(rep, contract, manifest.effects));
+    expect(failures).toEqual([]);
+  });
+
+  it("fails an effect whose startsOn names a clip the contract lacks", () => {
+    const effects = structuredClone(manifest.effects);
+    const strike = effects.find((e) => e.id === "impact_strike");
+    if (!strike) throw new Error("bad fixture");
+    strike.startsOn = { clip: "atack", event: "impact" };
+    const { failures } = quietly((rep) => checkEffectSync(rep, contract, effects));
+    expect(failures).toEqual(["effect sync  impact_strike"]);
+  });
+
+  it("fails an effect whose startsOn names an event its clip does not expose", () => {
+    const effects = structuredClone(manifest.effects);
+    const bloom = effects.find((e) => e.id === "heal_bloom");
+    if (!bloom) throw new Error("bad fixture");
+    bloom.startsOn = { clip: "cast", event: "bloom" };
+    const { failures } = quietly((rep) => checkEffectSync(rep, contract, effects));
+    expect(failures).toEqual(["effect sync  heal_bloom"]);
+  });
+
+  it("fails an effect that declares no startsOn at all", () => {
+    // `startsOn: null` is an answer (ambient); no field is dodging the
+    // question, which is the pre-manifest silence this check replaced.
+    const effects = structuredClone(manifest.effects);
+    const star = effects.find((e) => e.id === "burst_star");
+    if (!star) throw new Error("bad fixture");
+    delete star.startsOn;
+    const { failures } = quietly((rep) => checkEffectSync(rep, contract, effects));
+    expect(failures).toEqual(["effect sync  burst_star"]);
+  });
+
+  it("fails a sheet on a different clock from the contract's tick", () => {
+    const effects = structuredClone(manifest.effects);
+    const strike = effects.find((e) => e.id === "impact_strike");
+    if (!strike) throw new Error("bad fixture");
+    strike.fps = 24;
+    const { failures } = quietly((rep) => checkEffectSync(rep, contract, effects));
+    expect(failures).toEqual(["effect sync  impact_strike"]);
+  });
+
+  it("skips an ambient loop (startsOn: null) instead of failing or passing it", () => {
+    const aura = manifest.effects.filter((e) => e.startsOn === null);
+    expect(aura.length).toBeGreaterThan(0);
+    const { failures, passed, lines } = quietly((rep) => checkEffectSync(rep, contract, aura));
+    expect(failures).toEqual([]);
+    // Nothing checked is not a pass — but the skip is said out loud.
+    expect(passed).toBe(0);
+    expect(lines.join("\n")).toContain("ambient");
+  });
+
+  it("warns, and does not fail, on an event no effect consumes", () => {
+    // leap's `dust` — dust_scuff is specified (§9.7 item 1) but not
+    // commissioned, and undelivered work is tolerated, not silently dropped.
+    const { failures, warnings } = quietly((rep) =>
+      checkEffectSync(rep, contract, manifest.effects),
+    );
+    expect(failures).toEqual([]);
+    expect(warnings.some((w) => w.includes("leap.dust"))).toBe(true);
+  });
+
+  it("does not warn about an event a concurrent clip consumes", () => {
+    // lift's `contact` is consumed twice over (revive_lift and revive); it
+    // must not be reported idle even if the sheet went away.
+    const effects = manifest.effects.filter((e) => e.id !== "revive_lift");
+    const { warnings } = quietly((rep) => checkEffectSync(rep, contract, effects));
+    expect(warnings.some((w) => w.includes("lift.contact"))).toBe(false);
+  });
+});
+
+describe("checkTurnBudget, including concurrent overhangs", () => {
+  it("passes the real contract at exactly 45/45 — zero headroom, by design", () => {
+    // §9.2: the ceiling is the cast turn, and the budget is spent at 100%.
+    // If this number moves in either direction, the contract changed and the
+    // brief's arithmetic has to be redone before anything ships.
+    const { failures, lines } = quietly((rep) =>
+      checkTurnBudget(rep, contract, manifest.effects),
+    );
+    expect(failures).toEqual([]);
+    expect(lines.join("\n")).toContain("45/45");
+  });
+
+  it("charges a concurrent clip's overhang to the turn of the clip that hosts it", () => {
+    /*
+     * The synthetic retiming the brief warns about: stretch `revive` and the
+     * Help Up turn must grow, even though `revive` is concurrent and the old
+     * check excluded it unconditionally. 40 ticks from the lift's contact at
+     * 6 ends at 45; the lift ends at 10; move 12 + lift 10 + overhang 35 = 57.
+     */
+    const ctr = structuredClone(contract);
+    if (!ctr.clips.revive || !ctr.clips.lift) throw new Error("bad fixture");
+    ctr.clips.revive.ticks = 40;
+    const { failures, lines } = quietly((rep) => checkTurnBudget(rep, ctr, manifest.effects));
+    expect(failures).toEqual(["turn budget"]);
+    const out = lines.join("\n");
+    expect(out).toContain("57 ticks");
+    expect(out).toContain("revive overhang");
+  });
+
+  it("is indifferent to an overhang the host clip already covers", () => {
+    // `hurt` starts at the attack's impact (tick 3) and ends at 7, inside the
+    // attack's 8 — concurrency that really is free stays free.
+    const ctr = structuredClone(contract);
+    if (!ctr.clips.hurt) throw new Error("bad fixture");
+    ctr.clips.hurt.ticks = 6; // ends exactly with the attack
+    const { failures } = quietly((rep) => checkTurnBudget(rep, ctr, manifest.effects));
+    expect(failures).toEqual([]);
+  });
+
+  it("fails a concurrent clip that declares no startsOn", () => {
+    // Without a start tick the overhang is unmeasurable, and the budget would
+    // be back to taking `concurrent` on faith — the bug this field closed.
+    const ctr = structuredClone(contract);
+    if (!ctr.clips.revive) throw new Error("bad fixture");
+    delete ctr.clips.revive.startsOn;
+    const { failures } = quietly((rep) => checkTurnBudget(rep, ctr, manifest.effects));
+    expect(failures).toEqual(['turn budget  concurrent clip "revive"']);
+  });
+
+  it("fails a concurrent clip whose startsOn names an event that is not there", () => {
+    const ctr = structuredClone(contract);
+    if (!ctr.clips.revive) throw new Error("bad fixture");
+    ctr.clips.revive.startsOn = { clip: "lift", event: "grab" };
+    const { failures } = quietly((rep) => checkTurnBudget(rep, ctr, manifest.effects));
+    expect(failures).toEqual(['turn budget  concurrent clip "revive"']);
+  });
+
+  it("reads effect tails from the manifest's startsOn, not from a table", () => {
+    // Point burst_star at the attack instead and the worst turn moves with the
+    // data: attack picks up a 12-frame tail from its tick-3 impact (ticks 3–14,
+    // 6 past its 8), so the worst turn becomes 18 + 12 + 8 + 6 = 44 — the
+    // attack turn, because the cast turn lost its sheets and fell to 40.
+    const effects = structuredClone(manifest.effects).filter((e) => e.id !== "heal_bloom");
+    const star = effects.find((e) => e.id === "burst_star");
+    if (!star) throw new Error("bad fixture");
+    star.startsOn = { clip: "attack", event: "impact" };
+    const { failures, lines } = quietly((rep) => checkTurnBudget(rep, contract, effects));
+    expect(failures).toEqual([]);
+    expect(lines.join("\n")).toContain("attack 8 + 6 tick(s) of effect tail");
   });
 });
 
