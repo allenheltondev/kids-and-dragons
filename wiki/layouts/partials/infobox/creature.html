@@ -1,0 +1,52 @@
+<aside class="wiki-infobox wiki-infobox--creature" role="complementary" aria-label="Creature information">
+  {{ with .Params.assets.primary }}
+  <div class="wiki-infobox__portrait">
+    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+  </div>
+  {{ end }}
+
+  <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+
+  <dl class="wiki-infobox__fields">
+    {{ with .Params.classification }}
+    <div class="wiki-infobox__field">
+      <dt>Classification</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.habitat }}
+    <div class="wiki-infobox__field">
+      <dt>Habitat</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.temperament }}
+    <div class="wiki-infobox__field">
+      <dt>Temperament</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.difficulty }}
+    <div class="wiki-infobox__field">
+      <dt>Difficulty</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.drops }}
+    <div class="wiki-infobox__field">
+      <dt>Drops</dt>
+      <dd>
+        <ul class="wiki-infobox__list">
+          {{ range . }}
+          <li>{{ . }}</li>
+          {{ end }}
+        </ul>
+      </dd>
+    </div>
+    {{ end }}
+  </dl>
+</aside>

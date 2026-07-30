@@ -1,0 +1,51 @@
+items:
+  - id: "item.forest_moss"
+    title: "Forest Moss"
+    status: "reviewed"
+    featured: false
+    tags: ["crafting", "nature", "common"]
+    category: "Crafting Material"
+    rarity: "Common"
+    acquisition: "Gathered from ancient trees in Enchanted Woods"
+    short_description: "Soft, luminescent moss that retains magical energy"
+    visual_identity: "Deep green moss with faint golden speckles"
+    common_story_uses: "Crafting healing items, trade goods"
+    canon_constraints: "Only grows on trees older than 100 years"
+    standard_behavior: "Glows faintly when exposed to moonlight"
+    relationships:
+      found_in: ["biome.enchanted_woods"]
+      dropped_by: ["creature.bigfoot"]
+
+  - id: "item.ancient_bark"
+    title: "Ancient Bark"
+    status: "reviewed"
+    featured: false
+    tags: ["crafting", "nature", "uncommon"]
+    category: "Crafting Material"
+    rarity: "Uncommon"
+    acquisition: "Shed naturally by elder trees or dropped by Bigfoot"
+    short_description: "Hardened bark imbued with centuries of magical growth"
+    visual_identity: "Dark brown bark with swirling silver veins"
+    common_story_uses: "Crafting armor, building materials"
+    canon_constraints: "Cannot be harvested from living trees without consequences"
+    standard_behavior: "Becomes more rigid and magical with age"
+    relationships:
+      found_in: ["biome.enchanted_woods"]
+      dropped_by: ["creature.bigfoot", "creature.bone_crawler"]
+
+  - id: "item.shimmer_scale"
+    title: "Shimmer Scale"
+    status: "draft"
+    featured: false
+    tags: ["crafting", "water", "rare"]
+    category: "Magical Component"
+    rarity: "Rare"
+    acquisition: "Shed by Silver Otters during full moons"
+    short_description: "An iridescent scale that shimmers with inner light"
+    visual_identity: "Translucent scale refracting light into rainbow patterns"
+    common_story_uses: "Enchanting, potion ingredients, quest items"
+    canon_constraints: "Loses magic if removed from water for too long"
+    standard_behavior: "Pulses gently with a soft blue glow when submerged"
+    relationships:
+      found_in: ["biome.crystal_caverns"]
+      dropped_by: ["creature.silver_otter"]

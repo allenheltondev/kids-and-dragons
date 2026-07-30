@@ -1,0 +1,34 @@
+biomes:
+  - id: "biome.enchanted_woods"
+    title: "Enchanted Woods"
+    status: "reviewed"
+    featured: true
+    tags: ["forest", "magical", "peaceful"]
+    climate: "Temperate, perpetual twilight glow"
+    danger_level: "Low"
+    key_resources: ["item.forest_moss", "item.ancient_bark"]
+    short_description: "An ancient forest where magic flows through every root and branch"
+    visual_identity: "Towering trees with bioluminescent bark, floating pollen motes"
+    common_story_uses: "Starting area, nature quests, peaceful exploration"
+    canon_constraints: "Always magically lit. Seasons do not change here."
+    standard_behavior: "Trees shift slowly, paths rearrange for lost travelers"
+    relationships:
+      creatures: ["creature.bigfoot", "creature.silver_otter"]
+      items: ["item.forest_moss", "item.ancient_bark"]
+
+  - id: "biome.crystal_caverns"
+    title: "Crystal Caverns"
+    status: "draft"
+    featured: false
+    tags: ["underground", "dangerous", "crystal"]
+    climate: "Cold, no natural light"
+    danger_level: "High"
+    key_resources: ["item.shimmer_scale", "item.bone_shard"]
+    short_description: "A vast underground network of crystal-lined tunnels"
+    visual_identity: "Massive crystal formations refracting dim magical light"
+    common_story_uses: "Mid-game dungeon, mining quests, boss encounters"
+    canon_constraints: "No sunlight ever reaches here. Crystals amplify magic."
+    standard_behavior: "Crystal formations grow and shift over decades"
+    relationships:
+      creatures: ["creature.bone_crawler"]
+      items: ["item.shimmer_scale", "item.bone_shard"]

@@ -956,7 +956,15 @@ export function riveInputKinds(smi: {
  *
  * The 2.39.1 runtime signals a set work area with the `enableWorkArea` flag;
  * the published `.d.ts` omits that flag, so where it is absent this falls back
- * to the other signal the API has, `workEnd > 0` (an unset work area reads 0).
+ * to the other signal the API has, `workEnd`.
+ *
+ * That fallback used to read "an unset work area reads 0", and the first real
+ * `.riv` to reach this function disproved it: 2.39.1 reports **0xFFFFFFFF** for
+ * both `workStart` and `workEnd` when no work area is set. The flag is present
+ * on this build, so the fallback never ran and nothing noticed — but on a build
+ * without it, `workEnd > 0` would have been true for every animation and every
+ * clip would have measured as roughly 0xFFFFFFFF frames long. The sentinel is
+ * now excluded explicitly.
  *
  * Pure and exported for the unit tests. `tickFps` is a parameter rather than a
  * read off the contract because `introspectRiv` deliberately knows nothing
@@ -973,8 +981,12 @@ export function riveClipTicks(
   },
   tickFps: number,
 ): number {
+  // 2.39.1's "no work area" sentinel, on both ends. Not 0 — see the note above.
+  const UNSET_FRAME = 0xffffffff;
   const workAreaSet =
-    anim.enableWorkArea === undefined ? anim.workEnd > 0 : anim.enableWorkArea === true;
+    anim.enableWorkArea === undefined
+      ? anim.workEnd > 0 && anim.workEnd !== UNSET_FRAME
+      : anim.enableWorkArea === true;
   const frames = workAreaSet ? anim.workEnd - anim.workStart : anim.duration;
   return anim.fps > 0 ? Math.round((frames / anim.fps) * tickFps) : 0;
 }
@@ -999,7 +1011,7 @@ interface RiveAnimTiming {
  * printed warning ("Image mesh will not be drawn") — which is about rendering
  * image meshes, and this function renders nothing. The claim survived because
  * the import's catch below used to blame *every* failure on the package not
- * being installed, so the real error was never seen. Two small things are
+ * being installed, so the real error was never seen. Three small things are
  * genuinely needed headlessly:
  *
  *   1. A `document` stub, installed **before** the module is imported — the
@@ -1010,6 +1022,18 @@ interface RiveAnimTiming {
  *   2. The wasm handed over as bytes (`wasmBinary`) rather than as a path via
  *      `locateFile` — the path gets `fetch()`ed, and Node's fetch does not
  *      read local files.
+ *   3. An asset loader that **claims** every embedded asset, so the runtime
+ *      never runs its own decode path. This is the one the first real delivery
+ *      found, and it is the one that mattered: a character rig embeds its part
+ *      PNGs, the runtime decodes those with `new Image()`, and bare Node has no
+ *      such global — so every rig this pipeline will ever produce came back as
+ *      `introspection failed: Image is not defined` while a shape-only `.riv`
+ *      read perfectly. Stubbing `Image` does not fix it; the stub never fires a
+ *      load event and `load()` waits forever. Claiming the asset is the fix,
+ *      and it costs nothing here: this function reads clip and input *metadata*
+ *      and renders nothing, so a decoded bitmap would have been thrown away.
+ *      `enableRiveAssetCDN` goes off with it — a gate that reaches the network
+ *      to grade a local file is a gate that fails on a train.
  *
  * Everything from `runtime.load` onward is wrapped per call: a corrupt-but-
  * parseable `.riv` must come back as a reason string for `checkRigFiles` to
@@ -1079,7 +1103,13 @@ export async function introspectRiv(
   };
 
   try {
-    const file = track(await runtime.load(bytes));
+    // (3) above. `loadContents` returning true means "handled, do not decode".
+    // The asset stays undecoded and unrenderable, which is exactly right for a
+    // metadata read — and it is why a rig full of part PNGs is now readable.
+    const assetLoader = track(
+      new runtime.CustomFileAssetLoader({ loadContents: () => true }),
+    );
+    const file = track(await runtime.load(bytes, assetLoader, false));
     if (!file) return "not a readable Rive file";
 
     const artboard = track(file.defaultArtboard());

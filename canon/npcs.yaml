@@ -1,0 +1,345 @@
+schema_version: "2.0"
+document_type: red_sky_supporting_people_canon
+title: "The Realm of Red Sky Supporting Peoples"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for every sapient non-playable people and
+  cultural order in the Realm of Red Sky. Use this file when planning NPC
+  encounters, dialogue, regional population, cultural details, artwork, or any
+  game content involving supporting peoples.
+
+agent_instructions:
+  - Do not portray an entire sapient people as inherently good, evil, hostile, foolish, or untrustworthy.
+  - For sapient peoples, standard_behavior describes common cultural practices, not mandatory personality traits.
+  - A homeland identifies cultural origin and population concentration, not an absolute border. Individuals may live, work, study, or travel elsewhere.
+  - Species does not determine morality.
+  - The Exchange has no native or dominant people.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+  - Cultural orders are learned roles, not species or moral alignments.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions and creature canon."
+    intentionally_undefined: "A protected mystery or open design slot."
+  classification:
+    supporting_people: "Sapient people used primarily for NPCs and world population."
+    cultural_order: "A learned role or tradition that can include members of multiple peoples."
+  sapience:
+    sapient: "Person-level intelligence, language, culture, and moral agency."
+    semi_sapient: "Problem solving and communication beyond ordinary wildlife without a full civilization."
+  scale:
+    tiny: "Fits in cupped hands."
+    small: "Knee height on a person."
+    small_to_medium: "Between knee and waist height."
+    medium: "Person-sized."
+    large: "Horse-to-wagon sized."
+    very_large: "Fills a clearing; too big for a single combat tile."
+    variable: "Size depends on the individual or manifestation."
+
+people_ids:
+  - centaur
+  - faun
+  - harvest_sprite
+  - frogfolk
+  - boggart
+  - yeti
+  - merfolk
+  - selkie
+  - stone_troll
+  - witch_order
+
+npcs:
+  - id: npc.centaur
+    asset_id: centaur
+    canonical_creature_id: centaur
+    title: "Centaur"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, plains, caravan, guide]
+    scale: large
+    short_description: >-
+      Traveling plains people who guide caravans and preserve the realm's oldest
+      overland routes.
+    visual_identity: >-
+      Humanoid upper body and equine lower body. Travel gear, route maps,
+      messenger packs, and caravan colors.
+    common_story_uses: >-
+      Guide, courier, witness to trouble along the roads.
+    canon_constraints: >-
+      A homeland identifies cultural origin, not an absolute border. Individuals
+      may live elsewhere.
+    standard_behavior: >-
+      Guides travelers, carries news, maintains camps and road markers, redirects
+      caravans when routes change.
+    relationships:
+      primary_locations: [plains]
+      secondary_locations: [eastern_plains, sunward_fields, the_exchange, stone_crossing]
+      creatures: []
+      items: []
+
+  - id: npc.faun
+    asset_id: faun
+    canonical_creature_id: faun
+    title: "Faun"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, fields, farming, music]
+    scale: medium
+    short_description: >-
+      Hooved farming people associated with orchards, music, communal work, and
+      seasonal celebrations.
+    visual_identity: >-
+      Humanoid form with goat-like legs, ears, and variable horns. Practical farm
+      clothing, tools, instruments, and sun motifs.
+    common_story_uses: >-
+      Farmer, festival organizer, neighbor facing a practical local problem.
+    canon_constraints: >-
+      Species does not determine morality.
+    standard_behavior: >-
+      Plants, harvests, repairs irrigation, organizes shared meals, uses music to
+      coordinate work.
+    relationships:
+      primary_locations: [sunward_fields]
+      secondary_locations: [plains, the_exchange, enchanted_woods]
+      creatures: []
+      items: []
+
+  - id: npc.harvest_sprite
+    asset_id: harvest_sprite
+    canonical_creature_id: harvest_sprite
+    title: "Harvest Sprite"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: semi_sapient
+    featured: false
+    tags: [supporting-people, fields, tiny, semi-sapient]
+    scale: tiny
+    short_description: >-
+      Tiny field spirits who tend overlooked plants and reward careful stewardship.
+    visual_identity: >-
+      Tiny luminous or plant-like figures. Features and colors change with crop
+      and season.
+    common_story_uses: >-
+      Environmental clue, tiny helper, indicator of a field's health.
+    canon_constraints: >-
+      Semi-sapient, not fully sapient. Hides from careless workers.
+    standard_behavior: >-
+      Tends unharvested patches, recovers dropped seeds, assists communities that
+      leave food for small creatures.
+    relationships:
+      primary_locations: [sunward_fields]
+      secondary_locations: [enchanted_woods, plains]
+      creatures: []
+      items: []
+
+  - id: npc.frogfolk
+    asset_id: frogfolk
+    canonical_creature_id: frogfolk
+    title: "Frogfolk"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, marsh, amphibious, navigator]
+    scale: small_to_medium
+    short_description: >-
+      Amphibious marsh people who maintain safe channels, reed settlements, and
+      mist markers.
+    visual_identity: >-
+      Amphibious humanoid form with broad eyes and varied frog-like colors.
+      Reed-woven clothing, pole boats, and mist lanterns.
+    common_story_uses: >-
+      Marsh guide, boat keeper, first witness to a changed waterway.
+    canon_constraints: >-
+      Closes routes when the whispers grow dangerous.
+    standard_behavior: >-
+      Marks safe channels, monitors water levels, collects useful marsh plants,
+      guides respectful travelers.
+    relationships:
+      primary_locations: [whispering_marsh]
+      secondary_locations: [the_exchange]
+      creatures: []
+      items: []
+
+  - id: npc.boggart
+    asset_id: boggart
+    canonical_creature_id: boggart
+    title: "Boggart"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, marsh, collector, secretive]
+    scale: small
+    short_description: >-
+      Small marsh-dwelling people who collect lost objects, secrets, and unusual
+      sounds.
+    visual_identity: >-
+      Small, wiry silhouettes with marsh-colored skin, fur, or plant-like
+      coverings. Collections of buttons, keys, shells, bells.
+    common_story_uses: >-
+      Unreliable-looking but truthful witness, keeper of a missing object,
+      information trader.
+    canon_constraints: >-
+      Boggarts may be secretive or irritating, but they are not inherently
+      malicious.
+    standard_behavior: >-
+      Collects things the marsh has swallowed, trades information indirectly,
+      tests whether strangers pay attention.
+    relationships:
+      primary_locations: [whispering_marsh]
+      secondary_locations: [enchanted_woods, the_exchange]
+      creatures: []
+      items: []
+
+  - id: npc.yeti
+    asset_id: yeti
+    canonical_creature_id: yeti
+    title: "Yeti"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, glacier, memory-keeper, patient]
+    scale: large
+    short_description: >-
+      Patient ice-dwelling people who preserve and interpret memories trapped in
+      the glacier.
+    visual_identity: >-
+      Large fur-covered form adapted to snow and ice. Layered cold-weather wraps,
+      memory tokens, ice tools, and carved walking staffs.
+    common_story_uses: >-
+      Keeper of old knowledge, glacier guide, interpreter of an incomplete memory.
+    canon_constraints: >-
+      Deliberates carefully before acting.
+    standard_behavior: >-
+      Inspects the glacier for exposed memories, guides visitors away from
+      unstable ice, preserves old accounts.
+    relationships:
+      primary_locations: [glacier_of_origins]
+      secondary_locations: [frostfang_peaks]
+      creatures: []
+      items: []
+
+  - id: npc.merfolk
+    asset_id: merfolk
+    canonical_creature_id: merfolk
+    title: "Merfolk"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, ocean, reef, alliance]
+    scale: medium
+    short_description: >-
+      Aquatic reef people who maintain Mermaid Cove and uphold an ancient
+      alliance with the land.
+    visual_identity: >-
+      Aquatic humanoid form with fish-like tail and broad regional variation.
+      Coral, shell, woven kelp motifs.
+    common_story_uses: >-
+      Reef guardian, keeper of an old treaty, messenger warning of a changed
+      current.
+    canon_constraints: >-
+      Limited land mobility unless aided by established magic or equipment.
+    standard_behavior: >-
+      Patrols reefs, rescues swimmers, repairs coral, participates in songs that
+      help prevent the whirlpool from widening.
+    relationships:
+      primary_locations: [mermaid_cove]
+      secondary_locations: [the_exchange]
+      creatures: []
+      items: []
+
+  - id: npc.selkie
+    asset_id: selkie
+    canonical_creature_id: selkie
+    title: "Selkie"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting-people, coastal, shapeshifter, courier]
+    scale: medium
+    short_description: >-
+      Seal-shifting coastal people who move easily between sea communities and
+      the land.
+    visual_identity: >-
+      Seal form and land-going form connected by a personally significant seal
+      coat. Travel-worn coastal clothing.
+    common_story_uses: >-
+      Sea-land courier, guide along the coast, witness connecting two communities.
+    canon_constraints: >-
+      A selkie's coat is part of their autonomy and must not be treated casually.
+    standard_behavior: >-
+      Carries messages between sea and land, observes coastal changes, assists
+      stranded travelers, carefully guards their coat.
+    relationships:
+      primary_locations: [mermaid_cove]
+      secondary_locations: [the_exchange]
+      creatures: []
+      items: []
+
+  - id: npc.stone_troll
+    asset_id: stone_troll
+    canonical_creature_id: stone_troll
+    title: "Stone Troll"
+    canon_status: confirmed
+    classification: supporting_people
+    sapience: sapient
+    featured: true
+    tags: [supporting-people, river, bridgekeeper, masonry]
+    scale: very_large
+    short_description: >-
+      Massive stone-skinned people known for patient judgment, masonry,
+      bridgekeeping, and gateway stewardship.
+    visual_identity: >-
+      Large humanoid form with stone-like skin, lichen, cracks, and mineral
+      variation. Masonry tools and carved tokens.
+    common_story_uses: >-
+      Bridgekeeper, patient judge, guardian who requires a non-monetary toll.
+    canon_constraints: >-
+      Stone trolls are not default enemies and do not habitually eat travelers.
+    standard_behavior: >-
+      Inspects bridges, repairs stonework, monitors river currents, requests
+      stories or riddles as tolls.
+    relationships:
+      primary_locations: [stone_crossing, skullwater_cave]
+      secondary_locations: [eastern_plains]
+      creatures: []
+      items: []
+
+  - id: npc.witch_order
+    asset_id: witch_order
+    canonical_creature_id: witch_order
+    title: "Witches"
+    canon_status: confirmed
+    classification: cultural_order
+    sapience: sapient
+    featured: false
+    tags: [cultural-order, cross-species, magic, tradition]
+    scale: variable
+    short_description: >-
+      A cross-species magical tradition rather than a separate people.
+    visual_identity: >-
+      No required body type; a witch may belong to any sapient people. Personal
+      tools, ingredients, notebooks, charms.
+    common_story_uses: >-
+      Expert with incomplete knowledge, mentor, rival practitioner, cause or
+      solver of a magical problem.
+    canon_constraints: >-
+      Witch is a learned role, not a species, gender, or moral alignment.
+    standard_behavior: >-
+      Studies specific forms of magic, trades remedies, investigates supernatural
+      disruptions, disagrees about responsible practice.
+    relationships:
+      primary_locations: [whispering_marsh]
+      secondary_locations: [enchanted_woods, the_exchange, sunward_fields]
+      creatures: []
+      items: []

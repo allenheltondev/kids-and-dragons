@@ -1,0 +1,98 @@
+schema_version: "2.0"
+document_type: red_sky_faction_canon
+title: "The Realm of Red Sky Faction Canon"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for organized groups and factions in the
+  Realm of Red Sky. Use this file when planning faction interactions, political
+  storylines, membership, or any game content involving organized groups. Note
+  that per creature canon rules, named individuals, villainous factions, and
+  political governments are not yet canon.
+
+agent_instructions:
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - These faction entries are placeholder designs pending explicit canon approval. They may be used for chapter-scoped content but carry no canon weight outside that scope.
+  - Do not treat faction membership, hierarchy, or named leaders as established canon.
+  - Factions should not be portrayed as uniformly good or evil without individual moral agency.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions."
+    intentionally_undefined: "The faction concept exists as a design placeholder but is not yet canon."
+  faction_type:
+    military_order: "An organized group with martial purpose and hierarchy."
+    secret_society: "A hidden group operating through cells and indirect communication."
+  alignment:
+    lawful_neutral: "Follows a strict code without inherent moral bias."
+    chaotic_neutral: "Prioritizes individual freedom and unconventional methods."
+
+faction_ids:
+  - skywardens
+  - deep_hollow_cult
+
+factions:
+  - id: faction.skywardens
+    asset_id: skywardens
+    title: "The Skywardens"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      Per creature canon rules, named factions and political governments are not
+      yet canon. This entry is a placeholder design for chapter-scoped content.
+    faction_type: military_order
+    alignment: lawful_neutral
+    featured: true
+    tags: [military, order, protectors, highlands]
+    short_description: >-
+      An ancient order of knights sworn to watch the red sky and protect the
+      realm from what lies beyond it.
+    visual_identity: >-
+      Silver and violet armor, crimson cloaks, tower shield emblems.
+    common_story_uses: >-
+      Player faction, quest givers, moral authority, military support.
+    canon_constraints: >-
+      Honorable but rigid. Will sacrifice individuals for the greater good.
+    standard_behavior: >-
+      Patrol the highlands, maintain fortifications, train recruits.
+    relationships:
+      headquarters: [redspire_citadel]
+      territory: [red_sky_foothills]
+      enemies: [deep_hollow_cult]
+      quests: [shattered_sky_rite]
+      campaigns: [dawn_of_the_red_sky]
+      members: []
+
+  - id: faction.deep_hollow_cult
+    asset_id: deep_hollow_cult
+    title: "The Deep Hollow Cult"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      Per creature canon rules, named factions and political governments are not
+      yet canon. This entry is a placeholder design for chapter-scoped content.
+    faction_type: secret_society
+    alignment: chaotic_neutral
+    featured: false
+    tags: [cult, underground, mystical, antagonist]
+    short_description: >-
+      A secretive group of scholars and mystics who believe the Crystal Heart
+      holds the key to rewriting the world's broken laws.
+    visual_identity: >-
+      Dark robes with glowing crystal inlays, faceless masks with a single eye
+      slit.
+    common_story_uses: >-
+      Antagonist faction, knowledge brokers, morally grey opposition.
+    canon_constraints: >-
+      Not purely evil — motivated by a desire to fix the world. Methods are
+      extreme.
+    standard_behavior: >-
+      Operate in cells, communicate through crystal resonance, recruit the
+      desperate.
+    relationships:
+      headquarters: [crystal_font]
+      territory: [skullwater_cave]
+      enemies: [skywardens]
+      quests: [crystal_heart_retrieval]
+      campaigns: [echoes_beneath]
+      items: [crystal_heart]
+      members: []

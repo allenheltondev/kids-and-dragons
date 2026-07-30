@@ -1,0 +1,120 @@
+{{/*
+  Entity Reference Card Partial
+
+  Renders an entity reference card in either inline or block mode.
+  Used by all entity shortcodes (creature, biome, npc, item, location).
+
+  Parameters (passed via dict):
+    .id       — Canon_ID (e.g. "creature.bigfoot")
+    .type     — entity type name (e.g. "creature")
+    .prefix   — content path prefix (e.g. "creatures")
+    .mode     — "inline" (default) or "block"
+    .page     — the parent page context (for warnf)
+*/}}
+
+{{- $id := .id -}}
+{{- $type := .type -}}
+{{- $prefix := .prefix -}}
+{{- $mode := .mode | default "inline" -}}
+{{- $page := .page -}}
+
+{{/* Derive the page path from the Canon_ID: strip the type prefix */}}
+{{- $name := "" -}}
+{{- $parts := split $id "." -}}
+{{- if gt (len $parts) 1 -}}
+  {{- $name = index $parts 1 -}}
+{{- else -}}
+  {{- $name = $id -}}
+{{- end -}}
+
+{{- $pagePath := printf "/%s/%s" $prefix $name -}}
+{{- $entity := site.GetPage $pagePath -}}
+
+{{/* Unresolved Canon_ID — render placeholder */}}
+{{- if not $entity -}}
+  {{- warnf "Shortcode: unresolved Canon_ID %q in %s" $id $page.File.Path -}}
+  <span class="wiki-shortcode-placeholder" role="note" aria-label="Unresolved reference: {{ $id }}">
+    <span class="wiki-shortcode-placeholder__icon" aria-hidden="true">⚠</span>
+    <span class="wiki-shortcode-placeholder__id">{{ $id }}</span>
+  </span>
+{{- else -}}
+
+  {{/* Resolve artwork */}}
+  {{- $hasArtwork := false -}}
+  {{- $artworkPath := "" -}}
+  {{- with $entity.Params.assets -}}
+    {{- with .primary -}}
+      {{- $hasArtwork = true -}}
+      {{- $artworkPath = . -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $title := $entity.Title -}}
+  {{- $link := $entity.RelPermalink -}}
+  {{- $summary := "" -}}
+  {{- with $entity.Params.description -}}
+    {{- $summary = . -}}
+  {{- else -}}
+    {{- with $entity.Params.short_description -}}
+      {{- $summary = . -}}
+    {{- else -}}
+      {{/* Use plain-text content truncated as summary fallback */}}
+      {{- $plain := $entity.Plain -}}
+      {{- if gt (len $plain) 120 -}}
+        {{- $summary = substr $plain 0 120 -}}
+      {{- else -}}
+        {{- $summary = $plain -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{/* Truncate summary to 120 characters */}}
+  {{- if gt (len $summary) 120 -}}
+    {{- $summary = printf "%s…" (substr $summary 0 120) -}}
+  {{- end -}}
+
+  {{- if eq $mode "block" -}}
+    {{/* Block mode: 120×120 thumbnail + name + summary + link */}}
+    <div class="wiki-shortcode-block">
+      {{- if $hasArtwork -}}
+        <img class="wiki-shortcode-block__thumb" src="{{ $artworkPath | relURL }}" alt="{{ $title }}" width="120" height="120" loading="lazy">
+      {{- else -}}
+        <div class="wiki-shortcode-icon-placeholder wiki-shortcode__placeholder--{{ $type }}" style="width:120px;height:120px;" aria-hidden="true">
+          {{- if eq $type "creature" -}}🐉
+          {{- else if eq $type "biome" -}}🌲
+          {{- else if eq $type "npc" -}}👤
+          {{- else if eq $type "item" -}}⚔
+          {{- else if eq $type "location" -}}📍
+          {{- else -}}📄
+          {{- end -}}
+        </div>
+      {{- end -}}
+      <div class="wiki-shortcode-block__content">
+        <div class="wiki-shortcode-block__name">{{ $title }}</div>
+        {{- with $summary -}}
+        <div class="wiki-shortcode-block__summary">{{ . }}</div>
+        {{- end -}}
+        <a href="{{ $link }}" class="wiki-shortcode-block__link">View {{ $type }} →</a>
+      </div>
+    </div>
+  {{- else -}}
+    {{/* Inline mode: 48×48 thumbnail + name link */}}
+    <a href="{{ $link }}" class="wiki-shortcode-inline" title="{{ $title }}">
+      {{- if $hasArtwork -}}
+        <img class="wiki-shortcode-inline__thumb" src="{{ $artworkPath | relURL }}" alt="" width="48" height="48" loading="lazy">
+      {{- else -}}
+        <span class="wiki-shortcode-icon-placeholder wiki-shortcode__placeholder--{{ $type }}" aria-hidden="true">
+          {{- if eq $type "creature" -}}🐉
+          {{- else if eq $type "biome" -}}🌲
+          {{- else if eq $type "npc" -}}👤
+          {{- else if eq $type "item" -}}⚔
+          {{- else if eq $type "location" -}}📍
+          {{- else -}}📄
+          {{- end -}}
+        </span>
+      {{- end -}}
+      <span class="wiki-shortcode-inline__name">{{ $title }}</span>
+    </a>
+  {{- end -}}
+
+{{- end -}}

@@ -1,0 +1,58 @@
+creatures:
+  - id: "creature.bigfoot"
+    title: "Bigfoot"
+    status: "reviewed"
+    featured: true
+    tags: ["forest", "mythical", "gentle"]
+    classification: "Guardian Beast"
+    habitat: "biome.enchanted_woods"
+    temperament: "Gentle"
+    difficulty: "Moderate"
+    drops: ["item.forest_moss", "item.ancient_bark"]
+    short_description: "A towering forest guardian covered in moss and ancient bark"
+    visual_identity: "Massive, moss-covered creature with glowing amber eyes"
+    common_story_uses: "Forest encounters, nature quests, guardian trials"
+    canon_constraints: "Never aggressive unprovoked. Protects ancient groves."
+    standard_behavior: "Patrols ancient groves at dawn and dusk"
+    relationships:
+      habitat: ["biome.enchanted_woods"]
+      allies: ["creature.silver_otter"]
+      enemies: ["creature.bone_crawler"]
+
+  - id: "creature.silver_otter"
+    title: "Silver Otter"
+    status: "reviewed"
+    featured: false
+    tags: ["water", "playful", "magical"]
+    classification: "Spirit Companion"
+    habitat: "biome.enchanted_woods"
+    temperament: "Playful"
+    difficulty: "Easy"
+    drops: ["item.shimmer_scale"]
+    short_description: "A luminous otter that glides through moonlit streams"
+    visual_identity: "Sleek silver fur with faint blue luminescence"
+    common_story_uses: "Guide creature, fetch quests, water puzzles"
+    canon_constraints: "Always near water sources. Friendly to all non-hostile creatures."
+    standard_behavior: "Swims in enchanted streams, occasionally surfaces to observe travelers"
+    relationships:
+      habitat: ["biome.enchanted_woods"]
+      allies: ["creature.bigfoot"]
+
+  - id: "creature.bone_crawler"
+    title: "Bone Crawler"
+    status: "draft"
+    featured: false
+    tags: ["undead", "aggressive", "cave"]
+    classification: "Undead Predator"
+    habitat: "biome.crystal_caverns"
+    temperament: "Hostile"
+    difficulty: "Hard"
+    drops: ["item.ancient_bark", "item.bone_shard"]
+    short_description: "A skeletal horror that skitters through dark caverns"
+    visual_identity: "Multi-limbed skeleton fused from various creatures"
+    common_story_uses: "Dungeon encounters, horror elements, boss minions"
+    canon_constraints: "Only found underground. Weak to radiant damage."
+    standard_behavior: "Lurks in shadows, ambushes from ceiling crevices"
+    relationships:
+      habitat: ["biome.crystal_caverns"]
+      enemies: ["creature.bigfoot"]

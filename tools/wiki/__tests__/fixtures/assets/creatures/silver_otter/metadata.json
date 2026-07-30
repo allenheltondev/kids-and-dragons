@@ -1,0 +1,5 @@
+{
+  "artist": "Example Artist",
+  "created": "2025-01-10",
+  "notes": "This JSON file should be excluded by asset discovery"
+}

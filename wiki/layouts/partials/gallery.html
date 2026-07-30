@@ -1,0 +1,24 @@
+{{/*
+  Gallery partial — renders a multi-image gallery grid.
+  Images come from .Params.assets.gallery as an array of image paths.
+  Only renders when gallery images are present.
+*/}}
+{{ with .Params.assets.gallery }}
+<section class="wiki-gallery" aria-label="Image gallery for {{ $.Title }}">
+  <h2 class="wiki-gallery__heading">Gallery</h2>
+  <div class="wiki-gallery__grid">
+    {{ range $index, $image := . }}
+    <figure class="wiki-gallery__item">
+      <a href="{{ $image | relURL }}" class="wiki-gallery__link">
+        <img
+          src="{{ $image | relURL }}"
+          alt="{{ $.Title }} — image {{ add $index 1 }}"
+          class="wiki-gallery__image"
+          loading="lazy"
+        >
+      </a>
+    </figure>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

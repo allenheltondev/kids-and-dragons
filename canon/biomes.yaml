@@ -1,0 +1,768 @@
+schema_version: "2.0"
+document_type: red_sky_biome_canon
+title: "The Realm of Red Sky Biome Canon"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for every named environment shown on the
+  current Realm of Red Sky world map. Use this file when planning chapters,
+  locations, encounter themes, environmental storytelling, regional artwork,
+  music, ambient behavior, or biome-specific game content.
+
+agent_instructions:
+  - Treat the current illustrated Realm of Red Sky map as the naming source of truth.
+  - Every map label represented by an environmental art package appears exactly once in this file.
+  - Preserve the distinctions between the Plains, Eastern Plains, and Sunward Fields.
+  - Preserve the distinction between the Enchanted Woods and MossHome.
+  - Mount Red Sky is not the dragonling homeland; dragonlings are native to the Red Sky Foothills.
+  - The Exchange has no native or dominant people.
+  - The Bone Yard has no ordinary permanent settlement.
+  - The Expanse is intentionally unknown. Do not populate or explain it without an explicit canon decision.
+  - An entry may be an environment used by the game without being a broad ecological biome.
+  - Geography, borders, routes, and coordinates belong to the geography canon. This file owns environmental identity.
+  - Creature ids reference red-sky-creature-canon.yaml and must not be invented here.
+  - Empty inhabitant lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by the current map and supporting canon."
+    intentionally_undefined: "The environment exists, but important facts are protected mysteries."
+  environment_type:
+    biome_region: "A broad ecological and travel region."
+    aerial_region: "A broad region not fixed to the surface."
+    offshore_region: "A broad island, reef, or marine environment."
+    settlement_environment: "A named settlement with its own visual and encounter identity."
+    landmark_environment: "A singular landmark or constrained area with its own environmental identity."
+    gateway_environment: "An entrance to another world layer or much larger environment."
+  danger_level:
+    low: "Ordinary travel is usually safe with basic preparation."
+    moderate: "Unprepared travelers can be harmed or stranded."
+    high: "Travel normally requires planning, local knowledge, or protection."
+    legendary: "The environment itself can support realm-scale threats or major campaign climaxes."
+    unknown: "Danger is intentionally not established."
+
+map_environment_ids:
+  - sky_islands
+  - enchanted_woods
+  - mosshome
+  - whispering_marsh
+  - exchange
+  - sunward_fields
+  - plains
+  - eastern_plains
+  - stone_crossing
+  - red_sky_foothills
+  - mount_red_sky
+  - expanse
+  - frostfang_peaks
+  - glacier_of_origins
+  - skullwater_cave
+  - mermaid_cove
+  - bone_yard
+
+biomes:
+  - id: biome.sky_islands
+    asset_id: sky_islands
+    canonical_location_id: sky_islands
+    geography_id: geography.sky_islands
+    title: "Sky Islands"
+    map_label: "Sky Islands"
+    canon_status: confirmed
+    environment_type: aerial_region
+    featured: true
+    tags: [aerial, drifting-islands, wind, temples, open-sky]
+    climate: "Cool, bright, and highly changeable; wind and cloud conditions matter more than seasons."
+    danger_level: moderate
+    short_description: >-
+      An archipelago of inhabited islands that drift across the western sky on
+      recurring but imperfect wind routes.
+    visual_identity: >-
+      Floating stone islands, gold-roofed temple settlements, hanging roots,
+      cloud banks, open blue distance, wind banners, and narrow aerial approaches.
+    common_story_uses: >-
+      Navigation, separated communities, changing routes, messenger journeys,
+      weather emergencies, and stories whose destination is defined by when it
+      can be reached rather than only where it is.
+    canon_constraints: >-
+      The islands move. Do not give them permanent surface borders or ordinary
+      road connections. Do not portray every kitsune as deceptive.
+    standard_behavior: >-
+      Wind routes shift, island communities prepare for storms, and navigation
+      depends on stars, recurring air currents, signals, and shared stories.
+    inhabitants:
+      primary_peoples: [kitsune]
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: [cloud_whale]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [open_sea]
+      factions: []
+      items: []
+
+  - id: biome.enchanted_woods
+    asset_id: enchanted_woods
+    canonical_location_id: enchanted_woods
+    geography_id: geography.enchanted_woods
+    title: "Enchanted Woods"
+    map_label: "Enchanted Woods"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [ancient-forest, living-magic, changing-paths, memory, hidden-glades]
+    climate: "Temperate and humid beneath a dense canopy, with localized magical weather and light."
+    danger_level: moderate
+    short_description: >-
+      An ancient living forest whose paths, clearings, and hidden places respond
+      to memory, promises, damage, and the behavior of those who enter.
+    visual_identity: >-
+      Immense layered trees, luminous knots and hollows, blue-green magical
+      lights, tangled roots, mossy paths, hidden shrines, and depth that feels
+      older than the surrounding realm.
+    common_story_uses: >-
+      Lost paths, remembered promises, damaged magic, old shrines, hidden
+      communities, ecological mysteries, and choices where kindness changes the route.
+    canon_constraints: >-
+      The forest is responsive, not randomly hostile. It remembers treatment but
+      does not assign morality by species. MossHome is inside the wider Woods and
+      is not interchangeable with the whole region.
+    standard_behavior: >-
+      Paths shift gradually, magical disturbances echo through plants and
+      wildlife, and the forest tends to reveal safer routes to travelers who
+      repair harm or honor commitments.
+    inhabitants:
+      primary_peoples: [unicorn]
+      supporting_peoples: [harvest_sprite]
+      cultural_orders: []
+      ambient_creatures: [mosshorn]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: [will_o_wisp]
+    relationships:
+      locations: [mosshome, bramblewood]
+      factions: []
+      items: []
+
+  - id: biome.mosshome
+    asset_id: mosshome
+    canonical_location_id: mosshome
+    geography_id: location.mosshome
+    title: "MossHome"
+    map_label: "MossHome"
+    canon_status: confirmed
+    environment_type: settlement_environment
+    parent_biome: biome.enchanted_woods
+    featured: true
+    tags: [forest-settlement, living-architecture, bigfoot, cultivated-moss, ancient-trees]
+    climate: "Sheltered, damp, and mild beneath the oldest western trees."
+    danger_level: low
+    short_description: >-
+      The principal Bigfoot settlement, built into and alongside ancient living
+      trees without severing the forest systems that support it.
+    visual_identity: >-
+      Tall wooden and stone structures woven into trunks and roots, cultivated
+      moss gardens, suspended walkways, natural archives, and warm lights beneath
+      the canopy.
+    common_story_uses: >-
+      Research, healing, historical discovery, community preparation, ecological
+      investigation, and a safe home that can reveal changes elsewhere in the forest.
+    canon_constraints: >-
+      MossHome is a settlement, not a separate wilderness biome. Bigfoots are not
+      primitive or universally reclusive, and the settlement should look designed,
+      maintained, and knowledgeable.
+    standard_behavior: >-
+      Residents maintain living structures, paths, gardens, historical records,
+      and observation stations while monitoring changes in the wider Enchanted Woods.
+    inhabitants:
+      primary_peoples: [bigfoot]
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: [mosshorn]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [enchanted_woods]
+      factions: []
+      items: []
+
+  - id: biome.whispering_marsh
+    asset_id: whispering_marsh
+    canonical_location_id: whispering_marsh
+    geography_id: geography.whispering_marsh
+    title: "Whispering Marsh"
+    map_label: "Whispering Marsh"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [wetland, mist, spirits, memory, waterways, secrets]
+    climate: "Cool, saturated, and persistently misty, with still pools and slow-moving channels."
+    danger_level: moderate
+    short_description: >-
+      A mist-covered wetland where voices, memories, and supernatural
+      manifestations collect among drowned roots and hidden waterways.
+    visual_identity: >-
+      Layered fog, twisted wetland trees, dark reflective water, reed islands,
+      half-submerged paths, hanging moss, dim lanterns, and distant lights with
+      uncertain depth.
+    common_story_uses: >-
+      Spirit encounters, missing memories, hidden communities, navigation by
+      sound, environmental restoration, bargains, warnings, and mysteries that
+      should not always be solved by fighting.
+    canon_constraints: >-
+      The marsh is eerie but not inherently evil. Frogfolk, boggarts, and witches
+      have moral agency. Do not make every whisper a ghost or every light a trap.
+    standard_behavior: >-
+      Mist changes visibility, water routes shift with weather and river flow,
+      and whispers sometimes repeat memories or warnings without explaining their source.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [frogfolk, boggart]
+      cultural_orders: [witch_order]
+      ambient_creatures: []
+      dangerous_creatures: [mire_mimic]
+      legendary_beings: []
+      supernatural_manifestations: [will_o_wisp]
+    relationships:
+      locations: [great_river]
+      factions: []
+      items: []
+
+  - id: biome.expanse
+    asset_id: expanse
+    canonical_location_id: the_expanse
+    geography_id: geography.expanse
+    title: "The Expanse"
+    map_label: "The Expanse"
+    canon_status: intentionally_undefined
+    environment_type: biome_region
+    featured: true
+    tags: [barren, northern-waste, forbidden, unknown, plateau]
+    climate: "Not established beyond its visibly barren and exposed surface."
+    danger_level: unknown
+    short_description: >-
+      A vast northern waste where nothing visibly grows and no confirmed
+      population, ecology, or civilization has been established.
+    visual_identity: >-
+      Immense cracked brown plateau, wind-carved channels, dead vertical forms,
+      steep coastal escarpments, sparse ruins or silhouettes, and an oppressive
+      absence of visible life.
+    common_story_uses: >-
+      Distant signs, forbidden expeditions, unanswered questions, northern
+      warnings, lost history, and major campaign mysteries.
+    canon_constraints: >-
+      Do not invent inhabitants, explain the dead landscape, establish a hidden
+      civilization, or define what lies beyond it without an explicit canon decision.
+    standard_behavior: >-
+      Intentionally unknown. Surface movement, weather, magic, and life signs
+      should remain uncertain until the mystery is developed.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: []
+      factions: []
+      items: []
+
+  - id: biome.red_sky_foothills
+    asset_id: red_sky_foothills
+    canonical_location_id: red_sky_foothills
+    geography_id: geography.red_sky_foothills
+    title: "Red Sky Foothills"
+    map_label: "Red Sky Foothills"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [volcanic-hills, crystal-veins, lava-tubes, caves, dragonling-homeland]
+    climate: "Warm to hot, dry, and ash-prone, with cooler sheltered valleys and lava tubes."
+    danger_level: high
+    short_description: >-
+      Volcanic hills surrounding Mount Red Sky, cut by cooled lava tubes,
+      crystal veins, caves, and long-established dragonling communities.
+    visual_identity: >-
+      Ochre and black hills, glowing cracks, crystal outcrops, cave mouths,
+      scorched grasses, volcanic dust, sheltered settlements, and the mountain
+      dominating the northern horizon.
+    common_story_uses: >-
+      Cave exploration, eruption warnings, crystal disputes, rescue routes,
+      dragonling communities, unstable terrain, and changes originating from Mount Red Sky.
+    canon_constraints: >-
+      This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are
+      gathered from naturally released material rather than mined from living veins.
+    standard_behavior: >-
+      Tremors, ash, heat, and crystal changes are closely watched. Communities
+      maintain warning systems, safe caves, and evacuation routes.
+    inhabitants:
+      primary_peoples: [dragonling]
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: [embermoth]
+      dangerous_creatures: [glassback_crab, cinder_wolf]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [mount_redsky]
+      factions: []
+      items: []
+
+  - id: biome.mount_red_sky
+    asset_id: mount_red_sky
+    canonical_location_id: mount_redsky
+    geography_id: location.mount_red_sky
+    title: "Mount Red Sky"
+    map_label: "Mount Red Sky"
+    canon_status: confirmed
+    environment_type: landmark_environment
+    parent_biome: biome.red_sky_foothills
+    featured: true
+    tags: [active-volcano, gemfalls, legendary, ash, lava, unstable-power]
+    climate: "Extreme heat, ash, volcanic gases, and rapidly changing local conditions."
+    danger_level: legendary
+    short_description: >-
+      The active volcano at the center of the realm, source of the Gemfalls and
+      territory of rare solitary legendary beasts.
+    visual_identity: >-
+      Towering volcanic cone, orange lava channels, black ridges, smoke column,
+      gemstone flashes, ash-darkened sky, and terrain that visibly radiates power.
+    common_story_uses: >-
+      Major campaign climaxes, legendary-beast encounters, eruption mysteries,
+      dangerous rescues, gemstone events, and consequences that affect several regions.
+    canon_constraints: >-
+      Mount Red Sky is not a dragonling city or homeland. Adult legend dragons
+      are rare solitary beings and are not automatically ancestors or rulers of dragonlings.
+    standard_behavior: >-
+      Activity changes through tremors, smoke, heat, Gemfalls, and lava movement.
+      Calm periods remain tense because the mountain is never treated as permanently dormant.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: [embermoth]
+      dangerous_creatures: [glassback_crab]
+      legendary_beings: [legend_dragon]
+      supernatural_manifestations: []
+    relationships:
+      locations: [red_sky_foothills]
+      factions: []
+      items: []
+
+  - id: biome.plains
+    asset_id: plains
+    canonical_location_id: the_plains
+    geography_id: geography.plains
+    title: "The Plains"
+    map_label: "The Plains"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [central-plains, roads, caravans, grassland, crossroads]
+    climate: "Temperate and windy, with open sun, seasonal rain, and broad visibility."
+    danger_level: low
+    short_description: >-
+      The central open country of the realm, crossed by old roads, caravans, and
+      routes connecting the forest, foothills, fields, river, and coast.
+    visual_identity: >-
+      Rolling green-gold grass, broad roads, scattered trees and stones, caravan
+      camps, low ridges, distant settlements, and long views beneath an open sky.
+    common_story_uses: >-
+      Travel chapters, caravan stories, races, missing travelers, route disputes,
+      encounters visible from far away, and journeys that connect otherwise separate regions.
+    canon_constraints: >-
+      Do not merge the Plains with Eastern Plains or Sunward Fields. The central
+      Plains are road country, not the manticore homeland and not primarily farmland.
+    standard_behavior: >-
+      Caravans, messengers, herds, and travelers move along old routes while
+      weather and river conditions periodically change the safest path.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [centaur]
+      cultural_orders: []
+      ambient_creatures: [jackalope]
+      dangerous_creatures: [cinder_wolf]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [great_river]
+      factions: []
+      items: []
+
+  - id: biome.sunward_fields
+    asset_id: sunward_fields
+    canonical_location_id: sunward_fields
+    geography_id: geography.sunward_fields
+    title: "The Sunward Fields"
+    map_label: "The Sunward Fields"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [farmland, meadows, orchards, villages, food, seasonal-work]
+    climate: "Warm, fertile, and seasonally varied, with reliable sun and managed water."
+    danger_level: low
+    short_description: >-
+      Rolling meadows, farms, orchards, and village cooperatives that produce
+      much of the food used across the realm.
+    visual_identity: >-
+      Gold-green fields, hedgerows, orchards, wind-bent grain, irrigation
+      channels, farmsteads, communal barns, roads, and warm evening light.
+    common_story_uses: >-
+      Harvest problems, village festivals, missing livestock, weather threats,
+      cooperative work, food shortages, local mysteries, and the consequences of
+      trouble elsewhere reaching ordinary families.
+    canon_constraints: >-
+      The Fields are not generic open plains. Agriculture, villages, irrigation,
+      and communal work should shape both visuals and stories.
+    standard_behavior: >-
+      Work follows planting and harvest seasons. Communities share labor,
+      maintain water and roads, and respond quickly when weather, magic, or pests
+      threaten the realm's food supply.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [faun, harvest_sprite]
+      cultural_orders: []
+      ambient_creatures: [jackalope]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [the_exchange, stone_crossing]
+      factions: []
+      items: []
+
+  - id: biome.exchange
+    asset_id: exchange
+    canonical_location_id: the_exchange
+    geography_id: location.exchange
+    title: "The Exchange"
+    map_label: "The Exchange"
+    canon_status: confirmed
+    environment_type: settlement_environment
+    featured: true
+    tags: [coastal-city, trade, crossroads, docks, mixed-population, stories]
+    climate: "Mild coastal weather shaped by sea wind, river traffic, and seasonal storms."
+    danger_level: low
+    short_description: >-
+      A neutral coastal city where roads, ships, peoples, trade, news, and
+      opportunities from across the realm converge.
+    visual_identity: >-
+      Dense towers and halls built along cliffs, bridges, layered docks, ships,
+      market awnings, signs from many cultures, crowded paths, and constant movement.
+    common_story_uses: >-
+      Campaign beginnings, reunions, contracts, rumors, investigation, trade,
+      political tension between individuals, missing cargo, and stories that bring
+      distant regions into contact.
+    canon_constraints: >-
+      The Exchange has no native or dominant people. Do not give one species
+      ownership of the city or reduce it to a marketplace without homes,
+      institutions, stories, and ordinary life.
+    standard_behavior: >-
+      Ships arrive, caravans turn over cargo, travelers exchange news, and the
+      city continuously adapts to disruptions in roads, rivers, weather, and distant regions.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+      population_rule: "Mixed population with no native or dominant people."
+    relationships:
+      locations: [sunward_fields, whispering_marsh, open_sea]
+      factions: []
+      items: []
+
+  - id: biome.glacier_of_origins
+    asset_id: glacier_of_origins
+    canonical_location_id: glacier_of_origins
+    geography_id: geography.glacier_of_origins
+    title: "Glacier of Origins"
+    map_label: "Glacier of Origins"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [ancient-ice, river-source, frozen-memory, glacier, northern]
+    climate: "Severe cold, glacial wind, deep snow, and unstable ice around melt channels."
+    danger_level: high
+    short_description: >-
+      An ancient northeastern glacier where the Great River begins and fragments
+      of old memory are said to remain preserved in the ice.
+    visual_identity: >-
+      Blue-white ice fields, sharp glacial ridges, dark crevasses, meltwater
+      channels, wind-carved snow, frozen shapes, and the young river cutting south.
+    common_story_uses: >-
+      River-source mysteries, rescues, preserved history, dangerous crossings,
+      changing melt, ancient discoveries, and signs connecting the frozen north
+      to events downstream.
+    canon_constraints: >-
+      The glacier may preserve memories, but it should not casually provide
+      complete historical answers. Survival conditions matter.
+    standard_behavior: >-
+      Ice shifts, melt channels move, storms erase paths, and changes at the
+      source eventually affect every downstream region.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [yeti]
+      cultural_orders: []
+      ambient_creatures: [snowhorn_goat]
+      dangerous_creatures: [frost_wyrm]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [great_river, frostfang_peaks]
+      factions: []
+      items: []
+
+  - id: biome.frostfang_peaks
+    asset_id: frostfang_peaks
+    canonical_location_id: frostfang_peaks
+    geography_id: geography.frostfang_peaks
+    title: "Frostfang Peaks"
+    map_label: "Frostfang Peaks"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [frozen-mountains, aeries, griffin-homeland, cliffs, rescue]
+    climate: "High-altitude cold, strong winds, sudden storms, and thin air."
+    danger_level: high
+    short_description: >-
+      A vast frozen mountain range of cliffs, passes, and aeries that forms the
+      griffin homeland and watches the northern horizon.
+    visual_identity: >-
+      Dense ranks of snow-covered peaks, dark exposed rock, high aeries, narrow
+      passes, cloud shadows, ice shelves, and enormous vertical scale.
+    common_story_uses: >-
+      Mountain rescue, aerial travel, watch duties, avalanches, lost messengers,
+      northern signs, dangerous passes, and conflicts between curiosity and caution.
+    canon_constraints: >-
+      Griffins are rescuers, scouts, and people with ordinary communities, not
+      merely mounts or guards. The Peaks are distinct from the Glacier of Origins.
+    standard_behavior: >-
+      Aerie communities maintain watches, rescue routes, signals, and pass
+      knowledge while storms and ice frequently close expected paths.
+    inhabitants:
+      primary_peoples: [griffin]
+      supporting_peoples: [yeti]
+      cultural_orders: []
+      ambient_creatures: [snowhorn_goat]
+      dangerous_creatures: [frost_wyrm]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [glacier_of_origins]
+      factions: []
+      items: []
+
+  - id: biome.eastern_plains
+    asset_id: eastern_plains
+    canonical_location_id: eastern_plains
+    geography_id: geography.eastern_plains
+    title: "The Eastern Plains"
+    map_label: "The Eastern Plains"
+    canon_status: confirmed
+    environment_type: biome_region
+    featured: true
+    tags: [eastern-grassland, manticore-homeland, roads, prides, caravans]
+    climate: "Open, dry-to-temperate grassland with strong seasonal winds and broad skies."
+    danger_level: moderate
+    short_description: >-
+      Wide open country east of the Great River, crossed by roads and pride
+      routes and serving as the manticore homeland.
+    visual_identity: >-
+      Broad yellow-green grasslands, low ridges, winding roads, scattered trees,
+      pride markers, camps, distant hills, and a hard eastern coastline.
+    common_story_uses: >-
+      Road patrols, caravan escort, territorial misunderstandings, riddles and
+      formal challenges, long-distance pursuit, migration, and threats visible
+      long before they arrive.
+    canon_constraints: >-
+      Do not merge the Eastern Plains with the central Plains. Manticores are not
+      inherently hostile, and threatening anatomy is not shorthand for villainy.
+    standard_behavior: >-
+      Pride routes, patrols, caravans, and seasonal gathering grounds structure
+      movement across the open region.
+    inhabitants:
+      primary_peoples: [manticore]
+      supporting_peoples: [centaur]
+      cultural_orders: []
+      ambient_creatures: [jackalope]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [stone_crossing]
+      factions: []
+      items: []
+
+  - id: biome.stone_crossing
+    asset_id: stone_crossing
+    canonical_location_id: stone_crossing
+    geography_id: location.stone_crossing
+    title: "Stone Crossing"
+    map_label: "Stone Crossing"
+    canon_status: confirmed
+    environment_type: landmark_environment
+    featured: true
+    tags: [river-crossing, bridge, bottleneck, current, trade-route]
+    climate: "River-cooled and windy, with conditions changing sharply after northern melt or storms."
+    danger_level: moderate
+    short_description: >-
+      A narrow, strategically important crossing where the Great River compresses
+      travel between the Sunward Fields and Eastern Plains into a single route.
+    visual_identity: >-
+      Fast blue water, stone and timber bridgework, steep banks, weathered route
+      structures, waiting caravans, river spray, and a clear sense of constrained passage.
+    common_story_uses: >-
+      Blocked travel, bridge defense, rescues from the current, negotiations,
+      caravan queues, missing cargo, river creatures, and choices where every
+      traveler must pass through the same place.
+    canon_constraints: >-
+      Stone Crossing is a location and transition environment, not a broad
+      grassland biome. The current is a real hazard, and alternate nearby crossings
+      should not be invented casually.
+    standard_behavior: >-
+      Traffic, river level, weather, maintenance, and danger can change whether
+      the crossing is open, delayed, or impassable.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [stone_troll, centaur]
+      cultural_orders: []
+      ambient_creatures: [silver_otter]
+      dangerous_creatures: [river_drake]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [great_river, sunward_fields, eastern_plains]
+      factions: []
+      items: []
+
+  - id: biome.skullwater_cave
+    asset_id: skullwater_cave
+    canonical_location_id: skullwater_cave
+    geography_id: location.skullwater_cave
+    title: "Skullwater Cave"
+    map_label: "Skullwater Cave"
+    canon_status: confirmed
+    environment_type: gateway_environment
+    featured: true
+    tags: [offshore-cave, underground-gateway, skull-rock, caverns, unknown-depths]
+    climate: "Cold, wet, echoing, and increasingly disconnected from surface weather with depth."
+    danger_level: high
+    short_description: >-
+      A skull-shaped offshore opening that leads into a much larger underground
+      world whose full extent has not yet been canonized.
+    visual_identity: >-
+      A single colossal skull-shaped rock, dark cave mouth, slick ledges, breaking
+      waves, deep interior shadows, mineral reflections, and passages disappearing underground.
+    common_story_uses: >-
+      Descent into the underground, missing expeditions, echoes, hidden passages,
+      creatures moving between layers, rescue, and campaign transitions into a
+      separate subterranean geography.
+    canon_constraints: >-
+      The skull is one continuous rock formation, not a pile of skulls. Do not
+      define the entire underground world through this entry; it requires its own
+      geography layer and future canon.
+    standard_behavior: >-
+      Tides affect the entrance, sound travels unpredictably, and deeper passages
+      should feel larger than the visible island mouth implies.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [stone_troll]
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: [echo_hunter]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [open_sea]
+      factions: []
+      items: []
+
+  - id: biome.mermaid_cove
+    asset_id: mermaid_cove
+    canonical_location_id: mermaid_cove
+    geography_id: geography.mermaid_cove
+    title: "Mermaid Cove"
+    map_label: "Mermaid Cove"
+    canon_status: confirmed
+    environment_type: offshore_region
+    featured: true
+    tags: [warm-water, coral-reefs, lagoon, alliance, island]
+    climate: "Warm, humid, and ocean-moderated, with clear shallows and seasonal storms."
+    danger_level: moderate
+    short_description: >-
+      A warm southern cove of coral reefs, sheltered water, merfolk and selkie
+      communities, and an ancient alliance.
+    visual_identity: >-
+      Turquoise lagoon water, living coral, green island slopes, pale towers,
+      bright shallows, reef channels, boats, and deep blue water beyond the shelter.
+    common_story_uses: >-
+      Reef rescue, diplomacy, ancient agreements, storms, underwater discovery,
+      damaged habitats, sea travel, missing swimmers, and conflicts between surface
+      and underwater needs.
+    canon_constraints: >-
+      Mermaid Cove is not populated only by merfolk, and merfolk are not generic
+      fantasy mermaids without culture. Preserve the ancient alliance as important
+      without defining all of its history prematurely.
+    standard_behavior: >-
+      Tides, reefs, weather, fishing, travel, and community agreements shape daily
+      life, while changes in the open sea quickly reach the cove.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [merfolk, selkie]
+      cultural_orders: []
+      ambient_creatures: [silver_otter, reefglider]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [open_sea, the_whirlpool]
+      factions: []
+      items: []
+
+  - id: biome.bone_yard
+    asset_id: bone_yard
+    canonical_location_id: bone_yard
+    geography_id: geography.bone_yard
+    title: "The Bone Yard"
+    map_label: "The Bone Yard"
+    canon_status: confirmed
+    environment_type: offshore_region
+    featured: true
+    tags: [bone-island, river-delta, forbidden, ancient-remains, supernatural]
+    climate: "Dry, exposed, salt-worn, and affected by river sediment and coastal storms."
+    danger_level: high
+    short_description: >-
+      A southeastern river-delta island where the remains of enormous ancient
+      creatures collect, settle, and sometimes refuse to remain entirely still.
+    visual_identity: >-
+      A V-shaped island of colossal ribs, skulls, vertebrae, dark sediment,
+      pale bone fields, shallow channels, sparse dead growth, and no ordinary settlement.
+    common_story_uses: >-
+      Ancient-remains mysteries, supernatural disturbances, retrieval with moral
+      consequences, rescue, dangerous tides, forbidden expeditions, and stories
+      about allowing the dead to rest.
+    canon_constraints: >-
+      The Bone Yard has no normal permanent settlement. Do not make it a generic
+      graveyard, battlefield, or source of consequence-free crafting materials.
+    standard_behavior: >-
+      River deposits and tides rearrange smaller remains, supernatural activity
+      may animate or echo through the bones, and safe paths can change.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: [bone_crawler]
+      legendary_beings: []
+      supernatural_manifestations: [restless_remains]
+    relationships:
+      locations: [great_river, open_sea, the_whirlpool]
+      factions: []
+      items: []

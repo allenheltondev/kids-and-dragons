@@ -1,0 +1,4 @@
+{{/* Item Reference Shortcode — renders entity reference card (inline or block mode) */}}
+{{- $id := .Get "id" -}}
+{{- $mode := .Get "mode" | default "inline" -}}
+{{- partial "entity-card.html" (dict "id" $id "type" "item" "prefix" "items" "mode" $mode "page" .Page) -}}
