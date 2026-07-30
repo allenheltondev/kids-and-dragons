@@ -11,6 +11,7 @@
 
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { canUseInventoryItem } from "./PlayerPanel";
 import rules from "../../../../content/rules.json";
 import items from "../../../../content/items.json";
 import {
@@ -57,6 +58,15 @@ function iconNames(value: unknown, found: Set<string> = new Set()): Set<string> 
 describe("screens", () => {
   it.each(Object.entries(SCREENS))("%s renders with an empty store", (_name, Screen) => {
     expect(() => renderToStaticMarkup(<Screen />)).not.toThrow();
+  });
+});
+
+describe("PlayerPanel inventory", () => {
+  const potion = { itemId: "sunbloom_draught", kind: "consumable" as const };
+
+  it("does not offer a consumable action during combat", () => {
+    expect(canUseInventoryItem(potion, true)).toBe(false);
+    expect(canUseInventoryItem(potion, false)).toBe(true);
   });
 });
 

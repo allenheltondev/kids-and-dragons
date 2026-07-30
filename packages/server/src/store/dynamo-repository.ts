@@ -596,7 +596,19 @@ export class DynamoRepository implements GameRepository {
   }
 
   async commit(input: CommitInput): Promise<boolean> {
-    const { runId, expectedSeq, state, event, characters = [], chapterProgress, campaignProgress } = input;
+    const {
+      runId,
+      expectedSeq,
+      state,
+      event,
+      characters = [],
+      chapterProgress,
+      campaignProgress,
+      campaignProgressExpectedVersion,
+    } = input;
+    if (campaignProgress && campaignProgressExpectedVersion === undefined) {
+      throw new Error("campaign progress commit is missing its expected version");
+    }
     try {
       /*
        * The two writes that must never come apart: append `EVT#<seq>` and
@@ -650,9 +662,8 @@ export class DynamoRepository implements GameRepository {
                 } satisfies TableItem,
               },
             })),
-            // The progress rows ride the same gate. The setback counter in
-            // particular is a read-modify-write; the seq condition is what
-            // serializes it against two phones completing the chapter at once.
+            // Progress rows ride the run gate. The campaign row also has its
+            // own version condition because a second run has a different seq gate.
             ...(chapterProgress
               ? [
                   {
@@ -669,7 +680,13 @@ export class DynamoRepository implements GameRepository {
                 ]
               : []),
             ...(campaignProgress
-              ? [{ Put: { TableName: this.table, Item: campaignProgressItem(campaignProgress) } }]
+              ? [
+                  campaignProgressTransaction(
+                    this.table,
+                    campaignProgress,
+                    campaignProgressExpectedVersion as number | null,
+                  ),
+                ]
               : []),
           ],
         }),
@@ -753,6 +770,32 @@ export class DynamoRepository implements GameRepository {
       new DeleteCommand({ TableName: this.table, Key: { PK: ROOM(code), SK: META } }),
     );
   }
+}
+
+/** A conditional Put that is safe across independent run partitions. */
+function campaignProgressTransaction(
+  table: string,
+  progress: CampaignProgressRecord,
+  expectedVersion: number | null,
+) {
+  const condition =
+    expectedVersion === null
+      ? { ConditionExpression: "attribute_not_exists(PK)" }
+      : {
+          ConditionExpression:
+            expectedVersion === 0
+              ? "attribute_exists(PK) AND (attribute_not_exists(#d.#version) OR #d.#version = :expectedVersion)"
+              : "#d.#version = :expectedVersion",
+          ExpressionAttributeNames: { "#d": "data", "#version": "version" },
+          ExpressionAttributeValues: { ":expectedVersion": expectedVersion },
+        };
+  return {
+    Put: {
+      TableName: table,
+      Item: campaignProgressItem(progress),
+      ...condition,
+    },
+  };
 }
 
 /** One shape for both write paths — `putCampaignProgress` and `commit`. */

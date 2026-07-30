@@ -426,8 +426,10 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
             campaignId: "hollow-crown",
             status: "active" as const,
             setbacks: 1,
+            version: 1,
             updatedAt: "2026-07-04T18:00:00.000Z",
           },
+          campaignProgressExpectedVersion: null,
         };
 
         // A losing commit must leave both rows unwritten.
@@ -457,6 +459,46 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toMatchObject({
           setbacks: 1,
         });
+      });
+
+      it("serializes one campaign attempt across different runs", async () => {
+        await repo.putState(state("r_1", 0));
+        await repo.putState(state("r_2", 0));
+        await repo.putCampaignProgress({
+          householdId: "h_1",
+          campaignId: "hollow-crown",
+          status: "active",
+          setbacks: 0,
+          version: 1,
+          updatedAt: "2026-07-04T18:00:00.000Z",
+        });
+
+        const advance = (runId: string, setbacks: number) =>
+          repo.commit({
+            runId,
+            expectedSeq: 0,
+            state: state(runId, 1),
+            event: event(runId, 1),
+            campaignProgress: {
+              householdId: "h_1",
+              campaignId: "hollow-crown",
+              status: "active",
+              setbacks,
+              version: 2,
+              updatedAt: `2026-07-04T18:00:0${setbacks}.000Z`,
+            },
+            campaignProgressExpectedVersion: 1,
+          });
+
+        const results = await Promise.all([advance("r_1", 1), advance("r_2", 2)]);
+        expect(results.filter(Boolean)).toHaveLength(1);
+        expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toMatchObject({
+          version: 2,
+        });
+        const advancedRuns = [await repo.getState("r_1"), await repo.getState("r_2")].filter(
+          (candidate) => candidate?.seq === 1,
+        );
+        expect(advancedRuns).toHaveLength(1);
       });
 
       it("advances state and event together, once", async () => {
