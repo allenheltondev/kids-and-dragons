@@ -11,21 +11,21 @@
     {{ with .Params.category }}
     <div class="wiki-infobox__field">
       <dt>Category</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
     {{ with .Params.rarity }}
     <div class="wiki-infobox__field">
       <dt>Rarity</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
     {{ with .Params.acquisition }}
     <div class="wiki-infobox__field">
       <dt>Acquisition</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
   </dl>
