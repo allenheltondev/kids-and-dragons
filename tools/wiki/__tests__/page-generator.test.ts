@@ -143,7 +143,7 @@ describe('generatePage — new page creation', () => {
 
     // Should have biomes group (from habitat relationship)
     expect(content).toContain('### Biomes');
-    expect(content).toContain('[Enchanted Woods](/biomes/enchanted_woods/) — habitat');
+    expect(content).toContain('[Enchanted Woods](/biomes/enchanted_woods/) `Habitat`');
 
     // Should have creatures group (from allies/enemies + reverse refs)
     expect(content).toContain('### Creatures');

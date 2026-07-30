@@ -6,14 +6,18 @@
     {{ with .Params.tags }}
     <div class="entity-tags" aria-label="Tags">
       {{ range . }}
-      <span class="wiki-tag">{{ . }}</span>
+      <span class="wiki-tag">{{ partial "title-case.html" . }}</span>
       {{ end }}
     </div>
     {{ end }}
 
     {{ $content := .Content }}
     {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: ai_context -->.*?<!-- END GENERATED: ai_context -->` "" $content }}
+    {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: relationships -->.*?<!-- END GENERATED: relationships -->` "" $content }}
     {{ $content | safeHTML }}
+
+    {{/* Related entities — visual card grid */}}
+    {{ partial "related-entities.html" $ }}
 
     {{/* Hidden AI context for AI tools */}}
     {{ partial "ai-context.html" . }}
