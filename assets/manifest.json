@@ -162,20 +162,20 @@
   ],
   "$gearDeferredComment": "Same stance as abilities.json $deferred: declared and waited on, never silently absent. Songkeeper's three sets shipped with the split scripts; the other three classes are roadmap chapter 5 commissions. The verifier reports a deferred class instead of failing on it (strict mode included, so the prod gate stays armed for what *is* due), and checks it like anything else the moment its directory appears. Delivering a class is: commission it, drop the deferred flag.",
 
-  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen.",
+  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question.",
 
   "effects": [
-    { "id": "aura_bigfoot", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true },
-    { "id": "aura_dragonling", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true },
-    { "id": "aura_griffin", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true },
-    { "id": "aura_kitsune", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true },
-    { "id": "aura_manticore", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true },
-    { "id": "aura_unicorn", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true },
-    { "id": "burst_star", "frames": 12, "fps": 12, "size": 256 },
-    { "id": "heal_bloom", "frames": 12, "fps": 12, "size": 256 },
-    { "id": "impact_strike", "frames": 8, "fps": 12, "size": 256 },
-    { "id": "revive_lift", "frames": 12, "fps": 12, "size": 256 },
-    { "id": "transform_flash", "frames": 18, "fps": 12, "size": 256, "outOfCombat": true }
+    { "id": "aura_bigfoot", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true, "startsOn": null },
+    { "id": "aura_dragonling", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true, "startsOn": null },
+    { "id": "aura_griffin", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true, "startsOn": null },
+    { "id": "aura_kitsune", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true, "startsOn": null },
+    { "id": "aura_manticore", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true, "startsOn": null },
+    { "id": "aura_unicorn", "frames": 12, "fps": 12, "size": 256, "tileScoped": false, "loop": true, "startsOn": null },
+    { "id": "burst_star", "frames": 12, "fps": 12, "size": 256, "startsOn": { "clip": "cast", "event": "release" } },
+    { "id": "heal_bloom", "frames": 12, "fps": 12, "size": 256, "startsOn": { "clip": "cast", "event": "release" } },
+    { "id": "impact_strike", "frames": 8, "fps": 12, "size": 256, "startsOn": { "clip": "attack", "event": "impact" } },
+    { "id": "revive_lift", "frames": 12, "fps": 12, "size": 256, "startsOn": { "clip": "lift", "event": "contact" } },
+    { "id": "transform_flash", "frames": 18, "fps": 12, "size": 256, "outOfCombat": true, "startsOn": { "clip": "transform", "event": "flash" } }
   ],
 
   "$rigContractComment": "docs/asset-brief.md §9.2 as data, read by tools/art/verify-rig.ts. Ticks, not seconds: one tick is one frame at `tickFps`, the same clock the effect sheets run on, so an effect that starts on a tick boundary can never drift against the clip that triggered it. Rive interpolates at 60fps — author to the 12ths-of-a-second grid anyway. Every clip listed in a set is required on every rig of that kind, including rigs for species with no ability that fires it: art-pipeline.md §6.1's rule is that game code never special-cases a species, and a state machine present on two rigs and absent on four is that special case permanently. `shove` deliberately has no clip (§9.2) — a shoved figure is translated by the engine and keeps playing `idle`, because to an 8-year-old a flinch *is* damage and `shove` deals none.",
@@ -194,14 +194,14 @@
       "walk": { "ticks": 4, "loop": true, "$comment": "One cycle, two steps. Four steps is 0.67s; a Duskrunner's six is 1.0s, and a move must never outlast the roll." },
       "attack": { "ticks": 8, "rolls": true, "events": { "impact": 3 } },
       "cast": { "ticks": 10, "rolls": true, "events": { "release": 4 }, "$comment": "Two ticks longer than attack on purpose — a cast the same length as a swing reads as a swing." },
-      "hurt": { "ticks": 5, "concurrent": true, "$comment": "Starts on the attack's impact event and ends with it, so it adds nothing to the turn." },
+      "hurt": { "ticks": 5, "concurrent": true, "startsOn": { "clip": "attack", "event": "impact" }, "$comment": "Starts on the attack's impact event (tick 3) and ends at tick 7, inside the attack's 8 — so it genuinely adds nothing to the turn. That is arithmetic checkTurnBudget now does from startsOn, not an assertion." },
       "guard": { "ticks": 6, "hold": true, "$comment": "Brace lasts until your next turn (encounter.ts), so this is a plant and a hold, not a loop." },
       "leap": { "ticks": 11, "events": { "dust": [3, 8] }, "$comment": "3 crouch, 5 airborne, 3 land. The engine translates the figure during the airborne five." },
-      "down": { "ticks": 6, "loopTicks": 24, "$comment": "§9.3 overrides art-pipeline §6.1's \"held, not looped\": a frozen pose reads as a corpse. Six ticks of fall, then a 24-tick breathing loop at half idle's amplitude." },
+      "down": { "ticks": 6, "loopTicks": 24, "loopClip": "down_loop", "$comment": "§9.3 overrides art-pipeline §6.1's \"held, not looped\": a frozen pose reads as a corpse. Six ticks of fall, then a hand-off to `down_loop` — a 24-tick breathing loop at half idle's amplitude, exported as its own Rive animation. A rig that delivers `down` must deliver `down_loop` with it; the verifier requires the pair wherever a set requires `down`." },
       "lift": { "ticks": 10, "events": { "contact": 6 } },
-      "revive": { "ticks": 10, "concurrent": true, "$comment": "Started by the lift's contact event, so the two read as one gesture." },
+      "revive": { "ticks": 10, "concurrent": true, "startsOn": { "clip": "lift", "event": "contact" }, "$comment": "Started by the lift's contact event (tick 6), so the two read as one gesture. It runs to tick 15 where the lift ends at 10 — checkTurnBudget charges those 5 ticks of overhang to the Help Up turn." },
       "celebrate": { "ticks": 24, "outOfCombat": true },
-      "transform": { "ticks": 24, "outOfCombat": true, "deferred": true, "$comment": "Chapter 5's, and not this commission. Declared so a rig that ships it early is still checked, and deferred so its absence is not a failure." }
+      "transform": { "ticks": 24, "outOfCombat": true, "deferred": true, "events": { "flash": 4 }, "$comment": "Chapter 5's, and not this commission. Declared so a rig that ships it early is still checked, and deferred so its absence is not a failure. `flash` starts transform_flash's 18-frame white-out; §9.4 names the sheet but no tick, so the tick is decided here: at 4, the sheet's brightest middle frames land mid-clip — over the skin swap, which is the thing the white-out exists to cover — and its fade-out ends at tick 21, leaving three ticks for the new tier to settle in clear view. Out of combat, so none of this touches the turn budget." }
     },
 
     "sets": {
@@ -212,7 +212,7 @@
 
     "turnBudgetTicks": 45,
     "$turnBudgetComment": "§9.2: a 6-minute encounter over 4 rounds with 6 figures is ~15s per turn, of which motion gets a quarter (3.75s = 45 ticks) and the human gets the rest. The dice roll's 1.5s comes out of that. Worst realistic turn is roll 18 + a 6-step move 12 + attack 8 with impact_strike's tail = 40, and `cast` is the real ceiling at 45 exactly. If a clip needs to grow, something else in the same turn has to shrink — say which.",
-    "$clipFlagsComment": "`rolls` marks a clip whose action is preceded by a d20, and it is an engine fact rather than a preference: `attack` resolves against Guard (dice.ts resolveAttack) and Burst's effects are attacks, while heal, revive, shove, protect, skipTurn and moveSelf resolve without a roll. Only a rolling clip is charged the roll's 18 ticks — charging it to Help Up put the budget 2 ticks over on nothing. `concurrent` marks a clip that overlaps another rather than following it: `hurt` starts on the attacker's impact event, `revive` on the lift's contact event, so neither adds to the turn and neither is measured as if it did."
+    "$clipFlagsComment": "`rolls` marks a clip whose action is preceded by a d20, and it is an engine fact rather than a preference: `attack` resolves against Guard (dice.ts resolveAttack) and Burst's effects are attacks, while heal, revive, shove, protect, skipTurn and moveSelf resolve without a roll. Only a rolling clip is charged the roll's 18 ticks — charging it to Help Up put the budget 2 ticks over on nothing. `concurrent` marks a clip that overlaps another rather than following it, and `startsOn` names the host event that starts it, so the overlap is arithmetic rather than assertion. Overlapping is not the same as free: `hurt` starts on the attack's impact (tick 3) and ends at 7, inside the attack's 8, so it truly adds nothing — but `revive` starts on the lift's contact (tick 6) and runs to 15 where the lift ends at 10, and checkTurnBudget charges that 5-tick overhang to the Help Up turn (move 12 + lift 10 + the greater of revive's 5-tick overhang and revive_lift's 7-tick tail = 29). An earlier version of this comment claimed revive \"adds nothing to the turn\"; the arithmetic said otherwise, and now the verifier does the arithmetic — retime `lift` or `revive` and the budget check moves with you instead of staying silent."
   },
 
   "biomes": [

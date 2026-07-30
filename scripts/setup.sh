@@ -30,21 +30,22 @@ else
 fi
 
 # --- Python -----------------------------------------------------------------
-# tools/art/verify.py and tools/art/sheet.py need exactly these two. The verifier
-# prints the same pip line on ImportError; keep the two in step.
+# requirements-dev.txt is the one list — pillow and numpy for tools/art/, and
+# cfn-lint for `npm run infra:lint`. The same file feeds every pip install in
+# .github/workflows/, so a laptop and CI cannot drift apart.
 PY=$(command -v python3 || true)
 if [ -z "$PY" ]; then
-  warn "python3 not found — 'npm run art:verify' and 'npm run art:sheet' will not run"
-elif "$PY" -c 'import PIL, numpy' >/dev/null 2>&1; then
-  say "art dependencies already installed (pillow, numpy)"
+  warn "python3 not found — 'npm run art:verify', 'npm run art:sheet', and 'npm run infra:lint' will not run"
+elif "$PY" -c 'import PIL, numpy, cfnlint' >/dev/null 2>&1; then
+  say "python dev dependencies already installed (pillow, numpy, cfn-lint)"
 else
-  say "installing art dependencies (pillow, numpy)"
+  say "installing python dev dependencies (requirements-dev.txt)"
   # Debian-style images mark the system interpreter externally-managed; fall back
-  # rather than failing the whole session over an art tool.
-  "$PY" -m pip install --quiet --disable-pip-version-check pillow numpy \
-    || "$PY" -m pip install --quiet --disable-pip-version-check --user pillow numpy \
-    || "$PY" -m pip install --quiet --disable-pip-version-check --break-system-packages pillow numpy \
-    || warn "could not install pillow/numpy — the art commands will explain what is missing"
+  # rather than failing the whole session over dev tooling.
+  "$PY" -m pip install --quiet --disable-pip-version-check -r requirements-dev.txt \
+    || "$PY" -m pip install --quiet --disable-pip-version-check --user -r requirements-dev.txt \
+    || "$PY" -m pip install --quiet --disable-pip-version-check --break-system-packages -r requirements-dev.txt \
+    || warn "could not install requirements-dev.txt — the art commands will explain what is missing"
 fi
 
 say "ready"

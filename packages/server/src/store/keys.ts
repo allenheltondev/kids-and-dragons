@@ -38,6 +38,9 @@ export const CHAR_SK = (characterId: string) => `CHAR#${characterId}`;
 export const RUN_SK = (runId: string) => `RUN#${runId}`;
 export const CHAPTER_SK = (index: number) => `CHAPTER#${index}`;
 
+/** Campaign setback counter, household-scoped — see `CampaignProgressRecord`. */
+export const CAMPAIGN_SK = (campaignId: string) => `CAMPAIGN#${campaignId}`;
+
 /** Sort-key prefixes, for range queries. */
 export const PREFIX = {
   player: "PLAYER#",

@@ -16,3 +16,16 @@ export function useEnsureContent(): void {
     void loadContent();
   }, [loadContent]);
 }
+
+/**
+ * The chapter in play, for surfaces that render it (the combat board's biome
+ * tiles and enemy art). Keyed on the run's `chapterId` so a mid-session
+ * chapter change refetches by itself; `loadChapter` is idempotent per id.
+ */
+export function useEnsureChapter(): void {
+  const chapterId = useGameStore((s) => s.state?.chapterId ?? null);
+  const loadChapter = useGameStore((s) => s.loadChapter);
+  useEffect(() => {
+    if (chapterId) void loadChapter(chapterId);
+  }, [chapterId, loadChapter]);
+}

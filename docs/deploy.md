@@ -11,6 +11,7 @@ Companion to [architecture.md §2](./architecture.md#2-aws-topology) and
 | You open or push to a pull request | the **Staging** environment → the `kad-staging` stack |
 | CI completes green on `main` | the **Production** environment → the `kad-prod` stack |
 | You need a redeploy without a commit | Actions → **Deploy (staging)** or **Deploy (production)** → Run workflow |
+| You need to roll production back | **Deploy (production)** → Run workflow, with the `ref` input set to the known-good commit |
 
 Two naming schemes meet here and are deliberately kept apart: the **GitHub
 environment** (`Staging` / `Production`) is where the role ARN and any
@@ -56,6 +57,40 @@ deploy that succeeded into a broken bundle is caught before the family finds
 out. A **manual dispatch** of either workflow has no green CI run to lean on,
 so it keeps the checks.
 
+**Production does not rebuild either — it ships CI's artifact.** After its
+build steps, `ci.yml` uploads `infra/.build/` and `packages/client/dist/` as an
+artifact named `kad-build-<sha>` (kept 14 days). On the `workflow_run` path,
+`prod-deploy.yml` downloads that artifact from the triggering run and calls
+`deploy.sh` with `KAD_PREBUILT=1`, which skips both build steps, verifies that
+every CodeUri directory and the client dist are present and non-empty *before*
+`sam deploy` (a ship with no artifact fails there, never as empty CodeUris),
+and syncs what it was given. So "it worked on staging, CI is green" is a claim
+about the exact bytes production serves — not about a second `npm ci` +
+esbuild resolution of the same commit. **Staging deliberately still builds its
+own**: `deploy.yml` runs in parallel with CI on the pull request, so there is
+no completed CI run to download from — that asymmetry is the price of staging
+feedback that starts at PR-open rather than after a full CI pass. A manual
+dispatch of the production workflow has no triggering run and no artifact, so
+it falls back to `deploy.sh`'s normal build mode; `KAD_PREBUILT` is only ever
+set by the workflow, and never by hand unless you have just put a real build
+in both directories.
+
+**Rolling production back** is therefore one click: **Deploy (production)** →
+Run workflow, with the `ref` input pointing at the last good commit (empty
+means the default branch). The dispatch checks out that ref, runs the full
+checks, rebuilds, and ships — and it passes the stale-tip guard
+unconditionally, because deploying something other than the tip of `main` is
+the point of choosing a ref.
+
+**Staging says what it is serving.** The staging stack is one shared, mutable
+environment that every pull request updates in place — two open PRs overwrite
+each other, and a reviewer cannot tell whose bytes are live from the stack
+itself. So the staging workflow maintains a sticky PR comment — "🎭 Staging is
+serving `<head-sha>` — <site-url>" — found again by a hidden marker and edited
+in place rather than re-posted, so the answer lives on the PR that asks without
+spamming its timeline. On a manual dispatch there is no PR and the step is
+skipped.
+
 ---
 
 ## Turning the automated deploys on
@@ -97,6 +132,23 @@ Add `CreateOidcProvider=false` if `token.actions.githubusercontent.com` already
 exists in the account — and an account may hold only one, so if you deploy
 anything else from Actions, it does. Its two outputs are not interchangeable:
 `StagingRoleArn` belongs to Staging and `ProdRoleArn` to Production.
+
+Both roles carry the same **scoped policy** (`kad-deploy`, defined in the same
+template) rather than the `PowerUserAccess` + `IAMFullAccess` pair they started
+with. Every stack resource is name-prefixed `kad-` / `kad-site-`, and
+CloudFormation prefixes every name it generates with the stack name, so the
+policy is generous with actions but strict about reach: CloudFormation on
+`kad-*` stacks (plus SAM's `aws-sam-cli-managed-default` artifact-bucket
+stack), S3 on `kad-site-*` and the SAM bucket, IAM only on `role/kad-*` with an
+explicit deny on the deploy roles themselves (so a PR-triggered staging job can
+never widen its own permissions), and Lambda/DynamoDB/SSM/Scheduler/logs on
+their `kad-*` names. CloudFront, Cognito, and AppSync get `Resource: "*"`
+because their ARNs carry generated ids rather than names — there is nothing to
+scope on. That matters most for **staging**, which is assumable from
+repository-controlled code on every collaborator PR. If a deploy fails after a
+policy change, the workflow's diagnose step prints the CloudFormation events;
+an over-tight policy reads as `is not authorized to perform` in
+`ResourceStatusReason`, naming the exact action and ARN to add.
 
 **2. Set `AWS_DEPLOYMENT_ROLE_ARN`** on the `Staging` and `Production` environments.
 
@@ -372,9 +424,12 @@ The recoverable path is the one the game already offers, and it runs before the
 loss rather than after it: sign in, and the household stops being a guest.
 
 **Rolling back.** `sam deploy` produces a changeset per deploy; CloudFormation
-rolls back a failed one on its own. A bad *client* bundle is faster to fix by
-redeploying than by reverting S3, since `index.html` is served `no-cache` and the
-hashed bundle under `/bundle/*` is immutable. Versioning is enabled on the site
-bucket, so the previous client and assets remain recoverable object versions
-after a sync — but roll-forward stays the primary story; the versions are a
-safety net, not a deploy path.
+rolls back a failed one on its own. For a deploy that *succeeded* into a bad
+state, the first tool is the production workflow's `ref` input — Run workflow,
+pick the last good commit, and it rebuilds and ships that (see the table at the
+top). A bad *client* bundle is faster to fix that way than by reverting S3,
+since `index.html` is served `no-cache` and the hashed bundle under `/bundle/*`
+is immutable. Versioning is enabled on the site bucket, so the previous client
+and assets remain recoverable object versions after a sync — but roll-forward
+(or ref-rollback) stays the primary story; the versions are a safety net, not a
+deploy path.

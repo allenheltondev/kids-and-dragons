@@ -31,6 +31,30 @@ export interface RunRecord {
   createdAt: string;
 }
 
+/**
+ * `HH#<householdId>` / `CAMPAIGN#<campaignId>` — the campaign setback counter
+ * (roadmap chapter 5, spec §8.3).
+ *
+ * Household-scoped, not run-scoped, because that is the whole reason it
+ * exists: "a campaign fails at three setbacks" counts across the weeks a
+ * campaign takes, and every one of those evenings is its own run. Counting
+ * off `ChapterProgressRecord`s alone cannot work twice — a second attempt at
+ * a failed campaign would inherit the first attempt's setbacks and insta-fail
+ * on its next stumble. So the counter carries the attempt: a record whose
+ * `status` is `complete` or `failed` is a *finished* attempt, and the next
+ * chapter completion for that campaign starts a fresh one at zero.
+ */
+export interface CampaignProgressRecord {
+  householdId: string;
+  campaignId: string;
+  /** `active` is the attempt in flight; anything else is history. */
+  status: "active" | "complete" | "failed";
+  setbacks: number;
+  /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
+  version?: number;
+  updatedAt: string;
+}
+
 /** `RUN#<runId>` / `CHAPTER#<n>`. */
 export interface ChapterProgressRecord {
   runId: string;
@@ -99,6 +123,21 @@ export interface CommitInput {
    * award on the character. Either the whole turn lands or none of it does.
    */
   characters?: Character[];
+  /**
+   * The progress rows a chapter completion owes, in the same transaction and
+   * for the same reason as `characters`: the seq gate is what makes reading
+   * the setback counter, deciding the campaign's fate, and writing all of it
+   * back a serialized read-modify-write instead of a race two phones can
+   * split.
+   */
+  chapterProgress?: ChapterProgressRecord;
+  campaignProgress?: CampaignProgressRecord;
+  /**
+   * The version read before deriving `campaignProgress`; null means no row
+   * existed. The shared household row must win this condition as well as the
+   * run's seq condition, because two different runs have independent seqs.
+   */
+  campaignProgressExpectedVersion?: number | null;
 }
 
 export interface GameRepository {
@@ -194,6 +233,10 @@ export interface GameRepository {
 
   putChapterProgress(progress: ChapterProgressRecord): Promise<void>;
   listChapterProgress(runId: string): Promise<ChapterProgressRecord[]>;
+
+  /** The setback counter (see `CampaignProgressRecord`). `null` = no attempt yet. */
+  getCampaignProgress(householdId: string, campaignId: string): Promise<CampaignProgressRecord | null>;
+  putCampaignProgress(progress: CampaignProgressRecord): Promise<void>;
 
   getState(runId: string): Promise<RunState | null>;
   /** Unconditional write. Only for run creation; advancing goes through commit. */

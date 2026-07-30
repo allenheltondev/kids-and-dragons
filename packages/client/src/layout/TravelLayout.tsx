@@ -40,7 +40,7 @@ import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
 import { ModeSwitch } from "./ModeSwitch";
 import { Icon } from "../screens/icons";
-import { useIsMyPrompt, useMe, usePresentation } from "../store";
+import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation } from "../store";
 
 type Focus = "world" | "player";
 
@@ -56,11 +56,13 @@ export function TravelLayout(): React.JSX.Element {
    * nothing at all.
    */
   const isMyPrompt = useIsMyPrompt();
+  const isMyCombatTurn = useIsMyCombatTurn();
   const me = useMe();
-  // Both hooks called unconditionally: `useIsMyPrompt() || useMe() === null`
+  // All hooks called unconditionally: `useIsMyPrompt() || useMe() === null`
   // short-circuits the second one away the moment the first is true, which is
-  // a conditional hook and breaks the moment the turn changes.
-  const myTurn = isMyPrompt || me === null;
+  // a conditional hook and breaks the moment the turn changes. A combat turn
+  // counts as being asked (spec §7.2) even though no Prompt object is open.
+  const myTurn = isMyPrompt || isMyCombatTurn || me === null;
   const [focus, setFocus] = useState<Focus>("world");
   const [rolling, setRolling] = useState(false);
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

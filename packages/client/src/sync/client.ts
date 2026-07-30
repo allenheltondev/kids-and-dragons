@@ -9,6 +9,7 @@ import type {
   ActionRequest,
   ActionResponse,
   Campaign,
+  Chapter,
   CreateRoomRequest,
   CreateRoomResponse,
   ItemCatalog,
@@ -112,6 +113,20 @@ export interface Api {
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
   loadCampaign(id: string): Promise<Campaign>;
+  /**
+   * The chapter in play, for what the *renderer* needs from it: the biome that
+   * picks the combat tile sheet, and the enemy art ids on encounter scenes.
+   * The engine's copy lives server-side; this one is read-only dressing.
+   */
+  loadChapter(id: string): Promise<Chapter>;
+  /**
+   * The combat ability catalog, raw. `content/abilities.json` wraps the
+   * catalog in `{ version, abilities }` with authoring `$comment`s throughout;
+   * `parseAbilityCatalog` (store/combat.ts) is what turns it into the
+   * `AbilityCatalog` that `legalActions` takes, and it stays a separate pure
+   * step so the shape-tolerance is testable without a fetch.
+   */
+  loadAbilities(): Promise<unknown>;
 
   /** `null` when the deployment has no user pool, i.e. local dev. */
   fetchConfig(): Promise<ClientConfig | null>;
@@ -224,6 +239,14 @@ export const api: Api = {
 
   loadCampaign(id) {
     return request<Campaign>(`/content/campaigns/${id}.json`);
+  },
+
+  loadChapter(id) {
+    return request<Chapter>(`/content/chapters/${encodeURIComponent(id)}.json`);
+  },
+
+  loadAbilities() {
+    return request<unknown>("/content/abilities.json");
   },
 
   // --- optional sign-in (architecture §4.5) --------------------------------
