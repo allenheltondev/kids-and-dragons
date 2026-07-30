@@ -1,11 +1,14 @@
 {{/* Sidebar navigation partial — hierarchical, scalable to 1000+ pages.
      Top level: entity type sections. Second level: individual entity pages.
      Only the current section is expanded to keep the DOM manageable. */}}
-<aside class="wiki-sidebar" aria-label="Encyclopedia navigation">
+<div class="wiki-sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+<aside class="wiki-sidebar" id="wiki-sidebar" aria-label="Wiki navigation">
   <nav class="wiki-sidebar__nav">
     <ul class="wiki-sidebar__sections" role="tree">
       {{ $currentSection := .CurrentSection }}
       {{ range .Site.Sections }}
+        {{/* Only render sections that have at least one regular content page (requirement 4.1) */}}
+        {{ if gt (len .RegularPagesRecursive) 0 }}
         {{ $isActive := or (eq . $currentSection) (.IsAncestor $currentSection) }}
         <li class="wiki-sidebar__section{{ if $isActive }} wiki-sidebar__section--active{{ end }}" role="treeitem" aria-expanded="{{ if $isActive }}true{{ else }}false{{ end }}">
           <a href="{{ .RelPermalink }}" class="wiki-sidebar__section-link{{ if $isActive }} wiki-sidebar__section-link--active{{ end }}">
@@ -39,6 +42,7 @@
             {{ end }}
           {{ end }}
         </li>
+        {{ end }}
       {{ end }}
     </ul>
   </nav>
