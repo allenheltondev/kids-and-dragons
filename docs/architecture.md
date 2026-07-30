@@ -21,7 +21,7 @@ chapter schema, and LLM integration.
 | Assets & hosting | **S3 + CloudFront** | |
 | LLM | **Claude on Claude Platform on AWS** | Anthropic-operated, SigV4 auth, IAM, Marketplace billing, same-day feature parity. |
 | Art assets | **Commissioned from a coding agent** | We own the contract ([asset-brief.md](./asset-brief.md)) and the CI gate, not a generation pipeline. |
-| IaC | **AWS SAM** — [`infra/template.yaml`](../infra/template.yaml) | One template, one region, two stacks. See [deploy.md](./deploy.md). |
+| IaC | **AWS SAM** — [`infra/template.yaml`](../infra/template.yaml) | One template, one region, two long-lived stacks (staging, prod) plus an optional dev stack. See [deploy.md](./deploy.md). |
 
 ### 1.1 Why AppSync Events over API Gateway WebSockets
 
@@ -216,10 +216,15 @@ the same two objects.
 ### 3.2 Stored shapes change — how they migrate
 
 Every item is an envelope — `PK`, `SK`, optional GSI keys, optional `ttl`, `entity`, `data` — with
-the domain object inside `data`. Today `getCharacter()` casts `data` straight to `Character`, which
-means every field is trusted and nothing defaults. `CharacterProgress.unspentPoints` is optional
-purely because of this: a required field would have TypeScript promising a number where an older row
-returns `undefined`, and `undefined + 1` corrupts a stat block at the first Rest scene.
+the domain object inside `data`. Characters are versioned and migrated on read:
+`migrateCharacter()` (`packages/shared/src/migrate.ts`) runs a ladder of small steps from whatever
+`v` the row carries up to `CHARACTER_VERSION`, then narrows the result with `assertCharacter()`.
+Both repositories call it — `getCharacter()` directly, `listCharacters()` through the shared
+`character-io.ts` — and every write stamps the current version onto the envelope.
+`CharacterProgress.unspentPoints` is optional because of the rows that predate it: a required field
+would have TypeScript promising a number where an older row returns `undefined`, and
+`undefined + 1` corrupts a stat block at the first Rest scene — so the v0 step defaults it and the
+type stays honest about history.
 
 The failure mode is worth naming precisely, because it changes the solution. **Nothing but our own
 Lambda ever writes these items.** There is no hostile input to defend against and no third-party
@@ -267,9 +272,9 @@ list, matching the rule `resolveCharacter()` already follows: a stale save must 
 down mid-session.
 
 **Hand-written, no schema library.** `assertRulesContent()` in `rules.ts` is the precedent and the
-reason still holds — no ajv in a bundle that ships to a phone. `assertCharacter()` belongs beside
-it, called at the repository boundary in **both** stores so the contract suite covers it once and
-tests both.
+reason still holds — no ajv in a bundle that ships to a phone. `assertCharacter()` sits beside the
+ladder in `migrate.ts`, called at the repository boundary in **both** stores so the contract suite
+covers it once and tests both.
 
 #### Retiring a step
 
@@ -302,8 +307,8 @@ phone that fell behind the couch to desync.
   "seq": 41,                    // client's last-seen server seq; server rejects if stale
   "intent": {
     "type": "COMBAT_ACTION",
-    "action": "attack",
-    "targetTile": { "x": 4, "y": 6 }
+    "abilityId": "attack",
+    "targetId": "e_2"             // or "targetTile": { "x": 4, "y": 6 } for tile-targeted abilities
   }
 }
 ```
@@ -315,8 +320,8 @@ phone that fell behind the couch to desync.
   "seq": 42,
   "runId": "r_88c",
   "patch": [                    // RFC 6902 JSON Patch against client state
-    { "op": "replace", "path": "/combat/actors/e_2/hp", "value": 3 },
-    { "op": "replace", "path": "/combat/turnIndex", "value": 2 }
+    { "op": "replace", "path": "/encounter/combatants/3/hp", "value": 3 },
+    { "op": "replace", "path": "/encounter/turnIndex", "value": 2 }
   ],
   "presentation": {             // how the TV should animate this transition
     "kind": "ATTACK",
@@ -604,9 +609,9 @@ and served as a static asset from CloudFront.
 
     "encounter_bramblewisps": {
       "type": "encounter",
-      "map": "maps/bramblewood/thicket",
+      "map": "thicket",
       "enemies": [
-        { "id": "wisp", "count": 3, "hp": 6, "guard": 11, "steps": 5, "attack": 3 }
+        { "id": "wisp", "count": 3, "hp": 6, "guard": 11, "quick": 3, "steps": 5, "attack": 3 }
       ],
       "onVictory": { "goto": "scene_shrine" },
       "onDefeat":  { "goto": "scene_captured" }        // never a game over
@@ -622,6 +627,9 @@ and served as a static asset from CloudFront.
 }
 ```
 
+`map` is a bare id, resolved to `content/maps/<id>.json` — an encounter board is content too,
+a grid of rows plus spawn points, living beside the chapters and validated the same way.
+
 `requiresSpecies` is what produces "only my griffin can do this" moments. Choices whose
 requirements aren't met by anyone in the party are **hidden**, not greyed out — no one feels
 locked out of something they can see.
@@ -636,21 +644,24 @@ Items themselves live in a separate catalog, `content/items.json`, so a chapter 
 ```jsonc
 {
   "sunbloom_draught": {
-    "kind": "consumable", "icon": "icons/items/sunbloom.svg",
+    "kind": "consumable", "icon": "potion",
     "name": "Sunbloom Draught", "text": "Heal 4 HP.",
     "effect": { "type": "heal", "amount": 4 }
   },
   "river_charm": {
-    "kind": "trinket", "icon": "icons/items/river-charm.svg",
+    "kind": "trinket", "icon": "charm",
     "name": "River Charm", "text": "+1 step.",
-    "passive": { "type": "statBonus", "stat": "steps", "amount": 1 }
+    "passive": { "type": "stepBonus", "amount": 1 }
   },
   "rusted_key": {
-    "kind": "quest", "icon": "icons/items/rusted-key.svg",
+    "kind": "quest", "icon": "key",
     "name": "Rusted Key", "text": "It opens something, somewhere."
   }
 }
 ```
+
+Icons are short slugs, never file paths — one slug namespace across rules, choices, and items,
+resolved by the client to inline SVG so there is exactly one icon lookup (spec §11).
 
 ### 5.1 The ability catalog
 
@@ -785,7 +796,7 @@ CI runs the integration suite with the live layer stubbed out — this invariant
 |---|---|---|
 | local | Vite + the dev server + DynamoDB Local. Live LLM off by default. | `npm run dev` |
 | `staging` | A real stack, on real AWS, from every pull request. | the `Staging` GitHub environment |
-| `prod` | The real thing. One stack, one region. | the `Production` environment, on push to `main` |
+| `prod` | The real thing. One stack, one region. | the `Production` environment, once CI passes on `main` |
 | `dev` | An optional fourth stack for driving by hand. | `./scripts/deploy.sh dev` |
 
 > Revised. This section previously said "no staging — it's a family game, `dev`

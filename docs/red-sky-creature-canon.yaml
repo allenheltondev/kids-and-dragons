@@ -1,7 +1,7 @@
 schema_version: "1.0"
 document_type: red_sky_creature_canon
 title: "The Realm of Red Sky Creature Canon"
-updated: "2026-07-29"
+updated: "2026-07-30"
 
 purpose: >-
   Canonical, agent-readable reference for the peoples, creatures, legendary
@@ -22,7 +22,18 @@ agent_instructions:
   - The Bone Yard has no normal permanent settlement.
   - Preserve the distinctions between MossHome and the wider Enchanted Woods.
   - Preserve the distinctions between the central Plains, Eastern Plains, and Sunward Fields.
-  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version. Chapters may introduce named characters (bramblewood-01's Pib, for example); they are chapter-scoped and carry no canon weight outside the chapter that names them.
+
+# Four location ids shorten when they become asset directories. This is the
+# whole transform — every other id is identical in both registries — and it is
+# written down because manifest.entities carries both spellings in one object
+# (`primaryBiome` uses the asset id, `canonicalLocations` the canon id), and
+# nothing else said which was which.
+asset_biome_ids:
+  mount_redsky: mount_red_sky
+  the_expanse: expanse
+  the_plains: plains
+  the_exchange: exchange
 
 controlled_values:
   canon_status:
@@ -51,6 +62,22 @@ controlled_values:
     high: "A serious threat requiring planning, escape, or cooperation."
     legendary: "Potentially realm-changing or suitable for a major story climax."
     unknown: "Deliberately not established."
+  scale:
+    # Every value `scale` uses, closed like the other vocabularies — an entity
+    # with a size not on this list is a canon edit, not a new adjective.
+    # asset-brief.md §9.5 maps the five starred values to on-canvas pixel
+    # heights for commissioning; the others describe creatures that are not
+    # one-tile combat actors and take their size from their story use.
+    tiny: "Fits in cupped hands. *"
+    tiny_to_small: "Between hands and knee height."
+    small: "Knee height on a person."
+    small_to_medium: "Between knee and waist height. *"
+    medium: "Person-sized. *"
+    medium_to_large: "Between person and horse sized. *"
+    large: "Horse-to-wagon sized. *"
+    very_large: "Fills a clearing; too big for a single combat tile."
+    colossal: "Landscape-scale. Never a combat actor."
+    variable: "Size depends on the individual or manifestation."
 
 world_rules:
   moral_alignment: >-
@@ -84,6 +111,17 @@ locations:
     location_type: settlement
     parent_location: enchanted_woods
     canon_note: "Bigfoot settlement built in harmony with living ancient trees."
+
+  - id: bramblewood
+    name: "The Bramblewood"
+    location_type: locale
+    parent_location: enchanted_woods
+    canon_note: >-
+      A bramble-tangled reach of the Enchanted Woods, thick with thornways and
+      old shrines. The name survives from the reference chapter
+      (bramblewood-01, biome enchanted_woods) and names a place inside the
+      Woods, never a separate region — the retired five-biome roster is not a
+      back door.
 
   - id: whispering_marsh
     name: "Whispering Marsh"
@@ -1011,11 +1049,17 @@ entities:
     standard_behavior: >-
       Some wisps repeat a memory harmlessly. Others lure travelers toward the
       place connected to that memory, even when the route is unsafe. A wisp does
-      not necessarily understand the danger it creates.
+      not necessarily understand the danger it creates. A wisp formed from a
+      playful memory plays: it teases, borrows treasured things, and leads
+      chases, re-enacting the game it is made of — the "bramblewisps" of the
+      Bramblewood (bramblewood-01) are wisps of this kind, tangled in the
+      memory of a game of keep-away. Returning what anchors the memory, or
+      letting the game finish, releases them.
     encounter_options: ["Identify the repeated memory", "Refuse to follow blindly", "Resolve or release the memory", "Use protective marsh guidance"]
-    common_story_uses: ["Misdirection", "Emotional clue", "Fragment of an older event"]
+    common_story_uses: ["Misdirection", "Emotional clue", "Fragment of an older event", "A game that has forgotten it ended"]
     canon_constraints:
       - "A will-o'-wisp is not automatically the ghost of a dead person."
+      - "A regional nickname (bramblewisp) names where and how a wisp manifests, never a second species."
 
   - id: frost_wyrm
     name: "Frost Wyrm"
@@ -1252,6 +1296,15 @@ world_phenomena:
     behavior: "The song is a maintained practice connected to an ancient alliance, not a single permanent spell."
 
 regional_population_index:
+  # The buckets here name an entity's ROLE IN THIS REGION, not its
+  # `classification` — the two deliberately disagree. A playable people appears
+  # under `supporting_people` where it lives as a minority (bigfoot in the
+  # Enchanted Woods); a classification-`supporting_people` appears under
+  # `primary_people` where it is the dominant culture (frogfolk in the marsh);
+  # a `supernatural_manifestation` lists under `dangerous_creatures` where it
+  # endangers travelers, because that is what a chapter set there needs to
+  # know. Read the entity's own entry for what it *is*; read this index for
+  # what it *does here*.
   sky_islands:
     primary_people: [kitsune]
     supporting_people: []
@@ -1271,6 +1324,13 @@ regional_population_index:
     supporting_people: []
     ambient_creatures: [mosshorn]
     dangerous_creatures: []
+    unresolved: []
+
+  bramblewood:
+    primary_people: []
+    supporting_people: []
+    ambient_creatures: []
+    dangerous_creatures: [will_o_wisp]
     unresolved: []
 
   whispering_marsh:
@@ -1382,8 +1442,27 @@ regional_population_index:
     dangerous_creatures: [river_drake]
     unresolved: []
 
+  # Every canon location gets an index row, even the two nobody has set a
+  # chapter in yet — four entity entries and the containment song already point
+  # at these, and a location the index skips reads as an oversight rather than
+  # as open water.
+  open_sea:
+    primary_people: []
+    supporting_people: [merfolk, selkie]
+    ambient_creatures: [cloud_whale, reefglider]
+    dangerous_creatures: []
+    unresolved: []
+
+  the_whirlpool:
+    primary_people: []
+    supporting_people: [merfolk]
+    ambient_creatures: []
+    dangerous_creatures: []
+    unresolved: [whirlpool_entity]
+
 current_content_gaps:
-  - "No named individual characters are canon."
+  - "No named individual characters are canon. Chapter-scoped characters exist in content (Pib the bramble sprite in bramblewood-01) and stay chapter-scoped; 'bramble sprite' reads as a local name for a harvest-sprite-like woodland spirit until a future version canonizes it."
+  - "The Hollow Crown — the campaign's namesake artifact (content/campaigns/the-hollow-crown.json, hollow_crown_shard in items.json) — has no canon entry. When canonized it should build on forest_memory and the unicorn's role in repairing broken trust, which is the ground the chapter's shrine material already stands on."
   - "No villainous faction is canon."
   - "No formal governments or political borders are canon."
   - "No exact population numbers are canon."
