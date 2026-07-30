@@ -184,6 +184,47 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.getCharacter("h_1", "c_1")).not.toBeNull();
       });
 
+      it("resolves a device by primary key too", async () => {
+        // The consistent read the revocation check depends on (`getDevice`'s
+        // port comment) — resolvable by household + device, null otherwise.
+        await repo.putDevice({
+          deviceId: "d_1",
+          householdId: "h_1",
+          playerId: "p_1",
+          tokenHash: "hash",
+          lastSeen: "2026-07-04T18:00:00.000Z",
+        });
+        expect(await repo.getDevice("h_1", "d_1")).toMatchObject({ playerId: "p_1" });
+        expect(await repo.getDevice("h_1", "d_nope")).toBeNull();
+        expect(await repo.getDevice("h_other", "d_1")).toBeNull();
+      });
+
+      it("touching a device cannot un-revoke it", async () => {
+        /*
+         * The bug this pins, found in review: resolve wrote the whole binding
+         * back to refresh `lastSeen`, so a resolve racing a revocation could
+         * write a pre-revocation copy over the flag — the lost phone erasing
+         * its own revocation. `touchDevice` updates `lastSeen` and nothing
+         * else, so the race has nothing to lose.
+         */
+        await repo.putDevice({
+          deviceId: "d_1",
+          householdId: "h_1",
+          playerId: "p_1",
+          tokenHash: "hash",
+          lastSeen: "2026-07-04T18:00:00.000Z",
+        });
+        await repo.revokeDevice("h_1", "d_1");
+        await repo.touchDevice("h_1", "d_1", "2026-07-05T09:00:00.000Z");
+
+        const binding = await repo.getDevice("h_1", "d_1");
+        expect(binding?.revoked).toBe(true);
+        expect(binding?.lastSeen).toBe("2026-07-05T09:00:00.000Z");
+
+        // A device that is not there is a no-op, never a throw.
+        await repo.touchDevice("h_1", "d_ghost", "2026-07-05T09:00:00.000Z");
+      });
+
       it("maps an account to its households", async () => {
         await repo.putAccountPointer("sub_a", "h_1");
         await repo.putAccountPointer("sub_a", "h_2");
