@@ -318,7 +318,7 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
       rep.fail(f, `/abilities/${id}/target/kind`, `"${id}" scopes an effect to an area but does not target a tile`, "The area square is anchored on the target tile; without one there is nothing to anchor it to.");
       ok = false;
     }
-    if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {
+    if (scopes.has("target") && (t.kind === "none" || (t.kind === "tile" && !t.followUp))) {
       rep.fail(f, `/abilities/${id}/effects`, `"${id}" scopes an effect to its target, and its target is a ${t.kind === "none" ? "nothing" : "tile"}`, "\"target\" means the one figure that was pointed at. On a tile or on nothing it lands on nobody.");
       ok = false;
     }
