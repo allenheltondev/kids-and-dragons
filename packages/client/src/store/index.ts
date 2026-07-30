@@ -13,8 +13,10 @@ import { useEffect, useRef } from "react";
 import { create } from "zustand";
 import type { StateCreator } from "zustand";
 import type {
+  AbilityCatalog,
   ActionResponse,
   Campaign,
+  Chapter,
   ClientIntent,
   JoinRoomResponse,
   ItemCatalog,
@@ -25,6 +27,7 @@ import type {
   RulesContent,
   RunState,
 } from "@kad/shared";
+import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type { ClientSession, ConnectionStatus, GameStore, PresentationEvent } from "./contract";
 import {
   clearSession,
@@ -169,6 +172,8 @@ interface Runtime {
    * SSE against the dev server's `/events/<code>`.
    */
   realtime: Promise<ClientConfig["realtime"] | null> | null;
+  /** In-flight chapter fetch, keyed by id — same shape as `attaching`. */
+  chapter: { id: string; task: Promise<void> } | null;
 }
 
 /**
@@ -191,6 +196,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       attaching: null,
       realtime: null,
       broadcastWatchdog: null,
+      chapter: null,
     };
 
     /**
@@ -383,10 +389,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       rules: null,
       items: null,
       campaign: null,
+      abilities: null,
+      chapter: null,
       pendingCode: null,
 
       async loadContent() {
-        if (get().rules && get().items && get().campaign) return;
+        if (get().rules && get().items && get().campaign && get().abilities) return;
         if (runtime.content) return runtime.content;
 
         const task = (async () => {
@@ -394,13 +402,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           // to name the chapter it asks the server to start, and content must
           // never require a deploy of game code. LAUNCH_CAMPAIGN is the only
           // hardcoded id in the client; picking between campaigns is roadmap
-          // Chapter 5's problem.
-          const [rules, items, campaign] = await Promise.all([
+          // Chapter 5's problem. The ability catalog rides the same batch: it
+          // is what `legalActions` needs to draw the combat action cards
+          // (store/combat.ts), served exactly like rules and items.
+          const [rules, items, campaign, rawAbilities] = await Promise.all([
             deps.api.loadRules(),
             deps.api.loadItems(),
             deps.api.loadCampaign(LAUNCH_CAMPAIGN),
+            deps.api.loadAbilities(),
           ]);
-          set({ rules, items, campaign });
+          set({ rules, items, campaign, abilities: parseAbilityCatalog(rawAbilities) });
         })()
           .catch((error: unknown) => {
             set({
@@ -412,6 +423,36 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           });
 
         runtime.content = task;
+        return task;
+      },
+
+      /**
+       * The chapter in play, for the renderer's sake: the biome that picks the
+       * combat tile sheet and the enemy art on encounter scenes. Loaded over
+       * HTTP like every other piece of content, cached by id — a run stays in
+       * one chapter for a whole sitting, so this fires once per chapter and a
+       * re-render costs nothing. A failed fetch stays quiet: the board falls
+       * back to flat tiles and placeholder silhouettes, which is a shabbier
+       * fight, not a broken one.
+       */
+      async loadChapter(chapterId: string) {
+        if (!chapterId) return;
+        if (get().chapter?.id === chapterId) return;
+        if (runtime.chapter?.id === chapterId) return runtime.chapter.task;
+
+        const task = deps.api
+          .loadChapter(chapterId)
+          .then((chapter) => {
+            if (runtime.chapter?.task === task) set({ chapter });
+          })
+          .catch(() => {
+            /* dressing only — see above */
+          })
+          .finally(() => {
+            if (runtime.chapter?.task === task) runtime.chapter = null;
+          });
+
+        runtime.chapter = { id: chapterId, task };
         return task;
       },
 
@@ -712,6 +753,23 @@ export function useItems(): ItemCatalog | null {
 
 export function useCampaign(): Campaign | null {
   return useGameStore((store) => store.campaign);
+}
+
+export function useAbilities(): AbilityCatalog | null {
+  return useGameStore((store) => store.abilities);
+}
+
+export function useChapter(): Chapter | null {
+  return useGameStore((store) => store.chapter);
+}
+
+/**
+ * "Is the combat clock on me?" The layout shells use it the way they use
+ * `useIsMyPrompt`: a combat turn is a question without a Prompt object, and
+ * §2.2's "your turn comes to you" applies to it just the same.
+ */
+export function useIsMyCombatTurn(): boolean {
+  return useGameStore((store) => isMyCombatTurn(store.state, store.session?.playerId ?? ""));
 }
 
 export function useError(): string | null {

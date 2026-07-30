@@ -16,6 +16,7 @@
  * | `CreationPreview`      | WorldView  | phase === "creation"                 |
  * | `CreationFlow`         | PlayerView | phase === "creation" and I have none |
  * | `PlayerPanel`          | PlayerView | otherwise                            |
+ * | `CombatControls`       | PlayerView | inside PlayerPanel while a fight is on |
  * | `SignInFlow`           | PlayerView | somebody opened the keepsake offer   |
  *
  * `KeepsakeOffer` is the one exception to the no-props rule being *interesting*:
@@ -31,6 +32,7 @@ export { ChapterCompletePanel } from "./ChapterCompletePanel";
 export { CreationPreview } from "./CreationPreview";
 export { CreationFlow } from "./CreationFlow";
 export { PlayerPanel } from "./PlayerPanel";
+export { CombatControls } from "./CombatPanel";
 export { SignInFlow, KeepsakeOffer } from "./SignInFlow";
 export { KeepsakeLantern, type KeepsakeLanternProps, type LanternMote } from "./KeepsakeLantern";
 

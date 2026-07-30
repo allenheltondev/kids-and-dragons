@@ -41,6 +41,7 @@ import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { KeepsakeOffer } from "./SignInFlow";
+import { CombatControls } from "./CombatPanel";
 import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
@@ -348,6 +349,13 @@ export function PlayerPanel(): ReactElement {
       ) : null}
 
       <div className="player__prompt">
+        {/* ---------------- combat (spec §7.2) ----------------
+            Renders itself only while `state.encounter` exists, and owns the
+            slot when it does: there is never an open Prompt during a fight
+            (the pre-fight ready-up runs before the board goes up), so nothing
+            below competes with it. */}
+        <CombatControls />
+
         {/* ---------------- choice / vote (spec §6.1) ---------------- */}
         {myPrompt !== null && myPrompt.kind === "choice" ? (
           <div className="prompt">
@@ -612,7 +620,7 @@ export function PlayerPanel(): ReactElement {
           </p>
         ) : null}
 
-        {myPrompt === null && globalPrompt === null && state.phase !== "lobby" && state.phase !== "chapter_complete" ? (
+        {myPrompt === null && globalPrompt === null && !state.encounter && state.phase !== "lobby" && state.phase !== "chapter_complete" ? (
           <p className="player__waiting" role="status">
             <Icon name="waiting" />
             <span>Listen to the story…</span>

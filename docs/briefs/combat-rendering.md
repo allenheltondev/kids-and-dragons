@@ -1,6 +1,6 @@
 # Brief: the client half of combat
 
-**Status: open.** Written during the 2026-07 performance/consistency pass, which
+**Status: done.** Written during the 2026-07 performance/consistency pass, which
 confirmed the split the README now states: Chapter 4's combat is built and
 tested server-side (`packages/shared/src/encounter.ts`, `grid.ts`,
 `enemy-ai.ts`, wired through `engine.ts`; `content/abilities.json`;

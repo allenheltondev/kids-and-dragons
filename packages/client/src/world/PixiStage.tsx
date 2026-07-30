@@ -15,17 +15,84 @@
  * the tab is hidden and when the host box is zero-sized — which is exactly the
  * Travel Mode `display: none` pane (components.css). A GPU pass per frame into
  * an invisible canvas is pure battery drain on the phone this mode exists for.
+ * The combat board adds no ticker of its own — it rides this one — so that
+ * discipline survives a fight.
+ *
+ * This component is also where the store meets the scene: it pushes the party,
+ * the encounter (with the chapter's biome and enemy art), the camera's
+ * attention key, and the COMBAT_SEQUENCE beats. The scene stays a plain Pixi
+ * module with no React and no store in it.
  */
 
 import { useEffect, useRef } from "react";
 import { Application } from "pixi.js";
+import type { Chapter, PartyMember, RunState } from "@kad/shared";
+import { currentActorId } from "@kad/shared";
 import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
-import { useGameStore, useParty } from "../store";
+import type { BoardViewState } from "./board";
+import { presentationDuration } from "./presentation";
+import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSession } from "../store";
+import { useEnsureChapter } from "../screens/content";
+
+/**
+ * Enemy spec id → authored art id, read off the chapter's encounter scene.
+ * The `EncounterState` deliberately carries no art (it is rules state); the
+ * chapter file is where a wisp's picture lives, exactly like scene art.
+ */
+export function enemyArtFor(chapter: Chapter | null, sceneId: string | null): Record<string, string> {
+  if (!chapter || !sceneId) return {};
+  const scene = chapter.scenes[sceneId];
+  if (!scene || scene.type !== "encounter") return {};
+  const out: Record<string, string> = {};
+  for (const spec of scene.enemies) {
+    if (spec.art) out[spec.id] = spec.art;
+  }
+  return out;
+}
+
+/**
+ * The camera's attention key (world/camera.ts header): the encounter scene
+ * plus the id of whoever this device is being asked to act as. It changes
+ * exactly when a question starts or stops being yours — which is the one
+ * moment the game may take a panned camera back (§2.2, "your turn comes to
+ * you") — and at no other time, so a pan survives everyone else's turns.
+ */
+export function attentionKeyFor(
+  state: RunState | null,
+  myCharacterId: string | null,
+): string {
+  const encounter = state?.encounter ?? null;
+  if (!encounter) return `scene:${state?.sceneId ?? ""}`;
+  const activeId = currentActorId(encounter);
+  const mine = activeId !== null && activeId === myCharacterId ? activeId : "";
+  return `${state?.sceneId ?? ""}:${mine}`;
+}
+
+function boardView(
+  state: RunState | null,
+  party: readonly PartyMember[],
+  chapter: Chapter | null,
+): BoardViewState | null {
+  const encounter = state?.encounter ?? null;
+  if (!encounter) return null;
+  return {
+    encounter,
+    biome: chapter?.biome ?? null,
+    enemyArt: enemyArtFor(chapter, state?.sceneId ?? null),
+    party,
+  };
+}
 
 export function PixiStage(): React.JSX.Element {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const sceneRef = useRef<PartyScene | null>(null);
   const party = useParty();
+  const state = useRunState();
+  const session = useSession();
+  const chapter = useChapter();
+  // The board needs the chapter for its biome and enemy art; content is data,
+  // fetched over HTTP like rules and items, never baked into the bundle.
+  useEnsureChapter();
 
   useEffect(() => {
     const host = hostRef.current;
@@ -67,10 +134,12 @@ export function PixiStage(): React.JSX.Element {
       scene = createScene(instance);
       sceneRef.current = scene;
       setActiveScene(scene);
-      // The live party, not the value this effect closed over at mount: init
-      // is async, and anyone who joined during it would otherwise be invisible
-      // until the next party change pushed a fresh value in.
-      scene.setParty(useGameStore.getState().state?.party ?? []);
+      // The live state, not the values this effect closed over at mount: init
+      // is async, and anyone who joined — or a fight that began — during it
+      // would otherwise be invisible until the next change pushed a fresh one.
+      const live = useGameStore.getState();
+      scene.setParty(live.state?.party ?? []);
+      scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter));
 
       /** Run the ticker only when a frame could actually be seen. */
       const syncTicker = () => {
@@ -133,7 +202,7 @@ export function PixiStage(): React.JSX.Element {
           app = null;
         });
     };
-    // Deliberately empty deps: the party is pushed in by the effect below.
+    // Deliberately empty deps: state is pushed in by the effects below.
     // Re-initialising a WebGL context whenever someone's HP changes would be
     // absurd, and `party` is intentionally not a dependency here.
   }, []);
@@ -141,6 +210,34 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setParty(party);
   }, [party]);
+
+  // The board is a reader of the mirrored state (brief, trap 2): every patch
+  // that touches the encounter flows through here and nowhere else.
+  useEffect(() => {
+    sceneRef.current?.setEncounter(boardView(state, party, chapter));
+  }, [state, party, chapter]);
+
+  // Whose attention the camera may claim — see attentionKeyFor.
+  const me = party.find((member) => member.playerId === (session?.playerId ?? ""));
+  const attention = attentionKeyFor(state, me?.character.id ?? null);
+  useEffect(() => {
+    sceneRef.current?.setCameraAttention(attention);
+  }, [attention]);
+
+  // Combat beats ride presentations, and the patch behind each one is held
+  // until its hold elapses (sync/channel.ts) — so the numbers pop while the
+  // board still shows the world they happened to.
+  usePresentation("COMBAT_SEQUENCE", (presentation) => {
+    sceneRef.current?.playCombatEvents(presentation.events, presentationDuration(presentation));
+  });
+  usePresentation("ENCOUNTER_BEGAN", (presentation) => {
+    if (presentation.events && presentation.events.length > 0) {
+      sceneRef.current?.playCombatEvents(
+        presentation.events,
+        presentationDuration(presentation),
+      );
+    }
+  });
 
   return <div ref={hostRef} className="kad-stage" aria-hidden="true" />;
 }
