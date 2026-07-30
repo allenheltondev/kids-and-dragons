@@ -61,7 +61,7 @@ jobs:
       # Python 3.11 for the art tooling and cfn-lint. The set lives in
       # requirements-dev.txt so every workflow and scripts/setup.sh install the
       # same thing, and `cache: pip` stops each run re-downloading the wheels.
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
           cache: pip
