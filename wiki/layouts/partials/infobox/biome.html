@@ -11,14 +11,14 @@
     {{ with .Params.climate }}
     <div class="wiki-infobox__field">
       <dt>Climate</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
     {{ with .Params.danger_level }}
     <div class="wiki-infobox__field">
       <dt>Danger Level</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
@@ -28,7 +28,7 @@
       <dd>
         <ul class="wiki-infobox__list">
           {{ range . }}
-          <li>{{ . }}</li>
+          <li>{{ partial "title-case.html" . }}</li>
           {{ end }}
         </ul>
       </dd>
@@ -41,7 +41,7 @@
       <dd>
         <ul class="wiki-infobox__list">
           {{ range . }}
-          <li>{{ . }}</li>
+          <li>{{ partial "title-case.html" . }}</li>
           {{ end }}
         </ul>
       </dd>

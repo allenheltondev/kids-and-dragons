@@ -1,0 +1,87 @@
+{{/*
+  Tier Viewer — progression carousel for character pages.
+
+  Displays the character's progression tiers (Fledgling → Sworn → Radiant → Mythic)
+  as a navigable viewer with tier title and left/right controls.
+
+  Expects page context (.) with:
+    .Params.assets.primary — the primary (fledgling) image path
+    .Params.assets.gallery — array of other tier image paths
+
+  Tier order is derived from the path: assets/characters/{name}/{tier}/assembled.png
+*/}}
+{{ $tiers := slice "fledgling" "sworn" "radiant" "mythic" }}
+{{ $tierImages := dict }}
+
+{{/* Collect all available tier images */}}
+{{ with .Params.assets }}
+  {{ with .primary }}
+    {{/* Primary is always fledgling */}}
+    {{ $tierImages = merge $tierImages (dict "fledgling" .) }}
+  {{ end }}
+  {{ with .gallery }}
+    {{ range . }}
+      {{/* Extract tier name from path: assets/characters/{name}/{tier}/assembled.png */}}
+      {{ $parts := split . "/" }}
+      {{ if ge (len $parts) 4 }}
+        {{ $tier := index $parts 3 }}
+        {{ $tierImages = merge $tierImages (dict $tier .) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{/* Only render if we have at least 2 tiers */}}
+{{ $count := len $tierImages }}
+{{ if ge $count 2 }}
+<section class="wiki-tier-viewer" aria-label="Character progression tiers" data-tier-viewer>
+  <div class="wiki-tier-viewer__header">
+    <button class="wiki-tier-viewer__nav wiki-tier-viewer__nav--prev"
+            aria-label="Previous tier" data-tier-prev>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <h2 class="wiki-tier-viewer__title" data-tier-title>Fledgling</h2>
+    <button class="wiki-tier-viewer__nav wiki-tier-viewer__nav--next"
+            aria-label="Next tier" data-tier-next>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="wiki-tier-viewer__stage">
+    {{ range $tiers }}
+      {{ $img := index $tierImages . }}
+      {{ if $img }}
+      <img
+        class="wiki-tier-viewer__img{{ if eq . "fledgling" }} wiki-tier-viewer__img--active{{ end }}"
+        src="{{ $img | relURL }}"
+        alt="{{ $.Title }} — {{ . | title }} tier"
+        data-tier="{{ . }}"
+        loading="lazy"
+      >
+      {{ end }}
+    {{ end }}
+  </div>
+
+  <div class="wiki-tier-viewer__dots" role="tablist" aria-label="Tier selection">
+    {{ range $i, $tier := $tiers }}
+      {{ $img := index $tierImages $tier }}
+      {{ if $img }}
+      <button class="wiki-tier-viewer__dot{{ if eq $tier "fledgling" }} wiki-tier-viewer__dot--active{{ end }}"
+              role="tab"
+              aria-selected="{{ if eq $tier "fledgling" }}true{{ else }}false{{ end }}"
+              aria-label="{{ $tier | title }}"
+              data-tier-dot="{{ $tier }}">
+      </button>
+      {{ end }}
+    {{ end }}
+  </div>
+</section>
+{{ end }}

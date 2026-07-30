@@ -11,28 +11,28 @@
     {{ with .Params.occupation }}
     <div class="wiki-infobox__field">
       <dt>Occupation</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
     {{ with .Params.residence }}
     <div class="wiki-infobox__field">
       <dt>Residence</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
     {{ with .Params.faction }}
     <div class="wiki-infobox__field">
       <dt>Faction</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
 
     {{ with .Params.disposition }}
     <div class="wiki-infobox__field">
       <dt>Disposition</dt>
-      <dd>{{ . }}</dd>
+      <dd>{{ partial "title-case.html" . }}</dd>
     </div>
     {{ end }}
   </dl>
