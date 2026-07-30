@@ -5,6 +5,7 @@
  * (architecture §4.2) and never mutate it locally.
  */
 
+import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
 
@@ -109,6 +110,20 @@ export interface RunState {
    * second pot.
    */
   bonuses?: EarnedBonus[];
+  /**
+   * The fight in progress, or null when there is not one (spec §7).
+   *
+   * Held on the run rather than beside it because everything else about a
+   * reconnect already works by mirroring this object: a phone that died halfway
+   * through a round gets the board, the turn order and everybody's HP back from
+   * the same snapshot that carries the scene. A separate store for combat would
+   * need its own replay path, and the one thing an eight-year-old cannot forgive
+   * is losing a fight to a dropped connection.
+   *
+   * Optional for the same reason as the two above — a run written before
+   * combat existed has to keep loading.
+   */
+  encounter?: EncounterState | null;
   updatedAt: string;
 }
 

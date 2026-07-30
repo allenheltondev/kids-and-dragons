@@ -241,7 +241,7 @@
 
     "encounter_bramblewisps": {
       "type": "encounter",
-      "map": "maps/bramblewood/thicket",
+      "map": "thicket",
       "art": "bg/bramblewood/stream",
       "narration": "The wisps scatter into the thicket and start a game of tag that nobody agreed to play.",
       "enemies": [
@@ -251,9 +251,10 @@
           "count": 3,
           "hp": 6,
           "guard": 11,
+          "quick": 3,
           "steps": 5,
           "attack": 3,
-          "art": "enemies/bramblewood/wisp"
+          "art": "enemies/will_o_wisp"
         }
       ],
       "onVictory": {

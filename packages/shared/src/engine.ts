@@ -18,9 +18,16 @@
  *     it is an authored ending that pays half the award, with no retry, no
  *     losing phase, and the party intact on the other side of it.
  *
- * Not in scope: tactical combat. Roadmap chapter 4 owns the grid, turn order
- * and enemy AI. Encounter scenes here resolve through a clearly marked
- * `TODO(chapter-4)` auto-victory so the chapter graph stays walkable end to end.
+ * Tactical combat lives here now (roadmap chapter 4). The board comes from the
+ * map the scene names, `encounter.ts` owns the rules, `enemy-ai.ts` drives the
+ * monsters, and MOVE / COMBAT_ACTION / END_TURN are the three intents a phone
+ * sends. `startEncounter` puts the board up once the party has readied, and
+ * `settleEncounter` branches the story on the way out.
+ *
+ * Still outstanding: the ability **catalog**. Attack, Help Up and Ready are
+ * built into `encounter.ts`, so a fight is playable end to end — but class
+ * signatures and species actions have to be authored as content before they
+ * appear on a phone, and combat-only items still refuse outside a fight.
  */
 
 import type {
@@ -35,10 +42,29 @@ import type {
   ChapterOutcome,
   Choice,
   Effect,
+  EncounterMap,
   EndingScene,
   Scene,
   SceneId,
 } from "./types/chapter.js";
+import {
+  beginEncounter,
+  encounterOutcome,
+  endTurn,
+  moveTo,
+  performAction,
+  currentActor,
+  currentActorId,
+  legalActions,
+  type AbilityCatalog,
+  type CombatActionRequest,
+  type EncounterState,
+  type EncounterEvent,
+  type EnemyPlacement,
+  type PartyPlacement,
+} from "./encounter.js";
+import { parseBoard, type Position } from "./grid.js";
+import { planEnemyTurn } from "./enemy-ai.js";
 import type {
   DiceRoll,
   EarnedBonus,
@@ -59,11 +85,34 @@ import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 // Surface
 // ---------------------------------------------------------------------------
 
+/**
+ * A hard stop on the enemy-turn loop. Four rounds of at most four monsters is
+ * sixteen; sixty is far past anything a real fight reaches and still finite, so
+ * a bug in a plan cannot freeze the board with everybody watching.
+ */
+const MAX_ENEMY_TURNS = 60;
+
+/** §7.2's Attack, the only ability a monster uses. */
+const ATTACK_ABILITY = "attack";
+
 export interface EngineContext {
   rules: RulesContent;
   items: ItemCatalog;
   /** The chapter in play. Null in the lobby and during character creation. */
   chapter?: Chapter | null;
+  /**
+   * The board an encounter scene names, by id. A lookup rather than a value
+   * because a chapter can hold several fights, and the engine should not have
+   * to be handed every map a chapter might reach.
+   */
+  map?: (id: string) => EncounterMap | null;
+  /**
+   * Combat abilities, by id. Authored content like the item catalog. Attack,
+   * Help Up and Ready are built into `encounter.ts` and need no entry, so an
+   * empty catalog still gives a playable fight — which is what lets combat land
+   * before the ability content does.
+   */
+  abilities?: AbilityCatalog;
   rng: Rng;
   /** ISO timestamp. Injected so the engine stays pure and replayable. */
   now: string;
@@ -473,9 +522,10 @@ function openScenePrompt(
     }
 
     case "encounter": {
-      // TODO(chapter-4): tactical combat. Until the grid exists, an encounter
-      // waits on a ready-up and then resolves as an auto-victory (see
-      // resolveEncounter) so a chapter is walkable end to end.
+      // An encounter waits on a ready-up before the board goes up. That pause
+      // is deliberate: three phones have to swap to a combat UI, and a fight
+      // beginning around somebody still on their character sheet would have
+      // their figure taking damage before they had looked up.
       draft.prompt = { kind: "ready", forPlayerIds: draft.party.map((m) => m.playerId) };
       return undefined;
     }
@@ -599,6 +649,15 @@ function dispatch(
 ): Presentation | undefined {
   const { playerId, intent } = envelope;
   switch (intent.type) {
+    case "MOVE":
+      return doCombatMove(draft, playerId, intent.to, ctx);
+
+    case "COMBAT_ACTION":
+      return doCombatAction(draft, playerId, intent, ctx);
+
+    case "END_TURN":
+      return doEndTurn(draft, playerId, ctx);
+
     case "SET_MODE":
       // Layout only (architecture §4.6). Legal at any point — the laptop dying
       // mid-encounter is exactly when you need it.
@@ -646,7 +705,20 @@ function doReady(
     draft.prompt?.kind === "ready" &&
     draft.party.every((m) => m.ready || !m.connected)
   ) {
-    return resolveEncounter(draft, ctx);
+    // Capture the board identity before settlement can branch away from the
+    // encounter scene. Opening monster turns are part of this presentation,
+    // not invisible mutations hidden inside its patch.
+    const events = startEncounter(draft, ctx);
+    const mapId = encounterMapId(draft, ctx);
+    const firstActorId = draft.encounter ? currentActorId(draft.encounter) : null;
+    const after = settleEncounter(draft, ctx);
+    return {
+      kind: "ENCOUNTER_BEGAN",
+      mapId,
+      firstActorId,
+      ...(events.length > 0 ? { events } : {}),
+      ...(after ? { after } : {}),
+    };
   }
   return undefined;
 }
@@ -906,23 +978,261 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
 }
 
 /**
- * TODO(chapter-4): tactical combat lives in roadmap chapter 4 — grid, turn
- * order, enemy AI, knock-downs, revives. Until then an encounter resolves as an
- * auto-victory placeholder so a chapter can be walked end to end and the rest
- * of the engine can be tested against real content.
+ * Combat proper: the board from `grid.ts`, the rules from `encounter.ts`, the
+ * monsters from `enemy-ai.ts`. `startEncounter` sets it up, the three combat
+ * intents drive it, and `settleEncounter` branches the story on the way out —
+ * victory to `onVictory`, a wipe to `onDefeat`, and never to a game over.
  *
  * The `onDefeat` branch is already wired and deliberately left reachable in the
  * schema: a wipe branches the story, it is never a game over (spec §7.3).
  */
-function resolveEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
+/**
+ * Sets a fight up on the board the scene names.
+ *
+ * The party arrives as it is — hurt, and possibly with somebody already down
+ * (`PartyPlacement` carries hp and down for exactly this). A chapter that beat
+ * you up before the fight is a chapter you go into the fight beaten up.
+ *
+ * `EnemySpec.count` is flattened against the map's spawn points in order,
+ * because the spec says how many and the map says where. More figures than
+ * spawn points is an authoring error the content validator already refuses, so
+ * running out here means the deployed bundle and the deployed content disagree.
+ */
+function startEncounter(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
+  const { scene } = currentScene(draft, ctx);
+  if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "not on an encounter scene");
+
+  const map = ctx.map?.(scene.map) ?? null;
+  if (!map) throw new Illegal("NOT_FOUND", `map "${scene.map}" is not loaded`);
+
+  const party: PartyPlacement[] = draft.party.map((member, i) => {
+    const at = map.partySpawns[i % map.partySpawns.length];
+    if (!at) throw new Illegal("ILLEGAL", `map "${map.id}" has no party spawns`);
+    return { character: member.character, at, hp: member.hp, down: member.down };
+  });
+
+  const enemies: EnemyPlacement[] = [];
+  for (const spec of scene.enemies) {
+    for (let n = 0; n < spec.count; n++) {
+      const at = map.enemySpawns[enemies.length];
+      if (!at) {
+        throw new Illegal(
+          "ILLEGAL",
+          `map "${map.id}" has ${map.enemySpawns.length} enemy spawns, the scene wants more`,
+        );
+      }
+      enemies.push({ spec, at });
+    }
+  }
+
+  draft.encounter = beginEncounter(
+    { board: parseBoard(map.rows), party, enemies },
+    combatCtx(ctx),
+  );
+  // Whoever the initiative roll put first might be a monster, so the fight has
+  // to be walked forward before anybody's phone is asked for anything.
+  return runEnemyTurns(draft, ctx);
+}
+
+/**
+ * The figure whose turn it is, if this player owns it.
+ *
+ * Every combat intent goes through here, and it is the whole authority check:
+ * a phone may only ever act as the character it owns, on that character's turn.
+ * Without it, any player could drive anybody's figure — including a monster's.
+ */
+function requireTurn(draft: RunState, playerId: string): EncounterState {
+  const encounter = draft.encounter;
+  if (!encounter) throw new Illegal("ILLEGAL", "there is no fight going on");
+  const actor = currentActor(encounter);
+  if (!actor) throw new Illegal("ILLEGAL", "nobody can act");
+  if (actor.side !== "party") throw new Illegal("FORBIDDEN", "it is not your turn");
+
+  const member = draft.party.find((m) => m.character.id === actor.id);
+  if (!member) throw new Illegal("ILLEGAL", `no party member for actor "${actor.id}"`);
+  if (member.playerId !== playerId) {
+    throw new Illegal("FORBIDDEN", `it is ${member.character.name}'s turn, not yours`);
+  }
+  return encounter;
+}
+
+function doCombatMove(
+  draft: RunState,
+  playerId: string,
+  to: Position,
+  _ctx: EngineContext,
+): Presentation | undefined {
+  const encounter = requireTurn(draft, playerId);
+  const result = moveTo(encounter, to);
+  // A refusal is a stale phone, not a cheat: the highlight it tapped was drawn
+  // from a board that has since moved on. Say so and let it resync.
+  if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
+  draft.encounter = result.state;
+  return combatPresentation(result.events);
+}
+
+function doCombatAction(
+  draft: RunState,
+  playerId: string,
+  intent: Extract<ClientIntent, { type: "COMBAT_ACTION" }>,
+  ctx: EngineContext,
+): Presentation | undefined {
+  const encounter = requireTurn(draft, playerId);
+  const request: CombatActionRequest = {
+    abilityId: intent.abilityId,
+    ...(intent.targetId ? { targetId: intent.targetId } : {}),
+    ...(intent.targetTile ? { targetTile: intent.targetTile } : {}),
+  };
+  const result = performAction(encounter, combatCtx(ctx), request);
+  if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
+  draft.encounter = result.state;
+  // The fight may have just ended on that swing. The branch waits behind
+  // the ordered roll/damage/down events rather than replacing them.
+  return combatPresentation(result.events, settleEncounter(draft, ctx));
+}
+
+function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
+  const encounter = requireTurn(draft, playerId);
+  draft.encounter = endTurn(encounter);
+  // Handing over may hand over to a monster, and monsters do not wait to be
+  // asked. Their entire run is one ordered animation queue.
+  const events = runEnemyTurns(draft, ctx);
+  return combatPresentation(events, settleEncounter(draft, ctx));
+}
+
+/** The slice of `EngineContext` a combat call needs. */
+function combatCtx(ctx: EngineContext) {
+  return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+}
+
+/** Keeps combat spectacle ordered without making it authoritative state. */
+function combatPresentation(
+  events: readonly EncounterEvent[],
+  after?: Presentation,
+): Presentation | undefined {
+  if (events.length === 0) return after;
+  return {
+    kind: "COMBAT_SEQUENCE",
+    events,
+    ...(after ? { after } : {}),
+  };
+}
+
+/**
+ * Plays every consecutive enemy turn, stopping the moment it is a player's turn
+ * again or the fight is over.
+ *
+ * The server drives monsters rather than waiting to be asked, because there is
+ * nobody to ask: a monster has no phone. The whole run of them lands in one
+ * patch, which is also what the client wants — three wisps moving is one
+ * animation queue, not three round trips.
+ *
+ * Bounded rather than looped to exhaustion. A plan that somehow fails to end a
+ * turn would otherwise spin here forever with the table watching a frozen
+ * board; a cap turns that into a fight that carries on slightly wrong.
+ */
+function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
+  let encounter = draft.encounter;
+  const events: EncounterEvent[] = [];
+  if (!encounter) return events;
+
+  for (let guard = 0; guard < MAX_ENEMY_TURNS; guard++) {
+    if (encounterOutcome(encounter) !== "ongoing") break;
+    const actor = currentActor(encounter);
+    if (!actor || actor.side !== "enemy") break;
+
+    const plan = planEnemyTurn({
+      board: encounter.board,
+      enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: actor.steps },
+      party: encounter.combatants
+        .filter((c) => c.side === "party")
+        .map((c) => ({
+          id: c.id,
+          at: positionOfActor(encounter!, c.id),
+          hp: c.hp,
+          maxHp: c.maxHp,
+          down: c.down,
+        })),
+    });
+
+    if (plan.moveTo) {
+      const moved = moveTo(encounter, plan.moveTo);
+      // A refusal is the AI and the grid disagreeing, which is a bug rather
+      // than a decision — but it must not strand the turn.
+      if (moved.ok) {
+        encounter = moved.state;
+        events.push(...moved.events);
+      }
+    }
+    if (plan.attack) {
+      const swung = performAction(encounter, combatCtx(ctx), {
+        abilityId: ATTACK_ABILITY,
+        targetId: plan.attack,
+      });
+      if (swung.ok) {
+        encounter = swung.state;
+        events.push(...swung.events);
+      }
+    }
+    encounter = endTurn(encounter);
+  }
+
+  draft.encounter = encounter;
+  return events;
+}
+
+/** The map the scene in play names. Only called where the scene is an encounter. */
+function encounterMapId(draft: RunState, ctx: EngineContext): string {
+  const { scene } = currentScene(draft, ctx);
+  return scene.type === "encounter" ? scene.map : "";
+}
+
+function positionOfActor(encounter: EncounterState, id: string): Position {
+  const actor = encounter.board.actors.find((a) => a.id === id);
+  if (!actor) throw new Illegal("ILLEGAL", `actor "${id}" is not on the board`);
+  return { x: actor.x, y: actor.y };
+}
+
+/**
+ * Ends the fight if it is over, branching the story either way.
+ *
+ * **A wipe is not a game over** (spec §7.3, and the header): it takes
+ * `onDefeat`, which is an authored scene like any other, and the party carries
+ * on from there. There is deliberately no losing phase for this to put the run
+ * into.
+ */
+function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
+  const encounter = draft.encounter;
+  if (!encounter) return undefined;
+  const outcome = encounterOutcome(encounter);
+  if (outcome === "ongoing") return undefined;
+
+  // Carry the damage out with them. A fight that cost her six hit points is a
+  // fight she is still six hit points down from at the next scene.
+  for (const member of draft.party) {
+    const combatant = encounter.combatants.find((c) => c.id === member.character.id);
+    if (!combatant) continue;
+    member.hp = combatant.hp;
+    member.down = combatant.down;
+    member.ready = false;
+  }
+
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "no encounter is running");
-  for (const member of draft.party) member.ready = false;
-  return takeBranch(draft, scene.onVictory, ctx);
+  draft.encounter = null;
+  return takeBranch(draft, outcome === "victory" ? scene.onVictory : scene.onDefeat, ctx);
 }
 
 function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefined {
-  if (draft.phase === "encounter") return resolveEncounter(draft, ctx);
+  if (draft.phase === "encounter") {
+    // ADVANCE is the "next" button, and during a fight there is nothing to
+    // advance to — the turn order decides what happens next, not a tap. The one
+    // exception is a fight that has already finished and is waiting to be
+    // cleared, which `settleEncounter` handles.
+    const settled = settleEncounter(draft, ctx);
+    if (settled) return settled;
+    throw new Illegal("ILLEGAL", "the fight is still going — take your turn");
+  }
   if (draft.phase === "chapter_complete") {
     /*
      * Back to the lobby. Picking the *next* chapter is roadmap Chapter 5 (it
@@ -957,6 +1267,7 @@ function doUseItem(
 ): Presentation | undefined {
   const member = memberByPlayer(draft, playerId);
   if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+  if (draft.encounter) throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
 
   const def = ctx.items[itemId];
   if (!def) throw new Illegal("NOT_FOUND", `unknown item "${itemId}"`);
@@ -965,10 +1276,16 @@ function doUseItem(
     throw new Illegal("ILLEGAL", `"${def.name}" is a quest item; it opens something, somewhere`);
   }
   if (def.effect && def.effect.type !== "heal") {
-    // TODO(chapter-4): rollBonus and thrown damage need a target and a combat
-    // round to land in. Rejected rather than consumed — losing an item for
-    // nothing is worse than not being allowed to use it yet.
-    throw new Illegal("ILLEGAL", `"${def.name}" can only be used in an encounter (chapter 4)`);
+    /*
+     * A combat-only item outside a fight. `rollBonus` and thrown damage need a
+     * target and a round to land in, and `encounter.ts` owns both — using one
+     * here has nothing to apply it to.
+     *
+     * Rejected rather than consumed: losing an item for nothing is worse than
+     * being told you cannot use it yet. Wiring these into a fight is the next
+     * pass, along with the ability catalog.
+     */
+    throw new Illegal("ILLEGAL", `"${def.name}" can only be used in a fight`);
   }
 
   const result = useConsumable(member.character.inventory, itemId, ctx.items);

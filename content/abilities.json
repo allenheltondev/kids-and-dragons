@@ -1,0 +1,324 @@
+{
+  "$comment": "Combat definitions for the abilities rules.json names — architecture §5, spec §7.2. Shape is packages/shared/src/encounter.ts AbilityCatalog; where this file and the TS type disagree, the type wins. rules.json owns an ability's name, icon and the sentence a child reads; this file owns what it does on the board. The split is deliberate: an ability's *words* are read at a Rest scene by somebody choosing, and its *mechanics* are read by the engine, and the two get edited by different people for different reasons. Attack, Help Up and Ready are built into encounter.ts (UNIVERSAL_ABILITIES) because §7.2 grants them to everybody and they have no rules.json entry to borrow a name from — an entry here with the same id would win, which is the escape hatch if one ever needs retuning.",
+  "$deferredComment": "Abilities rules.json promises that the ten effect verbs cannot express *faithfully*. They are listed rather than approximated on purpose. An approximation is a lie a child will catch: `tanglelight` says \"it cannot move\" and the nearest verb costs the monster its whole turn, which is a different and better effect, so a player who reads the card and then watches the board learns not to trust the cards. content:validate refuses an ability that is in neither this list nor the catalog, so adding one to rules.json cannot silently produce a button that does nothing. Every entry names the verb it is waiting on.",
+  "version": 1,
+  "abilities": {
+    "brace": {
+      "id": "brace",
+      "name": "Brace",
+      "icon": "shield",
+      "timing": "action",
+      "$comment": "\"Take a hit that was meant for a friend standing next to you.\" The whole Thornguard fantasy, and the reason `protect` is a verb.",
+      "target": {
+        "kind": "ally",
+        "range": "adjacent"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "protect"
+          }
+        }
+      ]
+    },
+    "first_strike": {
+      "id": "first_strike",
+      "name": "First Strike",
+      "icon": "arrow",
+      "timing": "initiative",
+      "$comment": "\"Go before anybody else on the first round.\" Read once, when order is rolled — never a button on a turn, which is why the timing is `initiative` and not `action`.",
+      "target": {
+        "kind": "self"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "goFirst"
+          },
+          "to": "self"
+        }
+      ]
+    },
+    "burst": {
+      "id": "burst",
+      "name": "Burst",
+      "icon": "spark",
+      "timing": "action",
+      "$comment": "\"Hit every enemy inside a 2x2 square of tiles.\" `area: 2` is literally that square, anchored top-left on the tile she taps. One roll per enemy caught — `attack` is a roll, so the dice decide each one. The text gives no range, so this takes 6, the same reach every other card that stays silent about it gets — and it has to say *something*, because an absent range means adjacent and a Starweaver who must stand next to the square she blasts is a Thornguard. `openTileOnly: false` is the other half of that: it defaults to *open*, which is right for a leap and exactly wrong here, because the square you most want to blast is the one with a monster standing in it.",
+      "target": {
+        "kind": "tile",
+        "range": 6,
+        "area": 2,
+        "affects": "enemy",
+        "openTileOnly": false
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "attack",
+            "damage": 3
+          },
+          "to": "area"
+        }
+      ]
+    },
+    "rally": {
+      "id": "rally",
+      "name": "Rally",
+      "icon": "hand",
+      "timing": "action",
+      "$comment": "\"Heal a friend, or lift a knocked-down friend back up from across the board.\" One ability with two readings, and `when` is how the data says so rather than the resolver growing a rule about heals not stacking onto a revive. Heals 2 where soothe heals 3: rally reaches the whole board from level 1, so the level-3 upgrade has to be worth taking.",
+      "target": {
+        "kind": "ally",
+        "range": "board",
+        "state": "any"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "revive"
+          },
+          "when": "down"
+        },
+        {
+          "effect": {
+            "type": "heal",
+            "amount": 2
+          },
+          "when": "standing"
+        }
+      ]
+    },
+    "shove": {
+      "id": "shove",
+      "name": "Shove",
+      "icon": "fist",
+      "timing": "action",
+      "$comment": "\"Push an enemy back 2 steps and step into its place.\" Two verbs in order: the shove empties the tile, then `moveSelf` takes it. Order matters — swap them and the Thornguard tries to stand where the monster still is.",
+      "target": {
+        "kind": "enemy",
+        "range": "adjacent"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "shove",
+            "steps": 2
+          }
+        },
+        {
+          "effect": {
+            "type": "moveSelf"
+          }
+        }
+      ]
+    },
+    "glimmer": {
+      "id": "glimmer",
+      "name": "Glimmer",
+      "icon": "star",
+      "timing": "action",
+      "$comment": "\"A friend anywhere on the board gets +2 on their next roll.\" `range: \"board\"` is that \"anywhere\", and the point of the ability — the Starweaver helps from wherever she is standing.",
+      "target": {
+        "kind": "ally",
+        "range": "board"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "rollBonus",
+            "amount": 2
+          }
+        }
+      ]
+    },
+    "soothe": {
+      "id": "soothe",
+      "name": "Soothe",
+      "icon": "flame",
+      "timing": "action",
+      "$comment": "\"A friend within 4 steps gets 3 HP back.\" Straight across the board and through walls, as every \"within N steps\" range is (grid.ts) — she is counting tiles between two figures, not tracing a route.",
+      "target": {
+        "kind": "ally",
+        "range": 4
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "heal",
+            "amount": 3
+          }
+        }
+      ]
+    },
+    "chorus": {
+      "id": "chorus",
+      "name": "Chorus",
+      "icon": "note",
+      "timing": "action",
+      "$comment": "\"Every friend gets 2 HP back and +1 on their next roll.\" No target at all — the effects find their own audience, and `allies` includes the Songkeeper herself, which the word \"every\" fairly promises.",
+      "target": {
+        "kind": "none",
+        "affects": "ally"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "heal",
+            "amount": 2
+          },
+          "to": "allies"
+        },
+        {
+          "effect": {
+            "type": "rollBonus",
+            "amount": 1
+          },
+          "to": "allies"
+        }
+      ]
+    },
+    "mending_light": {
+      "id": "mending_light",
+      "name": "Mending Light",
+      "icon": "hand",
+      "timing": "action",
+      "$comment": "\"Touch a friend standing next to you. They get 3 HP back.\" `state` defaults to standing, which is what \"standing next to you\" means and also §7.3's rule that healing never lifts anybody off the floor.",
+      "target": {
+        "kind": "ally",
+        "range": "adjacent"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "heal",
+            "amount": 3
+          }
+        }
+      ],
+      "oncePerEncounter": true
+    },
+    "gliding_leap": {
+      "id": "gliding_leap",
+      "name": "Gliding Leap",
+      "icon": "wing",
+      "timing": "action",
+      "$comment": "\"Sail over anything in your way and land on any open tile within 6 steps.\" `openTileOnly` is the landing being somewhere she could stand, and the straight-line range is what \"sail over anything in your way\" means — this range ignores walls by design.",
+      "target": {
+        "kind": "tile",
+        "range": 6,
+        "openTileOnly": true
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "moveSelf"
+          }
+        }
+      ],
+      "oncePerEncounter": true
+    },
+    "sky_watch": {
+      "id": "sky_watch",
+      "name": "Sky Watch",
+      "icon": "eye",
+      "timing": "action",
+      "$comment": "\"Every friend gets +2 on their next roll.\" The griffin calls out where the enemies are going, so it lands on the whole party at once and needs nothing pointed at.",
+      "target": {
+        "kind": "none",
+        "affects": "ally"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "rollBonus",
+            "amount": 2
+          },
+          "to": "allies"
+        }
+      ],
+      "oncePerEncounter": true
+    },
+    "ground_smash": {
+      "id": "ground_smash",
+      "name": "Ground Smash",
+      "icon": "fist",
+      "timing": "action",
+      "$comment": "\"Every enemy next to you is shoved back 2 steps.\" The `adjacent` scope with `affects: enemy` is that sentence; no target, because \"next to you\" is decided by where the bigfoot is standing rather than by a tap.",
+      "target": {
+        "kind": "none",
+        "affects": "enemy"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "shove",
+            "steps": 2
+          },
+          "to": "adjacent"
+        }
+      ],
+      "oncePerEncounter": true
+    },
+    "fox_fire": {
+      "id": "fox_fire",
+      "name": "Fox Fire",
+      "icon": "spark",
+      "timing": "action",
+      "$comment": "\"It is so busy watching them that it skips its next turn.\" The text gives no range, so this takes 6 — the same reach the other two ranged species actions use, which keeps \"how far can my species action go\" one answer instead of six.",
+      "target": {
+        "kind": "enemy",
+        "range": 6
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "skipTurn"
+          }
+        }
+      ],
+      "oncePerEncounter": true
+    },
+    "pounce": {
+      "id": "pounce",
+      "name": "Pounce",
+      "icon": "arrow",
+      "timing": "action",
+      "$comment": "Jump to an open tile, then choose and attack one adjacent enemy.",
+      "target": {
+        "kind": "tile",
+        "range": 6,
+        "openTileOnly": true,
+        "affects": "enemy",
+        "followUp": {
+          "kind": "enemy",
+          "range": "adjacent"
+        }
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "moveSelf"
+          }
+        },
+        {
+          "effect": {
+            "type": "attack",
+            "damage": 3
+          }
+        }
+      ],
+      "oncePerEncounter": true
+    }
+  },
+  "$deferred": {
+    "bramble_wall": "Needs a verb that changes the terrain. Every one of the ten acts on a figure; nothing makes a tile impassable, and `Board.terrain` is built once by `parseBoard` at the start of a fight.",
+    "unbreakable": "Needs damage reduction, and a duration — \"until your next turn\". No verb reduces incoming damage and the model has no concept of an effect that lasts.",
+    "vanish": "Needs a miss. `protect` redirects the next hit onto the bracer; this has to make it fail outright, which is a different verb.",
+    "twin_step": "Needs a second movement after acting. §7.2's turn is move-then-act, and `moveSelf` is an effect rather than a refunded move.",
+    "storm_of_blades": "Needs two *chosen* enemies. The `adjacent` scope hits everything beside you, which is more generous than the card and would make the level-9 unlock strictly better than it reads.",
+    "tanglelight": "Needs \"cannot move\" on its own. `skipTurn` costs the monster its whole turn, which is a stronger and different effect — the card would be lying.",
+    "starfall": "Needs a board-wide scope. `area` is a square anchored on a tile; nothing collects every enemy wherever they are.",
+    "encore": "Needs a second turn for somebody else — a turn cursor the round loop does not have."
+  }
+}

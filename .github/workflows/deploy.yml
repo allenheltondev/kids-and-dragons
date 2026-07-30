@@ -138,11 +138,28 @@ jobs:
             --stack-name "$STACK_NAME" --region "$AWS_REGION" \
             --query "Stacks[0].Outputs" --output json)
           read_out() { echo "$OUTPUTS" | jq -r --arg k "$1" '.[] | select(.OutputKey==$k) | .OutputValue'; }
+          SITE_URL=$(read_out SiteUrl)
           {
-            echo "site-url=$(read_out SiteUrl)"
+            echo "site-url=${SITE_URL}"
             echo "api-endpoint=$(read_out ApiEndpoint)"
             echo "table-name=$(read_out TableName)"
           } >> "$GITHUB_OUTPUT"
+
+          # In the log as well as the summary. The summary is a separate tab and
+          # the environment URL is a small link in the sidebar; neither is visible
+          # while you are watching the run, which is exactly when you want the
+          # address to open on the TV.
+          if [ -z "$SITE_URL" ] || [ "$SITE_URL" = "null" ]; then
+            echo "::error::the stack has no SiteUrl output — the deploy may have succeeded but there is no address to open"
+            exit 1
+          fi
+          echo "::notice title=Staging is live::${SITE_URL}"
+          echo
+          echo "  ┌──────────────────────────────────────────────────────────"
+          echo "  │  Kids & Dragons — staging"
+          echo "  │  ${SITE_URL}"
+          echo "  └──────────────────────────────────────────────────────────"
+          echo
 
       - name: Write deployment summary
         run: |
