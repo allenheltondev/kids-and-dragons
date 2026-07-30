@@ -16,6 +16,7 @@ afterEach(async () => {
 async function tree(files: {
   rules?: unknown;
   items?: unknown;
+  abilities?: unknown;
   chapters?: Record<string, unknown> | null;
   maps?: Record<string, unknown> | null;
 }): Promise<string> {
@@ -23,6 +24,7 @@ async function tree(files: {
   tempDirs.push(root);
   if (files.rules !== undefined) await write(path.join(root, "rules.json"), files.rules);
   if (files.items !== undefined) await write(path.join(root, "items.json"), files.items);
+  if (files.abilities !== undefined) await write(path.join(root, "abilities.json"), files.abilities);
   if (files.chapters !== null) {
     const dir = path.join(root, "chapters");
     await fs.mkdir(dir, { recursive: true });
@@ -134,5 +136,88 @@ describe("loadContent", () => {
 
     const items = { ...makeItems(), broken: { name: "Broken", text: "", icon: "" } };
     await expect(loadContent(await tree({ ...good(), items }))).rejects.toThrow(/invalid kind/);
+  });
+});
+
+describe("the ability catalog", () => {
+  function abilities(overrides: Record<string, unknown> = {}) {
+    return {
+      version: 1,
+      abilities: {
+        brace: {
+          id: "brace",
+          name: "Brace",
+          icon: "shield",
+          timing: "action",
+          target: { kind: "ally", range: "adjacent" },
+          effects: [{ effect: { type: "protect" } }],
+        },
+        ...overrides,
+      },
+      $deferred: { bramble_wall: "Needs a verb that changes the terrain." },
+    };
+  }
+
+  it("loads the catalog flat, dropping the wrapper the engine has no use for", async () => {
+    const content = await loadContent(await tree({ ...good(), abilities: abilities() }));
+
+    // Keyed by id, with no `version` or `$deferred` leaking in — the engine hands
+    // this straight to `abilityFor`, which does a bare property lookup.
+    expect(Object.keys(content.abilities())).toEqual(["brace"]);
+    expect(content.abilities().brace?.effects[0]?.effect).toEqual({ type: "protect" });
+  });
+
+  it("loads a content set that has no abilities.json at all", async () => {
+    /*
+     * A thinner game, not a broken one: every class signature falls back to the
+     * three universal actions of §7.2 and a fight is still playable. The loader's
+     * job is to refuse content that would *break* at the table — `content:validate`
+     * is what insists the shipped set is complete, and it fails the build for a
+     * missing file rather than the session.
+     */
+    const content = await loadContent(await tree(good()));
+    expect(content.abilities()).toEqual({});
+  });
+
+  it("rejects an ability whose key and id disagree", async () => {
+    // `legalActions` offers the key and `performAction` looks up the same key, so
+    // this would be an ability that vanishes between being offered and being
+    // tapped — a refusal on a legal action, mid-fight.
+    const catalog = abilities();
+    catalog.abilities.brace.id = "brase";
+    await expect(loadContent(await tree({ ...good(), abilities: catalog }))).rejects.toThrow(
+      /"brace" carries id "brase"/,
+    );
+  });
+
+  it("rejects an ability with no effects", async () => {
+    const catalog = abilities();
+    catalog.abilities.brace.effects = [];
+    await expect(loadContent(await tree({ ...good(), abilities: catalog }))).rejects.toThrow(
+      /button that does nothing/,
+    );
+  });
+
+  it("rejects a nameless, iconless or untimed ability", async () => {
+    const bare = { id: "x", target: { kind: "self" }, effects: [{ effect: { type: "revive" } }] };
+    const root = await tree({ ...good(), abilities: { version: 1, abilities: { x: bare } } });
+    const error = await loadContent(root).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ContentError);
+    if (!(error instanceof ContentError)) return;
+    expect(error.problems).toEqual([
+      expect.stringContaining('"x" has no name'),
+      expect.stringContaining('"x" has no icon'),
+      expect.stringContaining('"x" has an invalid timing'),
+    ]);
+  });
+
+  it("rejects a file that is not JSON, or has no abilities object", async () => {
+    await expect(loadContent(await tree({ ...good(), abilities: "{ oh no" }))).rejects.toThrow(
+      /abilities.json is not valid JSON/,
+    );
+    await expect(
+      loadContent(await tree({ ...good(), abilities: { version: 1, abilities: [] } })),
+    ).rejects.toThrow(/expected an "abilities" object/);
   });
 });

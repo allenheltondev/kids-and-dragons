@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons/schemas/abilities.schema.json",
+  "title": "Combat ability catalog",
+  "description": "content/abilities.json. Mirrors packages/shared/src/encounter.ts CombatAbility / AbilityCatalog; where the two disagree the TypeScript type wins. rules.json owns an ability's name, icon and the sentence a child reads at a Rest scene; this file owns what it does on the board. The rules a schema cannot express — every ability rules.json names is either authored here or listed in $deferred, and never both — are enforced by tools/content/validate.mjs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "abilities"],
+  "properties": {
+    "$comment": { "type": "string" },
+    "$deferredComment": { "type": "string" },
+    "version": { "const": 1 },
+    "abilities": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/abilityId" },
+      "additionalProperties": { "$ref": "#/$defs/ability" }
+    },
+    "$deferred": {
+      "$comment": "An ability rules.json promises that the ten effect verbs cannot express faithfully. The value is the reason, naming the verb it waits on — a deferral has to be legible to whoever adds the verb.",
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/abilityId" },
+      "additionalProperties": { "type": "string", "minLength": 20 }
+    }
+  },
+  "$defs": {
+    "abilityId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "ability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "icon", "timing", "target", "effects"],
+      "properties": {
+        "$comment": { "type": "string" },
+        "id": { "$ref": "#/$defs/abilityId" },
+        "name": { "type": "string", "minLength": 1 },
+        "icon": {
+          "$comment": "Icons before text (roadmap): nothing tappable ships without one.",
+          "type": "string",
+          "minLength": 1
+        },
+        "timing": {
+          "$comment": "Only \"action\" is ever offered as a button. \"initiative\" is read once, when turn order is rolled — a timing is how First Strike avoids being a dead button, which spec 7.2 forbids.",
+          "enum": ["action", "initiative"]
+        },
+        "target": { "$ref": "#/$defs/targetRule" },
+        "effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/effectSpec" }
+        },
+        "oncePerEncounter": {
+          "$comment": "Spec 7.2 — species actions are once per encounter.",
+          "type": "boolean"
+        }
+      }
+    },
+    "targetRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["none", "self", "ally", "enemy", "tile"] },
+        "range": {
+          "$comment": "Absent means adjacent. A number is the \"within N steps\" the card already says, measured straight across the board and ignoring walls.",
+          "anyOf": [
+            { "type": "integer", "minimum": 1, "maximum": 10 },
+            { "enum": ["adjacent", "board"] }
+          ]
+        },
+        "state": { "enum": ["down", "standing", "any"] },
+        "openTileOnly": { "type": "boolean" },
+        "affects": { "enum": ["ally", "enemy"] },
+        "area": {
+          "$comment": "Side length of the square collected by the \"area\" scope, anchored top-left on the target tile. Burst is 2. Kept small: a 4x4 on a 10x8 board is a quarter of the map.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        }
+      }
+    },
+    "effectSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["effect"],
+      "properties": {
+        "effect": { "$ref": "#/$defs/effect" },
+        "to": {
+          "$comment": "Defaults to \"target\".",
+          "enum": ["target", "self", "allies", "adjacent", "area"]
+        },
+        "when": {
+          "$comment": "Skip this effect unless the recipient is in that state. How Rally says \"heal a friend, OR lift a knocked-down friend\" in data rather than in the resolver.",
+          "enum": ["down", "standing"]
+        }
+      }
+    },
+    "effect": {
+      "$comment": "The ten verbs of encounter.ts AbilityEffect. A new ability is data; a new verb is a code change, so this list is closed on purpose — an unknown type here fails the build rather than becoming a button that does nothing.",
+      "type": "object",
+      "unevaluatedProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "attack",
+            "damage",
+            "heal",
+            "revive",
+            "rollBonus",
+            "moveSelf",
+            "shove",
+            "skipTurn",
+            "protect",
+            "goFirst"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "attack" } }, "required": ["type"] },
+          "then": { "required": ["damage"], "properties": { "damage": { "$ref": "#/$defs/magnitude" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "damage" } }, "required": ["type"] },
+          "then": { "required": ["amount"], "properties": { "amount": { "$ref": "#/$defs/magnitude" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "heal" } }, "required": ["type"] },
+          "then": { "required": ["amount"], "properties": { "amount": { "$ref": "#/$defs/magnitude" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "rollBonus" } }, "required": ["type"] },
+          "then": { "required": ["amount"], "properties": { "amount": { "$ref": "#/$defs/magnitude" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "shove" } }, "required": ["type"] },
+          "then": { "required": ["steps"], "properties": { "steps": { "type": "integer", "minimum": 1, "maximum": 4 } } }
+        }
+      ]
+    },
+    "magnitude": {
+      "$comment": "A character has 10 base HP (rules.json baseMaxHp), so 10 is the whole of one; nothing on a card is bigger than that.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    }
+  }
+}
