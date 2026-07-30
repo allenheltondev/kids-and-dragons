@@ -1,5 +1,26 @@
 # Brief: promote one artifact, and shrink the deploy role
 
+**Status: done (2026-07-30),** with three deliberate departures. (1) Only
+**prod** consumes the CI artifact (`kad-build-<sha>`, via `KAD_PREBUILT=1` in
+`deploy.sh`); staging still builds its own, because `deploy.yml` runs in
+parallel with CI on the PR and has no completed run to download from — so a
+*merged* commit produces exactly one build, but a PR still pays a staging
+build. (2) The scoped policy landed on **both** roles at once (one shared
+`kad-deploy` managed policy in `infra/github-oidc.yaml`) rather than
+prod-first: the roles deploy the same template and the policy scopes by
+resource name, so iterating it twice bought nothing. IAM is scoped by the
+`role/kad-*` name prefix rather than a `/kad/` path — SAM's generated role
+names carry the stack prefix but no path — with an explicit deny on
+`role/kad-deploy-*` so the PR-assumable staging role cannot widen itself.
+CloudFront/Cognito/AppSync remain `Resource: "*"` because their ARNs carry
+generated ids, not names. (3) `workflow_dispatch` rollback took the `ref`
+input form (rebuild the chosen commit), not "pick an artifact" — artifacts
+expire after 14 days and the download-by-run-id plumbing only exists on the
+workflow_run path. Also landed: the sticky staging PR comment,
+`.github/dependabot.yml` (github-actions, weekly), and `requirements-dev.txt`
++ `cache: pip` across every workflow and `scripts/setup.sh`. The original
+text follows.
+
 **Status: open.** The 2026-07 pass made the pipelines *correct* — real action
 versions, prod gated on CI via `workflow_run` pinned to the CI-tested SHA, a
 prod-only strict art gate, post-deploy smoke checks, S3 versioning for

@@ -1,0 +1,11 @@
+# Python dependencies for the checks — the art tooling (tools/art/) and the
+# stack linter. One file so the workflows, scripts/setup.sh, and a laptop all
+# install the same set, and so setup-python's `cache: pip` has a file to key on.
+#
+#   python -m pip install -r requirements-dev.txt
+#
+# Deliberately unpinned: these are dev tools, not runtime dependencies, and the
+# verifier fails loudly if an upgrade ever changes its answers.
+pillow
+numpy
+cfn-lint
