@@ -1,0 +1,21 @@
+{{/* Blocking theme script — must go in <head> to prevent flash-of-wrong-theme.
+     Reads localStorage, respects prefers-color-scheme, defaults to dark mode.
+     Falls back to dark mode if localStorage is unavailable. */}}
+<script>
+(function() {
+  try {
+    var stored = localStorage.getItem('wiki-theme');
+    if (stored === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else if (stored === 'dark' || !stored) {
+      if (!stored && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    }
+  } catch(e) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+</script>

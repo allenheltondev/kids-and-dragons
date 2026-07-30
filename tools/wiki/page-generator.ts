@@ -6,8 +6,9 @@
  * generated section markers.
  */
 
+import fs from 'node:fs';
 import path from 'node:path';
-import type { CanonEntity, AssetResult, CanonRegistry, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
+import type { CanonEntity, AiContext, AssetResult, CanonRegistry, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
 
 /** Marker format for generated sections. */
 const BEGIN_MARKER = (section: string) => `<!-- BEGIN GENERATED: ${section} -->`;
@@ -57,6 +58,162 @@ function extractEntityName(id: string): string {
 function extractType(id: string): string {
   const dotIndex = id.indexOf('.');
   return dotIndex > 0 ? id.substring(0, dotIndex) : id;
+}
+
+/**
+ * Convention-based asset path mapping per entity type.
+ *
+ * Characters  → assets/characters/{name}/fledgling/assembled.png
+ * Creatures   → assets/entities/{name}/assembled.png
+ * NPCs        → assets/entities/{name}/assembled.png
+ * Biomes      → assets/biomes/{name}/bg.webp
+ */
+export function getConventionAssetPath(entityType: string, name: string): string | null {
+  switch (entityType) {
+    case 'character':
+      return `assets/characters/${name}/fledgling/assembled.png`;
+    case 'creature':
+    case 'npc':
+      return `assets/entities/${name}/assembled.png`;
+    case 'biome':
+      return `assets/biomes/${name}/bg.webp`;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Derive the asset name for an entity.
+ *
+ * Uses `asset_id` from metadata if present, otherwise the portion of Canon_ID after the dot.
+ */
+export function getAssetName(entity: CanonEntity): string {
+  if (entity.assetId) {
+    return entity.assetId;
+  }
+  // Also check metadata for asset_id
+  const metaAssetId = entity.metadata['asset_id'];
+  if (typeof metaAssetId === 'string' && metaAssetId.length > 0) {
+    return metaAssetId;
+  }
+  return extractEntityName(entity.id);
+}
+
+/**
+ * Discover gallery assets for an entity by scanning the convention directory.
+ *
+ * For characters: scans assets/characters/{name}/ for all assembled.png across tiers.
+ * For creatures/NPCs: scans assets/entities/{name}/ for all image files.
+ * For biomes: scans assets/biomes/{name}/ for all image files (excluding bg.webp which is primary).
+ *
+ * Returns only paths to files that actually exist on disk.
+ */
+export function discoverGalleryAssets(
+  entity: CanonEntity,
+  assetsDir: string,
+  primaryPath: string | undefined,
+): string[] {
+  const name = getAssetName(entity);
+  const gallery: string[] = [];
+
+  let scanDir: string;
+  switch (entity.type) {
+    case 'character':
+      scanDir = path.join(assetsDir, 'characters', name);
+      break;
+    case 'creature':
+    case 'npc':
+      scanDir = path.join(assetsDir, 'entities', name);
+      break;
+    case 'biome':
+      scanDir = path.join(assetsDir, 'biomes', name);
+      break;
+    default:
+      return gallery;
+  }
+
+  if (!fs.existsSync(scanDir)) {
+    return gallery;
+  }
+
+  // For characters, look for assembled.png in each tier subdirectory
+  if (entity.type === 'character') {
+    try {
+      const entries = fs.readdirSync(scanDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const assembledPath = path.join(scanDir, entry.name, 'assembled.png');
+          if (fs.existsSync(assembledPath)) {
+            const relativePath = path.posix.join('assets', 'characters', name, entry.name, 'assembled.png');
+            gallery.push(relativePath);
+          }
+        }
+      }
+    } catch {
+      // Silently skip on read errors
+    }
+  } else {
+    // For creatures/NPCs/biomes, scan directory for all image files
+    const IMAGE_EXTENSIONS = new Set(['.png', '.webp', '.jpg', '.svg']);
+    try {
+      const entries = fs.readdirSync(scanDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isFile()) {
+          const ext = path.extname(entry.name).toLowerCase();
+          if (IMAGE_EXTENSIONS.has(ext)) {
+            const baseDir = entity.type === 'biome' ? 'biomes' : 'entities';
+            const relativePath = path.posix.join('assets', baseDir, name, entry.name);
+            gallery.push(relativePath);
+          }
+        }
+      }
+    } catch {
+      // Silently skip on read errors
+    }
+  }
+
+  // Sort gallery alphabetically and remove the primary image from gallery
+  gallery.sort();
+  if (primaryPath) {
+    const normalizedPrimary = primaryPath.replaceAll('\\', '/');
+    return gallery.filter(p => p !== normalizedPrimary);
+  }
+  return gallery;
+}
+
+/**
+ * Resolve convention-based assets for an entity, checking file existence.
+ *
+ * Returns an AssetResult with the primary path set only if the file exists on disk,
+ * and gallery populated from discovered assets.
+ */
+export function resolveConventionAssets(
+  entity: CanonEntity,
+  assetsDir: string,
+): AssetResult {
+  const name = getAssetName(entity);
+  const conventionPath = getConventionAssetPath(entity.type, name);
+
+  let primary: string | undefined;
+
+  if (conventionPath) {
+    // Check if the file actually exists on disk
+    const fullPath = path.join(assetsDir, '..', conventionPath);
+    const normalizedFullPath = path.resolve(fullPath);
+    if (fs.existsSync(normalizedFullPath)) {
+      primary = conventionPath;
+    }
+  }
+
+  // Discover gallery assets
+  const gallery = discoverGalleryAssets(entity, assetsDir, primary);
+
+  return {
+    entityId: entity.id,
+    primary,
+    gallery: gallery.length > 0 ? gallery : undefined,
+    source: primary ? 'convention' : 'none',
+  };
 }
 
 /**
@@ -156,6 +313,60 @@ function buildRelatedEntries(
 }
 
 /**
+ * Escape a string for use inside a double-quoted YAML value.
+ * Escapes backslashes and double quotes.
+ */
+function escapeYamlString(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+/**
+ * Build the ai_context front matter object from canon metadata fields.
+ *
+ * Mapping:
+ *   short_description → mood
+ *   visual_identity → visual_style
+ *   common_story_uses → common_encounters
+ *   canon_constraints → writing_guidance
+ *   standard_behavior → generation_hints
+ *
+ * Derived:
+ *   themes → from entity tags
+ *   lore_highlights → empty string
+ *   related_entities → comma-separated list of related entity IDs
+ *
+ * Missing source fields produce empty strings rather than omitting the target key.
+ */
+export function buildAiContextFrontMatter(
+  entity: CanonEntity,
+  relatedEntries: RelatedEntry[],
+): AiContext {
+  const meta = entity.metadata;
+
+  const mood = typeof meta['short_description'] === 'string' ? meta['short_description'] : '';
+  const themes = entity.tags && entity.tags.length > 0
+    ? entity.tags.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(', ')
+    : '';
+  const visual_style = typeof meta['visual_identity'] === 'string' ? meta['visual_identity'] : '';
+  const common_encounters = typeof meta['common_story_uses'] === 'string' ? meta['common_story_uses'] : '';
+  const lore_highlights = '';
+  const related_entities = relatedEntries.map(e => e.id).join(', ');
+  const writing_guidance = typeof meta['canon_constraints'] === 'string' ? meta['canon_constraints'] : '';
+  const generation_hints = typeof meta['standard_behavior'] === 'string' ? meta['standard_behavior'] : '';
+
+  return {
+    mood,
+    themes,
+    visual_style,
+    common_encounters,
+    lore_highlights,
+    related_entities,
+    writing_guidance,
+    generation_hints,
+  };
+}
+
+/**
  * Generate YAML front matter block for an entity page.
  *
  * Uses unquoted values where safe, matching Hugo conventions.
@@ -217,17 +428,31 @@ function generateFrontMatter(
   }
 
   // Assets — only include if entity has assets
-  if (assets.primary) {
+  if (assets.primary || (assets.gallery && assets.gallery.length > 0)) {
     lines.push('assets:');
-    lines.push(`  primary: ${assets.primary}`);
-  } else if (assets.gallery && assets.gallery.length > 0) {
-    lines.push('assets:');
-    lines.push('  gallery:');
-    for (const img of assets.gallery) {
-      lines.push(`    - ${img}`);
+    if (assets.primary) {
+      lines.push(`  primary: ${assets.primary}`);
+    }
+    if (assets.gallery && assets.gallery.length > 0) {
+      lines.push('  gallery:');
+      for (const img of assets.gallery) {
+        lines.push(`    - ${img}`);
+      }
     }
   }
   // When source is 'none', omit assets field entirely
+
+  // AI context — emitted as front matter object
+  const aiContext = buildAiContextFrontMatter(entity, relatedEntries);
+  lines.push('ai_context:');
+  lines.push(`  mood: "${escapeYamlString(aiContext.mood ?? '')}"`);
+  lines.push(`  themes: "${escapeYamlString(aiContext.themes ?? '')}"`);
+  lines.push(`  visual_style: "${escapeYamlString(aiContext.visual_style ?? '')}"`);
+  lines.push(`  common_encounters: "${escapeYamlString(aiContext.common_encounters ?? '')}"`);
+  lines.push(`  lore_highlights: "${escapeYamlString(aiContext.lore_highlights ?? '')}"`);
+  lines.push(`  related_entities: "${escapeYamlString(aiContext.related_entities ?? '')}"`);
+  lines.push(`  writing_guidance: "${escapeYamlString(aiContext.writing_guidance ?? '')}"`);
+  lines.push(`  generation_hints: "${escapeYamlString(aiContext.generation_hints ?? '')}"`);
 
   // Layout and infobox
   lines.push(`layout: ${pluralizeType(entity.type)}`);
@@ -439,22 +664,21 @@ export function generatePage(
 
   // Generate section contents
   const relationshipsContent = generateRelationshipsSection(relatedEntries);
-  const aiContextContent = generateAiContextSection(entity, relatedEntries);
 
   // Build generated sections (only include relationships if there are any)
   const hasRelationships = relatedEntries.length > 0;
   const relationshipsSection = hasRelationships
     ? wrapWithMarkers('relationships', relationshipsContent)
     : '';
-  const aiContextSection = wrapWithMarkers('ai_context', aiContextContent);
 
   // If no existing content, create a brand new page
+  // Note: ai_context is now in front matter, so we don't emit body blocks for it
   if (!existingContent) {
     const parts = [frontMatter];
     if (hasRelationships) {
       parts.push('', relationshipsSection);
     }
-    parts.push('', aiContextSection, '');
+    parts.push('');
     return { content: parts.join('\n'), warnings };
   }
 
@@ -472,6 +696,7 @@ export function generatePage(
     });
 
     // Replace front matter, preserve body, append generated sections
+    // Note: ai_context is now in front matter, so only relationship section is appended
     let result = frontMatter + '\n';
     result += parsed.body;
     // Ensure there's a newline before appending
@@ -481,17 +706,18 @@ export function generatePage(
     if (hasRelationships) {
       result += '\n' + relationshipsSection + '\n';
     }
-    result += '\n' + aiContextSection + '\n';
     return { content: result, warnings };
   }
 
   // Page has markers — replace content within markers, preserve everything else
+  // For ai_context: since it's now in front matter, remove the body block entirely
   const generatedSections = new Map<string, string>();
   if (parsed.sections.has('relationships')) {
     generatedSections.set('relationships', relationshipsSection || '');
   }
   if (parsed.sections.has('ai_context')) {
-    generatedSections.set('ai_context', aiContextSection);
+    // Replace ai_context body block with empty string to remove it
+    generatedSections.set('ai_context', '');
   }
 
   const updatedBody = replaceGeneratedSections(parsed.body, generatedSections, parsed.sections);

@@ -1,68 +1,13 @@
 {{/*
-  AI Context partial — renders structural wrapper around the AI context section.
-  The AI context content is already generated into .Content by the Generator
-  as a labeled key-value section within GENERATED markers. This partial provides
-  a semantic container for styling and programmatic extraction.
+  AI Context partial — renders ai_context front matter as hidden metadata.
+  Invisible to users, accessible to AI tools via DOM query [data-ai-context],
+  excluded from Pagefind search index via data-pagefind-ignore.
 */}}
-<section class="wiki-ai-context" aria-labelledby="ai-context-heading">
-  <h2 id="ai-context-heading" class="wiki-ai-context__heading">AI Context</h2>
-  <div class="wiki-ai-context__fields">
-    {{ with .Params.ai_context }}
-      {{ with .mood }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Mood:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .themes }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Themes:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .visual_style }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Visual Style:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .common_encounters }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Common Encounters:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .lore_highlights }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Lore Highlights:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .related_entities }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Related Entities:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .writing_guidance }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Writing Guidance:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-
-      {{ with .generation_hints }}
-      <div class="wiki-ai-context__field">
-        <strong class="wiki-ai-context__label">Generation Hints:</strong>
-        <span class="wiki-ai-context__value">{{ . }}</span>
-      </div>
-      {{ end }}
-    {{ end }}
-  </div>
-</section>
+{{ with .Params.ai_context }}
+<div hidden data-ai-context data-pagefind-ignore
+     aria-hidden="true">
+  {{ range $key, $value := . }}
+  <meta name="ai-{{ $key }}" content="{{ $value }}">
+  {{ end }}
+</div>
+{{ end }}
