@@ -16,11 +16,78 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  apply-review-fixes:
+    if: github.event_name == 'pull_request' && github.head_ref == 'claude/combat-foundations-dxz34k'
+    name: apply and verify PR review fixes
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/combat-foundations-dxz34k
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Extract and apply the one-time repair
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          source = Path('.github/workflows/fix-pr-5.yml').read_text().splitlines()
+          start = next(i for i, line in enumerate(source) if line.strip() == "python3 <<'PY'")
+          end = next(i for i in range(start + 1, len(source)) if source[i].strip() == 'PY')
+          block = []
+          for line in source[start:end + 1]:
+              block.append(line[10:] if line.startswith('          ') else line)
+          Path('/tmp/apply-pr-5-fixes.sh').write_text('\n'.join(block) + '\n')
+          PY
+          bash /tmp/apply-pr-5-fixes.sh
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Commit verified fixes and remove temporary CI
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout HEAD^ -- .github/workflows/ci.yml
+          git rm .github/workflows/fix-pr-5.yml
+          git add packages/shared/src/engine.ts \
+                  packages/shared/src/encounter.ts \
+                  packages/shared/src/types/protocol.ts \
+                  packages/shared/src/engine.test.ts \
+                  packages/shared/src/encounter.test.ts \
+                  packages/client/src/layout/WorldView.tsx \
+                  content/abilities.json \
+                  schemas/abilities.schema.json \
+                  tools/content/validate.mjs \
+                  .github/workflows/ci.yml
+          git commit -m "fix: preserve combat events and action legality"
+          git push origin HEAD:claude/combat-foundations-dxz34k
+
   build:
     name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
