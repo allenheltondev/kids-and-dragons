@@ -1,9 +1,16 @@
 name: Deploy (production)
 
-# Production, on every push to main. Sibling of deploy.yml, kept as a separate
-# file rather than one workflow with conditionals — which is how
+# Production, after CI goes green on main. Sibling of deploy.yml, kept as a
+# separate file rather than one workflow with conditionals — which is how
 # allenheltondev/content-tracking does it, and it reads far better than a
 # ternary in six places.
+#
+# `workflow_run` rather than `push`: CI and the deploy used to fire on the same
+# event and race, which meant a red e2e or a bad CloudFormation property could
+# reach prod with nothing standing in the way. Now the deploy starts only when
+# the CI workflow for that main commit has *completed*, and the job condition
+# below requires it to have passed. The checkout pins to the exact SHA CI
+# tested, so what deploys is what went green — not whatever main has moved to.
 #
 # The environment is `Production` and the AWS stage is `prod`. They are
 # deliberately different words: GitHub matches the environment name exactly, and
@@ -11,7 +18,9 @@ name: Deploy (production)
 # `prod` is what names the stack, the table, and `StageName` in the template.
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -27,23 +36,35 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
+  # deploy.sh derives the stack and stage from its argument; this copy exists
+  # only for the diagnostic and summary steps below.
   STACK_NAME: kad-prod
-  STAGE: prod
 
 jobs:
   deploy:
     name: sam deploy production
+    # Deploy only a green CI run. A manual dispatch skips the gate on purpose —
+    # deploy.sh re-runs the checks in that case (see the Deploy step).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     environment:
       name: Production
       url: ${{ steps.outputs.outputs.site-url }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
+        with:
+          # The exact commit CI went green on — not the branch tip, which may
+          # have moved while CI ran. Empty on workflow_dispatch, which then
+          # checks out the chosen ref as usual.
+          ref: ${{ github.event.workflow_run.head_sha || '' }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -51,12 +72,12 @@ jobs:
       # The art gate is Python, and `deploy.sh` runs it — see the note on the
       # deploy step for why the checks are not skipped here.
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Set up AWS SAM CLI
-        uses: aws-actions/setup-sam@v3
+        uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
 
@@ -80,7 +101,7 @@ jobs:
             | jq -r '"The role trust policy must accept:\n  sub: \(.sub)\n  aud: \(.aud)"'
 
       - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@6.2.2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
           role-session-name: GitHubActions-KidsAndDragons-ProductionDeploy
@@ -91,17 +112,27 @@ jobs:
           npm ci
           python -m pip install --disable-pip-version-check pillow numpy
 
+      # Prod-only tightening: the strict pixel gate fails on *undelivered* art,
+      # not just malformed art. On a PR that is noise — sets land over time —
+      # but production shipping with a missing set is a real regression. The
+      # rig gate stays non-strict until the first .riv is authored (roadmap
+      # Chapter 1, Allen's hands-on step).
+      - name: Strict art gate
+        run: npm run art:verify:strict
+
       - name: Deploy
         # `scripts/deploy.sh` is the same command that runs from a laptop: it
         # runs the checks, bundles the Lambdas, deploys the stack, uploads the
         # client and the art, and invalidates CloudFront — in that order, so a
         # deploy that fails partway leaves the previous version serving.
         #
-        # `KAD_SKIP_CHECKS` is deliberately unset. `ci.yml` runs the same suite
-        # on the same commit, but in a parallel workflow that cannot gate this
-        # one — so skipping would let a red commit reach a stack.
+        # On the workflow_run path, CI has already run the full suite — plus
+        # e2e, cfn-lint, and the rig contract, which deploy.sh never ran — on
+        # this exact SHA, so the checks are skipped. A manual dispatch has no
+        # such guarantee and keeps them.
         run: ./scripts/deploy.sh prod
         env:
+          KAD_SKIP_CHECKS: ${{ github.event_name == 'workflow_run' && '1' || '' }}
           # Passkeys bind to a domain for the life of the credential, and
           # `sam deploy` reverts any parameter it is not given. Empty is a
           # complete state: email-code sign-in only.
@@ -146,6 +177,11 @@ jobs:
             echo "::error::the stack has no SiteUrl output — the deploy may have succeeded but there is no address to open"
             exit 1
           fi
+          # A stack output proves CloudFormation is happy, not that the site
+          # serves. One request through CloudFront catches the deploy that
+          # succeeded into a broken bundle — before the family finds out.
+          curl -fsS --retry 3 --retry-delay 5 -o /dev/null "$SITE_URL"
+
           echo "::notice title=Production is live::${SITE_URL}"
           echo
           echo "  ┌──────────────────────────────────────────────────────────"
@@ -157,11 +193,11 @@ jobs:
       - name: Write deployment summary
         run: |
           {
-            echo "## Kids \& Dragons production deploy"
+            echo "## Kids & Dragons production deploy"
             echo
             echo "- **Stack:** \`${STACK_NAME}\`"
             echo "- **Region:** \`${AWS_REGION}\`"
             echo "- **Open it:** ${{ steps.outputs.outputs.site-url }}"
             echo "- **Table:** \`${{ steps.outputs.outputs.table-name }}\`"
-            echo "- **Commit:** \`${{ github.sha }}\`"
+            echo "- **Commit:** \`${{ github.event.workflow_run.head_sha || github.sha }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
