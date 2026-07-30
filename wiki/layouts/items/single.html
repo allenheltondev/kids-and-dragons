@@ -28,15 +28,16 @@
       </div>
       {{ end }}
 
-      {{/* Main content: category + rarity + crafting + locations + description + AI context */}}
-      {{ .Content }}
+      {{/* Main content: category + rarity + crafting + locations + description */}}
+      {{ $content := .Content }}
+      {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: ai_context -->.*?<!-- END GENERATED: ai_context -->` "" $content }}
+      {{ $content | safeHTML }}
+
+      {{/* Hidden AI context for AI tools */}}
+      {{ partial "ai-context.html" . }}
 
       {{/* Multi-image gallery if available */}}
-      {{ with .Params.assets }}
-      {{ with .gallery }}
-      {{ partial "gallery.html" (dict "images" . "title" $.Title) }}
-      {{ end }}
-      {{ end }}
+      {{ partial "gallery.html" $ }}
     </div>
   </div>
 </article>
