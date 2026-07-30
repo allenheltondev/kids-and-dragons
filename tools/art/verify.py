@@ -689,6 +689,54 @@ def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
     check_format(rep, path, mf["canvas"], mf["tolerance"])
 
 
+def check_gear(rep: Report, mf: dict, skipped: list[str]) -> None:
+    """Class gear overlays — the blind spot the docs audit found.
+
+    The manifest has declared 12 gear sets since the songkeeper split landed,
+    and this file never looked: nine sets could be missing with the gate green,
+    while art-pipeline.md told a commissioning agent that existence was
+    checked. A gear set is small — the declared parts, present and decodable —
+    so this is an existence check, not the full character contract.
+
+    A class marked ``"deferred": true`` is commissioned later (roadmap
+    chapter 5) and is reported rather than failed, in either mode — the same
+    stance abilities.json takes with ``$deferred``: named and waited on, never
+    silently absent. Delivering early simply works: the moment the directory
+    exists it is checked like anything else, and un-marking the class is the
+    one-line edit that arms strict mode for it.
+    """
+    deferred: list[str] = []
+    for gear in mf.get("gear", []):
+        cls = gear["class"]
+        for tier in gear.get("tiers", []):
+            label = f"gear/{cls}/{tier}"
+            base = os.path.join(ROOT, "assets", "gear", cls, tier)
+            if not os.path.isdir(base):
+                if gear.get("deferred"):
+                    deferred.append(f"{cls}/{tier}")
+                else:
+                    skipped.append(f"gear {cls}/{tier}")
+                continue
+            print(f"\n{BOLD}{label}{RESET}")
+            for part in gear.get("parts", []):
+                path = os.path.join(base, f"{part}.png")
+                if not os.path.exists(path):
+                    rep.fail(f"{label} {part}.png", "present", "missing")
+                    continue
+                try:
+                    art = load_rgba(path)
+                except Exception as err:  # noqa: BLE001 - a bad PNG is the finding
+                    rep.fail(f"{label} {part}.png", "a decodable PNG", str(err))
+                    continue
+                if not (art[..., 3] > 0).any():
+                    rep.fail(f"{label} {part}.png", "visible pixels", "fully transparent")
+                else:
+                    rep.ok(f"{label} {part}.png")
+    if deferred:
+        print(f"\n{DIM}deferred: {len(deferred)} gear set(s) awaiting commission "
+              f"(roadmap chapter 5) - {', '.join(deferred)}{RESET}")
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -741,6 +789,10 @@ def main() -> int:
     # Not gated on `args`: the effect sheets are shared by every species, so
     # narrowing to one character should not stop checking them.
     check_effects(rep, mf)
+
+    # Nor is gear: it is per-class, not per-species, and the whole point of
+    # checking it is that nobody was going to remember to ask.
+    check_gear(rep, mf, skipped)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:
