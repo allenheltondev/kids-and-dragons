@@ -35,8 +35,7 @@ jobs:
           script = '\n'.join(line[10:] if line.startswith('          ') else line for line in source[start:end + 1]) + '\n'
           def remove_between(marker, next_marker):
               global script
-              at = script.index(marker)
-              after = script.index(next_marker, at)
+              at = script.index(marker); after = script.index(next_marker, at)
               script = script[:at] + script[after + 1:]
           remove_between("replace_once(\n    engine,\n    '''          ): Presentation | undefined {", "\n# ------------------------------------------------------------------\n# Encounter legality")
           remove_between("replace_once(\n    encounter,\n    '''  } else if (ability.target.kind === \"tile\") {", "\n# ------------------------------------------------------------------\n# Authored Pounce")
@@ -77,10 +76,9 @@ jobs:
             const def = ctx.items[itemId];
           ''')
 
-          encounter_path = Path('packages/shared/src/encounter.ts')
-          encounter = encounter_path.read_text()
-          start = encounter.index('  } else if (ability.target.kind === "tile") {')
-          end = encounter.index('\n  }\n\n  const events: EncounterEvent[]', start) + len('\n  }')
+          p = Path('packages/shared/src/encounter.ts'); text = p.read_text()
+          start = text.index('  } else if (ability.target.kind === "tile") {')
+          end = text.index('\n  }\n\n  const events: EncounterEvent[]', start) + len('\n  }')
           replacement = '''  } else if (ability.target.kind === "tile") {
             const tile = request.targetTile;
             if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
@@ -95,7 +93,9 @@ jobs:
               targetId = request.targetId;
             }
           }'''
-          encounter_path.write_text(encounter[:start] + replacement + encounter[end:])
+          text = text[:start] + replacement + text[end:]
+          text = text.replace('return effect.amount > recipient.rollBonus;', 'return effect.amount > 0;', 1)
+          p.write_text(text)
 
           p = Path('content/abilities.json'); doc = json.loads(p.read_text()); ability = doc['abilities']['pounce']
           ability['$comment'] = 'Jump to an open tile, then choose and attack one adjacent enemy.'
@@ -104,12 +104,7 @@ jobs:
           p.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + '\n')
 
           p = Path('schemas/abilities.schema.json'); schema = json.loads(p.read_text())
-          schema['$defs']['targetRule']['properties']['followUp'] = {
-            'type': 'object', 'additionalProperties': False, 'required': ['kind'],
-            'properties': {'kind': {'enum': ['ally','enemy']}, 'range': {'anyOf': [
-              {'type':'integer','minimum':1,'maximum':10}, {'enum':['adjacent','board']} ]},
-              'state': {'enum':['down','standing','any']}}
-          }
+          schema['$defs']['targetRule']['properties']['followUp'] = {'type':'object','additionalProperties':False,'required':['kind'],'properties':{'kind':{'enum':['ally','enemy']},'range':{'anyOf':[{'type':'integer','minimum':1,'maximum':10},{'enum':['adjacent','board']}]},'state':{'enum':['down','standing','any']}}}
           p.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + '\n')
 
           exact('tools/content/validate.mjs', 'if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {', 'if (scopes.has("target") && (t.kind === "none" || (t.kind === "tile" && !t.followUp))) {')
@@ -121,6 +116,8 @@ jobs:
           test = test[:a] + block + test[b:]
           test = test.replace('performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 } })', 'performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 }, targetId: "wisp#1" })', 1)
           p.write_text(test)
+
+          exact('packages/server/src/content/abilities.test.ts', 'request: () => ({ abilityId: "pounce", targetTile: { x: 5, y: 2 } }),', 'request: () => ({ abilityId: "pounce", targetTile: { x: 5, y: 2 }, targetId: "wisp#1" }),')
           PY
       - run: npm ci
       - run: npm test
@@ -132,6 +129,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
           git rm .github/workflows/fix-pr-5.yml
-          git add packages/shared/src/engine.ts packages/shared/src/encounter.ts packages/shared/src/types/protocol.ts packages/shared/src/encounter.test.ts packages/client/src/layout/WorldView.tsx content/abilities.json schemas/abilities.schema.json tools/content/validate.mjs .github/workflows/ci.yml
+          git add packages/shared/src/engine.ts packages/shared/src/encounter.ts packages/shared/src/types/protocol.ts packages/shared/src/encounter.test.ts packages/server/src/content/abilities.test.ts packages/client/src/layout/WorldView.tsx content/abilities.json schemas/abilities.schema.json tools/content/validate.mjs .github/workflows/ci.yml
           git commit -m "fix: preserve combat events and action legality"
           git push origin HEAD:claude/combat-foundations-dxz34k
