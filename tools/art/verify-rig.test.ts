@@ -577,11 +577,23 @@ describe("riveClipTicks", () => {
     expect(riveClipTicks(anim, 12)).toBe(24);
   });
 
-  it("falls back to workEnd > 0 when the build has no enableWorkArea flag", () => {
-    // The published .d.ts omits the flag; on such a surface an unset work area
-    // reads workEnd 0, and a set one reads its end frame.
+  it("falls back to workEnd when the build has no enableWorkArea flag", () => {
+    // The published .d.ts omits the flag; on such a surface a set work area
+    // reads its end frame, and an unset one reads 0.
     expect(riveClipTicks({ duration: 100, fps: 12, workStart: 2, workEnd: 14 }, 12)).toBe(12);
     expect(riveClipTicks({ duration: 100, fps: 12, workStart: 0, workEnd: 0 }, 12)).toBe(100);
+  });
+
+  it("treats 0xFFFFFFFF as no work area, not as a 4-billion-frame one", () => {
+    /*
+     * What 2.39.1 actually reports for an unset work area, measured off the
+     * first delivered rig — the flag is present on this build so the fallback
+     * does not run, but a build without it would have called every clip
+     * 0xFFFFFFFF frames long and failed every rig with an absurd number.
+     */
+    const unset = { duration: 120, fps: 60, workStart: 0xffffffff, workEnd: 0xffffffff };
+    expect(riveClipTicks(unset, 12)).toBe(24);
+    expect(riveClipTicks({ ...unset, enableWorkArea: false }, 12)).toBe(24);
   });
 
   it("rounds to the nearest whole tick", () => {
