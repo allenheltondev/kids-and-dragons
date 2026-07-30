@@ -211,23 +211,35 @@ export async function applyAction(
     };
   }
 
+  const message = {
+    kind: "patch" as const,
+    seq: event.seq,
+    runId: event.runId,
+    patch: event.patch,
+    ...(event.presentation ? { presentation: event.presentation } : {}),
+  };
   try {
-    await deps.channel.publish(next.roomCode, {
-      kind: "patch",
-      seq: event.seq,
-      runId: event.runId,
-      patch: event.patch,
-      ...(event.presentation ? { presentation: event.presentation } : {}),
-    });
+    await deps.channel.publish(next.roomCode, message);
   } catch (err) {
     /*
      * The transaction has already landed, so this request *succeeded* — a 500
      * here would tell the acting phone to retry an action that took, and the
      * retry would bounce off STALE_SEQ while every other client stayed dark.
-     * A missed broadcast is exactly what the clients' gap detection and
-     * `/state` resync exist for; the honest answer is ok plus a log line.
+     *
+     * But "ok" alone is not a recovery contract either: subscribers wait on
+     * this broadcast, and nothing else is coming to open a gap for them. So:
+     * one immediate retry for the transient blip, and past that the response
+     * still names the committed seq — the client holds the server to that
+     * (store `expectBroadcast`), resyncing when the promised patch never
+     * arrives. Duplicate delivery is safe by construction: the sequencer
+     * drops anything at or below its watermark.
      */
-    console.error(`publish failed for run ${event.runId} seq ${event.seq}:`, err);
+    console.error(`publish failed for run ${event.runId} seq ${event.seq}, retrying:`, err);
+    try {
+      await deps.channel.publish(next.roomCode, message);
+    } catch (retryErr) {
+      console.error(`publish retry failed for run ${event.runId} seq ${event.seq}:`, retryErr);
+    }
   }
 
   return { ok: true, seq: nextSeq };

@@ -526,6 +526,23 @@ function openScenePrompt(
     }
 
     case "encounter": {
+      if (scene.autoResolve === "victory") {
+        /*
+         * The chapter-4 gate (types/chapter.ts). No phone can play a fight yet,
+         * so a gated encounter flows through its victory branch the way the
+         * old placeholder did — with the scene's own narration kept in front
+         * of the branch's, so the beat still reads even though the board
+         * never goes up.
+         */
+        const narration = [scene.narration, scene.onVictory.narration]
+          .filter(Boolean)
+          .join("\n\n");
+        return takeBranch(
+          draft,
+          { ...scene.onVictory, ...(narration ? { narration } : {}) },
+          ctx,
+        );
+      }
       // An encounter waits on a ready-up before the board goes up. That pause
       // is deliberate: three phones have to swap to a combat UI, and a fight
       // beginning around somebody still on their character sheet would have
