@@ -97,8 +97,16 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git show HEAD^:.github/workflows/ci.yml > .github/workflows/ci.yml
-          printf 'Delete this file after the repair commit to trigger final CI.\n' > .github/.pr9-repair-complete
-          git add .
+          git add \
+            .github/workflows/prod-deploy.yml \
+            infra/github-oidc.yaml \
+            packages/client/src/screens/PlayerPanel.tsx \
+            packages/client/src/screens/screens.test.tsx \
+            packages/server/src/handlers/action.ts \
+            packages/server/src/handlers/progression.ts \
+            packages/server/src/store/contract.test.ts \
+            packages/server/src/store/dynamo-repository.ts \
+            packages/server/src/store/memory-repository.ts \
+            packages/server/src/store/repository.ts
           git commit -m "fix: close PR review gaps"
           git push origin HEAD:${{ github.head_ref }}
