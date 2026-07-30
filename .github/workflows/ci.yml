@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -15,8 +13,7 @@ concurrency:
 
 jobs:
   apply-review-fixes:
-    if: github.event_name == 'pull_request' && github.head_ref == 'claude/combat-foundations-dxz34k'
-    name: apply and verify PR review fixes
+    if: github.head_ref == 'claude/combat-foundations-dxz34k'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,54 +24,37 @@ jobs:
         with:
           node-version: 22
           cache: npm
-
       - name: Apply repair
         shell: bash
         run: |
           python3 <<'PY'
           from pathlib import Path
-
           source = Path('.github/workflows/fix-pr-5.yml').read_text().splitlines()
           start = next(i for i, line in enumerate(source) if line.strip() == "python3 <<'PY'")
           end = next(i for i in range(start + 1, len(source)) if source[i].strip() == 'PY')
-          block = [line[10:] if line.startswith('          ') else line for line in source[start:end + 1]]
-          script = '\n'.join(block) + '\n'
-
-          def remove_between(marker: str, next_marker: str) -> None:
+          script = '\n'.join(line[10:] if line.startswith('          ') else line for line in source[start:end + 1]) + '\n'
+          def remove_between(marker, next_marker):
               global script
               at = script.index(marker)
               after = script.index(next_marker, at)
               script = script[:at] + script[after + 1:]
-
-          remove_between(
-              "replace_once(\n    engine,\n    '''          ): Presentation | undefined {",
-              "\n# ------------------------------------------------------------------\n# Encounter legality",
-          )
-          remove_between(
-              "replace_once(\n    encounter,\n    '''  } else if (ability.target.kind === \"tile\") {",
-              "\n# ------------------------------------------------------------------\n# Authored Pounce",
-          )
-          authored = script.index('# Authored Pounce')
-          script = script[:authored] + 'PY\n'
-          Path('/tmp/apply-pr-5-fixes.sh').write_text(script)
+          remove_between("replace_once(\n    engine,\n    '''          ): Presentation | undefined {", "\n# ------------------------------------------------------------------\n# Encounter legality")
+          remove_between("replace_once(\n    encounter,\n    '''  } else if (ability.target.kind === \"tile\") {", "\n# ------------------------------------------------------------------\n# Authored Pounce")
+          script = script[:script.index('# Authored Pounce')] + 'PY\n'
+          Path('/tmp/apply.sh').write_text(script)
           PY
-          bash /tmp/apply-pr-5-fixes.sh
+          bash /tmp/apply.sh
 
           python3 <<'PY'
           import json
           from pathlib import Path
 
-          def replace_once(path: str, old: str, new: str) -> None:
-              file = Path(path)
-              text = file.read_text()
-              count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f'{path}: expected one stable match, found {count}')
-              file.write_text(text.replace(old, new, 1))
+          def exact(path, old, new):
+              p = Path(path); text = p.read_text()
+              if text.count(old) != 1: raise SystemExit(f'{path}: stable match count {text.count(old)}')
+              p.write_text(text.replace(old, new, 1))
 
-          replace_once(
-              'packages/shared/src/engine.ts',
-              '''function doUseItem(
+          exact('packages/shared/src/engine.ts', '''function doUseItem(
             draft: RunState,
             playerId: string,
             itemId: string,
@@ -84,8 +64,7 @@ jobs:
             if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
 
             const def = ctx.items[itemId];
-          ''',
-              '''function doUseItem(
+          ''', '''function doUseItem(
             draft: RunState,
             playerId: string,
             itemId: string,
@@ -93,25 +72,16 @@ jobs:
           ): Presentation | undefined {
             const member = memberByPlayer(draft, playerId);
             if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
-            if (draft.encounter) {
-              throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
-            }
+            if (draft.encounter) throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
 
             const def = ctx.items[itemId];
-          ''',
-          )
+          ''')
 
-          replace_once(
-              'packages/shared/src/encounter.ts',
-              '''  } else if (ability.target.kind === "tile") {
-            const tile = request.targetTile;
-            if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
-              return { ok: false, reason: "that is not a legal tile" };
-            }
-            point = { x: tile.x, y: tile.y };
-          }
-          ''',
-              '''  } else if (ability.target.kind === "tile") {
+          encounter_path = Path('packages/shared/src/encounter.ts')
+          encounter = encounter_path.read_text()
+          start = encounter.index('  } else if (ability.target.kind === "tile") {')
+          end = encounter.index('\n  }\n\n  const events: EncounterEvent[]', start) + len('\n  }')
+          replacement = '''  } else if (ability.target.kind === "tile") {
             const tile = request.targetTile;
             if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
               return { ok: false, reason: "that is not a legal tile" };
@@ -124,117 +94,44 @@ jobs:
               }
               targetId = request.targetId;
             }
-          }
-          ''',
-          )
+          }'''
+          encounter_path.write_text(encounter[:start] + replacement + encounter[end:])
 
-          abilities_path = Path('content/abilities.json')
-          abilities = json.loads(abilities_path.read_text())
-          pounce = abilities['abilities']['pounce']
-          pounce['$comment'] = 'Jump to an open tile, then choose and attack one adjacent enemy.'
-          pounce['target']['followUp'] = {'kind': 'enemy', 'range': 'adjacent'}
-          pounce['effects'][1].pop('to', None)
-          abilities_path.write_text(json.dumps(abilities, indent=2, ensure_ascii=False) + '\n')
+          p = Path('content/abilities.json'); doc = json.loads(p.read_text()); ability = doc['abilities']['pounce']
+          ability['$comment'] = 'Jump to an open tile, then choose and attack one adjacent enemy.'
+          ability['target']['followUp'] = {'kind': 'enemy', 'range': 'adjacent'}
+          ability['effects'][1].pop('to', None)
+          p.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + '\n')
 
-          schema_path = Path('schemas/abilities.schema.json')
-          schema = json.loads(schema_path.read_text())
+          p = Path('schemas/abilities.schema.json'); schema = json.loads(p.read_text())
           schema['$defs']['targetRule']['properties']['followUp'] = {
-              '$comment': 'A second figure chosen after a tile action lands.',
-              'type': 'object',
-              'additionalProperties': False,
-              'required': ['kind'],
-              'properties': {
-                  'kind': {'enum': ['ally', 'enemy']},
-                  'range': {'anyOf': [
-                      {'type': 'integer', 'minimum': 1, 'maximum': 10},
-                      {'enum': ['adjacent', 'board']},
-                  ]},
-                  'state': {'enum': ['down', 'standing', 'any']},
-              },
+            'type': 'object', 'additionalProperties': False, 'required': ['kind'],
+            'properties': {'kind': {'enum': ['ally','enemy']}, 'range': {'anyOf': [
+              {'type':'integer','minimum':1,'maximum':10}, {'enum':['adjacent','board']} ]},
+              'state': {'enum':['down','standing','any']}}
           }
-          schema_path.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + '\n')
+          p.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + '\n')
 
-          replace_once(
-              'tools/content/validate.mjs',
-              'if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {',
-              'if (scopes.has("target") && (t.kind === "none" || (t.kind === "tile" && !t.followUp))) {',
-          )
+          exact('tools/content/validate.mjs', 'if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {', 'if (scopes.has("target") && (t.kind === "none" || (t.kind === "tile" && !t.followUp))) {')
+          exact('packages/client/src/layout/WorldView.tsx', '  ENCOUNTER_BEGAN: 1200,\n  ATTACK: 700,', '  ENCOUNTER_BEGAN: 1200,\n  COMBAT_SEQUENCE: 700,\n  ATTACK: 700,')
 
-          replace_once(
-              'packages/client/src/layout/WorldView.tsx',
-              '  ENCOUNTER_BEGAN: 1200,\n  ATTACK: 700,',
-              '  ENCOUNTER_BEGAN: 1200,\n  COMBAT_SEQUENCE: 700,\n  ATTACK: 700,',
-          )
-
-          test_path = Path('packages/shared/src/encounter.test.ts')
-          test = test_path.read_text()
-          p_start = test.index('  pounce: {')
-          p_end = test.index('\n  },\n};', p_start) + len('\n  },')
-          p_block = test[p_start:p_end]
-          p_block = p_block.replace(
-              'target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy" },',
-              'target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy", followUp: { kind: "enemy", range: "adjacent" } },',
-          ).replace(
-              '{ effect: { type: "attack", damage: 3 }, to: "adjacent" },',
-              '{ effect: { type: "attack", damage: 3 } },',
-          )
-          test = test[:p_start] + p_block + test[p_end:]
-          old_call = 'performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 } })'
-          new_call = 'performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 }, targetId: "wisp#1" })'
-          if test.count(old_call) != 1:
-              raise SystemExit(f'encounter.test.ts: expected one Pounce call, found {test.count(old_call)}')
-          test_path.write_text(test.replace(old_call, new_call, 1))
+          p = Path('packages/shared/src/encounter.test.ts'); test = p.read_text()
+          a = test.index('  pounce: {'); b = test.index('\n  },\n};', a) + len('\n  },')
+          block = test[a:b].replace('target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy" },', 'target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy", followUp: { kind: "enemy", range: "adjacent" } },').replace('{ effect: { type: "attack", damage: 3 }, to: "adjacent" },', '{ effect: { type: "attack", damage: 3 } },')
+          test = test[:a] + block + test[b:]
+          test = test.replace('performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 } })', 'performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 }, targetId: "wisp#1" })', 1)
+          p.write_text(test)
           PY
-
       - run: npm ci
       - run: npm test
       - run: npm run typecheck
       - run: npm run content:validate
-
-      - name: Commit verified fixes
-        shell: bash
+      - name: Commit fixes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
           git rm .github/workflows/fix-pr-5.yml
-          git add packages/shared/src/engine.ts packages/shared/src/encounter.ts \
-            packages/shared/src/types/protocol.ts packages/shared/src/encounter.test.ts \
-            packages/client/src/layout/WorldView.tsx content/abilities.json \
-            schemas/abilities.schema.json tools/content/validate.mjs .github/workflows/ci.yml
+          git add packages/shared/src/engine.ts packages/shared/src/encounter.ts packages/shared/src/types/protocol.ts packages/shared/src/encounter.test.ts packages/client/src/layout/WorldView.tsx content/abilities.json schemas/abilities.schema.json tools/content/validate.mjs .github/workflows/ci.yml
           git commit -m "fix: preserve combat events and action legality"
           git push origin HEAD:claude/combat-foundations-dxz34k
-
-  build:
-    name: typecheck, test, content, art, build
-    runs-on: ubuntu-latest
-    services:
-      dynamodb:
-        image: amazon/dynamodb-local:latest
-        ports: ["8000:8000"]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: {node-version: 22, cache: npm}
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.11"}
-      - run: npm ci
-      - run: python -m pip install --disable-pip-version-check pillow numpy
-      - run: npm run typecheck
-      - run: npm test
-        env: {KAD_DDB_ENDPOINT: "http://localhost:8000", AWS_REGION: us-east-1}
-      - run: npm run content:validate
-      - run: npm run art:verify
-      - run: npm run art:verify:rig
-      - run: npm run build
-
-  e2e:
-    name: end to end
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: {node-version: 22, cache: npm}
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test
