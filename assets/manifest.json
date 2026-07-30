@@ -155,11 +155,12 @@
   ],
 
   "gear": [
-    { "class": "thornguard", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
-    { "class": "duskrunner", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
-    { "class": "starweaver", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
+    { "class": "thornguard", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"], "deferred": true },
+    { "class": "duskrunner", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"], "deferred": true },
+    { "class": "starweaver", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"], "deferred": true },
     { "class": "songkeeper", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] }
   ],
+  "$gearDeferredComment": "Same stance as abilities.json $deferred: declared and waited on, never silently absent. Songkeeper's three sets shipped with the split scripts; the other three classes are roadmap chapter 5 commissions. The verifier reports a deferred class instead of failing on it (strict mode included, so the prod gate stays armed for what *is* due), and checks it like anything else the moment its directory appears. Delivering a class is: commission it, drop the deferred flag.",
 
   "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen.",
 
