@@ -400,6 +400,28 @@ gate 1 defines all later tiers; producing them early guarantees rework.
 
 Every correction needed at a gate should become an edit to *this document* before proceeding.
 
+### 6.4 Canonical non-player entities
+
+The playable peoples keep the rigged, four-tier contract above. Every other drawable entry in
+`docs/red-sky-creature-canon.yaml` uses a simpler runtime contract:
+
+- **Path:** `assets/entities/<entity-id>/assembled.png`
+- **Format:** 1024 × 1024 RGBA PNG with real transparency and at least 8px clear edge margin.
+- **Contents:** one definitive, complete cutout. The Witch Order is the intentional exception: its
+  representative asset is a cross-species group.
+- **Scale:** the figure fills the asset canvas for readability; `assets/manifest.json` carries the
+  entity's canonical world scale. A cloud whale and an embermoth are not the same size in play.
+- **Biome identity:** `primaryBiome` names the runtime biome whose palette and material language
+  guide the artwork. `canonicalLocations` preserves the source-canon location ids, including
+  waterways and regions that do not have a standalone runtime backdrop.
+- **Protected mysteries:** entries under `open_canon_slots` are not drawable entities and must not
+  receive artwork until the canon explicitly defines them.
+- **Review:** the `art/review/canonical_entities_*.png` sheets are the human gate for silhouette,
+  subject identity, biome fit, family-friendly tone, and transparency.
+
+`python tools/art/verify.py` checks every manifested entity's canvas, RGBA mode, alpha, margins,
+primary biome, and canonical-location metadata alongside the existing character checks.
+
 ---
 
 ## 7. Resolved decisions 🔺

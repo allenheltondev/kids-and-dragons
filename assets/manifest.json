@@ -115,6 +115,36 @@
     }
   ],
 
+  "entities": [
+    { "id": "centaur", "classification": "supporting_people", "primaryBiome": "plains", "canonicalLocations": ["the_plains", "eastern_plains", "stone_crossing"], "scale": "large" },
+    { "id": "faun", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields"], "scale": "medium" },
+    { "id": "harvest_sprite", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields", "enchanted_woods"], "scale": "tiny" },
+    { "id": "frogfolk", "classification": "supporting_people", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh", "great_river"], "scale": "small_to_medium" },
+    { "id": "boggart", "classification": "supporting_people", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh"], "scale": "small" },
+    { "id": "yeti", "classification": "supporting_people", "primaryBiome": "glacier_of_origins", "canonicalLocations": ["glacier_of_origins", "frostfang_peaks"], "scale": "large" },
+    { "id": "merfolk", "classification": "supporting_people", "primaryBiome": "mermaid_cove", "canonicalLocations": ["mermaid_cove", "great_river"], "scale": "medium" },
+    { "id": "selkie", "classification": "supporting_people", "primaryBiome": "mermaid_cove", "canonicalLocations": ["mermaid_cove", "open_sea"], "scale": "medium" },
+    { "id": "stone_troll", "classification": "supporting_people", "primaryBiome": "stone_crossing", "canonicalLocations": ["stone_crossing", "skullwater_cave", "eastern_plains"], "scale": "very_large" },
+    { "id": "witch_order", "classification": "cultural_order", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh"], "scale": "variable" },
+    { "id": "legend_dragon", "classification": "legendary_beast", "primaryBiome": "mount_red_sky", "canonicalLocations": ["mount_redsky"], "scale": "colossal" },
+    { "id": "embermoth", "classification": "ambient_creature", "primaryBiome": "red_sky_foothills", "canonicalLocations": ["red_sky_foothills", "mount_redsky"], "scale": "tiny_to_small" },
+    { "id": "mosshorn", "classification": "ambient_creature", "primaryBiome": "enchanted_woods", "canonicalLocations": ["enchanted_woods", "mosshome"], "scale": "medium" },
+    { "id": "jackalope", "classification": "ambient_creature", "primaryBiome": "plains", "canonicalLocations": ["the_plains", "sunward_fields", "eastern_plains"], "scale": "small" },
+    { "id": "cloud_whale", "classification": "ambient_creature", "primaryBiome": "sky_islands", "canonicalLocations": ["sky_islands"], "scale": "colossal" },
+    { "id": "snowhorn_goat", "classification": "ambient_creature", "primaryBiome": "frostfang_peaks", "canonicalLocations": ["frostfang_peaks", "glacier_of_origins"], "scale": "medium" },
+    { "id": "silver_otter", "classification": "ambient_creature", "primaryBiome": "stone_crossing", "canonicalLocations": ["great_river", "stone_crossing", "mermaid_cove"], "scale": "small" },
+    { "id": "reefglider", "classification": "ambient_creature", "primaryBiome": "mermaid_cove", "canonicalLocations": ["mermaid_cove"], "scale": "medium" },
+    { "id": "glassback_crab", "classification": "dangerous_creature", "primaryBiome": "red_sky_foothills", "canonicalLocations": ["red_sky_foothills", "mount_redsky"], "scale": "medium_to_large" },
+    { "id": "cinder_wolf", "classification": "dangerous_creature", "primaryBiome": "red_sky_foothills", "canonicalLocations": ["red_sky_foothills", "the_plains"], "scale": "medium" },
+    { "id": "mire_mimic", "classification": "dangerous_creature", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh"], "scale": "medium_to_large" },
+    { "id": "frost_wyrm", "classification": "dangerous_creature", "primaryBiome": "frostfang_peaks", "canonicalLocations": ["frostfang_peaks", "glacier_of_origins"], "scale": "large" },
+    { "id": "river_drake", "classification": "dangerous_creature", "primaryBiome": "stone_crossing", "canonicalLocations": ["great_river", "stone_crossing"], "scale": "large" },
+    { "id": "bone_crawler", "classification": "dangerous_creature", "primaryBiome": "bone_yard", "canonicalLocations": ["bone_yard"], "scale": "small_to_medium" },
+    { "id": "echo_hunter", "classification": "dangerous_creature", "primaryBiome": "skullwater_cave", "canonicalLocations": ["skullwater_cave"], "scale": "large" },
+    { "id": "will_o_wisp", "classification": "supernatural_manifestation", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh", "enchanted_woods"], "scale": "tiny" },
+    { "id": "restless_remains", "classification": "supernatural_manifestation", "primaryBiome": "bone_yard", "canonicalLocations": ["bone_yard"], "scale": "variable" }
+  ],
+
   "gear": [
     { "class": "thornguard", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
     { "class": "duskrunner", "tiers": ["sworn", "radiant", "mythic"], "parts": ["overlay_torso", "prop_held"] },
