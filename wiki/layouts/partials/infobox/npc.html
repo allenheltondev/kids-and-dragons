@@ -1,0 +1,39 @@
+<aside class="wiki-infobox wiki-infobox--npc" role="complementary" aria-label="NPC information">
+  {{ with .Params.assets.primary }}
+  <div class="wiki-infobox__portrait">
+    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+  </div>
+  {{ end }}
+
+  <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+
+  <dl class="wiki-infobox__fields">
+    {{ with .Params.occupation }}
+    <div class="wiki-infobox__field">
+      <dt>Occupation</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.residence }}
+    <div class="wiki-infobox__field">
+      <dt>Residence</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.faction }}
+    <div class="wiki-infobox__field">
+      <dt>Faction</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.disposition }}
+    <div class="wiki-infobox__field">
+      <dt>Disposition</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+  </dl>
+</aside>

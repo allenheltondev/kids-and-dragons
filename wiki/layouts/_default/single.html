@@ -1,0 +1,17 @@
+{{ define "main" }}
+<article class="entity-page{{ with .Params.type }} entity-type-{{ . }}{{ end }}">
+  <div class="entity-content">
+    <h1>{{ .Title }}</h1>
+
+    {{ with .Params.tags }}
+    <div class="entity-tags" aria-label="Tags">
+      {{ range . }}
+      <span class="wiki-tag">{{ . }}</span>
+      {{ end }}
+    </div>
+    {{ end }}
+
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

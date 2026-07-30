@@ -1,0 +1,51 @@
+<aside class="wiki-infobox wiki-infobox--biome" role="complementary" aria-label="Biome information">
+  {{ with .Params.assets.primary }}
+  <div class="wiki-infobox__portrait">
+    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+  </div>
+  {{ end }}
+
+  <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+
+  <dl class="wiki-infobox__fields">
+    {{ with .Params.climate }}
+    <div class="wiki-infobox__field">
+      <dt>Climate</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.danger_level }}
+    <div class="wiki-infobox__field">
+      <dt>Danger Level</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.key_resources }}
+    <div class="wiki-infobox__field">
+      <dt>Key Resources</dt>
+      <dd>
+        <ul class="wiki-infobox__list">
+          {{ range . }}
+          <li>{{ . }}</li>
+          {{ end }}
+        </ul>
+      </dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.dominant_creatures }}
+    <div class="wiki-infobox__field">
+      <dt>Dominant Creatures</dt>
+      <dd>
+        <ul class="wiki-infobox__list">
+          {{ range . }}
+          <li>{{ . }}</li>
+          {{ end }}
+        </ul>
+      </dd>
+    </div>
+    {{ end }}
+  </dl>
+</aside>

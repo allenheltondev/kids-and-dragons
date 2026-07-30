@@ -1,0 +1,18 @@
+creatures:
+  - id: "creature.shadow_wolf"
+    title: "Shadow Wolf"
+    status: "reviewed"
+    tags: ["shadow", "predator"]
+    classification: "Dark Beast"
+
+  - id: "creature.shadow_wolf"
+    title: "Shadow Wolf (Duplicate)"
+    status: "draft"
+    tags: ["shadow", "duplicate"]
+    classification: "Dark Beast Variant"
+
+  - id: "creature.unique_one"
+    title: "Unique Creature"
+    status: "reviewed"
+    tags: ["unique"]
+    classification: "Test Entity"

@@ -1,0 +1,32 @@
+<aside class="wiki-infobox wiki-infobox--item" role="complementary" aria-label="Item information">
+  {{ with .Params.assets.primary }}
+  <div class="wiki-infobox__portrait">
+    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+  </div>
+  {{ end }}
+
+  <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+
+  <dl class="wiki-infobox__fields">
+    {{ with .Params.category }}
+    <div class="wiki-infobox__field">
+      <dt>Category</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.rarity }}
+    <div class="wiki-infobox__field">
+      <dt>Rarity</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+
+    {{ with .Params.acquisition }}
+    <div class="wiki-infobox__field">
+      <dt>Acquisition</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+  </dl>
+</aside>

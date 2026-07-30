@@ -1,0 +1,12 @@
+creatures:
+  - id: "creature.broken_one
+    title: "Broken One"
+    status: "reviewed"
+    tags: ["forest", "mythical"
+    classification: Guardian Beast
+  habitat: "biome.enchanted_woods"
+      temperament: "Gentle
+    difficulty: "Moderate"
+    this is totally invalid yaml that will cause a parse error
+  - id: creature.another
+  title: no indentation here

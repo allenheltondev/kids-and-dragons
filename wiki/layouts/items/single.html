@@ -1,0 +1,43 @@
+{{ define "main" }}
+<article class="entity-page entity-type-item">
+  <div class="entity-layout entity-layout--with-infobox">
+    {{/* Item icon */}}
+    {{ with .Params.assets }}
+    {{ with .primary }}
+    <div class="entity-icon">
+      <img src="{{ . }}" alt="{{ $.Title }} icon" loading="eager">
+    </div>
+    {{ end }}
+    {{ end }}
+
+    {{/* Infobox sidebar: icon, category, rarity, acquisition */}}
+    {{ with .Params.infobox }}
+    <aside class="infobox infobox-item" role="complementary" aria-label="Item summary">
+      {{ partial "infobox/item.html" $ }}
+    </aside>
+    {{ end }}
+
+    <div class="entity-content">
+      <h1>{{ .Title }}</h1>
+
+      {{ with .Params.tags }}
+      <div class="entity-tags" aria-label="Tags">
+        {{ range . }}
+        <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      {{/* Main content: category + rarity + crafting + locations + description + AI context */}}
+      {{ .Content }}
+
+      {{/* Multi-image gallery if available */}}
+      {{ with .Params.assets }}
+      {{ with .gallery }}
+      {{ partial "gallery.html" (dict "images" . "title" $.Title) }}
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</article>
+{{ end }}
