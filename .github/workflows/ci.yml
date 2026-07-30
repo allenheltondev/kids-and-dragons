@@ -1,3 +1,13 @@
+# Kids & Dragons CI.
+#
+# One workflow, on purpose. This is a family project, not a platform team — a single
+# file you can read top to bottom beats a matrix of reusable workflows nobody edits.
+#
+# It enforces the two cross-cutting rules from docs/roadmap.md that only CI can:
+#   * schema validation — a malformed chapter fails the build, never the play session
+#   * the art gate — "the agent says it's finished" is not an acceptance criterion
+#     (docs/art-pipeline.md §3)
+
 name: CI
 
 on:
@@ -8,46 +18,197 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: false
+  # Cancel superseded runs on pull requests only. On main, a CI run gates the
+  # production deploy (prod-deploy.yml triggers on its completion), so
+  # cancelling an in-flight main run would silently drop a deploy.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# This workflow only reads the repo. Stated explicitly so a future step that
+# wants to write (the one-time PR-repair pattern) has to say so out loud.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  publish-verified-pr9-fix:
-    if: github.event_name == 'pull_request' && github.head_ref == 'claude/codebase-perf-review-wcmby8'
+  build:
+    name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+
+    # The prod store gets tested against a real DynamoDB, not a mock. The whole
+    # justification for the in-memory store is that swapping in DynamoRepository
+    # is a wiring change rather than a re-modelling exercise
+    # (packages/server/src/store/contract.test.ts), and that claim is worth
+    # nothing unless one suite runs against both.
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
+
+    # dynamodb-local ships no HEALTHCHECK, and GitHub only waits on containers
+    # that define one — so without the wait step below, `npm test` can race a
+    # port that is not listening yet and fail intermittently.
+
     steps:
       - uses: actions/checkout@v4
+
+      # Node 22 — the same runtime the Lambdas use (architecture §1).
+      - uses: actions/setup-node@v4
         with:
-          ref: ${{ github.head_ref }}
+          node-version: 22
+          cache: npm
 
-      - name: Apply the already-verified patch
-        shell: bash
-        run: |
-          python3 - <<'PYCODE'
-          import base64, gzip
-          from pathlib import Path
-          encoded = "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"
-          Path('/tmp/patch_pr9.py').write_bytes(gzip.decompress(base64.b64decode(encoded)))
-          PYCODE
-          python3 /tmp/patch_pr9.py
+      # Python 3.11 for the art tooling and cfn-lint. The set lives in
+      # requirements-dev.txt so every workflow and scripts/setup.sh install the
+      # same thing, and `cache: pip` stops each run re-downloading the wheels.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
-      - name: Push non-workflow changes
-        shell: bash
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # KAD_DDB_ENDPOINT switches the repository contract suite from "memory
+      # only" to "memory and DynamoDB". Without it those cases skip, which is
+      # what keeps `npm test` a two-second command on a laptop.
+      - name: Wait for DynamoDB Local
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            infra/github-oidc.yaml \
-            packages/client/src/screens/PlayerPanel.tsx \
-            packages/client/src/screens/screens.test.tsx \
-            packages/server/src/handlers/action.ts \
-            packages/server/src/handlers/progression.ts \
-            packages/server/src/store/contract.test.ts \
-            packages/server/src/store/dynamo-repository.ts \
-            packages/server/src/store/memory-repository.ts \
-            packages/server/src/store/repository.ts
-          git commit -m "fix: close PR review gaps"
-          git push origin HEAD:${{ github.head_ref }}
+          for i in $(seq 1 30); do
+            curl -s -o /dev/null http://localhost:8000 && exit 0
+            sleep 1
+          done
+          echo "::error::DynamoDB Local never came up on :8000"
+          exit 1
+
+      - name: Test
+        run: npm test
+        env:
+          KAD_DDB_ENDPOINT: http://localhost:8000
+          AWS_REGION: us-east-1
+
+      # The stack is code too. cfn-lint applies the SAM transform, so this
+      # catches a bad property on a Serverless resource — the class of mistake
+      # you would otherwise find eight minutes into a deploy.
+      - name: Lint the stack
+        run: npm run infra:lint
+
+      # A Lambda bundle that does not build is a deploy that fails after the
+      # checks have already passed. It costs seconds here.
+      - name: Bundle Lambdas
+        run: npm run infra:build
+
+      # Content is data (roadmap, "Content as data"), so it gets checked like code:
+      # schemas first, then the cross-file rules a schema cannot express.
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Verify art assets
+        run: npm run art:verify
+
+      # The rig contract is checked separately from the pixels because it needs
+      # no image decoding and no delivered art — it is arithmetic over
+      # manifest.rigContract, and it should go red the moment a clip grows past
+      # the turn budget rather than when the first .riv shows up.
+      - name: Verify rig contract
+        run: npm run art:verify:rig
+
+      - name: Build
+        run: npm run build
+
+      # The bytes production ships. On a main push, prod-deploy.yml downloads
+      # this artifact from the triggering run instead of rebuilding — so what
+      # goes live is the exact output CI just tested, not a second npm ci +
+      # esbuild resolution of the same commit. Staging (deploy.yml) cannot do
+      # the same: it runs in parallel with CI on the pull request, so there is
+      # no completed run to pull from, and it builds its own on purpose.
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kad-build-${{ github.sha }}
+          path: |
+            infra/.build/
+            packages/client/dist/
+          # `.build` is a dotted directory, which upload-artifact v4 skips by
+          # default — without this the artifact would silently hold only the
+          # client, and the ship-mode guard in deploy.sh would refuse it.
+          include-hidden-files: true
+          if-no-files-found: error
+          # Two weeks bounds how old a one-click redeploy of a past artifact
+          # can be; older than that means rebuilding from the commit.
+          retention-days: 14
+
+      # The contact sheets are the human gate's input (art-pipeline.md §3.2). They do
+      # not gate the build — nothing here decides whether the art looks right — but
+      # having them on every run means a reviewer never has to build them by hand.
+      - name: Contact sheets
+        run: npm run art:sheet
+
+      - name: Upload contact sheets
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: art-review-sheets
+          path: art/review/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  e2e:
+    # The roadmap's dev loop says a change isn't done until it has been seen on
+    # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
+    # holds three browser contexts against the real dev server: real room
+    # codes, real SSE, real server-rolled dice. It is a separate job because it
+    # is minutes rather than seconds, and because a red e2e means something
+    # quite different from a red unit test.
+    name: end to end
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      # ~1-2 minutes of download per run without the cache. Keyed on the lock
+      # file because that is what pins @playwright/test, whose version decides
+      # which browser build it wants.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      # OS-level deps are not cached with the browser; install them either way.
+      - name: Install Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      # playwright.config.ts starts `npm run dev` itself and waits for Vite.
+      - name: Play a chapter
+        run: npm run e2e
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
