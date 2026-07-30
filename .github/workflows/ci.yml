@@ -58,17 +58,20 @@ jobs:
           node-version: 22
           cache: npm
 
-      # Python 3.11 for the art tooling. Pillow and numpy are the verifier's only
-      # dependencies and it prints exactly that if they are missing.
+      # Python 3.11 for the art tooling and cfn-lint. The set lives in
+      # requirements-dev.txt so every workflow and scripts/setup.sh install the
+      # same thing, and `cache: pip` stops each run re-downloading the wheels.
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Install art dependencies
-        run: python -m pip install --disable-pip-version-check pillow numpy
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
       - name: Typecheck
         run: npm run typecheck
@@ -95,9 +98,7 @@ jobs:
       # catches a bad property on a Serverless resource — the class of mistake
       # you would otherwise find eight minutes into a deploy.
       - name: Lint the stack
-        run: |
-          python -m pip install --disable-pip-version-check cfn-lint
-          npm run infra:lint
+        run: npm run infra:lint
 
       # A Lambda bundle that does not build is a deploy that fails after the
       # checks have already passed. It costs seconds here.
@@ -121,6 +122,28 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # The bytes production ships. On a main push, prod-deploy.yml downloads
+      # this artifact from the triggering run instead of rebuilding — so what
+      # goes live is the exact output CI just tested, not a second npm ci +
+      # esbuild resolution of the same commit. Staging (deploy.yml) cannot do
+      # the same: it runs in parallel with CI on the pull request, so there is
+      # no completed run to pull from, and it builds its own on purpose.
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kad-build-${{ github.sha }}
+          path: |
+            infra/.build/
+            packages/client/dist/
+          # `.build` is a dotted directory, which upload-artifact v4 skips by
+          # default — without this the artifact would silently hold only the
+          # client, and the ship-mode guard in deploy.sh would refuse it.
+          include-hidden-files: true
+          if-no-files-found: error
+          # Two weeks bounds how old a one-click redeploy of a past artifact
+          # can be; older than that means rebuilding from the commit.
+          retention-days: 14
 
       # The contact sheets are the human gate's input (art-pipeline.md §3.2). They do
       # not gate the build — nothing here decides whether the art looks right — but

@@ -12,6 +12,15 @@ name: Deploy (production)
 # below requires it to have passed. The checkout pins to the exact SHA CI
 # tested, so what deploys is what went green — not whatever main has moved to.
 #
+# Build once, ship to prod: on the workflow_run path this workflow does not
+# rebuild at all. It downloads the `kad-build-<sha>` artifact CI uploaded —
+# infra/.build/ and packages/client/dist/ — and runs deploy.sh in ship-only
+# mode (KAD_PREBUILT=1), so production serves the exact bytes CI tested rather
+# than a second resolution of the same commit. Staging keeps building its own:
+# deploy.yml runs in parallel with CI on the PR and has no completed run to
+# pull from. A manual dispatch has no triggering run either, so it falls back
+# to deploy.sh's normal build mode.
+#
 # The environment is `Production` and the AWS stage is `prod`. They are
 # deliberately different words: GitHub matches the environment name exactly, and
 # the OIDC `sub` claim carries it verbatim into the role's trust policy, while
@@ -23,6 +32,18 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      # One-click rollback: point this at a known-good older commit and the
+      # dispatch builds and ships it. Dispatches always pass the stale-tip
+      # guard below — deploying something other than the tip of main is the
+      # entire point of choosing a ref.
+      ref:
+        description: >-
+          Git ref to deploy (branch, tag, or SHA). Leave empty for the default
+          branch.
+        required: false
+        type: string
+        default: ""
 
 concurrency:
   # Queued, never cancelled: a half-applied CloudFormation update is a worse
@@ -97,9 +118,29 @@ jobs:
         uses: actions/checkout@v4
         with:
           # The exact commit CI went green on — not the branch tip, which may
-          # have moved while CI ran. Empty on workflow_dispatch, which then
-          # checks out the chosen ref as usual.
-          ref: ${{ github.event.workflow_run.head_sha || '' }}
+          # have moved while CI ran. On workflow_dispatch there is no
+          # workflow_run, so the operator's `ref` input wins; empty means the
+          # default branch, an older commit means a rollback deploy.
+          ref: ${{ github.event.workflow_run.head_sha || inputs.ref || '' }}
+
+      # Build once, ship to prod. CI already built this exact SHA; downloading
+      # its artifact from the *triggering run* (run-id + github-token, which
+      # download-artifact needs to read a run other than this one) restores
+      # infra/.build/ and packages/client/dist/ exactly where the build steps
+      # would have written them, and the Deploy step below ships them as-is.
+      # No equivalent exists for staging — deploy.yml runs in parallel with CI
+      # on the PR, so it builds its own — and none exists for a manual
+      # dispatch, which has no triggering run and falls back to building.
+      - name: Download the CI build artifact
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: kad-build-${{ github.event.workflow_run.head_sha }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          # The artifact's paths are rooted at the repo root, so extracting
+          # here puts infra/.build/ and packages/client/dist/ back in place.
+          path: .
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -113,6 +154,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
       - name: Set up AWS SAM CLI
         uses: aws-actions/setup-sam@v2
@@ -145,10 +188,17 @@ jobs:
           role-session-name: GitHubActions-KidsAndDragons-ProductionDeploy
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Install dependencies
-        run: |
-          npm ci
-          python -m pip install --disable-pip-version-check pillow numpy
+      # node_modules only matters when this run builds — the manual-dispatch
+      # path, where deploy.sh runs the checks and both build steps. On the
+      # workflow_run path the CI artifact supplies the bundles, ship-mode
+      # deploy.sh runs no npm scripts, and the strict art gate below is Python
+      # (`npm run` needs only package.json to dispatch it).
+      - name: Install Node dependencies
+        if: github.event_name != 'workflow_run'
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
       # Prod-only tightening: the strict pixel gate fails on *undelivered* art,
       # not just malformed art. On a PR that is noise — sets land over time —
@@ -166,11 +216,15 @@ jobs:
         #
         # On the workflow_run path, CI has already run the full suite — plus
         # e2e, cfn-lint, and the rig contract, which deploy.sh never ran — on
-        # this exact SHA, so the checks are skipped. A manual dispatch has no
-        # such guarantee and keeps them.
+        # this exact SHA, so the checks are skipped; and CI already *built*
+        # this exact SHA, so the build steps are skipped too (KAD_PREBUILT=1
+        # ships the artifact downloaded above, refusing to deploy if it is
+        # missing or empty). A manual dispatch has neither guarantee and keeps
+        # both: full checks, fresh build.
         run: ./scripts/deploy.sh prod
         env:
           KAD_SKIP_CHECKS: ${{ github.event_name == 'workflow_run' && '1' || '' }}
+          KAD_PREBUILT: ${{ github.event_name == 'workflow_run' && '1' || '' }}
           # Passkeys bind to a domain for the life of the credential, and
           # `sam deploy` reverts any parameter it is not given. Empty is a
           # complete state: email-code sign-in only.
