@@ -15,6 +15,7 @@ import rules from "../../../../content/rules.json";
 import items from "../../../../content/items.json";
 import {
   ChapterCompletePanel,
+  CombatControls,
   CreationFlow,
   CreationPreview,
   DiceOverlay,
@@ -35,6 +36,7 @@ const SCREENS = {
   CreationPreview,
   CreationFlow,
   PlayerPanel,
+  CombatControls,
   DiceOverlay,
   SignInFlow,
 };

@@ -60,10 +60,44 @@ async function createCharacter(page: Page, species: string, name: string): Promi
 }
 
 /** The server's view, so the test asserts on authority rather than on pixels. */
-async function serverState(code: string): Promise<{ phase: string; xpEarned: number }> {
+async function serverState(
+  code: string,
+): Promise<{ phase: string; xpEarned: number; sceneId: string | null; encounter?: unknown }> {
   const response = await fetch(`http://localhost:8787/api/state?code=${code}`);
-  const body = (await response.json()) as { state: { phase: string; xpEarned: number } };
+  const body = (await response.json()) as {
+    state: { phase: string; xpEarned: number; sceneId: string | null; encounter?: unknown };
+  };
   return body.state;
+}
+
+/**
+ * Tap a specific choice, confirm it (spec §11: select, then "Do it!"), and
+ * keep at it until the server actually stands where the choice leads. Used by
+ * the combat test to route deterministically — the chapter-walk test keeps
+ * its "whoever is asked, answers" randomness on purpose.
+ *
+ * The retry is not paranoia: a tap can land while the phone's patches are
+ * held behind a presentation, in which case the intent is refused as stale
+ * and the *game's* answer is "resync and tap again" (store `send()`). A test
+ * that fire-and-forgets a single click asserts something the app never
+ * promised.
+ */
+async function chooseUntil(page: Page, label: RegExp, done: () => Promise<boolean>): Promise<void> {
+  for (let attempt = 0; attempt < 8; attempt++) {
+    if (await done()) return;
+    await page
+      .locator(".prompt button")
+      .filter({ hasText: label })
+      .first()
+      .click({ timeout: 5_000 })
+      .catch(() => {});
+    await page
+      .getByRole("button", { name: /do it!/i })
+      .click({ timeout: 5_000 })
+      .catch(() => {});
+    await page.waitForTimeout(700);
+  }
+  expect(await done(), `the tap on ${String(label)} never took`).toBe(true);
 }
 
 /**
@@ -232,7 +266,10 @@ test.describe("first playable", () => {
     let completed: { phase: string; xpEarned: number } | null = null;
     let quiet = 0;
 
-    for (let turn = 0; turn < 60 && completed === null; turn++) {
+    // 90 rather than 60: with the bramblewisp fight ungated, a route through
+    // the stream can land in real combat, which the generic driver plays one
+    // card at a time.
+    for (let turn = 0; turn < 90 && completed === null; turn++) {
       let acted = false;
 
       for (const page of phones) {
@@ -257,15 +294,216 @@ test.describe("first playable", () => {
 
       // A quiet turn is normal — a roll is animating, or a patch is in flight.
       // Several in a row means the game is genuinely stuck waiting on nobody,
-      // which is the thing worth failing on.
+      // which is the thing worth failing on. The bound tolerates a full enemy
+      // combat round: its COMBAT_SEQUENCE holds every phone's patch for up to
+      // 4s (world/presentation.ts), which is three quiet passes on its own.
       quiet = acted ? 0 : quiet + 1;
       if (quiet > 0) await host.waitForTimeout(1_200);
-      expect(quiet, "stuck: nobody has anything to tap").toBeLessThan(4);
+      expect(quiet, "stuck: nobody has anything to tap").toBeLessThan(7);
     }
 
     expect(completed, "the chapter never finished").not.toBeNull();
     // XP is awarded per chapter, not per enemy — exploring counts (spec §8.1).
     expect(completed!.xpEarned).toBeGreaterThan(0);
+  });
+
+  test("three players fight the bramblewisps and the story carries on", async ({ browser }) => {
+    // Three creations plus a real fight: a d20 fight §7.1 tunes to ~4 rounds
+    // routinely runs 6–10 when three novice thornguards keep missing, and
+    // every round costs ~30s of genuine presentation holds across three
+    // phones. The default 300s budget fits the median run, not the tail.
+    test.setTimeout(540_000);
+    const phones = [await phone(browser), await phone(browser), await phone(browser)];
+    const [host] = phones as [Page, ...Page[]];
+
+    await host.goto("/");
+    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await host.getByText("Travel Mode").click();
+    await host.getByRole("button", { name: /start a game/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
+    const code = new URL(host.url()).pathname.split("/").pop()!;
+
+    for (const [i, page] of phones.slice(1).entries()) {
+      await page.goto("/");
+      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
+      await page.getByLabel(/room code/i).fill(code);
+      await page.getByRole("button", { name: /join a game/i }).click();
+    }
+
+    // A bigfoot, so "Push the thorns aside" is on the menu and the route to
+    // the fight needs no dice at all.
+    const species = ["unicorn", "griffin", "bigfoot"];
+    const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
+    for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
+
+    for (const page of phones) {
+      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
+      await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
+    }
+    await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
+
+    const at = (sceneId: string) => async () => (await serverState(code)).sceneId === sceneId;
+    const heroOf = (page: Page): string => heroes[phones.indexOf(page)]!;
+
+    /*
+     * The deterministic road to the thicket — no checks, no dice:
+     * hedge wall → first clearing → the fork (a real three-phone vote) →
+     * the singing stream → "Chase them off", which goes straight to
+     * encounter_bramblewisps.
+     */
+    await chooseUntil(host, /push the thorns aside/i, at("scene_first_clearing"));
+    await chooseUntil(host, /head deeper into the wood/i, at("choice_point_path"));
+    // The vote: each phone keeps confirming "stream" until either its vote is
+    // what resolves the prompt or the party has already moved on.
+    for (const page of phones) {
+      await chooseUntil(page, /follow the singing stream/i, async () => {
+        const s = await serverState(code);
+        if (s.sceneId !== "choice_point_path") return true; // resolved
+        return await page
+          .locator(".prompt button")
+          .filter({ hasText: /follow the singing stream/i })
+          .getByText(heroOf(page))
+          .isVisible()
+          .catch(() => false);
+      });
+    }
+    await expect.poll(async () => (await serverState(code)).sceneId).toBe("scene_singing_stream");
+    await chooseUntil(host, /chase them off/i, at("encounter_bramblewisps"));
+
+    const encounterOf = async () =>
+      ((await serverState(code)).encounter ?? null) as {
+        round: number;
+        turnIndex: number;
+        actionTaken: boolean;
+        stepsLeft: number;
+        order: string[];
+        openingOrder: string[];
+        combatants: { id: string; side: string; down: boolean; name: string }[];
+      } | null;
+
+    // An encounter waits on a ready-up before the board goes up (engine.ts) —
+    // three phones have to swap to a combat UI first. Same tolerance as every
+    // other tap: ready is confirmed by the button flipping, not by the click.
+    for (const page of phones) {
+      for (let attempt = 0; attempt < 5; attempt++) {
+        if (await encounterOf()) break;
+        const flipped = await page
+          .getByRole("button", { name: /wait, not yet/i })
+          .isVisible()
+          .catch(() => false);
+        if (flipped) break;
+        await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 8_000 }).catch(() => {});
+        await page.waitForTimeout(500);
+      }
+    }
+    await expect.poll(async () => Boolean(await encounterOf()), { timeout: 30_000 }).toBe(true);
+
+    /** Whose turn the *server* says it is — a party hero's name, or null
+        while a monster (or nobody) holds the clock. */
+    function activeHero(enc: NonNullable<Awaited<ReturnType<typeof encounterOf>>>): string | null {
+      const order = enc.round === 1 ? enc.openingOrder : enc.order;
+      const active = enc.combatants.find((c) => c.id === order[enc.turnIndex]);
+      return active && active.side === "party" && !active.down ? active.name : null;
+    }
+
+    /** Attack if the card is offered: card → first target → "Do it!". Clicks
+        are tolerant — a miss is retried by the next driver pass. */
+    async function tryAttack(page: Page): Promise<boolean> {
+      const card = page.locator(".combat .choice").filter({ hasText: /attack/i });
+      if ((await card.count()) === 0) return false;
+      await card.first().click({ timeout: 4_000 }).catch(() => {});
+      await page.locator(".combat__targets button").first().click({ timeout: 4_000 }).catch(() => {});
+      await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
+      await page.waitForTimeout(800);
+      return true;
+    }
+
+    /** Step toward the wisps: the reachable tile furthest right, confirmed. */
+    async function tryMove(page: Page): Promise<boolean> {
+      const tiles = page.locator("button[data-move-tile]");
+      const count = await tiles.count();
+      if (count === 0) return false;
+      let bestX = -1;
+      let bestIndex = 0;
+      for (let i = 0; i < count; i++) {
+        const x = Number(await tiles.nth(i).getAttribute("data-x"));
+        if (x > bestX) {
+          bestX = x;
+          bestIndex = i;
+        }
+      }
+      await tiles.nth(bestIndex).click({ timeout: 4_000 }).catch(() => {});
+      await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
+      // The move's own COMBAT_SEQUENCE holds this phone's patch ~700ms
+      // (world/presentation.ts); the attack re-check needs the fresh board.
+      await page.waitForTimeout(1_000);
+      return true;
+    }
+
+    /*
+     * Play the fight through the phone UI, driving the phone the *server*
+     * says is up (its own patches can trail the enemy round's COMBAT_SEQUENCE
+     * hold by ~4s — world/presentation.ts — so we wait for its combat UI
+     * before tapping): attack when a target is legal, otherwise step toward
+     * the enemies and re-check, otherwise end the turn. Every click is
+     * retry-tolerant; the server state is the only progress meter. Bounded —
+     * a fight §7.1 tunes to ~4 rounds that is still running after 50 driver
+     * passes has genuinely hung.
+     */
+    let over = false;
+    for (let i = 0; i < 150 && !over; i++) {
+      const enc = await encounterOf();
+      if (!enc) {
+        over = true;
+        break;
+      }
+      const hero = activeHero(enc);
+      if (!hero) {
+        // Nobody can act this instant (a settle in flight); look again.
+        await host.waitForTimeout(800);
+        continue;
+      }
+      const page = phones[heroes.indexOf(hero)]!;
+      const ready = await page
+        .getByText(/your turn/i)
+        .first()
+        .waitFor({ state: "visible", timeout: 12_000 })
+        .then(() => true)
+        .catch(() => false);
+      if (!ready) continue; // patches still draining; poll the server again
+
+      const endTurn = async () => {
+        await page
+          .locator(".combat .choice")
+          .filter({ hasText: /end turn/i })
+          .first()
+          .click({ timeout: 4_000 })
+          .catch(() => {});
+        await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
+        await page.waitForTimeout(600);
+      };
+
+      if (enc.actionTaken) {
+        // The one action is spent (§7.2); nothing is left but handing over.
+        await endTurn();
+        continue;
+      }
+      if (await tryAttack(page)) continue;
+      if (enc.stepsLeft > 0 && (await tryMove(page)) && (await tryAttack(page))) continue;
+      await endTurn();
+    }
+
+    // The fight ended and the story branched — victory or defeat both carry
+    // on (spec §7.3); there is no game over to assert against.
+    expect(over, "the encounter never resolved").toBe(true);
+    const after = await serverState(code);
+    expect(after.encounter ?? null).toBeNull();
+    expect(after.sceneId).not.toBe("encounter_bramblewisps");
+    expect(["scene_wisp_friends", "scene_bundled"]).toContain(after.sceneId);
+
+    // And play keeps playing: both branch scenes end on a single choice that
+    // walks to the shrine, which is the chapter's spine.
+    await chooseUntil(host, /go where they are pointing|untie your laces/i, at("scene_shrine_hollow"));
   });
 
   test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {

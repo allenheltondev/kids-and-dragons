@@ -113,6 +113,13 @@
   block-size: 100%;
 }
 
+/* The stage owns its gestures: a drag is a camera pan and a pinch is a zoom
+   (spec §2.2), so the browser must not claim either for scrolling. Scoped to
+   the canvas — the DOM panels layered over the stage scroll as normal. */
+.kad-stage canvas {
+  touch-action: none;
+}
+
 /* ==========================================================================
  * Primitives
  * ======================================================================== */
