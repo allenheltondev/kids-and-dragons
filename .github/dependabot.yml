@@ -1,0 +1,10 @@
+# Keeps the `uses:` pins in .github/workflows/ current mechanically — the
+# hand-guessed action versions the 2026-07 pass had to fix are exactly the
+# mistake this automates away. deploy.yml already carries the dependabot-actor
+# guard, so a bump PR gets CI but never a staging deploy.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
