@@ -63,7 +63,7 @@ jobs:
       # The art gate is Python, and `deploy.sh` runs it — see the note on the
       # deploy step for why the checks are not skipped here.
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
           cache: pip
