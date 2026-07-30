@@ -130,7 +130,7 @@ jobs:
       # the same: it runs in parallel with CI on the pull request, so there is
       # no completed run to pull from, and it builds its own on purpose.
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kad-build-${{ github.sha }}
           path: |
@@ -152,7 +152,7 @@ jobs:
         run: npm run art:sheet
 
       - name: Upload contact sheets
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: art-review-sheets
@@ -206,7 +206,7 @@ jobs:
         run: npm run e2e
 
       - name: Upload traces
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-traces
