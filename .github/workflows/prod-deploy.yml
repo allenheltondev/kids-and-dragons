@@ -54,6 +54,9 @@ concurrency:
 permissions:
   id-token: write
   contents: read
+  # download-artifact reads the artifact from the CI workflow run that invoked
+  # this workflow, not from this deploy run.
+  actions: read
 
 env:
   AWS_REGION: us-east-1
