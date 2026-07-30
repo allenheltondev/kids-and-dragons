@@ -11,17 +11,13 @@
   <link rel="stylesheet" href="{{ $css.RelPermalink }}">
   {{ end }}
   {{ block "head" . }}{{ end }}
+  {{ partial "theme-head.html" . }}
 </head>
 <body class="rpg-codex{{ with .Params.type }} entity-type-{{ . }}{{ end }}{{ if .IsHome }} page-home{{ end }}">
   <a href="#main-content" class="wiki-skip-link">Skip to content</a>
 
   {{ block "header" . }}
-  <header class="site-header">
-    <nav class="site-nav" aria-label="Main navigation">
-      <a href="{{ "/" | relURL }}" class="site-title">{{ .Site.Title }}</a>
-      {{ partial "theme-toggle.html" . }}
-    </nav>
-  </header>
+  {{ partial "navbar.html" . }}
   {{ end }}
 
   <div class="content-wrapper">
@@ -48,10 +44,34 @@
 
   {{ block "footer" . }}
   <footer class="site-footer">
-    <p>Realm of Red Sky — World Encyclopedia</p>
+    <p>Realm of Red Sky — World Wiki</p>
   </footer>
   {{ end }}
 
   {{ block "scripts" . }}{{ end }}
+
+  {{/* Theme click handler (deferred — blocking init already in <head> via theme-head.html) */}}
+  {{ $themeJS := resources.Get "js/theme.js" }}
+  {{ if $themeJS }}
+  <script defer src="{{ $themeJS.RelPermalink }}"></script>
+  {{ end }}
+
+  {{/* Pagefind navbar search — uses ES module export, loaded as module */}}
+  {{ $searchJS := resources.Get "js/search.js" }}
+  {{ if $searchJS }}
+  <script type="module" src="{{ $searchJS.RelPermalink }}"></script>
+  {{ end }}
+
+  {{/* Mobile sidebar overlay toggle */}}
+  {{ $sidebarJS := resources.Get "js/sidebar.js" }}
+  {{ if $sidebarJS }}
+  <script defer src="{{ $sidebarJS.RelPermalink }}"></script>
+  {{ end }}
+
+  {{/* Navbar scroll detection — blur effect on scroll */}}
+  {{ $navScrollJS := resources.Get "js/navbar-scroll.js" }}
+  {{ if $navScrollJS }}
+  <script defer src="{{ $navScrollJS.RelPermalink }}"></script>
+  {{ end }}
 </body>
 </html>

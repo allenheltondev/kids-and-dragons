@@ -10,22 +10,23 @@
 
   {{ $pages := .Pages.ByTitle }}
   {{ if $pages }}
-  <ul class="wiki-entity-list">
+  <div class="wiki-tile-grid">
     {{ range $pages }}
-    <li class="wiki-entity-list__item">
-      <div class="wiki-entity-list__info">
-        <span class="wiki-entity-list__name">
-          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        </span>
-        {{ with .Params.type }}
-        <span class="wiki-entity-list__meta">
-          <span class="wiki-badge wiki-badge--{{ . }}">{{ . }}</span>
-        </span>
-        {{ end }}
+    {{ $title := .Title }}
+    <a href="{{ .RelPermalink }}" class="wiki-tile-card">
+      {{ with .Params.assets.primary }}
+      <div class="wiki-tile-card__image">
+        <img src="{{ . | relURL }}" alt="{{ $title }}" loading="lazy">
       </div>
-    </li>
+      {{ else }}
+      <div class="wiki-tile-card__placeholder" aria-hidden="true">
+        {{ partial "tile-placeholder-icon.html" . }}
+      </div>
+      {{ end }}
+      <span class="wiki-tile-card__name">{{ .Title }}</span>
+    </a>
     {{ end }}
-  </ul>
+  </div>
   {{ else }}
   <p class="text-secondary">No pages in this section yet.</p>
   {{ end }}

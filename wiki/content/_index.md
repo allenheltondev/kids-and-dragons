@@ -1,6 +1,6 @@
 ---
 title: "Realm of Red Sky"
-subtitle: "World Encyclopedia"
+subtitle: "World Wiki"
 ---
 
-Welcome to the World Encyclopedia — the canonical design bible for Realm of Red Sky.
+Welcome to the World Wiki — the canonical design bible for Realm of Red Sky.

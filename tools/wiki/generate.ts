@@ -13,7 +13,7 @@ import type { GeneratorConfig, ValidationMessage } from './types.ts';
 import { parseCanonDirectory } from './canon-parser.ts';
 import { validateCanon } from './canon-validator.ts';
 import { discoverAllAssets } from './asset-discovery.ts';
-import { generatePage, getEntityPagePath } from './page-generator.ts';
+import { generatePage, getEntityPagePath, resolveConventionAssets } from './page-generator.ts';
 import { checkIncremental, updateManifest, getCanonFileMtimes } from './incremental.ts';
 
 function main(): void {
@@ -139,7 +139,11 @@ function main(): void {
     }
 
     // Get assets and reverse refs for this entity
-    const assets = assetResults.get(entityId) ?? { entityId, source: 'none' as const };
+    // Prefer explicit assets from asset-discovery, then fall back to convention-based resolution
+    const discoveredAssets = assetResults.get(entityId);
+    const assets = discoveredAssets && discoveredAssets.source === 'explicit'
+      ? discoveredAssets
+      : resolveConventionAssets(entity, assetsDir);
     const reverseRefs = registry.reverseRefs.get(entityId) ?? [];
 
     // Generate the page
