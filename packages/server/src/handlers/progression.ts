@@ -163,6 +163,7 @@ export interface ChapterSettlement {
   characters: Character[];
   chapterProgress?: ChapterProgressRecord;
   campaignProgress?: CampaignProgressRecord;
+  campaignProgressExpectedVersion?: number | null;
 }
 
 /**
@@ -223,10 +224,14 @@ export async function settleChapterCompletion(
    * inherit its own history and insta-fail (see CampaignProgressRecord).
    */
   const existing = await deps.repo.getCampaignProgress(householdId, campaignId);
+  // The run seq serializes one room. This version serializes the household row
+  // across rooms, so two campaign evenings cannot overwrite each other's count.
+  const campaignProgressExpectedVersion = existing ? (existing.version ?? 0) : null;
+  const version = (existing?.version ?? 0) + 1;
   const attempt: CampaignProgressRecord =
     existing && existing.status === "active"
-      ? { ...existing, updatedAt: now }
-      : { householdId, campaignId, status: "active", setbacks: 0, updatedAt: now };
+      ? { ...existing, version, updatedAt: now }
+      : { householdId, campaignId, status: "active", setbacks: 0, version, updatedAt: now };
   if (outcome === "setback") attempt.setbacks += 1;
 
   const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;
@@ -246,6 +251,7 @@ export async function settleChapterCompletion(
       }),
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
+      campaignProgressExpectedVersion,
     };
   }
 
@@ -255,10 +261,16 @@ export async function settleChapterCompletion(
       characters: await transformParty(state, deps, householdId, characters, commitCampaign),
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
+      campaignProgressExpectedVersion,
     };
   }
 
-  return { characters, ...(chapterProgress ? { chapterProgress } : {}), campaignProgress: attempt };
+  return {
+    characters,
+    ...(chapterProgress ? { chapterProgress } : {}),
+    campaignProgress: attempt,
+    campaignProgressExpectedVersion,
+  };
 }
 
 /**

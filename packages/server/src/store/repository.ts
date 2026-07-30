@@ -50,6 +50,8 @@ export interface CampaignProgressRecord {
   /** `active` is the attempt in flight; anything else is history. */
   status: "active" | "complete" | "failed";
   setbacks: number;
+  /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
+  version?: number;
   updatedAt: string;
 }
 
@@ -130,6 +132,12 @@ export interface CommitInput {
    */
   chapterProgress?: ChapterProgressRecord;
   campaignProgress?: CampaignProgressRecord;
+  /**
+   * The version read before deriving `campaignProgress`; null means no row
+   * existed. The shared household row must win this condition as well as the
+   * run's seq condition, because two different runs have independent seqs.
+   */
+  campaignProgressExpectedVersion?: number | null;
 }
 
 export interface GameRepository {

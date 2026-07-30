@@ -468,18 +468,42 @@ export class MemoryRepository implements GameRepository {
   }
 
   async commit(input: CommitInput): Promise<boolean> {
-    const { runId, expectedSeq, state, event, characters = [] } = input;
+    const {
+      runId,
+      expectedSeq,
+      state,
+      event,
+      characters = [],
+      chapterProgress,
+      campaignProgress,
+      campaignProgressExpectedVersion,
+    } = input;
     const current = (this.get(RUN(runId), STATE)?.data as RunState | undefined) ?? null;
     // Both conditions of the real TransactWriteItems: the state has not moved,
     // and this seq has not already been written.
     if (!current || current.seq !== expectedSeq) return false;
     if (this.items.has(rowKey(RUN(runId), EVT_SK(event.seq)))) return false;
 
+    if (campaignProgress) {
+      if (campaignProgressExpectedVersion === undefined) {
+        throw new Error("campaign progress commit is missing its expected version");
+      }
+      const stored =
+        (this.get(
+          HH(campaignProgress.householdId),
+          CAMPAIGN_SK(campaignProgress.campaignId),
+        )?.data as CampaignProgressRecord | undefined) ?? null;
+      const matches =
+        campaignProgressExpectedVersion === null
+          ? stored === null
+          : stored !== null && (stored.version ?? 0) === campaignProgressExpectedVersion;
+      if (!matches) return false;
+    }
+
+    // No await from here through the final row: this is the local equivalent of
+    // one TransactWriteItems, including across two different run partitions.
     this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
-    // Written only once both checks above have passed, mirroring the real
-    // transaction: a commit that loses the seq race must leave characters
-    // untouched, or a losing turn still banks its XP.
     for (const character of characters) {
       this.put({
         PK: HH(character.householdId),
@@ -489,10 +513,22 @@ export class MemoryRepository implements GameRepository {
         data: character,
       });
     }
-    // The progress rows ride the same gate as the characters, and for the same
-    // reason — see CommitInput.
-    if (input.chapterProgress) await this.putChapterProgress(input.chapterProgress);
-    if (input.campaignProgress) await this.putCampaignProgress(input.campaignProgress);
+    if (chapterProgress) {
+      this.put({
+        PK: RUN(chapterProgress.runId),
+        SK: CHAPTER_SK(chapterProgress.index),
+        entity: "chapter-progress",
+        data: chapterProgress,
+      });
+    }
+    if (campaignProgress) {
+      this.put({
+        PK: HH(campaignProgress.householdId),
+        SK: CAMPAIGN_SK(campaignProgress.campaignId),
+        entity: "campaign-progress",
+        data: campaignProgress,
+      });
+    }
     return true;
   }
 

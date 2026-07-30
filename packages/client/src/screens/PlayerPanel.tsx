@@ -61,6 +61,11 @@ function promptKey(prompt: Prompt | null): string {
   }
 }
 
+/** A consumable is actionable only outside the encounter state that owns HP. */
+export function canUseInventoryItem(entry: InventoryEntry, encounterActive: boolean): boolean {
+  return entry.kind === "consumable" && !encounterActive;
+}
+
 function nameOfCharacter(party: PartyMember[], characterId: string): string {
   return party.find((m) => m.character.id === characterId)?.character.name ?? "Someone";
 }
@@ -661,7 +666,7 @@ export function PlayerPanel(): ReactElement {
               >
                 Close
               </Button>
-              {selectedEntry.kind === "consumable" ? (
+              {canUseInventoryItem(selectedEntry, state.encounter !== null) ? (
                 <Button
                   variant="primary"
                   size="lg"
@@ -675,6 +680,11 @@ export function PlayerPanel(): ReactElement {
                 >
                   Use it
                 </Button>
+              ) : selectedEntry.kind === "consumable" ? (
+                <p className="item-detail__passive kad-chip">
+                  <Icon name="waiting" />
+                  <span>Save it for after the fight</span>
+                </p>
               ) : (
                 <p className="item-detail__passive kad-chip">
                   <Icon name="trinket" />
