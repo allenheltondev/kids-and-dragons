@@ -1,12 +1,15 @@
 {{ define "main" }}
 <article class="entity-page entity-type-character">
-  <div class="entity-layout">
-    {{/* Character portrait */}}
+  <div class="entity-layout entity-layout--with-infobox">
+    {{/* Character portrait in infobox area */}}
     {{ with .Params.assets }}
     {{ with .primary }}
-    <div class="entity-portrait">
-      <img src="{{ . }}" alt="{{ $.Title }} portrait" loading="eager">
-    </div>
+    <aside class="wiki-infobox wiki-infobox--character" role="complementary" aria-label="Character information">
+      <div class="wiki-infobox__portrait">
+        <img src="{{ . | relURL }}" alt="{{ $.Title }} portrait"
+             class="wiki-infobox__portrait-img" loading="eager">
+      </div>
+    </aside>
     {{ end }}
     {{ end }}
 
@@ -21,15 +24,16 @@
       </div>
       {{ end }}
 
-      {{/* Main content: biography + personality + relationships + abilities + AI context */}}
-      {{ .Content }}
+      {{/* Main content: biography + personality + relationships + abilities */}}
+      {{ $content := .Content }}
+      {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: ai_context -->.*?<!-- END GENERATED: ai_context -->` "" $content }}
+      {{ $content | safeHTML }}
+
+      {{/* Hidden AI context for AI tools */}}
+      {{ partial "ai-context.html" . }}
 
       {{/* Multi-image gallery if available */}}
-      {{ with .Params.assets }}
-      {{ with .gallery }}
-      {{ partial "gallery.html" (dict "images" . "title" $.Title) }}
-      {{ end }}
-      {{ end }}
+      {{ partial "gallery.html" $ }}
     </div>
   </div>
 </article>

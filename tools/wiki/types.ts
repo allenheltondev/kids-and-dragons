@@ -89,6 +89,45 @@ export interface AssetResult {
   source: 'explicit' | 'convention' | 'none';
 }
 
+/** AI context metadata for entity pages, intended for AI tools, not end-user display. */
+export interface AiContext {
+  mood?: string;
+  themes?: string;
+  visual_style?: string;
+  common_encounters?: string;
+  lore_highlights?: string;
+  related_entities?: string;
+  writing_guidance?: string;
+  generation_hints?: string;
+}
+
+/** Asset references for an entity page's front matter. */
+export interface EntityAssets {
+  primary?: string;
+  gallery?: string[];
+}
+
+/** Front matter structure produced by the Generator for entity pages. */
+export interface EntityFrontMatter {
+  title: string;
+  id: string;
+  type: string;
+  status: string;
+  lastReviewed: string;
+  canon_status?: string;
+  draft?: boolean;
+  tags: string[];
+  classification?: string;
+  danger_level?: string;
+  scale?: string;
+  sapience?: string;
+  related: Array<{ id: string; type: string; relationship: string }>;
+  assets?: EntityAssets;
+  ai_context?: AiContext;
+  layout: string;
+  infobox: string;
+}
+
 /** Options passed to the page generator for a single entity. */
 export interface PageGeneratorOptions {
   entity: CanonEntity;
