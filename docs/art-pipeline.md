@@ -175,17 +175,41 @@ Every character rig exposes the same state machine so game code never special-ca
 Inputs: `move`, `attack`, `cast`, `hurt`, `helpUp`, `celebrate`, `transform` (triggers);
 `knockedDown`, `facing` (bool/number).
 
-**`tools/art/verify-rig.ts` does not exist yet.** This paragraph used to claim it asserted the
-interface above; it never did. Until it is written, nothing checks a `.riv` against this table, so a
-rig missing `celebrate` fails at the table rather than in CI — which is the exact inversion this
-pipeline exists to prevent. Treat the table as a contract enforced by review, and write the tool
-before the first rig lands. `asset-brief.md` §9.7 asks for the clip list to be moved into
-`manifest.json` as `rigContract`, which is what such a tool would read.
+**`tools/art/verify-rig.ts` exists** (`npm run art:verify:rig`), and the table above now lives in
+`assets/manifest.json` as `rigContract` — with per-clip tick counts and event ticks, which this table
+does not carry. **The manifest wins over this document**, same as everywhere else; `asset-brief.md`
+§9.2 is where the timings come from and why.
 
-The same gap swallowed six effect sheets: `verify.py` walked `manifest.species` and never opened
-`assets/effects/`, so `aura_*` sheets shipped with no manifest entry and nothing noticed. That half
-is now closed (`check_effects`), and it is the reason to be suspicious of any claim in this document
-that a check exists — grep for it.
+Be precise about what the tool does, because for months this paragraph claimed it enforced an
+interface it had never seen:
+
+| It checks | It does not check |
+|---|---|
+| The contract is coherent — every required clip defined, every event tick inside its clip, no duplicate input names, every clip reachable from a trigger or documented as not needing one | Whether the animation is any good. §6.2 and asset-brief §9.8.2 |
+| Every clip is required by some set, so nothing is a line in a table that no rigger is told to author | |
+| The worst realistic turn fits §9.2's 45-tick budget, re-derived from the clips rather than quoted | |
+| Every effect sheet that syncs to a clip event has that event, and runs on the contract's tick | |
+| A delivered rig, clip by clip — missing clips, clips nobody asked for, lengths that disagree with the tick table, a hold clip that loops, missing or wrongly-typed inputs | |
+
+**Where the edge actually is.** `compareRigToContract()` is complete and covered by
+`verify-rig.test.ts` — nineteen cases, each verified to fail when the corresponding rule is removed.
+What is *not* proven is the twenty-line adapter that turns a `.riv` into its input, and the reason is
+worth writing down so nobody re-discovers it: `@rive-app/canvas-advanced` is a dependency and the call
+sequence is real, but **the runtime cannot initialise headlessly.** It is an emscripten WebGL build
+that compiles shaders in its factory, so under plain Node it dies before any file is parsed —
+`document is not defined`, and a DOM shim only reaches `getShaderInfoLog is not a function`. Making it
+run needs a real GL context (`headless-gl`, or Mesa in CI), which is a native dependency and a
+decision about the build rather than about this file.
+
+So a `.riv` on disk is reported as a **failure** — "I could not read this" is information and silence
+is not. Review it against `rigContract` by hand and say so in the PR. Nothing about that failure is a
+judgement on the rig; it is the tool declining to pretend.
+
+Two gaps of exactly this shape have now been closed, and they are the reason to be suspicious of any
+claim in this document that a check exists — **grep for it**. `verify.py` walked `manifest.species`
+and never opened `assets/effects/`, so six `aura_*` sheets shipped with no manifest entry and nothing
+noticed (`check_effects`); and it checked effect *geometry* while saying nothing about where an
+effect's mass sat or how long it ran (`check_effect_composition`).
 
 ### 6.2 Palette slots
 

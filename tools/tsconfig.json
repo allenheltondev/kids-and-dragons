@@ -1,0 +1,9 @@
+{
+  "$comment": "The tools are typechecked too. A typed tool nothing typechecks is the same kind of lie as a documented check nothing runs — Node strips the annotations at run time without looking at them, so this is the only thing that reads them. `.mjs` tools are outside this and stay that way; the boundary is the file extension.",
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowImportingTsExtensions": true
+  },
+  "include": ["**/*.ts"]
+}
