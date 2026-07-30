@@ -135,8 +135,18 @@ The largest chapter. Budget accordingly.
 - 10×8 grid, tile system, pathfinding, reachable-tile highlighting
 - **Focus camera** — auto-frames the active actor, pinch-zoom and pan override. Unconditional on every surface; this is what makes the grid legible in Travel Mode.
 - Turn order (Quick-based, rerolled per encounter), round loop
-- Actions: Attack, class signature, species action, Use item, Help Up, Ready
+- Actions: Attack, class signature, species action, Use item, Help Up, Ready.
+  Built: Attack, Help Up and Ready are code (§7.2 grants them to everybody); the rest are the
+  **ability catalog** `content/abilities.json`, ten effect verbs deep. Fourteen of the twenty-two
+  abilities `rules.json` promises are authored; **eight are listed in `$deferred`** with the verb
+  they wait on rather than approximated, and `content:validate` refuses one that is in neither list
+  — so a card can never ship as a button that does nothing (architecture §5.1). Use item is the
+  one still open: what a consumable does lives in `inventory.ts`, and Chapter 5 is where the two meet
 - Enemy AI — simple and readable. She should be able to predict it. Deliberately not clever.
+  Built: one policy, *a monster walks at the nearest hero it can reach and hits them*. If encounters
+  play too soft, the dial is a **second one-sentence rule for a specific creature**, keyed off a
+  `behaviour` field on `EnemySpec` so it stays a chapter edit — never a cleverer shared policy
+  (`enemy-ai.ts` header)
 - Knocked-down state, revive, party-wipe → story branch (never a game over)
 - Phone combat UI: only legal actions shown, target confirm step
 - Damage numbers, hit/miss feedback, impact effect sync
@@ -156,6 +166,11 @@ The largest chapter. Budget accordingly.
 **Claude**
 - XP → level, stat point spend, action unlocks. `CharacterProgress.unspentPoints`, inside the
   provisional/committed pair so a failed campaign reverts earned *and* spent points together
+- **The eight deferred abilities** (`content/abilities.json` `$deferred`). This chapter owns level
+  unlocks, and six of the eight are level 6 or 9 — so the effect verbs they wait on land here or the
+  unlocks arrive as cards nobody can tap. Each entry names its verb; the cheap ones are duration
+  (`unbreakable`, `tanglelight`'s "cannot move") and a board-wide scope (`starfall`), the expensive
+  ones are terrain (`bramble_wall`) and a second turn cursor (`encore`)
 - **Chapter outcomes** (spec §8.2): a terminal scene declares `success` or `setback`; a setback
   pays half XP and branches rather than retrying. This is what makes campaign failure — and
   therefore the whole souvenir system — reachable at all; today `completeChapter()` is the engine's

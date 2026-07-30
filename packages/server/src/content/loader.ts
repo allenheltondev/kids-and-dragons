@@ -21,7 +21,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type {
+  AbilityCatalog,
   Chapter,
+  CombatAbility,
+  EncounterMap,
   ItemCatalog,
   ItemDef,
   RulesContent,
@@ -60,6 +63,32 @@ export interface ContentStore {
   /** `null` for an unknown id — the caller decides whether that is fatal. */
   chapter(id: string): Chapter | null;
   chapterIds(): string[];
+  /**
+   * A battle map by id, as referenced by `EncounterScene.map`. `null` for an
+   * unknown id; `content:validate` already refuses a chapter that names one, so
+   * a miss at runtime means the deployed bundle and the deployed content
+   * disagree — which the engine reports as NOT_FOUND rather than guessing a
+   * board.
+   */
+  map(id: string): EncounterMap | null;
+  /**
+   * What every ability *does on the board*, by id — handed to the engine as
+   * `EngineContext.abilities`.
+   *
+   * Separate from `rules()`, which owns the same abilities' names, icons and the
+   * sentence a child reads at a Rest scene. The split is the one thing worth
+   * knowing about this pair: the words are edited by whoever is writing the
+   * game, the mechanics by whoever is balancing it, and they are read at
+   * different moments by different code.
+   *
+   * The catalog is deliberately allowed to be *smaller* than the set of
+   * abilities `rules.json` names. `resolveCharacter` tolerates an action with no
+   * catalog entry and `legalActions` skips it, so an ability awaiting an effect
+   * verb is a card that cannot be tapped rather than a crash — and
+   * `content:validate` refuses one that is neither authored nor listed in
+   * `$deferred`, so the gap can never be an accident.
+   */
+  abilities(): AbilityCatalog;
 }
 
 class LoadedContent implements ContentStore {
@@ -68,7 +97,13 @@ class LoadedContent implements ContentStore {
     private readonly _rules: RulesContent,
     private readonly _items: ItemCatalog,
     private readonly _chapters: ReadonlyMap<string, Chapter>,
+    private readonly _maps: ReadonlyMap<string, EncounterMap>,
+    private readonly _abilities: AbilityCatalog,
   ) {}
+
+  abilities(): AbilityCatalog {
+    return this._abilities;
+  }
 
   rules(): RulesContent {
     return this._rules;
@@ -80,6 +115,10 @@ class LoadedContent implements ContentStore {
 
   chapter(id: string): Chapter | null {
     return this._chapters.get(id) ?? null;
+  }
+
+  map(id: string): EncounterMap | null {
+    return this._maps.get(id) ?? null;
   }
 
   chapterIds(): string[] {
@@ -152,13 +191,132 @@ async function readAll(root: string): Promise<ContentStore> {
     chapters.set(chapter.id, chapter);
   }
 
+  const maps = new Map<string, EncounterMap>();
+  const mapsDir = path.join(root, "maps");
+  let mapFiles: string[] = [];
+  try {
+    mapFiles = (await fs.readdir(mapsDir)).filter((f) => f.endsWith(".json")).sort();
+  } catch {
+    // No maps/ at all is fine — a content set with no encounters in it is a
+    // legitimate thing to load, and `checkChapter` is what catches an encounter
+    // that names a map nothing provides.
+  }
+  for (const file of mapFiles) {
+    const map = await readJson<EncounterMap>(path.join(mapsDir, file), problems);
+    if (!map) continue;
+    const mapProblems = checkMap(map, `maps/${file}`);
+    if (mapProblems.length > 0) {
+      problems.push(...mapProblems);
+      continue;
+    }
+    if (maps.has(map.id)) {
+      problems.push(`maps/${file}: duplicate map id "${map.id}"`);
+      continue;
+    }
+    maps.set(map.id, map);
+  }
+
+  // Every encounter's map has to exist, and only now can we know. A missing
+  // board is a chapter that cannot be played past its first fight, so it fails
+  // the load rather than the session.
+  for (const chapter of chapters.values()) {
+    for (const [sceneId, scene] of Object.entries(chapter.scenes)) {
+      if (scene.type !== "encounter") continue;
+      if (!maps.has(scene.map)) {
+        problems.push(
+          `chapters/${chapter.id}.json: scene "${sceneId}" names map "${scene.map}", which is not in maps/`,
+        );
+      }
+    }
+  }
+
+  // Optional on purpose. A content set with no abilities.json is every class
+  // signature reduced to Attack, Help Up and Ready — a duller game, but a
+  // playable one, and the loader's job is to refuse content that would *break*
+  // at the table rather than content that is thin. `content:validate` is what
+  // insists the shipped set is complete.
+  const abilities = await readAbilities(path.join(root, "abilities.json"), problems);
+
   if (rules) problems.push(...checkRules(rules));
   if (items) problems.push(...checkItems(items));
 
   if (!rules || !items || problems.length > 0) {
     throw new ContentError(root, problems);
   }
-  return new LoadedContent(root, rules, items, chapters);
+  return new LoadedContent(root, rules, items, chapters, maps, abilities);
+}
+
+/**
+ * Reads `abilities.json` into the flat catalog the engine wants.
+ *
+ * The file wraps the catalog in `{ version, abilities, $deferred }` because it
+ * carries the deferral list with it — the record of which abilities `rules.json`
+ * names that the effect verbs cannot yet express. That list is the validator's
+ * business and the engine has no use for it, so it is dropped here rather than
+ * threaded through `EngineContext` and ignored at the far end.
+ */
+async function readAbilities(file: string, problems: string[]): Promise<AbilityCatalog> {
+  let raw: string;
+  try {
+    raw = await fs.readFile(file, "utf8");
+  } catch {
+    return {};
+  }
+  let parsed: { abilities?: unknown };
+  try {
+    parsed = JSON.parse(raw) as { abilities?: unknown };
+  } catch (err) {
+    problems.push(`abilities.json is not valid JSON: ${(err as Error).message}`);
+    return {};
+  }
+  const catalog = parsed.abilities;
+  if (!catalog || typeof catalog !== "object" || Array.isArray(catalog)) {
+    problems.push('abilities.json: expected an "abilities" object keyed by ability id');
+    return {};
+  }
+  problems.push(...checkAbilities(catalog as Record<string, unknown>));
+  return catalog as AbilityCatalog;
+}
+
+/**
+ * The shape checks worth making at startup.
+ *
+ * Not the full schema — `content:validate` owns that, and duplicating it here
+ * would mean two definitions of a legal ability drifting apart. These are the
+ * three that would otherwise surface as something inexplicable *during a fight*:
+ * a key that disagrees with the record's own `id` (so `legalActions` offers an
+ * ability `performAction` then cannot find), an ability with no effects (a
+ * button that consumes a turn and does nothing), and a missing name or icon (a
+ * blank tappable square on an eight-year-old's phone, which §7.2 forbids).
+ */
+function checkAbilities(catalog: Record<string, unknown>): string[] {
+  const problems: string[] = [];
+  for (const [id, value] of Object.entries(catalog)) {
+    const ability = value as Partial<CombatAbility> | null;
+    if (!ability || typeof ability !== "object") {
+      problems.push(`abilities.json: "${id}" is not an object`);
+      continue;
+    }
+    if (ability.id !== id) {
+      problems.push(`abilities.json: "${id}" carries id "${String(ability.id)}"`);
+    }
+    if (typeof ability.name !== "string" || ability.name === "") {
+      problems.push(`abilities.json: "${id}" has no name`);
+    }
+    if (typeof ability.icon !== "string" || ability.icon === "") {
+      problems.push(`abilities.json: "${id}" has no icon`);
+    }
+    if (ability.timing !== "action" && ability.timing !== "initiative") {
+      problems.push(`abilities.json: "${id}" has an invalid timing (${String(ability.timing)})`);
+    }
+    if (!ability.target || typeof ability.target !== "object") {
+      problems.push(`abilities.json: "${id}" has no target rule`);
+    }
+    if (!Array.isArray(ability.effects) || ability.effects.length === 0) {
+      problems.push(`abilities.json: "${id}" has no effects — it would be a button that does nothing`);
+    }
+  }
+  return problems;
 }
 
 async function readJson<T>(file: string, problems: string[]): Promise<T | null> {
@@ -224,6 +382,65 @@ function checkItems(items: ItemCatalog): string[] {
       problems.push(`items.json: "${id}" has an invalid kind (${String(item.kind)})`);
     }
     if (typeof item.name !== "string") problems.push(`items.json: "${id}" has no name`);
+  }
+  return problems;
+}
+
+/**
+ * The map invariants a JSON Schema cannot state.
+ *
+ * The schema already fixes the board at 10×8 and the alphabet at `.`/`#`. What
+ * it cannot see is whether the map is *playable*: a spawn on a bramble tile
+ * would throw out of `placeActor` at the moment the fight starts, which is a
+ * crash at the table for a mistake visible in the file.
+ */
+function checkMap(map: EncounterMap, label: string): string[] {
+  const problems: string[] = [];
+  if (typeof map.id !== "string" || map.id === "") problems.push(`${label}: missing id`);
+  if (!Array.isArray(map.rows) || map.rows.length === 0) {
+    problems.push(`${label}: missing rows`);
+    return problems;
+  }
+
+  const height = map.rows.length;
+  const width = map.rows[0]?.length ?? 0;
+  for (const [y, row] of map.rows.entries()) {
+    if (typeof row !== "string" || row.length !== width) {
+      problems.push(`${label}: row ${y} is ${String(row?.length)} tiles wide, expected ${width}`);
+    } else if (/[^.#]/.test(row)) {
+      problems.push(`${label}: row ${y} has characters other than "." and "#"`);
+    }
+  }
+
+  const seen = new Set<string>();
+  for (const [kind, spawns] of [
+    ["partySpawns", map.partySpawns],
+    ["enemySpawns", map.enemySpawns],
+  ] as const) {
+    if (!Array.isArray(spawns)) {
+      problems.push(`${label}: missing ${kind}`);
+      continue;
+    }
+    for (const [i, at] of spawns.entries()) {
+      const where = `${label}: ${kind}[${i}]`;
+      if (at?.x === undefined || at?.y === undefined) {
+        problems.push(`${where} needs an x and a y`);
+        continue;
+      }
+      if (at.x < 0 || at.x >= width || at.y < 0 || at.y >= height) {
+        problems.push(`${where} at (${at.x}, ${at.y}) is off a ${width}×${height} board`);
+        continue;
+      }
+      if (map.rows[at.y]?.[at.x] !== ".") {
+        problems.push(`${where} at (${at.x}, ${at.y}) stands on a blocked tile`);
+      }
+      // Two figures cannot share a tile (grid.ts), and a duplicate spawn would
+      // only fail once a fight had that many bodies in it — which is to say on
+      // the map with four enemies and not on the one with two.
+      const key = `${at.x},${at.y}`;
+      if (seen.has(key)) problems.push(`${where} at (${at.x}, ${at.y}) repeats an earlier spawn`);
+      seen.add(key);
+    }
   }
   return problems;
 }

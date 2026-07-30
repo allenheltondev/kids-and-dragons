@@ -47,6 +47,12 @@ const PRESENTATION_MS: Record<Presentation["kind"], number> = {
   SCENE_ENTER: 350,
   ROLL: 1500,
   CHOICE_MADE: 200,
+  // Everyone taking their places on a board that was not there a moment ago.
+  // Longer than any other beat except a transformation: the camera has to frame
+  // the fight and three phones have to swap to a combat UI, and arriving mid-
+  // shuffle is how a player misses whose turn it is (spec §7.2).
+  ENCOUNTER_BEGAN: 1200,
+  COMBAT_SEQUENCE: 700,
   ATTACK: 700,
   HEAL: 600,
   DOWN: 700,

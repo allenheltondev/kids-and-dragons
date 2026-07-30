@@ -652,8 +652,56 @@ Items themselves live in a separate catalog, `content/items.json`, so a chapter 
 }
 ```
 
-JSON Schemas for both formats live in `schemas/` and are validated in CI. A chapter that references
-an unknown `itemId`, or an invalid scene graph, **fails the build** — not the play session.
+### 5.1 The ability catalog
+
+Combat abilities are split across two files on purpose, and the split is worth stating because it
+looks like duplication until you know why.
+
+`content/rules.json` owns an ability's **name, icon and the sentence a child reads** — "Brace: take
+a hit that was meant for a friend standing next to you" — because that is part of what a class *is*,
+and it is read at a Rest scene by somebody choosing a level-3 unlock.
+
+`content/abilities.json` owns **what it does on the board**: who you may point it at, how far it
+reaches, and a list of effects.
+
+```jsonc
+{
+  "version": 1,
+  "abilities": {
+    "shove": {
+      "id": "shove", "name": "Shove", "icon": "fist", "timing": "action",
+      "target": { "kind": "enemy", "range": "adjacent" },
+      "effects": [
+        { "effect": { "type": "shove", "steps": 2 } },
+        { "effect": { "type": "moveSelf" } }
+      ]
+    }
+  },
+  "$deferred": {
+    "bramble_wall": "Needs a verb that changes the terrain. Every one of the ten acts on a figure."
+  }
+}
+```
+
+An ability is data; an *effect verb* is code. There are ten verbs (`packages/shared/src/encounter.ts`),
+chosen by writing out all four class signatures and all six species actions and taking the union — so a
+fifth species is a catalog entry, and a fifth *kind of thing an ability can do* is a code change.
+
+`$deferred` is the other half of that boundary made honest. Eight of the twenty-two abilities
+`rules.json` promises cannot be expressed faithfully by the ten verbs — Tanglelight's "it cannot move"
+is not `skipTurn`, which costs a whole turn and is a different, better effect. They are **listed with
+the verb they are waiting on** rather than approximated, because an approximation is a lie a child
+catches: read the card, watch the board, learn not to trust the cards.
+
+The engine is deliberately tolerant of the gap. `legalActions` skips an ability it cannot look up, so a
+deferred ability is a card that is never offered rather than a crash mid-fight. Which makes the failure
+mode silent, and that is what `content:validate` exists to prevent: every ability `rules.json` grants
+must be in **exactly one** of `abilities` or `$deferred`, names and icons must agree across the two
+files, and an ability whose effects can provably land on nobody fails the build.
+
+JSON Schemas for every format live in `schemas/` and are validated in CI. A chapter that references
+an unknown `itemId`, an invalid scene graph, or an ability nobody defined **fails the build** — not
+the play session.
 
 ---
 
