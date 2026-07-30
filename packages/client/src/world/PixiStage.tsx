@@ -10,12 +10,17 @@
  * browser starts dropping them. The `cancelled` flag plus the promise chain in
  * the cleanup is what makes mount → unmount → mount land on exactly one live
  * renderer.
+ *
+ * The ticker runs only while there is something to draw *to*: it stops when
+ * the tab is hidden and when the host box is zero-sized — which is exactly the
+ * Travel Mode `display: none` pane (components.css). A GPU pass per frame into
+ * an invisible canvas is pure battery drain on the phone this mode exists for.
  */
 
 import { useEffect, useRef } from "react";
 import { Application } from "pixi.js";
-import { createScene, setActiveScene, type PartyScene } from "./scene";
-import { useParty } from "../store";
+import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
+import { useGameStore, useParty } from "../store";
 
 export function PixiStage(): React.JSX.Element {
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -29,6 +34,11 @@ export function PixiStage(): React.JSX.Element {
     let cancelled = false;
     let app: Application | null = null;
     let observer: ResizeObserver | null = null;
+    // Local to this effect run, never the shared ref: strict mode overlaps two
+    // effect instances, and a cleanup that reads `sceneRef.current` tears down
+    // whichever scene happens to be there — usually the *new* one.
+    let scene: PartyScene | null = null;
+    let removeVisibilityListener: (() => void) | null = null;
 
     const ready = (async () => {
       const instance = new Application();
@@ -49,26 +59,57 @@ export function PixiStage(): React.JSX.Element {
       }
 
       app = instance;
-      instance.canvas.style.width = "100%";
-      instance.canvas.style.height = "100%";
+      // autoDensity owns the canvas CSS size (it keeps style px in step with
+      // the renderer on every resize); we only stop it rendering inline.
       instance.canvas.style.display = "block";
       host.appendChild(instance.canvas);
 
-      const scene = createScene(instance);
+      scene = createScene(instance);
       sceneRef.current = scene;
       setActiveScene(scene);
-      scene.setParty(party);
+      // The live party, not the value this effect closed over at mount: init
+      // is async, and anyone who joined during it would otherwise be invisible
+      // until the next party change pushed a fresh value in.
+      scene.setParty(useGameStore.getState().state?.party ?? []);
+
+      /** Run the ticker only when a frame could actually be seen. */
+      const syncTicker = () => {
+        const hidden = typeof document !== "undefined" && document.hidden;
+        const sized = host.clientWidth > 0 && host.clientHeight > 0;
+        if (hidden || !sized) {
+          instance.ticker.stop();
+        } else if (!instance.ticker.started) {
+          instance.ticker.start();
+          // One immediate frame, so coming back is not a beat of stale canvas.
+          instance.render();
+        }
+      };
 
       const size = () => {
-        const width = Math.max(1, host.clientWidth);
-        const height = Math.max(1, host.clientHeight);
+        const width = host.clientWidth;
+        const height = host.clientHeight;
+        if (width === 0 || height === 0) {
+          // The hidden Travel pane. Don't squash the renderer to a token 1×1 —
+          // that throws away the framebuffer and forces a real resize (and a
+          // flash of letterboxing) on every toggle back. Just go to sleep.
+          instance.ticker.stop();
+          return;
+        }
         instance.renderer.resize(width, height);
-        scene.resize(width, height);
+        scene?.resize(width, height);
+        syncTicker();
       };
       size();
 
       observer = new ResizeObserver(size);
       observer.observe(host);
+
+      if (typeof document !== "undefined") {
+        document.addEventListener("visibilitychange", syncTicker);
+        removeVisibilityListener = () => {
+          document.removeEventListener("visibilitychange", syncTicker);
+        };
+      }
     })();
 
     return () => {
@@ -76,12 +117,17 @@ export function PixiStage(): React.JSX.Element {
       void ready
         .catch(() => undefined)
         .then(() => {
+          removeVisibilityListener?.();
+          removeVisibilityListener = null;
           observer?.disconnect();
           observer = null;
-          if (sceneRef.current) {
-            setActiveScene(null);
-            sceneRef.current.destroy();
-            sceneRef.current = null;
+          if (scene) {
+            // Only clear the module-level handles if they still point at *this*
+            // scene — a newer effect instance may already own them.
+            if (getActiveScene() === scene) setActiveScene(null);
+            if (sceneRef.current === scene) sceneRef.current = null;
+            scene.destroy();
+            scene = null;
           }
           app?.destroy(true, { children: true });
           app = null;

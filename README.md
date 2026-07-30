@@ -74,6 +74,7 @@ to the same behaviour:
 | `npm test` | unit tests |
 | `npm run content:validate` | schemas, plus unresolved `goto`, unreachable scenes, unknown `itemId` |
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
+| `npm run art:verify:rig` | the rig contract — clips, events, inputs, the turn budget |
 | `npm run art:sheet` | regenerates the review contact sheets |
 | `npm run e2e` | three browser contexts playing a chapter against the real stack |
 | `npm run infra:lint` | the SAM template, with the transform applied |
@@ -95,7 +96,8 @@ own download isn't there.
 ## What's built
 
 Roadmap **Chapter 0 through Chapter 3** — the first playable — running locally, plus the
-infrastructure and persistence it deploys onto:
+infrastructure and persistence it deploys onto, plus the server half of Chapter 4's tactical
+combat and the first pieces of Chapter 5 (versioned character storage with read-time migration):
 
 - accounts and character creation
 - rooms, server-authoritative state, JSON Patch sync, reconnect, both presentation modes
@@ -107,12 +109,15 @@ infrastructure and persistence it deploys onto:
 - the keepsake flow — offered at the end of a chapter, with the characters you just played
   drawn as lights in a lantern. Emailed code, then an optional passkey. No password anywhere.
 
-**Not built yet:** tactical combat (Chapter 4) — an encounter scene currently resolves through its
-`onVictory` branch as a marked placeholder so a chapter stays walkable end to end. Also outstanding:
-Rive rigs (the client composites static tier PNGs with procedural motion in the meantime),
-progression and inventory commitment at the campaign boundary, the authoring tools, and the live
-LLM layer.
+Tactical combat (Chapter 4) is built **server-side**: the encounter engine, grid and pathfinding,
+turn order, enemy AI, the ability catalog (`content/abilities.json`, 14 abilities over ten effect
+verbs), and encounter maps (`content/maps/`) all run behind `startEncounter` / `COMBAT_ACTION` /
+`settleEncounter` in `packages/shared`. **Not built yet:** the other half of that chapter — the
+phone combat UI and the grid renderer; no client code touches `encounter` state, so an encounter
+scene still resolves through its `onVictory` branch on screen. Also outstanding: Rive rigs (the
+client composites static tier PNGs with procedural motion in the meantime), progression and
+inventory commitment at the campaign boundary, the authoring tools, and the live LLM layer.
 
-The art contract is real and enforced: all six species are approved across all four tiers, 382
+The art contract is real and enforced: all six species are approved across all four tiers, 474
 mechanical checks green. Anything that fails to load still draws a clearly-placeholder silhouette
 rather than a broken image.

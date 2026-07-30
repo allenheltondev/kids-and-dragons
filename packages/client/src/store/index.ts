@@ -146,8 +146,23 @@ interface Runtime {
   gate: PresentationGate | null;
   content: Promise<void> | null;
   resyncing: Promise<void> | null;
-  /** In-flight attach, so React 19's double-invoked effect joins once. */
-  attaching: Promise<void> | null;
+  /**
+   * Watchdog for a broadcast the server owes us. A successful action response
+   * names the seq it committed; the patch normally arrives on the channel a
+   * beat later. If it never does — the server's publish failed after the
+   * commit — nothing else would notice until the *next* message opened a gap,
+   * and between scenes that next message can be minutes away. This timer is
+   * the recovery contract: response says N, sequencer still behind N after a
+   * grace period, resync.
+   */
+  broadcastWatchdog: ReturnType<typeof setTimeout> | null;
+  /**
+   * In-flight attach, so React 19's double-invoked effect joins once — keyed
+   * by room code, because "an attach is running" is not the same fact as "an
+   * attach *to this room* is running". Handing back the old promise for a new
+   * code would resolve the caller against the wrong room.
+   */
+  attaching: { code: string; task: Promise<void> } | null;
   /**
    * Which realtime transport this deployment uses, resolved once from
    * `/api/config` (architecture §4.4). `null` — the local dev answer — means
@@ -155,6 +170,15 @@ interface Runtime {
    */
   realtime: Promise<ClientConfig["realtime"] | null> | null;
 }
+
+/**
+ * How long an action's committed patch may take to arrive on the channel
+ * before the client stops waiting and resyncs. Generous next to the
+ * sequencer's 750ms gap timer, because this timer's normal fate is to be
+ * cleared: it has to outlast an ordinary broadcast plus a presentation-gated
+ * beat, so it only ever fires when the broadcast genuinely never left.
+ */
+const BROADCAST_GRACE_MS = 4_000;
 
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
@@ -166,6 +190,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       resyncing: null,
       attaching: null,
       realtime: null,
+      broadcastWatchdog: null,
     };
 
     /**
@@ -276,6 +301,28 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.sequencer?.dispose();
       runtime.sequencer = null;
       runtime.resyncing = null;
+      if (runtime.broadcastWatchdog) {
+        clearTimeout(runtime.broadcastWatchdog);
+        runtime.broadcastWatchdog = null;
+      }
+    }
+
+    /**
+     * Hold the server to the broadcast its action response promised (see the
+     * field's comment on Runtime). One timer, latest target wins — every ok
+     * response re-arms it, and it disarms itself when the sequencer has caught
+     * up, which is the overwhelmingly normal case.
+     */
+    function expectBroadcast(seq: number): void {
+      const sequencer = runtime.sequencer;
+      if (!sequencer || sequencer.seq >= seq) return;
+      if (runtime.broadcastWatchdog) clearTimeout(runtime.broadcastWatchdog);
+      runtime.broadcastWatchdog = setTimeout(() => {
+        runtime.broadcastWatchdog = null;
+        const current = runtime.sequencer;
+        if (!current || current.seq >= seq) return;
+        void resync(current.seq);
+      }, BROADCAST_GRACE_MS);
     }
 
     async function establish(session: ClientSession, snapshot: RunState): Promise<void> {
@@ -425,12 +472,23 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         const roomCode = code.trim().toUpperCase();
         const existing = get().session;
         if (existing && existing.roomCode === roomCode) return;
-        if (runtime.attaching) return runtime.attaching;
+        if (runtime.attaching) {
+          // Same room: join the in-flight attach (React 19's double-invoked
+          // effect). Different room — the URL changed under us — supersede it:
+          // drop whatever the old attach has wired up so far and let its
+          // remaining steps see they are stale and bail.
+          if (runtime.attaching.code === roomCode) return runtime.attaching.task;
+          disconnect();
+        }
 
         const stored = loadSession(roomCode, deps.storage);
         set({ connection: "connecting", pendingCode: roomCode });
 
-        const task = (async () => {
+        /** Still the newest attach? Checked after every await — a resolved
+            fetch for a superseded room must not clobber the current one. */
+        const current = (): boolean => runtime.attaching?.task === task;
+
+        const task: Promise<void> = (async () => {
           if (stored) {
             // No `sinceSeq`: attaching is always a cold start — the mirror did
             // not survive the refresh, so we want the snapshot. Sending 0 would
@@ -441,6 +499,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               { runId: stored.runId, code: roomCode },
               stored.sessionToken || undefined,
             );
+            if (!current()) return;
             if (!response.state) throw new ApiError(410, "That room has expired.");
             await establish(stored, response.state);
             return;
@@ -461,6 +520,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * still what actually denies authority (spec §2.1).
            */
           const response = await deps.api.watchRoom(roomCode);
+          if (!current()) return;
           const display: ClientSession = {
             runId: response.runId,
             roomCode,
@@ -474,14 +534,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           await connect(display, response.state, response.state.seq);
         })()
           .catch((error: unknown) => {
+            // A superseded attach's failure is not this surface's failure.
+            if (!current()) return;
             const message = error instanceof Error ? error.message : "Could not reach the game.";
             set({ error: message, connection: "error" });
           })
           .finally(() => {
-            runtime.attaching = null;
+            if (runtime.attaching?.task === task) runtime.attaching = null;
           });
 
-        runtime.attaching = task;
+        runtime.attaching = { code: roomCode, task };
         return task;
       },
 
@@ -530,7 +592,18 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             response = await post(response.seq);
           }
 
-          if (response.ok) return true;
+          if (response.ok) {
+            /*
+             * The response names the seq the server committed; the patch is
+             * supposed to follow on the channel. If the server's publish
+             * failed after the commit, that patch never comes — and the tap
+             * would look like it did nothing while the state quietly
+             * advanced. The watchdog turns "the broadcast never arrived"
+             * into a resync instead of a mystery.
+             */
+            expectBroadcast(response.seq);
+            return true;
+          }
           set({ error: response.error?.message ?? "That isn't allowed right now." });
           return false;
         } catch (error) {
@@ -657,12 +730,51 @@ export function useLayoutMode(): RoomMode {
   return useGameStore((store) => store.state?.mode ?? store.session?.mode ?? "party");
 }
 
+/** What `watchPresentation` needs from the store — narrowed so tests can hand
+    it a plain vanilla store instead of the app singleton. */
+interface PresentationSource {
+  getState(): { presentation: PresentationEvent | null };
+  subscribe(listener: (state: { presentation: PresentationEvent | null }) => void): () => void;
+}
+
+/**
+ * The delivery core of `usePresentation`, extracted so the mount-time replay
+ * below can be tested without a DOM.
+ *
+ * Delivers the event already sitting in the store *before* subscribing: the
+ * event that causes a surface to mount — the ROLL that summons the dice
+ * overlay, the LEVEL_UP whose patch flipped the phase to chapter_complete —
+ * has been written by the time that surface's effect runs, and seeding the
+ * watermark from the store (as this used to) skipped exactly that event.
+ * The watermark lives with the component instance, not the subscription, so
+ * nothing is delivered twice however many times React 19 strict mode
+ * resubscribes — and a fresh page load replays nothing, because a fresh store
+ * holds no presentation.
+ */
+export function watchPresentation<K extends Presentation["kind"]>(
+  source: PresentationSource,
+  kind: K,
+  watermark: { current: number },
+  handler: (presentation: Extract<Presentation, { kind: K }>, event: PresentationEvent) => void,
+): () => void {
+  const deliver = (event: PresentationEvent | null): void => {
+    if (!event || event.seq <= watermark.current) return;
+    watermark.current = event.seq;
+    if (event.presentation.kind !== kind) return;
+    handler(event.presentation as Extract<Presentation, { kind: K }>, event);
+  };
+  deliver(source.getState().presentation);
+  return source.subscribe((state) => deliver(state.presentation));
+}
+
 /**
  * Subscribe to one kind of presentation event.
  *
- * Fires only for events that arrive while mounted: a refresh must not replay a
- * dice roll that already happened. Dedupes on `seq`, since React 19 strict mode
- * subscribes twice.
+ * Fires once per event this component instance has not yet handled — including
+ * the event that arrived just before mount (see `watchPresentation`). A hard
+ * refresh must not replay a dice roll that already happened, and it cannot:
+ * the refreshed store holds no presentation. Dedupes on `seq`, since React 19
+ * strict mode subscribes twice.
  */
 export function usePresentation<K extends Presentation["kind"]>(
   kind: K,
@@ -670,15 +782,15 @@ export function usePresentation<K extends Presentation["kind"]>(
 ): void {
   const handlerRef = useRef(handler);
   handlerRef.current = handler;
+  // Per component instance, deliberately not per effect run: strict mode's
+  // resubscribe must not replay what this instance already played.
+  const watermark = useRef(0);
 
-  useEffect(() => {
-    let seen = useGameStore.getState().presentation?.seq ?? 0;
-    return useGameStore.subscribe((store) => {
-      const event = store.presentation;
-      if (!event || event.seq <= seen) return;
-      seen = event.seq;
-      if (event.presentation.kind !== kind) return;
-      handlerRef.current(event.presentation as Extract<Presentation, { kind: K }>, event);
-    });
-  }, [kind]);
+  useEffect(
+    () =>
+      watchPresentation(useGameStore, kind, watermark, (presentation, event) => {
+        handlerRef.current(presentation, event);
+      }),
+    [kind],
+  );
 }

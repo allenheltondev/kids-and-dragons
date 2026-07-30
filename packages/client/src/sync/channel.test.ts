@@ -3,7 +3,9 @@ import type { ChannelMessage, RunState, ServerMessage } from "@kad/shared";
 import {
   MessageSequencer,
   backoffDelay,
+  openChannel,
   parseChannelMessage,
+  type EventSourceLike,
   type SequencerHandlers,
   type TimerHandle,
 } from "./channel";
@@ -307,6 +309,103 @@ describe("MessageSequencer", () => {
     });
   });
 
+  describe("chained presentation (`after`)", () => {
+    const sequence = {
+      kind: "COMBAT_SEQUENCE" as const,
+      events: [{ type: "down" as const, actorId: "e_1" }],
+      after: { kind: "SCENE_ENTER" as const, sceneId: "s_2" },
+    };
+
+    it("without a gate, surfaces the parent then the child, in order", () => {
+      const { sequencer, presentations } = harness();
+      sequencer.reset(makeState({ seq: 1 }), 1);
+
+      sequencer.ingest(patch(2, "two", sequence));
+
+      expect(presentations.map((e) => e.presentation.kind)).toEqual([
+        "COMBAT_SEQUENCE",
+        "SCENE_ENTER",
+      ]);
+      // The child's synthetic seq sits strictly between its parent and the
+      // next real message, so a subscriber's watermark neither replays the
+      // parent nor skips whatever seq 3 carries.
+      expect(presentations.map((e) => e.seq)).toEqual([2, 2.5]);
+      expect(sequencer.seq).toBe(2);
+    });
+
+    it("with a gate, plays parent then child, and only then applies the patch", async () => {
+      const releases: (() => void)[] = [];
+      const played: string[] = [];
+      const gate = (event: PresentationEvent) => {
+        played.push(event.presentation.kind);
+        return new Promise<void>((resolve) => releases.push(resolve));
+      };
+      const { sequencer } = harness({ gate });
+      sequencer.reset(makeState({ seq: 1, narration: "one" }), 1);
+
+      sequencer.ingest(patch(2, "two", sequence));
+
+      // The parent beat is playing; the child has not started.
+      expect(played).toEqual(["COMBAT_SEQUENCE"]);
+      expect(sequencer.seq).toBe(1);
+
+      releases[0]?.();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      // Parent finished → the child plays. The patch is still held.
+      expect(played).toEqual(["COMBAT_SEQUENCE", "SCENE_ENTER"]);
+      expect(sequencer.state?.narration).toBe("one");
+
+      releases[1]?.();
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(sequencer.state?.narration).toBe("two");
+      expect(sequencer.seq).toBe(2);
+    });
+
+    it("still plays the child when the parent's animation blows up", async () => {
+      const played: string[] = [];
+      const gate = (event: PresentationEvent) => {
+        played.push(event.presentation.kind);
+        return event.presentation.kind === "COMBAT_SEQUENCE"
+          ? Promise.reject(new Error("rive exploded"))
+          : Promise.resolve();
+      };
+      const { sequencer } = harness({ gate });
+      sequencer.reset(makeState({ seq: 1 }), 1);
+
+      sequencer.ingest(patch(2, "two", sequence));
+      // A macrotask: the reject → catch → child-gate chain is several
+      // microtask hops deep, and counting them is not the point of the test.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(played).toEqual(["COMBAT_SEQUENCE", "SCENE_ENTER"]);
+      expect(sequencer.seq).toBe(2);
+    });
+  });
+
+  it("re-arms the gap timer so a failed resync is asked for again", () => {
+    const { sequencer, gaps, scheduler } = harness();
+    sequencer.reset(makeState({ seq: 1 }), 1);
+
+    sequencer.ingest(patch(3, "three"));
+    scheduler.flush();
+    expect(gaps).toEqual([1]);
+
+    // The resync went nowhere (offline, dropped, empty answer). The hole is
+    // still there, so the sequencer must ask again rather than stall forever.
+    scheduler.flush();
+    expect(gaps).toEqual([1, 1]);
+
+    // Once the hole fills, the nagging stops.
+    sequencer.ingest(patch(2, "two"));
+    scheduler.flush();
+    expect(gaps).toEqual([1, 1]);
+  });
+
   it("stops applying once disposed", () => {
     const { sequencer } = harness();
     sequencer.reset(makeState({ seq: 1 }), 1);
@@ -315,6 +414,60 @@ describe("MessageSequencer", () => {
     sequencer.ingest(patch(2, "two"));
 
     expect(sequencer.seq).toBe(1);
+  });
+});
+
+describe("openChannel", () => {
+  function fakeSource(): EventSourceLike {
+    return { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+  }
+
+  it("re-issues a resync that was asked for while one was in flight", async () => {
+    const scheduler = manualScheduler();
+    const sources: EventSourceLike[] = [];
+    const resolvers: (() => void)[] = [];
+    const resync = vi.fn(() => new Promise<void>((resolve) => resolvers.push(resolve)));
+    const sequencer = new MessageSequencer({
+      handlers: { onState: () => undefined, onPresentation: () => undefined, onGap: () => undefined },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+    });
+    sequencer.reset(makeState({ seq: 1 }), 1);
+
+    openChannel({
+      url: () => "/events/ABCD",
+      sequencer,
+      onStatus: () => undefined,
+      resync,
+      createEventSource: () => {
+        const source = fakeSource();
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+      backoff: { random: () => 0 },
+    });
+
+    // First connect: the catch-up fetch starts and stays in flight.
+    sources[0]?.onopen?.({});
+    expect(resync).toHaveBeenCalledTimes(1);
+
+    // The connection drops and comes back before that fetch settles. The
+    // request this open makes must not simply vanish — anything published
+    // after the first fetch was answered would never be asked for again.
+    sources[0]?.onerror?.({});
+    scheduler.flush(); // the backoff timer → reconnect
+    sources[1]?.onopen?.({});
+    expect(resync).toHaveBeenCalledTimes(1); // still busy: recorded, not fired
+
+    resolvers[0]?.();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(resync).toHaveBeenCalledTimes(2);
+    expect(resync).toHaveBeenLastCalledWith(sequencer.seq);
   });
 });
 

@@ -168,14 +168,21 @@ export class DevIdentity implements IdentityService {
     const claims = decode<DevDeviceClaims>(token, DEVICE_PREFIX);
     if (!claims) return null;
 
-    const binding = await this.repo.getDeviceById(claims.deviceId);
+    // By primary key, like the prod service: the revocation check must never
+    // read a stale index copy it could then write back (see `TokenIdentity`).
+    const binding = await this.repo.getDevice(claims.householdId, claims.deviceId);
     if (!binding || binding.revoked) return null;
     if (binding.tokenHash !== hashToken(token)) return null;
     if (binding.householdId !== claims.householdId) return null;
 
     // Real tokens rotate on use with a sliding expiry; locally we just keep
-    // `lastSeen` honest so the revocation UI has something to show.
-    await this.repo.putDevice({ ...binding, lastSeen: new Date(this.now()).toISOString() });
+    // `lastSeen` honest so the revocation UI has something to show. `touch`,
+    // not a full put — a resolve must never be able to un-revoke.
+    await this.repo.touchDevice(
+      binding.householdId,
+      binding.deviceId,
+      new Date(this.now()).toISOString(),
+    );
 
     return {
       deviceId: binding.deviceId,

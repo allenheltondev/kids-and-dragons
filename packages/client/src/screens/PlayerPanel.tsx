@@ -246,7 +246,13 @@ export function PlayerPanel(): ReactElement {
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
-  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+  /**
+   * The selected *item*, with the slot it was tapped in only to tell duplicates
+   * apart. A bare index is not enough: the server rewrites the inventory under
+   * us (a swap, a used potion, a granted item), and an index that survived that
+   * would quietly point "Use it" at whatever slid into the slot.
+   */
+  const [selected, setSelected] = useState<{ itemId: string; index: number } | null>(null);
   const [busy, setBusy] = useState(false);
 
   const globalPrompt = state?.prompt ?? null;
@@ -298,7 +304,17 @@ export function PlayerPanel(): ReactElement {
   const myVote =
     myPrompt !== null && myPrompt.kind === "choice" ? myPrompt.votes?.[me.playerId] ?? null : null;
 
-  const selectedEntry = selectedSlot === null ? null : me.character.inventory[selectedSlot] ?? null;
+  // Resolve the selection against the inventory as it is *now*. Same item in
+  // the same slot: fine. Item shifted (something before it was removed): follow
+  // it. Item gone: the selection quietly clears rather than adopting a stranger.
+  const inventory = me.character.inventory;
+  const selectedIndex = (() => {
+    if (selected === null) return null;
+    if (inventory[selected.index]?.itemId === selected.itemId) return selected.index;
+    const moved = inventory.findIndex((entry) => entry.itemId === selected.itemId);
+    return moved === -1 ? null : moved;
+  })();
+  const selectedEntry = selectedIndex === null ? null : inventory[selectedIndex] ?? null;
   const selectedDef = selectedEntry === null ? undefined : items?.[selectedEntry.itemId];
 
   return (
@@ -608,11 +624,14 @@ export function PlayerPanel(): ReactElement {
         <StatRow me={me} />
 
         <InventoryGrid
-          entries={me.character.inventory}
+          entries={inventory}
           questItems={me.character.questItems}
           items={items}
-          selectedIndex={selectedSlot}
-          onSelect={setSelectedSlot}
+          selectedIndex={selectedIndex}
+          onSelect={(index) => {
+            const entry = index === null ? null : inventory[index] ?? null;
+            setSelected(entry === null || index === null ? null : { itemId: entry.itemId, index });
+          }}
         />
 
         {/* Using an item is a decision like any other: select, then confirm. */}
@@ -630,7 +649,7 @@ export function PlayerPanel(): ReactElement {
                 variant="ghost"
                 size="md"
                 icon={<Icon name="close" />}
-                onClick={() => setSelectedSlot(null)}
+                onClick={() => setSelected(null)}
               >
                 Close
               </Button>
@@ -642,7 +661,7 @@ export function PlayerPanel(): ReactElement {
                   disabled={busy}
                   onClick={() => {
                     const itemId = selectedEntry.itemId;
-                    setSelectedSlot(null);
+                    setSelected(null);
                     void dispatch({ type: "USE_ITEM", itemId });
                   }}
                 >

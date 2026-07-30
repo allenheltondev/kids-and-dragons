@@ -16,6 +16,9 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
+// The one normalize helper for typed and prefilled codes — the router owns the
+// code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
+import { ROOM_CODE_LENGTH as CODE_LENGTH, normalizeCodeInput as normalizeCode } from "../router";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -23,12 +26,6 @@ import { SignInFlow } from "./SignInFlow";
 import "./shared.css";
 import "./HomeScreen.css";
 
-/**
- * Room-code alphabet (architecture §4.5): no I, no O, and no digits at all, so
- * there is no 1/I or 0/O to misread on a TV across the room.
- */
-const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-const CODE_LENGTH = 4;
 const CODE_SLOTS = [0, 1, 2, 3];
 
 const MODE_BLURB: Record<RoomMode, string> = {
@@ -37,15 +34,6 @@ const MODE_BLURB: Record<RoomMode, string> = {
 };
 
 const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" };
-
-/** Uppercases, drops anything outside the unambiguous alphabet, caps length. */
-function normalizeCode(raw: string): string {
-  let out = "";
-  for (const ch of raw.toUpperCase()) {
-    if (CODE_ALPHABET.includes(ch) && out.length < CODE_LENGTH) out += ch;
-  }
-  return out;
-}
 
 export function HomeScreen(): ReactElement {
   const createRoom = useGameStore((s) => s.createRoom);

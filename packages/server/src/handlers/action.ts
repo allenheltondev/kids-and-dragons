@@ -160,20 +160,26 @@ export async function applyAction(
     characters.push(...(await foldChapterXp(result.state, deps, auth.run.householdId)));
   }
 
-  // A no-op intent (a re-tap, a READY that was already true) writes nothing.
-  // Burning a seq on it would churn every client's mirror for no reason. The
-  // engine stamps seq and updatedAt on every accepted intent, so "did anything
-  // happen?" has to be asked of the domain fields alone.
-  if (!result.presentation && sameDomainState(state, result.state)) {
-    return { ok: true, seq: state.seq };
-  }
-
   // --- 3. stamp, persist, broadcast ---------------------------------------
   // Normalising seq here is what makes the sequence gapless by construction:
   // every published patch takes a client from seq-1 to seq, whatever the engine
   // did internally.
   const next: RunState = { ...result.state, seq: nextSeq, updatedAt: iso(nowMs) };
   const patch = diff(state, next);
+
+  /*
+   * A no-op intent (a re-tap, a READY that was already true) writes nothing.
+   * Burning a seq on it would churn every client's mirror for no reason. The
+   * engine stamps seq and updatedAt on every accepted intent, so "did anything
+   * happen?" is asked of the one patch we were going to need anyway: if the
+   * only operations are the two transport fields, nothing did. This used to be
+   * a separate full deep diff (plus two full-state spreads) run *before* the
+   * real one — three walks of the whole RunState per tap where one suffices.
+   */
+  const trivial = patch.every((op) => op.path === "/seq" || op.path === "/updatedAt");
+  if (!result.presentation && trivial) {
+    return { ok: true, seq: state.seq };
+  }
 
   const event: EventRecord = {
     seq: nextSeq,
@@ -205,13 +211,36 @@ export async function applyAction(
     };
   }
 
-  await deps.channel.publish(next.roomCode, {
-    kind: "patch",
+  const message = {
+    kind: "patch" as const,
     seq: event.seq,
     runId: event.runId,
     patch: event.patch,
     ...(event.presentation ? { presentation: event.presentation } : {}),
-  });
+  };
+  try {
+    await deps.channel.publish(next.roomCode, message);
+  } catch (err) {
+    /*
+     * The transaction has already landed, so this request *succeeded* — a 500
+     * here would tell the acting phone to retry an action that took, and the
+     * retry would bounce off STALE_SEQ while every other client stayed dark.
+     *
+     * But "ok" alone is not a recovery contract either: subscribers wait on
+     * this broadcast, and nothing else is coming to open a gap for them. So:
+     * one immediate retry for the transient blip, and past that the response
+     * still names the committed seq — the client holds the server to that
+     * (store `expectBroadcast`), resyncing when the promised patch never
+     * arrives. Duplicate delivery is safe by construction: the sequencer
+     * drops anything at or below its watermark.
+     */
+    console.error(`publish failed for run ${event.runId} seq ${event.seq}, retrying:`, err);
+    try {
+      await deps.channel.publish(next.roomCode, message);
+    } catch (retryErr) {
+      console.error(`publish retry failed for run ${event.runId} seq ${event.seq}:`, retryErr);
+    }
+  }
 
   return { ok: true, seq: nextSeq };
 }
@@ -233,12 +262,6 @@ function resolveChapter(
     input.intent.type === "START_CHAPTER" ? input.intent.chapterId : state.chapterId;
   if (!chapterId) return null;
   return deps.content.chapter(chapterId) ?? undefined;
-}
-
-/** Equal ignoring the two fields the transport owns. */
-function sameDomainState(a: RunState, b: RunState): boolean {
-  const strip = (s: RunState): RunState => ({ ...s, seq: 0, updatedAt: "" });
-  return diff(strip(a), strip(b)).length === 0;
 }
 
 /**
