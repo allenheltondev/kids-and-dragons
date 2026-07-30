@@ -1,0 +1,95 @@
+# World Encyclopedia — build and deploy to GitHub Pages.
+#
+# Runs the Generator (canon → Markdown), Hugo (Markdown → HTML), and Pagefind
+# (HTML → search index), then pushes the result to GitHub Pages.
+#
+# Triggers on pushes to main that touch canon data, wiki content, wiki tooling,
+# or this workflow itself. Also runnable manually via workflow_dispatch.
+
+name: Deploy Wiki
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "canon/**"
+      - "wiki/**"
+      - "tools/wiki/**"
+      - "assets/**"
+      - ".github/workflows/wiki-deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: wiki-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build encyclopedia
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: wiki/go.sum
+
+      - name: Install Hugo Extended
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.139.0"
+          extended: true
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # The Generator reads canon/*.yaml and produces wiki/content/ pages.
+      # --force because CI has no manifest from a prior run.
+      - name: Generate wiki pages
+        run: npx tsx tools/wiki/generate.ts --force
+
+      # Hugo builds the static site. The baseURL comes from the Pages
+      # configuration so links work at whatever path GitHub assigns.
+      - name: Build Hugo site
+        run: hugo --source wiki --minify --baseURL "${{ steps.pages.outputs.base_url }}"
+
+      # Pagefind creates the client-side search index from the built HTML.
+      - name: Index with Pagefind
+        run: npx pagefind --site wiki/public
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: wiki/public
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

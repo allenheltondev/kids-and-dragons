@@ -1,0 +1,94 @@
+schema_version: "2.0"
+document_type: red_sky_campaign_canon
+title: "The Realm of Red Sky Campaign Canon"
+updated: "2026-07-30"
+
+purpose: >-
+  Canonical, agent-readable reference for campaign arcs in the Realm of Red Sky.
+  Use this file when planning campaign structure, chapter progression, narrative
+  arcs, or any game content involving the overarching player experience across
+  multiple quests and locations.
+
+agent_instructions:
+  - Campaigns structure the player experience across multiple quests, locations, and factions.
+  - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - These campaign entries are placeholder designs pending explicit canon approval. They may be used for chapter-scoped content but carry no canon weight outside that scope.
+  - Campaign narratives should support the child-hero tone: danger, loss, and mystery are appropriate, but emphasize courage, curiosity, consequences, cooperation, and repair.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions."
+    intentionally_undefined: "The campaign concept exists as a design placeholder but is not yet canon."
+  campaign_type:
+    main_story_arc: "The primary narrative campaign."
+    side_story_arc: "An optional campaign providing additional depth."
+
+campaign_ids:
+  - dawn_of_the_red_sky
+  - echoes_beneath
+
+campaigns:
+  - id: campaign.dawn_of_the_red_sky
+    asset_id: dawn_of_the_red_sky
+    title: "Dawn of the Red Sky"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      This campaign references non-canon factions and named characters. It is a
+      placeholder design for chapter-scoped content pending canon approval.
+    campaign_type: main_story_arc
+    chapter_count: 5
+    featured: true
+    tags: [main-campaign, highlands, epic, skywardens]
+    short_description: >-
+      The primary campaign following a hero's journey to uncover why the sky
+      turned red and whether it can be restored.
+    visual_identity: >-
+      Epic vista of the foothills with a highland fortress silhouetted against a
+      blood-red sky.
+    common_story_uses: >-
+      Core narrative backbone, faction introduction, world-building vehicle.
+    canon_constraints: >-
+      Must be completable regardless of faction choices. The sky's origin is
+      revealed in chapter 4.
+    standard_behavior: >-
+      Linear progression with branching side content per chapter.
+    relationships:
+      factions: [skywardens]
+      quests: [shattered_sky_rite]
+      locations: [redspire_citadel]
+      biomes: [red_sky_foothills]
+      items: [crimson_shard]
+      creatures: []
+
+  - id: campaign.echoes_beneath
+    asset_id: echoes_beneath
+    title: "Echoes Beneath"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      This campaign references non-canon factions and named characters. It is a
+      placeholder design for chapter-scoped content pending canon approval.
+    campaign_type: side_story_arc
+    chapter_count: 3
+    featured: false
+    tags: [side-campaign, underground, mystery, cult]
+    short_description: >-
+      A darker campaign exploring the deep caverns and a secretive group's plan
+      to use the Crystal Heart to reshape reality.
+    visual_identity: >-
+      Underground cathedral of crystals with ritualists performing a ceremony
+      around the floating Crystal Heart.
+    common_story_uses: >-
+      Alternative perspective, antagonist backstory, moral complexity.
+    canon_constraints: >-
+      Can be played alongside or after the main campaign. Reveals antagonist
+      motivations as sympathetic.
+    standard_behavior: >-
+      Non-linear exploration with reputation-gated content.
+    relationships:
+      factions: [deep_hollow_cult]
+      quests: [crystal_heart_retrieval]
+      locations: [crystal_font]
+      biomes: [skullwater_cave]
+      items: [crystal_heart]
+      creatures: []

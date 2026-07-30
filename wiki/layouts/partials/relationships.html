@@ -1,0 +1,43 @@
+{{/*
+  Relationships partial — renders grouped relationship links.
+  Relationships are stored in .Params.related as a list of objects with
+  id, type, and relationship fields. This partial groups them by type and
+  renders clickable links to related entity pages.
+*/}}
+{{ with .Params.related }}
+<section class="wiki-relationships" aria-labelledby="relationships-heading">
+  <h2 id="relationships-heading" class="wiki-relationships__heading">Related Entities</h2>
+
+  {{/* Group related entities by type */}}
+  {{ $grouped := dict }}
+  {{ range . }}
+    {{ $type := .type | default "other" }}
+    {{ $existing := index $grouped $type }}
+    {{ if $existing }}
+      {{ $grouped = merge $grouped (dict $type (append $existing .)) }}
+    {{ else }}
+      {{ $grouped = merge $grouped (dict $type (slice .)) }}
+    {{ end }}
+  {{ end }}
+
+  {{/* Render each group */}}
+  {{ range $type, $entities := $grouped }}
+  <div class="wiki-relationships__group">
+    <h3 class="wiki-relationships__group-title">{{ $type | humanize | title }}</h3>
+    <ul class="wiki-relationships__list">
+      {{ range $entities }}
+      <li class="wiki-relationships__item">
+        {{ $targetPage := printf "/%ss/%s/" $type (index (split .id ".") 1) }}
+        <a href="{{ $targetPage | relURL }}" class="wiki-relationships__link">
+          <span class="wiki-relationships__name">{{ .id }}</span>
+          {{ with .relationship }}
+          <span class="wiki-relationships__type">— {{ . }}</span>
+          {{ end }}
+        </a>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+  {{ end }}
+</section>
+{{ end }}

@@ -13,6 +13,10 @@ dist/
 cdk.out/
 *.tsbuildinfo
 
+# wiki generator manifest (local dev state, regenerated on each run)
+wiki/.gen-manifest.json
+wiki/public/
+
 # bundled Lambda artifacts — infra/build.mjs regenerates these on every deploy
 infra/.build/
 
@@ -24,6 +28,8 @@ infra/.build/
 .env.local
 *.local
 .DS_Store
+.kiro
+.vscode
 
 # playwright
 test-results/

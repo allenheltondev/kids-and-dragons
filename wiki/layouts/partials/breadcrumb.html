@@ -1,0 +1,36 @@
+{{/* Breadcrumb partial — supports up to 3 levels deep.
+     Format: Home › Section › [Subsection ›] Current Page
+     Uses semantic <nav> with aria-label for accessibility. */}}
+{{ if not .IsHome }}
+<nav class="wiki-breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore>
+  <ol class="wiki-breadcrumb__list">
+    <li class="wiki-breadcrumb__item">
+      <a href="{{ "/" | relURL }}" class="wiki-breadcrumb__link">Home</a>
+    </li>
+    {{/* Walk up the ancestor chain (excluding Home and current page) */}}
+    {{ $ancestors := slice }}
+    {{ $current := . }}
+    {{ with .Parent }}
+      {{ if not .IsHome }}
+        {{/* Check for grandparent (3rd level support) */}}
+        {{ with .Parent }}
+          {{ if not .IsHome }}
+            {{ $ancestors = $ancestors | append . }}
+          {{ end }}
+        {{ end }}
+        {{ $ancestors = $ancestors | append $current.Parent }}
+      {{ end }}
+    {{ end }}
+    {{ range $ancestors }}
+    <li class="wiki-breadcrumb__item">
+      <span class="wiki-breadcrumb__separator" aria-hidden="true">›</span>
+      <a href="{{ .RelPermalink }}" class="wiki-breadcrumb__link">{{ .Title }}</a>
+    </li>
+    {{ end }}
+    <li class="wiki-breadcrumb__item wiki-breadcrumb__item--current">
+      <span class="wiki-breadcrumb__separator" aria-hidden="true">›</span>
+      <span aria-current="page">{{ .Title }}</span>
+    </li>
+  </ol>
+</nav>
+{{ end }}
