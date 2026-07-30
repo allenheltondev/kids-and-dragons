@@ -90,6 +90,13 @@ jobs:
       - name: Verify art assets
         run: npm run art:verify
 
+      # The rig contract is checked separately from the pixels because it needs
+      # no image decoding and no delivered art — it is arithmetic over
+      # manifest.rigContract, and it should go red the moment a clip grows past
+      # the turn budget rather than when the first .riv shows up.
+      - name: Verify rig contract
+        run: npm run art:verify:rig
+
       - name: Build
         run: npm run build
 
