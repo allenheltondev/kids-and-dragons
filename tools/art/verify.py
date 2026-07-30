@@ -50,11 +50,15 @@ class Report:
         self.passed += 1
         print(f"  {GREEN}pass{RESET}  {label}")
 
-    def fail(self, label: str, expected: object, actual: object) -> None:
+    def fail(self, label: str, expected: object, actual: object, hint: str = "") -> None:
         self.failures.append(label)
         print(f"  {RED}FAIL{RESET}  {label}")
         print(f"        expected: {expected}")
         print(f"        actual:   {actual}")
+        # A failure an artist cannot act on is a failure they will ask about.
+        # The hint carries the section of the brief that decided the rule.
+        if hint:
+            print(f"        {DIM}{hint}{RESET}")
 
     def warn(self, label: str, detail: str = "") -> None:
         self.warnings.append(label)
@@ -459,6 +463,7 @@ def check_effects(rep: Report, mf: dict) -> None:
     a fight, which is worse. So neither side is allowed to be longer than the
     other.
     """
+    tol = mf["tolerance"]
     directory = os.path.join(ROOT, "assets", "effects")
     if not os.path.isdir(directory):
         rep.warn("assets/effects/ is missing", "No effect sheets to check.")
@@ -511,14 +516,146 @@ def check_effects(rep: Report, mf: dict) -> None:
         # than as a missing file.
         blanks = [
             i for i in range(frames)
-            if not opaque_mask(img[:, i * size : (i + 1) * size], 8).any()
+            if not opaque_mask(img[:, i * size : (i + 1) * size], tol["alphaThreshold"]).any()
         ]
         if blanks:
             rep.fail(f"{label}  {len(blanks)} blank frame(s)",
                      "every frame has visible pixels", f"frames {blanks[:6]} are empty")
             continue
 
+        if not check_effect_composition(rep, label, img, entry, frames, size, tol):
+            continue
+
         rep.ok(f"{label}  {frames} frames @ {entry.get('fps', '?')}fps, {size}px")
+
+
+def check_effect_composition(rep: Report, label: str, img: np.ndarray,
+                             entry: dict, frames: int, size: int, tol: dict) -> bool:
+    """Where an effect's mass sits, and how long it runs — asset-brief.md §9.4/§9.6.
+
+    Geometry is not enough. A sheet can be exactly the right size, have no blank
+    frames, and still be unusable in a fight for four reasons, all of which are
+    decidable from the pixels and none of which a human notices reliably at 12fps
+    on a television across the room.
+
+    None of these is about taste. Each one is a specific thing an 8-year-old
+    cannot do if the sheet gets it wrong: tell which figure was hit, read the
+    damage number, see the effect fade in rather than pop, or see the colour the
+    renderer tinted it.
+    """
+    alpha = tol["alphaThreshold"]
+    ok = True
+
+    def frame(i: int) -> np.ndarray:
+        return img[:, i * size : (i + 1) * size]
+
+    # Three of the checks below only make sense for a **one-shot effect that
+    # plays during a turn**, and getting that scoping wrong is how the first
+    # version of this function failed eight shipped sheets for doing their job:
+    #
+    #   - A `loop: true` aura must NOT fade in and out. It is continuous, so a
+    #     fade at either end is a pulse to nothing once a second.
+    #   - An `outOfCombat: true` cutscene has no damage numbers to crowd. There
+    #     is nothing else on the screen; that is what makes it a cutscene.
+    #
+    # So the flags are load-bearing and the manifest has to carry them honestly.
+    # An unflagged sheet is measured as an in-combat one-shot, which is the
+    # strictest reading and the right default.
+    one_shot = not entry.get("loop")
+    in_combat = not entry.get("outOfCombat")
+
+    # --- fade in and out. The first and last frame are a fade, not a pose. A
+    # sheet that starts at full brightness pops, and a pop reads as a second,
+    # separate event on a screen that already has a lot happening.
+    end_max = tol["effectEndFrameCoverageMax"]
+    if one_shot:
+        for name, i in (("first", 0), ("last", frames - 1)):
+            coverage = float(opaque_mask(frame(i), alpha).mean())
+            if coverage > end_max:
+                rep.fail(f"{label}  {name} frame does not fade",
+                         f"≤ {end_max:.0%} of the frame opaque",
+                         f"{coverage:.1%}  (frame {i})",
+                         "§9.4: an effect that starts or ends at full strength pops, and a pop is a second event. "
+                         "A continuously-playing effect is exempt — mark it loop: true.")
+                ok = False
+
+    # --- tile-scoped mass. Three players and up to four enemies means the
+    # neighbouring tiles are usually occupied, so an effect that straddles two of
+    # them is a question: which figure did that? `tileScoped: false` is the opt
+    # out for effects that play on a figure rather than on a tile (the auras).
+    if entry.get("tileScoped", True):
+        centre_min = tol["effectCentreEnergyMin"]
+        lo, hi = size // 4, size - size // 4
+        total = 0.0
+        inside = 0.0
+        for i in range(frames):
+            mask = opaque_mask(frame(i), alpha)
+            total += float(mask.sum())
+            inside += float(mask[lo:hi, lo:hi].sum())
+        share = inside / total if total > 0 else 0.0
+        if share < centre_min:
+            rep.fail(f"{label}  mass escapes its tile",
+                     f"≥ {centre_min:.0%} of opaque mass inside the centre {hi - lo}x{hi - lo}",
+                     f"{share:.1%}",
+                     "§9.6: an effect spilling onto a neighbouring occupied tile leaves her guessing who was hit. "
+                     "Set tileScoped: false only if it plays on a figure.")
+            ok = False
+
+    # --- the top band belongs to the damage numbers (§9.4). They are the only
+    # text in a fight she has to read, and an effect drawn behind a number is a
+    # number that does not exist.
+    # Scoped to the effects that play *at the moment a number appears* — the
+    # tile-scoped impacts. A figure aura is a draw-order question for the client,
+    # and a cutscene has no numbers at all.
+    if in_combat and entry.get("tileScoped", True):
+        band_px = tol["effectTopBandPx"]
+        band_max = tol["effectTopBandCoverageMax"]
+        worst_band = 0.0
+        for i in range(frames):
+            worst_band = max(worst_band, float(opaque_mask(frame(i)[:band_px], alpha).mean()))
+        if worst_band > band_max:
+            rep.fail(f"{label}  crowds the damage numbers",
+                     f"≤ {band_max:.0%} of the top {band_px}px opaque",
+                     f"{worst_band:.1%} at its worst frame",
+                     "§9.4: damage numbers own the top band. It is the only text in a fight she has to read.")
+            ok = False
+
+    # --- tint safety. A sheet the renderer recolours has to be near-greyscale,
+    # or the tint fights the art it is multiplied into and the result is neither
+    # colour. Measured as HSV saturation over opaque pixels only — the
+    # transparent ones carry whatever RGB the exporter left behind.
+    if entry.get("tintable"):
+        sat_max = tol["tintableMaxSaturation"]
+        worst_sat = 0.0
+        for i in range(frames):
+            f = frame(i)
+            mask = opaque_mask(f, alpha)
+            if not mask.any():
+                continue
+            rgb = f[..., :3][mask].astype(np.float32) / 255.0
+            mx = rgb.max(axis=1)
+            mn = rgb.min(axis=1)
+            sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0.0)
+            worst_sat = max(worst_sat, float(np.percentile(sat, 99)))
+        if worst_sat > sat_max:
+            rep.fail(f"{label}  too saturated to tint",
+                     f"99th-percentile HSV saturation ≤ {sat_max:.2f}",
+                     f"{worst_sat:.2f}",
+                     "§9.4: a tintable sheet is recoloured at runtime. Colour already in the art fights the tint.")
+            ok = False
+
+    # --- combat frame budget. 12 frames at 12fps is one second, and §9.2's turn
+    # has no room for more. An effect longer than that is out of combat by
+    # definition, and saying so is a one-word manifest change — so the flag is
+    # the honest way to ask, and its absence is not an oversight to tolerate.
+    if not entry.get("outOfCombat") and frames > tol["combatEffectMaxFrames"]:
+        rep.fail(f"{label}  too long for a turn",
+                 f"≤ {tol['combatEffectMaxFrames']} frames, or outOfCombat: true",
+                 f"{frames} frames",
+                 "§9.2's turn budget is 45 ticks total. Mark it outOfCombat if it plays between turns.")
+        ok = False
+
+    return ok
 
 
 def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
