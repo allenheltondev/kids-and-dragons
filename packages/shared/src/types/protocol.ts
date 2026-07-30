@@ -10,6 +10,7 @@
 import type { Appearance, ClassId, SpeciesId, Stats } from "./domain.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
+import type { EncounterEvent } from "../encounter.js";
 
 // ---------------------------------------------------------------------------
 // Client → server
@@ -94,7 +95,22 @@ export type Presentation =
    * lands, exactly like a chapter's ending beat below — a board that simply
    * appears mid-scene reads as a glitch.
    */
-  | { kind: "ENCOUNTER_BEGAN"; mapId: string; firstActorId: string | null }
+  | {
+      kind: "ENCOUNTER_BEGAN";
+      mapId: string;
+      firstActorId: string | null;
+      /** Enemy turns that resolved before the first player could act. */
+      events?: readonly EncounterEvent[];
+      /** A branch reached if those opening turns immediately ended the fight. */
+      after?: Presentation;
+    }
+  | {
+      kind: "COMBAT_SEQUENCE";
+      /** Every move, roll and state-changing effect, in resolution order. */
+      events: readonly EncounterEvent[];
+      /** A scene transition that must wait until the combat beats finish. */
+      after?: Presentation;
+    }
   | { kind: "ATTACK"; sourceId: string; targetId: string; roll: DiceRoll; damage: number }
   | { kind: "HEAL"; targetId: string; amount: number }
   | { kind: "DOWN"; targetId: string }

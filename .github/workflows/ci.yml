@@ -1,134 +1,145 @@
+# Kids & Dragons CI.
+#
+# One workflow, on purpose. This is a family project, not a platform team — a single
+# file you can read top to bottom beats a matrix of reusable workflows nobody edits.
+#
+# It enforces the two cross-cutting rules from docs/roadmap.md that only CI can:
+#   * schema validation — a malformed chapter fails the build, never the play session
+#   * the art gate — "the agent says it's finished" is not an acceptance criterion
+#     (docs/art-pipeline.md §3)
+
 name: CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  apply-review-fixes:
-    if: github.head_ref == 'claude/combat-foundations-dxz34k'
+  build:
+    name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
+
+    # The prod store gets tested against a real DynamoDB, not a mock. The whole
+    # justification for the in-memory store is that swapping in DynamoRepository
+    # is a wiring change rather than a re-modelling exercise
+    # (packages/server/src/store/contract.test.ts), and that claim is worth
+    # nothing unless one suite runs against both.
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: claude/combat-foundations-dxz34k
-          fetch-depth: 0
+
+      # Node 22 — the same runtime the Lambdas use (architecture §1).
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Apply repair
-        shell: bash
+
+      # Python 3.11 for the art tooling. Pillow and numpy are the verifier's only
+      # dependencies and it prints exactly that if they are missing.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install art dependencies
+        run: python -m pip install --disable-pip-version-check pillow numpy
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # KAD_DDB_ENDPOINT switches the repository contract suite from "memory
+      # only" to "memory and DynamoDB". Without it those cases skip, which is
+      # what keeps `npm test` a two-second command on a laptop.
+      - name: Test
+        run: npm test
+        env:
+          KAD_DDB_ENDPOINT: http://localhost:8000
+          AWS_REGION: us-east-1
+
+      # The stack is code too. cfn-lint applies the SAM transform, so this
+      # catches a bad property on a Serverless resource — the class of mistake
+      # you would otherwise find eight minutes into a deploy.
+      - name: Lint the stack
         run: |
-          python3 <<'PY'
-          from pathlib import Path
-          source = Path('.github/workflows/fix-pr-5.yml').read_text().splitlines()
-          start = next(i for i, line in enumerate(source) if line.strip() == "python3 <<'PY'")
-          end = next(i for i in range(start + 1, len(source)) if source[i].strip() == 'PY')
-          script = '\n'.join(line[10:] if line.startswith('          ') else line for line in source[start:end + 1]) + '\n'
-          def remove_between(marker, next_marker):
-              global script
-              at = script.index(marker); after = script.index(next_marker, at)
-              script = script[:at] + script[after + 1:]
-          remove_between("replace_once(\n    engine,\n    '''          ): Presentation | undefined {", "\n# ------------------------------------------------------------------\n# Encounter legality")
-          remove_between("replace_once(\n    encounter,\n    '''  } else if (ability.target.kind === \"tile\") {", "\n# ------------------------------------------------------------------\n# Authored Pounce")
-          script = script[:script.index('# Authored Pounce')] + 'PY\n'
-          Path('/tmp/apply.sh').write_text(script)
-          PY
-          bash /tmp/apply.sh
+          python -m pip install --disable-pip-version-check cfn-lint
+          npm run infra:lint
 
-          python3 <<'PY'
-          import json
-          from pathlib import Path
+      # A Lambda bundle that does not build is a deploy that fails after the
+      # checks have already passed. It costs seconds here.
+      - name: Bundle Lambdas
+        run: npm run infra:build
 
-          def exact(path, old, new):
-              p = Path(path); text = p.read_text()
-              if text.count(old) != 1: raise SystemExit(f'{path}: stable match count {text.count(old)}')
-              p.write_text(text.replace(old, new, 1))
+      # Content is data (roadmap, "Content as data"), so it gets checked like code:
+      # schemas first, then the cross-file rules a schema cannot express.
+      - name: Validate content
+        run: npm run content:validate
 
-          exact('packages/shared/src/engine.ts', '''function doUseItem(
-            draft: RunState,
-            playerId: string,
-            itemId: string,
-            ctx: EngineContext,
-          ): Presentation | undefined {
-            const member = memberByPlayer(draft, playerId);
-            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+      - name: Verify art assets
+        run: npm run art:verify
 
-            const def = ctx.items[itemId];
-          ''', '''function doUseItem(
-            draft: RunState,
-            playerId: string,
-            itemId: string,
-            ctx: EngineContext,
-          ): Presentation | undefined {
-            const member = memberByPlayer(draft, playerId);
-            if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
-            if (draft.encounter) throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
+      - name: Build
+        run: npm run build
 
-            const def = ctx.items[itemId];
-          ''')
+      # The contact sheets are the human gate's input (art-pipeline.md §3.2). They do
+      # not gate the build — nothing here decides whether the art looks right — but
+      # having them on every run means a reviewer never has to build them by hand.
+      - name: Contact sheets
+        run: npm run art:sheet
 
-          p = Path('packages/shared/src/encounter.ts'); text = p.read_text()
-          start = text.index('  } else if (ability.target.kind === "tile") {')
-          end = text.index('\n  }\n\n  const events: EncounterEvent[]', start) + len('\n  }')
-          replacement = '''  } else if (ability.target.kind === "tile") {
-            const tile = request.targetTile;
-            if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
-              return { ok: false, reason: "that is not a legal tile" };
-            }
-            point = { x: tile.x, y: tile.y };
-            if (ability.target.followUp) {
-              const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
-              if (!request.targetId || !option?.targets.includes(request.targetId)) {
-                return { ok: false, reason: "that is not a legal target from that tile" };
-              }
-              targetId = request.targetId;
-            }
-          }'''
-          text = text[:start] + replacement + text[end:]
-          text = text.replace('return effect.amount > recipient.rollBonus;', 'return effect.amount > 0;', 1)
-          p.write_text(text)
+      - name: Upload contact sheets
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: art-review-sheets
+          path: art/review/
+          if-no-files-found: ignore
+          retention-days: 14
 
-          p = Path('content/abilities.json'); doc = json.loads(p.read_text()); ability = doc['abilities']['pounce']
-          ability['$comment'] = 'Jump to an open tile, then choose and attack one adjacent enemy.'
-          ability['target']['followUp'] = {'kind': 'enemy', 'range': 'adjacent'}
-          ability['effects'][1].pop('to', None)
-          p.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + '\n')
+  e2e:
+    # The roadmap's dev loop says a change isn't done until it has been seen on
+    # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
+    # holds three browser contexts against the real dev server: real room
+    # codes, real SSE, real server-rolled dice. It is a separate job because it
+    # is minutes rather than seconds, and because a red e2e means something
+    # quite different from a red unit test.
+    name: end to end
+    runs-on: ubuntu-latest
 
-          p = Path('schemas/abilities.schema.json'); schema = json.loads(p.read_text())
-          schema['$defs']['targetRule']['properties']['followUp'] = {'type':'object','additionalProperties':False,'required':['kind'],'properties':{'kind':{'enum':['ally','enemy']},'range':{'anyOf':[{'type':'integer','minimum':1,'maximum':10},{'enum':['adjacent','board']}]},'state':{'enum':['down','standing','any']}}}
-          p.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + '\n')
+    steps:
+      - uses: actions/checkout@v4
 
-          exact('tools/content/validate.mjs', 'if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {', 'if (scopes.has("target") && (t.kind === "none" || (t.kind === "tile" && !t.followUp))) {')
-          exact('packages/client/src/layout/WorldView.tsx', '  ENCOUNTER_BEGAN: 1200,\n  ATTACK: 700,', '  ENCOUNTER_BEGAN: 1200,\n  COMBAT_SEQUENCE: 700,\n  ATTACK: 700,')
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
 
-          p = Path('packages/shared/src/encounter.test.ts'); test = p.read_text()
-          a = test.index('  pounce: {'); b = test.index('\n  },\n};', a) + len('\n  },')
-          block = test[a:b].replace('target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy" },', 'target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy", followUp: { kind: "enemy", range: "adjacent" } },').replace('{ effect: { type: "attack", damage: 3 }, to: "adjacent" },', '{ effect: { type: "attack", damage: 3 } },')
-          test = test[:a] + block + test[b:]
-          test = test.replace('performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 } })', 'performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 }, targetId: "wisp#1" })', 1)
-          p.write_text(test)
+      - name: Install Node dependencies
+        run: npm ci
 
-          exact('packages/server/src/content/abilities.test.ts', 'request: () => ({ abilityId: "pounce", targetTile: { x: 5, y: 2 } }),', 'request: () => ({ abilityId: "pounce", targetTile: { x: 5, y: 2 }, targetId: "wisp#1" }),')
-          PY
-      - run: npm ci
-      - run: npm test
-      - run: npm run typecheck
-      - run: npm run content:validate
-      - name: Commit fixes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git show origin/main:.github/workflows/ci.yml > .github/workflows/ci.yml
-          git rm .github/workflows/fix-pr-5.yml
-          git add packages/shared/src/engine.ts packages/shared/src/encounter.ts packages/shared/src/types/protocol.ts packages/shared/src/encounter.test.ts packages/server/src/content/abilities.test.ts packages/client/src/layout/WorldView.tsx content/abilities.json schemas/abilities.schema.json tools/content/validate.mjs .github/workflows/ci.yml
-          git commit -m "fix: preserve combat events and action legality"
-          git push origin HEAD:claude/combat-foundations-dxz34k
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # playwright.config.ts starts `npm run dev` itself and waits for Vite.
+      - name: Play a chapter
+        run: npx playwright test
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7

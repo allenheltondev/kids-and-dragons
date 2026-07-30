@@ -153,10 +153,10 @@ const CATALOG: AbilityCatalog = {
     name: "Pounce",
     icon: "arrow",
     timing: "action",
-    target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy" },
+    target: { kind: "tile", range: 6, openTileOnly: true, affects: "enemy", followUp: { kind: "enemy", range: "adjacent" } },
     effects: [
       { effect: { type: "moveSelf" } },
-      { effect: { type: "attack", damage: 3 }, to: "adjacent" },
+      { effect: { type: "attack", damage: 3 } },
     ],
     oncePerEncounter: true,
   },
@@ -1004,7 +1004,7 @@ describe("actions", () => {
     );
 
     const pounced = ok(
-      performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 } }),
+      performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "pounce", targetTile: { x: 4, y: 2 }, targetId: "wisp#1" }),
     );
 
     expect(positionOf(pounced.state, "c_man")).toEqual({ x: 4, y: 2 });
