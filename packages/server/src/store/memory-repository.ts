@@ -25,6 +25,7 @@ import type {
   RunState,
 } from "@kad/shared";
 import type {
+  CampaignProgressRecord,
   ChapterProgressRecord,
   CommitInput,
   EventRecord,
@@ -34,6 +35,7 @@ import type {
 } from "./repository.ts";
 import {
   ACCT,
+  CAMPAIGN_SK,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -440,6 +442,23 @@ export class MemoryRepository implements GameRepository {
     return this.query(RUN(runId), PREFIX.chapter).map((i) => i.data as ChapterProgressRecord);
   }
 
+  async getCampaignProgress(
+    householdId: string,
+    campaignId: string,
+  ): Promise<CampaignProgressRecord | null> {
+    const item = this.get(HH(householdId), CAMPAIGN_SK(campaignId));
+    return (item?.data as CampaignProgressRecord | undefined) ?? null;
+  }
+
+  async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {
+    this.put({
+      PK: HH(progress.householdId),
+      SK: CAMPAIGN_SK(progress.campaignId),
+      entity: "campaign-progress",
+      data: progress,
+    });
+  }
+
   async getState(runId: string): Promise<RunState | null> {
     return (this.get(RUN(runId), STATE)?.data as RunState | undefined) ?? null;
   }
@@ -470,6 +489,10 @@ export class MemoryRepository implements GameRepository {
         data: character,
       });
     }
+    // The progress rows ride the same gate as the characters, and for the same
+    // reason — see CommitInput.
+    if (input.chapterProgress) await this.putChapterProgress(input.chapterProgress);
+    if (input.campaignProgress) await this.putCampaignProgress(input.campaignProgress);
     return true;
   }
 

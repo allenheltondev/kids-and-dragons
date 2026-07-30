@@ -30,7 +30,11 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
-import { foldChapterXp, newCharacterWrite } from "./progression.ts";
+import {
+  newCharacterWrite,
+  settleChapterCompletion,
+  type ChapterSettlement,
+} from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId" | "role">;
@@ -156,8 +160,13 @@ export async function applyAction(
    */
   const finishedChapter =
     state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
+  let settlement: ChapterSettlement | null = null;
   if (finishedChapter) {
-    characters.push(...(await foldChapterXp(result.state, deps, auth.run.householdId)));
+    // XP, the chapter's record, the setback counter, and — when this
+    // completion decides it — the campaign's fate (progression.ts). All of it
+    // rides the same conditional commit below.
+    settlement = await settleChapterCompletion(result.state, deps, auth.run.householdId);
+    characters.push(...settlement.characters);
   }
 
   // --- 3. stamp, persist, broadcast ---------------------------------------
@@ -199,6 +208,8 @@ export async function applyAction(
     state: next,
     event,
     ...(characters.length > 0 ? { characters } : {}),
+    ...(settlement?.chapterProgress ? { chapterProgress: settlement.chapterProgress } : {}),
+    ...(settlement?.campaignProgress ? { campaignProgress: settlement.campaignProgress } : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the

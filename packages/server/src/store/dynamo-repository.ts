@@ -41,6 +41,7 @@ import type {
   RunState,
 } from "@kad/shared";
 import type {
+  CampaignProgressRecord,
   ChapterProgressRecord,
   CommitInput,
   EventRecord,
@@ -50,6 +51,7 @@ import type {
 } from "./repository.ts";
 import {
   ACCT,
+  CAMPAIGN_SK,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -573,6 +575,18 @@ export class DynamoRepository implements GameRepository {
     return items.map((i) => i.data as ChapterProgressRecord);
   }
 
+  async getCampaignProgress(
+    householdId: string,
+    campaignId: string,
+  ): Promise<CampaignProgressRecord | null> {
+    const item = await this.get(HH(householdId), CAMPAIGN_SK(campaignId));
+    return (item?.data as CampaignProgressRecord | undefined) ?? null;
+  }
+
+  async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {
+    await this.put(campaignProgressItem(progress));
+  }
+
   async getState(runId: string): Promise<RunState | null> {
     return ((await this.get(RUN(runId), STATE))?.data as RunState | undefined) ?? null;
   }
@@ -582,7 +596,7 @@ export class DynamoRepository implements GameRepository {
   }
 
   async commit(input: CommitInput): Promise<boolean> {
-    const { runId, expectedSeq, state, event, characters = [] } = input;
+    const { runId, expectedSeq, state, event, characters = [], chapterProgress, campaignProgress } = input;
     try {
       /*
        * The two writes that must never come apart: append `EVT#<seq>` and
@@ -636,6 +650,27 @@ export class DynamoRepository implements GameRepository {
                 } satisfies TableItem,
               },
             })),
+            // The progress rows ride the same gate. The setback counter in
+            // particular is a read-modify-write; the seq condition is what
+            // serializes it against two phones completing the chapter at once.
+            ...(chapterProgress
+              ? [
+                  {
+                    Put: {
+                      TableName: this.table,
+                      Item: {
+                        PK: RUN(chapterProgress.runId),
+                        SK: CHAPTER_SK(chapterProgress.index),
+                        entity: "chapter-progress",
+                        data: chapterProgress,
+                      } satisfies TableItem,
+                    },
+                  },
+                ]
+              : []),
+            ...(campaignProgress
+              ? [{ Put: { TableName: this.table, Item: campaignProgressItem(campaignProgress) } }]
+              : []),
           ],
         }),
       );
@@ -718,6 +753,16 @@ export class DynamoRepository implements GameRepository {
       new DeleteCommand({ TableName: this.table, Key: { PK: ROOM(code), SK: META } }),
     );
   }
+}
+
+/** One shape for both write paths — `putCampaignProgress` and `commit`. */
+function campaignProgressItem(progress: CampaignProgressRecord): TableItem {
+  return {
+    PK: HH(progress.householdId),
+    SK: CAMPAIGN_SK(progress.campaignId),
+    entity: "campaign-progress",
+    data: progress,
+  };
 }
 
 /** `ConditionalCheckFailedException`, however the SDK version spells it. */
