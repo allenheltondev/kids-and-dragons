@@ -59,6 +59,7 @@ import {
   type AbilityCatalog,
   type CombatActionRequest,
   type EncounterState,
+  type EncounterEvent,
   type EnemyPlacement,
   type PartyPlacement,
 } from "./encounter.js";
@@ -704,19 +705,20 @@ function doReady(
     draft.prompt?.kind === "ready" &&
     draft.party.every((m) => m.ready || !m.connected)
   ) {
-    // Everybody has readied up, so the fight begins. It used to *end* here —
-    // `resolveEncounter` handed out an automatic victory so a chapter stayed
-    // walkable without a grid (the TODO in the header). Now the board goes up,
-    // initiative is rolled, and the first monster in the order takes its turn
-    // before any phone is asked for anything.
-    startEncounter(draft, ctx);
-    return (
-      settleEncounter(draft, ctx) ?? {
-        kind: "ENCOUNTER_BEGAN",
-        mapId: encounterMapId(draft, ctx),
-        firstActorId: draft.encounter ? currentActorId(draft.encounter) : null,
-      }
-    );
+    // Capture the board identity before settlement can branch away from the
+    // encounter scene. Opening monster turns are part of this presentation,
+    // not invisible mutations hidden inside its patch.
+    const events = startEncounter(draft, ctx);
+    const mapId = encounterMapId(draft, ctx);
+    const firstActorId = draft.encounter ? currentActorId(draft.encounter) : null;
+    const after = settleEncounter(draft, ctx);
+    return {
+      kind: "ENCOUNTER_BEGAN",
+      mapId,
+      firstActorId,
+      ...(events.length > 0 ? { events } : {}),
+      ...(after ? { after } : {}),
+    };
   }
   return undefined;
 }
@@ -996,7 +998,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
  * spawn points is an authoring error the content validator already refuses, so
  * running out here means the deployed bundle and the deployed content disagree.
  */
-function startEncounter(draft: RunState, ctx: EngineContext): void {
+function startEncounter(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "not on an encounter scene");
 
@@ -1029,7 +1031,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): void {
   );
   // Whoever the initiative roll put first might be a monster, so the fight has
   // to be walked forward before anybody's phone is asked for anything.
-  runEnemyTurns(draft, ctx);
+  return runEnemyTurns(draft, ctx);
 }
 
 /**
@@ -1066,7 +1068,7 @@ function doCombatMove(
   // from a board that has since moved on. Say so and let it resync.
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
-  return undefined;
+  return combatPresentation(result.events);
 }
 
 function doCombatAction(
@@ -1084,23 +1086,36 @@ function doCombatAction(
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
-  // The fight may have just ended on that swing.
-  return settleEncounter(draft, ctx);
+  // The fight may have just ended on that swing. The branch waits behind
+  // the ordered roll/damage/down events rather than replacing them.
+  return combatPresentation(result.events, settleEncounter(draft, ctx));
 }
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
   const encounter = requireTurn(draft, playerId);
   draft.encounter = endTurn(encounter);
   // Handing over may hand over to a monster, and monsters do not wait to be
-  // asked — every consecutive enemy turn resolves inside this one intent so the
-  // client gets the whole run of them in one patch.
-  runEnemyTurns(draft, ctx);
-  return settleEncounter(draft, ctx);
+  // asked. Their entire run is one ordered animation queue.
+  const events = runEnemyTurns(draft, ctx);
+  return combatPresentation(events, settleEncounter(draft, ctx));
 }
 
 /** The slice of `EngineContext` a combat call needs. */
 function combatCtx(ctx: EngineContext) {
   return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+}
+
+/** Keeps combat spectacle ordered without making it authoritative state. */
+function combatPresentation(
+  events: readonly EncounterEvent[],
+  after?: Presentation,
+): Presentation | undefined {
+  if (events.length === 0) return after;
+  return {
+    kind: "COMBAT_SEQUENCE",
+    events,
+    ...(after ? { after } : {}),
+  };
 }
 
 /**
@@ -1116,9 +1131,10 @@ function combatCtx(ctx: EngineContext) {
  * turn would otherwise spin here forever with the table watching a frozen
  * board; a cap turns that into a fight that carries on slightly wrong.
  */
-function runEnemyTurns(draft: RunState, ctx: EngineContext): void {
+function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
   let encounter = draft.encounter;
-  if (!encounter) return;
+  const events: EncounterEvent[] = [];
+  if (!encounter) return events;
 
   for (let guard = 0; guard < MAX_ENEMY_TURNS; guard++) {
     if (encounterOutcome(encounter) !== "ongoing") break;
@@ -1141,22 +1157,28 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): void {
 
     if (plan.moveTo) {
       const moved = moveTo(encounter, plan.moveTo);
-      // A refusal is the AI and the grid disagreeing, which is a bug rather than
-      // a decision — but it must not strand the turn, so the monster just stands
-      // there and swings if it can.
-      if (moved.ok) encounter = moved.state;
+      // A refusal is the AI and the grid disagreeing, which is a bug rather
+      // than a decision — but it must not strand the turn.
+      if (moved.ok) {
+        encounter = moved.state;
+        events.push(...moved.events);
+      }
     }
     if (plan.attack) {
       const swung = performAction(encounter, combatCtx(ctx), {
         abilityId: ATTACK_ABILITY,
         targetId: plan.attack,
       });
-      if (swung.ok) encounter = swung.state;
+      if (swung.ok) {
+        encounter = swung.state;
+        events.push(...swung.events);
+      }
     }
     encounter = endTurn(encounter);
   }
 
   draft.encounter = encounter;
+  return events;
 }
 
 /** The map the scene in play names. Only called where the scene is an encounter. */
@@ -1245,6 +1267,7 @@ function doUseItem(
 ): Presentation | undefined {
   const member = memberByPlayer(draft, playerId);
   if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+  if (draft.encounter) throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
 
   const def = ctx.items[itemId];
   if (!def) throw new Illegal("NOT_FOUND", `unknown item "${itemId}"`);

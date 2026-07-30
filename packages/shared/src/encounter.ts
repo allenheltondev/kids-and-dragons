@@ -126,6 +126,16 @@ export interface TargetRule {
   /** A tile target must be somewhere you could actually stand. */
   readonly openTileOnly?: boolean;
   /**
+   * A second figure selected after landing on a tile. Pounce uses this to
+   * pair one legal landing tile with one adjacent enemy rather than hitting
+   * everyone nearby or allowing a jump that has nobody to attack.
+   */
+  readonly followUp?: {
+    readonly kind: "ally" | "enemy";
+    readonly range?: number | "adjacent" | "board";
+    readonly state?: "down" | "standing" | "any";
+  };
+  /**
    * Side collected by the `"area"` and `"adjacent"` effect scopes. Defaults to
    * the opposite of `kind` when that says one ("ally" → ally), and to `"enemy"`
    * for `"none"` / `"self"` / `"tile"`.
@@ -692,7 +702,15 @@ export interface LegalAction {
   readonly targets: readonly ActorId[];
   /** Tiles it may be pointed at. Empty unless the ability targets a tile. */
   readonly tiles: readonly Position[];
-  /** True when the request must carry a `targetId` or `targetTile`. */
+  /**
+   * Figure choices paired with a tile. Present only when an action requires
+   * both, so the client cannot combine a legal tile with the wrong target.
+   */
+  readonly tileTargets?: readonly {
+    readonly tile: Position;
+    readonly targets: readonly ActorId[];
+  }[];
+  /** True when the request must carry a target. Some actions require both. */
   readonly needsTarget: boolean;
 }
 
@@ -737,12 +755,16 @@ export function legalActions(state: EncounterState, ctx: EncounterContext): read
     if (ability.timing !== "action") continue;
     if (ability.oncePerEncounter && actor.spent.includes(abilityId)) continue;
 
-    const targets = legalTargetsFor(state, actor, ability);
-    const tiles = legalTilesFor(state, actor, ability);
+    const directTargets = legalTargetsFor(state, actor, ability.target).filter((targetId) =>
+      wouldAbilityDoAnything(state, actor, ability, targetId, positionOf(state, targetId)),
+    );
+    const tileTargets = legalTileTargetsFor(state, actor, ability);
+    const tiles = tileTargets.map((option) => option.tile);
+    const targets = ability.target.followUp
+      ? [...new Set(tileTargets.flatMap((option) => option.targets))]
+      : directTargets;
     const needsTarget = ability.target.kind !== "none" && ability.target.kind !== "self";
     if (needsTarget && targets.length === 0 && tiles.length === 0) continue;
-    // No figure to point at *and* no figure the effects would find: Ground
-    // Smash standing alone in a field does nothing, so it is not offered.
     if (!needsTarget && !hasAnyAudience(state, actor, ability, positionOf(state, actor.id))) {
       continue;
     }
@@ -753,6 +775,7 @@ export function legalActions(state: EncounterState, ctx: EncounterContext): read
       icon: ability.icon,
       targets,
       tiles,
+      ...(ability.target.followUp ? { tileTargets } : {}),
       needsTarget,
     });
   }
@@ -793,9 +816,8 @@ function isFriendly(actor: Combatant, other: Combatant, side: AbilitySide): bool
 function legalTargetsFor(
   state: EncounterState,
   actor: Combatant,
-  ability: CombatAbility,
+  rule: TargetRule,
 ): readonly ActorId[] {
-  const rule = ability.target;
   if (rule.kind === "self") return [actor.id];
   if (rule.kind !== "ally" && rule.kind !== "enemy") return [];
 
@@ -803,12 +825,6 @@ function legalTargetsFor(
   const want: AbilitySide = rule.kind === "ally" ? "ally" : "enemy";
   return state.combatants
     .filter((c) => {
-      // You are never your own "ally" target. The spec does not rule on it, but
-      // every ability that reaches for one says "a friend" or "a friend
-      // standing next to you", and a Thornguard bracing for themselves or a
-      // Unicorn touching their own shoulder is not what any of that text
-      // describes. Abilities that *do* include the caster say so by scoping an
-      // effect to "self" or "allies" — Ready and Chorus both do.
       if (c.id === actor.id) return false;
       if (!isFriendly(actor, c, want)) return false;
       if (!matchesState(c, rule)) return false;
@@ -833,12 +849,124 @@ function legalTilesFor(
       const at = { x, y };
       if (samePosition(at, from)) continue;
       if (range !== "board" && stepsBetween(from, at) > range) continue;
-      // "land on any open tile" — Gliding Leap, Pounce.
       if (rule.openTileOnly !== false && !isOpen(state.board, at)) continue;
       out.push(at);
     }
   }
   return out;
+}
+
+function legalTileTargetsFor(
+  state: EncounterState,
+  actor: Combatant,
+  ability: CombatAbility,
+): readonly { readonly tile: Position; readonly targets: readonly ActorId[] }[] {
+  if (ability.target.kind !== "tile") return [];
+  const followUp = ability.target.followUp;
+
+  return legalTilesFor(state, actor, ability).flatMap((tile) => {
+    if (!followUp) {
+      return wouldAbilityDoAnything(state, actor, ability, null, tile)
+        ? [{ tile, targets: [] }]
+        : [];
+    }
+
+    const preview = previewStateForTile(state, actor.id, ability, tile);
+    const previewActor = combatantById(preview, actor.id);
+    if (!previewActor) return [];
+    const followRule: TargetRule = {
+      kind: followUp.kind,
+      ...(followUp.range === undefined ? {} : { range: followUp.range }),
+      ...(followUp.state === undefined ? {} : { state: followUp.state }),
+    };
+    const targets = legalTargetsFor(preview, previewActor, followRule).filter((targetId) =>
+      wouldAbilityDoAnything(state, actor, ability, targetId, tile),
+    );
+    return targets.length > 0 ? [{ tile, targets }] : [];
+  });
+}
+
+function canMoveSelf(state: EncounterState, actorId: ActorId, point: Position | null): boolean {
+  const from = positionOf(state, actorId);
+  return Boolean(point && from && !samePosition(from, point) && isOpen(state.board, point));
+}
+
+function previewStateForTile(
+  state: EncounterState,
+  actorId: ActorId,
+  ability: CombatAbility,
+  point: Position | null,
+): EncounterState {
+  const moves = ability.effects.some((spec) => spec.effect.type === "moveSelf");
+  if (!moves || !canMoveSelf(state, actorId, point) || !point) return state;
+  return { ...state, board: moveActor(state.board, actorId, point) };
+}
+
+function effectWouldChange(
+  state: EncounterState,
+  actorId: ActorId,
+  recipientId: ActorId,
+  effect: AbilityEffect,
+  point: Position | null,
+): boolean {
+  const recipient = combatantById(state, recipientId);
+  if (!recipient) return false;
+
+  switch (effect.type) {
+    case "attack":
+      return !recipient.down && effect.damage > 0;
+    case "damage":
+      return !recipient.down && effect.amount > 0;
+    case "heal":
+      return !recipient.down && recipient.hp < recipient.maxHp && effect.amount > 0;
+    case "revive":
+      return recipient.down;
+    case "rollBonus":
+      return effect.amount > 0;
+    case "moveSelf":
+      return canMoveSelf(state, actorId, point);
+    case "skipTurn":
+      return !recipient.down && !recipient.skipNextTurn;
+    case "protect":
+      return !recipient.down && recipient.protectedBy !== actorId;
+    case "goFirst":
+      return false;
+    case "shove": {
+      const from = positionOf(state, actorId);
+      const start = positionOf(state, recipientId);
+      if (!from || !start || effect.steps < 1) return false;
+      const dx = Math.sign(start.x - from.x);
+      const dy = Math.sign(start.y - from.y);
+      if (dx === 0 && dy === 0) return false;
+      return isOpen(state.board, { x: start.x + dx, y: start.y + dy });
+    }
+  }
+}
+
+/** Would this ability make a meaningful state change for this selection? */
+function wouldAbilityDoAnything(
+  state: EncounterState,
+  actor: Combatant,
+  ability: CombatAbility,
+  targetId: ActorId | null,
+  point: Position | null,
+): boolean {
+  const nonMovement = ability.effects.filter((spec) => spec.effect.type !== "moveSelf");
+  if (nonMovement.length === 0) {
+    return ability.effects.some((spec) => spec.effect.type === "moveSelf") &&
+      canMoveSelf(state, actor.id, point);
+  }
+
+  const preview = previewStateForTile(state, actor.id, ability, point);
+  return nonMovement.some((spec) =>
+    audienceFor(preview, actor.id, ability, spec, targetId, point).some((recipientId) => {
+      const recipient = combatantById(preview, recipientId);
+      if (!recipient) return false;
+      if (spec.when === "down" && !recipient.down) return false;
+      if (spec.when === "standing" && recipient.down) return false;
+      return effectWouldChange(preview, actor.id, recipientId, spec.effect, point);
+    }),
+  );
 }
 
 /**
@@ -908,10 +1036,11 @@ function hasAnyAudience(
   ability: CombatAbility,
   point: Position | null,
 ): boolean {
-  return ability.effects.some(
-    (spec) => audienceFor(state, actor.id, ability, spec, null, point).length > 0,
-  );
+  return wouldAbilityDoAnything(state, actor, ability, null, point);
 }
+
+// ---------------------------------------------------------------------------
+// Taking a turn
 
 // ---------------------------------------------------------------------------
 // Taking a turn
@@ -989,12 +1118,19 @@ export function performAction(
     targetId = request.targetId;
     point = positionOf(state, targetId);
   } else if (ability.target.kind === "tile") {
-    const tile = request.targetTile;
-    if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
-      return { ok: false, reason: "that is not a legal tile" };
-    }
-    point = { x: tile.x, y: tile.y };
+  const tile = request.targetTile;
+  if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+    return { ok: false, reason: "that is not a legal tile" };
   }
+  point = { x: tile.x, y: tile.y };
+  if (ability.target.followUp) {
+    const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
+    if (!request.targetId || !option?.targets.includes(request.targetId)) {
+      return { ok: false, reason: "that is not a legal target from that tile" };
+    }
+    targetId = request.targetId;
+  }
+}
 
   const events: EncounterEvent[] = [];
   let working = state;

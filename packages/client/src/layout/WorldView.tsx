@@ -52,6 +52,7 @@ const PRESENTATION_MS: Record<Presentation["kind"], number> = {
   // the fight and three phones have to swap to a combat UI, and arriving mid-
   // shuffle is how a player misses whose turn it is (spec §7.2).
   ENCOUNTER_BEGAN: 1200,
+  COMBAT_SEQUENCE: 700,
   ATTACK: 700,
   HEAL: 600,
   DOWN: 700,

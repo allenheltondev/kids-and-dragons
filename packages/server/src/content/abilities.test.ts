@@ -463,7 +463,7 @@ describe("species actions", () => {
       enemy: { x: 6, y: 2 },
       // Land beside the wisp; the attack collects from where the leap ended,
       // which is the whole ordering question the ability exists to pose.
-      request: () => ({ abilityId: "pounce", targetTile: { x: 5, y: 2 } }),
+      request: () => ({ abilityId: "pounce", targetTile: { x: 5, y: 2 }, targetId: "wisp#1" }),
       check: (_before, after, heroId) => {
         expect(tileOf(after, heroId)).toEqual({ x: 5, y: 2 });
         expect(hpOf(after, "wisp#1")).toBeLessThan(6);
