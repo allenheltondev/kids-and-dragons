@@ -8,11 +8,13 @@ session** ([architecture §5](../docs/architecture.md#5-chapter-schema)).
 ```
 content/
   rules.json                     species, classes, stats, levels, tiers   → RulesContent
+  abilities.json                 what abilities do on the board           → AbilityCatalog
   items.json                     the item catalog, keyed by itemId        → ItemCatalog
   campaigns/<id>.json            a story arc, listing its chapters        → Campaign
   chapters/<id>.json             one ~30-minute sitting                   → Chapter
+  maps/<id>.json                 encounter boards — rows + spawn points   → EncounterMap
 schemas/
-  rules|items|chapter|campaign.schema.json     JSON Schema, draft 2020-12
+  rules|abilities|items|chapter|campaign|map.schema.json     JSON Schema, draft 2020-12
 ```
 
 ## Authoring XP
@@ -60,9 +62,8 @@ it handles anything.
 
 - **Icons are short slugs** (`fist`, `wing`, `eye`, `spark`, `hand`, `flame`, `key`, …), never file
   paths. The client resolves a slug to an inline SVG, so every element gets an icon (spec §11).
-  Note that the worked example in architecture §5 shows item icons as `icons/items/*.svg` paths;
-  we use one slug namespace for rules, choices, and items alike so there is exactly one icon
-  lookup in the client.
+  One slug namespace covers rules, choices, and items alike, so there is exactly one icon lookup
+  in the client.
 - **A scene with an empty `choices` array ends the chapter.** The `Chapter` type has no terminal
   marker, and this is the only representable one. `rest_lanternfall` is that scene here, which
   matches spec §6.1 — Rest *is* the end-of-session beat. Every chapter needs at least one, and every
@@ -75,8 +76,7 @@ it handles anything.
 - **`levelXp` holds the nine thresholds *above* level 1.** `levelXp[n]` is the total XP needed to
   reach level `n + 2`, and the cap is `levelXp.length + 1`. That is what `levelForXp()` and
   `maxLevel()` in `packages/shared/src/rules.ts` implement, and it is why the array does not start
-  with a `0` — a leading zero would hand every character level 2 for free. (The comment on
-  `RulesContent.levelXp` in `domain.ts` reads `n + 1`; the implementation is the one that runs.)
+  with a `0` — a leading zero would hand every character level 2 for free.
 - **XP is a chapter award.** `xpAward` is the payout; the single `grantXp` in the reference chapter
   is a small exploration bonus, kept small so that exploring and talking stay worth about as much as
   fighting (spec §8.1).

@@ -16,7 +16,7 @@ Prove the three things that could invalidate the whole design, before building o
 **Claude**
 - Repo scaffolding: Vite + React + TS, Pixi, **SAM stack** (`infra/template.yaml`), DynamoDB Local, CI
 - CloudFront + S3 deploy pipeline, one command to prod (`./scripts/deploy.sh`), and
-  the same command from CI — staging on every pull request, prod on merge to main
+  the same command from CI — staging on every pull request, prod once CI passes on main
 - **`assets/manifest.json` + `npm run art:verify`** — the contract and the gate, written *before* any asset is commissioned ([art-pipeline.md §3](./art-pipeline.md#3-division-of-labor))
 - `npm run art:sheet` contact sheet generator
 - **Spike A — the brief:** commission `unicorn/fledgling` from Codex against [asset-brief.md](./asset-brief.md). Does it pass `art:verify` without hand-fixing? Every correction becomes a brief edit.
@@ -24,13 +24,20 @@ Prove the three things that could invalidate the whole design, before building o
 - **Spike C — AppSync Events:** TV + 2 phones, room code join, sub-200ms round trip on LAN and over the internet
 
 **Allen**
-- Resolve the four open questions in [asset-brief.md §7](./asset-brief.md#7-open-questions-to-resolve-before-starting) — palette, face style, line weight, aura handling
+- ~~Resolve the four open questions in asset-brief §7 — palette, face style, line weight, aura handling~~ — decided and recorded: that section is now [asset-brief.md §7 "Resolved decisions"](./asset-brief.md#7-resolved-decisions-)
 - Review the first unicorn against the register in §2.1 until the look is right. This gates everything visual.
 - Decide TV hardware and confirm the browser situation
 - AWS account, Claude Platform on AWS workspace
 
 **Done when:** a static "hello world" page with one animated unicorn is live on CloudFront, two
 phones and the TV are in a synced room, and all three spikes have a written verdict.
+
+> **Where this stands.** The scaffolding, the deploy pipeline, the manifest, and both art gates
+> are built and running in CI. Spike A resolved in the brief's favour — the approved unicorn is
+> now the reference for the whole cast (asset-brief rev 5) — and the AppSync path of Spike C is
+> deployed and exercised by the e2e suite. **Spike B has no written verdict and remains open**:
+> no `.riv` exists in the repo, and the client composites static tier PNGs with procedural motion
+> in the meantime (`packages/client/src/world/scene.ts` says so in its header, on purpose).
 
 > **The real deliverable of Spike A is the brief, not the unicorn.** If the agent needed hand-holding
 > to hit spec, the brief has a gap — fix the document, not just the asset. That's the difference
@@ -92,6 +99,9 @@ into its own player with the character still there.** No login screen for her, e
 
 **Allen**
 - One biome backdrop (Bramblewood) + prop set
+  *(Amended: the five-biome roster this named is retired. What shipped is the Realm of Red Sky
+  set — 17 destination backdrops across 12 terrain families, asset-brief §4.5 — and the reference
+  chapter plays in `enchanted_woods`.)*
 - Party lineup composition and camera framing at both scales
 
 **Done when:** the same session plays correctly on a TV + two phones **and** on three phones with
@@ -153,9 +163,15 @@ The largest chapter. Budget accordingly.
 
 **Allen**
 - Combat animations for all 4 classes (attack, cast, hurt, down, revive)
+  *(Amended: asset-brief §9.1 corrects this line — motion belongs to the **species** rig, not the
+  class, so the commission is 95 clips rather than 864. Read that section before spending money.)*
 - Effect sprite sheets: attacks, heals, impacts
 - Enemy designs for Bramblewood (3–4 creatures)
+  *(Amended: superseded by the canon enemy roster — nine creatures drawn from
+  `docs/red-sky-creature-canon.yaml`, specified in asset-brief §9.5.)*
 - One tile set
+  *(Amended: tile sets now follow the 12 terrain families of asset-brief §4.5, shared across the
+  17 destinations.)*
 
 **Done when:** a 6-minute encounter plays cleanly, someone goes down, someone else picks them up.
 
@@ -167,7 +183,8 @@ The largest chapter. Budget accordingly.
 - XP → level, stat point spend, action unlocks. `CharacterProgress.unspentPoints`, inside the
   provisional/committed pair so a failed campaign reverts earned *and* spent points together
 - **The eight deferred abilities** (`content/abilities.json` `$deferred`). This chapter owns level
-  unlocks, and six of the eight are level 6 or 9 — so the effect verbs they wait on land here or the
+  unlocks, and seven of the eight are level 6 or 9 (`vanish` is the lone level-3) — so the effect
+  verbs they wait on land here or the
   unlocks arrive as cards nobody can tap. Each entry names its verb; the cheap ones are duration
   (`unbreakable`, `tanglelight`'s "cannot move") and a board-wide scope (`starfall`), the expensive
   ones are terrain (`bramble_wall`) and a second turn cursor (`encore`)
@@ -195,18 +212,19 @@ The largest chapter. Budget accordingly.
   either, so no chapter outcome survives its run. §8.3's three-setback rule needs the count to
   persist across weeks, not just across one evening's `RunState`. The record carries `outcome`
   already; nothing fills it in
-- **Normalise stored characters on read, and stamp a version** ([architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate)).
-  `getCharacter`/`listCharacters` cast raw DynamoDB items straight to `Character` — every field
-  trusted, no defaulting, no version. That is why `CharacterProgress.unspentPoints` had to be
-  optional, and this chapter adds more fields to the same stored shape, so the pressure only grows.
-  Do it before there is data worth keeping; the migration ladder is far cheaper to start at v1 than
-  to retrofit onto rows nobody can date
+- ~~**Normalise stored characters on read, and stamp a version**~~ ([architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate))
+  — decided and built: `migrateCharacter()` in `packages/shared/src/migrate.ts` runs the ladder on
+  every read in both stores, `putCharacter` stamps `v: CHARACTER_VERSION` on every write, and
+  `listCharacters` skips-and-logs a row it cannot repair rather than taking the household down
+  with it
 - **The transformation cutscene** — party stops, camera pushes in, tier swap, full-screen moment
 - Character sheet with tier history
 
 **Allen**
-- Commission Sworn, Radiant, and Mythic tiers for all 6 species — the cross-tier consistency test at full scale, and the bulk of remaining art
-- Commission gear overlays for all 4 classes; item icons (~25); souvenir icons
+- ~~Commission Sworn, Radiant, and Mythic tiers for all 6 species~~ — delivered: all 24 sets
+  (6 species × 4 tiers) are in `assets/characters/` and green through `art:verify`
+- Commission gear overlays for all 4 classes; item icons (~25); souvenir icons — songkeeper's
+  three tiers are delivered; the other three classes' overlays remain
 - **Bind the new tiers to the existing rigs** — same skeleton, skin swap. If cross-tier joint registration was right, this is fast; if it wasn't, you'll find out here.
 - Transformation effect and its sound
 
@@ -218,7 +236,7 @@ she picked up two sessions ago is still in her bag.
 
 > This is the emotional payload of the entire project. Give it more polish than it seems to deserve.
 
-> **On normalising characters** — the full plan is [architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate).
+> **On normalising characters** — the full design, now built, is [architecture §3.2](./architecture.md#32-stored-shapes-change--how-they-migrate).
 > Short version: a `v` on the storage envelope rather than the domain type, a chain of small
 > read-time migration steps, write-back on the next natural write rather than on read, defaults for
 > what is missing and a throw for what is structurally impossible, and `assertCharacter()`
