@@ -205,6 +205,198 @@ function checkRules(rep, file, rules) {
   return ok;
 }
 
+/**
+ * The abilities check, and the reason this file has one at all.
+ *
+ * `rules.json` names twenty-two combat abilities — four class signatures, twelve
+ * level unlocks, six species actions — and the engine looks each one up in
+ * `abilities.json` at the moment a phone asks what it may do. A name with no
+ * definition is not a crash: `legalActions` skips what it cannot find, on
+ * purpose, so a save written against newer content stays playable. Which means
+ * the failure mode is silent, and it is the worst kind — a child reads "Bramble
+ * Wall: grow a wall of thorns" on her level-6 card, taps it, and nothing
+ * happens.
+ *
+ * So every ability `rules.json` names must be in exactly one of two places:
+ * **authored**, or **listed in `$deferred`** with the verb it is waiting on.
+ * Never both, never neither. Adding an ability to `rules.json` therefore cannot
+ * ship a dead button — it fails the build until somebody has said, in writing,
+ * which of the two this is.
+ *
+ * The check runs the other way too. An authored ability nobody references is
+ * either a typo in the id or a leftover, and both are worth a failure while the
+ * catalog is still small enough to fix in a minute.
+ */
+function checkAbilities(rep, file, doc, rules, rulesFile) {
+  const f = rel(file);
+  const rf = rel(rulesFile);
+  let ok = true;
+
+  const authored = doc.abilities ?? {};
+  const deferred = doc.$deferred ?? {};
+
+  // Every ability rules.json names, with the pointer that named it and the words
+  // the card shows — so a mismatch can be reported against the right file.
+  const referenced = new Map();
+  const refer = (ability, at) => {
+    const prior = referenced.get(ability.id);
+    if (prior) {
+      // The same ability granted by two classes would be a balance decision
+      // nobody made, and the second grant's name and icon would silently lose.
+      rep.fail(rf, at, `ability id "${ability.id}" is already granted at ${prior.at}`);
+      ok = false;
+      return;
+    }
+    referenced.set(ability.id, { at, ability });
+  };
+  for (const [id, cls] of Object.entries(rules.classes ?? {})) {
+    refer(cls.signature, `/classes/${id}/signature`);
+    for (const [level, ability] of Object.entries(cls.unlocks ?? {})) {
+      refer(ability, `/classes/${id}/unlocks/${level}`);
+    }
+  }
+  for (const [id, sp] of Object.entries(rules.species ?? {})) {
+    refer(sp.combatAction, `/species/${id}/combatAction`);
+  }
+
+  for (const [id, { at, ability }] of referenced) {
+    const isAuthored = Object.hasOwn(authored, id);
+    const isDeferred = Object.hasOwn(deferred, id);
+
+    if (isAuthored && isDeferred) {
+      rep.fail(
+        f,
+        `/$deferred/${id}`,
+        `"${id}" is both authored and deferred`,
+        "The engine would use the definition and the deferral note would be a lie about the game. Delete one.",
+      );
+      ok = false;
+      continue;
+    }
+    if (!isAuthored && !isDeferred) {
+      rep.fail(
+        f,
+        `/abilities/${id}`,
+        `rules.json grants "${ability.name}" (${id}) at ${at}, and nothing here defines it`,
+        "legalActions skips an ability it cannot look up, so this ships as a card that does nothing when tapped. " +
+          "Author it, or add it to $deferred naming the effect verb it needs.",
+      );
+      ok = false;
+      continue;
+    }
+    if (isDeferred) continue;
+
+    // Authored. The catalog wins at the table (encounter.ts abilityFor), so a
+    // disagreement means the Rest screen and the battle screen call the same
+    // thing by different names — which is how a child learns not to trust the
+    // cards.
+    const def = authored[id];
+    if (def.name !== ability.name) {
+      rep.fail(f, `/abilities/${id}/name`, `named "${def.name}" here and "${ability.name}" in rules.json at ${at}`);
+      ok = false;
+    }
+    if (def.icon !== ability.icon) {
+      rep.fail(f, `/abilities/${id}/icon`, `icon "${def.icon}" here and "${ability.icon}" in rules.json at ${at}`);
+      ok = false;
+    }
+  }
+
+  // An ability that is defined, and legal, and lands on nobody. These are the
+  // failures the schema cannot see and no test will notice unless somebody
+  // thought to write one, because the engine's answer to all of them is a
+  // perfectly well-formed action that changes nothing.
+  for (const [id, def] of Object.entries(authored)) {
+    const t = def.target ?? {};
+    // `moveSelf` always lands on the actor whatever the spec says (encounter.ts
+    // audienceFor), so it is not evidence of anything about the target rule and
+    // has to be taken out of the scope set before any of this reasons about it.
+    const effects = (def.effects ?? []).filter((e) => e.effect?.type !== "moveSelf");
+    const scopes = new Set(effects.map((e) => e.to ?? "target"));
+    const movesSelf = (def.effects ?? []).some((e) => e.effect?.type === "moveSelf");
+
+    if (scopes.has("area") && t.kind !== "tile") {
+      rep.fail(f, `/abilities/${id}/target/kind`, `"${id}" scopes an effect to an area but does not target a tile`, "The area square is anchored on the target tile; without one there is nothing to anchor it to.");
+      ok = false;
+    }
+    if (scopes.has("target") && (t.kind === "none" || t.kind === "tile")) {
+      rep.fail(f, `/abilities/${id}/effects`, `"${id}" scopes an effect to its target, and its target is a ${t.kind === "none" ? "nothing" : "tile"}`, "\"target\" means the one figure that was pointed at. On a tile or on nothing it lands on nobody.");
+      ok = false;
+    }
+    // `openTileOnly` defaults to *open* (encounter.ts legalTilesFor), which is
+    // right for a leap and wrong for an area attack: a 1x1 square anchored on a
+    // tile that is required to be empty can never hold anybody.
+    if (scopes.has("area") && (t.area ?? 1) <= 1 && t.openTileOnly !== false) {
+      rep.fail(f, `/abilities/${id}/target/openTileOnly`, `"${id}" collects an area of 1 from a tile that must be empty`, "Give it an area, or set openTileOnly to false so it can be aimed at an occupied tile.");
+      ok = false;
+    }
+    // A tile ability that moves the actor and permits an occupied tile is a
+    // figure walking into another figure — grid.ts throws, mid-fight.
+    if (t.kind === "tile" && t.openTileOnly === false && movesSelf) {
+      rep.fail(f, `/abilities/${id}/target/openTileOnly`, `"${id}" moves the actor onto a tile it allows to be occupied`, "Two figures cannot share a tile (grid.ts placeActor throws). Drop openTileOnly: false.");
+      ok = false;
+    }
+    // An effect gated on a state its target rule can never produce. Rally is the
+    // legitimate use of `when` — one card, two readings — and it works because
+    // its target rule says `state: "any"`.
+    for (const [i, spec] of (def.effects ?? []).entries()) {
+      if (!spec.when || spec.effect?.type === "moveSelf") continue;
+      const scope = spec.to ?? "target";
+      if (scope !== "target") continue;
+      const allowed = t.state ?? "standing";
+      if (allowed !== "any" && allowed !== spec.when) {
+        rep.fail(f, `/abilities/${id}/effects/${i}/when`, `"${id}" only ever targets the ${allowed}, so a "${spec.when}" effect never fires`, "Widen the target rule to state \"any\", or drop the when.");
+        ok = false;
+      }
+    }
+  }
+
+  // spec §7.2 — a species action is once per encounter, and the class signature
+  // and unlocks are not. Getting this backwards is invisible in a diff and
+  // obvious at the table on round two.
+  const speciesActions = new Set(
+    Object.values(rules.species ?? {}).map((sp) => sp.combatAction.id),
+  );
+  for (const [id, def] of Object.entries(authored)) {
+    if (!referenced.has(id)) {
+      rep.fail(
+        f,
+        `/abilities/${id}`,
+        `nothing in rules.json grants "${id}"`,
+        "An unreferenced ability is a typo in the id or a leftover; either way no phone can ever offer it.",
+      );
+      ok = false;
+      continue;
+    }
+    const shouldBeOnce = speciesActions.has(id);
+    if (shouldBeOnce && def.oncePerEncounter !== true) {
+      rep.fail(f, `/abilities/${id}/oncePerEncounter`, `"${id}" is a species action, which spec §7.2 limits to once per encounter`);
+      ok = false;
+    }
+    if (!shouldBeOnce && def.oncePerEncounter === true) {
+      rep.fail(f, `/abilities/${id}/oncePerEncounter`, `"${id}" is a class ability; only species actions are once per encounter (spec §7.2)`);
+      ok = false;
+    }
+  }
+
+  for (const id of Object.keys(deferred)) {
+    if (!referenced.has(id)) {
+      rep.fail(
+        f,
+        `/$deferred/${id}`,
+        `nothing in rules.json grants "${id}"`,
+        "Deferring an ability the game does not promise is a note about nothing. Delete it, or grant it in rules.json.",
+      );
+      ok = false;
+    }
+  }
+
+  if (ok) {
+    const counts = `${Object.keys(authored).length} authored, ${Object.keys(deferred).length} deferred, ${referenced.size} granted`;
+    rep.ok(`${f}  ability catalog  (${counts}; every grant defined or deferred, names match rules.json)`);
+  }
+  return ok;
+}
+
 function checkItems(rep, file, items) {
   const f = rel(file);
   let ok = true;
@@ -606,7 +798,7 @@ function main() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
 
-  for (const name of ["rules", "items", "chapter", "campaign", "map"]) {
+  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities"]) {
     const path = join(SCHEMAS, `${name}.schema.json`);
     if (!existsSync(path)) {
       rep.fail(rel(path), "", "schema is missing");
@@ -629,6 +821,20 @@ function main() {
   const items = existsSync(itemsPath) ? readJson(rep, itemsPath) : null;
   if (!items) rep.fail(rel(itemsPath), "", "content/items.json is missing");
   else if (validateAgainstSchema(rep, ajv, "items", itemsPath, items)) checkItems(rep, itemsPath, items);
+
+  // --- abilities, checked against rules.json: what every card actually does
+  const abilitiesPath = join(CONTENT, "abilities.json");
+  const abilities = existsSync(abilitiesPath) ? readJson(rep, abilitiesPath) : null;
+  if (!abilities) {
+    rep.fail(
+      rel(abilitiesPath),
+      "",
+      "content/abilities.json is missing",
+      "Without it every class signature and species action is a card that does nothing when tapped.",
+    );
+  } else if (validateAgainstSchema(rep, ajv, "abilities", abilitiesPath, abilities) && rules) {
+    checkAbilities(rep, abilitiesPath, abilities, rules, rulesPath);
+  }
 
   // Biome list lives in the art contract; content and art must not drift apart.
   let biomes = null;

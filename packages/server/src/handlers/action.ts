@@ -102,6 +102,10 @@ export async function applyAction(
       // chapter can hold several fights, and the engine should not be handed
       // every map it might reach.
       map: (id) => deps.content.map(id),
+      // What every class and species action does on the board. A value rather
+      // than a lookup, unlike maps: `legalActions` runs for every combatant on
+      // every turn and needs the whole catalog anyway.
+      abilities: deps.content.abilities(),
       // Characters belong to the household, not the run (architecture §3), so
       // CREATE_CHARACTER needs to know which household it is building into.
       householdId: auth.run.householdId,

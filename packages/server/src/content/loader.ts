@@ -21,7 +21,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type {
+  AbilityCatalog,
   Chapter,
+  CombatAbility,
   EncounterMap,
   ItemCatalog,
   ItemDef,
@@ -69,6 +71,24 @@ export interface ContentStore {
    * board.
    */
   map(id: string): EncounterMap | null;
+  /**
+   * What every ability *does on the board*, by id — handed to the engine as
+   * `EngineContext.abilities`.
+   *
+   * Separate from `rules()`, which owns the same abilities' names, icons and the
+   * sentence a child reads at a Rest scene. The split is the one thing worth
+   * knowing about this pair: the words are edited by whoever is writing the
+   * game, the mechanics by whoever is balancing it, and they are read at
+   * different moments by different code.
+   *
+   * The catalog is deliberately allowed to be *smaller* than the set of
+   * abilities `rules.json` names. `resolveCharacter` tolerates an action with no
+   * catalog entry and `legalActions` skips it, so an ability awaiting an effect
+   * verb is a card that cannot be tapped rather than a crash — and
+   * `content:validate` refuses one that is neither authored nor listed in
+   * `$deferred`, so the gap can never be an accident.
+   */
+  abilities(): AbilityCatalog;
 }
 
 class LoadedContent implements ContentStore {
@@ -78,7 +98,12 @@ class LoadedContent implements ContentStore {
     private readonly _items: ItemCatalog,
     private readonly _chapters: ReadonlyMap<string, Chapter>,
     private readonly _maps: ReadonlyMap<string, EncounterMap>,
+    private readonly _abilities: AbilityCatalog,
   ) {}
+
+  abilities(): AbilityCatalog {
+    return this._abilities;
+  }
 
   rules(): RulesContent {
     return this._rules;
@@ -205,13 +230,93 @@ async function readAll(root: string): Promise<ContentStore> {
     }
   }
 
+  // Optional on purpose. A content set with no abilities.json is every class
+  // signature reduced to Attack, Help Up and Ready — a duller game, but a
+  // playable one, and the loader's job is to refuse content that would *break*
+  // at the table rather than content that is thin. `content:validate` is what
+  // insists the shipped set is complete.
+  const abilities = await readAbilities(path.join(root, "abilities.json"), problems);
+
   if (rules) problems.push(...checkRules(rules));
   if (items) problems.push(...checkItems(items));
 
   if (!rules || !items || problems.length > 0) {
     throw new ContentError(root, problems);
   }
-  return new LoadedContent(root, rules, items, chapters, maps);
+  return new LoadedContent(root, rules, items, chapters, maps, abilities);
+}
+
+/**
+ * Reads `abilities.json` into the flat catalog the engine wants.
+ *
+ * The file wraps the catalog in `{ version, abilities, $deferred }` because it
+ * carries the deferral list with it — the record of which abilities `rules.json`
+ * names that the effect verbs cannot yet express. That list is the validator's
+ * business and the engine has no use for it, so it is dropped here rather than
+ * threaded through `EngineContext` and ignored at the far end.
+ */
+async function readAbilities(file: string, problems: string[]): Promise<AbilityCatalog> {
+  let raw: string;
+  try {
+    raw = await fs.readFile(file, "utf8");
+  } catch {
+    return {};
+  }
+  let parsed: { abilities?: unknown };
+  try {
+    parsed = JSON.parse(raw) as { abilities?: unknown };
+  } catch (err) {
+    problems.push(`abilities.json is not valid JSON: ${(err as Error).message}`);
+    return {};
+  }
+  const catalog = parsed.abilities;
+  if (!catalog || typeof catalog !== "object" || Array.isArray(catalog)) {
+    problems.push('abilities.json: expected an "abilities" object keyed by ability id');
+    return {};
+  }
+  problems.push(...checkAbilities(catalog as Record<string, unknown>));
+  return catalog as AbilityCatalog;
+}
+
+/**
+ * The shape checks worth making at startup.
+ *
+ * Not the full schema — `content:validate` owns that, and duplicating it here
+ * would mean two definitions of a legal ability drifting apart. These are the
+ * three that would otherwise surface as something inexplicable *during a fight*:
+ * a key that disagrees with the record's own `id` (so `legalActions` offers an
+ * ability `performAction` then cannot find), an ability with no effects (a
+ * button that consumes a turn and does nothing), and a missing name or icon (a
+ * blank tappable square on an eight-year-old's phone, which §7.2 forbids).
+ */
+function checkAbilities(catalog: Record<string, unknown>): string[] {
+  const problems: string[] = [];
+  for (const [id, value] of Object.entries(catalog)) {
+    const ability = value as Partial<CombatAbility> | null;
+    if (!ability || typeof ability !== "object") {
+      problems.push(`abilities.json: "${id}" is not an object`);
+      continue;
+    }
+    if (ability.id !== id) {
+      problems.push(`abilities.json: "${id}" carries id "${String(ability.id)}"`);
+    }
+    if (typeof ability.name !== "string" || ability.name === "") {
+      problems.push(`abilities.json: "${id}" has no name`);
+    }
+    if (typeof ability.icon !== "string" || ability.icon === "") {
+      problems.push(`abilities.json: "${id}" has no icon`);
+    }
+    if (ability.timing !== "action" && ability.timing !== "initiative") {
+      problems.push(`abilities.json: "${id}" has an invalid timing (${String(ability.timing)})`);
+    }
+    if (!ability.target || typeof ability.target !== "object") {
+      problems.push(`abilities.json: "${id}" has no target rule`);
+    }
+    if (!Array.isArray(ability.effects) || ability.effects.length === 0) {
+      problems.push(`abilities.json: "${id}" has no effects — it would be a button that does nothing`);
+    }
+  }
+  return problems;
 }
 
 async function readJson<T>(file: string, problems: string[]): Promise<T | null> {
