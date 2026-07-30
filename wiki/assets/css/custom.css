@@ -1,7 +1,7 @@
 /* ==========================================================================
- * World Encyclopedia — Custom Styles
+ * World Wiki — Custom Styles
  *
- * RPG-codex visual identity for the Realm of Red Sky encyclopedia.
+ * RPG-codex visual identity for the Realm of Red Sky wiki.
  * Overrides Hextra theme defaults with the game's established color palette
  * from packages/client/src/styles/theme.css.
  *
@@ -69,6 +69,19 @@
   /* Sizing */
   --wiki-touch-min: 44px;
   --wiki-infobox-width: 280px;
+
+  /* Navbar */
+  --wiki-navbar-height: 64px;
+  --wiki-navbar-blur: 8px;
+
+  /* Tile cards */
+  --wiki-tile-min-width: 200px;
+  --wiki-tile-aspect: 1;
+
+  /* Mobile */
+  --wiki-sidebar-width: 280px;
+  --wiki-overlay-z: 1000;
+  --wiki-navbar-z: 900;
 }
 
 .dark {
@@ -83,6 +96,55 @@
   --wiki-gold: #f5c86c;
   --wiki-border: rgba(190, 178, 255, 0.16);
   --wiki-border-strong: rgba(190, 178, 255, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+ * 1b. Transition System
+ *
+ * Unified transition declarations for all interactive elements.
+ * Uses --wiki-transition (200ms ease) for consistent micro-interactions.
+ * ----------------------------------------------------------------------- */
+
+/* All interactive elements get smooth transitions on common visual properties */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea,
+.wiki-card,
+.hextra-card,
+.wiki-section-index__card,
+.wiki-shortcode-block,
+.wiki-relationship-card,
+.wiki-entity-list__item,
+.wiki-tile-card,
+.wiki-badge,
+.wiki-tag,
+.wiki-breadcrumb__item a,
+.wiki-breadcrumb__link,
+.wiki-sidebar__section-link,
+.wiki-sidebar__page-link,
+.wiki-navbar__search-toggle,
+.wiki-navbar__hamburger,
+.wiki-theme-toggle {
+  transition: color var(--wiki-transition),
+              background-color var(--wiki-transition),
+              border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+/* Card-like components: ensure consistent radius, shadow, and spacing */
+.wiki-card,
+.hextra-card,
+.wiki-section-index__card,
+.wiki-shortcode-block,
+.wiki-relationship-card,
+.wiki-entity-list__item {
+  border-radius: var(--wiki-radius-md);
+  box-shadow: var(--wiki-shadow-sm);
+  padding: var(--wiki-space-lg);
 }
 
 /* --------------------------------------------------------------------------
@@ -1305,8 +1367,8 @@ pre code {
 
 .wiki-sidebar {
   position: sticky;
-  top: 0;
-  max-height: 100vh;
+  top: var(--wiki-navbar-height);
+  max-height: calc(100vh - var(--wiki-navbar-height));
   overflow-y: auto;
   padding: var(--wiki-space-lg) var(--wiki-space-md);
   border-right: 1px solid var(--wiki-border);
@@ -1412,14 +1474,99 @@ pre code {
   max-width: 900px;
 }
 
-/* Responsive: hide sidebar on mobile */
-@media (max-width: 768px) {
+/* --------------------------------------------------------------------------
+ * Responsive: Navbar, Sidebar Overlay, and Tap Targets (< 768px)
+ *
+ * Mobile-first responsive rules:
+ * - Hide inline search, show search icon + hamburger
+ * - Sidebar becomes a slide-in overlay with backdrop
+ * - All interactive elements enforced at 44×44px minimum tap target
+ * ----------------------------------------------------------------------- */
+
+/* Desktop (≥ 768px): hide mobile controls, show inline search */
+@media (min-width: 768px) {
+  .wiki-navbar__search-toggle,
+  .wiki-navbar__hamburger {
+    display: none;
+  }
+
+  .wiki-navbar__search {
+    display: flex;
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  /* Navbar: hide inline search, show mobile controls */
+  .wiki-navbar__search {
+    display: none;
+  }
+
+  .wiki-navbar__search-toggle,
+  .wiki-navbar__hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--wiki-touch-min);
+    min-width: var(--wiki-touch-min);
+  }
+
+  /* Sidebar: hidden by default, shown as overlay on toggle */
   .wiki-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--wiki-sidebar-width);
+    height: 100vh;
+    z-index: var(--wiki-overlay-z);
+    transform: translateX(-100%);
+    transition: transform var(--wiki-transition);
+    overflow-y: auto;
+    border-right: 1px solid var(--wiki-border);
+    background-color: var(--wiki-bg);
+    padding-top: var(--wiki-navbar-height);
+  }
+
+  .wiki-sidebar--open {
+    transform: translateX(0);
+  }
+
+  /* Sidebar backdrop overlay */
+  .wiki-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--wiki-overlay-z) - 1);
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .wiki-sidebar-backdrop[hidden] {
     display: none;
   }
 
   .main-content {
     padding: var(--wiki-space-md);
+  }
+
+  /* Tap targets: ensure all interactive elements meet 44×44px minimum */
+  a,
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  select,
+  .wiki-breadcrumb__item a,
+  .wiki-breadcrumb__link,
+  .wiki-tag,
+  .wiki-badge,
+  .wiki-sidebar__section-link,
+  .wiki-sidebar__page-link,
+  .wiki-navbar__search-toggle,
+  .wiki-navbar__hamburger,
+  .wiki-theme-toggle,
+  .wiki-entity-list__item a,
+  nav a {
+    min-height: var(--wiki-touch-min);
+    min-width: var(--wiki-touch-min);
   }
 }
 
@@ -1466,4 +1613,180 @@ pre code {
 
 .wiki-breadcrumb__item--current span[aria-current="page"] {
   padding: var(--wiki-space-xs) var(--wiki-space-sm);
+}
+
+/* --------------------------------------------------------------------------
+ * 20. Tile Card Grid (List Pages)
+ * ----------------------------------------------------------------------- */
+
+.wiki-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--wiki-space-lg);
+  padding: var(--wiki-space-lg) 0;
+}
+
+.wiki-tile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  overflow: hidden;
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+.wiki-tile-card:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-md);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.wiki-tile-card:focus-visible {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-md);
+  transform: translateY(-2px);
+  outline: 2px solid var(--wiki-accent);
+  outline-offset: 2px;
+}
+
+.wiki-tile-card__image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background-color: var(--wiki-bg-sunken);
+}
+
+.wiki-tile-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--wiki-transition);
+}
+
+.wiki-tile-card:hover .wiki-tile-card__image img {
+  transform: scale(1.03);
+}
+
+.wiki-tile-card__placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--wiki-bg-sunken);
+  font-size: 3rem;
+}
+
+.wiki-tile-card__name {
+  display: block;
+  width: 100%;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  font-family: var(--wiki-font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--wiki-text);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tile grid responsive: two columns between 400px–767px, single column below 400px */
+@media (max-width: 767px) and (min-width: 400px) {
+  .wiki-tile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 399px) {
+  .wiki-tile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 23. Page Fade-In Animation
+ *
+ * Smooth fade-in on page content load. Disabled automatically by the
+ * prefers-reduced-motion rule in section 15 (duration set to 1ms).
+ * ----------------------------------------------------------------------- */
+
+@keyframes wiki-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.main-content {
+  animation: wiki-fade-in 300ms ease;
+}
+
+/* --------------------------------------------------------------------------
+ * 24. Navbar Fixed Positioning & Z-Index Layering
+ *
+ * The navbar is fixed to the top of the viewport. The sidebar overlay and
+ * its backdrop use z-index values that layer correctly:
+ *   Navbar:        z-index 900 (--wiki-navbar-z)
+ *   Backdrop:      z-index 950 (between navbar and sidebar)
+ *   Sidebar overlay: z-index 1000 (--wiki-overlay-z)
+ *
+ * Body content is offset by --wiki-navbar-height to prevent content from
+ * hiding behind the fixed navbar.
+ * ----------------------------------------------------------------------- */
+
+.wiki-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--wiki-navbar-z);
+  height: var(--wiki-navbar-height);
+  background-color: var(--wiki-bg);
+  display: flex;
+  align-items: center;
+}
+
+/* Offset body content below the fixed navbar */
+body {
+  padding-top: var(--wiki-navbar-height);
+}
+
+/* Sidebar overlay (mobile) — sits above the navbar */
+.wiki-sidebar--open {
+  z-index: var(--wiki-overlay-z);
+  width: var(--wiki-sidebar-width);
+}
+
+/* Sidebar backdrop — between navbar and sidebar overlay */
+.wiki-sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 950;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+ * 24b. Navbar Scroll Effect
+ *
+ * Applied by navbar-scroll.js when scrollY > 0. Adds a subtle blur backdrop
+ * and a bottom border to visually separate the fixed navbar from scrolled
+ * page content.
+ * ----------------------------------------------------------------------- */
+
+.wiki-navbar--scrolled {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--wiki-border);
 }

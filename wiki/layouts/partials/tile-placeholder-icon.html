@@ -1,0 +1,11 @@
+{{/* tile-placeholder-icon.html — Placeholder emoji for tile cards without art */}}
+{{ $type := .Params.type | default "unknown" }}
+{{ if eq $type "creature" }}🐉
+{{ else if eq $type "biome" }}🌲
+{{ else if or (eq $type "character") (eq $type "npc") }}👤
+{{ else if eq $type "item" }}⚔
+{{ else if eq $type "location" }}📍
+{{ else if eq $type "quest" }}📜
+{{ else if eq $type "faction" }}🏴
+{{ else }}📄
+{{ end }}

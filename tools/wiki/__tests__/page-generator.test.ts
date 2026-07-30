@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import path from 'node:path';
 import { parseCanonDirectory } from '../canon-parser.ts';
-import { generatePage, getEntityPagePath, handleOrphanedPage } from '../page-generator.ts';
+import { generatePage, getEntityPagePath, handleOrphanedPage, getConventionAssetPath, getAssetName, resolveConventionAssets } from '../page-generator.ts';
 import type { AssetResult, CanonEntity, CanonRegistry, ReverseRef } from '../types.ts';
 import fs from 'node:fs';
 
@@ -80,18 +80,16 @@ describe('generatePage — new page creation', () => {
     expect(content).toContain('<!-- END GENERATED: relationships -->');
     expect(content).toContain('## Related Entities');
 
-    // Should have AI context section with markers
-    expect(content).toContain('<!-- BEGIN GENERATED: ai_context -->');
-    expect(content).toContain('<!-- END GENERATED: ai_context -->');
-    expect(content).toContain('## AI Context');
-    expect(content).toContain('**Mood:**');
-    expect(content).toContain('**Themes:**');
-    expect(content).toContain('**Visual Style:**');
-    expect(content).toContain('**Common Encounters:**');
-    expect(content).toContain('**Lore Highlights:**');
-    expect(content).toContain('**Related Entities:**');
-    expect(content).toContain('**Writing Guidance:**');
-    expect(content).toContain('**Generation Hints:**');
+    // AI context should be in front matter (not body block)
+    expect(content).toContain('ai_context:');
+    expect(content).toContain('mood:');
+    expect(content).toContain('themes:');
+    expect(content).toContain('visual_style:');
+    expect(content).toContain('common_encounters:');
+    expect(content).toContain('lore_highlights:');
+    expect(content).toContain('related_entities:');
+    expect(content).toContain('writing_guidance:');
+    expect(content).toContain('generation_hints:');
 
     expect(warnings).toHaveLength(0);
   });
@@ -153,18 +151,19 @@ describe('generatePage — new page creation', () => {
     expect(content).toContain('[Bone Crawler](/creatures/bone_crawler/)');
   });
 
-  it('populates AI context fields from canon metadata', () => {
+  it('populates AI context fields from canon metadata in front matter', () => {
     const entity = registry.entities.get('creature.bigfoot')!;
     const reverseRefs = registry.reverseRefs.get('creature.bigfoot') ?? [];
     const assets: AssetResult = { entityId: 'creature.bigfoot', source: 'none' };
 
     const { content } = generatePage({ entity, assets, reverseRefs }, registry);
 
-    expect(content).toContain('**Mood:** A towering forest guardian covered in moss and ancient bark');
-    expect(content).toContain('**Visual Style:** Massive, moss-covered creature with glowing amber eyes');
-    expect(content).toContain('**Common Encounters:** Forest encounters, nature quests, guardian trials');
-    expect(content).toContain('**Writing Guidance:** Never aggressive unprovoked. Protects ancient groves.');
-    expect(content).toContain('**Generation Hints:** Patrols ancient groves at dawn and dusk');
+    // AI context is now in front matter as YAML
+    expect(content).toContain('mood: "A towering forest guardian covered in moss and ancient bark"');
+    expect(content).toContain('visual_style: "Massive, moss-covered creature with glowing amber eyes"');
+    expect(content).toContain('common_encounters: "Forest encounters, nature quests, guardian trials"');
+    expect(content).toContain('writing_guidance: "Never aggressive unprovoked. Protects ancient groves."');
+    expect(content).toContain('generation_hints: "Patrols ancient groves at dawn and dusk"');
   });
 
   it('includes all AI context sub-fields even when metadata is empty', () => {
@@ -182,15 +181,15 @@ describe('generatePage — new page creation', () => {
       registry,
     );
 
-    // All sub-fields must be present, even with empty values
-    expect(content).toContain('**Mood:** ');
-    expect(content).toContain('**Themes:** ');
-    expect(content).toContain('**Visual Style:** ');
-    expect(content).toContain('**Common Encounters:** ');
-    expect(content).toContain('**Lore Highlights:** ');
-    expect(content).toContain('**Related Entities:** ');
-    expect(content).toContain('**Writing Guidance:** ');
-    expect(content).toContain('**Generation Hints:** ');
+    // All sub-fields must be present in front matter, even with empty values
+    expect(content).toContain('mood: ""');
+    expect(content).toContain('themes: ""');
+    expect(content).toContain('visual_style: ""');
+    expect(content).toContain('common_encounters: ""');
+    expect(content).toContain('lore_highlights: ""');
+    expect(content).toContain('related_entities: ""');
+    expect(content).toContain('writing_guidance: ""');
+    expect(content).toContain('generation_hints: ""');
   });
 
   it('omits relationships section when entity has no relationships', () => {
@@ -260,11 +259,13 @@ describe('generatePage — updating existing pages with markers', () => {
     expect(content).toContain('## Combat Notes');
     expect(content).toContain('Despite its gentle nature, a provoked Bigfoot is a fearsome opponent.');
 
-    // Generated sections should be updated
+    // Generated sections should be updated (relationships still as body block)
     expect(content).toContain('<!-- BEGIN GENERATED: relationships -->');
     expect(content).toContain('<!-- END GENERATED: relationships -->');
-    expect(content).toContain('<!-- BEGIN GENERATED: ai_context -->');
-    expect(content).toContain('<!-- END GENERATED: ai_context -->');
+
+    // ai_context is now in front matter, old body block should be removed
+    expect(content).not.toContain('<!-- BEGIN GENERATED: ai_context -->');
+    expect(content).toContain('ai_context:');
 
     // Front matter should be regenerated
     expect(content).toMatch(/^---\n/);
@@ -292,9 +293,9 @@ describe('generatePage — updating existing pages with markers', () => {
       registry,
     );
 
-    // AI context should have fresh values
-    expect(content).toContain('**Mood:** A towering forest guardian covered in moss and ancient bark');
-    expect(content).toContain('**Generation Hints:** Patrols ancient groves at dawn and dusk');
+    // AI context should have fresh values in front matter
+    expect(content).toContain('mood: "A towering forest guardian covered in moss and ancient bark"');
+    expect(content).toContain('generation_hints: "Patrols ancient groves at dawn and dusk"');
   });
 });
 
@@ -320,11 +321,13 @@ describe('generatePage — pages without markers', () => {
     expect(content).toContain('## Cultural Significance');
     expect(content).toContain('## Notes for Writers');
 
-    // Generated sections should be appended at end
+    // Relationships section should be appended at end with markers
     expect(content).toContain('<!-- BEGIN GENERATED: relationships -->');
     expect(content).toContain('<!-- END GENERATED: relationships -->');
-    expect(content).toContain('<!-- BEGIN GENERATED: ai_context -->');
-    expect(content).toContain('<!-- END GENERATED: ai_context -->');
+
+    // AI context is now in front matter, not a body block
+    expect(content).toContain('ai_context:');
+    expect(content).toContain('mood:');
 
     // Warning should be emitted
     expect(warnings).toHaveLength(1);
@@ -379,5 +382,182 @@ describe('generatePage — front matter related field', () => {
     expect(content).toContain('id: biome.enchanted_woods');
     // The related field should be present
     expect(content).toContain('related:');
+  });
+});
+
+describe('getConventionAssetPath', () => {
+  it('maps character type to assets/characters/{name}/fledgling/assembled.png', () => {
+    expect(getConventionAssetPath('character', 'bigfoot'))
+      .toBe('assets/characters/bigfoot/fledgling/assembled.png');
+  });
+
+  it('maps creature type to assets/entities/{name}/assembled.png', () => {
+    expect(getConventionAssetPath('creature', 'bone_crawler'))
+      .toBe('assets/entities/bone_crawler/assembled.png');
+  });
+
+  it('maps npc type to assets/entities/{name}/assembled.png', () => {
+    expect(getConventionAssetPath('npc', 'merchant'))
+      .toBe('assets/entities/merchant/assembled.png');
+  });
+
+  it('maps biome type to assets/biomes/{name}/bg.webp', () => {
+    expect(getConventionAssetPath('biome', 'enchanted_woods'))
+      .toBe('assets/biomes/enchanted_woods/bg.webp');
+  });
+
+  it('returns null for unsupported entity types', () => {
+    expect(getConventionAssetPath('item', 'forest_moss')).toBeNull();
+    expect(getConventionAssetPath('quest', 'main_quest')).toBeNull();
+    expect(getConventionAssetPath('faction', 'druids')).toBeNull();
+  });
+});
+
+describe('getAssetName', () => {
+  it('uses assetId when present on the entity', () => {
+    const entity: CanonEntity = {
+      id: 'creature.bone_crawler',
+      type: 'creature',
+      title: 'Bone Crawler',
+      assetId: 'custom_bone_crawler',
+      relationships: {},
+      metadata: {},
+    };
+    expect(getAssetName(entity)).toBe('custom_bone_crawler');
+  });
+
+  it('uses asset_id from metadata when assetId is not set', () => {
+    const entity: CanonEntity = {
+      id: 'creature.bone_crawler',
+      type: 'creature',
+      title: 'Bone Crawler',
+      relationships: {},
+      metadata: { asset_id: 'meta_bone_crawler' },
+    };
+    expect(getAssetName(entity)).toBe('meta_bone_crawler');
+  });
+
+  it('derives name from Canon_ID when no assetId or asset_id is present', () => {
+    const entity: CanonEntity = {
+      id: 'creature.bone_crawler',
+      type: 'creature',
+      title: 'Bone Crawler',
+      relationships: {},
+      metadata: {},
+    };
+    expect(getAssetName(entity)).toBe('bone_crawler');
+  });
+
+  it('prefers assetId over metadata asset_id', () => {
+    const entity: CanonEntity = {
+      id: 'creature.bone_crawler',
+      type: 'creature',
+      title: 'Bone Crawler',
+      assetId: 'from_asset_id_field',
+      relationships: {},
+      metadata: { asset_id: 'from_metadata' },
+    };
+    expect(getAssetName(entity)).toBe('from_asset_id_field');
+  });
+});
+
+describe('resolveConventionAssets', () => {
+  const assetsDir = path.resolve('assets');
+
+  it('resolves primary for a character entity when file exists', () => {
+    const entity: CanonEntity = {
+      id: 'character.bigfoot',
+      type: 'character',
+      title: 'Bigfoot',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    expect(result.primary).toBe('assets/characters/bigfoot/fledgling/assembled.png');
+    expect(result.source).toBe('convention');
+  });
+
+  it('resolves primary for a creature entity when file exists', () => {
+    const entity: CanonEntity = {
+      id: 'creature.bone_crawler',
+      type: 'creature',
+      title: 'Bone Crawler',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    expect(result.primary).toBe('assets/entities/bone_crawler/assembled.png');
+    expect(result.source).toBe('convention');
+  });
+
+  it('resolves primary for a biome entity when file exists', () => {
+    const entity: CanonEntity = {
+      id: 'biome.enchanted_woods',
+      type: 'biome',
+      title: 'Enchanted Woods',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    expect(result.primary).toBe('assets/biomes/enchanted_woods/bg.webp');
+    expect(result.source).toBe('convention');
+  });
+
+  it('omits primary when convention file does not exist', () => {
+    const entity: CanonEntity = {
+      id: 'creature.nonexistent_beast',
+      type: 'creature',
+      title: 'Nonexistent Beast',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    expect(result.primary).toBeUndefined();
+    expect(result.source).toBe('none');
+  });
+
+  it('uses assetId for path resolution when present', () => {
+    const entity: CanonEntity = {
+      id: 'creature.some_creature',
+      type: 'creature',
+      title: 'Some Creature',
+      assetId: 'bone_crawler',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    // Should resolve using 'bone_crawler' (from assetId) not 'some_creature' (from id)
+    expect(result.primary).toBe('assets/entities/bone_crawler/assembled.png');
+    expect(result.source).toBe('convention');
+  });
+
+  it('returns gallery for characters with multiple tiers', () => {
+    const entity: CanonEntity = {
+      id: 'character.bigfoot',
+      type: 'character',
+      title: 'Bigfoot',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    // bigfoot has fledgling, mythic, radiant, sworn tiers
+    expect(result.gallery).toBeDefined();
+    expect(result.gallery!.length).toBeGreaterThan(0);
+    // primary (fledgling) should not be in gallery
+    expect(result.gallery).not.toContain('assets/characters/bigfoot/fledgling/assembled.png');
+  });
+
+  it('returns no assets for unsupported types', () => {
+    const entity: CanonEntity = {
+      id: 'item.forest_moss',
+      type: 'item',
+      title: 'Forest Moss',
+      relationships: {},
+      metadata: {},
+    };
+    const result = resolveConventionAssets(entity, assetsDir);
+    expect(result.primary).toBeUndefined();
+    expect(result.gallery).toBeUndefined();
+    expect(result.source).toBe('none');
   });
 });

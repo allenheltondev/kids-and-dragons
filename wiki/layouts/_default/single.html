@@ -11,7 +11,12 @@
     </div>
     {{ end }}
 
-    {{ .Content }}
+    {{ $content := .Content }}
+    {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: ai_context -->.*?<!-- END GENERATED: ai_context -->` "" $content }}
+    {{ $content | safeHTML }}
+
+    {{/* Hidden AI context for AI tools */}}
+    {{ partial "ai-context.html" . }}
   </div>
 </article>
 {{ end }}
