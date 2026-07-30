@@ -136,7 +136,7 @@ jobs:
       # dispatch, which has no triggering run and falls back to building.
       - name: Download the CI build artifact
         if: github.event_name == 'workflow_run'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: kad-build-${{ github.event.workflow_run.head_sha }}
           run-id: ${{ github.event.workflow_run.id }}
