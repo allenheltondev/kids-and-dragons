@@ -201,11 +201,11 @@ Every character rig exposes the same state machine so game code never special-ca
 | `hurt` | 5 | `hurt` | Concurrent — starts on the attacker's `impact` event and adds nothing to the turn. |
 | `guard` | 6, then hold | `guard` | A plant and a hold, not a loop — Brace lasts until your next turn. |
 | `leap` | 11 | `leap` | 3 crouch, 5 airborne, 3 land; **`dust` events at ticks 3 and 8.** |
-| `down` | 6 fall + 24-tick loop | `knockedDown` (bool) | **Not held** — a breathing loop at half `idle`'s amplitude. A frozen pose reads as a corpse (asset-brief §9.3). |
+| `down` | 6 fall + `down_loop` (24, looped) | `knockedDown` (bool) | **Not held** — the fall hands off to `down_loop`, a breathing loop at half `idle`'s amplitude and a second Rive animation the rig must ship with `down` (the manifest's `loopClip` names it). A frozen pose reads as a corpse (asset-brief §9.3). |
 | `lift` | 10 | `helpUp` | The helper's reach-down. **`contact` event at tick 6.** |
-| `revive` | 10 | the lift's `contact` event | Concurrent with `lift` — the contact, not the button press, brings the downed figure up. |
+| `revive` | 10 | the lift's `contact` event | Concurrent with `lift` — the contact, not the button press, brings the downed figure up. It runs 5 ticks past the lift's end, and the verifier charges that overhang to the Help Up turn. |
 | `celebrate` | 24 | `celebrate` | Victory and level-up. Out of combat, so outside the turn budget. |
-| `transform` | 24 | `transform` | Tier change, the most animated moment in the game. Chapter 5's; declared but deferred. |
+| `transform` | 24 | `transform` | Tier change, the most animated moment in the game. Chapter 5's; declared but deferred. **`flash` event at tick 4** starts `transform_flash`'s white-out (the manifest's `$comment` carries the tick's reasoning). |
 
 Inputs: `move`, `attack`, `cast`, `hurt`, `guard`, `leap`, `helpUp`, `celebrate`, `transform`
 (nine triggers); `knockedDown` (bool); `facing` (number).
@@ -220,14 +220,17 @@ interface it had never seen:
 
 | It checks | It does not check |
 |---|---|
-| The contract is coherent — every required clip defined, every event tick inside its clip, no duplicate input names, every clip reachable from a trigger or documented as not needing one | Whether the animation is any good. §6.2 and asset-brief §9.8.2 |
+| The contract is coherent — every required clip defined, every event tick inside its clip, no duplicate input names, every clip reachable from a trigger, started by its host's event (`startsOn`), or documented as not needing one | Whether the animation is any good. §6.2 and asset-brief §9.8.2 |
 | Every clip is required by some set, so nothing is a line in a table that no rigger is told to author | |
-| The worst realistic turn fits §9.2's 45-tick budget, re-derived from the clips rather than quoted | |
-| Every effect sheet that syncs to a clip event has that event, and runs on the contract's tick | |
-| A delivered rig, clip by clip — missing clips, clips nobody asked for, lengths that disagree with the tick table, a hold clip that loops, missing or wrongly-typed inputs | |
+| The worst realistic turn fits §9.2's 45-tick budget, re-derived from the clips rather than quoted — including effect tails and any concurrent clip's overhang past its host, both read off the manifest's `startsOn` data | |
+| Every delivered effect sheet declares its start in the manifest (`startsOn: { clip, event }`, or `null` for an ambient loop), names a real event, and runs on the contract's tick. A declared event no sheet consumes yet (`leap`'s `dust`) is a warning, not a failure | |
+| A delivered rig, clip by clip — missing clips, clips nobody asked for, lengths that disagree with the tick table, a hold clip that loops, a `down` without its `down_loop`, missing or wrongly-typed inputs | |
 
 **Where the edge actually is.** `compareRigToContract()` is complete and covered by
-`verify-rig.test.ts` — nineteen cases, each verified to fail when the corresponding rule is removed.
+`verify-rig.test.ts` — twenty-eight cases against fabricated rigs — and the effect-sync and
+turn-budget checks are exercised there too, against the real manifest and mutations of it, so
+which sheet fires on which event is checked as the data it now is rather than as a table this
+tool remembers.
 And the `.riv` reader is real: an earlier revision of this paragraph claimed the Rive runtime could
 not initialise headlessly (WebGL, shader compilation, `getShaderInfoLog`), and that claim was tested
 and found **false** — `@rive-app/canvas-advanced` 2.39.1 is the Canvas2D build, and it starts under
