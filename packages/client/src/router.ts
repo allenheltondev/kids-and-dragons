@@ -31,8 +31,28 @@ export type Route =
  */
 const ROOM_CODE = /^[A-Z0-9]{4}$/;
 
+export const ROOM_CODE_LENGTH = 4;
+
 export function normalizeCode(raw: string): string {
   return raw.trim().toUpperCase();
+}
+
+/**
+ * Normalize free-typed (or URL-prefilled) room-code *input*: uppercase, drop
+ * anything that could never be part of a code, cap at the code length.
+ *
+ * Deliberately the same alphabet the router accepts — any 4 alphanumerics —
+ * and not the generator's digit-free one. HomeScreen used to filter against
+ * the generator alphabet, so a scanned `/p/AB1C` prefilled as "AB1C" here and
+ * as "ABC" there, and the join button stayed disabled on a code the server
+ * would have taken. One helper, one answer.
+ */
+export function normalizeCodeInput(raw: string): string {
+  let out = "";
+  for (const ch of raw.toUpperCase()) {
+    if (/[A-Z0-9]/.test(ch) && out.length < ROOM_CODE_LENGTH) out += ch;
+  }
+  return out;
 }
 
 export function isRoomCode(raw: string): boolean {

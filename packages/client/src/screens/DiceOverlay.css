@@ -15,8 +15,12 @@
   display: grid;
   place-items: center;
   padding: var(--space-4, 1em);
+  /* An opaque-enough fill and no backdrop-filter: this overlay sits on the
+     live WebGL canvas, and blurring that backdrop forces the compositor to
+     re-filter every animation frame for the roll's entire 1.5s — the fill
+     alone reads the same and costs nothing. (The keepsake/sign-in blurs are
+     fine: only static DOM sits behind them.) */
   background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
-  backdrop-filter: blur(0.15em);
   animation: dice-fade var(--kad-dur-fast, 120ms) ease-out;
 }
 

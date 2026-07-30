@@ -12,7 +12,6 @@
 
 import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
-import { toDataURL } from "qrcode";
 import type { PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
 import { Spinner } from "../ui/Spinner";
@@ -38,12 +37,18 @@ function useJoinQr(code: string | null): string | null {
       return;
     }
     let live = true;
-    void toDataURL(joinUrl(code), {
-      margin: 1,
-      width: 512,
-      errorCorrectionLevel: "M",
-      color: { dark: "#12102a", light: "#ffffff" },
-    })
+    // Loaded on demand: the QR encoder is a lobby-only nicety, and pulling it
+    // out of the main chunk keeps it off the join screen's critical path. If
+    // the import itself fails, that is just "no QR" like any other failure.
+    void import("qrcode")
+      .then(({ toDataURL }) =>
+        toDataURL(joinUrl(code), {
+          margin: 1,
+          width: 512,
+          errorCorrectionLevel: "M",
+          color: { dark: "#12102a", light: "#ffffff" },
+        }),
+      )
       .then((url) => {
         if (live) setDataUrl(url);
       })
