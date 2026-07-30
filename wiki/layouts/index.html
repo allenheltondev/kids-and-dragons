@@ -68,7 +68,7 @@
       {{- with $featuredBiome.Params.tags }}
       <div class="wiki-featured__tags">
         {{- range . }}
-        <span class="wiki-tag">{{ . }}</span>
+        <span class="wiki-tag">{{ partial "title-case.html" . }}</span>
         {{- end }}
       </div>
       {{- end }}
@@ -111,7 +111,7 @@
       {{- with $featuredCreature.Params.tags }}
       <div class="wiki-featured__tags">
         {{- range . }}
-        <span class="wiki-tag">{{ . }}</span>
+        <span class="wiki-tag">{{ partial "title-case.html" . }}</span>
         {{- end }}
       </div>
       {{- end }}
