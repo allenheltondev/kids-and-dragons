@@ -21,8 +21,17 @@
  * keeps playing, it just does not accrue.
  */
 
-import { awardXp, resolveCharacter, startCampaign, type Character, type RunState } from "@kad/shared";
-import type { HandlerDeps } from "./deps.ts";
+import {
+  awardXp,
+  commitCampaign,
+  failCampaign,
+  resolveCharacter,
+  startCampaign,
+  type Character,
+  type RunState,
+} from "@kad/shared";
+import { iso, type HandlerDeps } from "./deps.ts";
+import type { CampaignProgressRecord, ChapterProgressRecord } from "../store/repository.ts";
 
 /**
  * The identity a provisional gain is scoped to.
@@ -142,6 +151,157 @@ export async function foldChapterXp(
     // creation and never again, so without this the sheet would keep showing
     // the level she started the evening on.
     member.character = resolveCharacter(character, rules, items);
+  }
+  return writes;
+}
+
+/** Spec §8.3's default. A campaign may tune it (`Campaign.setbackLimit`). */
+const DEFAULT_SETBACK_LIMIT = 3;
+
+/** Everything a chapter completion owes the store, for one `repo.commit()`. */
+export interface ChapterSettlement {
+  characters: Character[];
+  chapterProgress?: ChapterProgressRecord;
+  campaignProgress?: CampaignProgressRecord;
+}
+
+/**
+ * The campaign boundary — the half of the commitment rule that was never
+ * wired. `startCampaign()` has always made gains provisional on the way in;
+ * nothing ever called `commitCampaign()` or `failCampaign()`, so provisional
+ * was where progress went to wait forever (roadmap chapter 5's "armed in one
+ * direction only").
+ *
+ * On every chapter completion this settles three things:
+ *
+ *  1. **The chapter's record** — outcome and XP, persisted so §8.3's setback
+ *     count survives the run it happened in.
+ *  2. **The attempt's counter** — `CampaignProgressRecord`, read here and
+ *     written back through the same seq-gated commit, which is what makes the
+ *     read-modify-write safe against two phones finishing the chapter at once.
+ *  3. **The campaign's fate, if this completion decides it** — the setback
+ *     limit reached fails it (revert to committed, keep a souvenir, spec
+ *     §8.3); completing the final chapter commits it (the gains become who
+ *     you are). Everything in between stays provisional, exactly as before.
+ *
+ * A chapter with no campaign, or a campaign the content set does not know,
+ * settles only the XP and its own record. Committing on a guess would make
+ * gains permanent that a failed campaign was supposed to take back — the safe
+ * failure is to keep them provisional.
+ */
+export async function settleChapterCompletion(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+): Promise<ChapterSettlement> {
+  const now = iso(deps.now());
+  const characters = await foldChapterXp(state, deps, householdId);
+  const outcome = state.chapterOutcome ?? "success";
+
+  const chapter = state.chapterId ? deps.content.chapter(state.chapterId) : null;
+  const chapterProgress: ChapterProgressRecord | undefined = chapter
+    ? {
+        runId: state.runId,
+        index: chapter.index,
+        chapterId: chapter.id,
+        status: "complete",
+        outcome,
+        xpEarned: state.xpEarned,
+        updatedAt: now,
+      }
+    : undefined;
+
+  const campaignId = state.campaignId;
+  const campaign = campaignId ? deps.content.campaign(campaignId) : null;
+  if (!campaignId || !campaign || !chapter) {
+    return { characters, ...(chapterProgress ? { chapterProgress } : {}) };
+  }
+
+  /*
+   * The attempt. A record whose status is `complete` or `failed` is a finished
+   * attempt — starting to count from it again would make a replayed campaign
+   * inherit its own history and insta-fail (see CampaignProgressRecord).
+   */
+  const existing = await deps.repo.getCampaignProgress(householdId, campaignId);
+  const attempt: CampaignProgressRecord =
+    existing && existing.status === "active"
+      ? { ...existing, updatedAt: now }
+      : { householdId, campaignId, status: "active", setbacks: 0, updatedAt: now };
+  if (outcome === "setback") attempt.setbacks += 1;
+
+  const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;
+  const finalChapter = campaign.chapters[campaign.chapters.length - 1] === chapter.id;
+
+  if (attempt.setbacks >= limit) {
+    attempt.status = "failed";
+    return {
+      characters: await transformParty(state, deps, householdId, characters, (c) => {
+        // The souvenir reads the tier *before* the revert takes it away —
+        // "she goes back to Fledgling and keeps something visible that says
+        // she was Sworn once" (spec §8.3). The id is a display key for the
+        // souvenir art roadmap chapter 5 commissions.
+        const reached = c.provisional?.tier;
+        const flavored = reached && reached !== c.committed.tier;
+        return failCampaign(c, flavored ? `${campaignId}#${reached}` : campaignId, now);
+      }),
+      ...(chapterProgress ? { chapterProgress } : {}),
+      campaignProgress: attempt,
+    };
+  }
+
+  if (finalChapter) {
+    attempt.status = "complete";
+    return {
+      characters: await transformParty(state, deps, householdId, characters, commitCampaign),
+      ...(chapterProgress ? { chapterProgress } : {}),
+      campaignProgress: attempt,
+    };
+  }
+
+  return { characters, ...(chapterProgress ? { chapterProgress } : {}), campaignProgress: attempt };
+}
+
+/**
+ * Applies a campaign-fate transform to every stored party character.
+ *
+ * Starts from the XP writes when they exist and loads the rest — a final
+ * chapter can award zero XP and still has to commit, so "who gets
+ * transformed" cannot be "whoever happened to earn something". Every base is
+ * passed through `startCampaign()` first so a provisional left over from some
+ * *other* campaign can never be committed or failed at this one's boundary —
+ * re-seeding discards it, which is what the one-campaign-in-flight model says
+ * should happen.
+ */
+async function transformParty(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+  awarded: Character[],
+  fate: (character: Character) => Character,
+): Promise<Character[]> {
+  const rules = deps.content.rules();
+  const items = deps.content.items();
+  const byId = new Map(awarded.map((c) => [c.id, c]));
+  const writes: Character[] = [];
+
+  for (const member of state.party) {
+    let base = byId.get(member.character.id) ?? null;
+    if (!base) {
+      try {
+        base = await deps.repo.getCharacter(householdId, member.character.id);
+      } catch (err) {
+        // Same policy as foldChapterXp: one bad row must not take the table
+        // down at the moment the campaign ends.
+        console.error(`settle: skipping character ${member.character.id}:`, err);
+      }
+      if (!base) continue;
+    }
+    const settled = fate(startCampaign(base, campaignKey(state)));
+    writes.push(settled);
+    // The revert (or the commit) has to reach the phones on the same patch —
+    // a failed campaign whose party still *looks* levelled is a lie the next
+    // chapter would expose anyway.
+    member.character = resolveCharacter(settled, rules, items);
   }
   return writes;
 }

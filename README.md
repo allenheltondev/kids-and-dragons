@@ -114,9 +114,11 @@ turn order, enemy AI, the ability catalog (`content/abilities.json`, 14 abilitie
 verbs), and encounter maps (`content/maps/`) all run behind `startEncounter` / `COMBAT_ACTION` /
 `settleEncounter` in `packages/shared`. **Not built yet:** the other half of that chapter — the
 phone combat UI and the grid renderer; no client code touches `encounter` state, so an encounter
-scene still resolves through its `onVictory` branch on screen. Also outstanding: Rive rigs (the
-client composites static tier PNGs with procedural motion in the meantime), progression and
-inventory commitment at the campaign boundary, the authoring tools, and the live LLM layer.
+scene still resolves through its `onVictory` branch on screen. The campaign boundary is wired:
+completing a campaign's last chapter commits the party's provisional gains, three setbacks fail
+it (revert plus souvenir, spec §8.3), and the count survives across evenings. Also outstanding:
+Rive rigs (the client composites static tier PNGs with procedural motion in the meantime),
+spending banked stat points, the authoring tools, and the live LLM layer.
 
 The art contract is real and enforced: all six species are approved across all four tiers, 474
 mechanical checks green. Anything that fails to load still draws a clearly-placeholder silhouette
