@@ -23,6 +23,7 @@ import path from "node:path";
 import { EFFECT_VERBS, MAX_PARTY } from "@kad/shared";
 import type {
   AbilityCatalog,
+  Campaign,
   Chapter,
   CombatAbility,
   EncounterMap,
@@ -73,6 +74,14 @@ export interface ContentStore {
    */
   map(id: string): EncounterMap | null;
   /**
+   * A campaign by id. `null` for an unknown id — which the campaign-boundary
+   * logic treats as "this chapter belongs to no campaign we can see the end
+   * of": XP still folds provisionally, and nothing commits. That is the safe
+   * failure. Committing on a guess would make gains permanent that a failed
+   * campaign was supposed to take back.
+   */
+  campaign(id: string): Campaign | null;
+  /**
    * What every ability *does on the board*, by id — handed to the engine as
    * `EngineContext.abilities`.
    *
@@ -100,7 +109,12 @@ class LoadedContent implements ContentStore {
     private readonly _chapters: ReadonlyMap<string, Chapter>,
     private readonly _maps: ReadonlyMap<string, EncounterMap>,
     private readonly _abilities: AbilityCatalog,
+    private readonly _campaigns: ReadonlyMap<string, Campaign>,
   ) {}
+
+  campaign(id: string): Campaign | null {
+    return this._campaigns.get(id) ?? null;
+  }
 
   abilities(): AbilityCatalog {
     return this._abilities;
@@ -238,13 +252,67 @@ async function readAll(root: string): Promise<ContentStore> {
   // insists the shipped set is complete.
   const abilities = await readAbilities(path.join(root, "abilities.json"), problems);
 
+  // Campaigns are what makes "the last chapter" a fact the server can know —
+  // the commitment rule (spec §8.3) turns on it. Optional like maps/: a
+  // content set of one-off chapters is legitimate, and a chapter whose
+  // campaign is unknown simply never reaches the campaign boundary.
+  const campaigns = new Map<string, Campaign>();
+  const campaignsDir = path.join(root, "campaigns");
+  let campaignFiles: string[] = [];
+  try {
+    campaignFiles = (await fs.readdir(campaignsDir)).filter((f) => f.endsWith(".json")).sort();
+  } catch {
+    // No campaigns/ at all is fine.
+  }
+  for (const file of campaignFiles) {
+    const campaign = await readJson<Campaign>(path.join(campaignsDir, file), problems);
+    if (!campaign) continue;
+    const campaignProblems = checkCampaign(campaign, chapters, `campaigns/${file}`);
+    if (campaignProblems.length > 0) {
+      problems.push(...campaignProblems);
+      continue;
+    }
+    if (campaigns.has(campaign.id)) {
+      problems.push(`campaigns/${file}: duplicate campaign id "${campaign.id}"`);
+      continue;
+    }
+    campaigns.set(campaign.id, campaign);
+  }
+
   if (rules) problems.push(...checkRules(rules));
   if (items) problems.push(...checkItems(items));
 
   if (!rules || !items || problems.length > 0) {
     throw new ContentError(root, problems);
   }
-  return new LoadedContent(root, rules, items, chapters, maps, abilities);
+  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns);
+}
+
+/**
+ * The graph-level campaign rules live in `content:validate`; this holds only
+ * what the server would crash or silently mis-decide on: a campaign with no
+ * chapters has no last chapter, and a chapter list naming files this load did
+ * not produce means "is this the end?" would always answer no.
+ */
+function checkCampaign(
+  campaign: Campaign,
+  chapters: ReadonlyMap<string, Chapter>,
+  label: string,
+): string[] {
+  const problems: string[] = [];
+  if (typeof campaign.id !== "string" || campaign.id === "") {
+    problems.push(`${label}: missing id`);
+  }
+  if (!Array.isArray(campaign.chapters) || campaign.chapters.length === 0) {
+    problems.push(`${label}: a campaign with no chapters has no ending to commit at`);
+    return problems;
+  }
+  for (const chapterId of campaign.chapters) {
+    if (!chapters.has(chapterId)) {
+      problems.push(`${label}: names chapter "${chapterId}", which did not load`);
+    }
+  }
+  return problems;
 }
 
 /**

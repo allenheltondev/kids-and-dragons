@@ -8,7 +8,9 @@
  */
 
 import type {
+  AbilityCatalog,
   Campaign,
+  Chapter,
   ClientIntent,
   ItemCatalog,
   PartyMember,
@@ -55,9 +57,23 @@ export interface GameStore {
    * a campaign must never mean deploying game code.
    */
   campaign: Campaign | null;
+  /**
+   * The combat ability catalog (content/abilities.json), parsed. What
+   * `legalActions` needs to draw the action cards during an encounter — the
+   * same catalog the server validates against, loaded the same way as rules.
+   */
+  abilities: AbilityCatalog | null;
+  /**
+   * The chapter in play, for rendering only: its biome picks the combat tile
+   * sheet, its encounter scenes carry the enemy art ids. Never consulted for
+   * rules — the server runs the chapter; this is what it looks like.
+   */
+  chapter: Chapter | null;
 
-  /** Loads content/rules.json and content/items.json. Idempotent. */
+  /** Loads rules, items, the campaign and the ability catalog. Idempotent. */
   loadContent(): Promise<void>;
+  /** Loads the named chapter's content. Idempotent per id; failures are quiet. */
+  loadChapter(chapterId: string): Promise<void>;
   createRoom(mode: RoomMode, displayName: string): Promise<ClientSession>;
   joinRoom(code: string, displayName: string): Promise<ClientSession>;
   /**
@@ -89,6 +105,9 @@ export interface GameStore {
  *   useRules()       — RulesContent | null
  *   useItems()       — ItemCatalog | null
  *   useCampaign()    — Campaign | null
+ *   useAbilities()   — AbilityCatalog | null
+ *   useChapter()     — Chapter | null
+ *   useIsMyCombatTurn() — boolean (the combat clock is on this device)
  *   usePresentation(kind, handler) — subscribe to one presentation kind
  */
 export type MaybeMember = PartyMember | null;

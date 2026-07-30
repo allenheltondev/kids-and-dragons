@@ -41,6 +41,7 @@ import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { KeepsakeOffer } from "./SignInFlow";
+import { CombatControls } from "./CombatPanel";
 import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
@@ -58,6 +59,11 @@ function promptKey(prompt: Prompt | null): string {
     case "ready":
       return `ready:${prompt.forPlayerIds.join(",")}`;
   }
+}
+
+/** A consumable is actionable only outside the encounter state that owns HP. */
+export function canUseInventoryItem(entry: InventoryEntry, encounterActive: boolean): boolean {
+  return entry.kind === "consumable" && !encounterActive;
 }
 
 function nameOfCharacter(party: PartyMember[], characterId: string): string {
@@ -348,6 +354,13 @@ export function PlayerPanel(): ReactElement {
       ) : null}
 
       <div className="player__prompt">
+        {/* ---------------- combat (spec §7.2) ----------------
+            Renders itself only while `state.encounter` exists, and owns the
+            slot when it does: there is never an open Prompt during a fight
+            (the pre-fight ready-up runs before the board goes up), so nothing
+            below competes with it. */}
+        <CombatControls />
+
         {/* ---------------- choice / vote (spec §6.1) ---------------- */}
         {myPrompt !== null && myPrompt.kind === "choice" ? (
           <div className="prompt">
@@ -612,7 +625,7 @@ export function PlayerPanel(): ReactElement {
           </p>
         ) : null}
 
-        {myPrompt === null && globalPrompt === null && state.phase !== "lobby" && state.phase !== "chapter_complete" ? (
+        {myPrompt === null && globalPrompt === null && !state.encounter && state.phase !== "lobby" && state.phase !== "chapter_complete" ? (
           <p className="player__waiting" role="status">
             <Icon name="waiting" />
             <span>Listen to the story…</span>
@@ -653,7 +666,7 @@ export function PlayerPanel(): ReactElement {
               >
                 Close
               </Button>
-              {selectedEntry.kind === "consumable" ? (
+              {canUseInventoryItem(selectedEntry, state.encounter !== null) ? (
                 <Button
                   variant="primary"
                   size="lg"
@@ -667,6 +680,11 @@ export function PlayerPanel(): ReactElement {
                 >
                   Use it
                 </Button>
+              ) : selectedEntry.kind === "consumable" ? (
+                <p className="item-detail__passive kad-chip">
+                  <Icon name="waiting" />
+                  <span>Save it for after the fight</span>
+                </p>
               ) : (
                 <p className="item-detail__passive kad-chip">
                   <Icon name="trinket" />
