@@ -73,5 +73,17 @@
   {{ if $navScrollJS }}
   <script defer src="{{ $navScrollJS.RelPermalink }}"></script>
   {{ end }}
+
+  {{/* Image lightbox — modal overlay for gallery/portrait images */}}
+  {{ $lightboxJS := resources.Get "js/lightbox.js" }}
+  {{ if $lightboxJS }}
+  <script defer src="{{ $lightboxJS.RelPermalink }}"></script>
+  {{ end }}
+
+  {{/* Tier viewer — character progression carousel */}}
+  {{ $tierViewerJS := resources.Get "js/tier-viewer.js" }}
+  {{ if $tierViewerJS }}
+  <script defer src="{{ $tierViewerJS.RelPermalink }}"></script>
+  {{ end }}
 </body>
 </html>
