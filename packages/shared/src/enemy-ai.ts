@@ -76,8 +76,8 @@
  * what lets the client show her, in advance, where a monster would go.
  */
 
-import { findPath, isOpen, reachableTiles, stepsBetween, tilesWithinSteps } from "./grid.js";
-import type { ActorId, Board, Position } from "./grid.js";
+import { isOpen, reachableTiles, stepsBetween, tilesWithinSteps, walkField } from "./grid.js";
+import type { ActorId, Board, Position, WalkField } from "./grid.js";
 
 /**
  * The acting monster. Its position is passed in rather than looked up by id
@@ -162,8 +162,18 @@ export function planEnemyTurn(turn: EnemyTurn): EnemyPlan {
   // branch (§7.3). Hovering over the bodies would be the wrong picture.
   if (standing.length === 0) return HOLD;
 
+  /*
+   * One flood for the whole turn. Every question this planner asks — how far
+   * is each attack tile around each hero, and which way is the walk — is a
+   * shortest-path question *from the monster's own tile*, so the answers all
+   * live in a single field. Rating used to re-flood the board once per
+   * candidate tile per hero (~150 floods for a reach-3 monster); now the
+   * floods-per-turn is exactly one, and the answers are the same ones.
+   */
+  const field = walkField(board, enemy.at);
+
   const best = standing
-    .map((hero) => rateApproach(board, enemy.at, reach, hero))
+    .map((hero) => rateApproach(board, field, enemy.at, reach, hero))
     .sort(compareApproaches)[0];
   // `standing` is not empty, so there is always a best; the guard is here for
   // the compiler's benefit rather than the game's.
@@ -181,7 +191,7 @@ export function planEnemyTurn(turn: EnemyTurn): EnemyPlan {
   // walking that way. Next turn it arrives, which is a thing she can watch
   // coming and move away from — the readable version of "it is coming for you".
   if (Number.isFinite(best.cost) && best.tile) {
-    return { moveTo: walkToward(board, enemy.at, best.tile, allowance), attack: null };
+    return { moveTo: walkToward(board, field, best.tile, allowance), attack: null };
   }
 
   // No route at all — a Bramble Wall across the corridor, or a hero who walled
@@ -212,6 +222,7 @@ interface Approach {
  */
 function rateApproach(
   board: Board,
+  field: WalkField,
   from: Position,
   reach: number,
   target: PartyTarget,
@@ -228,9 +239,7 @@ function rateApproach(
   // same reading order grid.ts sorts by, on every device.
   for (const stand of tilesWithinSteps(board, target.at, reach)) {
     if (!isOpen(board, stand)) continue;
-    const path = findPath(board, from, stand);
-    if (!path) continue;
-    const walk = path.length - 1;
+    const walk = field.dist(stand);
     if (walk < cost) {
       cost = walk;
       tile = stand;
@@ -278,11 +287,11 @@ function compareApproaches(a: Approach, b: Approach): number {
  */
 function walkToward(
   board: Board,
-  from: Position,
+  field: WalkField,
   toward: Position,
   allowance: number,
 ): Position | null {
-  const path = findPath(board, from, toward);
+  const path = field.pathTo(toward);
   if (!path) return null;
   for (let i = Math.min(allowance, path.length - 1); i >= 1; i--) {
     const step = path[i];

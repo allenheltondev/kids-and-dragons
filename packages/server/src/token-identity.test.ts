@@ -321,9 +321,35 @@ describe("TokenIdentity — device tokens", () => {
     clock.advance(3600_000);
     await identity.resolveDevice(token);
 
-    expect((await repo.getDeviceById(deviceId))?.lastSeen).toBe(
-      new Date(clock.now()).toISOString(),
-    );
+    const refreshed = new Date(clock.now()).toISOString();
+    expect((await repo.getDeviceById(deviceId))?.lastSeen).toBe(refreshed);
+
+    // …but not on every request. Resolve runs on every API call, and the
+    // screen says "last used Tuesday", not "last used 340ms ago" — so within
+    // the staleness window the resolve must not buy a write.
+    clock.advance(60_000);
+    await identity.resolveDevice(token);
+    expect((await repo.getDeviceById(deviceId))?.lastSeen).toBe(refreshed);
+  });
+
+  it("a resolve racing a revocation cannot write the revocation away", async () => {
+    /*
+     * The bug this pins, found in review: resolve refreshed `lastSeen` with a
+     * full `putDevice` of the binding it had read — so a resolve that read the
+     * item just before `revokeDevice` landed wrote the whole pre-revocation
+     * copy back, and the lost phone erased its own revocation. The refresh now
+     * goes through `touchDevice`, which can only ever set `lastSeen`.
+     */
+    const { identity, repo, clock } = setup();
+    const { token, deviceId } = await identity.issueDeviceToken(device);
+
+    clock.advance(3600_000);
+    await identity.resolveDevice(token); // stale enough that the refresh write fires
+    await repo.revokeDevice("h_1", deviceId);
+
+    clock.advance(3600_000);
+    expect(await identity.resolveDevice(token)).toBeNull();
+    expect((await repo.getDeviceById(deviceId))?.revoked).toBe(true);
   });
 });
 

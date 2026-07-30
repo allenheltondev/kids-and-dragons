@@ -25,6 +25,24 @@ import { awardXp, resolveCharacter, startCampaign, type Character, type RunState
 import type { HandlerDeps } from "./deps.ts";
 
 /**
+ * The identity a provisional gain is scoped to.
+ *
+ * The campaign, not the room. `startCampaign()` re-seeds `provisional` from
+ * `committed` whenever the identity changes, and a room — and therefore its
+ * `runId` — lives for one evening. Scoping to the run meant Saturday's fresh
+ * room quietly threw away Tuesday's provisional levels: every character was
+ * permanently level 1 plus whatever the current sitting had earned. Campaigns
+ * run 4–8 chapters across weeks (spec §8.1); the gains have to survive the
+ * rooms they were earned in, and revert only when the *campaign* fails.
+ *
+ * `campaignId` is null for a one-off chapter, where the run really is the
+ * campaign — so the fallback keeps the old scope exactly there.
+ */
+function campaignKey(state: RunState): string {
+  return state.campaignId ?? state.runId;
+}
+
+/**
  * The character rows a completed chapter owes, ready for the run's own commit.
  *
  * Nothing here writes. Both of these used to call `putCharacter` directly, and
@@ -92,14 +110,31 @@ export async function foldChapterXp(
   const items = deps.content.items();
   const writes: Character[] = [];
 
-  for (const member of state.party) {
-    const stored = await deps.repo.getCharacter(householdId, member.character.id);
+  // One round trip per member was serialized inside the request that completes
+  // the chapter — the one moment three phones are all watching the screen.
+  const stored = await Promise.all(
+    state.party.map(async (member) => {
+      try {
+        return await deps.repo.getCharacter(householdId, member.character.id);
+      } catch (err) {
+        // An unrepairable stored row (`migrateCharacter` throws) gets the same
+        // treatment as a missing one, and for the same reason as
+        // `character-io.readAll`: one bad row must not take the table down at
+        // the exact moment the chapter completes.
+        console.error(`foldChapterXp: skipping character ${member.character.id}:`, err);
+        return null;
+      }
+    }),
+  );
+
+  for (const [i, member] of state.party.entries()) {
     // A swept household, or a member created before any of this existed. The
     // character on screen keeps playing; it just does not accrue. Throwing here
     // would end the session at the table.
-    if (!stored) continue;
+    const row = stored[i];
+    if (!row) continue;
 
-    const { character } = awardXp(startCampaign(stored, state.runId), rules, state.xpEarned);
+    const { character } = awardXp(startCampaign(row, campaignKey(state)), rules, state.xpEarned);
     writes.push(character);
 
     // Re-resolve so the level, tier, unlocked actions and the waiting stat

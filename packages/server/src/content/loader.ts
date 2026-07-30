@@ -20,6 +20,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
+import { EFFECT_VERBS, MAX_PARTY } from "@kad/shared";
 import type {
   AbilityCatalog,
   Chapter,
@@ -314,6 +315,18 @@ function checkAbilities(catalog: Record<string, unknown>): string[] {
     }
     if (!Array.isArray(ability.effects) || ability.effects.length === 0) {
       problems.push(`abilities.json: "${id}" has no effects — it would be a button that does nothing`);
+    } else {
+      // Every verb must be one the engine implements. An unknown verb used to
+      // pass the cast and surface as a TypeError in the middle of somebody's
+      // turn; here it is a startup failure with the ability's name on it.
+      for (const spec of ability.effects as { effect?: { type?: unknown } }[]) {
+        const verb = spec?.effect?.type;
+        if (typeof verb !== "string" || !(EFFECT_VERBS as readonly string[]).includes(verb)) {
+          problems.push(
+            `abilities.json: "${id}" has an effect verb the engine does not implement (${String(verb)})`,
+          );
+        }
+      }
     }
   }
   return problems;
@@ -412,6 +425,15 @@ function checkMap(map: EncounterMap, label: string): string[] {
     }
   }
 
+  // The engine refuses a fight when the party outnumbers the spawns, so a map
+  // that cannot seat a full party is a chapter that works right up until the
+  // wrong number of people sit down. Caught here, it is a build failure.
+  if (Array.isArray(map.partySpawns) && map.partySpawns.length < MAX_PARTY) {
+    problems.push(
+      `${label}: ${map.partySpawns.length} partySpawns cannot seat a full party of ${MAX_PARTY}`,
+    );
+  }
+
   const seen = new Set<string>();
   for (const [kind, spawns] of [
     ["partySpawns", map.partySpawns],
@@ -458,6 +480,12 @@ function checkChapter(chapter: Chapter, label: string): string[] {
     problems.push(`${label}: entry scene "${String(chapter.entry)}" is not in scenes`);
   }
   for (const [sceneId, scene] of Object.entries(chapter.scenes)) {
+    if (!SCENE_TYPES.includes(scene?.type as string)) {
+      problems.push(
+        `${label}: scene "${sceneId}" has a type the engine does not know (${String(scene?.type)})`,
+      );
+      continue;
+    }
     for (const target of gotoTargets(scene)) {
       if (!chapter.scenes[target]) {
         problems.push(`${label}: scene "${sceneId}" goes to unknown scene "${target}"`);
@@ -478,5 +506,14 @@ function gotoTargets(scene: Scene): SceneId[] {
       return [scene.onSuccess.goto, scene.onFailure.goto];
     case "encounter":
       return [scene.onVictory.goto, scene.onDefeat.goto];
+    default:
+      // An unknown scene type fell out of the switch as `undefined`, and
+      // `for (const t of undefined)` threw a raw TypeError out of readAll —
+      // bypassing the ContentError message this whole file exists to produce.
+      // `checkChapter` reports it by name; returning no edges keeps the walk
+      // alive long enough for that report to be the one the author reads.
+      return [];
   }
 }
+
+const SCENE_TYPES: readonly string[] = ["story", "choice_point", "rest", "check", "encounter"];

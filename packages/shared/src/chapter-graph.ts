@@ -70,6 +70,11 @@ export function sceneEdges(scene: Scene): Edge[] {
         ...(scene.onVictory ? [{ to: scene.onVictory.goto, via: "onVictory" }] : []),
         ...(scene.onDefeat ? [{ to: scene.onDefeat.goto, via: "onDefeat" }] : []),
       ];
+    default:
+      // Authored JSON, so an unknown type can reach here despite the union.
+      // No edges beats `for (const e of undefined)` throwing past the walker
+      // that was about to report the real problem.
+      return [];
   }
 }
 

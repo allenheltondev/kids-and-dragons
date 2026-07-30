@@ -29,14 +29,34 @@ export interface PresenceInput {
 
 /**
  * Returns the new seq when something changed, or `null` when there was nothing
- * to say — an unknown player, an already-correct flag, or a race with another
- * write. Presence is best-effort by nature: a failed commit here is a stream
- * that will re-announce itself on the next connect.
+ * to say — an unknown player, an already-correct flag, or a losing race that
+ * still would not stick after retries.
+ *
+ * A lost seq race is retried rather than dropped. Presence changes *cause*
+ * traffic — a phone dying mid-turn arrives together with the tap it
+ * interrupted — so "best effort, the stream re-announces itself" was weakest at
+ * exactly the moment it mattered: a disconnect that lost its race was never
+ * recorded, and the ready-gate then waited forever on a phone that was gone.
+ * The re-read makes the retry cheap; the cap keeps a hot room from looping.
  */
+const COMMIT_ATTEMPTS = 3;
+
 export async function setPresence(
   input: PresenceInput,
   deps: PresenceDeps,
 ): Promise<number | null> {
+  for (let attempt = 1; ; attempt++) {
+    const result = await trySetPresence(input, deps);
+    if (result !== "lost-race") return result;
+    if (attempt >= COMMIT_ATTEMPTS) return null;
+  }
+}
+
+/** One optimistic attempt: read, diff, conditional commit. */
+async function trySetPresence(
+  input: PresenceInput,
+  deps: PresenceDeps,
+): Promise<number | null | "lost-race"> {
   const state = await deps.repo.getState(input.runId);
   if (!state) return null;
 
@@ -68,7 +88,7 @@ export async function setPresence(
     state: next,
     event,
   });
-  if (!committed) return null;
+  if (!committed) return "lost-race";
 
   await deps.channel.publish(next.roomCode, {
     kind: "patch",
