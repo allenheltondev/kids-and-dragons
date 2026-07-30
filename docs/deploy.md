@@ -41,6 +41,11 @@ the checks itself — a broken chapter fails the deploy, never the table.
 **Production waits for CI**: `prod-deploy.yml` triggers on `workflow_run`, only
 once the CI workflow for a `main` commit has completed *and passed*, and it
 checks out the exact SHA CI tested rather than whatever `main` has moved on to.
+A guard job refuses any run whose SHA is no longer the tip of `main` — CI runs
+finish in their own order, not commit order, so without it an older commit's
+green run could queue up behind a newer one's and put the older bytes live
+*last*. When a run is skipped as stale, the newer commit's own CI run owns the
+next deploy; if that run is red, prod deliberately stays where it is.
 On that path the checks are skipped (`KAD_SKIP_CHECKS=1`), because CI just ran a
 strictly larger set — e2e, `cfn-lint`, and the rig contract included — on the
 same commit, and re-running the smaller set would buy minutes of nothing. What
