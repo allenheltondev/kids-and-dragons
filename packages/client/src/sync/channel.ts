@@ -12,10 +12,10 @@
  * Momento should mean writing one adapter, not rewriting ordering logic.
  */
 
-import { applyPatch } from "fast-json-patch";
 import type { Operation } from "fast-json-patch";
 import type { ChannelMessage, Presentation, RunState, ServerMessage } from "@kad/shared";
 import type { ConnectionStatus, PresentationEvent } from "../store/contract";
+import { applyPatchShared } from "./apply-patch";
 
 /**
  * Plays a presentation and resolves when it is done.
@@ -171,10 +171,10 @@ export class MessageSequencer {
 
   private apply(message: ServerMessage): void {
     if (this.mirror === null) return;
-    // mutateDocument: false — React needs a new reference, and a half-applied
-    // patch must never be observable.
-    const result = applyPatch(this.mirror, message.patch as Operation[], false, false);
-    this.mirror = result.newDocument;
+    // Structural sharing: React needs a new reference for what changed and the
+    // *same* reference for what did not, a half-applied patch must never be
+    // observable, and the old mirror is never mutated (see apply-patch.ts).
+    this.mirror = applyPatchShared(this.mirror, message.patch as Operation[]);
     this.lastSeq = message.seq;
     this.handlers.onState(this.mirror, this.lastSeq);
   }
@@ -186,9 +186,32 @@ export class MessageSequencer {
     if (!presentation) return null;
     const event: PresentationEvent = { seq, presentation };
     this.handlers.onPresentation(event);
-    if (!this.gate) return null;
-    const result = this.gate(event);
-    return result instanceof Promise ? result : null;
+    // ENCOUNTER_BEGAN and COMBAT_SEQUENCE can carry a chained beat that must
+    // play *after* them (protocol.ts). It rides one server message, so it gets
+    // a synthetic seq strictly between this one and the next integer — later
+    // than its parent for the subscribers' watermarks, and never able to
+    // swallow the presentation on the next real message.
+    const after = "after" in presentation ? presentation.after : undefined;
+    const afterSeq = (seq + Math.floor(seq) + 1) / 2;
+
+    if (!this.gate) {
+      // No gate — a Party Mode phone. Spectacle is not played, but the events
+      // are still surfaced in order for anything subscribed to them.
+      if (after) this.emitPresentation(after, afterSeq);
+      return null;
+    }
+
+    const played = this.gate(event);
+    if (!after) return played instanceof Promise ? played : null;
+
+    // The chained beat starts when the parent's animation finishes — even a
+    // broken one, so a throwing animation cannot eat the beat after it — and
+    // the patch stays held until the whole chain has played.
+    const parentDone = played instanceof Promise ? played.catch(() => undefined) : Promise.resolve();
+    return parentDone.then(() => {
+      if (this.disposed) return;
+      return this.emitPresentation(after, afterSeq) ?? undefined;
+    });
   }
 
   private armGapTimer(): void {
@@ -202,6 +225,10 @@ export class MessageSequencer {
       if (this.disposed || this.buffer.size === 0) return;
       // Still holed. Ask for the missing range rather than guessing.
       this.handlers.onGap(this.lastSeq);
+      // The resync can fail or return nothing; if the hole is still there,
+      // keep asking rather than waiting for a message that may never come —
+      // without this, a dropped resync left the mirror stuck forever.
+      this.armGapTimer();
     }, this.gapTimeoutMs);
   }
 
@@ -318,9 +345,16 @@ export function openChannel(options: ChannelOptions): Channel {
   let closed = false;
   /** Serializes resyncs so a gap during a reconnect doesn't double-fetch. */
   let resyncing: Promise<void> | null = null;
+  /** A resync asked for while one was in flight. Dropping it outright left a
+      reconnect that raced a slow catch-up permanently behind. */
+  let resyncAgain = false;
 
   function resync(sinceSeq: number): void {
-    if (closed || resyncing) return;
+    if (closed) return;
+    if (resyncing) {
+      resyncAgain = true;
+      return;
+    }
     resyncing = options
       .resync(sinceSeq)
       .catch(() => {
@@ -328,6 +362,12 @@ export function openChannel(options: ChannelOptions): Channel {
       })
       .finally(() => {
         resyncing = null;
+        if (resyncAgain && !closed) {
+          resyncAgain = false;
+          // From wherever the mirror is *now* — the finished resync may have
+          // moved it well past the seq the dropped request named.
+          resync(options.sequencer.seq);
+        }
       });
   }
 

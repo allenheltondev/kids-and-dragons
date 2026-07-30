@@ -209,6 +209,64 @@ describe("failures", () => {
   });
 });
 
+describe("the silence watchdog", () => {
+  it("fails the socket when nothing at all arrives within the ack's timeout", () => {
+    vi.useFakeTimers();
+    try {
+      const { fake, errors } = setup();
+      fake.socket.onopen?.({});
+      deliver(fake, { type: "connection_ack", connectionTimeoutMs: 60_000 });
+      deliver(fake, { type: "subscribe_success", id: "sub_1" });
+
+      // A half-open socket: no data, no `ka`, and no close event ever fires.
+      // Without the watchdog this connection looks healthy forever and the
+      // reconnect logic never gets its turn.
+      vi.advanceTimersByTime(60_000);
+      expect(errors).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("treats keepalives as proof of life", () => {
+    vi.useFakeTimers();
+    try {
+      const { fake, errors } = setup();
+      fake.socket.onopen?.({});
+      deliver(fake, { type: "connection_ack", connectionTimeoutMs: 60_000 });
+      deliver(fake, { type: "subscribe_success", id: "sub_1" });
+
+      // `ka` frames keep arriving on schedule; the watchdog must keep resetting.
+      for (let i = 0; i < 10; i += 1) {
+        vi.advanceTimersByTime(45_000);
+        deliver(fake, { type: "ka" });
+      }
+      expect(errors).toEqual([]);
+
+      // The keepalives stop; now it is allowed to give up.
+      vi.advanceTimersByTime(60_000);
+      expect(errors).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("stays quiet after close — a dead timer must not resurrect the channel", () => {
+    vi.useFakeTimers();
+    try {
+      const { source, fake, errors } = setup();
+      fake.socket.onopen?.({});
+      deliver(fake, { type: "connection_ack", connectionTimeoutMs: 60_000 });
+      source.close();
+
+      vi.advanceTimersByTime(600_000);
+      expect(errors).toEqual([]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
 describe("close", () => {
   it("closes the socket and goes quiet", () => {
     const { source, fake, events, errors } = setup();

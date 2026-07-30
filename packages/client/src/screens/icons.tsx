@@ -573,7 +573,11 @@ export function Icon({ name, label, size = DEFAULT_SIZE, className }: IconProps)
       className={className === undefined ? "kad-icon" : `kad-icon ${className}`}
       viewBox="0 0 24 24"
       // Sized in CSS rather than by attribute so `size` may be a var() token.
-      style={{ inlineSize: size, blockSize: size }}
+      // The 1em default lives on `.kad-icon` (shared.css): icons are the most
+      // rendered component in the app, and allocating a fresh style object per
+      // render just to say "1em" again made every one of them a guaranteed
+      // DOM-prop diff.
+      style={size === DEFAULT_SIZE ? undefined : { inlineSize: size, blockSize: size }}
       role={decorative ? undefined : "img"}
       aria-hidden={decorative ? true : undefined}
       aria-label={label}
