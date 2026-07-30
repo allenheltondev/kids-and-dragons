@@ -88,6 +88,9 @@ Resources:
     Properties:
       RoleName: kad-deploy-staging
       Description: Deploys the Kids & Dragons staging stack from GitHub Actions
+      Tags:
+        - Key: kad:stage
+          Value: staging
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -108,6 +111,9 @@ Resources:
     Properties:
       RoleName: kad-deploy-prod
       Description: Deploys the Kids & Dragons prod stack from GitHub Actions
+      Tags:
+        - Key: kad:stage
+          Value: prod
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -159,7 +165,7 @@ Resources:
             Effect: Allow
             Action: cloudformation:*
             Resource:
-              - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/kad-*/*"
+              - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/kad-${!aws:PrincipalTag/kad:stage}/*"
               - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/aws-sam-cli-managed-default*/*"
 
           # Deploying a template with `Transform: AWS::Serverless-2016-10-31`
@@ -185,8 +191,8 @@ Resources:
             Effect: Allow
             Action: s3:*
             Resource:
-              - !Sub "arn:${AWS::Partition}:s3:::kad-site-*"
-              - !Sub "arn:${AWS::Partition}:s3:::kad-site-*/*"
+              - !Sub "arn:${AWS::Partition}:s3:::kad-site-${!aws:PrincipalTag/kad:stage}-*"
+              - !Sub "arn:${AWS::Partition}:s3:::kad-site-${!aws:PrincipalTag/kad:stage}-*/*"
               - !Sub "arn:${AWS::Partition}:s3:::aws-sam-cli-managed-default*"
               - !Sub "arn:${AWS::Partition}:s3:::aws-sam-cli-managed-default*/*"
 
@@ -214,7 +220,7 @@ Resources:
               - iam:UpdateAssumeRolePolicy
               - iam:UpdateRole
               - iam:UpdateRoleDescription
-            Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/kad-*"
+            Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/kad-${!aws:PrincipalTag/kad:stage}-*"
 
           # role/kad-* unavoidably matches the two deploy roles in this very
           # template. Without this deny, the staging role — assumable from
@@ -230,14 +236,16 @@ Resources:
           - Sid: LambdaKadFunctions
             Effect: Allow
             Action: lambda:*
-            Resource: !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:kad-*"
+            Resource: !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:kad-${!aws:PrincipalTag/kad:stage}-*"
 
           # table/kad-* also matches the GSI ARNs (table/kad-*/index/*) — IAM
           # wildcards cross "/".
           - Sid: DynamoKadTables
             Effect: Allow
             Action: dynamodb:*
-            Resource: !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-*"
+            Resource:
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}"
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}/index/*"
 
           # The token-signing SecureString lives at /kad/<stage>/…. Nothing in
           # the deploy path writes it today (the API function mints it at
@@ -246,7 +254,7 @@ Resources:
           - Sid: SsmKadParameters
             Effect: Allow
             Action: ssm:*
-            Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/*"
+            Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${!aws:PrincipalTag/kad:stage}/*"
 
           # The sweep schedule is EventBridge Scheduler (ScheduleV2 in the
           # template), named kad-sweep-<stage> in the default group — not a
@@ -254,7 +262,7 @@ Resources:
           - Sid: SchedulerKadSchedules
             Effect: Allow
             Action: scheduler:*
-            Resource: !Sub "arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/default/kad-*"
+            Resource: !Sub "arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/default/kad-sweep-${!aws:PrincipalTag/kad:stage}"
 
           # The stack declares no log groups (retention is managed outside this
           # repo), but Lambda's groups are /aws/lambda/kad-* and diagnosing a
@@ -262,42 +270,55 @@ Resources:
           - Sid: LogsKadGroups
             Effect: Allow
             Action: logs:*
-            Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kad-*"
+            Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kad-${!aws:PrincipalTag/kad:stage}-*"
 
-          # Resource "*" from here down, and each for the same reason: these
-          # services put a *generated id*, not the resource's name, in the ARN,
-          # so a name-prefix scope has nothing to match against.
-          #
-          # CloudFront distribution ARNs are distribution/E2ABCDEF… — the
-          # kad naming lives only in the Comment. Covers the distribution CRUD
-          # CloudFormation performs, the OAC, the kad-spa-router function, and
-          # the CreateInvalidation deploy.sh issues after every sync.
-          - Sid: CloudFrontUnscopable
+          # These resources carry generated ids rather than kad-* names. Broad
+          # lifecycle permissions are therefore usable only when CloudFormation
+          # is calling on the role's behalf; a workflow cannot invoke them
+          # directly against another stack's resources.
+          - Sid: CloudFrontViaCloudFormation
             Effect: Allow
             Action: cloudfront:*
             Resource: "*"
+            Condition: &ViaCloudFormation
+              ForAnyValue:StringEquals:
+                aws:CalledVia: cloudformation.amazonaws.com
 
-          # Cognito user pool ARNs end in a generated pool id
-          # (us-east-1_AbCdEf123), and CreateUserPool is authorized against no
-          # resource at all. deploy.sh also calls describe-user-pool for the
-          # passkey hint.
-          - Sid: CognitoUnscopable
+          - Sid: CognitoViaCloudFormation
             Effect: Allow
             Action: cognito-idp:*
             Resource: "*"
+            Condition: *ViaCloudFormation
 
-          # AppSync Events API ARNs are apis/<generated id>.
-          - Sid: AppSyncUnscopable
+          - Sid: AppSyncViaCloudFormation
             Effect: Allow
             Action: appsync:*
             Resource: "*"
+            Condition: *ViaCloudFormation
 
-          # API Gateway (the HttpApi) — ARNs carry no account and no name,
-          # only generated api ids; the region is the tightest honest scope.
-          - Sid: ApiGatewayRegionScoped
+          - Sid: ApiGatewayViaCloudFormation
             Effect: Allow
             Action: apigateway:*
             Resource: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}::*"
+            Condition: *ViaCloudFormation
+
+          # deploy.sh has exactly two direct calls after the stack update. Both
+          # are limited to the stack matching this role's kad:stage principal tag.
+          - Sid: InvalidateThisStageDistribution
+            Effect: Allow
+            Action: cloudfront:CreateInvalidation
+            Resource: !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/*"
+            Condition:
+              StringEquals:
+                "aws:ResourceTag/aws:cloudformation:stack-name": "kad-${aws:PrincipalTag/kad:stage}"
+
+          - Sid: DescribeThisStageUserPool
+            Effect: Allow
+            Action: cognito-idp:DescribeUserPool
+            Resource: !Sub "arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
+            Condition:
+              StringEquals:
+                "aws:ResourceTag/aws:cloudformation:stack-name": "kad-${aws:PrincipalTag/kad:stage}"
 
 Outputs:
   StagingRoleArn:

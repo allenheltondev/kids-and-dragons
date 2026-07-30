@@ -209,7 +209,12 @@ export async function applyAction(
     event,
     ...(characters.length > 0 ? { characters } : {}),
     ...(settlement?.chapterProgress ? { chapterProgress: settlement.chapterProgress } : {}),
-    ...(settlement?.campaignProgress ? { campaignProgress: settlement.campaignProgress } : {}),
+    ...(settlement?.campaignProgress
+      ? {
+          campaignProgress: settlement.campaignProgress,
+          campaignProgressExpectedVersion: settlement.campaignProgressExpectedVersion ?? null,
+        }
+      : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the
