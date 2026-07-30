@@ -1,0 +1,138 @@
+{{/*
+  Related Entities — visual card grid with images and relationship chips.
+
+  Reads .Params.related from front matter, groups relationships by entity,
+  resolves each entity's page via site.GetPage, and renders a card grid
+  with thumbnail, title, type badge, and relationship chips.
+
+  Replaces the plain markdown "## Related Entities" section with rich visuals.
+*/}}
+
+{{ with .Params.related }}
+{{ $related := . }}
+
+{{/* Deduplicate: group relationships by entity ID */}}
+{{ $entityMap := dict }}
+{{ range $related }}
+  {{ $id := .id }}
+  {{ $existing := index $entityMap $id }}
+  {{ if $existing }}
+    {{/* Append relationship to existing entry */}}
+    {{ $rels := index $existing "relationships" }}
+    {{ $newRel := .relationship }}
+    {{ $rels = $rels | append $newRel }}
+    {{ $entityMap = merge $entityMap (dict $id (dict "id" $id "type" .type "relationships" $rels)) }}
+  {{ else }}
+    {{ $entityMap = merge $entityMap (dict $id (dict "id" $id "type" .type "relationships" (slice .relationship))) }}
+  {{ end }}
+{{ end }}
+
+{{/* Only render if we have entities */}}
+{{ if gt (len $entityMap) 0 }}
+<section class="wiki-related" aria-label="Related entities">
+  <h2 class="wiki-related__heading">Related Entities</h2>
+  <div class="wiki-related__grid">
+    {{ range $id, $data := $entityMap }}
+      {{/* Derive page path from Canon_ID */}}
+      {{ $parts := split $id "." }}
+      {{ $entityType := index $parts 0 }}
+      {{ $entityName := "" }}
+      {{ if gt (len $parts) 1 }}
+        {{ $entityName = index $parts 1 }}
+      {{ else }}
+        {{ $entityName = $id }}
+      {{ end }}
+
+      {{/* Pluralize type for path */}}
+      {{ $plural := $entityType }}
+      {{ if eq $entityType "biome" }}{{ $plural = "biomes" }}
+      {{ else if eq $entityType "creature" }}{{ $plural = "creatures" }}
+      {{ else if eq $entityType "character" }}{{ $plural = "characters" }}
+      {{ else if eq $entityType "npc" }}{{ $plural = "npcs" }}
+      {{ else if eq $entityType "item" }}{{ $plural = "items" }}
+      {{ else if eq $entityType "location" }}{{ $plural = "locations" }}
+      {{ else if eq $entityType "quest" }}{{ $plural = "quests" }}
+      {{ else if eq $entityType "faction" }}{{ $plural = "factions" }}
+      {{ else if eq $entityType "campaign" }}{{ $plural = "campaigns" }}
+      {{ else }}{{ $plural = printf "%ss" $entityType }}
+      {{ end }}
+
+      {{ $pagePath := printf "/%s/%s" $plural $entityName }}
+      {{ $entity := site.GetPage $pagePath }}
+
+      {{ if $entity }}
+      <a href="{{ $entity.RelPermalink }}" class="wiki-related__card">
+        {{/* Thumbnail */}}
+        <div class="wiki-related__thumb">
+          {{ with $entity.Params.assets }}
+            {{ with .primary }}
+              <img src="{{ . | relURL }}" alt="{{ $entity.Title }}" loading="lazy">
+            {{ else }}
+              <span class="wiki-related__placeholder" aria-hidden="true">
+                {{ if eq $entityType "creature" }}🐉
+                {{ else if eq $entityType "biome" }}🌲
+                {{ else if eq $entityType "npc" }}👤
+                {{ else if eq $entityType "item" }}⚔
+                {{ else if eq $entityType "character" }}🧙
+                {{ else if eq $entityType "location" }}📍
+                {{ else if eq $entityType "quest" }}📜
+                {{ else if eq $entityType "faction" }}⚔
+                {{ else if eq $entityType "campaign" }}🗺
+                {{ else }}📄
+                {{ end }}
+              </span>
+            {{ end }}
+          {{ else }}
+            <span class="wiki-related__placeholder" aria-hidden="true">
+              {{ if eq $entityType "creature" }}🐉
+              {{ else if eq $entityType "biome" }}🌲
+              {{ else if eq $entityType "npc" }}👤
+              {{ else if eq $entityType "item" }}⚔
+              {{ else if eq $entityType "character" }}🧙
+              {{ else if eq $entityType "location" }}📍
+              {{ else if eq $entityType "quest" }}📜
+              {{ else if eq $entityType "faction" }}⚔
+              {{ else if eq $entityType "campaign" }}🗺
+              {{ else }}📄
+              {{ end }}
+            </span>
+          {{ end }}
+        </div>
+
+        {{/* Info */}}
+        <div class="wiki-related__info">
+          <span class="wiki-related__name">{{ $entity.Title }}</span>
+          <span class="wiki-related__type">{{ $entityType }}</span>
+        </div>
+
+        {{/* Relationship chips */}}
+        <div class="wiki-related__chips">
+          {{ $rels := index $data "relationships" }}
+          {{ range $rels }}
+            <span class="wiki-related__chip">{{ partial "title-case.html" . }}</span>
+          {{ end }}
+        </div>
+      </a>
+      {{ else }}
+      {{/* Unresolved entity - render minimal fallback */}}
+      <div class="wiki-related__card wiki-related__card--unresolved">
+        <div class="wiki-related__thumb">
+          <span class="wiki-related__placeholder" aria-hidden="true">❓</span>
+        </div>
+        <div class="wiki-related__info">
+          <span class="wiki-related__name">{{ $entityName }}</span>
+          <span class="wiki-related__type">{{ $entityType }}</span>
+        </div>
+        <div class="wiki-related__chips">
+          {{ $rels := index $data "relationships" }}
+          {{ range $rels }}
+            <span class="wiki-related__chip">{{ partial "title-case.html" . }}</span>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+{{ end }}

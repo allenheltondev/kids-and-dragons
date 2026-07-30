@@ -1,0 +1,22 @@
+{{/*
+  Title Case — converts kebab-case or snake_case strings to Title Case.
+
+  Usage: {{ partial "title-case.html" "some-kebab-string" }}
+  Returns: "Some Kebab String"
+*/}}
+{{- $input := . -}}
+{{- $input = replace $input "-" " " -}}
+{{- $input = replace $input "_" " " -}}
+{{- $result := "" -}}
+{{- $words := split $input " " -}}
+{{- range $i, $word := $words -}}
+  {{- if $word -}}
+    {{- $capitalized := printf "%s%s" (substr $word 0 1 | upper) (substr $word 1) -}}
+    {{- if eq $i 0 -}}
+      {{- $result = $capitalized -}}
+    {{- else -}}
+      {{- $result = printf "%s %s" $result $capitalized -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $result -}}

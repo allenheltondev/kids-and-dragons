@@ -463,7 +463,21 @@ function generateFrontMatter(
 }
 
 /**
+ * Convert a snake_case string to Title Case.
+ * e.g. "primary_locations" → "Primary Locations"
+ */
+function toTitleCase(snakeStr: string): string {
+  return snakeStr
+    .split('_')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+/**
  * Generate the relationships section content (without markers).
+ *
+ * Deduplicates entries by entity ID, grouping multiple relationships as chips.
+ * Relationship names are rendered in Title Case.
  */
 function generateRelationshipsSection(
   relatedEntries: RelatedEntry[],
@@ -487,17 +501,34 @@ function generateRelationshipsSection(
 
   for (const type of sortedTypes) {
     const group = groups.get(type)!;
-    // Sort entries alphabetically by title within each group
-    group.sort((a, b) => a.title.localeCompare(b.title));
+
+    // Deduplicate: group relationships by entity ID
+    const entityMap = new Map<string, { entry: RelatedEntry; relationships: string[] }>();
+    for (const entry of group) {
+      const existing = entityMap.get(entry.id);
+      if (existing) {
+        if (!existing.relationships.includes(entry.relationship)) {
+          existing.relationships.push(entry.relationship);
+        }
+      } else {
+        entityMap.set(entry.id, { entry, relationships: [entry.relationship] });
+      }
+    }
+
+    // Sort entities alphabetically by title
+    const sortedEntities = [...entityMap.values()].sort((a, b) =>
+      a.entry.title.localeCompare(b.entry.title),
+    );
 
     const pluralType = pluralizeType(type);
     // Capitalize first letter for heading
     const heading = pluralType.charAt(0).toUpperCase() + pluralType.slice(1);
     lines.push(`### ${heading}`);
 
-    for (const entry of group) {
+    for (const { entry, relationships } of sortedEntities) {
       const entityName = extractEntityName(entry.id);
-      lines.push(`- [${entry.title}](/${pluralType}/${entityName}/) — ${entry.relationship}`);
+      const chips = relationships.map(r => `\`${toTitleCase(r)}\``).join(' ');
+      lines.push(`- [${entry.title}](/${pluralType}/${entityName}/) ${chips}`);
     }
     lines.push('');
   }

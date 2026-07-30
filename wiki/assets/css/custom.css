@@ -1790,3 +1790,566 @@ body {
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--wiki-border);
 }
+
+/* --------------------------------------------------------------------------
+ * 24c. Navbar Inner Layout
+ *
+ * Horizontal flex layout: title (left) | search (center) | controls (right).
+ * ----------------------------------------------------------------------- */
+
+.wiki-navbar__inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--wiki-space-lg);
+  gap: var(--wiki-space-md);
+}
+
+.wiki-navbar__title {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--wiki-text);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.wiki-navbar__title:hover {
+  color: var(--wiki-accent);
+}
+
+.wiki-navbar__search {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.wiki-navbar__search-input {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+ * 24d. Search Bar Styling
+ *
+ * Themed search input to match the RPG codex aesthetic.
+ * ----------------------------------------------------------------------- */
+
+.wiki-navbar__search-input input,
+.wiki-navbar__search-input .pagefind-ui__search-input {
+  width: 100%;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  font-family: var(--wiki-font-body);
+  font-size: 0.875rem;
+  color: var(--wiki-text);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  outline: none;
+  transition: border-color var(--wiki-transition), box-shadow var(--wiki-transition);
+}
+
+.wiki-navbar__search-input input:focus,
+.wiki-navbar__search-input .pagefind-ui__search-input:focus {
+  border-color: var(--wiki-accent);
+  box-shadow: 0 0 0 3px var(--wiki-accent-soft);
+}
+
+.wiki-navbar__search-input input::placeholder,
+.wiki-navbar__search-input .pagefind-ui__search-input::placeholder {
+  color: var(--wiki-text-faint);
+}
+
+/* --------------------------------------------------------------------------
+ * 24e. Navbar Controls & Theme Toggle Styling
+ *
+ * Right-aligned control buttons with consistent RPG styling.
+ * ----------------------------------------------------------------------- */
+
+.wiki-navbar__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--wiki-space-sm);
+  flex-shrink: 0;
+}
+
+.wiki-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--wiki-touch-min);
+  height: var(--wiki-touch-min);
+  padding: 0;
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  background-color: var(--wiki-bg-raised);
+  color: var(--wiki-text-secondary);
+  cursor: pointer;
+}
+
+.wiki-theme-toggle:hover {
+  border-color: var(--wiki-accent);
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+}
+
+.wiki-navbar__search-toggle,
+.wiki-navbar__hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--wiki-touch-min);
+  height: var(--wiki-touch-min);
+  padding: 0;
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  background-color: var(--wiki-bg-raised);
+  color: var(--wiki-text-secondary);
+  cursor: pointer;
+}
+
+.wiki-navbar__search-toggle:hover,
+.wiki-navbar__hamburger:hover {
+  border-color: var(--wiki-accent);
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+}
+
+/* --------------------------------------------------------------------------
+ * 24f. Navbar Search Widget (wiki-search component from search.js)
+ *
+ * Styles for the custom Pagefind search widget rendered in the navbar.
+ * ----------------------------------------------------------------------- */
+
+.wiki-search {
+  position: relative;
+  width: 100%;
+}
+
+.wiki-search__input {
+  width: 100%;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  font-family: var(--wiki-font-body);
+  font-size: 0.875rem;
+  color: var(--wiki-text);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  outline: none;
+  transition: border-color var(--wiki-transition), box-shadow var(--wiki-transition);
+  min-height: 36px;
+}
+
+.wiki-search__input:focus {
+  border-color: var(--wiki-accent);
+  box-shadow: 0 0 0 3px var(--wiki-accent-soft);
+}
+
+.wiki-search__input::placeholder {
+  color: var(--wiki-text-faint);
+}
+
+.wiki-search__dropdown {
+  position: absolute;
+  top: calc(100% + var(--wiki-space-xs));
+  left: 0;
+  right: 0;
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  box-shadow: var(--wiki-shadow-md);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 1100;
+}
+
+.wiki-search__result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--wiki-space-xs) var(--wiki-space-sm);
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  text-decoration: none;
+  color: var(--wiki-text);
+  border-bottom: 1px solid var(--wiki-border);
+  transition: background-color var(--wiki-transition);
+}
+
+.wiki-search__result:last-child {
+  border-bottom: none;
+}
+
+.wiki-search__result:hover,
+.wiki-search__result--focused {
+  background-color: var(--wiki-accent-soft);
+}
+
+.wiki-search__result-title {
+  font-weight: 600;
+  color: var(--wiki-text);
+}
+
+.wiki-search__result-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: var(--wiki-radius-sm);
+  background-color: var(--wiki-accent-soft);
+  color: var(--wiki-accent);
+}
+
+.wiki-search__result-excerpt {
+  width: 100%;
+  font-size: 0.8rem;
+  color: var(--wiki-text-secondary);
+  line-height: 1.4;
+}
+
+.wiki-search__no-results {
+  padding: var(--wiki-space-md);
+  text-align: center;
+  color: var(--wiki-text-faint);
+  font-size: 0.875rem;
+}
+
+
+/* --------------------------------------------------------------------------
+ * 25. Image Lightbox Modal
+ *
+ * Full-viewport overlay for viewing images at full size without navigating
+ * away from the current page. Click backdrop or close button to dismiss.
+ * ----------------------------------------------------------------------- */
+
+.wiki-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: var(--wiki-space-xl);
+  cursor: pointer;
+}
+
+.wiki-lightbox[hidden] {
+  display: none;
+}
+
+.wiki-lightbox__img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: var(--wiki-radius-md);
+  box-shadow: var(--wiki-shadow-lg);
+  cursor: default;
+}
+
+.wiki-lightbox__close {
+  position: absolute;
+  top: var(--wiki-space-lg);
+  right: var(--wiki-space-lg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--wiki-touch-min);
+  height: var(--wiki-touch-min);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--wiki-radius-md);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color var(--wiki-transition), border-color var(--wiki-transition);
+}
+
+.wiki-lightbox__close:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Make portrait images clickable (cursor hint) */
+.wiki-infobox__portrait-img {
+  cursor: zoom-in;
+}
+
+.wiki-gallery__link {
+  cursor: zoom-in;
+}
+
+
+/* --------------------------------------------------------------------------
+ * 26. Character Tier Progression Viewer
+ *
+ * Carousel-style viewer showing character progression tiers with navigation
+ * arrows, a tier title, and dot indicators.
+ * ----------------------------------------------------------------------- */
+
+.wiki-tier-viewer {
+  margin: var(--wiki-space-xl) 0;
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-lg);
+  padding: var(--wiki-space-lg);
+  text-align: center;
+}
+
+.wiki-tier-viewer__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--wiki-space-md);
+  margin-bottom: var(--wiki-space-lg);
+}
+
+.wiki-tier-viewer__title {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--wiki-gold);
+  margin: 0;
+  min-width: 120px;
+  letter-spacing: 0.02em;
+}
+
+.wiki-tier-viewer__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--wiki-touch-min);
+  height: var(--wiki-touch-min);
+  padding: 0;
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  background-color: var(--wiki-bg-sunken);
+  color: var(--wiki-text-secondary);
+  cursor: pointer;
+  transition: border-color var(--wiki-transition),
+              color var(--wiki-transition),
+              background-color var(--wiki-transition);
+}
+
+.wiki-tier-viewer__nav:hover {
+  border-color: var(--wiki-accent);
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+}
+
+.wiki-tier-viewer__stage {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--wiki-radius-md);
+  background-color: var(--wiki-bg-sunken);
+}
+
+.wiki-tier-viewer__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.wiki-tier-viewer__img--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.wiki-tier-viewer__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--wiki-space-sm);
+  margin-top: var(--wiki-space-lg);
+}
+
+.wiki-tier-viewer__dot {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 2px solid var(--wiki-border-strong);
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color var(--wiki-transition),
+              border-color var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+.wiki-tier-viewer__dot:hover {
+  border-color: var(--wiki-accent);
+  transform: scale(1.2);
+}
+
+.wiki-tier-viewer__dot--active {
+  background-color: var(--wiki-gold);
+  border-color: var(--wiki-gold);
+  transform: scale(1.2);
+}
+
+
+/* --------------------------------------------------------------------------
+ * 27. Relationship Chips
+ *
+ * Inline code elements within relationship list items are styled as small
+ * colored chips/badges to visually distinguish relationship types.
+ * ----------------------------------------------------------------------- */
+
+.entity-content li > code,
+.entity-content li > a + code {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 4px;
+  font-family: var(--wiki-font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+  border: 1px solid rgba(139, 108, 245, 0.25);
+  border-radius: var(--wiki-radius-sm);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+
+/* --------------------------------------------------------------------------
+ * 28. Related Entities Visual Grid
+ *
+ * Card-based grid layout for related entities with thumbnails, entity name,
+ * type indicator, and relationship chips.
+ * ----------------------------------------------------------------------- */
+
+.wiki-related {
+  margin: var(--wiki-space-xl) 0;
+}
+
+.wiki-related__heading {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.5rem;
+  margin-bottom: var(--wiki-space-lg);
+}
+
+.wiki-related__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--wiki-space-md);
+}
+
+.wiki-related__card {
+  display: flex;
+  align-items: center;
+  gap: var(--wiki-space-md);
+  padding: var(--wiki-space-md);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  text-decoration: none;
+  color: var(--wiki-text);
+  transition: border-color var(--wiki-transition),
+              box-shadow var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+.wiki-related__card:hover {
+  border-color: var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-sm);
+  transform: translateY(-1px);
+  text-decoration: none;
+  color: var(--wiki-text);
+}
+
+.wiki-related__card--unresolved {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.wiki-related__thumb {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: var(--wiki-radius-sm);
+  overflow: hidden;
+  background-color: var(--wiki-bg-sunken);
+  border: 1px solid var(--wiki-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wiki-related__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wiki-related__placeholder {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.wiki-related__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wiki-related__name {
+  font-family: var(--wiki-font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--wiki-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiki-related__type {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--wiki-text-faint);
+}
+
+.wiki-related__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-shrink: 0;
+  max-width: 45%;
+  justify-content: flex-end;
+}
+
+.wiki-related__chip {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--wiki-font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--wiki-accent);
+  background-color: var(--wiki-accent-soft);
+  border: 1px solid rgba(139, 108, 245, 0.25);
+  border-radius: var(--wiki-radius-sm);
+  line-height: 1.4;
+  white-space: nowrap;
+}
