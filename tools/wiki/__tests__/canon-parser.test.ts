@@ -37,10 +37,15 @@ describe('parseCanonDirectory', () => {
       expect(bigfoot.status).toBe('reviewed');
       expect(bigfoot.featured).toBe(true);
       expect(bigfoot.tags).toEqual(['forest', 'mythical', 'gentle']);
+
+      // `drops` is a top-level relationship array — the shape canon/geography.yaml
+      // uses throughout — so it is promoted into relationships alongside the keys
+      // from the explicit `relationships:` block.
       expect(bigfoot.relationships).toEqual({
         habitat: ['biome.enchanted_woods'],
         allies: ['creature.silver_otter'],
         enemies: ['creature.bone_crawler'],
+        drops: ['item.forest_moss', 'item.ancient_bark'],
       });
     });
 
@@ -50,13 +55,16 @@ describe('parseCanonDirectory', () => {
 
       // These should be in metadata, not as top-level CanonEntity fields
       expect(bigfoot.metadata['classification']).toBe('Guardian Beast');
-      expect(bigfoot.metadata['habitat']).toBe('biome.enchanted_woods');
       expect(bigfoot.metadata['temperament']).toBe('Gentle');
       expect(bigfoot.metadata['difficulty']).toBe('Moderate');
-      expect(bigfoot.metadata['drops']).toEqual(['item.forest_moss', 'item.ancient_bark']);
       expect(bigfoot.metadata['short_description']).toBe(
         'A towering forest guardian covered in moss and ancient bark'
       );
+
+      // `habitat` and `drops` are relationship keys, so they land in
+      // relationships instead — metadata holds only what is left over.
+      expect(bigfoot.metadata['habitat']).toBeUndefined();
+      expect(bigfoot.metadata['drops']).toBeUndefined();
     });
 
     it('derives entity type from the id prefix', () => {
