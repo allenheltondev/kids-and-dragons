@@ -1,0 +1,76 @@
+{
+  "$comment": "Bigfoot skeleton. The clip table is not here — it is assets/manifest.json's rigContract, and the build derives every clip, tick, event and input from it. See art/rig/README.md.",
+  "root": "body",
+  "adjacency": [
+    [
+      "body",
+      "head"
+    ],
+    [
+      "body",
+      "mane"
+    ],
+    [
+      "body",
+      "arm_l"
+    ],
+    [
+      "body",
+      "arm_r"
+    ],
+    [
+      "body",
+      "leg_l"
+    ],
+    [
+      "body",
+      "leg_r"
+    ]
+  ],
+  "zOrder": [
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane"
+  ],
+  "origin": {
+    "x": 512,
+    "y": 900
+  },
+  "ground": {
+    "x": 700,
+    "y": 1088
+  },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": [
+          "idle",
+          "hurt",
+          "walk",
+          "guard"
+        ]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  },
+  "$maneComment": "Bigfoot's `mane` hangs off the body, and it is the only species where it does. On the other five the mane is a head ruff; here the layer is a whole-figure fur trim — brow, mantle, chest, and separate islands along both arms — so a head pivot would swing the arm fur off the arms. The cost is the mirror of that: the arm-fur islands do not follow the arms during walk or attack, because the art is one flattened layer and nothing in a rig can un-flatten it. Splitting the trim per limb is an art change, not a rig change.",
+  "$paletteComment": "The fur trim is the mane, and it is also the signature part, so there is no separate accent: the manifest mint sits on the leaf tucked in the fur, a few dozen pixels inside the same flattened layer. No tint slots ship in this rig — art-pipeline §6.2 carries the measurement that says why, and the property names the client will drive when they do (mane).",
+  "$stageComment": "The artboard is deliberately LARGER than the art canvas. The 1024 canvas is commissioned with 8px of margin (manifest tolerance.edgeMarginPx), which is enough for a part not to be born against the edge and nowhere near enough for a rig to rotate, leap or topple inside — a knocked-down character needs its own diagonal, and a mythic tier fills the canvas standing still. So the art canvas sits centred in a 1400 stage with 188px of blank on every side, at scale 1, and the standing point still lands on the manifest origin. Rest is still 1:1 with assembled.png inside that sub-rect, which is what build-rigs checks."
+}
