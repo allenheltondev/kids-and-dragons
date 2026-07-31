@@ -1,5 +1,13 @@
 # Brief: canon as a content source, and generated situations
 
+> **Superseded in part (2026-07-31) by `docs/canon-contract.md`.** Allen ruled
+> that `canon/` is the truth, which moves §2's bestiary *into* canon as a field
+> group on the creature entry — `content/bestiary.json` becomes a generated
+> projection rather than an authored file. §0's structural finding and §1's gap
+> list still stand, with one correction noted in §1.4 (biomes.yaml already
+> carries a creature index). Read the contract for the schema; read this for
+> why it matters.
+
 **Status: open.** Two questions, one answer. *"Can an agent invent situations on
 the fly?"* and *"what is canon missing?"* are the same question, because the
 only safe way to generate a situation is to **select** from canon rather than
@@ -101,10 +109,12 @@ Pick one — I'd make `asset_id` the join key, since it already matches
   features + 4 routes) — overlapping ownership. geography.yaml states "A named
   place appears once in this canon and is referenced elsewhere by id," and
   locations.yaml then names three more places. One of these files owns places.
-- **biomes.yaml** (17) — the strongest file; matches the art 1:1. Missing a
-  reverse index: creature → location exists, location → creature does not, and
-  "what could plausibly be here" is the query an encounter generator makes.
-  Also no link to `content/maps/` (which has exactly one map, `thicket`).
+- **biomes.yaml** (17) — the strongest file; matches the art 1:1, and its
+  `inhabitants` block already carries the reverse index an encounter generator
+  needs (`ambient_creatures`, `dangerous_creatures`, `primary_peoples`, and four
+  more). What it lacks is normalization — those are bare ids where the rest of
+  canon is prefixed — and a link to `content/maps/` (which has one map,
+  `thicket`).
 - **characters.yaml** (6) — duplicates `assets/manifest.json` (`bipedal`,
   `signature_part`) and omits what `rules.json` holds (`worldAbility`,
   `passive`). Three files describe a unicorn; none references another.

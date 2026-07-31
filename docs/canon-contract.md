@@ -1,0 +1,374 @@
+# Kids & Dragons — Canon Contract
+
+**Status: proposed.** `canon/*.yaml` is the truth. Everything else — the wiki,
+`content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
+document is the schema that makes derivation mechanical instead of manual.
+
+Written to be settled **before** the canon elaboration pass, not after: adding
+a field to 87 entities is cheap while you are already editing them and
+expensive once you are done.
+
+> **One concern, stated once.** At 115KB / ~30k tokens the entire corpus fits
+> in a Lambda bundle, and `GetItem` on a table is slower and more moving parts
+> than a property access on a frozen object. The reasons to project into
+> DynamoDB anyway are real — selective fetch for agent tools without shipping
+> the corpus into every context, reverse-relationship queries that don't load
+> everything, and a place to hang derived or per-household data later — so §7
+> specifies it. But §6's registry is the load-bearing part and works standalone;
+> build behind `CanonRepository` so the in-memory and DynamoDB readers are the
+> same swap the game store already makes (`memory-repository.ts` /
+> `dynamo-repository.ts`). Design for both, ship the bundle first.
+
+---
+
+## 1. Where it lives
+
+A new workspace package, `packages/canon`:
+
+```
+packages/canon/
+  src/
+    schema/            zod schemas, one file per taxonomy + envelope.ts + edges.ts
+    parse.ts           YAML → validated, normalized entities
+    registry.ts        the in-memory registry + forward/reverse edge indexes
+    repository.ts      CanonRepository interface (memory | dynamo)
+    index.ts
+```
+
+**Not `@kad/shared`.** The client depends on shared, the client does not need
+canon, and Zod would land in the game bundle for nothing. `packages/server`,
+`tools/`, and the sync job depend on `@kad/canon`; the client never does.
+
+Zod is a new dependency (the repo currently validates with ajv + hand-written
+`schemas/*.json`). That is the point of the exercise: **one definition, many
+consumers** — TS types via `z.infer`, YAML validation, DynamoDB item shape,
+agent tool `input_schema`, and — via `zod-to-json-schema` — the `schemas/*.json`
+files that `tools/content/validate.mjs` already consumes, which become
+generated rather than hand-maintained.
+
+## 2. The envelope
+
+Every canon entity, in every taxonomy, satisfies this. It is the base every
+schema in §3 extends, and the reason a generic registry, a generic DynamoDB
+row, and a generic `canon_get` tool are possible at all.
+
+```ts
+export const Envelope = z.object({
+  id:            CanonId,                    // "creature.glassback_crab" — see §5
+  title:         z.string().min(1),          // display name
+  asset_id:      Slug.optional(),            // the ONE join key — §9 D3
+  canon_status:  CanonStatus,                // §9 D1
+  tags:          z.array(Slug).default([]),
+  featured:      z.boolean().default(false),
+
+  short_description: z.string().min(1),
+  visual_identity:   z.string().optional(),  // art brief input
+  standard_behavior: z.string().optional(),  // how it normally acts
+  canon_constraints: z.string().optional(),  // the "never do this" line
+  common_story_uses: z.string().optional(),  // authoring/generation hint
+  notes:             z.array(z.string()).default([]),
+});
+```
+
+`visual_identity` feeds `docs/asset-brief.md`; `canon_constraints` is the
+single most load-bearing field for generated content and today is prose (§9 D9).
+
+## 3. Taxonomies
+
+Thirteen, across ten files — `geography.yaml` carries four.
+
+| Taxonomy | File | Id prefix | Count | Adds to the envelope |
+|---|---|---|---|---|
+| `biome` | biomes.yaml | `biome.` | 17 | `map_label`, `climate`, `environment_type`, `danger_level`, `inhabitants` (§4) |
+| `species` | characters.yaml | `character.` | 6 | `bipedal`, `signature_part`, `scale` |
+| `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `danger_level`, **`encounter`** (§9 D9) |
+| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, `speech_register` (§9 D8) |
+| `faction` | factions.yaml | `faction.` | 2 | `faction_type`, `alignment` |
+| `item` | items.yaml | `item.` | 3 | `category`, `rarity`, `acquisition`, **`mechanics`** (§9 D7) |
+| `location` | locations.yaml | `location.` | 3 | `location_type`, `parent_biome` |
+| `quest` | quests.yaml | `quest.` | 2 | `quest_type`, `difficulty`, `objectives`, `rewards` |
+| `campaign` | campaigns.yaml | `campaign.` | 2 | `campaign_type`, `chapter_count` |
+| `region` | geography.yaml | `geography.` | 12 | `kind`, `map_anchor`, `relative_position`, `barriers` |
+| `site` | geography.yaml | `location.` | 5 | `kind`, `map_anchor` |
+| `feature` | geography.yaml | `feature.` | 4 | `kind`, `map_anchor` |
+| `route` | geography.yaml | `route.` | 4 | `kind`, `map_anchor`, `travel_modes` |
+
+Each is `Envelope.extend({...})`. The file → taxonomy mapping is data
+(`FILES` in `parse.ts`), so a new taxonomy is a schema plus a table row.
+
+## 4. Edges are declared in the schema, not discovered by a parser
+
+Today the relationship type system is a private constant:
+`RELATIONSHIP_KEY_TO_PREFIX` in `tools/wiki/canon-parser.ts` maps ~35 field
+names (`primary_locations` → `biome.`, `dropped_by` → `creature.`, …) to target
+prefixes. That map *is* the schema, sitting in a tool that only the wiki runs.
+
+Move it into the schemas. An edge field declares its target taxonomy:
+
+```ts
+const edge = (...to: Taxonomy[]) => z.array(CanonRef(to)).default([]);
+
+export const Biome = Envelope.extend({
+  inhabitants: z.object({
+    primary_peoples:            edge("species", "people"),
+    supporting_peoples:         edge("species", "people"),
+    cultural_orders:            edge("faction"),
+    ambient_creatures:          edge("creature"),
+    dangerous_creatures:        edge("creature"),
+    legendary_beings:           edge("creature"),
+    supernatural_manifestations:edge("creature"),
+  }),
+  relationships: z.object({
+    locations: edge("location", "site", "feature"),
+    factions:  edge("faction"),
+    items:     edge("item"),
+  }),
+});
+```
+
+Two payoffs. Referential integrity becomes a `superRefine` against the registry
+rather than a bespoke pass, and the reverse index (§7) is derivable for every
+field without anyone maintaining a list.
+
+Geography expresses edges as **top-level typed fields** (`borders`, `connects`,
+`crosses`, `contained_by`, `adjacent_to`, `access_from`) rather than inside a
+`relationships` object. Keep that — those are semantically distinct edge kinds
+and read better — and declare them as edges in the schema. The parser stops
+special-casing anything.
+
+## 5. Id form and normalization
+
+**Canonical form is `<prefix>.<slug>`** — `creature.glassback_crab`. Two
+reasons beyond consistency: taxonomy is derivable from an id alone (so
+`canon_get("creature.x")` needs no second argument, and a DynamoDB key can be
+computed without a lookup), and it is already the majority form.
+
+The corpus is currently mixed — `borders: [geography.enchanted_woods]` prefixed,
+`inhabitants.ambient_creatures: [mosshorn]` bare, `relationships.primary_locations:
+[red_sky_foothills]` bare. **Accept bare on input, normalize on parse**: the
+edge declaration names the target taxonomy, so a bare slug resolves
+mechanically, and an ambiguous one (two taxonomies allowed, both match) is a
+parse error. Normalization is one-way — the YAML stays readable, the registry
+is uniform.
+
+`Slug` is `/^[a-z0-9]+(_[a-z0-9]+)*$/`. Note `tags` currently use **kebab**-case
+(`ancient-forest`, `living-magic`) while ids use snake — pick one (§9 D12).
+
+**Field names stay `snake_case`.** No camelCase transform layer: the agent
+reading a `canon_get` result should see the field names the canon files and
+`agent_instructions` use, and a rename layer is a second place for drift.
+
+## 6. The pipeline
+
+```
+canon/*.yaml
+   │  parse.ts    zod per taxonomy → typed entities, ids normalized
+   │  registry.ts forward + reverse edge index, referential integrity
+   ▼
+CanonRegistry ──┬──► npm run canon:check      CI gate (fails the build)
+                ├──► npm run canon:index      content/canon-index.json (legal ids)
+                ├──► zod-to-json-schema        schemas/*.json, generated
+                ├──► tools/wiki/generate.ts    replaces canon-parser.ts wholesale
+                ├──► npm run canon:sync        → DynamoDB (§7)
+                └──► CanonRepository            server validation + agent tools (§8)
+```
+
+`tools/wiki/canon-parser.ts` and `canon-validator.ts` are **superseded**, not
+duplicated: the wiki generator becomes a consumer of the registry. Its
+`validateCanon()` logic (id format, uniqueness, broken references) is the
+starting point for the zod refinements — it is already written and already has
+tests under `tools/wiki/__tests__/`.
+
+`canon:check` runs in CI. Today nothing does: `ci.yml` runs `content:validate`
+and `art:verify`, and `validateCanon()` only executes inside `wiki:generate`,
+which is manual. That is the cheapest win in this document.
+
+## 7. The DynamoDB projection
+
+Same table (`kad-<stage>`, PK/SK + GSI1 — `infra/template.yaml`). Canon rows are
+global rather than household-scoped, which the single-table design already
+tolerates; they carry **no `ttl`**, and the sweeper only queries the
+`GSI1_GUEST` partition, so it cannot touch them.
+
+| Item | PK | SK | GSI1PK | GSI1SK |
+|---|---|---|---|---|
+| Entity | `CANON#<taxonomy>` | `<id>` | — | — |
+| Edge | `CANON#EDGE#<sourceId>` | `<field>#<targetId>` | `CANONREF#<targetId>` | `<field>#<sourceId>` |
+| Manifest | `CANON#META` | `MANIFEST` | — | — |
+
+Access patterns, all single queries:
+
+- **get by id** — taxonomy from the id prefix, `GetItem`
+- **list a taxonomy** — `Query PK = CANON#creature`
+- **forward edges** — `Query PK = CANON#EDGE#biome.enchanted_woods`
+- **reverse edges** — `Query GSI1 PK = CANONREF#biome.enchanted_woods`
+  ("what lives here", "what drops this") — the encounter-generation query
+- **tag search** — client-side over a listed taxonomy; 87 entities does not
+  justify an index
+
+**Sync is one-way and idempotent.** `npm run canon:sync` (invoked from
+`scripts/deploy.sh` after the stack update, and runnable against DynamoDB Local
+in dev) parses, validates, and diffs by per-entity `content_hash`, writing only
+what changed. Deletion is handled by sweep: after upsert, query each taxonomy
+partition and delete ids absent from the parse. No tombstones — canon files are
+truth, so absence is deletion. Every row carries `content_hash`, `schema_version`,
+and `synced_at`; the `CANON#META` manifest carries the corpus hash and git SHA,
+so drift is one `GetItem` to detect. A `--dry-run` prints the diff.
+
+**DynamoDB is never written by gameplay.** If a canon row is wrong, the fix is a
+YAML edit and a re-sync. Nothing else may write these partitions.
+
+## 8. Agent tool surface
+
+The payoff of zod-throughout: the same schema that validates the YAML *is* the
+tool contract, via `zod-to-json-schema`.
+
+| Tool | Input | Returns |
+|---|---|---|
+| `canon_get` | `{ id }` | one entity |
+| `canon_list` | `{ taxonomy, tags?, danger_level?, canon_status? }` | envelope fields only, no prose |
+| `canon_related` | `{ id, field?, direction: "out" \| "in" }` | ids + titles |
+| `canon_search` | `{ query, taxonomy? }` | ids + titles |
+
+`canon_list` returning the envelope rather than full entries is deliberate: an
+agent listing 17 creatures wants to *choose*, then fetch. Full prose for all 17
+is ~8k tokens spent to pick one.
+
+Two rules, both enforced server-side rather than prompted:
+
+1. **Read-only.** No tool writes canon.
+2. **`agent_instructions` ride along.** Each taxonomy's `agent_instructions`
+   block is returned with every `canon_list` and `canon_get` for that taxonomy.
+   Those instructions are the guardrails — *"Empty relationship lists are
+   deliberate; they do not authorize an agent to fill the gap"* — and an agent
+   that fetches an entity without them has lost the thing that makes the fetch
+   safe.
+
+---
+
+## 9. Decisions required before the schema can be final
+
+These are the gaps. Each one blocks a field definition; each has a recommended
+resolution, and the recommendation is what I would implement absent a ruling.
+
+**D1 — `canon_status` is not one enum.** Nine values across two families:
+`confirmed | newly_defined | intentionally_undefined` (nine files) and
+`map_canonical | map_canonical_and_biome_matched | map_visible_name_pending |
+map_implied | visible_unlabeled_feature` (geography only).
+*Recommend:* a shared `CanonStatus` for all taxonomies, plus a separate
+geography-only `map_provenance` field. Those five values answer "how do we know
+this place exists," which is a different question from "is this canon."
+
+**D2 — id form is mixed.** Bare in `inhabitants` and
+`relationships.primary_locations`, prefixed in `borders` / `biome_id` /
+`geography_id`. *Recommend:* §5 — canonical prefixed, bare accepted and
+normalized on parse.
+
+**D3 — five aliasing fields.** `asset_id`, `canonical_creature_id`,
+`canonical_location_id`, `species_manifest_id`, `geography_id` all mean "this
+thing's other name." *Recommend:* keep `asset_id` only (it already matches
+`assets/<kind>/<id>/`, and is the join to `content/`); `geography_id` becomes an
+edge; the rest are dropped as derivable.
+
+**D4 — two relationship representations.** *Recommend:* §4 — keep both shapes,
+declare both in the schema.
+
+**D5 — `barriers` values are not ids.** `barriers: {south: northern_escarpment,
+east: upper_great_river}` — neither resolves; the closest entity is
+`feature.great_river`. *Recommend:* promote them to `feature.*` entities and
+make `barriers` an edge map, or declare the values free text. Currently they
+look like references and are not.
+
+**D6 — place ownership.** `geography.yaml` states "A named place appears once in
+this canon and is referenced elsewhere by id," then `locations.yaml` names three
+more places. *Recommend:* geography owns *where* (map anchor, adjacency,
+routes); locations owns *what happens there* (story sites), and every location
+carries a required edge to its geography entity.
+
+**D7 — item ownership, now decided by canon-as-truth.** `canon/items.yaml` (3,
+lore-only) and `content/items.json` (15, mechanical) are disjoint — no shared
+id. Since canon is truth, the item's `mechanics` block (`kind`, `icon`,
+`effect`) belongs **in canon**, and `content/items.json` becomes a generated
+projection. Every mechanical item needs a canon entry; that is 12 new entries.
+
+**D8 — named individuals.** `npcs.yaml` holds *peoples* (centaur, faun,
+frogfolk), and `agent_instructions` says named individuals are not canon. Yet
+`bramblewood-01.json` has Pib, a wisp, and an embarrassed door, characterised
+entirely in that chapter's `llmHints.npcVoices` and discarded afterward.
+*Recommend:* add `speech_register` to `people` (so any member of that people can
+be voiced consistently), and formally bless chapter-scoped individuals as
+non-canon with a documented shape. Do not open a `individual.` taxonomy yet.
+
+**D9 — no mechanical fields anywhere, and they now belong here.** `danger_level:
+moderate` is prose; `EnemySpec` needs `hp`, `guard`, `quick`, `steps`, `attack`.
+*This supersedes `docs/briefs/generated-content.md` §2*, which put the bestiary
+in `content/`: under canon-as-truth the stat block is a field group on the
+creature, and `content/bestiary.json` becomes a generated projection.
+
+```yaml
+encounter:
+  band: skirmisher          # → stat ranges; a generator picks a band, never an hp
+  stats: { hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }
+  ai: harrier               # a profile enemy-ai.ts implements
+  xp: 15
+  footprint: 1              # tiles; the board is 10×8 and EnemySpec assumes 1
+  resolutions:              # D10
+    - { kind: talk,  stat: heart, tn: 12 }
+    - { kind: evade, stat: quick, tn: 12 }
+```
+
+Required for `classification: dangerous_creature`, optional elsewhere.
+
+**D10 — non-combat resolutions have no field.** `creatures.yaml`
+`agent_instructions` requires that encounters "usually permit more than combat…
+observation, conversation, bargaining, rescue, distraction, escape," and nothing
+can express one. The glassback crab's *"stops pursuing once intruder leaves
+territory"* is a mechanic written in English. *Recommend:* the `resolutions`
+array above, whose `stat`/`tn` map straight onto a `CheckScene`.
+
+**D11 — nine dangling references.** Real, and few:
+
+| Source | Field | Target |
+|---|---|---|
+| `biome.sky_islands`, `exchange`, `skullwater_cave`, `mermaid_cove`, `bone_yard` | `relationships.locations` | `open_sea` |
+| `biome.mermaid_cove`, `bone_yard` | `relationships.locations` | `the_whirlpool` |
+| `biome.enchanted_woods` | `relationships.locations` | `bramblewood` |
+| `biome.exchange` | `inhabitants.population_rule` | *(prose in an edge object)* |
+
+`bramblewood` is the setting of the only shipped chapter and is not an entity.
+`open_sea` and `the_whirlpool` are named in seven places and exist nowhere.
+Either promote all three, or drop the references. The last row is a schema bug,
+not a data bug: `population_rule` is prose living inside `inhabitants`, whose
+other seven keys are all edge arrays — move it up to the envelope.
+
+**D12 — `tags` are kebab-case, ids are snake_case.** Pick one. *Recommend:*
+snake, matching ids and `asset_id`, so one `Slug` regex covers the corpus.
+
+**D13 — `schema_version` is declared and unenforced.** Every file says `"2.0"`;
+nothing reads it. *Recommend:* the parser asserts it and fails loudly on
+mismatch, and this document gets a "changes in 2.1" section the day a field
+changes shape.
+
+**D14 — one correction to a claim in the earlier brief.** I wrote that canon has
+no biome → creature index. It does: `biomes.yaml` `inhabitants` carries seven
+edge arrays including `ambient_creatures` and `dangerous_creatures`. Encounter
+generation can already ask "what lives here" — that field just needs D2's
+normalization and D9's stats to be *usable*.
+
+---
+
+## 10. Order
+
+1. `packages/canon` with the envelope + one taxonomy (`creature`), parse,
+   registry, and `canon:check` **in CI**. Proves the shape end to end.
+2. Settle D1–D3 and D12 — they change every schema, so they are cheapest first.
+3. The remaining twelve taxonomies; delete `tools/wiki/canon-parser.ts` and
+   point the wiki at the registry.
+4. Generate `schemas/*.json` from zod; `content:validate` starts checking
+   chapters against real canon ids.
+5. D9/D10 fields, during the elaboration pass.
+6. `CanonRepository` + `canon:sync` + the DynamoDB projection.
+7. Agent tools on top of the repository.
+
+Steps 1–4 are pure infrastructure and change no canon prose. Step 5 is the one
+that has to happen *while* the elaboration is underway.
