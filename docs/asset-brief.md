@@ -917,7 +917,7 @@ which is what a turn is about. **So combat art has to survive 64px** — roughly
 And two rules that follow from "what just hit whom":
 
 - **An effect belongs to exactly one square.** That is the §9.4 centre-energy rule, and the
-  behavioural half of it is that the sheet plays on the **target's** tile — never between attacker
+  behavioral half of it is that the sheet plays on the **target's** tile — never between attacker
   and target, never at a midpoint. Three players and up to four enemies means neighbouring tiles
   are usually occupied, and an effect that straddles two of them is a question.
 - **Damage numbers own the top of the frame** (§9.4's top-band rule). They are the only text in a

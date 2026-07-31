@@ -13,6 +13,8 @@ import { loadCanon } from "./index.js";
 import { buildRegistry } from "./registry.js";
 import { parseCanon } from "./parse.js";
 import { Creature, Biome } from "./taxonomies.js";
+import type { Creature as CreatureEntity } from "./taxonomies.js";
+import { BANDS, BANDS_BY_DANGER, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
 import { errors, related } from "./registry.js";
 
@@ -174,5 +176,74 @@ describe("registry integrity", () => {
           issue.id === "biome.test_wood" && issue.message.includes("references a item"),
       ),
     ).toBe(true);
+  });
+});
+
+describe("encounter blocks — D9/D10", () => {
+  const creatures = [...registry.byTaxonomy.get("creature")!] as CreatureEntity[];
+  const dangerous = creatures.filter((c) => c.classification !== "ambient_creature");
+
+  it("gives every dangerous creature a stat block and every ambient one none", () => {
+    expect(dangerous.every((c) => c.encounter)).toBe(true);
+    expect(
+      creatures.filter((c) => c.classification === "ambient_creature").every((c) => !c.encounter),
+    ).toBe(true);
+  });
+
+  it("offers a way past every dangerous creature that is not a fight", () => {
+    // creatures.yaml agent_instructions: "Encounters should usually permit more
+    // than combat." This is that instruction, enforced.
+    for (const c of dangerous) {
+      expect(c.encounter?.resolutions.length, c.id).toBeGreaterThan(0);
+    }
+  });
+
+  it("resolves stats from the band, so no creature carries loose integers", () => {
+    for (const c of dangerous) {
+      const stats = resolveStats(c.encounter!);
+      expect(stats, c.id).not.toBeNull();
+      expect(stats!.hp).toBeGreaterThan(0);
+    }
+  });
+
+  it("keeps band and danger_level from disagreeing", () => {
+    for (const c of dangerous) {
+      expect(BANDS_BY_DANGER[c.danger_level], c.id).toContain(c.encounter!.band);
+    }
+  });
+
+  it("lands a usual-count encounter inside the four-round HP window", () => {
+    // The invariant that matters is the *encounter* total, not any one creature:
+    // one brute and three skirmishers are both fine, and only the sum says so.
+    for (const band of ["skirmisher", "lurker", "brute", "sentinel"] as const) {
+      const row = BANDS[band];
+      const total = row.stats!.hp * row.usualCount;
+      expect(total, band).toBeGreaterThanOrEqual(ENCOUNTER_HP_WINDOW.min);
+      expect(total, band).toBeLessThanOrEqual(ENCOUNTER_HP_WINDOW.max);
+    }
+  });
+
+  it("reproduces the stat block the shipped chapter has always used", () => {
+    // The skirmisher row was derived from bramblewood-01.json's Bramblewisp.
+    // If this fails, either the band table moved or the chapter did.
+    const wisp = resolveStats(
+      creatures.find((c) => c.id === "creature.will_o_wisp")!.encounter!,
+    );
+    expect(wisp).toEqual({ hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 });
+  });
+
+  it("rejects an ambient creature that grows a stat block", () => {
+    const ambient = creatures.find((c) => c.classification === "ambient_creature")!;
+    const result = Creature.safeParse({
+      ...ambient,
+      encounter: { band: "brute", resolutions: [{ kind: "escape", stat: "quick", difficulty: "easy" }] },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a legend with no authored stats — the band has none to give", () => {
+    const dragon = creatures.find((c) => c.id === "creature.legend_dragon")!;
+    const { stats: _dropped, ...rest } = dragon.encounter!;
+    expect(Creature.safeParse({ ...dragon, encounter: rest }).success).toBe(false);
   });
 });
