@@ -260,7 +260,7 @@ regions:
       - location.stone_crossing
     coast: eastern_sea
     notes:
-      - The region has two mapped westward crossings: the northern bridge and Stone Crossing.
+      - "The region has two mapped westward crossings: the northern bridge and Stone Crossing."
       - The southern extent reaches the river mouth and the waters north of the Bone Yard.
 
   - id: geography.glacier_of_origins
