@@ -18,7 +18,8 @@ related:
     type: biome
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/bone_crawler/assembled.png
+  primary: assets/entities/bone_crawler/portrait.webp
+  primaryFull: assets/entities/bone_crawler/assembled.png
 ai_context:
   mood: "Pale scavenger that constructs protective shells from loose fossil fragments."
   themes: "Dangerous, Bone_yard, Scavenger, Swarm"

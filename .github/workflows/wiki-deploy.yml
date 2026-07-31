@@ -49,6 +49,13 @@ jobs:
           node-version: 22
           cache: npm
 
+      # Pillow, for the derived page-sized images below.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
       - uses: actions/setup-go@v5
         with:
           go-version: "1.22"
@@ -63,6 +70,9 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
@@ -73,6 +83,14 @@ jobs:
       # projection would publish numbers the game does not use.
       - name: Project canon into the bestiary
         run: npm run canon:bestiary
+
+      # Pages render derived, page-sized images rather than the commissioned
+      # sources — a related-entity card is 56x56 and was pulling a 754KB
+      # backdrop. Deriving them here rather than trusting the committed copies
+      # means new art cannot publish a stale picture; a checkout still has them
+      # committed so `wiki:generate` works locally without Pillow.
+      - name: Derive page-sized images
+        run: npm run art:portraits
 
       # Item pages show what the item does in your hands, and they read
       # content/items.json — canon's `mechanics` blocks merged with every

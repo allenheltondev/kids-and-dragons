@@ -5,7 +5,8 @@
  * the full-size image in a centered modal with a dark backdrop.
  *
  * Features:
- * - Click any gallery image or portrait to open in modal
+ * - Click any gallery image or portrait to open in modal (at full resolution,
+ *   via data-full, even when the page renders a smaller derived portrait)
  * - Click backdrop, close button, or press Escape to dismiss
  * - Traps focus inside modal while open
  * - Prevents body scroll while modal is active
@@ -104,10 +105,12 @@
     }
 
     // Case 2: Infobox portrait image (no link wrapper)
+    // `data-full` is the commissioned source; `src` is the small derived
+    // portrait the page renders. Opening `src` would zoom into a thumbnail.
     var portrait = e.target.closest('.wiki-infobox__portrait-img');
     if (portrait) {
       e.preventDefault();
-      open(portrait.src, portrait.alt);
+      open(portrait.dataset.full || portrait.src, portrait.alt);
       return;
     }
 

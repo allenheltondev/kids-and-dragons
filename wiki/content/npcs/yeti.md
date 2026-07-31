@@ -23,7 +23,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/yeti/assembled.png
+  primary: assets/entities/yeti/portrait.webp
+  primaryFull: assets/entities/yeti/assembled.png
 ai_context:
   mood: "Patient ice-dwelling people who preserve and interpret memories trapped in the glacier."
   themes: "Supporting_people, Glacier, Memory_keeper, Patient"

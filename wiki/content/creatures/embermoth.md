@@ -24,7 +24,8 @@ related:
     type: location
     relationship: ambient_creatures
 assets:
-  primary: assets/entities/embermoth/assembled.png
+  primary: assets/entities/embermoth/portrait.webp
+  primaryFull: assets/entities/embermoth/assembled.png
 ai_context:
   mood: "Warm-bodied moth with smoky wings and ember-like markings."
   themes: "Ambient, Foothills, Volcanic, Indicator"

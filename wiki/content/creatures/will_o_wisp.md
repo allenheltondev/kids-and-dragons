@@ -27,7 +27,8 @@ related:
     type: individual
     relationship: creatures
 assets:
-  primary: assets/entities/will_o_wisp/assembled.png
+  primary: assets/entities/will_o_wisp/portrait.webp
+  primaryFull: assets/entities/will_o_wisp/assembled.png
 ai_context:
   mood: "A floating light formed when a strong memory becomes tangled in marsh magic."
   themes: "Supernatural, Marsh, Memory, Misdirection"

@@ -18,7 +18,8 @@ related:
     type: biome
     relationship: ambient_creatures
 assets:
-  primary: assets/entities/reefglider/assembled.png
+  primary: assets/entities/reefglider/portrait.webp
+  primaryFull: assets/entities/reefglider/assembled.png
 ai_context:
   mood: "Bright manta-like reef animal that glides through warm currents in coordinated groups."
   themes: "Ambient, Ocean, Reef, Indicator"

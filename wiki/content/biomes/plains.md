@@ -72,9 +72,11 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
-  primary: assets/biomes/plains/bg.webp
+  primary: assets/biomes/plains/portrait.webp
+  primaryFull: assets/biomes/plains/bg.webp
   gallery:
-    - assets/biomes/plains/tiles.png
+    - src: assets/biomes/plains/portrait.webp
+      full: assets/biomes/plains/tiles.png
 ai_context:
   mood: "The central open country of the realm, crossed by old roads, caravans, and routes connecting the forest, foothills, fields, river, and coast."
   themes: "Central_plains, Roads, Caravans, Grassland, Crossroads"

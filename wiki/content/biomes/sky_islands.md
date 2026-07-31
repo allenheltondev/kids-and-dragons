@@ -27,9 +27,11 @@ related:
     type: item
     relationship: found_in
 assets:
-  primary: assets/biomes/sky_islands/bg.webp
+  primary: assets/biomes/sky_islands/portrait.webp
+  primaryFull: assets/biomes/sky_islands/bg.webp
   gallery:
-    - assets/biomes/sky_islands/tiles.png
+    - src: assets/biomes/sky_islands/portrait.webp
+      full: assets/biomes/sky_islands/tiles.png
 ai_context:
   mood: "An archipelago of inhabited islands that drift across the western sky on recurring but imperfect wind routes."
   themes: "Aerial, Drifting_islands, Wind, Temples, Open_sky"

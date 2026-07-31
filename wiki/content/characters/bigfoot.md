@@ -24,11 +24,15 @@ related:
     type: location
     relationship: primary_peoples
 assets:
-  primary: assets/characters/bigfoot/fledgling/assembled.png
+  primary: assets/characters/bigfoot/fledgling/portrait.webp
+  primaryFull: assets/characters/bigfoot/fledgling/assembled.png
   gallery:
-    - assets/characters/bigfoot/mythic/assembled.png
-    - assets/characters/bigfoot/radiant/assembled.png
-    - assets/characters/bigfoot/sworn/assembled.png
+    - src: assets/characters/bigfoot/mythic/portrait.webp
+      full: assets/characters/bigfoot/mythic/assembled.png
+    - src: assets/characters/bigfoot/radiant/portrait.webp
+      full: assets/characters/bigfoot/radiant/assembled.png
+    - src: assets/characters/bigfoot/sworn/portrait.webp
+      full: assets/characters/bigfoot/sworn/assembled.png
 ai_context:
   mood: "Large, shaggy forest people known for observation, natural history, living construction, and quietly maintained knowledge."
   themes: "Playable, Forest, Strong, Observer"

@@ -8,7 +8,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import type { CanonEntity, AiContext, AssetResult, CanonRegistry, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
+import type { CanonEntity, AiContext, AssetResult, CanonRegistry, EntityImage, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
 
 /** Marker format for generated sections. */
 const BEGIN_MARKER = (section: string) => `<!-- BEGIN GENERATED: ${section} -->`;
@@ -80,6 +80,26 @@ export function getConventionAssetPath(entityType: string, name: string): string
     default:
       return null;
   }
+}
+
+/**
+ * The derived, page-sized image `tools/art/portraits.py` writes beside a
+ * commissioned figure. Never a distinct picture — always a smaller copy of the
+ * `assembled.png` in the same directory.
+ */
+const PORTRAIT_FILE = 'portrait.webp';
+
+/**
+ * Pair a full-resolution source with what a page should actually render.
+ *
+ * Falls back to the source when no portrait has been derived, so a checkout
+ * that has not run `npm run art:portraits` gets a heavier page rather than a
+ * broken image.
+ */
+function withDisplay(full: string, assetsDir: string): EntityImage {
+  const portrait = path.posix.join(path.posix.dirname(full), PORTRAIT_FILE);
+  const onDisk = path.resolve(assetsDir, '..', portrait);
+  return { src: fs.existsSync(onDisk) ? portrait : full, full };
 }
 
 /**
@@ -160,7 +180,9 @@ export function discoverGalleryAssets(
       for (const entry of entries) {
         if (entry.isFile()) {
           const ext = path.extname(entry.name).toLowerCase();
-          if (IMAGE_EXTENSIONS.has(ext)) {
+          // A portrait is a smaller copy of its neighbour, not a second
+          // picture — listing it would put every creature in the gallery twice.
+          if (IMAGE_EXTENSIONS.has(ext) && entry.name !== PORTRAIT_FILE) {
             const baseDir = entity.type === 'biome' ? 'biomes' : 'entities';
             const relativePath = path.posix.join('assets', baseDir, name, entry.name);
             gallery.push(relativePath);
@@ -210,8 +232,8 @@ export function resolveConventionAssets(
 
   return {
     entityId: entity.id,
-    primary,
-    gallery: gallery.length > 0 ? gallery : undefined,
+    primary: primary ? withDisplay(primary, assetsDir) : undefined,
+    gallery: gallery.length > 0 ? gallery.map((full) => withDisplay(full, assetsDir)) : undefined,
     source: primary ? 'convention' : 'none',
   };
 }
@@ -431,12 +453,18 @@ function generateFrontMatter(
   if (assets.primary || (assets.gallery && assets.gallery.length > 0)) {
     lines.push('assets:');
     if (assets.primary) {
-      lines.push(`  primary: ${assets.primary}`);
+      lines.push(`  primary: ${assets.primary.src}`);
+      // Only worth emitting when it differs — otherwise it is the same string
+      // twice in every front matter in the corpus.
+      if (assets.primary.full !== assets.primary.src) {
+        lines.push(`  primaryFull: ${assets.primary.full}`);
+      }
     }
     if (assets.gallery && assets.gallery.length > 0) {
       lines.push('  gallery:');
       for (const img of assets.gallery) {
-        lines.push(`    - ${img}`);
+        lines.push(`    - src: ${img.src}`);
+        lines.push(`      full: ${img.full}`);
       }
     }
   }

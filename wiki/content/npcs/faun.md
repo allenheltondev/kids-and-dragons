@@ -26,7 +26,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/faun/assembled.png
+  primary: assets/entities/faun/portrait.webp
+  primaryFull: assets/entities/faun/assembled.png
 ai_context:
   mood: "Hooved farming people associated with orchards, music, communal work, and seasonal celebrations."
   themes: "Supporting_people, Fields, Farming, Music"

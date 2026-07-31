@@ -24,11 +24,15 @@ related:
     type: biome
     relationship: primary_peoples
 assets:
-  primary: assets/characters/dragonling/fledgling/assembled.png
+  primary: assets/characters/dragonling/fledgling/portrait.webp
+  primaryFull: assets/characters/dragonling/fledgling/assembled.png
   gallery:
-    - assets/characters/dragonling/mythic/assembled.png
-    - assets/characters/dragonling/radiant/assembled.png
-    - assets/characters/dragonling/sworn/assembled.png
+    - src: assets/characters/dragonling/mythic/portrait.webp
+      full: assets/characters/dragonling/mythic/assembled.png
+    - src: assets/characters/dragonling/radiant/portrait.webp
+      full: assets/characters/dragonling/radiant/assembled.png
+    - src: assets/characters/dragonling/sworn/portrait.webp
+      full: assets/characters/dragonling/sworn/assembled.png
 ai_context:
   mood: "Young dragon-like people adapted to the tremors, ash, caves, and crystal fields of the Red Sky Foothills."
   themes: "Playable, Volcanic, Explorer, Heat_resistant"

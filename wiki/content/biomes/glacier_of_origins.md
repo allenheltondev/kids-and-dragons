@@ -51,9 +51,11 @@ related:
     type: npc
     relationship: primary_locations
 assets:
-  primary: assets/biomes/glacier_of_origins/bg.webp
+  primary: assets/biomes/glacier_of_origins/portrait.webp
+  primaryFull: assets/biomes/glacier_of_origins/bg.webp
   gallery:
-    - assets/biomes/glacier_of_origins/tiles.png
+    - src: assets/biomes/glacier_of_origins/portrait.webp
+      full: assets/biomes/glacier_of_origins/tiles.png
 ai_context:
   mood: "An ancient northeastern glacier where the Great River begins and fragments of old memory are said to remain preserved in the ice."
   themes: "Ancient_ice, River_source, Frozen_memory, Glacier, Northern"

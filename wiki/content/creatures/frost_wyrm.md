@@ -24,7 +24,8 @@ related:
     type: biome
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/frost_wyrm/assembled.png
+  primary: assets/entities/frost_wyrm/portrait.webp
+  primaryFull: assets/entities/frost_wyrm/assembled.png
 ai_context:
   mood: "Large serpentine ice predator that burrows through deep snow and fractured glacier ice."
   themes: "Dangerous, Mountain, Ice, Predator"

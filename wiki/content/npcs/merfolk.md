@@ -23,7 +23,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/merfolk/assembled.png
+  primary: assets/entities/merfolk/portrait.webp
+  primaryFull: assets/entities/merfolk/assembled.png
 ai_context:
   mood: "Aquatic reef people who maintain Mermaid Cove and uphold an ancient alliance with the land."
   themes: "Supporting_people, Ocean, Reef, Alliance"

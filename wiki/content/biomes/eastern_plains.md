@@ -72,9 +72,11 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
-  primary: assets/biomes/eastern_plains/bg.webp
+  primary: assets/biomes/eastern_plains/portrait.webp
+  primaryFull: assets/biomes/eastern_plains/bg.webp
   gallery:
-    - assets/biomes/eastern_plains/tiles.png
+    - src: assets/biomes/eastern_plains/portrait.webp
+      full: assets/biomes/eastern_plains/tiles.png
 ai_context:
   mood: "Wide open country east of the Great River, crossed by roads and pride routes and serving as the manticore homeland."
   themes: "Eastern_grassland, Manticore_homeland, Roads, Prides, Caravans"

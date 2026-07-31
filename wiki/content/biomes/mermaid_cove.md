@@ -39,9 +39,11 @@ related:
     type: npc
     relationship: primary_locations
 assets:
-  primary: assets/biomes/mermaid_cove/bg.webp
+  primary: assets/biomes/mermaid_cove/portrait.webp
+  primaryFull: assets/biomes/mermaid_cove/bg.webp
   gallery:
-    - assets/biomes/mermaid_cove/tiles.png
+    - src: assets/biomes/mermaid_cove/portrait.webp
+      full: assets/biomes/mermaid_cove/tiles.png
 ai_context:
   mood: "A warm southern cove of coral reefs, sheltered water, merfolk and selkie communities, and an ancient alliance."
   themes: "Warm_water, Coral_reefs, Lagoon, Alliance, Island"

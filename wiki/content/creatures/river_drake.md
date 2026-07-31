@@ -21,7 +21,8 @@ related:
     type: location
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/river_drake/assembled.png
+  primary: assets/entities/river_drake/portrait.webp
+  primaryFull: assets/entities/river_drake/assembled.png
 ai_context:
   mood: "Long-bodied freshwater drake that claims deep pools, bridge shadows, and narrow currents."
   themes: "Dangerous, River, Semi_sapient, Territorial"
