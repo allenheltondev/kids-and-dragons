@@ -113,6 +113,18 @@ jobs:
       - name: Check canon
         run: npm run canon:check
 
+      # content/bestiary.json is generated from canon, and both the content
+      # validator and the wiki read it. A committed copy that no longer matches
+      # its source would validate chapters against stale stats and publish them,
+      # so regenerate and fail if anything moved.
+      - name: Check the bestiary is up to date
+        run: |
+          npm run canon:bestiary
+          git diff --exit-code -- content/bestiary.json || {
+            echo "::error::content/bestiary.json is stale — run \`npm run canon:bestiary\` and commit the result."
+            exit 1
+          }
+
       # Content is data (roadmap, "Content as data"), so it gets checked like code:
       # schemas first, then the cross-file rules a schema cannot express.
       - name: Validate content
