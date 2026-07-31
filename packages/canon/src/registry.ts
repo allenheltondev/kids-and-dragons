@@ -224,6 +224,44 @@ export function related(
   return field ? edges.filter((edge) => edge.field === field) : edges;
 }
 
+/**
+ * Every `asset_id` that claims art has a directory to point at.
+ *
+ * `asset_id` is the one join D3 left standing — to `assets/`, to `content/`, to
+ * the bestiary — and nothing checked it. The corpus happens to be exactly 1:1
+ * with `assets/entities/` today (27 and 27), which is worth keeping true rather
+ * than rediscovering.
+ */
+export function checkAssets(
+  registry: CanonRegistry,
+  assetsDir: string,
+  exists: (path: string) => boolean,
+): CanonIssue[] {
+  const DIRS: Partial<Record<Taxonomy, string>> = {
+    creature: "entities",
+    people: "entities",
+    biome: "biomes",
+    species: "characters",
+  };
+  const issues: CanonIssue[] = [];
+  for (const [id, entity] of registry.byId) {
+    const taxonomy = registry.taxonomyOf.get(id);
+    const dir = taxonomy ? DIRS[taxonomy] : undefined;
+    const assetId = (entity as { asset_id?: string }).asset_id;
+    if (!dir || !assetId) continue;
+    if (!exists(`${assetsDir}/${dir}/${assetId}`)) {
+      issues.push({
+        level: "warning",
+        file: `${dir}/${assetId}`,
+        id,
+        field: "asset_id",
+        message: `no art directory at assets/${dir}/${assetId}`,
+      });
+    }
+  }
+  return issues;
+}
+
 export function errors(registry: CanonRegistry): readonly CanonIssue[] {
   return registry.issues.filter((issue) => issue.level === "error");
 }

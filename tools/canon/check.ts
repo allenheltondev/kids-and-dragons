@@ -14,7 +14,8 @@
 
 import path from "node:path";
 import process from "node:process";
-import { loadCanon, errors, warnings, formatIssue, TAXONOMIES } from "@kad/canon";
+import fs from "node:fs";
+import { loadCanon, errors, warnings, formatIssue, checkAssets, TAXONOMIES } from "@kad/canon";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const tty = process.stdout.isTTY;
@@ -33,7 +34,10 @@ const registry = loadCanon(path.join(ROOT, "canon"));
  * reference is now simply an error.
  */
 const fatal = errors(registry);
-const soft = warnings(registry);
+const soft = [
+  ...warnings(registry),
+  ...checkAssets(registry, path.join(ROOT, "assets"), (p) => fs.existsSync(p)),
+];
 
 console.log(`${BOLD}Kids & Dragons — canon check${OFF}`);
 console.log(`${DIM}canon/ · ${registry.byId.size} entities · ${registry.edges.length} edges${OFF}\n`);

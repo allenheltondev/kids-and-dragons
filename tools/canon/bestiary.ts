@@ -37,6 +37,8 @@ for (const creature of creatures) {
   if (!stats) continue;
 
   bestiary[id] = {
+    /** Where this came from. The projection should never be the only record. */
+    canon_id: creature.id,
     name: creature.title,
     art: `enemies/${id}`,
     band: creature.encounter.band,
