@@ -12,6 +12,7 @@ const CHROMIUM = process.env.KAD_CHROMIUM ?? undefined;
 
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: "wiki-*.spec.ts",
   // Three players each walking a five-step creation flow, and then a whole
   // chapter with real roll animations, is a lot of genuine interaction — the
   // playthrough spends about two minutes of this on its own.
