@@ -44,14 +44,34 @@
   pointer-events: none;
 }
 
+/*
+ * The figure stands on the *bottom of its box*, which is not the same as the
+ * bottom of its canvas.
+ *
+ * The art is a 1024×1024 square whose ground-contact line is at y=900
+ * (assets/manifest.json) — the remaining 12.1% is transparent air below the
+ * feet. Bottom-aligning the image therefore hangs every character that much
+ * above its floor, which is invisible on a 2.8em lobby avatar and a finger's
+ * width of hover on the creation preview. So the image is a square as wide as
+ * its box, aligned to the bottom, and then pushed down by exactly that
+ * remainder: `--portrait-floor`, set from the same `ANCHOR_Y` the Pixi sprites
+ * anchor to (CharacterPortrait.tsx).
+ *
+ * `translate` rather than `transform`, because the float animation owns
+ * `transform` — the two compose, so the offset survives the motion.
+ *
+ * The square is stated twice on purpose: `aspect-ratio` gives the box its shape
+ * without needing the intrinsic size, and `object-fit` keeps a hypothetical
+ * off-contract asset letterboxed on the floor instead of stretched.
+ */
 .portrait__img {
   position: relative;
   inline-size: 100%;
-  block-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
   object-fit: contain;
-  /* The art's ground contact is at 88% of its canvas, so aligning the box to
-     the bottom stands a bigfoot and a dragonling on the same floor line. */
   object-position: 50% 100%;
+  translate: 0 var(--portrait-floor, 12.109375%);
   -webkit-user-select: none;
   user-select: none;
 }

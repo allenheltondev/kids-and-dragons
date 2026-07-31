@@ -12,22 +12,46 @@
  *   - **It never breaks a screen.** Art is a separate deploy from the bundle
  *     (`/assets` is synced to the same bucket, not built into it), so a portrait
  *     can 404 on a perfectly good build. `onError` falls back to the species
- *     icon, which is what these screens showed before the art existed.
+ *     icon, which is what these screens showed before the art existed — and the
+ *     failure belongs to the *URL*, not to this component (see `isMissingArt`).
  *   - **It is decorative.** Every use sits beside the character's name, so the
  *     image carries no information a screen reader needs (`alt=""`), and the
  *     icon fallback is unlabelled for the same reason.
- *   - **It is the whole figure, not a crop.** The art is a 1024×1024 canvas
- *     with the feet at y=900 (assets/manifest.json), so `object-fit: contain`
- *     with the box aligned to the bottom stands every species on the same line
- *     regardless of how tall it is.
+ *   - **It stands on the same line Pixi stands it on.** The art is a 1024×1024
+ *     canvas whose ground contact is at y=900, not at the bottom edge
+ *     (assets/manifest.json), so the figure is pushed down by the transparent
+ *     remainder — `ANCHOR_Y`, the very constant the Pixi sprites anchor to. One
+ *     contract, two renderers.
  */
 
 import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { SpeciesId, TierId } from "@kad/shared";
-import { STARTING_TIER, characterArtUrl } from "../world/art-paths";
+import { ANCHOR_Y, STARTING_TIER, characterArtUrl } from "../world/art-paths";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
+
+/**
+ * How far below the figure's feet the canvas keeps going, as a share of the
+ * canvas. `ANCHOR_Y` is the Pixi sprite anchor; this is the same number said
+ * the other way round, which is why neither renderer owns it.
+ */
+export const PORTRAIT_FLOOR = 1 - ANCHOR_Y;
+
+/**
+ * Is the art for `src` known to be missing?
+ *
+ * Keyed on the URL rather than kept as a `broken` boolean, because one mounted
+ * portrait outlives the picture it is showing: a character levels into a new
+ * tier, a lobby row is reused for a different species, and — since `/assets` is
+ * deployed separately from the bundle — a file that 404s at 12:00 can exist at
+ * 12:05. A boolean would latch the fallback on for the life of the component
+ * and never ask for the new URL. This asks again for every URL except the one
+ * that actually failed.
+ */
+export function isMissingArt(failedSrc: string | null, src: string): boolean {
+  return failedSrc !== null && failedSrc === src;
+}
 
 export interface CharacterPortraitProps {
   species: SpeciesId;
@@ -60,9 +84,15 @@ export function CharacterPortrait({
   float = false,
   className = "",
 }: CharacterPortraitProps): ReactElement {
-  const [broken, setBroken] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const src = characterArtUrl(species, tier);
+  const missing = isMissingArt(failedSrc, src);
 
-  const style: CSSProperties & Record<string, string | undefined> = {};
+  const style: CSSProperties & Record<string, string | undefined> = {
+    // The ground-contact contract, handed to CSS so the stylesheet never has
+    // to restate a number that lives in assets/manifest.json.
+    "--portrait-floor": `${String(PORTRAIT_FLOOR * 100)}%`,
+  };
   if (size !== undefined) {
     style.inlineSize = size;
     style.blockSize = size;
@@ -75,12 +105,12 @@ export function CharacterPortrait({
       style={style}
       data-species={species}
     >
-      {broken ? (
+      {missing ? (
         <Icon name={species} className="portrait__fallback" size="72%" />
       ) : (
         <img
           className="portrait__img"
-          src={characterArtUrl(species, tier)}
+          src={src}
           alt=""
           // The art is a megabyte of 1024² PNG per species and the species grid
           // asks for six of them; below-the-fold cards on a phone should not be
@@ -88,8 +118,10 @@ export function CharacterPortrait({
           loading="lazy"
           decoding="async"
           draggable={false}
+          // The URL that failed, not "this portrait failed" — a later species,
+          // a later tier, or a later deploy of the same file all get another go.
           onError={() => {
-            setBroken(true);
+            setFailedSrc(src);
           }}
         />
       )}
