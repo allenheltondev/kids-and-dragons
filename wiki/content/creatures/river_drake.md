@@ -3,9 +3,9 @@ title: River Drake
 id: creature.river_drake
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["dangerous", "river", "semi-sapient", "territorial"]
+tags: ["dangerous", "river", "semi_sapient", "territorial"]
 classification: dangerous_creature
 danger_level: moderate
 scale: large
@@ -17,6 +17,17 @@ related:
   - id: biome.stone_crossing
     type: biome
     relationship: dangerous_creatures
+assets:
+  primary: assets/entities/river_drake/assembled.png
+ai_context:
+  mood: "Long-bodied freshwater drake that claims deep pools, bridge shadows, and narrow currents."
+  themes: "Dangerous, River, Semi_sapient, Territorial"
+  visual_style: "Sleek amphibious dragon-like body with fins, short limbs, and river-stone coloring."
+  common_encounters: "Bridge complication, river rescue, creature displaced by changed currents."
+  lore_highlights: ""
+  related_entities: "biome.stone_crossing, biome.stone_crossing"
+  writing_guidance: "Smaller and less powerful than a legendary dragon, can learn routines."
+  generation_hints: "Defends deep water and favorite resting shelves, may block boats or demand dropped food."
 layout: creatures
 infobox: creature
 ---
@@ -25,19 +36,7 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Stone Crossing](/biomes/stone_crossing/) — primary_locations
-- [Stone Crossing](/biomes/stone_crossing/) — dangerous_creatures
+- [Stone Crossing](/biomes/stone_crossing/) `Primary Locations` `Dangerous Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Long-bodied freshwater drake that claims deep pools, bridge shadows, and narrow currents.
-**Themes:** Dangerous, River, Semi-sapient, Territorial
-**Visual Style:** Sleek amphibious dragon-like body with fins, short limbs, and river-stone coloring.
-**Common Encounters:** Bridge complication, river rescue, creature displaced by changed currents.
-**Lore Highlights:** 
-**Related Entities:** biome.stone_crossing, biome.stone_crossing
-**Writing Guidance:** Smaller and less powerful than a legendary dragon, can learn routines.
-**Generation Hints:** Defends deep water and favorite resting shelves, may block boats or demand dropped food.
-<!-- END GENERATED: ai_context -->

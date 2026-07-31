@@ -3,8 +3,8 @@ title: Mount Red Sky
 id: location.mount_red_sky
 type: location
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.red_sky_foothills
@@ -19,6 +19,15 @@ related:
   - id: geography.red_sky_foothills
     type: geography
     relationship: contains_sites
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.red_sky_foothills, geography.expanse, geography.red_sky_foothills, geography.red_sky_foothills"
+  writing_guidance: ""
+  generation_hints: ""
 layout: locations
 infobox: location
 ---
@@ -27,21 +36,8 @@ infobox: location
 ## Related Entities
 
 ### Geography
-- [Red Sky Foothills](/geography/red_sky_foothills/) — contained_by
-- [Red Sky Foothills](/geography/red_sky_foothills/) — access_from
-- [Red Sky Foothills](/geography/red_sky_foothills/) — contains_sites
-- [The Expanse](/geography/expanse/) — adjacent_to
+- [Red Sky Foothills](/geography/red_sky_foothills/) `Contained By` `Access From` `Contains Sites`
+- [The Expanse](/geography/expanse/) `Adjacent To`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.red_sky_foothills, geography.expanse, geography.red_sky_foothills, geography.red_sky_foothills
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

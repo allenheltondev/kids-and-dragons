@@ -3,7 +3,7 @@ title: Legend Dragon
 id: creature.legend_dragon
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["legendary", "volcano", "sapient", "ancient"]
 classification: legendary_beast
@@ -17,6 +17,17 @@ related:
   - id: biome.mount_red_sky
     type: biome
     relationship: legendary_beings
+assets:
+  primary: assets/entities/legend_dragon/assembled.png
+ai_context:
+  mood: "An ancient, solitary dragon powerful enough to claim territory on or beneath Mount RedSky."
+  themes: "Legendary, Volcano, Sapient, Ancient"
+  visual_style: "Enormous dragon silhouette shaped by age and volcanic surroundings, scales may show heat, ash, mineral, or gemstone effects."
+  common_encounters: "Legendary guardian, dangerous source of ancient knowledge, powerful individual whose goals are not understood."
+  lore_highlights: ""
+  related_entities: "biome.mount_red_sky, biome.mount_red_sky"
+  writing_guidance: "Not the rulers or parents of dragonling society. No specific legend dragon has yet been named or designed."
+  generation_hints: "Guards a claimed lair or purpose, monitors intrusions, may warn, test, bargain with, or attack depending on individual."
 layout: creatures
 infobox: creature
 ---
@@ -25,19 +36,7 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) — primary_locations
-- [Mount Red Sky](/biomes/mount_red_sky/) — legendary_beings
+- [Mount Red Sky](/biomes/mount_red_sky/) `Primary Locations` `Legendary Beings`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** An ancient, solitary dragon powerful enough to claim territory on or beneath Mount RedSky.
-**Themes:** Legendary, Volcano, Sapient, Ancient
-**Visual Style:** Enormous dragon silhouette shaped by age and volcanic surroundings, scales may show heat, ash, mineral, or gemstone effects.
-**Common Encounters:** Legendary guardian, dangerous source of ancient knowledge, powerful individual whose goals are not understood.
-**Lore Highlights:** 
-**Related Entities:** biome.mount_red_sky, biome.mount_red_sky
-**Writing Guidance:** Not the rulers or parents of dragonling society. No specific legend dragon has yet been named or designed.
-**Generation Hints:** Guards a claimed lair or purpose, monitors intrusions, may warn, test, bargain with, or attack depending on individual.
-<!-- END GENERATED: ai_context -->

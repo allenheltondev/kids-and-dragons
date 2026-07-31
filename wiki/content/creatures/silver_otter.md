@@ -3,7 +3,7 @@ title: Silver Otter
 id: creature.silver_otter
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["ambient", "river", "playful", "indicator"]
 classification: ambient_creature
@@ -23,6 +23,17 @@ related:
   - id: biome.mermaid_cove
     type: biome
     relationship: ambient_creatures
+assets:
+  primary: assets/entities/silver_otter/assembled.png
+ai_context:
+  mood: "Playful river otter with water-shedding silver-blue fur."
+  themes: "Ambient, River, Playful, Indicator"
+  visual_style: "Sleek otter form with silver or blue highlights, often carries a favorite polished stone or shell."
+  common_encounters: "River health clue, lighthearted interaction, finder of a small lost object."
+  lore_highlights: ""
+  related_entities: "biome.stone_crossing, biome.mermaid_cove, biome.stone_crossing, biome.mermaid_cove"
+  writing_guidance: "Avoids polluted or magically disturbed water."
+  generation_hints: "Plays in safe currents, collects polished objects, sometimes returns dropped items."
 layout: creatures
 infobox: creature
 ---
@@ -31,21 +42,8 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Mermaid Cove](/biomes/mermaid_cove/) — primary_locations
-- [Mermaid Cove](/biomes/mermaid_cove/) — ambient_creatures
-- [Stone Crossing](/biomes/stone_crossing/) — primary_locations
-- [Stone Crossing](/biomes/stone_crossing/) — ambient_creatures
+- [Mermaid Cove](/biomes/mermaid_cove/) `Primary Locations` `Ambient Creatures`
+- [Stone Crossing](/biomes/stone_crossing/) `Primary Locations` `Ambient Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Playful river otter with water-shedding silver-blue fur.
-**Themes:** Ambient, River, Playful, Indicator
-**Visual Style:** Sleek otter form with silver or blue highlights, often carries a favorite polished stone or shell.
-**Common Encounters:** River health clue, lighthearted interaction, finder of a small lost object.
-**Lore Highlights:** 
-**Related Entities:** biome.stone_crossing, biome.mermaid_cove, biome.stone_crossing, biome.mermaid_cove
-**Writing Guidance:** Avoids polluted or magically disturbed water.
-**Generation Hints:** Plays in safe currents, collects polished objects, sometimes returns dropped items.
-<!-- END GENERATED: ai_context -->

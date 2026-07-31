@@ -25,8 +25,9 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by the current map and supporting canon."
-    intentionally_undefined: "The environment exists, but important facts are protected mysteries."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
   environment_type:
     biome_region: "A broad ecological and travel region."
     aerial_region: "A broad region not fixed to the surface."
@@ -63,14 +64,13 @@ map_environment_ids:
 biomes:
   - id: biome.sky_islands
     asset_id: sky_islands
-    canonical_location_id: sky_islands
     geography_id: geography.sky_islands
     title: "Sky Islands"
     map_label: "Sky Islands"
     canon_status: confirmed
     environment_type: aerial_region
     featured: true
-    tags: [aerial, drifting-islands, wind, temples, open-sky]
+    tags: [aerial, drifting_islands, wind, temples, open_sky]
     climate: "Cool, bright, and highly changeable; wind and cloud conditions matter more than seasons."
     danger_level: moderate
     short_description: >-
@@ -90,10 +90,10 @@ biomes:
       Wind routes shift, island communities prepare for storms, and navigation
       depends on stars, recurring air currents, signals, and shared stories.
     inhabitants:
-      primary_peoples: [kitsune]
+      primary_peoples: [character.kitsune]
       supporting_peoples: []
       cultural_orders: []
-      ambient_creatures: [cloud_whale]
+      ambient_creatures: [creature.cloud_whale]
       dangerous_creatures: []
       legendary_beings: []
       supernatural_manifestations: []
@@ -104,14 +104,13 @@ biomes:
 
   - id: biome.enchanted_woods
     asset_id: enchanted_woods
-    canonical_location_id: enchanted_woods
     geography_id: geography.enchanted_woods
     title: "Enchanted Woods"
     map_label: "Enchanted Woods"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [ancient-forest, living-magic, changing-paths, memory, hidden-glades]
+    tags: [ancient_forest, living_magic, changing_paths, memory, hidden_glades]
     climate: "Temperate and humid beneath a dense canopy, with localized magical weather and light."
     danger_level: moderate
     short_description: >-
@@ -133,21 +132,20 @@ biomes:
       wildlife, and the forest tends to reveal safer routes to travelers who
       repair harm or honor commitments.
     inhabitants:
-      primary_peoples: [unicorn]
-      supporting_peoples: [harvest_sprite]
+      primary_peoples: [character.unicorn]
+      supporting_peoples: [npc.harvest_sprite]
       cultural_orders: []
-      ambient_creatures: [mosshorn]
+      ambient_creatures: [creature.mosshorn]
       dangerous_creatures: []
       legendary_beings: []
-      supernatural_manifestations: [will_o_wisp]
+      supernatural_manifestations: [creature.will_o_wisp]
     relationships:
-      locations: [mosshome, bramblewood]
+      locations: [location.mosshome, bramblewood]
       factions: []
       items: []
 
   - id: biome.mosshome
     asset_id: mosshome
-    canonical_location_id: mosshome
     geography_id: location.mosshome
     title: "MossHome"
     map_label: "MossHome"
@@ -155,7 +153,7 @@ biomes:
     environment_type: settlement_environment
     parent_biome: biome.enchanted_woods
     featured: true
-    tags: [forest-settlement, living-architecture, bigfoot, cultivated-moss, ancient-trees]
+    tags: [forest_settlement, living_architecture, bigfoot, cultivated_moss, ancient_trees]
     climate: "Sheltered, damp, and mild beneath the oldest western trees."
     danger_level: low
     short_description: >-
@@ -176,21 +174,20 @@ biomes:
       Residents maintain living structures, paths, gardens, historical records,
       and observation stations while monitoring changes in the wider Enchanted Woods.
     inhabitants:
-      primary_peoples: [bigfoot]
+      primary_peoples: [character.bigfoot]
       supporting_peoples: []
       cultural_orders: []
-      ambient_creatures: [mosshorn]
+      ambient_creatures: [creature.mosshorn]
       dangerous_creatures: []
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [enchanted_woods]
+      locations: [biome.enchanted_woods]
       factions: []
       items: []
 
   - id: biome.whispering_marsh
     asset_id: whispering_marsh
-    canonical_location_id: whispering_marsh
     geography_id: geography.whispering_marsh
     title: "Whispering Marsh"
     map_label: "Whispering Marsh"
@@ -219,27 +216,26 @@ biomes:
       and whispers sometimes repeat memories or warnings without explaining their source.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [frogfolk, boggart]
-      cultural_orders: [witch_order]
+      supporting_peoples: [npc.frogfolk, npc.boggart]
+      cultural_orders: [npc.witch_order]
       ambient_creatures: []
-      dangerous_creatures: [mire_mimic]
+      dangerous_creatures: [creature.mire_mimic]
       legendary_beings: []
-      supernatural_manifestations: [will_o_wisp]
+      supernatural_manifestations: [creature.will_o_wisp]
     relationships:
-      locations: [great_river]
+      locations: [feature.great_river]
       factions: []
       items: []
 
   - id: biome.expanse
     asset_id: expanse
-    canonical_location_id: the_expanse
     geography_id: geography.expanse
     title: "The Expanse"
     map_label: "The Expanse"
     canon_status: intentionally_undefined
     environment_type: biome_region
     featured: true
-    tags: [barren, northern-waste, forbidden, unknown, plateau]
+    tags: [barren, northern_waste, forbidden, unknown, plateau]
     climate: "Not established beyond its visibly barren and exposed surface."
     danger_level: unknown
     short_description: >-
@@ -273,14 +269,13 @@ biomes:
 
   - id: biome.red_sky_foothills
     asset_id: red_sky_foothills
-    canonical_location_id: red_sky_foothills
     geography_id: geography.red_sky_foothills
     title: "Red Sky Foothills"
     map_label: "Red Sky Foothills"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [volcanic-hills, crystal-veins, lava-tubes, caves, dragonling-homeland]
+    tags: [volcanic_hills, crystal_veins, lava_tubes, caves, dragonling_homeland]
     climate: "Warm to hot, dry, and ash-prone, with cooler sheltered valleys and lava tubes."
     danger_level: high
     short_description: >-
@@ -300,21 +295,20 @@ biomes:
       Tremors, ash, heat, and crystal changes are closely watched. Communities
       maintain warning systems, safe caves, and evacuation routes.
     inhabitants:
-      primary_peoples: [dragonling]
+      primary_peoples: [character.dragonling]
       supporting_peoples: []
       cultural_orders: []
-      ambient_creatures: [embermoth]
-      dangerous_creatures: [glassback_crab, cinder_wolf]
+      ambient_creatures: [creature.embermoth]
+      dangerous_creatures: [creature.glassback_crab, creature.cinder_wolf]
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [mount_redsky]
+      locations: [biome.mount_red_sky]
       factions: []
       items: []
 
   - id: biome.mount_red_sky
     asset_id: mount_red_sky
-    canonical_location_id: mount_redsky
     geography_id: location.mount_red_sky
     title: "Mount Red Sky"
     map_label: "Mount Red Sky"
@@ -322,7 +316,7 @@ biomes:
     environment_type: landmark_environment
     parent_biome: biome.red_sky_foothills
     featured: true
-    tags: [active-volcano, gemfalls, legendary, ash, lava, unstable-power]
+    tags: [active_volcano, gemfalls, legendary, ash, lava, unstable_power]
     climate: "Extreme heat, ash, volcanic gases, and rapidly changing local conditions."
     danger_level: legendary
     short_description: >-
@@ -344,25 +338,24 @@ biomes:
       primary_peoples: []
       supporting_peoples: []
       cultural_orders: []
-      ambient_creatures: [embermoth]
-      dangerous_creatures: [glassback_crab]
-      legendary_beings: [legend_dragon]
+      ambient_creatures: [creature.embermoth]
+      dangerous_creatures: [creature.glassback_crab]
+      legendary_beings: [creature.legend_dragon]
       supernatural_manifestations: []
     relationships:
-      locations: [red_sky_foothills]
+      locations: [biome.red_sky_foothills]
       factions: []
       items: []
 
   - id: biome.plains
     asset_id: plains
-    canonical_location_id: the_plains
     geography_id: geography.plains
     title: "The Plains"
     map_label: "The Plains"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [central-plains, roads, caravans, grassland, crossroads]
+    tags: [central_plains, roads, caravans, grassland, crossroads]
     climate: "Temperate and windy, with open sun, seasonal rain, and broad visibility."
     danger_level: low
     short_description: >-
@@ -382,27 +375,26 @@ biomes:
       weather and river conditions periodically change the safest path.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [centaur]
+      supporting_peoples: [npc.centaur]
       cultural_orders: []
-      ambient_creatures: [jackalope]
-      dangerous_creatures: [cinder_wolf]
+      ambient_creatures: [creature.jackalope]
+      dangerous_creatures: [creature.cinder_wolf]
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [great_river]
+      locations: [feature.great_river]
       factions: []
       items: []
 
   - id: biome.sunward_fields
     asset_id: sunward_fields
-    canonical_location_id: sunward_fields
     geography_id: geography.sunward_fields
     title: "The Sunward Fields"
     map_label: "The Sunward Fields"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [farmland, meadows, orchards, villages, food, seasonal-work]
+    tags: [farmland, meadows, orchards, villages, food, seasonal_work]
     climate: "Warm, fertile, and seasonally varied, with reliable sun and managed water."
     danger_level: low
     short_description: >-
@@ -424,27 +416,26 @@ biomes:
       threaten the realm's food supply.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [faun, harvest_sprite]
+      supporting_peoples: [npc.faun, npc.harvest_sprite]
       cultural_orders: []
-      ambient_creatures: [jackalope]
+      ambient_creatures: [creature.jackalope]
       dangerous_creatures: []
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [the_exchange, stone_crossing]
+      locations: [biome.exchange, location.stone_crossing]
       factions: []
       items: []
 
   - id: biome.exchange
     asset_id: exchange
-    canonical_location_id: the_exchange
     geography_id: location.exchange
     title: "The Exchange"
     map_label: "The Exchange"
     canon_status: confirmed
     environment_type: settlement_environment
     featured: true
-    tags: [coastal-city, trade, crossroads, docks, mixed-population, stories]
+    tags: [coastal_city, trade, crossroads, docks, mixed_population, stories]
     climate: "Mild coastal weather shaped by sea wind, river traffic, and seasonal storms."
     danger_level: low
     short_description: >-
@@ -474,20 +465,19 @@ biomes:
       supernatural_manifestations: []
       population_rule: "Mixed population with no native or dominant people."
     relationships:
-      locations: [sunward_fields, whispering_marsh, open_sea]
+      locations: [biome.sunward_fields, biome.whispering_marsh, open_sea]
       factions: []
       items: []
 
   - id: biome.glacier_of_origins
     asset_id: glacier_of_origins
-    canonical_location_id: glacier_of_origins
     geography_id: geography.glacier_of_origins
     title: "Glacier of Origins"
     map_label: "Glacier of Origins"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [ancient-ice, river-source, frozen-memory, glacier, northern]
+    tags: [ancient_ice, river_source, frozen_memory, glacier, northern]
     climate: "Severe cold, glacial wind, deep snow, and unstable ice around melt channels."
     danger_level: high
     short_description: >-
@@ -508,27 +498,26 @@ biomes:
       source eventually affect every downstream region.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [yeti]
+      supporting_peoples: [npc.yeti]
       cultural_orders: []
-      ambient_creatures: [snowhorn_goat]
-      dangerous_creatures: [frost_wyrm]
+      ambient_creatures: [creature.snowhorn_goat]
+      dangerous_creatures: [creature.frost_wyrm]
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [great_river, frostfang_peaks]
+      locations: [feature.great_river, biome.frostfang_peaks]
       factions: []
       items: []
 
   - id: biome.frostfang_peaks
     asset_id: frostfang_peaks
-    canonical_location_id: frostfang_peaks
     geography_id: geography.frostfang_peaks
     title: "Frostfang Peaks"
     map_label: "Frostfang Peaks"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [frozen-mountains, aeries, griffin-homeland, cliffs, rescue]
+    tags: [frozen_mountains, aeries, griffin_homeland, cliffs, rescue]
     climate: "High-altitude cold, strong winds, sudden storms, and thin air."
     danger_level: high
     short_description: >-
@@ -547,28 +536,27 @@ biomes:
       Aerie communities maintain watches, rescue routes, signals, and pass
       knowledge while storms and ice frequently close expected paths.
     inhabitants:
-      primary_peoples: [griffin]
-      supporting_peoples: [yeti]
+      primary_peoples: [character.griffin]
+      supporting_peoples: [npc.yeti]
       cultural_orders: []
-      ambient_creatures: [snowhorn_goat]
-      dangerous_creatures: [frost_wyrm]
+      ambient_creatures: [creature.snowhorn_goat]
+      dangerous_creatures: [creature.frost_wyrm]
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [glacier_of_origins]
+      locations: [biome.glacier_of_origins]
       factions: []
       items: []
 
   - id: biome.eastern_plains
     asset_id: eastern_plains
-    canonical_location_id: eastern_plains
     geography_id: geography.eastern_plains
     title: "The Eastern Plains"
     map_label: "The Eastern Plains"
     canon_status: confirmed
     environment_type: biome_region
     featured: true
-    tags: [eastern-grassland, manticore-homeland, roads, prides, caravans]
+    tags: [eastern_grassland, manticore_homeland, roads, prides, caravans]
     climate: "Open, dry-to-temperate grassland with strong seasonal winds and broad skies."
     danger_level: moderate
     short_description: >-
@@ -588,28 +576,27 @@ biomes:
       Pride routes, patrols, caravans, and seasonal gathering grounds structure
       movement across the open region.
     inhabitants:
-      primary_peoples: [manticore]
-      supporting_peoples: [centaur]
+      primary_peoples: [character.manticore]
+      supporting_peoples: [npc.centaur]
       cultural_orders: []
-      ambient_creatures: [jackalope]
+      ambient_creatures: [creature.jackalope]
       dangerous_creatures: []
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [stone_crossing]
+      locations: [location.stone_crossing]
       factions: []
       items: []
 
   - id: biome.stone_crossing
     asset_id: stone_crossing
-    canonical_location_id: stone_crossing
     geography_id: location.stone_crossing
     title: "Stone Crossing"
     map_label: "Stone Crossing"
     canon_status: confirmed
     environment_type: landmark_environment
     featured: true
-    tags: [river-crossing, bridge, bottleneck, current, trade-route]
+    tags: [river_crossing, bridge, bottleneck, current, trade_route]
     climate: "River-cooled and windy, with conditions changing sharply after northern melt or storms."
     danger_level: moderate
     short_description: >-
@@ -631,27 +618,26 @@ biomes:
       the crossing is open, delayed, or impassable.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [stone_troll, centaur]
+      supporting_peoples: [npc.stone_troll, npc.centaur]
       cultural_orders: []
-      ambient_creatures: [silver_otter]
-      dangerous_creatures: [river_drake]
+      ambient_creatures: [creature.silver_otter]
+      dangerous_creatures: [creature.river_drake]
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [great_river, sunward_fields, eastern_plains]
+      locations: [feature.great_river, biome.sunward_fields, biome.eastern_plains]
       factions: []
       items: []
 
   - id: biome.skullwater_cave
     asset_id: skullwater_cave
-    canonical_location_id: skullwater_cave
     geography_id: location.skullwater_cave
     title: "Skullwater Cave"
     map_label: "Skullwater Cave"
     canon_status: confirmed
     environment_type: gateway_environment
     featured: true
-    tags: [offshore-cave, underground-gateway, skull-rock, caverns, unknown-depths]
+    tags: [offshore_cave, underground_gateway, skull_rock, caverns, unknown_depths]
     climate: "Cold, wet, echoing, and increasingly disconnected from surface weather with depth."
     danger_level: high
     short_description: >-
@@ -673,10 +659,10 @@ biomes:
       should feel larger than the visible island mouth implies.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [stone_troll]
+      supporting_peoples: [npc.stone_troll]
       cultural_orders: []
       ambient_creatures: []
-      dangerous_creatures: [echo_hunter]
+      dangerous_creatures: [creature.echo_hunter]
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
@@ -686,14 +672,13 @@ biomes:
 
   - id: biome.mermaid_cove
     asset_id: mermaid_cove
-    canonical_location_id: mermaid_cove
     geography_id: geography.mermaid_cove
     title: "Mermaid Cove"
     map_label: "Mermaid Cove"
     canon_status: confirmed
     environment_type: offshore_region
     featured: true
-    tags: [warm-water, coral-reefs, lagoon, alliance, island]
+    tags: [warm_water, coral_reefs, lagoon, alliance, island]
     climate: "Warm, humid, and ocean-moderated, with clear shallows and seasonal storms."
     danger_level: moderate
     short_description: >-
@@ -715,9 +700,9 @@ biomes:
       life, while changes in the open sea quickly reach the cove.
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [merfolk, selkie]
+      supporting_peoples: [npc.merfolk, npc.selkie]
       cultural_orders: []
-      ambient_creatures: [silver_otter, reefglider]
+      ambient_creatures: [creature.silver_otter, creature.reefglider]
       dangerous_creatures: []
       legendary_beings: []
       supernatural_manifestations: []
@@ -728,14 +713,13 @@ biomes:
 
   - id: biome.bone_yard
     asset_id: bone_yard
-    canonical_location_id: bone_yard
     geography_id: geography.bone_yard
     title: "The Bone Yard"
     map_label: "The Bone Yard"
     canon_status: confirmed
     environment_type: offshore_region
     featured: true
-    tags: [bone-island, river-delta, forbidden, ancient-remains, supernatural]
+    tags: [bone_island, river_delta, forbidden, ancient_remains, supernatural]
     climate: "Dry, exposed, salt-worn, and affected by river sediment and coastal storms."
     danger_level: high
     short_description: >-
@@ -759,10 +743,10 @@ biomes:
       supporting_peoples: []
       cultural_orders: []
       ambient_creatures: []
-      dangerous_creatures: [bone_crawler]
+      dangerous_creatures: [creature.bone_crawler]
       legendary_beings: []
-      supernatural_manifestations: [restless_remains]
+      supernatural_manifestations: [creature.restless_remains]
     relationships:
-      locations: [great_river, open_sea, the_whirlpool]
+      locations: [feature.great_river, open_sea, the_whirlpool]
       factions: []
       items: []

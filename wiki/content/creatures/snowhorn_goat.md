@@ -3,7 +3,7 @@ title: Snowhorn Goat
 id: creature.snowhorn_goat
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["ambient", "mountain", "climbing", "indicator"]
 classification: ambient_creature
@@ -23,6 +23,17 @@ related:
   - id: biome.frostfang_peaks
     type: biome
     relationship: ambient_creatures
+assets:
+  primary: assets/entities/snowhorn_goat/assembled.png
+ai_context:
+  mood: "Sure-footed mountain goat with translucent ice-colored horns."
+  themes: "Ambient, Mountain, Climbing, Indicator"
+  visual_style: "Dense pale coat and glassy blue-white horns, compact powerful legs and oversized climbing hooves."
+  common_encounters: "Trail clue, rescue target, peaceful mountain scene."
+  lore_highlights: ""
+  related_entities: "biome.frostfang_peaks, biome.glacier_of_origins, biome.glacier_of_origins, biome.frostfang_peaks"
+  writing_guidance: "Defends young with short charges, abandons routes before avalanches."
+  generation_hints: "Follows safe mountain lines, abandons routes before avalanches or ice breaks."
 layout: creatures
 infobox: creature
 ---
@@ -31,21 +42,8 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Frostfang Peaks](/biomes/frostfang_peaks/) — primary_locations
-- [Frostfang Peaks](/biomes/frostfang_peaks/) — ambient_creatures
-- [Glacier of Origins](/biomes/glacier_of_origins/) — primary_locations
-- [Glacier of Origins](/biomes/glacier_of_origins/) — ambient_creatures
+- [Frostfang Peaks](/biomes/frostfang_peaks/) `Primary Locations` `Ambient Creatures`
+- [Glacier of Origins](/biomes/glacier_of_origins/) `Primary Locations` `Ambient Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Sure-footed mountain goat with translucent ice-colored horns.
-**Themes:** Ambient, Mountain, Climbing, Indicator
-**Visual Style:** Dense pale coat and glassy blue-white horns, compact powerful legs and oversized climbing hooves.
-**Common Encounters:** Trail clue, rescue target, peaceful mountain scene.
-**Lore Highlights:** 
-**Related Entities:** biome.frostfang_peaks, biome.glacier_of_origins, biome.glacier_of_origins, biome.frostfang_peaks
-**Writing Guidance:** Defends young with short charges, abandons routes before avalanches.
-**Generation Hints:** Follows safe mountain lines, abandons routes before avalanches or ice breaks.
-<!-- END GENERATED: ai_context -->

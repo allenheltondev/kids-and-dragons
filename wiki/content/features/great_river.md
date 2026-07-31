@@ -3,8 +3,8 @@ title: The Great River
 id: feature.great_river
 type: feature
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.glacier_of_origins
@@ -31,6 +31,21 @@ related:
   - id: route.stone_crossing
     type: route
     relationship: crossings
+  - id: biome.whispering_marsh
+    type: biome
+    relationship: locations
+  - id: biome.plains
+    type: biome
+    relationship: locations
+  - id: biome.glacier_of_origins
+    type: biome
+    relationship: locations
+  - id: biome.stone_crossing
+    type: biome
+    relationship: locations
+  - id: biome.bone_yard
+    type: biome
+    relationship: locations
   - id: geography.red_sky_foothills
     type: geography
     relationship: separated_by
@@ -55,6 +70,15 @@ related:
   - id: route.stone_crossing
     type: route
     relationship: crosses
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.glacier_of_origins, geography.frostfang_peaks, geography.red_sky_foothills, geography.eastern_plains, geography.plains, geography.sunward_fields, route.northern_river_bridge, route.stone_crossing, biome.whispering_marsh, biome.plains, biome.glacier_of_origins, biome.stone_crossing, biome.bone_yard, geography.red_sky_foothills, geography.plains, geography.sunward_fields, geography.eastern_plains, geography.frostfang_peaks, location.stone_crossing, route.northern_river_bridge, route.stone_crossing"
+  writing_guidance: ""
+  generation_hints: ""
 layout: features
 infobox: feature
 ---
@@ -62,38 +86,27 @@ infobox: feature
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
+### Biomes
+- [Glacier of Origins](/biomes/glacier_of_origins/) `Locations`
+- [Stone Crossing](/biomes/stone_crossing/) `Locations`
+- [The Bone Yard](/biomes/bone_yard/) `Locations`
+- [The Plains](/biomes/plains/) `Locations`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Locations`
+
 ### Geography
-- [Frostfang Peaks](/geography/frostfang_peaks/) — reaches
-- [Frostfang Peaks](/geography/frostfang_peaks/) — separated_by
-- [Glacier of Origins](/geography/glacier_of_origins/) — reaches
-- [Red Sky Foothills](/geography/red_sky_foothills/) — reaches
-- [Red Sky Foothills](/geography/red_sky_foothills/) — separated_by
-- [The Eastern Plains](/geography/eastern_plains/) — reaches
-- [The Eastern Plains](/geography/eastern_plains/) — separated_by
-- [The Plains](/geography/plains/) — reaches
-- [The Plains](/geography/plains/) — separated_by
-- [The Sunward Fields](/geography/sunward_fields/) — reaches
-- [The Sunward Fields](/geography/sunward_fields/) — separated_by
+- [Frostfang Peaks](/geography/frostfang_peaks/) `Reaches` `Separated By`
+- [Glacier of Origins](/geography/glacier_of_origins/) `Reaches`
+- [Red Sky Foothills](/geography/red_sky_foothills/) `Reaches` `Separated By`
+- [The Eastern Plains](/geography/eastern_plains/) `Reaches` `Separated By`
+- [The Plains](/geography/plains/) `Reaches` `Separated By`
+- [The Sunward Fields](/geography/sunward_fields/) `Reaches` `Separated By`
 
 ### Locations
-- [Stone Crossing](/locations/stone_crossing/) — spans
+- [Stone Crossing](/locations/stone_crossing/) `Spans`
 
 ### Routes
-- [Northern River Bridge](/routes/northern_river_bridge/) — crossings
-- [Northern River Bridge](/routes/northern_river_bridge/) — crosses
-- [Stone Crossing Route](/routes/stone_crossing/) — crossings
-- [Stone Crossing Route](/routes/stone_crossing/) — crosses
+- [Northern River Bridge](/routes/northern_river_bridge/) `Crossings` `Crosses`
+- [Stone Crossing Route](/routes/stone_crossing/) `Crossings` `Crosses`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.glacier_of_origins, geography.frostfang_peaks, geography.red_sky_foothills, geography.eastern_plains, geography.plains, geography.sunward_fields, route.northern_river_bridge, route.stone_crossing, geography.red_sky_foothills, geography.plains, geography.sunward_fields, geography.eastern_plains, geography.frostfang_peaks, location.stone_crossing, route.northern_river_bridge, route.stone_crossing
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

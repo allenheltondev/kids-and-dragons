@@ -3,8 +3,8 @@ title: Enchanted Woods
 id: geography.enchanted_woods
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.expanse
@@ -25,6 +25,15 @@ related:
   - id: location.mosshome
     type: location
     relationship: contained_by
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.expanse, geography.red_sky_foothills, geography.plains, geography.whispering_marsh, location.mosshome, location.mosshome"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -33,25 +42,13 @@ infobox: geography
 ## Related Entities
 
 ### Geography
-- [Red Sky Foothills](/geography/red_sky_foothills/) — borders
-- [The Expanse](/geography/expanse/) — borders
-- [The Plains](/geography/plains/) — borders
-- [Whispering Marsh](/geography/whispering_marsh/) — borders
+- [Red Sky Foothills](/geography/red_sky_foothills/) `Borders`
+- [The Expanse](/geography/expanse/) `Borders`
+- [The Plains](/geography/plains/) `Borders`
+- [Whispering Marsh](/geography/whispering_marsh/) `Borders`
 
 ### Locations
-- [Mosshome](/locations/mosshome/) — contains_sites
-- [Mosshome](/locations/mosshome/) — contained_by
+- [Mosshome](/locations/mosshome/) `Contains Sites` `Contained By`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.expanse, geography.red_sky_foothills, geography.plains, geography.whispering_marsh, location.mosshome, location.mosshome
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

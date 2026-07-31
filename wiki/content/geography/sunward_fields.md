@@ -3,8 +3,8 @@ title: The Sunward Fields
 id: geography.sunward_fields
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.eastern_plains
@@ -40,6 +40,15 @@ related:
   - id: route.exchange_to_sunward_fields
     type: route
     relationship: connects
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.eastern_plains, feature.great_river, geography.plains, geography.whispering_marsh, location.exchange, location.stone_crossing, location.exchange, location.stone_crossing, feature.great_river, route.stone_crossing, route.exchange_to_sunward_fields"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -48,34 +57,20 @@ infobox: geography
 ## Related Entities
 
 ### Features
-- [The Great River](/features/great_river/) — separated_by
-- [The Great River](/features/great_river/) — reaches
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
 
 ### Geography
-- [The Eastern Plains](/geography/eastern_plains/) — separated_from
-- [The Plains](/geography/plains/) — borders
-- [Whispering Marsh](/geography/whispering_marsh/) — borders
+- [The Eastern Plains](/geography/eastern_plains/) `Separated From`
+- [The Plains](/geography/plains/) `Borders`
+- [Whispering Marsh](/geography/whispering_marsh/) `Borders`
 
 ### Locations
-- [Stone Crossing](/locations/stone_crossing/) — nearby_sites
-- [Stone Crossing](/locations/stone_crossing/) — connects
-- [The Exchange](/locations/exchange/) — nearby_sites
-- [The Exchange](/locations/exchange/) — adjacent_to
+- [Stone Crossing](/locations/stone_crossing/) `Nearby Sites` `Connects`
+- [The Exchange](/locations/exchange/) `Nearby Sites` `Adjacent To`
 
 ### Routes
-- [Exchange–Sunward Road](/routes/exchange_to_sunward_fields/) — connects
-- [Stone Crossing Route](/routes/stone_crossing/) — connects
+- [Exchange–Sunward Road](/routes/exchange_to_sunward_fields/) `Connects`
+- [Stone Crossing Route](/routes/stone_crossing/) `Connects`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.eastern_plains, feature.great_river, geography.plains, geography.whispering_marsh, location.exchange, location.stone_crossing, location.exchange, location.stone_crossing, feature.great_river, route.stone_crossing, route.exchange_to_sunward_fields
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

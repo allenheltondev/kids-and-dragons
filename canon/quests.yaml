@@ -17,8 +17,9 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions."
-    intentionally_undefined: "The quest concept exists as a design placeholder but is not yet canon."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
   quest_type:
     main_story: "A quest tied to the primary campaign narrative."
     side_quest: "An optional quest providing additional depth or rewards."
@@ -43,7 +44,7 @@ quests:
     quest_type: main_story
     difficulty: hard
     featured: true
-    tags: [main-quest, ritual, highlands, epic]
+    tags: [main_quest, ritual, highlands, epic]
     short_description: >-
       Perform an ancient ritual atop a highland fortress to glimpse the truth
       behind the eternal red sky.
@@ -64,10 +65,10 @@ quests:
     rewards:
       - Vision of the world before the red sky
     relationships:
-      locations: [redspire_citadel]
-      items: [crimson_shard]
-      factions: [skywardens]
-      campaigns: [dawn_of_the_red_sky]
+      locations: [location.redspire_citadel]
+      items: [item.crimson_shard]
+      factions: [faction.skywardens]
+      campaigns: [campaign.dawn_of_the_red_sky]
       creatures: []
 
   - id: quest.crystal_heart_retrieval
@@ -80,7 +81,7 @@ quests:
     quest_type: side_quest
     difficulty: moderate
     featured: false
-    tags: [side-quest, exploration, underground, mystery]
+    tags: [side_quest, exploration, underground, mystery]
     short_description: >-
       Descend into the deepest cavern reaches to retrieve the legendary Crystal
       Heart before a rival faction claims it.
@@ -101,8 +102,8 @@ quests:
     rewards:
       - Crystal Heart artifact
     relationships:
-      locations: [crystal_font]
-      items: [crystal_heart]
-      factions: [deep_hollow_cult]
-      campaigns: [echoes_beneath]
+      locations: [location.crystal_font]
+      items: [item.crystal_heart]
+      factions: [faction.deep_hollow_cult]
+      campaigns: [campaign.echoes_beneath]
       creatures: []

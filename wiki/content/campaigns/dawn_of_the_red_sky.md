@@ -3,10 +3,10 @@ title: Dawn of the Red Sky
 id: campaign.dawn_of_the_red_sky
 type: campaign
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: intentionally_undefined
 draft: true
-tags: ["main-campaign", "highlands", "epic", "skywardens"]
+tags: ["main_campaign", "highlands", "epic", "skywardens"]
 related:
   - id: faction.skywardens
     type: faction
@@ -14,8 +14,8 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: quests
-  - id: biome.redspire_citadel
-    type: biome
+  - id: location.redspire_citadel
+    type: location
     relationship: locations
   - id: biome.red_sky_foothills
     type: biome
@@ -32,6 +32,15 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: campaigns
+ai_context:
+  mood: "The primary campaign following a hero's journey to uncover why the sky turned red and whether it can be restored."
+  themes: "Main_campaign, Highlands, Epic, Skywardens"
+  visual_style: "Epic vista of the foothills with a highland fortress silhouetted against a blood-red sky."
+  common_encounters: "Core narrative backbone, faction introduction, world-building vehicle."
+  lore_highlights: ""
+  related_entities: "faction.skywardens, quest.shattered_sky_rite, location.redspire_citadel, biome.red_sky_foothills, item.crimson_shard, faction.skywardens, location.redspire_citadel, quest.shattered_sky_rite"
+  writing_guidance: "Must be completable regardless of faction choices. The sky's origin is revealed in chapter 4."
+  generation_hints: "Linear progression with branching side content per chapter."
 layout: campaigns
 infobox: campaign
 ---
@@ -40,33 +49,19 @@ infobox: campaign
 ## Related Entities
 
 ### Biomes
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — biomes
-- [Redspire Citadel](/biomes/redspire_citadel/) — locations
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Biomes`
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — factions
-- [The Skywardens](/factions/skywardens/) — campaigns
+- [The Skywardens](/factions/skywardens/) `Factions` `Campaigns`
 
 ### Items
-- [Crimson Shard](/items/crimson_shard/) — items
+- [Crimson Shard](/items/crimson_shard/) `Items`
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) — campaigns
+- [Redspire Citadel](/locations/redspire_citadel/) `Locations` `Campaigns`
 
 ### Quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — campaigns
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/) `Quests` `Campaigns`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** The primary campaign following a hero's journey to uncover why the sky turned red and whether it can be restored.
-**Themes:** Main-campaign, Highlands, Epic, Skywardens
-**Visual Style:** Epic vista of the foothills with a highland fortress silhouetted against a blood-red sky.
-**Common Encounters:** Core narrative backbone, faction introduction, world-building vehicle.
-**Lore Highlights:** 
-**Related Entities:** faction.skywardens, quest.shattered_sky_rite, biome.redspire_citadel, biome.red_sky_foothills, item.crimson_shard, faction.skywardens, location.redspire_citadel, quest.shattered_sky_rite
-**Writing Guidance:** Must be completable regardless of faction choices. The sky's origin is revealed in chapter 4.
-**Generation Hints:** Linear progression with branching side content per chapter.
-<!-- END GENERATED: ai_context -->
