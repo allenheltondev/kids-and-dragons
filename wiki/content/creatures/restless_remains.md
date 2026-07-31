@@ -18,7 +18,8 @@ related:
     type: biome
     relationship: supernatural_manifestations
 assets:
-  primary: assets/entities/restless_remains/assembled.png
+  primary: assets/entities/restless_remains/portrait.webp
+  primaryFull: assets/entities/restless_remains/assembled.png
 ai_context:
   mood: "Ancient bones temporarily animated when the Bone Yard's rest is seriously disturbed."
   themes: "Supernatural, Bone_yard, Rare, Guardian"

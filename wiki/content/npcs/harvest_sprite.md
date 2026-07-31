@@ -26,7 +26,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/harvest_sprite/assembled.png
+  primary: assets/entities/harvest_sprite/portrait.webp
+  primaryFull: assets/entities/harvest_sprite/assembled.png
 ai_context:
   mood: "Tiny field spirits who tend overlooked plants and reward careful stewardship."
   themes: "Supporting_people, Fields, Tiny, Semi_sapient"

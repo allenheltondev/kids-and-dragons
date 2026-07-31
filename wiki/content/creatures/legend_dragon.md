@@ -18,7 +18,8 @@ related:
     type: location
     relationship: legendary_beings
 assets:
-  primary: assets/entities/legend_dragon/assembled.png
+  primary: assets/entities/legend_dragon/portrait.webp
+  primaryFull: assets/entities/legend_dragon/assembled.png
 ai_context:
   mood: "An ancient, solitary dragon powerful enough to claim territory on or beneath Mount RedSky."
   themes: "Legendary, Volcano, Sapient, Ancient"

@@ -24,11 +24,15 @@ related:
     type: biome
     relationship: primary_peoples
 assets:
-  primary: assets/characters/griffin/fledgling/assembled.png
+  primary: assets/characters/griffin/fledgling/portrait.webp
+  primaryFull: assets/characters/griffin/fledgling/assembled.png
   gallery:
-    - assets/characters/griffin/mythic/assembled.png
-    - assets/characters/griffin/radiant/assembled.png
-    - assets/characters/griffin/sworn/assembled.png
+    - src: assets/characters/griffin/mythic/portrait.webp
+      full: assets/characters/griffin/mythic/assembled.png
+    - src: assets/characters/griffin/radiant/portrait.webp
+      full: assets/characters/griffin/radiant/assembled.png
+    - src: assets/characters/griffin/sworn/portrait.webp
+      full: assets/characters/griffin/sworn/assembled.png
 ai_context:
   mood: "Eagle-and-lion people of the Frostfang aeries who serve as scouts, rescuers, messengers, and guardians of the northern horizon."
   themes: "Playable, Mountain, Flight, Scout"

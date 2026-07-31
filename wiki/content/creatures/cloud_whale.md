@@ -18,7 +18,8 @@ related:
     type: biome
     relationship: ambient_creatures
 assets:
-  primary: assets/entities/cloud_whale/assembled.png
+  primary: assets/entities/cloud_whale/portrait.webp
+  primaryFull: assets/entities/cloud_whale/assembled.png
 ai_context:
   mood: "Enormous gentle sky-swimmer that follows the same high wind currents as the drifting islands."
   themes: "Ambient, Sky, Majestic, Semi_sapient"

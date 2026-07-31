@@ -102,9 +102,11 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
-  primary: assets/biomes/sunward_fields/bg.webp
+  primary: assets/biomes/sunward_fields/portrait.webp
+  primaryFull: assets/biomes/sunward_fields/bg.webp
   gallery:
-    - assets/biomes/sunward_fields/tiles.png
+    - src: assets/biomes/sunward_fields/portrait.webp
+      full: assets/biomes/sunward_fields/tiles.png
 ai_context:
   mood: "Rolling meadows, farms, orchards, and village cooperatives that produce much of the food used across the realm."
   themes: "Farmland, Meadows, Orchards, Villages, Food, Seasonal_work"

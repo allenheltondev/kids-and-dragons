@@ -26,7 +26,8 @@ related:
     type: location
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/stone_troll/assembled.png
+  primary: assets/entities/stone_troll/portrait.webp
+  primaryFull: assets/entities/stone_troll/assembled.png
 ai_context:
   mood: "Massive stone-skinned people known for patient judgment, masonry, bridgekeeping, and gateway stewardship."
   themes: "Supporting_people, River, Bridgekeeper, Masonry"

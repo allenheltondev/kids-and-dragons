@@ -18,7 +18,8 @@ related:
     type: biome
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/mire_mimic/assembled.png
+  primary: assets/entities/mire_mimic/portrait.webp
+  primaryFull: assets/entities/mire_mimic/assembled.png
 ai_context:
   mood: "Patient marsh predator that resembles a safe patch of ground, log, or abandoned boat."
   themes: "Dangerous, Marsh, Ambush, Camouflage"

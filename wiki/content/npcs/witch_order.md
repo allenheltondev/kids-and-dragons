@@ -26,7 +26,8 @@ related:
     type: biome
     relationship: cultural_orders
 assets:
-  primary: assets/entities/witch_order/assembled.png
+  primary: assets/entities/witch_order/portrait.webp
+  primaryFull: assets/entities/witch_order/assembled.png
 ai_context:
   mood: "A cross-species magical tradition rather than a separate people."
   themes: "Cultural_order, Cross_species, Magic, Tradition"

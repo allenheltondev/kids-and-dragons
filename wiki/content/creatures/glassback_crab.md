@@ -27,7 +27,8 @@ related:
     type: location
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/glassback_crab/assembled.png
+  primary: assets/entities/glassback_crab/portrait.webp
+  primaryFull: assets/entities/glassback_crab/assembled.png
 ai_context:
   mood: "Large territorial crab-like burrower with a translucent mineral shell."
   themes: "Dangerous, Foothills, Territorial, Burrower"

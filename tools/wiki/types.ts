@@ -78,13 +78,30 @@ export interface ReverseRef {
   relationshipKey: string;
 }
 
+/**
+ * One image, at both the sizes a page needs.
+ *
+ * The commissioned art is 1024x1024 PNG — right for the game's renderer, wrong
+ * for a wiki page that displays it at 400px. `tools/art/portraits.py` derives a
+ * trimmed 512px WebP beside each one, so a page can show the small file and
+ * still hand the lightbox the real thing. Before this the infobox, the tier
+ * viewer and the gallery thumbnails all served the source: ~3.2MB on a single
+ * character page, 19MB across the six.
+ */
+export interface EntityImage {
+  /** What the page renders. The derived portrait when one exists on disk. */
+  src: string;
+  /** What the lightbox opens. Always the full-resolution source. */
+  full: string;
+}
+
 /** Result of asset discovery for a single entity. */
 export interface AssetResult {
   entityId: string;
-  /** Single image path when exactly one image is found */
-  primary?: string;
-  /** Multiple image paths when more than one is found (alpha-sorted) */
-  gallery?: string[];
+  /** Single image when exactly one is found */
+  primary?: EntityImage;
+  /** Multiple images when more than one is found (alpha-sorted) */
+  gallery?: EntityImage[];
   /** How the asset was resolved */
   source: 'explicit' | 'convention' | 'none';
 }
@@ -101,10 +118,17 @@ export interface AiContext {
   generation_hints?: string;
 }
 
-/** Asset references for an entity page's front matter. */
+/**
+ * Asset references for an entity page's front matter.
+ *
+ * `primary` stays a bare string because five templates read it as an `src` and
+ * none of them care where the big version is; `primaryFull` is the lightbox
+ * target, read only by the two that offer one.
+ */
 export interface EntityAssets {
   primary?: string;
-  gallery?: string[];
+  primaryFull?: string;
+  gallery?: EntityImage[];
 }
 
 /** Front matter structure produced by the Generator for entity pages. */

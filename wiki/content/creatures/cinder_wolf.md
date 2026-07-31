@@ -24,7 +24,8 @@ related:
     type: biome
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/cinder_wolf/assembled.png
+  primary: assets/entities/cinder_wolf/portrait.webp
+  primaryFull: assets/entities/cinder_wolf/assembled.png
 ai_context:
   mood: "Lean pack predator with ash-dark fur and heat glowing faintly beneath its coat."
   themes: "Dangerous, Foothills, Pack, Predator"

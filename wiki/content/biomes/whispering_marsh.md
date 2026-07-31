@@ -78,9 +78,11 @@ related:
     type: npc
     relationship: primary_locations
 assets:
-  primary: assets/biomes/whispering_marsh/bg.webp
+  primary: assets/biomes/whispering_marsh/portrait.webp
+  primaryFull: assets/biomes/whispering_marsh/bg.webp
   gallery:
-    - assets/biomes/whispering_marsh/tiles.png
+    - src: assets/biomes/whispering_marsh/portrait.webp
+      full: assets/biomes/whispering_marsh/tiles.png
 ai_context:
   mood: "A mist-covered wetland where voices, memories, and supernatural manifestations collect among drowned roots and hidden waterways."
   themes: "Wetland, Mist, Spirits, Memory, Waterways, Secrets"

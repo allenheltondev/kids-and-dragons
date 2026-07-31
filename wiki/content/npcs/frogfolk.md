@@ -20,7 +20,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/frogfolk/assembled.png
+  primary: assets/entities/frogfolk/portrait.webp
+  primaryFull: assets/entities/frogfolk/assembled.png
 ai_context:
   mood: "Amphibious marsh people who maintain safe channels, reed settlements, and mist markers."
   themes: "Supporting_people, Marsh, Amphibious, Navigator"

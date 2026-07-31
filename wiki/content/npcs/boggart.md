@@ -23,7 +23,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/boggart/assembled.png
+  primary: assets/entities/boggart/portrait.webp
+  primaryFull: assets/entities/boggart/assembled.png
 ai_context:
   mood: "Small marsh-dwelling people who collect lost objects, secrets, and unusual sounds."
   themes: "Supporting_people, Marsh, Collector, Secretive"
