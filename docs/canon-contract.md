@@ -1,6 +1,7 @@
 # Kids & Dragons — Canon Contract
 
-**Status: proposed.** `canon/*.yaml` is the truth. Everything else — the wiki,
+**Status: D1, D2, D3 and D12 ruled (2026-07-31) and applied to the corpus; the
+rest proposed.** `canon/*.yaml` is the truth. Everything else — the wiki,
 `content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
 document is the schema that makes derivation mechanical instead of manual.
 
@@ -143,13 +144,18 @@ reasons beyond consistency: taxonomy is derivable from an id alone (so
 `canon_get("creature.x")` needs no second argument, and a DynamoDB key can be
 computed without a lookup), and it is already the majority form.
 
-The corpus is currently mixed — `borders: [geography.enchanted_woods]` prefixed,
-`inhabitants.ambient_creatures: [mosshorn]` bare, `relationships.primary_locations:
-[red_sky_foothills]` bare. **Accept bare on input, normalize on parse**: the
-edge declaration names the target taxonomy, so a bare slug resolves
-mechanically, and an ambiguous one (two taxonomies allowed, both match) is a
-parse error. Normalization is one-way — the YAML stays readable, the registry
-is uniform.
+The corpus **was** mixed and has been migrated: every reference is now prefixed
+in the files themselves, so the schema requires prefixed form and the parser
+holds no resolution logic. `CanonRef` is a string check against the registry,
+nothing more.
+
+Getting there needed the §4 edge declarations first. Ninety references were
+ambiguous on their bare form alone, because nearly every place exists as both a
+`biome.*` (ecology and art) and a `geography.*` (map) — `enchanted_woods` is
+both. The field decides: `primary_locations` on a creature means ecology and
+resolves to `biome`, while `borders` on a region means the map graph and
+resolves to `geography`. Eight references resolved to nothing and are listed in
+D11.
 
 `Slug` is `/^[a-z0-9]+(_[a-z0-9]+)*$/`. Note `tags` currently use **kebab**-case
 (`ancient-forest`, `living-magic`) while ids use snake — pick one (§9 D12).
@@ -251,7 +257,7 @@ Two rules, both enforced server-side rather than prompted:
 These are the gaps. Each one blocks a field definition; each has a recommended
 resolution, and the recommendation is what I would implement absent a ruling.
 
-**D1 — `canon_status` is not one enum.** Nine values across two families:
+**D1 — RULED, applied. `canon_status` is not one enum.** Nine values across two families:
 `confirmed | newly_defined | intentionally_undefined` (nine files) and
 `map_canonical | map_canonical_and_biome_matched | map_visible_name_pending |
 map_implied | visible_unlabeled_feature` (geography only).
@@ -259,12 +265,13 @@ map_implied | visible_unlabeled_feature` (geography only).
 geography-only `map_provenance` field. Those five values answer "how do we know
 this place exists," which is a different question from "is this canon."
 
-**D2 — id form is mixed.** Bare in `inhabitants` and
+**D2 — RULED, applied, and stronger than proposed. id form is mixed.** Bare in `inhabitants` and
 `relationships.primary_locations`, prefixed in `borders` / `biome_id` /
-`geography_id`. *Recommend:* §5 — canonical prefixed, bare accepted and
-normalized on parse.
+`geography_id`. Allen's ruling: rewrite the *files* to prefixed form rather than
+normalizing on read, so the schema can **require** prefixed and the parser
+carries no resolution logic at all. Applied: 195 references across ten files.
 
-**D3 — five aliasing fields.** `asset_id`, `canonical_creature_id`,
+**D3 — RULED, applied. Five aliasing fields.** `asset_id`, `canonical_creature_id`,
 `canonical_location_id`, `species_manifest_id`, `geography_id` all mean "this
 thing's other name." *Recommend:* keep `asset_id` only (it already matches
 `assets/<kind>/<id>/`, and is the join to `content/`); `geography_id` becomes an
@@ -341,8 +348,8 @@ Either promote all three, or drop the references. The last row is a schema bug,
 not a data bug: `population_rule` is prose living inside `inhabitants`, whose
 other seven keys are all edge arrays — move it up to the envelope.
 
-**D12 — `tags` are kebab-case, ids are snake_case.** Pick one. *Recommend:*
-snake, matching ids and `asset_id`, so one `Slug` regex covers the corpus.
+**D12 — RULED, applied. `tags` were kebab-case, ids snake_case.** Everything is
+snake now; one `Slug` regex covers the corpus.
 
 **D13 — `schema_version` is declared and unenforced.** Every file says `"2.0"`;
 nothing reads it. *Recommend:* the parser asserts it and fails loudly on

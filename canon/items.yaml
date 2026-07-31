@@ -19,7 +19,8 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
     intentionally_undefined: "A protected mystery or open design slot."
   category:
     crafting_material: "A raw or processed material used in creation."
@@ -59,9 +60,9 @@ items:
     standard_behavior: >-
       Emits faint warmth and light, intensifies near other shards.
     relationships:
-      found_in: [red_sky_foothills]
-      dropped_by: [glassback_crab]
-      quests: [shattered_sky_rite]
+      found_in: [biome.red_sky_foothills]
+      dropped_by: [creature.glassback_crab]
+      quests: [quest.shattered_sky_rite]
       factions: []
 
   - id: item.crystal_heart
@@ -88,9 +89,9 @@ items:
     standard_behavior: >-
       Pulses in sync with nearby crystal formations.
     relationships:
-      found_in: [skullwater_cave]
+      found_in: [biome.skullwater_cave]
       dropped_by: []
-      quests: [crystal_heart_retrieval]
+      quests: [quest.crystal_heart_retrieval]
       factions: []
 
   - id: item.marsh_lantern
@@ -117,7 +118,7 @@ items:
     standard_behavior: >-
       Flickers when spirits are nearby, burns steady when the path is safe.
     relationships:
-      found_in: [whispering_marsh]
+      found_in: [biome.whispering_marsh]
       dropped_by: []
       quests: []
       factions: []

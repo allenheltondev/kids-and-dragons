@@ -3,9 +3,9 @@ title: Merfolk
 id: npc.merfolk
 type: npc
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["supporting-people", "ocean", "reef", "alliance"]
+tags: ["supporting_people", "ocean", "reef", "alliance"]
 classification: supporting_people
 scale: medium
 sapience: sapient
@@ -13,9 +13,23 @@ related:
   - id: biome.mermaid_cove
     type: biome
     relationship: primary_locations
-  - id: biome.the_exchange
+  - id: biome.exchange
     type: biome
     relationship: secondary_locations
+  - id: biome.mermaid_cove
+    type: biome
+    relationship: supporting_peoples
+assets:
+  primary: assets/entities/merfolk/assembled.png
+ai_context:
+  mood: "Aquatic reef people who maintain Mermaid Cove and uphold an ancient alliance with the land."
+  themes: "Supporting_people, Ocean, Reef, Alliance"
+  visual_style: "Aquatic humanoid form with fish-like tail and broad regional variation. Coral, shell, woven kelp motifs."
+  common_encounters: "Reef guardian, keeper of an old treaty, messenger warning of a changed current."
+  lore_highlights: ""
+  related_entities: "biome.mermaid_cove, biome.exchange, biome.mermaid_cove"
+  writing_guidance: "Limited land mobility unless aided by established magic or equipment."
+  generation_hints: "Patrols reefs, rescues swimmers, repairs coral, participates in songs that help prevent the whirlpool from widening."
 layout: npcs
 infobox: npc
 ---
@@ -24,19 +38,8 @@ infobox: npc
 ## Related Entities
 
 ### Biomes
-- [Mermaid Cove](/biomes/mermaid_cove/) — primary_locations
-- [The Exchange](/biomes/the_exchange/) — secondary_locations
+- [Mermaid Cove](/biomes/mermaid_cove/) `Primary Locations` `Supporting Peoples`
+- [The Exchange](/biomes/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Aquatic reef people who maintain Mermaid Cove and uphold an ancient alliance with the land.
-**Themes:** Supporting-people, Ocean, Reef, Alliance
-**Visual Style:** Aquatic humanoid form with fish-like tail and broad regional variation. Coral, shell, woven kelp motifs.
-**Common Encounters:** Reef guardian, keeper of an old treaty, messenger warning of a changed current.
-**Lore Highlights:** 
-**Related Entities:** biome.mermaid_cove, biome.the_exchange
-**Writing Guidance:** Limited land mobility unless aided by established magic or equipment.
-**Generation Hints:** Patrols reefs, rescues swimmers, repairs coral, participates in songs that help prevent the whirlpool from widening.
-<!-- END GENERATED: ai_context -->

@@ -3,7 +3,7 @@ title: Manticore
 id: character.manticore
 type: character
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["playable", "plains", "guardian", "proud"]
 scale: medium_to_large
@@ -17,12 +17,27 @@ related:
   - id: biome.plains
     type: biome
     relationship: secondary_locations
-  - id: biome.the_exchange
+  - id: biome.exchange
     type: biome
     relationship: secondary_locations
   - id: biome.eastern_plains
     type: biome
     relationship: primary_peoples
+assets:
+  primary: assets/characters/manticore/fledgling/assembled.png
+  gallery:
+    - assets/characters/manticore/mythic/assembled.png
+    - assets/characters/manticore/radiant/assembled.png
+    - assets/characters/manticore/sworn/assembled.png
+ai_context:
+  mood: "Proud, formidable plains people who travel in family prides, maintain routes, and guard travelers crossing the open east."
+  themes: "Playable, Plains, Guardian, Proud"
+  visual_style: "Lion-like body and a distinctive powerful tail. A formidable silhouette balanced by expressive, approachable features."
+  common_encounters: "Road guardian, caravan escort, hero confronting unfair assumptions about appearance."
+  lore_highlights: ""
+  related_entities: "biome.eastern_plains, biome.stone_crossing, biome.plains, biome.exchange, biome.eastern_plains"
+  writing_guidance: "Manticores are not an inherently hostile or villainous people."
+  generation_hints: "Patrols roads, repairs trail markers, investigates unusual tracks, escorts caravans, exchanges news between settlements."
 layout: characters
 infobox: character
 ---
@@ -31,22 +46,10 @@ infobox: character
 ## Related Entities
 
 ### Biomes
-- [Stone Crossing](/biomes/stone_crossing/) — secondary_locations
-- [The Eastern Plains](/biomes/eastern_plains/) — primary_locations
-- [The Eastern Plains](/biomes/eastern_plains/) — primary_peoples
-- [The Exchange](/biomes/the_exchange/) — secondary_locations
-- [The Plains](/biomes/plains/) — secondary_locations
+- [Stone Crossing](/biomes/stone_crossing/) `Secondary Locations`
+- [The Eastern Plains](/biomes/eastern_plains/) `Primary Locations` `Primary Peoples`
+- [The Exchange](/biomes/exchange/) `Secondary Locations`
+- [The Plains](/biomes/plains/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Proud, formidable plains people who travel in family prides, maintain routes, and guard travelers crossing the open east.
-**Themes:** Playable, Plains, Guardian, Proud
-**Visual Style:** Lion-like body and a distinctive powerful tail. A formidable silhouette balanced by expressive, approachable features.
-**Common Encounters:** Road guardian, caravan escort, hero confronting unfair assumptions about appearance.
-**Lore Highlights:** 
-**Related Entities:** biome.eastern_plains, biome.stone_crossing, biome.plains, biome.the_exchange, biome.eastern_plains
-**Writing Guidance:** Manticores are not an inherently hostile or villainous people.
-**Generation Hints:** Patrols roads, repairs trail markers, investigates unusual tracks, escorts caravans, exchanges news between settlements.
-<!-- END GENERATED: ai_context -->

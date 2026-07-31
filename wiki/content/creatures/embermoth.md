@@ -3,7 +3,7 @@ title: Embermoth
 id: creature.embermoth
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["ambient", "foothills", "volcanic", "indicator"]
 classification: ambient_creature
@@ -23,6 +23,17 @@ related:
   - id: biome.mount_red_sky
     type: biome
     relationship: ambient_creatures
+assets:
+  primary: assets/entities/embermoth/assembled.png
+ai_context:
+  mood: "Warm-bodied moth with smoky wings and ember-like markings."
+  themes: "Ambient, Foothills, Volcanic, Indicator"
+  visual_style: "Broad dark wings edged with orange-red light, soft glow rather than open flame, small groups resemble drifting sparks."
+  common_encounters: "Environmental clue, atmospheric artwork, warning that the mountain is changing."
+  lore_highlights: ""
+  related_entities: "biome.red_sky_foothills, biome.mount_red_sky, biome.red_sky_foothills, biome.mount_red_sky"
+  writing_guidance: "Harmless unless a large frightened swarm obscures vision."
+  generation_hints: "Gathers near warm cracks before noticeable volcanic changes, avoids loud movement."
 layout: creatures
 infobox: creature
 ---
@@ -31,21 +42,8 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) — primary_locations
-- [Mount Red Sky](/biomes/mount_red_sky/) — ambient_creatures
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — primary_locations
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — ambient_creatures
+- [Mount Red Sky](/biomes/mount_red_sky/) `Primary Locations` `Ambient Creatures`
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Primary Locations` `Ambient Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Warm-bodied moth with smoky wings and ember-like markings.
-**Themes:** Ambient, Foothills, Volcanic, Indicator
-**Visual Style:** Broad dark wings edged with orange-red light, soft glow rather than open flame, small groups resemble drifting sparks.
-**Common Encounters:** Environmental clue, atmospheric artwork, warning that the mountain is changing.
-**Lore Highlights:** 
-**Related Entities:** biome.red_sky_foothills, biome.mount_red_sky, biome.red_sky_foothills, biome.mount_red_sky
-**Writing Guidance:** Harmless unless a large frightened swarm obscures vision.
-**Generation Hints:** Gathers near warm cracks before noticeable volcanic changes, avoids loud movement.
-<!-- END GENERATED: ai_context -->

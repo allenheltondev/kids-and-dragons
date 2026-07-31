@@ -18,8 +18,9 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions."
-    intentionally_undefined: "The campaign concept exists as a design placeholder but is not yet canon."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
   campaign_type:
     main_story_arc: "The primary narrative campaign."
     side_story_arc: "An optional campaign providing additional depth."
@@ -39,7 +40,7 @@ campaigns:
     campaign_type: main_story_arc
     chapter_count: 5
     featured: true
-    tags: [main-campaign, highlands, epic, skywardens]
+    tags: [main_campaign, highlands, epic, skywardens]
     short_description: >-
       The primary campaign following a hero's journey to uncover why the sky
       turned red and whether it can be restored.
@@ -54,11 +55,11 @@ campaigns:
     standard_behavior: >-
       Linear progression with branching side content per chapter.
     relationships:
-      factions: [skywardens]
-      quests: [shattered_sky_rite]
-      locations: [redspire_citadel]
-      biomes: [red_sky_foothills]
-      items: [crimson_shard]
+      factions: [faction.skywardens]
+      quests: [quest.shattered_sky_rite]
+      locations: [location.redspire_citadel]
+      biomes: [biome.red_sky_foothills]
+      items: [item.crimson_shard]
       creatures: []
 
   - id: campaign.echoes_beneath
@@ -71,7 +72,7 @@ campaigns:
     campaign_type: side_story_arc
     chapter_count: 3
     featured: false
-    tags: [side-campaign, underground, mystery, cult]
+    tags: [side_campaign, underground, mystery, cult]
     short_description: >-
       A darker campaign exploring the deep caverns and a secretive group's plan
       to use the Crystal Heart to reshape reality.
@@ -86,9 +87,9 @@ campaigns:
     standard_behavior: >-
       Non-linear exploration with reputation-gated content.
     relationships:
-      factions: [deep_hollow_cult]
-      quests: [crystal_heart_retrieval]
-      locations: [crystal_font]
-      biomes: [skullwater_cave]
-      items: [crystal_heart]
+      factions: [faction.deep_hollow_cult]
+      quests: [quest.crystal_heart_retrieval]
+      locations: [location.crystal_font]
+      biomes: [biome.skullwater_cave]
+      items: [item.crystal_heart]
       creatures: []

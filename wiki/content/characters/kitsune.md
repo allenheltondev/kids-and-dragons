@@ -3,7 +3,7 @@ title: Kitsune
 id: character.kitsune
 type: character
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["playable", "sky", "illusion", "clever"]
 scale: small_to_medium
@@ -11,7 +11,7 @@ related:
   - id: biome.sky_islands
     type: biome
     relationship: primary_locations
-  - id: biome.the_exchange
+  - id: biome.exchange
     type: biome
     relationship: secondary_locations
   - id: biome.enchanted_woods
@@ -23,6 +23,21 @@ related:
   - id: biome.sky_islands
     type: biome
     relationship: primary_peoples
+assets:
+  primary: assets/characters/kitsune/fledgling/assembled.png
+  gallery:
+    - assets/characters/kitsune/mythic/assembled.png
+    - assets/characters/kitsune/radiant/assembled.png
+    - assets/characters/kitsune/sworn/assembled.png
+ai_context:
+  mood: "Fox-like people of the drifting Sky Islands who use wind, stories, navigation, and illusion to connect moving communities."
+  themes: "Playable, Sky, Illusion, Clever"
+  visual_style: "Fox-like form with expressive ears, tail or tails, and light travel clothing. Wind, cloud, star, and temple motifs."
+  common_encounters: "Wind navigator, messenger carrying incomplete or symbolic information, hero whose clever solution creates an unexpected consequence."
+  lore_highlights: ""
+  related_entities: "biome.sky_islands, biome.exchange, biome.enchanted_woods, biome.frostfang_peaks, biome.sky_islands"
+  writing_guidance: "Do not portray every kitsune as dishonest or mischievous."
+  generation_hints: "Charts wind patterns, maintains island stabilizing sites, carries stories between islands, uses illusions for teaching and play."
 layout: characters
 infobox: character
 ---
@@ -31,22 +46,10 @@ infobox: character
 ## Related Entities
 
 ### Biomes
-- [Enchanted Woods](/biomes/enchanted_woods/) — secondary_locations
-- [Frostfang Peaks](/biomes/frostfang_peaks/) — secondary_locations
-- [Sky Islands](/biomes/sky_islands/) — primary_locations
-- [Sky Islands](/biomes/sky_islands/) — primary_peoples
-- [The Exchange](/biomes/the_exchange/) — secondary_locations
+- [Enchanted Woods](/biomes/enchanted_woods/) `Secondary Locations`
+- [Frostfang Peaks](/biomes/frostfang_peaks/) `Secondary Locations`
+- [Sky Islands](/biomes/sky_islands/) `Primary Locations` `Primary Peoples`
+- [The Exchange](/biomes/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Fox-like people of the drifting Sky Islands who use wind, stories, navigation, and illusion to connect moving communities.
-**Themes:** Playable, Sky, Illusion, Clever
-**Visual Style:** Fox-like form with expressive ears, tail or tails, and light travel clothing. Wind, cloud, star, and temple motifs.
-**Common Encounters:** Wind navigator, messenger carrying incomplete or symbolic information, hero whose clever solution creates an unexpected consequence.
-**Lore Highlights:** 
-**Related Entities:** biome.sky_islands, biome.the_exchange, biome.enchanted_woods, biome.frostfang_peaks, biome.sky_islands
-**Writing Guidance:** Do not portray every kitsune as dishonest or mischievous.
-**Generation Hints:** Charts wind patterns, maintains island stabilizing sites, carries stories between islands, uses illusions for teaching and play.
-<!-- END GENERATED: ai_context -->

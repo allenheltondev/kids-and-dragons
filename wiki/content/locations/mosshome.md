@@ -3,8 +3,8 @@ title: Mosshome
 id: location.mosshome
 type: location
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.enchanted_woods
@@ -13,9 +13,21 @@ related:
   - id: geography.whispering_marsh
     type: geography
     relationship: adjacent_to
+  - id: biome.enchanted_woods
+    type: biome
+    relationship: locations
   - id: geography.enchanted_woods
     type: geography
     relationship: contains_sites
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.enchanted_woods, geography.whispering_marsh, biome.enchanted_woods, geography.enchanted_woods"
+  writing_guidance: ""
+  generation_hints: ""
 layout: locations
 infobox: location
 ---
@@ -23,21 +35,12 @@ infobox: location
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
+### Biomes
+- [Enchanted Woods](/biomes/enchanted_woods/) `Locations`
+
 ### Geography
-- [Enchanted Woods](/geography/enchanted_woods/) — contained_by
-- [Enchanted Woods](/geography/enchanted_woods/) — contains_sites
-- [Whispering Marsh](/geography/whispering_marsh/) — adjacent_to
+- [Enchanted Woods](/geography/enchanted_woods/) `Contained By` `Contains Sites`
+- [Whispering Marsh](/geography/whispering_marsh/) `Adjacent To`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.enchanted_woods, geography.whispering_marsh, geography.enchanted_woods
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

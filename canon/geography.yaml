@@ -39,6 +39,10 @@ controlled_values:
     overland_road: "A maintained road between locations."
     overland_route: "An unmaintained or informal overland path."
   canon_status:
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
+  map_provenance:
     map_canonical: "Directly placed and labeled on the current map."
     map_canonical_and_biome_matched: "Map-placed and matched to a biome canon entry."
     map_visible_name_pending: "Visible on the map but lacking a canonical proper name."
@@ -105,7 +109,8 @@ regions:
     title: The Expanse
     kind: biome_region
     biome_id: biome.expanse
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 470, y: 75 }
     relative_position: north
     borders:
@@ -123,7 +128,8 @@ regions:
     title: Sky Islands
     kind: aerial_archipelago
     biome_id: biome.sky_islands
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 165, y: 235 }
     relative_position: west_offshore
     borders: []
@@ -138,7 +144,8 @@ regions:
     title: Enchanted Woods
     kind: biome_region
     biome_id: biome.enchanted_woods
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 220, y: 395 }
     relative_position: west_central
     borders:
@@ -155,7 +162,8 @@ regions:
     title: Red Sky Foothills
     kind: biome_region
     biome_id: biome.red_sky_foothills
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 440, y: 410 }
     relative_position: central
     borders:
@@ -175,7 +183,8 @@ regions:
     title: The Plains
     kind: biome_region
     biome_id: biome.plains
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 455, y: 520 }
     relative_position: central_south
     borders:
@@ -194,7 +203,8 @@ regions:
     title: Whispering Marsh
     kind: biome_region
     biome_id: biome.whispering_marsh
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 225, y: 620 }
     relative_position: southwest
     borders:
@@ -212,7 +222,8 @@ regions:
     title: The Sunward Fields
     kind: biome_region
     biome_id: biome.sunward_fields
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 470, y: 690 }
     relative_position: south_central
     borders:
@@ -232,7 +243,8 @@ regions:
     title: The Eastern Plains
     kind: biome_region
     biome_id: biome.eastern_plains
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 750, y: 445 }
     relative_position: east_central
     borders:
@@ -255,7 +267,8 @@ regions:
     title: Glacier of Origins
     kind: biome_region
     biome_id: biome.glacier_of_origins
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 805, y: 85 }
     relative_position: northeast
     borders:
@@ -270,7 +283,8 @@ regions:
     title: Frostfang Peaks
     kind: biome_region
     biome_id: biome.frostfang_peaks
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 825, y: 275 }
     relative_position: east_northeast
     borders:
@@ -285,7 +299,8 @@ regions:
     title: The Bone Yard
     kind: offshore_island_region
     biome_id: biome.bone_yard
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 875, y: 805 }
     relative_position: southeast_offshore
     borders: []
@@ -300,7 +315,8 @@ regions:
     title: Mermaid Cove
     kind: offshore_island_region
     biome_id: biome.mermaid_cove
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 690, y: 925 }
     relative_position: south_offshore
     borders: []
@@ -315,7 +331,8 @@ sites:
   - id: location.mount_red_sky
     title: Mount Red Sky
     kind: volcanic_landmark_region
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 465, y: 325 }
     contained_by: geography.red_sky_foothills
     adjacent_to:
@@ -330,7 +347,8 @@ sites:
   - id: location.mosshome
     title: Mosshome
     kind: settlement_region
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 115, y: 525 }
     contained_by: geography.enchanted_woods
     adjacent_to:
@@ -343,7 +361,8 @@ sites:
   - id: location.exchange
     title: The Exchange
     kind: coastal_trade_city
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 350, y: 855 }
     adjacent_to:
       - geography.whispering_marsh
@@ -357,7 +376,8 @@ sites:
   - id: location.stone_crossing
     title: Stone Crossing
     kind: river_crossing_settlement
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 710, y: 655 }
     contained_by: geography.eastern_plains
     spans: feature.great_river
@@ -372,7 +392,8 @@ sites:
   - id: location.skullwater_cave
     title: Skullwater Cave
     kind: offshore_dungeon_landmark
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 945, y: 370 }
     relative_position: east_offshore
     coast_near:
@@ -390,14 +411,16 @@ features:
   - id: feature.great_river_source
     title: Source of the Great River
     kind: river_source
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 720, y: 105 }
     contained_by: geography.glacier_of_origins
 
   - id: feature.great_river
     title: The Great River
     kind: major_river
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     source: feature.great_river_source
     flow_direction: north_to_south
     reaches:
@@ -424,7 +447,8 @@ features:
   - id: feature.great_river_west_branch
     title: Western Branch of the Great River
     kind: river_branch
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     parent: feature.great_river
     map_anchor: { x: 390, y: 590 }
     reaches:
@@ -438,7 +462,8 @@ features:
   - id: feature.eastern_maelstrom
     title: Eastern Maelstrom
     kind: ocean_hazard
-    canon_status: visible_unlabeled_feature
+    canon_status: confirmed
+    map_provenance: visible_unlabeled_feature
     map_anchor: { x: 950, y: 625 }
     notes:
       - Visible east of the Eastern Plains and north of the Bone Yard.
@@ -448,7 +473,8 @@ routes:
   - id: route.northern_river_bridge
     title: Northern River Bridge
     kind: bridge
-    canon_status: map_visible_name_pending
+    canon_status: confirmed
+    map_provenance: map_visible_name_pending
     map_anchor: { x: 655, y: 390 }
     crosses: feature.great_river
     connects:
@@ -462,7 +488,8 @@ routes:
   - id: route.stone_crossing
     title: Stone Crossing Route
     kind: bridge_and_narrow_pass
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 630, y: 680 }
     crosses: feature.great_river
     via: location.stone_crossing
@@ -477,7 +504,8 @@ routes:
   - id: route.exchange_to_sunward_fields
     title: Exchange–Sunward Road
     kind: overland_road
-    canon_status: map_implied
+    canon_status: confirmed
+    map_provenance: map_implied
     connects:
       - location.exchange
       - geography.sunward_fields
@@ -486,7 +514,8 @@ routes:
   - id: route.exchange_to_whispering_marsh
     title: Exchange–Marsh Approach
     kind: overland_route
-    canon_status: map_implied
+    canon_status: confirmed
+    map_provenance: map_implied
     connects:
       - location.exchange
       - geography.whispering_marsh

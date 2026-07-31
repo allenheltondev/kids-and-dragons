@@ -3,8 +3,8 @@ title: Red Sky Foothills
 id: geography.red_sky_foothills
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.eastern_plains
@@ -40,6 +40,15 @@ related:
   - id: route.northern_river_bridge
     type: route
     relationship: connects
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.eastern_plains, feature.great_river, geography.expanse, geography.enchanted_woods, geography.plains, location.mount_red_sky, geography.frostfang_peaks, location.mount_red_sky, location.mount_red_sky, feature.great_river, route.northern_river_bridge"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -48,34 +57,20 @@ infobox: geography
 ## Related Entities
 
 ### Features
-- [The Great River](/features/great_river/) — separated_by
-- [The Great River](/features/great_river/) — reaches
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
 
 ### Geography
-- [Enchanted Woods](/geography/enchanted_woods/) — borders
-- [Frostfang Peaks](/geography/frostfang_peaks/) — separated_from
-- [The Eastern Plains](/geography/eastern_plains/) — separated_from
-- [The Expanse](/geography/expanse/) — borders
-- [The Plains](/geography/plains/) — borders
+- [Enchanted Woods](/geography/enchanted_woods/) `Borders`
+- [Frostfang Peaks](/geography/frostfang_peaks/) `Separated From`
+- [The Eastern Plains](/geography/eastern_plains/) `Separated From`
+- [The Expanse](/geography/expanse/) `Borders`
+- [The Plains](/geography/plains/) `Borders`
 
 ### Locations
-- [Mount Red Sky](/locations/mount_red_sky/) — contains_sites
-- [Mount Red Sky](/locations/mount_red_sky/) — contained_by
-- [Mount Red Sky](/locations/mount_red_sky/) — access_from
+- [Mount Red Sky](/locations/mount_red_sky/) `Contains Sites` `Contained By` `Access From`
 
 ### Routes
-- [Northern River Bridge](/routes/northern_river_bridge/) — connects
+- [Northern River Bridge](/routes/northern_river_bridge/) `Connects`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.eastern_plains, feature.great_river, geography.expanse, geography.enchanted_woods, geography.plains, location.mount_red_sky, geography.frostfang_peaks, location.mount_red_sky, location.mount_red_sky, feature.great_river, route.northern_river_bridge
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

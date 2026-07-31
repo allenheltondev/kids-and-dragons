@@ -3,7 +3,7 @@ title: Jackalope
 id: creature.jackalope
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["ambient", "plains", "common", "fast"]
 classification: ambient_creature
@@ -29,6 +29,17 @@ related:
   - id: biome.eastern_plains
     type: biome
     relationship: ambient_creatures
+assets:
+  primary: assets/entities/jackalope/assembled.png
+ai_context:
+  mood: "Fast rabbit-like plains animal with small branching antlers."
+  themes: "Ambient, Plains, Common, Fast"
+  visual_style: "Rabbit body, long ears, and delicate antlers. Coat colors reflect grasses, soil, and local crops."
+  common_encounters: "Background life, harmless chase, clue that a nearby predator has disturbed a warren."
+  lore_highlights: ""
+  related_entities: "biome.plains, biome.sunward_fields, biome.eastern_plains, biome.plains, biome.sunward_fields, biome.eastern_plains"
+  writing_guidance: "Flees from danger, investigates unattended food."
+  generation_hints: "Gathers near well-maintained roads where predators are easier to spot."
 layout: creatures
 infobox: creature
 ---
@@ -37,23 +48,9 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [The Eastern Plains](/biomes/eastern_plains/) — primary_locations
-- [The Eastern Plains](/biomes/eastern_plains/) — ambient_creatures
-- [The Plains](/biomes/plains/) — primary_locations
-- [The Plains](/biomes/plains/) — ambient_creatures
-- [The Sunward Fields](/biomes/sunward_fields/) — primary_locations
-- [The Sunward Fields](/biomes/sunward_fields/) — ambient_creatures
+- [The Eastern Plains](/biomes/eastern_plains/) `Primary Locations` `Ambient Creatures`
+- [The Plains](/biomes/plains/) `Primary Locations` `Ambient Creatures`
+- [The Sunward Fields](/biomes/sunward_fields/) `Primary Locations` `Ambient Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Fast rabbit-like plains animal with small branching antlers.
-**Themes:** Ambient, Plains, Common, Fast
-**Visual Style:** Rabbit body, long ears, and delicate antlers. Coat colors reflect grasses, soil, and local crops.
-**Common Encounters:** Background life, harmless chase, clue that a nearby predator has disturbed a warren.
-**Lore Highlights:** 
-**Related Entities:** biome.plains, biome.sunward_fields, biome.eastern_plains, biome.plains, biome.sunward_fields, biome.eastern_plains
-**Writing Guidance:** Flees from danger, investigates unattended food.
-**Generation Hints:** Gathers near well-maintained roads where predators are easier to spot.
-<!-- END GENERATED: ai_context -->

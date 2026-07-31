@@ -3,12 +3,12 @@ title: Red Sky Foothills
 id: biome.red_sky_foothills
 type: biome
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["volcanic-hills", "crystal-veins", "lava-tubes", "caves", "dragonling-homeland"]
+tags: ["volcanic_hills", "crystal_veins", "lava_tubes", "caves", "dragonling_homeland"]
 danger_level: high
 related:
-  - id: biome.mount_redsky
+  - id: biome.mount_red_sky
     type: biome
     relationship: locations
   - id: character.dragonling
@@ -23,9 +23,6 @@ related:
   - id: creature.cinder_wolf
     type: creature
     relationship: dangerous_creatures
-  - id: biome.mount_red_sky
-    type: biome
-    relationship: locations
   - id: campaign.dawn_of_the_red_sky
     type: campaign
     relationship: biomes
@@ -48,9 +45,18 @@ related:
     type: location
     relationship: biome
 assets:
+  primary: assets/biomes/red_sky_foothills/bg.webp
   gallery:
-    - C:/git/kids-and-dragons/assets/biomes/red_sky_foothills/bg.webp
-    - C:/git/kids-and-dragons/assets/biomes/red_sky_foothills/tiles.png
+    - assets/biomes/red_sky_foothills/tiles.png
+ai_context:
+  mood: "Volcanic hills surrounding Mount Red Sky, cut by cooled lava tubes, crystal veins, caves, and long-established dragonling communities."
+  themes: "Volcanic_hills, Crystal_veins, Lava_tubes, Caves, Dragonling_homeland"
+  visual_style: "Ochre and black hills, glowing cracks, crystal outcrops, cave mouths, scorched grasses, volcanic dust, sheltered settlements, and the mountain dominating the northern horizon."
+  common_encounters: "Cave exploration, eruption warnings, crystal disputes, rescue routes, dragonling communities, unstable terrain, and changes originating from Mount Red Sky."
+  lore_highlights: ""
+  related_entities: "biome.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, campaign.dawn_of_the_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, item.crimson_shard, location.redspire_citadel"
+  writing_guidance: "This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are gathered from naturally released material rather than mined from living veins."
+  generation_hints: "Tremors, ash, heat, and crystal changes are closely watched. Communities maintain warning systems, safe caves, and evacuation routes."
 layout: biomes
 infobox: biome
 ---
@@ -59,40 +65,24 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) — locations
-- [Mount Redsky](/biomes/mount_redsky/) — locations
+- [Mount Red Sky](/biomes/mount_red_sky/) `Locations`
 
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — biomes
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Biomes`
 
 ### Characters
-- [Dragonling](/characters/dragonling/) — primary_peoples
-- [Dragonling](/characters/dragonling/) — primary_locations
+- [Dragonling](/characters/dragonling/) `Primary Peoples` `Primary Locations`
 
 ### Creatures
-- [Cinder Wolf](/creatures/cinder_wolf/) — dangerous_creatures
-- [Cinder Wolf](/creatures/cinder_wolf/) — primary_locations
-- [Embermoth](/creatures/embermoth/) — ambient_creatures
-- [Embermoth](/creatures/embermoth/) — primary_locations
-- [Glassback Crab](/creatures/glassback_crab/) — dangerous_creatures
-- [Glassback Crab](/creatures/glassback_crab/) — primary_locations
+- [Cinder Wolf](/creatures/cinder_wolf/) `Dangerous Creatures` `Primary Locations`
+- [Embermoth](/creatures/embermoth/) `Ambient Creatures` `Primary Locations`
+- [Glassback Crab](/creatures/glassback_crab/) `Dangerous Creatures` `Primary Locations`
 
 ### Items
-- [Crimson Shard](/items/crimson_shard/) — found_in
+- [Crimson Shard](/items/crimson_shard/) `Found In`
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) — biome
+- [Redspire Citadel](/locations/redspire_citadel/) `Biome`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Volcanic hills surrounding Mount Red Sky, cut by cooled lava tubes, crystal veins, caves, and long-established dragonling communities.
-**Themes:** Volcanic-hills, Crystal-veins, Lava-tubes, Caves, Dragonling-homeland
-**Visual Style:** Ochre and black hills, glowing cracks, crystal outcrops, cave mouths, scorched grasses, volcanic dust, sheltered settlements, and the mountain dominating the northern horizon.
-**Common Encounters:** Cave exploration, eruption warnings, crystal disputes, rescue routes, dragonling communities, unstable terrain, and changes originating from Mount Red Sky.
-**Lore Highlights:** 
-**Related Entities:** biome.mount_redsky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.mount_red_sky, campaign.dawn_of_the_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, item.crimson_shard, location.redspire_citadel
-**Writing Guidance:** This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are gathered from naturally released material rather than mined from living veins.
-**Generation Hints:** Tremors, ash, heat, and crystal changes are closely watched. Communities maintain warning systems, safe caves, and evacuation routes.
-<!-- END GENERATED: ai_context -->

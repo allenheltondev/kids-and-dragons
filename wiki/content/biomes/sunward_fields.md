@@ -3,27 +3,27 @@ title: The Sunward Fields
 id: biome.sunward_fields
 type: biome
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal-work"]
+tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
 related:
-  - id: biome.the_exchange
+  - id: biome.exchange
     type: biome
     relationship: locations
-  - id: biome.stone_crossing
-    type: biome
+  - id: location.stone_crossing
+    type: location
     relationship: locations
-  - id: character.faun
-    type: character
+  - id: npc.faun
+    type: npc
     relationship: supporting_peoples
-  - id: character.harvest_sprite
-    type: character
+  - id: npc.harvest_sprite
+    type: npc
     relationship: supporting_peoples
   - id: creature.jackalope
     type: creature
     relationship: ambient_creatures
-  - id: biome.exchange
+  - id: biome.stone_crossing
     type: biome
     relationship: locations
   - id: character.unicorn
@@ -48,9 +48,18 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
+  primary: assets/biomes/sunward_fields/bg.webp
   gallery:
-    - C:/git/kids-and-dragons/assets/biomes/sunward_fields/bg.webp
-    - C:/git/kids-and-dragons/assets/biomes/sunward_fields/tiles.png
+    - assets/biomes/sunward_fields/tiles.png
+ai_context:
+  mood: "Rolling meadows, farms, orchards, and village cooperatives that produce much of the food used across the realm."
+  themes: "Farmland, Meadows, Orchards, Villages, Food, Seasonal_work"
+  visual_style: "Gold-green fields, hedgerows, orchards, wind-bent grain, irrigation channels, farmsteads, communal barns, roads, and warm evening light."
+  common_encounters: "Harvest problems, village festivals, missing livestock, weather threats, cooperative work, food shortages, local mysteries, and the consequences of trouble elsewhere reaching ordinary families."
+  lore_highlights: ""
+  related_entities: "biome.exchange, location.stone_crossing, npc.faun, npc.harvest_sprite, creature.jackalope, biome.stone_crossing, character.unicorn, character.dragonling, creature.jackalope, npc.centaur, npc.faun, npc.harvest_sprite, npc.witch_order"
+  writing_guidance: "The Fields are not generic open plains. Agriculture, villages, irrigation, and communal work should shape both visuals and stories."
+  generation_hints: "Work follows planting and harvest seasons. Communities share labor, maintain water and roads, and respond quickly when weather, magic, or pests threaten the realm's food supply."
 layout: biomes
 infobox: biome
 ---
@@ -59,36 +68,24 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Stone Crossing](/biomes/stone_crossing/) — locations
-- [The Exchange](/biomes/the_exchange/) — locations
-- [The Exchange](/biomes/exchange/) — locations
+- [Stone Crossing](/biomes/stone_crossing/) `Locations`
+- [The Exchange](/biomes/exchange/) `Locations`
 
 ### Characters
-- [Dragonling](/characters/dragonling/) — secondary_locations
-- [Faun](/characters/faun/) — supporting_peoples
-- [Harvest Sprite](/characters/harvest_sprite/) — supporting_peoples
-- [Unicorn](/characters/unicorn/) — secondary_locations
+- [Dragonling](/characters/dragonling/) `Secondary Locations`
+- [Unicorn](/characters/unicorn/) `Secondary Locations`
 
 ### Creatures
-- [Jackalope](/creatures/jackalope/) — ambient_creatures
-- [Jackalope](/creatures/jackalope/) — primary_locations
+- [Jackalope](/creatures/jackalope/) `Ambient Creatures` `Primary Locations`
+
+### Locations
+- [Stone Crossing](/locations/stone_crossing/) `Locations`
 
 ### Npcs
-- [Centaur](/npcs/centaur/) — secondary_locations
-- [Faun](/npcs/faun/) — primary_locations
-- [Harvest Sprite](/npcs/harvest_sprite/) — primary_locations
-- [Witches](/npcs/witch_order/) — secondary_locations
+- [Centaur](/npcs/centaur/) `Secondary Locations`
+- [Faun](/npcs/faun/) `Supporting Peoples` `Primary Locations`
+- [Harvest Sprite](/npcs/harvest_sprite/) `Supporting Peoples` `Primary Locations`
+- [Witches](/npcs/witch_order/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Rolling meadows, farms, orchards, and village cooperatives that produce much of the food used across the realm.
-**Themes:** Farmland, Meadows, Orchards, Villages, Food, Seasonal-work
-**Visual Style:** Gold-green fields, hedgerows, orchards, wind-bent grain, irrigation channels, farmsteads, communal barns, roads, and warm evening light.
-**Common Encounters:** Harvest problems, village festivals, missing livestock, weather threats, cooperative work, food shortages, local mysteries, and the consequences of trouble elsewhere reaching ordinary families.
-**Lore Highlights:** 
-**Related Entities:** biome.the_exchange, biome.stone_crossing, character.faun, character.harvest_sprite, creature.jackalope, biome.exchange, character.unicorn, character.dragonling, creature.jackalope, npc.centaur, npc.faun, npc.harvest_sprite, npc.witch_order
-**Writing Guidance:** The Fields are not generic open plains. Agriculture, villages, irrigation, and communal work should shape both visuals and stories.
-**Generation Hints:** Work follows planting and harvest seasons. Communities share labor, maintain water and roads, and respond quickly when weather, magic, or pests threaten the realm's food supply.
-<!-- END GENERATED: ai_context -->
