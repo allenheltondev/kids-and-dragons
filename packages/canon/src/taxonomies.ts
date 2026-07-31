@@ -54,16 +54,12 @@ const MapAnchor = z.strictObject({ x: z.number(), y: z.number() });
 
 export const Biome = Envelope.extend({
   /**
-   * The map entity this biome dresses. Optional: `biome.open_sea` surrounds
-   * the illustrated map rather than appearing on it, and inventing a region
-   * with a map anchor for it would be worse than admitting it has none.
-   *
-   * A `site` as often as a `region`: five
+   * The map entity this biome dresses. A `site` as often as a `region`: five
    * biomes (MossHome, Mount Red Sky, The Exchange, Stone Crossing, Skullwater
    * Cave) are named places inside a wider region rather than regions of their
    * own — which is D6's ownership question showing up as a union type.
    */
-  geography_id: canonRef("region", "site").optional(),
+  geography_id: canonRef("region", "site"),
   map_label: z.string().min(1),
   environment_type: Slug,
   climate: z.string(),

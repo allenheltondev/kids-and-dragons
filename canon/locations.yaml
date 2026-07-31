@@ -22,6 +22,7 @@ controlled_values:
     newly_defined: "Added as canon in this inventory."
     intentionally_undefined: "A protected mystery or open design slot."
   location_type:
+    town: "A settled community people live in, smaller than a city."
     ocean_hazard: "A dangerous water feature that behaves as a place."
     fortress: "A defensible structure or military installation."
     underground_sanctum: "A hidden or subterranean sacred space."
@@ -151,6 +152,36 @@ locations:
       Turns steadily; strengthens with weather and tide.
     relationships:
       biome: [biome.open_sea]
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: []
+
+  - id: location.bramblewood
+    title: "Bramblewood"
+    canon_status: newly_defined
+    location_type: town
+    parent_biome: biome.sunward_fields
+    featured: false
+    tags: [town, hedges, sunward_fields, waystop]
+    short_description: >-
+      A hedged town about two thirds of the way through the Sunward Fields,
+      furthest from the Exchange.
+    visual_identity: >-
+      Thorn hedges grown into walls and doorways, roofs showing above them, paths
+      that turn more often than they need to.
+    common_story_uses: >-
+      A first waystop, somewhere to be let into, a town whose hedges decide who
+      gets through.
+    canon_constraints: >-
+      The hedges are grown and tended, not wild. Bramblewood is a place people
+      live, not a wood with a name.
+    standard_behavior: >-
+      The hedges are kept by the people who live behind them, and the paths
+      through them change with the season.
+    relationships:
+      biome: [biome.sunward_fields]
       creatures: []
       factions: []
       items: []
