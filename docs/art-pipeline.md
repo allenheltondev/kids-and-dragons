@@ -179,6 +179,32 @@ in what shape*; the brief answers *what it should look like*.
 
 ---
 
+## 5. Where the client uses it
+
+Every path into `assets/` is built in one module —
+`packages/client/src/world/art-paths.ts` — and nothing derives a filename anywhere else. It
+imports no Pixi on purpose: half the consumers are DOM, not canvas, and the renderer is a lazy
+chunk that the join screen must not wait for.
+
+| Asset | Drawn by | Where you see it |
+|---|---|---|
+| `characters/<species>/<tier>/assembled.png` | `screens/CharacterPortrait.tsx` (DOM) | the six species cards, the hero pinned above every later creation step, the creation preview, the lobby lineup, your own sheet |
+| ” | `world/scene.ts`, `world/board.ts` (Pixi) | the party standing in a scene, the figures on the combat grid |
+| `entities/<id>/assembled.png` | `world/board.ts` | monsters in a fight |
+| `biomes/<b>/bg.webp` | `world/scene.ts` → `setBiome`, and the creation preview's stage | behind the party in every story scene |
+| `biomes/<b>/tiles.png` | `world/board.ts` | the combat floor |
+| `effects/*.sheet.png` | `world/board.ts` | hits, heals, revives |
+
+Two rules hold across all of them, because art is deployed separately from the bundle and can
+therefore 404 against a perfectly good build:
+
+- **A missing file degrades, never blanks.** Pixi keeps `drawPlaceholder`'s hatched silhouette;
+  the DOM portrait falls back to the species icon; a missing backdrop leaves the drawn stand-in.
+- **No screen depends on a picture to be usable.** Every portrait sits beside the name it belongs
+  to, so the art is decoration on top of text that already says the same thing (spec §11).
+
+---
+
 ## 6. Rigging in Rive
 
 **Six rigs are authored — one skeleton per species — and each is exported per tier as a skin-bound

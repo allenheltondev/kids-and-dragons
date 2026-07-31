@@ -42,15 +42,23 @@
   background: var(--color-surface, #191534);
 }
 
+/* Taller than wide, like the lobby lineup: the art is a whole standing figure,
+   so a square well crops the interesting half out of it. */
 .sheet__portrait {
   display: grid;
-  place-items: center;
-  width: 2.6em;
-  height: 2.6em;
+  place-items: end center;
+  width: 2.8em;
+  height: 3.4em;
   flex: 0 0 auto;
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   color: var(--color-accent, #ffc95c);
+  overflow: hidden;
+}
+
+.sheet__art {
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .sheet__id {

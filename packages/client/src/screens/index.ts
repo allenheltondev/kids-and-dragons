@@ -39,3 +39,5 @@ export { KeepsakeLantern, type KeepsakeLanternProps, type LanternMote } from "./
 /** Shared by every screen, and by anything else that renders game content. */
 export { Icon, hasIcon, statIcon, speciesIcon, classIcon, itemKindIcon } from "./icons";
 export type { IconProps } from "./icons";
+/** The commissioned character art, wherever a face belongs (spec §5.1). */
+export { CharacterPortrait, type CharacterPortraitProps } from "./CharacterPortrait";

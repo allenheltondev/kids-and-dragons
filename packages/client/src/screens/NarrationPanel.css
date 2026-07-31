@@ -19,11 +19,16 @@
   gap: var(--space-2, 0.5em);
   padding: var(--space-4, 1em);
   color: var(--color-text, #f4f0ff);
+  /* Four stops rather than three, since the thing behind the words is now the
+     biome's own painting (world/scene.ts, setBiome) instead of flat bands: the
+     body text needs a floor to sit on that a sunlit meadow cannot wash out,
+     and the top of the frame still has to be clear art. */
   background: linear-gradient(
     to top,
     var(--kad-bg, #0d0b1a) 0%,
-    color-mix(in srgb, var(--kad-bg, #0d0b1a) 80%, transparent) 45%,
-    transparent 80%
+    color-mix(in srgb, var(--kad-bg, #0d0b1a) 88%, transparent) 38%,
+    color-mix(in srgb, var(--kad-bg, #0d0b1a) 48%, transparent) 62%,
+    transparent 88%
   );
   overflow-y: auto;
 }
