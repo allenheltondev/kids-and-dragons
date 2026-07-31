@@ -22,11 +22,14 @@ dislikes:
     url: "/creatures/bone_crawler/"
     because: "Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely."
 related:
-  - id: biome.bone_yard
-    type: biome
+  - id: location.bone_yard
+    type: location
     relationship: primary_locations
-  - id: biome.bone_yard
+  - id: biome.sallow_wastelands
     type: biome
+    relationship: supernatural_manifestations
+  - id: location.bone_yard
+    type: location
     relationship: supernatural_manifestations
 assets:
   primary: assets/entities/restless_remains/portrait.webp
@@ -37,7 +40,7 @@ ai_context:
   visual_style: "Movement assembled from existing enormous remains, magic appears as current, vibration, light, or shadow joining the bones."
   common_encounters: "Guardian encounter, consequence of grave disturbance, puzzle to resolve."
   lore_highlights: "Not a monster. A grievance, wearing whatever was available."
-  related_entities: "biome.bone_yard, biome.bone_yard"
+  related_entities: "location.bone_yard, biome.sallow_wastelands, location.bone_yard"
   writing_guidance: "Stays dormant under normal conditions. Each manifestation reflects the remains and cause involved."
   generation_hints: "When awakened by grave magic or theft, moves to remove, reclaim, expose, or stop the cause."
 layout: creatures
@@ -94,7 +97,10 @@ It answers a wrong, not a person. Put back what was taken and it settles mid-str
 ## Related Entities
 
 ### Biomes
-- [The Bone Yard](/biomes/bone_yard/) `Primary Locations` `Supernatural Manifestations`
+- [The Sallow Wastelands](/biomes/sallow_wastelands/) `Supernatural Manifestations`
+
+### Locations
+- [The Bone Yard](/locations/bone_yard/) `Primary Locations` `Supernatural Manifestations`
 <!-- END GENERATED: relationships -->
 
 
