@@ -14,6 +14,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { ClassDef, SpeciesDef } from "@kad/shared";
 import { canUseInventoryItem } from "./PlayerPanel";
 import { CosmeticRow, HeroStrip, SpeciesStep } from "./CreationFlow";
+import { nextFace } from "./DiceOverlay";
 import { HORN_STYLES, MARKINGS, WING_STYLES } from "./creationContent";
 import { patchCreationDraft, resetCreationDraft } from "./creationDraft";
 import rules from "../../../../content/rules.json";
@@ -183,6 +184,39 @@ describe("creation options", () => {
     expect(marks(row("dapple"))).toBe(MARKINGS.length);
     expect(row(undefined)).not.toContain("Chosen");
     expect(row("dapple")).toContain("Chosen");
+  });
+});
+
+/**
+ * The die's face is theatre — the server rolled the number before this client
+ * heard about it (architecture §4.2). What the scramble owes the table is only
+ * that it always shows a legal face and never appears to stick.
+ */
+describe("dice scramble", () => {
+  it("never repeats the face already showing", () => {
+    for (let previous = 1; previous <= 20; previous += 1) {
+      for (const random of [0, 0.25, 0.5, 0.75, 0.999999]) {
+        expect(nextFace(previous, random)).not.toBe(previous);
+      }
+    }
+  });
+
+  it("only ever shows a face the die has", () => {
+    for (let previous = 1; previous <= 20; previous += 1) {
+      for (let i = 0; i < 40; i += 1) {
+        const face = nextFace(previous, i / 40);
+        expect(face).toBeGreaterThanOrEqual(1);
+        expect(face).toBeLessThanOrEqual(20);
+        expect(Number.isInteger(face)).toBe(true);
+      }
+    }
+  });
+
+  it("can reach every other face", () => {
+    // 19 inputs, 19 distinct faces: the skip must not fold two inputs onto one.
+    const seen = new Set(Array.from({ length: 19 }, (_, i) => nextFace(7, i / 19)));
+    expect(seen.size).toBe(19);
+    expect(seen.has(7)).toBe(false);
   });
 });
 
