@@ -1,7 +1,9 @@
 # Kids & Dragons — Canon Contract
 
-**Status: D1, D2, D3 and D12 ruled (2026-07-31) and applied to the corpus; the
-rest proposed.** `canon/*.yaml` is the truth. Everything else — the wiki,
+**Status: §1–§6 built (2026-07-31). D1, D2, D3 and D12 ruled and applied to the
+corpus; `packages/canon` ships all thirteen schemas, the parser, the registry
+and `npm run canon:check` in CI. §7 (DynamoDB) and §8 (agent tools) proposed;
+D5–D11 still open.** `canon/*.yaml` is the truth. Everything else — the wiki,
 `content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
 document is the schema that makes derivation mechanical instead of manual.
 
@@ -24,17 +26,23 @@ expensive once you are done.
 
 ## 1. Where it lives
 
-A new workspace package, `packages/canon`:
+A new workspace package, `packages/canon` — **built**:
 
 ```
 packages/canon/
   src/
-    schema/            zod schemas, one file per taxonomy + envelope.ts + edges.ts
-    parse.ts           YAML → validated, normalized entities
-    registry.ts        the in-memory registry + forward/reverse edge indexes
-    repository.ts      CanonRepository interface (memory | dynamo)
-    index.ts
+    ids.ts             Slug, CanonId, the taxonomy→prefix table, canonRef/edge
+    envelope.ts        the shared envelope + the cross-file enums
+    taxonomies.ts      all thirteen schemas
+    parse.ts           YAML → validated entities  (+ controlled_values checks)
+    registry.ts        entities, edges, both indexes, referential integrity
+    canon.test.ts      16 tests, run against the real corpus
+    index.ts           loadCanon()
+tools/canon/check.ts   the CI gate
 ```
+
+Not yet built: `repository.ts` (the `CanonRepository` interface §7 needs) and
+the sync job.
 
 **Not `@kad/shared`.** The client depends on shared, the client does not need
 canon, and Zod would land in the game bundle for nothing. `packages/server`,
@@ -185,9 +193,28 @@ duplicated: the wiki generator becomes a consumer of the registry. Its
 starting point for the zod refinements — it is already written and already has
 tests under `tools/wiki/__tests__/`.
 
-`canon:check` runs in CI. Today nothing does: `ci.yml` runs `content:validate`
-and `art:verify`, and `validateCanon()` only executes inside `wiki:generate`,
-which is manual. That is the cheapest win in this document.
+`canon:check` **runs in CI**, between typecheck and `content:validate`. Before
+it, nothing read canon on any build: `ci.yml` ran `content:validate` (which
+checks a chapter's biome against `assets/manifest.json` and has no concept of a
+creature id) and `art:verify`, while `validateCanon()` only executed inside the
+manual `wiki:generate`. It reports 87 entities and 310 edges.
+
+Two things the build taught us that are worth writing down:
+
+**Reference checking belongs in the registry, not the schema.** The first cut
+put a prefix regex on `canonRef`, which made one bad reference fail the whole
+*entity* — it then dropped out of the registry, and every entity pointing at it
+looked broken too. A single unresolvable id in `biome.enchanted_woods` produced
+twenty errors in files nobody had touched. Moving the check to the built
+registry gives exactly one error per bad reference, and checks something a
+prefix cannot: that the target is really a biome, not merely a string beginning
+`biome.`. `canonRef` is now a plain `z.string()` carrying a `ref:` marker.
+
+**`controlled_values` is enforced.** Open vocabularies (`kind`,
+`environment_type`, `relative_position`) are `Slug` in the schema and checked
+against the *file's own* `controlled_values` block instead. Those grow with
+every elaboration pass, and this way adding a `kind` means defining it, in the
+file, where the next author will read it — the block stops being decoration.
 
 ## 7. The DynamoDB projection
 
