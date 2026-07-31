@@ -81,14 +81,12 @@ function OptionCard({
   icon,
   title,
   children,
-  swatch,
 }: {
   selected: boolean;
   onSelect: () => void;
   icon: ReactNode;
   title: string;
   children?: ReactNode;
-  swatch?: ReactNode;
 }): ReactElement {
   return (
     <button
@@ -97,7 +95,7 @@ function OptionCard({
       aria-pressed={selected}
       onClick={onSelect}
     >
-      <span className="creation-card__icon">{swatch ?? icon}</span>
+      <span className="creation-card__icon">{icon}</span>
       <span className="creation-card__text">
         <span className="creation-card__title">
           {title}
@@ -155,8 +153,10 @@ export function SpeciesStep({
               <span className="creation-card__blurb kad-muted">{def.blurb}</span>
               <span className="creation-card__line">
                 <Icon name={def.worldAbility.icon} />
-                <b>{def.worldAbility.name}</b>
-                <span className="kad-muted">{def.worldAbility.text}</span>
+                <span>
+                  <b>{def.worldAbility.name}</b>{" "}
+                  <span className="kad-muted">{def.worldAbility.text}</span>
+                </span>
               </span>
               <span className="creation-card__line kad-muted">
                 <Icon name={def.passive.stat ?? "heart"} />
@@ -250,8 +250,9 @@ function ClassStep({
           <span className="creation-card__blurb kad-muted">{def.blurb}</span>
           <span className="creation-card__line">
             <Icon name={def.signature.icon} />
-            <b>{def.signature.name}</b>
-            <span className="kad-muted">{def.signature.text}</span>
+            <span>
+              <b>{def.signature.name}</b> <span className="kad-muted">{def.signature.text}</span>
+            </span>
           </span>
         </OptionCard>
       ))}
@@ -282,13 +283,19 @@ function StatsStep({
 }): ReactElement {
   return (
     <div className="creation-stats">
-      <p className="creation-stats__budget">
-        <Icon name="star" />
+      <p className={`creation-stats__budget${remaining === 0 ? " creation-stats__budget--done" : ""}`}>
+        <Icon name={remaining === 0 ? "check" : "star"} />
         <span>
           {remaining === 0 ? "All points spent" : `${String(remaining)} point${remaining === 1 ? "" : "s"} to spend`}
         </span>
       </p>
 
+      {/*
+       * Every row is the same five columns — icon, name, free-point chip,
+       * total, controls — and each column is the same width in every row, so
+       * the numbers read down the page as a column instead of landing wherever
+       * the row before them happened to end.
+       */}
       <ul className="creation-stats__list">
         {STAT_IDS.map((stat) => {
           const total = base[stat] + bonus[stat] + assigned[stat];
@@ -298,21 +305,28 @@ function StatsStep({
                 <Icon name={stat} size="1.8em" />
               </span>
               <span className="creation-stat__name">{stat}</span>
+              <span className="creation-stat__bonus">
+                {bonus[stat] > 0 ? (
+                  <span className="kad-chip">
+                    <Icon name="star" />
+                    <span>+{bonus[stat]} free</span>
+                  </span>
+                ) : null}
+              </span>
               <span className="creation-stat__value" aria-label={`${stat} ${String(total)}`}>
                 {total}
               </span>
-              {bonus[stat] > 0 ? (
-                <span className="creation-stat__bonus kad-chip">
-                  <Icon name="star" />
-                  <span>+{bonus[stat]} free</span>
-                </span>
-              ) : null}
+              {/*
+               * The tray keeps its width whether or not there is anything in
+               * it. Controls still appear only when they are legal — nothing is
+               * greyed out (spec §11) — but spending your last point no longer
+               * makes four rows change shape underneath your finger.
+               */}
               <span className="creation-stat__controls">
-                {/* Controls appear only when they are legal — nothing greyed out. */}
                 {assigned[stat] > 0 ? (
                   <button
                     type="button"
-                    className="creation-step-btn kad-tap kad-focusable"
+                    className="creation-step-btn creation-step-btn--take kad-tap kad-focusable"
                     onClick={() => onRemove(stat)}
                   >
                     <Icon name="minus" size="1.4em" label={`Take a point off ${stat}`} />
@@ -343,10 +357,71 @@ function StatsStep({
 }
 
 // ---------------------------------------------------------------------------
+// Small choices — colours, cosmetics, name suggestions (spec §5.4, §5.5)
+//
+// One shape for all of them, because they are all the same question: pick one
+// of a handful of equal things. Two rules do most of the work:
+//
+//   - **They are a grid, not a wrap.** Content-width pills broke into rows of
+//     2, then 3, then 1, differently in every group, and the result read as
+//     scattered rather than as a set of choices.
+//   - **The check has a seat whether or not anybody is sitting in it.** The
+//     mark used to be added to the chosen chip, which made it wider and
+//     reflowed the row — tapping a colour moved the other colours. The slot is
+//     always there; only the glyph inside it comes and goes.
+// ---------------------------------------------------------------------------
+
+function OptionRow({
+  legend,
+  children,
+}: {
+  legend: string;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <fieldset className="creation-fieldset">
+      <legend className="creation-legend">{legend}</legend>
+      <div className="creation-options">{children}</div>
+    </fieldset>
+  );
+}
+
+function OptionButton({
+  selected,
+  onSelect,
+  media,
+  label,
+  className = "",
+}: {
+  selected: boolean;
+  onSelect: () => void;
+  media: ReactNode;
+  label: string;
+  className?: string;
+}): ReactElement {
+  const classes = ["creation-option", className, "kad-tap", "kad-focusable"];
+  if (selected) classes.push("creation-option--on");
+  return (
+    <button
+      type="button"
+      className={classes.filter(Boolean).join(" ")}
+      aria-pressed={selected}
+      onClick={onSelect}
+    >
+      <span className="creation-option__media">{media}</span>
+      <span className="creation-option__label">{label}</span>
+      <span className="creation-option__mark">
+        {selected ? <Icon name="check" label="Chosen" /> : null}
+      </span>
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Step 4 — appearance (spec §5.4)
 // ---------------------------------------------------------------------------
 
-function CosmeticRow({
+export function CosmeticRow({
   legend,
   options,
   chosen,
@@ -359,24 +434,19 @@ function CosmeticRow({
 }): ReactElement | null {
   if (options.length === 0) return null;
   return (
-    <fieldset className="creation-fieldset">
-      <legend className="creation-legend">{legend}</legend>
-      <div className="creation-chips">
-        {options.map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            className={`creation-chip kad-tap kad-focusable${chosen === option.id ? " creation-chip--on" : ""}`}
-            aria-pressed={chosen === option.id}
-            onClick={() => onChoose(option.id)}
-          >
-            <Icon name={option.icon} />
-            <span>{option.name}</span>
-            {chosen === option.id ? <Icon name="check" label="Chosen" /> : null}
-          </button>
-        ))}
-      </div>
-    </fieldset>
+    <OptionRow legend={legend}>
+      {options.map((option) => (
+        <OptionButton
+          key={option.id}
+          selected={chosen === option.id}
+          onSelect={() => {
+            onChoose(option.id);
+          }}
+          media={<Icon name={option.icon} size="1.5em" />}
+          label={option.name}
+        />
+      ))}
+    </OptionRow>
   );
 }
 
@@ -559,57 +629,50 @@ export function CreationFlow(): ReactElement {
 
         {draft.step === "appearance" && draft.species !== null ? (
           <div className="creation-appearance">
-            <fieldset className="creation-fieldset">
-              <legend className="creation-legend">Colours</legend>
-              <div className="creation-swatches">
-                {PALETTES.map((palette) => (
-                  <button
-                    key={palette.id}
-                    type="button"
-                    className={`creation-swatch kad-tap kad-focusable${draft.appearance.palette === palette.id ? " creation-swatch--on" : ""}`}
-                    aria-pressed={draft.appearance.palette === palette.id}
-                    onClick={() =>
-                      patchCreationDraft({
-                        appearance: { ...draft.appearance, palette: palette.id },
-                      })
-                    }
-                  >
+            {/* `creation-swatch` carries no styling of its own — it names the
+                kind of option this is, for the e2e that picks a colour and an
+                accent by role rather than by position. */}
+            <OptionRow legend="Colours">
+              {PALETTES.map((palette) => (
+                <OptionButton
+                  key={palette.id}
+                  className="creation-swatch"
+                  selected={draft.appearance.palette === palette.id}
+                  onSelect={() => {
+                    patchCreationDraft({
+                      appearance: { ...draft.appearance, palette: palette.id },
+                    });
+                  }}
+                  media={
                     <span
                       className="creation-swatch__chip"
                       style={{ background: palette.coat, borderColor: palette.mane }}
-                      aria-hidden="true"
                     />
-                    <span>{palette.name}</span>
-                    {draft.appearance.palette === palette.id ? <Icon name="check" label="Chosen" /> : null}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
+                  }
+                  label={palette.name}
+                />
+              ))}
+            </OptionRow>
 
-            <fieldset className="creation-fieldset">
-              <legend className="creation-legend">Accent</legend>
-              <div className="creation-swatches">
-                {ACCENTS.map((accent) => (
-                  <button
-                    key={accent.id}
-                    type="button"
-                    className={`creation-swatch kad-tap kad-focusable${draft.appearance.accent === accent.hex ? " creation-swatch--on" : ""}`}
-                    aria-pressed={draft.appearance.accent === accent.hex}
-                    onClick={() =>
-                      patchCreationDraft({ appearance: { ...draft.appearance, accent: accent.hex } })
-                    }
-                  >
+            <OptionRow legend="Accent">
+              {ACCENTS.map((accent) => (
+                <OptionButton
+                  key={accent.id}
+                  className="creation-swatch"
+                  selected={draft.appearance.accent === accent.hex}
+                  onSelect={() => {
+                    patchCreationDraft({ appearance: { ...draft.appearance, accent: accent.hex } });
+                  }}
+                  media={
                     <span
                       className="creation-swatch__chip"
                       style={{ background: accent.hex, borderColor: accent.hex }}
-                      aria-hidden="true"
                     />
-                    <span>{accent.name}</span>
-                    {draft.appearance.accent === accent.hex ? <Icon name="check" label="Chosen" /> : null}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
+                  }
+                  label={accent.name}
+                />
+              ))}
+            </OptionRow>
 
             <CosmeticRow
               legend="Horn"
@@ -641,41 +704,43 @@ export function CreationFlow(): ReactElement {
         {draft.step === "name" ? (
           <div className="creation-name">
             {/* Tapping a suggestion is a complete path through this screen —
-                the keyboard is there for anyone who wants it (spec §1.1). */}
-            <div className="creation-chips">
-              {suggestions.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  type="button"
-                  className={`creation-chip kad-tap kad-focusable${draft.name === suggestion ? " creation-chip--on" : ""}`}
-                  aria-pressed={draft.name === suggestion}
-                  onClick={() => patchCreationDraft({ name: suggestion })}
-                >
-                  <Icon name="star" />
-                  <span>{suggestion}</span>
-                  {draft.name === suggestion ? <Icon name="check" label="Chosen" /> : null}
-                </button>
-              ))}
+                the keyboard is there for anyone who wants it (spec §1.1) — so
+                the suggestions are a labelled choice like every other step,
+                not three loose chips above a text field. */}
+            {/* "Surprise me" is part of the same question as the suggestions,
+                so it sits with them rather than floating between two groups. */}
+            <div className="creation-name__pick">
+              <OptionRow legend="Pick a name">
+                {suggestions.map((suggestion) => (
+                  <OptionButton
+                    key={suggestion}
+                    selected={draft.name === suggestion}
+                    onSelect={() => {
+                      patchCreationDraft({ name: suggestion });
+                    }}
+                    media={<Icon name="star" size="1.5em" />}
+                    label={suggestion}
+                  />
+                ))}
+              </OptionRow>
+
+              <Button
+                variant="secondary"
+                size="md"
+                block
+                icon={<Icon name="shuffle" />}
+                onClick={() => {
+                  const fresh = randomNames(3);
+                  setSuggestions(fresh);
+                  patchCreationDraft({ name: fresh[0] ?? draft.name });
+                }}
+              >
+                Surprise me
+              </Button>
             </div>
 
-            <Button
-              variant="secondary"
-              size="md"
-              icon={<Icon name="shuffle" />}
-              onClick={() => {
-                const fresh = randomNames(3);
-                setSuggestions(fresh);
-                patchCreationDraft({ name: fresh[0] ?? draft.name });
-              }}
-            >
-              Surprise me
-            </Button>
-
             <label className="creation-name__field">
-              <span className="creation-legend">
-                <Icon name="name" />
-                <span>Or type one</span>
-              </span>
+              <span className="creation-legend">Or type one</span>
               <input
                 className="creation-name__input kad-focusable"
                 type="text"
@@ -687,15 +752,9 @@ export function CreationFlow(): ReactElement {
                 placeholder="Tap to type"
               />
             </label>
-
-            <p className="creation-name__summary kad-muted">
-              {speciesDef === null || classDef === null ? null : (
-                <span>
-                  {draft.name.trim() === "" ? "Your hero" : draft.name} the {speciesDef.name}{" "}
-                  {classDef.name}
-                </span>
-              )}
-            </p>
+            {/* No summary line: the hero strip in the head says the same
+                sentence with the picture attached, and said it two screens
+                earlier. */}
           </div>
         ) : null}
 
