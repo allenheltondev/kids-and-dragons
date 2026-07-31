@@ -75,7 +75,7 @@ export function makeContent(
   const abilities = overrides.abilities ?? {};
   // Empty by default, deliberately: an unknown campaign means the campaign
   // boundary never fires (loader.ts `campaign()`), so every handler test
-  // written before campaigns existed keeps its exact behaviour — XP folds
+  // written before campaigns existed keeps its exact behavior — XP folds
   // provisionally and nothing commits. Tests about the boundary pass one in.
   const campaigns = new Map((overrides.campaigns ?? []).map((c) => [c.id, c]));
   return {

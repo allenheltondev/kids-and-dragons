@@ -5,7 +5,7 @@ import { getSpeaker, setSpeaker, speak } from "./speak.js";
 afterEach(() => setSpeaker(null));
 
 describe("speak (spec §11)", () => {
-  it("is a no-op with no speaker installed — v1 behaviour", () => {
+  it("is a no-op with no speaker installed — v1 behavior", () => {
     expect(getSpeaker()).toBeNull();
     expect(() => speak("The path ends at a wall of thorns.")).not.toThrow();
   });

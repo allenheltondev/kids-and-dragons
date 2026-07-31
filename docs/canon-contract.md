@@ -3,7 +3,7 @@
 **Status: §1–§6 built (2026-07-31). D1, D2, D3, D6, D11 and D12 ruled and
 applied; `packages/canon` ships all **eleven** schemas, the parser, the registry
 and `npm run canon:check` in CI. §7 (DynamoDB) and §8 (agent tools) proposed;
-D5, D7, D8, D13 open, and D9/D10 specified but unbuilt.** `canon/*.yaml` is the truth. Everything else — the wiki,
+D9 and D10 built; D5, D7, D8 and D13 open.** `canon/*.yaml` is the truth. Everything else — the wiki,
 `content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
 document is the schema that makes derivation mechanical instead of manual.
 
@@ -348,7 +348,7 @@ entirely in that chapter's `llmHints.npcVoices` and discarded afterward.
 be voiced consistently), and formally bless chapter-scoped individuals as
 non-canon with a documented shape. Do not open a `individual.` taxonomy yet.
 
-**D9 — RULED IN SHAPE, unbuilt. The encounter block.** `danger_level: moderate`
+**D9 — RULED and BUILT. The encounter block.** `danger_level: moderate`
 is prose; `EnemySpec` needs five integers. Under canon-as-truth the stat block
 is a field group on the creature, and `content/bestiary.json` becomes a
 generated projection — this supersedes `docs/briefs/generated-content.md` §2,
@@ -364,7 +364,7 @@ three players on a 10×8 board (spec §7.1).
 encounter:
   band: skirmisher
   stats: { hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }
-  behaviour: null           # see below — almost always null
+  behavior: null           # see below — almost always null
 ```
 
 **Bands, not free integers.** A generator picks a band; it never picks an `hp`.
@@ -391,27 +391,35 @@ invariant worth validating, not the individual numbers.
 `moderate` → `skirmisher` | `lurker` | `brute`, `high` → `brute` | `sentinel`,
 `legendary` → `legend`.
 
-**Three fields I proposed earlier and am withdrawing, because the engine has
-nowhere to put them:**
+**Three fields I had proposed dropping, and where they actually live** (Allen
+kept all three):
 
-- **`xp`.** XP is chapter-level. `completeChapter` pays `chapter.xpAward` (100
-  for Bramblewood), halves it on a setback, and adds objectives capped at 25%;
-  `encounter.ts` contains no XP at all. Per-creature XP would be dead data, and
-  spec §8.2's "uniform party XP" is deliberate — killing things is not what
-  levels a party here.
-- **`footprint`.** `EnemySpec` has no footprint and the grid seats one actor per
-  tile. Adding the field to canon before `grid.ts` can honour it just records a
-  number nothing reads. `scale` already carries the narrative size.
+- **`xp` — no engine change needed.** The `Effect` union already has
+  `{ type: "grantXp", amount }` and encounter scenes already have
+  `onVictory.effects`, so a creature's XP is what an author or generator sums
+  into a `grantXp` on victory. `grantXp` pays the *whole party*, so this adds
+  encounter-scale reward without touching spec §8.2's uniform award — the
+  chapter's `xpAward` stays the main event. Defaults come from the band
+  (skirmisher 5 → sentinel 20 → legend 50), so three wisps are 15 against
+  Bramblewood's 100: flavour, not the point.
+- **`footprint` — canon records it now, the grid honours it later.** It is a
+  true fact about the creature, so it belongs in canon whatever the renderer can
+  do today. Until `EnemySpec` and `grid.ts` grow multi-tile actors it is
+  advisory: an encounter generator uses it to cap `count` and to keep something
+  colossal out of a three-wide corridor. Only `legend_dragon` sets it (4).
 - **`ai` profiles.** `enemy-ai.ts` is deliberately *one sentence* — "a monster
   walks at the nearest hero it can reach and hits them" — and its header argues
   at length that an AI a child cannot predict turns positioning from a decision
-  into a guess. It names exactly one extension: a `behaviour` field on
+  into a guess. It names exactly one extension: a `behavior` field on
   `EnemySpec` selecting a **second sentence** for a specific creature ("the
-  sentinel never leaves the bridge"). So the field is `behaviour`, it is
+  sentinel never leaves the bridge"). So the field is `behavior`, it is
   optional, it should be null on nearly every creature, and each value costs a
-  reviewed sentence in that module. It is not a profile list.
+  reviewed sentence in that module — which is its own constraint on growth. It
+  is not a profile list. Two creatures use one: `frost_wyrm` and
+  `legend_dragon` both `holds_ground`, `restless_remains` `guards_its_cause`.
+  Spelled the American way, like `standard_behavior` beside it.
 
-**D10 — RULED IN SHAPE, unbuilt. Non-combat resolutions.** `creatures.yaml`
+**D10 — RULED and BUILT. Non-combat resolutions.** `creatures.yaml`
 `agent_instructions` requires that encounters "usually permit more than
 combat — observation, conversation, bargaining, rescue, distraction, escape,
 environmental problem-solving, restoring a damaged habitat," and no field can
@@ -443,9 +451,27 @@ Each entry maps onto a `CheckScene` with no translation: `stat` → `stat`,
 success stays with the chapter, because that is scene-specific — canon says what
 a creature responds to, content says what that gets you.
 
-Required for `classification: dangerous_creature`; optional elsewhere. A
-dangerous creature with an empty `resolutions` list is a creature that can only
-be fought, and the instruction says that should be the exception.
+Every one of the twenty authored resolutions is traceable to a line that was
+already in that creature's `canon_constraints` or `standard_behavior`. The
+glassback crab's *"stops pursuing once intruder leaves territory"* became an
+`escape` check; the echo hunter's *"retreats from overwhelming layered noise"*
+became a `distraction`; the wisp's is the "say please" that
+`bramblewood-01.json` has been doing by hand since before canon could express
+it. The prose was already the design — it just had nowhere to go.
+
+Enforced, not requested: a `superRefine` on `Creature` fails the build if a
+dangerous creature has no encounter block, if an ambient one has one, if the
+band and `danger_level` disagree, or if `resolutions` is empty.
+
+**`content/bestiary.json` is the projection** — generated by
+`npm run canon:bestiary`, never edited, keyed by `asset_id` because that is the
+join `assets/entities/<id>/` and a chapter's `EnemySpec.art` already use.
+
+The projection is also the proof. `bramblewood-01.json` has shipped a
+Bramblewisp at hp 6 / guard 11 / quick 3 / steps 5 / attack 3 since long before
+any of this; the `skirmisher` row was derived from it, and the generated
+bestiary reproduces it exactly. A test pins that, so if it ever stops being
+true, either the band table moved or the chapter did.
 
 **D11 — RULED and mostly applied. Nine dangling references.** Allen's rule:
 a **biome is an ecological region**; a **location is a place inside one**. So

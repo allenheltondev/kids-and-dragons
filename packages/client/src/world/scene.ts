@@ -21,7 +21,7 @@
  * viewport from `resize()`, and drives the stage transform from
  * `resolveCamera(state, viewport)` every tick — which is what makes the clamp,
  * the letterbox, the NaN laundering and the pinch/pan override one tested
- * behaviour on the TV and on a phone pane alike.
+ * behavior on the TV and on a phone pane alike.
  *
  * camera.ts thinks in *tiles*, so each of the two things it frames declares
  * its own tile size:
