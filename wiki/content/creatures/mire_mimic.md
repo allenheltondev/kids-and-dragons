@@ -32,6 +32,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Lurker** — Waits, then hits. Harder to land a blow on than it looks, and quicker than it looks.
+
+| | |
+|---|---|
+| Health | 9 |
+| Guard | 13 — how hard it is to hit |
+| Attack | +3 |
+| Speed | 4 steps, 4 initiative |
+| Usually | 2 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Observation** (Clever, normal) — It only works while it is mistaken for the ground. Naming it ends the ambush.
+- **Distraction** (Might, normal) — Strong vibration moves it off a hunting site — stamping works as well as anything.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 

@@ -32,6 +32,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Skirmisher** — Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
+
+| | |
+|---|---|
+| Health | 6 |
+| Guard | 11 — how hard it is to hit |
+| Attack | +3 |
+| Speed | 5 steps, 3 initiative |
+| Usually | 3 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Distraction** (Clever, normal) — It swarms whatever carries fresh magical energy. Throw the glowing thing somewhere you are not.
+- **Escape** (Quick, normal) — It hides from anything large, so standing tall and leaving loudly usually works.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
