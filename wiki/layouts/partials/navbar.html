@@ -1,7 +1,7 @@
 <header class="wiki-navbar" id="wiki-navbar">
   <nav class="wiki-navbar__inner" aria-label="Main navigation">
     <!-- Left: Site title -->
-    <a href="{{ "/" | relURL }}" class="wiki-navbar__title">{{ .Site.Title }}</a>
+    <a href="{{ .Site.BaseURL }}" class="wiki-navbar__title">{{ .Site.Title }}</a>
 
     <!-- Center: Pagefind search (hidden on mobile via CSS, replaced by icon) -->
     <div class="wiki-navbar__search" id="navbar-search">
