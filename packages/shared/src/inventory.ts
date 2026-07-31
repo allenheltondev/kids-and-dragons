@@ -18,6 +18,28 @@ import type { ItemCatalog, ItemDef, ItemEffect, InventoryEntry } from "./types/d
 /** A character's slotted items. Quest items are tracked separately. */
 export type Inventory = readonly InventoryEntry[];
 
+/**
+ * Reads a `Record<itemId, ItemDef>` out of authored JSON, dropping the
+ * `$`-prefixed annotations it may carry.
+ *
+ * `content/items.json` is generated from canon and every chapter's `props`
+ * (D7), so it opens with a `$comment` saying so — the same idiom
+ * `abilities.json` uses for `$deferred` and every chapter file uses for its
+ * own header. `$` is not a legal item id (`schemas/items.schema.json` requires
+ * `^[a-z]`), so this cannot swallow a real entry.
+ *
+ * Exists because both the server loader and the client fetch that file
+ * independently, and "which keys are real items" should be answered once.
+ */
+export function itemCatalog(raw: Readonly<Record<string, unknown>>): ItemCatalog {
+  const catalog: Record<string, ItemDef> = {};
+  for (const [id, def] of Object.entries(raw)) {
+    if (id.startsWith("$")) continue;
+    catalog[id] = def as ItemDef;
+  }
+  return catalog;
+}
+
 export type AddItemResult =
   | { status: "added"; inventory: InventoryEntry[] }
   | { status: "needs_swap"; incomingItemId: string }

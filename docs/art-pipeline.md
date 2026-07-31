@@ -50,6 +50,9 @@ assets/
                                               horn is the unicorn's, wings the flyers'
         rig.riv                  not yet delivered — zero .riv in the repo; the
                                  contract it must meet is manifest.rigContract (§6.1)
+        portrait.webp            *derived*, not commissioned — `npm run art:portraits`
+                                 trims assembled.png to the figure, squares it, and
+                                 writes 384px WebP for cards and lists (§2.1)
   gear/
     <class>/<tier>/              overlay parts, same registration
   entities/
@@ -64,6 +67,20 @@ assets/
 There is deliberately **one** manifest, at the top of `assets/` — not one per character directory
 — so the contract cannot fork per asset. UI icons never live here at all: they are inline SVG in
 the client, resolved from slugs (spec §11).
+
+### 2.1 Derived assets
+
+`portrait.webp` is the only file in `assets/` no artist delivers. The commissioned figure is a
+1024×1024 PNG whose value is its alpha and its registered origin — the right shape for the Pixi
+stage, the wrong shape for a card. Character creation puts all six species on a phone at once, and
+at ~700KB each that is 4MB to answer "who do you want to be?". The derivation trims to the
+figure's own bounding box, pads it square (six species, six aspect ratios, one card box), and
+resizes to 384px: ~25KB apiece.
+
+It is committed like any other asset so a checkout renders without a Python toolchain, and it is
+re-run — `npm run art:portraits` — after new art lands. Nothing depends on it: every consumer falls
+back to `assembled.png` (`screens/CreatureImage.tsx`), so a missing or stale portrait is a slower
+card, never a broken one. `verify.py` ignores it; it is derived from art that already passed.
 
 **Registration is the load-bearing constraint.** Every part of every tier of every species is
 authored against the same canvas size and the same origin. A `sworn` horn must drop onto a

@@ -397,22 +397,32 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
   return ok;
 }
 
+/**
+ * The real entries of a catalog-shaped file, without its `$`-prefixed
+ * annotations. Mirrors `itemCatalog()` in packages/shared — items.json is
+ * generated (D7) and opens with a `$comment`, and `$` is not a legal item id.
+ */
+function entries(catalog) {
+  return Object.entries(catalog ?? {}).filter(([id]) => !id.startsWith("$"));
+}
+
 function checkItems(rep, file, items) {
   const f = rel(file);
   let ok = true;
-  for (const [id, item] of Object.entries(items)) {
+  const real = entries(items);
+  for (const [id, item] of real) {
     if (!item.icon?.trim()) {
       rep.fail(f, `/${id}/icon`, "icon slug is empty");
       ok = false;
     }
   }
-  const kinds = new Set(Object.values(items).map((i) => i.kind));
+  const kinds = new Set(real.map(([, i]) => i.kind));
   for (const kind of ["consumable", "trinket", "quest"]) {
     if (!kinds.has(kind)) {
       rep.warn(`${f} has no ${kind} items`, "spec §9.2 defines three kinds; a catalog missing one is probably unfinished.");
     }
   }
-  if (ok) rep.ok(`${f}  item catalog  (${Object.keys(items).length} items, icons present)`);
+  if (ok) rep.ok(`${f}  item catalog  (${real.length} items, icons present)`);
   return ok;
 }
 
@@ -499,7 +509,7 @@ function checkMap(rep, file, map) {
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds) {
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -517,6 +527,27 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds) {
 
   if (!ids.has(chapter.entry)) {
     fail("/entry", `entry scene "${chapter.entry}" does not exist`);
+  }
+
+  // --- D7: chapter-scoped props are projected into content/items.json, so the
+  // two have to agree. The generator is what merges them; this is what notices
+  // that nobody ran it. Everything below resolves item ids against items.json
+  // alone, which would silently pass a prop the catalog has never heard of.
+  for (const [id, prop] of entries(chapter.props)) {
+    const shipped = items?.[id];
+    if (!shipped) {
+      fail(
+        `/props/${id}`,
+        `prop "${id}" is not in content/items.json`,
+        "content/items.json is generated from canon and every chapter's props — run `npm run canon:items`.",
+      );
+    } else if (JSON.stringify(shipped) !== JSON.stringify(prop)) {
+      fail(
+        `/props/${id}`,
+        `prop "${id}" does not match content/items.json`,
+        "The catalog is stale, or somebody edited the generated file. Run `npm run canon:items`.",
+      );
+    }
   }
 
   // --- every goto names a scene that exists
@@ -666,10 +697,64 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds) {
 
     // spec §7.1 - 3 players vs 2-4 enemies, never more.
     if (scene.type === "encounter") {
-      const total = scene.enemies.reduce((n, e) => n + e.count, 0);
+      /*
+       * Every monster is a canon creature, and its numbers come from there.
+       *
+       * `creature` is the join to canon/creatures.yaml (docs/canon-contract.md
+       * D9); content/bestiary.json is the generated projection of it, and the
+       * content loader fills each enemy from it at load time
+       * (`resolveEnemy` in packages/shared/src/bestiary.ts).
+       *
+       * The chapter used to keep its own copy of the five stats with this
+       * check policing the copy. Canon is the source of truth, and a second
+       * copy a build has to police is not a source — so the copy is gone, and
+       * what is checked now is the opposite thing: that nobody has *restated*
+       * a number canon already supplies. An override is fine and deliberate; a
+       * duplicate is the drift risk coming back.
+       */
+      const STATS = ["hp", "guard", "quick", "steps", "attack"];
+      let total = 0;
+      for (const enemy of scene.enemies) {
+        const where = `/scenes/${id}/enemies/${enemy.id}`;
+        const entry = enemy.creature ? bestiary?.creatures?.[enemy.creature] : null;
+
+        if (!enemy.creature) {
+          rep.warn(
+            `${f} ${where} has no \`creature\``,
+            "Name the canon creature it is one of, so its stats come from canon instead of being written twice.",
+          );
+          total += enemy.count ?? 1;
+          continue;
+        }
+        if (!entry) {
+          fail(
+            `${where}/creature`,
+            `"${enemy.creature}" is not in content/bestiary.json`,
+            bestiary
+              ? "Give the creature an `encounter` block in canon/creatures.yaml, then `npm run canon:bestiary`."
+              : "content/bestiary.json is missing — run `npm run canon:bestiary`.",
+          );
+          continue;
+        }
+
+        total += enemy.count ?? entry.usualCount ?? 1;
+
+        for (const stat of [...STATS, "count", "art"]) {
+          if (enemy[stat] === undefined) continue;
+          const canonValue = stat === "count" ? entry.usualCount : entry[stat];
+          if (enemy[stat] === canonValue) {
+            fail(
+              `${where}/${stat}`,
+              `${stat} restates canon's own ${JSON.stringify(canonValue)}`,
+              `Delete it — the loader fills it from content/bestiary.json. Keep it only to *override*, which this does not.`,
+            );
+          }
+        }
+      }
       if (total < 2 || total > 4) {
         fail(`/scenes/${id}/enemies`, `${total} enemies - encounters are 2 to 4, never more (spec §7.1)`);
       }
+
       // The board this fight happens on. Without it the encounter has nowhere to
       // put anybody, and the failure lands mid-chapter at the table rather than
       // here — so the map is a build-time reference like an itemId, not a path.
@@ -857,6 +942,15 @@ function main() {
   }
   if (mapFiles.length) rep.ok(`content/maps  ${mapFiles.length} map(s)  (10×8 board, spawns open and reachable)`);
 
+  // --- the bestiary: canon's creatures, projected. Generated, never edited.
+  const bestiaryPath = join(CONTENT, "bestiary.json");
+  const bestiary = existsSync(bestiaryPath) ? readJson(rep, bestiaryPath) : null;
+  if (!bestiary) {
+    rep.warn("content/bestiary.json is missing", "Run `npm run canon:bestiary` — enemy stats cannot be checked against canon without it.");
+  } else {
+    rep.ok(`content/bestiary.json  ${Object.keys(bestiary.creatures ?? {}).length} creature(s) projected from canon`);
+  }
+
   // --- chapters
   console.log(`\n${BOLD}chapters${RESET}`);
   const chapterFiles = listJson(join(CONTENT, "chapters"));
@@ -874,7 +968,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes, mapIds);
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary);
     chaptersById.set(chapter.id, chapter);
   }
 

@@ -27,7 +27,7 @@
 import { useEffect, useRef } from "react";
 import { Application } from "pixi.js";
 import type { Chapter, PartyMember, RunState } from "@kad/shared";
-import { currentActorId } from "@kad/shared";
+import { currentActorId, enemyArtId } from "@kad/shared";
 import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
 import { presentationDuration } from "./presentation";
@@ -35,9 +35,15 @@ import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSe
 import { useEnsureChapter } from "../screens/content";
 
 /**
- * Enemy spec id → authored art id, read off the chapter's encounter scene.
- * The `EncounterState` deliberately carries no art (it is rules state); the
- * chapter file is where a wisp's picture lives, exactly like scene art.
+ * Enemy spec id → art id, read off the chapter's encounter scene. The
+ * `EncounterState` deliberately carries no art (it is rules state); the chapter
+ * file is where a wisp's picture lives, exactly like scene art.
+ *
+ * The chapter fetched here is the *authored* one — a static asset, not the
+ * server's resolved copy — so an enemy that inherits its art from canon has
+ * none written down. `enemyArtId` applies the bestiary's own
+ * `enemies/<creature>` convention rather than making the client fetch a whole
+ * catalog for one string mid-battle.
  */
 export function enemyArtFor(chapter: Chapter | null, sceneId: string | null): Record<string, string> {
   if (!chapter || !sceneId) return {};
@@ -45,7 +51,8 @@ export function enemyArtFor(chapter: Chapter | null, sceneId: string | null): Re
   if (!scene || scene.type !== "encounter") return {};
   const out: Record<string, string> = {};
   for (const spec of scene.enemies) {
-    if (spec.art) out[spec.id] = spec.art;
+    const art = enemyArtId(spec);
+    if (art) out[spec.id] = art;
   }
   return out;
 }

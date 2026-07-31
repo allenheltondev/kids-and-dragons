@@ -1,0 +1,153 @@
+schema_version: "2.0"
+document_type: red_sky_individual_canon
+title: "The Realm of Red Sky Named Individuals"
+updated: "2026-07-31"
+
+purpose: >-
+  Canonical, agent-readable reference for named individuals the world has, as
+  opposed to individuals a chapter borrows. Use this file when writing dialogue
+  for someone a party can go back and find, planning who is in a town, or
+  deciding whether a character belongs in canon at all.
+
+agent_instructions:
+  - "The defining rule: a location owns them. An individual is canon because a place would miss them if they were gone, not because a chapter needed somebody to stand there."
+  - "`home` is required and always a location. If you cannot name the place that owns them, they are not canon - they belong in a chapter's `llmHints.npcVoices`, where they can be forgotten when the chapter ends."
+  - Individuals persist between chapters. A party that comes back next campaign finds them still there, older, remembering what happened.
+  - Do not kill, remove, or permanently change a named individual in generated content. Canon changes are authored here, deliberately.
+  - "`speech_register` is how this one person talks, layered over their people's register in npcs.yaml. Use both."
+  - Do not invent a new individual. Adding one is a canon decision - use a chapter-scoped character instead, which needs no permission from anybody.
+  - Individuals are ordinary people with ordinary lives. None of them is secretly important unless canon says so.
+  - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
+  role:
+    hedge_keeper: "Tends and opens the grown walls of a hedged town; decides who gets through."
+    innkeeper: "Runs the place travellers sleep, and knows who has passed through lately."
+    ferryman: "Takes people and goods across water for a price that is rarely money."
+    archivist: "Keeps a place's records, and is the reason anybody knows what happened before."
+
+individual_ids:
+  - pib
+  - marda_thorn
+  - old_ossley
+
+individuals:
+  # -------------------------------------------------------------------------
+  # D8. Three, on purpose - this file is a shape to author against rather than
+  # a population. Pib came from bramblewood-01's `llmHints.npcVoices`, where a
+  # bramble sprite the size of a teapot was invented, played for one chapter
+  # and thrown away. Bramblewood is a canon town; Pib lives there; that is the
+  # whole argument for promoting one character and not the other two in that
+  # same block. A wisp with a rhyming habit and an embarrassed door belong to
+  # the chapter, and they stay there.
+  # -------------------------------------------------------------------------
+
+  - id: individual.pib
+    title: "Pib"
+    canon_status: newly_defined
+    home: location.bramblewood
+    people: npc.harvest_sprite
+    role: hedge_keeper
+    pronouns: "they/them"
+    featured: false
+    tags: [bramblewood, hedges, sprite, helpful]
+    short_description: >-
+      A bramble sprite about the size of a teapot who keeps the Bramblewood
+      hedges and takes the job extremely seriously.
+    visual_identity: >-
+      Small and green-brown and mostly thorns, with a coat of woven hedge
+      clippings they are visibly proud of and a satchel too big for them.
+    speech_register: >-
+      Earnest. Over-explains. Offers you things you did not ask for and looks
+      hurt if you say no, then offers something else.
+    common_story_uses: >-
+      The way into town. Somebody to ask about what has changed. The first
+      friendly face of a chapter set in Sunward Fields.
+    canon_constraints: >-
+      Pib cannot open the hedges for anybody who has not been let in properly,
+      and will not be talked round - not because they are strict, but because
+      the hedges genuinely do not listen to them otherwise.
+    standard_behavior: >-
+      Found somewhere along the hedge wall, doing maintenance nobody asked for
+      and narrating it.
+    relationships:
+      haunts: [biome.sunward_fields]
+      people: [individual.marda_thorn]
+      factions: []
+      creatures: [creature.will_o_wisp]
+      items: [item.honeycake]
+      quests: []
+
+  - id: individual.marda_thorn
+    title: "Marda Thorn"
+    canon_status: newly_defined
+    home: location.bramblewood
+    people: npc.centaur
+    role: innkeeper
+    pronouns: "she/her"
+    featured: false
+    tags: [bramblewood, inn, centaur, waystop]
+    short_description: >-
+      Runs the wide-doored inn at the middle of Bramblewood and knows who has
+      come through the hedges in the last month.
+    visual_identity: >-
+      A grey-dappled centaur in a apron with too many pockets, ducking through
+      doorways built for her and still ducking out of habit.
+    speech_register: >-
+      Unhurried. Asks one question, waits for the whole answer, and remembers
+      it. Never repeats herself.
+    common_story_uses: >-
+      Where a chapter starts or ends. Who a party asks when they need to know
+      what happened here before they arrived.
+    canon_constraints: >-
+      Marda does not travel. A story that needs her elsewhere needs a different
+      character.
+    standard_behavior: >-
+      Behind the counter, or in the doorway watching the road, depending on the
+      hour.
+    relationships:
+      haunts: []
+      people: [individual.pib]
+      factions: []
+      creatures: []
+      items: [item.honeycake, item.songbird_ribbon]
+      quests: []
+
+  - id: individual.old_ossley
+    title: "Old Ossley"
+    canon_status: newly_defined
+    home: location.stone_crossing
+    people: npc.frogfolk
+    role: ferryman
+    pronouns: "he/him"
+    featured: false
+    tags: [stone_crossing, river, frogfolk, crossing]
+    short_description: >-
+      Takes people over the water at Stone Crossing when the stones are under,
+      and has never once named a price in coin.
+    visual_identity: >-
+      Broad and mottled green, wearing a hat that has been rained on for
+      decades, poling a flat boat with no obvious wear on it.
+    speech_register: >-
+      Very few words. Long pauses that are not hesitation. Answers the question
+      you meant rather than the one you asked.
+    common_story_uses: >-
+      A crossing that costs something other than money. Somebody who has seen
+      what goes up and down the river.
+    canon_constraints: >-
+      Ossley's price is never coin and never cruel - a song, a favour, a thing
+      you were carrying anyway. He does not explain how he decides.
+    standard_behavior: >-
+      At the water when the stones are under, gone somewhere unspecified when
+      they are not.
+    relationships:
+      haunts: [biome.plains]
+      people: []
+      factions: []
+      creatures: [creature.silver_otter, creature.river_drake]
+      items: [item.river_charm]
+      quests: []

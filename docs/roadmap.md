@@ -155,7 +155,7 @@ The largest chapter. Budget accordingly.
 - Enemy AI — simple and readable. She should be able to predict it. Deliberately not clever.
   Built: one policy, *a monster walks at the nearest hero it can reach and hits them*. If encounters
   play too soft, the dial is a **second one-sentence rule for a specific creature**, keyed off a
-  `behaviour` field on `EnemySpec` so it stays a chapter edit — never a cleverer shared policy
+  `behavior` field on `EnemySpec` so it stays a chapter edit — never a cleverer shared policy
   (`enemy-ai.ts` header)
 - Knocked-down state, revive, party-wipe → story branch (never a game over)
 - Phone combat UI: only legal actions shown, target confirm step

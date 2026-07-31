@@ -5,7 +5,7 @@
  * a static asset. A malformed chapter fails the build, never the play session.
  */
 
-import type { SpeciesId, StatId } from "./domain.js";
+import type { ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
 
@@ -130,6 +130,31 @@ export interface EnemySpec {
   id: string;
   name?: string;
   count: number;
+  /**
+   * The canon creature this is one of — its `asset_id` in `canon/creatures.yaml`
+   * (docs/canon-contract.md D9).
+   *
+   * Canon owns what a creature *is* and what it is worth in a fight; this is the
+   * thread back to it. Before the field existed the only link was the `art`
+   * string by convention, so a chapter could quietly disagree with canon about
+   * how much HP a bramblewisp has and nothing would notice.
+   *
+   * **The stats below are resolved from it**, not copied beside it. A chapter
+   * authors `{ "id": "wisp", "name": "Bramblewisp", "creature": "will_o_wisp" }`
+   * and the content loader fills the rest from `content/bestiary.json`
+   * (`resolveEnemy` in bestiary.ts) — so retuning the `skirmisher` band is an
+   * edit to `content/rules.json` and nothing else.
+   *
+   * This interface describes the **loaded** chapter, which is why every stat is
+   * required: `setup()` should never wonder whether a monster has HP. The
+   * authored shape, where they are optional, is `AuthoredEnemySpec`, and it is
+   * what `schemas/chapter.schema.json` validates.
+   *
+   * Overriding is still allowed — a chapter that wants a weakened wisp says
+   * `"hp": 4` and means it — and an override that merely restates canon's own
+   * number is refused, because that is the duplication this replaced.
+   */
+  creature?: string;
   hp: number;
   guard: number;
   /**
@@ -187,7 +212,7 @@ export interface EncounterScene {
    * phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a
    * scene nobody can tap — the table dead-ends with the state advanced and
    * nothing to press. A scene carrying this resolves straight through
-   * `onVictory` (the pre-combat placeholder behaviour, now opt-in per scene
+   * `onVictory` (the pre-combat placeholder behavior, now opt-in per scene
    * and authored in content rather than hardcoded in the engine). Turning a
    * fight on is deleting one line of JSON, chapter by chapter, as the UI
    * lands.
@@ -221,6 +246,19 @@ export interface LlmHints {
   tone: string;
   vocabulary: string;
   forbidden: string[];
+  /**
+   * Chapter-scoped characters — D8's other half, and the counterpart to
+   * `props` above.
+   *
+   * The wisp who speaks in rhyme and the very embarrassed door exist because
+   * this chapter happened. When it ends they are gone, and that is the correct
+   * outcome; nothing in the Realm is poorer for it.
+   *
+   * A character the *world* has goes in `canon/individuals.yaml` instead, and
+   * the test is whether a place would miss them. Pib keeps Bramblewood's
+   * hedges, so Pib is canon; the door is not. `canon/individuals.yaml` states
+   * the rule, and `individual.home` being required is what enforces it.
+   */
   npcVoices?: Record<string, string>;
 }
 
@@ -236,6 +274,24 @@ export interface Chapter {
   scenes: Record<SceneId, Scene>;
   /** Optional bonus objectives, spec §8.2. Absent is the normal case. */
   objectives?: ChapterObjective[];
+  /**
+   * Items this chapter brings into the world and the world does not otherwise
+   * have — D7's chapter-scoped props.
+   *
+   * The rusted key that opens *this* chapter's door is a consequence of the
+   * chapter, not a fact about the Realm, and putting it in `canon/items.yaml`
+   * would claim otherwise. It still needs mechanics, so it is authored here,
+   * beside the door it opens.
+   *
+   * "Scoped" describes where it is *authored*, not how long it lasts. A quest
+   * item granted in chapter one is still on the character in chapter three,
+   * and an inventory screen that could not name it would be a bug — so
+   * `content/items.json` is generated from canon **and** every chapter's
+   * `props`, and the catalog the game reads is one flat namespace. The
+   * generator refuses a prop that collides with a canon item or with another
+   * chapter's prop, which is what keeps that namespace honest.
+   */
+  props?: Record<string, ItemDef>;
   llmHints?: LlmHints;
 }
 

@@ -347,7 +347,7 @@ export class TokenIdentity implements IdentityService {
 // got wrong). Minting it here is smaller than either: the template still owns
 // the *name* and the *permissions*, which is the part that has to be reviewed.
 //
-// It also outlives the stack, which is the behaviour we want. Deleting and
+// It also outlives the stack, which is the behavior we want. Deleting and
 // recreating staging keeps every paired phone working, where a stack-owned
 // secret would sign them all out — and it is one line to delete by hand on a
 // real teardown (docs/deploy.md).
