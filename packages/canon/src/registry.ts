@@ -90,6 +90,12 @@ function edgePaths(taxonomy: Taxonomy): EdgePath[] {
       visit(unwrapped.def.element, trail);
       return;
     }
+    // records — a map whose *values* are refs, e.g. a biome's `barriers`
+    const record = schema as unknown as { def?: { valueType?: z.ZodTypeAny } };
+    if (def?.def?.type === "record" && record.def?.valueType) {
+      visit(record.def.valueType, trail);
+      return;
+    }
     // objects — recurse into each key
     if (def?.def?.type === "object" && unwrapped.def?.shape) {
       for (const [key, child] of Object.entries(unwrapped.def.shape)) {

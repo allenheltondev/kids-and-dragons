@@ -259,8 +259,8 @@ biomes:
       should remain uncertain until the mystery is developed.
     borders: [biome.enchanted_woods, biome.red_sky_foothills, biome.glacier_of_origins]
     barriers:
-      south: northern_escarpment
-      east: upper_great_river
+      south: location.mount_red_sky
+      east: feature.great_river
     inhabitants:
       primary_peoples: []
       supporting_peoples: []
