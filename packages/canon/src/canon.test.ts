@@ -15,12 +15,16 @@ import { buildRegistry } from "./registry.js";
 import { parseCanon } from "./parse.js";
 import { Creature, Biome } from "./taxonomies.js";
 import type { Creature as CreatureEntity } from "./taxonomies.js";
-import { BANDS, BANDS_BY_DANGER, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
+import { bandTable, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
 import { checkAssets, errors, related } from "./registry.js";
 
 const CANON_DIR = path.join(process.cwd(), "canon");
 const registry = loadCanon(CANON_DIR);
+/** The numbers live in content/rules.json now — canon only names the band. */
+const BANDS = bandTable(
+  JSON.parse(fs.readFileSync(path.join(process.cwd(), "content", "rules.json"), "utf8")),
+);
 
 describe("canon corpus", () => {
   it("parses and validates every entity, with every reference resolving", () => {
@@ -201,7 +205,7 @@ describe("encounter blocks — D9/D10", () => {
 
   it("resolves stats from the band, so no creature carries loose integers", () => {
     for (const c of dangerous) {
-      const stats = resolveStats(c.encounter!);
+      const stats = resolveStats(c.encounter!, BANDS);
       expect(stats, c.id).not.toBeNull();
       expect(stats!.hp).toBeGreaterThan(0);
     }
@@ -209,16 +213,16 @@ describe("encounter blocks — D9/D10", () => {
 
   it("keeps band and danger_level from disagreeing", () => {
     for (const c of dangerous) {
-      expect(BANDS_BY_DANGER[c.danger_level], c.id).toContain(c.encounter!.band);
+      expect(BANDS[c.encounter!.band]?.dangerLevels, c.id).toContain(c.danger_level);
     }
   });
 
   it("lands a usual-count encounter inside the four-round HP window", () => {
     // The invariant that matters is the *encounter* total, not any one creature:
     // one brute and three skirmishers are both fine, and only the sum says so.
-    for (const band of ["skirmisher", "lurker", "brute", "sentinel"] as const) {
-      const row = BANDS[band];
-      const total = row.stats!.hp * row.usualCount;
+    for (const [band, row] of Object.entries(BANDS)) {
+      if (!row.stats) continue; // `legend` has no default, by design
+      const total = row.stats.hp * row.usualCount;
       expect(total, band).toBeGreaterThanOrEqual(ENCOUNTER_HP_WINDOW.min);
       expect(total, band).toBeLessThanOrEqual(ENCOUNTER_HP_WINDOW.max);
     }
@@ -229,6 +233,7 @@ describe("encounter blocks — D9/D10", () => {
     // If this fails, either the band table moved or the chapter did.
     const wisp = resolveStats(
       creatures.find((c) => c.id === "creature.will_o_wisp")!.encounter!,
+      BANDS,
     );
     expect(wisp).toEqual({ hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 });
   });
@@ -242,10 +247,19 @@ describe("encounter blocks — D9/D10", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects a legend with no authored stats — the band has none to give", () => {
+  it("resolves nothing for a legend with no authored stats", () => {
+    // The band has none to give, so this is the case tools/canon/check.ts
+    // fails the build on — the schema alone cannot see it.
     const dragon = creatures.find((c) => c.id === "creature.legend_dragon")!;
     const { stats: _dropped, ...rest } = dragon.encounter!;
-    expect(Creature.safeParse({ ...dragon, encounter: rest }).success).toBe(false);
+    expect(resolveStats(rest, BANDS)).toBeNull();
+  });
+
+  it("reads its numbers from content/rules.json, not from code", () => {
+    // The whole point of the split: canon says will_o_wisp is a skirmisher,
+    // rules.json says what a skirmisher is worth. Retuning is a content edit.
+    expect(BANDS["skirmisher"]?.stats?.hp).toBe(6);
+    expect(Object.keys(BANDS).length).toBeGreaterThanOrEqual(5);
   });
 });
 

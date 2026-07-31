@@ -15,7 +15,18 @@
 import path from "node:path";
 import process from "node:process";
 import fs from "node:fs";
-import { loadCanon, errors, warnings, formatIssue, checkAssets, TAXONOMIES } from "@kad/canon";
+import {
+  loadCanon,
+  errors,
+  warnings,
+  formatIssue,
+  checkAssets,
+  bandTable,
+  resolveStats,
+  ENCOUNTER_HP_WINDOW,
+  TAXONOMIES,
+} from "@kad/canon";
+import type { CanonIssue, Creature } from "@kad/canon";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const tty = process.stdout.isTTY;
@@ -27,15 +38,82 @@ const BOLD = tty ? "[1m" : "";
 const OFF = tty ? "[0m" : "";
 
 const registry = loadCanon(path.join(ROOT, "canon"));
+/**
+ * The half of D9 that needs both corpora.
+ *
+ * Canon says a creature is a `skirmisher`; `content/rules.json` says what a
+ * skirmisher is worth. Neither file can check the other alone, and this is the
+ * one place that reads both — which is exactly why the band/danger_level gate
+ * and the round-budget check live here rather than in the creature schema.
+ */
+function checkBands(): CanonIssue[] {
+  const issues: CanonIssue[] = [];
+  const rules = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "rules.json"), "utf8"));
+  const bands = bandTable(rules);
+
+  // The band table itself: does a usual-count encounter last about four rounds?
+  for (const [name, row] of Object.entries(bands)) {
+    if (!row.stats) continue;
+    const total = row.stats.hp * row.usualCount;
+    if (total < ENCOUNTER_HP_WINDOW.min || total > ENCOUNTER_HP_WINDOW.max) {
+      issues.push({
+        level: "warning",
+        file: "content/rules.json",
+        id: `encounterBands.${name}`,
+        message: `${row.usualCount} × ${row.stats.hp} HP = ${total}, outside the ${ENCOUNTER_HP_WINDOW.min}–${ENCOUNTER_HP_WINDOW.max} round budget (spec §7.1)`,
+      });
+    }
+  }
+
+  for (const entity of registry.byTaxonomy.get("creature") ?? []) {
+    const creature = entity as Creature;
+    const encounter = creature.encounter;
+    if (!encounter) continue;
+    const row = bands[encounter.band];
+
+    if (!row) {
+      issues.push({
+        level: "error",
+        file: "creatures.yaml",
+        id: creature.id,
+        field: "encounter.band",
+        message: `"${encounter.band}" is not in content/rules.json encounterBands (${Object.keys(bands).join(", ")})`,
+      });
+      continue;
+    }
+    if (!row.dangerLevels.includes(creature.danger_level)) {
+      issues.push({
+        level: "error",
+        file: "creatures.yaml",
+        id: creature.id,
+        field: "encounter.band",
+        message: `danger_level "${creature.danger_level}" may not be a ${encounter.band} (that band serves ${row.dangerLevels.join(", ")})`,
+      });
+    }
+    if (!resolveStats(encounter, bands)) {
+      issues.push({
+        level: "error",
+        file: "creatures.yaml",
+        id: creature.id,
+        field: "encounter.stats",
+        message: `band "${encounter.band}" has no default stats — author a complete block`,
+      });
+    }
+  }
+  return issues;
+}
+
 /*
  * There is no known-gap allowlist any more, and that is the point. It held
  * `open_sea`, `the_whirlpool` and `bramblewood` — three places canon named and
  * never defined — until D11 was ruled and all three became entities. A dangling
  * reference is now simply an error.
  */
-const fatal = errors(registry);
+const bandIssues = checkBands();
+const fatal = [...errors(registry), ...bandIssues.filter((i) => i.level === "error")];
 const soft = [
   ...warnings(registry),
+  ...bandIssues.filter((i) => i.level === "warning"),
   ...checkAssets(registry, path.join(ROOT, "assets"), (p) => fs.existsSync(p)),
 ];
 
