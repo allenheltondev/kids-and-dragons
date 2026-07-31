@@ -39,6 +39,7 @@ import {
 } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
@@ -102,8 +103,15 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
   return (
     <header className="sheet">
+      {/* Your own face on your own sheet, at whatever tier you have grown to —
+          the identity strip is pinned, so this is the one picture that is on
+          screen for the whole session. */}
       <span className="sheet__portrait" aria-hidden="true">
-        <Icon name={character.species} size="1.9em" />
+        <CharacterPortrait
+          species={character.species}
+          tier={character.tier}
+          className="sheet__art"
+        />
       </span>
       <span className="sheet__id">
         <span className="sheet__name">{character.name}</span>

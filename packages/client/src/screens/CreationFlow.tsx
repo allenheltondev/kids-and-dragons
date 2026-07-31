@@ -12,6 +12,13 @@
  *     nothing is sent until the final confirm, and Back always works.
  *   - roadmap "content as data". Species, classes and stat rules are read from
  *     `useRules()` (content/rules.json). Nothing about them is written here.
+ *
+ * spec §5.1 asks for "six large animated portraits", and the portraits exist —
+ * `assets/characters/<species>/fledgling/` has been delivered for all six. So
+ * species are chosen by their picture, and from the moment one is picked the
+ * hero stands at the top of every remaining screen: this is a phone held by an
+ * 8-year-old, and "who am I making?" has to be answerable by looking, not by
+ * remembering. The animated half is still the rigs' job (world/scene.ts header).
  */
 
 import { useCallback, useMemo, useState } from "react";
@@ -21,6 +28,7 @@ import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@k
 import { useRules, useSend } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import {
@@ -105,7 +113,14 @@ function OptionCard({
 // Step 1 — species (spec §5.1)
 // ---------------------------------------------------------------------------
 
-function SpeciesStep({
+/**
+ * The picture is the button. A species card is a portrait first and a card
+ * second — it does not reuse OptionCard because that layout leads with a 3.2em
+ * icon well, and the whole point here is that the creature is the biggest thing
+ * on the screen. Everything else about it is the same: a check glyph carries
+ * selection, and the name is still text (spec §11).
+ */
+export function SpeciesStep({
   species,
   chosen,
   onChoose,
@@ -115,28 +130,93 @@ function SpeciesStep({
   onChoose: (id: SpeciesId) => void;
 }): ReactElement {
   return (
-    <div className="creation-grid">
-      {species.map((def) => (
-        <OptionCard
-          key={def.id}
-          selected={chosen === def.id}
-          onSelect={() => onChoose(def.id)}
-          icon={<Icon name={def.id} size="2.2em" />}
-          title={def.name}
-        >
-          <span className="creation-card__blurb kad-muted">{def.blurb}</span>
-          <span className="creation-card__line">
-            <Icon name={def.worldAbility.icon} />
-            <b>{def.worldAbility.name}</b>
-            <span className="kad-muted">{def.worldAbility.text}</span>
-          </span>
-          <span className="creation-card__line kad-muted">
-            <Icon name={def.passive.stat ?? "heart"} />
-            <span>{def.passive.text}</span>
-          </span>
-        </OptionCard>
-      ))}
+    <div className="creation-species-grid">
+      {species.map((def) => {
+        const selected = chosen === def.id;
+        return (
+          <button
+            key={def.id}
+            type="button"
+            className={`creation-species kad-tap kad-focusable${selected ? " creation-species--on" : ""}`}
+            aria-pressed={selected}
+            onClick={() => onChoose(def.id)}
+          >
+            <CharacterPortrait
+              species={def.id}
+              className="creation-species__art"
+              lit={selected}
+              float={selected}
+            />
+            <span className="creation-species__text">
+              <span className="creation-card__title">
+                {def.name}
+                {selected ? <Icon name="check" label="Chosen" /> : null}
+              </span>
+              <span className="creation-card__blurb kad-muted">{def.blurb}</span>
+              <span className="creation-card__line">
+                <Icon name={def.worldAbility.icon} />
+                <b>{def.worldAbility.name}</b>
+                <span className="kad-muted">{def.worldAbility.text}</span>
+              </span>
+              <span className="creation-card__line kad-muted">
+                <Icon name={def.passive.stat ?? "heart"} />
+                <span>{def.passive.text}</span>
+              </span>
+            </span>
+          </button>
+        );
+      })}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+
+/**
+ * The hero so far, pinned above every screen after the species is chosen.
+ *
+ * It is the only thing on the phone that answers "who am I making?" without
+ * going back a step, and it is where the appearance choices land: the accent
+ * colour is the light the figure is standing in, so tapping a swatch changes
+ * something visible about *the character* rather than only a swatch border.
+ */
+export function HeroStrip({
+  species,
+  klass,
+  name,
+  accent,
+}: {
+  species: SpeciesDef;
+  klass: ClassDef | null;
+  name: string;
+  accent: string;
+}): ReactElement {
+  const trimmed = name.trim();
+  return (
+    <p className="creation-hero">
+      <CharacterPortrait
+        species={species.id}
+        className="creation-hero__art"
+        accent={accent}
+        lit
+        float
+      />
+      <span className="creation-hero__text">
+        {/* Before there is a name the species *is* the name, so the second line
+            drops it rather than saying "Unicorn / Unicorn Thornguard". */}
+        <span className="creation-hero__name">{trimmed === "" ? species.name : trimmed}</span>
+        <span className="creation-hero__meta kad-muted">
+          {klass === null ? (
+            <span>{species.blurb}</span>
+          ) : (
+            <>
+              <Icon name={klass.id} />
+              <span>{trimmed === "" ? klass.name : `${species.name} ${klass.name}`}</span>
+            </>
+          )}
+        </span>
+      </span>
+    </p>
   );
 }
 
@@ -439,6 +519,17 @@ export function CreationFlow(): ReactElement {
           <Icon name={STEP_ICON[draft.step]} />
           <span>{STEP_TITLE[draft.step]}</span>
         </h2>
+
+        {/* Not on the species screen: there, the six portraits below *are* the
+            hero, and a seventh copy of the one you just tapped is noise. */}
+        {speciesDef === null || draft.step === "species" ? null : (
+          <HeroStrip
+            species={speciesDef}
+            klass={classDef}
+            name={draft.name}
+            accent={draft.appearance.accent}
+          />
+        )}
       </header>
 
       <div className="creation__body kad-scroll">
@@ -599,13 +690,10 @@ export function CreationFlow(): ReactElement {
 
             <p className="creation-name__summary kad-muted">
               {speciesDef === null || classDef === null ? null : (
-                <>
-                  <Icon name={speciesDef.id} />
-                  <span>
-                    {draft.name.trim() === "" ? "Your hero" : draft.name} the {speciesDef.name}{" "}
-                    {classDef.name}
-                  </span>
-                </>
+                <span>
+                  {draft.name.trim() === "" ? "Your hero" : draft.name} the {speciesDef.name}{" "}
+                  {classDef.name}
+                </span>
               )}
             </p>
           </div>

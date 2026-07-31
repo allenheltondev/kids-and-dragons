@@ -182,15 +182,24 @@
   border-color: var(--color-success, #5fd6a0);
 }
 
+/* A well the character stands in, a little taller than it is wide: the art is
+   a full figure on a 1024² canvas, not a headshot, and a square crop of a
+   griffin at 2.6em is mostly wings. */
 .lobby-member__portrait {
   display: grid;
-  place-items: center;
-  inline-size: 2.6em;
-  block-size: 2.6em;
+  place-items: end center;
+  inline-size: 2.8em;
+  block-size: 3.4em;
   flex: 0 0 auto;
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #080711);
   color: var(--color-accent, #f5c86c);
+  overflow: hidden;
+}
+
+.lobby-member__art {
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .lobby-member__text {
