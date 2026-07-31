@@ -124,14 +124,22 @@ campaigns:
       Sky with a choice that renames the party for good.
     canon_constraints: >-
       The party begins ordinary - no chosen heroes. The Hollow Gate cannot be
-      opened in this arc; it foreshadows. Factions and named leads remain
-      chapter-scoped per faction canon. Whether history remembers the party as
-      the Heroes of Red Sky or the treasure hunters who woke the mountain is
-      decided by play, not by the script.
+      opened in this arc, and it foreshadows by observation only - its runes
+      share the gemstones' hum and it feels older than the modern world, but
+      whether it is a seal, doorway, warning, or something else entirely is
+      never established. Factions and named leads remain chapter-scoped per
+      faction canon. Whether history remembers the party as the Heroes of Red
+      Sky or the treasure hunters who woke the mountain is decided by play,
+      not by the script.
     standard_behavior: >-
-      Linear chapter spine with a branching middle: the Stone Crossing outcome
-      changes how the marsh chapter begins, not whether the story continues.
-      Failure reroutes; it never stops the campaign.
+      Fixed story beats with a routed middle: after Bramblewood the party
+      takes either the River Road (Stone Crossing, Eastern Plains, Northern
+      River Bridge) or the Wild Road (Whispering Marsh, Enchanted Woods,
+      MossHome), experiencing different chapters 3-5 that converge in the
+      foothills. Failure reroutes along real geography - the main channel
+      sweeps a failed Stone Crossing downstream toward the river mouth, the
+      west branch sweeps a failed ford back into the marsh - and it never
+      stops the campaign.
     relationships:
       biomes:
         - biome.sunward_fields
@@ -148,6 +156,9 @@ campaigns:
         - location.mosshome
         - location.redspire_citadel
         - location.mount_red_sky
+        - feature.great_river
+        - feature.great_river_west_branch
+        - route.northern_river_bridge
       creatures:
         - creature.river_drake
         - creature.mire_mimic

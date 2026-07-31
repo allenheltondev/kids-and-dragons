@@ -13,13 +13,16 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: reaches
+  - id: campaign.gemfall
+    type: campaign
+    relationship: locations
 ai_context:
   mood: ""
   themes: ""
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "biome.plains, biome.whispering_marsh"
+  related_entities: "biome.plains, biome.whispering_marsh, campaign.gemfall"
   writing_guidance: ""
   generation_hints: ""
 layout: features
@@ -33,6 +36,9 @@ infobox: feature
 ### Biomes
 - [The Plains](/biomes/plains/) `Reaches`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Reaches`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Locations`
 <!-- END GENERATED: relationships -->
 
 

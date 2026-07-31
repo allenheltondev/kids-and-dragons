@@ -645,6 +645,17 @@ silently unchecked since D5), so `readAll` now fans out across arrays and
 record values. The wiki generator renders `lore` as the leading page section
 and projects `likes`/`dislikes` into infobox chips.
 
+**D16 — RULED, applied. Campaign `relationships.locations` takes the full
+place set.** Biome and Location `locations` edges already accepted
+`location | route | feature | biome`; Campaign was narrower
+(`location | biome`) for no reason better than being written first. Gemfall's
+routed middle hangs its branching on two rivers and a bridge
+(`feature.great_river`, `feature.great_river_west_branch`,
+`route.northern_river_bridge`), and a campaign whose plot depends on a
+crossing should say so in the graph — "which campaigns depend on this
+crossing" is now a registry query. Quest `locations` stays narrow until a
+quest actually needs a river.
+
 ---
 
 ## 10. Order

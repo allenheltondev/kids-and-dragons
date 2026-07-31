@@ -16,6 +16,9 @@ related:
   - id: biome.eastern_plains
     type: biome
     relationship: connects
+  - id: campaign.gemfall
+    type: campaign
+    relationship: locations
   - id: feature.great_river
     type: feature
     relationship: crossings
@@ -25,7 +28,7 @@ ai_context:
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.red_sky_foothills, biome.eastern_plains, feature.great_river"
+  related_entities: "feature.great_river, biome.red_sky_foothills, biome.eastern_plains, campaign.gemfall, feature.great_river"
   writing_guidance: ""
   generation_hints: ""
 layout: routes
@@ -39,6 +42,9 @@ infobox: route
 ### Biomes
 - [Red Sky Foothills](/biomes/red_sky_foothills/) `Connects`
 - [The Eastern Plains](/biomes/eastern_plains/) `Connects`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Locations`
 
 ### Features
 - [The Great River](/features/great_river/) `Crosses` `Crossings`
