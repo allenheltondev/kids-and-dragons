@@ -409,7 +409,8 @@ export const Feature = Mapped.extend({
     .strictObject({
       map_anchor: MapAnchor.optional(),
       between: edge("biome"),
-      near: edge("biome"),
+      /** A river mouth can have a landmark sitting in it (the Bone Yard). */
+      near: edge("biome", "location"),
     })
     .optional(),
   outlet: Slug.optional(),

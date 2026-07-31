@@ -5,10 +5,122 @@
   <header class="wiki-hero">
     <h1 class="wiki-hero__title">{{ .Title }}</h1>
     <p class="wiki-hero__subtitle">{{ .Params.subtitle | default "World Wiki" }}</p>
+    {{- with .Params.tagline }}
+    <p class="wiki-hero__tagline">{{ . }}</p>
+    {{- end }}
   </header>
+
+  {{/* ===== The World Map =====
+       The map is the front door. Pins are generated from canon map anchors
+       (canon/biomes.yaml + canon/locations.yaml, mounted as site.Data.canon),
+       so a new anchored place gets a pin without touching this template.
+       Anchors are normalized 0-1000 with origin top-left (geography canon). */}}
+  <section class="wiki-map-section" aria-label="World Map">
+    <figure class="wiki-map">
+      <img class="wiki-map__image"
+           src="{{ "map/realm_of_red_sky.png" | relURL }}"
+           alt="Painted world map of the Realm of Red Sky, from the Sky Islands in the northwest to the Bone Yard in the southeast"
+           width="1331" height="1182" />
+      {{- range site.Data.canon.biomes.biomes }}
+        {{- $anchor := .map_anchor }}
+        {{- if $anchor }}
+        {{- /* YAML 1.1 parses the bare key `y` as a boolean, which Hugo
+              stringifies to "true" — accept either spelling. */}}
+        {{- $ax := index $anchor "x" }}
+        {{- $ay := or (index $anchor "y") (index $anchor "true") }}
+        {{- $slug := replace .id "biome." "" }}
+        <a class="wiki-map__pin wiki-map__pin--biome"
+           href="{{ relURL (printf "biomes/%s/" $slug) }}"
+           style="left: {{ div (mul $ax 100.0) 1000.0 }}%; top: {{ div (mul $ay 100.0) 1000.0 }}%;"
+           aria-label="{{ .title }} (biome)">
+          <span class="wiki-map__label">{{ .title }}</span>
+        </a>
+        {{- end }}
+      {{- end }}
+      {{- range site.Data.canon.locations.locations }}
+        {{- $anchor := .map_anchor }}
+        {{- if $anchor }}
+        {{- $ax := index $anchor "x" }}
+        {{- $ay := or (index $anchor "y") (index $anchor "true") }}
+        {{- $slug := replace .id "location." "" }}
+        <a class="wiki-map__pin wiki-map__pin--location"
+           href="{{ relURL (printf "locations/%s/" $slug) }}"
+           style="left: {{ div (mul $ax 100.0) 1000.0 }}%; top: {{ div (mul $ay 100.0) 1000.0 }}%;"
+           aria-label="{{ .title }} (location)">
+          <span class="wiki-map__label">{{ .title }}</span>
+        </a>
+        {{- end }}
+      {{- end }}
+      <figcaption class="wiki-map__caption">
+        Every pin is a door — <span class="wiki-map__key wiki-map__key--biome">gold for regions</span>,
+        <span class="wiki-map__key wiki-map__key--location">violet for places</span>.
+        Pick one and start walking.
+      </figcaption>
+    </figure>
+  </section>
+
+  {{/* ===== World Overview ===== */}}
+  <section class="wiki-overview-section" aria-label="World Overview">
+    <h2 class="wiki-heading">Welcome to the Realm</h2>
+    <div class="wiki-card">
+      <p>
+        The map says it plainly, right on the mountain: <em>"Source of the
+        Gemfalls, and restless power."</em> The Realm of Red Sky is a world
+        where the forest remembers, the dead sleep uneasy at the river mouth,
+        and every road, ship, and rumor eventually converges on a city that
+        belongs to no one. Thirteen regions, one continent-splitting river,
+        and at least one door nobody has ever opened.
+      </p>
+      <p>
+        This wiki is the realm's canonical design bible. Everything here is
+        connected to everything else — every creature knows who it likes and
+        why, every river failure sweeps you somewhere real, and every page
+        links onward. The fastest way in: pick a pin on the map above, or
+        chart a course below.
+      </p>
+    </div>
+  </section>
+
+  {{/* ===== Chart Your Course ===== */}}
+  <section class="wiki-start-section" aria-label="Chart Your Course">
+    <h2 class="wiki-heading">Chart Your Course</h2>
+    <div class="wiki-start-grid">
+      <a class="wiki-start-card" href="{{ relURL "campaigns/" }}">
+        <span class="wiki-start-card__icon" aria-hidden="true">📜</span>
+        <span class="wiki-start-card__title">Campaigns</span>
+        <span class="wiki-start-card__desc">Story arcs built on canon. Begin with Gemfall — a treasure rush with a secret underneath it.</span>
+      </a>
+      <a class="wiki-start-card" href="{{ relURL "biomes/" }}">
+        <span class="wiki-start-card__icon" aria-hidden="true">🌋</span>
+        <span class="wiki-start-card__title">Biomes</span>
+        <span class="wiki-start-card__desc">Thirteen regions, from the drifting Sky Islands to the brackish flats of the Saltrot.</span>
+      </a>
+      <a class="wiki-start-card" href="{{ relURL "locations/" }}">
+        <span class="wiki-start-card__icon" aria-hidden="true">🏰</span>
+        <span class="wiki-start-card__title">Locations</span>
+        <span class="wiki-start-card__desc">The Exchange, Stone Crossing, the Hollow Gate — the places where stories knot together.</span>
+      </a>
+      <a class="wiki-start-card" href="{{ relURL "creatures/" }}">
+        <span class="wiki-start-card__icon" aria-hidden="true">🐉</span>
+        <span class="wiki-start-card__title">Creatures</span>
+        <span class="wiki-start-card__desc">Embermoths, mire mimics, legend dragons — what lives here, and what each one wants.</span>
+      </a>
+      <a class="wiki-start-card" href="{{ relURL "npcs/" }}">
+        <span class="wiki-start-card__icon" aria-hidden="true">🛤️</span>
+        <span class="wiki-start-card__title">Peoples</span>
+        <span class="wiki-start-card__desc">Centaurs who stitch their routes into sashes; boggarts who file what the world drops.</span>
+      </a>
+      <a class="wiki-start-card" href="{{ relURL "factions/" }}">
+        <span class="wiki-start-card__icon" aria-hidden="true">⚖️</span>
+        <span class="wiki-start-card__title">Factions</span>
+        <span class="wiki-start-card__desc">The Skywardens and the Deep Hollow Cult — and what each would do with the realm's secret.</span>
+      </a>
+    </div>
+  </section>
 
   {{/* ===== Search Section ===== */}}
   <section class="wiki-search-section" aria-label="Search">
+    <h2 class="wiki-heading">Know What You're Looking For?</h2>
     <div class="wiki-card">
       <div id="search" class="wiki-search-container">
         {{/* Pagefind UI will be injected here */}}
@@ -21,20 +133,6 @@
         new PagefindUI({ element: "#search", showSubResults: true });
       });
     </script>
-  </section>
-
-  {{/* ===== World Overview ===== */}}
-  <section class="wiki-overview-section" aria-label="World Overview">
-    <h2 class="wiki-heading">World Overview</h2>
-    <div class="wiki-card">
-      <p>
-        The Realm of Red Sky is a vast fantasy world of crimson-tinged horizons,
-        ancient magic, and untold mysteries. From the volcanic Crimson Highlands to
-        the mist-shrouded Whispering Marsh, every biome teems with unique creatures,
-        storied characters, and legendary artifacts. This wiki serves as the
-        canonical reference for all entities, relationships, and lore within the realm.
-      </p>
-    </div>
   </section>
 
   {{/* ===== Featured Region ===== */}}
@@ -160,15 +258,6 @@
         <div class="wiki-stats__label">{{ .Key | humanize | pluralize }}</div>
       </div>
       {{- end }}
-    </div>
-  </section>
-
-  {{/* ===== World Map Placeholder ===== */}}
-  <section class="wiki-map-section" aria-label="World Map">
-    <h2 class="wiki-heading">World Map</h2>
-    <div class="wiki-map-placeholder">
-      <p>🗺️ Interactive World Map</p>
-      <p class="wiki-muted">An interactive map of the Realm of Red Sky is planned for a future update.</p>
     </div>
   </section>
 

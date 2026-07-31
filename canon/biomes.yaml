@@ -16,7 +16,8 @@ agent_instructions:
   - Preserve the distinction between the Enchanted Woods and MossHome.
   - Mount Red Sky is not the dragonling homeland; dragonlings are native to the Red Sky Foothills.
   - The Exchange has no native or dominant people.
-  - The Bone Yard has no ordinary permanent settlement.
+  - The Bone Yard is a location within the Sallow Wastelands, not a biome, and has no ordinary permanent settlement.
+  - The geographic hierarchy of the southeast coast is Sallow Wastelands, then the Bone Yard, then the sea.
   - The Expanse is intentionally unknown. Do not populate or explain it without an explicit canon decision.
   - An entry may be an environment used by the game without being a broad ecological biome.
   - Geography, borders, routes, and coordinates belong to the geography canon. This file owns environmental identity.
@@ -65,7 +66,7 @@ map_environment_ids:
   - glacier_of_origins
   - skullwater_cave
   - mermaid_cove
-  - bone_yard
+  - sallow_wastelands
 
 biomes:
   - id: biome.sky_islands
@@ -685,41 +686,50 @@ biomes:
       - "The water surrounding the illustrated landmass. It has no map anchor because it is not a place on the map so much as everything the map is not."
       - "Deliberately coarse: the first campaigns barely touch it. Split it into named seas when one of them needs to be a place."
 
-  - id: biome.bone_yard
-    asset_id: bone_yard
-    title: "The Bone Yard"
+  - id: biome.sallow_wastelands
+    title: "The Sallow Wastelands"
     map_label: "The Bone Yard"
-    canon_status: confirmed
-    environment_type: offshore_region
+    canon_status: newly_defined
+    environment_type: biome_region
     climate: >-
-      Dry, exposed, salt-worn, and affected by river sediment and coastal storms.
+      Humid and brackish: a coastal lowland where the Glacierflow slows and
+      spreads before reaching the sea. Salt, silt, rot, and seasonal flooding
+      shape everything that tries to live here.
     danger_level: high
     featured: true
-    tags: [bone_island, river_delta, forbidden, ancient_remains, supernatural]
-    map_provenance: map_canonical
-    map_anchor: { x: 875, y: 805 }
-    relative_position: southeast_offshore
+    tags: [coastal_lowland, brackish, mudflats, saltrot, unstable_ground]
+    map_provenance: map_implied
+    map_anchor: { x: 800, y: 840 }
+    relative_position: southeast_coastal
     short_description: >-
-      A southeastern river-delta island where the remains of enormous ancient
-      creatures collect, settle, and sometimes refuse to remain entirely still.
+      The humid, brackish coastal lowland where the Glacierflow loses its
+      strength before the sea - mudflats, shallow shifting channels, stunted
+      vegetation, and ground that cannot be trusted twice. Travelers commonly
+      call the region the Saltrot.
     visual_identity: >-
-      A V-shaped island of colossal ribs, skulls, vertebrae, dark sediment, pale
-      bone fields, shallow channels, sparse dead growth, and no ordinary
-      settlement.
+      Grey-green flats under a hazy sky: silt banks, salt-crusted pools,
+      drowned and stunted trees, channels that braid and rebraid with the
+      floods, and the pale gleam of the Bone Yard at the river mouth.
     common_story_uses: >-
-      Ancient-remains mysteries, supernatural disturbances, retrieval with moral
-      consequences, rescue, dangerous tides, forbidden expeditions, and stories
-      about allowing the dead to rest.
+      Hard travel over unstable ground, salvage and flotsam stories, seasonal
+      flood danger, guides who read the flats, approaches to the Bone Yard,
+      and journeys where the land itself is the obstacle.
     canon_constraints: >-
-      The Bone Yard has no normal permanent settlement. Do not make it a generic
-      graveyard, battlefield, or source of consequence-free crafting materials.
+      Not a desert and not a marsh: the Saltrot is a brackish river-mouth
+      lowland, and its hazards are salt, silt, flood, and footing rather than
+      monsters. The Bone Yard is a location within it, not a separate biome.
+      The geographic hierarchy is Sallow Wastelands, then the Bone Yard,
+      then the sea.
     standard_behavior: >-
-      River deposits and tides rearrange smaller remains, supernatural activity
-      may animate or echo through the bones, and safe paths can change.
-    borders: []
+      Tides and floods redraw the channels seasonally, the river keeps
+      delivering silt and debris toward the mouth, and paths that held last
+      season may not hold now.
+    borders: [biome.eastern_plains, biome.open_sea]
     access:
-      mode: sea
+      mode: overland_and_water
       fixed_routes: false
+    contains_sites: [location.bone_yard]
+    water_features: [feature.great_river]
     inhabitants:
       primary_peoples: []
       supporting_peoples: []
@@ -729,9 +739,12 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: [creature.restless_remains]
     relationships:
-      locations: [feature.great_river, biome.open_sea, location.the_whirlpool]
+      locations: [location.bone_yard, feature.great_river, biome.open_sea]
       factions: []
       items: []
     notes:
-      - The island lies east of the Great River delta.
-      - No permanent bridge or causeway is shown.
+      - The current map labels only the Bone Yard; the surrounding lowland is
+        established by canon decision, and the latest map design draws the
+        region as natural river-and-coast accumulation.
+      - The Bone Yard art family (asset_id bone_yard) follows the location,
+        not this biome.
