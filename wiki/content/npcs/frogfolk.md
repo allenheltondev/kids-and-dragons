@@ -13,8 +13,8 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: primary_locations
-  - id: biome.exchange
-    type: biome
+  - id: location.exchange
+    type: location
     relationship: secondary_locations
   - id: biome.whispering_marsh
     type: biome
@@ -27,7 +27,7 @@ ai_context:
   visual_style: "Amphibious humanoid form with broad eyes and varied frog-like colors. Reed-woven clothing, pole boats, and mist lanterns."
   common_encounters: "Marsh guide, boat keeper, first witness to a changed waterway."
   lore_highlights: ""
-  related_entities: "biome.whispering_marsh, biome.exchange, biome.whispering_marsh"
+  related_entities: "biome.whispering_marsh, location.exchange, biome.whispering_marsh"
   writing_guidance: "Closes routes when the whispers grow dangerous."
   generation_hints: "Marks safe channels, monitors water levels, collects useful marsh plants, guides respectful travelers."
 layout: npcs
@@ -38,8 +38,10 @@ infobox: npc
 ## Related Entities
 
 ### Biomes
-- [The Exchange](/biomes/exchange/) `Secondary Locations`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Primary Locations` `Supporting Peoples`
+
+### Locations
+- [The Exchange](/locations/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
 

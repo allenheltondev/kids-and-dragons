@@ -14,18 +14,18 @@ related:
   - id: biome.red_sky_foothills
     type: biome
     relationship: primary_locations
-  - id: biome.mount_red_sky
-    type: biome
+  - id: location.mount_red_sky
+    type: location
     relationship: primary_locations
   - id: biome.red_sky_foothills
-    type: biome
-    relationship: dangerous_creatures
-  - id: biome.mount_red_sky
     type: biome
     relationship: dangerous_creatures
   - id: item.crimson_shard
     type: item
     relationship: dropped_by
+  - id: location.mount_red_sky
+    type: location
+    relationship: dangerous_creatures
 assets:
   primary: assets/entities/glassback_crab/assembled.png
 ai_context:
@@ -34,7 +34,7 @@ ai_context:
   visual_style: "Broad crab body with a crystal-like shell that refracts nearby color, heavy digging claws and heat-darkened legs."
   common_encounters: "Cave obstacle, mistaken gemstone formation, sign of a newly warmed tunnel."
   lore_highlights: ""
-  related_entities: "biome.red_sky_foothills, biome.mount_red_sky, biome.red_sky_foothills, biome.mount_red_sky, item.crimson_shard"
+  related_entities: "biome.red_sky_foothills, location.mount_red_sky, biome.red_sky_foothills, item.crimson_shard, location.mount_red_sky"
   writing_guidance: "Threatens before charging, usually stops pursuing once intruder leaves territory."
   generation_hints: "Defends warm burrows and exposed mineral deposits."
 layout: creatures
@@ -45,11 +45,13 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) `Primary Locations` `Dangerous Creatures`
 - [Red Sky Foothills](/biomes/red_sky_foothills/) `Primary Locations` `Dangerous Creatures`
 
 ### Items
 - [Crimson Shard](/items/crimson_shard/) `Dropped By`
+
+### Locations
+- [Mount Red Sky](/locations/mount_red_sky/) `Primary Locations` `Dangerous Creatures`
 <!-- END GENERATED: relationships -->
 
 

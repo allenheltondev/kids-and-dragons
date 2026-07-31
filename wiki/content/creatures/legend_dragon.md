@@ -11,11 +11,11 @@ danger_level: legendary
 scale: colossal
 sapience: sapient
 related:
-  - id: biome.mount_red_sky
-    type: biome
+  - id: location.mount_red_sky
+    type: location
     relationship: primary_locations
-  - id: biome.mount_red_sky
-    type: biome
+  - id: location.mount_red_sky
+    type: location
     relationship: legendary_beings
 assets:
   primary: assets/entities/legend_dragon/assembled.png
@@ -25,7 +25,7 @@ ai_context:
   visual_style: "Enormous dragon silhouette shaped by age and volcanic surroundings, scales may show heat, ash, mineral, or gemstone effects."
   common_encounters: "Legendary guardian, dangerous source of ancient knowledge, powerful individual whose goals are not understood."
   lore_highlights: ""
-  related_entities: "biome.mount_red_sky, biome.mount_red_sky"
+  related_entities: "location.mount_red_sky, location.mount_red_sky"
   writing_guidance: "Not the rulers or parents of dragonling society. No specific legend dragon has yet been named or designed."
   generation_hints: "Guards a claimed lair or purpose, monitors intrusions, may warn, test, bargain with, or attack depending on individual."
 layout: creatures
@@ -35,8 +35,8 @@ infobox: creature
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) `Primary Locations` `Legendary Beings`
+### Locations
+- [Mount Red Sky](/locations/mount_red_sky/) `Primary Locations` `Legendary Beings`
 <!-- END GENERATED: relationships -->
 
 

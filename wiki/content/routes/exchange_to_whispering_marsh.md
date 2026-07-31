@@ -10,8 +10,8 @@ related:
   - id: location.exchange
     type: location
     relationship: connects
-  - id: geography.whispering_marsh
-    type: geography
+  - id: biome.whispering_marsh
+    type: biome
     relationship: connects
 ai_context:
   mood: ""
@@ -19,7 +19,7 @@ ai_context:
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "location.exchange, geography.whispering_marsh"
+  related_entities: "location.exchange, biome.whispering_marsh"
   writing_guidance: ""
   generation_hints: ""
 layout: routes
@@ -29,8 +29,8 @@ infobox: route
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Geography
-- [Whispering Marsh](/geography/whispering_marsh/) `Connects`
+### Biomes
+- [Whispering Marsh](/biomes/whispering_marsh/) `Connects`
 
 ### Locations
 - [The Exchange](/locations/exchange/) `Connects`

@@ -44,7 +44,7 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Open Sea](/biomes/open_sea/) `Locations`
+- [The Open Sea](/biomes/open_sea/) `Locations`
 
 ### Characters
 - [Kitsune](/characters/kitsune/) `Primary Peoples` `Primary Locations`

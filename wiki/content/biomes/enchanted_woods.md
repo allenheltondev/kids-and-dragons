@@ -11,9 +11,21 @@ related:
   - id: location.mosshome
     type: location
     relationship: locations
-  - id: biome.bramblewood
+  - id: biome.expanse
     type: biome
-    relationship: locations
+    relationship: borders
+  - id: biome.red_sky_foothills
+    type: biome
+    relationship: borders
+  - id: biome.plains
+    type: biome
+    relationship: borders
+  - id: biome.whispering_marsh
+    type: biome
+    relationship: borders
+  - id: location.mosshome
+    type: location
+    relationship: contains_sites
   - id: character.unicorn
     type: character
     relationship: primary_peoples
@@ -26,9 +38,6 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: supernatural_manifestations
-  - id: biome.mosshome
-    type: biome
-    relationship: locations
   - id: character.unicorn
     type: character
     relationship: primary_locations
@@ -44,6 +53,9 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: primary_locations
+  - id: location.mosshome
+    type: location
+    relationship: biome
   - id: npc.faun
     type: npc
     relationship: secondary_locations
@@ -66,7 +78,7 @@ ai_context:
   visual_style: "Immense layered trees, luminous knots and hollows, blue-green magical lights, tangled roots, mossy paths, hidden shrines, and depth that feels older than the surrounding realm."
   common_encounters: "Lost paths, remembered promises, damaged magic, old shrines, hidden communities, ecological mysteries, and choices where kindness changes the route."
   lore_highlights: ""
-  related_entities: "location.mosshome, biome.bramblewood, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, biome.mosshome, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
+  related_entities: "location.mosshome, biome.expanse, biome.red_sky_foothills, biome.plains, biome.whispering_marsh, location.mosshome, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, location.mosshome, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
   writing_guidance: "The forest is responsive, not randomly hostile. It remembers treatment but does not assign morality by species. MossHome is inside the wider Woods and is not interchangeable with the whole region."
   generation_hints: "Paths shift gradually, magical disturbances echo through plants and wildlife, and the forest tends to reveal safer routes to travelers who repair harm or honor commitments."
 layout: biomes
@@ -77,8 +89,10 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Bramblewood](/biomes/bramblewood/) `Locations`
-- [MossHome](/biomes/mosshome/) `Locations`
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Borders`
+- [The Expanse](/biomes/expanse/) `Borders`
+- [The Plains](/biomes/plains/) `Borders`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Borders`
 
 ### Characters
 - [Bigfoot](/characters/bigfoot/) `Secondary Locations`
@@ -90,7 +104,7 @@ infobox: biome
 - [Will-o'-Wisp](/creatures/will_o_wisp/) `Supernatural Manifestations` `Primary Locations`
 
 ### Locations
-- [Mosshome](/locations/mosshome/) `Locations`
+- [MossHome](/locations/mosshome/) `Locations` `Contains Sites` `Biome`
 
 ### Npcs
 - [Boggart](/npcs/boggart/) `Secondary Locations`

@@ -13,10 +13,13 @@ related:
   - id: biome.mermaid_cove
     type: biome
     relationship: primary_locations
-  - id: biome.exchange
-    type: biome
+  - id: location.exchange
+    type: location
     relationship: secondary_locations
   - id: biome.mermaid_cove
+    type: biome
+    relationship: supporting_peoples
+  - id: biome.open_sea
     type: biome
     relationship: supporting_peoples
 assets:
@@ -27,7 +30,7 @@ ai_context:
   visual_style: "Seal form and land-going form connected by a personally significant seal coat. Travel-worn coastal clothing."
   common_encounters: "Sea-land courier, guide along the coast, witness connecting two communities."
   lore_highlights: ""
-  related_entities: "biome.mermaid_cove, biome.exchange, biome.mermaid_cove"
+  related_entities: "biome.mermaid_cove, location.exchange, biome.mermaid_cove, biome.open_sea"
   writing_guidance: "A selkie's coat is part of their autonomy and must not be treated casually."
   generation_hints: "Carries messages between sea and land, observes coastal changes, assists stranded travelers, carefully guards their coat."
 layout: npcs
@@ -39,7 +42,10 @@ infobox: npc
 
 ### Biomes
 - [Mermaid Cove](/biomes/mermaid_cove/) `Primary Locations` `Supporting Peoples`
-- [The Exchange](/biomes/exchange/) `Secondary Locations`
+- [The Open Sea](/biomes/open_sea/) `Supporting Peoples`
+
+### Locations
+- [The Exchange](/locations/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
 

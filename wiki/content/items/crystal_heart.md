@@ -7,8 +7,8 @@ lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["artifact", "crystal", "magical", "legendary"]
 related:
-  - id: biome.skullwater_cave
-    type: biome
+  - id: location.skullwater_cave
+    type: location
     relationship: found_in
   - id: quest.crystal_heart_retrieval
     type: quest
@@ -31,7 +31,7 @@ ai_context:
   visual_style: "Heart-shaped violet crystal with a pulsing inner light, suspended in mid-air when uncontained."
   common_encounters: "Major quest objective, world-lore revelation, power source."
   lore_highlights: ""
-  related_entities: "biome.skullwater_cave, quest.crystal_heart_retrieval, campaign.echoes_beneath, faction.deep_hollow_cult, location.crystal_font, quest.crystal_heart_retrieval"
+  related_entities: "location.skullwater_cave, quest.crystal_heart_retrieval, campaign.echoes_beneath, faction.deep_hollow_cult, location.crystal_font, quest.crystal_heart_retrieval"
   writing_guidance: "Only one exists. Cannot be destroyed by conventional means."
   generation_hints: "Pulses in sync with nearby crystal formations."
 layout: items
@@ -41,9 +41,6 @@ infobox: item
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Biomes
-- [Skullwater Cave](/biomes/skullwater_cave/) `Found In`
-
 ### Campaigns
 - [Echoes Beneath](/campaigns/echoes_beneath/) `Items`
 
@@ -51,6 +48,7 @@ infobox: item
 - [The Deep Hollow Cult](/factions/deep_hollow_cult/) `Items`
 
 ### Locations
+- [Skullwater Cave](/locations/skullwater_cave/) `Found In`
 - [The Crystal Font](/locations/crystal_font/) `Items`
 
 ### Quests

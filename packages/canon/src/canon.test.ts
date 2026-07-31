@@ -63,7 +63,7 @@ describe("ids", () => {
   });
 
   it("tags a ref with the taxonomies it may point at", () => {
-    expect(refTargets(canonRef("biome", "region").description)).toEqual(["biome", "region"]);
+    expect(refTargets(canonRef("biome", "location").description)).toEqual(["biome", "location"]);
     expect(refTargets(edge("creature").unwrap().element.description)).toEqual(["creature"]);
     expect(refTargets("not a ref")).toBeNull();
   });
@@ -119,13 +119,15 @@ describe("registry integrity", () => {
     id: "biome.test_wood",
     title: "Test Wood",
     asset_id: "test_wood",
-    geography_id: "geography.nowhere",
     map_label: "Test Wood",
+    map_provenance: "map_implied",
+    relative_position: "nowhere",
     canon_status: "confirmed",
     environment_type: "biome_region",
     climate: "mild",
     danger_level: "low",
     short_description: "A wood, for testing.",
+    parent_biome: "biome.nowhere",
     inhabitants: {
       primary_peoples: [],
       supporting_peoples: [],
@@ -147,7 +149,7 @@ describe("registry integrity", () => {
     });
     const dangling = errors(built).filter((issue) => issue.message.includes("does not exist"));
     expect(dangling).toHaveLength(1);
-    expect(dangling[0]?.field).toBe("geography_id");
+    expect(dangling[0]?.field).toBe("parent_biome");
   });
 
   it("rejects a reference to a real entity of the wrong taxonomy", () => {
