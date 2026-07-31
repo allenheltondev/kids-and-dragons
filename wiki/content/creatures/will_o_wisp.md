@@ -38,6 +38,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Skirmisher** — Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
+
+| | |
+|---|---|
+| Health | 6 |
+| Guard | 11 — how hard it is to hit |
+| Attack | +3 |
+| Speed | 5 steps, 3 initiative |
+| Usually | 3 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Conversation** (Heart, normal) — Nobody has ever said please to a wisp before. It is not ready for it.
+- **Observation** (Clever, normal) — Noticing that the route it is offering is not a route.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 

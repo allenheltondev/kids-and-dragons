@@ -38,6 +38,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Sentinel** — The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
+
+| | |
+|---|---|
+| Health | 20 |
+| Guard | 14 — how hard it is to hit |
+| Attack | +4 |
+| Speed | 3 steps, 0 initiative |
+| Usually | alone |
+
+### Ways Past It That Are Not Fighting
+
+- **Escape** (Quick, normal) — It defends the tunnel, not the mountain. Leave the tunnel and it stops.
+- **Observation** (Clever, hard) — Telling a nesting tunnel from an ordinary one, before you are standing in it.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 

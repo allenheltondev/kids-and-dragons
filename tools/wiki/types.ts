@@ -135,4 +135,12 @@ export interface PageGeneratorOptions {
   reverseRefs: ReverseRef[];
   /** Current file content if the page already exists */
   existingContent?: string;
+  /**
+   * `content/bestiary.json` creatures — canon's encounter blocks joined with
+   * the band table in `content/rules.json`. Absent for non-creature pages and
+   * whenever the projection has not been generated.
+   */
+  bestiary?: Record<string, import('./page-generator.ts').BestiaryEntry>;
+  /** `content/rules.json` `encounterBands`, for the band's plain-language line. */
+  bands?: Record<string, import('./page-generator.ts').BandInfo>;
 }

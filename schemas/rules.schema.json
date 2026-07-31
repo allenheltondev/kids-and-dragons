@@ -123,6 +123,10 @@
       "additionalProperties": {
         "type": "object",
         "properties": {
+          "description": {
+            "type": "string",
+            "description": "Plain-language summary, shown on wiki creature pages."
+          },
           "$comment": {
             "type": "string"
           },
@@ -180,6 +184,7 @@
           }
         },
         "required": [
+          "description",
           "stats",
           "xp",
           "usualCount",

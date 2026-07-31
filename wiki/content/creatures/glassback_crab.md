@@ -41,6 +41,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Brute** — Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
+
+| | |
+|---|---|
+| Health | 14 |
+| Guard | 12 — how hard it is to hit |
+| Attack | +4 |
+| Speed | 3 steps, 1 initiative |
+| Usually | 2 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Observation** (Clever, easy) — It threatens before it charges, so the warning is the whole encounter if somebody reads it.
+- **Escape** (Quick, normal) — It stops pursuing once you are off its patch of warm ground.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 

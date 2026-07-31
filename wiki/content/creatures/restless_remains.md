@@ -32,6 +32,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Brute** — Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
+
+| | |
+|---|---|
+| Health | 14 |
+| Guard | 12 — how hard it is to hit |
+| Attack | +4 |
+| Speed | 3 steps, 1 initiative |
+| Usually | 2 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Restoring Habitat** (Heart, normal) — It woke because something was taken or disturbed. Put it back and it settles.
+- **Conversation** (Heart, hard) — There is enough of a person left to answer, if you are gentle about asking.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
