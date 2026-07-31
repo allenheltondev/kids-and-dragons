@@ -22,6 +22,7 @@ controlled_values:
     newly_defined: "Added as canon in this inventory."
     intentionally_undefined: "A protected mystery or open design slot."
   location_type:
+    ocean_hazard: "A dangerous water feature that behaves as a place."
     fortress: "A defensible structure or military installation."
     underground_sanctum: "A hidden or subterranean sacred space."
     ancient_ruins: "Remnants of an older civilization or structure."
@@ -128,3 +129,30 @@ locations:
       campaigns: []
       creatures: []
       items: []
+
+  - id: location.the_whirlpool
+    title: "The Whirlpool"
+    canon_status: newly_defined
+    location_type: ocean_hazard
+    parent_biome: biome.open_sea
+    featured: false
+    tags: [ocean, hazard, current, offshore]
+    short_description: >-
+      A standing spiral of water offshore, visible from the Bone Yard and Mermaid
+      Cove coasts.
+    visual_identity: >-
+      A wide turning ring of dark water, calm at its rim and loud at its centre.
+    common_story_uses: >-
+      A hazard to cross or go around, something that carries a boat somewhere it
+      did not mean to go, a landmark visible from two coasts.
+    canon_constraints: >-
+      Dangerous by current, not by intent. It is a place, not a creature.
+    standard_behavior: >-
+      Turns steadily; strengthens with weather and tide.
+    relationships:
+      biome: [biome.open_sea]
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: []
