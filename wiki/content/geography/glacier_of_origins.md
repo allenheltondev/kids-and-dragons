@@ -3,8 +3,8 @@ title: Glacier of Origins
 id: geography.glacier_of_origins
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.expanse
@@ -22,6 +22,15 @@ related:
   - id: feature.great_river
     type: feature
     relationship: reaches
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.expanse, geography.frostfang_peaks, feature.great_river_source, feature.great_river_source, feature.great_river"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -30,24 +39,12 @@ infobox: geography
 ## Related Entities
 
 ### Features
-- [Source of the Great River](/features/great_river_source/) — contains_features
-- [Source of the Great River](/features/great_river_source/) — contained_by
-- [The Great River](/features/great_river/) — reaches
+- [Source of the Great River](/features/great_river_source/) `Contains Features` `Contained By`
+- [The Great River](/features/great_river/) `Reaches`
 
 ### Geography
-- [Frostfang Peaks](/geography/frostfang_peaks/) — borders
-- [The Expanse](/geography/expanse/) — borders
+- [Frostfang Peaks](/geography/frostfang_peaks/) `Borders`
+- [The Expanse](/geography/expanse/) `Borders`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.expanse, geography.frostfang_peaks, feature.great_river_source, feature.great_river_source, feature.great_river
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

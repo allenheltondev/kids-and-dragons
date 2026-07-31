@@ -21,7 +21,8 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions and creature canon."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
     intentionally_undefined: "A protected mystery or open design slot."
   classification:
     supporting_people: "Sapient people used primarily for NPCs and world population."
@@ -53,13 +54,12 @@ people_ids:
 npcs:
   - id: npc.centaur
     asset_id: centaur
-    canonical_creature_id: centaur
     title: "Centaur"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, plains, caravan, guide]
+    tags: [supporting_people, plains, caravan, guide]
     scale: large
     short_description: >-
       Traveling plains people who guide caravans and preserve the realm's oldest
@@ -76,20 +76,19 @@ npcs:
       Guides travelers, carries news, maintains camps and road markers, redirects
       caravans when routes change.
     relationships:
-      primary_locations: [plains]
-      secondary_locations: [eastern_plains, sunward_fields, the_exchange, stone_crossing]
+      primary_locations: [biome.plains]
+      secondary_locations: [biome.eastern_plains, biome.sunward_fields, biome.exchange, biome.stone_crossing]
       creatures: []
       items: []
 
   - id: npc.faun
     asset_id: faun
-    canonical_creature_id: faun
     title: "Faun"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, fields, farming, music]
+    tags: [supporting_people, fields, farming, music]
     scale: medium
     short_description: >-
       Hooved farming people associated with orchards, music, communal work, and
@@ -105,20 +104,19 @@ npcs:
       Plants, harvests, repairs irrigation, organizes shared meals, uses music to
       coordinate work.
     relationships:
-      primary_locations: [sunward_fields]
-      secondary_locations: [plains, the_exchange, enchanted_woods]
+      primary_locations: [biome.sunward_fields]
+      secondary_locations: [biome.plains, biome.exchange, biome.enchanted_woods]
       creatures: []
       items: []
 
   - id: npc.harvest_sprite
     asset_id: harvest_sprite
-    canonical_creature_id: harvest_sprite
     title: "Harvest Sprite"
     canon_status: confirmed
     classification: supporting_people
     sapience: semi_sapient
     featured: false
-    tags: [supporting-people, fields, tiny, semi-sapient]
+    tags: [supporting_people, fields, tiny, semi_sapient]
     scale: tiny
     short_description: >-
       Tiny field spirits who tend overlooked plants and reward careful stewardship.
@@ -133,20 +131,19 @@ npcs:
       Tends unharvested patches, recovers dropped seeds, assists communities that
       leave food for small creatures.
     relationships:
-      primary_locations: [sunward_fields]
-      secondary_locations: [enchanted_woods, plains]
+      primary_locations: [biome.sunward_fields]
+      secondary_locations: [biome.enchanted_woods, biome.plains]
       creatures: []
       items: []
 
   - id: npc.frogfolk
     asset_id: frogfolk
-    canonical_creature_id: frogfolk
     title: "Frogfolk"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, marsh, amphibious, navigator]
+    tags: [supporting_people, marsh, amphibious, navigator]
     scale: small_to_medium
     short_description: >-
       Amphibious marsh people who maintain safe channels, reed settlements, and
@@ -162,20 +159,19 @@ npcs:
       Marks safe channels, monitors water levels, collects useful marsh plants,
       guides respectful travelers.
     relationships:
-      primary_locations: [whispering_marsh]
-      secondary_locations: [the_exchange]
+      primary_locations: [biome.whispering_marsh]
+      secondary_locations: [biome.exchange]
       creatures: []
       items: []
 
   - id: npc.boggart
     asset_id: boggart
-    canonical_creature_id: boggart
     title: "Boggart"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, marsh, collector, secretive]
+    tags: [supporting_people, marsh, collector, secretive]
     scale: small
     short_description: >-
       Small marsh-dwelling people who collect lost objects, secrets, and unusual
@@ -193,20 +189,19 @@ npcs:
       Collects things the marsh has swallowed, trades information indirectly,
       tests whether strangers pay attention.
     relationships:
-      primary_locations: [whispering_marsh]
-      secondary_locations: [enchanted_woods, the_exchange]
+      primary_locations: [biome.whispering_marsh]
+      secondary_locations: [biome.enchanted_woods, biome.exchange]
       creatures: []
       items: []
 
   - id: npc.yeti
     asset_id: yeti
-    canonical_creature_id: yeti
     title: "Yeti"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, glacier, memory-keeper, patient]
+    tags: [supporting_people, glacier, memory_keeper, patient]
     scale: large
     short_description: >-
       Patient ice-dwelling people who preserve and interpret memories trapped in
@@ -222,20 +217,19 @@ npcs:
       Inspects the glacier for exposed memories, guides visitors away from
       unstable ice, preserves old accounts.
     relationships:
-      primary_locations: [glacier_of_origins]
-      secondary_locations: [frostfang_peaks]
+      primary_locations: [biome.glacier_of_origins]
+      secondary_locations: [biome.frostfang_peaks]
       creatures: []
       items: []
 
   - id: npc.merfolk
     asset_id: merfolk
-    canonical_creature_id: merfolk
     title: "Merfolk"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, ocean, reef, alliance]
+    tags: [supporting_people, ocean, reef, alliance]
     scale: medium
     short_description: >-
       Aquatic reef people who maintain Mermaid Cove and uphold an ancient
@@ -252,20 +246,19 @@ npcs:
       Patrols reefs, rescues swimmers, repairs coral, participates in songs that
       help prevent the whirlpool from widening.
     relationships:
-      primary_locations: [mermaid_cove]
-      secondary_locations: [the_exchange]
+      primary_locations: [biome.mermaid_cove]
+      secondary_locations: [biome.exchange]
       creatures: []
       items: []
 
   - id: npc.selkie
     asset_id: selkie
-    canonical_creature_id: selkie
     title: "Selkie"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: false
-    tags: [supporting-people, coastal, shapeshifter, courier]
+    tags: [supporting_people, coastal, shapeshifter, courier]
     scale: medium
     short_description: >-
       Seal-shifting coastal people who move easily between sea communities and
@@ -281,20 +274,19 @@ npcs:
       Carries messages between sea and land, observes coastal changes, assists
       stranded travelers, carefully guards their coat.
     relationships:
-      primary_locations: [mermaid_cove]
-      secondary_locations: [the_exchange]
+      primary_locations: [biome.mermaid_cove]
+      secondary_locations: [biome.exchange]
       creatures: []
       items: []
 
   - id: npc.stone_troll
     asset_id: stone_troll
-    canonical_creature_id: stone_troll
     title: "Stone Troll"
     canon_status: confirmed
     classification: supporting_people
     sapience: sapient
     featured: true
-    tags: [supporting-people, river, bridgekeeper, masonry]
+    tags: [supporting_people, river, bridgekeeper, masonry]
     scale: very_large
     short_description: >-
       Massive stone-skinned people known for patient judgment, masonry,
@@ -310,20 +302,19 @@ npcs:
       Inspects bridges, repairs stonework, monitors river currents, requests
       stories or riddles as tolls.
     relationships:
-      primary_locations: [stone_crossing, skullwater_cave]
-      secondary_locations: [eastern_plains]
+      primary_locations: [biome.stone_crossing, biome.skullwater_cave]
+      secondary_locations: [biome.eastern_plains]
       creatures: []
       items: []
 
   - id: npc.witch_order
     asset_id: witch_order
-    canonical_creature_id: witch_order
     title: "Witches"
     canon_status: confirmed
     classification: cultural_order
     sapience: sapient
     featured: false
-    tags: [cultural-order, cross-species, magic, tradition]
+    tags: [cultural_order, cross_species, magic, tradition]
     scale: variable
     short_description: >-
       A cross-species magical tradition rather than a separate people.
@@ -339,7 +330,7 @@ npcs:
       Studies specific forms of magic, trades remedies, investigates supernatural
       disruptions, disagrees about responsible practice.
     relationships:
-      primary_locations: [whispering_marsh]
-      secondary_locations: [enchanted_woods, the_exchange, sunward_fields]
+      primary_locations: [biome.whispering_marsh]
+      secondary_locations: [biome.enchanted_woods, biome.exchange, biome.sunward_fields]
       creatures: []
       items: []

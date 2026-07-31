@@ -3,7 +3,7 @@ title: Mire Mimic
 id: creature.mire_mimic
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["dangerous", "marsh", "ambush", "camouflage"]
 classification: dangerous_creature
@@ -17,6 +17,17 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: dangerous_creatures
+assets:
+  primary: assets/entities/mire_mimic/assembled.png
+ai_context:
+  mood: "Patient marsh predator that resembles a safe patch of ground, log, or abandoned boat."
+  themes: "Dangerous, Marsh, Ambush, Camouflage"
+  visual_style: "Low mud-and-root body capable of flattening into familiar marsh shapes, small eye clusters and reed-like sensory whiskers."
+  common_encounters: "Navigation hazard, rescue encounter, reason a familiar route has been closed."
+  lore_highlights: ""
+  related_entities: "biome.whispering_marsh, biome.whispering_marsh"
+  writing_guidance: "Remains motionless beside frequently used paths, retreats from fire and strong vibration."
+  generation_hints: "Remains motionless, abandons hunting sites repeatedly marked by frogfolk."
 layout: creatures
 infobox: creature
 ---
@@ -25,19 +36,7 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Whispering Marsh](/biomes/whispering_marsh/) — primary_locations
-- [Whispering Marsh](/biomes/whispering_marsh/) — dangerous_creatures
+- [Whispering Marsh](/biomes/whispering_marsh/) `Primary Locations` `Dangerous Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Patient marsh predator that resembles a safe patch of ground, log, or abandoned boat.
-**Themes:** Dangerous, Marsh, Ambush, Camouflage
-**Visual Style:** Low mud-and-root body capable of flattening into familiar marsh shapes, small eye clusters and reed-like sensory whiskers.
-**Common Encounters:** Navigation hazard, rescue encounter, reason a familiar route has been closed.
-**Lore Highlights:** 
-**Related Entities:** biome.whispering_marsh, biome.whispering_marsh
-**Writing Guidance:** Remains motionless beside frequently used paths, retreats from fire and strong vibration.
-**Generation Hints:** Remains motionless, abandons hunting sites repeatedly marked by frogfolk.
-<!-- END GENERATED: ai_context -->

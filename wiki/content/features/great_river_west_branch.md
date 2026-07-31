@@ -3,8 +3,8 @@ title: Western Branch of the Great River
 id: feature.great_river_west_branch
 type: feature
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.plains
@@ -13,6 +13,15 @@ related:
   - id: geography.whispering_marsh
     type: geography
     relationship: reaches
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.plains, geography.whispering_marsh"
+  writing_guidance: ""
+  generation_hints: ""
 layout: features
 infobox: feature
 ---
@@ -21,19 +30,8 @@ infobox: feature
 ## Related Entities
 
 ### Geography
-- [The Plains](/geography/plains/) — reaches
-- [Whispering Marsh](/geography/whispering_marsh/) — reaches
+- [The Plains](/geography/plains/) `Reaches`
+- [Whispering Marsh](/geography/whispering_marsh/) `Reaches`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.plains, geography.whispering_marsh
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

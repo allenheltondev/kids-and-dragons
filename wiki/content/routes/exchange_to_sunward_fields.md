@@ -3,8 +3,8 @@ title: Exchange–Sunward Road
 id: route.exchange_to_sunward_fields
 type: route
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_implied
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: location.exchange
@@ -13,6 +13,15 @@ related:
   - id: geography.sunward_fields
     type: geography
     relationship: connects
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "location.exchange, geography.sunward_fields"
+  writing_guidance: ""
+  generation_hints: ""
 layout: routes
 infobox: route
 ---
@@ -21,21 +30,10 @@ infobox: route
 ## Related Entities
 
 ### Geography
-- [The Sunward Fields](/geography/sunward_fields/) — connects
+- [The Sunward Fields](/geography/sunward_fields/) `Connects`
 
 ### Locations
-- [The Exchange](/locations/exchange/) — connects
+- [The Exchange](/locations/exchange/) `Connects`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** location.exchange, geography.sunward_fields
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

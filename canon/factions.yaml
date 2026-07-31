@@ -19,8 +19,9 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions."
-    intentionally_undefined: "The faction concept exists as a design placeholder but is not yet canon."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
   faction_type:
     military_order: "An organized group with martial purpose and hierarchy."
     secret_society: "A hidden group operating through cells and indirect communication."
@@ -56,11 +57,11 @@ factions:
     standard_behavior: >-
       Patrol the highlands, maintain fortifications, train recruits.
     relationships:
-      headquarters: [redspire_citadel]
-      territory: [red_sky_foothills]
-      enemies: [deep_hollow_cult]
-      quests: [shattered_sky_rite]
-      campaigns: [dawn_of_the_red_sky]
+      headquarters: [location.redspire_citadel]
+      territory: [biome.red_sky_foothills]
+      enemies: [faction.deep_hollow_cult]
+      quests: [quest.shattered_sky_rite]
+      campaigns: [campaign.dawn_of_the_red_sky]
       members: []
 
   - id: faction.deep_hollow_cult
@@ -89,10 +90,10 @@ factions:
       Operate in cells, communicate through crystal resonance, recruit the
       desperate.
     relationships:
-      headquarters: [crystal_font]
-      territory: [skullwater_cave]
-      enemies: [skywardens]
-      quests: [crystal_heart_retrieval]
-      campaigns: [echoes_beneath]
-      items: [crystal_heart]
+      headquarters: [location.crystal_font]
+      territory: [biome.skullwater_cave]
+      enemies: [faction.skywardens]
+      quests: [quest.crystal_heart_retrieval]
+      campaigns: [campaign.echoes_beneath]
+      items: [item.crystal_heart]
       members: []

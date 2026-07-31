@@ -3,9 +3,9 @@ title: Witches
 id: npc.witch_order
 type: npc
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["cultural-order", "cross-species", "magic", "tradition"]
+tags: ["cultural_order", "cross_species", "magic", "tradition"]
 classification: cultural_order
 scale: variable
 sapience: sapient
@@ -16,7 +16,7 @@ related:
   - id: biome.enchanted_woods
     type: biome
     relationship: secondary_locations
-  - id: biome.the_exchange
+  - id: biome.exchange
     type: biome
     relationship: secondary_locations
   - id: biome.sunward_fields
@@ -25,6 +25,17 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: cultural_orders
+assets:
+  primary: assets/entities/witch_order/assembled.png
+ai_context:
+  mood: "A cross-species magical tradition rather than a separate people."
+  themes: "Cultural_order, Cross_species, Magic, Tradition"
+  visual_style: "No required body type; a witch may belong to any sapient people. Personal tools, ingredients, notebooks, charms."
+  common_encounters: "Expert with incomplete knowledge, mentor, rival practitioner, cause or solver of a magical problem."
+  lore_highlights: ""
+  related_entities: "biome.whispering_marsh, biome.enchanted_woods, biome.exchange, biome.sunward_fields, biome.whispering_marsh"
+  writing_guidance: "Witch is a learned role, not a species, gender, or moral alignment."
+  generation_hints: "Studies specific forms of magic, trades remedies, investigates supernatural disruptions, disagrees about responsible practice."
 layout: npcs
 infobox: npc
 ---
@@ -33,22 +44,10 @@ infobox: npc
 ## Related Entities
 
 ### Biomes
-- [Enchanted Woods](/biomes/enchanted_woods/) — secondary_locations
-- [The Exchange](/biomes/the_exchange/) — secondary_locations
-- [The Sunward Fields](/biomes/sunward_fields/) — secondary_locations
-- [Whispering Marsh](/biomes/whispering_marsh/) — primary_locations
-- [Whispering Marsh](/biomes/whispering_marsh/) — cultural_orders
+- [Enchanted Woods](/biomes/enchanted_woods/) `Secondary Locations`
+- [The Exchange](/biomes/exchange/) `Secondary Locations`
+- [The Sunward Fields](/biomes/sunward_fields/) `Secondary Locations`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Primary Locations` `Cultural Orders`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** A cross-species magical tradition rather than a separate people.
-**Themes:** Cultural-order, Cross-species, Magic, Tradition
-**Visual Style:** No required body type; a witch may belong to any sapient people. Personal tools, ingredients, notebooks, charms.
-**Common Encounters:** Expert with incomplete knowledge, mentor, rival practitioner, cause or solver of a magical problem.
-**Lore Highlights:** 
-**Related Entities:** biome.whispering_marsh, biome.enchanted_woods, biome.the_exchange, biome.sunward_fields, biome.whispering_marsh
-**Writing Guidance:** Witch is a learned role, not a species, gender, or moral alignment.
-**Generation Hints:** Studies specific forms of magic, trades remedies, investigates supernatural disruptions, disagrees about responsible practice.
-<!-- END GENERATED: ai_context -->

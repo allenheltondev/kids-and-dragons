@@ -3,8 +3,8 @@ title: Frostfang Peaks
 id: geography.frostfang_peaks
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.red_sky_foothills
@@ -25,6 +25,15 @@ related:
   - id: feature.great_river
     type: feature
     relationship: reaches
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.red_sky_foothills, feature.great_river, geography.glacier_of_origins, geography.eastern_plains, location.skullwater_cave, feature.great_river"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -33,27 +42,15 @@ infobox: geography
 ## Related Entities
 
 ### Features
-- [The Great River](/features/great_river/) — separated_by
-- [The Great River](/features/great_river/) — reaches
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
 
 ### Geography
-- [Glacier of Origins](/geography/glacier_of_origins/) — borders
-- [Red Sky Foothills](/geography/red_sky_foothills/) — separated_from
-- [The Eastern Plains](/geography/eastern_plains/) — borders
+- [Glacier of Origins](/geography/glacier_of_origins/) `Borders`
+- [Red Sky Foothills](/geography/red_sky_foothills/) `Separated From`
+- [The Eastern Plains](/geography/eastern_plains/) `Borders`
 
 ### Locations
-- [Skullwater Cave](/locations/skullwater_cave/) — coast_near
+- [Skullwater Cave](/locations/skullwater_cave/) `Coast Near`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.red_sky_foothills, feature.great_river, geography.glacier_of_origins, geography.eastern_plains, location.skullwater_cave, feature.great_river
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

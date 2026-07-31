@@ -3,8 +3,8 @@ title: The Expanse
 id: geography.expanse
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.enchanted_woods
@@ -19,6 +19,15 @@ related:
   - id: location.mount_red_sky
     type: location
     relationship: adjacent_to
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.enchanted_woods, geography.red_sky_foothills, geography.glacier_of_origins, location.mount_red_sky"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -27,23 +36,12 @@ infobox: geography
 ## Related Entities
 
 ### Geography
-- [Enchanted Woods](/geography/enchanted_woods/) — borders
-- [Glacier of Origins](/geography/glacier_of_origins/) — borders
-- [Red Sky Foothills](/geography/red_sky_foothills/) — borders
+- [Enchanted Woods](/geography/enchanted_woods/) `Borders`
+- [Glacier of Origins](/geography/glacier_of_origins/) `Borders`
+- [Red Sky Foothills](/geography/red_sky_foothills/) `Borders`
 
 ### Locations
-- [Mount Red Sky](/locations/mount_red_sky/) — adjacent_to
+- [Mount Red Sky](/locations/mount_red_sky/) `Adjacent To`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.enchanted_woods, geography.red_sky_foothills, geography.glacier_of_origins, location.mount_red_sky
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

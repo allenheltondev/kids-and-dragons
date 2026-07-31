@@ -3,8 +3,8 @@ title: Whispering Marsh
 id: geography.whispering_marsh
 type: geography
 status: draft
-lastReviewed: "2026-07-30"
-canon_status: map_canonical
+lastReviewed: "2026-07-31"
+canon_status: confirmed
 tags: []
 related:
   - id: geography.enchanted_woods
@@ -28,6 +28,15 @@ related:
   - id: route.exchange_to_whispering_marsh
     type: route
     relationship: connects
+ai_context:
+  mood: ""
+  themes: ""
+  visual_style: ""
+  common_encounters: ""
+  lore_highlights: ""
+  related_entities: "geography.enchanted_woods, geography.plains, geography.sunward_fields, location.mosshome, location.exchange, feature.great_river_west_branch, route.exchange_to_whispering_marsh"
+  writing_guidance: ""
+  generation_hints: ""
 layout: geography
 infobox: geography
 ---
@@ -36,30 +45,19 @@ infobox: geography
 ## Related Entities
 
 ### Features
-- [Western Branch of the Great River](/features/great_river_west_branch/) — reaches
+- [Western Branch of the Great River](/features/great_river_west_branch/) `Reaches`
 
 ### Geography
-- [Enchanted Woods](/geography/enchanted_woods/) — borders
-- [The Plains](/geography/plains/) — borders
-- [The Sunward Fields](/geography/sunward_fields/) — borders
+- [Enchanted Woods](/geography/enchanted_woods/) `Borders`
+- [The Plains](/geography/plains/) `Borders`
+- [The Sunward Fields](/geography/sunward_fields/) `Borders`
 
 ### Locations
-- [Mosshome](/locations/mosshome/) — adjacent_to
-- [The Exchange](/locations/exchange/) — adjacent_to
+- [Mosshome](/locations/mosshome/) `Adjacent To`
+- [The Exchange](/locations/exchange/) `Adjacent To`
 
 ### Routes
-- [Exchange–Marsh Approach](/routes/exchange_to_whispering_marsh/) — connects
+- [Exchange–Marsh Approach](/routes/exchange_to_whispering_marsh/) `Connects`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** 
-**Themes:** 
-**Visual Style:** 
-**Common Encounters:** 
-**Lore Highlights:** 
-**Related Entities:** geography.enchanted_woods, geography.plains, geography.sunward_fields, location.mosshome, location.exchange, feature.great_river_west_branch, route.exchange_to_whispering_marsh
-**Writing Guidance:** 
-**Generation Hints:** 
-<!-- END GENERATED: ai_context -->

@@ -3,7 +3,7 @@ title: Redspire Citadel
 id: location.redspire_citadel
 type: location
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: intentionally_undefined
 draft: true
 tags: ["fortress", "skywardens", "highlands", "hub"]
@@ -20,6 +20,21 @@ related:
   - id: campaign.dawn_of_the_red_sky
     type: campaign
     relationship: campaigns
+  - id: campaign.dawn_of_the_red_sky
+    type: campaign
+    relationship: locations
+  - id: quest.shattered_sky_rite
+    type: quest
+    relationship: locations
+ai_context:
+  mood: "A towering obsidian fortress perched on the highest peak of the foothills, headquarters of the Skywardens."
+  themes: "Fortress, Skywardens, Highlands, Hub"
+  visual_style: "Black stone tower with violet-lit windows, crimson banners, lightning rods crackling with energy."
+  common_encounters: "Hub location, quest start and end point, safe haven, faction headquarters."
+  lore_highlights: ""
+  related_entities: "biome.red_sky_foothills, faction.skywardens, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, quest.shattered_sky_rite"
+  writing_guidance: "Always accessible to players. Cannot be destroyed in narrative."
+  generation_hints: "Bustling with activity during day, eerily quiet at night except for the forge."
 layout: locations
 infobox: location
 ---
@@ -28,27 +43,16 @@ infobox: location
 ## Related Entities
 
 ### Biomes
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — biome
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Biome`
 
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — campaigns
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Campaigns` `Locations`
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — factions
+- [The Skywardens](/factions/skywardens/) `Factions`
 
 ### Quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — quests
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/) `Quests` `Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** A towering obsidian fortress perched on the highest peak of the foothills, headquarters of the Skywardens.
-**Themes:** Fortress, Skywardens, Highlands, Hub
-**Visual Style:** Black stone tower with violet-lit windows, crimson banners, lightning rods crackling with energy.
-**Common Encounters:** Hub location, quest start and end point, safe haven, faction headquarters.
-**Lore Highlights:** 
-**Related Entities:** biome.red_sky_foothills, faction.skywardens, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky
-**Writing Guidance:** Always accessible to players. Cannot be destroyed in narrative.
-**Generation Hints:** Bustling with activity during day, eerily quiet at night except for the forge.
-<!-- END GENERATED: ai_context -->

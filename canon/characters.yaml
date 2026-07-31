@@ -23,7 +23,8 @@ agent_instructions:
 
 controlled_values:
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions and creature canon."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
     intentionally_undefined: "A protected mystery or open design slot."
   scale:
     small_to_medium: "Between knee and waist height."
@@ -42,7 +43,6 @@ species_ids:
 characters:
   - id: character.unicorn
     asset_id: unicorn
-    species_manifest_id: unicorn
     title: "Unicorn"
     canon_status: confirmed
     featured: true
@@ -66,18 +66,17 @@ characters:
       Inspects changes in paths and glades, helps restore damaged places,
       mediates promises, investigates disturbances the forest remembers.
     relationships:
-      primary_locations: [enchanted_woods]
-      secondary_locations: [mosshome, sunward_fields, the_exchange]
+      primary_locations: [biome.enchanted_woods]
+      secondary_locations: [biome.mosshome, biome.sunward_fields, biome.exchange]
       creatures: []
       items: []
 
   - id: character.dragonling
     asset_id: dragonling
-    species_manifest_id: dragonling
     title: "Dragonling"
     canon_status: confirmed
     featured: false
-    tags: [playable, volcanic, explorer, heat-resistant]
+    tags: [playable, volcanic, explorer, heat_resistant]
     scale: small_to_medium
     signature_part: wings
     bipedal: false
@@ -97,14 +96,13 @@ characters:
       Communities monitor tremors, ash, heat, and crystal changes. Individuals
       explore caves, collect gemstones, trade with caravans.
     relationships:
-      primary_locations: [red_sky_foothills]
-      secondary_locations: [the_exchange, plains, sunward_fields]
+      primary_locations: [biome.red_sky_foothills]
+      secondary_locations: [biome.exchange, biome.plains, biome.sunward_fields]
       creatures: []
       items: []
 
   - id: character.griffin
     asset_id: griffin
-    species_manifest_id: griffin
     title: "Griffin"
     canon_status: confirmed
     featured: false
@@ -128,14 +126,13 @@ characters:
       Patrols passes, carries messages, rescues stranded travelers, watches for
       unexplained movement north of the peaks.
     relationships:
-      primary_locations: [frostfang_peaks]
-      secondary_locations: [glacier_of_origins, eastern_plains, the_exchange]
+      primary_locations: [biome.frostfang_peaks]
+      secondary_locations: [biome.glacier_of_origins, biome.eastern_plains, biome.exchange]
       creatures: []
       items: []
 
   - id: character.bigfoot
     asset_id: bigfoot
-    species_manifest_id: bigfoot
     title: "Bigfoot"
     canon_status: confirmed
     featured: false
@@ -158,14 +155,13 @@ characters:
       Tends forest paths and living structures, studies changes in plants and
       wildlife, preserves community history.
     relationships:
-      primary_locations: [mosshome]
-      secondary_locations: [enchanted_woods, whispering_marsh, the_exchange]
+      primary_locations: [biome.mosshome]
+      secondary_locations: [biome.enchanted_woods, biome.whispering_marsh, biome.exchange]
       creatures: []
       items: []
 
   - id: character.kitsune
     asset_id: kitsune
-    species_manifest_id: kitsune
     title: "Kitsune"
     canon_status: confirmed
     featured: false
@@ -188,14 +184,13 @@ characters:
       Charts wind patterns, maintains island stabilizing sites, carries stories
       between islands, uses illusions for teaching and play.
     relationships:
-      primary_locations: [sky_islands]
-      secondary_locations: [the_exchange, enchanted_woods, frostfang_peaks]
+      primary_locations: [biome.sky_islands]
+      secondary_locations: [biome.exchange, biome.enchanted_woods, biome.frostfang_peaks]
       creatures: []
       items: []
 
   - id: character.manticore
     asset_id: manticore
-    species_manifest_id: manticore
     title: "Manticore"
     canon_status: confirmed
     featured: false
@@ -218,7 +213,7 @@ characters:
       Patrols roads, repairs trail markers, investigates unusual tracks, escorts
       caravans, exchanges news between settlements.
     relationships:
-      primary_locations: [eastern_plains]
-      secondary_locations: [stone_crossing, plains, the_exchange]
+      primary_locations: [biome.eastern_plains]
+      secondary_locations: [biome.stone_crossing, biome.plains, biome.exchange]
       creatures: []
       items: []
