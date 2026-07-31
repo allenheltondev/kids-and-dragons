@@ -11,8 +11,8 @@ related:
   - id: biome.sky_islands
     type: biome
     relationship: primary_locations
-  - id: biome.exchange
-    type: biome
+  - id: location.exchange
+    type: location
     relationship: secondary_locations
   - id: biome.enchanted_woods
     type: biome
@@ -35,7 +35,7 @@ ai_context:
   visual_style: "Fox-like form with expressive ears, tail or tails, and light travel clothing. Wind, cloud, star, and temple motifs."
   common_encounters: "Wind navigator, messenger carrying incomplete or symbolic information, hero whose clever solution creates an unexpected consequence."
   lore_highlights: ""
-  related_entities: "biome.sky_islands, biome.exchange, biome.enchanted_woods, biome.frostfang_peaks, biome.sky_islands"
+  related_entities: "biome.sky_islands, location.exchange, biome.enchanted_woods, biome.frostfang_peaks, biome.sky_islands"
   writing_guidance: "Do not portray every kitsune as dishonest or mischievous."
   generation_hints: "Charts wind patterns, maintains island stabilizing sites, carries stories between islands, uses illusions for teaching and play."
 layout: characters
@@ -49,7 +49,9 @@ infobox: character
 - [Enchanted Woods](/biomes/enchanted_woods/) `Secondary Locations`
 - [Frostfang Peaks](/biomes/frostfang_peaks/) `Secondary Locations`
 - [Sky Islands](/biomes/sky_islands/) `Primary Locations` `Primary Peoples`
-- [The Exchange](/biomes/exchange/) `Secondary Locations`
+
+### Locations
+- [The Exchange](/locations/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
 

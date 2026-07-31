@@ -8,9 +8,27 @@ canon_status: confirmed
 tags: ["volcanic_hills", "crystal_veins", "lava_tubes", "caves", "dragonling_homeland"]
 danger_level: high
 related:
-  - id: biome.mount_red_sky
-    type: biome
+  - id: location.mount_red_sky
+    type: location
     relationship: locations
+  - id: biome.eastern_plains
+    type: biome
+    relationship: separated_from
+  - id: feature.great_river
+    type: feature
+    relationship: separated_by
+  - id: biome.expanse
+    type: biome
+    relationship: borders
+  - id: biome.enchanted_woods
+    type: biome
+    relationship: borders
+  - id: biome.plains
+    type: biome
+    relationship: borders
+  - id: location.mount_red_sky
+    type: location
+    relationship: contains_sites
   - id: character.dragonling
     type: character
     relationship: primary_peoples
@@ -23,6 +41,9 @@ related:
   - id: creature.cinder_wolf
     type: creature
     relationship: dangerous_creatures
+  - id: biome.frostfang_peaks
+    type: biome
+    relationship: separated_from
   - id: campaign.dawn_of_the_red_sky
     type: campaign
     relationship: biomes
@@ -38,9 +59,24 @@ related:
   - id: creature.cinder_wolf
     type: creature
     relationship: primary_locations
+  - id: faction.skywardens
+    type: faction
+    relationship: territory
+  - id: feature.great_river
+    type: feature
+    relationship: reaches
+  - id: route.northern_river_bridge
+    type: route
+    relationship: connects
   - id: item.crimson_shard
     type: item
     relationship: found_in
+  - id: location.mount_red_sky
+    type: location
+    relationship: biome
+  - id: location.mount_red_sky
+    type: location
+    relationship: access_from
   - id: location.redspire_citadel
     type: location
     relationship: biome
@@ -54,7 +90,7 @@ ai_context:
   visual_style: "Ochre and black hills, glowing cracks, crystal outcrops, cave mouths, scorched grasses, volcanic dust, sheltered settlements, and the mountain dominating the northern horizon."
   common_encounters: "Cave exploration, eruption warnings, crystal disputes, rescue routes, dragonling communities, unstable terrain, and changes originating from Mount Red Sky."
   lore_highlights: ""
-  related_entities: "biome.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, campaign.dawn_of_the_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, item.crimson_shard, location.redspire_citadel"
+  related_entities: "location.mount_red_sky, biome.eastern_plains, feature.great_river, biome.expanse, biome.enchanted_woods, biome.plains, location.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.frostfang_peaks, campaign.dawn_of_the_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, faction.skywardens, feature.great_river, route.northern_river_bridge, item.crimson_shard, location.mount_red_sky, location.mount_red_sky, location.redspire_citadel"
   writing_guidance: "This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are gathered from naturally released material rather than mined from living veins."
   generation_hints: "Tremors, ash, heat, and crystal changes are closely watched. Communities maintain warning systems, safe caves, and evacuation routes."
 layout: biomes
@@ -65,7 +101,11 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) `Locations`
+- [Enchanted Woods](/biomes/enchanted_woods/) `Borders`
+- [Frostfang Peaks](/biomes/frostfang_peaks/) `Separated From`
+- [The Eastern Plains](/biomes/eastern_plains/) `Separated From`
+- [The Expanse](/biomes/expanse/) `Borders`
+- [The Plains](/biomes/plains/) `Borders`
 
 ### Campaigns
 - [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Biomes`
@@ -78,11 +118,21 @@ infobox: biome
 - [Embermoth](/creatures/embermoth/) `Ambient Creatures` `Primary Locations`
 - [Glassback Crab](/creatures/glassback_crab/) `Dangerous Creatures` `Primary Locations`
 
+### Factions
+- [The Skywardens](/factions/skywardens/) `Territory`
+
+### Features
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
+
 ### Items
 - [Crimson Shard](/items/crimson_shard/) `Found In`
 
 ### Locations
+- [Mount Red Sky](/locations/mount_red_sky/) `Locations` `Contains Sites` `Biome` `Access From`
 - [Redspire Citadel](/locations/redspire_citadel/) `Biome`
+
+### Routes
+- [Northern River Bridge](/routes/northern_river_bridge/) `Connects`
 <!-- END GENERATED: relationships -->
 
 

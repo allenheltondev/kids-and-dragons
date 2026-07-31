@@ -16,8 +16,8 @@ related:
   - id: biome.plains
     type: biome
     relationship: secondary_locations
-  - id: biome.exchange
-    type: biome
+  - id: location.exchange
+    type: location
     relationship: secondary_locations
   - id: biome.enchanted_woods
     type: biome
@@ -33,7 +33,7 @@ ai_context:
   visual_style: "Humanoid form with goat-like legs, ears, and variable horns. Practical farm clothing, tools, instruments, and sun motifs."
   common_encounters: "Farmer, festival organizer, neighbor facing a practical local problem."
   lore_highlights: ""
-  related_entities: "biome.sunward_fields, biome.plains, biome.exchange, biome.enchanted_woods, biome.sunward_fields"
+  related_entities: "biome.sunward_fields, biome.plains, location.exchange, biome.enchanted_woods, biome.sunward_fields"
   writing_guidance: "Species does not determine morality."
   generation_hints: "Plants, harvests, repairs irrigation, organizes shared meals, uses music to coordinate work."
 layout: npcs
@@ -45,9 +45,11 @@ infobox: npc
 
 ### Biomes
 - [Enchanted Woods](/biomes/enchanted_woods/) `Secondary Locations`
-- [The Exchange](/biomes/exchange/) `Secondary Locations`
 - [The Plains](/biomes/plains/) `Secondary Locations`
 - [The Sunward Fields](/biomes/sunward_fields/) `Primary Locations` `Supporting Peoples`
+
+### Locations
+- [The Exchange](/locations/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
 

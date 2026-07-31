@@ -89,7 +89,7 @@ campaigns:
     relationships:
       factions: [faction.deep_hollow_cult]
       quests: [quest.crystal_heart_retrieval]
-      locations: [location.crystal_font]
-      biomes: [biome.skullwater_cave]
+      locations: [location.skullwater_cave, location.crystal_font]
+      biomes: []
       items: [item.crystal_heart]
       creatures: []

@@ -13,10 +13,13 @@ related:
   - id: biome.mermaid_cove
     type: biome
     relationship: primary_locations
-  - id: biome.exchange
-    type: biome
+  - id: location.exchange
+    type: location
     relationship: secondary_locations
   - id: biome.mermaid_cove
+    type: biome
+    relationship: supporting_peoples
+  - id: biome.open_sea
     type: biome
     relationship: supporting_peoples
 assets:
@@ -27,7 +30,7 @@ ai_context:
   visual_style: "Aquatic humanoid form with fish-like tail and broad regional variation. Coral, shell, woven kelp motifs."
   common_encounters: "Reef guardian, keeper of an old treaty, messenger warning of a changed current."
   lore_highlights: ""
-  related_entities: "biome.mermaid_cove, biome.exchange, biome.mermaid_cove"
+  related_entities: "biome.mermaid_cove, location.exchange, biome.mermaid_cove, biome.open_sea"
   writing_guidance: "Limited land mobility unless aided by established magic or equipment."
   generation_hints: "Patrols reefs, rescues swimmers, repairs coral, participates in songs that help prevent the whirlpool from widening."
 layout: npcs
@@ -39,7 +42,10 @@ infobox: npc
 
 ### Biomes
 - [Mermaid Cove](/biomes/mermaid_cove/) `Primary Locations` `Supporting Peoples`
-- [The Exchange](/biomes/exchange/) `Secondary Locations`
+- [The Open Sea](/biomes/open_sea/) `Supporting Peoples`
+
+### Locations
+- [The Exchange](/locations/exchange/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
 

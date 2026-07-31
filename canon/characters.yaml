@@ -67,7 +67,7 @@ characters:
       mediates promises, investigates disturbances the forest remembers.
     relationships:
       primary_locations: [biome.enchanted_woods]
-      secondary_locations: [biome.mosshome, biome.sunward_fields, biome.exchange]
+      secondary_locations: [location.mosshome, biome.sunward_fields, location.exchange]
       creatures: []
       items: []
 
@@ -97,7 +97,7 @@ characters:
       explore caves, collect gemstones, trade with caravans.
     relationships:
       primary_locations: [biome.red_sky_foothills]
-      secondary_locations: [biome.exchange, biome.plains, biome.sunward_fields]
+      secondary_locations: [location.exchange, biome.plains, biome.sunward_fields]
       creatures: []
       items: []
 
@@ -127,7 +127,7 @@ characters:
       unexplained movement north of the peaks.
     relationships:
       primary_locations: [biome.frostfang_peaks]
-      secondary_locations: [biome.glacier_of_origins, biome.eastern_plains, biome.exchange]
+      secondary_locations: [biome.glacier_of_origins, biome.eastern_plains, location.exchange]
       creatures: []
       items: []
 
@@ -155,8 +155,8 @@ characters:
       Tends forest paths and living structures, studies changes in plants and
       wildlife, preserves community history.
     relationships:
-      primary_locations: [biome.mosshome]
-      secondary_locations: [biome.enchanted_woods, biome.whispering_marsh, biome.exchange]
+      primary_locations: [location.mosshome]
+      secondary_locations: [biome.enchanted_woods, biome.whispering_marsh, location.exchange]
       creatures: []
       items: []
 
@@ -185,7 +185,7 @@ characters:
       between islands, uses illusions for teaching and play.
     relationships:
       primary_locations: [biome.sky_islands]
-      secondary_locations: [biome.exchange, biome.enchanted_woods, biome.frostfang_peaks]
+      secondary_locations: [location.exchange, biome.enchanted_woods, biome.frostfang_peaks]
       creatures: []
       items: []
 
@@ -214,6 +214,6 @@ characters:
       caravans, exchanges news between settlements.
     relationships:
       primary_locations: [biome.eastern_plains]
-      secondary_locations: [biome.stone_crossing, biome.plains, biome.exchange]
+      secondary_locations: [location.stone_crossing, biome.plains, location.exchange]
       creatures: []
       items: []

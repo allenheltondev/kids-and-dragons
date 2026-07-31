@@ -11,6 +11,18 @@ related:
   - id: biome.glacier_of_origins
     type: biome
     relationship: locations
+  - id: biome.red_sky_foothills
+    type: biome
+    relationship: separated_from
+  - id: feature.great_river
+    type: feature
+    relationship: separated_by
+  - id: biome.glacier_of_origins
+    type: biome
+    relationship: borders
+  - id: biome.eastern_plains
+    type: biome
+    relationship: borders
   - id: character.griffin
     type: character
     relationship: primary_peoples
@@ -35,6 +47,12 @@ related:
   - id: creature.frost_wyrm
     type: creature
     relationship: primary_locations
+  - id: feature.great_river
+    type: feature
+    relationship: reaches
+  - id: location.skullwater_cave
+    type: location
+    relationship: coast_near
   - id: npc.yeti
     type: npc
     relationship: secondary_locations
@@ -48,7 +66,7 @@ ai_context:
   visual_style: "Dense ranks of snow-covered peaks, dark exposed rock, high aeries, narrow passes, cloud shadows, ice shelves, and enormous vertical scale."
   common_encounters: "Mountain rescue, aerial travel, watch duties, avalanches, lost messengers, northern signs, dangerous passes, and conflicts between curiosity and caution."
   lore_highlights: ""
-  related_entities: "biome.glacier_of_origins, character.griffin, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, npc.yeti"
+  related_entities: "biome.glacier_of_origins, biome.red_sky_foothills, feature.great_river, biome.glacier_of_origins, biome.eastern_plains, character.griffin, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river, location.skullwater_cave, npc.yeti"
   writing_guidance: "Griffins are rescuers, scouts, and people with ordinary communities, not merely mounts or guards. The Peaks are distinct from the Glacier of Origins."
   generation_hints: "Aerie communities maintain watches, rescue routes, signals, and pass knowledge while storms and ice frequently close expected paths."
 layout: biomes
@@ -59,7 +77,9 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Glacier of Origins](/biomes/glacier_of_origins/) `Locations`
+- [Glacier of Origins](/biomes/glacier_of_origins/) `Locations` `Borders`
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Separated From`
+- [The Eastern Plains](/biomes/eastern_plains/) `Borders`
 
 ### Characters
 - [Griffin](/characters/griffin/) `Primary Peoples` `Primary Locations`
@@ -68,6 +88,12 @@ infobox: biome
 ### Creatures
 - [Frost Wyrm](/creatures/frost_wyrm/) `Dangerous Creatures` `Primary Locations`
 - [Snowhorn Goat](/creatures/snowhorn_goat/) `Ambient Creatures` `Primary Locations`
+
+### Features
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
+
+### Locations
+- [Skullwater Cave](/locations/skullwater_cave/) `Coast Near`
 
 ### Npcs
 - [Yeti](/npcs/yeti/) `Supporting Peoples` `Secondary Locations`

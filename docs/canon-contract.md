@@ -1,9 +1,9 @@
 # Kids & Dragons — Canon Contract
 
-**Status: §1–§6 built (2026-07-31). D1, D2, D3 and D12 ruled and applied to the
-corpus; `packages/canon` ships all thirteen schemas, the parser, the registry
+**Status: §1–§6 built (2026-07-31). D1, D2, D3, D6, D11 and D12 ruled and
+applied; `packages/canon` ships all **eleven** schemas, the parser, the registry
 and `npm run canon:check` in CI. §7 (DynamoDB) and §8 (agent tools) proposed;
-D5–D11 still open.** `canon/*.yaml` is the truth. Everything else — the wiki,
+D5, D7, D8, D13 open, and D9/D10 specified but unbuilt.** `canon/*.yaml` is the truth. Everything else — the wiki,
 `content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
 document is the schema that makes derivation mechanical instead of manual.
 
@@ -84,23 +84,26 @@ single most load-bearing field for generated content and today is prose (§9 D9)
 
 ## 3. Taxonomies
 
-Thirteen, across ten files — `geography.yaml` carries four.
+Eleven, across ten files. Was thirteen until D6 merged `region` into `biome` and
+`site` into `location`.
 
 | Taxonomy | File | Id prefix | Count | Adds to the envelope |
 |---|---|---|---|---|
-| `biome` | biomes.yaml | `biome.` | 17 | `map_label`, `climate`, `environment_type`, `danger_level`, `inhabitants` (§4) |
+| `biome` | biomes.yaml | `biome.` | 13 | `map_label`, `climate`, `environment_type`, `danger_level`, `inhabitants`, and the map fields absorbed from `region` |
 | `species` | characters.yaml | `character.` | 6 | `bipedal`, `signature_part`, `scale` |
-| `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `danger_level`, **`encounter`** (§9 D9) |
-| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, `speech_register` (§9 D8) |
+| `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `danger_level`, **`encounter`** (D9) |
+| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, `speech_register` (D8) |
 | `faction` | factions.yaml | `faction.` | 2 | `faction_type`, `alignment` |
-| `item` | items.yaml | `item.` | 3 | `category`, `rarity`, `acquisition`, **`mechanics`** (§9 D7) |
-| `location` | locations.yaml | `location.` | 3 | `location_type`, `parent_biome` |
+| `item` | items.yaml | `item.` | 3 | `category`, `rarity`, `acquisition`, **`mechanics`** (D7) |
+| `location` | locations.yaml | `location.` | 10 | `location_type`, `parent_biome`, optional `inhabitants`, and the map fields absorbed from `site` |
 | `quest` | quests.yaml | `quest.` | 2 | `quest_type`, `difficulty`, `objectives`, `rewards` |
 | `campaign` | campaigns.yaml | `campaign.` | 2 | `campaign_type`, `chapter_count` |
-| `region` | geography.yaml | `geography.` | 12 | `kind`, `map_anchor`, `relative_position`, `barriers` |
-| `site` | geography.yaml | `location.` | 5 | `kind`, `map_anchor` |
-| `feature` | geography.yaml | `feature.` | 4 | `kind`, `map_anchor` |
-| `route` | geography.yaml | `route.` | 4 | `kind`, `map_anchor`, `travel_modes` |
+| `feature` | geography.yaml | `feature.` | 4 | `kind`, `map_anchor`, `flow_direction`, `mouth` |
+| `route` | geography.yaml | `route.` | 4 | `kind`, `map_anchor`, `travel_modes`, `constraints` |
+
+`biome` and `location` share a `Place` base (map provenance, anchor, access).
+`geography.yaml` now owns only what is neither an ecological region nor a place
+inside one: rivers and roads.
 
 Each is `Envelope.extend({...})`. The file → taxonomy mapping is data
 (`FILES` in `parse.ts`), so a new taxonomy is a schema plus a table row.
@@ -313,11 +316,23 @@ east: upper_great_river}` — neither resolves; the closest entity is
 make `barriers` an edge map, or declare the values free text. Currently they
 look like references and are not.
 
-**D6 — place ownership.** `geography.yaml` states "A named place appears once in
-this canon and is referenced elsewhere by id," then `locations.yaml` names three
-more places. *Recommend:* geography owns *where* (map anchor, adjacency,
-routes); locations owns *what happens there* (story sites), and every location
-carries a required edge to its geography entity.
+**D6 — RULED and applied. Place ownership.** It was not an overlap, it was a
+duplication: `biomes.yaml` and `geography.yaml` described the same seventeen
+places twice, once from ecology and once from the map. Every biome carried a
+`geography_id`; every region and site was claimed by exactly one biome; **12
+paired with regions, 5 with sites, no orphans in either direction.**
+
+Allen's rule sorted them — *a biome is an ecological region, a location is a
+place inside one* — so the 12 absorbed their region and the 5 became locations,
+joining the ones `locations.yaml` already had. Thirteen taxonomies became
+eleven, and `contained_by` / `borders` / `adjacent_to` now point at biomes and
+locations rather than at a third kind of thing that was really the same things.
+
+Two site parents were inferred rather than authored, because the sites carried
+no `contained_by`: **The Exchange → `biome.sunward_fields`** (coastal, adjacent
+to it, nearest by map anchor) and **Skullwater Cave → `biome.open_sea`** (its
+entrance is offshore). `location.crystal_font`, which sits inside the cave,
+follows it. One field each if either is wrong.
 
 **D7 — item ownership, now decided by canon-as-truth.** `canon/items.yaml` (3,
 lore-only) and `content/items.json` (15, mechanical) are disjoint — no shared
