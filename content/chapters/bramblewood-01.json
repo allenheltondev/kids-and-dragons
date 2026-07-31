@@ -8,6 +8,21 @@
   "estimatedMinutes": 25,
   "xpAward": 100,
   "entry": "scene_hedge_wall",
+  "props": {
+    "$comment": "D7 chapter-scoped props: items this chapter brings with it, which the world does not otherwise have. The key opens one door, in this chapter. Putting it in canon/items.yaml would assert it as a fact about the Realm to make a lock work. They still project into content/items.json, because a quest item outlives the chapter that granted it and an inventory screen has to be able to name it.",
+    "rusted_key": {
+      "kind": "quest",
+      "icon": "key",
+      "name": "Rusted Key",
+      "text": "It opens something, somewhere."
+    },
+    "torn_map_east": {
+      "kind": "quest",
+      "icon": "map",
+      "name": "Torn Map (East Half)",
+      "text": "Half a map, drawn in berry juice. Somebody has the other half."
+    }
+  },
   "scenes": {
     "scene_hedge_wall": {
       "type": "story",

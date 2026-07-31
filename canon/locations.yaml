@@ -390,7 +390,7 @@ locations:
       quests: []
       campaigns: []
       creatures: []
-      items: []
+      items: [item.hollow_crown_shard]
 
   - id: location.the_whirlpool
     title: "The Whirlpool"

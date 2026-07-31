@@ -53,6 +53,15 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: primary_locations
+  - id: item.mosslight_jar
+    type: item
+    relationship: found_in
+  - id: item.thunder_acorn
+    type: item
+    relationship: found_in
+  - id: item.owlfeather_clasp
+    type: item
+    relationship: found_in
   - id: location.mosshome
     type: location
     relationship: biome
@@ -78,7 +87,7 @@ ai_context:
   visual_style: "Immense layered trees, luminous knots and hollows, blue-green magical lights, tangled roots, mossy paths, hidden shrines, and depth that feels older than the surrounding realm."
   common_encounters: "Lost paths, remembered promises, damaged magic, old shrines, hidden communities, ecological mysteries, and choices where kindness changes the route."
   lore_highlights: ""
-  related_entities: "location.mosshome, biome.expanse, biome.red_sky_foothills, biome.plains, biome.whispering_marsh, location.mosshome, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, location.mosshome, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
+  related_entities: "location.mosshome, biome.expanse, biome.red_sky_foothills, biome.plains, biome.whispering_marsh, location.mosshome, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, item.mosslight_jar, item.thunder_acorn, item.owlfeather_clasp, location.mosshome, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
   writing_guidance: "The forest is responsive, not randomly hostile. It remembers treatment but does not assign morality by species. MossHome is inside the wider Woods and is not interchangeable with the whole region."
   generation_hints: "Paths shift gradually, magical disturbances echo through plants and wildlife, and the forest tends to reveal safer routes to travelers who repair harm or honor commitments."
 layout: biomes
@@ -102,6 +111,11 @@ infobox: biome
 ### Creatures
 - [Mosshorn](/creatures/mosshorn/) `Ambient Creatures` `Primary Locations`
 - [Will-o'-Wisp](/creatures/will_o_wisp/) `Supernatural Manifestations` `Primary Locations`
+
+### Items
+- [Mosslight Jar](/items/mosslight_jar/) `Found In`
+- [Owlfeather Clasp](/items/owlfeather_clasp/) `Found In`
+- [Thunder Acorn](/items/thunder_acorn/) `Found In`
 
 ### Locations
 - [MossHome](/locations/mosshome/) `Locations` `Contains Sites` `Biome`

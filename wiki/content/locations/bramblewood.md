@@ -13,13 +13,22 @@ related:
   - id: biome.sunward_fields
     type: biome
     relationship: locations
+  - id: item.honeycake
+    type: item
+    relationship: found_in
+  - id: item.songbird_ribbon
+    type: item
+    relationship: found_in
+  - id: item.hearthstone_bead
+    type: item
+    relationship: found_in
 ai_context:
   mood: "A hedged town about two thirds of the way through the Sunward Fields, furthest from the Exchange."
   themes: "Town, Hedges, Sunward_fields, Waystop"
   visual_style: "Thorn hedges grown into walls and doorways, roofs showing above them, paths that turn more often than they need to."
   common_encounters: "A first waystop, somewhere to be let into, a town whose hedges decide who gets through."
   lore_highlights: ""
-  related_entities: "biome.sunward_fields, biome.sunward_fields"
+  related_entities: "biome.sunward_fields, biome.sunward_fields, item.honeycake, item.songbird_ribbon, item.hearthstone_bead"
   writing_guidance: "The hedges are grown and tended, not wild. Bramblewood is a place people live, not a wood with a name."
   generation_hints: "The hedges are kept by the people who live behind them, and the paths through them change with the season."
 layout: locations
@@ -31,4 +40,9 @@ infobox: location
 
 ### Biomes
 - [The Sunward Fields](/biomes/sunward_fields/) `Biome` `Locations`
+
+### Items
+- [Hearthstone Bead](/items/hearthstone_bead/) `Found In`
+- [Honeycake](/items/honeycake/) `Found In`
+- [Songbird Ribbon](/items/songbird_ribbon/) `Found In`
 <!-- END GENERATED: relationships -->

@@ -56,6 +56,12 @@ related:
   - id: creature.river_drake
     type: creature
     relationship: primary_locations
+  - id: item.brave_whistle
+    type: item
+    relationship: found_in
+  - id: item.river_charm
+    type: item
+    relationship: found_in
   - id: npc.centaur
     type: npc
     relationship: secondary_locations
@@ -68,7 +74,7 @@ ai_context:
   visual_style: "Fast blue water, stone and timber bridgework, steep banks, weathered route structures, waiting caravans, river spray, and a clear sense of constrained passage."
   common_encounters: "Blocked travel, bridge defense, rescues from the current, negotiations, caravan queues, missing cargo, river creatures, and choices where every traveler must pass through the same place."
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.sunward_fields, biome.eastern_plains, biome.eastern_plains, feature.great_river, biome.sunward_fields, biome.eastern_plains, npc.stone_troll, npc.centaur, creature.silver_otter, creature.river_drake, biome.sunward_fields, biome.eastern_plains, character.manticore, creature.silver_otter, creature.river_drake, npc.centaur, npc.stone_troll"
+  related_entities: "feature.great_river, biome.sunward_fields, biome.eastern_plains, biome.eastern_plains, feature.great_river, biome.sunward_fields, biome.eastern_plains, npc.stone_troll, npc.centaur, creature.silver_otter, creature.river_drake, biome.sunward_fields, biome.eastern_plains, character.manticore, creature.silver_otter, creature.river_drake, item.brave_whistle, item.river_charm, npc.centaur, npc.stone_troll"
   writing_guidance: "Stone Crossing is a location and transition environment, not a broad grassland biome. The current is a real hazard, and alternate nearby crossings should not be invented casually."
   generation_hints: "Traffic, river level, weather, maintenance, and danger can change whether the crossing is open, delayed, or impassable."
 layout: locations
@@ -91,6 +97,10 @@ infobox: location
 
 ### Features
 - [The Great River](/features/great_river/) `Locations` `Spans`
+
+### Items
+- [Brave Whistle](/items/brave_whistle/) `Found In`
+- [River Charm](/items/river_charm/) `Found In`
 
 ### Npcs
 - [Centaur](/npcs/centaur/) `Supporting Peoples` `Secondary Locations`

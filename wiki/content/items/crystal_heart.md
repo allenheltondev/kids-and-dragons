@@ -19,9 +19,6 @@ related:
   - id: faction.deep_hollow_cult
     type: faction
     relationship: items
-  - id: location.crystal_font
-    type: location
-    relationship: items
   - id: quest.crystal_heart_retrieval
     type: quest
     relationship: items
@@ -31,7 +28,7 @@ ai_context:
   visual_style: "Heart-shaped violet crystal with a pulsing inner light, suspended in mid-air when uncontained."
   common_encounters: "Major quest objective, world-lore revelation, power source."
   lore_highlights: ""
-  related_entities: "location.skullwater_cave, quest.crystal_heart_retrieval, campaign.echoes_beneath, faction.deep_hollow_cult, location.crystal_font, quest.crystal_heart_retrieval"
+  related_entities: "location.skullwater_cave, quest.crystal_heart_retrieval, campaign.echoes_beneath, faction.deep_hollow_cult, quest.crystal_heart_retrieval"
   writing_guidance: "Only one exists. Cannot be destroyed by conventional means."
   generation_hints: "Pulses in sync with nearby crystal formations."
 layout: items
@@ -49,7 +46,6 @@ infobox: item
 
 ### Locations
 - [Skullwater Cave](/locations/skullwater_cave/) `Found In`
-- [The Crystal Font](/locations/crystal_font/) `Items`
 
 ### Quests
 - [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) `Quests` `Items`

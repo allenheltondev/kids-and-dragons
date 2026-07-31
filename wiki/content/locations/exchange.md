@@ -53,6 +53,12 @@ related:
   - id: route.exchange_to_whispering_marsh
     type: route
     relationship: connects
+  - id: item.sunbloom_draught
+    type: item
+    relationship: found_in
+  - id: item.quickfoot_lace
+    type: item
+    relationship: found_in
   - id: npc.centaur
     type: npc
     relationship: secondary_locations
@@ -80,7 +86,7 @@ ai_context:
   visual_style: "Dense towers and halls built along cliffs, bridges, layered docks, ships, market awnings, signs from many cultures, crowded paths, and constant movement."
   common_encounters: "Campaign beginnings, reunions, contracts, rumors, investigation, trade, political tension between individuals, missing cargo, and stories that bring distant regions into contact."
   lore_highlights: ""
-  related_entities: "biome.sunward_fields, biome.whispering_marsh, biome.open_sea, biome.sunward_fields, biome.whispering_marsh, biome.sunward_fields, biome.sunward_fields, character.unicorn, character.dragonling, character.griffin, character.bigfoot, character.kitsune, character.manticore, route.exchange_to_sunward_fields, route.exchange_to_whispering_marsh, npc.centaur, npc.faun, npc.frogfolk, npc.boggart, npc.merfolk, npc.selkie, npc.witch_order"
+  related_entities: "biome.sunward_fields, biome.whispering_marsh, biome.open_sea, biome.sunward_fields, biome.whispering_marsh, biome.sunward_fields, biome.sunward_fields, character.unicorn, character.dragonling, character.griffin, character.bigfoot, character.kitsune, character.manticore, route.exchange_to_sunward_fields, route.exchange_to_whispering_marsh, item.sunbloom_draught, item.quickfoot_lace, npc.centaur, npc.faun, npc.frogfolk, npc.boggart, npc.merfolk, npc.selkie, npc.witch_order"
   writing_guidance: "The Exchange has no native or dominant people. Do not give one species ownership of the city or reduce it to a marketplace without homes, institutions, stories, and ordinary life."
   generation_hints: "Ships arrive, caravans turn over cargo, travelers exchange news, and the city continuously adapts to disruptions in roads, rivers, weather, and distant regions."
 layout: locations
@@ -102,6 +108,10 @@ infobox: location
 - [Kitsune](/characters/kitsune/) `Secondary Locations`
 - [Manticore](/characters/manticore/) `Secondary Locations`
 - [Unicorn](/characters/unicorn/) `Secondary Locations`
+
+### Items
+- [Quickfoot Lace](/items/quickfoot_lace/) `Found In`
+- [Sunbloom Draught](/items/sunbloom_draught/) `Found In`
 
 ### Npcs
 - [Boggart](/npcs/boggart/) `Secondary Locations`

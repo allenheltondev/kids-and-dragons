@@ -3,7 +3,7 @@
 **Status: §1–§6 built (2026-07-31). D1, D2, D3, D6, D11 and D12 ruled and
 applied; `packages/canon` ships all **eleven** schemas, the parser, the registry
 and `npm run canon:check` in CI. §7 (DynamoDB) and §8 (agent tools) proposed;
-D9 and D10 built; D5, D7, D8 and D13 open.** `canon/*.yaml` is the truth. Everything else — the wiki,
+D5, D7, D9 and D10 built; D8 and D13 open.** `canon/*.yaml` is the truth. Everything else — the wiki,
 `content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
 document is the schema that makes derivation mechanical instead of manual.
 
@@ -94,7 +94,7 @@ Eleven, across ten files. Was thirteen until D6 merged `region` into `biome` and
 | `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `danger_level`, **`encounter`** (D9) |
 | `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, `speech_register` (D8) |
 | `faction` | factions.yaml | `faction.` | 2 | `faction_type`, `alignment` |
-| `item` | items.yaml | `item.` | 3 | `category`, `rarity`, `acquisition`, **`mechanics`** (D7) |
+| `item` | items.yaml | `item.` | 16 | `category`, `rarity`, `acquisition`, **`mechanics`** (D7, optional) |
 | `location` | locations.yaml | `location.` | 10 | `location_type`, `parent_biome`, optional `inhabitants`, and the map fields absorbed from `site` |
 | `quest` | quests.yaml | `quest.` | 2 | `quest_type`, `difficulty`, `objectives`, `rewards` |
 | `campaign` | campaigns.yaml | `campaign.` | 2 | `campaign_type`, `chapter_count` |
@@ -331,14 +331,54 @@ locations rather than at a third kind of thing that was really the same things.
 Two site parents were inferred rather than authored, because the sites carried
 no `contained_by`: **The Exchange → `biome.sunward_fields`** (coastal, adjacent
 to it, nearest by map anchor) and **Skullwater Cave → `biome.open_sea`** (its
-entrance is offshore). `location.crystal_font`, which sits inside the cave,
-follows it. One field each if either is wrong.
+entrance is offshore). One field each if either is wrong.
+(`location.crystal_font`, which used to sit inside the cave, has since been
+deleted — nothing depended on it and nobody could recall what it was.)
 
-**D7 — item ownership, now decided by canon-as-truth.** `canon/items.yaml` (3,
-lore-only) and `content/items.json` (15, mechanical) are disjoint — no shared
-id. Since canon is truth, the item's `mechanics` block (`kind`, `icon`,
-`effect`) belongs **in canon**, and `content/items.json` becomes a generated
-projection. Every mechanical item needs a canon entry; that is 12 new entries.
+**D7 — RULED and BUILT. Item ownership, and where a chapter's props live.**
+`canon/items.yaml` (3, lore-only) and `content/items.json` (15, mechanical)
+were disjoint — no shared id. Canon is truth, so the `mechanics` block belongs
+in canon and `content/items.json` is now generated. But not everything in that
+file was a fact about the Realm, and forcing it to be would have been the wrong
+kind of tidy.
+
+**The ownership test: does the world own it, or does one chapter?** The world
+owns a honeycake — Bramblewood bakes them every morning whether or not anybody
+is playing. A chapter owns the rusted key that opens *its* door; asserting that
+key as canon would be a lie told to make a lock work. So there are two
+authoring homes:
+
+```yaml
+# canon/items.yaml — the world's
+mechanics:
+  kind: consumable       # consumable | trinket | quest
+  icon: cake
+  text: "Still warm. Heal 2 HP."     # the card, for a seven-year-old
+  effect: { type: heal, amount: 2 }  # or `passive:` on a trinket
+```
+```jsonc
+// content/chapters/<id>.json — the chapter's
+"props": { "rusted_key": { "kind": "quest", "icon": "key", "name": "…", "text": "…" } }
+```
+
+`mechanics` is **optional**, and its absence is a claim rather than a gap: the
+Crystal Heart is canon and is not in anybody's bag. Only items that carry it
+project.
+
+**"Scoped" describes authoring, not lifetime.** A quest item granted in chapter
+one is still on the character in chapter three (`character.questItems`), and an
+inventory screen that could not name it would be a bug — so `content/items.json`
+is one flat namespace projected from canon *and* every chapter's `props`, and
+`tools/canon/items.ts` refuses a prop that collides with a canon item or with
+another chapter's prop. That is the whole cost of the merge, and a build can pay
+it where a human cannot.
+
+Built: `mechanics.ts` (Zod mirrors of `ItemEffect`/`ItemPassive`, plus the
+kind/effect/passive rule both homes obey), `Chapter.props`, `npm run canon:items`,
+a CI drift check matching the bestiary's, and an **In Your Hands** wiki section
+— the item-page counterpart to a creature's stat block. 13 items promoted to
+canon (the 12 mechanical ones plus the Hollow Crown shard, which belongs to
+`location.hollow_gate` and stays `intentionally_undefined`); 2 stayed props.
 
 **D8 — named individuals.** `npcs.yaml` holds *peoples* (centaur, faun,
 frogfolk), and `agent_instructions` says named individuals are not canon. Yet
