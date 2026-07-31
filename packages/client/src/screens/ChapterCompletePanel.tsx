@@ -15,7 +15,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { speak } from "@kad/shared";
+import type { TierId } from "@kad/shared";
 import { useItems, useParty, usePresentation, useRunState } from "../store";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import "./shared.css";
@@ -80,8 +82,19 @@ export function ChapterCompletePanel(): ReactElement {
           const newTier = transformed[member.character.id];
           return (
             <li className="complete-card" key={member.playerId}>
+              {/*
+               * The new tier if they crossed one this chapter, not the tier
+               * they walked in with: TRANSFORM is announced right here, and a
+               * "you grew!" chip beside the same picture as before is the one
+               * moment in the game where the art has to change.
+               */}
               <span className="complete-card__portrait" aria-hidden="true">
-                <Icon name={member.character.species} size="2em" />
+                <CharacterPortrait
+                  species={member.character.species}
+                  tier={(newTier as TierId | undefined) ?? member.character.tier}
+                  className="complete-card__art"
+                  lit={newTier !== undefined}
+                />
               </span>
               <span className="complete-card__text">
                 <span className="complete-card__name">{member.character.name}</span>

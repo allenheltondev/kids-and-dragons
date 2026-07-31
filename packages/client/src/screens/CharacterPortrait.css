@@ -1,0 +1,125 @@
+/*
+ * The character portrait — see CharacterPortrait.tsx.
+ *
+ * Sized entirely by its box: the component writes an `inline-size`/`block-size`
+ * in `em` (or inherits one from the layout it lands in) and the art fits itself
+ * into that. No viewport units, no fixed pixels — the same portrait is 2.4em in
+ * a lobby row and 60% of a TV in the creation preview (architecture §4.6).
+ */
+
+.portrait {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  flex: 0 0 auto;
+  inline-size: 3.2em;
+  block-size: 3.2em;
+  color: var(--color-accent, #f5c86c);
+  /* The tint behind the figure. Overridden per-character by the accent the
+     player picked; the brand violet is the "no choice made yet" colour. */
+  --portrait-accent: var(--kad-accent, #8b6cf5);
+}
+
+/*
+ * The glow. A radial wash pooled under the figure's feet rather than a ring
+ * around the box: it reads as "standing in a light" instead of "selected", and
+ * selection is already carried by a check glyph everywhere (spec §11).
+ */
+.portrait--lit::before {
+  content: "";
+  position: absolute;
+  /* Anchored to the floor and no taller than a pool of light needs to be. Tied
+     to the top of the box instead, it grew into a full-height wash whenever the
+     portrait was in a tall box — the species cards stretch theirs. */
+  inset: auto 0 0;
+  block-size: 62%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 78%,
+    color-mix(in srgb, var(--portrait-accent) 55%, transparent) 0%,
+    color-mix(in srgb, var(--portrait-accent) 18%, transparent) 45%,
+    transparent 72%
+  );
+  filter: blur(0.15em);
+  pointer-events: none;
+}
+
+/*
+ * The figure stands on the *bottom of its box*, which is not the same as the
+ * bottom of its canvas.
+ *
+ * The art is a 1024×1024 square whose ground-contact line is at y=900
+ * (assets/manifest.json) — the remaining 12.1% is transparent air below the
+ * feet. Bottom-aligning the image therefore hangs every character that much
+ * above its floor, which is invisible on a 2.8em lobby avatar and a finger's
+ * width of hover on the creation preview. So the image is a square as wide as
+ * its box, aligned to the bottom, and then pushed down by exactly that
+ * remainder: `--portrait-floor`, set from the same `ANCHOR_Y` the Pixi sprites
+ * anchor to (CharacterPortrait.tsx).
+ *
+ * `translate` rather than `transform`, because the float animation owns
+ * `transform` — the two compose, so the offset survives the motion.
+ *
+ * The square is stated twice on purpose: `aspect-ratio` gives the box its shape
+ * without needing the intrinsic size, and `object-fit` keeps a hypothetical
+ * off-contract asset letterboxed on the floor instead of stretched.
+ */
+.portrait__img {
+  position: relative;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: 50% 100%;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Standing in a place: the whole remainder, so the feet meet the box's floor. */
+.portrait--floor .portrait__img {
+  translate: 0 var(--portrait-floor, 12.109375%);
+}
+
+/*
+ * A picture, not a place: *half* the remainder, which lands the drawn figure's
+ * middle on the box's middle. The air below the feet is the only asymmetry the
+ * canvas has, so half of it is exactly the correction — and it comes from the
+ * same constant, so there is still one number in play.
+ */
+.portrait--centre .portrait__img {
+  translate: 0 calc(var(--portrait-floor, 12.109375%) / 2);
+}
+
+.portrait--centre {
+  place-items: center;
+}
+
+/* The light follows the feet up with it, or it pools under empty air. */
+.portrait--centre.portrait--lit::before {
+  inset-block-end: calc(var(--portrait-floor, 12.109375%) / 2);
+}
+
+.portrait__fallback {
+  position: relative;
+  color: var(--color-accent, #f5c86c);
+}
+
+/*
+ * A breath, not a bounce. 6s is slow enough to read as "alive" across a room
+ * and never pulls the eye off the choice being made; theme.css flattens it
+ * entirely under prefers-reduced-motion.
+ */
+.portrait--float .portrait__img,
+.portrait--float .portrait__fallback {
+  animation: portrait-float 6s var(--kad-ease, ease-in-out) infinite;
+}
+
+@keyframes portrait-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translateY(-3%) rotate(0.4deg);
+  }
+}

@@ -139,6 +139,7 @@ export function PixiStage(): React.JSX.Element {
       // would otherwise be invisible until the next change pushed a fresh one.
       const live = useGameStore.getState();
       scene.setParty(live.state?.party ?? []);
+      scene.setBiome(live.chapter?.biome ?? null);
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter));
 
       /** Run the ticker only when a frame could actually be seen. */
@@ -210,6 +211,12 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setParty(party);
   }, [party]);
+
+  // The chapter's biome is what the party is standing in (spec §6.2). The board
+  // reads it off the same chapter for its tiles; this is the story half.
+  useEffect(() => {
+    sceneRef.current?.setBiome(chapter?.biome ?? null);
+  }, [chapter]);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

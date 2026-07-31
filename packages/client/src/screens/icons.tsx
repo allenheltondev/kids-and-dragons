@@ -182,6 +182,80 @@ const GLYPHS: Record<string, ReactElement> = {
     </g>
   ),
 
+  // --- Appearance (spec §5.4) -------------------------------------------
+  // The cosmetic options used to borrow interface glyphs — "Plain" was a
+  // check, which sat next to the selected-check and read as a bug. These say
+  // what they are instead. Markings are one swatch of coat with the pattern on
+  // it, so the four read as a set; the horn and wing styles are one silhouette
+  // detailed three ways, because that is exactly what they are.
+  marking_plain: (
+    <g {...S}>
+      <rect x="4.4" y="4.4" width="15.2" height="15.2" rx="4.6" />
+    </g>
+  ),
+  marking_dapple: (
+    <g {...S}>
+      <rect x="4.4" y="4.4" width="15.2" height="15.2" rx="4.6" />
+      <circle cx="9.4" cy="9.6" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none" />
+      <circle cx="9.8" cy="15.4" r="1.3" fill="currentColor" stroke="none" />
+    </g>
+  ),
+  marking_stripe: (
+    <g {...S}>
+      <rect x="4.4" y="4.4" width="15.2" height="15.2" rx="4.6" />
+      <path d="M6.6 12.8l6.2-6.2M10 16.4l6.4-6.4M14.6 18.2l3.4-3.4" />
+    </g>
+  ),
+  marking_starfall: (
+    <g {...S}>
+      <rect x="4.4" y="4.4" width="15.2" height="15.2" rx="4.6" />
+      <path d="M14 10.6l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="currentColor" />
+      <path d="M9.2 7.8l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" />
+    </g>
+  ),
+
+  // Horns and wings are drawn *wide*. A 1.8-unit stroke on a shape only four
+  // units across closes up into a solid blob at the size these render at —
+  // which is how the first pass at these came out: three yellow smudges.
+  horn_spiral: (
+    <g {...S}>
+      <path d="M6.4 20.4L17 3.6l-2 16.8z" />
+      <path d="M8.4 16.6l6.2-.8M10.2 12.6l4.9-.7M12 8.6l3.2-.5" />
+    </g>
+  ),
+  horn_curved: (
+    <g {...S}>
+      <path d="M5.8 20.4c.4-9 4.8-15.2 13.2-18.4-3.4 8.4-5.8 14.6-7.2 18.4z" />
+      <path d="M9 17.6c1.4-4.6 3.4-8.4 6-11.6" />
+    </g>
+  ),
+  horn_crystal: (
+    <g {...S}>
+      <path d="M12 3.2l5 6-5 11.6-5-11.6z" />
+      <path d="M7 9.2h10M12 3.2v17.6" />
+    </g>
+  ),
+
+  wing_feathered: (
+    <g {...S}>
+      <path d="M4.6 19.4c0-8.6 4.9-14.2 14.8-15.4-1 10.4-6 15.4-14.8 15.4z" />
+      <path d="M7.6 16.8c1.7-4.4 4.5-7.6 8.4-9.6M10.4 18.4c1.3-3.4 3.3-6.1 6-8.2" />
+    </g>
+  ),
+  wing_leathery: (
+    <g {...S}>
+      <path d="M19.4 4c-9.9 1.2-14.8 6.8-14.8 15.4 1.8-2.6 3.3-3 4.5-1.4.7-2.4 2-3.1 4-2.1.6-2.6 1.9-3.6 4-3-.4-3.4.4-6.3 2.3-8.9z" />
+      <path d="M19.4 4l-10.3 14M19.4 4l-6.3 11.9" />
+    </g>
+  ),
+  wing_starlit: (
+    <g {...S}>
+      <path d="M4.6 19.4c0-8.6 4.9-14.2 14.8-15.4-1 10.4-6 15.4-14.8 15.4z" />
+      <path d="M12.4 8.6l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="currentColor" />
+    </g>
+  ),
+
   // --- Items (spec §9.2) ------------------------------------------------
   consumable: (
     <g {...S}>
@@ -215,6 +289,25 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M12 2.4l4.6 8.2h-9.2z" />
       <path d="M7.4 10.6L12 21.6l4.6-11z" />
       <path d="M3.6 7.2l3.8 3.4M20.4 7.2l-3.8 3.4" />
+    </g>
+  ),
+  /*
+   * The rolled die (DiceOverlay), as opposed to `d20` the 1em label glyph
+   * beside the word "check". It is the only icon in the set drawn to be seen
+   * at 9em, and the only one with a *face*: the number lands inside the centre
+   * facet, so that facet is filled and centred on the box (its centroid is
+   * exactly 12,12) and everything else is structure around it.
+   */
+  d20_solid: (
+    <g {...S}>
+      <path d="M12 1.8L21 7v10l-9 5.2L3 17V7z" fill="currentColor" opacity="0.18" />
+      <path d="M5.6 8.2h12.8L12 19.6z" fill="currentColor" opacity="0.3" />
+      <path d="M12 1.8L21 7v10l-9 5.2L3 17V7z" strokeWidth="1.4" />
+      <path d="M5.6 8.2h12.8L12 19.6z" strokeWidth="1.4" />
+      <path
+        d="M12 1.8L5.6 8.2M12 1.8l6.4 6.4M3 7l2.6 1.2M21 7l-2.6 1.2M3 17l2.6-8.8M21 17l-2.6-8.8M12 19.6v2.6"
+        opacity="0.8"
+      />
     </g>
   ),
   dice: (

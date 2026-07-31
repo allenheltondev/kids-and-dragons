@@ -58,23 +58,30 @@ export const ACCENTS: readonly AccentOption[] = [
   { id: "fern", name: "Fern", hex: "#96E070" },
 ];
 
+/*
+ * Each cosmetic option shows the thing it names (icons.tsx, "Appearance").
+ * These used to borrow interface glyphs — a horn was the unicorn icon, "Plain"
+ * was a check — which put a second check inside the chip that the *selected*
+ * check also lives in, and left three markings illustrated by a footprint, a
+ * minus sign and a star.
+ */
 export const HORN_STYLES: readonly CosmeticOption[] = [
-  { id: "spiral", name: "Spiral", icon: "unicorn" },
-  { id: "curved", name: "Curved", icon: "arrow" },
-  { id: "crystal", name: "Crystal", icon: "trinket" },
+  { id: "spiral", name: "Spiral", icon: "horn_spiral" },
+  { id: "curved", name: "Curved", icon: "horn_curved" },
+  { id: "crystal", name: "Crystal", icon: "horn_crystal" },
 ];
 
 export const WING_STYLES: readonly CosmeticOption[] = [
-  { id: "feathered", name: "Feathered", icon: "griffin" },
-  { id: "leathery", name: "Leathery", icon: "dragonling" },
-  { id: "starlit", name: "Starlit", icon: "clever" },
+  { id: "feathered", name: "Feathered", icon: "wing_feathered" },
+  { id: "leathery", name: "Leathery", icon: "wing_leathery" },
+  { id: "starlit", name: "Starlit", icon: "wing_starlit" },
 ];
 
 export const MARKINGS: readonly CosmeticOption[] = [
-  { id: "plain", name: "Plain", icon: "check" },
-  { id: "dapple", name: "Dapple", icon: "steps" },
-  { id: "stripe", name: "Stripes", icon: "minus" },
-  { id: "starfall", name: "Starfall", icon: "star" },
+  { id: "plain", name: "Plain", icon: "marking_plain" },
+  { id: "dapple", name: "Dapple", icon: "marking_dapple" },
+  { id: "stripe", name: "Stripes", icon: "marking_stripe" },
+  { id: "starfall", name: "Starfall", icon: "marking_starfall" },
 ];
 
 /**
