@@ -28,7 +28,11 @@
 .portrait--lit::before {
   content: "";
   position: absolute;
-  inset: 12% 0 0;
+  /* Anchored to the floor and no taller than a pool of light needs to be. Tied
+     to the top of the box instead, it grew into a full-height wash whenever the
+     portrait was in a tall box — the species cards stretch theirs. */
+  inset: auto 0 0;
+  block-size: 62%;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at 50% 78%,

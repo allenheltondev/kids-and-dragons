@@ -84,9 +84,15 @@
   background: var(--color-surface, #191534);
 }
 
-/* The primary action always takes the room that is left. */
+/* The primary action always takes the room that is left, and never breaks its
+   own label over two lines to do it — "That's me!" wrapped at 390px, which is
+   the width the whole step was designed for. */
 .creation__foot > :last-child {
   flex: 1 1 auto;
+}
+
+.creation__foot .kad-button__label {
+  white-space: nowrap;
 }
 
 /* --- The hero so far ---------------------------------------------------- */
@@ -151,7 +157,7 @@
 
 .creation-species {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: var(--space-3, 0.75em);
   padding: var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, #3a3468);
@@ -174,17 +180,21 @@
 }
 
 /*
- * The portrait's share of the card: a square that grows with the pane rather
+ * The portrait's share of the card: a column that grows with the pane rather
  * than a fixed width, so the same card is a big picture on a landscape phone
- * and still a choosable one in a narrow portrait pane. `aspect-ratio` keeps it
- * square without a percentage block-size, which in a flex row resolves against
- * the row's own height and collapses.
+ * and still a choosable one in a narrow portrait pane.
+ *
+ * It stretches to the full height of the card and the figure stands on the
+ * bottom of it (CharacterPortrait.css aligns the art to its own floor). A
+ * fixed square left the creature hovering in the middle of a tall block of
+ * text with dead space above and below it.
  */
 .creation-species__art {
   flex: 0 0 auto;
+  align-self: stretch;
   inline-size: clamp(5.5em, 32%, 9em);
   block-size: auto;
-  aspect-ratio: 1;
+  min-block-size: 5.5em;
 }
 
 .creation-species__text {
@@ -252,13 +262,23 @@
   line-height: 1.35;
 }
 
+/*
+ * Icon in its own column, words in theirs. As a wrapping flex row the icon was
+ * just another word: a long ability description pushed it onto a line of its
+ * own, and every card broke in a different place.
+ */
 .creation-card__line {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
   gap: var(--space-2, 0.5em);
   font-size: var(--font-size-sm, 0.875em);
   line-height: 1.3;
+}
+
+/* The icon is optically centred on the first line of text beside it. */
+.creation-card__line > .kad-icon {
+  margin-block-start: 0.1em;
 }
 
 /* --- Stats ------------------------------------------------------------- */
@@ -269,6 +289,8 @@
   gap: var(--space-3, 0.75em);
 }
 
+/* Solid, not dashed: a dashed border is this app's "art pending" language
+   (world/actor-art.ts), and the points budget is not pending anything. */
 .creation-stats__budget {
   display: flex;
   align-items: center;
@@ -276,11 +298,18 @@
   gap: var(--space-2, 0.5em);
   margin: 0;
   padding: var(--space-2, 0.5em);
-  border: 0.08em dashed var(--color-accent, #ffc95c);
+  border: 0.08em solid var(--color-accent, #f5c86c);
   border-radius: var(--radius-md, 0.75em);
-  color: var(--color-accent, #ffc95c);
+  background: var(--color-surface, #191534);
+  color: var(--color-accent, #f5c86c);
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
+}
+
+/* Spent is a finished state, not a warning — and it is a check, not a colour. */
+.creation-stats__budget--done {
+  border-color: var(--color-success, #5fd6a0);
+  color: var(--color-success, #5fd6a0);
 }
 
 .creation-stats__list {
@@ -292,10 +321,22 @@
   list-style: none;
 }
 
+/*
+ * Five fixed columns, identical in every row: icon, name, the free-point chip,
+ * the total, and the +/- tray. The tray and the chip column hold their width
+ * while they are empty, so a row does not change shape when its controls come
+ * and go — which is what made this list look like four unrelated boxes.
+ */
 .creation-stat {
-  display: flex;
+  display: grid;
+  /* The last column is two touch targets plus the gap between them — the tray
+     is that wide in every row, occupied or not. */
+  grid-template-columns:
+    auto minmax(0, 1fr) auto 2.2ch
+    calc(var(--touch-min, 2.75em) * 2 + var(--space-2, 0.5em));
   align-items: center;
   gap: var(--space-3, 0.75em);
+  min-block-size: calc(var(--touch-min, 2.75em) + var(--space-4, 1em));
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, #3a3468);
   border-radius: var(--radius-md, 0.75em);
@@ -303,35 +344,54 @@
 }
 
 .creation-stat__icon {
-  color: var(--color-accent, #ffc95c);
+  display: grid;
+  place-items: center;
+  color: var(--color-accent, #f5c86c);
 }
 
 .creation-stat__name {
-  flex: 1 1 auto;
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
   text-transform: capitalize;
 }
 
 .creation-stat__value {
-  min-width: 2ch;
   font-size: var(--font-size-xl, 1.5em);
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
   text-align: right;
 }
 
 .creation-stat__bonus {
+  display: flex;
+  justify-content: flex-end;
   font-size: 0.72em;
 }
 
+/* Two seats, and each control always sits in its own. With a flex row a lone
+   "take one off" slid over into the "add one" position the moment the budget
+   ran out, so the button moved out from under the finger about to press it. */
 .creation-stat__controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, var(--touch-min, 2.75em));
   gap: var(--space-2, 0.5em);
+  justify-content: end;
 }
 
+.creation-step-btn--take {
+  grid-column: 1;
+}
+
+.creation-step-btn--add {
+  grid-column: 2;
+}
+
+/* Square, and the same square in every row — the tray above is sized from it. */
 .creation-step-btn {
   display: grid;
   place-items: center;
+  inline-size: var(--touch-min, 2.75em);
+  block-size: var(--touch-min, 2.75em);
   border: 0.08em solid var(--color-border, #3a3468);
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
@@ -350,7 +410,10 @@
 .creation-appearance {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4, 1em);
+  /* Between groups. Deliberately bigger than the gap *inside* a group
+     (space-2), so "Colours" and "Accent" read as two questions rather than one
+     field of chips. */
+  gap: var(--space-5, 1.5em);
 }
 
 .creation-fieldset {
@@ -359,27 +422,67 @@
   border: 0;
 }
 
+/*
+ * A quiet label above a set of choices — the step title is the question being
+ * asked, and a second bold heading per row competed with it. Uppercase and
+ * tracked so it reads as a caption at any size.
+ */
 .creation-legend {
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
   padding: 0 0 var(--space-2, 0.5em);
-  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.creation-swatches,
-.creation-chips {
-  display: flex;
-  flex-wrap: wrap;
+/*
+ * Choices line up in columns. Two abreast in a phone pane, three once there is
+ * room — never `flex-wrap`, which is what broke each group into rows of 2, 3
+ * and 1 and made the whole screen look scattered.
+ */
+.creation-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2, 0.5em);
 }
 
-.creation-swatch,
-.creation-chip {
-  display: inline-flex;
+@container (min-width: 30em) {
+  .creation-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/*
+ * A lone item on the last row takes the whole row. Three choices in a
+ * two-column grid is 2 + 1 however you slice it; a full-width last chip reads
+ * as the end of a list, a half-width one reads as a mistake.
+ */
+.creation-options > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+@container (min-width: 30em) {
+  .creation-options > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .creation-options > :last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
+}
+
+.creation-option {
+  display: grid;
+  /* media | label | mark. The mark's column exists whether or not there is a
+     check in it, so choosing never resizes the chip or reflows the row. */
+  grid-template-columns: auto minmax(0, 1fr) 1.2em;
   align-items: center;
   gap: var(--space-2, 0.5em);
+  min-block-size: var(--touch-min, 3em);
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, #3a3468);
   border-radius: var(--radius-pill, 999em);
@@ -387,31 +490,55 @@
   color: inherit;
   font: inherit;
   font-weight: 600;
+  text-align: left;
   cursor: pointer;
 }
 
-.creation-swatch--on,
-.creation-chip--on {
+.creation-option--on {
   border-color: var(--color-primary, #7c5cff);
   box-shadow: inset 0 0 0 0.08em var(--color-primary, #7c5cff);
 }
 
+.creation-option__media {
+  display: grid;
+  place-items: center;
+  color: var(--color-accent, #f5c86c);
+}
+
+/* Wraps rather than truncates. The longest labels here are generated names —
+   "Thistlewhisker" does not fit two-up on a small phone — and a name you are
+   being offered has to be readable in full. A grid absorbs the extra line by
+   growing that row; the columns stay put, which is the whole point. */
+.creation-option__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.creation-option__mark {
+  display: grid;
+  place-items: center;
+  color: var(--color-primary, #7c5cff);
+}
+
 /* The swatch is the colour; the name and the check carry the meaning (spec §11). */
 .creation-swatch__chip {
-  width: 1.5em;
-  height: 1.5em;
+  display: block;
+  inline-size: 1.4em;
+  block-size: 1.4em;
   border: 0.12em solid;
   border-radius: var(--radius-pill, 999em);
 }
 
 /* --- Name -------------------------------------------------------------- */
 
+/* Same rhythm as the appearance step: one gap between questions, everywhere. */
 .creation-name {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3, 0.75em);
+  gap: var(--space-5, 1.5em);
 }
 
+.creation-name__pick,
 .creation-name__field {
   display: flex;
   flex-direction: column;
@@ -430,10 +557,3 @@
   font-size: var(--font-size-lg, 1.25em);
 }
 
-.creation-name__summary {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  font-size: var(--font-size-md, 1em);
-}

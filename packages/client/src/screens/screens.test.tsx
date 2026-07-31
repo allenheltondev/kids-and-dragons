@@ -13,7 +13,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ClassDef, SpeciesDef } from "@kad/shared";
 import { canUseInventoryItem } from "./PlayerPanel";
-import { HeroStrip, SpeciesStep } from "./CreationFlow";
+import { CosmeticRow, HeroStrip, SpeciesStep } from "./CreationFlow";
+import { HORN_STYLES, MARKINGS, WING_STYLES } from "./creationContent";
 import { patchCreationDraft, resetCreationDraft } from "./creationDraft";
 import rules from "../../../../content/rules.json";
 import items from "../../../../content/items.json";
@@ -149,6 +150,39 @@ describe("creation art", () => {
     expect(html).toContain('src="/assets/characters/dragonling/fledgling/assembled.png"');
     // ...somewhere with a floor under it (spec §6.2).
     expect(html).toContain("/assets/biomes/");
+  });
+});
+
+/**
+ * The layout invariants behind the appearance and name steps. Both of these
+ * were real: a check added to the chosen chip made it wider and reflowed the
+ * row under the finger that tapped it, and every cosmetic option borrowed an
+ * interface glyph — "Plain" was a check, inside a chip whose selected state is
+ * also a check.
+ */
+describe("creation options", () => {
+  const cosmetics = [...MARKINGS, ...HORN_STYLES, ...WING_STYLES];
+
+  it("shows each cosmetic option as the thing it names", () => {
+    const missing = cosmetics.filter((option) => !hasIcon(option.icon));
+    expect(missing).toEqual([]);
+    // Nothing here reuses the glyph that carries selection.
+    expect(cosmetics.map((option) => option.icon)).not.toContain("check");
+  });
+
+  it("keeps a seat for the check whether or not anything is chosen", () => {
+    const row = (chosen: string | undefined) =>
+      renderToStaticMarkup(
+        <CosmeticRow legend="Markings" options={MARKINGS} chosen={chosen} onChoose={() => undefined} />,
+      );
+    const marks = (html: string) => html.split('class="creation-option__mark"').length - 1;
+
+    // One slot per option, both ways round — the row's geometry does not
+    // depend on what is selected.
+    expect(marks(row(undefined))).toBe(MARKINGS.length);
+    expect(marks(row("dapple"))).toBe(MARKINGS.length);
+    expect(row(undefined)).not.toContain("Chosen");
+    expect(row("dapple")).toContain("Chosen");
   });
 });
 
