@@ -31,7 +31,7 @@
  * **If encounters ever play too soft, do not make this policy cleverer.** The
  * door left open is a *second sentence* for a specific creature — "the wolf
  * always goes for whoever moved last", "the sentinel never leaves the bridge" —
- * selected by a `behaviour` field on `EnemySpec` in types/chapter.ts, which is
+ * selected by a `behavior` field on `EnemySpec` in types/chapter.ts, which is
  * content-authored, so a new one is a chapter edit rather than a deploy. Two
  * readable sentences stay predictable and give a chapter author a real dial. One
  * sentence with exceptions bolted on does not: the moment a monster's choice

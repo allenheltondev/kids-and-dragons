@@ -289,6 +289,21 @@ creatures:
       creatures: []
       items: []
 
+    encounter:
+      band: brute
+      resolutions:
+        - kind: observation
+          stat: clever
+          difficulty: easy
+          text: >-
+            It threatens before it charges, so the warning is the whole
+            encounter if somebody reads it.
+        - kind: escape
+          stat: quick
+          difficulty: normal
+          text: >-
+            It stops pursuing once you are off its patch of warm ground.
+
   - id: creature.cinder_wolf
     asset_id: cinder_wolf
     title: "Cinder Wolf"
@@ -315,6 +330,22 @@ creatures:
       primary_locations: [biome.red_sky_foothills, biome.plains]
       creatures: []
       items: []
+
+    encounter:
+      band: skirmisher
+      resolutions:
+        - kind: distraction
+          stat: clever
+          difficulty: normal
+          text: >-
+            A pack on a road is a pack that has run out of prey. Give them
+            easier prey and the road stops being interesting.
+        - kind: escape
+          stat: quick
+          difficulty: hard
+          text: >-
+            They are faster than you and they hunt together, so leaving is
+            harder than it looks.
 
   - id: creature.mire_mimic
     asset_id: mire_mimic
@@ -344,6 +375,22 @@ creatures:
       creatures: []
       items: []
 
+    encounter:
+      band: lurker
+      resolutions:
+        - kind: observation
+          stat: clever
+          difficulty: normal
+          text: >-
+            It only works while it is mistaken for the ground. Naming it ends
+            the ambush.
+        - kind: distraction
+          stat: might
+          difficulty: normal
+          text: >-
+            Strong vibration moves it off a hunting site — stamping works as
+            well as anything.
+
   - id: creature.frost_wyrm
     asset_id: frost_wyrm
     title: "Frost Wyrm"
@@ -370,6 +417,23 @@ creatures:
       primary_locations: [biome.frostfang_peaks, biome.glacier_of_origins]
       creatures: []
       items: []
+
+    encounter:
+      band: sentinel
+      behavior: holds_ground
+      resolutions:
+        - kind: escape
+          stat: quick
+          difficulty: normal
+          text: >-
+            It defends the tunnel, not the mountain. Leave the tunnel and it
+            stops.
+        - kind: observation
+          stat: clever
+          difficulty: hard
+          text: >-
+            Telling a nesting tunnel from an ordinary one, before you are
+            standing in it.
 
   - id: creature.river_drake
     asset_id: river_drake
@@ -399,6 +463,21 @@ creatures:
       creatures: []
       items: []
 
+    encounter:
+      band: brute
+      resolutions:
+        - kind: bargaining
+          stat: heart
+          difficulty: normal
+          text: >-
+            It blocks boats and demands dropped food. Paying the toll is a
+            complete answer.
+        - kind: conversation
+          stat: clever
+          difficulty: hard
+          text: >-
+            It learns routines, so it can be talked into a different one.
+
   - id: creature.bone_crawler
     asset_id: bone_crawler
     title: "Bone Crawler"
@@ -426,6 +505,22 @@ creatures:
       primary_locations: [biome.bone_yard]
       creatures: []
       items: []
+
+    encounter:
+      band: skirmisher
+      resolutions:
+        - kind: distraction
+          stat: clever
+          difficulty: normal
+          text: >-
+            It swarms whatever carries fresh magical energy. Throw the glowing
+            thing somewhere you are not.
+        - kind: escape
+          stat: quick
+          difficulty: normal
+          text: >-
+            It hides from anything large, so standing tall and leaving loudly
+            usually works.
 
   - id: creature.echo_hunter
     asset_id: echo_hunter
@@ -457,6 +552,21 @@ creatures:
 
   # ===== SUPERNATURAL MANIFESTATIONS =====
 
+    encounter:
+      band: sentinel
+      resolutions:
+        - kind: distraction
+          stat: clever
+          difficulty: normal
+          text: >-
+            It hunts one repeated sound and retreats from many at once. Make
+            the dark noisy.
+        - kind: escape
+          stat: quick
+          difficulty: hard
+          text: >-
+            Leaving in silence, which is harder than leaving.
+
   - id: creature.will_o_wisp
     asset_id: will_o_wisp
     title: "Will-o'-Wisp"
@@ -485,6 +595,21 @@ creatures:
       primary_locations: [biome.whispering_marsh, biome.enchanted_woods]
       creatures: []
       items: []
+
+    encounter:
+      band: skirmisher
+      resolutions:
+        - kind: conversation
+          stat: heart
+          difficulty: normal
+          text: >-
+            Nobody has ever said please to a wisp before. It is not ready for
+            it.
+        - kind: observation
+          stat: clever
+          difficulty: normal
+          text: >-
+            Noticing that the route it is offering is not a route.
 
   - id: creature.restless_remains
     asset_id: restless_remains
@@ -517,6 +642,23 @@ creatures:
 
   # ===== LEGENDARY BEASTS =====
 
+    encounter:
+      band: brute
+      behavior: guards_its_cause
+      resolutions:
+        - kind: restoring_habitat
+          stat: heart
+          difficulty: normal
+          text: >-
+            It woke because something was taken or disturbed. Put it back and
+            it settles.
+        - kind: conversation
+          stat: heart
+          difficulty: hard
+          text: >-
+            There is enough of a person left to answer, if you are gentle
+            about asking.
+
   - id: creature.legend_dragon
     asset_id: legend_dragon
     title: "Legend Dragon"
@@ -546,3 +688,22 @@ creatures:
       primary_locations: [location.mount_red_sky]
       creatures: []
       items: []
+    encounter:
+      band: legend
+      stats: { hp: 36, guard: 16, quick: 2, steps: 4, attack: 5 }
+      xp: 50
+      footprint: 4
+      behavior: holds_ground
+      resolutions:
+        - kind: bargaining
+          stat: heart
+          difficulty: hard
+          text: >-
+            It may warn, test, or bargain before it attacks. Which one is a
+            fact about the individual, not the species.
+        - kind: conversation
+          stat: clever
+          difficulty: hard
+          text: >-
+            It is guarding a purpose. Working out which one is most of the
+            conversation.

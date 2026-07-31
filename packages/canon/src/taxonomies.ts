@@ -34,6 +34,7 @@
 
 import { z } from "zod";
 import { canonRef, edge, Slug } from "./ids.js";
+import { BANDS, BANDS_BY_DANGER, Encounter, resolveStats } from "./encounter.js";
 import {
   CanonStatus,
   DangerLevel,
@@ -153,7 +154,66 @@ export const Creature = Envelope.extend({
     creatures: edge("creature"),
     items: edge("item"),
   }),
-  // `encounter` (stats, ai, xp, footprint, resolutions) lands here — D9/D10.
+  /** D9/D10 — what it does in a fight, and what it takes instead of one. */
+  encounter: Encounter.optional(),
+}).superRefine((creature, ctx) => {
+  const dangerous = creature.classification !== "ambient_creature";
+  const { encounter, danger_level: danger } = creature;
+
+  // A creature that is not dangerous does not get a stat block. Meeting it is a
+  // scene, not a fight, and numbers invite an author to start one.
+  if (!dangerous && encounter) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["encounter"],
+      message: `an ambient creature has no encounter block — remove it, or change its classification`,
+    });
+    return;
+  }
+  if (!encounter) {
+    if (dangerous) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["encounter"],
+        message: `a ${creature.classification} needs an encounter block (D9)`,
+      });
+    }
+    return;
+  }
+
+  // The band and the danger level are two names for the same judgement, so
+  // they are not allowed to disagree.
+  const legal = BANDS_BY_DANGER[danger] ?? [];
+  if (!legal.includes(encounter.band)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["encounter", "band"],
+      message: legal.length
+        ? `danger_level "${danger}" allows ${legal.join(" or ")}, not "${encounter.band}"`
+        : `danger_level "${danger}" gets no encounter block at all`,
+    });
+  }
+
+  // `legend` has no row in the band table on purpose: a legendary beast is a
+  // designed encounter, not a rolled one.
+  if (!BANDS[encounter.band].stats && !resolveStats(encounter)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["encounter", "stats"],
+      message: `band "${encounter.band}" has no default stats — author them explicitly`,
+    });
+  }
+
+  // D10. The instruction in creatures.yaml says encounters should *usually*
+  // permit more than combat; a dangerous creature with no way past it but a
+  // fight is the exception, and should have to be one deliberately.
+  if (encounter.resolutions.length === 0) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["encounter", "resolutions"],
+      message: `no way past this creature except fighting it — agent_instructions asks for at least one (D10)`,
+    });
+  }
 });
 
 // ---------------------------------------------------------------------------

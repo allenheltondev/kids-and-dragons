@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kids-and-dragons.local/schemas/items.schema.json",
   "title": "ItemCatalog",
-  "description": "content/items.json. Mirrors packages/shared/src/types/domain.ts ItemCatalog — a bare Record<itemId, ItemDef>, so there is nowhere to put a comment; the notes live in content/README.md. Item kinds and their behaviour: spec §9.2.",
+  "description": "content/items.json. Mirrors packages/shared/src/types/domain.ts ItemCatalog — a bare Record<itemId, ItemDef>, so there is nowhere to put a comment; the notes live in content/README.md. Item kinds and their behavior: spec §9.2.",
 
   "type": "object",
   "minProperties": 1,

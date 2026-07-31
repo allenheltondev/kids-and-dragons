@@ -7,7 +7,7 @@
  * not each carry their own slightly different copy of the rules.
  *
  * The numbers here mirror content/rules.json's intent (spec §4, §8) but are
- * fixtures, not content: tests assert on behaviour, not on these values.
+ * fixtures, not content: tests assert on behavior, not on these values.
  */
 
 import type {

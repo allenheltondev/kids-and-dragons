@@ -187,7 +187,7 @@ export interface EncounterScene {
    * phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a
    * scene nobody can tap — the table dead-ends with the state advanced and
    * nothing to press. A scene carrying this resolves straight through
-   * `onVictory` (the pre-combat placeholder behaviour, now opt-in per scene
+   * `onVictory` (the pre-combat placeholder behavior, now opt-in per scene
    * and authored in content rather than hardcoded in the engine). Turning a
    * fight on is deleting one line of JSON, chapter by chapter, as the UI
    * lands.
