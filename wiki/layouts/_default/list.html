@@ -8,7 +8,7 @@
   </div>
   {{ end }}
 
-  {{ $pages := .Pages.ByTitle }}
+  {{ $pages := sort (where .Site.RegularPages "Section" .Section) "Title" }}
   {{ if $pages }}
   <div class="wiki-tile-grid">
     {{ range $pages }}
