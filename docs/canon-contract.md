@@ -333,34 +333,118 @@ entirely in that chapter's `llmHints.npcVoices` and discarded afterward.
 be voiced consistently), and formally bless chapter-scoped individuals as
 non-canon with a documented shape. Do not open a `individual.` taxonomy yet.
 
-**D9 — no mechanical fields anywhere, and they now belong here.** `danger_level:
-moderate` is prose; `EnemySpec` needs `hp`, `guard`, `quick`, `steps`, `attack`.
-*This supersedes `docs/briefs/generated-content.md` §2*, which put the bestiary
-in `content/`: under canon-as-truth the stat block is a field group on the
-creature, and `content/bestiary.json` becomes a generated projection.
+**D9 — RULED IN SHAPE, unbuilt. The encounter block.** `danger_level: moderate`
+is prose; `EnemySpec` needs five integers. Under canon-as-truth the stat block
+is a field group on the creature, and `content/bestiary.json` becomes a
+generated projection — this supersedes `docs/briefs/generated-content.md` §2,
+which put it in `content/`.
+
+Everything below is anchored to numbers already in the engine, not invented:
+`ATTACK_DAMAGE = 3` for every plain swing (`encounter.ts`), heroes at
+`baseMaxHp` 10 / `baseGuard` 11 / `baseSteps` 4 (`rules.json`), attacks resolved
+as d20 + mod vs Guard (`dice.ts` `resolveAttack`), initiative as d20 + `quick`,
+three players on a 10×8 board (spec §7.1).
 
 ```yaml
 encounter:
-  band: skirmisher          # → stat ranges; a generator picks a band, never an hp
+  band: skirmisher
   stats: { hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }
-  ai: harrier               # a profile enemy-ai.ts implements
-  xp: 15
-  footprint: 1              # tiles; the board is 10×8 and EnemySpec assumes 1
-  resolutions:              # D10
-    - { kind: talk,  stat: heart, tn: 12 }
-    - { kind: evade, stat: quick, tn: 12 }
+  behaviour: null           # see below — almost always null
 ```
 
-Required for `classification: dangerous_creature`, optional elsewhere.
+**Bands, not free integers.** A generator picks a band; it never picks an `hp`.
+The four are derived from the one shipped stat block — the Bramblewisp, at
+hp 6 / guard 11 / quick 3 / steps 5 / attack 3, three of them — read against
+the round budget:
 
-**D10 — non-combat resolutions have no field.** `creatures.yaml`
-`agent_instructions` requires that encounters "usually permit more than combat…
-observation, conversation, bargaining, rescue, distraction, escape," and nothing
-can express one. The glassback crab's *"stops pursuing once intruder leaves
-territory"* is a mechanic written in English. *Recommend:* the `resolutions`
-array above, whose `stat`/`tn` map straight onto a `CheckScene`.
+| band | hp | guard | attack | steps | quick | usual count |
+|---|---:|---:|---:|---:|---:|---|
+| `skirmisher` | 6 | 11 | 3 | 5 | 3 | 3 |
+| `lurker` | 9 | 13 | 3 | 4 | 4 | 2 |
+| `brute` | 14 | 12 | 4 | 3 | 1 | 1–2 |
+| `sentinel` | 20 | 14 | 4 | 3 | 0 | 1 |
+| `legend` | — | — | — | — | — | bespoke, signed off per creature |
 
-**D11 — nine dangling references.** Real, and few:
+The arithmetic that fixes them: a level-1 hero swings at d20 + 2..4 against
+Guard 11 — about 65% — for 3 damage, so ~2 damage a round each, ~6 for a party
+of three. Spec §7.1 tunes for about four rounds, so **total encounter HP wants
+to land in 18–30**, and three wisps at 6 HP is exactly 18. That total is the
+invariant worth validating, not the individual numbers.
+
+`danger_level` gates which bands are legal, so the two fields cannot drift:
+`none` → no encounter block at all (it is not a fight), `low` → `skirmisher`,
+`moderate` → `skirmisher` | `lurker` | `brute`, `high` → `brute` | `sentinel`,
+`legendary` → `legend`.
+
+**Three fields I proposed earlier and am withdrawing, because the engine has
+nowhere to put them:**
+
+- **`xp`.** XP is chapter-level. `completeChapter` pays `chapter.xpAward` (100
+  for Bramblewood), halves it on a setback, and adds objectives capped at 25%;
+  `encounter.ts` contains no XP at all. Per-creature XP would be dead data, and
+  spec §8.2's "uniform party XP" is deliberate — killing things is not what
+  levels a party here.
+- **`footprint`.** `EnemySpec` has no footprint and the grid seats one actor per
+  tile. Adding the field to canon before `grid.ts` can honour it just records a
+  number nothing reads. `scale` already carries the narrative size.
+- **`ai` profiles.** `enemy-ai.ts` is deliberately *one sentence* — "a monster
+  walks at the nearest hero it can reach and hits them" — and its header argues
+  at length that an AI a child cannot predict turns positioning from a decision
+  into a guess. It names exactly one extension: a `behaviour` field on
+  `EnemySpec` selecting a **second sentence** for a specific creature ("the
+  sentinel never leaves the bridge"). So the field is `behaviour`, it is
+  optional, it should be null on nearly every creature, and each value costs a
+  reviewed sentence in that module. It is not a profile list.
+
+**D10 — RULED IN SHAPE, unbuilt. Non-combat resolutions.** `creatures.yaml`
+`agent_instructions` requires that encounters "usually permit more than
+combat — observation, conversation, bargaining, rescue, distraction, escape,
+environmental problem-solving, restoring a damaged habitat," and no field can
+express one. The glassback crab's *"stops pursuing once intruder leaves
+territory"* is a mechanic written in English.
+
+```yaml
+resolutions:
+  - kind: conversation
+    stat: heart
+    difficulty: normal
+    text: "Nobody has ever said please to a bramblewisp before."
+  - kind: escape
+    stat: quick
+    difficulty: normal
+```
+
+`kind` is exactly the eight verbs `agent_instructions` already lists — the
+vocabulary is canon's, not mine.
+
+**`difficulty`, not `tn`.** `easy | normal | hard` resolves through
+`rules.json` `difficultyTn` (8 / 12 / 16). `tools/content/validate.mjs` already
+rejects a `check` scene whose `tn` is outside that table, so writing raw numbers
+in canon would create a second place to retune difficulty and a way to author an
+unreachable one.
+
+Each entry maps onto a `CheckScene` with no translation: `stat` → `stat`,
+`difficulty` → `tn`, `text` → the author's hint for `prompt`. What *happens* on
+success stays with the chapter, because that is scene-specific — canon says what
+a creature responds to, content says what that gets you.
+
+Required for `classification: dangerous_creature`; optional elsewhere. A
+dangerous creature with an empty `resolutions` list is a creature that can only
+be fought, and the instruction says that should be the exception.
+
+**D11 — RULED and mostly applied. Nine dangling references.** Allen's rule:
+a **biome is an ecological region**; a **location is a place inside one**. So
+`open_sea` is a biome (with no `geography_id` — it surrounds the illustrated map
+rather than appearing on it, and inventing a region with a map anchor would be
+worse than admitting it has none) and `the_whirlpool` is a location inside it.
+Both are now entities and all seven references resolve.
+
+`bramblewood` is unresolved because the ruling and the corpus disagree: it was
+called a location of the plains, but canon files it under
+`biome.enchanted_woods` and `content/chapters/bramblewood-01.json` renders it
+with `biome: enchanted_woods`. Needs one word — which parent.
+
+The original list:
 
 | Source | Field | Target |
 |---|---|---|
