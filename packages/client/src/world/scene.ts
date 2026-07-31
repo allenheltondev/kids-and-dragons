@@ -66,6 +66,7 @@ import {
   FALLEN_ALPHA,
   FALLEN_ROTATION,
   approach,
+  biomeBackdropUrl,
   characterArtUrl,
   drawPlaceholder,
 } from "./actor-art";
@@ -106,6 +107,13 @@ export interface PartyScene {
   setEncounter(view: BoardViewState | null): void;
   /** Feed a COMBAT_SEQUENCE's beats to the board (damage numbers, walks). */
   playCombatEvents(events: readonly EncounterEvent[], totalMs: number): void;
+  /**
+   * Where the story is happening (spec §6.2). The chapter's biome art replaces
+   * the drawn stand-in behind the lineup; null, an unknown biome, or a missing
+   * file all leave the stand-in in place. Idempotent — the same biome twice
+   * costs one texture lookup, not a reload.
+   */
+  setBiome(biome: string | null): void;
   /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
@@ -165,6 +173,10 @@ export function createScene(app: Application): PartyScene {
 
   const backdropArt = drawBackdrop();
   backdrop.addChild(backdropArt);
+
+  /** The biome whose art is on the backdrop, and the sprite drawing it. */
+  let biomeId: string | null = null;
+  let biomeSprite: Sprite | null = null;
 
   const actorsLayer = new Container();
   // Painter's order by zIndex, so the depth stagger in layoutActors() reads
@@ -258,6 +270,13 @@ export function createScene(app: Application): PartyScene {
 
     applyCamera(dt);
     board?.tick(dt);
+
+    // The backdrop arrives over the stand-in rather than cutting to it: a
+    // chapter's art can take a moment on a phone, and a hard swap under a party
+    // that is already standing there reads as a glitch.
+    if (biomeSprite !== null && biomeSprite.alpha < 1) {
+      biomeSprite.alpha = approach(biomeSprite.alpha, 1, FADE_RATE, dt);
+    }
 
     for (const actor of actors.values()) {
       if (actor.down) {
@@ -414,9 +433,17 @@ export function createScene(app: Application): PartyScene {
       // object's transform, so touching `scale` here would throw.
       if (destroyed) return;
       viewport = { width, height };
-      backdropArt.scale.set(Math.max(width / DESIGN.width, height / DESIGN.height));
-      backdropArt.x = (width - backdropArt.width) / 2;
-      backdropArt.y = (height - backdropArt.height) / 2;
+      /*
+       * Cover the pane with the *design rect*, not with the backdrop's bounds.
+       * The drawn stand-in's ellipses deliberately bleed past the rect (they are
+       * atmosphere, not geometry), so measuring `backdropArt.width` centres the
+       * bleed instead of the picture — which with a real biome backdrop in there
+       * showed up as a 200px band of nothing down one side of a 1280px TV.
+       */
+      const cover = Math.max(width / DESIGN.width, height / DESIGN.height);
+      backdropArt.scale.set(cover);
+      backdropArt.x = (width - DESIGN.width * cover) / 2;
+      backdropArt.y = (height - DESIGN.height * cover) / 2;
       applyCamera(0);
     },
 
@@ -447,6 +474,43 @@ export function createScene(app: Application): PartyScene {
 
     focusCamera(next) {
       target = next;
+    },
+
+    setBiome(next) {
+      if (destroyed || next === biomeId) return;
+      biomeId = next;
+      // A new place: take the old art down immediately. The drawn stand-in is
+      // underneath it, so the gap while the next one loads is never a blank
+      // screen — and staying in the last chapter's woods would be worse.
+      biomeSprite?.destroy();
+      biomeSprite = null;
+      if (next === null) return;
+
+      const wanted = next;
+      void Assets.load<Texture>(biomeBackdropUrl(wanted))
+        .then((texture) => {
+          // The chapter may have moved on (or the stage gone) while it loaded.
+          if (destroyed || biomeId !== wanted) return;
+          const sprite = new Sprite(texture);
+          /*
+           * Cover the design rect, then centre in it. Backdrops are authored
+           * 1920×1080 (asset-brief §4.5) — the rect's own 16:9 — so for every
+           * committed biome this is an exact fit; a differently-shaped one
+           * fills the rect and loses its edges rather than letterboxing.
+           */
+          sprite.scale.set(
+            Math.max(DESIGN.width / texture.width, DESIGN.height / texture.height),
+          );
+          sprite.x = (DESIGN.width - sprite.width) / 2;
+          sprite.y = (DESIGN.height - sprite.height) / 2;
+          sprite.alpha = 0; // faded up by tick()
+          biomeSprite = sprite;
+          backdropArt.addChild(sprite);
+        })
+        .catch(() => {
+          /* keep the drawn stand-in: a missing backdrop must never blank the
+             stage, exactly like a missing tier PNG */
+        });
     },
 
     setEncounter(view) {

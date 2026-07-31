@@ -1,0 +1,78 @@
+/*
+ * The character portrait — see CharacterPortrait.tsx.
+ *
+ * Sized entirely by its box: the component writes an `inline-size`/`block-size`
+ * in `em` (or inherits one from the layout it lands in) and the art fits itself
+ * into that. No viewport units, no fixed pixels — the same portrait is 2.4em in
+ * a lobby row and 60% of a TV in the creation preview (architecture §4.6).
+ */
+
+.portrait {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  flex: 0 0 auto;
+  inline-size: 3.2em;
+  block-size: 3.2em;
+  color: var(--color-accent, #f5c86c);
+  /* The tint behind the figure. Overridden per-character by the accent the
+     player picked; the brand violet is the "no choice made yet" colour. */
+  --portrait-accent: var(--kad-accent, #8b6cf5);
+}
+
+/*
+ * The glow. A radial wash pooled under the figure's feet rather than a ring
+ * around the box: it reads as "standing in a light" instead of "selected", and
+ * selection is already carried by a check glyph everywhere (spec §11).
+ */
+.portrait--lit::before {
+  content: "";
+  position: absolute;
+  inset: 12% 0 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 78%,
+    color-mix(in srgb, var(--portrait-accent) 55%, transparent) 0%,
+    color-mix(in srgb, var(--portrait-accent) 18%, transparent) 45%,
+    transparent 72%
+  );
+  filter: blur(0.15em);
+  pointer-events: none;
+}
+
+.portrait__img {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  /* The art's ground contact is at 88% of its canvas, so aligning the box to
+     the bottom stands a bigfoot and a dragonling on the same floor line. */
+  object-position: 50% 100%;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.portrait__fallback {
+  position: relative;
+  color: var(--color-accent, #f5c86c);
+}
+
+/*
+ * A breath, not a bounce. 6s is slow enough to read as "alive" across a room
+ * and never pulls the eye off the choice being made; theme.css flattens it
+ * entirely under prefers-reduced-motion.
+ */
+.portrait--float .portrait__img,
+.portrait--float .portrait__fallback {
+  animation: portrait-float 6s var(--kad-ease, ease-in-out) infinite;
+}
+
+@keyframes portrait-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.4deg);
+  }
+  50% {
+    transform: translateY(-3%) rotate(0.4deg);
+  }
+}

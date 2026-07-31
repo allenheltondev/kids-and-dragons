@@ -54,6 +54,7 @@ import {
   FALLEN_ROTATION,
   WALK_RATE,
   approach,
+  biomeTilesUrl,
   characterArtUrl,
   drawPlaceholder,
   enemyArtUrl,
@@ -161,7 +162,7 @@ export function createBoardLayer(): BoardLayer {
   function tileSheet(biome: string): Promise<{ floor: Texture[]; blocked: Texture[] } | null> {
     const cached = sheets.get(biome);
     if (cached) return cached;
-    const task = Assets.load<Texture>(`/assets/biomes/${biome}/tiles.png`)
+    const task = Assets.load<Texture>(biomeTilesUrl(biome))
       .then((sheet) => {
         const slice = (row: number, col: number) =>
           new Texture({

@@ -13,29 +13,25 @@
  * (512, 900). That origin is why the sprite anchor is 0.5 / 0.879 rather than
  * centred — actors are positioned by where their feet touch the floor, so a
  * Mythic unicorn and a Fledgling one stand on the same line.
+ *
+ * The canvas constants and the URL helpers themselves live in `art-paths.ts`,
+ * which imports no Pixi: `screens/` draws the same art as `<img>` and must not
+ * pull the renderer into the main bundle. They are re-exported here so the two
+ * stages keep importing one module.
  */
 
 import { Graphics } from "pixi.js";
-import type { SpeciesId, TierId } from "@kad/shared";
 
-/** assets/manifest.json → canvas. */
-export const CANVAS = { width: 1024, height: 1024, originX: 512, originY: 900 } as const;
-export const ANCHOR_X = CANVAS.originX / CANVAS.width;
-export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
-
-export function characterArtUrl(species: SpeciesId, tier: TierId): string {
-  return `/assets/characters/${species}/${tier}/assembled.png`;
-}
-
-/**
- * Enemy cutouts. A chapter authors `art: "enemies/will_o_wisp"`; the files
- * live in `assets/entities/<id>/assembled.png`, so the prefix is convention,
- * not a directory — strip it if present, trust the rest.
- */
-export function enemyArtUrl(artId: string): string {
-  const id = artId.startsWith("enemies/") ? artId.slice("enemies/".length) : artId;
-  return `/assets/entities/${id}/assembled.png`;
-}
+export {
+  ANCHOR_X,
+  ANCHOR_Y,
+  CANVAS,
+  STARTING_TIER,
+  biomeBackdropUrl,
+  biomeTilesUrl,
+  characterArtUrl,
+  enemyArtUrl,
+} from "./art-paths";
 
 /**
  * Move `current` toward `target` by a fixed *rate* rather than a fixed

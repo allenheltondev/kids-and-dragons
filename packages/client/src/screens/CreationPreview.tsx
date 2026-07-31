@@ -2,21 +2,36 @@
  * CreationPreview — WorldView during `phase === "creation"`.
  *
  * spec §5: the character renders live on the shared screen as the choices are
- * made on the phone. The *sprite* is the Pixi stage's job (`world/`); this is
- * the frame around it — who you are, what you can do out in the world, what
- * your class does in a fight, and the stat line. Everything the sprite cannot
- * say out loud.
+ * made on the phone. This panel is both halves of that — the figure, and the
+ * frame around it: who you are, what you can do out in the world, what your
+ * class does in a fight, and the stat line.
  *
- * The centre of this panel is deliberately empty: it is the hole the character
- * is drawn into, reserved with `aria-hidden` so a screen reader is not told
- * about a box with nothing in it.
+ * WHY THE FIGURE IS AN <img> AND NOT THE PIXI STAGE
+ *
+ * The middle of this panel used to be a transparent hole reserved for the rig
+ * to draw through, and for as long as the rigs do not exist that hole was
+ * simply empty — the Pixi scene draws the *committed* party (world/scene.ts),
+ * and a draft is deliberately not on the wire (creationDraft.ts header), so
+ * nothing was ever drawn into it. Meanwhile the tier PNGs the scene falls back
+ * to are sitting in `assets/` unused by this screen.
+ *
+ * So the preview draws them itself. Same posture as scene.ts's static-PNG
+ * placeholder: a deliberate stand-in with the seam left in the obvious place —
+ * when a rig can be driven from a draft, this element is what it replaces.
+ *
+ * It also means the figure lands *exactly* in the frame reserved for it. The
+ * scene's actors are centred in the whole pane, and this panel's stage is a
+ * 45% column of it on a wide surface; drawing through the hole would have put
+ * the hero behind the fact cards.
  */
 
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import { STAT_IDS } from "@kad/shared";
 import type { Stats } from "@kad/shared";
-import { useParty, useRules } from "../store";
+import { useChapter, useParty, useRules } from "../store";
 import { Spinner } from "../ui/Spinner";
+import { CREATION_BIOME, biomeBackdropUrl } from "../world/art-paths";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import { useCreationDraft } from "./creationDraft";
@@ -53,6 +68,16 @@ export function CreationPreview(): ReactElement {
 
   const palette = PALETTES.find((p) => p.id === draft.appearance.palette) ?? null;
 
+  /*
+   * Somewhere to stand. The run's own biome once a chapter is loaded, and the
+   * reference chapter's glade before that — creation happens in the lobby,
+   * where there is no chapter yet (art-paths.ts, CREATION_BIOME).
+   */
+  const biome = useChapter()?.biome ?? CREATION_BIOME;
+  const stageStyle: CSSProperties & Record<string, string> = {
+    "--stage-backdrop": `url("${biomeBackdropUrl(biome)}")`,
+  };
+
   return (
     <section className="preview" aria-labelledby="preview-heading">
       <header className="preview__head">
@@ -68,9 +93,25 @@ export function CreationPreview(): ReactElement {
       </header>
 
       <div className="preview__body">
-        <div className="preview__stage" aria-hidden="true">
-          {/* Reserved for the Pixi/Rive rig. Empty on purpose. */}
-          {draft.species === null ? <Icon name="unknown" size="30%" className="preview__stage-ghost" /> : null}
+        {/* aria-hidden: everything here is also said in words in the facts
+            column beside it, so a screen reader gets the character once. */}
+        <div className="preview__stage" style={stageStyle} aria-hidden="true">
+          {draft.species === null ? (
+            <Icon name="unknown" size="30%" className="preview__stage-ghost" />
+          ) : (
+            /* Keyed by species so switching from unicorn to griffin replays the
+               arrival rather than swapping one texture for another mid-float —
+               changing your mind should look like a different creature walking
+               on, which is most of the charm of this screen. */
+            <CharacterPortrait
+              key={draft.species}
+              species={draft.species}
+              className="preview__hero"
+              accent={draft.appearance.accent}
+              lit
+              float
+            />
+          )}
         </div>
 
         <div className="preview__facts">
@@ -141,7 +182,11 @@ export function CreationPreview(): ReactElement {
         <ul className="preview__done">
           {party.map((member) => (
             <li className="kad-chip kad-chip--ok" key={member.playerId}>
-              <Icon name={member.character.species} />
+              <CharacterPortrait
+                species={member.character.species}
+                tier={member.character.tier}
+                className="preview__done-art"
+              />
               <span>{member.character.name}</span>
               <Icon name="check" />
             </li>
