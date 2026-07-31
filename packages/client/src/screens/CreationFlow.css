@@ -157,7 +157,7 @@
 
 .creation-species {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: var(--space-3, 0.75em);
   padding: var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, #3a3468);
@@ -180,21 +180,22 @@
 }
 
 /*
- * The portrait's share of the card: a column that grows with the pane rather
+ * The portrait's share of the card: a square that grows with the pane rather
  * than a fixed width, so the same card is a big picture on a landscape phone
  * and still a choosable one in a narrow portrait pane.
  *
- * It stretches to the full height of the card and the figure stands on the
- * bottom of it (CharacterPortrait.css aligns the art to its own floor). A
- * fixed square left the creature hovering in the middle of a tall block of
- * text with dead space above and below it.
+ * Centred against the text, and centred *inside its own box* too
+ * (`stand="centre"`). This card is a picture beside a paragraph, not a place —
+ * stretching the column to the card's height and standing the creature on the
+ * bottom of it put it at the foot of a tall block of text, reading as fallen
+ * off the bottom rather than as standing on anything.
  */
 .creation-species__art {
   flex: 0 0 auto;
-  align-self: stretch;
+  align-self: center;
   inline-size: clamp(5.5em, 32%, 9em);
   block-size: auto;
-  min-block-size: 5.5em;
+  aspect-ratio: 1;
 }
 
 .creation-species__text {

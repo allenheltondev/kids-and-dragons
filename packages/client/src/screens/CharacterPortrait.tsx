@@ -72,6 +72,18 @@ export interface CharacterPortraitProps {
   accent?: string;
   /** A slow float, for the places where the hero is the subject of the screen. */
   float?: boolean;
+  /**
+   * Where the figure sits in its box.
+   *
+   *   - `"floor"` (the default) stands it on the bottom edge, on its
+   *     ground-contact line. Right wherever the box is a *place*: the creation
+   *     preview's lit stage, the wells in the lobby lineup and on your sheet.
+   *   - `"centre"` centres the drawn figure instead. Right wherever the box is
+   *     a *picture* — a portrait beside a paragraph, like the species cards.
+   *     There is no floor in a card, so standing on one just reads as sitting
+   *     too low.
+   */
+  stand?: "floor" | "centre";
   className?: string;
 }
 
@@ -82,6 +94,7 @@ export function CharacterPortrait({
   lit = false,
   accent,
   float = false,
+  stand = "floor",
   className = "",
 }: CharacterPortraitProps): ReactElement {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -101,7 +114,7 @@ export function CharacterPortrait({
 
   return (
     <span
-      className={`portrait${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
+      className={`portrait portrait--${stand}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
       style={style}
       data-species={species}
     >
