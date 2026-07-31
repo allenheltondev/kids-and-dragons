@@ -71,9 +71,32 @@
   aspect-ratio: 1;
   object-fit: contain;
   object-position: 50% 100%;
-  translate: 0 var(--portrait-floor, 12.109375%);
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* Standing in a place: the whole remainder, so the feet meet the box's floor. */
+.portrait--floor .portrait__img {
+  translate: 0 var(--portrait-floor, 12.109375%);
+}
+
+/*
+ * A picture, not a place: *half* the remainder, which lands the drawn figure's
+ * middle on the box's middle. The air below the feet is the only asymmetry the
+ * canvas has, so half of it is exactly the correction — and it comes from the
+ * same constant, so there is still one number in play.
+ */
+.portrait--centre .portrait__img {
+  translate: 0 calc(var(--portrait-floor, 12.109375%) / 2);
+}
+
+.portrait--centre {
+  place-items: center;
+}
+
+/* The light follows the feet up with it, or it pools under empty air. */
+.portrait--centre.portrait--lit::before {
+  inset-block-end: calc(var(--portrait-floor, 12.109375%) / 2);
 }
 
 .portrait__fallback {

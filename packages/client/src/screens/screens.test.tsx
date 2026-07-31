@@ -133,6 +133,20 @@ describe("CharacterPortrait", () => {
    * failure is held in component state that a rerender could carry, so
    * "what does the next render show" *is* this function.
    */
+  /*
+   * A box that is a *place* stands the figure on its floor; a box that is a
+   * *picture* centres it. The species cards are the second kind — a portrait
+   * beside a paragraph, with no floor in it to stand on.
+   */
+  it("stands on the floor by default and centres where asked", () => {
+    expect(renderToStaticMarkup(<CharacterPortrait species="unicorn" />)).toContain(
+      "portrait--floor",
+    );
+    expect(
+      renderToStaticMarkup(<CharacterPortrait species="unicorn" stand="centre" />),
+    ).toContain("portrait--centre");
+  });
+
   it("re-asks for a new URL after a different one failed", () => {
     const unicorn = characterArtUrl("unicorn");
     const griffin = characterArtUrl("griffin");
