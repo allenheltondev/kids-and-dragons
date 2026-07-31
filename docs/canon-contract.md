@@ -1,9 +1,9 @@
 # Kids & Dragons — Canon Contract
 
 **Status: §1–§6 built (2026-07-31). D1, D2, D3, D6, D11 and D12 ruled and
-applied; `packages/canon` ships all **eleven** schemas, the parser, the registry
+applied; `packages/canon` ships all **twelve** schemas, the parser, the registry
 and `npm run canon:check` in CI. §7 (DynamoDB) and §8 (agent tools) proposed;
-D5, D7, D9 and D10 built; D8 and D13 open.** `canon/*.yaml` is the truth. Everything else — the wiki,
+D5, D7, D8, D9 and D10 built; D13 open.** `canon/*.yaml` is the truth. Everything else — the wiki,
 `content/`, the DynamoDB projection, agent tools — is a *derivation*, and this
 document is the schema that makes derivation mechanical instead of manual.
 
@@ -33,7 +33,8 @@ packages/canon/
   src/
     ids.ts             Slug, CanonId, the taxonomy→prefix table, canonRef/edge
     envelope.ts        the shared envelope + the cross-file enums
-    taxonomies.ts      all thirteen schemas
+    taxonomies.ts      all twelve schemas
+    mechanics.ts       what an item does in your hands (D7)
     parse.ts           YAML → validated entities  (+ controlled_values checks)
     registry.ts        entities, edges, both indexes, referential integrity
     canon.test.ts      16 tests, run against the real corpus
@@ -84,15 +85,16 @@ single most load-bearing field for generated content and today is prose (§9 D9)
 
 ## 3. Taxonomies
 
-Eleven, across ten files. Was thirteen until D6 merged `region` into `biome` and
-`site` into `location`.
+Twelve, across eleven files. Was thirteen, then eleven after D6 merged `region`
+into `biome` and `site` into `location`; D8 added `individual`.
 
 | Taxonomy | File | Id prefix | Count | Adds to the envelope |
 |---|---|---|---|---|
 | `biome` | biomes.yaml | `biome.` | 13 | `map_label`, `climate`, `environment_type`, `danger_level`, `inhabitants`, and the map fields absorbed from `region` |
 | `species` | characters.yaml | `character.` | 6 | `bipedal`, `signature_part`, `scale` |
 | `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `danger_level`, **`encounter`** (D9) |
-| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, `speech_register` (D8) |
+| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, **`speech_register`** (D8) |
+| `individual` | individuals.yaml | `individual.` | 3 | **`home`** (required — the defining rule), `people`, `role`, `pronouns`, `speech_register` (D8) |
 | `faction` | factions.yaml | `faction.` | 2 | `faction_type`, `alignment` |
 | `item` | items.yaml | `item.` | 16 | `category`, `rarity`, `acquisition`, **`mechanics`** (D7, optional) |
 | `location` | locations.yaml | `location.` | 10 | `location_type`, `parent_biome`, optional `inhabitants`, and the map fields absorbed from `site` |
@@ -380,13 +382,40 @@ a CI drift check matching the bestiary's, and an **In Your Hands** wiki section
 canon (the 12 mechanical ones plus the Hollow Crown shard, which belongs to
 `location.hollow_gate` and stays `intentionally_undefined`); 2 stayed props.
 
-**D8 — named individuals.** `npcs.yaml` holds *peoples* (centaur, faun,
-frogfolk), and `agent_instructions` says named individuals are not canon. Yet
-`bramblewood-01.json` has Pib, a wisp, and an embarrassed door, characterised
-entirely in that chapter's `llmHints.npcVoices` and discarded afterward.
-*Recommend:* add `speech_register` to `people` (so any member of that people can
-be voiced consistently), and formally bless chapter-scoped individuals as
-non-canon with a documented shape. Do not open a `individual.` taxonomy yet.
+**D8 — RULED and BUILT. Named individuals, and the one rule that decides
+them.** `npcs.yaml` holds *peoples* (centaur, faun, frogfolk) and said named
+individuals were not canon. Meanwhile `bramblewood-01.json` had Pib, a wisp and
+an embarrassed door, characterised entirely in `llmHints.npcVoices` and thrown
+away when the chapter ended.
+
+**The defining rule: a location owns them.** A named individual is canon
+because a place would miss them — they are in the town whether or not a chapter
+is running, and the next chapter set there finds them behind the same counter.
+Someone who is merely "there at this point in chapter two" is the chapter's.
+This is D7's ownership test applied to people, and it is enforced the only way a
+rule like this survives: `individual.home` is a **required** `canonRef("location")`,
+so there is no way to author a canon individual belonging to nowhere. The
+question "should this be canon?" becomes "can you name the place that would miss
+them?"
+
+A twelfth taxonomy, `individual.*`, in `canon/individuals.yaml` — separate from
+`npc.*` because they answer different questions and one owns the other: an
+individual names the people they belong to, a people has many individuals or
+none. Fields beyond the envelope: `home`, `people`, `role`, `pronouns`,
+`speech_register`. `pronouns` is authored rather than guessed, because nothing
+about a name tells you and getting it wrong at the table is the kind of small
+unkindness worth a field.
+
+`people` also gains `speech_register` — how a *kind* of person generally sounds
+— so a frogfolk met in chapter one and a frogfolk met in chapter six belong to
+the same civilisation without anyone re-authoring it. The two layer: the
+people's register, then the individual's over it.
+
+Chapter-scoped characters keep the home they already had, `llmHints.npcVoices`,
+now formally blessed rather than merely tolerated. Of bramblewood-01's three,
+Pib was promoted (Bramblewood is a canon town and Pib keeps its hedges); the
+wisp and the door stayed, because no place would miss them. Three individuals
+authored — enough to be a shape to author against rather than a population.
 
 **D9 addendum (2026-07-31) — chapters stopped restating the stats.** As first
 built, `EnemySpec.creature` was a *check*: the chapter kept its own copy of the

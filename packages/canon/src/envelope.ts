@@ -2,7 +2,7 @@
  * The envelope every canon entity satisfies — docs/canon-contract.md §2.
  *
  * This is what makes a *generic* registry, a generic DynamoDB row and a generic
- * `canon_get` tool possible: thirteen taxonomies, one guaranteed shape at the
+ * `canon_get` tool possible: twelve taxonomies, one guaranteed shape at the
  * top of each. A consumer that only needs "id, title, what is this, is it
  * settled" never has to know which taxonomy it is holding.
  *
@@ -16,7 +16,7 @@ import { z } from "zod";
 import { CanonId, Slug } from "./ids.js";
 
 /**
- * D1 — one vocabulary for all thirteen taxonomies.
+ * D1 — one vocabulary for all twelve taxonomies.
  *
  * `intentionally_undefined` is the load-bearing one and the reason this is not
  * a boolean: it marks a protected mystery or an open design slot, and

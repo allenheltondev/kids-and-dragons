@@ -10,13 +10,16 @@ related:
   - id: location.stone_crossing
     type: location
     relationship: found_in
+  - id: individual.old_ossley
+    type: individual
+    relationship: items
 ai_context:
   mood: "A holed river stone on a cord. Water wore the hole, which is the whole reason it is worth anything."
   themes: "Charm, Travel, Stone_crossing, Common"
   visual_style: "Flat grey pebble with a clean round hole through it, strung on braided river grass."
   common_encounters: "A parting gift for someone with a long way to go."
   lore_highlights: ""
-  related_entities: "location.stone_crossing"
+  related_entities: "location.stone_crossing, individual.old_ossley"
   writing_guidance: "Only stones the river holed itself carry the blessing. A drilled one is just a pebble with a hole in it, and everyone can tell."
   generation_hints: "Stays cool against the skin, however far you have walked."
 layout: items
@@ -33,6 +36,9 @@ infobox: item
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
+
+### Individuals
+- [Old Ossley](/individuals/old_ossley/) `Items`
 
 ### Locations
 - [Stone Crossing](/locations/stone_crossing/) `Found In`
