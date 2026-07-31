@@ -98,7 +98,7 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [open_sea]
+      locations: [biome.open_sea]
       factions: []
       items: []
 
@@ -465,7 +465,7 @@ biomes:
       supernatural_manifestations: []
       population_rule: "Mixed population with no native or dominant people."
     relationships:
-      locations: [biome.sunward_fields, biome.whispering_marsh, open_sea]
+      locations: [biome.sunward_fields, biome.whispering_marsh, biome.open_sea]
       factions: []
       items: []
 
@@ -666,7 +666,7 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [open_sea]
+      locations: [biome.open_sea]
       factions: []
       items: []
 
@@ -707,7 +707,42 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [open_sea, the_whirlpool]
+      locations: [biome.open_sea, location.the_whirlpool]
+      factions: []
+      items: []
+
+  - id: biome.open_sea
+    title: "The Open Sea"
+    map_label: "Open Sea"
+    canon_status: newly_defined
+    environment_type: offshore_region
+    featured: false
+    tags: [ocean, offshore, deep_water, weather, currents]
+    climate: "Open ocean; weather arrives without warning and currents matter more than direction."
+    danger_level: moderate
+    short_description: >-
+      The wide water surrounding the realm, reached from every coast and owned by
+      none of them.
+    visual_identity: >-
+      Open horizon, long swells, no landmarks but light and weather.
+    common_story_uses: >-
+      Crossings between coastal places, being carried off course, what lies past
+      the edge of the map.
+    canon_constraints: >-
+      Surrounds the illustrated map rather than appearing on it, so it has no map
+      anchor and no mapped region. Coastal places reach it; it borders nothing.
+    standard_behavior: >-
+      Currents and weather change on their own schedule and ignore the shore.
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [npc.merfolk, npc.selkie]
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [location.the_whirlpool]
       factions: []
       items: []
 
@@ -747,6 +782,6 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: [creature.restless_remains]
     relationships:
-      locations: [feature.great_river, open_sea, the_whirlpool]
+      locations: [feature.great_river, biome.open_sea, location.the_whirlpool]
       factions: []
       items: []

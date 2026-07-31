@@ -21,7 +21,7 @@ const registry = loadCanon(CANON_DIR);
 
 /** D11 — references to places canon names but has never defined. Mirrors the
  *  allowlist in tools/canon/check.ts; both may only shrink. */
-const KNOWN_GAPS = ["open_sea", "the_whirlpool", "bramblewood"];
+const KNOWN_GAPS = ["bramblewood"];
 const isKnownGap = (message: string) => KNOWN_GAPS.some((gap) => message.includes(`"${gap}"`));
 
 describe("canon corpus", () => {
@@ -38,7 +38,7 @@ describe("canon corpus", () => {
 
   it("keeps the known-gap list from growing", () => {
     const gaps = errors(registry).filter((issue) => isKnownGap(issue.message));
-    expect(gaps).toHaveLength(8);
+    expect(gaps).toHaveLength(1);
   });
 
   it("indexes edges in both directions", () => {

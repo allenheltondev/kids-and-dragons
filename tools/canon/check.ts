@@ -35,10 +35,16 @@ const OFF = tty ? "[0m" : "";
  * gate.
  *
  * So they are demoted to warnings, listed on every run, and this list may only
- * ever shrink. `bramblewood` is the sharpest of the three: it is the setting of
- * the only shipped chapter.
+ * ever shrink — `open_sea` and `the_whirlpool` came off it when Allen ruled
+ * that a biome is an ecological region and a location is a place inside one.
+ *
+ * `bramblewood` is left because the ruling and the corpus disagree about where
+ * it is: it was called a location of the plains, while canon files it under
+ * `biome.enchanted_woods` and `content/chapters/bramblewood-01.json` renders it
+ * with `biome: enchanted_woods`. Picking either silently would change which art
+ * the only shipped chapter uses.
  */
-const KNOWN_GAPS = new Set(["open_sea", "the_whirlpool", "bramblewood"]);
+const KNOWN_GAPS = new Set(["bramblewood"]);
 
 const registry = loadCanon(path.join(ROOT, "canon"));
 const isKnownGap = (message: string): boolean =>
