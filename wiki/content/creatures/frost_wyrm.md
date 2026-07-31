@@ -10,6 +10,17 @@ classification: dangerous_creature
 danger_level: high
 scale: large
 sapience: animal
+lore_hook: "The glacier's other tenant. It was here first, and the receipts are frozen."
+likes:
+  - id: npc.yeti
+    title: "Yeti"
+    url: "/npcs/yeti/"
+    because: "Their songs carry through the ice. It has opinions on the repertoire, all favorable, none shared."
+dislikes:
+  - id: character.griffin
+    title: "Griffin"
+    url: "/characters/griffin/"
+    because: "A shadow crossing the snow is the one shape it has never argued with."
 related:
   - id: biome.frostfang_peaks
     type: biome
@@ -31,13 +42,40 @@ ai_context:
   themes: "Dangerous, Mountain, Ice, Predator"
   visual_style: "Long low body, digging forelimbs, ice-ridged scales, and a wedge-shaped head."
   common_encounters: "Mountain chase, blocked pass, sign that the glacier is warming or shifting."
-  lore_highlights: ""
+  lore_highlights: "The glacier's other tenant. It was here first, and the receipts are frozen."
   related_entities: "biome.frostfang_peaks, biome.glacier_of_origins, biome.glacier_of_origins, biome.frostfang_peaks"
   writing_guidance: "Avoids griffin aeries, defends nesting tunnels aggressively."
   generation_hints: "Avoids griffin aeries but defends nesting tunnels aggressively. Unusual warmth can force them onto paths."
 layout: creatures
 infobox: creature
 ---
+
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+> *The glacier's other tenant. It was here first, and the receipts are frozen.*
+
+Frost wyrms tunnel the deep ice along seams older than any map, spiraling their nests around things frozen far below — whether they guard those things or simply like the company is one of the north's politely unasked questions. A wyrm's whole idea of a good year is one in which nothing at all happens near its tunnel, and it enforces this idea with total commitment.
+
+### For Fun
+
+- Coiling beneath the yetis' singing halls to feel the low notes come down through forty feet of ice. The yetis do not know. The wyrm is counting on that.
+- Polishing tunnel walls to glass with its ridged scales, for reasons that may be maintenance and may be pride.
+- Sleeping through entire seasons, on purpose, starting from a good one.
+
+### Getting Along
+
+A frost wyrm defends the tunnel, never the mountain. It holds no grudges because it takes no notes: leave, and you have solved the entire relationship.
+
+### Likes
+
+- **[Yeti](/npcs/yeti/)** — Their songs carry through the ice. It has opinions on the repertoire, all favorable, none shared.
+
+### Dislikes
+
+- **[Griffin](/characters/griffin/)** — A shadow crossing the snow is the one shape it has never argued with.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight

@@ -20,6 +20,7 @@ agent_instructions:
   - Cultural orders are learned roles, not species or moral alignments.
   - "`speech_register` describes how a people generally sounds, not how any one of them must. It is there so a frogfolk met in chapter one and a frogfolk met in chapter six belong to the same civilization."
   - "This file holds *kinds* of person. One named person is an `individual` in individuals.yaml, and canon only has them when a location owns them - see that file's rules."
+  - "`lore` describes the culture, not a mandate for any individual. `likes` and `dislikes` are history between kinds with a required `because` - a specific grievance or fondness a chapter can use, never a moral verdict about a people."
 
 controlled_values:
   canon_status:
@@ -80,6 +81,34 @@ npcs:
     standard_behavior: >-
       Guides travelers, carries news, maintains camps and road markers, redirects
       caravans when routes change.
+    lore:
+      hook: "Ask one how far. You will get the distance, the weather, and one warning, once."
+      story: >-
+        Centaurs have walked the roads since before the roads were roads, and
+        the old routes are taught to foals as songs — one verse per landmark,
+        with the hazards in the chorus so nobody forgets them. A centaur's
+        caravan sash is also a map, embroidered a stitch at a time over a
+        working life, and reading a stranger's sash is how centaurs shake
+        hands.
+      pastimes:
+        - "Sash embroidery. A route walked is a route stitched, and an elder's sash is a life you can read."
+        - "Relay runs for the joy of it: how fast can news cross the realm? The record is disputed, loudly, at every campfire."
+        - "The Shortcut Debate — a nine-generation argument about one hypothetical route through the foothills. No centaur alive believes it exists. No centaur alive will concede."
+      social: >-
+        Unhurried, factual, and impossible to alarm. A centaur states the
+        distance, the weather, and the trouble in the same level tone, and
+        never repeats a warning — the road is honest, and expects the same of
+        you.
+      likes:
+        - of: creature.jackalope
+          because: "A warren by the roadside means the road is healthy. Also, they pace the caravans, and nobody has ever admitted to racing back."
+        - of: character.manticore
+          because: "East of the river the road is theirs, and it is in good hands."
+        - of: npc.stone_troll
+          because: "A bridge kept is worth a hundred fords."
+      dislikes:
+        - of: creature.will_o_wisp
+          because: "A light that moves travelers off the road is the exact opposite of a road marker."
     relationships:
       primary_locations: [biome.plains]
       secondary_locations: [biome.eastern_plains, biome.sunward_fields, location.exchange, location.stone_crossing]
@@ -111,6 +140,33 @@ npcs:
     standard_behavior: >-
       Plants, harvests, repairs irrigation, organizes shared meals, uses music to
       coordinate work.
+    lore:
+      hook: "The harvest is a song, and everyone is in the chorus whether they know it or not."
+      story: >-
+        Fauns farm the Sunward Fields in cooperatives older than money, and
+        their music is not decoration — the beat is the schedule, the harmony
+        is the division of labor, and a field's work-song tells you what stage
+        the season is in from half a mile away. A faun who stops singing
+        mid-verse has seen something worth stopping for, and every hand in
+        earshot knows it.
+      pastimes:
+        - "Festival-inventing. First frost, last frost, a notably good pumpkin: the calendar has more festivals than days, which the fauns consider a scheduling triumph."
+        - "Building instruments out of farm surplus — gourd-drums, seed-shakers, and the irrigation flute, which waters a row while you play it."
+        - "Competitive pie diplomacy. Recipes are state secrets. Judges are bribed openly, in pie."
+      social: >-
+        Warm, rhythmic, and incapable of letting a stranger stand at the edge
+        of anything. Every exchange becomes an invitation and every answer an
+        anecdote; being adopted by a faun village takes roughly one meal.
+      likes:
+        - of: npc.harvest_sprite
+          because: "The fields' other workers. A faun leaves the corner rows unpicked, and both parties call it good manners."
+        - of: npc.centaur
+          because: "The harvest goes somewhere and the news comes back. Also they can carry a drum you can climb inside."
+        - of: creature.jackalope
+          because: "The orchard's least useful employees, kept on for morale."
+      dislikes:
+        - of: npc.boggart
+          because: "Every festival, exactly one pie. Always exactly one. They bake an extra now and set it slightly apart, and everyone involved maintains the fiction."
     relationships:
       primary_locations: [biome.sunward_fields]
       secondary_locations: [biome.plains, location.exchange, biome.enchanted_woods]
@@ -141,6 +197,34 @@ npcs:
     standard_behavior: >-
       Tends unharvested patches, recovers dropped seeds, assists communities that
       leave food for small creatures.
+    lore:
+      hook: "The realm's smallest professionals, and by a wide margin its most serious."
+      story: >-
+        Harvest sprites tend everything the big folk overlook: the crooked
+        row, the dropped seed, the plant behind the barn that nobody planted.
+        No sprite has ever explained the arrangement, but communities that
+        leave a little food out for small creatures find their fields doing
+        better than arithmetic says they should, and no sprite will confirm
+        the connection while sober enough to be quoted.
+      pastimes:
+        - "Competitive tidying. Two sprites, one messy row: it is a race now, and it was always a race."
+        - "Riding jackalopes. Without the jackalope's knowledge. Briefly."
+        - "Award ceremonies for plants. The season's best beetroot receives a small woven medal. Attendance is mandatory."
+      social: >-
+        Earnest, over-explaining, and heartbroken by refusal for about four
+        seconds at a time. A sprite offers help nobody asked for, takes
+        enormous pride in work nobody sees, and remembers every person who
+        ever said thank you to something smaller than themselves.
+      likes:
+        - of: npc.faun
+          because: "The only big folk whose work-songs have a verse for the small workers."
+        - of: creature.mosshorn
+          because: "An antler posting is the profession's highest honor: a garden that walks, with tenure."
+      dislikes:
+        - of: creature.jackalope
+          because: "It eats the overlooked plants. The overlooked plants are the entire jurisdiction."
+        - of: npc.boggart
+          because: "Recovered items keep un-recovering. The paperwork is endless, and the paperwork is imaginary, and it is still endless."
     relationships:
       primary_locations: [biome.sunward_fields]
       secondary_locations: [biome.enchanted_woods, biome.plains]
@@ -172,6 +256,34 @@ npcs:
     standard_behavior: >-
       Marks safe channels, monitors water levels, collects useful marsh plants,
       guides respectful travelers.
+    lore:
+      hook: "They know where the ground actually is. This is rarer than it sounds."
+      story: >-
+        The marsh is passable because frogfolk make it so: safe channels
+        marked, mist lanterns kept, and routes closed the day the whispers
+        change — not the day after. A frogfolk pause is not hesitation; it is
+        the size of the true answer being checked before it is issued. They
+        say little because the marsh says a great deal, and someone has to be
+        listening.
+      pastimes:
+        - "Channel races, poled standing, no wakes allowed. Wakes wake things."
+        - "Mist-lantern festivals on new-moon nights, when the marsh is darkest and, by long observation, at its most polite."
+        - "Collecting rain-sounds. A really good roof is famous for three villages in every direction."
+      social: >-
+        Reserved and precise, with a hospitality that consists of getting you
+        where you are going alive rather than telling you about it. A
+        frogfolk who answers the question you meant instead of the one you
+        asked is not being difficult; they are being efficient.
+      likes:
+        - of: creature.silver_otter
+          because: "The river's other honest professionals. Boats and otters have traded right-of-way for a hundred years without one collision."
+        - of: npc.stone_troll
+          because: "Water people who keep their crossings. A kinship of maintenance."
+        - of: npc.boggart
+          because: "Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
+      dislikes:
+        - of: creature.mire_mimic
+          because: "Every marked channel it imitates is a review of frogfolk work, and the review is a trap."
     relationships:
       primary_locations: [biome.whispering_marsh]
       secondary_locations: [location.exchange]
@@ -205,6 +317,36 @@ npcs:
     standard_behavior: >-
       Collects things the marsh has swallowed, trades information indirectly,
       tests whether strangers pay attention.
+    lore:
+      hook: "Nothing in the marsh is lost. It has simply changed management."
+      story: >-
+        Boggarts collect what the world drops: buttons, keys, bells, sounds,
+        secrets. A boggart's collection is its memoir — ask about any button
+        and you will get the story, though not necessarily the story you
+        wanted, and never in order. They do not steal, a distinction boggarts
+        consider obvious and everyone else considers ongoing: a thing on the
+        ground has been filed under ground, and filing is a service.
+      pastimes:
+        - "Cataloguing, by systems that change weekly, are internally perfect, and have never once been explained to an outsider."
+        - "Connoisseurship of overheard sentences. A really good one is retold at boggart gatherings for years, with attribution."
+        - "Silent trade meets with silver otters, where nothing is said and everything is appraised."
+      social: >-
+        Sidelong, delighted, and constitutionally allergic to stating a thing
+        plainly when a hint will do. A boggart tests whether you pay attention
+        and rewards you in exact proportion to the result — which makes them
+        the marsh's most honest people, hidden inside its most annoying ones.
+      likes:
+        - of: creature.will_o_wisp
+          because: "A secret that tells itself, on schedule. Boggarts attend with notebooks."
+        - of: creature.silver_otter
+          because: "A fellow collector with excellent taste and no small talk."
+        - of: character.kitsune
+          because: "Stories with missing pieces — the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won."
+      dislikes:
+        - of: npc.harvest_sprite
+          because: "They return found things to their owners. On purpose. The waste is unspeakable."
+        - of: creature.mire_mimic
+          because: "It sits on the best salvage and pretends to be it."
     relationships:
       primary_locations: [biome.whispering_marsh]
       secondary_locations: [biome.enchanted_woods, location.exchange]
@@ -236,6 +378,34 @@ npcs:
     standard_behavior: >-
       Inspects the glacier for exposed memories, guides visitors away from
       unstable ice, preserves old accounts.
+    lore:
+      hook: "The glacier remembers everything. The yetis are its reading room."
+      story: >-
+        Yetis read the ice. Memories catch in the glacier the way leaves catch
+        in amber, and the yetis' whole slow civilization is arranged around
+        finding them, interpreting them, and keeping them company. They speak
+        of the long-dead as though they stepped out a moment ago because, from
+        the glacier's point of view, they did — and a yeti sees no reason to
+        take a shorter view than the thing it lives on.
+      pastimes:
+        - "Singing in halls carved from the ice — low songs, felt through the feet more than heard, some of them older than their words."
+        - "Memory-walks: retracing a preserved moment on the surface where it happened, at the original pace, in the original weather if it can be arranged."
+        - "Tea. Brewed from meltwater of a specific named year, for occasions that have earned it."
+      social: >-
+        Slow, enormous, and gentle, with a courtesy built for centuries: a
+        yeti deliberates before speaking because it intends to stand by the
+        sentence for a hundred years. Visitors are guided, fed, and remembered
+        in unnerving detail on the next visit, forty years later.
+      likes:
+        - of: creature.snowhorn_goat
+          because: "The mountains' own surveyors. When the herd reroutes, the yetis annotate."
+        - of: character.griffin
+          because: "The other half of every mountain rescue, and the fast half, which the yetis acknowledge without envy."
+        - of: creature.will_o_wisp
+          because: "A memory that got up and walked away. Professionally fascinating. Every one deserves an interview."
+      dislikes:
+        - of: creature.frost_wyrm
+          because: "A thousand years of stratigraphy, ruined by one nest. The wyrms are ancient too, which somehow makes it worse."
     relationships:
       primary_locations: [biome.glacier_of_origins]
       secondary_locations: [biome.frostfang_peaks]
@@ -268,6 +438,31 @@ npcs:
     standard_behavior: >-
       Patrols reefs, rescues swimmers, repairs coral, participates in songs that
       help prevent the whirlpool from widening.
+    lore:
+      hook: "An alliance is not a mood. They will keep the agreement; that is what agreements are for."
+      story: >-
+        Merfolk keep Mermaid Cove, its reefs, and an alliance older than any
+        surviving record of what, exactly, it was made against. The song
+        circles are the center of everything — part choir, part civic
+        engineering — and the old verses are sung precisely because nobody
+        remembers what they hold shut, which the merfolk consider the strongest
+        possible argument for not missing a night.
+      pastimes:
+        - "Song circles, nightly, attendance a joy and also the infrastructure."
+        - "Reef-gardening: coral grown into archways, nurseries, and — for a visiting dignitary — furniture."
+        - "The formal receiving of guests, an art form with tides in it. Rescued swimmers are technically guests, which surprises the swimmers."
+      social: >-
+        Courteous, precise about promises, and quietly warm underneath the
+        protocol. A casual agreement is binding; they assume yours is too, and
+        the resulting misunderstandings are the source of half the treaty's
+        amendments. The merfolk keep a formal registry of grievances. It is
+        currently empty. It is reviewed annually.
+      likes:
+        - of: npc.selkie
+          because: "Treaty kin who take nothing seriously except the things that matter, in exactly the right order."
+        - of: creature.reefglider
+          because: "The song circles' faithful orbit. The singers pretend not to be flattered."
+      dislikes: []
     relationships:
       primary_locations: [biome.mermaid_cove]
       secondary_locations: [location.exchange]
@@ -299,6 +494,32 @@ npcs:
     standard_behavior: >-
       Carries messages between sea and land, observes coastal changes, assists
       stranded travelers, carefully guards their coat.
+    lore:
+      hook: "Two shapes, one joke, always delivered on time."
+      story: >-
+        Selkies are the realm's couriers between two worlds that would
+        otherwise only wave at each other. The coat is not a garment but a
+        self, and everything in selkie culture flows from that one fact: where
+        it hangs, who may touch it (no one), and the exact height of shelf
+        that means I trust this house. A selkie tells the truth in a way that
+        sounds like a joke, which keeps the truth portable.
+      pastimes:
+        - "Trading jokes up and down the coast. A joke's worth is measured in how far it traveled to reach you, and a really good one arrives salt-stained."
+        - "Message-racing the tide: the letter must beat the water to the third rock. The letter usually wins. The occasions it did not are famous."
+        - "Storm-swimming for fun, an activity every other people on the coast has independently classified as a rescue situation."
+      social: >-
+        Easy, quick, and register-shifting — a selkie talks to a merfolk
+        elder, a dockhand, and a child in three different voices inside one
+        minute, and means every word in all three. Their friendship is loyal
+        and their coat is not a topic.
+      likes:
+        - of: npc.merfolk
+          because: "Kin by treaty and temperament, the temperament being reliability. With jokes."
+        - of: creature.silver_otter
+          because: "Kindred spirits: swimmers who understand that an errand is improved by a detour."
+      dislikes:
+        - of: npc.boggart
+          because: "No boggart has ever taken a coat. Every selkie hangs it higher near one anyway, and both peoples know it is not fair, and the shelf stays where it is."
     relationships:
       primary_locations: [biome.mermaid_cove]
       secondary_locations: [location.exchange]
@@ -330,6 +551,34 @@ npcs:
     standard_behavior: >-
       Inspects bridges, repairs stonework, monitors river currents, requests
       stories or riddles as tolls.
+    lore:
+      hook: "The bridge stands because someone patient is under it. This is not a metaphor."
+      story: >-
+        Stone trolls keep the crossings — the masonry, the current-watch, and
+        the judgment about who crosses and what it costs. The toll is never
+        money and never cruel: a story, a riddle, a promise sized to the
+        crosser, because a troll's real ledger is made of what people are
+        carrying that isn't cargo. A troll begins a sentence the way other
+        people begin a journey, and finishes it the same way: completely.
+      pastimes:
+        - "The riddle account with the manticore prides, maintained for generations and lovingly disputed from both ends of the bridge."
+        - "Stone-listening: one palm flat on the bridge tells the day's whole traffic, and a good bridge is reread like a favorite book."
+        - "Games of strategy played across seasons, one move per market day. Spectators bring grandchildren, then great-grandchildren."
+      social: >-
+        Immensely slow to begin and then complete. A troll weighs a question
+        out loud before answering, and the answer is final — not from
+        stubbornness, but because it was weighed. They are not default
+        enemies, do not eat travelers, and are politely tired of the question.
+      likes:
+        - of: character.manticore
+          because: "The riddle account, faithfully honored from both ends."
+        - of: creature.echo_hunter
+          because: "The deep tunnels' politest neighbor. They have never once met in a hurry."
+        - of: creature.river_drake
+          because: "A colleague in the crossing trade. The rates differ; the principle does not."
+      dislikes:
+        - of: creature.will_o_wisp
+          because: "A bridge's entire argument is that the way is known. A light that argues otherwise makes work."
     relationships:
       primary_locations: [location.stone_crossing, location.skullwater_cave]
       secondary_locations: [biome.eastern_plains]
@@ -361,6 +610,36 @@ npcs:
     standard_behavior: >-
       Studies specific forms of magic, trades remedies, investigates supernatural
       disruptions, disagrees about responsible practice.
+    lore:
+      hook: "Magic answers anyone who studies. This is the problem, and the witches are the ones who take it seriously."
+      story: >-
+        Witchcraft is a tradition, not a people: any of the realm's folk may
+        learn, and the pointed hat fits every head that earns it. The real
+        discipline is not the spellwork but the question asked before it —
+        what do you actually want? — because most of the trouble a witch is
+        called to fix began as an answer somebody skipped. Witches disagree
+        with each other constantly, in the margins of each other's notebooks,
+        as a form of quality control and, plainly, of affection.
+      pastimes:
+        - "Remedy fairs: part market, part conference, part elaborate excuse to read everyone else's annotations."
+        - "Ingredient walks that take the long way, because the long way is where the ingredients are and the gossip is."
+        - "Wisp-sitting: the practice of keeping a tangled memory company. Unglamorous, unpaid, and considered the truest work in the craft."
+      social: >-
+        Careful and instructive. A witch asks what you actually want before
+        saying what is possible, never promises the first thing, and delivers
+        exactly what was agreed — which is why people trust witches and why
+        people are also slightly afraid of them, and why witches consider both
+        reactions correct.
+      likes:
+        - of: creature.will_o_wisp
+          because: "A patient, in the oldest sense. Some can be untangled and allowed to finish, and there is no better feeling in the craft."
+        - of: npc.boggart
+          because: "Suppliers of ingredients, rumors, and — twice now, at the exact crucial moment — a button."
+        - of: npc.yeti
+          because: "Fellow keepers of the principle that knowing something makes you responsible for it."
+      dislikes:
+        - of: faction.deep_hollow_cult
+          because: "They skip the question. All of them. Every time."
     relationships:
       primary_locations: [biome.whispering_marsh]
       secondary_locations: [biome.enchanted_woods, location.exchange, biome.sunward_fields]
