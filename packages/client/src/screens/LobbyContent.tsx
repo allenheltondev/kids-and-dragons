@@ -15,6 +15,7 @@ import type { ReactElement } from "react";
 import type { PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
 import { Spinner } from "../ui/Spinner";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./LobbyContent.css";
@@ -66,8 +67,16 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
   const { character } = member;
   return (
     <li className={`lobby-member${member.ready ? " lobby-member--ready" : ""}`}>
+      {/* The lineup is the one place everyone looks while the room fills up, so
+          it is their actual character, at their actual tier — a party of three
+          fledglings and a returning Radiant should look like that. */}
       <span className="lobby-member__portrait" aria-hidden="true">
-        <Icon name={character.species} size="2.4em" />
+        <CharacterPortrait
+          species={character.species}
+          tier={character.tier}
+          className="lobby-member__art"
+          lit={member.ready}
+        />
       </span>
       <span className="lobby-member__text">
         <span className="lobby-member__name">{character.name}</span>
@@ -123,7 +132,7 @@ export function LobbyContent(): ReactElement {
           full three-person party is on screen without scrolling. */}
       <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
         <div className="lobby__code-block">
-          <p className="lobby__code-label kad-muted">Room code</p>
+          <p className="lobby__code-label kad-label">Room code</p>
           <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
             {code === null
               ? "----"

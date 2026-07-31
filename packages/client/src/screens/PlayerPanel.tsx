@@ -39,6 +39,7 @@ import {
 } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
@@ -102,8 +103,15 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
   return (
     <header className="sheet">
+      {/* Your own face on your own sheet, at whatever tier you have grown to —
+          the identity strip is pinned, so this is the one picture that is on
+          screen for the whole session. */}
       <span className="sheet__portrait" aria-hidden="true">
-        <Icon name={character.species} size="1.9em" />
+        <CharacterPortrait
+          species={character.species}
+          tier={character.tier}
+          className="sheet__art"
+        />
       </span>
       <span className="sheet__id">
         <span className="sheet__name">{character.name}</span>
@@ -201,7 +209,7 @@ function InventoryGrid({
                 <Icon name={def?.icon ?? entry.kind} size="1.7em" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
-                <span className="inv__kind">
+                <span className="inv__kind kad-label">
                   <Icon name={entry.kind} />
                   <span>{entry.kind}</span>
                 </span>
@@ -390,13 +398,20 @@ export function PlayerPanel(): ReactElement {
                         <Icon name={option.icon} size="1.8em" />
                       </span>
                       <span className="choice__label">{option.label}</span>
-                      {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
-                      {voters.length === 0 ? null : (
-                        <span className="choice__votes">
-                          <Icon name="vote" />
-                          <span>{voters.join(", ")}</span>
+                      <span className="choice__trail">
+                        {/* The seat is always here; only the check comes and
+                            goes, so somebody else voting cannot rewrap the
+                            label you are reading. */}
+                        <span className="choice__mark">
+                          {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
                         </span>
-                      )}
+                        {voters.length === 0 ? null : (
+                          <span className="choice__votes">
+                            <Icon name="vote" />
+                            <span>{voters.join(", ")}</span>
+                          </span>
+                        )}
+                      </span>
                     </button>
                   </li>
                 );

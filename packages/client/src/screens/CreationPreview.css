@@ -1,10 +1,10 @@
 /*
  * Creation preview — WorldView.
  *
- * Positioned over the Pixi canvas with a transparent stage hole: the rig draws
- * *through* this panel, which is why nothing in the middle column has a
- * background. Everything else is a card so the text stays readable whatever is
- * behind it.
+ * Positioned over the Pixi canvas. The stage in the middle is a lit window with
+ * the biome behind it and the hero standing in it (CreationPreview.tsx explains
+ * why the figure is an element here rather than something drawn through a hole);
+ * everything else is a card so the text stays readable whatever is behind it.
  *
  * `em` against `.kad-surface`, no viewport units (architecture §4.6 rule 2).
  */
@@ -70,16 +70,85 @@
   }
 }
 
-/* Deliberately empty and deliberately transparent — the character is drawn
-   here by the Pixi stage underneath (spec §5). */
+/*
+ * The window the hero stands in (spec §5).
+ *
+ * The backdrop is the biome's own 1920×1080 art, set as a custom property by
+ * the component so the URL stays in TypeScript with every other asset path. It
+ * is darkened and blurred a touch: the character is the subject, the biome is
+ * the room, and full-strength scenery behind a figure at this size reads as a
+ * collage rather than a place.
+ */
 .preview__stage {
+  position: relative;
   display: grid;
-  place-items: center;
+  place-items: end center;
   flex: 1 1 auto;
   min-block-size: 0;
-  border: 0.08em dashed var(--color-border, rgba(190, 178, 255, 0.16));
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
   border-radius: var(--radius-lg, 1.25em);
+  overflow: hidden;
   color: var(--color-border, rgba(190, 178, 255, 0.16));
+  background-color: var(--color-surface-sunken, #080711);
+}
+
+.preview__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--stage-backdrop);
+  background-size: cover;
+  background-position: 50% 60%;
+  opacity: 0.55;
+  filter: saturate(0.9) blur(0.02em);
+}
+
+/* A floor for the figure to stand on, and a vignette so the fact cards beside
+   it always have something dark to sit against. */
+.preview__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 92%, rgba(8, 7, 17, 0.72), transparent 55%),
+    linear-gradient(to bottom, rgba(8, 7, 17, 0.55), transparent 35%, rgba(8, 7, 17, 0.75));
+}
+
+.preview__stage-ghost {
+  position: relative;
+  place-self: center;
+}
+
+/*
+ * The hero. Sized off the stage's block size rather than its width so a wide
+ * TV pane does not blow the figure past the top of its own window, and capped
+ * at 80% so there is always headroom above the head.
+ */
+.preview__hero {
+  position: relative;
+  inline-size: auto;
+  block-size: min(88%, 26em);
+  aspect-ratio: 1;
+  max-inline-size: 100%;
+  animation: preview-arrive var(--kad-dur-slow, 420ms) var(--kad-ease-out, ease-out);
+}
+
+/* Walking on. Plays once per species (the element is keyed by it). */
+@keyframes preview-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(6%) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.preview__done-art {
+  inline-size: 1.8em;
+  block-size: 1.8em;
 }
 
 .preview__facts {

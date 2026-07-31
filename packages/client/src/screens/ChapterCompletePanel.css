@@ -66,15 +66,23 @@
   background: var(--color-surface, #1a1730);
 }
 
+/* The same well as the lobby lineup and the player's own sheet: taller than it
+   is wide, because the art is a standing figure and not a headshot. */
 .complete-card__portrait {
   display: grid;
-  place-items: center;
-  inline-size: 2.6em;
-  block-size: 2.6em;
+  place-items: end center;
+  inline-size: 2.8em;
+  block-size: 3.4em;
   flex: 0 0 auto;
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #080711);
   color: var(--color-accent, #f5c86c);
+  overflow: hidden;
+}
+
+.complete-card__art {
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .complete-card__text {
