@@ -355,14 +355,7 @@
         {
           "id": "wisp",
           "name": "Bramblewisp",
-          "count": 3,
-          "creature": "will_o_wisp",
-          "hp": 6,
-          "guard": 11,
-          "quick": 3,
-          "steps": 5,
-          "attack": 3,
-          "art": "enemies/will_o_wisp"
+          "creature": "will_o_wisp"
         }
       ],
       "onVictory": {
