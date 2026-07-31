@@ -371,7 +371,12 @@ export const Campaign = Envelope.extend({
   chapter_count: z.number().int().positive(),
   relationships: z.strictObject({
     biomes: edge("biome"),
-    locations: edge("location", "biome"),
+    /**
+     * Same target set as Biome/Location `locations`: campaigns whose plot
+     * hangs on a river or a bridge (Gemfall's routed middle) get to say so
+     * in the graph, so "which campaigns depend on this crossing" is a query.
+     */
+    locations: edge("location", "route", "feature", "biome"),
     creatures: edge("creature"),
     factions: edge("faction"),
     items: edge("item"),

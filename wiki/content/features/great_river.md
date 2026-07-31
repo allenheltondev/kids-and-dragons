@@ -58,6 +58,9 @@ related:
   - id: biome.bone_yard
     type: biome
     relationship: locations
+  - id: campaign.gemfall
+    type: campaign
+    relationship: locations
   - id: route.northern_river_bridge
     type: route
     relationship: crosses
@@ -76,7 +79,7 @@ ai_context:
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "biome.glacier_of_origins, biome.frostfang_peaks, biome.red_sky_foothills, biome.eastern_plains, biome.plains, biome.sunward_fields, route.northern_river_bridge, route.stone_crossing, biome.whispering_marsh, biome.red_sky_foothills, biome.plains, biome.plains, biome.sunward_fields, biome.glacier_of_origins, biome.frostfang_peaks, biome.eastern_plains, biome.bone_yard, route.northern_river_bridge, route.stone_crossing, location.stone_crossing, location.stone_crossing"
+  related_entities: "biome.glacier_of_origins, biome.frostfang_peaks, biome.red_sky_foothills, biome.eastern_plains, biome.plains, biome.sunward_fields, route.northern_river_bridge, route.stone_crossing, biome.whispering_marsh, biome.red_sky_foothills, biome.plains, biome.plains, biome.sunward_fields, biome.glacier_of_origins, biome.frostfang_peaks, biome.eastern_plains, biome.bone_yard, campaign.gemfall, route.northern_river_bridge, route.stone_crossing, location.stone_crossing, location.stone_crossing"
   writing_guidance: ""
   generation_hints: ""
 layout: features
@@ -96,6 +99,9 @@ infobox: feature
 - [The Plains](/biomes/plains/) `Reaches` `Locations` `Separated By`
 - [The Sunward Fields](/biomes/sunward_fields/) `Reaches` `Separated By`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Locations`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Locations`
 
 ### Locations
 - [Stone Crossing](/locations/stone_crossing/) `Locations` `Spans`
