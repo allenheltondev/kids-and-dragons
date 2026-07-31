@@ -380,7 +380,7 @@ function OptionRow({
 }): ReactElement {
   return (
     <fieldset className="creation-fieldset">
-      <legend className="creation-legend">{legend}</legend>
+      <legend className="creation-legend kad-label">{legend}</legend>
       <div className="creation-options">{children}</div>
     </fieldset>
   );
@@ -740,7 +740,7 @@ export function CreationFlow(): ReactElement {
             </div>
 
             <label className="creation-name__field">
-              <span className="creation-legend">Or type one</span>
+              <span className="creation-legend kad-label">Or type one</span>
               <input
                 className="creation-name__input kad-focusable"
                 type="text"

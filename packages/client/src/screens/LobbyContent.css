@@ -51,8 +51,6 @@
 .lobby__code-label {
   margin: 0 0 var(--space-2, 0.5em);
   font-size: var(--font-size-sm, 0.875em);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
 }
 
 .lobby__code {

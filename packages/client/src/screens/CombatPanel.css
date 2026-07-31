@@ -18,6 +18,12 @@
   list-style: none;
 }
 
+/* Same size as the icon it replaced, so the HP chips keep their height. */
+.combat__face {
+  inline-size: 1.6em;
+  block-size: 1.6em;
+}
+
 .combat__hp {
   display: inline-flex;
   align-items: center;

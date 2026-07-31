@@ -34,6 +34,7 @@ import {
 import { useAbilities, useMe, useParty, useRules, useRunState, useSend } from "../store";
 import { combatContext } from "../store/combat";
 import { Button } from "../ui/Button";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { combatantIcon, combatantLabel, gridCells, turnKey } from "./combat-grid";
 import "./shared.css";
@@ -179,11 +180,25 @@ export function CombatControls(): ReactElement | null {
         </p>
       )}
 
-      {/* The party at a glance — number first, bar never (spec §11). */}
+      {/*
+       * The party at a glance — number first, bar never (spec §11). Faces
+       * here, glyphs on the grid below: this row is *who*, the grid is a map,
+       * and a map marker has to stay a shape you can read at a tile's size.
+       */}
       <ul className="combat__party" aria-label="The party">
-        {partyCombatants.map((c) => (
+        {partyCombatants.map((c) => {
+          const member = party.find((m) => m.character.id === c.id);
+          return (
           <li className={`kad-chip${c.down ? " kad-chip--bad" : ""}`} key={c.id}>
-            <Icon name={combatantIcon(c, party)} />
+            {member === undefined ? (
+              <Icon name={combatantIcon(c, party)} />
+            ) : (
+              <CharacterPortrait
+                species={member.character.species}
+                tier={member.character.tier}
+                className="combat__face"
+              />
+            )}
             <span>{c.name}</span>
             <span className="combat__hp">
               <Icon name="heart" />
@@ -191,7 +206,8 @@ export function CombatControls(): ReactElement | null {
             </span>
             {c.down ? <Icon name="down" label="Knocked down" /> : null}
           </li>
-        ))}
+          );
+        })}
       </ul>
 
       {myTurn && active ? (

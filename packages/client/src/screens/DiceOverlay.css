@@ -43,6 +43,11 @@
   font-weight: 600;
 }
 
+.dice__roller {
+  inline-size: 2em;
+  block-size: 2em;
+}
+
 .dice__stat {
   display: inline-flex;
   align-items: center;
