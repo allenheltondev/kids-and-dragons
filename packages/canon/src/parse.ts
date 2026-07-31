@@ -39,6 +39,7 @@ export const FILES: Record<string, Record<string, Taxonomy>> = {
   "characters.yaml": { characters: "species" },
   "creatures.yaml": { creatures: "creature" },
   "npcs.yaml": { npcs: "people" },
+  "individuals.yaml": { individuals: "individual" },
   "factions.yaml": { factions: "faction" },
   "items.yaml": { items: "item" },
   "locations.yaml": { locations: "location" },
@@ -78,6 +79,7 @@ export interface ParseResult {
  * `kind` means defining it, in the file, where the next author will read it.
  */
 const CONTROLLED = [
+  "role",
   "kind",
   "canon_status",
   "map_provenance",

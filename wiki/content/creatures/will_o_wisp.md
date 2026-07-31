@@ -23,6 +23,9 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: supernatural_manifestations
+  - id: individual.pib
+    type: individual
+    relationship: creatures
 assets:
   primary: assets/entities/will_o_wisp/assembled.png
 ai_context:
@@ -31,7 +34,7 @@ ai_context:
   visual_style: "Small floating light with a shifting center that may briefly suggest a face, object, or scene."
   common_encounters: "Misdirection, emotional clue, fragment of an older event, a game that has forgotten it ended."
   lore_highlights: ""
-  related_entities: "biome.whispering_marsh, biome.enchanted_woods, biome.enchanted_woods, biome.whispering_marsh"
+  related_entities: "biome.whispering_marsh, biome.enchanted_woods, biome.enchanted_woods, biome.whispering_marsh, individual.pib"
   writing_guidance: "Not automatically the ghost of a dead person. Regional nicknames name where a wisp manifests, not a second species."
   generation_hints: "Some repeat a memory harmlessly. Others lure travelers toward connected places even when the route is unsafe."
 layout: creatures
@@ -63,6 +66,9 @@ infobox: creature
 ### Biomes
 - [Enchanted Woods](/biomes/enchanted_woods/) `Primary Locations` `Supernatural Manifestations`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Primary Locations` `Supernatural Manifestations`
+
+### Individuals
+- [Pib](/individuals/pib/) `Creatures`
 <!-- END GENERATED: relationships -->
 
 
