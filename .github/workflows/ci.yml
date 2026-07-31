@@ -105,6 +105,14 @@ jobs:
       - name: Bundle Lambdas
         run: npm run infra:build
 
+      # Canon is the source of truth (docs/canon-contract.md), and until now it
+      # was the one corpus no build step read: content:validate checks a
+      # chapter's biome against assets/manifest.json and has no concept of a
+      # creature id, and the wiki's own validator only ran inside the manual
+      # wiki:generate. A truth nothing verifies drifts.
+      - name: Check canon
+        run: npm run canon:check
+
       # Content is data (roadmap, "Content as data"), so it gets checked like code:
       # schemas first, then the cross-file rules a schema cannot express.
       - name: Validate content
