@@ -209,7 +209,7 @@ function InventoryGrid({
                 <Icon name={def?.icon ?? entry.kind} size="1.7em" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
-                <span className="inv__kind">
+                <span className="inv__kind kad-label">
                   <Icon name={entry.kind} />
                   <span>{entry.kind}</span>
                 </span>
@@ -398,13 +398,20 @@ export function PlayerPanel(): ReactElement {
                         <Icon name={option.icon} size="1.8em" />
                       </span>
                       <span className="choice__label">{option.label}</span>
-                      {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
-                      {voters.length === 0 ? null : (
-                        <span className="choice__votes">
-                          <Icon name="vote" />
-                          <span>{voters.join(", ")}</span>
+                      <span className="choice__trail">
+                        {/* The seat is always here; only the check comes and
+                            goes, so somebody else voting cannot rewrap the
+                            label you are reading. */}
+                        <span className="choice__mark">
+                          {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
                         </span>
-                      )}
+                        {voters.length === 0 ? null : (
+                          <span className="choice__votes">
+                            <Icon name="vote" />
+                            <span>{voters.join(", ")}</span>
+                          </span>
+                        )}
+                      </span>
                     </button>
                   </li>
                 );
