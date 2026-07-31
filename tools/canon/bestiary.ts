@@ -20,20 +20,24 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { BANDS, loadCanon, resolveStats, resolveXp, slugOf } from "@kad/canon";
+import { bandTable, loadCanon, resolveStats, resolveXp, slugOf } from "@kad/canon";
 import type { Creature } from "@kad/canon";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const OUT = path.join(ROOT, "content", "bestiary.json");
 
 const registry = loadCanon(path.join(ROOT, "canon"));
+/* The join: canon names the band, content/rules.json defines it. */
+const bands = bandTable(
+  JSON.parse(fs.readFileSync(path.join(ROOT, "content", "rules.json"), "utf8")),
+);
 const creatures = (registry.byTaxonomy.get("creature") ?? []) as Creature[];
 
 const bestiary: Record<string, unknown> = {};
 for (const creature of creatures) {
   if (!creature.encounter) continue;
   const id = creature.asset_id ?? slugOf(creature.id);
-  const stats = resolveStats(creature.encounter);
+  const stats = resolveStats(creature.encounter, bands);
   if (!stats) continue;
 
   bestiary[id] = {
@@ -43,8 +47,8 @@ for (const creature of creatures) {
     art: `enemies/${id}`,
     band: creature.encounter.band,
     ...stats,
-    xp: resolveXp(creature.encounter),
-    usualCount: BANDS[creature.encounter.band].usualCount,
+    xp: resolveXp(creature.encounter, bands),
+    usualCount: bands[creature.encounter.band]?.usualCount ?? 1,
     ...(creature.encounter.footprint === undefined
       ? {}
       : { footprint: creature.encounter.footprint }),
