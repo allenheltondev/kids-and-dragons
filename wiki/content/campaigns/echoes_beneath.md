@@ -14,12 +14,12 @@ related:
   - id: quest.crystal_heart_retrieval
     type: quest
     relationship: quests
+  - id: location.skullwater_cave
+    type: location
+    relationship: locations
   - id: location.crystal_font
     type: location
     relationship: locations
-  - id: biome.skullwater_cave
-    type: biome
-    relationship: biomes
   - id: item.crystal_heart
     type: item
     relationship: items
@@ -38,7 +38,7 @@ ai_context:
   visual_style: "Underground cathedral of crystals with ritualists performing a ceremony around the floating Crystal Heart."
   common_encounters: "Alternative perspective, antagonist backstory, moral complexity."
   lore_highlights: ""
-  related_entities: "faction.deep_hollow_cult, quest.crystal_heart_retrieval, location.crystal_font, biome.skullwater_cave, item.crystal_heart, faction.deep_hollow_cult, location.crystal_font, quest.crystal_heart_retrieval"
+  related_entities: "faction.deep_hollow_cult, quest.crystal_heart_retrieval, location.skullwater_cave, location.crystal_font, item.crystal_heart, faction.deep_hollow_cult, location.crystal_font, quest.crystal_heart_retrieval"
   writing_guidance: "Can be played alongside or after the main campaign. Reveals antagonist motivations as sympathetic."
   generation_hints: "Non-linear exploration with reputation-gated content."
 layout: campaigns
@@ -48,9 +48,6 @@ infobox: campaign
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Biomes
-- [Skullwater Cave](/biomes/skullwater_cave/) `Biomes`
-
 ### Factions
 - [The Deep Hollow Cult](/factions/deep_hollow_cult/) `Factions` `Campaigns`
 
@@ -58,6 +55,7 @@ infobox: campaign
 - [Crystal Heart](/items/crystal_heart/) `Items`
 
 ### Locations
+- [Skullwater Cave](/locations/skullwater_cave/) `Locations`
 - [The Crystal Font](/locations/crystal_font/) `Locations` `Campaigns`
 
 ### Quests

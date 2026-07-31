@@ -77,7 +77,7 @@ npcs:
       caravans when routes change.
     relationships:
       primary_locations: [biome.plains]
-      secondary_locations: [biome.eastern_plains, biome.sunward_fields, biome.exchange, biome.stone_crossing]
+      secondary_locations: [biome.eastern_plains, biome.sunward_fields, location.exchange, location.stone_crossing]
       creatures: []
       items: []
 
@@ -105,7 +105,7 @@ npcs:
       coordinate work.
     relationships:
       primary_locations: [biome.sunward_fields]
-      secondary_locations: [biome.plains, biome.exchange, biome.enchanted_woods]
+      secondary_locations: [biome.plains, location.exchange, biome.enchanted_woods]
       creatures: []
       items: []
 
@@ -160,7 +160,7 @@ npcs:
       guides respectful travelers.
     relationships:
       primary_locations: [biome.whispering_marsh]
-      secondary_locations: [biome.exchange]
+      secondary_locations: [location.exchange]
       creatures: []
       items: []
 
@@ -190,7 +190,7 @@ npcs:
       tests whether strangers pay attention.
     relationships:
       primary_locations: [biome.whispering_marsh]
-      secondary_locations: [biome.enchanted_woods, biome.exchange]
+      secondary_locations: [biome.enchanted_woods, location.exchange]
       creatures: []
       items: []
 
@@ -247,7 +247,7 @@ npcs:
       help prevent the whirlpool from widening.
     relationships:
       primary_locations: [biome.mermaid_cove]
-      secondary_locations: [biome.exchange]
+      secondary_locations: [location.exchange]
       creatures: []
       items: []
 
@@ -275,7 +275,7 @@ npcs:
       stranded travelers, carefully guards their coat.
     relationships:
       primary_locations: [biome.mermaid_cove]
-      secondary_locations: [biome.exchange]
+      secondary_locations: [location.exchange]
       creatures: []
       items: []
 
@@ -302,7 +302,7 @@ npcs:
       Inspects bridges, repairs stonework, monitors river currents, requests
       stories or riddles as tolls.
     relationships:
-      primary_locations: [biome.stone_crossing, biome.skullwater_cave]
+      primary_locations: [location.stone_crossing, location.skullwater_cave]
       secondary_locations: [biome.eastern_plains]
       creatures: []
       items: []
@@ -331,6 +331,6 @@ npcs:
       disruptions, disagrees about responsible practice.
     relationships:
       primary_locations: [biome.whispering_marsh]
-      secondary_locations: [biome.enchanted_woods, biome.exchange, biome.sunward_fields]
+      secondary_locations: [biome.enchanted_woods, location.exchange, biome.sunward_fields]
       creatures: []
       items: []

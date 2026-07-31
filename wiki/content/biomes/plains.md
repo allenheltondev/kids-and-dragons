@@ -11,6 +11,24 @@ related:
   - id: feature.great_river
     type: feature
     relationship: locations
+  - id: biome.eastern_plains
+    type: biome
+    relationship: separated_from
+  - id: feature.great_river
+    type: feature
+    relationship: separated_by
+  - id: biome.red_sky_foothills
+    type: biome
+    relationship: borders
+  - id: biome.enchanted_woods
+    type: biome
+    relationship: borders
+  - id: biome.whispering_marsh
+    type: biome
+    relationship: borders
+  - id: biome.sunward_fields
+    type: biome
+    relationship: borders
   - id: npc.centaur
     type: npc
     relationship: supporting_peoples
@@ -32,6 +50,12 @@ related:
   - id: creature.cinder_wolf
     type: creature
     relationship: primary_locations
+  - id: feature.great_river
+    type: feature
+    relationship: reaches
+  - id: feature.great_river_west_branch
+    type: feature
+    relationship: reaches
   - id: npc.centaur
     type: npc
     relationship: primary_locations
@@ -51,7 +75,7 @@ ai_context:
   visual_style: "Rolling green-gold grass, broad roads, scattered trees and stones, caravan camps, low ridges, distant settlements, and long views beneath an open sky."
   common_encounters: "Travel chapters, caravan stories, races, missing travelers, route disputes, encounters visible from far away, and journeys that connect otherwise separate regions."
   lore_highlights: ""
-  related_entities: "feature.great_river, npc.centaur, creature.jackalope, creature.cinder_wolf, character.dragonling, character.manticore, creature.jackalope, creature.cinder_wolf, npc.centaur, npc.faun, npc.harvest_sprite"
+  related_entities: "feature.great_river, biome.eastern_plains, feature.great_river, biome.red_sky_foothills, biome.enchanted_woods, biome.whispering_marsh, biome.sunward_fields, npc.centaur, creature.jackalope, creature.cinder_wolf, character.dragonling, character.manticore, creature.jackalope, creature.cinder_wolf, feature.great_river, feature.great_river_west_branch, npc.centaur, npc.faun, npc.harvest_sprite"
   writing_guidance: "Do not merge the Plains with Eastern Plains or Sunward Fields. The central Plains are road country, not the manticore homeland and not primarily farmland."
   generation_hints: "Caravans, messengers, herds, and travelers move along old routes while weather and river conditions periodically change the safest path."
 layout: biomes
@@ -60,6 +84,13 @@ infobox: biome
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
+
+### Biomes
+- [Enchanted Woods](/biomes/enchanted_woods/) `Borders`
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Borders`
+- [The Eastern Plains](/biomes/eastern_plains/) `Separated From`
+- [The Sunward Fields](/biomes/sunward_fields/) `Borders`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Borders`
 
 ### Characters
 - [Dragonling](/characters/dragonling/) `Secondary Locations`
@@ -70,7 +101,8 @@ infobox: biome
 - [Jackalope](/creatures/jackalope/) `Ambient Creatures` `Primary Locations`
 
 ### Features
-- [The Great River](/features/great_river/) `Locations`
+- [The Great River](/features/great_river/) `Locations` `Separated By` `Reaches`
+- [Western Branch of the Great River](/features/great_river_west_branch/) `Reaches`
 
 ### Npcs
 - [Centaur](/npcs/centaur/) `Supporting Peoples` `Primary Locations`

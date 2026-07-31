@@ -23,13 +23,18 @@ export const SLUG_RE = /^[a-z0-9]+(?:_[a-z0-9]+)*$/;
 export const Slug = z.string().regex(SLUG_RE, "must be lower snake_case");
 
 /**
- * The thirteen taxonomies, and the id prefix each one owns.
+ * The eleven taxonomies, and the id prefix each one owns.
  *
- * Note two shared prefixes, both deliberate. `geography.yaml`'s `sites` are
- * `location.*` because a site *is* a location — the file it happens to live in
- * is not part of its identity (D6 leaves the ownership split open; this table
- * is what makes either answer a data change). And `character.*` is the playable
- * species from `characters.yaml`, distinct from `npc.*` peoples.
+ * Was thirteen. D6 found that `biomes.yaml` and `geography.yaml` were describing
+ * the same seventeen places twice — every biome had a `geography_id`, and every
+ * region and site was claimed by exactly one biome, 12 and 5, no orphans either
+ * way. One from the ecology side, one from the map side. So `region` merged into
+ * `biome` and `site` into `location`, on the rule that **a biome is an
+ * ecological region and a location is a place inside one**.
+ *
+ * `character.*` is the playable species from `characters.yaml`, distinct from
+ * `npc.*` peoples — the one remaining place where the prefix and the file name
+ * disagree.
  */
 export const TAXONOMY_PREFIX = {
   biome: "biome",
@@ -41,8 +46,6 @@ export const TAXONOMY_PREFIX = {
   location: "location",
   quest: "quest",
   campaign: "campaign",
-  region: "geography",
-  site: "location",
   feature: "feature",
   route: "route",
 } as const satisfies Record<string, string>;
@@ -52,7 +55,7 @@ export type IdPrefix = (typeof TAXONOMY_PREFIX)[Taxonomy];
 
 export const TAXONOMIES = Object.keys(TAXONOMY_PREFIX) as Taxonomy[];
 
-/** Every prefix in use, deduplicated (`location` is claimed by two taxonomies). */
+/** Every prefix in use. One per taxonomy since the D6 merge. */
 export const ID_PREFIXES = [...new Set(Object.values(TAXONOMY_PREFIX))] as IdPrefix[];
 
 const ID_RE = new RegExp(`^(${ID_PREFIXES.join("|")})\\.[a-z0-9]+(?:_[a-z0-9]+)*$`);

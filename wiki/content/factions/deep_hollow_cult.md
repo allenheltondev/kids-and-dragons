@@ -8,11 +8,11 @@ canon_status: intentionally_undefined
 draft: true
 tags: ["cult", "underground", "mystical", "antagonist"]
 related:
-  - id: crystal_font
-    type: crystal_font
+  - id: location.crystal_font
+    type: location
     relationship: headquarters
-  - id: skullwater_cave
-    type: skullwater_cave
+  - id: location.skullwater_cave
+    type: location
     relationship: territory
   - id: faction.skywardens
     type: faction
@@ -41,7 +41,7 @@ ai_context:
   visual_style: "Dark robes with glowing crystal inlays, faceless masks with a single eye slit."
   common_encounters: "Antagonist faction, knowledge brokers, morally grey opposition."
   lore_highlights: ""
-  related_entities: "crystal_font, skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, location.crystal_font, quest.crystal_heart_retrieval"
+  related_entities: "location.crystal_font, location.skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, location.crystal_font, quest.crystal_heart_retrieval"
   writing_guidance: "Not purely evil — motivated by a desire to fix the world. Methods are extreme."
   generation_hints: "Operate in cells, communicate through crystal resonance, recruit the desperate."
 layout: factions
@@ -54,9 +54,6 @@ infobox: faction
 ### Campaigns
 - [Echoes Beneath](/campaigns/echoes_beneath/) `Campaigns` `Factions`
 
-### Crystal_fonts
-- [Crystal Font](/crystal_fonts/crystal_font/) `Headquarters`
-
 ### Factions
 - [The Skywardens](/factions/skywardens/) `Enemies`
 
@@ -64,13 +61,11 @@ infobox: faction
 - [Crystal Heart](/items/crystal_heart/) `Items`
 
 ### Locations
-- [The Crystal Font](/locations/crystal_font/) `Factions`
+- [Skullwater Cave](/locations/skullwater_cave/) `Territory`
+- [The Crystal Font](/locations/crystal_font/) `Headquarters` `Factions`
 
 ### Quests
 - [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) `Quests` `Factions`
-
-### Skullwater_caves
-- [Skullwater Cave](/skullwater_caves/skullwater_cave/) `Territory`
 <!-- END GENERATED: relationships -->
 
 

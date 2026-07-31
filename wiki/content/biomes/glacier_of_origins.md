@@ -14,6 +14,15 @@ related:
   - id: biome.frostfang_peaks
     type: biome
     relationship: locations
+  - id: biome.expanse
+    type: biome
+    relationship: borders
+  - id: biome.frostfang_peaks
+    type: biome
+    relationship: borders
+  - id: feature.great_river_source
+    type: feature
+    relationship: contains_features
   - id: npc.yeti
     type: npc
     relationship: supporting_peoples
@@ -32,6 +41,12 @@ related:
   - id: creature.frost_wyrm
     type: creature
     relationship: primary_locations
+  - id: feature.great_river_source
+    type: feature
+    relationship: contained_by
+  - id: feature.great_river
+    type: feature
+    relationship: reaches
   - id: npc.yeti
     type: npc
     relationship: primary_locations
@@ -45,7 +60,7 @@ ai_context:
   visual_style: "Blue-white ice fields, sharp glacial ridges, dark crevasses, meltwater channels, wind-carved snow, frozen shapes, and the young river cutting south."
   common_encounters: "River-source mysteries, rescues, preserved history, dangerous crossings, changing melt, ancient discoveries, and signs connecting the frozen north to events downstream."
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.frostfang_peaks, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, creature.snowhorn_goat, creature.frost_wyrm, npc.yeti"
+  related_entities: "feature.great_river, biome.frostfang_peaks, biome.expanse, biome.frostfang_peaks, feature.great_river_source, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river_source, feature.great_river, npc.yeti"
   writing_guidance: "The glacier may preserve memories, but it should not casually provide complete historical answers. Survival conditions matter."
   generation_hints: "Ice shifts, melt channels move, storms erase paths, and changes at the source eventually affect every downstream region."
 layout: biomes
@@ -56,7 +71,8 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Frostfang Peaks](/biomes/frostfang_peaks/) `Locations`
+- [Frostfang Peaks](/biomes/frostfang_peaks/) `Locations` `Borders`
+- [The Expanse](/biomes/expanse/) `Borders`
 
 ### Characters
 - [Griffin](/characters/griffin/) `Secondary Locations`
@@ -66,7 +82,8 @@ infobox: biome
 - [Snowhorn Goat](/creatures/snowhorn_goat/) `Ambient Creatures` `Primary Locations`
 
 ### Features
-- [The Great River](/features/great_river/) `Locations`
+- [Source of the Great River](/features/great_river_source/) `Contains Features` `Contained By`
+- [The Great River](/features/great_river/) `Locations` `Reaches`
 
 ### Npcs
 - [Yeti](/npcs/yeti/) `Supporting Peoples` `Primary Locations`

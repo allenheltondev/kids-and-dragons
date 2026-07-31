@@ -7,23 +7,23 @@ lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: []
 related:
-  - id: geography.glacier_of_origins
-    type: geography
+  - id: biome.glacier_of_origins
+    type: biome
     relationship: reaches
-  - id: geography.frostfang_peaks
-    type: geography
+  - id: biome.frostfang_peaks
+    type: biome
     relationship: reaches
-  - id: geography.red_sky_foothills
-    type: geography
+  - id: biome.red_sky_foothills
+    type: biome
     relationship: reaches
-  - id: geography.eastern_plains
-    type: geography
+  - id: biome.eastern_plains
+    type: biome
     relationship: reaches
-  - id: geography.plains
-    type: geography
+  - id: biome.plains
+    type: biome
     relationship: reaches
-  - id: geography.sunward_fields
-    type: geography
+  - id: biome.sunward_fields
+    type: biome
     relationship: reaches
   - id: route.northern_river_bridge
     type: route
@@ -34,49 +34,49 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: locations
+  - id: biome.red_sky_foothills
+    type: biome
+    relationship: separated_by
   - id: biome.plains
     type: biome
     relationship: locations
+  - id: biome.plains
+    type: biome
+    relationship: separated_by
+  - id: biome.sunward_fields
+    type: biome
+    relationship: separated_by
   - id: biome.glacier_of_origins
     type: biome
     relationship: locations
-  - id: biome.stone_crossing
+  - id: biome.frostfang_peaks
     type: biome
-    relationship: locations
+    relationship: separated_by
+  - id: biome.eastern_plains
+    type: biome
+    relationship: separated_by
   - id: biome.bone_yard
     type: biome
     relationship: locations
-  - id: geography.red_sky_foothills
-    type: geography
-    relationship: separated_by
-  - id: geography.plains
-    type: geography
-    relationship: separated_by
-  - id: geography.sunward_fields
-    type: geography
-    relationship: separated_by
-  - id: geography.eastern_plains
-    type: geography
-    relationship: separated_by
-  - id: geography.frostfang_peaks
-    type: geography
-    relationship: separated_by
-  - id: location.stone_crossing
-    type: location
-    relationship: spans
   - id: route.northern_river_bridge
     type: route
     relationship: crosses
   - id: route.stone_crossing
     type: route
     relationship: crosses
+  - id: location.stone_crossing
+    type: location
+    relationship: locations
+  - id: location.stone_crossing
+    type: location
+    relationship: spans
 ai_context:
   mood: ""
   themes: ""
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "geography.glacier_of_origins, geography.frostfang_peaks, geography.red_sky_foothills, geography.eastern_plains, geography.plains, geography.sunward_fields, route.northern_river_bridge, route.stone_crossing, biome.whispering_marsh, biome.plains, biome.glacier_of_origins, biome.stone_crossing, biome.bone_yard, geography.red_sky_foothills, geography.plains, geography.sunward_fields, geography.eastern_plains, geography.frostfang_peaks, location.stone_crossing, route.northern_river_bridge, route.stone_crossing"
+  related_entities: "biome.glacier_of_origins, biome.frostfang_peaks, biome.red_sky_foothills, biome.eastern_plains, biome.plains, biome.sunward_fields, route.northern_river_bridge, route.stone_crossing, biome.whispering_marsh, biome.red_sky_foothills, biome.plains, biome.plains, biome.sunward_fields, biome.glacier_of_origins, biome.frostfang_peaks, biome.eastern_plains, biome.bone_yard, route.northern_river_bridge, route.stone_crossing, location.stone_crossing, location.stone_crossing"
   writing_guidance: ""
   generation_hints: ""
 layout: features
@@ -87,22 +87,17 @@ infobox: feature
 ## Related Entities
 
 ### Biomes
-- [Glacier of Origins](/biomes/glacier_of_origins/) `Locations`
-- [Stone Crossing](/biomes/stone_crossing/) `Locations`
+- [Frostfang Peaks](/biomes/frostfang_peaks/) `Reaches` `Separated By`
+- [Glacier of Origins](/biomes/glacier_of_origins/) `Reaches` `Locations`
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Reaches` `Separated By`
 - [The Bone Yard](/biomes/bone_yard/) `Locations`
-- [The Plains](/biomes/plains/) `Locations`
+- [The Eastern Plains](/biomes/eastern_plains/) `Reaches` `Separated By`
+- [The Plains](/biomes/plains/) `Reaches` `Locations` `Separated By`
+- [The Sunward Fields](/biomes/sunward_fields/) `Reaches` `Separated By`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Locations`
 
-### Geography
-- [Frostfang Peaks](/geography/frostfang_peaks/) `Reaches` `Separated By`
-- [Glacier of Origins](/geography/glacier_of_origins/) `Reaches`
-- [Red Sky Foothills](/geography/red_sky_foothills/) `Reaches` `Separated By`
-- [The Eastern Plains](/geography/eastern_plains/) `Reaches` `Separated By`
-- [The Plains](/geography/plains/) `Reaches` `Separated By`
-- [The Sunward Fields](/geography/sunward_fields/) `Reaches` `Separated By`
-
 ### Locations
-- [Stone Crossing](/locations/stone_crossing/) `Spans`
+- [Stone Crossing](/locations/stone_crossing/) `Locations` `Spans`
 
 ### Routes
 - [Northern River Bridge](/routes/northern_river_bridge/) `Crossings` `Crosses`

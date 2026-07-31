@@ -7,11 +7,11 @@ lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: []
 related:
-  - id: geography.plains
-    type: geography
+  - id: biome.plains
+    type: biome
     relationship: reaches
-  - id: geography.whispering_marsh
-    type: geography
+  - id: biome.whispering_marsh
+    type: biome
     relationship: reaches
 ai_context:
   mood: ""
@@ -19,7 +19,7 @@ ai_context:
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "geography.plains, geography.whispering_marsh"
+  related_entities: "biome.plains, biome.whispering_marsh"
   writing_guidance: ""
   generation_hints: ""
 layout: features
@@ -29,9 +29,9 @@ infobox: feature
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Geography
-- [The Plains](/geography/plains/) `Reaches`
-- [Whispering Marsh](/geography/whispering_marsh/) `Reaches`
+### Biomes
+- [The Plains](/biomes/plains/) `Reaches`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Reaches`
 <!-- END GENERATED: relationships -->
 
 

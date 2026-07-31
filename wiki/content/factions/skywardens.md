@@ -8,11 +8,11 @@ canon_status: intentionally_undefined
 draft: true
 tags: ["military", "order", "protectors", "highlands"]
 related:
-  - id: redspire_citadel
-    type: redspire_citadel
+  - id: location.redspire_citadel
+    type: location
     relationship: headquarters
-  - id: red_sky_foothills
-    type: red_sky_foothills
+  - id: biome.red_sky_foothills
+    type: biome
     relationship: territory
   - id: faction.deep_hollow_cult
     type: faction
@@ -38,7 +38,7 @@ ai_context:
   visual_style: "Silver and violet armor, crimson cloaks, tower shield emblems."
   common_encounters: "Player faction, quest givers, moral authority, military support."
   lore_highlights: ""
-  related_entities: "redspire_citadel, red_sky_foothills, faction.deep_hollow_cult, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, location.redspire_citadel, quest.shattered_sky_rite"
+  related_entities: "location.redspire_citadel, biome.red_sky_foothills, faction.deep_hollow_cult, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, location.redspire_citadel, quest.shattered_sky_rite"
   writing_guidance: "Honorable but rigid. Will sacrifice individuals for the greater good."
   generation_hints: "Patrol the highlands, maintain fortifications, train recruits."
 layout: factions
@@ -48,6 +48,9 @@ infobox: faction
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
+### Biomes
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Territory`
+
 ### Campaigns
 - [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Campaigns` `Factions`
 
@@ -55,16 +58,10 @@ infobox: faction
 - [The Deep Hollow Cult](/factions/deep_hollow_cult/) `Enemies`
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) `Factions`
+- [Redspire Citadel](/locations/redspire_citadel/) `Headquarters` `Factions`
 
 ### Quests
 - [The Shattered Sky Rite](/quests/shattered_sky_rite/) `Quests` `Factions`
-
-### Red_sky_foothills
-- [Red Sky Foothills](/red_sky_foothills/red_sky_foothills/) `Territory`
-
-### Redspire_citadels
-- [Redspire Citadel](/redspire_citadels/redspire_citadel/) `Headquarters`
 <!-- END GENERATED: relationships -->
 
 

@@ -8,12 +8,33 @@ canon_status: confirmed
 tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
 related:
-  - id: biome.exchange
-    type: biome
+  - id: location.exchange
+    type: location
     relationship: locations
   - id: location.stone_crossing
     type: location
     relationship: locations
+  - id: location.bramblewood
+    type: location
+    relationship: locations
+  - id: biome.eastern_plains
+    type: biome
+    relationship: separated_from
+  - id: feature.great_river
+    type: feature
+    relationship: separated_by
+  - id: biome.plains
+    type: biome
+    relationship: borders
+  - id: biome.whispering_marsh
+    type: biome
+    relationship: borders
+  - id: location.exchange
+    type: location
+    relationship: nearby_sites
+  - id: location.stone_crossing
+    type: location
+    relationship: nearby_sites
   - id: npc.faun
     type: npc
     relationship: supporting_peoples
@@ -23,9 +44,6 @@ related:
   - id: creature.jackalope
     type: creature
     relationship: ambient_creatures
-  - id: biome.stone_crossing
-    type: biome
-    relationship: locations
   - id: character.unicorn
     type: character
     relationship: secondary_locations
@@ -35,6 +53,27 @@ related:
   - id: creature.jackalope
     type: creature
     relationship: primary_locations
+  - id: feature.great_river
+    type: feature
+    relationship: reaches
+  - id: route.stone_crossing
+    type: route
+    relationship: connects
+  - id: route.exchange_to_sunward_fields
+    type: route
+    relationship: connects
+  - id: location.exchange
+    type: location
+    relationship: biome
+  - id: location.exchange
+    type: location
+    relationship: adjacent_to
+  - id: location.stone_crossing
+    type: location
+    relationship: connects
+  - id: location.bramblewood
+    type: location
+    relationship: biome
   - id: npc.centaur
     type: npc
     relationship: secondary_locations
@@ -57,7 +96,7 @@ ai_context:
   visual_style: "Gold-green fields, hedgerows, orchards, wind-bent grain, irrigation channels, farmsteads, communal barns, roads, and warm evening light."
   common_encounters: "Harvest problems, village festivals, missing livestock, weather threats, cooperative work, food shortages, local mysteries, and the consequences of trouble elsewhere reaching ordinary families."
   lore_highlights: ""
-  related_entities: "biome.exchange, location.stone_crossing, npc.faun, npc.harvest_sprite, creature.jackalope, biome.stone_crossing, character.unicorn, character.dragonling, creature.jackalope, npc.centaur, npc.faun, npc.harvest_sprite, npc.witch_order"
+  related_entities: "location.exchange, location.stone_crossing, location.bramblewood, biome.eastern_plains, feature.great_river, biome.plains, biome.whispering_marsh, location.exchange, location.stone_crossing, npc.faun, npc.harvest_sprite, creature.jackalope, character.unicorn, character.dragonling, creature.jackalope, feature.great_river, route.stone_crossing, route.exchange_to_sunward_fields, location.exchange, location.exchange, location.stone_crossing, location.bramblewood, npc.centaur, npc.faun, npc.harvest_sprite, npc.witch_order"
   writing_guidance: "The Fields are not generic open plains. Agriculture, villages, irrigation, and communal work should shape both visuals and stories."
   generation_hints: "Work follows planting and harvest seasons. Communities share labor, maintain water and roads, and respond quickly when weather, magic, or pests threaten the realm's food supply."
 layout: biomes
@@ -68,8 +107,9 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Stone Crossing](/biomes/stone_crossing/) `Locations`
-- [The Exchange](/biomes/exchange/) `Locations`
+- [The Eastern Plains](/biomes/eastern_plains/) `Separated From`
+- [The Plains](/biomes/plains/) `Borders`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Borders`
 
 ### Characters
 - [Dragonling](/characters/dragonling/) `Secondary Locations`
@@ -78,14 +118,23 @@ infobox: biome
 ### Creatures
 - [Jackalope](/creatures/jackalope/) `Ambient Creatures` `Primary Locations`
 
+### Features
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
+
 ### Locations
-- [Stone Crossing](/locations/stone_crossing/) `Locations`
+- [Bramblewood](/locations/bramblewood/) `Locations` `Biome`
+- [Stone Crossing](/locations/stone_crossing/) `Locations` `Nearby Sites` `Connects`
+- [The Exchange](/locations/exchange/) `Locations` `Nearby Sites` `Biome` `Adjacent To`
 
 ### Npcs
 - [Centaur](/npcs/centaur/) `Secondary Locations`
 - [Faun](/npcs/faun/) `Supporting Peoples` `Primary Locations`
 - [Harvest Sprite](/npcs/harvest_sprite/) `Supporting Peoples` `Primary Locations`
 - [Witches](/npcs/witch_order/) `Secondary Locations`
+
+### Routes
+- [Exchange–Sunward Road](/routes/exchange_to_sunward_fields/) `Connects`
+- [Stone Crossing Route](/routes/stone_crossing/) `Connects`
 <!-- END GENERATED: relationships -->
 
 

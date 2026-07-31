@@ -91,7 +91,7 @@ factions:
       desperate.
     relationships:
       headquarters: [location.crystal_font]
-      territory: [biome.skullwater_cave]
+      territory: [location.skullwater_cave]
       enemies: [faction.skywardens]
       quests: [quest.crystal_heart_retrieval]
       campaigns: [campaign.echoes_beneath]

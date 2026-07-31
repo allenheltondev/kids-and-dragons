@@ -1,5 +1,5 @@
 /**
- * The thirteen canon taxonomies — docs/canon-contract.md §3 and §4.
+ * The eleven canon taxonomies — docs/canon-contract.md §3 and §4.
  *
  * Each is `Envelope.extend({...})`, so everything generic (the registry, the
  * DynamoDB row, `canon_get`) works against any of them without knowing which.
@@ -48,48 +48,68 @@ export { CanonStatus, MapProvenance };
 /** `{ x, y }` against the illustrated map. See `world_metadata.coordinate_system`. */
 const MapAnchor = z.strictObject({ x: z.number(), y: z.number() });
 
+/**
+ * What a place is on the map. Shared by `biome` and `location` since the D6
+ * merge folded `geography.yaml`'s regions and sites into them.
+ *
+ * `map_provenance` is optional here and required on `biome`: every ecological
+ * region is drawn, but a town authored in `locations.yaml` need never have been.
+ */
+const Place = Envelope.extend({
+  map_provenance: MapProvenance.optional(),
+  map_anchor: MapAnchor.optional(),
+  access: z.strictObject({ mode: Slug, fixed_routes: z.boolean() }).optional(),
+});
+
+/** Who and what lives in a place. A settlement has people; a whirlpool does not. */
+const Inhabitants = z.strictObject({
+  primary_peoples: edge("species", "people"),
+  supporting_peoples: edge("species", "people"),
+  cultural_orders: edge("faction", "people"),
+  ambient_creatures: edge("creature"),
+  dangerous_creatures: edge("creature"),
+  legendary_beings: edge("creature"),
+  supernatural_manifestations: edge("creature"),
+  population_rule: z.string().optional(),
+});
+
 // ---------------------------------------------------------------------------
-// biome — the ecological + art view of a place. 17 entries, 1:1 with assets/biomes/.
+// biome — an ecological region: climate, wildlife, art, and its place on the map.
 // ---------------------------------------------------------------------------
 
-export const Biome = Envelope.extend({
-  /**
-   * The map entity this biome dresses. A `site` as often as a `region`: five
-   * biomes (MossHome, Mount Red Sky, The Exchange, Stone Crossing, Skullwater
-   * Cave) are named places inside a wider region rather than regions of their
-   * own — which is D6's ownership question showing up as a union type.
-   */
-  geography_id: canonRef("region", "site"),
+export const Biome = Place.extend({
   map_label: z.string().min(1),
   environment_type: Slug,
   climate: z.string(),
   danger_level: DangerLevel,
   parent_biome: canonRef("biome").optional(),
 
+  // Absorbed from geography.yaml `regions` by the D6 merge.
+  relative_position: Slug,
+  borders: edge("biome"),
+  /** Direction → barrier name. Free text: D5 — these look like refs and are not. */
+  barriers: z.record(z.string(), z.string()).optional(),
+  separated_from: z
+    .array(z.strictObject({ region: canonRef("biome"), by: canonRef("feature") }))
+    .default([]),
+  contains_sites: edge("location"),
+  contains_features: edge("feature"),
+  nearby_sites: edge("location"),
+  water_features: edge("feature"),
+  /** A named sea. Not an entity — the map has no sea taxonomy (D5). */
+  coast: Slug.optional(),
+
   /**
-   * Who and what lives here — already the reverse index an encounter generator
-   * needs ("what could plausibly be in this fight"). `population_rule` is prose
-   * sitting among seven edge arrays; D11 proposes lifting it to the envelope.
+   * Already the reverse index an encounter generator needs — "what could
+   * plausibly be in this fight". Required on a biome: an ecological region with
+   * nothing living in it is a gap, not a fact.
    */
-  inhabitants: z.strictObject({
-    primary_peoples: edge("species", "people"),
-    supporting_peoples: edge("species", "people"),
-    cultural_orders: edge("faction", "people"),
-    ambient_creatures: edge("creature"),
-    dangerous_creatures: edge("creature"),
-    legendary_beings: edge("creature"),
-    supernatural_manifestations: edge("creature"),
-    population_rule: z.string().optional(),
-  }),
+  inhabitants: Inhabitants,
+  map_provenance: MapProvenance,
 
   relationships: z.strictObject({
-    /**
-     * Named places inside this biome. `site` as well as `location` — the two
-     * share the `location.` prefix but are different taxonomies (one authored
-     * in locations.yaml, one in geography.yaml), which is exactly the ambiguity
-     * D6 exists to settle. Until it is, both are legal here.
-     */
-    locations: edge("location", "site", "route", "feature", "biome"),
+    /** Named places inside this biome. One taxonomy since the D6 merge. */
+    locations: edge("location", "route", "feature", "biome"),
     factions: edge("faction"),
     items: edge("item"),
   }),
@@ -105,8 +125,8 @@ export const Species = Envelope.extend({
   signature_part: z.enum(["horn", "mane", "tail", "wings"]),
   bipedal: z.boolean(),
   relationships: z.strictObject({
-    primary_locations: edge("biome"),
-    secondary_locations: edge("biome"),
+    primary_locations: edge("biome", "location"),
+    secondary_locations: edge("biome", "location"),
     creatures: edge("creature"),
     items: edge("item"),
   }),
@@ -129,7 +149,7 @@ export const Creature = Envelope.extend({
   scale: Scale,
   danger_level: DangerLevel,
   relationships: z.strictObject({
-    primary_locations: edge("biome"),
+    primary_locations: edge("biome", "location"),
     creatures: edge("creature"),
     items: edge("item"),
   }),
@@ -145,8 +165,8 @@ export const People = Envelope.extend({
   sapience: Sapience,
   scale: Scale,
   relationships: z.strictObject({
-    primary_locations: edge("biome"),
-    secondary_locations: edge("biome"),
+    primary_locations: edge("biome", "location"),
+    secondary_locations: edge("biome", "location"),
     creatures: edge("creature"),
     items: edge("item"),
   }),
@@ -161,7 +181,7 @@ export const Faction = Envelope.extend({
   alignment: Slug,
   relationships: z.strictObject({
     headquarters: edge("location"),
-    territory: edge("biome", "region"),
+    territory: edge("biome", "location"),
     /** Free text: membership is not canon (`agent_instructions`), so not refs. */
     members: z.array(z.string()).default([]),
     enemies: edge("faction"),
@@ -176,7 +196,7 @@ export const Item = Envelope.extend({
   rarity: Slug,
   acquisition: z.string(),
   relationships: z.strictObject({
-    found_in: edge("biome"),
+    found_in: edge("biome", "location"),
     dropped_by: edge("creature"),
     factions: edge("faction"),
     quests: edge("quest"),
@@ -184,11 +204,30 @@ export const Item = Envelope.extend({
   // `mechanics` (kind, icon, effect) lands here when D7 is ruled.
 });
 
-export const Location = Envelope.extend({
+export const Location = Place.extend({
   location_type: Slug,
+  /** The biome this place sits in. The defining field of the taxonomy (D6). */
   parent_biome: canonRef("biome"),
+
+  // Absorbed from geography.yaml `sites` by the D6 merge. All optional: a town
+  // authored in locations.yaml need never have been drawn on the map.
+  map_label: z.string().min(1).optional(),
+  climate: z.string().optional(),
+  danger_level: DangerLevel.optional(),
+  relative_position: Slug.optional(),
+  adjacent_to: edge("biome", "location"),
+  access_from: edge("biome", "location"),
+  connects: edge("biome", "location"),
+  coast_near: edge("biome"),
+  coast: Slug.optional(),
+  spans: canonRef("feature").optional(),
+  /** A settlement has people; a whirlpool does not. Same shape as a biome's. */
+  inhabitants: Inhabitants.optional(),
+
   relationships: z.strictObject({
     biome: edge("biome"),
+    /** Places inside this one — the Exchange's docks, a cave's deeper rooms. */
+    locations: edge("location", "route", "feature", "biome"),
     creatures: edge("creature"),
     factions: edge("faction"),
     items: edge("item"),
@@ -226,72 +265,40 @@ export const Campaign = Envelope.extend({
 });
 
 // ---------------------------------------------------------------------------
-// geography — four taxonomies in one file: the map graph.
+// geography — what is left after the D6 merge: the things that are neither an
+// ecological region nor a place inside one. Rivers and roads.
 //
 // `map_provenance` is the D1 split: how we know the place is there (drawn,
 // labelled, merely implied), which is a fact about the source map and not
 // about canon standing. A place can be `map_implied` and `confirmed` both.
 // ---------------------------------------------------------------------------
 
-const Mapped = Envelope.extend({
+const Mapped = Place.extend({
   kind: Slug,
   map_provenance: MapProvenance,
-  map_anchor: MapAnchor.optional(),
-});
-
-export const Region = Mapped.extend({
-  biome_id: canonRef("biome"),
-  relative_position: Slug,
-  borders: edge("region"),
-  /** Direction → barrier name. Free text: D5 — these look like refs and are not. */
-  barriers: z.record(z.string(), z.string()).optional(),
-  separated_from: z
-    .array(z.strictObject({ region: canonRef("region"), by: canonRef("feature") }))
-    .default([]),
-  access: z.strictObject({ mode: Slug, fixed_routes: z.boolean() }).optional(),
-  contains_sites: edge("site"),
-  contains_features: edge("feature"),
-  nearby_sites: edge("site"),
-  water_features: edge("feature"),
-  /** A named sea. Not an entity — the map has no sea taxonomy yet (D5). */
-  coast: Slug.optional(),
-});
-
-export const Site = Mapped.extend({
-  /** Which biome's art dresses this site — the join to assets/biomes/. */
-  art_biome_id: canonRef("biome"),
-  contained_by: canonRef("region").optional(),
-  adjacent_to: edge("region", "site"),
-  access_from: edge("region", "site"),
-  connects: edge("region", "site"),
-  spans: canonRef("feature").optional(),
-  relative_position: Slug.optional(),
-  coast_near: edge("region"),
-  coast: Slug.optional(),
-  access: z.strictObject({ mode: Slug, fixed_routes: z.boolean() }).optional(),
 });
 
 export const Feature = Mapped.extend({
-  contained_by: canonRef("region").optional(),
+  contained_by: canonRef("biome").optional(),
   source: canonRef("feature").optional(),
   parent: canonRef("feature").optional(),
   flow_direction: Slug.optional(),
-  reaches: edge("region"),
+  reaches: edge("biome"),
   crossings: edge("route"),
   mouth: z
     .strictObject({
       map_anchor: MapAnchor.optional(),
-      between: edge("region"),
-      near: edge("region"),
+      between: edge("biome"),
+      near: edge("biome"),
     })
     .optional(),
   outlet: Slug.optional(),
 });
 
 export const Route = Mapped.extend({
-  connects: edge("region", "site"),
+  connects: edge("biome", "location"),
   crosses: canonRef("feature").optional(),
-  via: canonRef("site").optional(),
+  via: canonRef("location").optional(),
   travel_modes: z.array(Slug).default([]),
   constraints: z.array(z.string()).default([]),
 });
@@ -310,8 +317,6 @@ export const SCHEMAS = {
   location: Location,
   quest: Quest,
   campaign: Campaign,
-  region: Region,
-  site: Site,
   feature: Feature,
   route: Route,
 } as const;
@@ -326,8 +331,6 @@ export type CanonEntity =
   | z.infer<typeof Location>
   | z.infer<typeof Quest>
   | z.infer<typeof Campaign>
-  | z.infer<typeof Region>
-  | z.infer<typeof Site>
   | z.infer<typeof Feature>
   | z.infer<typeof Route>;
 
@@ -340,7 +343,5 @@ export type Item = z.infer<typeof Item>;
 export type Location = z.infer<typeof Location>;
 export type Quest = z.infer<typeof Quest>;
 export type Campaign = z.infer<typeof Campaign>;
-export type Region = z.infer<typeof Region>;
-export type Site = z.infer<typeof Site>;
 export type Feature = z.infer<typeof Feature>;
 export type Route = z.infer<typeof Route>;

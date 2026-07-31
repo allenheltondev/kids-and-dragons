@@ -98,7 +98,7 @@ creatures:
     standard_behavior: >-
       Gathers near warm cracks before noticeable volcanic changes, avoids loud movement.
     relationships:
-      primary_locations: [biome.red_sky_foothills, biome.mount_red_sky]
+      primary_locations: [biome.red_sky_foothills, location.mount_red_sky]
       creatures: []
       items: []
 
@@ -124,7 +124,7 @@ creatures:
     standard_behavior: >-
       Follows healthy paths, sometimes approaches calm caretakers.
     relationships:
-      primary_locations: [biome.enchanted_woods, biome.mosshome]
+      primary_locations: [biome.enchanted_woods, location.mosshome]
       creatures: []
       items: []
 
@@ -230,7 +230,7 @@ creatures:
     standard_behavior: >-
       Plays in safe currents, collects polished objects, sometimes returns dropped items.
     relationships:
-      primary_locations: [biome.stone_crossing, biome.mermaid_cove]
+      primary_locations: [location.stone_crossing, biome.mermaid_cove]
       creatures: []
       items: []
 
@@ -285,7 +285,7 @@ creatures:
     standard_behavior: >-
       Defends warm burrows and exposed mineral deposits.
     relationships:
-      primary_locations: [biome.red_sky_foothills, biome.mount_red_sky]
+      primary_locations: [biome.red_sky_foothills, location.mount_red_sky]
       creatures: []
       items: []
 
@@ -395,7 +395,7 @@ creatures:
       Defends deep water and favorite resting shelves, may block boats or demand
       dropped food.
     relationships:
-      primary_locations: [biome.stone_crossing]
+      primary_locations: [location.stone_crossing]
       creatures: []
       items: []
 
@@ -451,7 +451,7 @@ creatures:
       Remains still while listening, investigates repeated sounds, retreats from
       overwhelming layered noise.
     relationships:
-      primary_locations: [biome.skullwater_cave]
+      primary_locations: [location.skullwater_cave]
       creatures: []
       items: []
 
@@ -543,6 +543,6 @@ creatures:
       Guards a claimed lair or purpose, monitors intrusions, may warn, test,
       bargain with, or attack depending on individual.
     relationships:
-      primary_locations: [biome.mount_red_sky]
+      primary_locations: [location.mount_red_sky]
       creatures: []
       items: []

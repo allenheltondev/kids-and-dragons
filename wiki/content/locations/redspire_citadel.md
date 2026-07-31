@@ -23,6 +23,9 @@ related:
   - id: campaign.dawn_of_the_red_sky
     type: campaign
     relationship: locations
+  - id: faction.skywardens
+    type: faction
+    relationship: headquarters
   - id: quest.shattered_sky_rite
     type: quest
     relationship: locations
@@ -32,7 +35,7 @@ ai_context:
   visual_style: "Black stone tower with violet-lit windows, crimson banners, lightning rods crackling with energy."
   common_encounters: "Hub location, quest start and end point, safe haven, faction headquarters."
   lore_highlights: ""
-  related_entities: "biome.red_sky_foothills, faction.skywardens, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, quest.shattered_sky_rite"
+  related_entities: "biome.red_sky_foothills, faction.skywardens, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, faction.skywardens, quest.shattered_sky_rite"
   writing_guidance: "Always accessible to players. Cannot be destroyed in narrative."
   generation_hints: "Bustling with activity during day, eerily quiet at night except for the forge."
 layout: locations
@@ -49,7 +52,7 @@ infobox: location
 - [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Campaigns` `Locations`
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) `Factions`
+- [The Skywardens](/factions/skywardens/) `Factions` `Headquarters`
 
 ### Quests
 - [The Shattered Sky Rite](/quests/shattered_sky_rite/) `Quests` `Locations`

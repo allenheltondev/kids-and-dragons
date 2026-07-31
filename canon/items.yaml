@@ -89,7 +89,7 @@ items:
     standard_behavior: >-
       Pulses in sync with nearby crystal formations.
     relationships:
-      found_in: [biome.skullwater_cave]
+      found_in: [location.skullwater_cave]
       dropped_by: []
       quests: [quest.crystal_heart_retrieval]
       factions: []

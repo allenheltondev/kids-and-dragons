@@ -14,8 +14,8 @@ related:
   - id: biome.open_sea
     type: biome
     relationship: locations
-  - id: biome.the_whirlpool
-    type: biome
+  - id: location.the_whirlpool
+    type: location
     relationship: locations
   - id: creature.bone_crawler
     type: creature
@@ -39,7 +39,7 @@ ai_context:
   visual_style: "A V-shaped island of colossal ribs, skulls, vertebrae, dark sediment, pale bone fields, shallow channels, sparse dead growth, and no ordinary settlement."
   common_encounters: "Ancient-remains mysteries, supernatural disturbances, retrieval with moral consequences, rescue, dangerous tides, forbidden expeditions, and stories about allowing the dead to rest."
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.open_sea, biome.the_whirlpool, creature.bone_crawler, creature.restless_remains, creature.bone_crawler, creature.restless_remains"
+  related_entities: "feature.great_river, biome.open_sea, location.the_whirlpool, creature.bone_crawler, creature.restless_remains, creature.bone_crawler, creature.restless_remains"
   writing_guidance: "The Bone Yard has no normal permanent settlement. Do not make it a generic graveyard, battlefield, or source of consequence-free crafting materials."
   generation_hints: "River deposits and tides rearrange smaller remains, supernatural activity may animate or echo through the bones, and safe paths can change."
 layout: biomes
@@ -50,8 +50,7 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Open Sea](/biomes/open_sea/) `Locations`
-- [The Whirlpool](/biomes/the_whirlpool/) `Locations`
+- [The Open Sea](/biomes/open_sea/) `Locations`
 
 ### Creatures
 - [Bone Crawler](/creatures/bone_crawler/) `Dangerous Creatures` `Primary Locations`
@@ -59,6 +58,9 @@ infobox: biome
 
 ### Features
 - [The Great River](/features/great_river/) `Locations`
+
+### Locations
+- [The Whirlpool](/locations/the_whirlpool/) `Locations`
 <!-- END GENERATED: relationships -->
 
 

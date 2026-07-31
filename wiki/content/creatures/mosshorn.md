@@ -14,14 +14,14 @@ related:
   - id: biome.enchanted_woods
     type: biome
     relationship: primary_locations
-  - id: biome.mosshome
-    type: biome
+  - id: location.mosshome
+    type: location
     relationship: primary_locations
   - id: biome.enchanted_woods
     type: biome
     relationship: ambient_creatures
-  - id: biome.mosshome
-    type: biome
+  - id: location.mosshome
+    type: location
     relationship: ambient_creatures
 assets:
   primary: assets/entities/mosshorn/assembled.png
@@ -31,7 +31,7 @@ ai_context:
   visual_style: "Deer-like body with antlers shaped like small living branches, moss and seasonal plants grow naturally across the antlers and shoulders."
   common_encounters: "Guide toward a safe path, sign of ecological trouble, peaceful background creature."
   lore_highlights: ""
-  related_entities: "biome.enchanted_woods, biome.mosshome, biome.enchanted_woods, biome.mosshome"
+  related_entities: "biome.enchanted_woods, location.mosshome, biome.enchanted_woods, location.mosshome"
   writing_guidance: "Avoids conflict, leaves areas where forest magic has become damaged."
   generation_hints: "Follows healthy paths, sometimes approaches calm caretakers."
 layout: creatures
@@ -43,7 +43,9 @@ infobox: creature
 
 ### Biomes
 - [Enchanted Woods](/biomes/enchanted_woods/) `Primary Locations` `Ambient Creatures`
-- [MossHome](/biomes/mosshome/) `Primary Locations` `Ambient Creatures`
+
+### Locations
+- [MossHome](/locations/mosshome/) `Primary Locations` `Ambient Creatures`
 <!-- END GENERATED: relationships -->
 
 
