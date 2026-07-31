@@ -23,7 +23,7 @@ export const SLUG_RE = /^[a-z0-9]+(?:_[a-z0-9]+)*$/;
 export const Slug = z.string().regex(SLUG_RE, "must be lower snake_case");
 
 /**
- * The eleven taxonomies, and the id prefix each one owns.
+ * The twelve taxonomies, and the id prefix each one owns.
  *
  * Was thirteen. D6 found that `biomes.yaml` and `geography.yaml` were describing
  * the same seventeen places twice — every biome had a `geography_id`, and every
@@ -35,12 +35,18 @@ export const Slug = z.string().regex(SLUG_RE, "must be lower snake_case");
  * `character.*` is the playable species from `characters.yaml`, distinct from
  * `npc.*` peoples — the one remaining place where the prefix and the file name
  * disagree.
+ *
+ * `npc.*` is a *kind* of person (centaur, faun); `individual.*` is one named
+ * person (D8). They are separate taxonomies because they answer different
+ * questions and because one owns the other: an individual names the people
+ * they belong to, and a people has many individuals or none.
  */
 export const TAXONOMY_PREFIX = {
   biome: "biome",
   species: "character",
   creature: "creature",
   people: "npc",
+  individual: "individual",
   faction: "faction",
   item: "item",
   location: "location",

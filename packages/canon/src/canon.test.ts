@@ -13,8 +13,12 @@ import { describe, expect, it } from "vitest";
 import { loadCanon } from "./index.js";
 import { buildRegistry } from "./registry.js";
 import { parseCanon } from "./parse.js";
-import { Creature, Biome, Item } from "./taxonomies.js";
-import type { Creature as CreatureEntity, Item as ItemEntity } from "./taxonomies.js";
+import { Creature, Biome, Individual, Item } from "./taxonomies.js";
+import type {
+  Creature as CreatureEntity,
+  Individual as IndividualEntity,
+  Item as ItemEntity,
+} from "./taxonomies.js";
 import { bandTable, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
 import { checkAssets, errors, related } from "./registry.js";
@@ -350,6 +354,53 @@ describe("item mechanics — D7", () => {
     );
     expect(props.length).toBeGreaterThan(0);
     for (const id of props) expect(registry.byId.has(`item.${id}`), id).toBe(false);
+  });
+});
+
+describe("named individuals — D8", () => {
+  const individuals = [...(registry.byTaxonomy.get("individual") ?? [])] as IndividualEntity[];
+
+  it("gives every individual a home that is a real location", () => {
+    // The defining rule, and the reason `home` is required rather than
+    // optional: an individual is canon because a place owns them.
+    expect(individuals.length).toBeGreaterThan(0);
+    for (const person of individuals) {
+      expect(registry.taxonomyOf.get(person.home), person.id).toBe("location");
+    }
+  });
+
+  it("refuses an individual belonging to nowhere", () => {
+    const homeless = {
+      id: "individual.nobody",
+      title: "Nobody",
+      canon_status: "confirmed",
+      role: "innkeeper",
+      pronouns: "they/them",
+      relationships: { haunts: [], people: [], factions: [], creatures: [], items: [], quests: [] },
+    };
+    expect(Individual.safeParse(homeless).success).toBe(false);
+    expect(Individual.safeParse({ ...homeless, home: "location.bramblewood" }).success).toBe(true);
+  });
+
+  it("lets a location answer who lives there, without the location saying so", () => {
+    // The reverse index doing the work it exists for: `home` points one way and
+    // nobody has to keep a roster on the town.
+    const residents = related(registry, "location.bramblewood", { direction: "in", field: "home" });
+    expect(residents.map((edge) => edge.from)).toContain("individual.pib");
+  });
+
+  it("keeps chapter-scoped characters out of canon", () => {
+    // bramblewood-01 voices three: Pib, a wisp with a rhyming habit, and an
+    // embarrassed door. Only Pib has a town that would miss them.
+    const chapter = JSON.parse(
+      fs.readFileSync(
+        path.join(process.cwd(), "content", "chapters", "bramblewood-01.json"),
+        "utf8",
+      ),
+    ) as { llmHints?: { npcVoices?: Record<string, string> } };
+    const voiced = Object.keys(chapter.llmHints?.npcVoices ?? {});
+    expect(voiced).toContain("door_voice");
+    expect(registry.byId.has("individual.door_voice")).toBe(false);
   });
 });
 

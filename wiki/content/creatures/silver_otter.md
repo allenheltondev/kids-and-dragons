@@ -20,6 +20,9 @@ related:
   - id: biome.mermaid_cove
     type: biome
     relationship: ambient_creatures
+  - id: individual.old_ossley
+    type: individual
+    relationship: creatures
   - id: item.quickfoot_lace
     type: item
     relationship: dropped_by
@@ -34,7 +37,7 @@ ai_context:
   visual_style: "Sleek otter form with silver or blue highlights, often carries a favorite polished stone or shell."
   common_encounters: "River health clue, lighthearted interaction, finder of a small lost object."
   lore_highlights: ""
-  related_entities: "location.stone_crossing, biome.mermaid_cove, biome.mermaid_cove, item.quickfoot_lace, location.stone_crossing"
+  related_entities: "location.stone_crossing, biome.mermaid_cove, biome.mermaid_cove, individual.old_ossley, item.quickfoot_lace, location.stone_crossing"
   writing_guidance: "Avoids polluted or magically disturbed water."
   generation_hints: "Plays in safe currents, collects polished objects, sometimes returns dropped items."
 layout: creatures
@@ -46,6 +49,9 @@ infobox: creature
 
 ### Biomes
 - [Mermaid Cove](/biomes/mermaid_cove/) `Primary Locations` `Ambient Creatures`
+
+### Individuals
+- [Old Ossley](/individuals/old_ossley/) `Creatures`
 
 ### Items
 - [Quickfoot Lace](/items/quickfoot_lace/) `Dropped By`

@@ -246,6 +246,19 @@ export interface LlmHints {
   tone: string;
   vocabulary: string;
   forbidden: string[];
+  /**
+   * Chapter-scoped characters — D8's other half, and the counterpart to
+   * `props` above.
+   *
+   * The wisp who speaks in rhyme and the very embarrassed door exist because
+   * this chapter happened. When it ends they are gone, and that is the correct
+   * outcome; nothing in the Realm is poorer for it.
+   *
+   * A character the *world* has goes in `canon/individuals.yaml` instead, and
+   * the test is whether a place would miss them. Pib keeps Bramblewood's
+   * hedges, so Pib is canon; the door is not. `canon/individuals.yaml` states
+   * the rule, and `individual.home` being required is what enforces it.
+   */
   npcVoices?: Record<string, string>;
 }
 

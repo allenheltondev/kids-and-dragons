@@ -1,5 +1,5 @@
 /**
- * The eleven canon taxonomies — docs/canon-contract.md §3 and §4.
+ * The twelve canon taxonomies — docs/canon-contract.md §3 and §4.
  *
  * Each is `Envelope.extend({...})`, so everything generic (the registry, the
  * DynamoDB row, `canon_get`) works against any of them without knowing which.
@@ -29,7 +29,7 @@
  * defining it, in the file, where an author will read it.
  *
  * Cross-file invariants (`canon_status`, `danger_level`, `sapience`) stay real
- * enums, because those have to mean the same thing in all thirteen.
+ * enums, because those have to mean the same thing in all twelve.
  */
 
 import { z } from "zod";
@@ -211,11 +211,68 @@ export const People = Envelope.extend({
   classification: z.enum(["supporting_people", "cultural_order"]),
   sapience: Sapience,
   scale: Scale,
+  /**
+   * How this people generally sounds — D8. Prose, and about the *kind*, not a
+   * person: "unhurried, states things as facts, never asks a question twice."
+   *
+   * The live layer voices NPCs from a cached prefix (architecture §6.3), and
+   * before this the only voicing anywhere was a chapter's `llmHints.npcVoices`,
+   * which is thrown away when the chapter ends. A people-level register means a
+   * frogfolk met in chapter one and a frogfolk met in chapter six sound like
+   * the same civilisation without anyone re-authoring it.
+   */
+  speech_register: z.string().optional(),
   relationships: z.strictObject({
     primary_locations: edge("biome", "location"),
     secondary_locations: edge("biome", "location"),
     creatures: edge("creature"),
     items: edge("item"),
+  }),
+});
+
+// ---------------------------------------------------------------------------
+// individual — one named person, owned by a place. D8.
+// ---------------------------------------------------------------------------
+
+/**
+ * A named individual the world has, as opposed to one a chapter borrows.
+ *
+ * **The defining rule is `home`, and it is required.** An individual is canon
+ * because a location owns them — they are in the town whether or not a chapter
+ * is running, and the next chapter set there finds them still standing behind
+ * the same counter. Someone who is merely "there at this point in chapter two"
+ * is not this; they are the chapter's, and they live in its
+ * `llmHints.npcVoices` where they can be forgotten afterward, which is the
+ * same split D7 draws between `canon/items.yaml` and a chapter's `props`.
+ *
+ * Making `home` required rather than optional is what stops that line eroding.
+ * There is no way to author a canon individual belonging to nowhere, so the
+ * question "should this be canon?" is answered by "can you name the place that
+ * would miss them?"
+ */
+export const Individual = Envelope.extend({
+  /** The location that owns them. The whole taxonomy hangs off this. */
+  home: canonRef("location"),
+  /** Which people they are one of. Absent for a one-of-a-kind. */
+  people: canonRef("species", "people").optional(),
+  /** What they do where they live — `innkeeper`, `hedge_keeper`, `ferryman`. */
+  role: Slug,
+  /**
+   * Third person, as the game will use them. Authored rather than inferred:
+   * nothing about a name tells you this, and getting it wrong at the table is
+   * the kind of small unkindness worth spending a field to avoid.
+   */
+  pronouns: z.string().min(1),
+  /** How *this* person talks, over and above their people's register. */
+  speech_register: z.string().optional(),
+  relationships: z.strictObject({
+    /** Places they turn up that are not home. */
+    haunts: edge("biome", "location"),
+    people: edge("individual"),
+    factions: edge("faction"),
+    creatures: edge("creature"),
+    items: edge("item"),
+    quests: edge("quest"),
   }),
 });
 
@@ -370,6 +427,7 @@ export const SCHEMAS = {
   species: Species,
   creature: Creature,
   people: People,
+  individual: Individual,
   faction: Faction,
   item: Item,
   location: Location,
@@ -384,6 +442,7 @@ export type CanonEntity =
   | z.infer<typeof Species>
   | z.infer<typeof Creature>
   | z.infer<typeof People>
+  | z.infer<typeof Individual>
   | z.infer<typeof Faction>
   | z.infer<typeof Item>
   | z.infer<typeof Location>
@@ -396,6 +455,7 @@ export type Biome = z.infer<typeof Biome>;
 export type Species = z.infer<typeof Species>;
 export type Creature = z.infer<typeof Creature>;
 export type People = z.infer<typeof People>;
+export type Individual = z.infer<typeof Individual>;
 export type Faction = z.infer<typeof Faction>;
 export type Item = z.infer<typeof Item>;
 export type Location = z.infer<typeof Location>;

@@ -1,3 +1,3 @@
 ---
-title: "NPCs"
+title: "Peoples"
 ---

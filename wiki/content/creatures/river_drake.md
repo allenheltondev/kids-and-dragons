@@ -14,6 +14,9 @@ related:
   - id: location.stone_crossing
     type: location
     relationship: primary_locations
+  - id: individual.old_ossley
+    type: individual
+    relationship: creatures
   - id: location.stone_crossing
     type: location
     relationship: dangerous_creatures
@@ -25,7 +28,7 @@ ai_context:
   visual_style: "Sleek amphibious dragon-like body with fins, short limbs, and river-stone coloring."
   common_encounters: "Bridge complication, river rescue, creature displaced by changed currents."
   lore_highlights: ""
-  related_entities: "location.stone_crossing, location.stone_crossing"
+  related_entities: "location.stone_crossing, individual.old_ossley, location.stone_crossing"
   writing_guidance: "Smaller and less powerful than a legendary dragon, can learn routines."
   generation_hints: "Defends deep water and favorite resting shelves, may block boats or demand dropped food."
 layout: creatures
@@ -53,6 +56,9 @@ infobox: creature
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
+
+### Individuals
+- [Old Ossley](/individuals/old_ossley/) `Creatures`
 
 ### Locations
 - [Stone Crossing](/locations/stone_crossing/) `Primary Locations` `Dangerous Creatures`
