@@ -139,11 +139,20 @@ export interface EnemySpec {
    * string by convention, so a chapter could quietly disagree with canon about
    * how much HP a bramblewisp has and nothing would notice.
    *
-   * The stat numbers stay written out below rather than being resolved from
-   * `content/bestiary.json` at load time, so a chapter is still readable and
-   * reviewable on its own. `tools/content/validate.mjs` fails the build if they
-   * disagree with the bestiary, which makes the duplication safe rather than
-   * merely conventional.
+   * **The stats below are resolved from it**, not copied beside it. A chapter
+   * authors `{ "id": "wisp", "name": "Bramblewisp", "creature": "will_o_wisp" }`
+   * and the content loader fills the rest from `content/bestiary.json`
+   * (`resolveEnemy` in bestiary.ts) — so retuning the `skirmisher` band is an
+   * edit to `content/rules.json` and nothing else.
+   *
+   * This interface describes the **loaded** chapter, which is why every stat is
+   * required: `setup()` should never wonder whether a monster has HP. The
+   * authored shape, where they are optional, is `AuthoredEnemySpec`, and it is
+   * what `schemas/chapter.schema.json` validates.
+   *
+   * Overriding is still allowed — a chapter that wants a weakened wisp says
+   * `"hp": 4` and means it — and an override that merely restates canon's own
+   * number is refused, because that is the duplication this replaced.
    */
   creature?: string;
   hp: number;
