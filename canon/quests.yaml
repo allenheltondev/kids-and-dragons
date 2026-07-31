@@ -102,7 +102,7 @@ quests:
     rewards:
       - Crystal Heart artifact
     relationships:
-      locations: [location.crystal_font]
+      locations: []
       items: [item.crystal_heart]
       factions: [faction.deep_hollow_cult]
       campaigns: [campaign.echoes_beneath]

@@ -48,7 +48,6 @@ controlled_values:
 
 location_ids:
   - redspire_citadel
-  - crystal_font
   - hollow_gate
 
 locations:
@@ -359,39 +358,6 @@ locations:
       campaigns: [campaign.dawn_of_the_red_sky]
       creatures: []
       items: []
-
-  - id: location.crystal_font
-    asset_id: crystal_font
-    title: "The Crystal Font"
-    canon_status: intentionally_undefined
-    canon_note: >-
-      This location is tied to the Deep Hollow Cult faction which is not yet
-      canon. The location design is a placeholder for chapter-scoped content.
-    location_type: underground_sanctum
-    parent_biome: biome.open_sea
-    featured: false
-    tags: [underground, sacred, crystal, cult_base]
-    short_description: >-
-      A hidden cathedral deep within the caverns where resonance rituals are
-      conducted.
-    visual_identity: >-
-      Vast cavern with a central crystal fountain emanating violet light,
-      surrounded by carved pillars.
-    common_story_uses: Dungeon location, quest objective, faction base, boss arena.
-    canon_constraints: >-
-      Hidden — requires navigation or guidance to find. Magical wards prevent
-      scrying.
-    standard_behavior: >-
-      Crystal formations here grow faster than elsewhere, reshaping the space over
-      weeks.
-    relationships:
-      biome: [biome.open_sea]
-      locations: [location.skullwater_cave]
-      factions: [faction.deep_hollow_cult]
-      quests: [quest.crystal_heart_retrieval]
-      campaigns: [campaign.echoes_beneath]
-      creatures: []
-      items: [item.crystal_heart]
 
   - id: location.hollow_gate
     asset_id: hollow_gate
