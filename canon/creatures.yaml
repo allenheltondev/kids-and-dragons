@@ -825,7 +825,7 @@ creatures:
           because: "A walking quarry and a parade in one. The crawlers attend every manifestation."
       dislikes: []
     relationships:
-      primary_locations: [biome.bone_yard]
+      primary_locations: [location.bone_yard]
       creatures: []
       items: []
 
@@ -1032,7 +1032,7 @@ creatures:
         - of: creature.bone_crawler
           because: "Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely."
     relationships:
-      primary_locations: [biome.bone_yard]
+      primary_locations: [location.bone_yard]
       creatures: []
       items: []
 

@@ -17,11 +17,14 @@ likes:
     url: "/creatures/restless_remains/"
     because: "A walking quarry and a parade in one. The crawlers attend every manifestation."
 related:
-  - id: biome.bone_yard
-    type: biome
+  - id: location.bone_yard
+    type: location
     relationship: primary_locations
-  - id: biome.bone_yard
+  - id: biome.sallow_wastelands
     type: biome
+    relationship: dangerous_creatures
+  - id: location.bone_yard
+    type: location
     relationship: dangerous_creatures
 assets:
   primary: assets/entities/bone_crawler/portrait.webp
@@ -32,7 +35,7 @@ ai_context:
   visual_style: "Low many-legged body mostly hidden beneath an irregular shell of old bone."
   common_encounters: "Bone Yard atmosphere, swarm obstacle, indicator that new magical energy entered the island."
   lore_highlights: "A hermit crab that moved into history."
-  related_entities: "biome.bone_yard, biome.bone_yard"
+  related_entities: "location.bone_yard, biome.sallow_wastelands, location.bone_yard"
   writing_guidance: "Does not intentionally animate bones. Shell looks assembled, not like an animated skeleton."
   generation_hints: "Hides from large creatures, defends feeding sites, swarms objects carrying fresh magical energy."
 layout: creatures
@@ -85,7 +88,10 @@ Timid alone, bold in a clatter, and entirely without enemies it is aware of — 
 ## Related Entities
 
 ### Biomes
-- [The Bone Yard](/biomes/bone_yard/) `Primary Locations` `Dangerous Creatures`
+- [The Sallow Wastelands](/biomes/sallow_wastelands/) `Dangerous Creatures`
+
+### Locations
+- [The Bone Yard](/locations/bone_yard/) `Primary Locations` `Dangerous Creatures`
 <!-- END GENERATED: relationships -->
 
 

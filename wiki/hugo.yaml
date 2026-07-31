@@ -11,6 +11,10 @@ module:
       target: content
     - source: ../assets
       target: static/assets  # mount repo assets into Hugo static
+    - source: ../art/reference
+      target: static/map     # world map art served at /map/
+    - source: ../canon
+      target: data/canon     # canon YAML exposed as site.Data.canon.* (map pins)
 
 params:
   search:
