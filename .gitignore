@@ -16,6 +16,7 @@ cdk.out/
 # wiki generator manifest (local dev state, regenerated on each run)
 wiki/.gen-manifest.json
 wiki/public/
+wiki-public/
 
 # bundled Lambda artifacts — infra/build.mjs regenerates these on every deploy
 infra/.build/
