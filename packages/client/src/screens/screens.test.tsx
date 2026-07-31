@@ -15,6 +15,9 @@ import type { ClassDef, SpeciesDef } from "@kad/shared";
 import { canUseInventoryItem } from "./PlayerPanel";
 import { CosmeticRow, HeroStrip, SpeciesStep } from "./CreationFlow";
 import { nextFace } from "./DiceOverlay";
+import { isMissingArt } from "./CharacterPortrait";
+import { characterArtUrl } from "../world/art-paths";
+import manifest from "../../../../assets/manifest.json";
 import { HORN_STYLES, MARKINGS, WING_STYLES } from "./creationContent";
 import { patchCreationDraft, resetCreationDraft } from "./creationDraft";
 import rules from "../../../../content/rules.json";
@@ -101,6 +104,47 @@ describe("CharacterPortrait", () => {
   it("carries the chosen accent as the colour of the light it stands in", () => {
     const html = renderToStaticMarkup(<CharacterPortrait species="bigfoot" lit accent="#70E09F" />);
     expect(html).toContain("--portrait-accent:#70E09F");
+  });
+
+  /*
+   * The figure stands on its ground-contact line, not on the bottom of its
+   * canvas — the same `ANCHOR_Y` the Pixi sprites use. Asserted against the
+   * manifest rather than against the number, because the number is the
+   * manifest's to change.
+   */
+  it("hands CSS the ground-contact offset from the art contract", () => {
+    const canvas = manifest.canvas;
+    const floor = (1 - canvas.originY / canvas.height) * 100;
+    expect(renderToStaticMarkup(<CharacterPortrait species="unicorn" />)).toContain(
+      `--portrait-floor:${String(floor)}%`,
+    );
+  });
+
+  /*
+   * One mounted portrait outlives the picture it shows: characters cross tiers,
+   * rows are reused for another species, and `/assets` deploys separately from
+   * the bundle, so a URL that 404s now can exist in ten minutes. The fallback
+   * is therefore keyed to the URL that failed.
+   *
+   * This is asserted on the predicate rather than by driving a rerender because
+   * the package has no DOM environment (vitest runs `node`, and screens are
+   * tested through `renderToStaticMarkup` — see signin.test.tsx). It is the
+   * whole of the behaviour either way: after this change nothing about the
+   * failure is held in component state that a rerender could carry, so
+   * "what does the next render show" *is* this function.
+   */
+  it("re-asks for a new URL after a different one failed", () => {
+    const unicorn = characterArtUrl("unicorn");
+    const griffin = characterArtUrl("griffin");
+    const unicornMythic = characterArtUrl("unicorn", "mythic");
+
+    expect(isMissingArt(null, unicorn)).toBe(false);
+    // The one that actually 404'd keeps the icon...
+    expect(isMissingArt(unicorn, unicorn)).toBe(true);
+    // ...and nothing else does: a species change, or a tier the character just
+    // grew into, both get their own request.
+    expect(isMissingArt(unicorn, griffin)).toBe(false);
+    expect(isMissingArt(unicorn, unicornMythic)).toBe(false);
   });
 });
 
