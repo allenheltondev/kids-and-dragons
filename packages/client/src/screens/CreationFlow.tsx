@@ -142,6 +142,7 @@ export function SpeciesStep({
             <CharacterPortrait
               species={def.id}
               className="creation-species__art"
+              stand="centre"
               lit={selected}
               float={selected}
             />
