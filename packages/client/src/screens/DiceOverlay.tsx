@@ -17,6 +17,7 @@ import { speak } from "@kad/shared";
 import type { DiceRoll } from "@kad/shared";
 import { useParty, usePresentation } from "../store";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./DiceOverlay.css";
@@ -90,7 +91,16 @@ export function DiceOverlay(): ReactElement | null {
     <div className="dice" role="status" aria-live="assertive">
       <div className={`dice__card${settled ? " dice__card--settled" : ""}`}>
         <p className="dice__who">
-          {roller === null ? null : <Icon name={roller.character.species} />}
+          {/* Whose roll it is, in the middle of the room, at a glance — the
+              name is right there but the picture is what carries across a
+              sofa. */}
+          {roller === null ? null : (
+            <CharacterPortrait
+              species={roller.character.species}
+              tier={roller.character.tier}
+              className="dice__roller"
+            />
+          )}
           <span>
             {roller?.character.name ?? "Someone"}
             {roll.stat === undefined ? "" : " rolls"}

@@ -97,7 +97,7 @@ export function NarrationPanel(): ReactElement | null {
     <section className="narration" aria-live="polite">
       <header className="narration__head">
         {state.chapterId === null ? null : (
-          <p className="narration__chapter kad-muted">
+          <p className="narration__chapter kad-label">
             <Icon name="chapter" />
             <span>{prettyChapter(state.chapterId)}</span>
           </p>

@@ -132,7 +132,7 @@ export function LobbyContent(): ReactElement {
           full three-person party is on screen without scrolling. */}
       <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
         <div className="lobby__code-block">
-          <p className="lobby__code-label kad-muted">Room code</p>
+          <p className="lobby__code-label kad-label">Room code</p>
           <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
             {code === null
               ? "----"
