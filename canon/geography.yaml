@@ -23,6 +23,7 @@ agent_instructions:
 controlled_values:
   kind:
     biome_region: "A broad ecological and travel region."
+    ocean: "Open water surrounding the landmass."
     aerial_archipelago: "A group of floating or airborne land masses."
     offshore_island_region: "An island or marine area not reachable by overland travel."
     volcanic_landmark_region: "A singular volcanic landmark with its own visual family."
@@ -105,6 +106,18 @@ world_metadata:
       illustrated region is traversable.
 
 regions:
+  - id: geography.ocean
+    title: Ocean
+    kind: ocean
+    biome_id: biome.open_sea
+    canon_status: confirmed
+    map_provenance: map_implied
+    relative_position: surrounding
+    borders: []
+    notes:
+      - "The water surrounding the illustrated landmass. It has no map anchor because it is not a place on the map so much as everything the map is not."
+      - "Deliberately coarse: the first campaigns barely touch it. Split it into named seas when one of them needs to be a place."
+
   - id: geography.expanse
     title: The Expanse
     kind: biome_region
