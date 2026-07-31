@@ -24,7 +24,8 @@ related:
     type: location
     relationship: ambient_creatures
 assets:
-  primary: assets/entities/mosshorn/assembled.png
+  primary: assets/entities/mosshorn/portrait.webp
+  primaryFull: assets/entities/mosshorn/assembled.png
 ai_context:
   mood: "Gentle deer-like forest animal whose antlers support living moss, ferns, and flowers."
   themes: "Ambient, Forest, Gentle, Indicator"

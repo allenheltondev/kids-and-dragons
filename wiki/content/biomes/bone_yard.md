@@ -30,9 +30,11 @@ related:
     type: creature
     relationship: primary_locations
 assets:
-  primary: assets/biomes/bone_yard/bg.webp
+  primary: assets/biomes/bone_yard/portrait.webp
+  primaryFull: assets/biomes/bone_yard/bg.webp
   gallery:
-    - assets/biomes/bone_yard/tiles.png
+    - src: assets/biomes/bone_yard/portrait.webp
+      full: assets/biomes/bone_yard/tiles.png
 ai_context:
   mood: "A southeastern river-delta island where the remains of enormous ancient creatures collect, settle, and sometimes refuse to remain entirely still."
   themes: "Bone_island, River_delta, Forbidden, Ancient_remains, Supernatural"

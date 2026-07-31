@@ -78,9 +78,11 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
-  primary: assets/biomes/enchanted_woods/bg.webp
+  primary: assets/biomes/enchanted_woods/portrait.webp
+  primaryFull: assets/biomes/enchanted_woods/bg.webp
   gallery:
-    - assets/biomes/enchanted_woods/tiles.png
+    - src: assets/biomes/enchanted_woods/portrait.webp
+      full: assets/biomes/enchanted_woods/tiles.png
 ai_context:
   mood: "An ancient living forest whose paths, clearings, and hidden places respond to memory, promises, damage, and the behavior of those who enter."
   themes: "Ancient_forest, Living_magic, Changing_paths, Memory, Hidden_glades"

@@ -25,9 +25,11 @@ related:
     type: location
     relationship: adjacent_to
 assets:
-  primary: assets/biomes/expanse/bg.webp
+  primary: assets/biomes/expanse/portrait.webp
+  primaryFull: assets/biomes/expanse/bg.webp
   gallery:
-    - assets/biomes/expanse/tiles.png
+    - src: assets/biomes/expanse/portrait.webp
+      full: assets/biomes/expanse/tiles.png
 ai_context:
   mood: "A vast northern waste where nothing visibly grows and no confirmed population, ecology, or civilization has been established."
   themes: "Barren, Northern_waste, Forbidden, Unknown, Plateau"

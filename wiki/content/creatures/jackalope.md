@@ -30,7 +30,8 @@ related:
     type: biome
     relationship: ambient_creatures
 assets:
-  primary: assets/entities/jackalope/assembled.png
+  primary: assets/entities/jackalope/portrait.webp
+  primaryFull: assets/entities/jackalope/assembled.png
 ai_context:
   mood: "Fast rabbit-like plains animal with small branching antlers."
   themes: "Ambient, Plains, Common, Fast"

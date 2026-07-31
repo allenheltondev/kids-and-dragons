@@ -24,11 +24,15 @@ related:
     type: biome
     relationship: primary_peoples
 assets:
-  primary: assets/characters/manticore/fledgling/assembled.png
+  primary: assets/characters/manticore/fledgling/portrait.webp
+  primaryFull: assets/characters/manticore/fledgling/assembled.png
   gallery:
-    - assets/characters/manticore/mythic/assembled.png
-    - assets/characters/manticore/radiant/assembled.png
-    - assets/characters/manticore/sworn/assembled.png
+    - src: assets/characters/manticore/mythic/portrait.webp
+      full: assets/characters/manticore/mythic/assembled.png
+    - src: assets/characters/manticore/radiant/portrait.webp
+      full: assets/characters/manticore/radiant/assembled.png
+    - src: assets/characters/manticore/sworn/portrait.webp
+      full: assets/characters/manticore/sworn/assembled.png
 ai_context:
   mood: "Proud, formidable plains people who travel in family prides, maintain routes, and guard travelers crossing the open east."
   themes: "Playable, Plains, Guardian, Proud"

@@ -24,11 +24,15 @@ related:
     type: biome
     relationship: primary_peoples
 assets:
-  primary: assets/characters/kitsune/fledgling/assembled.png
+  primary: assets/characters/kitsune/fledgling/portrait.webp
+  primaryFull: assets/characters/kitsune/fledgling/assembled.png
   gallery:
-    - assets/characters/kitsune/mythic/assembled.png
-    - assets/characters/kitsune/radiant/assembled.png
-    - assets/characters/kitsune/sworn/assembled.png
+    - src: assets/characters/kitsune/mythic/portrait.webp
+      full: assets/characters/kitsune/mythic/assembled.png
+    - src: assets/characters/kitsune/radiant/portrait.webp
+      full: assets/characters/kitsune/radiant/assembled.png
+    - src: assets/characters/kitsune/sworn/portrait.webp
+      full: assets/characters/kitsune/sworn/assembled.png
 ai_context:
   mood: "Fox-like people of the drifting Sky Islands who use wind, stories, navigation, and illusion to connect moving communities."
   themes: "Playable, Sky, Illusion, Clever"

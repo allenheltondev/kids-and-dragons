@@ -24,11 +24,15 @@ related:
     type: biome
     relationship: primary_peoples
 assets:
-  primary: assets/characters/unicorn/fledgling/assembled.png
+  primary: assets/characters/unicorn/fledgling/portrait.webp
+  primaryFull: assets/characters/unicorn/fledgling/assembled.png
   gallery:
-    - assets/characters/unicorn/mythic/assembled.png
-    - assets/characters/unicorn/radiant/assembled.png
-    - assets/characters/unicorn/sworn/assembled.png
+    - src: assets/characters/unicorn/mythic/portrait.webp
+      full: assets/characters/unicorn/mythic/assembled.png
+    - src: assets/characters/unicorn/radiant/portrait.webp
+      full: assets/characters/unicorn/radiant/assembled.png
+    - src: assets/characters/unicorn/sworn/portrait.webp
+      full: assets/characters/unicorn/sworn/assembled.png
 ai_context:
   mood: "Magical forest people who tend hidden glades, shifting paths, wounded magic, and the ancient promises remembered by the Enchanted Woods."
   themes: "Playable, Forest, Magic, Healer"

@@ -57,9 +57,11 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
-  primary: assets/biomes/frostfang_peaks/bg.webp
+  primary: assets/biomes/frostfang_peaks/portrait.webp
+  primaryFull: assets/biomes/frostfang_peaks/bg.webp
   gallery:
-    - assets/biomes/frostfang_peaks/tiles.png
+    - src: assets/biomes/frostfang_peaks/portrait.webp
+      full: assets/biomes/frostfang_peaks/tiles.png
 ai_context:
   mood: "A vast frozen mountain range of cliffs, passes, and aeries that forms the griffin homeland and watches the northern horizon."
   themes: "Frozen_mountains, Aeries, Griffin_homeland, Cliffs, Rescue"

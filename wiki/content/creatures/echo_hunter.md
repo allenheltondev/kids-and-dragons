@@ -18,7 +18,8 @@ related:
     type: location
     relationship: dangerous_creatures
 assets:
-  primary: assets/entities/echo_hunter/assembled.png
+  primary: assets/entities/echo_hunter/portrait.webp
+  primaryFull: assets/entities/echo_hunter/assembled.png
 ai_context:
   mood: "Blind underground predator that maps tunnels and tracks movement through sound."
   themes: "Dangerous, Underground, Blind, Predator"

@@ -23,7 +23,8 @@ related:
     type: biome
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/selkie/assembled.png
+  primary: assets/entities/selkie/portrait.webp
+  primaryFull: assets/entities/selkie/assembled.png
 ai_context:
   mood: "Seal-shifting coastal people who move easily between sea communities and the land."
   themes: "Supporting_people, Coastal, Shapeshifter, Courier"

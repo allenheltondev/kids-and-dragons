@@ -29,7 +29,7 @@ describe('discoverAssets', () => {
 
       expect(result.entityId).toBe('creature.bigfoot');
       expect(result.source).toBe('explicit');
-      expect(result.primary).toBe('assets/characters/bigfoot/fledgling/idle.png');
+      expect(result.primary?.full).toBe('assets/characters/bigfoot/fledgling/idle.png');
       expect(result.gallery).toBeUndefined();
       expect(warnings).toHaveLength(0);
     });
@@ -45,7 +45,7 @@ describe('discoverAssets', () => {
       const { result } = discoverAssets(entity, assetsDir);
 
       expect(result.source).toBe('explicit');
-      expect(result.primary).toBe('explicit/path/image.png');
+      expect(result.primary?.full).toBe('explicit/path/image.png');
     });
   });
 
@@ -60,7 +60,7 @@ describe('discoverAssets', () => {
 
       expect(result.entityId).toBe('creature.bigfoot');
       expect(result.source).toBe('convention');
-      expect(result.primary).toContain('creatures/bigfoot/idle.png');
+      expect(result.primary?.full).toContain('creatures/bigfoot/idle.png');
       expect(result.gallery).toBeUndefined();
       expect(warnings).toHaveLength(0);
     });
@@ -85,7 +85,7 @@ describe('discoverAssets', () => {
       const { result, warnings } = discoverAssets(entity, assetsDir);
 
       expect(result.source).toBe('convention');
-      expect(result.primary).toContain('biomes/enchanted_woods/landscape.png');
+      expect(result.primary?.full).toContain('biomes/enchanted_woods/landscape.png');
       expect(warnings).toHaveLength(0);
     });
   });
@@ -106,7 +106,7 @@ describe('discoverAssets', () => {
       expect(result.gallery!.length).toBe(3);
 
       // Should be alpha-sorted by filename: playing.jpg, portrait.webp, swimming.png
-      const filenames = result.gallery!.map((p) => p.split('/').pop());
+      const filenames = result.gallery!.map((image) => image.full.split('/').pop());
       expect(filenames).toEqual(['playing.jpg', 'portrait.webp', 'swimming.png']);
       expect(warnings).toHaveLength(0);
     });
@@ -121,7 +121,7 @@ describe('discoverAssets', () => {
 
       // metadata.json should not appear in results
       const allPaths = result.gallery ?? (result.primary ? [result.primary] : []);
-      const hasJson = allPaths.some((p) => p.endsWith('.json'));
+      const hasJson = allPaths.some((image) => image.full.endsWith('.json'));
       expect(hasJson).toBe(false);
     });
   });
@@ -193,11 +193,11 @@ describe('discoverAllAssets', () => {
 
     expect(results.size).toBe(3);
     expect(results.get('creature.bigfoot')!.source).toBe('convention');
-    expect(results.get('creature.bigfoot')!.primary).toContain('idle.png');
+    expect(results.get('creature.bigfoot')!.primary?.full).toContain('idle.png');
     expect(results.get('creature.silver_otter')!.source).toBe('convention');
     expect(results.get('creature.silver_otter')!.gallery).toHaveLength(3);
     expect(results.get('biome.enchanted_woods')!.source).toBe('convention');
-    expect(results.get('biome.enchanted_woods')!.primary).toContain('landscape.png');
+    expect(results.get('biome.enchanted_woods')!.primary?.full).toContain('landscape.png');
     expect(warnings).toHaveLength(0);
   });
 

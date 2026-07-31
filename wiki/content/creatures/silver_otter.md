@@ -30,7 +30,8 @@ related:
     type: location
     relationship: ambient_creatures
 assets:
-  primary: assets/entities/silver_otter/assembled.png
+  primary: assets/entities/silver_otter/portrait.webp
+  primaryFull: assets/entities/silver_otter/assembled.png
 ai_context:
   mood: "Playful river otter with water-shedding silver-blue fur."
   themes: "Ambient, River, Playful, Indicator"

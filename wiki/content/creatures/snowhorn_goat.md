@@ -27,7 +27,8 @@ related:
     type: item
     relationship: dropped_by
 assets:
-  primary: assets/entities/snowhorn_goat/assembled.png
+  primary: assets/entities/snowhorn_goat/portrait.webp
+  primaryFull: assets/entities/snowhorn_goat/assembled.png
 ai_context:
   mood: "Sure-footed mountain goat with translucent ice-colored horns."
   themes: "Ambient, Mountain, Climbing, Indicator"

@@ -1,7 +1,11 @@
 <aside class="wiki-infobox wiki-infobox--creature" role="complementary" aria-label="Creature information">
   {{ with .Params.assets.primary }}
   <div class="wiki-infobox__portrait">
-    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+    {{/* `src` is the page-sized portrait; `data-full` is what the lightbox
+         opens, so clicking to look closer gets the commissioned image. */}}
+    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy"
+         class="wiki-infobox__portrait-img"
+         {{ with $.Params.assets.primaryFull }}data-full="{{ . | relURL }}"{{ end }}>
   </div>
   {{ end }}
 

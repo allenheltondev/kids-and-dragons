@@ -35,7 +35,8 @@ related:
     type: location
     relationship: supporting_peoples
 assets:
-  primary: assets/entities/centaur/assembled.png
+  primary: assets/entities/centaur/portrait.webp
+  primaryFull: assets/entities/centaur/assembled.png
 ai_context:
   mood: "Traveling plains people who guide caravans and preserve the realm's oldest overland routes."
   themes: "Supporting_people, Plains, Caravan, Guide"
