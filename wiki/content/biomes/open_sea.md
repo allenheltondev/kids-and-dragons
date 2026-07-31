@@ -35,9 +35,6 @@ related:
   - id: location.skullwater_cave
     type: location
     relationship: biome
-  - id: location.crystal_font
-    type: location
-    relationship: biome
   - id: location.the_whirlpool
     type: location
     relationship: biome
@@ -47,7 +44,7 @@ ai_context:
   visual_style: "Open horizon, long swells, no landmarks but light and weather."
   common_encounters: "Crossings between coastal places, being carried off course, what lies past the edge of the map."
   lore_highlights: ""
-  related_entities: "location.the_whirlpool, npc.merfolk, npc.selkie, biome.sky_islands, biome.mermaid_cove, biome.bone_yard, location.exchange, location.skullwater_cave, location.skullwater_cave, location.crystal_font, location.the_whirlpool"
+  related_entities: "location.the_whirlpool, npc.merfolk, npc.selkie, biome.sky_islands, biome.mermaid_cove, biome.bone_yard, location.exchange, location.skullwater_cave, location.skullwater_cave, location.the_whirlpool"
   writing_guidance: "Surrounds the illustrated map rather than appearing on it, so it has no map anchor. Coastal places reach it; it borders nothing."
   generation_hints: "Currents and weather change on their own schedule and ignore the shore."
 layout: biomes
@@ -64,7 +61,6 @@ infobox: biome
 
 ### Locations
 - [Skullwater Cave](/locations/skullwater_cave/) `Locations` `Biome`
-- [The Crystal Font](/locations/crystal_font/) `Biome`
 - [The Exchange](/locations/exchange/) `Locations`
 - [The Whirlpool](/locations/the_whirlpool/) `Locations` `Biome`
 

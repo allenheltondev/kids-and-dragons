@@ -397,22 +397,32 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
   return ok;
 }
 
+/**
+ * The real entries of a catalog-shaped file, without its `$`-prefixed
+ * annotations. Mirrors `itemCatalog()` in packages/shared — items.json is
+ * generated (D7) and opens with a `$comment`, and `$` is not a legal item id.
+ */
+function entries(catalog) {
+  return Object.entries(catalog ?? {}).filter(([id]) => !id.startsWith("$"));
+}
+
 function checkItems(rep, file, items) {
   const f = rel(file);
   let ok = true;
-  for (const [id, item] of Object.entries(items)) {
+  const real = entries(items);
+  for (const [id, item] of real) {
     if (!item.icon?.trim()) {
       rep.fail(f, `/${id}/icon`, "icon slug is empty");
       ok = false;
     }
   }
-  const kinds = new Set(Object.values(items).map((i) => i.kind));
+  const kinds = new Set(real.map(([, i]) => i.kind));
   for (const kind of ["consumable", "trinket", "quest"]) {
     if (!kinds.has(kind)) {
       rep.warn(`${f} has no ${kind} items`, "spec §9.2 defines three kinds; a catalog missing one is probably unfinished.");
     }
   }
-  if (ok) rep.ok(`${f}  item catalog  (${Object.keys(items).length} items, icons present)`);
+  if (ok) rep.ok(`${f}  item catalog  (${real.length} items, icons present)`);
   return ok;
 }
 
@@ -517,6 +527,27 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
   if (!ids.has(chapter.entry)) {
     fail("/entry", `entry scene "${chapter.entry}" does not exist`);
+  }
+
+  // --- D7: chapter-scoped props are projected into content/items.json, so the
+  // two have to agree. The generator is what merges them; this is what notices
+  // that nobody ran it. Everything below resolves item ids against items.json
+  // alone, which would silently pass a prop the catalog has never heard of.
+  for (const [id, prop] of entries(chapter.props)) {
+    const shipped = items?.[id];
+    if (!shipped) {
+      fail(
+        `/props/${id}`,
+        `prop "${id}" is not in content/items.json`,
+        "content/items.json is generated from canon and every chapter's props — run `npm run canon:items`.",
+      );
+    } else if (JSON.stringify(shipped) !== JSON.stringify(prop)) {
+      fail(
+        `/props/${id}`,
+        `prop "${id}" does not match content/items.json`,
+        "The catalog is stale, or somebody edited the generated file. Run `npm run canon:items`.",
+      );
+    }
   }
 
   // --- every goto names a scene that exists

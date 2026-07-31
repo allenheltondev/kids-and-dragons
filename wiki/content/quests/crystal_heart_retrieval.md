@@ -8,9 +8,6 @@ canon_status: intentionally_undefined
 draft: true
 tags: ["side_quest", "exploration", "underground", "mystery"]
 related:
-  - id: location.crystal_font
-    type: location
-    relationship: locations
   - id: item.crystal_heart
     type: item
     relationship: items
@@ -29,16 +26,13 @@ related:
   - id: item.crystal_heart
     type: item
     relationship: quests
-  - id: location.crystal_font
-    type: location
-    relationship: quests
 ai_context:
   mood: "Descend into the deepest cavern reaches to retrieve the legendary Crystal Heart before a rival faction claims it."
   themes: "Side_quest, Exploration, Underground, Mystery"
   visual_style: "A glowing crystal chamber deep underground with a floating heart-shaped gem."
   common_encounters: "Exploration arc, faction rivalry, artifact recovery."
   lore_highlights: ""
-  related_entities: "location.crystal_font, item.crystal_heart, faction.deep_hollow_cult, campaign.echoes_beneath, campaign.echoes_beneath, faction.deep_hollow_cult, item.crystal_heart, location.crystal_font"
+  related_entities: "item.crystal_heart, faction.deep_hollow_cult, campaign.echoes_beneath, campaign.echoes_beneath, faction.deep_hollow_cult, item.crystal_heart"
   writing_guidance: "The Crystal Heart cannot leave the caverns without consequence. Choices have lasting impact."
   generation_hints: "Branching quest with stealth, combat, or negotiation paths."
 layout: quests
@@ -56,9 +50,6 @@ infobox: quest
 
 ### Items
 - [Crystal Heart](/items/crystal_heart/) `Items` `Quests`
-
-### Locations
-- [The Crystal Font](/locations/crystal_font/) `Locations` `Quests`
 <!-- END GENERATED: relationships -->
 
 

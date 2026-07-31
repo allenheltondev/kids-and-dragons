@@ -35,6 +35,7 @@
 import { z } from "zod";
 import { canonRef, edge, Slug } from "./ids.js";
 import { Encounter } from "./encounter.js";
+import { Mechanics, mechanicsProblems } from "./mechanics.js";
 import {
   CanonStatus,
   DangerLevel,
@@ -247,7 +248,18 @@ export const Item = Envelope.extend({
     factions: edge("faction"),
     quests: edge("quest"),
   }),
-  // `mechanics` (kind, icon, effect) lands here when D7 is ruled.
+  /**
+   * D7 — what the item does in a child's hands. Optional on purpose: canon
+   * holds things that exist in the world without existing in anybody's bag,
+   * and `mechanics` is exactly the line between the two. Present means this
+   * item projects into `content/items.json`.
+   */
+  mechanics: Mechanics.optional(),
+}).superRefine((item, ctx) => {
+  if (!item.mechanics) return;
+  for (const message of mechanicsProblems(item.mechanics)) {
+    ctx.addIssue({ code: "custom", path: ["mechanics"], message });
+  }
 });
 
 export const Location = Place.extend({

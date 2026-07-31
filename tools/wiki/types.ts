@@ -143,4 +143,10 @@ export interface PageGeneratorOptions {
   bestiary?: Record<string, import('./page-generator.ts').BestiaryEntry>;
   /** `content/rules.json` `encounterBands`, for the band's plain-language line. */
   bands?: Record<string, import('./page-generator.ts').BandInfo>;
+  /**
+   * `content/items.json` — canon's `mechanics` blocks plus every chapter's
+   * props (D7). The item-page counterpart to `bestiary`: what an item does in
+   * your hands, which the lore fields deliberately never say.
+   */
+  items?: Record<string, import('./page-generator.ts').ItemEntry>;
 }

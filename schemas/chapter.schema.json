@@ -62,6 +62,25 @@
         "$ref": "#/$defs/objective"
       }
     },
+    "props": {
+      "description": "Chapter-scoped props (D7): items this chapter brings with it that the world does not otherwise have. The world owns a honeycake; a chapter owns the key to its own door. These project into content/items.json alongside canon's items, because a quest item outlives the chapter that granted it and an inventory screen still has to name it — so the ids must not collide with canon's, which tools/canon/items.ts enforces. Same shape as an entry in schemas/items.schema.json.",
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "$comment": {
+          "type": "string"
+        }
+      },
+      "propertyNames": {
+        "anyOf": [
+          { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          { "const": "$comment" }
+        ]
+      },
+      "additionalProperties": {
+        "$ref": "https://kids-and-dragons.local/schemas/items.schema.json#/$defs/itemDef"
+      }
+    },
     "scenes": {
       "type": "object",
       "minProperties": 1,

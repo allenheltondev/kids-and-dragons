@@ -23,6 +23,9 @@ related:
   - id: biome.frostfang_peaks
     type: biome
     relationship: ambient_creatures
+  - id: item.brave_whistle
+    type: item
+    relationship: dropped_by
 assets:
   primary: assets/entities/snowhorn_goat/assembled.png
 ai_context:
@@ -31,7 +34,7 @@ ai_context:
   visual_style: "Dense pale coat and glassy blue-white horns, compact powerful legs and oversized climbing hooves."
   common_encounters: "Trail clue, rescue target, peaceful mountain scene."
   lore_highlights: ""
-  related_entities: "biome.frostfang_peaks, biome.glacier_of_origins, biome.glacier_of_origins, biome.frostfang_peaks"
+  related_entities: "biome.frostfang_peaks, biome.glacier_of_origins, biome.glacier_of_origins, biome.frostfang_peaks, item.brave_whistle"
   writing_guidance: "Defends young with short charges, abandons routes before avalanches."
   generation_hints: "Follows safe mountain lines, abandons routes before avalanches or ice breaks."
 layout: creatures
@@ -44,6 +47,9 @@ infobox: creature
 ### Biomes
 - [Frostfang Peaks](/biomes/frostfang_peaks/) `Primary Locations` `Ambient Creatures`
 - [Glacier of Origins](/biomes/glacier_of_origins/) `Primary Locations` `Ambient Creatures`
+
+### Items
+- [Brave Whistle](/items/brave_whistle/) `Dropped By`
 <!-- END GENERATED: relationships -->
 
 

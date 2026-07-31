@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_item_canon
 title: "The Realm of Red Sky Item Canon"
-updated: "2026-07-30"
+updated: "2026-07-31"
 
 purpose: >-
   Canonical, agent-readable reference for named items, artifacts, and materials
@@ -16,6 +16,9 @@ agent_instructions:
   - Items referencing locations must use valid biome or location IDs.
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+  - An item carries `mechanics` only if a child can pick it up and use it. Lore that exists in the world without existing in a bag has none, and that absence is a claim, not an omission.
+  - A prop that exists only because one chapter happened is not canon. Author it in that chapter's `props`, not here. The test is ownership - the world owns a honeycake, a chapter owns the key to its own door.
+  - "`mechanics.text` is written for a seven-year-old and says what tapping the item does. `short_description` says what the thing is. They are not interchangeable."
 
 controlled_values:
   canon_status:
@@ -26,6 +29,8 @@ controlled_values:
     crafting_material: "A raw or processed material used in creation."
     quest_artifact: "A unique object tied to a specific quest or storyline."
     adventuring_gear: "A practical tool or piece of equipment for exploration."
+    provision: "Food or drink carried for the road, used once and gone."
+    charm: "A small worn token that carries a steady blessing while it is on you."
   rarity:
     common: "Widely available with modest effort."
     uncommon: "Requires specific knowledge or location."
@@ -36,6 +41,19 @@ item_ids:
   - crimson_shard
   - crystal_heart
   - marsh_lantern
+  - sunbloom_draught
+  - honeycake
+  - mosslight_jar
+  - brave_whistle
+  - thunder_acorn
+  - river_charm
+  - thistle_pin
+  - owlfeather_clasp
+  - songbird_ribbon
+  - quickfoot_lace
+  - hearthstone_bead
+  - luckstone
+  - hollow_crown_shard
 
 items:
   - id: item.crimson_shard
@@ -119,6 +137,471 @@ items:
       Flickers when spirits are nearby, burns steady when the path is safe.
     relationships:
       found_in: [biome.whispering_marsh]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  # -------------------------------------------------------------------------
+  # Carried things — D7.
+  #
+  # These were mechanics without a world: they lived in
+  # content/items.json with a name, an icon and an effect, and nothing said
+  # where a honeycake comes from or why a marsh full of wisps sells jars of
+  # light. Canon is the truth, so they are canon now, and content/items.json
+  # is generated from this list.
+  #
+  # Every one is anchored to somewhere real. That is the whole point of moving
+  # them: "Heal 2 HP" is a number, but "still warm, from a Bramblewood kitchen"
+  # is something a table can use.
+  # -------------------------------------------------------------------------
+
+  - id: item.sunbloom_draught
+    title: "Sunbloom Draught"
+    canon_status: newly_defined
+    category: provision
+    rarity: uncommon
+    featured: false
+    tags: [provision, healing, sunward_fields, uncommon]
+    short_description: >-
+      A stoppered flask of pressed sunbloom, drunk warm. Tastes like the last
+      hour of an afternoon.
+    visual_identity: >-
+      Squat glass flask of thick gold liquid, cork sealed with wax, light
+      moving slowly inside as though it is in no hurry.
+    acquisition: >-
+      Pressed in Sunward Fields where the sunblooms grow tall enough to hide a
+      child, and carried east along the Exchange road in crates of twelve.
+    common_story_uses: >-
+      The reward a grateful farmhold presses on you at the gate. What a party
+      splits before something difficult.
+    canon_constraints: >-
+      Loses its warmth after a season and becomes ordinary sweet syrup. Nobody
+      has ever made it work on a wound that was not fresh.
+    standard_behavior: >-
+      Holds its own heat regardless of the weather around it.
+    mechanics:
+      kind: consumable
+      icon: potion
+      text: "Heal 4 HP."
+      effect: { type: heal, amount: 4 }
+    relationships:
+      found_in: [biome.sunward_fields, location.exchange]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.honeycake
+    title: "Honeycake"
+    canon_status: newly_defined
+    category: provision
+    rarity: common
+    featured: false
+    tags: [provision, healing, bramblewood, common]
+    short_description: >-
+      A palm-sized round of honey and oats, wrapped in cloth so it stays warm
+      to the middle of the day.
+    visual_identity: >-
+      Golden-brown cake in a checked cloth, one corner already torn back.
+    acquisition: >-
+      Baked in Bramblewood every morning and pressed on anyone leaving town,
+      whether or not they asked.
+    common_story_uses: >-
+      The small kindness at the start of a chapter. What a nervous NPC offers
+      instead of an explanation.
+    canon_constraints: >-
+      Not medicine and not magic. It is a cake, and it is enough for the size
+      of hurt a cake can fix.
+    standard_behavior: >-
+      Stays warm for about as long as anyone needs it to.
+    mechanics:
+      kind: consumable
+      icon: cake
+      text: "Still warm. Heal 2 HP."
+      effect: { type: heal, amount: 2 }
+    relationships:
+      found_in: [location.bramblewood, biome.sunward_fields]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.mosslight_jar
+    title: "Mosslight Jar"
+    canon_status: newly_defined
+    category: adventuring_gear
+    rarity: common
+    featured: false
+    tags: [tool, light, enchanted_woods, common]
+    short_description: >-
+      A jar of living moss that glows green when the lid is loosened, bright
+      enough to read a path by.
+    visual_identity: >-
+      Wide-mouthed jar packed with pale moss, soft green light welling out
+      around a loose brass lid.
+    acquisition: >-
+      Scraped from the north faces of Enchanted Woods stones, where the moss
+      grows thickest. The jar is the easy part.
+    common_story_uses: >-
+      Steadying a hand before a difficult attempt. Reading something in a
+      place with no windows.
+    canon_constraints: >-
+      The moss is alive and dies within a week of being sealed. Related to the
+      Marsh Lantern only in the way a candle is related to a lighthouse.
+    standard_behavior: >-
+      Brightens when held still, dims when shaken.
+    mechanics:
+      kind: consumable
+      icon: lantern
+      text: "Soft green light. +3 on your next roll."
+      effect: { type: rollBonus, amount: 3 }
+    relationships:
+      found_in: [biome.enchanted_woods, location.mosshome]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.brave_whistle
+    title: "Brave Whistle"
+    canon_status: newly_defined
+    category: adventuring_gear
+    rarity: common
+    featured: false
+    tags: [tool, courage, stone_crossing, common]
+    short_description: >-
+      A carved bone whistle with one note in it. The note is louder than the
+      whistle has any right to be.
+    visual_identity: >-
+      Short whistle of pale bone worn smooth at the mouthpiece, a leather
+      thong through the end.
+    acquisition: >-
+      Cut at Stone Crossing from the winter-shed antler of a snowhorn goat and
+      traded down the roads in bundles.
+    common_story_uses: >-
+      What somebody blows before doing the thing they are afraid of. A signal
+      across a gorge.
+    canon_constraints: >-
+      One note only, and only once - the reed splits on the first blow. It
+      frightens nothing; it steadies the one blowing it.
+    standard_behavior: >-
+      Carries much further than its size suggests.
+    mechanics:
+      kind: consumable
+      icon: whistle
+      text: "One loud note. +2 on your next roll."
+      effect: { type: rollBonus, amount: 2 }
+    relationships:
+      found_in: [location.stone_crossing, biome.plains]
+      dropped_by: [creature.snowhorn_goat]
+      quests: []
+      factions: []
+
+  - id: item.thunder_acorn
+    title: "Thunder Acorn"
+    canon_status: newly_defined
+    category: adventuring_gear
+    rarity: uncommon
+    featured: false
+    tags: [thrown, noise, enchanted_woods, uncommon]
+    short_description: >-
+      An acorn from a storm-struck oak, holding one crack of thunder that has
+      not gone off yet.
+    visual_identity: >-
+      Oversized acorn, shell scorched in a spiral, hairline fractures showing
+      white light when it is turned.
+    acquisition: >-
+      Gathered under Enchanted Woods oaks in the week after a storm, before the
+      charge leaks back into the ground.
+    common_story_uses: >-
+      Thrown at something too large to argue with. Collapsing a way behind you.
+    canon_constraints: >-
+      Goes off on impact and cannot be aimed with any precision. Never plant
+      one.
+    standard_behavior: >-
+      Hums faintly when weather is coming.
+    mechanics:
+      kind: consumable
+      icon: acorn
+      text: "Throw it. It cracks like thunder. 3 damage."
+      effect: { type: damage, amount: 3 }
+    relationships:
+      found_in: [biome.enchanted_woods]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.river_charm
+    title: "River Charm"
+    canon_status: newly_defined
+    category: charm
+    rarity: common
+    featured: false
+    tags: [charm, travel, stone_crossing, common]
+    short_description: >-
+      A holed river stone on a cord. Water wore the hole, which is the whole
+      reason it is worth anything.
+    visual_identity: >-
+      Flat grey pebble with a clean round hole through it, strung on braided
+      river grass.
+    acquisition: >-
+      Found in the shallows at Stone Crossing. Children spend whole afternoons
+      looking and most of them find one eventually.
+    common_story_uses: >-
+      A parting gift for someone with a long way to go.
+    canon_constraints: >-
+      Only stones the river holed itself carry the blessing. A drilled one is
+      just a pebble with a hole in it, and everyone can tell.
+    standard_behavior: >-
+      Stays cool against the skin, however far you have walked.
+    mechanics:
+      kind: trinket
+      icon: charm
+      text: "+1 step."
+      passive: { type: stepBonus, amount: 1 }
+    relationships:
+      found_in: [location.stone_crossing]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.thistle_pin
+    title: "Thistle Pin"
+    canon_status: newly_defined
+    category: charm
+    rarity: common
+    featured: false
+    tags: [charm, might, expanse, common]
+    short_description: >-
+      An iron pin shaped as a thistle head, worn by people who have decided
+      not to be moved.
+    visual_identity: >-
+      Blackened iron thistle the size of a thumbnail, spines still sharp, on a
+      long straight pin.
+    acquisition: >-
+      Struck in the smithies of the Expanse, where thistle is the only thing
+      that grows without asking permission.
+    common_story_uses: >-
+      Worn at the collar before a confrontation. Handed down.
+    canon_constraints: >-
+      The spines are real and it will draw blood off a careless hand. That is
+      considered part of it.
+    standard_behavior: >-
+      Sits heavier than its size the longer it is worn.
+    mechanics:
+      kind: trinket
+      icon: pin
+      text: "+1 Might."
+      passive: { type: statBonus, stat: might, amount: 1 }
+    relationships:
+      found_in: [biome.expanse]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.owlfeather_clasp
+    title: "Owlfeather Clasp"
+    canon_status: newly_defined
+    category: charm
+    rarity: common
+    featured: false
+    tags: [charm, clever, enchanted_woods, common]
+    short_description: >-
+      A cloak clasp holding a single barred owl feather, which does not move in
+      wind but turns toward whoever is speaking.
+    visual_identity: >-
+      Pewter clasp gripping one brown-and-cream feather, the vane immaculate.
+    acquisition: >-
+      Made where an owl feather is found already fallen in the Enchanted Woods.
+      Taking one is understood to reverse the effect.
+    common_story_uses: >-
+      Worn by anyone whose job is to notice things.
+    canon_constraints: >-
+      The feather must be found, never plucked. A plucked one goes grey within
+      a day and stops turning.
+    standard_behavior: >-
+      Turns slowly toward the source of any sound worth hearing.
+    mechanics:
+      kind: trinket
+      icon: feather
+      text: "+1 Clever."
+      passive: { type: statBonus, stat: clever, amount: 1 }
+    relationships:
+      found_in: [biome.enchanted_woods, location.mosshome]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.songbird_ribbon
+    title: "Songbird Ribbon"
+    canon_status: newly_defined
+    category: charm
+    rarity: common
+    featured: false
+    tags: [charm, heart, sunward_fields, common]
+    short_description: >-
+      A yellow ribbon tied round the wrist by someone who wanted you to come
+      back.
+    visual_identity: >-
+      Narrow butter-yellow ribbon, ends frayed soft, tied in a small
+      double knot.
+    acquisition: >-
+      Tied at gates and doorways across Sunward Fields, most of all in
+      Bramblewood, where the tying is done properly and out loud.
+    common_story_uses: >-
+      The thing a player refuses to take off. Recognising someone from the
+      same town.
+    canon_constraints: >-
+      It has to be tied on by another person. Tying your own does nothing, and
+      everyone who has tried knows it.
+    standard_behavior: >-
+      Never comes loose on its own.
+    mechanics:
+      kind: trinket
+      icon: ribbon
+      text: "+1 Heart."
+      passive: { type: statBonus, stat: heart, amount: 1 }
+    relationships:
+      found_in: [location.bramblewood, biome.sunward_fields]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.quickfoot_lace
+    title: "Quickfoot Lace"
+    canon_status: newly_defined
+    category: charm
+    rarity: common
+    featured: false
+    tags: [charm, quick, exchange, common]
+    short_description: >-
+      A boot lace of braided otter-hair that never once needs retying.
+    visual_identity: >-
+      Dark plaited cord with a silver sheen through it, threaded through one
+      boot only.
+    acquisition: >-
+      Braided at the Exchange from silver otter hair collected off riverside
+      stones, sold in single laces because one is all it takes.
+    common_story_uses: >-
+      Bought by couriers. Traded for far more than it costs.
+    canon_constraints: >-
+      Works in one boot. A second lace does nothing at all, which has not
+      stopped anyone from trying.
+    standard_behavior: >-
+      Holds its knot through water, mud and running.
+    mechanics:
+      kind: trinket
+      icon: boot
+      text: "+1 Quick."
+      passive: { type: statBonus, stat: quick, amount: 1 }
+    relationships:
+      found_in: [location.exchange]
+      dropped_by: [creature.silver_otter]
+      quests: []
+      factions: []
+
+  - id: item.hearthstone_bead
+    title: "Hearthstone Bead"
+    canon_status: newly_defined
+    category: charm
+    rarity: uncommon
+    featured: false
+    tags: [charm, endurance, bramblewood, uncommon]
+    short_description: >-
+      A clay bead fired in a family's own hearth, carrying a little of that
+      fire wherever it goes.
+    visual_identity: >-
+      Rough terracotta bead, glaze cracked in a fine web, warm to the touch in
+      any weather.
+    acquisition: >-
+      Made at home, never sold. A household fires a handful when a child is
+      old enough to leave.
+    common_story_uses: >-
+      Proof of where someone is from. What gets returned to a family when
+      somebody does not come back.
+    canon_constraints: >-
+      Only works for someone of the hearth it was fired in. A stranger's bead
+      is a warm bead and nothing more.
+    standard_behavior: >-
+      Warms noticeably when its own hearth is nearby.
+    mechanics:
+      kind: trinket
+      icon: bead
+      text: "+2 max HP."
+      passive: { type: maxHpBonus, amount: 2 }
+    relationships:
+      found_in: [location.bramblewood, biome.sunward_fields]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.luckstone
+    title: "Luckstone"
+    canon_status: newly_defined
+    category: charm
+    rarity: rare
+    featured: false
+    tags: [charm, luck, sky_islands, rare]
+    short_description: >-
+      A pale stone that fell from the Sky Islands and landed without breaking,
+      which is the only credential it needs.
+    visual_identity: >-
+      Smooth white ovoid, one face faintly starred, catching light from
+      directions the light is not coming from.
+    acquisition: >-
+      Found where something fell out of the Sky Islands and did not shatter.
+      Nobody has ever gone looking for one and found it.
+    common_story_uses: >-
+      The reward at the end of a chapter that went badly and turned out
+      all right.
+    canon_constraints: >-
+      A luckstone will not work twice in a row, and it cannot be given away
+      deliberately - it has to be lost, or left behind.
+    standard_behavior: >-
+      Turns up in a pocket it was not put in.
+    mechanics:
+      kind: trinket
+      icon: star
+      text: "Roll a 1? Roll it again. Once each fight."
+      passive: { type: rerollOnes, perEncounter: 1 }
+    relationships:
+      found_in: [biome.sky_islands]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.hollow_crown_shard
+    title: "Shard of the Hollow Crown"
+    canon_status: intentionally_undefined
+    canon_note: >-
+      What the Hollow Crown was, who wore it and what breaking it did are all
+      protected alongside the Hollow Gate itself. A shard may be found and
+      carried; nothing in canon yet says what the whole crown does.
+    category: quest_artifact
+    rarity: legendary
+    featured: false
+    tags: [artifact, hollow_gate, mysterious, legendary]
+    short_description: >-
+      A curl of cold silver, one piece of something that was broken on purpose.
+    visual_identity: >-
+      Thin crescent of tarnished silver, edges cleanly parted rather than snapped,
+      no reflection in it however the light falls.
+    acquisition: >-
+      Turns up near the Hollow Gate and in the marsh around it, never twice in the
+      same place. Nobody has yet counted how many pieces there are.
+    common_story_uses: >-
+      A campaign-long thread. What a chapter ends on when it is setting up a later
+      one.
+    canon_constraints: >-
+      Foreshadowing only. Shards may be found and carried; the Hollow Gate cannot
+      be opened in the current campaign arc, and no shard may be shown doing
+      anything that implies otherwise.
+    standard_behavior: >-
+      Hums when another shard is close, and goes silent the moment anyone listens
+      for it deliberately.
+    mechanics:
+      kind: quest
+      icon: crown
+      text: "A curl of cold silver. It hums when you are close to the rest of it."
+    relationships:
+      found_in: [location.hollow_gate, biome.whispering_marsh]
       dropped_by: []
       quests: []
       factions: []

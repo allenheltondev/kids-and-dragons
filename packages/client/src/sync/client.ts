@@ -5,6 +5,7 @@
  * failure means, because only the store knows whether a resync is in flight.
  */
 
+import { itemCatalog } from "@kad/shared";
 import type {
   ActionRequest,
   ActionResponse,
@@ -234,7 +235,9 @@ export const api: Api = {
   },
 
   loadItems() {
-    return request<ItemCatalog>("/content/items.json");
+    /* Generated (D7) and carries a `$comment` header; `itemCatalog` strips it
+       so the catalog the UI indexes holds only real items. */
+    return request<Record<string, unknown>>("/content/items.json").then(itemCatalog);
   },
 
   loadCampaign(id) {

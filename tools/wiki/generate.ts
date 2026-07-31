@@ -30,6 +30,12 @@ function main(): void {
   };
   const bestiary = (readJson('content/bestiary.json') as { creatures?: Record<string, never> } | null)?.creatures;
   const bands = (readJson('content/rules.json') as { encounterBands?: Record<string, never> } | null)?.encounterBands;
+  // The same half of an item page. `$`-prefixed keys are the generator's own
+  // header, not items.
+  const itemsFile = readJson('content/items.json') as Record<string, never> | null;
+  const items = itemsFile
+    ? Object.fromEntries(Object.entries(itemsFile).filter(([id]) => !id.startsWith('$')))
+    : undefined;
   const assetsDir = path.resolve('assets');
   const contentDir = path.resolve('wiki', 'content');
   const manifestPath = path.resolve('wiki', '.gen-manifest.json');
@@ -156,7 +162,7 @@ function main(): void {
 
     // Generate the page
     const { content, warnings: pageWarnings } = generatePage(
-      { entity, assets, reverseRefs, existingContent, bestiary, bands },
+      { entity, assets, reverseRefs, existingContent, bestiary, bands, items },
       registry,
     );
 
