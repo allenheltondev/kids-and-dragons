@@ -1,14 +1,4 @@
 <aside class="wiki-infobox wiki-infobox--biome" role="complementary" aria-label="Biome information">
-  {{ with .Params.assets.primary }}
-  <div class="wiki-infobox__portrait">
-    {{/* `src` is the page-sized portrait; `data-full` is what the lightbox
-         opens, so clicking to look closer gets the commissioned image. */}}
-    <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy"
-         class="wiki-infobox__portrait-img"
-         {{ with $.Params.assets.primaryFull }}data-full="{{ . | relURL }}"{{ end }}>
-  </div>
-  {{ end }}
-
   <h2 class="wiki-infobox__title">{{ .Title }}</h2>
 
   <dl class="wiki-infobox__fields">
@@ -22,7 +12,20 @@
     {{ with .Params.danger_level }}
     <div class="wiki-infobox__field">
       <dt>Danger Level</dt>
-      <dd>{{ partial "title-case.html" . }}</dd>
+      <dd>
+        {{- $level := lower . -}}
+        {{- $badgeColor := "green" -}}
+        {{- if eq $level "moderate" -}}
+          {{- $badgeColor = "gold" -}}
+        {{- else if eq $level "high" -}}
+          {{- $badgeColor = "orangered" -}}
+        {{- else if eq $level "legendary" -}}
+          {{- $badgeColor = "red" -}}
+        {{- end -}}
+        <span class="wiki-infobox__danger-badge" style="background-color: {{ $badgeColor }}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.85em;">
+          {{ partial "title-case.html" . }}
+        </span>
+      </dd>
     </div>
     {{ end }}
 
