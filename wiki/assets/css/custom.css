@@ -1236,10 +1236,10 @@ article img {
   height: auto;
 }
 
-/* Hero/landscape images (min 600px on desktop) */
+/* Hero/landscape images */
 .wiki-hero-image {
   width: 100%;
-  min-width: min(600px, 100%);
+  max-width: 100%;
   border-radius: var(--wiki-radius-lg);
   border: 1px solid var(--wiki-border);
   margin-bottom: var(--wiki-space-xl);
@@ -1465,13 +1465,13 @@ pre code {
 .content-wrapper {
   display: flex;
   min-height: calc(100vh - 120px);
+  overflow-x: hidden;
 }
 
 .main-content {
   flex: 1;
   min-width: 0;
   padding: var(--wiki-space-lg) var(--wiki-space-xl);
-  max-width: 900px;
 }
 
 /* --------------------------------------------------------------------------
@@ -1509,6 +1509,32 @@ pre code {
     justify-content: center;
     min-height: var(--wiki-touch-min);
     min-width: var(--wiki-touch-min);
+  }
+
+  /* Bug 1 fix: Navbar title truncation and compact padding */
+  .wiki-navbar__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .wiki-navbar__inner {
+    padding: 0 var(--wiki-space-md);
+  }
+
+  /* Bug 8 fix: Relationship chips stack vertically on mobile */
+  .entity-content li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wiki-space-xs);
+  }
+
+  .entity-content li > code,
+  .entity-content li > a + code {
+    display: block;
+    margin-left: 0;
+    margin-top: var(--wiki-space-xs);
   }
 
   /* Sidebar: hidden by default, shown as overlay on toggle */
@@ -1758,6 +1784,8 @@ pre code {
 /* Offset body content below the fixed navbar */
 body {
   padding-top: var(--wiki-navbar-height);
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Sidebar overlay (mobile) — sits above the navbar */
@@ -1813,7 +1841,6 @@ body {
   color: var(--wiki-text);
   text-decoration: none;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .wiki-navbar__title:hover {
@@ -1898,7 +1925,6 @@ body {
 
 .wiki-navbar__search-toggle,
 .wiki-navbar__hamburger {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: var(--wiki-touch-min);

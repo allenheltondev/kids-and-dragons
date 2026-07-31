@@ -1,18 +1,6 @@
 {{ define "main" }}
 <article class="entity-page entity-type-character">
   <div class="entity-layout entity-layout--with-infobox">
-    {{/* Character portrait in infobox area */}}
-    {{ with .Params.assets }}
-    {{ with .primary }}
-    <aside class="wiki-infobox wiki-infobox--character" role="complementary" aria-label="Character information">
-      <div class="wiki-infobox__portrait">
-        <img src="{{ . | relURL }}" alt="{{ $.Title }} portrait"
-             class="wiki-infobox__portrait-img" loading="eager">
-      </div>
-    </aside>
-    {{ end }}
-    {{ end }}
-
     <div class="entity-content">
       <h1>{{ .Title }}</h1>
 
@@ -38,9 +26,6 @@
 
       {{/* Character tier progression viewer */}}
       {{ partial "tier-viewer.html" $ }}
-
-      {{/* Multi-image gallery if available (non-tier images) */}}
-      {{ partial "gallery.html" $ }}
     </div>
   </div>
 </article>
