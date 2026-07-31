@@ -3,12 +3,12 @@ title: Crystal Heart
 id: item.crystal_heart
 type: item
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["artifact", "crystal", "magical", "legendary"]
 related:
-  - id: biome.skullwater_cave
-    type: biome
+  - id: location.skullwater_cave
+    type: location
     relationship: found_in
   - id: quest.crystal_heart_retrieval
     type: quest
@@ -19,12 +19,18 @@ related:
   - id: faction.deep_hollow_cult
     type: faction
     relationship: items
-  - id: location.crystal_font
-    type: location
-    relationship: items
   - id: quest.crystal_heart_retrieval
     type: quest
     relationship: items
+ai_context:
+  mood: "A perfectly formed crystal containing a rhythmic inner glow, said to be a fragment of the world's original heart."
+  themes: "Artifact, Crystal, Magical, Legendary"
+  visual_style: "Heart-shaped violet crystal with a pulsing inner light, suspended in mid-air when uncontained."
+  common_encounters: "Major quest objective, world-lore revelation, power source."
+  lore_highlights: ""
+  related_entities: "location.skullwater_cave, quest.crystal_heart_retrieval, campaign.echoes_beneath, faction.deep_hollow_cult, quest.crystal_heart_retrieval"
+  writing_guidance: "Only one exists. Cannot be destroyed by conventional means."
+  generation_hints: "Pulses in sync with nearby crystal formations."
 layout: items
 infobox: item
 ---
@@ -32,32 +38,17 @@ infobox: item
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Biomes
-- [Skullwater Cave](/biomes/skullwater_cave/) — found_in
-
 ### Campaigns
-- [Echoes Beneath](/campaigns/echoes_beneath/) — items
+- [Echoes Beneath](/campaigns/echoes_beneath/) `Items`
 
 ### Factions
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — items
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/) `Items`
 
 ### Locations
-- [The Crystal Font](/locations/crystal_font/) — items
+- [Skullwater Cave](/locations/skullwater_cave/) `Found In`
 
 ### Quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — items
+- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) `Quests` `Items`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** A perfectly formed crystal containing a rhythmic inner glow, said to be a fragment of the world's original heart.
-**Themes:** Artifact, Crystal, Magical, Legendary
-**Visual Style:** Heart-shaped violet crystal with a pulsing inner light, suspended in mid-air when uncontained.
-**Common Encounters:** Major quest objective, world-lore revelation, power source.
-**Lore Highlights:** 
-**Related Entities:** biome.skullwater_cave, quest.crystal_heart_retrieval, campaign.echoes_beneath, faction.deep_hollow_cult, location.crystal_font, quest.crystal_heart_retrieval
-**Writing Guidance:** Only one exists. Cannot be destroyed by conventional means.
-**Generation Hints:** Pulses in sync with nearby crystal formations.
-<!-- END GENERATED: ai_context -->

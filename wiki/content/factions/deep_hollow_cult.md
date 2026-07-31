@@ -3,16 +3,13 @@ title: The Deep Hollow Cult
 id: faction.deep_hollow_cult
 type: faction
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: intentionally_undefined
 draft: true
 tags: ["cult", "underground", "mystical", "antagonist"]
 related:
-  - id: crystal_font
-    type: crystal_font
-    relationship: headquarters
-  - id: skullwater_cave
-    type: skullwater_cave
+  - id: location.skullwater_cave
+    type: location
     relationship: territory
   - id: faction.skywardens
     type: faction
@@ -29,12 +26,18 @@ related:
   - id: campaign.echoes_beneath
     type: campaign
     relationship: factions
-  - id: location.crystal_font
-    type: location
-    relationship: factions
   - id: quest.crystal_heart_retrieval
     type: quest
     relationship: factions
+ai_context:
+  mood: "A secretive group of scholars and mystics who believe the Crystal Heart holds the key to rewriting the world's broken laws."
+  themes: "Cult, Underground, Mystical, Antagonist"
+  visual_style: "Dark robes with glowing crystal inlays, faceless masks with a single eye slit."
+  common_encounters: "Antagonist faction, knowledge brokers, morally grey opposition."
+  lore_highlights: ""
+  related_entities: "location.skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, quest.crystal_heart_retrieval"
+  writing_guidance: "Not purely evil — motivated by a desire to fix the world. Methods are extreme."
+  generation_hints: "Operate in cells, communicate through crystal resonance, recruit the desperate."
 layout: factions
 infobox: faction
 ---
@@ -43,38 +46,19 @@ infobox: faction
 ## Related Entities
 
 ### Campaigns
-- [Echoes Beneath](/campaigns/echoes_beneath/) — campaigns
-- [Echoes Beneath](/campaigns/echoes_beneath/) — factions
-
-### Crystal_fonts
-- [Crystal Font](/crystal_fonts/crystal_font/) — headquarters
+- [Echoes Beneath](/campaigns/echoes_beneath/) `Campaigns` `Factions`
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — enemies
+- [The Skywardens](/factions/skywardens/) `Enemies`
 
 ### Items
-- [Crystal Heart](/items/crystal_heart/) — items
+- [Crystal Heart](/items/crystal_heart/) `Items`
 
 ### Locations
-- [The Crystal Font](/locations/crystal_font/) — factions
+- [Skullwater Cave](/locations/skullwater_cave/) `Territory`
 
 ### Quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — factions
-
-### Skullwater_caves
-- [Skullwater Cave](/skullwater_caves/skullwater_cave/) — territory
+- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) `Quests` `Factions`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** A secretive group of scholars and mystics who believe the Crystal Heart holds the key to rewriting the world's broken laws.
-**Themes:** Cult, Underground, Mystical, Antagonist
-**Visual Style:** Dark robes with glowing crystal inlays, faceless masks with a single eye slit.
-**Common Encounters:** Antagonist faction, knowledge brokers, morally grey opposition.
-**Lore Highlights:** 
-**Related Entities:** crystal_font, skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, location.crystal_font, quest.crystal_heart_retrieval
-**Writing Guidance:** Not purely evil — motivated by a desire to fix the world. Methods are extreme.
-**Generation Hints:** Operate in cells, communicate through crystal resonance, recruit the desperate.
-<!-- END GENERATED: ai_context -->

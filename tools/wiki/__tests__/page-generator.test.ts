@@ -56,7 +56,7 @@ describe('generatePage — new page creation', () => {
     const reverseRefs = registry.reverseRefs.get('creature.bigfoot') ?? [];
     const assets: AssetResult = {
       entityId: 'creature.bigfoot',
-      primary: '/assets/creatures/bigfoot/idle.png',
+      primary: { src: '/assets/creatures/bigfoot/idle.png', full: '/assets/creatures/bigfoot/idle.png' },
       source: 'convention',
     };
 
@@ -99,7 +99,7 @@ describe('generatePage — new page creation', () => {
     const reverseRefs = registry.reverseRefs.get('creature.bigfoot') ?? [];
     const assets: AssetResult = {
       entityId: 'creature.bigfoot',
-      primary: '/assets/creatures/bigfoot/idle.png',
+      primary: { src: '/assets/creatures/bigfoot/idle.png', full: '/assets/creatures/bigfoot/idle.png' },
       source: 'convention',
     };
 
@@ -112,14 +112,20 @@ describe('generatePage — new page creation', () => {
     const reverseRefs = registry.reverseRefs.get('creature.bigfoot') ?? [];
     const assets: AssetResult = {
       entityId: 'creature.bigfoot',
-      gallery: ['/assets/creatures/bigfoot/a.png', '/assets/creatures/bigfoot/b.png'],
+      gallery: [
+        { src: '/assets/creatures/bigfoot/a.webp', full: '/assets/creatures/bigfoot/a.png' },
+        { src: '/assets/creatures/bigfoot/b.png', full: '/assets/creatures/bigfoot/b.png' },
+      ],
       source: 'convention',
     };
 
     const { content } = generatePage({ entity, assets, reverseRefs }, registry);
     expect(content).toContain('gallery:');
-    expect(content).toContain('/assets/creatures/bigfoot/a.png');
-    expect(content).toContain('/assets/creatures/bigfoot/b.png');
+    // Each entry carries both sizes: the page renders `src`, the lightbox
+    // opens `full`. They differ only where a portrait has been derived.
+    expect(content).toContain('- src: /assets/creatures/bigfoot/a.webp');
+    expect(content).toContain('  full: /assets/creatures/bigfoot/a.png');
+    expect(content).toContain('- src: /assets/creatures/bigfoot/b.png');
   });
 
   it('omits assets from front matter when none found', () => {
@@ -241,7 +247,7 @@ describe('generatePage — updating existing pages with markers', () => {
     const reverseRefs = registry.reverseRefs.get('creature.bigfoot') ?? [];
     const assets: AssetResult = {
       entityId: 'creature.bigfoot',
-      primary: '/assets/creatures/bigfoot/idle.png',
+      primary: { src: '/assets/creatures/bigfoot/idle.png', full: '/assets/creatures/bigfoot/idle.png' },
       source: 'convention',
     };
 
@@ -284,7 +290,7 @@ describe('generatePage — updating existing pages with markers', () => {
     const reverseRefs = registry.reverseRefs.get('creature.bigfoot') ?? [];
     const assets: AssetResult = {
       entityId: 'creature.bigfoot',
-      primary: '/assets/creatures/bigfoot/idle.png',
+      primary: { src: '/assets/creatures/bigfoot/idle.png', full: '/assets/creatures/bigfoot/idle.png' },
       source: 'convention',
     };
 
@@ -473,7 +479,7 @@ describe('resolveConventionAssets', () => {
       metadata: {},
     };
     const result = resolveConventionAssets(entity, assetsDir);
-    expect(result.primary).toBe('assets/characters/bigfoot/fledgling/assembled.png');
+    expect(result.primary?.full).toBe('assets/characters/bigfoot/fledgling/assembled.png');
     expect(result.source).toBe('convention');
   });
 
@@ -486,7 +492,7 @@ describe('resolveConventionAssets', () => {
       metadata: {},
     };
     const result = resolveConventionAssets(entity, assetsDir);
-    expect(result.primary).toBe('assets/entities/bone_crawler/assembled.png');
+    expect(result.primary?.full).toBe('assets/entities/bone_crawler/assembled.png');
     expect(result.source).toBe('convention');
   });
 
@@ -499,7 +505,7 @@ describe('resolveConventionAssets', () => {
       metadata: {},
     };
     const result = resolveConventionAssets(entity, assetsDir);
-    expect(result.primary).toBe('assets/biomes/enchanted_woods/bg.webp');
+    expect(result.primary?.full).toBe('assets/biomes/enchanted_woods/bg.webp');
     expect(result.source).toBe('convention');
   });
 
@@ -527,7 +533,7 @@ describe('resolveConventionAssets', () => {
     };
     const result = resolveConventionAssets(entity, assetsDir);
     // Should resolve using 'bone_crawler' (from assetId) not 'some_creature' (from id)
-    expect(result.primary).toBe('assets/entities/bone_crawler/assembled.png');
+    expect(result.primary?.full).toBe('assets/entities/bone_crawler/assembled.png');
     expect(result.source).toBe('convention');
   });
 
@@ -544,7 +550,7 @@ describe('resolveConventionAssets', () => {
     expect(result.gallery).toBeDefined();
     expect(result.gallery!.length).toBeGreaterThan(0);
     // primary (fledgling) should not be in gallery
-    expect(result.gallery).not.toContain('assets/characters/bigfoot/fledgling/assembled.png');
+    expect(result.gallery!.map((image) => image.full)).not.toContain('assets/characters/bigfoot/fledgling/assembled.png');
   });
 
   it('returns no assets for unsupported types', () => {

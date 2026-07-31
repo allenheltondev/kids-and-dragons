@@ -17,29 +17,325 @@ agent_instructions:
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
 
 controlled_values:
+  map_provenance:
+    map_canonical: "Directly placed and labeled on the current map."
+    map_canonical_and_biome_matched: "Map-placed and matched to a biome canon entry."
+    map_visible_name_pending: "Visible on the map but lacking a canonical proper name."
+    map_implied: "Not drawn but implied by adjacency or map logic."
+    visible_unlabeled_feature: "Visible on the map but not labeled."
+  danger_level:
+    none: "Not normally dangerous."
+    low: "May inconvenience or frighten but rarely causes serious harm."
+    moderate: "Can harm unprepared travelers."
+    high: "A serious threat requiring planning, escape, or cooperation."
+    legendary: "Potentially realm-changing or suitable for a major story climax."
+    unknown: "Deliberately not established."
   canon_status:
-    confirmed: "Directly established by worldbuilding decisions."
-    intentionally_undefined: "The location concept exists but details are not yet canon."
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
   location_type:
+    settlement_region: "A named settlement embedded in a larger region."
+    coastal_trade_city: "A trade settlement on the coast."
+    river_crossing_settlement: "A settlement at a constrained river crossing."
+    offshore_dungeon_landmark: "An offshore or underground landmark site."
+    volcanic_landmark_region: "A singular volcanic landmark with its own visual family."
+    town: "A settled community people live in, smaller than a city."
+    ocean_hazard: "A dangerous water feature that behaves as a place."
     fortress: "A defensible structure or military installation."
     underground_sanctum: "A hidden or subterranean sacred space."
     ancient_ruins: "Remnants of an older civilization or structure."
 
 location_ids:
   - redspire_citadel
-  - crystal_font
   - hollow_gate
 
 locations:
+  - id: location.mosshome
+    asset_id: mosshome
+    title: "MossHome"
+    map_label: "MossHome"
+    canon_status: confirmed
+    location_type: settlement_region
+    parent_biome: biome.enchanted_woods
+    climate: Sheltered, damp, and mild beneath the oldest western trees.
+    danger_level: low
+    featured: true
+    tags: [forest_settlement, living_architecture, bigfoot, cultivated_moss, ancient_trees]
+    map_provenance: map_canonical
+    map_anchor: { x: 115, y: 525 }
+    short_description: >-
+      The principal Bigfoot settlement, built into and alongside ancient living
+      trees without severing the forest systems that support it.
+    visual_identity: >-
+      Tall wooden and stone structures woven into trunks and roots, cultivated
+      moss gardens, suspended walkways, natural archives, and warm lights beneath
+      the canopy.
+    common_story_uses: >-
+      Research, healing, historical discovery, community preparation, ecological
+      investigation, and a safe home that can reveal changes elsewhere in the
+      forest.
+    canon_constraints: >-
+      MossHome is a settlement, not a separate wilderness biome. Bigfoots are not
+      primitive or universally reclusive, and the settlement should look designed,
+      maintained, and knowledgeable.
+    standard_behavior: >-
+      Residents maintain living structures, paths, gardens, historical records,
+      and observation stations while monitoring changes in the wider Enchanted
+      Woods.
+    adjacent_to: [biome.whispering_marsh]
+    inhabitants:
+      primary_peoples: [character.bigfoot]
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: [creature.mosshorn]
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [biome.enchanted_woods]
+      factions: []
+      items: []
+      biome: [biome.enchanted_woods]
+      creatures: []
+      quests: []
+      campaigns: []
+    notes:
+      - Home of the Bigfoot.
+      - "It is geographically embedded in the western ancient forest rather than a separate continent-scale biome."
+
+  - id: location.mount_red_sky
+    asset_id: mount_red_sky
+    title: "Mount Red Sky"
+    map_label: "Mount Red Sky"
+    canon_status: confirmed
+    location_type: volcanic_landmark_region
+    parent_biome: biome.red_sky_foothills
+    climate: >-
+      Extreme heat, ash, volcanic gases, and rapidly changing local conditions.
+    danger_level: legendary
+    featured: true
+    tags: [active_volcano, gemfalls, legendary, ash, lava, unstable_power]
+    map_provenance: map_canonical
+    map_anchor: { x: 465, y: 325 }
+    short_description: >-
+      The active volcano at the center of the realm, source of the Gemfalls and
+      territory of rare solitary legendary beasts.
+    visual_identity: >-
+      Towering volcanic cone, orange lava channels, black ridges, smoke column,
+      gemstone flashes, ash-darkened sky, and terrain that visibly radiates power.
+    common_story_uses: >-
+      Major campaign climaxes, legendary-beast encounters, eruption mysteries,
+      dangerous rescues, gemstone events, and consequences that affect several
+      regions.
+    canon_constraints: >-
+      Mount Red Sky is not a dragonling city or homeland. Adult legend dragons are
+      rare solitary beings and are not automatically ancestors or rulers of
+      dragonlings.
+    standard_behavior: >-
+      Activity changes through tremors, smoke, heat, Gemfalls, and lava movement.
+      Calm periods remain tense because the mountain is never treated as
+      permanently dormant.
+    adjacent_to: [biome.expanse]
+    access_from: [biome.red_sky_foothills]
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: [creature.embermoth]
+      dangerous_creatures: [creature.glassback_crab]
+      legendary_beings: [creature.legend_dragon]
+      supernatural_manifestations: []
+    relationships:
+      locations: [biome.red_sky_foothills]
+      factions: []
+      items: []
+      biome: [biome.red_sky_foothills]
+      creatures: []
+      quests: []
+      campaigns: []
+    notes:
+      - "The mountain is a singular landmark with its own visual family, not a world-scale travel grid."
+      - "Legendary beasts may inhabit it; dragonlings do not treat it as a normal homeland."
+
+  - id: location.exchange
+    asset_id: exchange
+    title: "The Exchange"
+    map_label: "The Exchange"
+    canon_status: confirmed
+    location_type: coastal_trade_city
+    parent_biome: biome.sunward_fields
+    climate: >-
+      Mild coastal weather shaped by sea wind, river traffic, and seasonal storms.
+    danger_level: low
+    featured: true
+    tags: [coastal_city, trade, crossroads, docks, mixed_population, stories]
+    map_provenance: map_canonical
+    map_anchor: { x: 350, y: 855 }
+    short_description: >-
+      A neutral coastal city where roads, ships, peoples, trade, news, and
+      opportunities from across the realm converge.
+    visual_identity: >-
+      Dense towers and halls built along cliffs, bridges, layered docks, ships,
+      market awnings, signs from many cultures, crowded paths, and constant
+      movement.
+    common_story_uses: >-
+      Campaign beginnings, reunions, contracts, rumors, investigation, trade,
+      political tension between individuals, missing cargo, and stories that bring
+      distant regions into contact.
+    canon_constraints: >-
+      The Exchange has no native or dominant people. Do not give one species
+      ownership of the city or reduce it to a marketplace without homes,
+      institutions, stories, and ordinary life.
+    standard_behavior: >-
+      Ships arrive, caravans turn over cargo, travelers exchange news, and the
+      city continuously adapts to disruptions in roads, rivers, weather, and
+      distant regions.
+    adjacent_to: [biome.whispering_marsh, biome.sunward_fields]
+    coast: southwestern_sea
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: []
+      legendary_beings: []
+      supernatural_manifestations: []
+      population_rule: Mixed population with no native or dominant people.
+    relationships:
+      locations: [biome.sunward_fields, biome.whispering_marsh, biome.open_sea]
+      factions: []
+      items: []
+      biome: [biome.sunward_fields]
+      creatures: []
+      quests: []
+      campaigns: []
+    notes:
+      - The Exchange is a settlement and transport hub.
+      - "Its docks imply sea access, but destinations and shipping routes are not yet canonized."
+
+  - id: location.stone_crossing
+    asset_id: stone_crossing
+    title: "Stone Crossing"
+    map_label: "Stone Crossing"
+    canon_status: confirmed
+    location_type: river_crossing_settlement
+    parent_biome: biome.eastern_plains
+    climate: >-
+      River-cooled and windy, with conditions changing sharply after northern melt
+      or storms.
+    danger_level: moderate
+    featured: true
+    tags: [river_crossing, bridge, bottleneck, current, trade_route]
+    map_provenance: map_canonical
+    map_anchor: { x: 710, y: 655 }
+    short_description: >-
+      A narrow, strategically important crossing where the Great River compresses
+      travel between the Sunward Fields and Eastern Plains into a single route.
+    visual_identity: >-
+      Fast blue water, stone and timber bridgework, steep banks, weathered route
+      structures, waiting caravans, river spray, and a clear sense of constrained
+      passage.
+    common_story_uses: >-
+      Blocked travel, bridge defense, rescues from the current, negotiations,
+      caravan queues, missing cargo, river creatures, and choices where every
+      traveler must pass through the same place.
+    canon_constraints: >-
+      Stone Crossing is a location and transition environment, not a broad
+      grassland biome. The current is a real hazard, and alternate nearby
+      crossings should not be invented casually.
+    standard_behavior: >-
+      Traffic, river level, weather, maintenance, and danger can change whether
+      the crossing is open, delayed, or impassable.
+    connects: [biome.sunward_fields, biome.eastern_plains]
+    spans: feature.great_river
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [npc.stone_troll, npc.centaur]
+      cultural_orders: []
+      ambient_creatures: [creature.silver_otter]
+      dangerous_creatures: [creature.river_drake]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [feature.great_river, biome.sunward_fields, biome.eastern_plains]
+      factions: []
+      items: []
+      biome: [biome.eastern_plains]
+      creatures: []
+      quests: []
+      campaigns: []
+    notes:
+      - This is the named southern crossing where the Great River narrows.
+      - The crossing is both a site and a constrained route.
+
+  - id: location.skullwater_cave
+    asset_id: skullwater_cave
+    title: "Skullwater Cave"
+    map_label: "Skullwater Cave"
+    canon_status: confirmed
+    location_type: offshore_dungeon_landmark
+    parent_biome: biome.open_sea
+    climate: >-
+      Cold, wet, echoing, and increasingly disconnected from surface weather with
+      depth.
+    danger_level: high
+    featured: true
+    tags: [offshore_cave, underground_gateway, skull_rock, caverns, unknown_depths]
+    map_provenance: map_canonical
+    map_anchor: { x: 945, y: 370 }
+    relative_position: east_offshore
+    short_description: >-
+      A skull-shaped offshore opening that leads into a much larger underground
+      world whose full extent has not yet been canonized.
+    visual_identity: >-
+      A single colossal skull-shaped rock, dark cave mouth, slick ledges, breaking
+      waves, deep interior shadows, mineral reflections, and passages disappearing
+      underground.
+    common_story_uses: >-
+      Descent into the underground, missing expeditions, echoes, hidden passages,
+      creatures moving between layers, rescue, and campaign transitions into a
+      separate subterranean geography.
+    canon_constraints: >-
+      The skull is one continuous rock formation, not a pile of skulls. Do not
+      define the entire underground world through this entry; it requires its own
+      geography layer and future canon.
+    standard_behavior: >-
+      Tides affect the entrance, sound travels unpredictably, and deeper passages
+      should feel larger than the visible island mouth implies.
+    access:
+      mode: sea_or_subterranean
+      fixed_routes: false
+    coast_near: [biome.frostfang_peaks, biome.eastern_plains]
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: [npc.stone_troll]
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: [creature.echo_hunter]
+      legendary_beings: []
+      supernatural_manifestations: []
+    relationships:
+      locations: [biome.open_sea]
+      factions: []
+      items: []
+      biome: [biome.open_sea]
+      creatures: []
+      quests: []
+      campaigns: []
+    notes:
+      - "The illustrated entrance is offshore and opens into an underground layer."
+      - "The cave network should be modeled separately from the surface map when authored."
+
   - id: location.redspire_citadel
     asset_id: redspire_citadel
     title: "Redspire Citadel"
     canon_status: intentionally_undefined
     canon_note: >-
-      This location is tied to the Skywardens faction which is not yet canon.
-      The location design is a placeholder for chapter-scoped content.
+      This location is tied to the Skywardens faction which is not yet canon. The
+      location design is a placeholder for chapter-scoped content.
     location_type: fortress
-    parent_biome: red_sky_foothills
+    parent_biome: biome.red_sky_foothills
     featured: true
     tags: [fortress, skywardens, highlands, hub]
     short_description: >-
@@ -53,47 +349,15 @@ locations:
     canon_constraints: >-
       Always accessible to players. Cannot be destroyed in narrative.
     standard_behavior: >-
-      Bustling with activity during day, eerily quiet at night except for the forge.
+      Bustling with activity during day, eerily quiet at night except for the
+      forge.
     relationships:
-      biome: [red_sky_foothills]
-      factions: [skywardens]
-      quests: [shattered_sky_rite]
-      campaigns: [dawn_of_the_red_sky]
+      biome: [biome.red_sky_foothills]
+      factions: [faction.skywardens]
+      quests: [quest.shattered_sky_rite]
+      campaigns: [campaign.dawn_of_the_red_sky]
       creatures: []
       items: []
-
-  - id: location.crystal_font
-    asset_id: crystal_font
-    title: "The Crystal Font"
-    canon_status: intentionally_undefined
-    canon_note: >-
-      This location is tied to the Deep Hollow Cult faction which is not yet
-      canon. The location design is a placeholder for chapter-scoped content.
-    location_type: underground_sanctum
-    parent_biome: skullwater_cave
-    featured: false
-    tags: [underground, sacred, crystal, cult-base]
-    short_description: >-
-      A hidden cathedral deep within the caverns where resonance rituals are
-      conducted.
-    visual_identity: >-
-      Vast cavern with a central crystal fountain emanating violet light,
-      surrounded by carved pillars.
-    common_story_uses: >-
-      Dungeon location, quest objective, faction base, boss arena.
-    canon_constraints: >-
-      Hidden — requires navigation or guidance to find. Magical wards prevent
-      scrying.
-    standard_behavior: >-
-      Crystal formations here grow faster than elsewhere, reshaping the space
-      over weeks.
-    relationships:
-      biome: [skullwater_cave]
-      factions: [deep_hollow_cult]
-      quests: [crystal_heart_retrieval]
-      campaigns: [echoes_beneath]
-      creatures: []
-      items: [crystal_heart]
 
   - id: location.hollow_gate
     asset_id: hollow_gate
@@ -103,27 +367,83 @@ locations:
       An unresolved mystery location. Its purpose and history are intentionally
       protected pending future canon development.
     location_type: ancient_ruins
-    parent_biome: whispering_marsh
+    parent_biome: biome.whispering_marsh
     featured: false
     tags: [ruins, marsh, portal, mysterious]
     short_description: >-
-      A crumbling stone archway in the heart of the Whispering Marsh, said to be
-      a sealed portal to the world before the red sky.
+      A crumbling stone archway in the heart of the Whispering Marsh, said to be a
+      sealed portal to the world before the red sky.
     visual_identity: >-
-      Moss-covered stone arch with faintly glowing runes, surrounded by dead
-      trees in a circle of still water.
+      Moss-covered stone arch with faintly glowing runes, surrounded by dead trees
+      in a circle of still water.
     common_story_uses: >-
       Mystery location, late-game revelation, lore discovery, potential future
       content.
     canon_constraints: >-
       Cannot be opened in current campaign arc. Serves as foreshadowing only.
     standard_behavior: >-
-      Runes glow brighter when the red sky intensifies, whispers grow louder
-      near it.
+      Runes glow brighter when the red sky intensifies, whispers grow louder near
+      it.
     relationships:
-      biome: [whispering_marsh]
+      biome: [biome.whispering_marsh]
       factions: []
       quests: []
       campaigns: []
       creatures: []
+      items: [item.hollow_crown_shard]
+
+  - id: location.the_whirlpool
+    title: "The Whirlpool"
+    canon_status: newly_defined
+    location_type: ocean_hazard
+    parent_biome: biome.open_sea
+    featured: false
+    tags: [ocean, hazard, current, offshore]
+    short_description: >-
+      A standing spiral of water offshore, visible from the Bone Yard and Mermaid
+      Cove coasts.
+    visual_identity: >-
+      A wide turning ring of dark water, calm at its rim and loud at its centre.
+    common_story_uses: >-
+      A hazard to cross or go around, something that carries a boat somewhere it
+      did not mean to go, a landmark visible from two coasts.
+    canon_constraints: >-
+      Dangerous by current, not by intent. It is a place, not a creature.
+    standard_behavior: Turns steadily; strengthens with weather and tide.
+    relationships:
+      biome: [biome.open_sea]
+      creatures: []
+      factions: []
       items: []
+      quests: []
+      campaigns: []
+
+  - id: location.bramblewood
+    title: "Bramblewood"
+    canon_status: newly_defined
+    location_type: town
+    parent_biome: biome.sunward_fields
+    featured: false
+    tags: [town, hedges, sunward_fields, waystop]
+    short_description: >-
+      A hedged town about two thirds of the way through the Sunward Fields,
+      furthest from the Exchange.
+    visual_identity: >-
+      Thorn hedges grown into walls and doorways, roofs showing above them, paths
+      that turn more often than they need to.
+    common_story_uses: >-
+      A first waystop, somewhere to be let into, a town whose hedges decide who
+      gets through.
+    canon_constraints: >-
+      The hedges are grown and tended, not wild. Bramblewood is a place people
+      live, not a wood with a name.
+    standard_behavior: >-
+      The hedges are kept by the people who live behind them, and the paths
+      through them change with the season.
+    relationships:
+      biome: [biome.sunward_fields]
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: []

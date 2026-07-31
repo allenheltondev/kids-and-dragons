@@ -15,7 +15,8 @@
     <aside class="wiki-infobox wiki-infobox--creature" role="complementary" aria-label="Creature portrait">
       <div class="wiki-infobox__portrait">
         <img src="{{ . | relURL }}" alt="{{ $.Title }} portrait"
-             class="wiki-infobox__portrait-img" loading="eager">
+             class="wiki-infobox__portrait-img" loading="eager"
+             {{ with $.Params.assets.primaryFull }}data-full="{{ . | relURL }}"{{ end }}>
       </div>
     </aside>
     {{ end }}

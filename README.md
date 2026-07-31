@@ -56,7 +56,7 @@ tools/              the art gate and the content validator
 ```
 
 Each seam has a dev implementation and a prod one, and one test suite holds them
-to the same behaviour:
+to the same behavior:
 
 | Seam | Local | AWS |
 |---|---|---|
