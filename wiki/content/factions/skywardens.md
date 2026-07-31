@@ -3,16 +3,16 @@ title: The Skywardens
 id: faction.skywardens
 type: faction
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: intentionally_undefined
 draft: true
 tags: ["military", "order", "protectors", "highlands"]
 related:
-  - id: redspire_citadel
-    type: redspire_citadel
+  - id: location.redspire_citadel
+    type: location
     relationship: headquarters
-  - id: red_sky_foothills
-    type: red_sky_foothills
+  - id: biome.red_sky_foothills
+    type: biome
     relationship: territory
   - id: faction.deep_hollow_cult
     type: faction
@@ -32,6 +32,15 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: factions
+ai_context:
+  mood: "An ancient order of knights sworn to watch the red sky and protect the realm from what lies beyond it."
+  themes: "Military, Order, Protectors, Highlands"
+  visual_style: "Silver and violet armor, crimson cloaks, tower shield emblems."
+  common_encounters: "Player faction, quest givers, moral authority, military support."
+  lore_highlights: ""
+  related_entities: "location.redspire_citadel, biome.red_sky_foothills, faction.deep_hollow_cult, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, location.redspire_citadel, quest.shattered_sky_rite"
+  writing_guidance: "Honorable but rigid. Will sacrifice individuals for the greater good."
+  generation_hints: "Patrol the highlands, maintain fortifications, train recruits."
 layout: factions
 infobox: faction
 ---
@@ -39,36 +48,20 @@ infobox: faction
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
+### Biomes
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Territory`
+
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — factions
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Campaigns` `Factions`
 
 ### Factions
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — enemies
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/) `Enemies`
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) — factions
+- [Redspire Citadel](/locations/redspire_citadel/) `Headquarters` `Factions`
 
 ### Quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — factions
-
-### Red_sky_foothills
-- [Red Sky Foothills](/red_sky_foothills/red_sky_foothills/) — territory
-
-### Redspire_citadels
-- [Redspire Citadel](/redspire_citadels/redspire_citadel/) — headquarters
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/) `Quests` `Factions`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** An ancient order of knights sworn to watch the red sky and protect the realm from what lies beyond it.
-**Themes:** Military, Order, Protectors, Highlands
-**Visual Style:** Silver and violet armor, crimson cloaks, tower shield emblems.
-**Common Encounters:** Player faction, quest givers, moral authority, military support.
-**Lore Highlights:** 
-**Related Entities:** redspire_citadel, red_sky_foothills, faction.deep_hollow_cult, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, location.redspire_citadel, quest.shattered_sky_rite
-**Writing Guidance:** Honorable but rigid. Will sacrifice individuals for the greater good.
-**Generation Hints:** Patrol the highlands, maintain fortifications, train recruits.
-<!-- END GENERATED: ai_context -->

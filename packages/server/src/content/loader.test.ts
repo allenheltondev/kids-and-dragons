@@ -17,11 +17,13 @@ async function tree(files: {
   rules?: unknown;
   items?: unknown;
   abilities?: unknown;
+  bestiary?: unknown;
   chapters?: Record<string, unknown> | null;
   maps?: Record<string, unknown> | null;
 }): Promise<string> {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "kad-content-"));
   tempDirs.push(root);
+  if (files.bestiary !== undefined) await write(path.join(root, "bestiary.json"), files.bestiary);
   if (files.rules !== undefined) await write(path.join(root, "rules.json"), files.rules);
   if (files.items !== undefined) await write(path.join(root, "items.json"), files.items);
   if (files.abilities !== undefined) await write(path.join(root, "abilities.json"), files.abilities);
@@ -234,5 +236,99 @@ describe("the ability catalog", () => {
     await expect(
       loadContent(await tree({ ...good(), abilities: { version: 1, abilities: [] } })),
     ).rejects.toThrow(/expected an "abilities" object/);
+  });
+});
+
+/**
+ * A chapter names its monsters; canon says what they are worth.
+ *
+ * The stats used to be copied into the chapter with `content:validate`
+ * policing the copy. Canon is the source of truth, so the copy is gone and the
+ * loader does the borrowing — which makes these the tests that keep a
+ * three-word enemy spec producing a complete one.
+ */
+describe("enemy stats come from the bestiary", () => {
+  const WISP = {
+    canon_id: "creature.will_o_wisp",
+    name: "Will-o'-Wisp",
+    art: "enemies/will_o_wisp",
+    band: "skirmisher",
+    hp: 6,
+    guard: 11,
+    quick: 3,
+    steps: 5,
+    attack: 3,
+    xp: 10,
+    usualCount: 3,
+  };
+  const bestiary = { version: 1, creatures: { will_o_wisp: WISP } };
+
+  /** The fixture chapter with its encounter's enemies replaced wholesale. */
+  async function withEnemies(enemies: unknown[]): Promise<string> {
+    const chapter = makeChapter() as {
+      scenes: Record<string, { type: string; enemies?: unknown[] }>;
+    };
+    for (const scene of Object.values(chapter.scenes)) {
+      if (scene.type === "encounter") scene.enemies = enemies;
+    }
+    return tree({ ...good(), bestiary, chapters: { "bramblewood-01": chapter } });
+  }
+
+  function enemy(root: Awaited<ReturnType<typeof loadContent>>) {
+    const scenes = root.chapter("bramblewood-01")!.scenes;
+    const scene = Object.values(scenes).find((s) => s.type === "encounter")!;
+    if (scene.type !== "encounter") throw new Error("no encounter scene");
+    return scene.enemies[0]!;
+  }
+
+  it("fills a three-word spec into a complete one", async () => {
+    const content = await loadContent(
+      await withEnemies([{ id: "wisp", name: "Bramblewisp", creature: "will_o_wisp" }]),
+    );
+    expect(enemy(content)).toEqual({
+      id: "wisp",
+      name: "Bramblewisp",
+      creature: "will_o_wisp",
+      count: 3,
+      hp: 6,
+      guard: 11,
+      quick: 3,
+      steps: 5,
+      attack: 3,
+      art: "enemies/will_o_wisp",
+    });
+  });
+
+  it("lets a chapter override, because a weakened wisp is a real thing to want", async () => {
+    const content = await loadContent(
+      await withEnemies([{ id: "wisp", creature: "will_o_wisp", hp: 4, count: 2 }]),
+    );
+    expect(enemy(content)).toMatchObject({ hp: 4, count: 2, guard: 11, name: "Will-o'-Wisp" });
+  });
+
+  it("refuses a creature the bestiary has never heard of", async () => {
+    const root = await withEnemies([{ id: "wisp", creature: "grumbleworm" }]);
+    const error = await loadContent(root).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ContentError);
+    if (!(error instanceof ContentError)) return;
+    expect(error.problems[0]).toContain('creature "grumbleworm" is not in content/bestiary.json');
+  });
+
+  it("still takes a hand-rolled enemy that names no creature", async () => {
+    // A one-off may exist; it just has to say every number itself. The shipped
+    // fixture is one, which is why the rest of the suite never needed a
+    // bestiary.
+    const content = await loadContent(
+      await withEnemies([{ id: "thing", count: 2, hp: 5, guard: 10, quick: 1, steps: 3, attack: 2 }]),
+    );
+    expect(enemy(content)).toMatchObject({ hp: 5, count: 2 });
+  });
+
+  it("reports the enemy that has no stats and no creature to inherit them from", async () => {
+    const root = await withEnemies([{ id: "thing", count: 2 }]);
+    const error = await loadContent(root).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ContentError);
+    if (!(error instanceof ContentError)) return;
+    expect(error.problems[0]).toContain("no hp, and no `creature` to inherit it from");
   });
 });

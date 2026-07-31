@@ -8,8 +8,8 @@
  * always, and against `DynamoRepository` on a real DynamoDB whenever
  * `KAD_DDB_ENDPOINT` points at one (`npm run ddb:local`, and CI).
  *
- * What lives here is the behaviour the game *depends on* rather than the
- * behaviour DynamoDB happens to have — conditional room creation, the
+ * What lives here is the behavior the game *depends on* rather than the
+ * behavior DynamoDB happens to have — conditional room creation, the
  * transactional commit, event ordering under zero-padding, GSI1 lookups, and the
  * guest-household lifecycle. If the two stores ever disagree about one of these,
  * a bug found at the table would be unreproducible on a laptop, which is the

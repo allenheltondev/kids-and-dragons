@@ -11,7 +11,7 @@ purpose: >-
 
 agent_instructions:
   - A named place appears once in this canon and is referenced elsewhere by id.
-  - Regions own broad territory. Sites own settlements, crossings, caves, and singular landmarks.
+  - Places live in biomes.yaml (ecological regions) and locations.yaml (places inside them). This file owns only what is neither: water features and travel routes.
   - A border means overland adjacency, not automatically a safe or maintained route.
   - A route records a meaningful or constrained way to travel between places.
   - Tactical encounter grids remain separate and may be reused by multiple canonical sites.
@@ -23,6 +23,7 @@ agent_instructions:
 controlled_values:
   kind:
     biome_region: "A broad ecological and travel region."
+    ocean: "Open water surrounding the landmass."
     aerial_archipelago: "A group of floating or airborne land masses."
     offshore_island_region: "An island or marine area not reachable by overland travel."
     volcanic_landmark_region: "A singular volcanic landmark with its own visual family."
@@ -39,6 +40,10 @@ controlled_values:
     overland_road: "A maintained road between locations."
     overland_route: "An unmaintained or informal overland path."
   canon_status:
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
+  map_provenance:
     map_canonical: "Directly placed and labeled on the current map."
     map_canonical_and_biome_matched: "Map-placed and matched to a biome canon entry."
     map_visible_name_pending: "Visible on the map but lacking a canonical proper name."
@@ -56,23 +61,6 @@ controlled_values:
     sea_or_subterranean: "Reachable by sea or underground passage."
 
 geography_ids:
-  - expanse
-  - sky_islands
-  - enchanted_woods
-  - red_sky_foothills
-  - plains
-  - whispering_marsh
-  - sunward_fields
-  - eastern_plains
-  - glacier_of_origins
-  - frostfang_peaks
-  - bone_yard
-  - mermaid_cove
-  - mount_red_sky
-  - mosshome
-  - exchange
-  - stone_crossing
-  - skullwater_cave
   - great_river_source
   - great_river
   - great_river_west_branch
@@ -100,320 +88,36 @@ world_metadata:
       boundaries, collision geometry, or a promise that every point inside an
       illustrated region is traversable.
 
-regions:
-  - id: geography.expanse
-    title: The Expanse
-    kind: biome_region
-    biome_id: biome.expanse
-    canon_status: map_canonical
-    map_anchor: { x: 470, y: 75 }
-    relative_position: north
-    borders:
-      - geography.enchanted_woods
-      - geography.red_sky_foothills
-      - geography.glacier_of_origins
-    barriers:
-      south: northern_escarpment
-      east: upper_great_river
-    notes:
-      - The illustrated plateau occupies most of the northern mainland.
-      - No fixed western land route is shown; its western edge falls to the sea.
-
-  - id: geography.sky_islands
-    title: Sky Islands
-    kind: aerial_archipelago
-    biome_id: biome.sky_islands
-    canon_status: map_canonical
-    map_anchor: { x: 165, y: 235 }
-    relative_position: west_offshore
-    borders: []
-    access:
-      mode: aerial
-      fixed_routes: false
-    notes:
-      - The islands drift, so their anchor represents their normal map area rather than a permanent position.
-      - They are not considered adjacent to the western coast for ordinary overland travel.
-
-  - id: geography.enchanted_woods
-    title: Enchanted Woods
-    kind: biome_region
-    biome_id: biome.enchanted_woods
-    canon_status: map_canonical
-    map_anchor: { x: 220, y: 395 }
-    relative_position: west_central
-    borders:
-      - geography.expanse
-      - geography.red_sky_foothills
-      - geography.plains
-      - geography.whispering_marsh
-    contains_sites:
-      - location.mosshome
-    notes:
-      - The forest forms the western transition between the northern plateau, central hills, and marsh.
-
-  - id: geography.red_sky_foothills
-    title: Red Sky Foothills
-    kind: biome_region
-    biome_id: biome.red_sky_foothills
-    canon_status: map_canonical
-    map_anchor: { x: 440, y: 410 }
-    relative_position: central
-    borders:
-      - geography.expanse
-      - geography.enchanted_woods
-      - geography.plains
-    separated_from:
-      - region: geography.eastern_plains
-        by: feature.great_river
-    contains_sites:
-      - location.mount_red_sky
-    notes:
-      - The foothills wrap the southern and western approaches to Mount Red Sky.
-      - The northern bridge provides the explicit route to the Eastern Plains.
-
-  - id: geography.plains
-    title: The Plains
-    kind: biome_region
-    biome_id: biome.plains
-    canon_status: map_canonical
-    map_anchor: { x: 455, y: 520 }
-    relative_position: central_south
-    borders:
-      - geography.red_sky_foothills
-      - geography.enchanted_woods
-      - geography.whispering_marsh
-      - geography.sunward_fields
-    separated_from:
-      - region: geography.eastern_plains
-        by: feature.great_river
-    notes:
-      - The west branch of the Great River runs through the southern portion of this region.
-      - Roads are visible across the region, but exact road nodes are not yet canonized.
-
-  - id: geography.whispering_marsh
-    title: Whispering Marsh
-    kind: biome_region
-    biome_id: biome.whispering_marsh
-    canon_status: map_canonical
-    map_anchor: { x: 225, y: 620 }
-    relative_position: southwest
-    borders:
-      - geography.enchanted_woods
-      - geography.plains
-      - geography.sunward_fields
-    contains_sites: []
-    water_features:
-      - feature.great_river_west_branch
-    notes:
-      - The mapped marsh reaches the western coast and wraps south of Mosshome.
-      - Internal waterways are intentionally not yet reduced to a grid.
-
-  - id: geography.sunward_fields
-    title: The Sunward Fields
-    kind: biome_region
-    biome_id: biome.sunward_fields
-    canon_status: map_canonical
-    map_anchor: { x: 470, y: 690 }
-    relative_position: south_central
-    borders:
-      - geography.plains
-      - geography.whispering_marsh
-    separated_from:
-      - region: geography.eastern_plains
-        by: feature.great_river
-    nearby_sites:
-      - location.exchange
-      - location.stone_crossing
-    notes:
-      - The southern bridge at Stone Crossing is the explicit eastern route.
-      - The Exchange occupies the southwestern coast immediately below the fields.
-
-  - id: geography.eastern_plains
-    title: The Eastern Plains
-    kind: biome_region
-    biome_id: biome.eastern_plains
-    canon_status: map_canonical
-    map_anchor: { x: 750, y: 445 }
-    relative_position: east_central
-    borders:
-      - geography.frostfang_peaks
-    separated_from:
-      - region: geography.red_sky_foothills
-        by: feature.great_river
-      - region: geography.plains
-        by: feature.great_river
-      - region: geography.sunward_fields
-        by: feature.great_river
-    contains_sites:
-      - location.stone_crossing
-    coast: eastern_sea
-    notes:
-      - The region has two mapped westward crossings: the northern bridge and Stone Crossing.
-      - The southern extent reaches the river mouth and the waters north of the Bone Yard.
-
-  - id: geography.glacier_of_origins
-    title: Glacier of Origins
-    kind: biome_region
-    biome_id: biome.glacier_of_origins
-    canon_status: map_canonical
-    map_anchor: { x: 805, y: 85 }
-    relative_position: northeast
-    borders:
-      - geography.expanse
-      - geography.frostfang_peaks
-    contains_features:
-      - feature.great_river_source
-    notes:
-      - The Great River begins here and flows south along the western edge of the frozen mountains.
-
-  - id: geography.frostfang_peaks
-    title: Frostfang Peaks
-    kind: biome_region
-    biome_id: biome.frostfang_peaks
-    canon_status: map_canonical
-    map_anchor: { x: 825, y: 275 }
-    relative_position: east_northeast
-    borders:
-      - geography.glacier_of_origins
-      - geography.eastern_plains
-    separated_from:
-      - region: geography.red_sky_foothills
-        by: feature.great_river
-    coast: eastern_sea
-
-  - id: geography.bone_yard
-    title: The Bone Yard
-    kind: offshore_island_region
-    biome_id: biome.bone_yard
-    canon_status: map_canonical
-    map_anchor: { x: 875, y: 805 }
-    relative_position: southeast_offshore
-    borders: []
-    access:
-      mode: sea
-      fixed_routes: false
-    notes:
-      - The island lies east of the Great River delta.
-      - No permanent bridge or causeway is shown.
-
-  - id: geography.mermaid_cove
-    title: Mermaid Cove
-    kind: offshore_island_region
-    biome_id: biome.mermaid_cove
-    canon_status: map_canonical
-    map_anchor: { x: 690, y: 925 }
-    relative_position: south_offshore
-    borders: []
-    access:
-      mode: sea
-      fixed_routes: false
-    notes:
-      - The cove lies south of the river mouth and southwest of the Bone Yard.
-      - Its internal lagoon and settlement nodes remain to be authored.
-
-sites:
-  - id: location.mount_red_sky
-    title: Mount Red Sky
-    kind: volcanic_landmark_region
-    canon_status: map_canonical
-    map_anchor: { x: 465, y: 325 }
-    contained_by: geography.red_sky_foothills
-    adjacent_to:
-      - geography.expanse
-    access_from:
-      - geography.red_sky_foothills
-    art_biome_id: biome.mount_red_sky
-    notes:
-      - The mountain is a singular landmark with its own visual family, not a world-scale travel grid.
-      - Legendary beasts may inhabit it; dragonlings do not treat it as a normal homeland.
-
-  - id: location.mosshome
-    title: Mosshome
-    kind: settlement_region
-    canon_status: map_canonical
-    map_anchor: { x: 115, y: 525 }
-    contained_by: geography.enchanted_woods
-    adjacent_to:
-      - geography.whispering_marsh
-    art_biome_id: biome.mosshome
-    notes:
-      - Home of the Bigfoot.
-      - It is geographically embedded in the western ancient forest rather than a separate continent-scale biome.
-
-  - id: location.exchange
-    title: The Exchange
-    kind: coastal_trade_city
-    canon_status: map_canonical
-    map_anchor: { x: 350, y: 855 }
-    adjacent_to:
-      - geography.whispering_marsh
-      - geography.sunward_fields
-    coast: southwestern_sea
-    art_biome_id: biome.exchange
-    notes:
-      - The Exchange is a settlement and transport hub.
-      - Its docks imply sea access, but destinations and shipping routes are not yet canonized.
-
-  - id: location.stone_crossing
-    title: Stone Crossing
-    kind: river_crossing_settlement
-    canon_status: map_canonical
-    map_anchor: { x: 710, y: 655 }
-    contained_by: geography.eastern_plains
-    spans: feature.great_river
-    connects:
-      - geography.sunward_fields
-      - geography.eastern_plains
-    art_biome_id: biome.stone_crossing
-    notes:
-      - This is the named southern crossing where the Great River narrows.
-      - The crossing is both a site and a constrained route.
-
-  - id: location.skullwater_cave
-    title: Skullwater Cave
-    kind: offshore_dungeon_landmark
-    canon_status: map_canonical
-    map_anchor: { x: 945, y: 370 }
-    relative_position: east_offshore
-    coast_near:
-      - geography.frostfang_peaks
-      - geography.eastern_plains
-    access:
-      mode: sea_or_subterranean
-      fixed_routes: false
-    art_biome_id: biome.skullwater_cave
-    notes:
-      - The illustrated entrance is offshore and opens into an underground layer.
-      - The cave network should be modeled separately from the surface map when authored.
-
 features:
   - id: feature.great_river_source
     title: Source of the Great River
     kind: river_source
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 720, y: 105 }
-    contained_by: geography.glacier_of_origins
+    contained_by: biome.glacier_of_origins
 
   - id: feature.great_river
     title: The Great River
     kind: major_river
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     source: feature.great_river_source
     flow_direction: north_to_south
     reaches:
-      - geography.glacier_of_origins
-      - geography.frostfang_peaks
-      - geography.red_sky_foothills
-      - geography.eastern_plains
-      - geography.plains
-      - geography.sunward_fields
+      - biome.glacier_of_origins
+      - biome.frostfang_peaks
+      - biome.red_sky_foothills
+      - biome.eastern_plains
+      - biome.plains
+      - biome.sunward_fields
     mouth:
       map_anchor: { x: 625, y: 900 }
       between:
-        - geography.sunward_fields
-        - geography.bone_yard
+        - biome.sunward_fields
+        - biome.bone_yard
       near:
-        - geography.mermaid_cove
+        - biome.mermaid_cove
     crossings:
       - route.northern_river_bridge
       - route.stone_crossing
@@ -424,12 +128,13 @@ features:
   - id: feature.great_river_west_branch
     title: Western Branch of the Great River
     kind: river_branch
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     parent: feature.great_river
     map_anchor: { x: 390, y: 590 }
     reaches:
-      - geography.plains
-      - geography.whispering_marsh
+      - biome.plains
+      - biome.whispering_marsh
     outlet: western_sea
     notes:
       - The map shows a substantial westward branch separating the Plains from the southern lands.
@@ -438,7 +143,8 @@ features:
   - id: feature.eastern_maelstrom
     title: Eastern Maelstrom
     kind: ocean_hazard
-    canon_status: visible_unlabeled_feature
+    canon_status: confirmed
+    map_provenance: visible_unlabeled_feature
     map_anchor: { x: 950, y: 625 }
     notes:
       - Visible east of the Eastern Plains and north of the Bone Yard.
@@ -448,12 +154,13 @@ routes:
   - id: route.northern_river_bridge
     title: Northern River Bridge
     kind: bridge
-    canon_status: map_visible_name_pending
+    canon_status: confirmed
+    map_provenance: map_visible_name_pending
     map_anchor: { x: 655, y: 390 }
     crosses: feature.great_river
     connects:
-      - geography.red_sky_foothills
-      - geography.eastern_plains
+      - biome.red_sky_foothills
+      - biome.eastern_plains
     travel_modes: [foot, caravan]
     notes:
       - This is the northern mapped bridge between the Foothills and Eastern Plains.
@@ -462,13 +169,14 @@ routes:
   - id: route.stone_crossing
     title: Stone Crossing Route
     kind: bridge_and_narrow_pass
-    canon_status: map_canonical
+    canon_status: confirmed
+    map_provenance: map_canonical
     map_anchor: { x: 630, y: 680 }
     crosses: feature.great_river
     via: location.stone_crossing
     connects:
-      - geography.sunward_fields
-      - geography.eastern_plains
+      - biome.sunward_fields
+      - biome.eastern_plains
     travel_modes: [foot, caravan]
     constraints:
       - The river narrows to a single path.
@@ -477,19 +185,21 @@ routes:
   - id: route.exchange_to_sunward_fields
     title: Exchange–Sunward Road
     kind: overland_road
-    canon_status: map_implied
+    canon_status: confirmed
+    map_provenance: map_implied
     connects:
       - location.exchange
-      - geography.sunward_fields
+      - biome.sunward_fields
     travel_modes: [foot, caravan]
 
   - id: route.exchange_to_whispering_marsh
     title: Exchange–Marsh Approach
     kind: overland_route
-    canon_status: map_implied
+    canon_status: confirmed
+    map_provenance: map_implied
     connects:
       - location.exchange
-      - geography.whispering_marsh
+      - biome.whispering_marsh
     travel_modes: [foot]
     notes:
       - A route exists by adjacency, but its safety, surface, and exact path are not yet canonized.
@@ -520,11 +230,11 @@ canon_reconciliation:
       - biome.bone_yard
       - biome.mermaid_cove
     site_art_families_not_true_biome_regions:
-      - biome.mount_red_sky
-      - biome.mosshome
-      - biome.exchange
-      - biome.stone_crossing
-      - biome.skullwater_cave
+      - location.mount_red_sky
+      - location.mosshome
+      - location.exchange
+      - location.stone_crossing
+      - location.skullwater_cave
     note: >-
       The uploaded biomes file appears to be an earlier or partial canon. This
       geography draft preserves its one exact match and leaves ambiguous concepts
@@ -551,7 +261,7 @@ internal_location_graphs:
       - route_kind
       - travel_constraints
       - visibility
-  recommended_first_region: geography.enchanted_woods
+  recommended_first_region: biome.enchanted_woods
   reason: >-
     The first playable chapter already implies a hedge wall, clearing, path fork,
     mossy stairs, singing stream, wisp thicket, shrine hollow, and hill door. Turning

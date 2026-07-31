@@ -611,7 +611,7 @@ and served as a static asset from CloudFront.
       "type": "encounter",
       "map": "thicket",
       "enemies": [
-        { "id": "wisp", "count": 3, "hp": 6, "guard": 11, "quick": 3, "steps": 5, "attack": 3 }
+        { "id": "wisp", "name": "Bramblewisp", "creature": "will_o_wisp" }   // stats come from canon
       ],
       "onVictory": { "goto": "scene_shrine" },
       "onDefeat":  { "goto": "scene_captured" }        // never a game over
@@ -638,12 +638,22 @@ locked out of something they can see.
 or a specific `playerId`. If the recipient's six slots are full, the client prompts to swap or leave —
 the grant never silently fails and never silently overflows.
 
+An enemy names the canon creature it is one of and inherits everything else — `count`, `name`, `art`
+and all five stats — from `content/bestiary.json`, the generated projection of `canon/creatures.yaml`
+([canon contract](canon-contract.md) D9). A stat written in the chapter is an override; retuning a
+whole band is an edit to `content/rules.json` and to nothing else.
+
 Items themselves live in a separate catalog, `content/items.json`, so a chapter references
-`itemId` and never redefines an item:
+`itemId` and never redefines an item. That file is **generated** from `canon/items.yaml` and from
+each chapter's own `props` block (D7) — the world owns a honeycake, one chapter owns the key to its
+own door — and both land in one namespace, because a quest item outlives the chapter that granted
+it:
 
 ```jsonc
+// content/items.json — GENERATED. `npm run canon:items`.
 {
-  "sunbloom_draught": {
+  "$comment": "…generated from canon/items.yaml and every chapter's props…",
+  "sunbloom_draught": {                    // from canon: the world has these
     "kind": "consumable", "icon": "potion",
     "name": "Sunbloom Draught", "text": "Heal 4 HP.",
     "effect": { "type": "heal", "amount": 4 }
@@ -653,7 +663,7 @@ Items themselves live in a separate catalog, `content/items.json`, so a chapter 
     "name": "River Charm", "text": "+1 step.",
     "passive": { "type": "stepBonus", "amount": 1 }
   },
-  "rusted_key": {
+  "rusted_key": {                          // from bramblewood-01's `props`
     "kind": "quest", "icon": "key",
     "name": "Rusted Key", "text": "It opens something, somewhere."
   }

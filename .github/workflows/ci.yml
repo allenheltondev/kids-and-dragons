@@ -105,6 +105,38 @@ jobs:
       - name: Bundle Lambdas
         run: npm run infra:build
 
+      # Canon is the source of truth (docs/canon-contract.md), and until now it
+      # was the one corpus no build step read: content:validate checks a
+      # chapter's biome against assets/manifest.json and has no concept of a
+      # creature id, and the wiki's own validator only ran inside the manual
+      # wiki:generate. A truth nothing verifies drifts.
+      - name: Check canon
+        run: npm run canon:check
+
+      # content/bestiary.json is generated from canon, and both the content
+      # validator and the wiki read it. A committed copy that no longer matches
+      # its source would validate chapters against stale stats and publish them,
+      # so regenerate and fail if anything moved.
+      - name: Check the bestiary is up to date
+        run: |
+          npm run canon:bestiary
+          git diff --exit-code -- content/bestiary.json || {
+            echo "::error::content/bestiary.json is stale — run \`npm run canon:bestiary\` and commit the result."
+            exit 1
+          }
+
+      # Same contract as the bestiary, one file over: content/items.json is
+      # projected from canon/items.yaml plus every chapter's `props` (D7). The
+      # generator is also where prop/canon id collisions are caught, so this
+      # step fails on a stale catalog *and* on a prop that shadows a world item.
+      - name: Check the item catalog is up to date
+        run: |
+          npm run canon:items
+          git diff --exit-code -- content/items.json || {
+            echo "::error::content/items.json is stale — run \`npm run canon:items\` and commit the result."
+            exit 1
+          }
+
       # Content is data (roadmap, "Content as data"), so it gets checked like code:
       # schemas first, then the cross-file rules a schema cannot express.
       - name: Validate content

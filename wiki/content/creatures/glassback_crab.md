@@ -3,7 +3,7 @@ title: Glassback Crab
 id: creature.glassback_crab
 type: creature
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["dangerous", "foothills", "territorial", "burrower"]
 classification: dangerous_creature
@@ -14,44 +14,64 @@ related:
   - id: biome.red_sky_foothills
     type: biome
     relationship: primary_locations
-  - id: biome.mount_red_sky
-    type: biome
+  - id: location.mount_red_sky
+    type: location
     relationship: primary_locations
   - id: biome.red_sky_foothills
-    type: biome
-    relationship: dangerous_creatures
-  - id: biome.mount_red_sky
     type: biome
     relationship: dangerous_creatures
   - id: item.crimson_shard
     type: item
     relationship: dropped_by
+  - id: location.mount_red_sky
+    type: location
+    relationship: dangerous_creatures
+assets:
+  primary: assets/entities/glassback_crab/portrait.webp
+  primaryFull: assets/entities/glassback_crab/assembled.png
+ai_context:
+  mood: "Large territorial crab-like burrower with a translucent mineral shell."
+  themes: "Dangerous, Foothills, Territorial, Burrower"
+  visual_style: "Broad crab body with a crystal-like shell that refracts nearby color, heavy digging claws and heat-darkened legs."
+  common_encounters: "Cave obstacle, mistaken gemstone formation, sign of a newly warmed tunnel."
+  lore_highlights: ""
+  related_entities: "biome.red_sky_foothills, location.mount_red_sky, biome.red_sky_foothills, item.crimson_shard, location.mount_red_sky"
+  writing_guidance: "Threatens before charging, usually stops pursuing once intruder leaves territory."
+  generation_hints: "Defends warm burrows and exposed mineral deposits."
 layout: creatures
 infobox: creature
 ---
+
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Brute** — Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
+
+| | |
+|---|---|
+| Health | 14 |
+| Guard | 12 — how hard it is to hit |
+| Attack | +4 |
+| Speed | 3 steps, 1 initiative |
+| Usually | 2 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Observation** (Clever, easy) — It threatens before it charges, so the warning is the whole encounter if somebody reads it.
+- **Escape** (Quick, normal) — It stops pursuing once you are off its patch of warm ground.
+<!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
 ### Biomes
-- [Mount Red Sky](/biomes/mount_red_sky/) — primary_locations
-- [Mount Red Sky](/biomes/mount_red_sky/) — dangerous_creatures
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — primary_locations
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — dangerous_creatures
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Primary Locations` `Dangerous Creatures`
 
 ### Items
-- [Crimson Shard](/items/crimson_shard/) — dropped_by
+- [Crimson Shard](/items/crimson_shard/) `Dropped By`
+
+### Locations
+- [Mount Red Sky](/locations/mount_red_sky/) `Primary Locations` `Dangerous Creatures`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Large territorial crab-like burrower with a translucent mineral shell.
-**Themes:** Dangerous, Foothills, Territorial, Burrower
-**Visual Style:** Broad crab body with a crystal-like shell that refracts nearby color, heavy digging claws and heat-darkened legs.
-**Common Encounters:** Cave obstacle, mistaken gemstone formation, sign of a newly warmed tunnel.
-**Lore Highlights:** 
-**Related Entities:** biome.red_sky_foothills, biome.mount_red_sky, biome.red_sky_foothills, biome.mount_red_sky, item.crimson_shard
-**Writing Guidance:** Threatens before charging, usually stops pursuing once intruder leaves territory.
-**Generation Hints:** Defends warm burrows and exposed mineral deposits.
-<!-- END GENERATED: ai_context -->

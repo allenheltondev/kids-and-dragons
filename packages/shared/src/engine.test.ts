@@ -539,7 +539,7 @@ describe("a full walk of a chapter", () => {
      * complete but the phones have no combat UI yet, so a chapter routed into
      * a fight dead-ended: state advanced, prompt empty, nothing to tap. A
      * scene marked `autoResolve: "victory"` flows through its victory branch
-     * — the old placeholder behaviour, opt-in per scene and authored in
+     * — the old placeholder behavior, opt-in per scene and authored in
      * content — with the encounter's narration kept in front of the
      * destination's so the beat still reads.
      */

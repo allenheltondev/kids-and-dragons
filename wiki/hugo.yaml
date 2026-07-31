@@ -40,8 +40,11 @@ menu:
       name: Characters
       weight: 50
     - identifier: npcs
-      name: NPCs
+      name: Peoples
       weight: 60
+    - identifier: individuals
+      name: Named Individuals
+      weight: 65
     - identifier: factions
       name: Factions
       weight: 70

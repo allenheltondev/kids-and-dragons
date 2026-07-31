@@ -1,9 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { AssetResult, CanonEntity, ValidationMessage } from './types.ts';
+import type { AssetResult, CanonEntity, EntityImage, ValidationMessage } from './types.ts';
 
 /** Supported image extensions for asset discovery (case-insensitive). */
 const IMAGE_EXTENSIONS = new Set(['.png', '.webp', '.jpg', '.svg']);
+
+/**
+ * This module discovers *whatever* images a directory holds and cannot know
+ * which of them is a derived thumbnail of another, so what it finds is shown at
+ * full size. `resolveConventionAssets` in page-generator.ts is the path that
+ * knows the `assembled.png` / `portrait.webp` convention, and it is the one
+ * `generate.ts` actually takes today.
+ */
+function sameAtBothSizes(image: string): EntityImage {
+  return { src: image, full: image };
+}
 
 /**
  * Discover assets for a single canon entity.
@@ -24,7 +35,7 @@ export function discoverAssets(
     return {
       result: {
         entityId: entity.id,
-        primary: entity.assets[0],
+        primary: sameAtBothSizes(entity.assets[0]!),
         source: 'explicit',
       },
       warnings,
@@ -116,7 +127,7 @@ export function discoverAssets(
     return {
       result: {
         entityId: entity.id,
-        primary: relativePaths[0],
+        primary: sameAtBothSizes(relativePaths[0]!),
         source: 'convention',
       },
       warnings,
@@ -126,7 +137,7 @@ export function discoverAssets(
   return {
     result: {
       entityId: entity.id,
-      gallery: relativePaths,
+      gallery: relativePaths.map(sameAtBothSizes),
       source: 'convention',
     },
     warnings,

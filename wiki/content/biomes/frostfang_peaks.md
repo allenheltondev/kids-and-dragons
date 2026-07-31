@@ -3,19 +3,31 @@ title: Frostfang Peaks
 id: biome.frostfang_peaks
 type: biome
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["frozen-mountains", "aeries", "griffin-homeland", "cliffs", "rescue"]
+tags: ["frozen_mountains", "aeries", "griffin_homeland", "cliffs", "rescue"]
 danger_level: high
 related:
   - id: biome.glacier_of_origins
     type: biome
     relationship: locations
+  - id: biome.red_sky_foothills
+    type: biome
+    relationship: separated_from
+  - id: feature.great_river
+    type: feature
+    relationship: separated_by
+  - id: biome.glacier_of_origins
+    type: biome
+    relationship: borders
+  - id: biome.eastern_plains
+    type: biome
+    relationship: borders
   - id: character.griffin
     type: character
     relationship: primary_peoples
-  - id: character.yeti
-    type: character
+  - id: npc.yeti
+    type: npc
     relationship: supporting_peoples
   - id: creature.snowhorn_goat
     type: creature
@@ -35,13 +47,30 @@ related:
   - id: creature.frost_wyrm
     type: creature
     relationship: primary_locations
+  - id: feature.great_river
+    type: feature
+    relationship: reaches
+  - id: location.skullwater_cave
+    type: location
+    relationship: coast_near
   - id: npc.yeti
     type: npc
     relationship: secondary_locations
 assets:
+  primary: assets/biomes/frostfang_peaks/portrait.webp
+  primaryFull: assets/biomes/frostfang_peaks/bg.webp
   gallery:
-    - C:/git/kids-and-dragons/assets/biomes/frostfang_peaks/bg.webp
-    - C:/git/kids-and-dragons/assets/biomes/frostfang_peaks/tiles.png
+    - src: assets/biomes/frostfang_peaks/portrait.webp
+      full: assets/biomes/frostfang_peaks/tiles.png
+ai_context:
+  mood: "A vast frozen mountain range of cliffs, passes, and aeries that forms the griffin homeland and watches the northern horizon."
+  themes: "Frozen_mountains, Aeries, Griffin_homeland, Cliffs, Rescue"
+  visual_style: "Dense ranks of snow-covered peaks, dark exposed rock, high aeries, narrow passes, cloud shadows, ice shelves, and enormous vertical scale."
+  common_encounters: "Mountain rescue, aerial travel, watch duties, avalanches, lost messengers, northern signs, dangerous passes, and conflicts between curiosity and caution."
+  lore_highlights: ""
+  related_entities: "biome.glacier_of_origins, biome.red_sky_foothills, feature.great_river, biome.glacier_of_origins, biome.eastern_plains, character.griffin, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river, location.skullwater_cave, npc.yeti"
+  writing_guidance: "Griffins are rescuers, scouts, and people with ordinary communities, not merely mounts or guards. The Peaks are distinct from the Glacier of Origins."
+  generation_hints: "Aerie communities maintain watches, rescue routes, signals, and pass knowledge while storms and ice frequently close expected paths."
 layout: biomes
 infobox: biome
 ---
@@ -50,33 +79,26 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Glacier of Origins](/biomes/glacier_of_origins/) — locations
+- [Glacier of Origins](/biomes/glacier_of_origins/) `Locations` `Borders`
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Separated From`
+- [The Eastern Plains](/biomes/eastern_plains/) `Borders`
 
 ### Characters
-- [Griffin](/characters/griffin/) — primary_peoples
-- [Griffin](/characters/griffin/) — primary_locations
-- [Kitsune](/characters/kitsune/) — secondary_locations
-- [Yeti](/characters/yeti/) — supporting_peoples
+- [Griffin](/characters/griffin/) `Primary Peoples` `Primary Locations`
+- [Kitsune](/characters/kitsune/) `Secondary Locations`
 
 ### Creatures
-- [Frost Wyrm](/creatures/frost_wyrm/) — dangerous_creatures
-- [Frost Wyrm](/creatures/frost_wyrm/) — primary_locations
-- [Snowhorn Goat](/creatures/snowhorn_goat/) — ambient_creatures
-- [Snowhorn Goat](/creatures/snowhorn_goat/) — primary_locations
+- [Frost Wyrm](/creatures/frost_wyrm/) `Dangerous Creatures` `Primary Locations`
+- [Snowhorn Goat](/creatures/snowhorn_goat/) `Ambient Creatures` `Primary Locations`
+
+### Features
+- [The Great River](/features/great_river/) `Separated By` `Reaches`
+
+### Locations
+- [Skullwater Cave](/locations/skullwater_cave/) `Coast Near`
 
 ### Npcs
-- [Yeti](/npcs/yeti/) — secondary_locations
+- [Yeti](/npcs/yeti/) `Supporting Peoples` `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** A vast frozen mountain range of cliffs, passes, and aeries that forms the griffin homeland and watches the northern horizon.
-**Themes:** Frozen-mountains, Aeries, Griffin-homeland, Cliffs, Rescue
-**Visual Style:** Dense ranks of snow-covered peaks, dark exposed rock, high aeries, narrow passes, cloud shadows, ice shelves, and enormous vertical scale.
-**Common Encounters:** Mountain rescue, aerial travel, watch duties, avalanches, lost messengers, northern signs, dangerous passes, and conflicts between curiosity and caution.
-**Lore Highlights:** 
-**Related Entities:** biome.glacier_of_origins, character.griffin, character.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, npc.yeti
-**Writing Guidance:** Griffins are rescuers, scouts, and people with ordinary communities, not merely mounts or guards. The Peaks are distinct from the Glacier of Origins.
-**Generation Hints:** Aerie communities maintain watches, rescue routes, signals, and pass knowledge while storms and ice frequently close expected paths.
-<!-- END GENERATED: ai_context -->

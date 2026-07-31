@@ -353,7 +353,7 @@ export class MemoryRepository implements GameRepository {
   async getDevice(householdId: string, deviceId: string): Promise<DeviceBinding | null> {
     // Memory is always consistent, so this differs from `getDeviceById` only
     // in shape — but both stores must expose it or the contract suite cannot
-    // hold them to the same behaviour.
+    // hold them to the same behavior.
     const item = this.get(HH(householdId), DEVICE_SK(deviceId));
     return (item?.data as DeviceBinding | undefined) ?? null;
   }

@@ -8,14 +8,14 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import type { CanonEntity, AiContext, AssetResult, CanonRegistry, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
+import type { CanonEntity, AiContext, AssetResult, CanonRegistry, EntityImage, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
 
 /** Marker format for generated sections. */
 const BEGIN_MARKER = (section: string) => `<!-- BEGIN GENERATED: ${section} -->`;
 const END_MARKER = (section: string) => `<!-- END GENERATED: ${section} -->`;
 
 /** Generated section names managed by this module. */
-const GENERATED_SECTIONS = ['relationships', 'ai_context'] as const;
+const GENERATED_SECTIONS = ['relationships', 'encounter', 'mechanics', 'ai_context'] as const;
 
 /**
  * Represents a single related entity entry for front matter and section rendering.
@@ -80,6 +80,26 @@ export function getConventionAssetPath(entityType: string, name: string): string
     default:
       return null;
   }
+}
+
+/**
+ * The derived, page-sized image `tools/art/portraits.py` writes beside a
+ * commissioned figure. Never a distinct picture — always a smaller copy of the
+ * `assembled.png` in the same directory.
+ */
+const PORTRAIT_FILE = 'portrait.webp';
+
+/**
+ * Pair a full-resolution source with what a page should actually render.
+ *
+ * Falls back to the source when no portrait has been derived, so a checkout
+ * that has not run `npm run art:portraits` gets a heavier page rather than a
+ * broken image.
+ */
+function withDisplay(full: string, assetsDir: string): EntityImage {
+  const portrait = path.posix.join(path.posix.dirname(full), PORTRAIT_FILE);
+  const onDisk = path.resolve(assetsDir, '..', portrait);
+  return { src: fs.existsSync(onDisk) ? portrait : full, full };
 }
 
 /**
@@ -160,7 +180,9 @@ export function discoverGalleryAssets(
       for (const entry of entries) {
         if (entry.isFile()) {
           const ext = path.extname(entry.name).toLowerCase();
-          if (IMAGE_EXTENSIONS.has(ext)) {
+          // A portrait is a smaller copy of its neighbour, not a second
+          // picture — listing it would put every creature in the gallery twice.
+          if (IMAGE_EXTENSIONS.has(ext) && entry.name !== PORTRAIT_FILE) {
             const baseDir = entity.type === 'biome' ? 'biomes' : 'entities';
             const relativePath = path.posix.join('assets', baseDir, name, entry.name);
             gallery.push(relativePath);
@@ -210,8 +232,8 @@ export function resolveConventionAssets(
 
   return {
     entityId: entity.id,
-    primary,
-    gallery: gallery.length > 0 ? gallery : undefined,
+    primary: primary ? withDisplay(primary, assetsDir) : undefined,
+    gallery: gallery.length > 0 ? gallery.map((full) => withDisplay(full, assetsDir)) : undefined,
     source: primary ? 'convention' : 'none',
   };
 }
@@ -431,12 +453,18 @@ function generateFrontMatter(
   if (assets.primary || (assets.gallery && assets.gallery.length > 0)) {
     lines.push('assets:');
     if (assets.primary) {
-      lines.push(`  primary: ${assets.primary}`);
+      lines.push(`  primary: ${assets.primary.src}`);
+      // Only worth emitting when it differs — otherwise it is the same string
+      // twice in every front matter in the corpus.
+      if (assets.primary.full !== assets.primary.src) {
+        lines.push(`  primaryFull: ${assets.primary.full}`);
+      }
     }
     if (assets.gallery && assets.gallery.length > 0) {
       lines.push('  gallery:');
       for (const img of assets.gallery) {
-        lines.push(`    - ${img}`);
+        lines.push(`    - src: ${img.src}`);
+        lines.push(`      full: ${img.full}`);
       }
     }
   }
@@ -471,6 +499,120 @@ function toTitleCase(snakeStr: string): string {
     .split('_')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
+}
+
+/**
+ * What a reader most wants off a monster's page: is this thing dangerous, and
+ * do I have to fight it?
+ *
+ * Reads `content/bestiary.json`, the generated join of canon's `encounter`
+ * blocks with `content/rules.json`'s band table — so the numbers on the wiki
+ * are the same numbers the game uses, by construction rather than by anybody
+ * remembering to update a page.
+ *
+ * The band leads because it is the meaningful category: "skirmisher, three of
+ * them" tells a reader more than five integers do. The ways past it that are
+ * not a fight come last and are arguably the best thing on the page — the wiki
+ * is the only place they are visible at all, since in play they are just a
+ * check the table either thinks of or does not.
+ */
+export interface BestiaryEntry {
+  band: string;
+  hp: number;
+  guard: number;
+  quick: number;
+  steps: number;
+  attack: number;
+  xp: number;
+  usualCount: number;
+  footprint?: number;
+  behavior?: string;
+  resolutions?: { kind: string; stat: string; difficulty: string; text?: string }[];
+}
+
+export interface BandInfo {
+  description: string;
+}
+
+function generateEncounterSection(
+  entity: CanonEntity,
+  bestiary: Record<string, BestiaryEntry> | null,
+  bands: Record<string, BandInfo> | null,
+): string {
+  const assetId = entity.assetId ?? extractEntityName(entity.id);
+  const entry = bestiary?.[assetId];
+  if (!entry) return '';
+
+  const band = bands?.[entry.band];
+  const lines: string[] = ['## In a Fight', ''];
+
+  lines.push(`**${toTitleCase(entry.band)}**${band ? ` — ${band.description}` : ''}`);
+  lines.push('');
+  lines.push('| | |');
+  lines.push('|---|---|');
+  lines.push(`| Health | ${entry.hp} |`);
+  lines.push(`| Guard | ${entry.guard} — how hard it is to hit |`);
+  lines.push(`| Attack | +${entry.attack} |`);
+  lines.push(`| Speed | ${entry.steps} steps, ${entry.quick} initiative |`);
+  lines.push(`| Usually | ${entry.usualCount === 1 ? 'alone' : `${entry.usualCount} of them`} |`);
+  if (entry.footprint && entry.footprint > 1) {
+    lines.push(`| Size | ${entry.footprint} tiles |`);
+  }
+  lines.push('');
+
+  if (entry.resolutions?.length) {
+    lines.push('### Ways Past It That Are Not Fighting', '');
+    for (const r of entry.resolutions) {
+      const label = toTitleCase(r.kind);
+      const check = `${toTitleCase(r.stat)}, ${r.difficulty}`;
+      lines.push(`- **${label}** (${check})${r.text ? ` — ${r.text}` : ''}`);
+    }
+    lines.push('');
+  }
+
+  if (lines[lines.length - 1] === '') lines.pop();
+  return lines.join('\n');
+}
+
+/**
+ * One entry of `content/items.json` — the generated item catalog (D7).
+ */
+export interface ItemEntry {
+  kind: 'consumable' | 'trinket' | 'quest';
+  name: string;
+  text: string;
+  icon: string;
+  effect?: { type: string; amount?: number };
+  passive?: { type: string; stat?: string; amount?: number; perEncounter?: number };
+}
+
+const KIND_BLURB: Record<string, string> = {
+  consumable: 'Used once, then it is gone.',
+  trinket: 'Carried. It works the whole time you have it.',
+  quest: 'A story item. It takes up no space in your bag.',
+};
+
+/**
+ * "In Your Hands" — the item-page counterpart to a creature's stat block.
+ *
+ * Same reasoning as the encounter section: canon says what a Luckstone *is*,
+ * and the one thing a reader actually wants to know — what happens when you
+ * tap it — lived only in `content/items.json`. Reads the projection rather
+ * than the `mechanics` block so the page shows what the game will really do,
+ * which is the same guarantee `generateEncounterSection` makes.
+ */
+function generateMechanicsSection(
+  entity: CanonEntity,
+  items: Record<string, ItemEntry> | null,
+): string {
+  const entry = items?.[extractEntityName(entity.id)];
+  if (!entry) return '';
+
+  const lines: string[] = ['## In Your Hands', ''];
+  lines.push(`**${toTitleCase(entry.kind)}** — ${KIND_BLURB[entry.kind] ?? ''}`.trim());
+  lines.push('');
+  lines.push(`> ${entry.text}`);
+  return lines.join('\n');
 }
 
 /**
@@ -680,7 +822,7 @@ export function generatePage(
   options: PageGeneratorOptions,
   allEntities: CanonRegistry | Map<string, CanonEntity>,
 ): { content: string; warnings: ValidationMessage[] } {
-  const { entity, assets, reverseRefs, existingContent } = options;
+  const { entity, assets, reverseRefs, existingContent, bestiary, bands, items } = options;
   const warnings: ValidationMessage[] = [];
 
   // Resolve the entities map from either a CanonRegistry or a plain Map
@@ -695,6 +837,18 @@ export function generatePage(
 
   // Generate section contents
   const relationshipsContent = generateRelationshipsSection(relatedEntries);
+  // The "what does this do at the table" sections. Mutually exclusive in
+  // practice — a creature has a stat block, an item has an effect — but
+  // handled as a list so a third one is a row rather than another special
+  // case in three places below.
+  const mechanical: [name: string, section: string][] = (
+    [
+      ['encounter', generateEncounterSection(entity, bestiary ?? null, bands ?? null)],
+      ['mechanics', generateMechanicsSection(entity, items ?? null)],
+    ] as [string, string][]
+  )
+    .filter(([, content]) => content)
+    .map(([name, content]) => [name, wrapWithMarkers(name, content)]);
 
   // Build generated sections (only include relationships if there are any)
   const hasRelationships = relatedEntries.length > 0;
@@ -706,6 +860,9 @@ export function generatePage(
   // Note: ai_context is now in front matter, so we don't emit body blocks for it
   if (!existingContent) {
     const parts = [frontMatter];
+    for (const [, section] of mechanical) {
+      parts.push('', section);
+    }
     if (hasRelationships) {
       parts.push('', relationshipsSection);
     }
@@ -734,6 +891,9 @@ export function generatePage(
     if (!result.endsWith('\n')) {
       result += '\n';
     }
+    for (const [, section] of mechanical) {
+      result += '\n' + section + '\n';
+    }
     if (hasRelationships) {
       result += '\n' + relationshipsSection + '\n';
     }
@@ -750,8 +910,26 @@ export function generatePage(
     // Replace ai_context body block with empty string to remove it
     generatedSections.set('ai_context', '');
   }
+  // A section whose content has gone away is emptied rather than left stale.
+  for (const name of ['encounter', 'mechanics'] as const) {
+    if (parsed.sections.has(name)) {
+      generatedSections.set(name, mechanical.find(([n]) => n === name)?.[1] ?? '');
+    }
+  }
 
-  const updatedBody = replaceGeneratedSections(parsed.body, generatedSections, parsed.sections);
+  let updatedBody = replaceGeneratedSections(parsed.body, generatedSections, parsed.sections);
+
+  // A page written before one of these sections existed has no marker to
+  // replace, so the first run has to insert it. Before Related Entities if
+  // that is there, since "what does this do" outranks "what is it near".
+  for (const [name, section] of mechanical) {
+    if (parsed.sections.has(name)) continue;
+    const anchor = updatedBody.indexOf(BEGIN_MARKER('relationships'));
+    updatedBody =
+      anchor >= 0
+        ? `${updatedBody.slice(0, anchor)}${section}\n\n${updatedBody.slice(anchor)}`
+        : `${updatedBody.replace(/\n+$/, '')}\n\n${section}\n`;
+  }
 
   // Rebuild the page: new front matter + preserved body with updated sections
   const result = frontMatter + '\n' + updatedBody;

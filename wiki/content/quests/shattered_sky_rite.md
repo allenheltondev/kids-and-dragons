@@ -3,13 +3,13 @@ title: The Shattered Sky Rite
 id: quest.shattered_sky_rite
 type: quest
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: intentionally_undefined
 draft: true
-tags: ["main-quest", "ritual", "highlands", "epic"]
+tags: ["main_quest", "ritual", "highlands", "epic"]
 related:
-  - id: biome.redspire_citadel
-    type: biome
+  - id: location.redspire_citadel
+    type: location
     relationship: locations
   - id: item.crimson_shard
     type: item
@@ -32,6 +32,15 @@ related:
   - id: location.redspire_citadel
     type: location
     relationship: quests
+ai_context:
+  mood: "Perform an ancient ritual atop a highland fortress to glimpse the truth behind the eternal red sky."
+  themes: "Main_quest, Ritual, Highlands, Epic"
+  visual_style: "A dramatic ritual scene atop a tower with crimson lightning and swirling sky."
+  common_encounters: "Campaign climax, faction loyalty test, world-lore reveal."
+  lore_highlights: ""
+  related_entities: "location.redspire_citadel, item.crimson_shard, faction.skywardens, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, faction.skywardens, item.crimson_shard, location.redspire_citadel"
+  writing_guidance: "Requires all three Crimson Shards. Can only be attempted once per playthrough."
+  generation_hints: "Multi-stage quest with combat, puzzle, and dialogue phases."
 layout: quests
 infobox: quest
 ---
@@ -39,34 +48,17 @@ infobox: quest
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
-### Biomes
-- [Redspire Citadel](/biomes/redspire_citadel/) — locations
-
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — quests
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Campaigns` `Quests`
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — factions
-- [The Skywardens](/factions/skywardens/) — quests
+- [The Skywardens](/factions/skywardens/) `Factions` `Quests`
 
 ### Items
-- [Crimson Shard](/items/crimson_shard/) — items
-- [Crimson Shard](/items/crimson_shard/) — quests
+- [Crimson Shard](/items/crimson_shard/) `Items` `Quests`
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) — quests
+- [Redspire Citadel](/locations/redspire_citadel/) `Locations` `Quests`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** Perform an ancient ritual atop a highland fortress to glimpse the truth behind the eternal red sky.
-**Themes:** Main-quest, Ritual, Highlands, Epic
-**Visual Style:** A dramatic ritual scene atop a tower with crimson lightning and swirling sky.
-**Common Encounters:** Campaign climax, faction loyalty test, world-lore reveal.
-**Lore Highlights:** 
-**Related Entities:** biome.redspire_citadel, item.crimson_shard, faction.skywardens, campaign.dawn_of_the_red_sky, campaign.dawn_of_the_red_sky, faction.skywardens, item.crimson_shard, location.redspire_citadel
-**Writing Guidance:** Requires all three Crimson Shards. Can only be attempted once per playthrough.
-**Generation Hints:** Multi-stage quest with combat, puzzle, and dialogue phases.
-<!-- END GENERATED: ai_context -->

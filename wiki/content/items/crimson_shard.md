@@ -3,7 +3,7 @@ title: Crimson Shard
 id: item.crimson_shard
 type: item
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
 tags: ["material", "fire", "crafting", "rare"]
 related:
@@ -22,6 +22,15 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: items
+ai_context:
+  mood: "A jagged fragment of solidified ember energy, pulsing with volcanic heat."
+  themes: "Material, Fire, Crafting, Rare"
+  visual_style: "Glowing red-orange crystalline shard with internal flame patterns."
+  common_encounters: "Weapon forging, quest objectives, tribute."
+  lore_highlights: ""
+  related_entities: "biome.red_sky_foothills, creature.glassback_crab, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, quest.shattered_sky_rite"
+  writing_guidance: "Burns unprotected hands. Must be stored in enchanted containers."
+  generation_hints: "Emits faint warmth and light, intensifies near other shards."
 layout: items
 infobox: item
 ---
@@ -30,28 +39,16 @@ infobox: item
 ## Related Entities
 
 ### Biomes
-- [Red Sky Foothills](/biomes/red_sky_foothills/) — found_in
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Found In`
 
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — items
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Items`
 
 ### Creatures
-- [Glassback Crab](/creatures/glassback_crab/) — dropped_by
+- [Glassback Crab](/creatures/glassback_crab/) `Dropped By`
 
 ### Quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — items
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/) `Quests` `Items`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** A jagged fragment of solidified ember energy, pulsing with volcanic heat.
-**Themes:** Material, Fire, Crafting, Rare
-**Visual Style:** Glowing red-orange crystalline shard with internal flame patterns.
-**Common Encounters:** Weapon forging, quest objectives, tribute.
-**Lore Highlights:** 
-**Related Entities:** biome.red_sky_foothills, creature.glassback_crab, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, quest.shattered_sky_rite
-**Writing Guidance:** Burns unprotected hands. Must be stored in enchanted containers.
-**Generation Hints:** Emits faint warmth and light, intensifies near other shards.
-<!-- END GENERATED: ai_context -->

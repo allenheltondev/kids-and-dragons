@@ -3,22 +3,34 @@ title: Enchanted Woods
 id: biome.enchanted_woods
 type: biome
 status: draft
-lastReviewed: "2026-07-30"
+lastReviewed: "2026-07-31"
 canon_status: confirmed
-tags: ["ancient-forest", "living-magic", "changing-paths", "memory", "hidden-glades"]
+tags: ["ancient_forest", "living_magic", "changing_paths", "memory", "hidden_glades"]
 danger_level: moderate
 related:
-  - id: biome.mosshome
-    type: biome
+  - id: location.mosshome
+    type: location
     relationship: locations
-  - id: biome.bramblewood
+  - id: biome.expanse
     type: biome
-    relationship: locations
+    relationship: borders
+  - id: biome.red_sky_foothills
+    type: biome
+    relationship: borders
+  - id: biome.plains
+    type: biome
+    relationship: borders
+  - id: biome.whispering_marsh
+    type: biome
+    relationship: borders
+  - id: location.mosshome
+    type: location
+    relationship: contains_sites
   - id: character.unicorn
     type: character
     relationship: primary_peoples
-  - id: character.harvest_sprite
-    type: character
+  - id: npc.harvest_sprite
+    type: npc
     relationship: supporting_peoples
   - id: creature.mosshorn
     type: creature
@@ -41,6 +53,18 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: primary_locations
+  - id: item.mosslight_jar
+    type: item
+    relationship: found_in
+  - id: item.thunder_acorn
+    type: item
+    relationship: found_in
+  - id: item.owlfeather_clasp
+    type: item
+    relationship: found_in
+  - id: location.mosshome
+    type: location
+    relationship: biome
   - id: npc.faun
     type: npc
     relationship: secondary_locations
@@ -54,9 +78,20 @@ related:
     type: npc
     relationship: secondary_locations
 assets:
+  primary: assets/biomes/enchanted_woods/portrait.webp
+  primaryFull: assets/biomes/enchanted_woods/bg.webp
   gallery:
-    - C:/git/kids-and-dragons/assets/biomes/enchanted_woods/bg.webp
-    - C:/git/kids-and-dragons/assets/biomes/enchanted_woods/tiles.png
+    - src: assets/biomes/enchanted_woods/portrait.webp
+      full: assets/biomes/enchanted_woods/tiles.png
+ai_context:
+  mood: "An ancient living forest whose paths, clearings, and hidden places respond to memory, promises, damage, and the behavior of those who enter."
+  themes: "Ancient_forest, Living_magic, Changing_paths, Memory, Hidden_glades"
+  visual_style: "Immense layered trees, luminous knots and hollows, blue-green magical lights, tangled roots, mossy paths, hidden shrines, and depth that feels older than the surrounding realm."
+  common_encounters: "Lost paths, remembered promises, damaged magic, old shrines, hidden communities, ecological mysteries, and choices where kindness changes the route."
+  lore_highlights: ""
+  related_entities: "location.mosshome, biome.expanse, biome.red_sky_foothills, biome.plains, biome.whispering_marsh, location.mosshome, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, item.mosslight_jar, item.thunder_acorn, item.owlfeather_clasp, location.mosshome, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
+  writing_guidance: "The forest is responsive, not randomly hostile. It remembers treatment but does not assign morality by species. MossHome is inside the wider Woods and is not interchangeable with the whole region."
+  generation_hints: "Paths shift gradually, magical disturbances echo through plants and wildlife, and the forest tends to reveal safer routes to travelers who repair harm or honor commitments."
 layout: biomes
 infobox: biome
 ---
@@ -65,38 +100,33 @@ infobox: biome
 ## Related Entities
 
 ### Biomes
-- [Bramblewood](/biomes/bramblewood/) — locations
-- [MossHome](/biomes/mosshome/) — locations
+- [Red Sky Foothills](/biomes/red_sky_foothills/) `Borders`
+- [The Expanse](/biomes/expanse/) `Borders`
+- [The Plains](/biomes/plains/) `Borders`
+- [Whispering Marsh](/biomes/whispering_marsh/) `Borders`
 
 ### Characters
-- [Bigfoot](/characters/bigfoot/) — secondary_locations
-- [Harvest Sprite](/characters/harvest_sprite/) — supporting_peoples
-- [Kitsune](/characters/kitsune/) — secondary_locations
-- [Unicorn](/characters/unicorn/) — primary_peoples
-- [Unicorn](/characters/unicorn/) — primary_locations
+- [Bigfoot](/characters/bigfoot/) `Secondary Locations`
+- [Kitsune](/characters/kitsune/) `Secondary Locations`
+- [Unicorn](/characters/unicorn/) `Primary Peoples` `Primary Locations`
 
 ### Creatures
-- [Mosshorn](/creatures/mosshorn/) — ambient_creatures
-- [Mosshorn](/creatures/mosshorn/) — primary_locations
-- [Will-o'-Wisp](/creatures/will_o_wisp/) — supernatural_manifestations
-- [Will-o'-Wisp](/creatures/will_o_wisp/) — primary_locations
+- [Mosshorn](/creatures/mosshorn/) `Ambient Creatures` `Primary Locations`
+- [Will-o'-Wisp](/creatures/will_o_wisp/) `Supernatural Manifestations` `Primary Locations`
+
+### Items
+- [Mosslight Jar](/items/mosslight_jar/) `Found In`
+- [Owlfeather Clasp](/items/owlfeather_clasp/) `Found In`
+- [Thunder Acorn](/items/thunder_acorn/) `Found In`
+
+### Locations
+- [MossHome](/locations/mosshome/) `Locations` `Contains Sites` `Biome`
 
 ### Npcs
-- [Boggart](/npcs/boggart/) — secondary_locations
-- [Faun](/npcs/faun/) — secondary_locations
-- [Harvest Sprite](/npcs/harvest_sprite/) — secondary_locations
-- [Witches](/npcs/witch_order/) — secondary_locations
+- [Boggart](/npcs/boggart/) `Secondary Locations`
+- [Faun](/npcs/faun/) `Secondary Locations`
+- [Harvest Sprite](/npcs/harvest_sprite/) `Supporting Peoples` `Secondary Locations`
+- [Witches](/npcs/witch_order/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
-<!-- BEGIN GENERATED: ai_context -->
-## AI Context
 
-**Mood:** An ancient living forest whose paths, clearings, and hidden places respond to memory, promises, damage, and the behavior of those who enter.
-**Themes:** Ancient-forest, Living-magic, Changing-paths, Memory, Hidden-glades
-**Visual Style:** Immense layered trees, luminous knots and hollows, blue-green magical lights, tangled roots, mossy paths, hidden shrines, and depth that feels older than the surrounding realm.
-**Common Encounters:** Lost paths, remembered promises, damaged magic, old shrines, hidden communities, ecological mysteries, and choices where kindness changes the route.
-**Lore Highlights:** 
-**Related Entities:** biome.mosshome, biome.bramblewood, character.unicorn, character.harvest_sprite, creature.mosshorn, creature.will_o_wisp, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order
-**Writing Guidance:** The forest is responsive, not randomly hostile. It remembers treatment but does not assign morality by species. MossHome is inside the wider Woods and is not interchangeable with the whole region.
-**Generation Hints:** Paths shift gradually, magical disturbances echo through plants and wildlife, and the forest tends to reveal safer routes to travelers who repair harm or honor commitments.
-<!-- END GENERATED: ai_context -->
