@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_faction_canon
 title: "The Realm of Red Sky Faction Canon"
-updated: "2026-07-30"
+updated: "2026-07-31"
 
 purpose: >-
   Canonical, agent-readable reference for organized groups and factions in the
@@ -56,6 +56,36 @@ factions:
       Honorable but rigid. Will sacrifice individuals for the greater good.
     standard_behavior: >-
       Patrol the highlands, maintain fortifications, train recruits.
+    lore:
+      hook: "Sworn to watch the sky. Proudest log entry in four centuries: 'nothing.'"
+      story: >-
+        The Skywardens were founded to watch the red sky and answer whatever
+        finally comes out of it, and the order's deepest doctrine is that the
+        watch being boring is the watch working. Recruits arrive dreaming of
+        battle and are handed a ledger; the ones who come to love the ledger
+        stay. Every warden knows the founding oath by heart and no warden
+        knows what, precisely, it was first sworn against, which the order
+        regards not as a gap in the records but as the records doing their job.
+      pastimes:
+        - "Watch-games: competitive cloud identification, governed by four centuries of accumulated house rules."
+        - "Forge nights at the citadel, where the smithing is real and the storytelling is quality-controlled."
+        - "Sky-cartography — charting a thing that will not hold still, revised nightly, bound annually, shelved forever."
+      social: >-
+        Formal, reliable, and rigid in exactly the way that makes them
+        excellent in a crisis and exhausting at a festival. A warden's word is
+        a load-bearing structure. The order will spend individuals for the
+        realm and has never pretended otherwise, which is the coldest thing
+        about it and the most honest.
+      likes:
+        - of: character.griffin
+          because: "The northern watch shares its logs. Half of warden doctrine is griffin weather."
+        - of: npc.centaur
+          because: "The roads are the realm's nervous system, and the centaurs run it faster than any signal tower."
+      dislikes:
+        - of: faction.deep_hollow_cult
+          because: "The sky is watched so that nobody has to find out. The cult wants to find out."
+        - of: creature.legend_dragon
+          because: "An unaccountable power seated exactly where the watch points. Not an enemy. Somehow worse."
     relationships:
       headquarters: [location.redspire_citadel]
       territory: [biome.red_sky_foothills]
@@ -89,6 +119,36 @@ factions:
     standard_behavior: >-
       Operate in cells, communicate through crystal resonance, recruit the
       desperate.
+    lore:
+      hook: "They looked at the red sky and asked the question everyone else is sworn not to."
+      story: >-
+        The Deep Hollow Cult began as scholars who concluded, from evidence
+        they will happily show you, that the world's laws are broken — the sky
+        is the wrong color, memories walk the marsh, the dead do not always
+        rest — and that somewhere beneath the realm is the power to set them
+        right. In their own telling they are not villains but the only people
+        brave enough to fix what everyone else has agreed to merely survive.
+        The methods are where the telling and the truth part company.
+      pastimes:
+        - "Resonance choirs: chords rung through crystal that carry farther than voices, which is communication, worship, and — the cult insists — tuning."
+        - "Evidence-collecting. Wisp sightings, restless-remains reports, tremor logs: annotated, cross-referenced, alarmingly thorough."
+        - "Recruiting by kindness — finding the desperate before anyone else bothers to, which would be admirable if it stopped there."
+      social: >-
+        Cells, masks, and patience. A cult member met in daylight is likely
+        the most sympathetic person in the room: curious, generous, and
+        certain. The certainty is the tell. They do not argue that the world
+        is broken; they wait for the day your own life demonstrates it, and
+        they are always, unfailingly, there that day.
+      likes:
+        - of: creature.will_o_wisp
+          because: "Exhibit A: a law of the world, visibly broken, wandering the marsh in public."
+        - of: creature.restless_remains
+          because: "Exhibit B, with footnotes."
+      dislikes:
+        - of: faction.skywardens
+          because: "Watchers who guard a question instead of answering it."
+        - of: npc.witch_order
+          because: "The question-first rule — which the cult calls cowardice dressed as ethics, and the witches call the whole difference between them."
     relationships:
       headquarters: []
       territory: [location.skullwater_cave]

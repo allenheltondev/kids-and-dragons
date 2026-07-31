@@ -11,6 +11,10 @@
 
   <h2 class="wiki-infobox__title">{{ .Title }}</h2>
 
+  {{ with .Params.lore_hook }}
+  <p class="wiki-infobox__hook">{{ . }}</p>
+  {{ end }}
+
   <dl class="wiki-infobox__fields">
     {{ with .Params.classification }}
     <div class="wiki-infobox__field">
@@ -53,4 +57,6 @@
     </div>
     {{ end }}
   </dl>
+
+  {{ partial "infobox/lore-opinions.html" $ }}
 </aside>

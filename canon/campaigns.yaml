@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_campaign_canon
 title: "The Realm of Red Sky Campaign Canon"
-updated: "2026-07-30"
+updated: "2026-07-31"
 
 purpose: >-
   Canonical, agent-readable reference for campaign arcs in the Realm of Red Sky.
@@ -28,6 +28,7 @@ controlled_values:
 campaign_ids:
   - dawn_of_the_red_sky
   - echoes_beneath
+  - gemfall
 
 campaigns:
   - id: campaign.dawn_of_the_red_sky
@@ -93,3 +94,71 @@ campaigns:
       biomes: []
       items: [item.crystal_heart]
       creatures: []
+
+  - id: campaign.gemfall
+    asset_id: gemfall
+    title: "Gemfall"
+    canon_status: newly_defined
+    canon_note: >-
+      The authored main arc for the treasure-rush storyline. The titan beneath
+      Mount Red Sky and the exact nature of the seal are campaign-scoped
+      mysteries pending full canon approval; the chapter breakdown lives in
+      docs/campaigns/gemfall.md and considers the lore blocks authored across
+      the canon corpus.
+    campaign_type: main_story_arc
+    chapter_count: 8
+    featured: true
+    tags: [main_campaign, treasure_rush, mount_red_sky, seal, exchange, gemfall]
+    short_description: >-
+      A violent eruption from Mount Red Sky scatters powerful gemstones across
+      the realm and launches the largest treasure rush in living memory - but
+      the stones are fragments of an ancient seal, and every one carried away
+      weakens it.
+    visual_identity: >-
+      A red-lit eruption raining gem-light across the realm while caravans and
+      ships converge on a coastal city below; late chapters trade gold-rush
+      bustle for ash, tremor light, and the inside of the mountain.
+    common_story_uses: >-
+      The realm-spanning main arc: a treasure hunt that becomes a race to
+      understand the treasure, crossing five biomes and ending inside Mount Red
+      Sky with a choice that renames the party for good.
+    canon_constraints: >-
+      The party begins ordinary - no chosen heroes. The Hollow Gate cannot be
+      opened in this arc; it foreshadows. Factions and named leads remain
+      chapter-scoped per faction canon. Whether history remembers the party as
+      the Heroes of Red Sky or the treasure hunters who woke the mountain is
+      decided by play, not by the script.
+    standard_behavior: >-
+      Linear chapter spine with a branching middle: the Stone Crossing outcome
+      changes how the marsh chapter begins, not whether the story continues.
+      Failure reroutes; it never stops the campaign.
+    relationships:
+      biomes:
+        - biome.sunward_fields
+        - biome.plains
+        - biome.whispering_marsh
+        - biome.enchanted_woods
+        - biome.red_sky_foothills
+        - biome.eastern_plains
+      locations:
+        - location.exchange
+        - location.bramblewood
+        - location.stone_crossing
+        - location.hollow_gate
+        - location.mosshome
+        - location.redspire_citadel
+        - location.mount_red_sky
+      creatures:
+        - creature.river_drake
+        - creature.mire_mimic
+        - creature.will_o_wisp
+        - creature.cinder_wolf
+        - creature.embermoth
+        - creature.glassback_crab
+        - creature.legend_dragon
+      factions:
+        - faction.skywardens
+        - faction.deep_hollow_cult
+      items:
+        - item.crimson_shard
+      quests: []

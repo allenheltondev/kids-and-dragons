@@ -29,6 +29,9 @@ related:
   - id: biome.sunward_fields
     type: biome
     relationship: nearby_sites
+  - id: campaign.gemfall
+    type: campaign
+    relationship: locations
   - id: character.unicorn
     type: character
     relationship: secondary_locations
@@ -86,12 +89,13 @@ ai_context:
   visual_style: "Dense towers and halls built along cliffs, bridges, layered docks, ships, market awnings, signs from many cultures, crowded paths, and constant movement."
   common_encounters: "Campaign beginnings, reunions, contracts, rumors, investigation, trade, political tension between individuals, missing cargo, and stories that bring distant regions into contact."
   lore_highlights: ""
-  related_entities: "biome.sunward_fields, biome.whispering_marsh, biome.open_sea, biome.sunward_fields, biome.whispering_marsh, biome.sunward_fields, biome.sunward_fields, character.unicorn, character.dragonling, character.griffin, character.bigfoot, character.kitsune, character.manticore, route.exchange_to_sunward_fields, route.exchange_to_whispering_marsh, item.sunbloom_draught, item.quickfoot_lace, npc.centaur, npc.faun, npc.frogfolk, npc.boggart, npc.merfolk, npc.selkie, npc.witch_order"
+  related_entities: "biome.sunward_fields, biome.whispering_marsh, biome.open_sea, biome.sunward_fields, biome.whispering_marsh, biome.sunward_fields, biome.sunward_fields, campaign.gemfall, character.unicorn, character.dragonling, character.griffin, character.bigfoot, character.kitsune, character.manticore, route.exchange_to_sunward_fields, route.exchange_to_whispering_marsh, item.sunbloom_draught, item.quickfoot_lace, npc.centaur, npc.faun, npc.frogfolk, npc.boggart, npc.merfolk, npc.selkie, npc.witch_order"
   writing_guidance: "The Exchange has no native or dominant people. Do not give one species ownership of the city or reduce it to a marketplace without homes, institutions, stories, and ordinary life."
   generation_hints: "Ships arrive, caravans turn over cargo, travelers exchange news, and the city continuously adapts to disruptions in roads, rivers, weather, and distant regions."
 layout: locations
 infobox: location
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -100,6 +104,9 @@ infobox: location
 - [The Open Sea](/biomes/open_sea/) `Locations`
 - [The Sunward Fields](/biomes/sunward_fields/) `Locations` `Biome` `Adjacent To` `Nearby Sites`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Locations` `Adjacent To`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Locations`
 
 ### Characters
 - [Bigfoot](/characters/bigfoot/) `Secondary Locations`

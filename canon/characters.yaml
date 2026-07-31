@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_playable_people_canon
 title: "The Realm of Red Sky Playable Peoples"
-updated: "2026-07-30"
+updated: "2026-07-31"
 
 purpose: >-
   Canonical, agent-readable reference for the six player-character species of
@@ -20,6 +20,7 @@ agent_instructions:
   - Preserve the distinctions between MossHome and the wider Enchanted Woods.
   - Preserve the distinctions between the central Plains, Eastern Plains, and Sunward Fields.
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
+  - "`lore` describes the culture, not a mandate for any individual: a playable hero may cut against every pastime and opinion listed. `likes` and `dislikes` carry a required `because` precisely so they read as history between kinds, never as species-level morality."
 
 controlled_values:
   canon_status:
@@ -65,6 +66,33 @@ characters:
     standard_behavior: >-
       Inspects changes in paths and glades, helps restore damaged places,
       mediates promises, investigates disturbances the forest remembers.
+    lore:
+      hook: "Sworn to the forest's promises — including several the forest made before they were born."
+      story: >-
+        Unicorns are the Enchanted Woods' memory made ambulatory. Where the
+        forest remembers something — a promise kept, a harm done, a path that
+        used to be — a unicorn goes to check on it, the way other people check
+        on elderly relatives. They feel a broken promise the way farmers feel
+        weather coming, and young unicorns are notorious for being certain,
+        early and loudly, about what a feeling means.
+      pastimes:
+        - "Restoring a damaged glade and then holding an extremely small, extremely solemn ceremony about it."
+        - "Path-guessing: competitive predictions of where the Woods will move a trail next season. Records are kept. Disputes are bitter."
+        - "Arguing the interpretation of old promises, recreationally, for entire evenings."
+      social: >-
+        Earnest, direct, and allergic to lies without being allergic to
+        kindness. A unicorn will believe you meant well long after the
+        evidence has given up, and will tell you exactly when it stops.
+      likes:
+        - of: creature.mosshorn
+          because: "The forest's health, self-propelled. Where they graze, the work is already done."
+        - of: character.bigfoot
+          because: "They write down what a unicorn can only feel. Between the two of them, the Woods has both a memory and a record."
+        - of: creature.will_o_wisp
+          because: "A memory in need of helping home. Tending one is considered practice for the harder promises."
+      dislikes:
+        - of: character.kitsune
+          because: "An illusion reads to them as a path that lies. Every unicorn knows this is unfair to kitsune. They feel bad about it. They cannot stop."
     relationships:
       primary_locations: [biome.enchanted_woods]
       secondary_locations: [location.mosshome, biome.sunward_fields, location.exchange]
@@ -95,6 +123,35 @@ characters:
     standard_behavior: >-
       Communities monitor tremors, ash, heat, and crystal changes. Individuals
       explore caves, collect gemstones, trade with caravans.
+    lore:
+      hook: "Small dragons. Big opinions. Absolutely no fear of the correct things."
+      story: >-
+        Dragonlings grew up on ground that moves, and it shows: their
+        communities read the mountain the way farmers read the sky, and every
+        dragonling child knows which caves you can nap in and which ones you
+        leave the moment the moths do. The one law of the foothills is
+        gathering law — you take what the mountain drops and you never pry at
+        what it holds. Stories of legend-dragon ancestry are told around every
+        fire, and are neither confirmed nor discouraged by the fires.
+      pastimes:
+        - "Cave-diving for gemstones, under gathering law, scored on find, form, and the quality of the story afterward."
+        - "Wing-sprint races through cooled lava tubes, judged on speed and singe."
+        - "Trading. With caravans, with each other, with anyone. A dragonling with nothing left to trade will trade the story of the last trade."
+      social: >-
+        Loud, warm, and communal. A dragonling settlement adopts visitors
+        first and assesses them later, and its warning systems — bells, moths,
+        grandmothers — extend to everyone inside the boundary stones, guest or
+        not.
+      likes:
+        - of: creature.embermoth
+          because: "The foothills' weather service, paid in warm rocks."
+        - of: creature.glassback_crab
+          because: "Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
+        - of: npc.centaur
+          because: "They bring the whole world to the foothills twice a season and take gemstones politely away."
+      dislikes:
+        - of: faction.deep_hollow_cult
+          because: "They pry at what the mountain holds. That is the one rule. There is only one rule."
     relationships:
       primary_locations: [biome.red_sky_foothills]
       secondary_locations: [location.exchange, biome.plains, biome.sunward_fields]
@@ -125,6 +182,34 @@ characters:
     standard_behavior: >-
       Patrols passes, carries messages, rescues stranded travelers, watches for
       unexplained movement north of the peaks.
+    lore:
+      hook: "Half eagle, half lion, entirely certain you should not have climbed that."
+      story: >-
+        Griffins keep the aeries of the Frostfang and, by long tradition, the
+        realm's northern watch. A griffin's first flight is a rescue drill and
+        its hundredth is usually a rescue, and the two facts are connected in
+        exactly the way griffin parents intend. What the watch sees in the
+        Expanse goes in the watch-log and nowhere else, which is either
+        discipline or the fact that it is almost always nothing. Almost.
+      pastimes:
+        - "Thermal-riding competitions where form outranks altitude. An elegant spiral beats a high one, and everyone is a judge."
+        - "Flying escort alongside a cloud whale for the length of one song, which can take a day and is worth it."
+        - "Re-stacking watch cairns that did not need re-stacking. It is not fussiness. It is readiness. It is possibly fussiness."
+      social: >-
+        Formal at first meeting, fierce in friendship, and constitutionally
+        incapable of watching someone struggle up a slope without circling
+        lower just in case. Griffin hospitality is a rescue you did not know
+        you were having.
+      likes:
+        - of: creature.snowhorn_goat
+          because: "The mountain's own early-warning system. When the goats move, a griffin calls it down the valley, and both halves of the arrangement are proud of it."
+        - of: creature.cloud_whale
+          because: "A storm-song heard early has ended a hundred rescues before they began."
+        - of: npc.yeti
+          because: "Below the ice line, the other half of every rescue."
+      dislikes:
+        - of: creature.frost_wyrm
+          because: "Every path it collapses is a rescue that did not have to happen."
     relationships:
       primary_locations: [biome.frostfang_peaks]
       secondary_locations: [biome.glacier_of_origins, biome.eastern_plains, location.exchange]
@@ -154,6 +239,34 @@ characters:
     standard_behavior: >-
       Tends forest paths and living structures, studies changes in plants and
       wildlife, preserves community history.
+    lore:
+      hook: "The forest's librarians. The books are alive, and some of them bite."
+      story: >-
+        Bigfoots build MossHome into the living trees rather than out of them,
+        and their real craft is noticing: path-records, plant journals, weather
+        memory, all kept across generations in archives that are part library
+        and part garden. A bigfoot's mane carries cultivated moss from a family
+        line older than the settlement, and reading whose moss is whose is the
+        first thing MossHome children learn.
+      pastimes:
+        - "Keeping calendar gardens — beds planted so that what is blooming tells you the week. The garden is also the record. Do not eat the record."
+        - "Growing furniture. A good chair takes nine years, and there is no bad word in the language strong enough for someone who rushes one."
+        - "Observation sits: hours of companionable stillness watching one thing. Mosshorns frequently nap against them mid-sit, which is considered peer review."
+      social: >-
+        Quiet, deliberate, and much funnier than strangers expect, in the way
+        of people who have watched everything long enough to see it be
+        ridiculous. A bigfoot shares knowledge freely and forgives almost
+        anything except carelessness with living things.
+      likes:
+        - of: creature.mosshorn
+          because: "A survey of forest health that conducts itself, on legs."
+        - of: character.unicorn
+          because: "They feel what the record cannot show. Between the two of them the Woods is fully witnessed."
+        - of: npc.boggart
+          because: "Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained."
+      dislikes:
+        - of: creature.jackalope
+          because: "One ate three years of the eastern calendar garden. The garden is fenced now. It was never about the lettuce; it was about the data."
     relationships:
       primary_locations: [location.mosshome]
       secondary_locations: [biome.enchanted_woods, biome.whispering_marsh, location.exchange]
@@ -183,6 +296,33 @@ characters:
     standard_behavior: >-
       Charts wind patterns, maintains island stabilizing sites, carries stories
       between islands, uses illusions for teaching and play.
+    lore:
+      hook: "Their home moves. Their maps are songs. Their jokes have layovers."
+      story: >-
+        Kitsune keep the drifting Sky Islands connected — navigators,
+        messengers, and story-carriers between communities that are never in
+        the same place twice. Illusion, to a kitsune, is a teaching tool, a
+        stage, and occasionally a way of making a point that would take too
+        long in words; it is no more dishonest than a drawing is, and a
+        kitsune will tell you so at length, in a voice coming from somewhere
+        slightly to your left.
+      pastimes:
+        - "Wind-mapping, which is half science and half gossip. Currents have names and reputations, and some of them are not spoken to."
+        - "Illusion theater: retelling the week's news as a play, with unauthorized casting."
+        - "Leaving small illusory gifts on windowsills — a flower that lasts exactly until it is noticed."
+      social: >-
+        Quick, curious, and generous with everything except the ending of a
+        story. A kitsune promise is real; the packaging around it is where
+        the artistry lives. Do not portray every kitsune as mischievous —
+        merely be aware the ratio is not in your favor.
+      likes:
+        - of: creature.cloud_whale
+          because: "The islands navigate by their songs. Half the star-charts are really whale-charts, and every navigator knows it."
+        - of: npc.boggart
+          because: "Finally, someone who appreciates a story with missing pieces. They trade — a tale for a secret — and both sides are certain they won."
+      dislikes:
+        - of: creature.mire_mimic
+          because: "Impersonation without craft. One impression, performed lying down. And it keeps working, which is the insulting part."
     relationships:
       primary_locations: [biome.sky_islands]
       secondary_locations: [location.exchange, biome.enchanted_woods, biome.frostfang_peaks]
@@ -212,6 +352,34 @@ characters:
     standard_behavior: >-
       Patrols roads, repairs trail markers, investigates unusual tracks, escorts
       caravans, exchanges news between settlements.
+    lore:
+      hook: "The scariest silhouette on the road is the reason the road is safe."
+      story: >-
+        Manticores travel the Eastern Plains in family prides, and the roads
+        east of the river are theirs in the sense that gardens belong to
+        gardeners. A manticore's tail can end an argument, so pride etiquette
+        holds that it must never start one — and the famous formal greeting,
+        performed at a distance with the tail conspicuously curled away,
+        exists specifically to give strangers time to stop panicking.
+      pastimes:
+        - "Riddle exchanges with the trolls at Stone Crossing. The score has been kept for generations and is lovingly disputed from both ends of the bridge."
+        - "Cub races against jackalopes. The cubs never win and the jackalopes never leave, so everyone is getting what they came for."
+        - "Collective sunset naps, arranged by strict seniority into one enormous pile."
+      social: >-
+        Proud, courteous, and resigned to being misjudged on sight, which
+        every manticore has turned into either a joke or a lesson by their
+        first patrol. Earn a pride's respect and you have an escort for life;
+        insult one and you will receive a formal note about it.
+      likes:
+        - of: npc.centaur
+          because: "The other people who understand that a road is a promise."
+        - of: npc.stone_troll
+          because: "A riddle traded at the crossing is worth the whole queue."
+        - of: creature.jackalope
+          because: "Keeps the cubs humble and exercised at no charge to the pride."
+      dislikes:
+        - of: creature.river_drake
+          because: "It holds up escorted caravans to negotiate, mid-current, at length. The pride considers this banditry with extra steps."
     relationships:
       primary_locations: [biome.eastern_plains]
       secondary_locations: [location.stone_crossing, biome.plains, location.exchange]

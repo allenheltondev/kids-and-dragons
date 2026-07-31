@@ -195,6 +195,53 @@ describe("registry integrity", () => {
       ),
     ).toBe(true);
   });
+
+  it("checks refs nested inside object arrays — lore.likes and separated_from", () => {
+    // The single-cursor walk used to dead-end at an array of objects, which
+    // silently exempted `separated_from.region` and every lore opinion from
+    // integrity checking. `readAll` fans out; this is the regression pin.
+    const opinionated = Biome.parse({
+      ...testWood,
+      parent_biome: undefined,
+      lore: {
+        story: "A wood with opinions.",
+        likes: [{ of: "creature.nobody_home", because: "testing" }],
+      },
+    });
+    const built = buildRegistry({
+      entities: [{ taxonomy: "biome", file: "test.yaml", entity: opinionated }],
+      issues: [],
+      instructions: {},
+    });
+    const dangling = errors(built).filter((issue) => issue.message.includes("does not exist"));
+    expect(dangling).toHaveLength(1);
+    expect(dangling[0]?.field).toBe("lore.likes.of");
+  });
+
+  it("indexes a lore opinion as a reverse edge — who likes *them*", () => {
+    // "Silver otters like frogfolk" should be answerable from the frogfolk
+    // side without anyone authoring the reverse sentence.
+    const admirer = Biome.parse({
+      ...testWood,
+      parent_biome: undefined,
+      lore: {
+        story: "A wood that likes its neighbours.",
+        likes: [{ of: "npc.frogfolk", because: "they wave" }],
+      },
+    });
+    const built = buildRegistry({
+      entities: [
+        { taxonomy: "biome", file: "test.yaml", entity: admirer },
+        ...parseCanon(CANON_DIR).entities,
+      ],
+      issues: [],
+      instructions: {},
+    });
+    const inbound = related(built, "npc.frogfolk", { direction: "in" });
+    expect(
+      inbound.some((edge) => edge.from === "biome.test_wood" && edge.field === "lore.likes.of"),
+    ).toBe(true);
+  });
 });
 
 describe("encounter blocks — D9/D10", () => {

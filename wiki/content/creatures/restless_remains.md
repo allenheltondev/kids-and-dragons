@@ -10,6 +10,17 @@ classification: supernatural_manifestation
 danger_level: high
 scale: variable
 sapience: variable
+lore_hook: "Not a monster. A grievance, wearing whatever was available."
+likes:
+  - id: npc.merfolk
+    title: "Merfolk"
+    url: "/npcs/merfolk/"
+    because: "The songs reach across the water on still nights, and the bones settle a little lower for hearing them."
+dislikes:
+  - id: creature.bone_crawler
+    title: "Bone Crawler"
+    url: "/creatures/bone_crawler/"
+    because: "Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely."
 related:
   - id: biome.bone_yard
     type: biome
@@ -25,13 +36,40 @@ ai_context:
   themes: "Supernatural, Bone_yard, Rare, Guardian"
   visual_style: "Movement assembled from existing enormous remains, magic appears as current, vibration, light, or shadow joining the bones."
   common_encounters: "Guardian encounter, consequence of grave disturbance, puzzle to resolve."
-  lore_highlights: ""
+  lore_highlights: "Not a monster. A grievance, wearing whatever was available."
   related_entities: "biome.bone_yard, biome.bone_yard"
   writing_guidance: "Stays dormant under normal conditions. Each manifestation reflects the remains and cause involved."
   generation_hints: "When awakened by grave magic or theft, moves to remove, reclaim, expose, or stop the cause."
 layout: creatures
 infobox: creature
 ---
+
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+> *Not a monster. A grievance, wearing whatever was available.*
+
+The Bone Yard mostly sleeps, and prefers to. But when the rest is seriously disturbed, something rises in whichever remains are nearest — not the dead themselves, but the cause: the taken thing, the broken promise, given shape and momentum until it is put right. It does not chase you out of the Yard. It walks toward the wrong until the wrong stops, and then, with visible relief, it lies back down.
+
+### For Fun
+
+- Being still. Between manifestations it is nothing at all, which every account agrees is how it prefers things.
+- Settling back down in a slightly different arrangement each time, to the lasting despair of everyone who maps the Yard.
+- Listening, if bones can listen, to merfolk song carrying over calm water. The Yard is measurably quieter on singing nights.
+
+### Getting Along
+
+It answers a wrong, not a person. Put back what was taken and it settles mid-stride; speak gently and there is sometimes enough of someone left in it to answer. It has never once pursued anyone past the water line.
+
+### Likes
+
+- **[Merfolk](/npcs/merfolk/)** — The songs reach across the water on still nights, and the bones settle a little lower for hearing them.
+
+### Dislikes
+
+- **[Bone Crawler](/creatures/bone_crawler/)** — Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight

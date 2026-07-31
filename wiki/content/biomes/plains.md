@@ -38,6 +38,9 @@ related:
   - id: creature.cinder_wolf
     type: creature
     relationship: dangerous_creatures
+  - id: campaign.gemfall
+    type: campaign
+    relationship: biomes
   - id: character.dragonling
     type: character
     relationship: secondary_locations
@@ -83,12 +86,13 @@ ai_context:
   visual_style: "Rolling green-gold grass, broad roads, scattered trees and stones, caravan camps, low ridges, distant settlements, and long views beneath an open sky."
   common_encounters: "Travel chapters, caravan stories, races, missing travelers, route disputes, encounters visible from far away, and journeys that connect otherwise separate regions."
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.eastern_plains, feature.great_river, biome.red_sky_foothills, biome.enchanted_woods, biome.whispering_marsh, biome.sunward_fields, npc.centaur, creature.jackalope, creature.cinder_wolf, character.dragonling, character.manticore, creature.jackalope, creature.cinder_wolf, feature.great_river, feature.great_river_west_branch, individual.old_ossley, item.brave_whistle, npc.centaur, npc.faun, npc.harvest_sprite"
+  related_entities: "feature.great_river, biome.eastern_plains, feature.great_river, biome.red_sky_foothills, biome.enchanted_woods, biome.whispering_marsh, biome.sunward_fields, npc.centaur, creature.jackalope, creature.cinder_wolf, campaign.gemfall, character.dragonling, character.manticore, creature.jackalope, creature.cinder_wolf, feature.great_river, feature.great_river_west_branch, individual.old_ossley, item.brave_whistle, npc.centaur, npc.faun, npc.harvest_sprite"
   writing_guidance: "Do not merge the Plains with Eastern Plains or Sunward Fields. The central Plains are road country, not the manticore homeland and not primarily farmland."
   generation_hints: "Caravans, messengers, herds, and travelers move along old routes while weather and river conditions periodically change the safest path."
 layout: biomes
 infobox: biome
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -99,6 +103,9 @@ infobox: biome
 - [The Eastern Plains](/biomes/eastern_plains/) `Separated From`
 - [The Sunward Fields](/biomes/sunward_fields/) `Borders`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Borders`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Biomes`
 
 ### Characters
 - [Dragonling](/characters/dragonling/) `Secondary Locations`

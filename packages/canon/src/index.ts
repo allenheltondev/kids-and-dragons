@@ -10,6 +10,7 @@
 
 export * from "./ids.js";
 export * from "./envelope.js";
+export * from "./lore.js";
 export * from "./encounter.js";
 export * from "./mechanics.js";
 export * from "./taxonomies.js";
