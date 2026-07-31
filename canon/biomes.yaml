@@ -140,7 +140,7 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: [creature.will_o_wisp]
     relationships:
-      locations: [location.mosshome, bramblewood]
+      locations: [location.mosshome]
       factions: []
       items: []
 
@@ -423,7 +423,7 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [biome.exchange, location.stone_crossing]
+      locations: [biome.exchange, location.stone_crossing, location.bramblewood]
       factions: []
       items: []
 
@@ -712,6 +712,7 @@ biomes:
       items: []
 
   - id: biome.open_sea
+    geography_id: geography.ocean
     title: "The Open Sea"
     map_label: "Open Sea"
     canon_status: newly_defined
@@ -730,7 +731,7 @@ biomes:
       the edge of the map.
     canon_constraints: >-
       Surrounds the illustrated map rather than appearing on it, so it has no map
-      anchor and no mapped region. Coastal places reach it; it borders nothing.
+      anchor. Coastal places reach it; it borders nothing.
     standard_behavior: >-
       Currents and weather change on their own schedule and ignore the shore.
     inhabitants:

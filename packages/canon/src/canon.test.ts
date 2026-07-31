@@ -19,14 +19,9 @@ import { errors, related } from "./registry.js";
 const CANON_DIR = path.join(process.cwd(), "canon");
 const registry = loadCanon(CANON_DIR);
 
-/** D11 — references to places canon names but has never defined. Mirrors the
- *  allowlist in tools/canon/check.ts; both may only shrink. */
-const KNOWN_GAPS = ["bramblewood"];
-const isKnownGap = (message: string) => KNOWN_GAPS.some((gap) => message.includes(`"${gap}"`));
-
 describe("canon corpus", () => {
-  it("parses and validates every entity", () => {
-    const real = errors(registry).filter((issue) => !isKnownGap(issue.message));
+  it("parses and validates every entity, with every reference resolving", () => {
+    const real = errors(registry);
     expect(real.map((issue) => `${issue.file} ${issue.id ?? ""} ${issue.message}`)).toEqual([]);
   });
 
@@ -34,11 +29,6 @@ describe("canon corpus", () => {
     for (const taxonomy of TAXONOMIES) {
       expect(registry.byTaxonomy.get(taxonomy)?.length ?? 0).toBeGreaterThan(0);
     }
-  });
-
-  it("keeps the known-gap list from growing", () => {
-    const gaps = errors(registry).filter((issue) => isKnownGap(issue.message));
-    expect(gaps).toHaveLength(1);
   });
 
   it("indexes edges in both directions", () => {
