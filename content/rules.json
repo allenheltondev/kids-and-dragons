@@ -36,6 +36,7 @@
   "encounterBands": {
     "$comment": "Enemy stat blocks, by band. The hero-side numbers are above (baseMaxHp, baseGuard, baseSteps); these are their counterpart, and they live together because retuning a fight should be one file. Canon says which band a creature is \u2014 a judgement about the world; this says what a band is worth \u2014 a judgement about balance. See docs/canon-contract.md D9.\nDerived, not invented: a level-1 hero swings d20+2..4 against Guard 11 for 3 damage (ATTACK_DAMAGE in encounter.ts), so about 2 a round each and 6 for a party of three. Spec 7.1 tunes for four rounds, so stats.hp x usualCount wants to land in 18-30. The skirmisher row is the Bramblewisp that bramblewood-01.json has shipped since before any of this.",
     "skirmisher": {
+      "description": "Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.",
       "stats": {
         "hp": 6,
         "guard": 11,
@@ -50,6 +51,7 @@
       ]
     },
     "lurker": {
+      "description": "Waits, then hits. Harder to land a blow on than it looks, and quicker than it looks.",
       "stats": {
         "hp": 9,
         "guard": 13,
@@ -64,6 +66,7 @@
       ]
     },
     "brute": {
+      "description": "Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.",
       "stats": {
         "hp": 14,
         "guard": 12,
@@ -79,6 +82,7 @@
       ]
     },
     "sentinel": {
+      "description": "The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.",
       "stats": {
         "hp": 20,
         "guard": 14,
@@ -93,6 +97,7 @@
       ]
     },
     "legend": {
+      "description": "A designed encounter rather than an ordinary one. Whatever it is, it is the reason the chapter exists.",
       "$comment": "No stats on purpose: a legendary beast is a designed encounter, not a rolled one, so it must author its own and can never be generated.",
       "stats": null,
       "xp": 50,

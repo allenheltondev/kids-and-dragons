@@ -38,6 +38,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Skirmisher** — Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
+
+| | |
+|---|---|
+| Health | 6 |
+| Guard | 11 — how hard it is to hit |
+| Attack | +3 |
+| Speed | 5 steps, 3 initiative |
+| Usually | 3 of them |
+
+### Ways Past It That Are Not Fighting
+
+- **Distraction** (Clever, normal) — A pack on a road is a pack that has run out of prey. Give them easier prey and the road stops being interesting.
+- **Escape** (Quick, hard) — They are faster than you and they hunt together, so leaving is harder than it looks.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 

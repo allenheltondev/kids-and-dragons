@@ -32,6 +32,25 @@ layout: creatures
 infobox: creature
 ---
 
+<!-- BEGIN GENERATED: encounter -->
+## In a Fight
+
+**Sentinel** — The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
+
+| | |
+|---|---|
+| Health | 20 |
+| Guard | 14 — how hard it is to hit |
+| Attack | +4 |
+| Speed | 3 steps, 0 initiative |
+| Usually | alone |
+
+### Ways Past It That Are Not Fighting
+
+- **Distraction** (Clever, normal) — It hunts one repeated sound and retreats from many at once. Make the dark noisy.
+- **Escape** (Quick, hard) — Leaving in silence, which is harder than leaving.
+<!-- END GENERATED: encounter -->
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
