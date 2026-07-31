@@ -21,6 +21,7 @@
     "art:verify:rig": "node tools/art/verify-rig.ts",
     "art:verify:rig:strict": "node tools/art/verify-rig.ts --strict",
     "art:sheet": "python3 tools/art/sheet.py",
+    "art:portraits": "python3 tools/art/portraits.py",
     "build": "npm run build --workspace @kad/client",
     "e2e": "playwright test",
     "infra:build": "node infra/build.mjs",
