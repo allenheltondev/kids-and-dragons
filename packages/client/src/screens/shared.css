@@ -36,6 +36,23 @@
 }
 
 /*
+ * A caption over a thing: "ROOM CODE", "COLOURS", the chapter slug above the
+ * narration, the kind of an inventory item. Small, tracked, quiet — it names
+ * what is below it without competing with the heading that asked the question.
+ *
+ * Size is deliberately *not* set here. These run from a 0.62em badge inside an
+ * inventory tile to a 0.875em section label, and pinning one size would put
+ * the badge back to being its own rule. What this owns is the part four
+ * screens had each invented separately, with four different tracking values.
+ */
+.kad-label {
+  color: var(--color-text-muted, #b7b0d8);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/*
  * A status chip. Always icon + word: spec §11 forbids conveying status by
  * colour alone, so the colour is decoration on top of a shape and a label.
  */

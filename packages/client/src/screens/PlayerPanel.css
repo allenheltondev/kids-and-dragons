@@ -42,15 +42,23 @@
   background: var(--color-surface, #191534);
 }
 
+/* Taller than wide, like the lobby lineup: the art is a whole standing figure,
+   so a square well crops the interesting half out of it. */
 .sheet__portrait {
   display: grid;
-  place-items: center;
-  width: 2.6em;
-  height: 2.6em;
+  place-items: end center;
+  width: 2.8em;
+  height: 3.4em;
   flex: 0 0 auto;
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   color: var(--color-accent, #ffc95c);
+  overflow: hidden;
+}
+
+.sheet__art {
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .sheet__id {
@@ -189,8 +197,15 @@
 }
 
 /* Every choice is icon + label, and full width for imprecise taps (spec §1.5). */
+/*
+ * icon | label | trailing. Inside the trailing column the check keeps a 1.2em
+ * seat whether or not it is occupied — the same rule the creation options
+ * follow: a vote landing on a row must not resize the label and rewrap the
+ * sentence somebody is in the middle of reading.
+ */
 .choice {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3, 0.75em);
   width: 100%;
@@ -221,10 +236,24 @@
 }
 
 .choice__label {
-  flex: 1 1 auto;
+  min-width: 0;
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
   line-height: 1.25;
+}
+
+.choice__trail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+}
+
+/* Always rendered, empty when there is nothing to mark. */
+.choice__mark {
+  display: grid;
+  place-items: center;
+  inline-size: 1.2em;
+  color: var(--color-primary, #7c5cff);
 }
 
 .choice__votes {
@@ -405,9 +434,6 @@
   align-items: center;
   gap: 0.2em;
   font-size: 0.62em;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted, #b7b0d8);
 }
 
 .inv__quest {
