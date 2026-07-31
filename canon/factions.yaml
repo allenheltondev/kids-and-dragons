@@ -90,7 +90,7 @@ factions:
       Operate in cells, communicate through crystal resonance, recruit the
       desperate.
     relationships:
-      headquarters: [location.crystal_font]
+      headquarters: []
       territory: [location.skullwater_cave]
       enemies: [faction.skywardens]
       quests: [quest.crystal_heart_retrieval]

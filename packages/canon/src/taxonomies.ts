@@ -88,8 +88,13 @@ export const Biome = Place.extend({
   // Absorbed from geography.yaml `regions` by the D6 merge.
   relative_position: Slug,
   borders: edge("biome"),
-  /** Direction → barrier name. Free text: D5 — these look like refs and are not. */
-  barriers: z.record(z.string(), z.string()).optional(),
+  /**
+   * Direction → the thing in the way. D5 made these real references: the
+   * Expanse is closed to the south by Mount Red Sky and to the east by the
+   * Great River, and both are entities. They used to be free strings that
+   * looked like ids, which is the worst of both.
+   */
+  barriers: z.record(z.string(), canonRef("biome", "location", "feature")).optional(),
   separated_from: z
     .array(z.strictObject({ region: canonRef("biome"), by: canonRef("feature") }))
     .default([]),

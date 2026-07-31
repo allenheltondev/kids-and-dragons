@@ -4,7 +4,7 @@
   "campaignId": "the-hollow-crown",
   "index": 1,
   "title": "The Rustling Path",
-  "biome": "enchanted_woods",
+  "biome": "sunward_fields",
   "estimatedMinutes": 25,
   "xpAward": 100,
   "entry": "scene_hedge_wall",
