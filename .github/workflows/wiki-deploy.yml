@@ -3,8 +3,14 @@
 # Runs the Generator (canon → Markdown), Hugo (Markdown → HTML), and Pagefind
 # (HTML → search index), then pushes the result to GitHub Pages.
 #
-# Triggers on pushes to main that touch canon data, wiki content, wiki tooling,
-# or this workflow itself. Also runnable manually via workflow_dispatch.
+# Triggers on pushes to main that touch canon data, the content that canon is
+# projected into, wiki content, wiki tooling, or this workflow itself. Also
+# runnable manually via workflow_dispatch.
+#
+# `content/**` is in that list because creature pages show stat blocks, and the
+# numbers behind them live in `content/rules.json` `encounterBands`. Retuning a
+# band is the one edit the canon/rules split exists to make easy, and it has to
+# reach the published wiki.
 
 name: Deploy Wiki
 
@@ -13,6 +19,7 @@ on:
     branches: [main]
     paths:
       - "canon/**"
+      - "content/**"
       - "wiki/**"
       - "tools/wiki/**"
       - "assets/**"
@@ -59,6 +66,13 @@ jobs:
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
+
+      # Creature pages show stat blocks, and they read content/bestiary.json —
+      # the join of canon's `encounter` blocks with rules.json's band table.
+      # Regenerate it first: building the wiki from fresh canon but a stale
+      # projection would publish numbers the game does not use.
+      - name: Project canon into the bestiary
+        run: npm run canon:bestiary
 
       # The Generator reads canon/*.yaml and produces wiki/content/ pages.
       # --force because CI has no manifest from a prior run.
