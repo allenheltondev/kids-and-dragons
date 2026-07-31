@@ -2,8 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kids-and-dragons.local/schemas/chapter.schema.json",
   "title": "Chapter",
-  "description": "content/chapters/*.json. Mirrors packages/shared/src/types/chapter.ts Chapter; where the two disagree the TypeScript type wins. Worked example: architecture §5. The graph-level rules a schema cannot express — every goto resolves, every scene is reachable, no dead ends, every itemId is in the catalog — are enforced by tools/content/validate.mjs.",
-
+  "description": "content/chapters/*.json. Mirrors packages/shared/src/types/chapter.ts Chapter; where the two disagree the TypeScript type wins. Worked example: architecture \u00a75. The graph-level rules a schema cannot express \u2014 every goto resolves, every scene is reachable, no dead ends, every itemId is in the catalog \u2014 are enforced by tools/content/validate.mjs.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,376 +16,807 @@
     "entry",
     "scenes"
   ],
-
   "properties": {
-    "$comment": { "type": "string" },
-
-    "id": { "$ref": "#/$defs/kebabId" },
-    "campaignId": { "$ref": "#/$defs/kebabId" },
+    "$comment": {
+      "type": "string"
+    },
+    "id": {
+      "$ref": "#/$defs/kebabId"
+    },
+    "campaignId": {
+      "$ref": "#/$defs/kebabId"
+    },
     "index": {
       "description": "Position within the campaign, 1-based and contiguous (checked across files).",
       "type": "integer",
       "minimum": 1
     },
-    "title": { "type": "string", "minLength": 1 },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
     "biome": {
       "description": "Selects backdrop, palette, tile set and music. Membership is validated against assets/manifest.json.",
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$"
     },
     "estimatedMinutes": {
-      "description": "A chapter is one sitting: ~30 minutes, spec §3 of the design principles.",
+      "description": "A chapter is one sitting: ~30 minutes, spec \u00a73 of the design principles.",
       "type": "integer",
       "minimum": 5,
       "maximum": 60
     },
     "xpAward": {
-      "description": "Awarded for completing the chapter, not per enemy (spec §8.1).",
+      "description": "Awarded for completing the chapter, not per enemy (spec \u00a78.1).",
       "type": "integer",
       "minimum": 0
     },
-    "entry": { "$ref": "#/$defs/sceneId" },
-
+    "entry": {
+      "$ref": "#/$defs/sceneId"
+    },
     "objectives": {
-      "description": "Optional bonus objectives (spec §8.2). They pay the whole party or nobody, never an individual. The 25%-of-xpAward ceiling on their total is a cross-field rule and is enforced by tools/content/validate.mjs.",
+      "description": "Optional bonus objectives (spec \u00a78.2). They pay the whole party or nobody, never an individual. The 25%-of-xpAward ceiling on their total is a cross-field rule and is enforced by tools/content/validate.mjs.",
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/objective" }
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
     },
-
     "scenes": {
       "type": "object",
       "minProperties": 1,
-      "propertyNames": { "$ref": "#/$defs/sceneId" },
-      "additionalProperties": { "$ref": "#/$defs/scene" }
+      "propertyNames": {
+        "$ref": "#/$defs/sceneId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/scene"
+      }
     },
-
     "llmHints": {
-      "description": "Feeds the live layer's cached prefix and its safety validator (architecture §6.3, §6.5).",
+      "description": "Feeds the live layer's cached prefix and its safety validator (architecture \u00a76.3, \u00a76.5).",
       "type": "object",
       "additionalProperties": false,
-      "required": ["tone", "vocabulary", "forbidden"],
+      "required": [
+        "tone",
+        "vocabulary",
+        "forbidden"
+      ],
       "properties": {
-        "tone": { "type": "string", "minLength": 1 },
-        "vocabulary": { "type": "string", "minLength": 1 },
+        "tone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vocabulary": {
+          "type": "string",
+          "minLength": 1
+        },
         "forbidden": {
           "type": "array",
           "minItems": 1,
-          "items": { "type": "string", "minLength": 1 }
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "npcVoices": {
           "type": "object",
-          "additionalProperties": { "type": "string", "minLength": 1 }
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     }
   },
-
   "$defs": {
-    "kebabId": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
-
-    "sceneId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-
-    "itemId": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-
-    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "minLength": 1 },
-
-    "statId": { "enum": ["might", "quick", "clever", "heart"] },
-
-    "speciesId": {
-      "enum": ["unicorn", "dragonling", "griffin", "bigfoot", "kitsune", "manticore"]
+    "kebabId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
-
+    "sceneId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "itemId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "minLength": 1
+    },
+    "statId": {
+      "enum": [
+        "might",
+        "quick",
+        "clever",
+        "heart"
+      ]
+    },
+    "speciesId": {
+      "enum": [
+        "unicorn",
+        "dragonling",
+        "griffin",
+        "bigfoot",
+        "kitsune",
+        "manticore"
+      ]
+    },
     "grantTarget": {
-      "description": "\"roller\" (whoever made the check), \"party\" (prompt for a holder), or a playerId. architecture §5.",
+      "description": "\"roller\" (whoever made the check), \"party\" (prompt for a holder), or a playerId. architecture \u00a75.",
       "type": "string",
       "minLength": 1
     },
-
     "effect": {
       "description": "Effect in chapter.ts. An unknown `type` is a build failure.",
       "type": "object",
       "unevaluatedProperties": false,
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "properties": {
         "type": {
-          "enum": ["grantItem", "grantQuestItem", "damage", "heal", "grantXp", "setFlag"]
+          "enum": [
+            "grantItem",
+            "grantQuestItem",
+            "damage",
+            "heal",
+            "grantXp",
+            "setFlag"
+          ]
         }
       },
       "allOf": [
         {
-          "if": { "properties": { "type": { "const": "grantItem" } }, "required": ["type"] },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "grantItem"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
           "then": {
             "type": "object",
-            "required": ["itemId"],
+            "required": [
+              "itemId"
+            ],
             "properties": {
-              "itemId": { "$ref": "#/$defs/itemId" },
-              "to": { "$ref": "#/$defs/grantTarget" }
+              "itemId": {
+                "$ref": "#/$defs/itemId"
+              },
+              "to": {
+                "$ref": "#/$defs/grantTarget"
+              }
             }
           }
         },
         {
-          "if": { "properties": { "type": { "const": "grantQuestItem" } }, "required": ["type"] },
-          "then": {
-            "type": "object",
-            "required": ["itemId"],
-            "properties": { "itemId": { "$ref": "#/$defs/itemId" } }
-          }
-        },
-        {
-          "if": { "properties": { "type": { "const": "damage" } }, "required": ["type"] },
-          "then": {
-            "type": "object",
-            "$comment": "Nobody dies (spec §2 of the design principles) — chapter damage is a scratch, not a threat.",
-            "required": ["amount"],
+          "if": {
             "properties": {
-              "amount": { "type": "integer", "minimum": 1, "maximum": 5 },
-              "to": { "$ref": "#/$defs/grantTarget" }
+              "type": {
+                "const": "grantQuestItem"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "itemId"
+            ],
+            "properties": {
+              "itemId": {
+                "$ref": "#/$defs/itemId"
+              }
             }
           }
         },
         {
-          "if": { "properties": { "type": { "const": "heal" } }, "required": ["type"] },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "damage"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
           "then": {
             "type": "object",
-            "required": ["amount"],
+            "$comment": "Nobody dies (spec \u00a72 of the design principles) \u2014 chapter damage is a scratch, not a threat.",
+            "required": [
+              "amount"
+            ],
             "properties": {
-              "amount": { "type": "integer", "minimum": 1, "maximum": 20 },
-              "to": { "$ref": "#/$defs/grantTarget" }
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "to": {
+                "$ref": "#/$defs/grantTarget"
+              }
             }
           }
         },
         {
-          "if": { "properties": { "type": { "const": "grantXp" } }, "required": ["type"] },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "heal"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
           "then": {
             "type": "object",
-            "required": ["amount"],
-            "properties": { "amount": { "type": "integer", "minimum": 1, "maximum": 500 } }
+            "required": [
+              "amount"
+            ],
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20
+              },
+              "to": {
+                "$ref": "#/$defs/grantTarget"
+              }
+            }
           }
         },
         {
-          "if": { "properties": { "type": { "const": "setFlag" } }, "required": ["type"] },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "grantXp"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
           "then": {
             "type": "object",
-            "required": ["flag"],
+            "required": [
+              "amount"
+            ],
             "properties": {
-              "flag": { "$ref": "#/$defs/flag" },
-              "value": { "type": "boolean" }
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 500
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "setFlag"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "flag"
+            ],
+            "properties": {
+              "flag": {
+                "$ref": "#/$defs/flag"
+              },
+              "value": {
+                "type": "boolean"
+              }
             }
           }
         }
       ]
     },
-
-    "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
-
-    "flag": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-
-    "outcome": {
-      "description": "How this ending ends the chapter (spec §8.2): success pays the full xpAward, setback pays half, rounded down. Absent means success, so existing content needs no edit. Only read on a scene with an empty `choices` array — the validator rejects it anywhere else.",
-      "enum": ["success", "setback"]
+    "effects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/effect"
+      }
     },
-
+    "flag": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "outcome": {
+      "description": "How this ending ends the chapter (spec \u00a78.2): success pays the full xpAward, setback pays half, rounded down. Absent means success, so existing content needs no edit. Only read on a scene with an empty `choices` array \u2014 the validator rejects it anywhere else.",
+      "enum": [
+        "success",
+        "setback"
+      ]
+    },
     "objective": {
-      "description": "ChapterObjective in chapter.ts. `flag` is watched, not set — author a setFlag effect wherever the thing happens and point at it. There is no second mechanism.",
+      "description": "ChapterObjective in chapter.ts. `flag` is watched, not set \u2014 author a setFlag effect wherever the thing happens and point at it. There is no second mechanism.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "label", "flag", "xp"],
+      "required": [
+        "id",
+        "label",
+        "flag",
+        "xp"
+      ],
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
         "label": {
           "$comment": "Shown on the completion screen, so it is held to the same length as a choice label.",
           "type": "string",
           "minLength": 1,
           "maxLength": 60
         },
-        "flag": { "$ref": "#/$defs/flag" },
-        "xp": { "type": "integer", "minimum": 1, "maximum": 500 }
+        "flag": {
+          "$ref": "#/$defs/flag"
+        },
+        "xp": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
       }
     },
-
     "choice": {
-      "description": "Choice in chapter.ts. `goto` is required — a choice that leads nowhere is the single most common authoring mistake and it must fail the build, not the table.",
+      "description": "Choice in chapter.ts. `goto` is required \u2014 a choice that leads nowhere is the single most common authoring mistake and it must fail the build, not the table.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "label", "icon", "goto"],
+      "required": [
+        "id",
+        "label",
+        "icon",
+        "goto"
+      ],
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-        "label": { "type": "string", "minLength": 1, "maxLength": 60 },
-        "icon": { "$ref": "#/$defs/slug" },
-        "goto": { "$ref": "#/$defs/sceneId" },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "icon": {
+          "$ref": "#/$defs/slug"
+        },
+        "goto": {
+          "$ref": "#/$defs/sceneId"
+        },
         "requiresSpecies": {
-          "description": "Hidden, not greyed out, when nobody in the party matches (architecture §5).",
+          "description": "Hidden, not greyed out, when nobody in the party matches (architecture \u00a75).",
           "oneOf": [
-            { "$ref": "#/$defs/speciesId" },
-            { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/speciesId" } }
+            {
+              "$ref": "#/$defs/speciesId"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/speciesId"
+              }
+            }
           ]
         },
-        "requiresFlag": { "$ref": "#/$defs/flag" },
-        "requiresItem": { "$ref": "#/$defs/itemId" },
-        "effects": { "$ref": "#/$defs/effects" }
+        "requiresFlag": {
+          "$ref": "#/$defs/flag"
+        },
+        "requiresItem": {
+          "$ref": "#/$defs/itemId"
+        },
+        "effects": {
+          "$ref": "#/$defs/effects"
+        }
       }
     },
-
-    "choices": { "type": "array", "items": { "$ref": "#/$defs/choice" } },
-
+    "choices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/choice"
+      }
+    },
     "branch": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["goto"],
+      "required": [
+        "goto"
+      ],
       "properties": {
-        "goto": { "$ref": "#/$defs/sceneId" },
-        "effects": { "$ref": "#/$defs/effects" },
-        "narration": { "type": "string", "minLength": 1 }
+        "goto": {
+          "$ref": "#/$defs/sceneId"
+        },
+        "effects": {
+          "$ref": "#/$defs/effects"
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
-
     "enemySpec": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "count", "hp", "guard", "quick", "steps", "attack"],
+      "required": [
+        "id",
+        "count",
+        "hp",
+        "guard",
+        "quick",
+        "steps",
+        "attack"
+      ],
       "properties": {
-        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-        "name": { "type": "string", "minLength": 1 },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
         "count": {
-          "$comment": "3 players vs 2-4 enemies, never more (spec §7.1).",
+          "$comment": "3 players vs 2-4 enemies, never more (spec \u00a77.1).",
           "type": "integer",
           "minimum": 1,
           "maximum": 4
         },
-        "hp": { "type": "integer", "minimum": 1 },
-        "guard": { "type": "integer", "minimum": 1 },
+        "creature": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+          "description": "Canon creature asset_id \u2014 the join to canon/creatures.yaml and content/bestiary.json. Stats below must match the bestiary."
+        },
+        "hp": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "guard": {
+          "type": "integer",
+          "minimum": 1
+        },
         "quick": {
-          "$comment": "Initiative, same scale as a character's Quick (spec §7.2). Authored, never inferred from guard — see EnemySpec in types/chapter.ts.",
+          "$comment": "Initiative, same scale as a character's Quick (spec \u00a77.2). Authored, never inferred from guard \u2014 see EnemySpec in types/chapter.ts.",
           "type": "integer",
           "minimum": 0
         },
-        "steps": { "type": "integer", "minimum": 0 },
-        "attack": { "type": "integer", "minimum": 0 },
-        "art": { "type": "string", "minLength": 1 }
+        "steps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attack": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
-
     "scene": {
       "type": "object",
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "properties": {
         "type": {
           "description": "Scene in chapter.ts. An unknown scene type is a build failure.",
-          "enum": ["story", "check", "choice_point", "rest", "encounter"]
+          "enum": [
+            "story",
+            "check",
+            "choice_point",
+            "rest",
+            "encounter"
+          ]
         }
       },
       "allOf": [
         {
-          "if": { "properties": { "type": { "const": "story" } }, "required": ["type"] },
-          "then": { "$ref": "#/$defs/storyScene" }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "story"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/storyScene"
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "check" } }, "required": ["type"] },
-          "then": { "$ref": "#/$defs/checkScene" }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "check"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/checkScene"
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "choice_point" } }, "required": ["type"] },
-          "then": { "$ref": "#/$defs/choicePointScene" }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "choice_point"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/choicePointScene"
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "rest" } }, "required": ["type"] },
-          "then": { "$ref": "#/$defs/restScene" }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "rest"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/restScene"
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "encounter" } }, "required": ["type"] },
-          "then": { "$ref": "#/$defs/encounterScene" }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "encounter"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/encounterScene"
+          }
         }
       ]
     },
-
     "storyScene": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "narration", "choices"],
+      "required": [
+        "type",
+        "narration",
+        "choices"
+      ],
       "properties": {
-        "type": { "const": "story" },
-        "art": { "type": "string", "minLength": 1 },
-        "narration": { "type": "string", "minLength": 1 },
-        "onEnter": { "$ref": "#/$defs/effects" },
-        "choices": { "$ref": "#/$defs/choices" },
-        "outcome": { "$ref": "#/$defs/outcome" }
+        "type": {
+          "const": "story"
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "onEnter": {
+          "$ref": "#/$defs/effects"
+        },
+        "choices": {
+          "$ref": "#/$defs/choices"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        }
       }
     },
-
     "checkScene": {
-      "description": "d20 + stat vs TN. Success and failure both continue the story (spec §6.1).",
+      "description": "d20 + stat vs TN. Success and failure both continue the story (spec \u00a76.1).",
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "stat", "tn", "prompt", "onSuccess", "onFailure"],
+      "required": [
+        "type",
+        "stat",
+        "tn",
+        "prompt",
+        "onSuccess",
+        "onFailure"
+      ],
       "properties": {
-        "type": { "const": "check" },
-        "art": { "type": "string", "minLength": 1 },
-        "stat": { "$ref": "#/$defs/statId" },
+        "type": {
+          "const": "check"
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stat": {
+          "$ref": "#/$defs/statId"
+        },
         "tn": {
-          "$comment": "easy 8 / normal 12 / hard 16, spec §4.1. The range allows authored in-between values; anything outside it is a typo.",
+          "$comment": "easy 8 / normal 12 / hard 16, spec \u00a74.1. The range allows authored in-between values; anything outside it is a typo.",
           "type": "integer",
           "minimum": 5,
           "maximum": 20
         },
-        "prompt": { "type": "string", "minLength": 1 },
-        "narration": { "type": "string", "minLength": 1 },
-        "onEnter": { "$ref": "#/$defs/effects" },
-        "roller": { "enum": ["party", "active", "best"] },
-        "onSuccess": { "$ref": "#/$defs/branch" },
-        "onFailure": { "$ref": "#/$defs/branch" }
+        "prompt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "onEnter": {
+          "$ref": "#/$defs/effects"
+        },
+        "roller": {
+          "enum": [
+            "party",
+            "active",
+            "best"
+          ]
+        },
+        "onSuccess": {
+          "$ref": "#/$defs/branch"
+        },
+        "onFailure": {
+          "$ref": "#/$defs/branch"
+        }
       }
     },
-
     "choicePointScene": {
-      "description": "The party votes; ties broken by the active turn marker (spec §6.1). A vote needs something to vote between.",
+      "description": "The party votes; ties broken by the active turn marker (spec \u00a76.1). A vote needs something to vote between.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "narration", "choices"],
+      "required": [
+        "type",
+        "narration",
+        "choices"
+      ],
       "properties": {
-        "type": { "const": "choice_point" },
-        "art": { "type": "string", "minLength": 1 },
-        "narration": { "type": "string", "minLength": 1 },
-        "onEnter": { "$ref": "#/$defs/effects" },
-        "choices": { "allOf": [{ "$ref": "#/$defs/choices" }, { "type": "array", "minItems": 2 }] },
-        "outcome": { "$ref": "#/$defs/outcome" }
+        "type": {
+          "const": "choice_point"
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "onEnter": {
+          "$ref": "#/$defs/effects"
+        },
+        "choices": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/choices"
+            },
+            {
+              "type": "array",
+              "minItems": 2
+            }
+          ]
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        }
       }
     },
-
     "restScene": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "narration", "choices"],
+      "required": [
+        "type",
+        "narration",
+        "choices"
+      ],
       "properties": {
-        "type": { "const": "rest" },
-        "art": { "type": "string", "minLength": 1 },
-        "narration": { "type": "string", "minLength": 1 },
-        "onEnter": { "$ref": "#/$defs/effects" },
-        "heal": { "type": "integer", "minimum": 0, "maximum": 20 },
-        "choices": { "$ref": "#/$defs/choices" },
-        "outcome": { "$ref": "#/$defs/outcome" }
+        "type": {
+          "const": "rest"
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "onEnter": {
+          "$ref": "#/$defs/effects"
+        },
+        "heal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "choices": {
+          "$ref": "#/$defs/choices"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        }
       }
     },
-
     "encounterScene": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "map", "enemies", "onVictory", "onDefeat"],
+      "required": [
+        "type",
+        "map",
+        "enemies",
+        "onVictory",
+        "onDefeat"
+      ],
       "properties": {
-        "$comment": { "type": "string" },
-        "type": { "const": "encounter" },
-        "map": { "type": "string", "minLength": 1 },
-        "art": { "type": "string", "minLength": 1 },
-        "narration": { "type": "string", "minLength": 1 },
-        "onEnter": { "$ref": "#/$defs/effects" },
-        "enemies": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/enemySpec" } },
-        "onVictory": { "$ref": "#/$defs/branch" },
+        "$comment": {
+          "type": "string"
+        },
+        "type": {
+          "const": "encounter"
+        },
+        "map": {
+          "type": "string",
+          "minLength": 1
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "onEnter": {
+          "$ref": "#/$defs/effects"
+        },
+        "enemies": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/enemySpec"
+          }
+        },
+        "onVictory": {
+          "$ref": "#/$defs/branch"
+        },
         "onDefeat": {
-          "description": "Losing branches the story; it is never a game over (spec §7.3), which is why it is required.",
+          "description": "Losing branches the story; it is never a game over (spec \u00a77.3), which is why it is required.",
           "$ref": "#/$defs/branch"
         },
         "autoResolve": {
-          "description": "The chapter-4 gate (chapter.ts). The engine's combat is built, but until the phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a scene nobody can tap — so a gated encounter resolves straight through onVictory. Turning the fight on is deleting this line.",
+          "description": "The chapter-4 gate (chapter.ts). The engine's combat is built, but until the phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a scene nobody can tap \u2014 so a gated encounter resolves straight through onVictory. Turning the fight on is deleting this line.",
           "const": "victory"
         }
       }

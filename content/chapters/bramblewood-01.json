@@ -1,6 +1,5 @@
 {
-  "$comment": "REFERENCE CHAPTER — the engine's proof that the loader, the schema, and the renderer work end to end. Allen hand-writes the real first chapter (roadmap Chapter 3); this one exists so there is something valid to load before he does. It deliberately touches every non-combat scene type, one encounter, species gates, a flag gate, an item gate, an item grant, a quest item, a branch that reconverges, and a failed roll that keeps the story going. See content/README.md.",
-
+  "$comment": "REFERENCE CHAPTER \u2014 the engine's proof that the loader, the schema, and the renderer work end to end. Allen hand-writes the real first chapter (roadmap Chapter 3); this one exists so there is something valid to load before he does. It deliberately touches every non-combat scene type, one encounter, species gates, a flag gate, an item gate, an item grant, a quest item, a branch that reconverges, and a failed roll that keeps the story going. See content/README.md.",
   "id": "bramblewood-01",
   "campaignId": "the-hollow-crown",
   "index": 1,
@@ -8,9 +7,7 @@
   "biome": "enchanted_woods",
   "estimatedMinutes": 25,
   "xpAward": 100,
-
   "entry": "scene_hedge_wall",
-
   "scenes": {
     "scene_hedge_wall": {
       "type": "story",
@@ -23,13 +20,22 @@
           "icon": "fist",
           "requiresSpecies": "bigfoot",
           "goto": "scene_first_clearing",
-          "effects": [{ "type": "setFlag", "flag": "made_a_doorway", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "made_a_doorway",
+              "value": true
+            }
+          ]
         },
         {
           "id": "fly_over",
           "label": "Go up and over",
           "icon": "wing",
-          "requiresSpecies": ["dragonling", "griffin"],
+          "requiresSpecies": [
+            "dragonling",
+            "griffin"
+          ],
           "goto": "scene_first_clearing"
         },
         {
@@ -53,17 +59,25 @@
         }
       ]
     },
-
     "scene_humming": {
       "type": "story",
       "art": "bg/bramblewood/hedge_wall",
       "narration": "You press an ear to the hedge. The tune goes up, up, down, and then stops, as if whoever is humming just noticed you.",
       "choices": [
-        { "id": "hum_back", "label": "Hum the tune back", "icon": "note", "goto": "check_hum" },
-        { "id": "gap_instead", "label": "Look for a gap instead", "icon": "eye", "goto": "check_squeeze" }
+        {
+          "id": "hum_back",
+          "label": "Hum the tune back",
+          "icon": "note",
+          "goto": "check_hum"
+        },
+        {
+          "id": "gap_instead",
+          "label": "Look for a gap instead",
+          "icon": "eye",
+          "goto": "check_squeeze"
+        }
       ]
     },
-
     "check_hum": {
       "type": "check",
       "stat": "heart",
@@ -73,14 +87,19 @@
       "onSuccess": {
         "goto": "scene_first_clearing",
         "narration": "The humming comes back louder, delighted, and the thorns unknot themselves into a doorway. Something small leaves a honeycake on a leaf for you.",
-        "effects": [{ "type": "grantItem", "itemId": "honeycake", "to": "roller" }]
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "roller"
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_first_clearing",
-        "narration": "You get the last note wrong. The humming stops, very politely, and does not start again — but while you were listening you found a gap in the hedge anyway."
+        "narration": "You get the last note wrong. The humming stops, very politely, and does not start again \u2014 but while you were listening you found a gap in the hedge anyway."
       }
     },
-
     "check_squeeze": {
       "type": "check",
       "stat": "quick",
@@ -90,53 +109,97 @@
       "onSuccess": {
         "goto": "scene_first_clearing",
         "narration": "You find a low arch under the thorns and slip through without touching a single one. There is a little bottle tucked in the roots, still corked.",
-        "effects": [{ "type": "grantItem", "itemId": "sunbloom_draught", "to": "roller" }]
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "sunbloom_draught",
+            "to": "roller"
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_scratched",
-        "effects": [{ "type": "damage", "amount": 1 }]
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ]
       }
     },
-
     "scene_scratched": {
       "type": "story",
       "art": "bg/bramblewood/hedge_wall",
       "narration": "You get through. You also get about forty small scratches, and one thorn in a very undignified place. A moth lands on your nose, as if to say bad luck.",
       "choices": [
-        { "id": "onward", "label": "Keep going", "icon": "arrow", "goto": "scene_first_clearing" }
+        {
+          "id": "onward",
+          "label": "Keep going",
+          "icon": "arrow",
+          "goto": "scene_first_clearing"
+        }
       ]
     },
-
     "scene_first_clearing": {
       "type": "story",
       "art": "bg/bramblewood/clearing",
       "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot.",
       "choices": [
-        { "id": "say_hello", "label": "Say hello", "icon": "hand", "goto": "scene_pib" },
-        { "id": "head_in", "label": "Head deeper into the wood", "icon": "arrow", "goto": "choice_point_path" }
+        {
+          "id": "say_hello",
+          "label": "Say hello",
+          "icon": "hand",
+          "goto": "scene_pib"
+        },
+        {
+          "id": "head_in",
+          "label": "Head deeper into the wood",
+          "icon": "arrow",
+          "goto": "choice_point_path"
+        }
       ]
     },
-
     "scene_pib": {
       "type": "story",
       "art": "bg/bramblewood/clearing",
       "narration": "\"I'm Pib,\" says the sprite, \"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\" Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous.",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "torn_map_east" },
-        { "type": "grantItem", "itemId": "thunder_acorn", "to": "party" }
+        {
+          "type": "grantQuestItem",
+          "itemId": "torn_map_east"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "thunder_acorn",
+          "to": "party"
+        }
       ],
       "choices": [
-        { "id": "thank_pib", "label": "Thank Pib and go on", "icon": "hand", "goto": "choice_point_path" }
+        {
+          "id": "thank_pib",
+          "label": "Thank Pib and go on",
+          "icon": "hand",
+          "goto": "choice_point_path"
+        }
       ]
     },
-
     "choice_point_path": {
       "type": "choice_point",
       "art": "bg/bramblewood/fork",
       "narration": "The path splits. To the left, mossy stone stairs climb up into the trees. To the right, a stream goes by making a sound very much like singing. Everybody vote.",
       "choices": [
-        { "id": "stair", "label": "Take the mossy stairs", "icon": "leaf", "goto": "scene_mossy_stair" },
-        { "id": "stream", "label": "Follow the singing stream", "icon": "drop", "goto": "scene_singing_stream" },
+        {
+          "id": "stair",
+          "label": "Take the mossy stairs",
+          "icon": "leaf",
+          "goto": "scene_mossy_stair"
+        },
+        {
+          "id": "stream",
+          "label": "Follow the singing stream",
+          "icon": "drop",
+          "goto": "scene_singing_stream"
+        },
         {
           "id": "scout",
           "label": "Fly up and look at both",
@@ -146,24 +209,43 @@
         }
       ]
     },
-
     "scene_scouted": {
       "type": "story",
       "art": "bg/bramblewood/canopy",
       "narration": "From above, the whole wood lies open like a picture book. The stairs end at a gate knotted shut with roots. The stream bends around a thicket where three small lights are throwing something shiny back and forth. And behind both, a hill with a door in it.",
-      "onEnter": [{ "type": "setFlag", "flag": "scouted_the_path", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "scouted_the_path",
+          "value": true
+        }
+      ],
       "choices": [
-        { "id": "down_stair", "label": "Down to the stairs", "icon": "leaf", "goto": "scene_mossy_stair" },
-        { "id": "down_stream", "label": "Down to the stream", "icon": "drop", "goto": "scene_singing_stream" }
+        {
+          "id": "down_stair",
+          "label": "Down to the stairs",
+          "icon": "leaf",
+          "goto": "scene_mossy_stair"
+        },
+        {
+          "id": "down_stream",
+          "label": "Down to the stream",
+          "icon": "drop",
+          "goto": "scene_singing_stream"
+        }
       ]
     },
-
     "scene_mossy_stair": {
       "type": "story",
       "art": "bg/bramblewood/stair",
       "narration": "Twenty-two steps up, soft with moss, and at the top a little gate tied shut by roots as thick as your arm. The roots are not going to untie themselves.",
       "choices": [
-        { "id": "heave", "label": "Heave the gate open", "icon": "fist", "goto": "check_gate" },
+        {
+          "id": "heave",
+          "label": "Heave the gate open",
+          "icon": "fist",
+          "goto": "check_gate"
+        },
         {
           "id": "slip_under",
           "label": "Slip under the roots without being seen",
@@ -173,7 +255,6 @@
         }
       ]
     },
-
     "check_gate": {
       "type": "check",
       "stat": "might",
@@ -189,23 +270,36 @@
         "narration": "The roots creak, argue, and win. The gate does not move even slightly."
       }
     },
-
     "scene_long_way": {
       "type": "story",
       "art": "bg/bramblewood/stair",
       "narration": "So you go back down the twenty-two steps, which feels much longer the second time, and take the low path instead. It brings you out beside the stream, where somebody is singing.",
       "choices": [
-        { "id": "to_stream", "label": "Follow the singing", "icon": "drop", "goto": "scene_singing_stream" }
+        {
+          "id": "to_stream",
+          "label": "Follow the singing",
+          "icon": "drop",
+          "goto": "scene_singing_stream"
+        }
       ]
     },
-
     "scene_singing_stream": {
       "type": "story",
       "art": "bg/bramblewood/stream",
-      "narration": "Three bramblewisps — little blue lights with far too much energy — are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
+      "narration": "Three bramblewisps \u2014 little blue lights with far too much energy \u2014 are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
       "choices": [
-        { "id": "ask_nicely", "label": "Ask them to give it back", "icon": "hand", "goto": "check_wisps" },
-        { "id": "shoo", "label": "Chase them off", "icon": "fist", "goto": "encounter_bramblewisps" },
+        {
+          "id": "ask_nicely",
+          "label": "Ask them to give it back",
+          "icon": "hand",
+          "goto": "check_wisps"
+        },
+        {
+          "id": "shoo",
+          "label": "Chase them off",
+          "icon": "fist",
+          "goto": "encounter_bramblewisps"
+        },
         {
           "id": "leap_across",
           "label": "Leap the stream and land in front of them",
@@ -222,7 +316,6 @@
         }
       ]
     },
-
     "check_wisps": {
       "type": "check",
       "stat": "heart",
@@ -238,7 +331,6 @@
         "narration": "They think you want to play. They are extremely wrong about what kind of game this is."
       }
     },
-
     "encounter_bramblewisps": {
       "type": "encounter",
       "map": "thicket",
@@ -249,6 +341,7 @@
           "id": "wisp",
           "name": "Bramblewisp",
           "count": 3,
+          "creature": "will_o_wisp",
           "hp": 6,
           "guard": 11,
           "quick": 3,
@@ -266,37 +359,66 @@
         "narration": "They are very fast and there are three of them, and eventually you sit down in the moss and admit it."
       }
     },
-
     "scene_bundled": {
       "type": "story",
       "art": "bg/bramblewood/thicket",
-      "narration": "The wisps tie all your bootlaces together, eat the snacks, and then — feeling a bit guilty — tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
-      "onEnter": [{ "type": "heal", "amount": 2 }],
+      "narration": "The wisps tie all your bootlaces together, eat the snacks, and then \u2014 feeling a bit guilty \u2014 tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 2
+        }
+      ],
       "choices": [
-        { "id": "untangle", "label": "Untie your laces and carry on", "icon": "arrow", "goto": "scene_shrine_hollow" }
+        {
+          "id": "untangle",
+          "label": "Untie your laces and carry on",
+          "icon": "arrow",
+          "goto": "scene_shrine_hollow"
+        }
       ]
     },
-
     "scene_wisp_friends": {
       "type": "story",
       "art": "bg/bramblewood/stream",
       "narration": "The shiny thing is a jar of mosslight, and the wisps hand it over with great ceremony. Then they point downstream, all three at once, at a hill with a door in it.",
-      "onEnter": [{ "type": "grantItem", "itemId": "mosslight_jar", "to": "party" }],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "mosslight_jar",
+          "to": "party"
+        }
+      ],
       "choices": [
-        { "id": "downstream", "label": "Go where they are pointing", "icon": "arrow", "goto": "scene_shrine_hollow" }
+        {
+          "id": "downstream",
+          "label": "Go where they are pointing",
+          "icon": "arrow",
+          "goto": "scene_shrine_hollow"
+        }
       ]
     },
-
     "scene_shrine_hollow": {
       "type": "story",
       "art": "bg/bramblewood/shrine",
       "narration": "A small stone shrine sits in a hollow, half swallowed by roots. The stone where the Hollow Crown used to rest is empty, and cold, and there is a rusted key lying in the moss as if somebody dropped it in a hurry.",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "rusted_key" },
-        { "type": "grantXp", "amount": 50 }
+        {
+          "type": "grantQuestItem",
+          "itemId": "rusted_key"
+        },
+        {
+          "type": "grantXp",
+          "amount": 50
+        }
       ],
       "choices": [
-        { "id": "read_stone", "label": "Read the words on the stone", "icon": "eye", "goto": "scene_stone_words" },
+        {
+          "id": "read_stone",
+          "label": "Read the words on the stone",
+          "icon": "eye",
+          "goto": "scene_stone_words"
+        },
         {
           "id": "try_key",
           "label": "Take the key to the door in the hill",
@@ -306,35 +428,51 @@
         }
       ]
     },
-
     "scene_stone_words": {
       "type": "story",
       "art": "bg/bramblewood/shrine",
       "narration": "The words are worn almost smooth, but you can still read them: WHAT IS BORROWED HUMS UNTIL IT IS HOME. Under that, somebody much less careful has scratched: sorry. sorry. sorry.",
       "choices": [
-        { "id": "to_door", "label": "Follow the humming to the hill", "icon": "key", "goto": "scene_crown_door" }
+        {
+          "id": "to_door",
+          "label": "Follow the humming to the hill",
+          "icon": "key",
+          "goto": "scene_crown_door"
+        }
       ]
     },
-
     "scene_crown_door": {
       "type": "story",
       "art": "bg/bramblewood/hill_door",
       "narration": "The door in the hill is round, wooden, and much too small for a grown-up. The humming is coming from behind it, and now that you are close you can hear that it is a sad sort of humming.",
       "choices": [
-        { "id": "listen_first", "label": "Listen at the door", "icon": "ear", "goto": "scene_door_listen" },
-        { "id": "turn_key", "label": "Turn the key", "icon": "key", "goto": "check_door" }
+        {
+          "id": "listen_first",
+          "label": "Listen at the door",
+          "icon": "ear",
+          "goto": "scene_door_listen"
+        },
+        {
+          "id": "turn_key",
+          "label": "Turn the key",
+          "icon": "key",
+          "goto": "check_door"
+        }
       ]
     },
-
     "scene_door_listen": {
       "type": "story",
       "art": "bg/bramblewood/hill_door",
       "narration": "Behind the door, somebody very small says: \"I only borrowed it. I was going to put it back.\" Then, quieter: \"I can't reach the shelf.\"",
       "choices": [
-        { "id": "unlock_now", "label": "Turn the key", "icon": "key", "goto": "check_door" }
+        {
+          "id": "unlock_now",
+          "label": "Turn the key",
+          "icon": "key",
+          "goto": "check_door"
+        }
       ]
     },
-
     "check_door": {
       "type": "check",
       "stat": "clever",
@@ -343,28 +481,38 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_lanternfall",
-        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand — a smooth grey stone that feels lucky.",
-        "effects": [{ "type": "grantItem", "itemId": "luckstone", "to": "roller" }]
+        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand \u2014 a smooth grey stone that feels lucky.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "roller"
+          }
+        ]
       },
       "onFailure": {
         "goto": "rest_lanternfall",
         "narration": "The key jams, and sticks, and finally the whole door gives up and swings open on its own with an enormous groan that startles every moth in the wood into the air at once. Not graceful. Still open."
       }
     },
-
     "rest_lanternfall": {
       "type": "rest",
       "art": "bg/bramblewood/lanternfall",
-      "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill — and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
+      "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill \u2014 and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
       "heal": 4,
       "choices": []
     }
   },
-
   "llmHints": {
     "tone": "warm, playful, a little spooky but never scary",
     "vocabulary": "age-8",
-    "forbidden": ["death", "blood", "permanent loss", "weapons that wound", "anyone being left behind"],
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind"
+    ],
     "npcVoices": {
       "pib": "a bramble sprite the size of a teapot; earnest, over-explains, offers you things you did not ask for",
       "wisp": "curious, speaks in rhyme, easily distracted, apologises immediately and then does it again",
