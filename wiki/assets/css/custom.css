@@ -2379,3 +2379,109 @@ body {
   line-height: 1.4;
   white-space: nowrap;
 }
+
+/* --------------------------------------------------------------------------
+ * 14. Lore — hooks, opinion chips, and the Lore body section
+ *
+ * The infobox chips answer "who"; the body's Likes/Dislikes lists answer
+ * "why". `because` text rides on the chips as a tooltip.
+ * ----------------------------------------------------------------------- */
+
+/* One-line hook under an infobox title or page h1 */
+.wiki-infobox__hook {
+  font-family: var(--wiki-font-heading);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--wiki-text-secondary);
+  text-align: center;
+  margin: calc(-1 * var(--wiki-space-sm)) 0 var(--wiki-space-md);
+  line-height: 1.4;
+}
+
+.entity-hook {
+  font-family: var(--wiki-font-heading);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--wiki-text-secondary);
+  margin: calc(-1 * var(--wiki-space-sm)) 0 var(--wiki-space-md);
+  line-height: 1.5;
+}
+
+/* Likes / Dislikes chip groups in the infobox */
+.wiki-infobox__opinions {
+  margin-top: var(--wiki-space-md);
+  padding-top: var(--wiki-space-sm);
+  border-top: 1px solid var(--wiki-border);
+}
+
+.wiki-infobox__opinion-group + .wiki-infobox__opinion-group {
+  margin-top: var(--wiki-space-sm);
+}
+
+.wiki-infobox__opinion-heading {
+  font-family: var(--wiki-font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wiki-text-faint);
+  margin: 0 0 var(--wiki-space-xs);
+}
+
+.wiki-opinion-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+
+.wiki-opinion {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--wiki-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--wiki-radius-sm);
+  line-height: 1.5;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: border-color var(--wiki-transition);
+}
+
+.wiki-opinion--like {
+  color: var(--wiki-success);
+  background-color: rgba(95, 214, 160, 0.12);
+  border: 1px solid rgba(95, 214, 160, 0.3);
+}
+
+.wiki-opinion--like:hover {
+  border-color: var(--wiki-success);
+}
+
+.wiki-opinion--dislike {
+  color: var(--wiki-danger);
+  background-color: rgba(255, 107, 129, 0.12);
+  border: 1px solid rgba(255, 107, 129, 0.3);
+}
+
+.wiki-opinion--dislike:hover {
+  border-color: var(--wiki-danger);
+}
+
+/* The Lore section's leading hook renders as a blockquote in the body */
+.entity-content blockquote {
+  border-left: 3px solid var(--wiki-gold);
+  background-color: var(--wiki-gold-soft);
+  border-radius: 0 var(--wiki-radius-sm) var(--wiki-radius-sm) 0;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  margin: var(--wiki-space-md) 0;
+  font-family: var(--wiki-font-heading);
+  font-size: 1.05rem;
+  color: var(--wiki-text);
+}
+
+.entity-content blockquote p {
+  margin: 0;
+}

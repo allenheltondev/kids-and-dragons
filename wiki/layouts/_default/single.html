@@ -3,6 +3,10 @@
   <div class="entity-content">
     <h1>{{ .Title }}</h1>
 
+    {{ with .Params.lore_hook }}
+    <p class="entity-hook">{{ . }}</p>
+    {{ end }}
+
     {{ with .Params.tags }}
     <div class="entity-tags" aria-label="Tags">
       {{ range . }}

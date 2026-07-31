@@ -109,13 +109,41 @@ function edgePaths(taxonomy: Taxonomy): EdgePath[] {
   return paths;
 }
 
-function read(value: unknown, path: string[]): unknown {
-  let cursor: unknown = value;
+/**
+ * Every value at `path`, fanning out across arrays along the way.
+ *
+ * A dotted path like `separated_from.region` or `lore.likes.of` runs *through*
+ * an array of objects, and a single-cursor walk dead-ends at the array —
+ * which silently exempted those refs from integrity checking. Fanning out
+ * means an edge declared anywhere in a schema is an edge that gets checked,
+ * which is the promise the header makes.
+ */
+function readAll(value: unknown, path: string[]): unknown[] {
+  let cursors: unknown[] = [value];
   for (const key of path) {
-    if (cursor === null || typeof cursor !== "object") return undefined;
-    cursor = (cursor as Record<string, unknown>)[key];
+    const next: unknown[] = [];
+    for (const cursor of cursors) {
+      if (cursor === null || typeof cursor !== "object") continue;
+      const step = Array.isArray(cursor) ? cursor : [cursor];
+      for (const element of step) {
+        if (element === null || typeof element !== "object" || Array.isArray(element)) continue;
+        const found = (element as Record<string, unknown>)[key];
+        if (found !== undefined) next.push(found);
+      }
+    }
+    cursors = next;
   }
-  return cursor;
+  return cursors;
+}
+
+/**
+ * The ref strings a terminal value holds: a single ref, an edge array, or a
+ * record whose *values* are refs (a biome's `barriers`).
+ */
+function refStrings(raw: unknown): unknown[] {
+  if (Array.isArray(raw)) return raw;
+  if (raw !== null && typeof raw === "object") return Object.values(raw);
+  return [raw];
 }
 
 /** Builds the registry and appends every referential-integrity problem found. */
@@ -156,36 +184,36 @@ export function buildRegistry(parsed: ParseResult): CanonRegistry {
 
   for (const { taxonomy, file, entity } of parsed.entities) {
     for (const { path: dotted, to } of edgePaths(taxonomy)) {
-      const raw = read(entity, dotted.split("."));
-      if (raw === undefined) continue;
-      for (const target of Array.isArray(raw) ? raw : [raw]) {
-        if (typeof target !== "string") continue;
-        const edge: CanonEdge = { from: entity.id, field: dotted, to: target };
-        edges.push(edge);
-        push(out, entity.id, edge);
-        push(incoming, target, edge);
+      for (const raw of readAll(entity, dotted.split("."))) {
+        for (const target of refStrings(raw)) {
+          if (typeof target !== "string") continue;
+          const edge: CanonEdge = { from: entity.id, field: dotted, to: target };
+          edges.push(edge);
+          push(out, entity.id, edge);
+          push(incoming, target, edge);
 
-        const targetTaxonomy = taxonomyOf.get(target);
-        if (targetTaxonomy === undefined) {
-          issues.push({
-            level: "error",
-            file,
-            id: entity.id,
-            field: dotted,
-            message: prefixOf(target)
-              ? `references "${target}", which does not exist`
-              : `references "${target}", which is not a prefixed canon id`,
-          });
-        } else if (!to.includes(targetTaxonomy)) {
-          // Stronger than a prefix check: the target is real, but it is the
-          // wrong *kind* of thing for this field to point at.
-          issues.push({
-            level: "error",
-            file,
-            id: entity.id,
-            field: dotted,
-            message: `references a ${targetTaxonomy} ("${target}"); this field takes ${to.join(" or ")}`,
-          });
+          const targetTaxonomy = taxonomyOf.get(target);
+          if (targetTaxonomy === undefined) {
+            issues.push({
+              level: "error",
+              file,
+              id: entity.id,
+              field: dotted,
+              message: prefixOf(target)
+                ? `references "${target}", which does not exist`
+                : `references "${target}", which is not a prefixed canon id`,
+            });
+          } else if (!to.includes(targetTaxonomy)) {
+            // Stronger than a prefix check: the target is real, but it is the
+            // wrong *kind* of thing for this field to point at.
+            issues.push({
+              level: "error",
+              file,
+              id: entity.id,
+              field: dotted,
+              message: `references a ${targetTaxonomy} ("${target}"); this field takes ${to.join(" or ")}`,
+            });
+          }
         }
       }
     }

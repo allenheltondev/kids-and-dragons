@@ -10,6 +10,21 @@ classification: dangerous_creature
 danger_level: moderate
 scale: medium_to_large
 sapience: animal
+lore_hook: "The most patient misunderstanding in the foothills."
+likes:
+  - id: creature.embermoth
+    title: "Embermoth"
+    url: "/creatures/embermoth/"
+    because: "It finds the warm ground first and charges nothing for the information."
+  - id: character.dragonling
+    title: "Dragonling"
+    url: "/characters/dragonling/"
+    because: "They knock on the burrow stone and wait. The only people who do."
+dislikes:
+  - id: creature.cinder_wolf
+    title: "Cinder Wolf"
+    url: "/creatures/cinder_wolf/"
+    because: "In deep winter a pack will dig into someone else's warm burrow without so much as a wave."
 related:
   - id: biome.red_sky_foothills
     type: biome
@@ -20,6 +35,9 @@ related:
   - id: biome.red_sky_foothills
     type: biome
     relationship: dangerous_creatures
+  - id: campaign.gemfall
+    type: campaign
+    relationship: creatures
   - id: item.crimson_shard
     type: item
     relationship: dropped_by
@@ -34,13 +52,41 @@ ai_context:
   themes: "Dangerous, Foothills, Territorial, Burrower"
   visual_style: "Broad crab body with a crystal-like shell that refracts nearby color, heavy digging claws and heat-darkened legs."
   common_encounters: "Cave obstacle, mistaken gemstone formation, sign of a newly warmed tunnel."
-  lore_highlights: ""
-  related_entities: "biome.red_sky_foothills, location.mount_red_sky, biome.red_sky_foothills, item.crimson_shard, location.mount_red_sky"
+  lore_highlights: "The most patient misunderstanding in the foothills."
+  related_entities: "biome.red_sky_foothills, location.mount_red_sky, biome.red_sky_foothills, campaign.gemfall, item.crimson_shard, location.mount_red_sky"
   writing_guidance: "Threatens before charging, usually stops pursuing once intruder leaves territory."
   generation_hints: "Defends warm burrows and exposed mineral deposits."
 layout: creatures
 infobox: creature
 ---
+
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+> *The most patient misunderstanding in the foothills.*
+
+A glassback's shell refracts whatever color is nearby, which in the foothills is usually gemstone, which is why every treasure rush in history has included somebody trying to mine one. The crab minds enormously. It gives one warning, which is more than most prospectors deserve, and it holds no grudge afterward — off its warm ground, you have never existed.
+
+### For Fun
+
+- Rearranging the mineral garden at its burrow mouth. Taste in arrangement appears to be hereditary.
+- Following embermoth swarms to freshly warmed ground, like a prospector who reads the news.
+- Holding threat displays at boulders that turned out not to be rival crabs. It takes a while to be sure.
+
+### Getting Along
+
+Solitary and formal. Neighbouring crabs maintain exact, invisible borders that are renegotiated once a year in a ceremony that looks exactly like two rocks facing each other for a day.
+
+### Likes
+
+- **[Embermoth](/creatures/embermoth/)** — It finds the warm ground first and charges nothing for the information.
+- **[Dragonling](/characters/dragonling/)** — They knock on the burrow stone and wait. The only people who do.
+
+### Dislikes
+
+- **[Cinder Wolf](/creatures/cinder_wolf/)** — In deep winter a pack will dig into someone else's warm burrow without so much as a wave.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
@@ -66,6 +112,9 @@ infobox: creature
 
 ### Biomes
 - [Red Sky Foothills](/biomes/red_sky_foothills/) `Primary Locations` `Dangerous Creatures`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Creatures`
 
 ### Items
 - [Crimson Shard](/items/crimson_shard/) `Dropped By`

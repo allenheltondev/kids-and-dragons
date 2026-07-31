@@ -10,10 +10,28 @@ classification: dangerous_creature
 danger_level: moderate
 scale: large
 sapience: semi_sapient
+lore_hook: "The river's self-appointed toll collector. The river has not confirmed the appointment."
+likes:
+  - id: npc.stone_troll
+    title: "Stone Troll"
+    url: "/npcs/stone_troll/"
+    because: "A colleague in the crossing trade. They have never spoken. The tolls are honored between professionals."
+  - id: individual.old_ossley
+    title: "Old Ossley"
+    url: "/individuals/old_ossley/"
+    because: "The one ferryman who pays without arguing, and who once threw in a honeycake unprompted."
+dislikes:
+  - id: creature.silver_otter
+    title: "Silver Otter"
+    url: "/creatures/silver_otter/"
+    because: "They call the toll 'borrowing.' It is not borrowing."
 related:
   - id: location.stone_crossing
     type: location
     relationship: primary_locations
+  - id: campaign.gemfall
+    type: campaign
+    relationship: creatures
   - id: individual.old_ossley
     type: individual
     relationship: creatures
@@ -28,13 +46,41 @@ ai_context:
   themes: "Dangerous, River, Semi_sapient, Territorial"
   visual_style: "Sleek amphibious dragon-like body with fins, short limbs, and river-stone coloring."
   common_encounters: "Bridge complication, river rescue, creature displaced by changed currents."
-  lore_highlights: ""
-  related_entities: "location.stone_crossing, individual.old_ossley, location.stone_crossing"
+  lore_highlights: "The river's self-appointed toll collector. The river has not confirmed the appointment."
+  related_entities: "location.stone_crossing, campaign.gemfall, individual.old_ossley, location.stone_crossing"
   writing_guidance: "Smaller and less powerful than a legendary dragon, can learn routines."
   generation_hints: "Defends deep water and favorite resting shelves, may block boats or demand dropped food."
 layout: creatures
 infobox: creature
 ---
+
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+> *The river's self-appointed toll collector. The river has not confirmed the appointment.*
+
+A river drake claims a stretch of deep water the way other folk claim a trade, and it works the position with genuine professionalism: it knows the ferry schedule better than the ferryman, adjusts its rates by cargo, weather, and how the day is going, and never takes more than the toll. Where the toll came from, and by what authority, are questions the drake considers closed.
+
+### For Fun
+
+- Rearranging the hoard shelf: fish bones, boat fittings, and one perfect otter-polished stone it will not discuss.
+- Timing the caravan queue from underwater and surfacing at the exact moment it is longest.
+- Napping in the bridge's shadow with one eye open, which it considers being at work.
+
+### Getting Along
+
+Semi-sapient and thoroughly transactional. A drake learns individual faces, individual boats, and individual grudges, and its regulars are waved through in a way that first-timers find infuriating.
+
+### Likes
+
+- **[Stone Troll](/npcs/stone_troll/)** — A colleague in the crossing trade. They have never spoken. The tolls are honored between professionals.
+- **[Old Ossley](/individuals/old_ossley/)** — The one ferryman who pays without arguing, and who once threw in a honeycake unprompted.
+
+### Dislikes
+
+- **[Silver Otter](/creatures/silver_otter/)** — They call the toll 'borrowing.' It is not borrowing.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
@@ -57,6 +103,9 @@ infobox: creature
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Creatures`
 
 ### Individuals
 - [Old Ossley](/individuals/old_ossley/) `Creatures`

@@ -567,3 +567,105 @@ describe('resolveConventionAssets', () => {
     expect(result.source).toBe('none');
   });
 });
+
+describe('generatePage — lore section', () => {
+  const liked: CanonEntity = {
+    id: 'creature.mosshorn',
+    type: 'creature',
+    title: 'Mosshorn',
+    relationships: {},
+    metadata: {},
+  };
+  const entity: CanonEntity = {
+    id: 'creature.testling',
+    type: 'creature',
+    title: 'Testling',
+    relationships: { creatures: ['creature.mosshorn'] },
+    metadata: {
+      lore: {
+        hook: 'A hook line.',
+        story: 'A story paragraph.',
+        pastimes: ['Doing the thing.'],
+        social: 'Gets along fine.',
+        likes: [{ of: 'creature.mosshorn', because: 'They weed.' }],
+        dislikes: [{ of: 'npc.unknown_folk', because: 'Long story.' }],
+      },
+    },
+  };
+  const entities = new Map<string, CanonEntity>([
+    [entity.id, entity],
+    [liked.id, liked],
+  ]);
+  const assets: AssetResult = { entityId: entity.id, source: 'none' };
+
+  it('renders the lore section with linked opinions on a new page', () => {
+    const { content } = generatePage({ entity, assets, reverseRefs: [] }, entities);
+
+    expect(content).toContain('<!-- BEGIN GENERATED: lore -->');
+    expect(content).toContain('## Lore');
+    expect(content).toContain('> *A hook line.*');
+    expect(content).toContain('A story paragraph.');
+    expect(content).toContain('### For Fun');
+    expect(content).toContain('- Doing the thing.');
+    expect(content).toContain('### Getting Along');
+    expect(content).toContain('**[Mosshorn](/creatures/mosshorn/)** — They weed.');
+    // An opinion of an entity outside the registry falls back to a derived title.
+    expect(content).toContain('**[Unknown Folk](/npcs/unknown_folk/)** — Long story.');
+
+    // Lore leads the body: before relationships.
+    const loreIdx = content.indexOf('<!-- BEGIN GENERATED: lore -->');
+    const relIdx = content.indexOf('<!-- BEGIN GENERATED: relationships -->');
+    expect(loreIdx).toBeGreaterThan(-1);
+    expect(loreIdx).toBeLessThan(relIdx);
+  });
+
+  it('writes the hook and resolved opinion chips into front matter', () => {
+    const { content } = generatePage({ entity, assets, reverseRefs: [] }, entities);
+
+    expect(content).toContain('lore_hook: "A hook line."');
+    expect(content).toContain('likes:');
+    expect(content).toContain('  - id: creature.mosshorn');
+    expect(content).toContain('    title: "Mosshorn"');
+    expect(content).toContain('    url: "/creatures/mosshorn/"');
+    expect(content).toContain('    because: "They weed."');
+    expect(content).toContain('dislikes:');
+    expect(content).toContain('lore_highlights: "A hook line."');
+  });
+
+  it('inserts a lore section before existing generated markers on legacy pages', () => {
+    const existing = [
+      '---',
+      'title: Testling',
+      '---',
+      '',
+      'Handwritten intro that must survive.',
+      '',
+      '<!-- BEGIN GENERATED: relationships -->',
+      'old relationships',
+      '<!-- END GENERATED: relationships -->',
+      '',
+    ].join('\n');
+
+    const { content } = generatePage(
+      { entity, assets, reverseRefs: [], existingContent: existing },
+      entities,
+    );
+
+    expect(content).toContain('Handwritten intro that must survive.');
+    const introIdx = content.indexOf('Handwritten intro');
+    const loreIdx = content.indexOf('<!-- BEGIN GENERATED: lore -->');
+    const relIdx = content.indexOf('<!-- BEGIN GENERATED: relationships -->');
+    expect(loreIdx).toBeGreaterThan(introIdx);
+    expect(relIdx).toBeGreaterThan(loreIdx);
+  });
+
+  it('emits no lore section, hook, or chips for an entity without lore', () => {
+    const { content } = generatePage(
+      { entity: liked, assets: { entityId: liked.id, source: 'none' }, reverseRefs: [] },
+      entities,
+    );
+    expect(content).not.toContain('<!-- BEGIN GENERATED: lore -->');
+    expect(content).not.toContain('lore_hook:');
+    expect(content).toContain('lore_highlights: ""');
+  });
+});

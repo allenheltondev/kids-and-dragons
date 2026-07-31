@@ -14,6 +14,7 @@
 
 import { z } from "zod";
 import { CanonId, Slug } from "./ids.js";
+import { Lore } from "./lore.js";
 
 /**
  * D1 — one vocabulary for all twelve taxonomies.
@@ -108,6 +109,14 @@ export const Envelope = z.strictObject({
   common_story_uses: z.string().optional(),
   canon_note: z.string().optional(),
   notes: z.array(z.string()).default([]),
+
+  /**
+   * The storyteller's half — story, pastimes, likes and dislikes. On the
+   * envelope so every taxonomy accepts one; optional because a route does not
+   * need a personality (though nothing here stops one from having it).
+   * See lore.ts.
+   */
+  lore: Lore.optional(),
 });
 
 export type Envelope = z.infer<typeof Envelope>;

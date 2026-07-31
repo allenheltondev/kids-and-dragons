@@ -15,7 +15,7 @@ const BEGIN_MARKER = (section: string) => `<!-- BEGIN GENERATED: ${section} -->`
 const END_MARKER = (section: string) => `<!-- END GENERATED: ${section} -->`;
 
 /** Generated section names managed by this module. */
-const GENERATED_SECTIONS = ['relationships', 'encounter', 'mechanics', 'ai_context'] as const;
+const GENERATED_SECTIONS = ['lore', 'relationships', 'encounter', 'mechanics', 'ai_context'] as const;
 
 /**
  * Represents a single related entity entry for front matter and section rendering.
@@ -342,6 +342,155 @@ function escapeYamlString(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
+// ---------------------------------------------------------------------------
+// Lore — the storyteller's half of a canon entry (packages/canon lore.ts).
+// ---------------------------------------------------------------------------
+
+/** One like/dislike as authored: a canon ref plus the reason. */
+export interface LoreOpinionEntry {
+  of: string;
+  because: string;
+}
+
+/** The `lore` block as it arrives in entity metadata. */
+export interface LoreBlock {
+  hook?: string;
+  story?: string;
+  pastimes?: string[];
+  social?: string;
+  likes?: LoreOpinionEntry[];
+  dislikes?: LoreOpinionEntry[];
+}
+
+/** Pull the lore block out of the metadata bag, or null when absent. */
+function getLore(entity: CanonEntity): LoreBlock | null {
+  const raw = entity.metadata['lore'];
+  if (raw === null || raw === undefined || typeof raw !== 'object' || Array.isArray(raw)) {
+    return null;
+  }
+  return raw as LoreBlock;
+}
+
+/** Valid opinion entries only — a malformed row is dropped, not rendered broken. */
+function loreOpinions(entries: LoreOpinionEntry[] | undefined): LoreOpinionEntry[] {
+  if (!Array.isArray(entries)) return [];
+  return entries.filter(
+    (entry) =>
+      entry !== null &&
+      typeof entry === 'object' &&
+      typeof entry.of === 'string' &&
+      typeof entry.because === 'string',
+  );
+}
+
+/** Site-relative URL for a canon id, e.g. `creature.mosshorn` → `/creatures/mosshorn/`. */
+function entityUrl(id: string): string {
+  return `/${pluralizeType(extractType(id))}/${extractEntityName(id)}/`;
+}
+
+/**
+ * "Lore" — the page's leading section, and the reason to visit it.
+ *
+ * The envelope's prose answers operational questions; this section answers
+ * "who are these guys": the story, what they do for fun, how they get along,
+ * and their opinions of the neighbours. Likes and dislikes are real canon
+ * refs, so they render as links into the rest of the wiki — every opinion is
+ * a doorway to another page, which is what makes an encyclopedia feel like a
+ * world instead of a filing cabinet.
+ */
+function generateLoreSection(
+  entity: CanonEntity,
+  allEntities: Map<string, CanonEntity>,
+): string {
+  const lore = getLore(entity);
+  if (!lore || typeof lore.story !== 'string' || lore.story.length === 0) return '';
+
+  const lines: string[] = ['## Lore', ''];
+
+  if (typeof lore.hook === 'string' && lore.hook.length > 0) {
+    lines.push(`> *${lore.hook.trim()}*`, '');
+  }
+
+  lines.push(lore.story.trim(), '');
+
+  const pastimes = Array.isArray(lore.pastimes)
+    ? lore.pastimes.filter((p): p is string => typeof p === 'string' && p.length > 0)
+    : [];
+  if (pastimes.length > 0) {
+    lines.push('### For Fun', '');
+    for (const pastime of pastimes) {
+      lines.push(`- ${pastime.trim()}`);
+    }
+    lines.push('');
+  }
+
+  if (typeof lore.social === 'string' && lore.social.length > 0) {
+    lines.push('### Getting Along', '');
+    lines.push(lore.social.trim(), '');
+  }
+
+  const likes = loreOpinions(lore.likes);
+  const dislikes = loreOpinions(lore.dislikes);
+  for (const [heading, opinions] of [
+    ['Likes', likes],
+    ['Dislikes', dislikes],
+  ] as const) {
+    if (opinions.length === 0) continue;
+    lines.push(`### ${heading}`, '');
+    for (const opinion of opinions) {
+      const title = getTitleForEntity(opinion.of, allEntities);
+      lines.push(`- **[${title}](${entityUrl(opinion.of)})** — ${opinion.because.trim()}`);
+    }
+    lines.push('');
+  }
+
+  while (lines[lines.length - 1] === '') lines.pop();
+  return lines.join('\n');
+}
+
+/**
+ * The infobox half of the same data: resolved titles and URLs so the Hugo
+ * partial can render opinion chips without knowing how canon ids work.
+ */
+function loreFrontMatterLines(
+  entity: CanonEntity,
+  allEntities: Map<string, CanonEntity>,
+): string[] {
+  const lore = getLore(entity);
+  if (!lore) return [];
+
+  const lines: string[] = [];
+  if (typeof lore.hook === 'string' && lore.hook.length > 0) {
+    lines.push(`lore_hook: "${escapeYamlString(lore.hook)}"`);
+  }
+  for (const [key, entries] of [
+    ['likes', loreOpinions(lore.likes)],
+    ['dislikes', loreOpinions(lore.dislikes)],
+  ] as const) {
+    if (entries.length === 0) continue;
+    lines.push(`${key}:`);
+    for (const entry of entries) {
+      lines.push(`  - id: ${entry.of}`);
+      lines.push(`    title: "${escapeYamlString(getTitleForEntity(entry.of, allEntities))}"`);
+      lines.push(`    url: "${entityUrl(entry.of)}"`);
+      lines.push(`    because: "${escapeYamlString(entry.because)}"`);
+    }
+  }
+  return lines;
+}
+
+/** The one-line summary ai_context leads with: the hook, else the story's first sentence. */
+function loreHighlight(entity: CanonEntity): string {
+  const lore = getLore(entity);
+  if (!lore) return '';
+  if (typeof lore.hook === 'string' && lore.hook.length > 0) return lore.hook;
+  if (typeof lore.story === 'string' && lore.story.length > 0) {
+    const period = lore.story.indexOf('. ');
+    return period > 0 ? lore.story.slice(0, period + 1) : lore.story;
+  }
+  return '';
+}
+
 /**
  * Build the ai_context front matter object from canon metadata fields.
  *
@@ -371,7 +520,7 @@ export function buildAiContextFrontMatter(
     : '';
   const visual_style = typeof meta['visual_identity'] === 'string' ? meta['visual_identity'] : '';
   const common_encounters = typeof meta['common_story_uses'] === 'string' ? meta['common_story_uses'] : '';
-  const lore_highlights = '';
+  const lore_highlights = loreHighlight(entity);
   const related_entities = relatedEntries.map(e => e.id).join(', ');
   const writing_guidance = typeof meta['canon_constraints'] === 'string' ? meta['canon_constraints'] : '';
   const generation_hints = typeof meta['standard_behavior'] === 'string' ? meta['standard_behavior'] : '';
@@ -397,6 +546,7 @@ function generateFrontMatter(
   entity: CanonEntity,
   assets: AssetResult,
   relatedEntries: RelatedEntry[],
+  allEntities: Map<string, CanonEntity>,
 ): string {
   const lines: string[] = ['---'];
 
@@ -436,6 +586,10 @@ function generateFrontMatter(
   if (typeof meta['sapience'] === 'string') {
     lines.push(`sapience: ${meta['sapience']}`);
   }
+
+  // Lore: the hook for cards and list pages, and resolved opinion chips for
+  // the infobox partials.
+  lines.push(...loreFrontMatterLines(entity, allEntities));
 
   // Related entities
   if (relatedEntries.length > 0) {
@@ -833,9 +987,11 @@ export function generatePage(
   const relatedEntries = buildRelatedEntries(entity, reverseRefs, entitiesMap);
 
   // Generate front matter
-  const frontMatter = generateFrontMatter(entity, assets, relatedEntries);
+  const frontMatter = generateFrontMatter(entity, assets, relatedEntries, entitiesMap);
 
   // Generate section contents
+  const loreContent = generateLoreSection(entity, entitiesMap);
+  const loreSection = loreContent ? wrapWithMarkers('lore', loreContent) : '';
   const relationshipsContent = generateRelationshipsSection(relatedEntries);
   // The "what does this do at the table" sections. Mutually exclusive in
   // practice — a creature has a stat block, an item has an effect — but
@@ -856,10 +1012,14 @@ export function generatePage(
     ? wrapWithMarkers('relationships', relationshipsContent)
     : '';
 
-  // If no existing content, create a brand new page
+  // If no existing content, create a brand new page. Lore leads: it is the
+  // page's prose, and everything mechanical reads better underneath it.
   // Note: ai_context is now in front matter, so we don't emit body blocks for it
   if (!existingContent) {
     const parts = [frontMatter];
+    if (loreSection) {
+      parts.push('', loreSection);
+    }
     for (const [, section] of mechanical) {
       parts.push('', section);
     }
@@ -891,6 +1051,9 @@ export function generatePage(
     if (!result.endsWith('\n')) {
       result += '\n';
     }
+    if (loreSection) {
+      result += '\n' + loreSection + '\n';
+    }
     for (const [, section] of mechanical) {
       result += '\n' + section + '\n';
     }
@@ -911,13 +1074,30 @@ export function generatePage(
     generatedSections.set('ai_context', '');
   }
   // A section whose content has gone away is emptied rather than left stale.
-  for (const name of ['encounter', 'mechanics'] as const) {
+  for (const name of ['lore', 'encounter', 'mechanics'] as const) {
     if (parsed.sections.has(name)) {
-      generatedSections.set(name, mechanical.find(([n]) => n === name)?.[1] ?? '');
+      generatedSections.set(
+        name,
+        name === 'lore' ? loreSection : (mechanical.find(([n]) => n === name)?.[1] ?? ''),
+      );
     }
   }
 
   let updatedBody = replaceGeneratedSections(parsed.body, generatedSections, parsed.sections);
+
+  // A page written before the lore section existed has no marker for it. Lore
+  // leads the page, so it inserts before the *earliest* generated marker —
+  // handwritten prose above stays above, everything generated stays below.
+  if (loreSection && !parsed.sections.has('lore')) {
+    const anchors = ['encounter', 'mechanics', 'relationships']
+      .map((name) => updatedBody.indexOf(BEGIN_MARKER(name)))
+      .filter((index) => index >= 0);
+    const anchor = anchors.length > 0 ? Math.min(...anchors) : -1;
+    updatedBody =
+      anchor >= 0
+        ? `${updatedBody.slice(0, anchor)}${loreSection}\n\n${updatedBody.slice(anchor)}`
+        : `${updatedBody.replace(/\n+$/, '')}\n\n${loreSection}\n`;
+  }
 
   // A page written before one of these sections existed has no marker to
   // replace, so the first run has to insert it. Before Related Entities if

@@ -32,6 +32,7 @@ layout: items
 infobox: item
 ---
 
+
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
