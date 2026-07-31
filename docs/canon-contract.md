@@ -367,10 +367,24 @@ encounter:
   behavior: null           # see below — almost always null
 ```
 
-**Bands, not free integers.** A generator picks a band; it never picks an `hp`.
-The four are derived from the one shipped stat block — the Bramblewisp, at
-hp 6 / guard 11 / quick 3 / steps 5 / attack 3, three of them — read against
-the round budget:
+**Bands, not free integers, and the numbers live in `content/rules.json`.**
+
+The split is the load-bearing part. *Canon* says a will-o-wisp is a
+`skirmisher` — a judgement about the world, and a fact about the creature.
+*`content/rules.json`* says what a skirmisher is worth — a judgement about
+balance, which belongs beside the hero-side numbers it is balanced against
+(`baseMaxHp` 10, `baseGuard` 11, `baseSteps` 4) rather than in a second file
+with a second schema. Retuning every fight in the game is a content edit, not a
+deploy.
+
+The consequence: `packages/canon` holds `band` as a slug and does not know what
+it is worth, so the band/`danger_level` gate cannot live in the creature schema.
+It lives in `tools/canon/check.ts`, which reads both files — along with the
+round-budget check on the table itself.
+
+A generator picks a band; it never picks an `hp`. The four are derived from the
+one shipped stat block — the Bramblewisp, at hp 6 / guard 11 / quick 3 /
+steps 5 / attack 3, three of them — read against the round budget:
 
 | band | hp | guard | attack | steps | quick | usual count |
 |---|---:|---:|---:|---:|---:|---|

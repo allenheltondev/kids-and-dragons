@@ -2,27 +2,19 @@
  * What a creature does in a fight, and what it takes instead of one —
  * docs/canon-contract.md D9 and D10.
  *
- * Every number here is anchored to the engine rather than invented:
- * `ATTACK_DAMAGE = 3` for any plain swing (`encounter.ts`), heroes at
- * `baseMaxHp` 10 / `baseGuard` 11 / `baseSteps` 4 (`rules.json`), attacks
- * resolved as d20 + mod vs Guard (`dice.ts`), initiative as d20 + `quick`,
- * three players on a 10×8 board (spec §7.1).
- *
- * The arithmetic that fixes the bands: a level-1 hero swings at d20 + 2..4
- * against Guard 11 — about 65% — for 3 damage, so roughly 2 damage a round
- * each and ~6 for a party of three. §7.1 tunes for about four rounds, so a
- * whole encounter wants 18–30 total HP. Three Bramblewisps at 6 HP is 18, and
- * that shipped stat block is where the `skirmisher` row comes from.
+ * The shapes live here; the *numbers* live in `content/rules.json`
+ * `encounterBands`, beside the hero-side ones they are balanced against. See
+ * the `Band` doc below for why the split falls there.
  *
  * ---------------------------------------------------------------------------
  * WHY BANDS AND NOT FIVE INTEGERS
  *
  * A creature picks a band; it does not pick an `hp`. The numbers live in one
  * table, so retuning combat is one edit rather than seventeen, and a generator
- * choosing an encounter is choosing from four options rather than inventing a
- * stat line. `stats` exists as an override for the creature that genuinely
- * needs one, and `legend` has no row at all — a legendary beast is authored,
- * signed off, and never generated.
+ * choosing an encounter is choosing from a handful of options rather than
+ * inventing a stat line. `stats` exists as an override for the creature that
+ * genuinely needs one, and `legend` has no default at all — a legendary beast
+ * is authored, signed off, and never generated.
  */
 
 import { z } from "zod";
@@ -45,48 +37,61 @@ export const EncounterStats = z.strictObject({
 });
 export type EncounterStats = z.infer<typeof EncounterStats>;
 
-export const Band = z.enum(["skirmisher", "lurker", "brute", "sentinel", "legend"]);
-export type Band = z.infer<typeof Band>;
+/**
+ * The name of a stat block, defined in `content/rules.json` `encounterBands`.
+ *
+ * **The numbers are deliberately not here.** Canon says which band a creature
+ * is — a judgement about the world, and a fact about the creature. What a band
+ * is *worth* is a judgement about balance, and it belongs beside the hero-side
+ * numbers it is balanced against (`baseMaxHp`, `baseGuard`, `baseSteps`), in
+ * the file the server already loads and the schema already validates. Retuning
+ * every fight in the game is then a content edit rather than a deploy.
+ *
+ * The consequence is that this package cannot check a band on its own: the
+ * name is a slug here, and `tools/canon/check.ts` — which can read both files —
+ * verifies it exists, that it suits the creature's `danger_level`, and that a
+ * usual-count encounter lands in the round budget.
+ */
+export const Band = Slug;
+export type Band = string;
 
+/** One row of `content/rules.json` `encounterBands`. */
 export interface BandRow {
+  /** `null` for a band with no default — the creature must author its own. */
   readonly stats: EncounterStats | null;
   /** Paid to the whole party via a `grantXp` effect — never to an individual. */
   readonly xp: number;
-  /** How many of these make one encounter, before the HP window is checked. */
+  /** How many make one encounter, before the HP window is checked. */
   readonly usualCount: number;
+  /** Which `danger_level` values may use this band, so the two cannot drift. */
+  readonly dangerLevels: readonly string[];
 }
 
-/**
- * `legend` is deliberately `null`: a legendary beast is a designed encounter,
- * not a rolled one, so it must author its own `stats` and cannot inherit.
- */
-export const BANDS: Readonly<Record<Band, BandRow>> = {
-  skirmisher: { stats: { hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }, xp: 5, usualCount: 3 },
-  lurker: { stats: { hp: 9, guard: 13, quick: 4, steps: 4, attack: 3 }, xp: 8, usualCount: 2 },
-  brute: { stats: { hp: 14, guard: 12, quick: 1, steps: 3, attack: 4 }, xp: 12, usualCount: 2 },
-  sentinel: { stats: { hp: 20, guard: 14, quick: 0, steps: 3, attack: 4 }, xp: 20, usualCount: 1 },
-  legend: { stats: null, xp: 50, usualCount: 1 },
-};
-
-/**
- * Which bands a `danger_level` may use, so the two cannot drift.
- *
- * `none` and `low` are absent on purpose. A creature that is not dangerous does
- * not get a stat block — meeting it is a scene, not a fight, and giving it
- * numbers invites an author to start one.
- */
-export const BANDS_BY_DANGER: Readonly<Record<string, readonly Band[]>> = {
-  moderate: ["skirmisher", "lurker", "brute"],
-  high: ["brute", "sentinel"],
-  legendary: ["legend"],
-};
+export type BandTable = Readonly<Record<string, BandRow>>;
 
 /**
  * The total-HP window a whole encounter should land in for a three-hero
- * fledgling party. Checked per *encounter* rather than per creature — one brute
- * or three skirmishers are both fine, and only the sum says which.
+ * fledgling party — the check `tools/canon/check.ts` runs over the band table.
+ *
+ * Derived, not chosen: a level-1 hero swings d20 + 2..4 against Guard 11 —
+ * about 65% — for 3 damage (`ATTACK_DAMAGE`), so roughly 2 damage a round each
+ * and ~6 for a party of three. Spec §7.1 tunes for about four rounds.
+ *
+ * Checked per *encounter* rather than per creature: one brute or three
+ * skirmishers are both fine, and only the sum says which.
  */
 export const ENCOUNTER_HP_WINDOW = { min: 18, max: 30 } as const;
+
+/** Reads the band table off a loaded `rules.json`. */
+export function bandTable(rules: unknown): BandTable {
+  const table = (rules as { encounterBands?: Record<string, unknown> })?.encounterBands ?? {};
+  const out: Record<string, BandRow> = {};
+  for (const [name, row] of Object.entries(table)) {
+    if (name.startsWith("$") || typeof row !== "object" || row === null) continue;
+    out[name] = row as BandRow;
+  }
+  return out;
+}
 
 // ---------------------------------------------------------------------------
 // D10 — the ways out that are not a fight
@@ -142,6 +147,7 @@ export type Resolution = z.infer<typeof Resolution>;
 // ---------------------------------------------------------------------------
 
 export const Encounter = z.strictObject({
+  /** Names a row of `content/rules.json` `encounterBands`. */
   band: Band,
   /**
    * Overrides the band's numbers. Required for `legend`, which has none, and
@@ -175,12 +181,16 @@ export const Encounter = z.strictObject({
 export type Encounter = z.infer<typeof Encounter>;
 
 /** The band's numbers with any per-creature override applied. */
-export function resolveStats(encounter: Encounter): EncounterStats | null {
-  const base = BANDS[encounter.band].stats;
-  if (!base) return encounter.stats ? (encounter.stats as EncounterStats) : null;
+export function resolveStats(encounter: Encounter, bands: BandTable): EncounterStats | null {
+  const base = bands[encounter.band]?.stats ?? null;
+  if (!base) {
+    const own = encounter.stats;
+    // A band with no default (legend) needs a complete authored block.
+    return own && EncounterStats.safeParse(own).success ? (own as EncounterStats) : null;
+  }
   return { ...base, ...encounter.stats };
 }
 
-export function resolveXp(encounter: Encounter): number {
-  return encounter.xp ?? BANDS[encounter.band].xp;
+export function resolveXp(encounter: Encounter, bands: BandTable): number {
+  return encounter.xp ?? bands[encounter.band]?.xp ?? 0;
 }

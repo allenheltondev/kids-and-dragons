@@ -34,7 +34,7 @@
 
 import { z } from "zod";
 import { canonRef, edge, Slug } from "./ids.js";
-import { BANDS, BANDS_BY_DANGER, Encounter, resolveStats } from "./encounter.js";
+import { Encounter } from "./encounter.js";
 import {
   CanonStatus,
   DangerLevel,
@@ -181,28 +181,9 @@ export const Creature = Envelope.extend({
     return;
   }
 
-  // The band and the danger level are two names for the same judgement, so
-  // they are not allowed to disagree.
-  const legal = BANDS_BY_DANGER[danger] ?? [];
-  if (!legal.includes(encounter.band)) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["encounter", "band"],
-      message: legal.length
-        ? `danger_level "${danger}" allows ${legal.join(" or ")}, not "${encounter.band}"`
-        : `danger_level "${danger}" gets no encounter block at all`,
-    });
-  }
-
-  // `legend` has no row in the band table on purpose: a legendary beast is a
-  // designed encounter, not a rolled one.
-  if (!BANDS[encounter.band].stats && !resolveStats(encounter)) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["encounter", "stats"],
-      message: `band "${encounter.band}" has no default stats — author them explicitly`,
-    });
-  }
+  // The band/danger_level gate and the stat resolution live in
+  // tools/canon/check.ts, which can read content/rules.json. This package
+  // deliberately does not — see the `Band` doc in encounter.ts.
 
   // D10. The instruction in creatures.yaml says encounters should *usually*
   // permit more than combat; a dangerous creature with no way past it but a

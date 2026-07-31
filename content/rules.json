@@ -1,27 +1,117 @@
 {
-  "$comment": "Rules as data — roadmap 'Content as data'. Values come from spec.md §4 (stats, species, classes), §5 (creation points), §7.1 (steps), §8.1 (levels and tiers). Shape is packages/shared/src/types/domain.ts RulesContent; where this file and the docs disagree, the TS type wins. levelXp holds the nine thresholds above level 1 — levelXp[n] is the total XP needed to reach level n+2, per levelForXp()/maxLevel() in packages/shared/src/rules.ts. The curve is superlinear on purpose (spec §8.1): level 2 costs 100 so it lands at the end of the first chapter ever played, and level 10 costs 1600. The doubled steps at 400/400 and 900/900 sit on the tier boundaries. Icons are short slugs, never file paths: the client resolves them to inline SVG so every element has an icon (spec §11).",
-
+  "$comment": "Rules as data \u2014 roadmap 'Content as data'. Values come from spec.md \u00a74 (stats, species, classes), \u00a75 (creation points), \u00a77.1 (steps), \u00a78.1 (levels and tiers). Shape is packages/shared/src/types/domain.ts RulesContent; where this file and the docs disagree, the TS type wins. levelXp holds the nine thresholds above level 1 \u2014 levelXp[n] is the total XP needed to reach level n+2, per levelForXp()/maxLevel() in packages/shared/src/rules.ts. The curve is superlinear on purpose (spec \u00a78.1): level 2 costs 100 so it lands at the end of the first chapter ever played, and level 10 costs 1600. The doubled steps at 400/400 and 900/900 sit on the tier boundaries. Icons are short slugs, never file paths: the client resolves them to inline SVG so every element has an icon (spec \u00a711).",
   "version": 1,
-
-  "baseStats": { "might": 1, "quick": 1, "clever": 1, "heart": 1 },
+  "baseStats": {
+    "might": 1,
+    "quick": 1,
+    "clever": 1,
+    "heart": 1
+  },
   "creationPoints": 3,
-
   "baseMaxHp": 10,
   "baseGuard": 11,
   "baseSteps": 4,
-
-  "difficultyTn": { "easy": 8, "normal": 12, "hard": 16 },
-
-  "levelXp": [100, 300, 700, 1100, 1700, 2600, 3500, 4700, 6300],
-
-  "tierLevels": { "fledgling": 1, "sworn": 4, "radiant": 7, "mythic": 10 },
-
+  "difficultyTn": {
+    "easy": 8,
+    "normal": 12,
+    "hard": 16
+  },
+  "levelXp": [
+    100,
+    300,
+    700,
+    1100,
+    1700,
+    2600,
+    3500,
+    4700,
+    6300
+  ],
+  "tierLevels": {
+    "fledgling": 1,
+    "sworn": 4,
+    "radiant": 7,
+    "mythic": 10
+  },
+  "encounterBands": {
+    "$comment": "Enemy stat blocks, by band. The hero-side numbers are above (baseMaxHp, baseGuard, baseSteps); these are their counterpart, and they live together because retuning a fight should be one file. Canon says which band a creature is \u2014 a judgement about the world; this says what a band is worth \u2014 a judgement about balance. See docs/canon-contract.md D9.\nDerived, not invented: a level-1 hero swings d20+2..4 against Guard 11 for 3 damage (ATTACK_DAMAGE in encounter.ts), so about 2 a round each and 6 for a party of three. Spec 7.1 tunes for four rounds, so stats.hp x usualCount wants to land in 18-30. The skirmisher row is the Bramblewisp that bramblewood-01.json has shipped since before any of this.",
+    "skirmisher": {
+      "stats": {
+        "hp": 6,
+        "guard": 11,
+        "quick": 3,
+        "steps": 5,
+        "attack": 3
+      },
+      "xp": 5,
+      "usualCount": 3,
+      "dangerLevels": [
+        "moderate"
+      ]
+    },
+    "lurker": {
+      "stats": {
+        "hp": 9,
+        "guard": 13,
+        "quick": 4,
+        "steps": 4,
+        "attack": 3
+      },
+      "xp": 8,
+      "usualCount": 2,
+      "dangerLevels": [
+        "moderate"
+      ]
+    },
+    "brute": {
+      "stats": {
+        "hp": 14,
+        "guard": 12,
+        "quick": 1,
+        "steps": 3,
+        "attack": 4
+      },
+      "xp": 12,
+      "usualCount": 2,
+      "dangerLevels": [
+        "moderate",
+        "high"
+      ]
+    },
+    "sentinel": {
+      "stats": {
+        "hp": 20,
+        "guard": 14,
+        "quick": 0,
+        "steps": 3,
+        "attack": 4
+      },
+      "xp": 20,
+      "usualCount": 1,
+      "dangerLevels": [
+        "high"
+      ]
+    },
+    "legend": {
+      "$comment": "No stats on purpose: a legendary beast is a designed encounter, not a rolled one, so it must author its own and can never be generated.",
+      "stats": null,
+      "xp": 50,
+      "usualCount": 1,
+      "dangerLevels": [
+        "legendary"
+      ]
+    }
+  },
   "species": {
     "unicorn": {
       "id": "unicorn",
       "name": "Unicorn",
       "blurb": "Gentle, stubborn, and impossible to scratch. Thorns lean away when a unicorn walks by.",
-      "passive": { "stat": "heart", "amount": 1, "text": "+1 Heart. You are the one everybody comes to when they are hurt." },
+      "passive": {
+        "stat": "heart",
+        "amount": 1,
+        "text": "+1 Heart. You are the one everybody comes to when they are hurt."
+      },
       "worldAbility": {
         "id": "mend",
         "name": "Mend",
@@ -35,12 +125,15 @@
         "icon": "hand"
       }
     },
-
     "dragonling": {
       "id": "dragonling",
       "name": "Dragonling",
       "blurb": "Small, warm, and much stronger than it looks. Wings still a little too big for it.",
-      "passive": { "stat": "might", "amount": 1, "text": "+1 Might. Heavy things are just things." },
+      "passive": {
+        "stat": "might",
+        "amount": 1,
+        "text": "+1 Might. Heavy things are just things."
+      },
       "worldAbility": {
         "id": "glide",
         "name": "Glide",
@@ -54,12 +147,15 @@
         "icon": "wing"
       }
     },
-
     "griffin": {
       "id": "griffin",
       "name": "Griffin",
       "blurb": "Half eagle, half lion, all opinions. Sees the whole map before anyone else does.",
-      "passive": { "stat": "quick", "amount": 1, "text": "+1 Quick. You are usually already there." },
+      "passive": {
+        "stat": "quick",
+        "amount": 1,
+        "text": "+1 Quick. You are usually already there."
+      },
       "worldAbility": {
         "id": "skyward",
         "name": "Skyward",
@@ -73,12 +169,15 @@
         "icon": "eye"
       }
     },
-
     "bigfoot": {
       "id": "bigfoot",
       "name": "Bigfoot",
       "blurb": "Enormous, shy, and very good at hugs. Doors are a suggestion.",
-      "passive": { "amount": 2, "maxHp": 2, "text": "+2 max HP. There is simply more of you." },
+      "passive": {
+        "amount": 2,
+        "maxHp": 2,
+        "text": "+2 max HP. There is simply more of you."
+      },
       "worldAbility": {
         "id": "smash",
         "name": "Smash",
@@ -92,12 +191,15 @@
         "icon": "fist"
       }
     },
-
     "kitsune": {
       "id": "kitsune",
       "name": "Kitsune",
       "blurb": "A fox with too many tails and a plan for everything. Nobody is quite sure how many tails.",
-      "passive": { "stat": "clever", "amount": 1, "text": "+1 Clever. You notice the thing nobody else noticed." },
+      "passive": {
+        "stat": "clever",
+        "amount": 1,
+        "text": "+1 Clever. You notice the thing nobody else noticed."
+      },
       "worldAbility": {
         "id": "beguile",
         "name": "Beguile",
@@ -111,12 +213,15 @@
         "icon": "spark"
       }
     },
-
     "manticore": {
       "id": "manticore",
       "name": "Manticore",
       "blurb": "Lion, wings, and a curling tail. Grumpy in the morning, loyal all day.",
-      "passive": { "stat": "quick", "amount": 1, "text": "+1 Quick. Nothing is really out of reach." },
+      "passive": {
+        "stat": "quick",
+        "amount": 1,
+        "text": "+1 Quick. Nothing is really out of reach."
+      },
       "worldAbility": {
         "id": "leap",
         "name": "Leap",
@@ -131,7 +236,6 @@
       }
     }
   },
-
   "classes": {
     "thornguard": {
       "id": "thornguard",
@@ -147,12 +251,26 @@
         "icon": "shield"
       },
       "unlocks": {
-        "3": { "id": "shove", "name": "Shove", "text": "Push an enemy back 2 steps and step into its place.", "icon": "fist" },
-        "6": { "id": "bramble_wall", "name": "Bramble Wall", "text": "Grow thorns on two tiles. Enemies have to go around.", "icon": "thorn" },
-        "9": { "id": "unbreakable", "name": "Unbreakable", "text": "Until your next turn, you and every friend beside you take 1 less damage from every hit.", "icon": "shield" }
+        "3": {
+          "id": "shove",
+          "name": "Shove",
+          "text": "Push an enemy back 2 steps and step into its place.",
+          "icon": "fist"
+        },
+        "6": {
+          "id": "bramble_wall",
+          "name": "Bramble Wall",
+          "text": "Grow thorns on two tiles. Enemies have to go around.",
+          "icon": "thorn"
+        },
+        "9": {
+          "id": "unbreakable",
+          "name": "Unbreakable",
+          "text": "Until your next turn, you and every friend beside you take 1 less damage from every hit.",
+          "icon": "shield"
+        }
       }
     },
-
     "duskrunner": {
       "id": "duskrunner",
       "name": "Duskrunner",
@@ -167,12 +285,26 @@
         "icon": "arrow"
       },
       "unlocks": {
-        "3": { "id": "vanish", "name": "Vanish", "text": "Slip out of sight. The next enemy that swings at you misses.", "icon": "moon" },
-        "6": { "id": "twin_step", "name": "Twin Step", "text": "Move, attack, and then move again.", "icon": "wing" },
-        "9": { "id": "storm_of_blades", "name": "Storm of Blades", "text": "Attack two different enemies standing next to you.", "icon": "arrow" }
+        "3": {
+          "id": "vanish",
+          "name": "Vanish",
+          "text": "Slip out of sight. The next enemy that swings at you misses.",
+          "icon": "moon"
+        },
+        "6": {
+          "id": "twin_step",
+          "name": "Twin Step",
+          "text": "Move, attack, and then move again.",
+          "icon": "wing"
+        },
+        "9": {
+          "id": "storm_of_blades",
+          "name": "Storm of Blades",
+          "text": "Attack two different enemies standing next to you.",
+          "icon": "arrow"
+        }
       }
     },
-
     "starweaver": {
       "id": "starweaver",
       "name": "Starweaver",
@@ -187,12 +319,26 @@
         "icon": "spark"
       },
       "unlocks": {
-        "3": { "id": "glimmer", "name": "Glimmer", "text": "A friend anywhere on the board gets +2 on their next roll.", "icon": "star" },
-        "6": { "id": "tanglelight", "name": "Tanglelight", "text": "Ribbons of light wrap one enemy. It cannot move on its next turn.", "icon": "thorn" },
-        "9": { "id": "starfall", "name": "Starfall", "text": "Every enemy on the board takes 2 damage. Once per fight.", "icon": "star" }
+        "3": {
+          "id": "glimmer",
+          "name": "Glimmer",
+          "text": "A friend anywhere on the board gets +2 on their next roll.",
+          "icon": "star"
+        },
+        "6": {
+          "id": "tanglelight",
+          "name": "Tanglelight",
+          "text": "Ribbons of light wrap one enemy. It cannot move on its next turn.",
+          "icon": "thorn"
+        },
+        "9": {
+          "id": "starfall",
+          "name": "Starfall",
+          "text": "Every enemy on the board takes 2 damage. Once per fight.",
+          "icon": "star"
+        }
       }
     },
-
     "songkeeper": {
       "id": "songkeeper",
       "name": "Songkeeper",
@@ -207,9 +353,24 @@
         "icon": "hand"
       },
       "unlocks": {
-        "3": { "id": "soothe", "name": "Soothe", "text": "A friend within 4 steps gets 3 HP back.", "icon": "flame" },
-        "6": { "id": "chorus", "name": "Chorus", "text": "Every friend gets 2 HP back and +1 on their next roll.", "icon": "note" },
-        "9": { "id": "encore", "name": "Encore", "text": "A friend takes another action right now. Once per fight.", "icon": "note" }
+        "3": {
+          "id": "soothe",
+          "name": "Soothe",
+          "text": "A friend within 4 steps gets 3 HP back.",
+          "icon": "flame"
+        },
+        "6": {
+          "id": "chorus",
+          "name": "Chorus",
+          "text": "Every friend gets 2 HP back and +1 on their next roll.",
+          "icon": "note"
+        },
+        "9": {
+          "id": "encore",
+          "name": "Encore",
+          "text": "A friend takes another action right now. Once per fight.",
+          "icon": "note"
+        }
       }
     }
   }
