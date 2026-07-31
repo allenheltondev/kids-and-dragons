@@ -20,9 +20,11 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { EFFECT_VERBS, itemCatalog, MAX_PARTY } from "@kad/shared";
+import { EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
 import type {
   AbilityCatalog,
+  AuthoredEnemySpec,
+  Bestiary,
   Campaign,
   Chapter,
   CombatAbility,
@@ -181,6 +183,12 @@ async function readAll(root: string): Promise<ContentStore> {
   const items = itemsFile ? itemCatalog(itemsFile) : null;
   const chapters = new Map<string, Chapter>();
 
+  // Canon's creatures, projected (`npm run canon:bestiary`). A chapter names
+  // the creature and inherits its stats, so this is read before any chapter is.
+  // Absent is not fatal here — `resolveEnemy` reports it per enemy, which
+  // points at the file that needs fixing instead of at the loader.
+  const bestiary = await readJson<Bestiary>(path.join(root, "bestiary.json"), []);
+
   const chaptersDir = path.join(root, "chapters");
   let chapterFiles: string[] = [];
   let chaptersDirExists = true;
@@ -200,6 +208,11 @@ async function readAll(root: string): Promise<ContentStore> {
     const full = path.join(chaptersDir, file);
     const chapter = await readJson<Chapter>(full, problems);
     if (!chapter) continue;
+    const enemyProblems = resolveChapterEnemies(chapter, bestiary, `chapters/${file}`);
+    if (enemyProblems.length > 0) {
+      problems.push(...enemyProblems);
+      continue;
+    }
     const chapterProblems = checkChapter(chapter, `chapters/${file}`);
     if (chapterProblems.length > 0) {
       problems.push(...chapterProblems);
@@ -592,3 +605,34 @@ function gotoTargets(scene: Scene): SceneId[] {
 }
 
 const SCENE_TYPES: readonly string[] = ["story", "choice_point", "rest", "check", "encounter"];
+
+/**
+ * Fills every enemy in a chapter from the bestiary, in place.
+ *
+ * In place because `Chapter` describes the *loaded* chapter: by the time the
+ * store hands one to a handler, an `EnemySpec` is complete and nothing
+ * downstream has to know a field was inherited. The authored file is the
+ * partial one, and `schemas/chapter.schema.json` is what validates that shape.
+ *
+ * Runs before `checkChapter` so the invariants that count enemies (spec §7.1's
+ * two-to-four) see the resolved `count` rather than an absent one.
+ */
+function resolveChapterEnemies(
+  chapter: Chapter,
+  bestiary: Bestiary | null,
+  label: string,
+): string[] {
+  const problems: string[] = [];
+  for (const [sceneId, scene] of Object.entries(chapter.scenes ?? {})) {
+    if (scene?.type !== "encounter" || !Array.isArray(scene.enemies)) continue;
+    scene.enemies = scene.enemies.map((authored) => {
+      const { spec, problems: found } = resolveEnemy(
+        authored as AuthoredEnemySpec,
+        bestiary,
+      );
+      for (const problem of found) problems.push(`${label} ${sceneId}: ${problem}`);
+      return spec ?? authored;
+    });
+  }
+  return problems;
+}

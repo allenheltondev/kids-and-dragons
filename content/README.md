@@ -9,7 +9,8 @@ session** ([architecture §5](../docs/architecture.md#5-chapter-schema)).
 content/
   rules.json                     species, classes, stats, levels, tiers   → RulesContent
   abilities.json                 what abilities do on the board           → AbilityCatalog
-  items.json                     the item catalog, keyed by itemId        → ItemCatalog
+  items.json                     the item catalog, keyed by itemId        → ItemCatalog   (generated)
+  bestiary.json                  canon's creatures, ready for a board     → Bestiary       (generated)
   campaigns/<id>.json            a story arc, listing its chapters        → Campaign
   chapters/<id>.json             one ~30-minute sitting                   → Chapter
   maps/<id>.json                 encounter boards — rows + spawn points   → EncounterMap
@@ -68,8 +69,20 @@ it handles anything.
   marker, and this is the only representable one. `rest_lanternfall` is that scene here, which
   matches spec §6.1 — Rest *is* the end-of-session beat. Every chapter needs at least one, and every
   other scene must lead somewhere; the validator enforces both.
-- **`items.json` carries no `$comment` key.** It is a bare `Record<itemId, ItemDef>` and anything at
-  the top level is treated as an item. Comments for it live here.
+- **`items.json` and `bestiary.json` are generated — do not edit them.** Both are projections of
+  `canon/*.yaml`, which is the source of truth ([canon contract](../docs/canon-contract.md)). Run
+  `npm run canon:items` / `npm run canon:bestiary`; CI regenerates and fails on any diff. They carry
+  a `$comment` saying as much, and `$`-prefixed keys are not items — `itemCatalog()` in
+  `@kad/shared` is the one place that rule is written down.
+- **An item is authored in one of two places, and the test is ownership.** The world owns a
+  honeycake, so it lives in `canon/items.yaml` with a `mechanics` block. One chapter owns the rusted
+  key that opens its own door, so it lives in that chapter's `props` (D7). Both project into
+  `items.json`, because a quest item outlives the chapter that granted it and an inventory screen
+  still has to name it — so the ids may not collide, and the generator refuses it if they do.
+- **A chapter names its monsters; it does not restate their stats.** `"creature": "will_o_wisp"` is
+  the whole spec, and the loader fills `count`, `name`, `art` and the five numbers from
+  `bestiary.json`. Writing a stat is an *override* and means it; writing one that merely repeats
+  canon's own value is a validation failure, because that is the duplication this replaced.
 - **Trinkets stay small on purpose.** +1 to a stat, +1 step, +2 max HP, one reroll per encounter —
   and nothing bigger, ever. The level-up transformation is the reward the game is built around and
   no item may compete with it (spec §9.3).

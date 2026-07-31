@@ -697,30 +697,35 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
     // spec §7.1 - 3 players vs 2-4 enemies, never more.
     if (scene.type === "encounter") {
-      const total = scene.enemies.reduce((n, e) => n + e.count, 0);
-      if (total < 2 || total > 4) {
-        fail(`/scenes/${id}/enemies`, `${total} enemies - encounters are 2 to 4, never more (spec §7.1)`);
-      }
       /*
-       * Every monster is a canon creature, and its numbers came from there.
+       * Every monster is a canon creature, and its numbers come from there.
        *
        * `creature` is the join to canon/creatures.yaml (docs/canon-contract.md
-       * D9); content/bestiary.json is the generated projection of it. The stats
-       * stay written out in the chapter so the file reads on its own — this is
-       * what stops that copy from drifting. Before it, the only link between a
-       * chapter's "wisp" and `creature.will_o_wisp` was the art path, and the
-       * two could disagree about HP forever without anybody noticing.
+       * D9); content/bestiary.json is the generated projection of it, and the
+       * content loader fills each enemy from it at load time
+       * (`resolveEnemy` in packages/shared/src/bestiary.ts).
+       *
+       * The chapter used to keep its own copy of the five stats with this
+       * check policing the copy. Canon is the source of truth, and a second
+       * copy a build has to police is not a source — so the copy is gone, and
+       * what is checked now is the opposite thing: that nobody has *restated*
+       * a number canon already supplies. An override is fine and deliberate; a
+       * duplicate is the drift risk coming back.
        */
+      const STATS = ["hp", "guard", "quick", "steps", "attack"];
+      let total = 0;
       for (const enemy of scene.enemies) {
         const where = `/scenes/${id}/enemies/${enemy.id}`;
+        const entry = enemy.creature ? bestiary?.creatures?.[enemy.creature] : null;
+
         if (!enemy.creature) {
           rep.warn(
             `${f} ${where} has no \`creature\``,
-            "Name the canon creature it is one of, so its stats can be checked against canon.",
+            "Name the canon creature it is one of, so its stats come from canon instead of being written twice.",
           );
+          total += enemy.count ?? 1;
           continue;
         }
-        const entry = bestiary?.creatures?.[enemy.creature];
         if (!entry) {
           fail(
             `${where}/creature`,
@@ -731,18 +736,23 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
           );
           continue;
         }
-        for (const stat of ["hp", "guard", "quick", "steps", "attack"]) {
-          if (enemy[stat] !== entry[stat]) {
+
+        total += enemy.count ?? entry.usualCount ?? 1;
+
+        for (const stat of [...STATS, "count", "art"]) {
+          if (enemy[stat] === undefined) continue;
+          const canonValue = stat === "count" ? entry.usualCount : entry[stat];
+          if (enemy[stat] === canonValue) {
             fail(
               `${where}/${stat}`,
-              `${stat} is ${enemy[stat]}, canon says ${entry[stat]}`,
-              `${enemy.creature} is a ${entry.band}. Change the chapter, or change the band in canon/creatures.yaml.`,
+              `${stat} restates canon's own ${JSON.stringify(canonValue)}`,
+              `Delete it — the loader fills it from content/bestiary.json. Keep it only to *override*, which this does not.`,
             );
           }
         }
-        if (enemy.art && enemy.art !== entry.art) {
-          fail(`${where}/art`, `art is "${enemy.art}", canon says "${entry.art}"`);
-        }
+      }
+      if (total < 2 || total > 4) {
+        fail(`/scenes/${id}/enemies`, `${total} enemies - encounters are 2 to 4, never more (spec §7.1)`);
       }
 
       // The board this fight happens on. Without it the encounter has nowhere to

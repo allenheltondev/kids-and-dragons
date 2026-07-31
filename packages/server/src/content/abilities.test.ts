@@ -49,6 +49,24 @@ import { contentDir } from "../paths.ts";
 const content: ContentStore = await loadContent(contentDir());
 clearContentCache();
 
+describe("the shipped chapters", () => {
+  it("resolve every enemy against the bestiary", () => {
+    // The real content directory, not a fixture: content/chapters/*.json now
+    // name a creature instead of restating its stats, and this is what proves
+    // the loader actually completes them for the engine.
+    for (const id of content.chapterIds()) {
+      for (const [sceneId, scene] of Object.entries(content.chapter(id)!.scenes)) {
+        if (scene.type !== "encounter") continue;
+        for (const enemy of scene.enemies) {
+          for (const stat of ["hp", "guard", "quick", "steps", "attack", "count"] as const) {
+            expect(enemy[stat], `${id}/${sceneId}/${enemy.id}/${stat}`).toBeGreaterThan(0);
+          }
+        }
+      }
+    }
+  });
+});
+
 const rules = content.rules();
 const items = content.items();
 const catalog = content.abilities();

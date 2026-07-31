@@ -388,6 +388,19 @@ entirely in that chapter's `llmHints.npcVoices` and discarded afterward.
 be voiced consistently), and formally bless chapter-scoped individuals as
 non-canon with a documented shape. Do not open a `individual.` taxonomy yet.
 
+**D9 addendum (2026-07-31) — chapters stopped restating the stats.** As first
+built, `EnemySpec.creature` was a *check*: the chapter kept its own copy of the
+five numbers and `content:validate` failed the build if the copy drifted. The
+argument was that a chapter should read on its own. It loses to the one against
+duplication — a second copy a build has to police is not a source of truth, it
+is a liability with a guard on it. A chapter now authors
+`{ "id": "wisp", "name": "Bramblewisp", "creature": "will_o_wisp" }` and the
+content loader fills `count`, `name`, `art` and every stat from the bestiary
+(`resolveEnemy`, packages/shared/src/bestiary.ts). Retuning the `skirmisher`
+band is an edit to `content/rules.json` and nothing else. Overriding is still
+allowed and still means something; *restating* canon's own number is now the
+validation failure, because that is the duplication this replaced.
+
 **D9 — RULED and BUILT. The encounter block.** `danger_level: moderate`
 is prose; `EnemySpec` needs five integers. Under canon-as-truth the stat block
 is a field group on the creature, and `content/bestiary.json` becomes a

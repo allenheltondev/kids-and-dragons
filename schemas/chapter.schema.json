@@ -473,16 +473,25 @@
       }
     },
     "enemySpec": {
+      "$comment": "The AUTHORED shape (AuthoredEnemySpec in packages/shared/src/bestiary.ts). Everything canon can supply is optional here and filled by the content loader from content/bestiary.json; EnemySpec, the loaded shape the engine sees, requires all of it. `anyOf` below is the trade: name a creature and inherit, or write every number yourself.",
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "id",
-        "count",
-        "hp",
-        "guard",
-        "quick",
-        "steps",
-        "attack"
+        "id"
+      ],
+      "anyOf": [
+        {
+          "$comment": "Borrowing from canon. (The stubbed `properties` are only here to satisfy ajv's strictRequired, which wants every required key declared in the same subschema; the real definitions are below.)",
+          "required": ["creature"],
+          "properties": { "creature": {} }
+        },
+        {
+          "$comment": "A one-off with no canon creature behind it says every number itself.",
+          "required": ["count", "hp", "guard", "quick", "steps", "attack"],
+          "properties": {
+            "count": {}, "hp": {}, "guard": {}, "quick": {}, "steps": {}, "attack": {}
+          }
+        }
       ],
       "properties": {
         "id": {
@@ -502,7 +511,7 @@
         "creature": {
           "type": "string",
           "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
-          "description": "Canon creature asset_id \u2014 the join to canon/creatures.yaml and content/bestiary.json. Stats below must match the bestiary."
+          "description": "Canon creature asset_id \u2014 the join to canon/creatures.yaml and content/bestiary.json. Naming one inherits count, name, art and every stat; anything also written below is an override, and tools/content/validate.mjs refuses an override that merely restates canon's own number."
         },
         "hp": {
           "type": "integer",
