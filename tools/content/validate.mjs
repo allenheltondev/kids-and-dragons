@@ -499,7 +499,7 @@ function checkMap(rep, file, map) {
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds) {
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -670,6 +670,50 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds) {
       if (total < 2 || total > 4) {
         fail(`/scenes/${id}/enemies`, `${total} enemies - encounters are 2 to 4, never more (spec §7.1)`);
       }
+      /*
+       * Every monster is a canon creature, and its numbers came from there.
+       *
+       * `creature` is the join to canon/creatures.yaml (docs/canon-contract.md
+       * D9); content/bestiary.json is the generated projection of it. The stats
+       * stay written out in the chapter so the file reads on its own — this is
+       * what stops that copy from drifting. Before it, the only link between a
+       * chapter's "wisp" and `creature.will_o_wisp` was the art path, and the
+       * two could disagree about HP forever without anybody noticing.
+       */
+      for (const enemy of scene.enemies) {
+        const where = `/scenes/${id}/enemies/${enemy.id}`;
+        if (!enemy.creature) {
+          rep.warn(
+            `${f} ${where} has no \`creature\``,
+            "Name the canon creature it is one of, so its stats can be checked against canon.",
+          );
+          continue;
+        }
+        const entry = bestiary?.creatures?.[enemy.creature];
+        if (!entry) {
+          fail(
+            `${where}/creature`,
+            `"${enemy.creature}" is not in content/bestiary.json`,
+            bestiary
+              ? "Give the creature an `encounter` block in canon/creatures.yaml, then `npm run canon:bestiary`."
+              : "content/bestiary.json is missing — run `npm run canon:bestiary`.",
+          );
+          continue;
+        }
+        for (const stat of ["hp", "guard", "quick", "steps", "attack"]) {
+          if (enemy[stat] !== entry[stat]) {
+            fail(
+              `${where}/${stat}`,
+              `${stat} is ${enemy[stat]}, canon says ${entry[stat]}`,
+              `${enemy.creature} is a ${entry.band}. Change the chapter, or change the band in canon/creatures.yaml.`,
+            );
+          }
+        }
+        if (enemy.art && enemy.art !== entry.art) {
+          fail(`${where}/art`, `art is "${enemy.art}", canon says "${entry.art}"`);
+        }
+      }
+
       // The board this fight happens on. Without it the encounter has nowhere to
       // put anybody, and the failure lands mid-chapter at the table rather than
       // here — so the map is a build-time reference like an itemId, not a path.
@@ -857,6 +901,15 @@ function main() {
   }
   if (mapFiles.length) rep.ok(`content/maps  ${mapFiles.length} map(s)  (10×8 board, spawns open and reachable)`);
 
+  // --- the bestiary: canon's creatures, projected. Generated, never edited.
+  const bestiaryPath = join(CONTENT, "bestiary.json");
+  const bestiary = existsSync(bestiaryPath) ? readJson(rep, bestiaryPath) : null;
+  if (!bestiary) {
+    rep.warn("content/bestiary.json is missing", "Run `npm run canon:bestiary` — enemy stats cannot be checked against canon without it.");
+  } else {
+    rep.ok(`content/bestiary.json  ${Object.keys(bestiary.creatures ?? {}).length} creature(s) projected from canon`);
+  }
+
   // --- chapters
   console.log(`\n${BOLD}chapters${RESET}`);
   const chapterFiles = listJson(join(CONTENT, "chapters"));
@@ -874,7 +927,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes, mapIds);
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary);
     chaptersById.set(chapter.id, chapter);
   }
 

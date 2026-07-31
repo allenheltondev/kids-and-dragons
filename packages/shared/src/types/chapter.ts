@@ -130,6 +130,22 @@ export interface EnemySpec {
   id: string;
   name?: string;
   count: number;
+  /**
+   * The canon creature this is one of — its `asset_id` in `canon/creatures.yaml`
+   * (docs/canon-contract.md D9).
+   *
+   * Canon owns what a creature *is* and what it is worth in a fight; this is the
+   * thread back to it. Before the field existed the only link was the `art`
+   * string by convention, so a chapter could quietly disagree with canon about
+   * how much HP a bramblewisp has and nothing would notice.
+   *
+   * The stat numbers stay written out below rather than being resolved from
+   * `content/bestiary.json` at load time, so a chapter is still readable and
+   * reviewable on its own. `tools/content/validate.mjs` fails the build if they
+   * disagree with the bestiary, which makes the duplication safe rather than
+   * merely conventional.
+   */
+  creature?: string;
   hp: number;
   guard: number;
   /**

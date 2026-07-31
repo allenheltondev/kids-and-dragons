@@ -7,6 +7,7 @@
  * while the files rotted.
  */
 
+import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { loadCanon } from "./index.js";
@@ -16,7 +17,7 @@ import { Creature, Biome } from "./taxonomies.js";
 import type { Creature as CreatureEntity } from "./taxonomies.js";
 import { BANDS, BANDS_BY_DANGER, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
-import { errors, related } from "./registry.js";
+import { checkAssets, errors, related } from "./registry.js";
 
 const CANON_DIR = path.join(process.cwd(), "canon");
 const registry = loadCanon(CANON_DIR);
@@ -245,5 +246,17 @@ describe("encounter blocks — D9/D10", () => {
     const dragon = creatures.find((c) => c.id === "creature.legend_dragon")!;
     const { stats: _dropped, ...rest } = dragon.encounter!;
     expect(Creature.safeParse({ ...dragon, encounter: rest }).success).toBe(false);
+  });
+});
+
+describe("asset_id is a real join", () => {
+  it("points every creature and people at art that exists", () => {
+    // D3 left asset_id as the single join to assets/, content/ and the
+    // bestiary, and nothing checked it. The corpus is exactly 1:1 with
+    // assets/entities/ today; this keeps that true rather than rediscovered.
+    const missing = checkAssets(registry, path.join(process.cwd(), "assets"), (p) =>
+      fs.existsSync(p),
+    );
+    expect(missing.map((issue) => `${issue.id} → ${issue.file}`)).toEqual([]);
   });
 });
