@@ -5,7 +5,7 @@
  * a static asset. A malformed chapter fails the build, never the play session.
  */
 
-import type { SpeciesId, StatId } from "./domain.js";
+import type { ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
 
@@ -252,6 +252,24 @@ export interface Chapter {
   scenes: Record<SceneId, Scene>;
   /** Optional bonus objectives, spec §8.2. Absent is the normal case. */
   objectives?: ChapterObjective[];
+  /**
+   * Items this chapter brings into the world and the world does not otherwise
+   * have — D7's chapter-scoped props.
+   *
+   * The rusted key that opens *this* chapter's door is a consequence of the
+   * chapter, not a fact about the Realm, and putting it in `canon/items.yaml`
+   * would claim otherwise. It still needs mechanics, so it is authored here,
+   * beside the door it opens.
+   *
+   * "Scoped" describes where it is *authored*, not how long it lasts. A quest
+   * item granted in chapter one is still on the character in chapter three,
+   * and an inventory screen that could not name it would be a bug — so
+   * `content/items.json` is generated from canon **and** every chapter's
+   * `props`, and the catalog the game reads is one flat namespace. The
+   * generator refuses a prop that collides with a canon item or with another
+   * chapter's prop, which is what keeps that namespace honest.
+   */
+  props?: Record<string, ItemDef>;
   llmHints?: LlmHints;
 }
 

@@ -74,6 +74,13 @@ jobs:
       - name: Project canon into the bestiary
         run: npm run canon:bestiary
 
+      # Item pages show what the item does in your hands, and they read
+      # content/items.json — canon's `mechanics` blocks merged with every
+      # chapter's props (D7). Same reason as the bestiary: fresh canon against
+      # a stale projection publishes an effect the game does not have.
+      - name: Project canon into the item catalog
+        run: npm run canon:items
+
       # The Generator reads canon/*.yaml and produces wiki/content/ pages.
       # --force because CI has no manifest from a prior run.
       - name: Generate wiki pages

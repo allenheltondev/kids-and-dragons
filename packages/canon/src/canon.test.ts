@@ -13,11 +13,20 @@ import { describe, expect, it } from "vitest";
 import { loadCanon } from "./index.js";
 import { buildRegistry } from "./registry.js";
 import { parseCanon } from "./parse.js";
-import { Creature, Biome } from "./taxonomies.js";
-import type { Creature as CreatureEntity } from "./taxonomies.js";
+import { Creature, Biome, Item } from "./taxonomies.js";
+import type { Creature as CreatureEntity, Item as ItemEntity } from "./taxonomies.js";
 import { bandTable, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
 import { checkAssets, errors, related } from "./registry.js";
+
+/**
+ * Reads an authored catalog, dropping its `$`-prefixed annotations — the same
+ * rule as `itemCatalog()` in @kad/shared, restated rather than imported so
+ * this package keeps depending on nothing but yaml and zod (see index.ts).
+ */
+function realEntries<T>(raw: Record<string, T>): Record<string, T> {
+  return Object.fromEntries(Object.entries(raw).filter(([id]) => !id.startsWith("$")));
+}
 
 const CANON_DIR = path.join(process.cwd(), "canon");
 const registry = loadCanon(CANON_DIR);
@@ -260,6 +269,87 @@ describe("encounter blocks — D9/D10", () => {
     // rules.json says what a skirmisher is worth. Retuning is a content edit.
     expect(BANDS["skirmisher"]?.stats?.hp).toBe(6);
     expect(Object.keys(BANDS).length).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe("item mechanics — D7", () => {
+  const items = [...(registry.byTaxonomy.get("item") ?? [])] as ItemEntity[];
+  const playable = items.filter((item) => item.mechanics);
+  /** The projection every consumer actually reads. */
+  const catalog = realEntries<{ kind: string; name: string; text: string; effect?: unknown }>(
+    JSON.parse(fs.readFileSync(path.join(process.cwd(), "content", "items.json"), "utf8")),
+  );
+
+  it("projects exactly the items that carry mechanics", () => {
+    // The Crystal Heart is canon and is not in anybody's bag. `mechanics`
+    // absent is a claim about the world, not an unfinished entry.
+    for (const item of playable) expect(catalog[slugOf(item.id)], item.id).toBeDefined();
+    for (const item of items) {
+      if (!item.mechanics) expect(catalog[slugOf(item.id)], item.id).toBeUndefined();
+    }
+  });
+
+  it("keeps the catalog and canon saying the same thing", () => {
+    // The failure this catches is a hand-edit of the generated file.
+    for (const item of playable) {
+      const shipped = catalog[slugOf(item.id)]!;
+      expect(shipped.name, item.id).toBe(item.title);
+      expect(shipped.text, item.id).toBe(item.mechanics!.text);
+      expect(shipped.effect, item.id).toEqual(item.mechanics!.effect);
+    }
+  });
+
+  it("refuses a consumable with nothing to do and a trinket that is used", () => {
+    const base = {
+      id: "item.test_thing",
+      title: "Test Thing",
+      canon_status: "confirmed",
+      category: "provision",
+      rarity: "common",
+      acquisition: "Made up, for testing.",
+      relationships: { found_in: [], dropped_by: [], factions: [], quests: [] },
+    };
+    const mechanics = { kind: "consumable", icon: "potion", text: "Does a thing." };
+    expect(Item.safeParse({ ...base, mechanics }).success).toBe(false);
+    expect(
+      Item.safeParse({
+        ...base,
+        mechanics: { ...mechanics, effect: { type: "heal", amount: 2 } },
+      }).success,
+    ).toBe(true);
+    expect(
+      Item.safeParse({
+        ...base,
+        mechanics: { ...mechanics, kind: "trinket", effect: { type: "heal", amount: 2 } },
+      }).success,
+    ).toBe(false);
+  });
+
+  it("holds chapter props out of canon but inside the catalog", () => {
+    // D7's split, stated as one assertion: the rusted key opens one door in
+    // one chapter, so it is not a fact about the Realm — but a quest item
+    // outlives its chapter, so the catalog still has to be able to name it.
+    expect(catalog["rusted_key"]?.kind).toBe("quest");
+    expect(registry.byId.has("item.rusted_key")).toBe(false);
+  });
+
+  it("keeps the catalog one namespace", () => {
+    // What `tools/canon/items.ts` refuses to project. A prop shadowing a canon
+    // item would make `grantItem` mean two different things by chapter.
+    const props = Object.keys(
+      realEntries(
+        (
+          JSON.parse(
+            fs.readFileSync(
+              path.join(process.cwd(), "content", "chapters", "bramblewood-01.json"),
+              "utf8",
+            ),
+          ) as { props?: Record<string, unknown> }
+        ).props ?? {},
+      ),
+    );
+    expect(props.length).toBeGreaterThan(0);
+    for (const id of props) expect(registry.byId.has(`item.${id}`), id).toBe(false);
   });
 });
 

@@ -23,6 +23,9 @@ related:
   - id: creature.cloud_whale
     type: creature
     relationship: primary_locations
+  - id: item.luckstone
+    type: item
+    relationship: found_in
 assets:
   primary: assets/biomes/sky_islands/bg.webp
   gallery:
@@ -33,7 +36,7 @@ ai_context:
   visual_style: "Floating stone islands, gold-roofed temple settlements, hanging roots, cloud banks, open blue distance, wind banners, and narrow aerial approaches."
   common_encounters: "Navigation, separated communities, changing routes, messenger journeys, weather emergencies, and stories whose destination is defined by when it can be reached rather than only where it is."
   lore_highlights: ""
-  related_entities: "biome.open_sea, character.kitsune, creature.cloud_whale, character.kitsune, creature.cloud_whale"
+  related_entities: "biome.open_sea, character.kitsune, creature.cloud_whale, character.kitsune, creature.cloud_whale, item.luckstone"
   writing_guidance: "The islands move. Do not give them permanent surface borders or ordinary road connections. Do not portray every kitsune as deceptive."
   generation_hints: "Wind routes shift, island communities prepare for storms, and navigation depends on stars, recurring air currents, signals, and shared stories."
 layout: biomes
@@ -51,6 +54,9 @@ infobox: biome
 
 ### Creatures
 - [Cloud Whale](/creatures/cloud_whale/) `Ambient Creatures` `Primary Locations`
+
+### Items
+- [Luckstone](/items/luckstone/) `Found In`
 <!-- END GENERATED: relationships -->
 
 

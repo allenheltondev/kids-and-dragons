@@ -18,6 +18,9 @@ related:
   - id: biome.glacier_of_origins
     type: biome
     relationship: borders
+  - id: item.thistle_pin
+    type: item
+    relationship: found_in
   - id: location.mount_red_sky
     type: location
     relationship: adjacent_to
@@ -31,7 +34,7 @@ ai_context:
   visual_style: "Immense cracked brown plateau, wind-carved channels, dead vertical forms, steep coastal escarpments, sparse ruins or silhouettes, and an oppressive absence of visible life."
   common_encounters: "Distant signs, forbidden expeditions, unanswered questions, northern warnings, lost history, and major campaign mysteries."
   lore_highlights: ""
-  related_entities: "biome.enchanted_woods, biome.red_sky_foothills, biome.glacier_of_origins, location.mount_red_sky"
+  related_entities: "biome.enchanted_woods, biome.red_sky_foothills, biome.glacier_of_origins, item.thistle_pin, location.mount_red_sky"
   writing_guidance: "Do not invent inhabitants, explain the dead landscape, establish a hidden civilization, or define what lies beyond it without an explicit canon decision."
   generation_hints: "Intentionally unknown. Surface movement, weather, magic, and life signs should remain uncertain until the mystery is developed."
 layout: biomes
@@ -47,6 +50,9 @@ infobox: biome
 - [Enchanted Woods](/biomes/enchanted_woods/) `Borders`
 - [Glacier of Origins](/biomes/glacier_of_origins/) `Borders`
 - [Red Sky Foothills](/biomes/red_sky_foothills/) `Borders`
+
+### Items
+- [Thistle Pin](/items/thistle_pin/) `Found In`
 
 ### Locations
 - [Mount Red Sky](/locations/mount_red_sky/) `Adjacent To`

@@ -20,7 +20,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { EFFECT_VERBS, MAX_PARTY } from "@kad/shared";
+import { EFFECT_VERBS, itemCatalog, MAX_PARTY } from "@kad/shared";
 import type {
   AbilityCatalog,
   Campaign,
@@ -171,7 +171,14 @@ async function readAll(root: string): Promise<ContentStore> {
   const problems: string[] = [];
 
   const rules = await readJson<RulesContent>(path.join(root, "rules.json"), problems);
-  const items = await readJson<ItemCatalog>(path.join(root, "items.json"), problems);
+  // `items.json` is generated (D7) and opens with a `$comment` saying so;
+  // `itemCatalog` drops it so nothing downstream sees a string where an
+  // ItemDef should be.
+  const itemsFile = await readJson<Record<string, unknown>>(
+    path.join(root, "items.json"),
+    problems,
+  );
+  const items = itemsFile ? itemCatalog(itemsFile) : null;
   const chapters = new Map<string, Chapter>();
 
   const chaptersDir = path.join(root, "chapters");

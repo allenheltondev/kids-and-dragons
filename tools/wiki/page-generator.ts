@@ -15,7 +15,7 @@ const BEGIN_MARKER = (section: string) => `<!-- BEGIN GENERATED: ${section} -->`
 const END_MARKER = (section: string) => `<!-- END GENERATED: ${section} -->`;
 
 /** Generated section names managed by this module. */
-const GENERATED_SECTIONS = ['relationships', 'encounter', 'ai_context'] as const;
+const GENERATED_SECTIONS = ['relationships', 'encounter', 'mechanics', 'ai_context'] as const;
 
 /**
  * Represents a single related entity entry for front matter and section rendering.
@@ -547,6 +547,47 @@ function generateEncounterSection(
 }
 
 /**
+ * One entry of `content/items.json` — the generated item catalog (D7).
+ */
+export interface ItemEntry {
+  kind: 'consumable' | 'trinket' | 'quest';
+  name: string;
+  text: string;
+  icon: string;
+  effect?: { type: string; amount?: number };
+  passive?: { type: string; stat?: string; amount?: number; perEncounter?: number };
+}
+
+const KIND_BLURB: Record<string, string> = {
+  consumable: 'Used once, then it is gone.',
+  trinket: 'Carried. It works the whole time you have it.',
+  quest: 'A story item. It takes up no space in your bag.',
+};
+
+/**
+ * "In Your Hands" — the item-page counterpart to a creature's stat block.
+ *
+ * Same reasoning as the encounter section: canon says what a Luckstone *is*,
+ * and the one thing a reader actually wants to know — what happens when you
+ * tap it — lived only in `content/items.json`. Reads the projection rather
+ * than the `mechanics` block so the page shows what the game will really do,
+ * which is the same guarantee `generateEncounterSection` makes.
+ */
+function generateMechanicsSection(
+  entity: CanonEntity,
+  items: Record<string, ItemEntry> | null,
+): string {
+  const entry = items?.[extractEntityName(entity.id)];
+  if (!entry) return '';
+
+  const lines: string[] = ['## In Your Hands', ''];
+  lines.push(`**${toTitleCase(entry.kind)}** — ${KIND_BLURB[entry.kind] ?? ''}`.trim());
+  lines.push('');
+  lines.push(`> ${entry.text}`);
+  return lines.join('\n');
+}
+
+/**
  * Generate the relationships section content (without markers).
  *
  * Deduplicates entries by entity ID, grouping multiple relationships as chips.
@@ -753,7 +794,7 @@ export function generatePage(
   options: PageGeneratorOptions,
   allEntities: CanonRegistry | Map<string, CanonEntity>,
 ): { content: string; warnings: ValidationMessage[] } {
-  const { entity, assets, reverseRefs, existingContent, bestiary, bands } = options;
+  const { entity, assets, reverseRefs, existingContent, bestiary, bands, items } = options;
   const warnings: ValidationMessage[] = [];
 
   // Resolve the entities map from either a CanonRegistry or a plain Map
@@ -768,10 +809,18 @@ export function generatePage(
 
   // Generate section contents
   const relationshipsContent = generateRelationshipsSection(relatedEntries);
-  const encounterContent = generateEncounterSection(entity, bestiary ?? null, bands ?? null);
-  const encounterSection = encounterContent
-    ? wrapWithMarkers('encounter', encounterContent)
-    : '';
+  // The "what does this do at the table" sections. Mutually exclusive in
+  // practice — a creature has a stat block, an item has an effect — but
+  // handled as a list so a third one is a row rather than another special
+  // case in three places below.
+  const mechanical: [name: string, section: string][] = (
+    [
+      ['encounter', generateEncounterSection(entity, bestiary ?? null, bands ?? null)],
+      ['mechanics', generateMechanicsSection(entity, items ?? null)],
+    ] as [string, string][]
+  )
+    .filter(([, content]) => content)
+    .map(([name, content]) => [name, wrapWithMarkers(name, content)]);
 
   // Build generated sections (only include relationships if there are any)
   const hasRelationships = relatedEntries.length > 0;
@@ -783,8 +832,8 @@ export function generatePage(
   // Note: ai_context is now in front matter, so we don't emit body blocks for it
   if (!existingContent) {
     const parts = [frontMatter];
-    if (encounterSection) {
-      parts.push('', encounterSection);
+    for (const [, section] of mechanical) {
+      parts.push('', section);
     }
     if (hasRelationships) {
       parts.push('', relationshipsSection);
@@ -814,8 +863,8 @@ export function generatePage(
     if (!result.endsWith('\n')) {
       result += '\n';
     }
-    if (encounterSection) {
-      result += '\n' + encounterSection + '\n';
+    for (const [, section] of mechanical) {
+      result += '\n' + section + '\n';
     }
     if (hasRelationships) {
       result += '\n' + relationshipsSection + '\n';
@@ -833,21 +882,25 @@ export function generatePage(
     // Replace ai_context body block with empty string to remove it
     generatedSections.set('ai_context', '');
   }
-  if (parsed.sections.has('encounter')) {
-    generatedSections.set('encounter', encounterSection || '');
+  // A section whose content has gone away is emptied rather than left stale.
+  for (const name of ['encounter', 'mechanics'] as const) {
+    if (parsed.sections.has(name)) {
+      generatedSections.set(name, mechanical.find(([n]) => n === name)?.[1] ?? '');
+    }
   }
 
   let updatedBody = replaceGeneratedSections(parsed.body, generatedSections, parsed.sections);
 
-  // A page written before this section existed has no marker to replace, so
-  // the first run has to insert it. Before Related Entities if that is there,
-  // since "is this thing dangerous" outranks "what is it near".
-  if (encounterSection && !parsed.sections.has('encounter')) {
+  // A page written before one of these sections existed has no marker to
+  // replace, so the first run has to insert it. Before Related Entities if
+  // that is there, since "what does this do" outranks "what is it near".
+  for (const [name, section] of mechanical) {
+    if (parsed.sections.has(name)) continue;
     const anchor = updatedBody.indexOf(BEGIN_MARKER('relationships'));
     updatedBody =
       anchor >= 0
-        ? `${updatedBody.slice(0, anchor)}${encounterSection}\n\n${updatedBody.slice(anchor)}`
-        : `${updatedBody.replace(/\n+$/, '')}\n\n${encounterSection}\n`;
+        ? `${updatedBody.slice(0, anchor)}${section}\n\n${updatedBody.slice(anchor)}`
+        : `${updatedBody.replace(/\n+$/, '')}\n\n${section}\n`;
   }
 
   // Rebuild the page: new front matter + preserved body with updated sections

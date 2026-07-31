@@ -8,9 +8,6 @@ canon_status: intentionally_undefined
 draft: true
 tags: ["cult", "underground", "mystical", "antagonist"]
 related:
-  - id: location.crystal_font
-    type: location
-    relationship: headquarters
   - id: location.skullwater_cave
     type: location
     relationship: territory
@@ -29,9 +26,6 @@ related:
   - id: campaign.echoes_beneath
     type: campaign
     relationship: factions
-  - id: location.crystal_font
-    type: location
-    relationship: factions
   - id: quest.crystal_heart_retrieval
     type: quest
     relationship: factions
@@ -41,7 +35,7 @@ ai_context:
   visual_style: "Dark robes with glowing crystal inlays, faceless masks with a single eye slit."
   common_encounters: "Antagonist faction, knowledge brokers, morally grey opposition."
   lore_highlights: ""
-  related_entities: "location.crystal_font, location.skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, location.crystal_font, quest.crystal_heart_retrieval"
+  related_entities: "location.skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, quest.crystal_heart_retrieval"
   writing_guidance: "Not purely evil — motivated by a desire to fix the world. Methods are extreme."
   generation_hints: "Operate in cells, communicate through crystal resonance, recruit the desperate."
 layout: factions
@@ -62,7 +56,6 @@ infobox: faction
 
 ### Locations
 - [Skullwater Cave](/locations/skullwater_cave/) `Territory`
-- [The Crystal Font](/locations/crystal_font/) `Headquarters` `Factions`
 
 ### Quests
 - [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) `Quests` `Factions`
