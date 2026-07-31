@@ -291,6 +291,25 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M3.6 7.2l3.8 3.4M20.4 7.2l-3.8 3.4" />
     </g>
   ),
+  /*
+   * The rolled die (DiceOverlay), as opposed to `d20` the 1em label glyph
+   * beside the word "check". It is the only icon in the set drawn to be seen
+   * at 9em, and the only one with a *face*: the number lands inside the centre
+   * facet, so that facet is filled and centred on the box (its centroid is
+   * exactly 12,12) and everything else is structure around it.
+   */
+  d20_solid: (
+    <g {...S}>
+      <path d="M12 1.8L21 7v10l-9 5.2L3 17V7z" fill="currentColor" opacity="0.18" />
+      <path d="M5.6 8.2h12.8L12 19.6z" fill="currentColor" opacity="0.3" />
+      <path d="M12 1.8L21 7v10l-9 5.2L3 17V7z" strokeWidth="1.4" />
+      <path d="M5.6 8.2h12.8L12 19.6z" strokeWidth="1.4" />
+      <path
+        d="M12 1.8L5.6 8.2M12 1.8l6.4 6.4M3 7l2.6 1.2M21 7l-2.6 1.2M3 17l2.6-8.8M21 17l-2.6-8.8M12 19.6v2.6"
+        opacity="0.8"
+      />
+    </g>
+  ),
   dice: (
     <g {...S}>
       <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="4" />
