@@ -1176,6 +1176,182 @@ footer {
   background-color: var(--wiki-bg-sunken);
 }
 
+/* Hero tagline under the subtitle */
+.wiki-hero__tagline {
+  margin-top: var(--wiki-space-md);
+  font-family: var(--wiki-font-heading);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--wiki-gold);
+}
+
+/* --------------------------------------------------------------------------
+ * 17b. Interactive World Map
+ *
+ * The homepage map. Pins are absolutely positioned from canon map anchors
+ * (normalized 0-1000, origin top-left), so percentage offsets track the
+ * image at any rendered size.
+ * ----------------------------------------------------------------------- */
+
+.wiki-map {
+  position: relative;
+  margin: 0;
+  border-radius: var(--wiki-radius-lg);
+}
+
+.wiki-map__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--wiki-radius-lg);
+  border: 1px solid var(--wiki-border-strong);
+  box-shadow: var(--wiki-shadow-lg);
+}
+
+.wiki-map__pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 2;
+}
+
+/* The visible dot: kept small, with the anchor element as a larger hit area */
+.wiki-map__pin::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(13, 11, 26, 0.85);
+  transition: transform var(--wiki-transition), box-shadow var(--wiki-transition);
+}
+
+.wiki-map__pin--biome::before {
+  background-color: var(--wiki-gold);
+  box-shadow: 0 0 6px 2px rgba(245, 200, 108, 0.55);
+}
+
+.wiki-map__pin--location::before {
+  background-color: var(--wiki-accent-hover);
+  box-shadow: 0 0 6px 2px rgba(139, 108, 245, 0.6);
+}
+
+.wiki-map__pin:hover::before,
+.wiki-map__pin:focus-visible::before {
+  transform: scale(1.5);
+}
+
+.wiki-map__label {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border-radius: var(--wiki-radius-sm);
+  background-color: rgba(13, 11, 26, 0.92);
+  border: 1px solid var(--wiki-border-strong);
+  color: var(--wiki-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--wiki-transition);
+  z-index: 3;
+}
+
+.wiki-map__pin:hover .wiki-map__label,
+.wiki-map__pin:focus-visible .wiki-map__label {
+  opacity: 1;
+}
+
+.wiki-map__caption {
+  margin-top: var(--wiki-space-md);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--wiki-text-secondary);
+}
+
+.wiki-map__key {
+  font-weight: 600;
+}
+
+.wiki-map__key--biome {
+  color: var(--wiki-gold);
+}
+
+.wiki-map__key--location {
+  color: var(--wiki-accent-hover);
+}
+
+/* --------------------------------------------------------------------------
+ * 17c. Chart Your Course cards
+ * ----------------------------------------------------------------------- */
+
+.wiki-start-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--wiki-space-md);
+  margin-top: var(--wiki-space-lg);
+}
+
+.wiki-start-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wiki-space-xs);
+  padding: var(--wiki-space-lg);
+  background-color: var(--wiki-bg-raised);
+  border: 1px solid var(--wiki-border);
+  border-radius: var(--wiki-radius-md);
+  text-decoration: none;
+  transition: border-color var(--wiki-transition),
+              background-color var(--wiki-transition),
+              transform var(--wiki-transition);
+}
+
+.wiki-start-card:hover,
+.wiki-start-card:focus-visible {
+  border-color: var(--wiki-border-strong);
+  background-color: rgba(139, 108, 245, 0.05);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.wiki-start-card__icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.wiki-start-card__title {
+  font-family: var(--wiki-font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--wiki-accent-hover);
+}
+
+.wiki-start-card__desc {
+  font-size: 0.875rem;
+  color: var(--wiki-text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  /* Labels would overlap on a small map; the pins remain tappable links */
+  .wiki-map__label {
+    display: none;
+  }
+
+  .wiki-map__pin {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 /* --------------------------------------------------------------------------
  * 18. Relationship Cards
  * ----------------------------------------------------------------------- */
@@ -2378,4 +2554,110 @@ body {
   border-radius: var(--wiki-radius-sm);
   line-height: 1.4;
   white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+ * 14. Lore — hooks, opinion chips, and the Lore body section
+ *
+ * The infobox chips answer "who"; the body's Likes/Dislikes lists answer
+ * "why". `because` text rides on the chips as a tooltip.
+ * ----------------------------------------------------------------------- */
+
+/* One-line hook under an infobox title or page h1 */
+.wiki-infobox__hook {
+  font-family: var(--wiki-font-heading);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--wiki-text-secondary);
+  text-align: center;
+  margin: calc(-1 * var(--wiki-space-sm)) 0 var(--wiki-space-md);
+  line-height: 1.4;
+}
+
+.entity-hook {
+  font-family: var(--wiki-font-heading);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--wiki-text-secondary);
+  margin: calc(-1 * var(--wiki-space-sm)) 0 var(--wiki-space-md);
+  line-height: 1.5;
+}
+
+/* Likes / Dislikes chip groups in the infobox */
+.wiki-infobox__opinions {
+  margin-top: var(--wiki-space-md);
+  padding-top: var(--wiki-space-sm);
+  border-top: 1px solid var(--wiki-border);
+}
+
+.wiki-infobox__opinion-group + .wiki-infobox__opinion-group {
+  margin-top: var(--wiki-space-sm);
+}
+
+.wiki-infobox__opinion-heading {
+  font-family: var(--wiki-font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wiki-text-faint);
+  margin: 0 0 var(--wiki-space-xs);
+}
+
+.wiki-opinion-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+
+.wiki-opinion {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--wiki-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--wiki-radius-sm);
+  line-height: 1.5;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: border-color var(--wiki-transition);
+}
+
+.wiki-opinion--like {
+  color: var(--wiki-success);
+  background-color: rgba(95, 214, 160, 0.12);
+  border: 1px solid rgba(95, 214, 160, 0.3);
+}
+
+.wiki-opinion--like:hover {
+  border-color: var(--wiki-success);
+}
+
+.wiki-opinion--dislike {
+  color: var(--wiki-danger);
+  background-color: rgba(255, 107, 129, 0.12);
+  border: 1px solid rgba(255, 107, 129, 0.3);
+}
+
+.wiki-opinion--dislike:hover {
+  border-color: var(--wiki-danger);
+}
+
+/* The Lore section's leading hook renders as a blockquote in the body */
+.entity-content blockquote {
+  border-left: 3px solid var(--wiki-gold);
+  background-color: var(--wiki-gold-soft);
+  border-radius: 0 var(--wiki-radius-sm) var(--wiki-radius-sm) 0;
+  padding: var(--wiki-space-sm) var(--wiki-space-md);
+  margin: var(--wiki-space-md) 0;
+  font-family: var(--wiki-font-heading);
+  font-size: 1.05rem;
+  color: var(--wiki-text);
+}
+
+.entity-content blockquote p {
+  margin: 0;
 }

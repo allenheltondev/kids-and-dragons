@@ -32,6 +32,7 @@ layout: individuals
 infobox: individual
 ---
 
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 

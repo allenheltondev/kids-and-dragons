@@ -38,6 +38,9 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: supernatural_manifestations
+  - id: campaign.gemfall
+    type: campaign
+    relationship: biomes
   - id: character.unicorn
     type: character
     relationship: primary_locations
@@ -89,12 +92,13 @@ ai_context:
   visual_style: "Immense layered trees, luminous knots and hollows, blue-green magical lights, tangled roots, mossy paths, hidden shrines, and depth that feels older than the surrounding realm."
   common_encounters: "Lost paths, remembered promises, damaged magic, old shrines, hidden communities, ecological mysteries, and choices where kindness changes the route."
   lore_highlights: ""
-  related_entities: "location.mosshome, biome.expanse, biome.red_sky_foothills, biome.plains, biome.whispering_marsh, location.mosshome, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, item.mosslight_jar, item.thunder_acorn, item.owlfeather_clasp, location.mosshome, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
+  related_entities: "location.mosshome, biome.expanse, biome.red_sky_foothills, biome.plains, biome.whispering_marsh, location.mosshome, character.unicorn, npc.harvest_sprite, creature.mosshorn, creature.will_o_wisp, campaign.gemfall, character.unicorn, character.bigfoot, character.kitsune, creature.mosshorn, creature.will_o_wisp, item.mosslight_jar, item.thunder_acorn, item.owlfeather_clasp, location.mosshome, npc.faun, npc.harvest_sprite, npc.boggart, npc.witch_order"
   writing_guidance: "The forest is responsive, not randomly hostile. It remembers treatment but does not assign morality by species. MossHome is inside the wider Woods and is not interchangeable with the whole region."
   generation_hints: "Paths shift gradually, magical disturbances echo through plants and wildlife, and the forest tends to reveal safer routes to travelers who repair harm or honor commitments."
 layout: biomes
 infobox: biome
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -104,6 +108,9 @@ infobox: biome
 - [The Expanse](/biomes/expanse/) `Borders`
 - [The Plains](/biomes/plains/) `Borders`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Borders`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Biomes`
 
 ### Characters
 - [Bigfoot](/characters/bigfoot/) `Secondary Locations`

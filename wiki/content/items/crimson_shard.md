@@ -19,6 +19,9 @@ related:
   - id: campaign.dawn_of_the_red_sky
     type: campaign
     relationship: items
+  - id: campaign.gemfall
+    type: campaign
+    relationship: items
   - id: quest.shattered_sky_rite
     type: quest
     relationship: items
@@ -28,12 +31,13 @@ ai_context:
   visual_style: "Glowing red-orange crystalline shard with internal flame patterns."
   common_encounters: "Weapon forging, quest objectives, tribute."
   lore_highlights: ""
-  related_entities: "biome.red_sky_foothills, creature.glassback_crab, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, quest.shattered_sky_rite"
+  related_entities: "biome.red_sky_foothills, creature.glassback_crab, quest.shattered_sky_rite, campaign.dawn_of_the_red_sky, campaign.gemfall, quest.shattered_sky_rite"
   writing_guidance: "Burns unprotected hands. Must be stored in enchanted containers."
   generation_hints: "Emits faint warmth and light, intensifies near other shards."
 layout: items
 infobox: item
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -43,6 +47,7 @@ infobox: item
 
 ### Campaigns
 - [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Items`
+- [Gemfall](/campaigns/gemfall/) `Items`
 
 ### Creatures
 - [Glassback Crab](/creatures/glassback_crab/) `Dropped By`

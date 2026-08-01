@@ -35,6 +35,9 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: supernatural_manifestations
+  - id: campaign.gemfall
+    type: campaign
+    relationship: biomes
   - id: character.bigfoot
     type: character
     relationship: secondary_locations
@@ -89,12 +92,13 @@ ai_context:
   visual_style: "Layered fog, twisted wetland trees, dark reflective water, reed islands, half-submerged paths, hanging moss, dim lanterns, and distant lights with uncertain depth."
   common_encounters: "Spirit encounters, missing memories, hidden communities, navigation by sound, environmental restoration, bargains, warnings, and mysteries that should not always be solved by fighting."
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, npc.frogfolk, npc.boggart, npc.witch_order"
+  related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, campaign.gemfall, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, npc.frogfolk, npc.boggart, npc.witch_order"
   writing_guidance: "The marsh is eerie but not inherently evil. Frogfolk, boggarts, and witches have moral agency. Do not make every whisper a ghost or every light a trap."
   generation_hints: "Mist changes visibility, water routes shift with weather and river flow, and whispers sometimes repeat memories or warnings without explaining their source."
 layout: biomes
 infobox: biome
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -103,6 +107,9 @@ infobox: biome
 - [Enchanted Woods](/biomes/enchanted_woods/) `Borders`
 - [The Plains](/biomes/plains/) `Borders`
 - [The Sunward Fields](/biomes/sunward_fields/) `Borders`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Biomes`
 
 ### Characters
 - [Bigfoot](/characters/bigfoot/) `Secondary Locations`

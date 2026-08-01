@@ -45,10 +45,12 @@ controlled_values:
     fortress: "A defensible structure or military installation."
     underground_sanctum: "A hidden or subterranean sacred space."
     ancient_ruins: "Remnants of an older civilization or structure."
+    river_mouth_landmark: "A landmark built by normal river and coastal deposition where a river meets the sea."
 
 location_ids:
   - redspire_citadel
   - hollow_gate
+  - bone_yard
 
 locations:
   - id: location.mosshome
@@ -417,6 +419,67 @@ locations:
       items: []
       quests: []
       campaigns: []
+
+  - id: location.bone_yard
+    asset_id: bone_yard
+    title: "The Bone Yard"
+    map_label: "The Bone Yard"
+    canon_status: confirmed
+    location_type: river_mouth_landmark
+    parent_biome: biome.sallow_wastelands
+    map_provenance: map_canonical
+    map_anchor: { x: 875, y: 805 }
+    danger_level: high
+    featured: true
+    relative_position: southeast_coastal
+    tags: [ancient_remains, forbidden, supernatural, river_mouth, saltrot]
+    short_description: >-
+      The place at the mouth of the Glacierflow where the current finally loses
+      its strength and lays down everything it carried across the continent -
+      sediment, uprooted trees, animal remains, wreckage, and ruins - and where
+      the bones of enormous ancient creatures collect, settle, and sometimes
+      refuse to remain entirely still.
+    visual_identity: >-
+      Colossal ribs, skulls, and vertebrae rising out of mudbanks and shallow
+      braided channels; dark sediment, pale bone fields, driftwood tangles,
+      sparse stunted growth, and an irregular shoreline built by deposition -
+      no ordinary settlement anywhere in sight.
+    common_story_uses: >-
+      Ancient-remains mysteries, supernatural disturbances, retrieval with moral
+      consequences, rescue, dangerous tides, forbidden expeditions, and stories
+      about allowing the dead to rest.
+    canon_constraints: >-
+      The Bone Yard has no normal permanent settlement. Do not make it a generic
+      graveyard, battlefield, or source of consequence-free crafting materials.
+      Its shape comes from normal river and coastal accumulation - it is not a
+      V-shaped island, not a fixed island, and not an unnaturally clean delta.
+      Shallows, muddy channels, and irregular shoreline features are in; tidy
+      geometry is out.
+    standard_behavior: >-
+      River deposits and tides rearrange smaller remains, supernatural activity
+      may animate or echo through the bones, and safe paths can change.
+    access:
+      mode: overland_and_water
+      fixed_routes: false
+    inhabitants:
+      primary_peoples: []
+      supporting_peoples: []
+      cultural_orders: []
+      ambient_creatures: []
+      dangerous_creatures: [creature.bone_crawler]
+      legendary_beings: []
+      supernatural_manifestations: [creature.restless_remains]
+    relationships:
+      biome: [biome.sallow_wastelands]
+      locations: [feature.great_river, biome.open_sea, location.the_whirlpool]
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: []
+    notes:
+      - No permanent bridge or causeway is shown; approach is by water or
+        across the flats, and neither is dependable.
 
   - id: location.bramblewood
     title: "Bramblewood"

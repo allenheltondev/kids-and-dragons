@@ -630,6 +630,32 @@ edge arrays including `ambient_creatures` and `dangerous_creatures`. Encounter
 generation can already ask "what lives here" — that field just needs D2's
 normalization and D9's stats to be *usable*.
 
+**D15 — RULED, applied. `lore` on the envelope.** Every taxonomy accepts an
+optional `lore` block (`packages/canon/src/lore.ts`): `hook`, a required
+`story`, `pastimes`, `social`, and `likes`/`dislikes` — opinions of other
+creature and people kinds. Two rules carry the weight. First, `likes.of` and
+`dislikes.of` are `canonRef`s, so every opinion is a validated, reverse-indexed
+edge: "who likes frogfolk" is a registry query, not an authoring chore. Second,
+`because` is required on every opinion, so a dislike reads as specific history
+between kinds rather than species-level prejudice — which keeps the block
+inside the "species does not determine morality" instruction all twelve files
+share. Applying D15 exposed a registry blind spot: the edge walker could not
+reach refs nested inside object arrays (`separated_from.region` had been
+silently unchecked since D5), so `readAll` now fans out across arrays and
+record values. The wiki generator renders `lore` as the leading page section
+and projects `likes`/`dislikes` into infobox chips.
+
+**D16 — RULED, applied. Campaign `relationships.locations` takes the full
+place set.** Biome and Location `locations` edges already accepted
+`location | route | feature | biome`; Campaign was narrower
+(`location | biome`) for no reason better than being written first. Gemfall's
+routed middle hangs its branching on two rivers and a bridge
+(`feature.great_river`, `feature.great_river_west_branch`,
+`route.northern_river_bridge`), and a campaign whose plot depends on a
+crossing should say so in the graph — "which campaigns depend on this
+crossing" is now a registry query. Quest `locations` stays narrow until a
+quest actually needs a river.
+
 ---
 
 ## 10. Order

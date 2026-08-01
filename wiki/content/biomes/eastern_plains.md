@@ -38,6 +38,12 @@ related:
   - id: creature.jackalope
     type: creature
     relationship: ambient_creatures
+  - id: biome.sallow_wastelands
+    type: biome
+    relationship: borders
+  - id: campaign.gemfall
+    type: campaign
+    relationship: biomes
   - id: character.griffin
     type: character
     relationship: secondary_locations
@@ -83,12 +89,13 @@ ai_context:
   visual_style: "Broad yellow-green grasslands, low ridges, winding roads, scattered trees, pride markers, camps, distant hills, and a hard eastern coastline."
   common_encounters: "Road patrols, caravan escort, territorial misunderstandings, riddles and formal challenges, long-distance pursuit, migration, and threats visible long before they arrive."
   lore_highlights: ""
-  related_entities: "location.stone_crossing, biome.red_sky_foothills, biome.plains, biome.sunward_fields, feature.great_river, biome.frostfang_peaks, location.stone_crossing, character.manticore, npc.centaur, creature.jackalope, character.griffin, character.manticore, creature.jackalope, feature.great_river, route.northern_river_bridge, route.stone_crossing, location.stone_crossing, location.stone_crossing, location.skullwater_cave, npc.centaur, npc.stone_troll"
+  related_entities: "location.stone_crossing, biome.red_sky_foothills, biome.plains, biome.sunward_fields, feature.great_river, biome.frostfang_peaks, location.stone_crossing, character.manticore, npc.centaur, creature.jackalope, biome.sallow_wastelands, campaign.gemfall, character.griffin, character.manticore, creature.jackalope, feature.great_river, route.northern_river_bridge, route.stone_crossing, location.stone_crossing, location.stone_crossing, location.skullwater_cave, npc.centaur, npc.stone_troll"
   writing_guidance: "Do not merge the Eastern Plains with the central Plains. Manticores are not inherently hostile, and threatening anatomy is not shorthand for villainy."
   generation_hints: "Pride routes, patrols, caravans, and seasonal gathering grounds structure movement across the open region."
 layout: biomes
 infobox: biome
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -97,7 +104,11 @@ infobox: biome
 - [Frostfang Peaks](/biomes/frostfang_peaks/) `Borders`
 - [Red Sky Foothills](/biomes/red_sky_foothills/) `Separated From`
 - [The Plains](/biomes/plains/) `Separated From`
+- [The Sallow Wastelands](/biomes/sallow_wastelands/) `Borders`
 - [The Sunward Fields](/biomes/sunward_fields/) `Separated From`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Biomes`
 
 ### Characters
 - [Griffin](/characters/griffin/) `Secondary Locations`
