@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_biome_canon
 title: "The Realm of Red Sky Biome Canon"
-updated: "2026-07-30"
+updated: "2026-08-01"
 
 purpose: >-
   Canonical, agent-readable reference for every named environment shown on the
@@ -23,6 +23,7 @@ agent_instructions:
   - Geography, borders, routes, and coordinates belong to the geography canon. This file owns environmental identity.
   - Creature ids reference red-sky-creature-canon.yaml and must not be invented here.
   - Empty inhabitant lists are deliberate; they do not authorize an agent to fill the gap.
+  - "`lore` is the storyteller's half of a place: its accepted origin, its recorded past, and its reputation. `origin`, `recorded_history`, and `cultural_significance` are in-world common knowledge. `common_beliefs` and `disputed_beliefs` are what people *say*, and are allowed to be wrong - a superstition is canon about the believers, not the place. `hidden_truths` are creator canon: a story may build toward one, but no NPC recites one, and on an `intentionally_undefined` entry the list stays empty so the protected mystery stays protected. `regional_relationships.place` is a validated reference; the `relationship` prose is the story hook."
 
 controlled_values:
   map_provenance:
@@ -100,6 +101,53 @@ biomes:
     standard_behavior: >-
       Wind routes shift, island communities prepare for storms, and navigation
       depends on stars, recurring air currents, signals, and shared stories.
+    lore:
+      origin: >-
+        Every island keeps its own founding story, and at least four of them
+        open with "the first island, alone in the sky." The version told to
+        children everywhere is simpler: the islands got tired of the sea and
+        left, and the wind, flattered by the compliment, has carried them ever
+        since.
+      recorded_history: >-
+        Island history is sung, not shelved - a settlement's past is its
+        navigation songs, with the disasters in the chorus. The one date every
+        island agrees on is the Great Becalming, a windless season when the
+        archipelago drifted into one enormous neighborly pile-up and the
+        messenger tradition was founded by people who could suddenly walk to
+        their relatives.
+      cultural_significance: >-
+        To the surface realm, the islands are where the weather is decided and
+        where letters go to take the long way. To the kitsune they are home in
+        the only sense that matters for a moving address: not a place you are,
+        but a place you can find again.
+      common_beliefs:
+        - "An island that falls from the sky becomes an ordinary island in the sea, which is why no navigator fully trusts a suspiciously round island."
+        - "Whistling on a windless day is asking the wind a question, and the wind answers all questions personally."
+      disputed_beliefs:
+        - "Whether the islands follow the cloud whales or the cloud whales follow the islands. Every temple holds a firm position, and the whales decline to settle it."
+      hidden_truths:
+        - "The foundation stones of the oldest temple are fossilized barnacle beds. Whatever the founding songs say, the islands have been sea floor, and the sea may not consider the loan closed."
+      regional_relationships:
+        - place: biome.open_sea
+          relationship: >-
+            Everything dropped from an island eventually arrives in the sea,
+            which the kitsune treat as a postal service with no return address
+            and the sea treats as tribute.
+        - place: biome.frostfang_peaks
+          relationship: >-
+            The high wind routes pass within sight of the griffin watch, and
+            the two peoples trade weather news by signal - the realm's oldest
+            conversation conducted entirely in flags.
+        - place: location.exchange
+          relationship: >-
+            The city's docks are where island goods touch the ground, and
+            kitsune messengers treat the place as the realm's front desk.
+      current_tensions:
+        - "The recurring wind routes of two islands have begun to overlap, and both communities are being extremely polite about it."
+        - "A messenger route that ran for three generations lost its wind this spring and has not found it again."
+      historical_hooks:
+        - "A letter posted during the Great Becalming is still in circulation, redirected each season because its address keeps moving."
+        - "An island last sighted a generation ago is, by the oldest songs' arithmetic, due back."
     borders: []
     access:
       mode: aerial
@@ -154,6 +202,52 @@ biomes:
       Paths shift gradually, magical disturbances echo through plants and
       wildlife, and the forest tends to reveal safer routes to travelers who
       repair harm or honor commitments.
+    lore:
+      origin: >-
+        The commonly accepted account is that the Woods was here first and
+        everything else was built around it, mostly with its permission. The
+        forest has never confirmed this, but it has a way of routing paths
+        past its favorite evidence.
+      recorded_history: >-
+        The bigfoot archives record the founding agreement of MossHome,
+        centuries of path movements, and the night known as the Reshelving,
+        when every trail in the forest moved at once and travelers woke up
+        politely relocated. The archives classify it as maintenance.
+      cultural_significance: >-
+        The realm swears its serious promises here, on the theory that the
+        forest remembers them - which it does, with interest. It is also where
+        people go to be lost on purpose, a service the Woods provides free of
+        charge and with unnerving accuracy.
+      common_beliefs:
+        - "If you are lost, you were rude to something. Apologize in order of size."
+        - "Never promise anything in the Woods you would not promise in writing."
+        - "A path that is prettier than it was yesterday wants something."
+      disputed_beliefs:
+        - "Whether the forest likes anyone, or merely keeps accounts. Unicorns insist it likes them. The bigfoot records note the question is unfalsifiable, and file fresh evidence on both sides annually."
+      hidden_truths:
+        - "One clearing has never moved in the entire span of the archives. The forest is holding it for a promise that has not come due yet."
+      regional_relationships:
+        - place: location.mosshome
+          relationship: >-
+            The settlement is the forest's memory in writing and the forest is
+            the settlement's memory in fact; neither could be itself without
+            the other, and both know it.
+        - place: biome.whispering_marsh
+          relationship: >-
+            The forest's waters drain south into the marsh, and marsh-folk say
+            everything the Woods chooses to forget arrives downstream
+            eventually, still muttering.
+        - place: biome.red_sky_foothills
+          relationship: >-
+            Ash from the mountain drifts onto the canopy in eruption years,
+            and the forest reroutes paths away from the foothills for a season
+            afterward, the way one avoids a neighbor after a loud party.
+      current_tensions:
+        - "Gemfall treasure hunters keep arriving with shovels, and the forest's opinion of shovels is being expressed one lost expedition at a time."
+        - "A shrine path has not come back since spring, and the unicorns cannot agree on what the forest is feeling about it."
+      historical_hooks:
+        - "The Reshelving has never been explained, and the archives' one marginal note about it - 'expected' - is in a hand nobody has identified."
+        - "Somewhere in the Woods is a promise old enough that its keeping is now a geographic feature."
     borders:
       - biome.expanse
       - biome.red_sky_foothills
@@ -208,6 +302,53 @@ biomes:
       Mist changes visibility, water routes shift with weather and river flow, and
       whispers sometimes repeat memories or warnings without explaining their
       source.
+    lore:
+      origin: >-
+        The marsh is where the river's western branch slows down and starts
+        keeping things. The accepted account is that it has always been the
+        realm's quiet drawer: water goes in carrying the year's noise, and the
+        mist holds on to the parts nobody came back for.
+      recorded_history: >-
+        Frogfolk channel-charts go back further than most peoples' histories
+        and are more accurate. They record the arrival of the witches, the
+        marking of the safe channels, and the periodic discovery that
+        something old was standing in the marsh all along - the Hollow Gate
+        being merely the largest example.
+      cultural_significance: >-
+        People come to the marsh to consult witches, to leave things behind,
+        and to hear voices they miss. The frogfolk maintain a strict etiquette
+        for all three, and the marsh maintains its own etiquette, which is
+        stricter and unposted.
+      common_beliefs:
+        - "Never answer a whisper with your name; a fair trade is a hum."
+        - "A light that knows where you live got that from somewhere. Ask where."
+        - "What sinks in the marsh is not lost. It is filed."
+      disputed_beliefs:
+        - "Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way."
+      hidden_truths:
+        - "Most whispers are recordings. The mist holds sound the way the northern glacier holds memory, and on still nights the marsh replays conversations older than the peoples having them."
+      regional_relationships:
+        - place: feature.great_river_west_branch
+          relationship: >-
+            The branch feeds the marsh and the marsh slows the branch; a flood
+            upstream redraws the channels here a season later, which the
+            frogfolk describe as the river forwarding its mail.
+        - place: location.exchange
+          relationship: >-
+            The city sits a short, famously soggy walk south, and depends on
+            marsh remedies, marsh guides, and the marsh's habit of returning
+            lost cargo at boggart prices.
+        - place: biome.sunward_fields
+          relationship: >-
+            The fields' irrigation and the marsh's water table are the same
+            water and the same argument, renegotiated through the frogfolk
+            every dry year, in very few words.
+      current_tensions:
+        - "The whispers near the Hollow Gate have changed, and the frogfolk closed two channels this year that had been safe for a century."
+        - "Wisp traffic is up, and nobody can say whether the marsh is remembering more or being listened to less."
+      historical_hooks:
+        - "A channel closed in a grandmother's time is due for reopening review, and it was somebody's only way home."
+        - "For eleven years the marsh's most reliable footbridge was a mire mimic. It is still sulking about the unmasking, and the crossing it played has never been as good since."
     borders: [biome.enchanted_woods, biome.plains, biome.sunward_fields]
     water_features: [feature.great_river_west_branch]
     inhabitants:
@@ -258,6 +399,46 @@ biomes:
     standard_behavior: >-
       Intentionally unknown. Surface movement, weather, magic, and life signs
       should remain uncertain until the mystery is developed.
+    lore:
+      origin: >-
+        Not established, and established as not established: every people has
+        a story about how the north went silent, and the stories agree on
+        nothing except that it was not always like this, and that you do not
+        go and check.
+      recorded_history: >-
+        The realm's records about the Expanse are mostly records of
+        restraint. The griffin watch-log runs back four centuries, and its
+        proudest, longest, and almost only entry is "nothing."
+      cultural_significance: >-
+        The Expanse is the realm's agreed-upon edge - the place parents point
+        to when a lesson needs weight, and the reason the northern watch is a
+        profession rather than a hobby.
+      common_beliefs:
+        - "Nothing grows there because the ground has not finished deciding what it wants to be."
+        - "The wind practices over the Expanse before it performs anywhere else."
+        - "If you can see the plateau clearly, the weather is about to change its mind."
+      disputed_beliefs:
+        - "Everything else. What it was, what happened, whether anything remains - the realm holds every possible theory, and the Expanse has confirmed none of them."
+      hidden_truths: []
+      regional_relationships:
+        - place: location.mount_red_sky
+          relationship: >-
+            The mountain stands between the plateau and everything south of
+            it, and most of the realm privately prefers the arrangement.
+        - place: feature.great_river
+          relationship: >-
+            The river holds the plateau's whole eastern line, and no crossing
+            has ever been built along that stretch, which nobody regrets.
+        - place: biome.glacier_of_origins
+          relationship: >-
+            The plateau and the glacier share the north between them, and the
+            yetis read the ice on their own side only - they have never said
+            whether that is preference or policy.
+      current_tensions:
+        - "The griffin watch does not discuss its log, but re-stacked cairns and doubled patrols suggest the word 'nothing' has been doing extra work lately."
+      historical_hooks:
+        - "An old map in a collector's stall at the Exchange shows a road entering the Expanse. Every other copy of that map shows no road, and the collector will not name a price."
+        - "Forbidden expeditions set out every generation or so. The stories about what they found differ; the fact that the stories are all secondhand does not."
     borders: [biome.enchanted_woods, biome.red_sky_foothills, biome.glacier_of_origins]
     barriers:
       south: location.mount_red_sky
@@ -311,6 +492,54 @@ biomes:
     standard_behavior: >-
       Tremors, ash, heat, and crystal changes are closely watched. Communities
       maintain warning systems, safe caves, and evacuation routes.
+    lore:
+      origin: >-
+        The foothills are what the mountain has been building with its
+        tantrums since before anyone kept count - hills of cooled temper,
+        laced with lava tubes and crystal. The dragonlings settled them on the
+        sensible theory that the best place to watch a mountain is from
+        partway up it.
+      recorded_history: >-
+        Dragonling history is kept as eruption tallies and boundary stones.
+        The great dates are the eruptions with names, each one the founding of
+        some part of the warning system - the bells after one, the moth-watch
+        after another, the grandmothers' authority after a third, which
+        nobody has been reckless enough to question since.
+      cultural_significance: >-
+        Every gemstone in the realm started here, which makes the foothills
+        the realm's treasury, and gathering law makes them the realm's most
+        heavily regulated picnic ground: take what the mountain drops, and
+        never pry at what it holds.
+      common_beliefs:
+        - "The mountain pays its rent in gemstones. Never bill it early."
+        - "If the moths are leaving, you already left. You just haven't noticed yet."
+        - "A cave that stays warm all winter is somebody's house. Knock."
+      disputed_beliefs:
+        - "Descent from the legend dragons - told around every fire, confirmed by none of them. The fires continue regardless."
+      hidden_truths:
+        - "The boundary stones are older than the dragonlings. They were standing when the first families arrived, already marking the same line gathering law marks now; the dragonlings adopted the stones, not the other way around."
+      regional_relationships:
+        - place: location.mount_red_sky
+          relationship: >-
+            Landlord, weather, calendar, and subject of every song. The
+            foothills exist at the mountain's pleasure and have made a culture
+            out of never forgetting it.
+        - place: biome.plains
+          relationship: >-
+            The caravan road west is the foothills' front door: gemstones go
+            out twice a season, everything else comes in, and the centaurs
+            rate the route among their favorites for the trade and the
+            storytelling.
+        - place: route.northern_river_bridge
+          relationship: >-
+            The one way east without wings. When the bridge queue backs up,
+            foothill trade holds its breath.
+      current_tensions:
+        - "The Gemfall rush has filled the hills with prospectors who have never heard of gathering law, and the moths, the crabs, and the grandmothers are all being tested at once."
+        - "Something in the deep lava tubes has been humming since the eruption, and the families who live nearest have begun sleeping with the bells on."
+      historical_hooks:
+        - "One eruption carved into the oldest boundary stone matches nothing in the dragonlings' own count, and it is recorded as if somebody watched it happen."
+        - "The grandmothers keep a list of caves that are never assigned to anyone, and the list predates every grandmother on record."
     borders: [biome.expanse, biome.enchanted_woods, biome.plains]
     separated_from:
       - region: biome.eastern_plains
@@ -363,6 +592,51 @@ biomes:
     standard_behavior: >-
       Caravans, messengers, herds, and travelers move along old routes while
       weather and river conditions periodically change the safest path.
+    lore:
+      origin: >-
+        Road country. The accepted account is that the Plains have always
+        been the space between other places, and are the only region proud of
+        it: the roads came first, the camps grew where the roads rested, and
+        the grass has been listening to travelers' news ever since.
+      recorded_history: >-
+        Plains history lives in the centaurs' route-songs, one verse per
+        landmark with the hazards in the chorus. The songs record road
+        openings, river shifts, and the start of the Shortcut Debate - a
+        nine-generation argument that is by now a landmark itself, with its
+        own verse.
+      cultural_significance: >-
+        Neutral ground. Every people crosses the Plains, so the Plains belong
+        to the crossing itself: news travels here faster than weather, and a
+        campfire on the open grass is the realm's oldest meeting room.
+      common_beliefs:
+        - "All news arrives three days old, except bad weather, which is punctual."
+        - "An empty stretch of good road is a message. Jackalopes are the punctuation."
+        - "Never camp where the road bends. The road knows something."
+      disputed_beliefs:
+        - "Whether the oldest roads were built or found. The centaurs say built, and sing the verses to prove it; the skeptics note the verses never say by whom."
+      hidden_truths:
+        - "The old east road does not end where the maps end it. Its bed runs on under the grass to the riverbank and stops at nothing, because the crossing it once met is gone - the river moved, and nobody now living knows there was ever a ford."
+      regional_relationships:
+        - place: feature.great_river_west_branch
+          relationship: >-
+            The branch cuts the southern Plains and decides, seasonally, which
+            roads are roads and which are waiting.
+        - place: biome.sunward_fields
+          relationship: >-
+            The Fields grow it and the Plains move it: the harvest road is the
+            realm's supply line, and both regions maintain their half with the
+            seriousness of people who have skipped a meal exactly once.
+        - place: biome.eastern_plains
+          relationship: >-
+            Same grass, same sky, one river and a very firm distinction
+            between them. Each side maintains that the other's roads are
+            almost as good.
+      current_tensions:
+        - "Gemfall traffic has doubled everything - caravans, campfires, opinions - and the route-songs are gaining verses faster than anyone can memorize them."
+        - "Displaced cinder wolf packs keep crossing the roads at dusk, cold and far from home, and every campfire argues about whether to feed them."
+      historical_hooks:
+        - "One route-song has a verse no landmark matches. The centaurs sing it anyway, in order, every time - a road is a promise, even to a place that is not there."
+        - "The Shortcut Debate could be settled by walking the route. In nine generations, nobody has. It is generally understood that settling it would be a loss."
     borders:
       - biome.red_sky_foothills
       - biome.enchanted_woods
@@ -418,6 +692,56 @@ biomes:
       Work follows planting and harvest seasons. Communities share labor, maintain
       water and roads, and respond quickly when weather, magic, or pests threaten
       the realm's food supply.
+    lore:
+      origin: >-
+        The accepted account is that the river made the Fields and the fauns
+        merely negotiated: the floods left the finest soil in the realm, and
+        the first cooperatives tamed the water one ditch at a time until the
+        argument became an irrigation system.
+      recorded_history: >-
+        The Fields' history is a festival calendar with the history attached:
+        every flood, drought, and triumphant beetroot is remembered as the
+        festival founded about it. The cooperatives are older than money and
+        keep their records in song, pie, and extremely durable grudges about
+        weather.
+      cultural_significance: >-
+        The realm eats because the Fields work. Every region knows it, the
+        Fields never mention it, and the resulting politeness is one of the
+        realm's great diplomatic assets.
+      common_beliefs:
+        - "Leave the corner rows. Everyone knows why, and nobody says why, and that is the arrangement."
+        - "Never compliment the weather before the harvest is in. It gets ideas."
+        - "A scarecrow that works too well should be introduced to everyone at the next festival, just in case."
+      disputed_beliefs:
+        - "Which village invented the honeycake. Four claim it, the recipes are identical, and the dispute is maintained with great care, because settling it would end four festivals."
+      hidden_truths:
+        - "The harvest sprites keep real ledgers, and the award ceremonies have minutes. If the big folk ever learned how much of the harvest is sprite arithmetic, the corner rows would get considerably bigger."
+      regional_relationships:
+        - place: location.exchange
+          relationship: >-
+            The harvest road ends at the city's markets, and the city's
+            appetite sets the Fields' spring planting. Each privately believes
+            it is feeding the other.
+        - place: location.stone_crossing
+          relationship: >-
+            The eastern gate: everything bound over the river queues at the
+            bridge, and a bad week at the crossing is a fine week for every
+            wayside pie stand in the southern Fields.
+        - place: location.bramblewood
+          relationship: >-
+            The far waystop, first to hear eastern news; the hedges decide who
+            arrives, and the Fields have learned to trust the hedges' taste.
+        - place: biome.whispering_marsh
+          relationship: >-
+            The Fields' ditches borrow the water and the marsh keeps the
+            ledger; the two settle accounts through the frogfolk every dry
+            year, and have never once been overdrawn.
+      current_tensions:
+        - "The Gemfall rush is hiring away farmhands at exactly the wrong time of year, and this harvest will be sung about either way."
+        - "The Exchange keeps growing, and the planting maps have run out of polite places to expand."
+      historical_hooks:
+        - "One festival on the calendar commemorates an event no record describes. It has the best food and the fewest explanations, and the elders' faces suggest the two facts are related."
+        - "A flood generations back moved a boundary ditch, and two cooperatives have been happily farming each other's fields ever since. Surveys are periodically proposed and unanimously postponed."
     borders: [biome.plains, biome.whispering_marsh]
     separated_from:
       - region: biome.eastern_plains
@@ -470,6 +794,51 @@ biomes:
     standard_behavior: >-
       Ice shifts, melt channels move, storms erase paths, and changes at the
       source eventually affect every downstream region.
+    lore:
+      origin: >-
+        The name is the accepted account: the Great River begins here, and by
+        yeti reckoning so does everything else worth remembering. The ice is
+        the realm's oldest resident and its most complete record, laid down
+        one winter at a time since before there were peoples to record.
+      recorded_history: >-
+        History here is not written but excavated: the yetis read events out
+        of the ice, name meltwater years the way other peoples name children,
+        and serve the important ones as tea. The reading rooms' catalogue runs
+        back further than every archive in the realm combined, and the yetis
+        will show you, slowly.
+      cultural_significance: >-
+        The realm's source and its attic. Scholars, witches, and the
+        occasionally desperate come north to consult memories the world has
+        otherwise lost, and everything downstream - water, weather, history -
+        starts on this ice.
+      common_beliefs:
+        - "Every drink from the river is somebody's remembered year. Drink respectfully."
+        - "Do not shout on the glacier. Opinions differ on what you might wake, and the not-knowing is the rule."
+        - "If the ice shows you something, it is yours to deal with now. Knowing makes you responsible."
+      disputed_beliefs:
+        - "Whether the memories in the ice are records or residents. The yetis decline the distinction, which each side counts as support."
+      hidden_truths:
+        - "At the bottom of one crevasse, below the oldest catalogued layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not catalogued it, because filing it would mean deciding what it is."
+      regional_relationships:
+        - place: feature.great_river_source
+          relationship: >-
+            The river rises from the melt, which means every region downstream
+            is, strictly speaking, drinking the archive.
+        - place: biome.frostfang_peaks
+          relationship: >-
+            The peaks handle the fast half of the north - watch, rescue,
+            wind - and the glacier handles the slow half - memory, melt, tea.
+            Each considers the division generous to the other.
+        - place: biome.expanse
+          relationship: >-
+            Neighbors along the realm's quietest border. The yetis read the
+            ice on their own side only.
+      current_tensions:
+        - "The melt is changing: channels move seasons early, memories surface out of order, and downstream the river has begun delivering silt the Saltrot guides do not recognize."
+        - "A frost wyrm has nested exactly where the next reading room was planned, and the yetis' response - wait a century or two - has, for the first time, struck some younger yetis as slow."
+      historical_hooks:
+        - "A newly melted memory shows the river leaving by a different valley. The yetis have re-catalogued it three times, which is yeti for alarm."
+        - "One meltwater year is never served as tea and never named. The vintage exists; the catalogue simply moves past it, and the politeness is glacial in every sense."
     borders: [biome.expanse, biome.frostfang_peaks]
     inhabitants:
       primary_peoples: []
@@ -517,6 +886,52 @@ biomes:
     standard_behavior: >-
       Aerie communities maintain watches, rescue routes, signals, and pass
       knowledge while storms and ice frequently close expected paths.
+    lore:
+      origin: >-
+        The accepted account is the visible one: the peaks are the realm's
+        north wall, raised - depending on the teller - by deep time, old
+        magic, or the world needing somewhere to keep its winter. The griffins
+        arrived high, stayed high, and have treated the wall as a
+        responsibility ever since.
+      recorded_history: >-
+        Aerie history is kept in pass ledgers and rescue rolls: who was
+        carried out of where, in what weather, by whom. Four centuries of the
+        northern watch run alongside, logged nightly and famous mostly for the
+        entry "nothing" - which is, every griffin will tell you, the point.
+      cultural_significance: >-
+        The realm sleeps because the peaks do not. Rescue, watch, and weather
+        all come down from the Frostfang, and the mountains hold the north the
+        way a good roof holds - unnoticed until the one night it matters.
+      common_beliefs:
+        - "The mountain counts you on the way up and expects the same number on the way down."
+        - "Never call a pass 'probably fine.' The pass hears the probably."
+        - "A re-stacked cairn is a griffin saying the route is watched. An un-stacked one is the mountain saying it is not."
+      disputed_beliefs:
+        - "The goats' staring-contest record against the griffins. The goats are undefeated; the griffins maintain they have never been playing; the goats find this consistent with being undefeated."
+      hidden_truths:
+        - "Some watch-log entries reading 'nothing' carry a small feather-stroke in the margin. Asked what it marks, watch-captains say 'nothing' - in a slightly different voice."
+      regional_relationships:
+        - place: biome.glacier_of_origins
+          relationship: >-
+            Partners in the north: the glacier remembers and the peaks
+            respond. Every mountain rescue is half griffin speed and half yeti
+            patience, and neither half works alone.
+        - place: biome.eastern_plains
+          relationship: >-
+            The plains below are where aerie trade lands and where young
+            griffins first encounter flat ground, which they describe to each
+            other for years afterward.
+        - place: location.skullwater_cave
+          relationship: >-
+            The skull rock sits off their coast, and aerie flight rules give
+            it a courteous margin - not fear, the griffins say, just no reason
+            to be rude to a door.
+      current_tensions:
+        - "Passes are closing earlier and more often as the glacier's melt shifts the ice, and the rescue rolls are filling in seasons that used to be quiet."
+        - "Frost wyrm tunnels have appeared under two flight routes, and the goats rerouted before the surveys did, which everyone found more reassuring than the surveys."
+      historical_hooks:
+        - "One rescue cairn high on the north face is maintained by no known aerie. It is always freshly stacked. The watch has opinions it does not log."
+        - "The oldest pass ledger opens mid-sentence; its first volume has never been found. The aeries' best guess is that it is somewhere sensible, under forty feet of ice."
     borders: [biome.glacier_of_origins, biome.eastern_plains]
     separated_from:
       - region: biome.red_sky_foothills
@@ -565,6 +980,56 @@ biomes:
     standard_behavior: >-
       Pride routes, patrols, caravans, and seasonal gathering grounds structure
       movement across the open region.
+    lore:
+      origin: >-
+        The accepted account is that the prides and the grass arrived together
+        and have been taking care of each other since: the manticore homeland
+        is not fenced or defended so much as walked, generation after
+        generation, until the walking became the border.
+      recorded_history: >-
+        Pride history is carried in route-markers and told at the gathering
+        grounds: the founding of the escort tradition, the establishment of
+        the two crossings, and above all the riddle account with the trolls of
+        Stone Crossing - a ledger of honor now old enough that its origin is
+        itself a riddle nobody can answer.
+      cultural_significance: >-
+        East of the river, safe passage is a manticore promise, and the realm
+        has learned to read the silhouette on the ridge correctly: the
+        scariest outline on the road is the reason the road is safe.
+      common_beliefs:
+        - "East of the river, wave first. Everything after that goes better."
+        - "If you can see trouble coming for a day, you owe it a day of thinking."
+        - "Never step over a pride marker; walk around. The detour is the point."
+      disputed_beliefs:
+        - "The riddle score. Both ends of the bridge keep the ledger, the totals have never once matched, and every proposal to audit them has been rejected by both sides as unromantic."
+      hidden_truths:
+        - "The famous formal greeting - performed at a distance, tail curled conspicuously away - is not ancient. It was composed by one mortified elder after an incident involving a fainting merchant, and the prides agreed within a generation to remember it as immemorial."
+      regional_relationships:
+        - place: location.stone_crossing
+          relationship: >-
+            The southern door and the social calendar: escorts begin and end
+            there, riddles are traded there, and a pride's reputation is half
+            made in the bridge queue.
+        - place: route.northern_river_bridge
+          relationship: >-
+            The northern door, quieter and colder, held in reserve; when Stone
+            Crossing closes, the prides reroute the realm's traffic overnight
+            and consider it good exercise.
+        - place: biome.frostfang_peaks
+          relationship: >-
+            The peaks watch the north and the prides watch the ground, and
+            between them very little crosses the east unobserved.
+        - place: biome.sallow_wastelands
+          relationship: >-
+            The southern flats are where pride escorts stop, hand travelers to
+            the Saltrot guides, and wish everyone luck in a tone that means
+            it.
+      current_tensions:
+        - "Gemfall caravan volume has stretched the escort tradition thin, and some prides now book seasons in advance, which the elders regard as the end of civilization."
+        - "The queue at Stone Crossing has grown long enough to cut across two prides' seasonal grounds, and the resulting etiquette problem is being negotiated at the pace etiquette deserves."
+      historical_hooks:
+        - "One riddle has stood unanswered on the account for sixty years, accruing honor like interest. Solving it would make someone famous at both ends of the bridge; several careers have quietly been spent trying."
+        - "An unclaimed pride marker stands far out on the eastern grass, older than any current pride and maintained by all of them, on the principle that somebody's promise should not lapse just because the somebody is gone."
     borders: [biome.frostfang_peaks]
     separated_from:
       - region: biome.red_sky_foothills
@@ -623,6 +1088,58 @@ biomes:
     standard_behavior: >-
       Tides, reefs, weather, fishing, travel, and community agreements shape daily
       life, while changes in the open sea quickly reach the cove.
+    lore:
+      origin: >-
+        The accepted account is that the reef built the cove, the cove
+        sheltered the peoples, and the alliance made it home: merfolk below,
+        selkies between, and an agreement with the land old enough that its
+        signing predates every surviving record of what, precisely, it was
+        signed against.
+      recorded_history: >-
+        Cove history is the treaty and its amendments - most of them
+        clarifications of what counts as a promise, filed after some traveler
+        made one casually - plus the unbroken run of nightly song circles,
+        which the merfolk date the way other peoples date dynasties.
+      cultural_significance: >-
+        The realm's southern door to the sea, and its standing proof that an
+        agreement can outlive its reasons and still hold. Sailors reckon the
+        cove the kindest water on the map, and are right, and are rarely told
+        why the singing is not optional.
+      common_beliefs:
+        - "A rescued swimmer owes the cove a story, payable at dinner. The dinner is not optional either."
+        - "Never sing near the Whirlpool unless you mean it. It listens more closely than anything else in the sea."
+        - "Casual promises do not exist in the cove. There are only promises."
+      disputed_beliefs:
+        - "What the alliance was made against. Every people has a theory, the elders answer every version with the same courteous nothing, and the treaty's first page is a list of signatories under a title nobody can read anymore."
+      hidden_truths:
+        - "The oldest verses of the nightly song are not merfolk compositions. They are borrowed reefglider signal patterns, older than the alliance, and the gliders still answer them - which the singers have decided is harmony rather than correspondence."
+      regional_relationships:
+        - place: location.the_whirlpool
+          relationship: >-
+            The cove's standing appointment: the songs keep it from widening,
+            the Whirlpool keeps turning, and neither party has ever missed a
+            night.
+        - place: location.bone_yard
+          relationship: >-
+            On still nights the song circles sing a little louder for the
+            neighbors across the water, and the Yard is measurably quieter for
+            it. Neither shore has ever acknowledged the arrangement.
+        - place: biome.open_sea
+          relationship: >-
+            Everything arrives from it and everything is eventually owed back
+            to it; the cove is the sea's guest room, kept beautiful on
+            purpose.
+        - place: location.exchange
+          relationship: >-
+            Sea trade and selkie couriers bind the cove to the city's docks
+            closely enough that cove news reaches the Exchange while it is
+            still gossip.
+      current_tensions:
+        - "The song circle rosters are thinning as young selkies and merfolk take courier and dock work at the Exchange, and the elders have begun, gently, to count attendance."
+        - "Gemfall shipping lanes have edged closer to the Whirlpool to save a day's sailing, and the cove is drafting an amendment about it."
+      historical_hooks:
+        - "One treaty amendment is sealed and unread, to be opened 'when it is needed.' Nobody knows how they will know. It is checked, unopened, every year."
+        - "The year the songs went unsung is remembered by the attendance customs it created and by nothing else; what happened that year was either nothing, or the reason for everything since."
     borders: []
     access:
       mode: sea
@@ -669,6 +1186,49 @@ biomes:
       anchor. Coastal places reach it; it borders nothing.
     standard_behavior: >-
       Currents and weather change on their own schedule and ignore the shore.
+    lore:
+      origin: >-
+        The accepted account, on every coast, is that the sea was here first
+        and is not finished. The peoples argue about everything else; on this
+        they have never needed to.
+      recorded_history: >-
+        The sea keeps no history of its own - it outsources. Its past lives in
+        harbor logs, treaty pages, salvage manifests, and the memories of
+        everyone it has carried somewhere they did not plan to go, which is
+        everyone.
+      cultural_significance: >-
+        The realm's edges all end at the same neighbor. The sea is the road
+        that owns itself: every coast uses it, no coast keeps it, and all
+        sailing custom in the realm is, at bottom, manners toward the same
+        enormous host.
+      common_beliefs:
+        - "The sea does not take things. It accepts them."
+        - "Weather at sea is not coming from anywhere. It lives there."
+        - "Whatever you say out of sight of land, say it as a guest."
+      disputed_beliefs:
+        - "What lies past the edge of the map. The kitsune have songs, the selkies have jokes, the merfolk have a silence, and every sailor has a cousin who knows somebody who saw it."
+      hidden_truths: []
+      regional_relationships:
+        - place: location.the_whirlpool
+          relationship: >-
+            The sea's only permanent address. Everything else about the open
+            water moves; the Whirlpool keeps turning exactly where it always
+            has, which sailors find either comforting or the opposite.
+        - place: biome.sky_islands
+          relationship: >-
+            The sea and the sky run the realm's weather between them and trade
+            dropped belongings constantly, and neither has ever returned
+            anything.
+        - place: biome.sallow_wastelands
+          relationship: >-
+            The river's terminus is the sea's front porch: everything the
+            current carried across the continent is laid down at the flats,
+            and the tides sort it at leisure.
+      current_tensions:
+        - "Gemfall shipping has crowded waters that were never consulted, and the season's storms have been unbooked, punctual, and thorough."
+      historical_hooks:
+        - "A current that was not there a generation ago now runs south along the eastern coast, and the selkies, who ought to know where it goes, change the subject with unusual skill."
+        - "Every so often the sea returns something - a spar, a bell, one perfect shoe - decades late and somewhere else entirely. The Exchange keeps a shelf for these arrivals, and the shelf is never empty."
     borders: []
     inhabitants:
       primary_peoples: []
@@ -724,6 +1284,52 @@ biomes:
       Tides and floods redraw the channels seasonally, the river keeps
       delivering silt and debris toward the mouth, and paths that held last
       season may not hold now.
+    lore:
+      origin: >-
+        The accepted account is exactly what it looks like: the Glacierflow
+        slows, spreads, and lays down everything it carried across the
+        continent, and the flats are the accumulated result - the realm's junk
+        drawer, delivered by current and arranged by flood.
+      recorded_history: >-
+        Saltrot history is kept by its guides, who memorize each season's safe
+        paths knowing the next flood will file them under fiction. The great
+        events are floods with names and arrivals of note - whole trees, whole
+        boats, once a whole bridge - and the long unbroken record of the flats
+        being crossed by exactly the people who respected them.
+      cultural_significance: >-
+        To the realm, the Saltrot is the cautionary approach to the Bone Yard
+        and the price of reaching it; to the guides it is a working landscape
+        with a schedule; to the river it is the end of a very long errand.
+      common_beliefs:
+        - "Trust a path once."
+        - "Ground that looks reliable is lying. Ground that looks wet is at least honest."
+        - "Take your boots off to cross and the flats will take it as a compliment. They will still keep one boot."
+      disputed_beliefs:
+        - "Some say the flats rearrange themselves to steer travelers away from the Bone Yard. The guides say floods are floods, and say it in the tone of people who have been asked before."
+      hidden_truths:
+        - "After every flood, the first paths to firm up are the ones leading away from the Bone Yard. The guides noticed generations ago. It is a trade secret, kept partly for business and partly out of courtesy to whatever prefers it that way."
+      regional_relationships:
+        - place: feature.great_river
+          relationship: >-
+            The employer. The Glacierflow delivers, the flats receive, and the
+            arrangement has run without a contract since the north was first
+            cold.
+        - place: location.bone_yard
+          relationship: >-
+            The flats hold the only landward approach, and hold it loosely:
+            reaching the Yard is meant to take effort, and the Saltrot
+            provides the effort.
+        - place: biome.eastern_plains
+          relationship: >-
+            The grass ends where the salt begins, and the manticore escorts
+            end with it; the handover to the guides is an institution with its
+            own small ceremony and its own excellent jokes.
+      current_tensions:
+        - "Gemfall rumor has it that gemstones washed downriver, and prospectors keep attempting the flats without guides. The guides keep retrieving them, and have started keeping score."
+        - "The floods are arriving heavier and carrying silt the guides do not recognize, which means something upstream is changing - and the flats will be the last to be told and the first to show it."
+      historical_hooks:
+        - "A named flood two generations back delivered a sealed cabin door, frame and all, standing upright in the flats. It has never been opened, on the guides' advice, and the advice has never been explained."
+        - "Somewhere under the silt is the bridge the flood brought. Every guide knows roughly where. No guide will take you."
     borders: [biome.eastern_plains, biome.open_sea]
     access:
       mode: overland_and_water
