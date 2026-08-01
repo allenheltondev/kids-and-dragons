@@ -305,12 +305,15 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
   // failures the schema cannot see and no test will notice unless somebody
   // thought to write one, because the engine's answer to all of them is a
   // perfectly well-formed action that changes nothing.
+  // Verbs that always land on the actor whatever the spec says (encounter.ts
+  // SELF_DIRECTED_VERBS), so they are not evidence of anything about the
+  // target rule and have to be taken out of the scope set before any of this
+  // reasons about it. growWall acts on tiles; extraMove refunds the actor's
+  // own steps.
+  const selfDirected = new Set(["moveSelf", "extraMove", "growWall"]);
   for (const [id, def] of Object.entries(authored)) {
     const t = def.target ?? {};
-    // `moveSelf` always lands on the actor whatever the spec says (encounter.ts
-    // audienceFor), so it is not evidence of anything about the target rule and
-    // has to be taken out of the scope set before any of this reasons about it.
-    const effects = (def.effects ?? []).filter((e) => e.effect?.type !== "moveSelf");
+    const effects = (def.effects ?? []).filter((e) => !selfDirected.has(e.effect?.type));
     const scopes = new Set(effects.map((e) => e.to ?? "target"));
     const movesSelf = (def.effects ?? []).some((e) => e.effect?.type === "moveSelf");
 
@@ -339,7 +342,7 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
     // legitimate use of `when` — one card, two readings — and it works because
     // its target rule says `state: "any"`.
     for (const [i, spec] of (def.effects ?? []).entries()) {
-      if (!spec.when || spec.effect?.type === "moveSelf") continue;
+      if (!spec.when || selfDirected.has(spec.effect?.type)) continue;
       const scope = spec.to ?? "target";
       if (scope !== "target") continue;
       const allowed = t.state ?? "standing";
@@ -350,9 +353,12 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
     }
   }
 
-  // spec §7.2 — a species action is once per encounter, and the class signature
-  // and unlocks are not. Getting this backwards is invisible in a diff and
-  // obvious at the table on round two.
+  // spec §7.2 — a species action is once per encounter, and a class ability is
+  // not unless its own card says so ("Once per fight." — Starfall, Encore).
+  // The card text is the license: the words she reads at a Rest scene and the
+  // behaviour on the board must be the same fact, in either direction, and
+  // getting it backwards is invisible in a diff and obvious at the table on
+  // round two.
   const speciesActions = new Set(
     Object.values(rules.species ?? {}).map((sp) => sp.combatAction.id),
   );
@@ -367,13 +373,21 @@ function checkAbilities(rep, file, doc, rules, rulesFile) {
       ok = false;
       continue;
     }
-    const shouldBeOnce = speciesActions.has(id);
+    const cardSaysOnce = /once per (fight|encounter)/i.test(referenced.get(id)?.ability?.text ?? "");
+    const shouldBeOnce = speciesActions.has(id) || cardSaysOnce;
     if (shouldBeOnce && def.oncePerEncounter !== true) {
-      rep.fail(f, `/abilities/${id}/oncePerEncounter`, `"${id}" is a species action, which spec §7.2 limits to once per encounter`);
+      const why = speciesActions.has(id)
+        ? "a species action, which spec §7.2 limits to once per encounter"
+        : 'a card whose text says "once per fight"';
+      rep.fail(f, `/abilities/${id}/oncePerEncounter`, `"${id}" is ${why}, and the catalog does not limit it`);
       ok = false;
     }
     if (!shouldBeOnce && def.oncePerEncounter === true) {
-      rep.fail(f, `/abilities/${id}/oncePerEncounter`, `"${id}" is a class ability; only species actions are once per encounter (spec §7.2)`);
+      rep.fail(
+        f,
+        `/abilities/${id}/oncePerEncounter`,
+        `"${id}" is limited to once per encounter, and neither spec §7.2 (species actions) nor its card text says so`,
+      );
       ok = false;
     }
   }

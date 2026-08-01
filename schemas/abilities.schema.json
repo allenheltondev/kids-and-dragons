@@ -29,7 +29,7 @@
       }
     },
     "$deferred": {
-      "$comment": "An ability rules.json promises that the ten effect verbs cannot express faithfully. The value is the reason, naming the verb it waits on — a deferral has to be legible to whoever adds the verb.",
+      "$comment": "An ability rules.json promises that the effect verbs cannot express faithfully. The value is the reason, naming the verb it waits on — a deferral has to be legible to whoever adds the verb. Empty since the chapter-5 pass authored the original eight; the mechanism stays for whatever comes next.",
       "type": "object",
       "propertyNames": {
         "$ref": "#/$defs/abilityId"
@@ -149,6 +149,18 @@
           "minimum": 1,
           "maximum": 3
         },
+        "count": {
+          "$comment": "Chosen figures, up to this many, all distinct. Storm of Blades is 2 — \"two different enemies\", which chosen targets say and the adjacent scope cannot. Capped at the party-sized 4; a card naming more is a different game.",
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 4
+        },
+        "tileCount": {
+          "$comment": "Chosen tiles, exactly this many. Bramble Wall is 2 — the ability is withheld when the board cannot give it that many open tiles. Not combinable with followUp.",
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 3
+        },
         "followUp": {
           "type": "object",
           "additionalProperties": false,
@@ -199,13 +211,14 @@
           "$ref": "#/$defs/effect"
         },
         "to": {
-          "$comment": "Defaults to \"target\".",
+          "$comment": "Defaults to \"target\". \"enemies\" is the whole other side wherever it stands — Starfall's board-wide counterpart of \"allies\".",
           "enum": [
             "target",
             "self",
             "allies",
             "adjacent",
-            "area"
+            "area",
+            "enemies"
           ]
         },
         "when": {
@@ -218,7 +231,7 @@
       }
     },
     "effect": {
-      "$comment": "The ten verbs of encounter.ts AbilityEffect. A new ability is data; a new verb is a code change, so this list is closed on purpose — an unknown type here fails the build rather than becoming a button that does nothing.",
+      "$comment": "The sixteen verbs of encounter.ts AbilityEffect. A new ability is data; a new verb is a code change, so this list is closed on purpose — an unknown type here fails the build rather than becoming a button that does nothing.",
       "type": "object",
       "unevaluatedProperties": false,
       "required": [
@@ -236,7 +249,13 @@
             "shove",
             "skipTurn",
             "protect",
-            "goFirst"
+            "goFirst",
+            "ward",
+            "evade",
+            "root",
+            "extraMove",
+            "extraTurn",
+            "growWall"
           ]
         }
       },
@@ -349,6 +368,50 @@
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 4
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ward"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "amount"
+            ],
+            "properties": {
+              "amount": {
+                "$ref": "#/$defs/magnitude"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "extraMove"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$comment": "steps is optional — absent means the actor's full allowance.",
+            "properties": {
+              "steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
               }
             }
           }

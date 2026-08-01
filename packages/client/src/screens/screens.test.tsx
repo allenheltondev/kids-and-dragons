@@ -72,10 +72,39 @@ describe("screens", () => {
 
 describe("PlayerPanel inventory", () => {
   const potion = { itemId: "sunbloom_draught", kind: "consumable" as const };
+  const heal = {
+    kind: "consumable" as const,
+    name: "Sunbloom Draught",
+    text: "Heal 4 HP.",
+    icon: "potion",
+    effect: { type: "heal" as const, amount: 4 },
+  };
+  const bonus = {
+    kind: "consumable" as const,
+    name: "Brave Whistle",
+    text: "+2 on your next roll.",
+    icon: "whistle",
+    effect: { type: "rollBonus" as const, amount: 2 },
+  };
 
-  it("does not offer a consumable action during combat", () => {
-    expect(canUseInventoryItem(potion, true)).toBe(false);
-    expect(canUseInventoryItem(potion, false)).toBe(true);
+  it("keeps the bag's Use button out of combat — the fight owns item use now", () => {
+    // During an encounter the item is an action card in CombatControls
+    // (§7.2's fourth universal action), not a bag button.
+    expect(canUseInventoryItem(potion, true, heal)).toBe(false);
+    expect(canUseInventoryItem(potion, false, heal)).toBe(true);
+  });
+
+  it("only a heal is usable outside a fight", () => {
+    // A roll bonus (or a thrown item) has nothing to land on out here, and the
+    // server would refuse rather than consume — so the button never shows.
+    expect(canUseInventoryItem(potion, false, bonus)).toBe(false);
+    expect(canUseInventoryItem(potion, false, undefined)).toBe(false);
+  });
+
+  it("and not at full health — the server refuses a heal of zero", () => {
+    // Hidden, never disabled: the same no-op rule the combat cards follow.
+    expect(canUseInventoryItem(potion, false, heal, true)).toBe(false);
+    expect(canUseInventoryItem(potion, false, heal, false)).toBe(true);
   });
 });
 
