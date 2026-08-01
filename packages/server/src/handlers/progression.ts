@@ -27,6 +27,7 @@ import {
   failCampaign,
   resolveCharacter,
   startCampaign,
+  syncRunInventory,
   type Character,
   type RunState,
 } from "@kad/shared";
@@ -94,14 +95,22 @@ export async function newCharacterWrite(
 }
 
 /**
- * Folds a completed chapter's XP into every character in the party, updates the
- * resolved snapshots the phones mirror, and returns the rows to write.
+ * Folds a completed chapter's gains — XP *and* the bag — into every character
+ * in the party, updates the resolved snapshots the phones mirror, and returns
+ * the rows to write.
  *
  * `state.xpEarned` is the whole award — base plus bonus objectives, already
  * halved if the ending was a setback (spec §8.2) — and every character gets the
  * same number. XP is uniform *by design*: the reward for a level is a visible
  * new body, and per-player XP would leave one child visibly smaller than the
  * rest of the party (spec §8.2).
+ *
+ * The inventory rides along because the engine's grants and swaps land on the
+ * run's resolved characters and nowhere else (`syncRunInventory`). It also
+ * means this runs on *every* completion, not just a paying one: a chapter can
+ * award nothing and still have handed somebody a potion, and "the potion she
+ * picked up two sessions ago is still in her bag" is this chapter's whole
+ * definition of done.
  *
  * `startCampaign()` first, always. It is idempotent for a run, and calling it
  * here means a gain is provisional by construction — there is no path through
@@ -113,8 +122,6 @@ export async function foldChapterXp(
   deps: HandlerDeps,
   householdId: string,
 ): Promise<Character[]> {
-  if (state.xpEarned <= 0) return [];
-
   const rules = deps.content.rules();
   const items = deps.content.items();
   const writes: Character[] = [];
@@ -143,7 +150,13 @@ export async function foldChapterXp(
     const row = stored[i];
     if (!row) continue;
 
-    const { character } = awardXp(startCampaign(row, campaignKey(state)), rules, state.xpEarned);
+    const seeded = startCampaign(row, campaignKey(state));
+    const carried = syncRunInventory(
+      seeded,
+      member.character.inventory,
+      member.character.questItems,
+    );
+    const { character } = awardXp(carried, rules, state.xpEarned);
     writes.push(character);
 
     // Re-resolve so the level, tier, unlocked actions and the waiting stat
