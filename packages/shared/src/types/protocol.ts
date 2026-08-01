@@ -37,7 +37,12 @@ export type ClientIntent =
   | { type: "CHOOSE"; choiceId: string }
   | { type: "ROLL" }
   | { type: "ADVANCE" }
-  | { type: "USE_ITEM"; itemId: string }
+  /**
+   * `targetId` is for a thrown consumable during the holder's combat turn —
+   * the Thunder Acorn needs a monster to land on. Ignored outside a fight,
+   * where the only usable effect is a heal and it lands on the user.
+   */
+  | { type: "USE_ITEM"; itemId: string; targetId?: string }
   | { type: "RESOLVE_ITEM_SWAP"; dropItemId: string | null }
   | { type: "SET_MODE"; mode: RoomMode }
   /**
@@ -51,7 +56,20 @@ export type ClientIntent =
    * protocol error instead of a normal thing an eight-year-old does.
    */
   | { type: "MOVE"; to: { x: number; y: number } }
-  | { type: "COMBAT_ACTION"; abilityId: string; targetId?: string; targetTile?: { x: number; y: number } }
+  /**
+   * `targetIds` / `targetTiles` are the multi-select forms (Storm of Blades'
+   * two enemies, Bramble Wall's two tiles). The singular fields stay for every
+   * one-target ability; a request may send either shape and the engine reads
+   * the plural first (encounter.ts CombatActionRequest).
+   */
+  | {
+      type: "COMBAT_ACTION";
+      abilityId: string;
+      targetId?: string;
+      targetTile?: { x: number; y: number };
+      targetIds?: string[];
+      targetTiles?: { x: number; y: number }[];
+    }
   | { type: "END_TURN" };
 
 export interface ActionRequest {

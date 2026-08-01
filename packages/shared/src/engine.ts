@@ -24,10 +24,11 @@
  * sends. `startEncounter` puts the board up once the party has readied, and
  * `settleEncounter` branches the story on the way out.
  *
- * Still outstanding: the ability **catalog**. Attack, Help Up and Ready are
- * built into `encounter.ts`, so a fight is playable end to end — but class
- * signatures and species actions have to be authored as content before they
- * appear on a phone, and combat-only items still refuse outside a fight.
+ * The ability catalog is authored content (`content/abilities.json`) and
+ * consumables work on both sides of the fight line: a heal anywhere, a roll
+ * bonus or a thrown item as the turn's one action inside an encounter
+ * (spec §7.2's fourth universal action), and either kind still refused where
+ * it would do nothing.
  */
 
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
@@ -57,6 +58,7 @@ import {
   currentActor,
   currentActorId,
   legalActions,
+  useItemInCombat,
   type AbilityCatalog,
   type CombatActionRequest,
   type EncounterState,
@@ -704,7 +706,7 @@ function dispatch(
       return doAdvance(draft, ctx);
 
     case "USE_ITEM":
-      return doUseItem(draft, playerId, intent.itemId, ctx);
+      return doUseItem(draft, playerId, intent.itemId, intent.targetId ?? null, ctx);
 
     case "RESOLVE_ITEM_SWAP":
       return doResolveItemSwap(draft, playerId, intent.dropItemId, ctx);
@@ -1137,6 +1139,8 @@ function doCombatAction(
     abilityId: intent.abilityId,
     ...(intent.targetId ? { targetId: intent.targetId } : {}),
     ...(intent.targetTile ? { targetTile: intent.targetTile } : {}),
+    ...(intent.targetIds ? { targetIds: intent.targetIds } : {}),
+    ...(intent.targetTiles ? { targetTiles: intent.targetTiles } : {}),
   };
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
@@ -1198,7 +1202,11 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
 
     const plan = planEnemyTurn({
       board: encounter.board,
-      enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: actor.steps },
+      // `stepsLeft`, not the spec's allowance: a Tanglelit monster starts its
+      // turn with zero steps, and a plan drawn against the full budget would
+      // walk to a tile `moveTo` then refuses — and swing at a hero it never
+      // actually reached.
+      enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: encounter.stepsLeft },
       party: encounter.combatants
         .filter((c) => c.side === "party")
         .map((c) => ({
@@ -1318,11 +1326,11 @@ function doUseItem(
   draft: RunState,
   playerId: string,
   itemId: string,
+  targetId: string | null,
   ctx: EngineContext,
 ): Presentation | undefined {
   const member = memberByPlayer(draft, playerId);
   if (!member) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
-  if (draft.encounter) throw new Illegal("ILLEGAL", "items cannot be used during a fight yet");
 
   const def = ctx.items[itemId];
   if (!def) throw new Illegal("NOT_FOUND", `unknown item "${itemId}"`);
@@ -1330,15 +1338,48 @@ function doUseItem(
     // §9.2 — story keys are never usable in combat or out of it.
     throw new Illegal("ILLEGAL", `"${def.name}" is a quest item; it opens something, somewhere`);
   }
+
+  if (draft.encounter) {
+    /*
+     * §7.2's fourth universal action: using an item in a fight is your turn's
+     * one action. `requireTurn` is the same authority check every combat
+     * intent passes — only the active figure's own phone may spend it.
+     *
+     * Validate first, consume second. `useItemInCombat` refuses a spent
+     * action or an illegal throw *before* the bag changes, so a refusal
+     * never costs the item — the same "lost it for nothing is worse" rule
+     * the out-of-combat path has always had.
+     */
+    const encounter = requireTurn(draft, playerId);
+    const held = useConsumable(member.character.inventory, itemId, ctx.items);
+    if (held.status === "not_held") {
+      throw new Illegal("NOT_FOUND", `${member.character.name} is not carrying "${itemId}"`);
+    }
+    if (held.status === "not_consumable") {
+      throw new Illegal("ILLEGAL", `"${def.name}" is always on — there is nothing to use`);
+    }
+    const applied = useItemInCombat(encounter, {
+      actorId: member.character.id,
+      effect: held.effect,
+      ...(targetId ? { targetId } : {}),
+    });
+    if (!applied.ok) throw new Illegal("ILLEGAL", applied.reason);
+
+    member.character.inventory = held.inventory;
+    draft.encounter = applied.state;
+    // The throw may have felled the last wisp; the branch waits behind the
+    // damage beats, exactly as it does for an attack.
+    return combatPresentation(applied.events, settleEncounter(draft, ctx));
+  }
+
   if (def.effect && def.effect.type !== "heal") {
     /*
      * A combat-only item outside a fight. `rollBonus` and thrown damage need a
-     * target and a round to land in, and `encounter.ts` owns both — using one
-     * here has nothing to apply it to.
+     * target and a round to land in, and both live in `encounter.ts` — out
+     * here there is nothing to apply them to.
      *
      * Rejected rather than consumed: losing an item for nothing is worse than
-     * being told you cannot use it yet. Wiring these into a fight is the next
-     * pass, along with the ability catalog.
+     * being told you cannot use it yet.
      */
     throw new Illegal("ILLEGAL", `"${def.name}" can only be used in a fight`);
   }
