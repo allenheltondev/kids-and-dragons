@@ -1,6 +1,6 @@
 # Gemfall — campaign design brief
 
-**Canon id:** `campaign.gemfall` · **Chapters:** 8 story beats (14 authored
+**Canon id:** `campaign.gemfall` · **Chapters:** 8 story beats (16 authored
 chapter files — see [Routes](#routes-fixed-beats-branching-country)) ·
 **Status:** `newly_defined`
 
@@ -63,8 +63,9 @@ Chapter 2 is shared country with a three-way exit.
 
 Chapter indexes stay contiguous for the content pipeline, but chapters 3–5
 exist as *route-variant triples* — one member per road, same index, same
-story beat, different country. A playthrough tours eight chapters; the corpus
-holds fourteen.
+story beat, different country — and chapter 7 is a triple of its own, keyed
+on pursuit instead of road. A playthrough tours eight chapters; the corpus
+holds sixteen.
 
 At the end of chapter 2 the party chooses at Bramblewood:
 
@@ -145,12 +146,18 @@ river doing what rivers do:
 
 ## Pursuits: what the party is actually for
 
-The campaign never asks "pick your goal." It watches. From chapter 1 the
-party accumulates conduct — gems kept or returned, promises made, who they
-told, what they mended — and at the end of chapter 6, with the whole truth
-on the table, the campaign makes them say it out loud. The exit scene sets
-one **pursuit flag**, and the pursuit — not the road — selects chapter 7 and
-frames chapter 8:
+The campaign never opens a goal menu — but it does not pretend the player
+has no say, either. From chapter 1 the party accumulates conduct — gems kept
+or returned, promises made, who they told, what they mended — and at the end
+of chapter 6, with the whole truth on the table, the campaign **reads that
+conduct back and names the pursuit it adds up to**. Then it asks. The player
+affirms the reading or overrules it — the choice is real, and it is theirs —
+but the history is binding either way: conduct keeps its receipts in NPC
+reactions, faction support, difficulty, and the epilogue, so a party that
+declares against its own record plays the harder, stranger version of the
+pursuit it chose, and the room notices. The exit scene sets one **pursuit
+flag**, and the pursuit — not the road — selects chapter 7 and frames
+chapter 8:
 
 - **The Reckoning** (`pursuit_restore`) — undo the rush. Thicken the seal,
   face what wakes, become the Heroes of Red Sky — or die trying, which is
@@ -158,8 +165,9 @@ frames chapter 8:
 - **The Collection** (`pursuit_hoard`) — the gems were always the point. The
   titan is somebody else's problem; the **First Facets** (below) are the
   party's. A complete, playable way through the campaign that never swings a
-  sword at destiny — and whose ending depends brutally on what the party did
-  *besides* collect.
+  sword at destiny — the only pursuit with its own exit before the mountain
+  (the Walk, chapter 7H) — and whose ending depends brutally on what the
+  party did *besides* collect.
 - **The Tether** (`pursuit_leash`) — the power beneath the mountain is the
   prize. Not restored, not destroyed: *held*. The wardens have a cage
   doctrine, the cult insists the seal is a cage on the cure, and the party
@@ -176,11 +184,12 @@ something the epilogue matrix knows how to read.
 
 The collection pursuit needs a collection, and the campaign seeds one from
 scene one. The laughed-out-of-the-tavern scholar of chapter 1 has a theory
-nobody wants: the original seal had **nine great facets**, and the rush is
-retailing eight of them by accident. Every chapter puts one named facet on
-the table — held by someone, priced in something — and each routed beat
-offers a different facet on each road, so any single playthrough can reach
-**eight**. The ninth is in the mountain.
+nobody wants: the original seal had **eight great facets**, and the rush is
+retailing seven of them by accident. Every chapter puts exactly one named
+facet on the table — held by someone, priced in something — and each routed
+beat offers a different facet on each road, so any single playthrough can
+reach **seven** before the mountain. The eighth is *in* the mountain, and it
+is not for sale.
 
 | # | Facet | Where, and in whose hands |
 | --- | --- | --- |
@@ -191,7 +200,7 @@ offers a different facet on each road, so any single playthrough can reach
 | 5 | **The Clerk's Stone** *(River)* — logged, tagged, and crossing the broken bridge westbound · **The Confiscated Stone** *(Wild)* — in the pile the Woods has been keeping · **The Unassigned Stone** *(Rush)* — held by the grandmothers, on the list of things never assigned to anyone. |
 | 6 | **The Table Stone** | Ch. 6 — the evidence stone on the Redspire truth-table, in warden custody and logged twice. |
 | 7 | **The Caravan Stone** | Ch. 7 — the masterpiece stone at the heart of the fattest caravan in the funnel. Every pursuit's chapter 7 collides with it. |
-| 8/9 | **The Keystone** | Ch. 8 — the exposed crown of the seal itself. Taking it *is* the Exploit choice. There is no way to hold nine facets and an intact realm at once, and the campaign never pretends otherwise. |
+| 8 | **The Keystone** | Ch. 8 — the exposed crown of the seal itself. Taking it *is* the Exploit choice. There is no way to hold all eight facets and an intact realm at once, and the campaign never pretends otherwise. |
 
 Facet flags (`facet_*`) are readable everywhere: NPCs notice a party that
 hums when it walks. Prides won't den near their camp. Mosshorns leave.
@@ -277,9 +286,11 @@ changed; and every loss epilogue ends on a spark someone else might pick up.
 | `crossed_dry` / `river_took_us` | ch. 3A | ch. 4A opening, Ossley's debt beat |
 | `walked_over` | ch. 3B exit | marsh→plains weave; ch. 4C opening |
 | `forded_clean` / `marsh_kept_us` | ch. 3C or 4B (west branch, either ford) | 4B/4C/5B openings; storyline switch |
-| `facet_*` (nine) | any chapter | collection count; NPC reactions; ch. 7H; the Exploit choice |
+| `facet_*` (eight) | any chapter | collection count; NPC reactions; ch. 7H; the Exploit choice |
 | `told_wardens` / `told_gatherers` / `kept_close` | ch. 5–6 exit | ch. 7 allies and depots; hoard-line epilogues |
-| `pursuit_restore` / `pursuit_hoard` / `pursuit_leash` | ch. 6 exit | selects ch. 7 variant; frames ch. 8 |
+| `pursuit_restore` / `pursuit_hoard` / `pursuit_leash` | ch. 6 exit | selects ch. 7 variant (7R / 7H / 7L); frames ch. 8 |
+| `funded_the_break` | ch. 7H (selling to the cult) | hard clock acceleration; recolors every downstream epilogue |
+| `walked_away` | ch. 7H exit | ends the campaign at the tree line; epilogue by clock + ally flags |
 | `seal_clock` (staged) | seeded chs. 1–5, runs from ch. 6 | loss checks; ch. 7–8 staging; every epilogue |
 
 ## The party
@@ -781,9 +792,12 @@ whole culture is built on against thousands of strangers with picks.
     (`told_gatherers`), or keep the truth close (`kept_close`).
   - *What for:* the scene reads the campaign back to the party — the facets
     in their pack, the glade mended or finished, the sprites' medal, the
-    debts — and makes them say it: put it back (`pursuit_restore`), finish
-    the collection (`pursuit_hoard`), or take the leash (`pursuit_leash`).
-    NPCs react in the room. History starts filing.
+    debts — and names the pursuit that conduct adds up to. Then it asks.
+    The player affirms the reading or overrules it: put it back
+    (`pursuit_restore`), finish the collection (`pursuit_hoard`), or take
+    the leash (`pursuit_leash`). NPCs react in the room — and react again,
+    differently, to a party declaring against its own record. History
+    starts filing.
 
 ### 7 — The Gathering *(routed by pursuit)*
 
@@ -797,6 +811,10 @@ depots, and camps — and every road north funnels through the Plains into
 these foothills. The party doesn't go back down the campaign. The campaign
 comes up the mountain to them. What they do at the confluence is the
 pursuit; the geography, the callbacks, and the ending beat are shared.
+Each pursuit is its own authored chapter file — `gemfall-07r` / `-07h` /
+`-07l`, same index, same beat, different objectives, scenes, faction
+behavior, and success conditions — selected by the pursuit flag exactly as
+the road chapters are selected by the route flag.
 
 **7R — The Returning** (`pursuit_restore`): the seal can still be thickened
 if enough fragments come *back*, and the party stands at the funnel and
@@ -824,9 +842,41 @@ the last facets on their list.
 - The realm reads the party now: hedges slow, mosshorns leave, prides bend
   around their camp, the silence of the warrens travels with them. The
   collection is nearly complete, and the land treats them like weather.
-- The cult offers, sweetly, to *buy* — and a Collection party can bankroll
-  the seal's breaking without ever touching the mountain. The scene makes
-  the arithmetic visible and lets them.
+- The cult offers, sweetly, to *buy*. The scene makes the arithmetic
+  visible and lets them sell — see the decision tree below for exactly what
+  that does and does not open up.
+
+**The Collection's exits — one explicit decision tree.** The Collection is
+the only pursuit with a fork of its own, and these are the only supported
+paths out of 7H:
+
+1. **Climb for the Keystone.** Enter chapter 8 with up to seven facets and
+   intentions the dragon will ask about. Taking the Keystone is the Exploit
+   ending. The dragon's questions can still turn a collector around — and
+   Restore, at the cost of the entire collection, stays on the table to the
+   last.
+2. **Walk.** The Collection's authored exit ramp, and it lives *here*, at
+   the end of 7H — not in chapter 8. The party turns south at the tree line
+   with full pockets and does not climb; sets `walked_away`, the campaign
+   ends, and the epilogue rolls from everything else: who they told, what
+   the factions manage without them, where the clock stood when they turned
+   around. Sometimes the wardens hold it. Sometimes the bell rings behind
+   them. The campaign keeps its one promise either way: it never pretends
+   they weren't warned. (A walking party never sees `gemfall-08`; there is
+   no southbound chapter 8, only the epilogue.)
+3. **Fund the break.** Selling to the cult is not a third exit — it is a
+   knowing modifier on the other two. `funded_the_break` accelerates the
+   Seal Clock hard, and every epilogue downstream of it is recolored: a
+   party that funds the break and then walks is walking away from a fuse
+   they lit, and the epilogue says so; a party that funds the break and
+   then climbs meets a dragon that already knows. There is no supported
+   path where selling to the cult resolves the campaign by itself — the
+   ending still arrives via Walk, climb, or the clock running out.
+4. **Hand it back.** Conduct keeps counting after the declaration: a
+   Collection party that starts returning facets mid-chapter is drifting
+   into the Returning, and the campaign lets the pursuit bend — the
+   epilogue matrix reads the facets' final disposition, not the chapter 6
+   speech.
 
 **7L — The Tether** (`pursuit_leash`): brokerage. The wardens' cage doctrine
 needs what the cult's resonance choirs know, and neither will sit at a table
@@ -873,8 +923,10 @@ clock. Embermoths have left the foothills entirely — Seal Clock stage
 three, and stage four is a bell nobody will name. The last scene is the
 ground refusing to stay still, and the party walking up the mountain
 everyone else is finally running away from — to give the stones back, to
-take the last one, or to put a leash on what wakes. The mountain does not
-care why they came. The mountain is about to.
+take the last one, or to put a leash on what wakes. One authored exception:
+a Collection party that takes the Walk turns south instead, and their
+campaign ends at this chapter's edge, epilogue rolling. For everyone else,
+the mountain does not care why they came. The mountain is about to.
 
 ### 8 — Gemfall
 
@@ -908,30 +960,26 @@ and its keeper.
   - **Exploit** — take the Keystone. The collection is complete; the rush
     wins; the party is rich, and the red sky is no longer the realm's
     strangest weather.
-  - **Walk** — the Collection's own exit: a party with eight facets and no
-    appetite for the ninth can turn south at the tree line and not climb at
-    all. Chapter 8 for them is the road back through the emptying foothills
-    with full pockets, watching the summit over their shoulders — and the
-    epilogue is decided by everything else: who they told, what the factions
-    manage without them, and where the clock stood when they turned around.
-    Sometimes the wardens hold it. Sometimes the bell rings behind them.
-    The campaign keeps its one promise either way: it never pretends they
-    weren't warned.
+
+  (There is no Walk choice here: the Walk is the Collection's exit at the
+  end of chapter 7H, and a party that took it never enters the mountain.
+  Everyone standing in the seal chamber climbed on purpose.)
 - **Losing, here at the end:** enter with a spent clock and empty hands and
   the mountain is already answering — see **Turned Back** and **The Last
   Ring** above. The Tether can still shatter in the seal chamber — see
   **The Broken Tether**. Every loss is an authored epilogue, child-hero
   tone, realm enduring, spark left burning.
 - **Epilogue matrix** reads the chapter-1 motives, the pursuit, the facet
-  count, the ally flags, and the final choice, and history files the party
-  accordingly. Named epilogue families: **Heroes of Red Sky** (restore/
-  destroy, clock beaten); **The Quiet Fixers** (restore, `kept_close`, no
-  one ever knows); **The Collectors** (walk/exploit, realm holds); **The
-  Ones Who Weren't There** (walk, realm doesn't); **The Wardens' Regret** /
-  **The Cure** (control, by faction); **The New Weather** (self-held
-  tether); **The Last Ring** / **Turned Back** / **The Broken Tether**
-  (losses). The treasure hunters who woke the mountain — or the ones who put
-  it back to sleep. Decided by play, not by the script.
+  count, the ally flags, and the final choice — including the Walk taken
+  back in 7H — and history files the party accordingly. Named epilogue
+  families: **Heroes of Red Sky** (restore/destroy, clock beaten); **The
+  Quiet Fixers** (restore, `kept_close`, no one ever knows); **The
+  Collectors** (Walk or Exploit, realm holds); **The Ones Who Weren't
+  There** (Walk, realm doesn't); **The Wardens' Regret** / **The Cure**
+  (control, by faction); **The New Weather** (self-held tether); **The Last
+  Ring** / **Turned Back** / **The Broken Tether** (losses). The treasure
+  hunters who woke the mountain — or the ones who put it back to sleep.
+  Decided by play, not by the script.
 
 ## Build order
 
@@ -947,17 +995,22 @@ The whole thing does not need building now. The intended sequence:
    change: let chapter files share an index when each declares a distinct
    `routeFlag`, have the loader pick the member matching the party's flag,
    and teach the validator that a routed index is complete only when every
-   declared route has a member. Chapter 7's variants use the same mechanism
-   keyed on the pursuit flag. Fourteen files, eight indexes:
+   declared route has a member. Chapter 7's variants are separate files
+   using the same mechanism keyed on the pursuit flag — Returning,
+   Collection, and Tether have different objectives, scenes, faction
+   behavior, and success conditions, so they are chapter variants, not one
+   oversized scene graph. Sixteen files, eight indexes:
    `gemfall-01`, `-02`, `-03a/-03b/-03c`, `-04a/-04b/-04c`,
-   `-05a/-05b/-05c`, `-06`, `-07` (internally routed by pursuit), `-08`.
+   `-05a/-05b/-05c`, `-06`, `-07r/-07h/-07l`, `-08`. (`-07h` carries the
+   Walk exit and its epilogue hand-off; there is no `-08` variant for
+   walkers because walkers never reach chapter 8.)
 3. Chapters 3A + 3B + 3C as the first authored triple — they exercise the
    route selection, the in-route flag passing (`crossed_dry` /
    `river_took_us`), and the cross-route weave (`marsh_kept_us` set from 3C
    landing the party in 4B) that everything downstream depends on.
 4. The remaining triples (4A/4B/4C, 5A/5B/5C), then the convergence (6), the
-   gathering (7), and the mountain (8), with the Seal Clock and facet flags
-   landing alongside 6 and 7.
+   gathering triple (7R/7H/7L), and the mountain (8), with the Seal Clock
+   and facet flags landing alongside 6 and 7.
 
 Wiki page: `wiki/content/campaigns/gemfall.md` carries the reader-facing
 version of this outline as handwritten content above the generated sections.
