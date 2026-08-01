@@ -115,15 +115,19 @@ features:
       map_anchor: { x: 625, y: 900 }
       between:
         - biome.sunward_fields
-        - biome.bone_yard
+        - biome.sallow_wastelands
       near:
         - biome.mermaid_cove
+        - location.bone_yard
     crossings:
       - route.northern_river_bridge
       - route.stone_crossing
     notes:
       - The main channel is a strategic barrier between the western-central mainland and the Eastern Plains.
       - Direct crossings should not be invented outside the named routes without updating this canon.
+      - In its slow lower reaches through the Sallow Wastelands the river is
+        commonly called the Glacierflow, after its source; where the current
+        finally fails it lays down the Bone Yard at the mouth.
 
   - id: feature.great_river_west_branch
     title: Western Branch of the Great River
@@ -227,7 +231,7 @@ canon_reconciliation:
       - biome.eastern_plains
       - biome.glacier_of_origins
       - biome.frostfang_peaks
-      - biome.bone_yard
+      - biome.sallow_wastelands
       - biome.mermaid_cove
     site_art_families_not_true_biome_regions:
       - location.mount_red_sky

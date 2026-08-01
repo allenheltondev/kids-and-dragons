@@ -14,6 +14,9 @@ related:
   - id: item.hollow_crown_shard
     type: item
     relationship: items
+  - id: campaign.gemfall
+    type: campaign
+    relationship: locations
   - id: item.hollow_crown_shard
     type: item
     relationship: found_in
@@ -23,18 +26,22 @@ ai_context:
   visual_style: "Moss-covered stone arch with faintly glowing runes, surrounded by dead trees in a circle of still water."
   common_encounters: "Mystery location, late-game revelation, lore discovery, potential future content."
   lore_highlights: ""
-  related_entities: "biome.whispering_marsh, item.hollow_crown_shard, item.hollow_crown_shard"
+  related_entities: "biome.whispering_marsh, item.hollow_crown_shard, campaign.gemfall, item.hollow_crown_shard"
   writing_guidance: "Cannot be opened in current campaign arc. Serves as foreshadowing only."
   generation_hints: "Runes glow brighter when the red sky intensifies, whispers grow louder near it."
 layout: locations
 infobox: location
 ---
 
+
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
 
 ### Biomes
 - [Whispering Marsh](/biomes/whispering_marsh/) `Biome`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Locations`
 
 ### Items
 - [Shard of the Hollow Crown](/items/hollow_crown_shard/) `Items` `Found In`

@@ -1,0 +1,38 @@
+{{/*
+  Likes & Dislikes chips — the infobox half of a canon `lore` block.
+
+  Front matter `likes`/`dislikes` are written by the wiki generator
+  (tools/wiki/page-generator.ts) with the canon ref already resolved to a
+  title and URL, so this partial never has to know how canon ids work.
+
+  The `because` renders as a hover tooltip here; the full reasons live in the
+  page body's Likes/Dislikes lists. Chips answer "who", the body answers "why".
+*/}}
+{{ if or .Params.likes .Params.dislikes }}
+<div class="wiki-infobox__opinions">
+  {{ with .Params.likes }}
+  <div class="wiki-infobox__opinion-group">
+    <h3 class="wiki-infobox__opinion-heading wiki-infobox__opinion-heading--like">Likes</h3>
+    <ul class="wiki-opinion-list">
+      {{ range . }}
+      <li>
+        <a class="wiki-opinion wiki-opinion--like" href="{{ .url | relURL }}" title="{{ .because }}">{{ .title }}</a>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+  {{ end }}
+  {{ with .Params.dislikes }}
+  <div class="wiki-infobox__opinion-group">
+    <h3 class="wiki-infobox__opinion-heading wiki-infobox__opinion-heading--dislike">Dislikes</h3>
+    <ul class="wiki-opinion-list">
+      {{ range . }}
+      <li>
+        <a class="wiki-opinion wiki-opinion--dislike" href="{{ .url | relURL }}" title="{{ .because }}">{{ .title }}</a>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+  {{ end }}
+</div>
+{{ end }}

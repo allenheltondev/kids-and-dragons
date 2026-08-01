@@ -47,6 +47,9 @@ related:
   - id: biome.eastern_plains
     type: biome
     relationship: contains_sites
+  - id: campaign.gemfall
+    type: campaign
+    relationship: locations
   - id: character.manticore
     type: character
     relationship: secondary_locations
@@ -74,12 +77,13 @@ ai_context:
   visual_style: "Fast blue water, stone and timber bridgework, steep banks, weathered route structures, waiting caravans, river spray, and a clear sense of constrained passage."
   common_encounters: "Blocked travel, bridge defense, rescues from the current, negotiations, caravan queues, missing cargo, river creatures, and choices where every traveler must pass through the same place."
   lore_highlights: ""
-  related_entities: "feature.great_river, biome.sunward_fields, biome.eastern_plains, biome.eastern_plains, feature.great_river, biome.sunward_fields, biome.eastern_plains, npc.stone_troll, npc.centaur, creature.silver_otter, creature.river_drake, biome.sunward_fields, biome.eastern_plains, character.manticore, creature.silver_otter, creature.river_drake, item.brave_whistle, item.river_charm, npc.centaur, npc.stone_troll"
+  related_entities: "feature.great_river, biome.sunward_fields, biome.eastern_plains, biome.eastern_plains, feature.great_river, biome.sunward_fields, biome.eastern_plains, npc.stone_troll, npc.centaur, creature.silver_otter, creature.river_drake, biome.sunward_fields, biome.eastern_plains, campaign.gemfall, character.manticore, creature.silver_otter, creature.river_drake, item.brave_whistle, item.river_charm, npc.centaur, npc.stone_troll"
   writing_guidance: "Stone Crossing is a location and transition environment, not a broad grassland biome. The current is a real hazard, and alternate nearby crossings should not be invented casually."
   generation_hints: "Traffic, river level, weather, maintenance, and danger can change whether the crossing is open, delayed, or impassable."
 layout: locations
 infobox: location
 ---
+
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
@@ -87,6 +91,9 @@ infobox: location
 ### Biomes
 - [The Eastern Plains](/biomes/eastern_plains/) `Locations` `Biome` `Connects` `Contains Sites`
 - [The Sunward Fields](/biomes/sunward_fields/) `Locations` `Connects` `Nearby Sites`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Locations`
 
 ### Characters
 - [Manticore](/characters/manticore/) `Secondary Locations`
