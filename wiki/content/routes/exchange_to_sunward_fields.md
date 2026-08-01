@@ -3,7 +3,7 @@ title: Exchange–Sunward Road
 id: route.exchange_to_sunward_fields
 type: route
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: []
 related:

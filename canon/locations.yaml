@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_location_canon
 title: "The Realm of Red Sky Location Canon"
-updated: "2026-07-30"
+updated: "2026-08-01"
 
 purpose: >-
   Canonical, agent-readable reference for named locations within biomes of the
@@ -15,6 +15,7 @@ agent_instructions:
   - Locations controlled by non-canon factions inherit the faction's intentionally_undefined status.
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+  - "`lore` is the storyteller's half of a place: its accepted origin, its recorded past, and its reputation. `origin`, `recorded_history`, and `cultural_significance` are in-world common knowledge. `common_beliefs` and `disputed_beliefs` are what people *say*, and are allowed to be wrong - a superstition is canon about the believers, not the place. `hidden_truths` are creator canon: a story may build toward one, but no NPC recites one, and on an `intentionally_undefined` entry the list stays empty so the protected mystery stays protected. `regional_relationships.place` is a validated reference; the `relationship` prose is the story hook."
 
 controlled_values:
   map_provenance:
@@ -85,6 +86,54 @@ locations:
       Residents maintain living structures, paths, gardens, historical records,
       and observation stations while monitoring changes in the wider Enchanted
       Woods.
+    lore:
+      origin: >-
+        The accepted account, preserved in the settlement's own archive, is
+        that the first bigfoot families asked the trees, and the asking took
+        forty years. The founding agreement survives in full, and visitors are
+        sometimes disappointed to learn that its clauses are mostly about
+        compost.
+      recorded_history: >-
+        MossHome's history is the archive: path-records, plant journals,
+        weather memory, and the settlement's own growth rings, kept
+        continuously since founding. The famous entry is the Reshelving -
+        every path in the Woods moved in one night, and the archive's marginal
+        note, in an unidentified hand, reads "expected."
+      cultural_significance: >-
+        The realm's memory of the west. Healers, historians, and the politely
+        desperate come to consult records nobody else thought to keep: which
+        winters the moths came early, what the marsh whispered forty years
+        ago, how long a promise has left to run.
+      common_beliefs:
+        - "Do not eat the record. The calendar gardens are the week, the month, and dessert only by archival approval."
+        - "A door grown shut is an answer. You may ask again next season."
+        - "If a mosshorn naps against your work, the work is good. This is peer review, and it is binding."
+      disputed_beliefs:
+        - "Whether the settlement chose the site or the site chose the settlement. The archive holds both accounts, in different hands, dated the same day."
+      hidden_truths:
+        - "One shelf of the archive is written in cultivated moss - living documents that must be watered to stay legible. One is in a strain nobody now living can read, and it is watered anyway, on schedule, because you do not let a book die for being difficult."
+      regional_relationships:
+        - place: biome.enchanted_woods
+          relationship: >-
+            Steward and tenant at once: MossHome keeps the forest's records
+            and the forest keeps MossHome, and the founding agreement is
+            honored so thoroughly that neither party has needed to reread it.
+        - place: biome.whispering_marsh
+          relationship: >-
+            Downhill neighbors and professional colleagues: marsh herbs come
+            up, remedies and flood-warnings go down, and the archivists trade
+            notes with the witches in the margins of each other's books.
+        - place: location.exchange
+          relationship: >-
+            The city sends its unanswerable questions west by caravan, and
+            MossHome sends back answers, corrections, and the occasional
+            polite observation that the question was wrong.
+      current_tensions:
+        - "Gemfall expeditions keep arriving with maps of the Woods that MossHome did not draw, asking for corrections the archivists are not sure the forest wants made."
+        - "A chair has come out wrong. Nine years of growing, and it leans. The grower insists the tree did it on purpose, and the archive has opened a file."
+      historical_hooks:
+        - "The founding agreement's compost clauses include one measure that has never once been invoked. The elders know it by heart and do not say it aloud."
+        - "The unreadable moss document has begun, for the first time in the records, to flower."
     adjacent_to: [biome.whispering_marsh]
     inhabitants:
       primary_peoples: [character.bigfoot]
@@ -138,6 +187,50 @@ locations:
       Activity changes through tremors, smoke, heat, Gemfalls, and lava movement.
       Calm periods remain tense because the mountain is never treated as
       permanently dormant.
+    lore:
+      origin: >-
+        The accepted account is that the mountain is where the realm keeps its
+        fire, and that it was burning before there was anyone to name it. It
+        named the realm rather than the other way around, and everything else
+        about its origin is told in stories that begin with "they say" and end
+        a safe distance away.
+      recorded_history: >-
+        The mountain's history is kept by its neighbors: the dragonlings'
+        eruption tallies, the gatherers' records of Gemfalls, and four
+        centuries of watch ledgers observing, in essence, that it is still
+        there. The mountain itself keeps no records that anyone has read.
+      cultural_significance: >-
+        The center of the realm by geography, gravity, and reputation. Its
+        Gemfalls fund the foothills, its moods set the region's calendar, and
+        its silhouette is the first thing every mapmaker draws and the last
+        thing every traveler stops checking over their shoulder.
+      common_beliefs:
+        - "The mountain drops what it means to drop. Everything else, it is holding."
+        - "Never thank the mountain out loud. It might take an interest."
+        - "A Gemfall is taken with open hands or not at all. A closed fist on the mountain is the oldest bad luck there is."
+      disputed_beliefs:
+        - "Whether the legend dragon is the mountain's tenant, warden, or prisoner. All three theories are held with confidence. The dragon has heard all three and commented on none."
+      hidden_truths:
+        - "The only living things permitted in the dragon's lair are the embermoths, who dust its scales. The moths have seen more of the mountain's inside than every expedition in history combined."
+      regional_relationships:
+        - place: biome.red_sky_foothills
+          relationship: >-
+            The mountain provides gemstones, warning tremors, and the weather;
+            the foothills provide gathering law, the moth-watch, and an
+            audience. It is the realm's longest-running relationship between
+            unequals, and it works because the smaller party does all the
+            thinking for both.
+        - place: biome.expanse
+          relationship: >-
+            The mountain closes the plateau's southern edge. Which of them is
+            guarding which is a question the realm prefers not to need
+            answered.
+      current_tensions:
+        - "Since the great eruption, the Gemfalls have not returned to their old rhythm, and the tally-keepers are running out of margin to disagree politely in."
+        - "Expeditions keep aiming for the summit with Gemfall money and borrowed courage, and the foothill grandmothers have taken to meeting them on the way up."
+      historical_hooks:
+        - "Somewhere on the mountain is the entrance every treasure story agrees on and no returning expedition has ever confirmed. The stories are all secondhand. They are also all identical."
+        - "The foothill bells have one ring that has never been used. Everyone knows what it would mean. Nobody has ever said it aloud."
     adjacent_to: [biome.expanse]
     access_from: [biome.red_sky_foothills]
     inhabitants:
@@ -193,6 +286,52 @@ locations:
       Ships arrive, caravans turn over cargo, travelers exchange news, and the
       city continuously adapts to disruptions in roads, rivers, weather, and
       distant regions.
+    lore:
+      origin: >-
+        The accepted account is that the Exchange began as a seasonal market
+        that failed to disperse. The stalls wintered over, the docks grew to
+        meet the stalls, and by the time anyone thought to ask whose city it
+        was, the honest answer was everyone's - which the city has kept as
+        policy ever since.
+      recorded_history: >-
+        The city's history is commercial and proud of it: the first winter
+        market, the building of the cliff docks, and a long tradition of
+        absorbing every crisis in the realm as a change in prices. Seventeen
+        founding plaques stand around the harbor, each sincere, each naming a
+        different founder, all polished by the same civic fund.
+      cultural_significance: >-
+        Where the realm meets itself. News, cargo, reunions, and campaigns all
+        begin at the Exchange, and every people in the realm can find a meal
+        here that tastes of home and a rumor that does not.
+      common_beliefs:
+        - "Anything lost anywhere in the realm surfaces at the Exchange within the year, priced fairly."
+        - "Never ask a dock merchant where something came from. Ask where it is going - the answer is more honest and the story is better."
+        - "The empty chair at an Exchange table is for whoever arrives next. Keeping it empty is not superstition; it is advertising."
+      disputed_beliefs:
+        - "Which people founded the city. Every people has a version placing themselves first, the seventeen plaques disagree in detail, and the dispute is considered part of the city's charm and is fanned accordingly."
+      hidden_truths:
+        - "The lost-and-found stalls' best supplier is a standing arrangement with the marsh boggarts. Neither side has ever put it in words, which both sides consider the strongest clause in it."
+      regional_relationships:
+        - place: biome.sunward_fields
+          relationship: >-
+            The Fields feed the city and the city pays for the Fields; each
+            assumes the other would collapse first, and neither wants to
+            check.
+        - place: biome.whispering_marsh
+          relationship: >-
+            The marsh approach delivers remedies, guides, boggart salvage, and
+            customers who prefer not to say which of those they came for.
+        - place: biome.open_sea
+          relationship: >-
+            The docks are the city's fortune and its weathervane: whatever the
+            sea is doing to shipping, the Exchange knows it by lunch and has
+            priced it by dinner.
+      current_tensions:
+        - "The Gemfall rush made the Exchange its front door, and the city is now housing, feeding, and pricing a boom it publicly insists it planned for."
+        - "The docks have outgrown the cliffs, and every expansion proposal involves somebody's ancestral mooring and everybody's opinion."
+      historical_hooks:
+        - "An eighteenth founding plaque was commissioned, delivered, and never installed. It is in a warehouse. The name on it is a matter of intense civic non-discussion."
+        - "The sea-returns shelf - things the ocean gave back decades late - includes one item the city's records list as delivered before it was lost. The clerk who filed it stands by the paperwork."
     adjacent_to: [biome.whispering_marsh, biome.sunward_fields]
     coast: southwestern_sea
     inhabitants:
@@ -249,6 +388,50 @@ locations:
     standard_behavior: >-
       Traffic, river level, weather, maintenance, and danger can change whether
       the crossing is open, delayed, or impassable.
+    lore:
+      origin: >-
+        The accepted account is that the trolls built the bridge because the
+        river was being unreasonable, and that the settlement is, at bottom, a
+        queue that put down roots.
+      recorded_history: >-
+        Crossing history is toll history: generations of stories, riddles, and
+        promises paid at the bridge, the long riddle account with the eastern
+        prides, and a flood-roll of the years the stones went under - when the
+        ferry becomes, briefly and repeatedly, the realm's most important
+        vessel.
+      cultural_significance: >-
+        The realm's bottleneck, and proud of it: every eastern story crosses
+        here eventually, pays something that is not money, and leaves a little
+        better told.
+      common_beliefs:
+        - "Pay the drake, answer the troll, and tip the ferryman in song. The crossing is cheap if you count right."
+        - "A riddle owed at the bridge is a debt. The interest is embarrassment."
+        - "Never brag about the current. It auditions people."
+      disputed_beliefs:
+        - "Whether the troll and the drake operate the crossing in partnership. Travelers assume a cartel; regulars point out that the rates have never once been coordinated."
+      hidden_truths:
+        - "The troll and the drake have never exchanged a single word. Each privately believes the other founded the arrangement, and is too professional to raise the subject now."
+      regional_relationships:
+        - place: feature.great_river
+          relationship: >-
+            The river is the reason, the obstacle, and the business model. The
+            crossing exists because the Great River narrows here once,
+            briefly, and has never been talked into doing it anywhere else.
+        - place: biome.sunward_fields
+          relationship: >-
+            The western approach is Fields country, and a long queue at the
+            bridge is the best market day the nearby cooperatives get.
+        - place: biome.eastern_plains
+          relationship: >-
+            The eastern side is pride country, where escorts begin and end and
+            the riddle account is honored; the bridge is the seam between two
+            halves of the realm, stitched daily.
+      current_tensions:
+        - "Gemfall traffic has produced the longest queues in the crossing's history, and the petition for a second bridge has reached the troll, who is weighing the question aloud. Estimates for the answer run from seasons to decades."
+        - "The drake has raised its rates, citing volume. The queue's opinion of this is loud; the drake's opinion of the queue's opinion is underwater."
+      historical_hooks:
+        - "The bridge's central span contains one stone that matches no local rock, and the troll, asked about it, begins the answer so slowly that no traveler has yet had time to hear the end."
+        - "The sixty-year riddle on the pride account is the troll's to answer, and the troll is still weighing it, one word per season. Both ends of the bridge agree that whoever interrupts will carry the blame forever."
     connects: [biome.sunward_fields, biome.eastern_plains]
     spans: feature.great_river
     inhabitants:
@@ -305,6 +488,52 @@ locations:
     standard_behavior: >-
       Tides affect the entrance, sound travels unpredictably, and deeper passages
       should feel larger than the visible island mouth implies.
+    lore:
+      origin: >-
+        No accepted account survives contact with the rock itself: sailors say
+        the sea carved a lucky likeness, cave-divers say no current carves eye
+        sockets level, and the stone trolls, who keep the outer galleries, say
+        only that it was already old when their oldest stories were young.
+      recorded_history: >-
+        The cave's recorded history is a list of thresholds: how far the
+        mapped galleries reach, and the dates each expedition pushed the map
+        one chamber deeper or declined to. The deep record is mostly names,
+        dates, and the phrase "turned back," written in every era's
+        handwriting.
+      cultural_significance: >-
+        The realm's agreed front door to the underground, and the reason
+        coastal charts mark depth in two directions. Sailors give the skull a
+        courteous margin, and the trolls give it maintenance - the only
+        attention it has ever visibly accepted.
+      common_beliefs:
+        - "Knock before entering. It is not superstition, it is manners, and something in there keeps track of manners."
+        - "Steady in, steady out. The cave dislikes surprises more than it dislikes visitors."
+        - "The tide decides your visiting hours. Argue with the tide, not with the cave."
+      disputed_beliefs:
+        - "Whether the skull resembles any creature that ever lived. Scholars have compared it to every remains in the Bone Yard and matched nothing, which has settled the question for nobody."
+      hidden_truths:
+        - "Parts of the cave sound designed because they are. The echo hunter has spent lifetimes adjusting drips and moving pebbles until its chambers ring true - the deep galleries are one creature's centuries-long housekeeping, a fact that would comfort no expedition."
+      regional_relationships:
+        - place: biome.open_sea
+          relationship: >-
+            The sea is the doorstep and the doorman: every approach is by
+            water, and the water sets the schedule.
+        - place: biome.frostfang_peaks
+          relationship: >-
+            The aeries watch the skull from their coast and give it
+            flight-rule distance; griffin manners, like troll manners, extend
+            to doors.
+        - place: location.bone_yard
+          relationship: >-
+            The realm's two great deposits of enormous old bone, forever
+            compared by scholars and never yet matched; whatever the skull
+            was, the Yard did not bury its relatives.
+      current_tensions:
+        - "Unfamiliar lanterns have been seen in the outer galleries at hours no expedition claims, and the trolls have begun greeting visitors with one more question than usual."
+        - "The last two mapping expeditions came back early, in agreement that the deep chambers sounded 'rearranged,' and in disagreement about everything else."
+      historical_hooks:
+        - "The oldest troll story about the cave calls it a door without saying to where, and troll stories are not known for leaving out the important part by accident."
+        - "A missing expedition's ledger washed out of the cave mouth a year after they went in - dry, complete, and one entry longer than when it went in."
     access:
       mode: sea_or_subterranean
       fixed_routes: false
@@ -353,6 +582,45 @@ locations:
     standard_behavior: >-
       Bustling with activity during day, eerily quiet at night except for the
       forge.
+    lore:
+      origin: >-
+        As the wardens tell it, the citadel was raised on the highest peak of
+        the foothills for one purpose - to watch the red sky - and every stone
+        of it faces upward. Records of the construction itself are sparse,
+        which the order attributes to the builders having been busy.
+      recorded_history: >-
+        Four centuries of watch rotations, forge-nights, and ledgers - above
+        all the ledgers. The citadel's history is deliberately uneventful, and
+        the order maintains that this is the finest record any fortress has
+        ever compiled.
+      cultural_significance: >-
+        The foothills' fixed point: caravans navigate by its silhouette,
+        locals set their clocks by the watch-horns, and the whole region
+        sleeps a little easier for the violet windows burning overnight -
+        without, if pressed, being able to say precisely what the wardens are
+        watching for. Neither, precisely, can the wardens.
+      common_beliefs:
+        - "As long as the forge smoke rises, the realm is fine. The day it stops, ask questions."
+        - "Somewhere below the citadel is a sealed vault the oaths are about. Wardens neither confirm nor deny, mostly because they were recruits once and would also like to know."
+      disputed_beliefs:
+        - "What the founding oath was first sworn against. The order's own records decline to say, and the order regards the declining as the records doing their job."
+      hidden_truths: []
+      regional_relationships:
+        - place: biome.red_sky_foothills
+          relationship: >-
+            Protector and tenant: the citadel watches the sky for the region,
+            and the region keeps the citadel fed, informed, and supplied with
+            recruits who think the job is about swords.
+        - place: location.mount_red_sky
+          relationship: >-
+            The watch points at the sky, but the windows face the mountain
+            too. The order has never said whether that is architecture or
+            policy.
+      current_tensions:
+        - "Gemfall has stretched the patrols thin exactly when the foothills got crowded, and the order is discovering that a boom is harder to watch than a mystery."
+      historical_hooks:
+        - "One year's ledger is bound in a different color and reads, in its entirety, like every other year's. The one question every recruit asks about it receives the traditional answer: 'nothing.'"
+        - "An ember storm is due - the old hands can feel it - and the last one is just far enough back that only the ledgers remember what the rite requires."
     relationships:
       biome: [biome.red_sky_foothills]
       factions: [faction.skywardens]
@@ -386,6 +654,41 @@ locations:
     standard_behavior: >-
       Runes glow brighter when the red sky intensifies, whispers grow louder near
       it.
+    lore:
+      origin: >-
+        Not established, and carefully so. The arch was already ancient when
+        the marsh first had visitors to notice it, and every attempt to date
+        it has concluded, in more careful words, "before us." The whispers
+        pile up near the arch, which is how it was found and why it is
+        avoided.
+      recorded_history: >-
+        The Gate's recorded history is a record of nothing happening, kept
+        nervously: it has never opened, never moved, and never done anything
+        but glow - and the glow keeping time with the red sky is the most
+        thoroughly studied non-event in the realm.
+      cultural_significance: >-
+        The realm's most respected closed door. Witches study it from a
+        distance, frogfolk route the channels around it, and the phrase "said
+        to be" does more work in sentences about the Gate than anywhere else
+        in the realm.
+      common_beliefs:
+        - "It is a sealed portal to the world before the red sky. This is what everyone says, and what nobody can source."
+        - "You do not knock. Whatever the Gate is, the one thing every people agrees on is that it is not to be knocked on."
+      disputed_beliefs:
+        - "Door, warning, monument, or lock - and if a lock, on which side. The theories are ancient, incompatible, and equally unencumbered by evidence."
+      hidden_truths: []
+      regional_relationships:
+        - place: biome.whispering_marsh
+          relationship: >-
+            The marsh holds the Gate the way one holds a thing whose owner may
+            return: channels routed around it, whispers thickest near it, and
+            the frogfolk's markers giving it the widest, politest berth in the
+            marsh.
+      current_tensions:
+        - "The runes have been brighter this year, and the whispers near the arch have changed pitch - facts nobody connects out loud, and everyone connects."
+        - "Since the Gemfall, more than one visitor has noticed that the runes' hum and the scattered gemstones' hum are the same hum. The witches took notes. The notes are not circulating."
+      historical_hooks:
+        - "The circle of still water around the arch does not flood, freeze, or drain, whatever the marsh does around it - a fact so old it reads as scenery, until you think about it."
     relationships:
       biome: [biome.whispering_marsh]
       factions: []
@@ -458,6 +761,50 @@ locations:
     standard_behavior: >-
       River deposits and tides rearrange smaller remains, supernatural activity
       may animate or echo through the bones, and safe paths can change.
+    lore:
+      origin: >-
+        The accepted account is the visible one: the Glacierflow ends here and
+        lays down everything it carried, and among the silt and driftwood, the
+        bones of enormous creatures no bestiary can name have been collecting
+        since long before anyone was watching.
+      recorded_history: >-
+        The Yard's history is a ledger of visits and consequences: expeditions
+        in, remains rising, things taken and - eventually, invariably -
+        returned. The guides' accounts agree on the pattern and on the moral,
+        which is the same one every time, and still needs relearning every
+        generation.
+      cultural_significance: >-
+        The realm's resting place for its oldest dead, and its longest-running
+        lesson in leaving things be. Forbidden in the way that matters: not by
+        law, but by everyone who has been there once.
+      common_beliefs:
+        - "Take nothing, hum something, and leave before the tide turns."
+        - "The bones are not angry. They are tired, and there is a difference, and you do not want to be the one who teaches them the first thing."
+        - "Speak low. Not because the bones hear - because you do not know that they don't."
+      disputed_beliefs:
+        - "What the enormous creatures were. No living species matches, the skull rock offshore matches nothing here either, and the realm's scholars have agreed to keep disagreeing rather than dig for the answer."
+      hidden_truths:
+        - "No object taken from the Yard has ever stayed sold. Every one has found its way back - returned by tide, by conscience, or by a buyer who could not sleep near it. The 'genuine Bone Yard relics' in circulation at the Exchange are hand-me-down crawler shells, every one."
+      regional_relationships:
+        - place: biome.sallow_wastelands
+          relationship: >-
+            The flats are the Yard's threshold: reaching the bones takes
+            effort, the effort is the point, and the guides who provide it
+            double as the Yard's unofficial doorkeepers.
+        - place: feature.great_river
+          relationship: >-
+            The river built the Yard and staffs it still, delivering silt,
+            driftwood, and the occasional new resident with every flood.
+        - place: biome.mermaid_cove
+          relationship: >-
+            The song circles carry across the water on still nights, and the
+            Yard is measurably quieter for it - the realm's gentlest ongoing
+            act of neighborliness, unacknowledged from both shores.
+      current_tensions:
+        - "Gemfall rumor insists that gemstones washed downriver into the bones, and the restless remains have risen twice this season - which the guides report in the tone of people watching a lesson approach on schedule."
+      historical_hooks:
+        - "Something taken generations ago has never come back, and old accounts say the Yard has been slightly restless ever since - one wrong, patiently outstanding."
+        - "Among the enormous remains is one small, ordinary grave, marked and maintained by nobody knows whom. The bones nearest it never rise."
     access:
       mode: overland_and_water
       fixed_routes: false
@@ -503,6 +850,50 @@ locations:
     standard_behavior: >-
       The hedges are kept by the people who live behind them, and the paths
       through them change with the season.
+    lore:
+      origin: >-
+        The accepted account is that the founders wanted neighbors, but with
+        notice, and planted accordingly. The hedges came first and the town
+        grew inside them - grown thick, grown tall, and, the founders' one
+        indulgence, grown opinionated.
+      recorded_history: >-
+        Town history is hedge history: plantings, graftings, the season the
+        paths first changed on their own, and the long friendly record of
+        keepers learning that tending the hedges and commanding them are
+        different jobs.
+      cultural_significance: >-
+        The Sunward Fields' far waystop and its filter: the first roof after
+        the bridge road or the last one before it, depending on your
+        direction, and a town that decides - or whose hedges decide - who gets
+        through.
+      common_beliefs:
+        - "The hedge hears offers. Flattery gets you nowhere; sincerity gets you the short path."
+        - "If today's path through the hedges is longer, it is for a reason. If it is shorter, check what you are carrying."
+        - "Never prune anything yourself. That is the keepers' whole job, and the hedge's whole sense of humor."
+      disputed_beliefs:
+        - "Whether the hedges decide who gets through or the keepers do. Visitors assume the keepers. The keepers, notably, do not."
+      hidden_truths:
+        - "The hedges decide. The keepers advocate, negotiate, and occasionally plead, but the hedges genuinely do not listen to anyone who has not been let in properly - including, on bad days, the keepers."
+      regional_relationships:
+        - place: biome.sunward_fields
+          relationship: >-
+            A Fields town to the bone - cooperative, festival-keeping, fed by
+            the same harvest road it watches over; waystop duty is its
+            contribution to the cooperatives.
+        - place: location.stone_crossing
+          relationship: >-
+            Bridge news arrives with every wagon, and a queue at the crossing
+            is a full inn at Bramblewood.
+        - place: location.exchange
+          relationship: >-
+            Far ends of the same road: the city sends travelers, prices, and
+            fashion; Bramblewood sends produce, gossip with the mud still on
+            it, and travelers it has already vetted.
+      current_tensions:
+        - "Gemfall traffic wants through the hedges in a hurry, and the hedges do not do hurry; the inn is full, the paths are long, and the queue outside the north gap has developed its own economy."
+      historical_hooks:
+        - "Once in the town's history the hedges opened a path straight through - both gaps, one line, no turns. Nobody now living knows for whom, and the keepers' records note only the date and, underneath, 'as agreed.'"
+        - "A door-sized gap in the oldest hedge wall has been sealed with thorns as long as anyone remembers. The hedge maintains it - the way you maintain a thing you intend to use again."
     relationships:
       biome: [biome.sunward_fields]
       creatures: []

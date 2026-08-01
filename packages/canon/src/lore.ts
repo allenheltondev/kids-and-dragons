@@ -57,3 +57,54 @@ export const Lore = z.strictObject({
   dislikes: z.array(LoreOpinion).default([]),
 });
 export type Lore = z.infer<typeof Lore>;
+
+/**
+ * Place lore — the storyteller's half of somewhere, rather than someone.
+ *
+ * A people has a story and opinions; a place has a past and a reputation, and
+ * the two need different fields. The load-bearing split here is
+ * **who knows what**:
+ *
+ *   - `origin`, `recorded_history`, `cultural_significance` are what the realm
+ *     broadly agrees on. In-world common knowledge.
+ *   - `common_beliefs` and `disputed_beliefs` are what people *say*, which is
+ *     allowed to be wrong — a superstition is canon about the believers, not
+ *     about the place.
+ *   - `hidden_truths` is creator canon nobody in-world generally knows. A
+ *     generator may build toward one; an NPC must not recite one. On a
+ *     protected mystery (`canon_status: intentionally_undefined`) the list
+ *     stays empty — an authored secret would quietly close the design slot
+ *     that status exists to hold open.
+ *
+ * `regional_relationships` follows the same rule as `LoreOpinion`: the `place`
+ * is a `canonRef`, so every relationship is a validated, reverse-indexed edge —
+ * "who has history with the marsh" is a registry query — and the prose carries
+ * the part a chapter can actually use.
+ */
+export const RegionalRelationship = z.strictObject({
+  place: canonRef("biome", "location", "feature", "route"),
+  /** How the two depend on, fear, or affect one another. Never optional. */
+  relationship: z.string().min(1),
+});
+export type RegionalRelationship = z.infer<typeof RegionalRelationship>;
+
+export const PlaceLore = z.strictObject({
+  /** The established or commonly accepted origin of the place. */
+  origin: z.string().min(1),
+  /** Important events that shaped its present identity. */
+  recorded_history: z.string().min(1).optional(),
+  /** What the place means to nearby peoples and the wider realm. */
+  cultural_significance: z.string().min(1).optional(),
+  /** Beliefs held by most people — including regional superstitions and sayings. */
+  common_beliefs: z.array(z.string().min(1)).default([]),
+  /** Theories some groups accept and others reject. Deliberately unresolved. */
+  disputed_beliefs: z.array(z.string().min(1)).default([]),
+  /** Canon known to the creator but not generally known in-world. */
+  hidden_truths: z.array(z.string().min(1)).default([]),
+  regional_relationships: z.array(RegionalRelationship).default([]),
+  /** Unresolved political, ecological, magical, or economic pressures. */
+  current_tensions: z.array(z.string().min(1)).default([]),
+  /** Story seeds arising from the place's past. */
+  historical_hooks: z.array(z.string().min(1)).default([]),
+});
+export type PlaceLore = z.infer<typeof PlaceLore>;

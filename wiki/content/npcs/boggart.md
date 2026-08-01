@@ -3,7 +3,7 @@ title: Boggart
 id: npc.boggart
 type: npc
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "collector", "secretive"]
 classification: supporting_people

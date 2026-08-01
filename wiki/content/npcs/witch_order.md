@@ -3,7 +3,7 @@ title: Witches
 id: npc.witch_order
 type: npc
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["cultural_order", "cross_species", "magic", "tradition"]
 classification: cultural_order

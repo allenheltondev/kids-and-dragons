@@ -3,7 +3,7 @@ title: Western Branch of the Great River
 id: feature.great_river_west_branch
 type: feature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: []
 related:

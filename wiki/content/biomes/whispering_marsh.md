@@ -3,10 +3,23 @@ title: Whispering Marsh
 id: biome.whispering_marsh
 type: biome
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
 danger_level: moderate
+regional_relationships:
+  - id: feature.great_river_west_branch
+    title: "Western Branch of the Great River"
+    url: "/features/great_river_west_branch/"
+    relationship: "The branch feeds the marsh and the marsh slows the branch; a flood upstream redraws the channels here a season later, which the frogfolk describe as the river forwarding its mail."
+  - id: location.exchange
+    title: "The Exchange"
+    url: "/locations/exchange/"
+    relationship: "The city sits a short, famously soggy walk south, and depends on marsh remedies, marsh guides, and the marsh's habit of returning lost cargo at boggart prices."
+  - id: biome.sunward_fields
+    title: "The Sunward Fields"
+    url: "/biomes/sunward_fields/"
+    relationship: "The fields' irrigation and the marsh's water table are the same water and the same argument, renegotiated through the frogfolk every dry year, in very few words."
 related:
   - id: feature.great_river
     type: feature
@@ -91,7 +104,7 @@ ai_context:
   themes: "Wetland, Mist, Spirits, Memory, Waterways, Secrets"
   visual_style: "Layered fog, twisted wetland trees, dark reflective water, reed islands, half-submerged paths, hanging moss, dim lanterns, and distant lights with uncertain depth."
   common_encounters: "Spirit encounters, missing memories, hidden communities, navigation by sound, environmental restoration, bargains, warnings, and mysteries that should not always be solved by fighting."
-  lore_highlights: ""
+  lore_highlights: "The marsh is where the river's western branch slows down and starts keeping things."
   related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, campaign.gemfall, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, npc.frogfolk, npc.boggart, npc.witch_order"
   writing_guidance: "The marsh is eerie but not inherently evil. Frogfolk, boggarts, and witches have moral agency. Do not make every whisper a ghost or every light a trap."
   generation_hints: "Mist changes visibility, water routes shift with weather and river flow, and whispers sometimes repeat memories or warnings without explaining their source."
@@ -99,6 +112,52 @@ layout: biomes
 infobox: biome
 ---
 
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+The marsh is where the river's western branch slows down and starts keeping things. The accepted account is that it has always been the realm's quiet drawer: water goes in carrying the year's noise, and the mist holds on to the parts nobody came back for.
+
+### Recorded History
+
+Frogfolk channel-charts go back further than most peoples' histories and are more accurate. They record the arrival of the witches, the marking of the safe channels, and the periodic discovery that something old was standing in the marsh all along - the Hollow Gate being merely the largest example.
+
+### Cultural Significance
+
+People come to the marsh to consult witches, to leave things behind, and to hear voices they miss. The frogfolk maintain a strict etiquette for all three, and the marsh maintains its own etiquette, which is stricter and unposted.
+
+### Common Beliefs
+
+- Never answer a whisper with your name; a fair trade is a hum.
+- A light that knows where you live got that from somewhere. Ask where.
+- What sinks in the marsh is not lost. It is filed.
+
+### Disputed Beliefs
+
+- Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way.
+
+### Hidden Truths
+
+> *Creator canon — not generally known in-world. No NPC recites these.*
+
+- Most whispers are recordings. The mist holds sound the way the northern glacier holds memory, and on still nights the marsh replays conversations older than the peoples having them.
+
+### Neighbors
+
+- **[Western Branch of the Great River](/features/great_river_west_branch/)** — The branch feeds the marsh and the marsh slows the branch; a flood upstream redraws the channels here a season later, which the frogfolk describe as the river forwarding its mail.
+- **[The Exchange](/locations/exchange/)** — The city sits a short, famously soggy walk south, and depends on marsh remedies, marsh guides, and the marsh's habit of returning lost cargo at boggart prices.
+- **[The Sunward Fields](/biomes/sunward_fields/)** — The fields' irrigation and the marsh's water table are the same water and the same argument, renegotiated through the frogfolk every dry year, in very few words.
+
+### Current Tensions
+
+- The whispers near the Hollow Gate have changed, and the frogfolk closed two channels this year that had been safe for a century.
+- Wisp traffic is up, and nobody can say whether the marsh is remembering more or being listened to less.
+
+### Story Hooks
+
+- A channel closed in a grandmother's time is due for reopening review, and it was somebody's only way home.
+- For eleven years the marsh's most reliable footbridge was a mire mimic. It is still sulking about the unmasking, and the crossing it played has never been as good since.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities

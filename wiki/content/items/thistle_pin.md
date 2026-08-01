@@ -3,7 +3,7 @@ title: Thistle Pin
 id: item.thistle_pin
 type: item
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["charm", "might", "expanse", "common"]
 related:
