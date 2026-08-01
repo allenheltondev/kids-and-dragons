@@ -3,7 +3,7 @@ title: Brave Whistle
 id: item.brave_whistle
 type: item
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["tool", "courage", "stone_crossing", "common"]
 related:

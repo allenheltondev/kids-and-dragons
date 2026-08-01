@@ -3,7 +3,7 @@ title: Echo Hunter
 id: creature.echo_hunter
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["dangerous", "underground", "blind", "predator"]
 classification: dangerous_creature

@@ -3,7 +3,7 @@ title: Frost Wyrm
 id: creature.frost_wyrm
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["dangerous", "mountain", "ice", "predator"]
 classification: dangerous_creature
