@@ -44,7 +44,7 @@ describe("gridCells", () => {
   it("marks exactly the offered tiles tappable — nothing self-derived", () => {
     const encounter = fight();
     const moves = legalMoves(encounter);
-    const cells = gridCells(encounter, [makeMember()], moves, null);
+    const cells = gridCells(encounter, [makeMember()], moves, []);
 
     expect(cells).toHaveLength(16);
     const tappable = cells.filter((c) => c.tappable).map((c) => `${c.x},${c.y}`);
@@ -57,7 +57,7 @@ describe("gridCells", () => {
 
   it("carries occupants by shape: species icon, foe glyph, active ring, wall", () => {
     const encounter = fight();
-    const cells = gridCells(encounter, [makeMember()], [], null);
+    const cells = gridCells(encounter, [makeMember()], [], []);
     const at = (x: number, y: number) => cells.find((c) => c.x === x && c.y === y);
 
     expect(at(1, 1)?.blocked).toBe(true);
@@ -73,7 +73,7 @@ describe("gridCells", () => {
 
   it("flags the selected tile", () => {
     const encounter = fight();
-    const cells = gridCells(encounter, [makeMember()], [], { x: 2, y: 2 });
+    const cells = gridCells(encounter, [makeMember()], [], [{ x: 2, y: 2 }]);
     expect(cells.find((c) => c.x === 2 && c.y === 2)?.selected).toBe(true);
     expect(cells.filter((c) => c.selected)).toHaveLength(1);
   });

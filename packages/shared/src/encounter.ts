@@ -20,10 +20,11 @@
  * were chosen by writing out all four class signatures and all six species
  * actions from `rules.json` and taking the union; the level-3 and level-6
  * unlocks then fell out of the same vocabulary for free, which is the evidence
- * that it is the right size. Two do not fit and are deliberately not built:
- * Bramble Wall grows terrain on two tiles at once (multi-tile targeting) and
- * Encore hands somebody an extra turn (a second cursor). Both are level-9,
- * both belong to the pass that owns level unlocks.
+ * that it is the right size. The chapter-5 pass — the one that owns level
+ * unlocks — grew the vocabulary to sixteen: the eight abilities `rules.json`
+ * promises at levels 3, 6 and 9 needed a ward that lasts, a miss, a root, a
+ * second move, a second turn, and terrain that grows mid-fight, and each of
+ * those is a verb below rather than a special case in the resolver.
  *
  * **`legalActions` is the only gate.** §7.2: "PlayerView shows only the actions
  * that are currently legal ... Illegal moves are not presented, so they can't be
@@ -71,11 +72,12 @@ import {
   reachableTiles,
   removeActor,
   samePosition,
+  setTerrain,
   stepsBetween,
 } from "./grid.js";
 import type { Rng } from "./dice.js";
 import { resolveAttack, rollD20 } from "./dice.js";
-import type { ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
+import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
 import type { EnemySpec } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
 
@@ -147,6 +149,24 @@ export interface TargetRule {
    * "every enemy inside a 2x2 square of tiles". Defaults to 1.
    */
   readonly area?: number;
+  /**
+   * How many figures may be chosen, all from the same legal set. Storm of
+   * Blades is `2` — "attack two different enemies standing next to you" — and
+   * the word *different* is why this is chosen targets rather than the
+   * `adjacent` scope, which would hit everyone beside you and make the card a
+   * lie in the generous direction. Choosing fewer than `count` is legal (one
+   * enemy left is still worth two swings on paper); choosing the same figure
+   * twice is not. Defaults to 1.
+   */
+  readonly count?: number;
+  /**
+   * How many tiles must be chosen, for a `"tile"` target. Bramble Wall is `2`
+   * — "grow thorns on two tiles" — and the ability is withheld entirely when
+   * fewer legal tiles exist, rather than quietly walling less than the card
+   * says. Exact, not "up to": a count the player picks is one more rule to
+   * explain. Defaults to 1. Not combinable with `followUp`.
+   */
+  readonly tileCount?: number;
 }
 
 /** Whom a single effect lands on, once the ability's target is chosen. */
@@ -160,11 +180,17 @@ export type EffectScope =
   /** Everyone of `affects` side standing next to the actor. Ground Smash. */
   | "adjacent"
   /** Everyone of `affects` side inside the `area` square at the target. Burst. */
-  | "area";
+  | "area"
+  /**
+   * Everyone on the *other* side who is still standing, wherever they are.
+   * Starfall's "every enemy on the board" — the board-wide counterpart of
+   * `allies`, and like it, deliberately not a square anchored anywhere.
+   */
+  | "enemies";
 
 /**
- * The ten verbs. Each is something the engine already knows how to do to a
- * figure; an ability is a list of them.
+ * The sixteen verbs. Each is something the engine already knows how to do to a
+ * figure (or, for `growWall`, to the board); an ability is a list of them.
  */
 export type AbilityEffect =
   /** d20 + your class stat vs. the target's Guard (§4.1, §7.2), then damage. */
@@ -186,7 +212,32 @@ export type AbilityEffect =
   /** Brace — the next hit meant for the target lands on the actor instead. */
   | { readonly type: "protect" }
   /** First Strike. Read once, when order is rolled; never on a turn. */
-  | { readonly type: "goFirst" };
+  | { readonly type: "goFirst" }
+  /**
+   * Unbreakable — every hit on the target lands `amount` lighter, until the
+   * *actor's* next turn starts. The first effect with a duration; it hangs on
+   * the recipient and is cleared by the granter's turn coming round, the same
+   * shape Brace already uses.
+   */
+  | { readonly type: "ward"; readonly amount: number }
+  /** Vanish — the next attack aimed at the target misses outright. */
+  | { readonly type: "evade" }
+  /** Tanglelight — the target keeps its action but takes no steps on its next turn. */
+  | { readonly type: "root" }
+  /**
+   * Twin Step — movement is legal again after the action, with a fresh budget.
+   * "Move, attack, and then move again": the second move is `steps` tiles, or
+   * the actor's full allowance when the card doesn't say.
+   */
+  | { readonly type: "extraMove"; readonly steps?: number }
+  /**
+   * Encore — the target takes one extra *action* (no steps) the moment the
+   * actor's turn ends. Queued rather than immediate, because the actor still
+   * owns the current turn; `endTurn` hands the clock over.
+   */
+  | { readonly type: "extraTurn" }
+  /** Bramble Wall — every chosen tile becomes blocked terrain for the rest of the fight. */
+  | { readonly type: "growWall" };
 
 /**
  * The verbs the engine implements, as data the content loader can hold
@@ -205,7 +256,26 @@ export const EFFECT_VERBS: readonly AbilityEffect["type"][] = [
   "skipTurn",
   "protect",
   "goFirst",
+  "ward",
+  "evade",
+  "root",
+  "extraMove",
+  "extraTurn",
+  "growWall",
 ];
+
+/**
+ * Verbs that only ever land on the actor performing them, whatever the spec's
+ * `to` says. `moveSelf` moves the actor by definition; `extraMove` refunds the
+ * actor's own steps; `growWall` acts on tiles, not figures. Forcing the scope
+ * here — rather than letting a catalog entry write the nonsense of gliding
+ * somebody else — is what lets Shove pair a shove with a `moveSelf` in one list.
+ */
+const SELF_DIRECTED_VERBS: ReadonlySet<AbilityEffect["type"]> = new Set([
+  "moveSelf",
+  "extraMove",
+  "growWall",
+]);
 
 export interface AbilityEffectSpec {
   readonly effect: AbilityEffect;
@@ -272,9 +342,10 @@ export const ATTACK_DAMAGE = 3;
  * A catalog entry with the same id still wins (see `abilityFor`), so retuning
  * Attack is a content change; needing the party to exist first is not.
  *
- * Use item is the fourth row of that table and is deliberately absent: what a
- * consumable does already lives in inventory.ts and content/items.json, and the
- * engine pass that wires encounters into scenes is where the two meet.
+ * Use item is the fourth row of that table and is still not an *ability*: what
+ * a consumable does lives in inventory.ts and content/items.json, and
+ * `useItemInCombat` below is where the two meet — it spends the turn's one
+ * action exactly as these do, without ever entering the catalog.
  */
 export const UNIVERSAL_ABILITIES: AbilityCatalog = {
   [ATTACK_ID]: {
@@ -350,6 +421,16 @@ export interface Combatant {
   readonly skipNextTurn: boolean;
   /** Brace — who is standing in front of this figure, if anyone. */
   readonly protectedBy: ActorId | null;
+  /**
+   * Unbreakable — hits land `amount` lighter until `byId`'s next turn starts.
+   * One slot, larger ward wins, same reasoning as `rollBonus`: two numbers to
+   * add together is the arithmetic the whole game exists to avoid.
+   */
+  readonly ward: { readonly byId: ActorId; readonly amount: number } | null;
+  /** Vanish — the next attack aimed at this figure misses, then this clears. */
+  readonly evade: boolean;
+  /** Tanglelight — no steps on this figure's next turn. Consumed when it starts. */
+  readonly rooted: boolean;
   /** The initiative roll, kept so the client can show the order it produced. */
   readonly initiative: number;
 }
@@ -374,6 +455,25 @@ export interface EncounterState {
   /** Steps the active figure has left. §7.2: move, *then* act. */
   readonly stepsLeft: number;
   readonly actionTaken: boolean;
+  /**
+   * Twin Step — the one exception to "move, then act". Set by the `extraMove`
+   * verb; while true, `stepsLeft` is spendable even though the action is gone.
+   * Cleared the moment the turn ends, however it ends.
+   */
+  readonly moveAfterAction: boolean;
+  /**
+   * Encore — figures owed an extra action, in the order they were owed. Read
+   * by `endTurn`, which hands the clock to the first standing one *before*
+   * advancing the cursor, so "right now" on the card is literally true.
+   */
+  readonly encores: readonly ActorId[];
+  /**
+   * The figure taking an encore action, overriding the cursor while set. A
+   * separate field rather than a cursor rewrite because the rolled order is a
+   * promise the screen already made — splicing a bonus action into `order`
+   * would re-seat everybody downstream of it.
+   */
+  readonly encoreActor: ActorId | null;
 }
 
 /** Something worth animating or narrating. Returned, never stored in state. */
@@ -387,7 +487,14 @@ export type EncounterEvent =
   | { readonly type: "shoved"; readonly actorId: ActorId; readonly to: Position }
   | { readonly type: "protected"; readonly actorId: ActorId; readonly byId: ActorId }
   | { readonly type: "bonus"; readonly actorId: ActorId; readonly amount: number }
-  | { readonly type: "dazed"; readonly actorId: ActorId };
+  | { readonly type: "dazed"; readonly actorId: ActorId }
+  /** A ward granted, or a hit landing lighter because of one. */
+  | { readonly type: "warded"; readonly actorId: ActorId; readonly amount: number }
+  /** An attack that was going to land, and didn't — Vanish spent. */
+  | { readonly type: "evaded"; readonly actorId: ActorId }
+  | { readonly type: "rooted"; readonly actorId: ActorId }
+  | { readonly type: "encore"; readonly actorId: ActorId }
+  | { readonly type: "walled"; readonly at: Position };
 
 /**
  * How the encounter stands *right now*. A query, never a phase.
@@ -557,6 +664,9 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       rollBonus: 0,
       skipNextTurn: false,
       protectedBy: null,
+      ward: null,
+      evade: false,
+      rooted: false,
       initiative: 0,
     });
     actors.push({ id: character.id, side: "party", x: placement.at.x, y: placement.at.y });
@@ -586,6 +696,9 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       rollBonus: 0,
       skipNextTurn: false,
       protectedBy: null,
+      ward: null,
+      evade: false,
+      rooted: false,
       initiative: 0,
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
@@ -610,6 +723,9 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
     turnIndex: 0,
     stepsLeft: 0,
     actionTaken: false,
+    moveAfterAction: false,
+    encores: [],
+    encoreActor: null,
   };
   // The first seat may be a character who walked in knocked down (§7.3).
   return startTurnAt(settleCursor(base));
@@ -669,7 +785,11 @@ export function positionOf(state: EncounterState, id: ActorId): Position | null 
 }
 
 export function currentActorId(state: EncounterState): ActorId | null {
-  return turnOrder(state)[state.turnIndex] ?? null;
+  // An encore action outranks the cursor: the clock is on the friend taking
+  // their bonus action, and the cursor still points at the seat it will
+  // resume from. `?? null` twice because a state serialized before encores
+  // existed has no `encoreActor` at all.
+  return state.encoreActor ?? turnOrder(state)[state.turnIndex] ?? null;
 }
 
 /** Whose turn it is, or null when nobody left standing can take one. */
@@ -731,6 +851,16 @@ export interface LegalAction {
   }[];
   /** True when the request must carry a target. Some actions require both. */
   readonly needsTarget: boolean;
+  /**
+   * Present when more than one figure may be chosen (`TargetRule.count`).
+   * The client picks up to this many distinct ids from `targets`.
+   */
+  readonly maxTargets?: number;
+  /**
+   * Present when the ability wants several tiles (`TargetRule.tileCount`).
+   * Exactly this many distinct tiles from `tiles`, or the action is refused.
+   */
+  readonly tileCount?: number;
 }
 
 /**
@@ -741,11 +871,13 @@ export interface LegalAction {
  * one action", and the reason to be strict about the order rather than
  * generous is sitting in `rules.json` — Duskrunner's level-6 Twin Step is
  * "Move, attack, and then move again", which is only a thing worth unlocking if
- * everybody else has to move first.
+ * everybody else has to move first. `moveAfterAction` is Twin Step cashing
+ * that in: the `extraMove` verb sets it, and it is the one state in which a
+ * spent action leaves the tiles lit.
  */
 export function legalMoves(state: EncounterState): readonly ReachableTile[] {
   const actor = currentActor(state);
-  if (!actor || state.actionTaken || state.stepsLeft < 1) return [];
+  if (!actor || (state.actionTaken && !state.moveAfterAction) || state.stepsLeft < 1) return [];
   const from = positionOf(state, actor.id);
   if (!from) return [];
   return reachableTiles(state.board, from, state.stepsLeft);
@@ -787,6 +919,11 @@ export function legalActions(state: EncounterState, ctx: EncounterContext): read
     if (!needsTarget && !hasAnyAudience(state, actor, ability, positionOf(state, actor.id))) {
       continue;
     }
+    // A multi-tile ability with too few legal tiles is withheld, not shrunk:
+    // Bramble Wall says two tiles, and walling one would be the card lying.
+    const tileCount = tileCountOf(ability.target);
+    if (ability.target.kind === "tile" && tiles.length < tileCount) continue;
+    const maxTargets = targetCountOf(ability.target);
 
     out.push({
       abilityId,
@@ -796,9 +933,21 @@ export function legalActions(state: EncounterState, ctx: EncounterContext): read
       tiles,
       ...(ability.target.followUp ? { tileTargets } : {}),
       needsTarget,
+      ...(maxTargets > 1 ? { maxTargets } : {}),
+      ...(tileCount > 1 ? { tileCount } : {}),
     });
   }
   return out;
+}
+
+/** How many figures a target rule lets you choose. Never below 1. */
+function targetCountOf(rule: TargetRule): number {
+  return Math.max(1, Math.floor(rule.count ?? 1));
+}
+
+/** How many tiles a tile-targeting rule demands. Never below 1. */
+function tileCountOf(rule: TargetRule): number {
+  return Math.max(1, Math.floor(rule.tileCount ?? 1));
 }
 
 function rangeOf(rule: TargetRule): number | "board" {
@@ -960,6 +1109,21 @@ function effectWouldChange(
       return !recipient.down && recipient.protectedBy !== actorId;
     case "goFirst":
       return false;
+    case "ward":
+      // Larger ward wins (see the Combatant field); an equal or smaller one
+      // would change nothing, same rule as rollBonus.
+      return !recipient.down && effect.amount > (recipient.ward?.amount ?? 0);
+    case "evade":
+      return !recipient.down && !recipient.evade;
+    case "root":
+      return !recipient.down && !recipient.rooted;
+    case "extraMove":
+      // Fresh steps are always worth something to a standing actor.
+      return !recipient.down;
+    case "extraTurn":
+      return !recipient.down;
+    case "growWall":
+      return point !== null && isOpen(state.board, point);
     case "shove": {
       const from = positionOf(state, actorId);
       const start = positionOf(state, recipientId);
@@ -993,7 +1157,14 @@ function wouldAbilityDoAnything(
 
   const preview = knownPreview ?? previewStateForTile(state, actor.id, ability, point);
   return nonMovement.some((spec) =>
-    audienceFor(preview, actor.id, ability, spec, targetId, point).some((recipientId) => {
+    audienceFor(
+      preview,
+      actor.id,
+      ability,
+      spec,
+      targetId === null ? [] : [targetId],
+      point,
+    ).some((recipientId) => {
       const recipient = combatantById(preview, recipientId);
       if (!recipient) return false;
       if (spec.when === "down" && !recipient.down) return false;
@@ -1015,22 +1186,23 @@ function audienceFor(
   actorId: ActorId,
   ability: CombatAbility,
   spec: AbilityEffectSpec,
-  targetId: ActorId | null,
+  targetIds: readonly ActorId[],
   point: Position | null,
 ): readonly ActorId[] {
   const actor = combatantById(state, actorId);
   if (!actor) return [];
   const side = affectedSide(ability.target);
-  // `moveSelf` moves the actor by definition, so it ignores `to` rather than
-  // letting a catalog entry write the nonsense of gliding somebody else.
-  const scope: EffectScope = spec.effect.type === "moveSelf" ? "self" : (spec.to ?? "target");
+  // Self-directed verbs ignore `to` — see SELF_DIRECTED_VERBS.
+  const scope: EffectScope = SELF_DIRECTED_VERBS.has(spec.effect.type)
+    ? "self"
+    : (spec.to ?? "target");
 
   switch (scope) {
     case "self":
       return [actor.id];
     case "target":
       if (ability.target.kind === "self") return [actor.id];
-      return targetId === null ? [] : [targetId];
+      return targetIds;
     case "allies":
       // "Every friend" — the caster included. Excluding them would mean a
       // Songkeeper can never be healed by their own Chorus, which is a rule
@@ -1060,6 +1232,11 @@ function audienceFor(
         })
         .map((c) => c.id);
     }
+    case "enemies":
+      // Starfall — the whole other side, wherever they stand. `side` is not
+      // consulted: "enemies" means the figures opposed to the actor, exactly
+      // as "allies" means the actor's own side.
+      return state.combatants.filter((c) => c.side !== actor.side && !c.down).map((c) => c.id);
   }
 }
 
@@ -1085,7 +1262,9 @@ function hasAnyAudience(
 export function moveTo(state: EncounterState, to: Position): CombatActionResult {
   const actor = currentActor(state);
   if (!actor) return { ok: false, reason: "nobody can act" };
-  if (state.actionTaken) return { ok: false, reason: "the action is already spent" };
+  if (state.actionTaken && !state.moveAfterAction) {
+    return { ok: false, reason: "the action is already spent" };
+  }
 
   const reachable = legalMoves(state).find((tile) => samePosition(tile, to));
   if (!reachable) return { ok: false, reason: "that tile is out of reach" };
@@ -1107,6 +1286,10 @@ export interface CombatActionRequest {
   readonly abilityId: string;
   readonly targetId?: ActorId;
   readonly targetTile?: Position;
+  /** Chosen figures for a `count > 1` ability. Supersedes `targetId` when set. */
+  readonly targetIds?: readonly ActorId[];
+  /** Chosen tiles for a `tileCount > 1` ability. Supersedes `targetTile` when set. */
+  readonly targetTiles?: readonly Position[];
 }
 
 /**
@@ -1137,29 +1320,51 @@ export function performAction(
   // Unreachable: `legalActions` only ever offers abilities it resolved.
   if (!ability) return { ok: false, reason: `unknown ability "${request.abilityId}"` };
 
-  let targetId: ActorId | null = null;
+  let targetIds: readonly ActorId[] = [];
+  let points: readonly Position[] = [];
   let point: Position | null = positionOf(state, actor.id);
 
   if (ability.target.kind === "self") {
-    targetId = actor.id;
+    targetIds = [actor.id];
   } else if (ability.target.kind === "ally" || ability.target.kind === "enemy") {
-    if (!request.targetId || !offered.targets.includes(request.targetId)) {
+    const chosen = request.targetIds ?? (request.targetId ? [request.targetId] : []);
+    const count = targetCountOf(ability.target);
+    // One to `count` distinct figures, every one from the offered list. Fewer
+    // than the card allows is a legal (weaker) use; the same figure twice is
+    // not a second target, it is the same target counted twice.
+    if (chosen.length < 1 || chosen.length > count) {
+      return { ok: false, reason: "that is not a legal number of targets" };
+    }
+    if (new Set(chosen).size !== chosen.length) {
+      return { ok: false, reason: "each target has to be a different figure" };
+    }
+    if (!chosen.every((id) => offered.targets.includes(id))) {
       return { ok: false, reason: "that is not a legal target" };
     }
-    targetId = request.targetId;
-    point = positionOf(state, targetId);
+    targetIds = chosen;
+    point = positionOf(state, chosen[0] as ActorId);
   } else if (ability.target.kind === "tile") {
-    const tile = request.targetTile;
-    if (!tile || !offered.tiles.some((t) => samePosition(t, tile))) {
+    const chosen = request.targetTiles ?? (request.targetTile ? [request.targetTile] : []);
+    const need = tileCountOf(ability.target);
+    // Exactly as many tiles as the card says, all distinct, all offered.
+    if (chosen.length !== need) {
+      return { ok: false, reason: `that needs ${need} tile${need === 1 ? "" : "s"}` };
+    }
+    if (new Set(chosen.map((t) => `${t.x},${t.y}`)).size !== chosen.length) {
+      return { ok: false, reason: "each tile has to be a different tile" };
+    }
+    if (!chosen.every((tile) => offered.tiles.some((t) => samePosition(t, tile)))) {
       return { ok: false, reason: "that is not a legal tile" };
     }
-    point = { x: tile.x, y: tile.y };
+    points = chosen.map((tile) => ({ x: tile.x, y: tile.y }));
+    point = points[0] ?? null;
     if (ability.target.followUp) {
-      const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, tile));
+      const first = points[0] as Position;
+      const option = offered.tileTargets?.find((entry) => samePosition(entry.tile, first));
       if (!request.targetId || !option?.targets.includes(request.targetId)) {
         return { ok: false, reason: "that is not a legal target from that tile" };
       }
-      targetId = request.targetId;
+      targetIds = [request.targetId];
     }
   }
 
@@ -1174,7 +1379,7 @@ export function performAction(
   let rolled = false;
 
   for (const spec of ability.effects) {
-    const audience = audienceFor(working, actor.id, ability, spec, targetId, point);
+    const audience = audienceFor(working, actor.id, ability, spec, targetIds, point);
     for (const recipientId of audience) {
       // `when` reads the state the recipient was in when the ability was
       // *pointed at them*, not the state it has been dragged into halfway
@@ -1191,6 +1396,7 @@ export function performAction(
         recipientId,
         effect: spec.effect,
         point,
+        points,
         bonus,
         events,
       });
@@ -1222,6 +1428,8 @@ interface EffectApplication {
   readonly recipientId: ActorId;
   readonly effect: AbilityEffect;
   readonly point: Position | null;
+  /** Every chosen tile, for the multi-tile verbs. `point` is the first of them. */
+  readonly points: readonly Position[];
   readonly bonus: number;
   readonly events: EncounterEvent[];
 }
@@ -1238,6 +1446,17 @@ function applyEffect(
 
   switch (effect.type) {
     case "attack": {
+      // Vanish — the swing was going to happen and doesn't. Checked before any
+      // die is thrown: an auto-miss with a roll animation would read as the
+      // dice being rigged, which is worse than the miss. Spent on one attack,
+      // clears whether or not the attacker had a chance.
+      if (recipient.evade) {
+        events.push({ type: "evaded", actorId: recipientId });
+        return {
+          state: updateCombatant(state, recipientId, (c) => ({ ...c, evade: false })),
+          rolled: false,
+        };
+      }
       const roll = resolveAttack(ctx.rng, {
         characterId: actor.id,
         mod: actor.attackMod + input.bonus,
@@ -1317,6 +1536,73 @@ function applyEffect(
       // Read by `openingOrderFor` when order is rolled; nothing to do on a turn.
       return { state, rolled: false };
 
+    case "ward": {
+      // Larger ward wins outright — amounts never stack, same as rollBonus.
+      if (effect.amount <= (recipient.ward?.amount ?? 0)) return { state, rolled: false };
+      events.push({ type: "warded", actorId: recipientId, amount: effect.amount });
+      return {
+        state: updateCombatant(state, recipientId, (c) => ({
+          ...c,
+          ward: { byId: actorId, amount: effect.amount },
+        })),
+        rolled: false,
+      };
+    }
+
+    case "evade": {
+      if (recipient.evade) return { state, rolled: false };
+      return {
+        state: updateCombatant(state, recipientId, (c) => ({ ...c, evade: true })),
+        rolled: false,
+      };
+    }
+
+    case "root": {
+      if (recipient.rooted) return { state, rolled: false };
+      events.push({ type: "rooted", actorId: recipientId });
+      return {
+        state: updateCombatant(state, recipientId, (c) => ({ ...c, rooted: true })),
+        rolled: false,
+      };
+    }
+
+    case "extraMove": {
+      // Twin Step. Steps land now; `legalMoves` honours them after the action
+      // because `moveAfterAction` is set. A fresh budget, not a refund of what
+      // was left: "move again" on the card means a second move, not change.
+      const steps = Math.max(0, Math.floor(effect.steps ?? actor.steps));
+      return {
+        state: { ...state, stepsLeft: steps, moveAfterAction: true },
+        rolled: false,
+      };
+    }
+
+    case "extraTurn": {
+      // Encore. Queued; `endTurn` hands the clock over. Down figures are
+      // filtered again at that moment — a friend knocked down in between
+      // cannot act, and the encore is quietly lost with them.
+      events.push({ type: "encore", actorId: recipientId });
+      return {
+        state: { ...state, encores: [...(state.encores ?? []), recipientId] },
+        rolled: false,
+      };
+    }
+
+    case "growWall": {
+      // Every chosen tile that is still open grows thorns. `legalTilesFor`
+      // vetted them against this same board a moment ago, so the guard is for
+      // the impossible; `setTerrain` would throw over an occupant, and a
+      // no-op wall beats a 500 mid-fight.
+      let board = state.board;
+      for (const at of input.points) {
+        if (!isOpen(board, at)) continue;
+        board = setTerrain(board, at, "blocked");
+        events.push({ type: "walled", at: { x: at.x, y: at.y } });
+      }
+      if (board === state.board) return { state, rolled: false };
+      return { state: { ...state, board }, rolled: false };
+    }
+
     default:
       /*
        * TypeScript believes this switch is exhaustive, and for *compiled* code
@@ -1373,7 +1659,18 @@ function dealDamage(
   const victim = combatantById(working, victimId);
   if (!victim || victim.down) return working;
 
-  const hp = Math.max(0, victim.hp - amount);
+  // Unbreakable — the ward shaves every hit, including one Brace redirected
+  // onto the warded figure. Applied at the moment damage lands, on whoever it
+  // actually lands on.
+  let dealt = amount;
+  if (victim.ward && victim.ward.amount > 0) {
+    const shaved = Math.min(victim.ward.amount, dealt);
+    dealt -= shaved;
+    events.push({ type: "warded", actorId: victimId, amount: shaved });
+    if (dealt <= 0) return working;
+  }
+
+  const hp = Math.max(0, victim.hp - dealt);
   events.push({ type: "damage", actorId: victimId, amount: victim.hp - hp, hp });
   if (hp > 0) {
     return updateCombatant(working, victimId, (c) => ({ ...c, hp }));
@@ -1467,7 +1764,34 @@ export function endTurn(state: EncounterState): EncounterState {
   // With nobody standing on either side there is no next turn, and advancing
   // would tick the round counter forever behind a client that keeps asking.
   if (!state.combatants.some((c) => !c.down)) return state;
-  return startTurnAt(settleCursor(advanceCursor(state)));
+
+  // A finishing encore hands the clock back to where the cursor still points.
+  let working: EncounterState =
+    state.encoreActor !== null ? { ...state, encoreActor: null } : state;
+
+  // An owed encore fires before the cursor moves — "right now" on the card.
+  // The queue drains past anyone knocked down since they were owed it: a
+  // figure on the floor cannot act (§7.3), encore included.
+  let queue = working.encores ?? [];
+  while (queue.length > 0) {
+    const owedId = queue[0] as ActorId;
+    queue = queue.slice(1);
+    working = { ...working, encores: queue };
+    const owed = combatantById(working, owedId);
+    if (owed && !owed.down) {
+      // An action, no steps — the card says "takes another action", and steps
+      // it does not say would be a stronger card than the one she read.
+      return {
+        ...working,
+        encoreActor: owedId,
+        stepsLeft: 0,
+        actionTaken: false,
+        moveAfterAction: false,
+      };
+    }
+  }
+
+  return startTurnAt(settleCursor(advanceCursor(working)));
 }
 
 /** One seat forward, rolling into the next round at the end of the order. */
@@ -1508,16 +1832,131 @@ function settleCursor(state: EncounterState): EncounterState {
   return working;
 }
 
-/** Fresh steps, a fresh action, and Brace expires where it was declared. */
+/**
+ * Fresh steps, a fresh action, and the durations that say "until your next
+ * turn" expire here: Brace clears where it was declared, and every ward this
+ * figure granted comes down. Tanglelight is consumed the same way — a rooted
+ * figure starts with no steps and the mark comes off, so it costs exactly the
+ * one turn's movement the card promises.
+ *
+ * None of this runs for an encore action, on purpose: a bonus action is not
+ * the figure's turn, so nothing that lasts "until your next turn" expires
+ * during one.
+ */
 function startTurnAt(state: EncounterState): EncounterState {
   const actor = currentActor(state);
-  if (!actor) return { ...state, stepsLeft: 0, actionTaken: false };
+  if (!actor) return { ...state, stepsLeft: 0, actionTaken: false, moveAfterAction: false };
+  const rooted = actor.rooted === true;
   return {
     ...state,
-    stepsLeft: actor.steps,
+    stepsLeft: rooted ? 0 : actor.steps,
     actionTaken: false,
-    combatants: state.combatants.map((c) =>
-      c.protectedBy === actor.id ? { ...c, protectedBy: null } : c,
-    ),
+    moveAfterAction: false,
+    combatants: state.combatants.map((c) => {
+      let next = c;
+      if (next.protectedBy === actor.id) next = { ...next, protectedBy: null };
+      if (next.ward && next.ward.byId === actor.id) next = { ...next, ward: null };
+      if (rooted && next.id === actor.id) next = { ...next, rooted: false };
+      return next;
+    }),
   };
+}
+
+// ---------------------------------------------------------------------------
+// Items in a fight — spec §7.2's fourth universal action
+// ---------------------------------------------------------------------------
+
+/**
+ * How far a thrown consumable reaches. The unstated-range convention: every
+ * card that reaches without saying how far takes 6 (Fox Fire, Burst), and
+ * "Throw it" on the Thunder Acorn says nothing about distance either.
+ */
+export const ITEM_RANGE = 6;
+
+export interface ItemUseRequest {
+  readonly actorId: ActorId;
+  readonly effect: ItemEffect;
+  /** Required for a `damage` item; ignored otherwise. */
+  readonly targetId?: ActorId;
+}
+
+/**
+ * Figures a thrown `damage` consumable may be aimed at: standing enemies of
+ * the actor within `ITEM_RANGE`, straight across the board like every other
+ * range. The phone renders this list and `useItemInCombat` re-derives it —
+ * the same one-gate rule `legalActions` lives by.
+ */
+export function legalItemTargets(state: EncounterState, actorId: ActorId): readonly ActorId[] {
+  const actor = combatantById(state, actorId);
+  const from = positionOf(state, actorId);
+  if (!actor || !from) return [];
+  return state.combatants
+    .filter((c) => {
+      if (c.side === actor.side || c.down) return false;
+      const at = positionOf(state, c.id);
+      return at !== null && stepsBetween(from, at) <= ITEM_RANGE;
+    })
+    .map((c) => c.id);
+}
+
+/**
+ * Spends the active figure's action on a consumable. The item's *removal* from
+ * the bag is the caller's job (inventory.ts owns bags; this module owns turns),
+ * and callers must apply this first and consume only on `ok` — a refusal here
+ * with the item already gone would be the "lost it for nothing" the engine
+ * refuses to allow.
+ *
+ * Heal and rollBonus land on the user: a consumable is something you drink or
+ * hold up, and handing potions across the board is a trade (a Rest-scene
+ * feature), not a combat action. Healing never lifts anybody (§7.3) — and a
+ * knocked-down figure never gets a turn to drink in anyway.
+ */
+export function useItemInCombat(
+  state: EncounterState,
+  request: ItemUseRequest,
+): CombatActionResult {
+  const actor = currentActor(state);
+  if (!actor) return { ok: false, reason: "nobody can act" };
+  if (actor.id !== request.actorId) return { ok: false, reason: "it is not your turn" };
+  if (state.actionTaken) return { ok: false, reason: "the action is already spent" };
+
+  const events: EncounterEvent[] = [];
+  let working = state;
+
+  // A use that would change nothing is refused, never absorbed. The caller
+  // consumes the item on `ok: true`, so a success that did nothing would
+  // spend the turn's action *and* the item on it — drinking a potion at full
+  // health has to come back as "not now", with both still in hand.
+  switch (request.effect.type) {
+    case "heal": {
+      if (actor.hp >= actor.maxHp) {
+        return { ok: false, reason: "already at full health" };
+      }
+      const hp = Math.min(actor.maxHp, actor.hp + request.effect.amount);
+      events.push({ type: "heal", actorId: actor.id, amount: hp - actor.hp, hp });
+      working = updateCombatant(working, actor.id, (c) => ({ ...c, hp }));
+      break;
+    }
+    case "rollBonus": {
+      // Larger bonus wins, never stacks — the rollBonus verb's rule exactly.
+      if (request.effect.amount <= actor.rollBonus) {
+        return { ok: false, reason: "a bonus that strong is already in place" };
+      }
+      const amount = request.effect.amount;
+      events.push({ type: "bonus", actorId: actor.id, amount });
+      working = updateCombatant(working, actor.id, (c) => ({ ...c, rollBonus: amount }));
+      break;
+    }
+    case "damage": {
+      const targetId = request.targetId;
+      if (!targetId || !legalItemTargets(working, actor.id).includes(targetId)) {
+        return { ok: false, reason: "that is not a legal target" };
+      }
+      working = dealDamage(working, targetId, request.effect.amount, events);
+      break;
+    }
+  }
+
+  working = { ...working, actionTaken: true };
+  return { ok: true, state: working, events, outcome: encounterOutcome(working) };
 }
