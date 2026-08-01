@@ -1418,6 +1418,63 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     expect(thrown.state.encounter?.actionTaken).toBe(true);
   });
 
+  it("a no-op use is refused with the action and the item both intact", () => {
+    /*
+     * The review case: a heal at full HP, or a bonus no better than the one in
+     * place, used to come back ok — spending the turn's action and, because
+     * the engine consumes on success, the item itself. Both must be refusals
+     * that leave everything exactly as it was.
+     */
+    const context = ctx({ rng: fixedRng(20) });
+    const state = midFight(context);
+    const member = activeMember(state);
+    // Fresh out of the lobby, the party is at full health.
+    expect(member.hp).toBe(member.character.maxHp);
+    state.party.forEach((m) => {
+      m.character.inventory = [
+        { itemId: "sunbloom_draught", kind: "consumable" },
+        { itemId: "brave_whistle", kind: "consumable" },
+      ];
+    });
+
+    const fullHeal = applyIntent(
+      state,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+    expect(fullHeal.error?.code).toBe("ILLEGAL");
+    expect(fullHeal.state.encounter?.actionTaken).toBe(false);
+    expect(
+      fullHeal.state.party
+        .find((m) => m.playerId === member.playerId)!
+        .character.inventory.map((e) => e.itemId),
+    ).toContain("sunbloom_draught");
+
+    // First whistle lands; a second, no stronger, is refused and kept.
+    const first = applyIntent(
+      state,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
+      context,
+    );
+    expect(first.error).toBeUndefined();
+    const rearmed = { ...first.state, encounter: { ...first.state.encounter!, actionTaken: false } };
+    rearmed.party
+      .find((m) => m.playerId === member.playerId)!
+      .character.inventory = [{ itemId: "brave_whistle", kind: "consumable" }];
+    const second = applyIntent(
+      rearmed,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
+      context,
+    );
+    expect(second.error?.code).toBe("ILLEGAL");
+    expect(second.state.encounter?.actionTaken).toBe(false);
+    expect(
+      second.state.party
+        .find((m) => m.playerId === member.playerId)!
+        .character.inventory.map((e) => e.itemId),
+    ).toContain("brave_whistle");
+  });
+
   it("only the player on the clock may use an item in a fight", () => {
     const context = ctx({ rng: fixedRng(20) });
     const state = midFight(context);

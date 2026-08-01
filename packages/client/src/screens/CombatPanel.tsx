@@ -134,17 +134,22 @@ export function CombatControls(): ReactElement | null {
 
   // The consumables this turn could spend the action on (§7.2's fourth
   // universal action). Hidden, never disabled: gone once the action is spent,
-  // and a thrown item with no monster in range never appears at all.
+  // and a card whose use the server would refuse — a thrown item with no
+  // monster in range, a heal at full health, a bonus no better than the one
+  // in place — never appears at all (useItemInCombat's exact refusals).
   const throwTargets = myTurn && me ? legalItemTargets(encounter, me.character.id) : [];
+  const myCombatant = me ? combatantById(encounter, me.character.id) : null;
   const usableItems =
-    !myTurn || encounter.actionTaken
+    !myTurn || encounter.actionTaken || !myCombatant
       ? []
       : me.character.inventory
           .map((entry, index) => ({ entry, index, def: items?.[entry.itemId] }))
           .filter((x): x is { entry: (typeof x)["entry"]; index: number; def: ItemDef } => {
             const effect = x.def?.effect;
             if (x.entry.kind !== "consumable" || !effect) return false;
-            return effect.type !== "damage" || throwTargets.length > 0;
+            if (effect.type === "damage") return throwTargets.length > 0;
+            if (effect.type === "heal") return myCombatant.hp < myCombatant.maxHp;
+            return effect.amount > myCombatant.rollBonus;
           });
 
   function tapTile(at: Position): void {
