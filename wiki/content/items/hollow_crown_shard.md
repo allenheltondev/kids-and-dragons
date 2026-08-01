@@ -14,6 +14,9 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: found_in
+  - id: campaign.gemfall
+    type: campaign
+    relationship: items
   - id: location.hollow_gate
     type: location
     relationship: items
@@ -23,7 +26,7 @@ ai_context:
   visual_style: "Thin crescent of tarnished silver, edges cleanly parted rather than snapped, no reflection in it however the light falls."
   common_encounters: "A campaign-long thread. What a chapter ends on when it is setting up a later one."
   lore_highlights: ""
-  related_entities: "location.hollow_gate, biome.whispering_marsh, location.hollow_gate"
+  related_entities: "location.hollow_gate, biome.whispering_marsh, campaign.gemfall, location.hollow_gate"
   writing_guidance: "Foreshadowing only. Shards may be found and carried; the Hollow Gate cannot be opened in the current campaign arc, and no shard may be shown doing anything that implies otherwise."
   generation_hints: "Hums when another shard is close, and goes silent the moment anyone listens for it deliberately."
 layout: items
@@ -44,6 +47,9 @@ infobox: item
 
 ### Biomes
 - [Whispering Marsh](/biomes/whispering_marsh/) `Found In`
+
+### Campaigns
+- [Gemfall](/campaigns/gemfall/) `Items`
 
 ### Locations
 - [The Hollow Gate](/locations/hollow_gate/) `Found In` `Items`
