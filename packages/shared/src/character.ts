@@ -21,6 +21,7 @@ import type {
   Character,
   CharacterProgress,
   ClassId,
+  InventoryEntry,
   ItemCatalog,
   ProvisionalProgress,
   ResolvedCharacter,
@@ -429,6 +430,34 @@ export function awardXp(
     ...(level > before.level ? { leveledTo: level } : {}),
     ...(tier !== before.tier && level > before.level ? { newTier: tier } : {}),
   };
+}
+
+/**
+ * Folds a run's inventory back into the stored character.
+ *
+ * The engine mutates bags on the *resolved* characters inside `RunState` —
+ * grants, swaps, consumables, quest keys all land there — and a resolved
+ * character cannot be written back whole (its stats already carry the species
+ * passive). Without this, the next `resolveCharacter()` rebuilt the bag from
+ * stored progress and the potion she picked up two sessions ago was quietly
+ * gone: items persisted only until the next re-resolve.
+ *
+ * Called at chapter completion, beside `awardXp` and under the same rule:
+ * through `writeProgress`, so mid-campaign pickups are provisional and revert
+ * with the levels if the campaign fails (spec §8.3 — the pair is the point).
+ * Quest items live on the character, not on progress, because both campaign
+ * endings clear them regardless (§9.2).
+ */
+export function syncRunInventory(
+  character: Character,
+  inventory: readonly InventoryEntry[],
+  questItems: readonly string[],
+): Character {
+  const next: CharacterProgress = {
+    ...cloneProgress(effectiveProgress(character)),
+    inventory: inventory.map((e) => ({ ...e })),
+  };
+  return { ...writeProgress(character, next), questItems: [...questItems] };
 }
 
 /**
