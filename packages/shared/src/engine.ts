@@ -1392,6 +1392,16 @@ function doUseItem(
     throw new Illegal("ILLEGAL", `"${def.name}" is always on — there is nothing to use`);
   }
 
+  // The same no-op rule the combat path enforces, in the same order
+  // (useItemInCombat: held-ness first, then the refusal, consume last): a use
+  // that would change nothing is refused, never absorbed. Assigning the
+  // reduced inventory and healing zero destroyed the potion for nothing — the
+  // exact failure the "rejected rather than consumed" comment above promises
+  // against.
+  if (result.effect.type === "heal" && member.hp >= member.character.maxHp) {
+    throw new Illegal("ILLEGAL", "already at full health");
+  }
+
   member.character.inventory = result.inventory;
   if (result.effect.type === "heal") {
     heal(member, result.effect.amount);
