@@ -3,7 +3,7 @@ title: Harvest Sprite
 id: npc.harvest_sprite
 type: npc
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["supporting_people", "fields", "tiny", "semi_sapient"]
 classification: supporting_people

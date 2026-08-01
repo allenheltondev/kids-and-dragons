@@ -3,7 +3,7 @@ title: Songbird Ribbon
 id: item.songbird_ribbon
 type: item
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["charm", "heart", "sunward_fields", "common"]
 related:

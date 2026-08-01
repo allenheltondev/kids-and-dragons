@@ -3,7 +3,7 @@ title: Faun
 id: npc.faun
 type: npc
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["supporting_people", "fields", "farming", "music"]
 classification: supporting_people

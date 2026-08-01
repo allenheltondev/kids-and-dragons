@@ -3,7 +3,7 @@ title: Embermoth
 id: creature.embermoth
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["ambient", "foothills", "volcanic", "indicator"]
 classification: ambient_creature

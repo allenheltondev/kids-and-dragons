@@ -3,7 +3,7 @@ title: Merfolk
 id: npc.merfolk
 type: npc
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["supporting_people", "ocean", "reef", "alliance"]
 classification: supporting_people

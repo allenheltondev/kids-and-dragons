@@ -3,7 +3,7 @@ title: Mire Mimic
 id: creature.mire_mimic
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["dangerous", "marsh", "ambush", "camouflage"]
 classification: dangerous_creature

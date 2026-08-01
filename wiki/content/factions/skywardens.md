@@ -3,7 +3,7 @@ title: The Skywardens
 id: faction.skywardens
 type: faction
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: intentionally_undefined
 draft: true
 tags: ["military", "order", "protectors", "highlands"]

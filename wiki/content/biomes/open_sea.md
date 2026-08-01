@@ -3,10 +3,23 @@ title: The Open Sea
 id: biome.open_sea
 type: biome
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["ocean", "offshore", "deep_water", "weather", "currents"]
 danger_level: moderate
+regional_relationships:
+  - id: location.the_whirlpool
+    title: "The Whirlpool"
+    url: "/locations/the_whirlpool/"
+    relationship: "The sea's only permanent address. Everything else about the open water moves; the Whirlpool keeps turning exactly where it always has, which sailors find either comforting or the opposite."
+  - id: biome.sky_islands
+    title: "Sky Islands"
+    url: "/biomes/sky_islands/"
+    relationship: "The sea and the sky run the realm's weather between them and trade dropped belongings constantly, and neither has ever returned anything."
+  - id: biome.sallow_wastelands
+    title: "The Sallow Wastelands"
+    url: "/biomes/sallow_wastelands/"
+    relationship: "The river's terminus is the sea's front porch: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure."
 related:
   - id: location.the_whirlpool
     type: location
@@ -49,7 +62,7 @@ ai_context:
   themes: "Ocean, Offshore, Deep_water, Weather, Currents"
   visual_style: "Open horizon, long swells, no landmarks but light and weather."
   common_encounters: "Crossings between coastal places, being carried off course, what lies past the edge of the map."
-  lore_highlights: ""
+  lore_highlights: "The accepted account, on every coast, is that the sea was here first and is not finished."
   related_entities: "location.the_whirlpool, npc.merfolk, npc.selkie, biome.sky_islands, biome.mermaid_cove, biome.sallow_wastelands, biome.sallow_wastelands, location.exchange, location.skullwater_cave, location.skullwater_cave, location.the_whirlpool, location.bone_yard"
   writing_guidance: "Surrounds the illustrated map rather than appearing on it, so it has no map anchor. Coastal places reach it; it borders nothing."
   generation_hints: "Currents and weather change on their own schedule and ignore the shore."
@@ -57,6 +70,45 @@ layout: biomes
 infobox: biome
 ---
 
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+The accepted account, on every coast, is that the sea was here first and is not finished. The peoples argue about everything else; on this they have never needed to.
+
+### Recorded History
+
+The sea keeps no history of its own - it outsources. Its past lives in harbor logs, treaty pages, salvage manifests, and the memories of everyone it has carried somewhere they did not plan to go, which is everyone.
+
+### Cultural Significance
+
+The realm's edges all end at the same neighbor. The sea is the road that owns itself: every coast uses it, no coast keeps it, and all sailing custom in the realm is, at bottom, manners toward the same enormous host.
+
+### Common Beliefs
+
+- The sea does not take things. It accepts them.
+- Weather at sea is not coming from anywhere. It lives there.
+- Whatever you say out of sight of land, say it as a guest.
+
+### Disputed Beliefs
+
+- What lies past the edge of the map. The kitsune have songs, the selkies have jokes, the merfolk have a silence, and every sailor has a cousin who knows somebody who saw it.
+
+### Neighbors
+
+- **[The Whirlpool](/locations/the_whirlpool/)** — The sea's only permanent address. Everything else about the open water moves; the Whirlpool keeps turning exactly where it always has, which sailors find either comforting or the opposite.
+- **[Sky Islands](/biomes/sky_islands/)** — The sea and the sky run the realm's weather between them and trade dropped belongings constantly, and neither has ever returned anything.
+- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The river's terminus is the sea's front porch: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure.
+
+### Current Tensions
+
+- Gemfall shipping has crowded waters that were never consulted, and the season's storms have been unbooked, punctual, and thorough.
+
+### Story Hooks
+
+- A current that was not there a generation ago now runs south along the eastern coast, and the selkies, who ought to know where it goes, change the subject with unusual skill.
+- Every so often the sea returns something - a spar, a bell, one perfect shoe - decades late and somewhere else entirely. The Exchange keeps a shelf for these arrivals, and the shelf is never empty.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
