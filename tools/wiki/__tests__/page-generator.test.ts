@@ -669,3 +669,101 @@ describe('generatePage — lore section', () => {
     expect(content).toContain('lore_highlights: ""');
   });
 });
+
+describe('generatePage — place lore section', () => {
+  const neighbour: CanonEntity = {
+    id: 'biome.whispering_marsh',
+    type: 'biome',
+    title: 'Whispering Marsh',
+    relationships: {},
+    metadata: {},
+  };
+  const entity: CanonEntity = {
+    id: 'biome.test_wood',
+    type: 'biome',
+    title: 'Test Wood',
+    relationships: { locations: ['biome.whispering_marsh'] },
+    metadata: {
+      lore: {
+        origin: 'Grown, for testing. Nobody remembers planting it.',
+        recorded_history: 'A history paragraph.',
+        cultural_significance: 'A significance paragraph.',
+        common_beliefs: ['Everyone says so.'],
+        disputed_beliefs: ['Some say otherwise.'],
+        hidden_truths: ['Only the creator knows.'],
+        regional_relationships: [
+          { place: 'biome.whispering_marsh', relationship: 'Downstream of it.' },
+          { place: 'location.unknown_town', relationship: 'Trades with it.' },
+        ],
+        current_tensions: ['An unresolved pressure.'],
+        historical_hooks: ['A story seed.'],
+      },
+    },
+  };
+  const entities = new Map<string, CanonEntity>([
+    [entity.id, entity],
+    [neighbour.id, neighbour],
+  ]);
+  const assets: AssetResult = { entityId: entity.id, source: 'none' };
+
+  it('renders the place lore section with linked neighbours on a new page', () => {
+    const { content } = generatePage({ entity, assets, reverseRefs: [] }, entities);
+
+    expect(content).toContain('<!-- BEGIN GENERATED: lore -->');
+    expect(content).toContain('## Lore');
+    expect(content).toContain('Grown, for testing. Nobody remembers planting it.');
+    expect(content).toContain('### Recorded History');
+    expect(content).toContain('A history paragraph.');
+    expect(content).toContain('### Cultural Significance');
+    expect(content).toContain('### Common Beliefs');
+    expect(content).toContain('- Everyone says so.');
+    expect(content).toContain('### Disputed Beliefs');
+    expect(content).toContain('- Some say otherwise.');
+    expect(content).toContain('### Neighbors');
+    expect(content).toContain('**[Whispering Marsh](/biomes/whispering_marsh/)** — Downstream of it.');
+    // A neighbour outside the registry falls back to a derived title.
+    expect(content).toContain('**[Unknown Town](/locations/unknown_town/)** — Trades with it.');
+    expect(content).toContain('### Current Tensions');
+    expect(content).toContain('### Story Hooks');
+    expect(content).toContain('- A story seed.');
+
+    // Lore leads the body: before relationships.
+    const loreIdx = content.indexOf('<!-- BEGIN GENERATED: lore -->');
+    const relIdx = content.indexOf('<!-- BEGIN GENERATED: relationships -->');
+    expect(loreIdx).toBeGreaterThan(-1);
+    expect(loreIdx).toBeLessThan(relIdx);
+  });
+
+  it('labels hidden truths as creator canon', () => {
+    const { content } = generatePage({ entity, assets, reverseRefs: [] }, entities);
+    expect(content).toContain('### Hidden Truths');
+    expect(content).toContain('> *Creator canon — not generally known in-world. No NPC recites these.*');
+    expect(content).toContain('- Only the creator knows.');
+  });
+
+  it('writes resolved neighbour chips into front matter, and no hook', () => {
+    const { content } = generatePage({ entity, assets, reverseRefs: [] }, entities);
+
+    expect(content).toContain('regional_relationships:');
+    expect(content).toContain('  - id: biome.whispering_marsh');
+    expect(content).toContain('    title: "Whispering Marsh"');
+    expect(content).toContain('    url: "/biomes/whispering_marsh/"');
+    expect(content).toContain('    relationship: "Downstream of it."');
+    // PlaceLore has no hook; the highlight falls back to origin's first sentence.
+    expect(content).not.toContain('lore_hook:');
+    expect(content).toContain('lore_highlights: "Grown, for testing."');
+  });
+
+  it('renders no lore section for a place lore block without an origin', () => {
+    const bare: CanonEntity = {
+      ...entity,
+      id: 'biome.bare_wood',
+      metadata: { lore: { common_beliefs: ['Unfounded.'] } },
+    };
+    const { content } = generatePage(
+      { entity: bare, assets: { entityId: bare.id, source: 'none' }, reverseRefs: [] },
+      entities,
+    );
+    expect(content).not.toContain('<!-- BEGIN GENERATED: lore -->');
+  });
+});

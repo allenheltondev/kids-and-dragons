@@ -656,6 +656,22 @@ crossing should say so in the graph — "which campaigns depend on this
 crossing" is now a registry query. Quest `locations` stays narrow until a
 quest actually needs a river.
 
+**D17 — RULED, applied. Place lore is its own shape.** A people has a story
+and opinions; a place has a past and a reputation, and the two need different
+fields. `Place` overrides the envelope's `lore` with `PlaceLore`
+(`packages/canon/src/lore.ts`) for the four place taxonomies — biome,
+location, feature, route: a required `origin`, `recorded_history`,
+`cultural_significance`, then `common_beliefs` / `disputed_beliefs` (in-world
+claims, allowed to be wrong — a superstition is canon about the believers,
+not the place), `hidden_truths` (creator canon nobody in-world recites, and
+kept empty on any `intentionally_undefined` entry so a protected mystery
+stays protected), `current_tensions`, and `historical_hooks`.
+`regional_relationships.place` follows D15's rule for opinions: it is a
+`canonRef`, so every relationship is a validated, reverse-indexed edge —
+"who has history with the marsh" is a registry query — and the required
+`relationship` prose carries the part a chapter can use. Applied across every
+biome and location in the corpus.
+
 ---
 
 ## 10. Order

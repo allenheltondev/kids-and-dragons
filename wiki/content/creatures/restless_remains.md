@@ -3,7 +3,7 @@ title: Restless Remains
 id: creature.restless_remains
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["supernatural", "bone_yard", "rare", "guardian"]
 classification: supernatural_manifestation

@@ -3,7 +3,7 @@ title: Silver Otter
 id: creature.silver_otter
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["ambient", "river", "playful", "indicator"]
 classification: ambient_creature

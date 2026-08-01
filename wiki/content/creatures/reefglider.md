@@ -3,7 +3,7 @@ title: Reefglider
 id: creature.reefglider
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["ambient", "ocean", "reef", "indicator"]
 classification: ambient_creature

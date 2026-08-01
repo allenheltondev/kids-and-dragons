@@ -3,7 +3,7 @@ title: Crimson Shard
 id: item.crimson_shard
 type: item
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["material", "fire", "crafting", "rare"]
 related:

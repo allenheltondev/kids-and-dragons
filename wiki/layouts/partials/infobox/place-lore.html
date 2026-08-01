@@ -1,0 +1,26 @@
+{{/*
+  Neighbor chips — the infobox half of a canon place `lore` block.
+
+  Front matter `regional_relationships` is written by the wiki generator
+  (tools/wiki/page-generator.ts) with the canon ref already resolved to a
+  title and URL, so this partial never has to know how canon ids work —
+  the same contract as lore-opinions.html.
+
+  The `relationship` prose renders as a hover tooltip here; the full
+  sentences live in the page body's Neighbors list. Chips answer "who",
+  the body answers "how they get along".
+*/}}
+{{ with .Params.regional_relationships }}
+<div class="wiki-infobox__opinions">
+  <div class="wiki-infobox__opinion-group">
+    <h3 class="wiki-infobox__opinion-heading wiki-infobox__opinion-heading--like">Neighbors</h3>
+    <ul class="wiki-opinion-list">
+      {{ range . }}
+      <li>
+        <a class="wiki-opinion wiki-opinion--like" href="{{ .url | relURL }}" title="{{ .relationship }}">{{ .title }}</a>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+{{ end }}

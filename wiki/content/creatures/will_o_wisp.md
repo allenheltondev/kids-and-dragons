@@ -3,7 +3,7 @@ title: Will-o'-Wisp
 id: creature.will_o_wisp
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["supernatural", "marsh", "memory", "misdirection"]
 classification: supernatural_manifestation

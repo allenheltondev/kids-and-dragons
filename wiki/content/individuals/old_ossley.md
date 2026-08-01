@@ -3,7 +3,7 @@ title: Old Ossley
 id: individual.old_ossley
 type: individual
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["stone_crossing", "river", "frogfolk", "crossing"]
 related:
