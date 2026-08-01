@@ -1662,6 +1662,27 @@ describe("useItemInCombat", () => {
     expect(combatantById(first.state, "c_hero")?.rollBonus).toBe(3);
   });
 
+  it("refuses a heal at full health — a use that changes nothing must not cost the item", () => {
+    // The caller consumes on ok, so a success that did nothing would spend
+    // the action *and* the potion on it. Refused instead, both kept.
+    const state = beginEncounter(setup(), ctxWith(ALWAYS_HIT));
+    const result = useItemInCombat(state, { actorId: "c_hero", effect: { type: "heal", amount: 4 } });
+    expect(result.ok).toBe(false);
+    expect(state.actionTaken).toBe(false);
+  });
+
+  it("refuses a bonus no better than the one already in place", () => {
+    let state = beginEncounter(setup(), ctxWith(ALWAYS_HIT));
+    state = { ...state, combatants: state.combatants.map((c) => (c.id === "c_hero" ? { ...c, rollBonus: 3 } : c)) };
+    const equal = useItemInCombat(state, { actorId: "c_hero", effect: { type: "rollBonus", amount: 3 } });
+    expect(equal.ok).toBe(false);
+    const weaker = useItemInCombat(state, { actorId: "c_hero", effect: { type: "rollBonus", amount: 2 } });
+    expect(weaker.ok).toBe(false);
+    // A genuinely larger one still lands.
+    const bigger = ok(useItemInCombat(state, { actorId: "c_hero", effect: { type: "rollBonus", amount: 4 } }));
+    expect(combatantById(bigger.state, "c_hero")?.rollBonus).toBe(4);
+  });
+
   it("a thrown item needs a legal target inside its range", () => {
     // 8 wide, 5 tall: the far corner is 7 steps from the near one — outside
     // ITEM_RANGE, so the wisp there can never be a legal throw.
