@@ -51,7 +51,8 @@ infra/              the SAM template and the Lambda bundler
 content/            rules, items, campaigns, chapters — the game as data
 schemas/            JSON Schema for all of the above, enforced in CI
 assets/             commissioned character art + manifest.json, the contract
-art/                art source, review sheets, and the split scripts
+art/                art source, review sheets, the split scripts, and the six
+                    rig configs the 24 .riv exports are built from
 tools/              the art gate and the content validator
 ```
 
@@ -75,7 +76,10 @@ to the same behavior:
 | `npm run content:validate` | schemas, plus unresolved `goto`, unreachable scenes, unknown `itemId` |
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:verify:rig` | the rig contract — clips, events, inputs, the turn budget |
+| `npm run art:rigs` | rebuilds the 24 rigs from `art/rig/*.rig.json` (needs the Rive CLI) |
+| `npm run art:verify:rig:motion` | what a rig *renders*: floor contact, artboard headroom, joint gaps, loop closure, and every trigger fired through the real state machine |
 | `npm run art:sheet` | regenerates the review contact sheets |
+| `npm run art:sheet:rig` | the same for a clip — N frames per species, so motion is reviewable |
 | `npm run e2e` | three browser contexts playing a chapter against the real stack |
 | `npm run infra:lint` | the SAM template, with the transform applied |
 | `npm run infra:build` | bundles the Lambdas — a deploy that would fail, failing here |
@@ -86,7 +90,8 @@ to the same behavior:
 `KAD_DDB_ENDPOINT` at a DynamoDB (`npm run ddb:local`, then `npm run test:ddb`)
 and the same suite runs against `DynamoRepository` too. CI always does both.
 
-All of them run in CI on every push. The e2e suite is its own job — minutes
+All of them run in CI on every push, except the four that need a local Rive CLI
+or a pair of eyes: `art:rigs`, `art:verify:rig:motion`, and the two sheet commands. The e2e suite is its own job — minutes
 rather than seconds, and a red e2e means something different from a red unit
 test. Locally it needs a Chromium; point `KAD_CHROMIUM` at one if Playwright's
 own download isn't there.
@@ -117,9 +122,20 @@ phone combat UI and the grid renderer; no client code touches `encounter` state,
 scene still resolves through its `onVictory` branch on screen. The campaign boundary is wired:
 completing a campaign's last chapter commits the party's provisional gains, three setbacks fail
 it (revert plus souvenir, spec §8.3), and the count survives across evenings. Also outstanding:
-Rive rigs (the client composites static tier PNGs with procedural motion in the meantime),
 spending banked stat points, the authoring tools, and the live LLM layer.
 
-The art contract is real and enforced: all six species are approved across all four tiers, 474
+The art contract is real and enforced: all six species are approved across all four tiers, 480
 mechanical checks green. Anything that fails to load still draws a clearly-placeholder silhouette
 rather than a broken image.
+
+**The rigs are built** — six skeletons, 24 exports, one per species per tier, each carrying the
+full twelve-clip hero set and the eleven state-machine inputs the contract names
+(`npm run art:verify:rig:strict`, 24/24 read and compared clip by clip). At rest every rig
+reproduces the `assembled.png` it was built from, which is the property that lets it drop into the
+same anchor the static art uses today. The acting is a first pass: a breathing idle, a two-step
+walk, a swing that lands its `impact` on tick 3, and `npm run art:verify:rig:motion` green across
+all 312 clips — nothing sinks through the floor, leaves the artboard, or paints a colour the
+approved art does not contain. **Nothing in the client draws them yet** — the
+Rive→Pixi seam (art-pipeline §7) is still a spike with an unmeasured TV row, and until that is
+settled the client goes on compositing static tier PNGs with procedural motion. Player-chosen
+colors are not wired into the rigs either, and §6.2 carries the measurement that says why.
