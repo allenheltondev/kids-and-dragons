@@ -34,6 +34,7 @@
 
 import { z } from "zod";
 import { canonRef, edge, Slug } from "./ids.js";
+import { PlaceLore } from "./lore.js";
 import { Encounter } from "./encounter.js";
 import { Mechanics, mechanicsProblems } from "./mechanics.js";
 import {
@@ -56,11 +57,15 @@ const MapAnchor = z.strictObject({ x: z.number(), y: z.number() });
  *
  * `map_provenance` is optional here and required on `biome`: every ecological
  * region is drawn, but a town authored in `locations.yaml` need never have been.
+ *
+ * `lore` here overrides the envelope's: a place's storyteller half is a past
+ * and a reputation (`PlaceLore`), not a personality — see lore.ts.
  */
 const Place = Envelope.extend({
   map_provenance: MapProvenance.optional(),
   map_anchor: MapAnchor.optional(),
   access: z.strictObject({ mode: Slug, fixed_routes: z.boolean() }).optional(),
+  lore: PlaceLore.optional(),
 });
 
 /** Who and what lives in a place. A settlement has people; a whirlpool does not. */
