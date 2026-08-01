@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_creature_canon
 title: "The Realm of Red Sky Creature Canon"
-updated: "2026-07-30"
+updated: "2026-07-31"
 
 purpose: >-
   Canonical, agent-readable reference for every non-playable fauna species in
@@ -18,6 +18,7 @@ agent_instructions:
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
   - Creature ids must not be invented outside this file or docs/red-sky-creature-canon.yaml.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+  - "`lore` is the storyteller's half: story, pastimes, and how a creature engages with others. `likes` and `dislikes` are opinions about kinds with stated reasons, never moral verdicts about a species — the `because` is the story hook, and it is required."
 
 controlled_values:
   canon_status:
@@ -97,6 +98,33 @@ creatures:
       Harmless unless a large frightened swarm obscures vision.
     standard_behavior: >-
       Gathers near warm cracks before noticeable volcanic changes, avoids loud movement.
+    lore:
+      hook: "The mountain's mood, printed on ten thousand small grey wings."
+      story: >-
+        Embermoths hatch in the warm cracks of the foothills and spend their
+        whole lives migrating from one warmth to the next. Nobody taught them
+        to predict eruptions; the moths simply have strong opinions about where
+        it is comfortable, and the mountain publishes its plans as heat before
+        it publishes them as smoke. Dragonlings learned to read them
+        generations ago, and treat a settling swarm the way sailors treat a
+        falling barometer.
+      pastimes:
+        - "Basking in spirals on freshly warmed stone, in strict order of seniority. Nobody knows how the order is decided — not even, apparently, the moths."
+        - "Riding cinder wolves between warm patches like slow ferries, which the wolves have agreed to never notice."
+        - "Crowding a traveler's lantern in a polite ring, at exactly the distance where nobody's wings catch."
+      social: >-
+        An embermoth fears nothing that does not stamp. They land on children,
+        tools, dragons, and soup, and regard all four as equally good
+        perches. A swarm that leaves in a hurry is not being rude; it is being
+        a warning.
+      likes:
+        - of: creature.cinder_wolf
+          because: "The warmest fur in the foothills, and it commutes."
+        - of: character.dragonling
+          because: "They keep warming-stones by their doors and have never once swatted."
+      dislikes:
+        - of: creature.will_o_wisp
+          because: "A light with no heat in it. The moths regard this as a broken promise."
     relationships:
       primary_locations: [biome.red_sky_foothills, location.mount_red_sky]
       creatures: []
@@ -123,6 +151,32 @@ creatures:
       Avoids conflict, leaves areas where forest magic has become damaged.
     standard_behavior: >-
       Follows healthy paths, sometimes approaches calm caretakers.
+    lore:
+      hook: "A walking garden that takes the job as seriously as any gardener."
+      story: >-
+        A mosshorn's antlers are living wood. Moss, ferns, and whole seasons of
+        small flowers grow there, and the oldest of the herd carry gardens that
+        predate the towns near them. The forest seems to route its health
+        through them: where a mosshorn grazes, things are well, and where a
+        mosshorn will not walk, wise travelers also do not.
+      pastimes:
+        - "Standing very still in the best light so the antler flowers open. The herd would deny this is showing off."
+        - "Trading seedlings by gently knocking antlers together, the way other folk clink mugs."
+        - "Wading into slow streams and letting minnows shelter in the antler roots until dusk."
+      social: >-
+        Shy but ceremonious. A mosshorn approaches a calm stranger exactly
+        once, inspects them thoroughly, and then either stays forever or was
+        never there. There is no appeal process.
+      likes:
+        - of: npc.harvest_sprite
+          because: "The best tenants an antler ever had. They weed."
+        - of: character.bigfoot
+          because: "They prune with respect, and they always ask first."
+        - of: character.unicorn
+          because: "Where a glade is hurt, they mend it, and the grazing comes back."
+      dislikes:
+        - of: creature.will_o_wisp
+          because: "The lights lead calves off the safe paths, and the herd has no way to say no to a light."
     relationships:
       primary_locations: [biome.enchanted_woods, location.mosshome]
       creatures: []
@@ -149,6 +203,32 @@ creatures:
       Flees from danger, investigates unattended food.
     standard_behavior: >-
       Gathers near well-maintained roads where predators are easier to spot.
+    lore:
+      hook: "The fastest thing on the plains, and it needs you to know it."
+      story: >-
+        Nobody knows whether the antlers came first or the attitude. Jackalopes
+        treat the realm's road network as a racetrack built specifically for
+        them, and a caravan crossing the Plains is, whether it knows it or not,
+        competing. The jackalope always wins, usually on a technicality only
+        the jackalope understands.
+      pastimes:
+        - "Racing caravans. The caravan is not always aware it has entered a race; this does not affect the standings."
+        - "Antler-hooking contests over windfall apples, best of five, no biting."
+        - "Assembling in perfect silence to watch travelers do absolutely anything at all."
+      social: >-
+        Bold at a distance, gone up close. A warren that lets you get near is
+        telling you the neighbourhood is safe; an empty stretch of good road is
+        telling you something else.
+      likes:
+        - of: npc.centaur
+          because: "They keep the roads flat and fast, and they pretend not to race back."
+        - of: npc.faun
+          because: "Orchard windfalls, and nobody ever counts them."
+      dislikes:
+        - of: creature.cinder_wolf
+          because: "Fair enough, being a wolf. But a wolf ruins a perfectly good straightaway."
+        - of: character.kitsune
+          because: "Raced one once. It turned out to be three of them, or possibly none. The warren has not recovered."
     relationships:
       primary_locations: [biome.plains, biome.sunward_fields, biome.eastern_plains]
       creatures: []
@@ -177,6 +257,32 @@ creatures:
     standard_behavior: >-
       Follows predictable seasonal currents, sings near storms, avoids settlements,
       occasionally shelters smaller fliers in its wake.
+    lore:
+      hook: "Too big to land. Too gentle to mind."
+      story: >-
+        Cloud whales swim the same high currents that carry the Sky Islands,
+        and have been swimming them since before the islands had names. They
+        sing near storms — not to calm them, as far as anyone can tell, but
+        about them, the way sailors sing about the sea. Kitsune navigators
+        write the songs down and steer by them, which the whales either do not
+        know or do not mind.
+      pastimes:
+        - "Composing storm-songs that take three days to finish. The storm is usually gone by the second verse. The song continues."
+        - "Drifting through the islands' wake to feel the hanging roots comb along their backs."
+        - "Letting smaller fliers rest in the calm behind their fins, and pretending very hard not to notice them."
+      social: >-
+        A cloud whale acknowledges a ship, an island, or a griffin with one
+        slow pass and considers the relationship established for life. They
+        remember individual travelers for decades and are mildly hurt when the
+        reverse is not true.
+      likes:
+        - of: character.kitsune
+          because: "The little navigators sing back. Off-key, but sincerely."
+        - of: character.griffin
+          because: "They carry the stranded into its wake, where the wind is kind. It approves of this use of itself."
+      dislikes:
+        - of: creature.legend_dragon
+          because: "One wingbeat unsettles a week of wind, and it has never once apologized."
     relationships:
       primary_locations: [biome.sky_islands]
       creatures: []
@@ -203,6 +309,31 @@ creatures:
       Defends young with short charges, abandons routes before avalanches.
     standard_behavior: >-
       Follows safe mountain lines, abandons routes before avalanches or ice breaks.
+    lore:
+      hook: "It has never once been wrong about an avalanche, and it is not going to start explaining itself now."
+      story: >-
+        Snowhorn goats walk lines through the Frostfang that no map holds,
+        passed from nanny to kid over generations of hard winters. When a herd
+        abandons a slope, the slope fails within the day — every time, without
+        exception, and without comment. The mountain peoples long ago stopped
+        asking how the goats know and started simply watching where they stand.
+      pastimes:
+        - "Standing on the most impossible point available, for no reason anyone has ever established. It may be art."
+        - "Leaving winter-shed horn where a traveler will find it, then watching from somewhere above while they do."
+        - "Staring contests with griffins. The goats claim an unbroken record. The griffins claim not to be playing."
+      social: >-
+        A snowhorn tolerates climbers who follow its line and despairs,
+        visibly, of those who do not. It will not lead you anywhere, but it
+        will let you notice where it is going, which it considers more than
+        generous.
+      likes:
+        - of: npc.yeti
+          because: "They remember where the good lichen was frozen two hundred years ago, and they walk slowly enough to follow."
+        - of: character.griffin
+          because: "When the herd reroutes, the griffins call the warning down the valley. A good division of labor: the goats know, the griffins are loud."
+      dislikes:
+        - of: creature.frost_wyrm
+          because: "It collapses in one morning what took the herd generations to map."
     relationships:
       primary_locations: [biome.frostfang_peaks, biome.glacier_of_origins]
       creatures: []
@@ -229,6 +360,32 @@ creatures:
       Avoids polluted or magically disturbed water.
     standard_behavior: >-
       Plays in safe currents, collects polished objects, sometimes returns dropped items.
+    lore:
+      hook: "Keeper of the river's lost-and-found. The administration fee is usually nothing."
+      story: >-
+        Every silver otter keeps a hoard-shelf under a root somewhere: polished
+        stones, dropped buttons, one perfect shell, arranged and rearranged
+        over a lifetime. They return lost things to travelers not out of duty
+        but because returning a thing makes you part of its story, and an otter
+        would rather be in the story than own the button.
+      pastimes:
+        - "Stone-polishing in the eddies under bridge pilings, where the current does most of the work and takes none of the credit."
+        - "Elaborate mudslide runs, redesigned every season, graded harshly by the juveniles."
+        - "Silent riverside trade meets with boggarts, where nothing is said and everything is appraised."
+      social: >-
+        Playful with anyone who is near water and not currently a hazard. An
+        otter that surfaces holding something you lost last week is not magic;
+        it is thoroughness.
+      likes:
+        - of: npc.frogfolk
+          because: "Pole boats are diving platforms, and a frogfolk pole has never once come down on an otter."
+        - of: npc.boggart
+          because: "The only people who understand the true worth of a really good button."
+        - of: npc.stone_troll
+          because: "It drops pebbles off the bridge on purpose and calls it maintenance."
+      dislikes:
+        - of: creature.river_drake
+          because: "It claims the deepest pool and the toll. An otter's stones should not count as cargo."
     relationships:
       primary_locations: [location.stone_crossing, biome.mermaid_cove]
       creatures: []
@@ -256,6 +413,29 @@ creatures:
       A sudden mass departure signals danger or reef damage.
     standard_behavior: >-
       Circles healthy reefs, avoids violent currents, gathers near merfolk song circles.
+    lore:
+      hook: "A kite the sea flies for itself."
+      story: >-
+        Reefgliders are the cove's weather, its festival, and its early-warning
+        system in one slow-turning body of light. The patterns on their backs
+        match the coral they grew up over, and their formation-signals are old
+        enough that merfolk song borrows phrases from them rather than the
+        other way around.
+      pastimes:
+        - "Formation-flying through the reef arches in patterns that take a whole tide to complete."
+        - "Orbiting merfolk song circles like a slow mobile, keeping time with their fins."
+        - "Riding the front edge of a storm current the long way around the cove, apparently for the view."
+      social: >-
+        Reefgliders have no known dislikes, which the merfolk privately find
+        suspicious. They investigate everything new by circling it at a
+        courteous distance for exactly one afternoon, after which it is
+        considered part of the reef.
+      likes:
+        - of: npc.merfolk
+          because: "The song circles. The singers pretend not to be flattered by the audience, and fail."
+        - of: npc.selkie
+          because: "Their wakes are the best game in the cove, and the selkies swim like they know it."
+      dislikes: []
     relationships:
       primary_locations: [biome.mermaid_cove]
       creatures: []
@@ -284,6 +464,31 @@ creatures:
       Threatens before charging, usually stops pursuing once intruder leaves territory.
     standard_behavior: >-
       Defends warm burrows and exposed mineral deposits.
+    lore:
+      hook: "The most patient misunderstanding in the foothills."
+      story: >-
+        A glassback's shell refracts whatever color is nearby, which in the
+        foothills is usually gemstone, which is why every treasure rush in
+        history has included somebody trying to mine one. The crab minds
+        enormously. It gives one warning, which is more than most prospectors
+        deserve, and it holds no grudge afterward — off its warm ground, you
+        have never existed.
+      pastimes:
+        - "Rearranging the mineral garden at its burrow mouth. Taste in arrangement appears to be hereditary."
+        - "Following embermoth swarms to freshly warmed ground, like a prospector who reads the news."
+        - "Holding threat displays at boulders that turned out not to be rival crabs. It takes a while to be sure."
+      social: >-
+        Solitary and formal. Neighbouring crabs maintain exact, invisible
+        borders that are renegotiated once a year in a ceremony that looks
+        exactly like two rocks facing each other for a day.
+      likes:
+        - of: creature.embermoth
+          because: "It finds the warm ground first and charges nothing for the information."
+        - of: character.dragonling
+          because: "They knock on the burrow stone and wait. The only people who do."
+      dislikes:
+        - of: creature.cinder_wolf
+          because: "In deep winter a pack will dig into someone else's warm burrow without so much as a wave."
     relationships:
       primary_locations: [biome.red_sky_foothills, location.mount_red_sky]
       creatures: []
@@ -326,6 +531,28 @@ creatures:
     standard_behavior: >-
       Avoids settled areas when prey is plentiful. Tremors or loss of habitat can
       drive packs toward roads.
+    lore:
+      hook: "Not a monster. Cold, mostly, and a long way from home."
+      story: >-
+        Cinder wolves carry banked heat under their coats the way other packs
+        carry nothing at all — a shared hearth that never quite goes out, fed
+        by closeness. A pack sleeping is one animal with twelve legs. When the
+        mountain grumbles and the prey moves, whole packs are pushed onto the
+        roads with their hearth and their hunger, and neither one is malice.
+      pastimes:
+        - "Heat-lounging in stacked piles, bottom position rotated by some fairness system no observer has cracked."
+        - "Pounce-games with embermoth swarms. No moth has ever been harmed; the game is the swirl."
+        - "Howling at the mountain in long complaints, which dragonling children insist they can translate."
+      social: >-
+        A cinder wolf pack wants nothing to do with you, and a pack that is
+        near you anyway is a pack whose home has stopped working. Feeding one
+        does not tame it; it does, however, get remembered.
+      likes:
+        - of: creature.embermoth
+          because: "A coatful of passengers, and the glow makes the den look lived-in."
+      dislikes:
+        - of: creature.legend_dragon
+          because: "When it turns over in its sleep, the prey moves east and nobody eats for a week."
     relationships:
       primary_locations: [biome.red_sky_foothills, biome.plains]
       creatures: []
@@ -370,6 +597,32 @@ creatures:
       strong vibration.
     standard_behavior: >-
       Remains motionless, abandons hunting sites repeatedly marked by frogfolk.
+    lore:
+      hook: "The marsh's most committed method actor, currently appearing in the role of 'ground.'"
+      story: >-
+        Nobody knows whether the mire mimic thinks of itself as a hunter or as
+        a performance. It has been a log, a jetty, three different abandoned
+        boats, and once — memorably — a small footbridge, for eleven years,
+        during which it let every school child in the marsh cross safely and
+        ate exactly one tax collector's satchel. Its impressions improve with
+        study; the newest boats have a smell.
+      pastimes:
+        - "Rehearsing. A mimic between hunts will practice being things it has no intention of ambushing anyone as."
+        - "Collecting compliments it overhears about scenery it is currently being."
+        - "Sulking, flatly and at length, after being identified in public."
+      social: >-
+        Solitary, patient, and quietly vain. Mimics encounter each other
+        rarely, and what happens then is not well understood, though one
+        frogfolk account describes two stretches of identical shoreline facing
+        each other for a month in what may have been a competition.
+      likes:
+        - of: creature.will_o_wisp
+          because: "It walks the audience straight to the stage, free of charge, and never once learns."
+      dislikes:
+        - of: npc.frogfolk
+          because: "The marking poles are reviews, and the reviews are always bad."
+        - of: npc.boggart
+          because: "They treat its staging area as a lost-and-found and its props as inventory."
     relationships:
       primary_locations: [biome.whispering_marsh]
       creatures: []
@@ -413,6 +666,29 @@ creatures:
     standard_behavior: >-
       Avoids griffin aeries but defends nesting tunnels aggressively. Unusual
       warmth can force them onto paths.
+    lore:
+      hook: "The glacier's other tenant. It was here first, and the receipts are frozen."
+      story: >-
+        Frost wyrms tunnel the deep ice along seams older than any map,
+        spiraling their nests around things frozen far below — whether they
+        guard those things or simply like the company is one of the north's
+        politely unasked questions. A wyrm's whole idea of a good year is one
+        in which nothing at all happens near its tunnel, and it enforces this
+        idea with total commitment.
+      pastimes:
+        - "Coiling beneath the yetis' singing halls to feel the low notes come down through forty feet of ice. The yetis do not know. The wyrm is counting on that."
+        - "Polishing tunnel walls to glass with its ridged scales, for reasons that may be maintenance and may be pride."
+        - "Sleeping through entire seasons, on purpose, starting from a good one."
+      social: >-
+        A frost wyrm defends the tunnel, never the mountain. It holds no
+        grudges because it takes no notes: leave, and you have solved the
+        entire relationship.
+      likes:
+        - of: npc.yeti
+          because: "Their songs carry through the ice. It has opinions on the repertoire, all favorable, none shared."
+      dislikes:
+        - of: character.griffin
+          because: "A shadow crossing the snow is the one shape it has never argued with."
     relationships:
       primary_locations: [biome.frostfang_peaks, biome.glacier_of_origins]
       creatures: []
@@ -458,6 +734,31 @@ creatures:
     standard_behavior: >-
       Defends deep water and favorite resting shelves, may block boats or demand
       dropped food.
+    lore:
+      hook: "The river's self-appointed toll collector. The river has not confirmed the appointment."
+      story: >-
+        A river drake claims a stretch of deep water the way other folk claim a
+        trade, and it works the position with genuine professionalism: it knows
+        the ferry schedule better than the ferryman, adjusts its rates by
+        cargo, weather, and how the day is going, and never takes more than the
+        toll. Where the toll came from, and by what authority, are questions
+        the drake considers closed.
+      pastimes:
+        - "Rearranging the hoard shelf: fish bones, boat fittings, and one perfect otter-polished stone it will not discuss."
+        - "Timing the caravan queue from underwater and surfacing at the exact moment it is longest."
+        - "Napping in the bridge's shadow with one eye open, which it considers being at work."
+      social: >-
+        Semi-sapient and thoroughly transactional. A drake learns individual
+        faces, individual boats, and individual grudges, and its regulars are
+        waved through in a way that first-timers find infuriating.
+      likes:
+        - of: npc.stone_troll
+          because: "A colleague in the crossing trade. They have never spoken. The tolls are honored between professionals."
+        - of: individual.old_ossley
+          because: "The one ferryman who pays without arguing, and who once threw in a honeycake unprompted."
+      dislikes:
+        - of: creature.silver_otter
+          because: "They call the toll 'borrowing.' It is not borrowing."
     relationships:
       primary_locations: [location.stone_crossing]
       creatures: []
@@ -501,8 +802,30 @@ creatures:
     standard_behavior: >-
       Hides from large creatures, defends feeding sites, swarms objects carrying
       fresh magical energy.
+    lore:
+      hook: "A hermit crab that moved into history."
+      story: >-
+        A bone crawler's shell is generations of borrowed fossil, fitted and
+        refitted until it is more heirloom than armor. When a crawler outgrows
+        its shell it leaves the whole assembly standing on the sand, and a
+        younger crawler moves in the way a child inherits a coat — sleeves too
+        long, dignity enormous. The Bone Yard's oldest shells have housed forty
+        owners and are considered fine addresses.
+      pastimes:
+        - "Shell-fitting, which is never finished. There is always one fragment that would sit better a little to the left."
+        - "Parading after the Restless Remains whenever the big bones walk. Chips fall like festival coins."
+        - "Arranging spare fragments in spirals on the tideline. No explanation has ever been offered."
+      social: >-
+        Timid alone, bold in a clatter, and entirely without enemies it is
+        aware of — everything it ought to fear is far too old to bother with
+        it. A swarm converging on your pack is not an attack; something in the
+        pack is humming with magic, and they would like it very much.
+      likes:
+        - of: creature.restless_remains
+          because: "A walking quarry and a parade in one. The crawlers attend every manifestation."
+      dislikes: []
     relationships:
-      primary_locations: [biome.bone_yard]
+      primary_locations: [location.bone_yard]
       creatures: []
       items: []
 
@@ -545,6 +868,29 @@ creatures:
     standard_behavior: >-
       Remains still while listening, investigates repeated sounds, retreats from
       overwhelming layered noise.
+    lore:
+      hook: "It has never seen anything in its life, and it knows the tunnels better than you know your own name."
+      story: >-
+        An echo hunter's memory is a library of sound: every drip, every
+        chamber, every visitor filed by footfall. It does not patrol so much as
+        proofread — a new sound in a known tunnel is an error in the text, and
+        the hunter will keep returning to the sentence until it parses. It is
+        not cruel. It is thorough, in the dark, which can amount to the same
+        thing for the unprepared.
+      pastimes:
+        - "Re-listening to favorite chambers the way a person rereads a good book."
+        - "Adjusting a tunnel's drip pattern, one moved pebble at a time, until the chamber sounds right. This can take years. The hunter has years."
+        - "Following an interesting new sound for days at a courteous distance, cataloguing."
+      social: >-
+        Entirely solitary, and by its own lights entirely polite. Approach
+        making steady, unhurried sounds and it files you under known;
+        approach in chaos and you are a problem the dark now needs to solve.
+      likes:
+        - of: npc.stone_troll
+          because: "They knock on stone before entering a passage — in its language, the height of good manners."
+      dislikes:
+        - of: creature.bone_crawler
+          because: "A crowd of clattering shells is a paragraph with no punctuation. It cannot bear it."
     relationships:
       primary_locations: [location.skullwater_cave]
       creatures: []
@@ -591,6 +937,32 @@ creatures:
     standard_behavior: >-
       Some repeat a memory harmlessly. Others lure travelers toward connected
       places even when the route is unsafe.
+    lore:
+      hook: "A memory that got loose, and is still trying to finish itself."
+      story: >-
+        When a memory matters enough — a way home, a hiding place, a game
+        interrupted at the best part — it can tangle in marsh magic and keep
+        going without its person. That is a wisp: one moment, replaying. Some
+        glow through it quietly forever. Others need a witness, and will lead
+        anyone who follows toward the place where the moment lived, without
+        ever checking whether the route still exists.
+      pastimes:
+        - "Replaying the good part."
+        - "Leading anything that will follow — travelers, moths, other wisps — toward the remembered place."
+        - "Hovering at the edge of frogfolk lantern festivals, at exactly the distance of an uninvited guest."
+      social: >-
+        A wisp cannot converse, exactly, but it responds — to patience, to
+        being walked with instead of away from, and above all to please,
+        which in the entire recorded history of the marsh almost nobody has
+        tried.
+      likes:
+        - of: npc.boggart
+          because: "They listen to the whole memory, every single time, and they write it down."
+        - of: npc.witch_order
+          because: "Once in a while, one of them can untangle the memory and let it finish. The wisp-equivalent of going home."
+      dislikes:
+        - of: creature.mire_mimic
+          because: "It keeps eating the audience in the middle of the story."
     relationships:
       primary_locations: [biome.whispering_marsh, biome.enchanted_woods]
       creatures: []
@@ -635,8 +1007,32 @@ creatures:
     standard_behavior: >-
       When awakened by grave magic or theft, moves to remove, reclaim, expose, or
       stop the cause.
+    lore:
+      hook: "Not a monster. A grievance, wearing whatever was available."
+      story: >-
+        The Bone Yard mostly sleeps, and prefers to. But when the rest is
+        seriously disturbed, something rises in whichever remains are nearest —
+        not the dead themselves, but the cause: the taken thing, the broken
+        promise, given shape and momentum until it is put right. It does not
+        chase you out of the Yard. It walks toward the wrong until the wrong
+        stops, and then, with visible relief, it lies back down.
+      pastimes:
+        - "Being still. Between manifestations it is nothing at all, which every account agrees is how it prefers things."
+        - "Settling back down in a slightly different arrangement each time, to the lasting despair of everyone who maps the Yard."
+        - "Listening, if bones can listen, to merfolk song carrying over calm water. The Yard is measurably quieter on singing nights."
+      social: >-
+        It answers a wrong, not a person. Put back what was taken and it
+        settles mid-stride; speak gently and there is sometimes enough of
+        someone left in it to answer. It has never once pursued anyone past
+        the water line.
+      likes:
+        - of: npc.merfolk
+          because: "The songs reach across the water on still nights, and the bones settle a little lower for hearing them."
+      dislikes:
+        - of: creature.bone_crawler
+          because: "Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely."
     relationships:
-      primary_locations: [biome.bone_yard]
+      primary_locations: [location.bone_yard]
       creatures: []
       items: []
 
@@ -684,6 +1080,32 @@ creatures:
     standard_behavior: >-
       Guards a claimed lair or purpose, monitors intrusions, may warn, test,
       bargain with, or attack depending on individual.
+    lore:
+      hook: "The mountain has a tenant. Nobody has read the lease."
+      story: >-
+        A legend dragon is less a species than an event that keeps happening to
+        Mount Red Sky. Each one is singular, ancient, and organized around a
+        purpose it has never seen the need to explain; whatever it keeps
+        beneath the mountain, it has kept since before anyone now living could
+        ask. Dragonling fireside stories claim kinship. The dragon has heard
+        the stories. It has not commented.
+      pastimes:
+        - "Rearranging the hoard by systems that take decades to complete. The current arrangement is believed to be by weight. The previous one may have been by regret."
+        - "Listening to the mountain. It is possible this is a conversation."
+        - "Testing visitors with questions it already knows the answers to, and grading generously when surprised."
+      social: >-
+        It may warn, test, bargain, or attack, and which one is a fact about
+        the individual, not the species. What every account agrees on: it
+        notices everything, forgets nothing, and finds almost all of it
+        beneath comment.
+      likes:
+        - of: creature.cloud_whale
+          because: "Something else old and slow that sings. The whales will not come near it, which it has decided not to notice."
+        - of: creature.embermoth
+          because: "The only living things permitted in the lair. They dust the scales, and they know the mountain's moods almost as well as it does."
+      dislikes:
+        - of: faction.deep_hollow_cult
+          because: "They keep knocking."
     relationships:
       primary_locations: [location.mount_red_sky]
       creatures: []
