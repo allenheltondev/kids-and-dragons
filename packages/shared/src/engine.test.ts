@@ -9,7 +9,13 @@ import {
   isPartyDown,
 } from "./engine.js";
 import type { EngineContext, EngineResult } from "./engine.js";
-import { currentActor, legalActions, type LegalAction } from "./encounter.js";
+import {
+  currentActor,
+  legalActions,
+  legalItemTargets,
+  legalMoves,
+  type LegalAction,
+} from "./encounter.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
@@ -1282,5 +1288,244 @@ describe("START_CHAPTER guards", () => {
     // would otherwise reset flags and XP and throw away the evening.
     expect(result.error?.code).toBe("ILLEGAL");
     expect(result.state.sceneId).toBe(started.sceneId);
+  });
+});
+
+describe("items in a fight (spec §7.2's fourth universal action)", () => {
+  /** Into the thicket fight with both bags stocked, and stay in it. */
+  function midFight(context: EngineContext): RunState {
+    let state = seatedParty(context);
+    state = applyEffects(
+      state,
+      [
+        { type: "grantItem", itemId: "brave_whistle", to: "p_1" },
+        { type: "grantItem", itemId: "firecracker", to: "p_1" },
+        { type: "grantItem", itemId: "brave_whistle", to: "p_2" },
+        { type: "grantItem", itemId: "firecracker", to: "p_2" },
+      ],
+      context,
+    );
+    state = walk(
+      state,
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    // The last READY by hand — `walk` would helpfully play the whole fight out.
+    const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
+    if (begun.error) throw new Error(`READY rejected: ${begun.error.message}`);
+    if (!begun.state.encounter) throw new Error("expected a fight in progress");
+    return begun.state;
+  }
+
+  function activeMember(state: RunState) {
+    const actor = state.encounter ? currentActor(state.encounter) : null;
+    const member = state.party.find((m) => m.character.id === actor?.id);
+    if (!actor || !member) throw new Error("expected a party member on the clock");
+    return member;
+  }
+
+  it("a consumable is the turn's one action, and its bonus lands on the fight", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = midFight(context);
+    const member = activeMember(state);
+
+    const used = applyIntent(
+      state,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
+      context,
+    );
+    expect(used.error).toBeUndefined();
+    const combatant = used.state.encounter?.combatants.find((c) => c.id === member.character.id);
+    expect(combatant?.rollBonus).toBe(2);
+    expect(used.state.encounter?.actionTaken).toBe(true);
+    const bag = used.state.party
+      .find((m) => m.playerId === member.playerId)!
+      .character.inventory.map((e) => e.itemId);
+    expect(bag).not.toContain("brave_whistle");
+
+    // The action is spent — a second item this turn is refused, and *kept*.
+    const again = applyIntent(
+      used.state,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "firecracker" } },
+      context,
+    );
+    expect(again.error?.code).toBe("ILLEGAL");
+    expect(
+      again.state.party
+        .find((m) => m.playerId === member.playerId)!
+        .character.inventory.map((e) => e.itemId),
+    ).toContain("firecracker");
+  });
+
+  it("a thrown item needs a monster within range, and a refusal never costs the item", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = midFight(context);
+    const member = activeMember(state);
+    const encounter = state.encounter!;
+
+    // The thicket seats the party on the west edge and the wisps on the east —
+    // out of throwing range until somebody closes the gap.
+    expect(legalItemTargets(encounter, member.character.id)).toEqual([]);
+    const tooFar = applyIntent(
+      state,
+      {
+        playerId: member.playerId,
+        intent: { type: "USE_ITEM", itemId: "firecracker", targetId: "wisp#1" },
+      },
+      context,
+    );
+    expect(tooFar.error?.code).toBe("ILLEGAL");
+    expect(
+      tooFar.state.party
+        .find((m) => m.playerId === member.playerId)!
+        .character.inventory.map((e) => e.itemId),
+    ).toContain("firecracker");
+
+    // Walk east until a wisp is inside ITEM_RANGE, then throw.
+    let working = state;
+    for (let hop = 0; hop < 4; hop++) {
+      const enc = working.encounter!;
+      if (legalItemTargets(enc, member.character.id).length > 0) break;
+      const moves = legalMoves(enc);
+      const east = [...moves].sort((a, b) => b.x - a.x)[0];
+      if (!east) throw new Error("expected a reachable tile to the east");
+      const moved = applyIntent(
+        working,
+        { playerId: member.playerId, intent: { type: "MOVE", to: { x: east.x, y: east.y } } },
+        context,
+      );
+      expect(moved.error).toBeUndefined();
+      working = moved.state;
+    }
+    const targets = legalItemTargets(working.encounter!, member.character.id);
+    expect(targets.length).toBeGreaterThan(0);
+    const targetId = targets[0]!;
+    const before = working.encounter!.combatants.find((c) => c.id === targetId)!.hp;
+
+    const thrown = applyIntent(
+      working,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "firecracker", targetId } },
+      context,
+    );
+    expect(thrown.error).toBeUndefined();
+    expect(thrown.state.encounter?.combatants.find((c) => c.id === targetId)?.hp).toBe(before - 3);
+    expect(thrown.state.encounter?.actionTaken).toBe(true);
+  });
+
+  it("a no-op use is refused with the action and the item both intact", () => {
+    /*
+     * The review case: a heal at full HP, or a bonus no better than the one in
+     * place, used to come back ok — spending the turn's action and, because
+     * the engine consumes on success, the item itself. Both must be refusals
+     * that leave everything exactly as it was.
+     */
+    const context = ctx({ rng: fixedRng(20) });
+    const state = midFight(context);
+    const member = activeMember(state);
+    // Fresh out of the lobby, the party is at full health.
+    expect(member.hp).toBe(member.character.maxHp);
+    state.party.forEach((m) => {
+      m.character.inventory = [
+        { itemId: "sunbloom_draught", kind: "consumable" },
+        { itemId: "brave_whistle", kind: "consumable" },
+      ];
+    });
+
+    const fullHeal = applyIntent(
+      state,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+    expect(fullHeal.error?.code).toBe("ILLEGAL");
+    expect(fullHeal.state.encounter?.actionTaken).toBe(false);
+    expect(
+      fullHeal.state.party
+        .find((m) => m.playerId === member.playerId)!
+        .character.inventory.map((e) => e.itemId),
+    ).toContain("sunbloom_draught");
+
+    // First whistle lands; a second, no stronger, is refused and kept.
+    const first = applyIntent(
+      state,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
+      context,
+    );
+    expect(first.error).toBeUndefined();
+    const rearmed = { ...first.state, encounter: { ...first.state.encounter!, actionTaken: false } };
+    rearmed.party
+      .find((m) => m.playerId === member.playerId)!
+      .character.inventory = [{ itemId: "brave_whistle", kind: "consumable" }];
+    const second = applyIntent(
+      rearmed,
+      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
+      context,
+    );
+    expect(second.error?.code).toBe("ILLEGAL");
+    expect(second.state.encounter?.actionTaken).toBe(false);
+    expect(
+      second.state.party
+        .find((m) => m.playerId === member.playerId)!
+        .character.inventory.map((e) => e.itemId),
+    ).toContain("brave_whistle");
+  });
+
+  it("only the player on the clock may use an item in a fight", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = midFight(context);
+    const member = activeMember(state);
+    const other = state.party.find((m) => m.playerId !== member.playerId)!;
+
+    const stolen = applyIntent(
+      state,
+      { playerId: other.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
+      context,
+    );
+    expect(stolen.error?.code).toBe("FORBIDDEN");
+  });
+
+  it("a heal at full health refuses outside a fight too, unconsumed", () => {
+    // The same no-op rule as in combat, in the same order: an unheld item is
+    // still NOT_FOUND first, and a held potion at full HP comes back ILLEGAL
+    // with the bag untouched — never consumed for a heal of zero.
+    const context = ctx();
+    let state = seatedParty(context);
+    state = applyEffects(state, [{ type: "grantItem", itemId: "sunbloom_draught", to: "p_1" }], context);
+    expect(state.party[0]!.hp).toBe(state.party[0]!.character.maxHp);
+
+    const result = applyIntent(
+      state,
+      { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.state.party[0]!.character.inventory.map((e) => e.itemId)).toContain(
+      "sunbloom_draught",
+    );
+
+    const unheld = applyIntent(
+      state,
+      { playerId: "p_2", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+    expect(unheld.error?.code).toBe("NOT_FOUND");
+  });
+
+  it("a combat-only item still refuses outside a fight, unconsumed", () => {
+    const context = ctx();
+    let state = seatedParty(context);
+    state = applyEffects(state, [{ type: "grantItem", itemId: "firecracker", to: "p_1" }], context);
+    const result = applyIntent(
+      state,
+      { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "firecracker" } },
+      context,
+    );
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.state.party[0]!.character.inventory.map((e) => e.itemId)).toContain("firecracker");
   });
 });

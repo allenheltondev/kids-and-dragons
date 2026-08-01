@@ -24,6 +24,7 @@ import type {
   ClientIntent,
   InventoryEntry,
   ItemCatalog,
+  ItemDef,
   PartyMember,
   Prompt,
 } from "@kad/shared";
@@ -62,9 +63,27 @@ function promptKey(prompt: Prompt | null): string {
   }
 }
 
-/** A consumable is actionable only outside the encounter state that owns HP. */
-export function canUseInventoryItem(entry: InventoryEntry, encounterActive: boolean): boolean {
-  return entry.kind === "consumable" && !encounterActive;
+/**
+ * Whether the bag's "Use it" button applies to this item *here*, outside a
+ * fight. Only a heal works out of combat — a roll bonus or a thrown item has
+ * nothing to land on — and only on somebody actually hurt, because the server
+ * refuses a use that would change nothing rather than consuming the item for
+ * it (engine.ts doUseItem, the same rule useItemInCombat enforces). During an
+ * encounter the bag goes quiet entirely: using an item is the turn's one
+ * action (§7.2), so it lives with the other action cards in CombatControls.
+ */
+export function canUseInventoryItem(
+  entry: InventoryEntry,
+  encounterActive: boolean,
+  def?: ItemDef,
+  atFullHealth?: boolean,
+): boolean {
+  return (
+    entry.kind === "consumable" &&
+    !encounterActive &&
+    def?.effect?.type === "heal" &&
+    atFullHealth !== true
+  );
 }
 
 function nameOfCharacter(party: PartyMember[], characterId: string): string {
@@ -681,7 +700,12 @@ export function PlayerPanel(): ReactElement {
               >
                 Close
               </Button>
-              {canUseInventoryItem(selectedEntry, state.encounter !== null) ? (
+              {canUseInventoryItem(
+                selectedEntry,
+                state.encounter !== null,
+                selectedDef,
+                me.hp >= me.character.maxHp,
+              ) ? (
                 <Button
                   variant="primary"
                   size="lg"
@@ -698,7 +722,13 @@ export function PlayerPanel(): ReactElement {
               ) : selectedEntry.kind === "consumable" ? (
                 <p className="item-detail__passive kad-chip">
                   <Icon name="waiting" />
-                  <span>Save it for after the fight</span>
+                  <span>
+                    {state.encounter !== null
+                      ? "Use it from your turn in the fight"
+                      : selectedDef?.effect?.type === "heal"
+                        ? "You're at full health — save it for later"
+                        : "Save it for a fight"}
+                  </span>
                 </p>
               ) : (
                 <p className="item-detail__passive kad-chip">

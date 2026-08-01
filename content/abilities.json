@@ -1,6 +1,6 @@
 {
   "$comment": "Combat definitions for the abilities rules.json names — architecture §5, spec §7.2. Shape is packages/shared/src/encounter.ts AbilityCatalog; where this file and the TS type disagree, the type wins. rules.json owns an ability's name, icon and the sentence a child reads; this file owns what it does on the board. The split is deliberate: an ability's *words* are read at a Rest scene by somebody choosing, and its *mechanics* are read by the engine, and the two get edited by different people for different reasons. Attack, Help Up and Ready are built into encounter.ts (UNIVERSAL_ABILITIES) because §7.2 grants them to everybody and they have no rules.json entry to borrow a name from — an entry here with the same id would win, which is the escape hatch if one ever needs retuning.",
-  "$deferredComment": "Abilities rules.json promises that the ten effect verbs cannot express *faithfully*. They are listed rather than approximated on purpose. An approximation is a lie a child will catch: `tanglelight` says \"it cannot move\" and the nearest verb costs the monster its whole turn, which is a different and better effect, so a player who reads the card and then watches the board learns not to trust the cards. content:validate refuses an ability that is in neither this list nor the catalog, so adding one to rules.json cannot silently produce a button that does nothing. Every entry names the verb it is waiting on.",
+  "$deferredComment": "Abilities rules.json promises that the effect verbs cannot express *faithfully*. They are listed rather than approximated on purpose. An approximation is a lie a child will catch: `tanglelight` says \"it cannot move\" and the nearest verb at the time cost the monster its whole turn, which is a different and better effect, so a player who reads the card and then watches the board learns not to trust the cards. content:validate refuses an ability that is in neither this list nor the catalog, so adding one to rules.json cannot silently produce a button that does nothing. The list is empty today — the chapter-5 pass grew the verbs the original eight waited on (ward, evade, root, extraMove, extraTurn, growWall, the board-wide `enemies` scope, chosen-multi targets and multi-tile targeting) — but the mechanism stays: every future entry names the verb it is waiting on.",
   "version": 1,
   "abilities": {
     "brace": {
@@ -309,16 +309,175 @@
         }
       ],
       "oncePerEncounter": true
+    },
+    "vanish": {
+      "id": "vanish",
+      "name": "Vanish",
+      "icon": "moon",
+      "timing": "action",
+      "$comment": "\"Slip out of sight. The next enemy that swings at you misses.\" The `evade` verb: spent by the next attack aimed at you, however many rounds later that comes, and the miss happens before any die is thrown — an auto-miss dressed as a bad roll would read as rigged dice.",
+      "target": {
+        "kind": "self"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "evade"
+          },
+          "to": "self"
+        }
+      ]
+    },
+    "twin_step": {
+      "id": "twin_step",
+      "name": "Twin Step",
+      "icon": "wing",
+      "timing": "action",
+      "$comment": "\"Move, attack, and then move again.\" An adjacent attack, then `extraMove` reopens movement with a fresh budget — the level-6 exception to §7.2's move-then-act, which is what makes it worth unlocking. The second move is the full allowance: \"move again\" on the card is a second move, not the change from the first one.",
+      "target": {
+        "kind": "enemy",
+        "range": "adjacent"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "attack",
+            "damage": 3
+          }
+        },
+        {
+          "effect": {
+            "type": "extraMove"
+          },
+          "to": "self"
+        }
+      ]
+    },
+    "storm_of_blades": {
+      "id": "storm_of_blades",
+      "name": "Storm of Blades",
+      "icon": "arrow",
+      "timing": "action",
+      "$comment": "\"Attack two different enemies standing next to you.\" `count: 2` is chosen targets, not the `adjacent` scope — the scope hits everything beside you, which is more generous than the card and would make the level-9 unlock strictly better than it reads. One roll per enemy, the dice deciding each (Burst's rule), and the engine refuses the same figure twice.",
+      "target": {
+        "kind": "enemy",
+        "range": "adjacent",
+        "count": 2
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "attack",
+            "damage": 3
+          }
+        }
+      ]
+    },
+    "bramble_wall": {
+      "id": "bramble_wall",
+      "name": "Bramble Wall",
+      "icon": "thorn",
+      "timing": "action",
+      "$comment": "\"Grow thorns on two tiles. Enemies have to go around.\" `growWall` turns each chosen tile into blocked terrain for the rest of the fight — real terrain, the same word the map is drawn in, which is why grid.ts made terrain board state rather than art. `tileCount: 2` is exact: the ability is withheld when the board cannot give it two open tiles, rather than walling less than the card says. The text gives no range, so this takes 6, same as every card that stays silent about it.",
+      "target": {
+        "kind": "tile",
+        "range": 6,
+        "tileCount": 2
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "growWall"
+          },
+          "to": "self"
+        }
+      ]
+    },
+    "unbreakable": {
+      "id": "unbreakable",
+      "name": "Unbreakable",
+      "icon": "shield",
+      "timing": "action",
+      "$comment": "\"Until your next turn, you and every friend beside you take 1 less damage from every hit.\" The `ward` verb, granted to self and adjacent — two effect lines, exactly as the card reads. It hangs on each recipient and every ward comes down when the Thornguard's next turn starts, the same expiry shape Brace already taught: \"until your next turn\" is the one duration this game has.",
+      "target": {
+        "kind": "none",
+        "affects": "ally"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "ward",
+            "amount": 1
+          },
+          "to": "self"
+        },
+        {
+          "effect": {
+            "type": "ward",
+            "amount": 1
+          },
+          "to": "adjacent"
+        }
+      ]
+    },
+    "tanglelight": {
+      "id": "tanglelight",
+      "name": "Tanglelight",
+      "icon": "thorn",
+      "timing": "action",
+      "$comment": "\"Ribbons of light wrap one enemy. It cannot move on its next turn.\" The `root` verb: the wrapped figure keeps its action and starts its next turn with zero steps, which is precisely what the card says and nothing more — `skipTurn` was the nearest verb for years, and it cost the monster its whole turn, a stronger and different effect. The text gives no range, so this takes 6.",
+      "target": {
+        "kind": "enemy",
+        "range": 6
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "root"
+          }
+        }
+      ]
+    },
+    "starfall": {
+      "id": "starfall",
+      "name": "Starfall",
+      "icon": "star",
+      "timing": "action",
+      "$comment": "\"Every enemy on the board takes 2 damage. Once per fight.\" The `enemies` scope is the whole other side wherever it stands — the board-wide counterpart of `allies`, not a square anchored anywhere. Flat damage, no rolls: the sky does not miss. The card says once per fight, so `oncePerEncounter` — the one class ability (with Encore) that carries it, and the card text is what licenses it (content:validate holds the two in agreement).",
+      "target": {
+        "kind": "none",
+        "affects": "enemy"
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "damage",
+            "amount": 2
+          },
+          "to": "enemies"
+        }
+      ],
+      "oncePerEncounter": true
+    },
+    "encore": {
+      "id": "encore",
+      "name": "Encore",
+      "icon": "note",
+      "timing": "action",
+      "$comment": "\"A friend takes another action right now. Once per fight.\" The `extraTurn` verb queues the friend, and the moment the Songkeeper's turn ends the clock lands on them — an action, no steps, because the card says \"another action\" and steps it does not say would be a stronger card than the one she read. Their own turn still arrives in the rolled order, full budget and all. The text gives no range, so this takes 6.",
+      "target": {
+        "kind": "ally",
+        "range": 6
+      },
+      "effects": [
+        {
+          "effect": {
+            "type": "extraTurn"
+          }
+        }
+      ],
+      "oncePerEncounter": true
     }
   },
-  "$deferred": {
-    "bramble_wall": "Needs a verb that changes the terrain. Every one of the ten acts on a figure; nothing makes a tile impassable, and `Board.terrain` is built once by `parseBoard` at the start of a fight.",
-    "unbreakable": "Needs damage reduction, and a duration — \"until your next turn\". No verb reduces incoming damage and the model has no concept of an effect that lasts.",
-    "vanish": "Needs a miss. `protect` redirects the next hit onto the bracer; this has to make it fail outright, which is a different verb.",
-    "twin_step": "Needs a second movement after acting. §7.2's turn is move-then-act, and `moveSelf` is an effect rather than a refunded move.",
-    "storm_of_blades": "Needs two *chosen* enemies. The `adjacent` scope hits everything beside you, which is more generous than the card and would make the level-9 unlock strictly better than it reads.",
-    "tanglelight": "Needs \"cannot move\" on its own. `skipTurn` costs the monster its whole turn, which is a stronger and different effect — the card would be lying.",
-    "starfall": "Needs a board-wide scope. `area` is a square anchored on a tile; nothing collects every enemy wherever they are.",
-    "encore": "Needs a second turn for somebody else — a turn cursor the round loop does not have."
-  }
+  "$deferred": {}
 }

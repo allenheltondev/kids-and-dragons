@@ -52,17 +52,20 @@ export function combatantIcon(combatant: Combatant, party: readonly PartyMember[
 /**
  * The whole board as row-major cells. `tappable` marks exactly the given
  * positions — the caller passes `legalMoves` destinations or a legal action's
- * tiles, never anything it derived itself.
+ * tiles, never anything it derived itself. `selected` is a list because a
+ * multi-tile ability (Bramble Wall) keeps every picked tile lit while the
+ * next one is chosen.
  */
 export function gridCells(
   encounter: EncounterState,
   party: readonly PartyMember[],
   tappable: readonly Position[],
-  selected: Position | null,
+  selected: readonly Position[],
 ): GridCell[] {
   const { board } = encounter;
   const activeId = currentActorId(encounter);
   const tapKeys = new Set(tappable.map((p) => `${p.x},${p.y}`));
+  const selectedKeys = new Set(selected.map((p) => `${p.x},${p.y}`));
   const byId = new Map(encounter.combatants.map((c) => [c.id, c]));
 
   const occupants = new Map<string, GridOccupant>();
@@ -89,7 +92,7 @@ export function gridCells(
         blocked: board.terrain[y * board.width + x] === "blocked",
         occupant: occupants.get(key) ?? null,
         tappable: tapKeys.has(key),
-        selected: selected !== null && selected.x === x && selected.y === y,
+        selected: selectedKeys.has(key),
       });
     }
   }

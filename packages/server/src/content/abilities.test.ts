@@ -178,7 +178,13 @@ function tileOf(state: EncounterState, id: string) {
 /** `performAction`, with a refusal turned into a readable failure. */
 function act(
   scene: Scene,
-  request: { abilityId: string; targetId?: string; targetTile?: { x: number; y: number } },
+  request: {
+    abilityId: string;
+    targetId?: string;
+    targetTile?: { x: number; y: number };
+    targetIds?: string[];
+    targetTiles?: { x: number; y: number }[];
+  },
 ): EncounterState {
   const result = performAction(scene.state, ctx(), request);
   if (!result.ok) throw new Error(`${request.abilityId} refused: ${result.reason}`);
@@ -534,22 +540,158 @@ describe("species actions", () => {
   }
 });
 
+describe("the chapter-5 unlocks", () => {
+  /*
+   * The eight that spent their first year in `$deferred`, now authored and run
+   * through the shipped catalog. Each test is the card's own sentence acted
+   * out — the same bar every other entry in this file is held to.
+   */
+
+  it("every card rules.json promises is authored — the deferral list is spent", () => {
+    // Chapter 5's definition of done for the catalog: no unlock arrives as a
+    // card nobody can tap. A future deferral would fail here on purpose — say
+    // it in $deferred *and* update this expectation, in the same commit.
+    for (const cls of Object.values(rules.classes)) {
+      expect(catalog[cls.signature.id], cls.signature.id).toBeDefined();
+      for (const unlock of Object.values(cls.unlocks)) {
+        expect(catalog[unlock.id], unlock.id).toBeDefined();
+      }
+    }
+    for (const sp of Object.values(rules.species)) {
+      expect(catalog[sp.combatAction.id], sp.combatAction.id).toBeDefined();
+    }
+  });
+
+  it("vanish: the next swing at the Duskrunner misses", () => {
+    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", level: 3 });
+    const scene = sceneWith([{ character: runner, at: { x: 1, y: 2 } }], [wisp()], runner.id);
+
+    expect(offered(scene)).toContain("vanish");
+    const after = act(scene, { abilityId: "vanish" });
+    expect(after.combatants.find((c) => c.id === runner.id)?.evade).toBe(true);
+  });
+
+  it("twin_step: move, attack, and the tiles light up again", () => {
+    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", level: 6 });
+    const scene = sceneWith([{ character: runner, at: { x: 3, y: 2 } }], [wisp()], runner.id);
+
+    expect(offered(scene)).toContain("twin_step");
+    const after = act(scene, { abilityId: "twin_step", targetId: "wisp#1" });
+    expect(after.actionTaken).toBe(true);
+    expect(after.moveAfterAction).toBe(true);
+    expect(after.stepsLeft).toBe(runner.steps);
+  });
+
+  it("storm_of_blades: two different enemies, both hit", () => {
+    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", level: 9 });
+    const scene = sceneWith(
+      [{ character: runner, at: { x: 3, y: 2 } }],
+      [wisp({ x: 4, y: 2 }), wisp({ x: 3, y: 3 })],
+      runner.id,
+    );
+
+    expect(offered(scene)).toContain("storm_of_blades");
+    // Guard-1 wisps, so both rolls land whatever the dice say.
+    const after = act(scene, { abilityId: "storm_of_blades", targetIds: ["wisp#1", "wisp#2"] });
+    expect(hpOf(after, "wisp#1")).toBeLessThan(6);
+    expect(hpOf(after, "wisp#2")).toBeLessThan(6);
+  });
+
+  it("bramble_wall: two tiles of real terrain", () => {
+    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 6 });
+    const scene = sceneWith([{ character: guard, at: { x: 3, y: 2 } }], [wisp({ x: 8, y: 2 })], guard.id);
+
+    const wall = legalActions(scene.state, ctx()).find((a) => a.abilityId === "bramble_wall");
+    expect(wall?.tileCount).toBe(2);
+    const after = act(scene, {
+      abilityId: "bramble_wall",
+      targetTiles: [
+        { x: 5, y: 1 },
+        { x: 5, y: 2 },
+      ],
+    });
+    const idx = (p: { x: number; y: number }) => p.y * after.board.width + p.x;
+    expect(after.board.terrain[idx({ x: 5, y: 1 })]).toBe("blocked");
+    expect(after.board.terrain[idx({ x: 5, y: 2 })]).toBe("blocked");
+  });
+
+  it("unbreakable: the Thornguard and the friend beside them are warded", () => {
+    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 9 });
+    const friend = hero({ id: "c_friend", species: "unicorn", class: "songkeeper" });
+    const scene = sceneWith(
+      [
+        { character: guard, at: { x: 1, y: 2 } },
+        { character: friend, at: { x: 2, y: 2 } },
+      ],
+      [wisp()],
+      guard.id,
+    );
+
+    expect(offered(scene)).toContain("unbreakable");
+    const after = act(scene, { abilityId: "unbreakable" });
+    expect(after.combatants.find((c) => c.id === guard.id)?.ward).toEqual({ byId: guard.id, amount: 1 });
+    expect(after.combatants.find((c) => c.id === friend.id)?.ward).toEqual({ byId: guard.id, amount: 1 });
+  });
+
+  it("tanglelight: the wrapped enemy cannot move on its next turn", () => {
+    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", level: 6 });
+    const scene = sceneWith([{ character: weaver, at: { x: 1, y: 2 } }], [wisp({ x: 5, y: 2 })], weaver.id);
+
+    expect(offered(scene)).toContain("tanglelight");
+    const after = act(scene, { abilityId: "tanglelight", targetId: "wisp#1" });
+    expect(after.combatants.find((c) => c.id === "wisp#1")?.rooted).toBe(true);
+  });
+
+  it("starfall: every enemy on the board, once per fight", () => {
+    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", level: 9 });
+    const scene = sceneWith(
+      [{ character: weaver, at: { x: 0, y: 0 } }],
+      [wisp({ x: 9, y: 4 }), wisp({ x: 0, y: 4 })],
+      weaver.id,
+    );
+
+    expect(offered(scene)).toContain("starfall");
+    const after = act(scene, { abilityId: "starfall" });
+    expect(hpOf(after, "wisp#1")).toBe(4);
+    expect(hpOf(after, "wisp#2")).toBe(4);
+    expect(after.combatants.find((c) => c.id === weaver.id)?.spent).toContain("starfall");
+  });
+
+  it("encore: the friend is owed an action the moment the song ends", () => {
+    const singer = hero({ id: "c_singer", species: "unicorn", class: "songkeeper", level: 9 });
+    const friend = hero({ id: "c_friend", species: "bigfoot", class: "thornguard" });
+    const scene = sceneWith(
+      [
+        { character: singer, at: { x: 1, y: 2 } },
+        { character: friend, at: { x: 3, y: 2 } },
+      ],
+      [wisp({ x: 8, y: 2 })],
+      singer.id,
+    );
+
+    expect(offered(scene)).toContain("encore");
+    const after = act(scene, { abilityId: "encore", targetId: friend.id });
+    expect(after.encores).toContain(friend.id);
+  });
+});
+
 describe("what is not in the catalog", () => {
-  it("leaves a deferred ability off the phone rather than crashing", () => {
+  it("leaves an action with no catalog entry off the phone rather than crashing", () => {
     /*
-     * The tolerance this whole design leans on. A level-6 Thornguard is granted
-     * Bramble Wall, which needs a verb that changes the terrain and is therefore
-     * in `$deferred`. `resolveCharacter` still lists it — the card exists, the
-     * rules promise it — and `legalActions` must simply not offer it. Anything
-     * else is a crash at the table for a gap somebody wrote down on purpose.
+     * The tolerance this whole design leans on. `$deferred` is empty today —
+     * the chapter-5 pass authored all eight — but the gap it covered is
+     * permanent: a save written against newer rules, or a future unlock
+     * waiting on a verb, puts an id in `actions` that this catalog cannot
+     * resolve. `legalActions` must simply not offer it. Anything else is a
+     * crash at the table for a gap somebody wrote down on purpose.
      */
     const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 6 });
-    expect(guard.actions).toContain("bramble_wall");
-    expect(catalog["bramble_wall"]).toBeUndefined();
+    const promised = { ...guard, actions: [...guard.actions, "comet_call"] };
+    expect(catalog["comet_call"]).toBeUndefined();
 
-    const scene = sceneWith([{ character: guard, at: { x: 3, y: 2 } }], [wisp({ x: 4, y: 2 })], guard.id);
+    const scene = sceneWith([{ character: promised, at: { x: 3, y: 2 } }], [wisp({ x: 4, y: 2 })], promised.id);
     const shown = offered(scene);
-    expect(shown).not.toContain("bramble_wall");
+    expect(shown).not.toContain("comet_call");
     // And the turn is still playable.
     expect(shown).toContain(ATTACK_ID);
   });
