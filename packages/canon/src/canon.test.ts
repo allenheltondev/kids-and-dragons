@@ -196,51 +196,87 @@ describe("registry integrity", () => {
     ).toBe(true);
   });
 
-  it("checks refs nested inside object arrays — lore.likes and separated_from", () => {
+  it("checks refs nested inside object arrays — place lore and separated_from", () => {
     // The single-cursor walk used to dead-end at an array of objects, which
-    // silently exempted `separated_from.region` and every lore opinion from
+    // silently exempted `separated_from.region` and every lore ref from
     // integrity checking. `readAll` fans out; this is the regression pin.
-    const opinionated = Biome.parse({
+    const storied = Biome.parse({
       ...testWood,
       parent_biome: undefined,
       lore: {
-        story: "A wood with opinions.",
-        likes: [{ of: "creature.nobody_home", because: "testing" }],
+        origin: "Grown, for testing.",
+        regional_relationships: [
+          { place: "biome.nowhere_home", relationship: "testing" },
+        ],
       },
     });
     const built = buildRegistry({
-      entities: [{ taxonomy: "biome", file: "test.yaml", entity: opinionated }],
+      entities: [{ taxonomy: "biome", file: "test.yaml", entity: storied }],
       issues: [],
       instructions: {},
     });
     const dangling = errors(built).filter((issue) => issue.message.includes("does not exist"));
     expect(dangling).toHaveLength(1);
-    expect(dangling[0]?.field).toBe("lore.likes.of");
+    expect(dangling[0]?.field).toBe("lore.regional_relationships.place");
   });
 
-  it("indexes a lore opinion as a reverse edge — who likes *them*", () => {
-    // "Silver otters like frogfolk" should be answerable from the frogfolk
-    // side without anyone authoring the reverse sentence.
-    const admirer = Biome.parse({
+  it("indexes a regional relationship as a reverse edge — who has history with *them*", () => {
+    // "The test wood depends on the marsh" should be answerable from the
+    // marsh's side without anyone authoring the reverse sentence.
+    const neighbourly = Biome.parse({
       ...testWood,
       parent_biome: undefined,
       lore: {
-        story: "A wood that likes its neighbours.",
-        likes: [{ of: "npc.frogfolk", because: "they wave" }],
+        origin: "Grown next to a marsh, for testing.",
+        regional_relationships: [
+          { place: "biome.whispering_marsh", relationship: "downstream of it" },
+        ],
       },
     });
     const built = buildRegistry({
       entities: [
-        { taxonomy: "biome", file: "test.yaml", entity: admirer },
+        { taxonomy: "biome", file: "test.yaml", entity: neighbourly },
         ...parseCanon(CANON_DIR).entities,
       ],
       issues: [],
       instructions: {},
     });
-    const inbound = related(built, "npc.frogfolk", { direction: "in" });
+    const inbound = related(built, "biome.whispering_marsh", { direction: "in" });
     expect(
-      inbound.some((edge) => edge.from === "biome.test_wood" && edge.field === "lore.likes.of"),
+      inbound.some(
+        (edge) =>
+          edge.from === "biome.test_wood" && edge.field === "lore.regional_relationships.place",
+      ),
     ).toBe(true);
+  });
+
+  it("gives a place the place lore shape, not a personality", () => {
+    // A biome does not have pastimes; a creature does not have an origin myth.
+    // The envelope's `lore` is overridden on Place, and strictness keeps the
+    // two shapes from bleeding into each other.
+    expect(
+      Biome.safeParse({
+        ...testWood,
+        parent_biome: undefined,
+        lore: { story: "A wood with opinions." },
+      }).success,
+    ).toBe(false);
+    expect(
+      Biome.safeParse({
+        ...testWood,
+        parent_biome: undefined,
+        lore: { origin: "Grown, for testing.", hidden_truths: ["it is a test"] },
+      }).success,
+    ).toBe(true);
+    // `origin` is the required field: place lore with no origin is a mood
+    // board, and the envelope already has one of those.
+    expect(
+      Biome.safeParse({
+        ...testWood,
+        parent_biome: undefined,
+        lore: { common_beliefs: ["unfounded"] },
+      }).success,
+    ).toBe(false);
   });
 });
 
