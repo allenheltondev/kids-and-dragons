@@ -147,11 +147,13 @@ The largest chapter. Budget accordingly.
 - Turn order (Quick-based, rerolled per encounter), round loop
 - Actions: Attack, class signature, species action, Use item, Help Up, Ready.
   Built: Attack, Help Up and Ready are code (§7.2 grants them to everybody); the rest are the
-  **ability catalog** `content/abilities.json`, ten effect verbs deep. Fourteen of the twenty-two
-  abilities `rules.json` promises are authored; **eight are listed in `$deferred`** with the verb
-  they wait on rather than approximated, and `content:validate` refuses one that is in neither list
-  — so a card can never ship as a button that does nothing (architecture §5.1). Use item is the
-  one still open: what a consumable does lives in `inventory.ts`, and Chapter 5 is where the two meet
+  **ability catalog** `content/abilities.json`. Fourteen of the twenty-two
+  abilities `rules.json` promises were authored against the original ten effect verbs, and eight
+  waited in `$deferred` with the verb each needed; `content:validate` refuses one that is in neither
+  list — so a card can never ship as a button that does nothing (architecture §5.1).
+  *(Amended by chapter 5: the verbs landed — sixteen now — all twenty-two are authored, `$deferred`
+  is empty, and Use item is a combat action: `useItemInCombat` in `encounter.ts` spends the turn's
+  one action on a heal, a roll bonus, or a throw at a standing enemy within 6 steps.)*
 - Enemy AI — simple and readable. She should be able to predict it. Deliberately not clever.
   Built: one policy, *a monster walks at the nearest hero it can reach and hits them*. If encounters
   play too soft, the dial is a **second one-sentence rule for a specific creature**, keyed off a
@@ -182,12 +184,14 @@ The largest chapter. Budget accordingly.
 **Claude**
 - XP → level, stat point spend, action unlocks. `CharacterProgress.unspentPoints`, inside the
   provisional/committed pair so a failed campaign reverts earned *and* spent points together
-- **The eight deferred abilities** (`content/abilities.json` `$deferred`). This chapter owns level
-  unlocks, and seven of the eight are level 6 or 9 (`vanish` is the lone level-3) — so the effect
-  verbs they wait on land here or the
-  unlocks arrive as cards nobody can tap. Each entry names its verb; the cheap ones are duration
-  (`unbreakable`, `tanglelight`'s "cannot move") and a board-wide scope (`starfall`), the expensive
-  ones are terrain (`bramble_wall`) and a second turn cursor (`encore`)
+- ~~**The eight deferred abilities** (`content/abilities.json` `$deferred`).~~ — built: the six
+  verbs landed in `encounter.ts` (`ward`, `evade`, `root`, `extraMove`, `extraTurn`, `growWall`),
+  plus the board-wide `enemies` scope, chosen-multi targets (`count`, Storm of Blades' "two
+  *different* enemies") and multi-tile targeting (`tileCount`, Bramble Wall's two tiles of real
+  terrain via `setTerrain`). All eight cards are authored, `$deferred` is empty, and a server
+  content test drives each one through the shipped catalog. Encore turned out to be a queue rather
+  than a second cursor: `endTurn` hands the clock to the owed friend — an action, no steps, because
+  that is what the card says — before the rolled order advances, so nobody downstream is re-seated
 - **Chapter outcomes** (spec §8.2): a terminal scene declares `success` or `setback`; a setback
   pays half XP and branches rather than retrying. This is what makes campaign failure — and
   therefore the whole souvenir system — reachable at all; today `completeChapter()` is the engine's
@@ -198,9 +202,19 @@ The largest chapter. Budget accordingly.
   XP set to that level's threshold, validated server-side against the party's committed level
 - **Inventory**: 6 slots, three item kinds, `content/items.json` catalog + schema validation
 - Item grants from chapters, full-slot swap-or-leave prompt, quest items outside the slot budget
-- Consumables usable in combat; trinket passives folded into `resolveCharacter()`
+- ~~Consumables usable in combat; trinket passives folded into `resolveCharacter()`~~ — built:
+  an item is the turn's one action (§7.2's fourth row), on the phone as a card beside the
+  abilities; a thrown item aims through the same target list, and a refusal never consumes.
+  Out of combat only a heal works, and the bag says so instead of offering a dead button
 - **Trading at Rest scenes** — drag on your phone, tap to accept on theirs
-- Provisional/committed state machine covering level, stats, **and inventory** together
+- ~~Provisional/committed state machine covering level, stats, **and inventory** together~~ —
+  built, and the seam that made "and inventory" a half-truth is closed: the engine's grants and
+  swaps land on the run's *resolved* characters, and nothing copied them back — so every pickup
+  quietly vanished at the next re-resolve. `syncRunInventory()` (`character.ts`) now folds the
+  run's bag and quest items into stored progress at every chapter completion, through
+  `writeProgress` so a failed campaign takes the bag back with the levels, and `foldChapterXp`
+  no longer skips a zero-XP completion (a chapter can pay nothing and still have handed somebody
+  a potion)
 - Souvenir generation on failure, tier-flavored when the run reached a new tier before failing;
   quest-item clearing at campaign end
 - ~~**Campaign completion, which nothing triggers yet.**~~ — built:
