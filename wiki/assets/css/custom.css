@@ -18,6 +18,26 @@
  * ========================================================================== */
 
 /* --------------------------------------------------------------------------
+ * 0. Box Model Reset
+ *
+ * No theme stylesheet is loaded (baseof.html only links this file), so
+ * padding must be included in declared widths or every `width: 100%`
+ * element with padding overflows the viewport on mobile.
+ * ----------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The sidebar rail keeps the content-box model: its 260px CSS width plus
+ * padding is the rendered rail width the desktop layout was built around. */
+.wiki-sidebar {
+  box-sizing: content-box;
+}
+
+/* --------------------------------------------------------------------------
  * 1. CSS Custom Properties
  * ----------------------------------------------------------------------- */
 
@@ -1194,9 +1214,15 @@ footer {
  * ----------------------------------------------------------------------- */
 
 .wiki-map {
-  position: relative;
   margin: 0;
   border-radius: var(--wiki-radius-lg);
+}
+
+/* Positioning context for the pins: wraps ONLY the image, so percentage
+ * offsets track the image itself. The figcaption sits outside this frame —
+ * including it in the reference box pushes high-y pins off the map. */
+.wiki-map__frame {
+  position: relative;
 }
 
 .wiki-map__image {
@@ -1673,6 +1699,11 @@ pre code {
 
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
+  /* Standard mobile app-bar height */
+  :root {
+    --wiki-navbar-height: 56px;
+  }
+
   /* Navbar: hide inline search, show mobile controls */
   .wiki-navbar__search {
     display: none;
@@ -1687,16 +1718,48 @@ pre code {
     min-width: var(--wiki-touch-min);
   }
 
-  /* Bug 1 fix: Navbar title truncation and compact padding */
+  /* Bug 1 fix: Navbar title truncation and compact padding.
+   * The title takes all free space (search is hidden) so the controls pin
+   * to the right edge. (Title/controls skinning lives in section 24g so it
+   * wins the cascade against the base navbar rules below it.) */
   .wiki-navbar__title {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
-    flex-shrink: 1;
+    flex: 1 1 auto;
+    justify-content: flex-start;
   }
 
   .wiki-navbar__inner {
     padding: 0 var(--wiki-space-md);
+  }
+
+  /* Mobile search overlay: styled panel fixed under the navbar */
+  .wiki-navbar__search-overlay {
+    position: fixed;
+    top: var(--wiki-navbar-height);
+    left: 0;
+    right: 0;
+    padding: var(--wiki-space-sm) var(--wiki-space-md) var(--wiki-space-md);
+    background-color: var(--wiki-bg);
+    border-bottom: 1px solid var(--wiki-border);
+    box-shadow: var(--wiki-shadow-md);
+    z-index: var(--wiki-navbar-z);
+  }
+
+  .wiki-navbar__search-overlay[hidden] {
+    display: none;
+  }
+
+  /* Related-entity cards: chips wrap onto their own row instead of
+   * squeezing the entity name into an ellipsis */
+  .wiki-related__card {
+    flex-wrap: wrap;
+  }
+
+  .wiki-related__chips {
+    max-width: 100%;
+    justify-content: flex-start;
   }
 
   /* Bug 8 fix: Relationship chips stack vertically on mobile */
@@ -1711,6 +1774,13 @@ pre code {
     display: block;
     margin-left: 0;
     margin-top: var(--wiki-space-xs);
+  }
+
+  /* Drawer links stay left-aligned (the blanket tap-target rule below
+   * centers `nav a` content, which reads oddly in a nav drawer) */
+  .wiki-sidebar__section-link,
+  .wiki-sidebar__page-link {
+    justify-content: flex-start;
   }
 
   /* Sidebar: hidden by default, shown as overlay on toggle */
@@ -2023,9 +2093,15 @@ body {
   color: var(--wiki-accent);
 }
 
+/* Short title variant only appears on mobile */
+.wiki-navbar__title-short {
+  display: none;
+}
+
+/* No `display` here: the responsive rules own it (flex on desktop, none on
+ * mobile) — setting it in this later rule would override the mobile hide. */
 .wiki-navbar__search {
   flex: 1;
-  display: flex;
   justify-content: center;
   max-width: 420px;
   margin: 0 auto;
@@ -2217,6 +2293,39 @@ body {
   text-align: center;
   color: var(--wiki-text-faint);
   font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 24g. Mobile Navbar Skin (< 768px)
+ *
+ * Placed after the base navbar rules (24c–24f) so these same-specificity
+ * mobile overrides win the cascade. Title shows the short site name; the
+ * control buttons read as app-bar icons instead of boxed buttons.
+ * ----------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .wiki-navbar__title-full {
+    display: none;
+  }
+
+  .wiki-navbar__title-short {
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Tap targets stay 44×44 via width/height on the buttons themselves */
+  .wiki-navbar__controls {
+    gap: var(--wiki-space-xs);
+  }
+
+  .wiki-navbar__search-toggle,
+  .wiki-navbar__hamburger,
+  .wiki-theme-toggle {
+    border: none;
+    background-color: transparent;
+    color: var(--wiki-text-secondary);
+  }
 }
 
 
