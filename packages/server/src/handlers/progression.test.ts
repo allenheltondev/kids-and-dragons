@@ -291,19 +291,74 @@ describe("foldChapterXp", () => {
     }
   });
 
-  it("does nothing when the chapter awarded nothing", async () => {
+  it("still folds the bag when the chapter awarded nothing", async () => {
+    /*
+     * This used to early-return on zero XP, and that return was the bug: a
+     * chapter can pay nothing and still have handed somebody a potion, and
+     * skipping the fold dropped it on the floor. Every completion folds now —
+     * the award just happens to be zero.
+     */
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
     const { state, character } = setup(harness, householdId, playerId);
     await harness.repo.putCharacter(character);
 
+    state.party[0]!.character.inventory = [{ itemId: "sunbloom_draught", kind: "consumable" }];
+
     for (const c of await foldChapterXp(state, harness.deps, householdId)) {
       await harness.repo.putCharacter(c);
     }
 
     const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
-    expect(stored?.provisional).toBeNull();
+    expect(stored?.provisional?.xp).toBe(0);
+    expect(stored?.provisional?.inventory).toEqual([
+      { itemId: "sunbloom_draught", kind: "consumable" },
+    ]);
+  });
+
+  it("carries the run's inventory and quest items into stored progress", async () => {
+    /*
+     * The seam this chapter closes: the engine's grants and swaps land on the
+     * run's *resolved* characters, and until this fold existed nothing copied
+     * them back — so the next `resolveCharacter()` rebuilt the bag from stored
+     * progress and the potion she picked up two sessions ago was quietly gone.
+     * The roadmap's "still in her bag" sentence is this assertion.
+     */
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const playerId = players[0]!.principal.playerId;
+    const { state, character, rules, items } = setup(harness, householdId, playerId);
+    await harness.repo.putCharacter(character);
+
+    state.xpEarned = 100;
+    state.party[0]!.character.inventory = [
+      { itemId: "sunbloom_draught", kind: "consumable" },
+      { itemId: "oak_token", kind: "trinket" },
+    ];
+    state.party[0]!.character.questItems = ["rusted_key"];
+    const maxHpBefore = state.party[0]!.character.maxHp;
+
+    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+      await harness.repo.putCharacter(c);
+    }
+
+    const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
+    expect(stored?.provisional?.inventory?.map((e) => e.itemId)).toEqual([
+      "sunbloom_draught",
+      "oak_token",
+    ]);
+    expect(stored?.questItems).toEqual(["rusted_key"]);
+    // Provisional, not committed: a failed campaign takes the bag back with
+    // the levels (spec §8.3) — the pair reverts together or not at all.
+    expect(stored?.committed.inventory).toEqual([]);
+
+    // And the re-resolved snapshot the phones mirror carries the trinket's
+    // passive: the oak token's +2 max HP is on the sheet from this patch on —
+    // the fold swapped the party member's snapshot too, and both views agree.
+    const resolved = resolveCharacter(stored!, rules, items);
+    expect(resolved.maxHp).toBe(maxHpBefore + 2);
+    expect(state.party[0]!.character.maxHp).toBe(maxHpBefore + 2);
   });
 
   it("skips a character the household has no record of, without throwing", async () => {
