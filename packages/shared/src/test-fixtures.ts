@@ -130,6 +130,13 @@ export function makeItems(): ItemCatalog {
       icon: "icons/items/firecracker.svg",
       effect: { type: "damage", amount: 3 },
     },
+    brave_whistle: {
+      kind: "consumable",
+      name: "Brave Whistle",
+      text: "One loud note. +2 on your next roll.",
+      icon: "icons/items/whistle.svg",
+      effect: { type: "rollBonus", amount: 2 },
+    },
     river_charm: {
       kind: "trinket",
       name: "River Charm",

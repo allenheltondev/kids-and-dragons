@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   ATTACK_ID,
   HELP_UP_ID,
+  ITEM_RANGE,
   READY_ID,
   beginEncounter,
   combatantById,
@@ -12,12 +13,14 @@ import {
   endTurn,
   isPartyWiped,
   legalActions,
+  legalItemTargets,
   legalMoves,
   moveTo,
   performAction,
   positionOf,
   rollInitiative,
   turnOrder,
+  useItemInCombat,
 } from "./encounter.js";
 import type {
   AbilityCatalog,
@@ -26,7 +29,7 @@ import type {
   EncounterSetup,
   EncounterState,
 } from "./encounter.js";
-import { parseBoard } from "./grid.js";
+import { isOpen, parseBoard } from "./grid.js";
 import type { Board, Position } from "./grid.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
@@ -158,6 +161,90 @@ const CATALOG: AbilityCatalog = {
       { effect: { type: "moveSelf" } },
       { effect: { type: "attack", damage: 3 } },
     ],
+    oncePerEncounter: true,
+  },
+
+  // --- The chapter-5 unlocks: the eight that waited on new verbs. ---
+
+  // Duskrunner 3 — "Slip out of sight. The next enemy that swings at you misses."
+  vanish: {
+    id: "vanish",
+    name: "Vanish",
+    icon: "moon",
+    timing: "action",
+    target: { kind: "self" },
+    effects: [{ effect: { type: "evade" }, to: "self" }],
+  },
+  // Thornguard 9 — "Until your next turn, you and every friend beside you take
+  // 1 less damage from every hit."
+  unbreakable: {
+    id: "unbreakable",
+    name: "Unbreakable",
+    icon: "shield",
+    timing: "action",
+    target: { kind: "none", affects: "ally" },
+    effects: [
+      { effect: { type: "ward", amount: 1 }, to: "self" },
+      { effect: { type: "ward", amount: 1 }, to: "adjacent" },
+    ],
+  },
+  // Starweaver 6 — "Ribbons of light wrap one enemy. It cannot move on its next turn."
+  tanglelight: {
+    id: "tanglelight",
+    name: "Tanglelight",
+    icon: "thorn",
+    timing: "action",
+    target: { kind: "enemy", range: 6 },
+    effects: [{ effect: { type: "root" } }],
+  },
+  // Starweaver 9 — "Every enemy on the board takes 2 damage. Once per fight."
+  starfall: {
+    id: "starfall",
+    name: "Starfall",
+    icon: "star",
+    timing: "action",
+    target: { kind: "none", affects: "enemy" },
+    effects: [{ effect: { type: "damage", amount: 2 }, to: "enemies" }],
+    oncePerEncounter: true,
+  },
+  // Duskrunner 9 — "Attack two different enemies standing next to you."
+  storm_of_blades: {
+    id: "storm_of_blades",
+    name: "Storm of Blades",
+    icon: "arrow",
+    timing: "action",
+    target: { kind: "enemy", range: "adjacent", count: 2 },
+    effects: [{ effect: { type: "attack", damage: 3 } }],
+  },
+  // Duskrunner 6 — "Move, attack, and then move again."
+  twin_step: {
+    id: "twin_step",
+    name: "Twin Step",
+    icon: "wing",
+    timing: "action",
+    target: { kind: "enemy", range: "adjacent" },
+    effects: [
+      { effect: { type: "attack", damage: 3 } },
+      { effect: { type: "extraMove" }, to: "self" },
+    ],
+  },
+  // Thornguard 6 — "Grow thorns on two tiles. Enemies have to go around."
+  bramble_wall: {
+    id: "bramble_wall",
+    name: "Bramble Wall",
+    icon: "thorn",
+    timing: "action",
+    target: { kind: "tile", range: 6, tileCount: 2 },
+    effects: [{ effect: { type: "growWall" }, to: "self" }],
+  },
+  // Songkeeper 9 — "A friend takes another action right now. Once per fight."
+  encore: {
+    id: "encore",
+    name: "Encore",
+    icon: "note",
+    timing: "action",
+    target: { kind: "ally", range: 6 },
+    effects: [{ effect: { type: "extraTurn" } }],
     oncePerEncounter: true,
   },
 };
@@ -1280,5 +1367,337 @@ describe("determinism", () => {
     };
 
     expect(JSON.stringify(play())).toBe(JSON.stringify(play()));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The chapter-5 verbs — the eight unlocks that waited on them
+// ---------------------------------------------------------------------------
+
+describe("the chapter-5 verbs", () => {
+  it("vanish: the next attack misses without a die being thrown, then it is spent", () => {
+    // Hero leads (Quick 9), vanishes, ends the turn. The wisp swings with a
+    // die pinned to hit — and the swing has to fail anyway, with no roll
+    // event, because an auto-miss dressed as a bad roll reads as rigged dice.
+    let state = beginEncounter(
+      setup({ party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["vanish"] }), at: { x: 1, y: 2 } }] }),
+      ctxWith(ALWAYS_HIT),
+    );
+    state = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "vanish" })).state;
+    expect(combatantById(state, "c_hero")?.evade).toBe(true);
+
+    state = endTurn(state);
+    expect(currentActorId(state)).toBe("wisp#1");
+    const swing = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "c_hero" }));
+    expect(swing.events).toEqual([{ type: "evaded", actorId: "c_hero" }]);
+    expect(hpOf(swing.state, "c_hero")).toBe(10);
+    expect(combatantById(swing.state, "c_hero")?.evade).toBe(false);
+
+    // Spent. The second swing, next round, lands as normal.
+    state = endTurn(endTurn(swing.state));
+    expect(currentActorId(state)).toBe("wisp#1");
+    const second = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "c_hero" }));
+    expect(hpOf(second.state, "c_hero")).toBe(7);
+  });
+
+  it("unbreakable: wards self and adjacent friends, shaves every hit, expires on the caster's next turn", () => {
+    // Two heroes side by side; the guard (Quick 9) wards both, and the wisp's
+    // 3-damage hit lands as 2 on either of them.
+    let state = beginEncounter(
+      setup({
+        party: [
+          { character: hero({ id: "c_guard", quick: 9, actions: ["unbreakable"] }), at: { x: 1, y: 2 } },
+          { character: hero({ id: "c_friend", quick: 8 }), at: { x: 1, y: 3 } },
+        ],
+        enemies: [{ spec: wisp(), at: { x: 2, y: 2 } }],
+      }),
+      ctxWith(ALWAYS_HIT),
+    );
+    state = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "unbreakable" })).state;
+    expect(combatantById(state, "c_guard")?.ward).toEqual({ byId: "c_guard", amount: 1 });
+    expect(combatantById(state, "c_friend")?.ward).toEqual({ byId: "c_guard", amount: 1 });
+
+    state = endTurn(state); // friend
+    state = endTurn(state); // wisp
+    expect(currentActorId(state)).toBe("wisp#1");
+    const swing = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "c_guard" }));
+    expect(swing.events).toContainEqual({ type: "warded", actorId: "c_guard", amount: 1 });
+    expect(hpOf(swing.state, "c_guard")).toBe(8);
+
+    // The caster's next turn starts, and every ward they granted comes down.
+    state = endTurn(swing.state);
+    expect(currentActorId(state)).toBe("c_guard");
+    expect(combatantById(state, "c_guard")?.ward).toBeNull();
+    expect(combatantById(state, "c_friend")?.ward).toBeNull();
+  });
+
+  it("tanglelight: the rooted figure keeps its action but starts its next turn with no steps", () => {
+    let state = beginEncounter(
+      setup({ party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["tanglelight"] }), at: { x: 1, y: 2 } }] }),
+      ctxWith(ALWAYS_MISS),
+    );
+    const cast = ok(performAction(state, ctxWith(ALWAYS_MISS), { abilityId: "tanglelight", targetId: "wisp#1" }));
+    expect(cast.events).toContainEqual({ type: "rooted", actorId: "wisp#1" });
+    expect(combatantById(cast.state, "wisp#1")?.rooted).toBe(true);
+
+    // Its turn comes: zero steps, mark consumed — one turn's movement, no more.
+    state = endTurn(cast.state);
+    expect(currentActorId(state)).toBe("wisp#1");
+    expect(state.stepsLeft).toBe(0);
+    expect(legalMoves(state)).toEqual([]);
+    expect(combatantById(state, "wisp#1")?.rooted).toBe(false);
+    // The action survives: the wisp standing next to the hero still swings.
+    expect(legalActions(state, ctxWith(ALWAYS_MISS)).map((a) => a.abilityId)).toContain(ATTACK_ID);
+  });
+
+  it("starfall: every enemy on the board takes the damage, wherever it stands", () => {
+    // Two wisps at opposite corners — far outside any square a tile could
+    // anchor. "Every enemy on the board" has to mean the board.
+    let state = beginEncounter(
+      setup({
+        party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["starfall"] }), at: { x: 1, y: 2 } }],
+        enemies: [
+          { spec: wisp(), at: { x: 0, y: 0 } },
+          { spec: wisp(), at: { x: 7, y: 4 } },
+        ],
+      }),
+      ctxWith(ALWAYS_MISS),
+    );
+    const cast = ok(performAction(state, ctxWith(ALWAYS_MISS), { abilityId: "starfall" }));
+    expect(hpOf(cast.state, "wisp#1")).toBe(4);
+    expect(hpOf(cast.state, "wisp#2")).toBe(4);
+    expect(hpOf(cast.state, "c_hero")).toBe(10);
+    // Once per fight — spent under the id the action list uses.
+    expect(combatantById(cast.state, "c_hero")?.spent).toContain("starfall");
+  });
+
+  it("storm of blades: two different enemies, never the same one twice", () => {
+    let state = beginEncounter(
+      setup({
+        party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["storm_of_blades"] }), at: { x: 1, y: 2 } }],
+        enemies: [
+          { spec: wisp(), at: { x: 2, y: 2 } },
+          { spec: wisp(), at: { x: 1, y: 3 } },
+        ],
+      }),
+      ctxWith(ALWAYS_HIT),
+    );
+    const offered = legalActions(state, ctxWith(ALWAYS_HIT)).find((a) => a.abilityId === "storm_of_blades");
+    expect(offered?.maxTargets).toBe(2);
+    expect([...(offered?.targets ?? [])].sort()).toEqual(["wisp#1", "wisp#2"]);
+
+    // The same figure twice is one target counted twice, not two targets.
+    const doubled = performAction(state, ctxWith(ALWAYS_HIT), {
+      abilityId: "storm_of_blades",
+      targetIds: ["wisp#1", "wisp#1"],
+    });
+    expect(doubled.ok).toBe(false);
+
+    const both = ok(performAction(state, ctxWith(ALWAYS_HIT), {
+      abilityId: "storm_of_blades",
+      targetIds: ["wisp#1", "wisp#2"],
+    }));
+    expect(hpOf(both.state, "wisp#1")).toBe(3);
+    expect(hpOf(both.state, "wisp#2")).toBe(3);
+    // Two attacks, two rolls — the dice decide each one (Burst's rule).
+    expect(both.events.filter((e) => e.type === "roll")).toHaveLength(2);
+  });
+
+  it("storm of blades: one enemy left is still a legal (weaker) use", () => {
+    const state = beginEncounter(
+      setup({ party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["storm_of_blades"] }), at: { x: 1, y: 2 } }] }),
+      ctxWith(ALWAYS_HIT),
+    );
+    const one = ok(performAction(state, ctxWith(ALWAYS_HIT), {
+      abilityId: "storm_of_blades",
+      targetId: "wisp#1",
+    }));
+    expect(hpOf(one.state, "wisp#1")).toBe(3);
+  });
+
+  it("twin step: movement comes back after the action, once, with a fresh budget", () => {
+    let state = beginEncounter(
+      setup({ party: [{ character: hero({ id: "c_hero", quick: 9, steps: 4, actions: ["twin_step"] }), at: { x: 1, y: 2 } }] }),
+      ctxWith(ALWAYS_MISS),
+    );
+    // Spend some steps first — the second move is a fresh allowance, not change.
+    state = ok(moveTo(state, { x: 1, y: 1 })).state;
+    expect(state.stepsLeft).toBe(3);
+    state = ok(performAction(state, ctxWith(ALWAYS_MISS), { abilityId: "twin_step", targetId: "wisp#1" })).state;
+
+    expect(state.actionTaken).toBe(true);
+    expect(state.moveAfterAction).toBe(true);
+    expect(state.stepsLeft).toBe(4);
+    expect(legalMoves(state).length).toBeGreaterThan(0);
+    state = ok(moveTo(state, { x: 1, y: 0 })).state;
+
+    // The exception dies with the turn that used it.
+    state = endTurn(state);
+    state = endTurn(state); // back to the hero
+    expect(state.moveAfterAction).toBe(false);
+  });
+
+  it("bramble wall: exactly two tiles, and the thorns are real terrain", () => {
+    let state = beginEncounter(
+      setup({ party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["bramble_wall"] }), at: { x: 1, y: 2 } }] }),
+      ctxWith(ALWAYS_MISS),
+    );
+    const offered = legalActions(state, ctxWith(ALWAYS_MISS)).find((a) => a.abilityId === "bramble_wall");
+    expect(offered?.tileCount).toBe(2);
+
+    // One tile is not what the card says.
+    const short = performAction(state, ctxWith(ALWAYS_MISS), {
+      abilityId: "bramble_wall",
+      targetTile: { x: 3, y: 2 },
+    });
+    expect(short.ok).toBe(false);
+
+    const walled = ok(performAction(state, ctxWith(ALWAYS_MISS), {
+      abilityId: "bramble_wall",
+      targetTiles: [{ x: 3, y: 2 }, { x: 3, y: 3 }],
+    }));
+    expect(walled.events).toContainEqual({ type: "walled", at: { x: 3, y: 2 } });
+    expect(walled.events).toContainEqual({ type: "walled", at: { x: 3, y: 3 } });
+    expect(isOpen(walled.state.board, { x: 3, y: 2 })).toBe(false);
+    expect(isOpen(walled.state.board, { x: 3, y: 3 })).toBe(false);
+  });
+
+  it("bramble wall: withheld entirely when the board cannot give it two tiles", () => {
+    // Three open tiles, all occupied or standing room only — one free tile is
+    // fewer than the card's two, so the button never appears (§7.2: hidden,
+    // never a lie).
+    const board = parseBoard([
+      "...#",
+      "####",
+    ]);
+    const state = beginEncounter(
+      {
+        board,
+        party: [{ character: hero({ id: "c_hero", quick: 9, actions: ["bramble_wall"] }), at: { x: 0, y: 0 } }],
+        enemies: [{ spec: wisp(), at: { x: 1, y: 0 } }],
+      },
+      ctxWith(ALWAYS_MISS),
+    );
+    const offered = legalActions(state, ctxWith(ALWAYS_MISS)).map((a) => a.abilityId);
+    expect(offered).not.toContain("bramble_wall");
+  });
+
+  it("encore: the friend acts right now, with no steps, and still gets their own turn", () => {
+    let state = beginEncounter(
+      setup({
+        party: [
+          { character: hero({ id: "c_singer", quick: 9, actions: ["encore"] }), at: { x: 1, y: 2 } },
+          { character: hero({ id: "c_friend", quick: 8 }), at: { x: 3, y: 2 } },
+        ],
+        enemies: [{ spec: wisp(), at: { x: 3, y: 3 } }],
+      }),
+      ctxWith(ALWAYS_HIT),
+    );
+    expect(currentActorId(state)).toBe("c_singer");
+    const cast = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "encore", targetId: "c_friend" }));
+    expect(cast.events).toContainEqual({ type: "encore", actorId: "c_friend" });
+
+    // The singer's turn ends and the clock lands on the friend — an action,
+    // no steps, before the cursor moves at all.
+    state = endTurn(cast.state);
+    expect(currentActorId(state)).toBe("c_friend");
+    expect(state.stepsLeft).toBe(0);
+    expect(state.actionTaken).toBe(false);
+    expect(legalMoves(state)).toEqual([]);
+    const swing = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "wisp#1" }));
+
+    // The bonus action over, the order resumes where it left off — the friend's
+    // *own* turn is next and arrives with a full budget.
+    state = endTurn(swing.state);
+    expect(state.encoreActor).toBeNull();
+    expect(currentActorId(state)).toBe("c_friend");
+    expect(state.stepsLeft).toBe(4);
+  });
+
+  it("encore: a friend knocked down in between quietly loses the bonus action", () => {
+    let state = beginEncounter(
+      setup({
+        party: [
+          { character: hero({ id: "c_singer", quick: 9, actions: ["encore"] }), at: { x: 1, y: 2 } },
+          { character: hero({ id: "c_friend", quick: 8, maxHp: 10 }), at: { x: 3, y: 2 }, hp: 1 },
+        ],
+        enemies: [{ spec: wisp({ attack: 5 }), at: { x: 3, y: 3 } }],
+      }),
+      ctxWith(ALWAYS_HIT),
+    );
+    let cast = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "encore", targetId: "c_friend" })).state;
+    // Knock the friend down before the singer's turn ends — the engine can't,
+    // but a test can reach in and say it happened.
+    cast = {
+      ...cast,
+      combatants: cast.combatants.map((c) => (c.id === "c_friend" ? { ...c, hp: 0, down: true } : c)),
+    };
+    const after = endTurn(cast);
+    // Straight past the lost encore to the next seat in the order.
+    expect(after.encoreActor).toBeNull();
+    expect(currentActorId(after)).toBe("wisp#1");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Items in a fight — §7.2's fourth universal action
+// ---------------------------------------------------------------------------
+
+describe("useItemInCombat", () => {
+  it("a healing draught heals the drinker and spends the action", () => {
+    let state = beginEncounter(setup(), ctxWith(ALWAYS_HIT));
+    state = {
+      ...state,
+      combatants: state.combatants.map((c) => (c.id === "c_hero" ? { ...c, hp: 5 } : c)),
+    };
+    const used = ok(useItemInCombat(state, { actorId: "c_hero", effect: { type: "heal", amount: 4 } }));
+    expect(hpOf(used.state, "c_hero")).toBe(9);
+    expect(used.state.actionTaken).toBe(true);
+    expect(used.events).toContainEqual({ type: "heal", actorId: "c_hero", amount: 4, hp: 9 });
+  });
+
+  it("a roll bonus takes the larger, never stacks — the rollBonus rule exactly", () => {
+    const state = beginEncounter(setup(), ctxWith(ALWAYS_HIT));
+    const first = ok(useItemInCombat(state, { actorId: "c_hero", effect: { type: "rollBonus", amount: 3 } }));
+    expect(combatantById(first.state, "c_hero")?.rollBonus).toBe(3);
+  });
+
+  it("a thrown item needs a legal target inside its range", () => {
+    // 8 wide, 5 tall: the far corner is 7 steps from the near one — outside
+    // ITEM_RANGE, so the wisp there can never be a legal throw.
+    const state = beginEncounter(
+      setup({
+        party: [{ character: hero({ id: "c_hero", quick: 9 }), at: { x: 0, y: 0 } }],
+        enemies: [
+          { spec: wisp(), at: { x: 6, y: 0 } },
+          { spec: wisp(), at: { x: 7, y: 4 } },
+        ],
+      }),
+      ctxWith(ALWAYS_HIT),
+    );
+    expect(ITEM_RANGE).toBe(6);
+    expect(legalItemTargets(state, "c_hero")).toEqual(["wisp#1"]);
+
+    const far = useItemInCombat(state, {
+      actorId: "c_hero",
+      effect: { type: "damage", amount: 3 },
+      targetId: "wisp#2",
+    });
+    expect(far.ok).toBe(false);
+
+    const thrown = ok(useItemInCombat(state, {
+      actorId: "c_hero",
+      effect: { type: "damage", amount: 3 },
+      targetId: "wisp#1",
+    }));
+    expect(hpOf(thrown.state, "wisp#1")).toBe(3);
+    expect(thrown.state.actionTaken).toBe(true);
+  });
+
+  it("refuses once the action is spent — an item is the turn's one action", () => {
+    const state = beginEncounter(setup(), ctxWith(ALWAYS_HIT));
+    const first = ok(useItemInCombat(state, { actorId: "c_hero", effect: { type: "rollBonus", amount: 2 } }));
+    const second = useItemInCombat(first.state, { actorId: "c_hero", effect: { type: "heal", amount: 2 } });
+    expect(second.ok).toBe(false);
   });
 });
