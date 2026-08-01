@@ -120,26 +120,39 @@ campaigns:
       bustle for ash, tremor light, and the inside of the mountain.
     common_story_uses: >-
       The realm-spanning main arc: a treasure hunt that becomes a race to
-      understand the treasure, crossing five biomes and ending inside Mount Red
-      Sky with a choice that renames the party for good.
+      understand the treasure, crossing six biomes on three weaving roads and
+      ending at Mount Red Sky with a choice that renames the party for good -
+      or a loss the realm remembers.
     canon_constraints: >-
       The party begins ordinary - no chosen heroes. The Hollow Gate cannot be
       opened in this arc, and it foreshadows by observation only - its runes
       share the gemstones' hum and it feels older than the modern world, but
       whether it is a seal, doorway, warning, or something else entirely is
       never established. Factions and named leads remain chapter-scoped per
-      faction canon. Whether history remembers the party as the Heroes of Red
-      Sky or the treasure hunters who woke the mountain is decided by play,
-      not by the script.
+      faction canon. The party's pursuit is a real choice made at the chapter
+      6 exit, with the campaign's reading of five chapters of conduct on the
+      table: restoring the seal, completing the gem collection, and leashing
+      the power beneath the mountain are all playable pursuits, and conduct
+      keeps its receipts in reactions, support, and epilogues whichever is
+      chosen. The campaign can be lost - loss endings are authored epilogues
+      in the child-hero tone, never dead ends mid-chapter. Whether history
+      remembers the party as the Heroes of Red Sky, the Collectors, or the
+      treasure hunters who woke the mountain is decided by play, not by the
+      script.
     standard_behavior: >-
-      Fixed story beats with a routed middle: after Bramblewood the party
-      takes either the River Road (Stone Crossing, Eastern Plains, Northern
-      River Bridge) or the Wild Road (Whispering Marsh, Enchanted Woods,
-      MossHome), experiencing different chapters 3-5 that converge in the
-      foothills. Failure reroutes along real geography - the main channel
-      sweeps a failed Stone Crossing downstream toward the river mouth, the
-      west branch sweeps a failed ford back into the marsh - and it never
-      stops the campaign.
+      Fixed story beats with a routed middle: every chapter ends on the same
+      story beat on every road, but rarely in the same place. After
+      Bramblewood the party takes the River Road (Stone Crossing, Eastern
+      Plains, Northern River Bridge), the Rush Road (the Plains caravan ford
+      and the boundary stones), or the Wild Road (Whispering Marsh, Enchanted
+      Woods, MossHome), experiencing different chapters 3-5 that converge in
+      the foothills; chapter 7 routes by pursuit instead of road. The roads
+      weave where geography allows - a marsh party can walk northeast into
+      the rush traffic, and a failed caravan ford sweeps a Rush Road party
+      west into the Wild Road's forest. Scene failure reroutes along real
+      geography and never stops a chapter; campaign loss comes only from the
+      Seal Clock, a doom staged through creature signs from misbehaving
+      embermoths to a foothill bell ring that has never been used.
     relationships:
       biomes:
         - biome.sunward_fields
@@ -172,4 +185,5 @@ campaigns:
         - faction.deep_hollow_cult
       items:
         - item.crimson_shard
+        - item.hollow_crown_shard
       quests: []
