@@ -15,11 +15,11 @@ regional_relationships:
   - id: biome.eastern_plains
     title: "The Eastern Plains"
     url: "/biomes/eastern_plains/"
-    relationship: "The plains below are where aerie trade lands and where young griffins first encounter flat ground, which they describe to each other for years afterward."
+    relationship: "The plains below are where aerie trade lands and where mountain debts are repaid - a rescued caravan remembers, and the prides make sure of it."
   - id: location.skullwater_cave
     title: "Skullwater Cave"
     url: "/locations/skullwater_cave/"
-    relationship: "The skull rock sits off their coast, and aerie flight rules give it a courteous margin - not fear, the griffins say, just no reason to be rude to a door."
+    relationship: "The skull rock sits off their coast. Aerie flight rules give it a courteous margin, and no ledger records why."
 related:
   - id: biome.glacier_of_origins
     type: biome
@@ -105,12 +105,12 @@ The realm sleeps because the peaks do not. Rescue, watch, and weather all come d
 ### Common Beliefs
 
 - The mountain counts you on the way up and expects the same number on the way down.
-- Never call a pass 'probably fine.' The pass hears the probably.
-- A re-stacked cairn is a griffin saying the route is watched. An un-stacked one is the mountain saying it is not.
+- Never call a pass 'probably fine.' A pass is fine, or it is closed.
+- A re-stacked cairn means the route is watched. An un-stacked one means it is not.
 
 ### Disputed Beliefs
 
-- The goats' staring-contest record against the griffins. The goats are undefeated; the griffins maintain they have never been playing; the goats find this consistent with being undefeated.
+- Whether the wall was raised, or merely remained when everything else wore away. The aeries do not argue it; the argument belongs to scholars who have never wintered there.
 
 ### Hidden Truths
 
@@ -121,17 +121,17 @@ The realm sleeps because the peaks do not. Rescue, watch, and weather all come d
 ### Neighbors
 
 - **[Glacier of Origins](/biomes/glacier_of_origins/)** — Partners in the north: the glacier remembers and the peaks respond. Every mountain rescue is half griffin speed and half yeti patience, and neither half works alone.
-- **[The Eastern Plains](/biomes/eastern_plains/)** — The plains below are where aerie trade lands and where young griffins first encounter flat ground, which they describe to each other for years afterward.
-- **[Skullwater Cave](/locations/skullwater_cave/)** — The skull rock sits off their coast, and aerie flight rules give it a courteous margin - not fear, the griffins say, just no reason to be rude to a door.
+- **[The Eastern Plains](/biomes/eastern_plains/)** — The plains below are where aerie trade lands and where mountain debts are repaid - a rescued caravan remembers, and the prides make sure of it.
+- **[Skullwater Cave](/locations/skullwater_cave/)** — The skull rock sits off their coast. Aerie flight rules give it a courteous margin, and no ledger records why.
 
 ### Current Tensions
 
 - Passes are closing earlier and more often as the glacier's melt shifts the ice, and the rescue rolls are filling in seasons that used to be quiet.
-- Frost wyrm tunnels have appeared under two flight routes, and the goats rerouted before the surveys did, which everyone found more reassuring than the surveys.
+- Frost wyrm tunnels have appeared under two flight routes, and the goats rerouted before the surveys did.
 
 ### Story Hooks
 
-- One rescue cairn high on the north face is maintained by no known aerie. It is always freshly stacked. The watch has opinions it does not log.
+- The rescue rolls record one save that no aerie has ever claimed. It is left in the rolls anyway. A rescue is a rescue.
 - The oldest pass ledger opens mid-sentence; its first volume has never been found. The aeries' best guess is that it is somewhere sensible, under forty feet of ice.
 <!-- END GENERATED: lore -->
 

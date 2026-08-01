@@ -8,10 +8,6 @@ canon_status: confirmed
 tags: ["warm_water", "coral_reefs", "lagoon", "alliance", "island"]
 danger_level: moderate
 regional_relationships:
-  - id: location.the_whirlpool
-    title: "The Whirlpool"
-    url: "/locations/the_whirlpool/"
-    relationship: "The cove's standing appointment: the songs keep it from widening, the Whirlpool keeps turning, and neither party has ever missed a night."
   - id: location.bone_yard
     title: "The Bone Yard"
     url: "/locations/bone_yard/"
@@ -91,7 +87,6 @@ The realm's southern door to the sea, and its standing proof that an agreement c
 ### Common Beliefs
 
 - A rescued swimmer owes the cove a story, payable at dinner. The dinner is not optional either.
-- Never sing near the Whirlpool unless you mean it. It listens more closely than anything else in the sea.
 - Casual promises do not exist in the cove. There are only promises.
 
 ### Disputed Beliefs
@@ -106,7 +101,6 @@ The realm's southern door to the sea, and its standing proof that an agreement c
 
 ### Neighbors
 
-- **[The Whirlpool](/locations/the_whirlpool/)** — The cove's standing appointment: the songs keep it from widening, the Whirlpool keeps turning, and neither party has ever missed a night.
 - **[The Bone Yard](/locations/bone_yard/)** — On still nights the song circles sing a little louder for the neighbors across the water, and the Yard is measurably quieter for it. Neither shore has ever acknowledged the arrangement.
 - **[The Open Sea](/biomes/open_sea/)** — Everything arrives from it and everything is eventually owed back to it; the cove is the sea's guest room, kept beautiful on purpose.
 - **[The Exchange](/locations/exchange/)** — Sea trade and selkie couriers bind the cove to the city's docks closely enough that cove news reaches the Exchange while it is still gossip.
@@ -114,7 +108,7 @@ The realm's southern door to the sea, and its standing proof that an agreement c
 ### Current Tensions
 
 - The song circle rosters are thinning as young selkies and merfolk take courier and dock work at the Exchange, and the elders have begun, gently, to count attendance.
-- Gemfall shipping lanes have edged closer to the Whirlpool to save a day's sailing, and the cove is drafting an amendment about it.
+- Gemfall shipping has crowded the cove's southern approaches, and the cove is drafting an amendment about wakes over the reef nurseries.
 
 ### Story Hooks
 

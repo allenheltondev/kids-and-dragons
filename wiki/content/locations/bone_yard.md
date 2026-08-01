@@ -11,7 +11,7 @@ regional_relationships:
   - id: biome.sallow_wastelands
     title: "The Sallow Wastelands"
     url: "/biomes/sallow_wastelands/"
-    relationship: "The flats are the Yard's moat and receptionist: reaching the bones takes effort, the effort is the point, and the guides who provide it double as the Yard's unofficial doorkeepers."
+    relationship: "The flats are the Yard's threshold: reaching the bones takes effort, the effort is the point, and the guides who provide it double as the Yard's unofficial doorkeepers."
   - id: feature.great_river
     title: "The Great River"
     url: "/features/great_river/"
@@ -81,21 +81,21 @@ The realm's resting place for its oldest dead, and its longest-running lesson in
 
 - Take nothing, hum something, and leave before the tide turns.
 - The bones are not angry. They are tired, and there is a difference, and you do not want to be the one who teaches them the first thing.
-- Never point at a skull. It is rude, and rude is remembered here longer than anywhere.
+- Speak low. Not because the bones hear - because you do not know that they don't.
 
 ### Disputed Beliefs
 
-- What the enormous creatures were. No living species matches, the skull rock offshore matches nothing here either, and the realm's scholars have politely agreed to keep disagreeing rather than dig for the answer.
+- What the enormous creatures were. No living species matches, the skull rock offshore matches nothing here either, and the realm's scholars have agreed to keep disagreeing rather than dig for the answer.
 
 ### Hidden Truths
 
 > *Creator canon — not generally known in-world. No NPC recites these.*
 
-- No object taken from the Yard has ever stayed sold. Every one has found its way back - by tide, by refund, by embarrassed courier - and the handful of 'genuine Bone Yard relics' in circulation at the Exchange are, without exception, hand-me-down crawler shells.
+- No object taken from the Yard has ever stayed sold. Every one has found its way back - returned by tide, by conscience, or by a buyer who could not sleep near it. The 'genuine Bone Yard relics' in circulation at the Exchange are hand-me-down crawler shells, every one.
 
 ### Neighbors
 
-- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The flats are the Yard's moat and receptionist: reaching the bones takes effort, the effort is the point, and the guides who provide it double as the Yard's unofficial doorkeepers.
+- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The flats are the Yard's threshold: reaching the bones takes effort, the effort is the point, and the guides who provide it double as the Yard's unofficial doorkeepers.
 - **[The Great River](/features/great_river/)** — The river built the Yard and staffs it still, delivering silt, driftwood, and the occasional new resident with every flood.
 - **[Mermaid Cove](/biomes/mermaid_cove/)** — The song circles carry across the water on still nights, and the Yard is measurably quieter for it - the realm's gentlest ongoing act of neighborliness, unacknowledged from both shores.
 

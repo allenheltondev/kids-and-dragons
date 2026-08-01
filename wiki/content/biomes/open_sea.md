@@ -8,18 +8,14 @@ canon_status: newly_defined
 tags: ["ocean", "offshore", "deep_water", "weather", "currents"]
 danger_level: moderate
 regional_relationships:
-  - id: location.the_whirlpool
-    title: "The Whirlpool"
-    url: "/locations/the_whirlpool/"
-    relationship: "The sea's only permanent address. Everything else about the open water moves; the Whirlpool keeps turning exactly where it always has, which sailors find either comforting or the opposite."
   - id: biome.sky_islands
     title: "Sky Islands"
     url: "/biomes/sky_islands/"
-    relationship: "The sea and the sky run the realm's weather between them and trade dropped belongings constantly, and neither has ever returned anything."
+    relationship: "The sea and the sky run the realm's weather between them - an arrangement no shore was consulted on."
   - id: biome.sallow_wastelands
     title: "The Sallow Wastelands"
     url: "/biomes/sallow_wastelands/"
-    relationship: "The river's terminus is the sea's front porch: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure."
+    relationship: "The river's terminus is the sea's threshold: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure."
 related:
   - id: location.the_whirlpool
     type: location
@@ -92,22 +88,21 @@ The realm's edges all end at the same neighbor. The sea is the road that owns it
 
 ### Disputed Beliefs
 
-- What lies past the edge of the map. The kitsune have songs, the selkies have jokes, the merfolk have a silence, and every sailor has a cousin who knows somebody who saw it.
+- What lies past the edge of the map. Every coast has an answer. No two agree. None has been checked.
 
 ### Neighbors
 
-- **[The Whirlpool](/locations/the_whirlpool/)** — The sea's only permanent address. Everything else about the open water moves; the Whirlpool keeps turning exactly where it always has, which sailors find either comforting or the opposite.
-- **[Sky Islands](/biomes/sky_islands/)** — The sea and the sky run the realm's weather between them and trade dropped belongings constantly, and neither has ever returned anything.
-- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The river's terminus is the sea's front porch: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure.
+- **[Sky Islands](/biomes/sky_islands/)** — The sea and the sky run the realm's weather between them - an arrangement no shore was consulted on.
+- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The river's terminus is the sea's threshold: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure.
 
 ### Current Tensions
 
-- Gemfall shipping has crowded waters that were never consulted, and the season's storms have been unbooked, punctual, and thorough.
+- Gemfall shipping has crowded waters that were never consulted, and the season's storms have been punctual and thorough.
 
 ### Story Hooks
 
-- A current that was not there a generation ago now runs south along the eastern coast, and the selkies, who ought to know where it goes, change the subject with unusual skill.
-- Every so often the sea returns something - a spar, a bell, one perfect shoe - decades late and somewhere else entirely. The Exchange keeps a shelf for these arrivals, and the shelf is never empty.
+- A current that was not there a generation ago now runs south along the eastern coast, and the selkies, who ought to know where it goes, do not say.
+- Every so often the sea returns something - a spar, a bell, a name-board - decades late and somewhere else entirely. The Exchange keeps a shelf for these arrivals. It is never empty.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
