@@ -16,10 +16,6 @@ regional_relationships:
     title: "Frostfang Peaks"
     url: "/biomes/frostfang_peaks/"
     relationship: "The peaks handle the fast half of the north - watch, rescue, wind - and the glacier handles the slow half - memory, melt, tea. Each considers the division generous to the other."
-  - id: biome.expanse
-    title: "The Expanse"
-    url: "/biomes/expanse/"
-    relationship: "Neighbors along the realm's quietest border. The yetis read the ice on their own side only."
 related:
   - id: feature.great_river
     type: feature
@@ -116,7 +112,6 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 
 - **[Source of the Great River](/features/great_river_source/)** — The river rises from the melt, which means every region downstream is, strictly speaking, drinking the archive.
 - **[Frostfang Peaks](/biomes/frostfang_peaks/)** — The peaks handle the fast half of the north - watch, rescue, wind - and the glacier handles the slow half - memory, melt, tea. Each considers the division generous to the other.
-- **[The Expanse](/biomes/expanse/)** — Neighbors along the realm's quietest border. The yetis read the ice on their own side only.
 
 ### Current Tensions
 

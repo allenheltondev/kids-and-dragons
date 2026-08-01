@@ -8,19 +8,6 @@ canon_status: intentionally_undefined
 draft: true
 tags: ["barren", "northern_waste", "forbidden", "unknown", "plateau"]
 danger_level: unknown
-regional_relationships:
-  - id: location.mount_red_sky
-    title: "Mount Red Sky"
-    url: "/locations/mount_red_sky/"
-    relationship: "The mountain stands between the plateau and everything south of it, and most of the realm privately prefers the arrangement."
-  - id: feature.great_river
-    title: "The Great River"
-    url: "/features/great_river/"
-    relationship: "The river holds the plateau's whole eastern line, and no crossing has ever been built along that stretch, which nobody regrets."
-  - id: biome.glacier_of_origins
-    title: "Glacier of Origins"
-    url: "/biomes/glacier_of_origins/"
-    relationship: "The plateau and the glacier share the north between them, and the yetis read the ice on their own side only - they have never said whether that is preference or policy."
 related:
   - id: biome.enchanted_woods
     type: biome
@@ -66,11 +53,11 @@ Not established, and established as not established: every people has a story ab
 
 ### Recorded History
 
-The realm's records about the Expanse are mostly records of restraint. The griffin watch-log runs back four centuries, and its proudest, longest, and almost only entry is "nothing."
+Almost none, deliberately. What records the realm keeps about the Expanse are records of staying away.
 
 ### Cultural Significance
 
-The Expanse is the realm's agreed-upon edge - the place parents point to when a lesson needs weight, and the reason the northern watch is a profession rather than a hobby.
+The realm's agreed-upon edge. The plateau is the word parents use when a lesson needs weight, and the north is the direction the realm keeps its back to.
 
 ### Common Beliefs
 
@@ -81,21 +68,6 @@ The Expanse is the realm's agreed-upon edge - the place parents point to when a 
 ### Disputed Beliefs
 
 - Everything else. What it was, what happened, whether anything remains - the realm holds every possible theory, and the Expanse has confirmed none of them.
-
-### Neighbors
-
-- **[Mount Red Sky](/locations/mount_red_sky/)** — The mountain stands between the plateau and everything south of it, and most of the realm privately prefers the arrangement.
-- **[The Great River](/features/great_river/)** — The river holds the plateau's whole eastern line, and no crossing has ever been built along that stretch, which nobody regrets.
-- **[Glacier of Origins](/biomes/glacier_of_origins/)** — The plateau and the glacier share the north between them, and the yetis read the ice on their own side only - they have never said whether that is preference or policy.
-
-### Current Tensions
-
-- The griffin watch does not discuss its log, but re-stacked cairns and doubled patrols suggest the word 'nothing' has been doing extra work lately.
-
-### Story Hooks
-
-- An old map in a collector's stall at the Exchange shows a road entering the Expanse. Every other copy of that map shows no road, and the collector will not name a price.
-- Forbidden expeditions set out every generation or so. The stories about what they found differ; the fact that the stories are all secondhand does not.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

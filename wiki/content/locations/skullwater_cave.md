@@ -79,7 +79,7 @@ The cave's recorded history is a list of thresholds: how far the mapped gallerie
 
 ### Cultural Significance
 
-The realm's agreed front door to the underground, and its standing reminder that the world has a basement. Sailors give the skull a courteous margin; scholars give it monographs; the trolls give it maintenance, which is the only attention it has ever visibly accepted.
+The realm's agreed front door to the underground, and the reason coastal charts mark depth in two directions. Sailors give the skull a courteous margin, and the trolls give it maintenance - the only attention it has ever visibly accepted.
 
 ### Common Beliefs
 

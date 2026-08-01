@@ -19,7 +19,7 @@ regional_relationships:
   - id: biome.eastern_plains
     title: "The Eastern Plains"
     url: "/biomes/eastern_plains/"
-    relationship: "The grass ends where the salt begins, and the manticore escorts end with it; the handover to the guides is an institution with its own small ceremony and its own excellent jokes."
+    relationship: "The grass ends where the salt begins, and the manticore escorts end with it; the handover to the guides is short, practiced, and taken seriously on both sides of the salt line."
 related:
   - id: location.bone_yard
     type: location
@@ -53,7 +53,7 @@ ai_context:
   themes: "Coastal_lowland, Brackish, Mudflats, Saltrot, Unstable_ground"
   visual_style: "Grey-green flats under a hazy sky: silt banks, salt-crusted pools, drowned and stunted trees, channels that braid and rebraid with the floods, and the pale gleam of the Bone Yard at the river mouth."
   common_encounters: "Hard travel over unstable ground, salvage and flotsam stories, seasonal flood danger, guides who read the flats, approaches to the Bone Yard, and journeys where the land itself is the obstacle."
-  lore_highlights: "The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent, and the flats are the accumulated result - the realm's junk drawer, delivered by current and arranged by flood."
+  lore_highlights: "The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent."
   related_entities: "location.bone_yard, feature.great_river, biome.open_sea, biome.eastern_plains, biome.open_sea, location.bone_yard, creature.bone_crawler, creature.restless_remains, location.bone_yard"
   writing_guidance: "Not a desert and not a marsh: the Saltrot is a brackish river-mouth lowland, and its hazards are salt, silt, flood, and footing rather than monsters. The Bone Yard is a location within it, not a separate biome. The geographic hierarchy is Sallow Wastelands, then the Bone Yard, then the sea."
   generation_hints: "Tides and floods redraw the channels seasonally, the river keeps delivering silt and debris toward the mouth, and paths that held last season may not hold now."
@@ -64,11 +64,11 @@ infobox: biome
 <!-- BEGIN GENERATED: lore -->
 ## Lore
 
-The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent, and the flats are the accumulated result - the realm's junk drawer, delivered by current and arranged by flood.
+The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent. The flats are what could not be carried any further, delivered by current and arranged by flood.
 
 ### Recorded History
 
-Saltrot history is kept by its guides, who memorize each season's safe paths knowing the next flood will file them under fiction. The great events are floods with names and arrivals of note - whole trees, whole boats, once a whole bridge - and the long unbroken record of the flats being crossed by exactly the people who respected them.
+Saltrot history is kept by its guides, who memorize each season's safe paths knowing the next flood will erase them. The great events are floods with names and arrivals of note - whole trees, whole boats, once a whole bridge - and the long unbroken record of the flats being crossed by exactly the people who respected them.
 
 ### Cultural Significance
 
@@ -78,7 +78,7 @@ To the realm, the Saltrot is the cautionary approach to the Bone Yard and the pr
 
 - Trust a path once.
 - Ground that looks reliable is lying. Ground that looks wet is at least honest.
-- Take your boots off to cross and the flats will take it as a compliment. They will still keep one boot.
+- Cross on the ebb, keep to the shell-banks, and never step where the mud is smooth.
 
 ### Disputed Beliefs
 
@@ -88,17 +88,17 @@ To the realm, the Saltrot is the cautionary approach to the Bone Yard and the pr
 
 > *Creator canon — not generally known in-world. No NPC recites these.*
 
-- After every flood, the first paths to firm up are the ones leading away from the Bone Yard. The guides noticed generations ago. It is a trade secret, kept partly for business and partly out of courtesy to whatever prefers it that way.
+- The guides' real secret is sedimentary. Each flood drops its coarse, quick-draining material first, along the old channel spines, and carries the finest silt furthest - out toward the mouth, where the Bone Yard stands. Firm ground returns in that order, spines first, mouth last, so the earliest safe paths always run away from the Yard. The flats are not warning anyone. They are draining.
 
 ### Neighbors
 
 - **[The Great River](/features/great_river/)** — The employer. The Glacierflow delivers, the flats receive, and the arrangement has run without a contract since the north was first cold.
 - **[The Bone Yard](/locations/bone_yard/)** — The flats hold the only landward approach, and hold it loosely: reaching the Yard is meant to take effort, and the Saltrot provides the effort.
-- **[The Eastern Plains](/biomes/eastern_plains/)** — The grass ends where the salt begins, and the manticore escorts end with it; the handover to the guides is an institution with its own small ceremony and its own excellent jokes.
+- **[The Eastern Plains](/biomes/eastern_plains/)** — The grass ends where the salt begins, and the manticore escorts end with it; the handover to the guides is short, practiced, and taken seriously on both sides of the salt line.
 
 ### Current Tensions
 
-- Gemfall rumor has it that gemstones washed downriver, and prospectors keep attempting the flats without guides. The guides keep retrieving them, and have started keeping score.
+- Gemfall rumor has it that gemstones washed downriver, and prospectors keep attempting the flats without guides. The guides keep retrieving them, and the retrievals are getting longer.
 - The floods are arriving heavier and carrying silt the guides do not recognize, which means something upstream is changing - and the flats will be the last to be told and the first to show it.
 
 ### Story Hooks
