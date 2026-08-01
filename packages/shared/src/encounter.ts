@@ -1923,22 +1923,28 @@ export function useItemInCombat(
   const events: EncounterEvent[] = [];
   let working = state;
 
+  // A use that would change nothing is refused, never absorbed. The caller
+  // consumes the item on `ok: true`, so a success that did nothing would
+  // spend the turn's action *and* the item on it — drinking a potion at full
+  // health has to come back as "not now", with both still in hand.
   switch (request.effect.type) {
     case "heal": {
-      const hp = Math.min(actor.maxHp, actor.hp + request.effect.amount);
-      if (hp > actor.hp) {
-        events.push({ type: "heal", actorId: actor.id, amount: hp - actor.hp, hp });
-        working = updateCombatant(working, actor.id, (c) => ({ ...c, hp }));
+      if (actor.hp >= actor.maxHp) {
+        return { ok: false, reason: "already at full health" };
       }
+      const hp = Math.min(actor.maxHp, actor.hp + request.effect.amount);
+      events.push({ type: "heal", actorId: actor.id, amount: hp - actor.hp, hp });
+      working = updateCombatant(working, actor.id, (c) => ({ ...c, hp }));
       break;
     }
     case "rollBonus": {
       // Larger bonus wins, never stacks — the rollBonus verb's rule exactly.
-      const amount = Math.max(actor.rollBonus, request.effect.amount);
-      if (amount > actor.rollBonus) {
-        events.push({ type: "bonus", actorId: actor.id, amount });
-        working = updateCombatant(working, actor.id, (c) => ({ ...c, rollBonus: amount }));
+      if (request.effect.amount <= actor.rollBonus) {
+        return { ok: false, reason: "a bonus that strong is already in place" };
       }
+      const amount = request.effect.amount;
+      events.push({ type: "bonus", actorId: actor.id, amount });
+      working = updateCombatant(working, actor.id, (c) => ({ ...c, rollBonus: amount }));
       break;
     }
     case "damage": {
