@@ -17,6 +17,7 @@
        Anchors are normalized 0-1000 with origin top-left (geography canon). */}}
   <section class="wiki-map-section" aria-label="World Map">
     <figure class="wiki-map">
+      <div class="wiki-map__frame">
       <img class="wiki-map__image"
            src="{{ "map/realm_of_red_sky.png" | relURL }}"
            alt="Painted world map of the Realm of Red Sky, from the Sky Islands in the northwest to the Bone Yard in the southeast"
@@ -51,6 +52,7 @@
         </a>
         {{- end }}
       {{- end }}
+      </div>
       <figcaption class="wiki-map__caption">
         Every pin is a door — <span class="wiki-map__key wiki-map__key--biome">gold for regions</span>,
         <span class="wiki-map__key wiki-map__key--location">violet for places</span>.
