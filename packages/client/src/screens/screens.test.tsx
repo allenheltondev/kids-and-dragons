@@ -100,6 +100,12 @@ describe("PlayerPanel inventory", () => {
     expect(canUseInventoryItem(potion, false, bonus)).toBe(false);
     expect(canUseInventoryItem(potion, false, undefined)).toBe(false);
   });
+
+  it("and not at full health — the server refuses a heal of zero", () => {
+    // Hidden, never disabled: the same no-op rule the combat cards follow.
+    expect(canUseInventoryItem(potion, false, heal, true)).toBe(false);
+    expect(canUseInventoryItem(potion, false, heal, false)).toBe(true);
+  });
 });
 
 /**

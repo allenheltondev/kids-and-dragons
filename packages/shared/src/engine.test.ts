@@ -1489,6 +1489,33 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     expect(stolen.error?.code).toBe("FORBIDDEN");
   });
 
+  it("a heal at full health refuses outside a fight too, unconsumed", () => {
+    // The same no-op rule as in combat, in the same order: an unheld item is
+    // still NOT_FOUND first, and a held potion at full HP comes back ILLEGAL
+    // with the bag untouched — never consumed for a heal of zero.
+    const context = ctx();
+    let state = seatedParty(context);
+    state = applyEffects(state, [{ type: "grantItem", itemId: "sunbloom_draught", to: "p_1" }], context);
+    expect(state.party[0]!.hp).toBe(state.party[0]!.character.maxHp);
+
+    const result = applyIntent(
+      state,
+      { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.state.party[0]!.character.inventory.map((e) => e.itemId)).toContain(
+      "sunbloom_draught",
+    );
+
+    const unheld = applyIntent(
+      state,
+      { playerId: "p_2", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+    expect(unheld.error?.code).toBe("NOT_FOUND");
+  });
+
   it("a combat-only item still refuses outside a fight, unconsumed", () => {
     const context = ctx();
     let state = seatedParty(context);
