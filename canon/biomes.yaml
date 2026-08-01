@@ -406,13 +406,12 @@ biomes:
         nothing except that it was not always like this, and that you do not
         go and check.
       recorded_history: >-
-        The realm's records about the Expanse are mostly records of
-        restraint. The griffin watch-log runs back four centuries, and its
-        proudest, longest, and almost only entry is "nothing."
+        Almost none, deliberately. What records the realm keeps about the
+        Expanse are records of staying away.
       cultural_significance: >-
-        The Expanse is the realm's agreed-upon edge - the place parents point
-        to when a lesson needs weight, and the reason the northern watch is a
-        profession rather than a hobby.
+        The realm's agreed-upon edge. The plateau is the word parents use
+        when a lesson needs weight, and the north is the direction the realm
+        keeps its back to.
       common_beliefs:
         - "Nothing grows there because the ground has not finished deciding what it wants to be."
         - "The wind practices over the Expanse before it performs anywhere else."
@@ -420,25 +419,9 @@ biomes:
       disputed_beliefs:
         - "Everything else. What it was, what happened, whether anything remains - the realm holds every possible theory, and the Expanse has confirmed none of them."
       hidden_truths: []
-      regional_relationships:
-        - place: location.mount_red_sky
-          relationship: >-
-            The mountain stands between the plateau and everything south of
-            it, and most of the realm privately prefers the arrangement.
-        - place: feature.great_river
-          relationship: >-
-            The river holds the plateau's whole eastern line, and no crossing
-            has ever been built along that stretch, which nobody regrets.
-        - place: biome.glacier_of_origins
-          relationship: >-
-            The plateau and the glacier share the north between them, and the
-            yetis read the ice on their own side only - they have never said
-            whether that is preference or policy.
-      current_tensions:
-        - "The griffin watch does not discuss its log, but re-stacked cairns and doubled patrols suggest the word 'nothing' has been doing extra work lately."
-      historical_hooks:
-        - "An old map in a collector's stall at the Exchange shows a road entering the Expanse. Every other copy of that map shows no road, and the collector will not name a price."
-        - "Forbidden expeditions set out every generation or so. The stories about what they found differ; the fact that the stories are all secondhand does not."
+      regional_relationships: []
+      current_tensions: []
+      historical_hooks: []
     borders: [biome.enchanted_woods, biome.red_sky_foothills, biome.glacier_of_origins]
     barriers:
       south: location.mount_red_sky
@@ -829,10 +812,6 @@ biomes:
             The peaks handle the fast half of the north - watch, rescue,
             wind - and the glacier handles the slow half - memory, melt, tea.
             Each considers the division generous to the other.
-        - place: biome.expanse
-          relationship: >-
-            Neighbors along the realm's quietest border. The yetis read the
-            ice on their own side only.
       current_tensions:
         - "The melt is changing: channels move seasons early, memories surface out of order, and downstream the river has begun delivering silt the Saltrot guides do not recognize."
         - "A frost wyrm has nested exactly where the next reading room was planned, and the yetis' response - wait a century or two - has, for the first time, struck some younger yetis as slow."
@@ -904,10 +883,10 @@ biomes:
         way a good roof holds - unnoticed until the one night it matters.
       common_beliefs:
         - "The mountain counts you on the way up and expects the same number on the way down."
-        - "Never call a pass 'probably fine.' The pass hears the probably."
-        - "A re-stacked cairn is a griffin saying the route is watched. An un-stacked one is the mountain saying it is not."
+        - "Never call a pass 'probably fine.' A pass is fine, or it is closed."
+        - "A re-stacked cairn means the route is watched. An un-stacked one means it is not."
       disputed_beliefs:
-        - "The goats' staring-contest record against the griffins. The goats are undefeated; the griffins maintain they have never been playing; the goats find this consistent with being undefeated."
+        - "Whether the wall was raised, or merely remained when everything else wore away. The aeries do not argue it; the argument belongs to scholars who have never wintered there."
       hidden_truths:
         - "Some watch-log entries reading 'nothing' carry a small feather-stroke in the margin. Asked what it marks, watch-captains say 'nothing' - in a slightly different voice."
       regional_relationships:
@@ -918,19 +897,18 @@ biomes:
             patience, and neither half works alone.
         - place: biome.eastern_plains
           relationship: >-
-            The plains below are where aerie trade lands and where young
-            griffins first encounter flat ground, which they describe to each
-            other for years afterward.
+            The plains below are where aerie trade lands and where mountain
+            debts are repaid - a rescued caravan remembers, and the prides
+            make sure of it.
         - place: location.skullwater_cave
           relationship: >-
-            The skull rock sits off their coast, and aerie flight rules give
-            it a courteous margin - not fear, the griffins say, just no reason
-            to be rude to a door.
+            The skull rock sits off their coast. Aerie flight rules give it a
+            courteous margin, and no ledger records why.
       current_tensions:
         - "Passes are closing earlier and more often as the glacier's melt shifts the ice, and the rescue rolls are filling in seasons that used to be quiet."
-        - "Frost wyrm tunnels have appeared under two flight routes, and the goats rerouted before the surveys did, which everyone found more reassuring than the surveys."
+        - "Frost wyrm tunnels have appeared under two flight routes, and the goats rerouted before the surveys did."
       historical_hooks:
-        - "One rescue cairn high on the north face is maintained by no known aerie. It is always freshly stacked. The watch has opinions it does not log."
+        - "The rescue rolls record one save that no aerie has ever claimed. It is left in the rolls anyway. A rescue is a rescue."
         - "The oldest pass ledger opens mid-sentence; its first volume has never been found. The aeries' best guess is that it is somewhere sensible, under forty feet of ice."
     borders: [biome.glacier_of_origins, biome.eastern_plains]
     separated_from:
@@ -1107,18 +1085,12 @@ biomes:
         why the singing is not optional.
       common_beliefs:
         - "A rescued swimmer owes the cove a story, payable at dinner. The dinner is not optional either."
-        - "Never sing near the Whirlpool unless you mean it. It listens more closely than anything else in the sea."
         - "Casual promises do not exist in the cove. There are only promises."
       disputed_beliefs:
         - "What the alliance was made against. Every people has a theory, the elders answer every version with the same courteous nothing, and the treaty's first page is a list of signatories under a title nobody can read anymore."
       hidden_truths:
         - "The oldest verses of the nightly song are not merfolk compositions. They are borrowed reefglider signal patterns, older than the alliance, and the gliders still answer them - which the singers have decided is harmony rather than correspondence."
       regional_relationships:
-        - place: location.the_whirlpool
-          relationship: >-
-            The cove's standing appointment: the songs keep it from widening,
-            the Whirlpool keeps turning, and neither party has ever missed a
-            night.
         - place: location.bone_yard
           relationship: >-
             On still nights the song circles sing a little louder for the
@@ -1136,7 +1108,7 @@ biomes:
             still gossip.
       current_tensions:
         - "The song circle rosters are thinning as young selkies and merfolk take courier and dock work at the Exchange, and the elders have begun, gently, to count attendance."
-        - "Gemfall shipping lanes have edged closer to the Whirlpool to save a day's sailing, and the cove is drafting an amendment about it."
+        - "Gemfall shipping has crowded the cove's southern approaches, and the cove is drafting an amendment about wakes over the reef nurseries."
       historical_hooks:
         - "One treaty amendment is sealed and unread, to be opened 'when it is needed.' Nobody knows how they will know. It is checked, unopened, every year."
         - "The year the songs went unsung is remembered by the attendance customs it created and by nothing else; what happened that year was either nothing, or the reason for everything since."
@@ -1206,29 +1178,23 @@ biomes:
         - "Weather at sea is not coming from anywhere. It lives there."
         - "Whatever you say out of sight of land, say it as a guest."
       disputed_beliefs:
-        - "What lies past the edge of the map. The kitsune have songs, the selkies have jokes, the merfolk have a silence, and every sailor has a cousin who knows somebody who saw it."
+        - "What lies past the edge of the map. Every coast has an answer. No two agree. None has been checked."
       hidden_truths: []
       regional_relationships:
-        - place: location.the_whirlpool
-          relationship: >-
-            The sea's only permanent address. Everything else about the open
-            water moves; the Whirlpool keeps turning exactly where it always
-            has, which sailors find either comforting or the opposite.
         - place: biome.sky_islands
           relationship: >-
-            The sea and the sky run the realm's weather between them and trade
-            dropped belongings constantly, and neither has ever returned
-            anything.
+            The sea and the sky run the realm's weather between them - an
+            arrangement no shore was consulted on.
         - place: biome.sallow_wastelands
           relationship: >-
-            The river's terminus is the sea's front porch: everything the
+            The river's terminus is the sea's threshold: everything the
             current carried across the continent is laid down at the flats,
             and the tides sort it at leisure.
       current_tensions:
-        - "Gemfall shipping has crowded waters that were never consulted, and the season's storms have been unbooked, punctual, and thorough."
+        - "Gemfall shipping has crowded waters that were never consulted, and the season's storms have been punctual and thorough."
       historical_hooks:
-        - "A current that was not there a generation ago now runs south along the eastern coast, and the selkies, who ought to know where it goes, change the subject with unusual skill."
-        - "Every so often the sea returns something - a spar, a bell, one perfect shoe - decades late and somewhere else entirely. The Exchange keeps a shelf for these arrivals, and the shelf is never empty."
+        - "A current that was not there a generation ago now runs south along the eastern coast, and the selkies, who ought to know where it goes, do not say."
+        - "Every so often the sea returns something - a spar, a bell, a name-board - decades late and somewhere else entirely. The Exchange keeps a shelf for these arrivals. It is never empty."
     borders: []
     inhabitants:
       primary_peoples: []
@@ -1288,14 +1254,14 @@ biomes:
       origin: >-
         The accepted account is exactly what it looks like: the Glacierflow
         slows, spreads, and lays down everything it carried across the
-        continent, and the flats are the accumulated result - the realm's junk
-        drawer, delivered by current and arranged by flood.
+        continent. The flats are what could not be carried any further,
+        delivered by current and arranged by flood.
       recorded_history: >-
         Saltrot history is kept by its guides, who memorize each season's safe
-        paths knowing the next flood will file them under fiction. The great
-        events are floods with names and arrivals of note - whole trees, whole
-        boats, once a whole bridge - and the long unbroken record of the flats
-        being crossed by exactly the people who respected them.
+        paths knowing the next flood will erase them. The great events are
+        floods with names and arrivals of note - whole trees, whole boats,
+        once a whole bridge - and the long unbroken record of the flats being
+        crossed by exactly the people who respected them.
       cultural_significance: >-
         To the realm, the Saltrot is the cautionary approach to the Bone Yard
         and the price of reaching it; to the guides it is a working landscape
@@ -1303,11 +1269,11 @@ biomes:
       common_beliefs:
         - "Trust a path once."
         - "Ground that looks reliable is lying. Ground that looks wet is at least honest."
-        - "Take your boots off to cross and the flats will take it as a compliment. They will still keep one boot."
+        - "Cross on the ebb, keep to the shell-banks, and never step where the mud is smooth."
       disputed_beliefs:
         - "Some say the flats rearrange themselves to steer travelers away from the Bone Yard. The guides say floods are floods, and say it in the tone of people who have been asked before."
       hidden_truths:
-        - "After every flood, the first paths to firm up are the ones leading away from the Bone Yard. The guides noticed generations ago. It is a trade secret, kept partly for business and partly out of courtesy to whatever prefers it that way."
+        - "The guides' real secret is sedimentary. Each flood drops its coarse, quick-draining material first, along the old channel spines, and carries the finest silt furthest - out toward the mouth, where the Bone Yard stands. Firm ground returns in that order, spines first, mouth last, so the earliest safe paths always run away from the Yard. The flats are not warning anyone. They are draining."
       regional_relationships:
         - place: feature.great_river
           relationship: >-
@@ -1322,10 +1288,10 @@ biomes:
         - place: biome.eastern_plains
           relationship: >-
             The grass ends where the salt begins, and the manticore escorts
-            end with it; the handover to the guides is an institution with its
-            own small ceremony and its own excellent jokes.
+            end with it; the handover to the guides is short, practiced, and
+            taken seriously on both sides of the salt line.
       current_tensions:
-        - "Gemfall rumor has it that gemstones washed downriver, and prospectors keep attempting the flats without guides. The guides keep retrieving them, and have started keeping score."
+        - "Gemfall rumor has it that gemstones washed downriver, and prospectors keep attempting the flats without guides. The guides keep retrieving them, and the retrievals are getting longer."
         - "The floods are arriving heavier and carrying silt the guides do not recognize, which means something upstream is changing - and the flats will be the last to be told and the first to show it."
       historical_hooks:
         - "A named flood two generations back delivered a sealed cabin door, frame and all, standing upright in the flats. It has never been opened, on the guides' advice, and the advice has never been explained."

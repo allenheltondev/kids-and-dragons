@@ -74,7 +74,7 @@ The accepted account is that the mountain is where the realm keeps its fire, and
 
 ### Recorded History
 
-The mountain's history is kept by its neighbors: the dragonlings' eruption tallies, the gatherers' records of Gemfalls, and four centuries of watch ledgers observing, in essence, that it is still there. The mountain itself keeps no records - or keeps them somewhere nobody has managed to browse.
+The mountain's history is kept by its neighbors: the dragonlings' eruption tallies, the gatherers' records of Gemfalls, and four centuries of watch ledgers observing, in essence, that it is still there. The mountain itself keeps no records that anyone has read.
 
 ### Cultural Significance
 
@@ -84,7 +84,7 @@ The center of the realm by geography, gravity, and reputation. Its Gemfalls fund
 
 - The mountain drops what it means to drop. Everything else, it is holding.
 - Never thank the mountain out loud. It might take an interest.
-- Red sky at night is the mountain minding its own business. Red sky at noon, mind yours faster.
+- A Gemfall is taken with open hands or not at all. A closed fist on the mountain is the oldest bad luck there is.
 
 ### Disputed Beliefs
 
@@ -94,7 +94,7 @@ The center of the realm by geography, gravity, and reputation. Its Gemfalls fund
 
 > *Creator canon — not generally known in-world. No NPC recites these.*
 
-- The only living things permitted in the dragon's lair are the embermoths, who dust its scales. The moths have therefore seen more of the mountain's inside than every expedition in history combined, and, being moths, are telling no one.
+- The only living things permitted in the dragon's lair are the embermoths, who dust its scales. The moths have seen more of the mountain's inside than every expedition in history combined.
 
 ### Neighbors
 
@@ -104,7 +104,7 @@ The center of the realm by geography, gravity, and reputation. Its Gemfalls fund
 ### Current Tensions
 
 - Since the great eruption, the Gemfalls have not returned to their old rhythm, and the tally-keepers are running out of margin to disagree politely in.
-- Expeditions keep aiming for the summit with Gemfall money and borrowed courage, and the foothill grandmothers have taken to interviewing them on the way up. Slowly. In shifts.
+- Expeditions keep aiming for the summit with Gemfall money and borrowed courage, and the foothill grandmothers have taken to meeting them on the way up.
 
 ### Story Hooks
 
