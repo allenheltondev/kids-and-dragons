@@ -3,7 +3,7 @@ title: Thunder Acorn
 id: item.thunder_acorn
 type: item
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["thrown", "noise", "enchanted_woods", "uncommon"]
 related:

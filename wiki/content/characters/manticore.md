@@ -3,7 +3,7 @@ title: Manticore
 id: character.manticore
 type: character
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["playable", "plains", "guardian", "proud"]
 scale: medium_to_large

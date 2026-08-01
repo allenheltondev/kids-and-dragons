@@ -352,7 +352,20 @@ export interface LoreOpinionEntry {
   because: string;
 }
 
-/** The `lore` block as it arrives in entity metadata. */
+/** One regional relationship as authored: a canon ref plus the prose. */
+export interface RegionalRelationshipEntry {
+  place: string;
+  relationship: string;
+}
+
+/**
+ * The `lore` block as it arrives in entity metadata.
+ *
+ * Two shapes share the field (packages/canon lore.ts): people and creatures
+ * carry `story`/`pastimes`/`likes`, places carry `origin`/`beliefs`/
+ * `regional_relationships`. Which one arrived is decided by its required
+ * field — `story` for a personality, `origin` for a place.
+ */
 export interface LoreBlock {
   hook?: string;
   story?: string;
@@ -360,6 +373,15 @@ export interface LoreBlock {
   social?: string;
   likes?: LoreOpinionEntry[];
   dislikes?: LoreOpinionEntry[];
+  origin?: string;
+  recorded_history?: string;
+  cultural_significance?: string;
+  common_beliefs?: string[];
+  disputed_beliefs?: string[];
+  hidden_truths?: string[];
+  regional_relationships?: RegionalRelationshipEntry[];
+  current_tensions?: string[];
+  historical_hooks?: string[];
 }
 
 /** Pull the lore block out of the metadata bag, or null when absent. */
@@ -383,6 +405,26 @@ function loreOpinions(entries: LoreOpinionEntry[] | undefined): LoreOpinionEntry
   );
 }
 
+/** Non-empty strings only — same drop-don't-break rule as loreOpinions. */
+function loreStrings(entries: string[] | undefined): string[] {
+  if (!Array.isArray(entries)) return [];
+  return entries.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0);
+}
+
+/** Valid regional relationship entries only. */
+function loreRegionalRelationships(
+  entries: RegionalRelationshipEntry[] | undefined,
+): RegionalRelationshipEntry[] {
+  if (!Array.isArray(entries)) return [];
+  return entries.filter(
+    (entry) =>
+      entry !== null &&
+      typeof entry === 'object' &&
+      typeof entry.place === 'string' &&
+      typeof entry.relationship === 'string',
+  );
+}
+
 /** Site-relative URL for a canon id, e.g. `creature.mosshorn` → `/creatures/mosshorn/`. */
 function entityUrl(id: string): string {
   return `/${pluralizeType(extractType(id))}/${extractEntityName(id)}/`;
@@ -403,7 +445,11 @@ function generateLoreSection(
   allEntities: Map<string, CanonEntity>,
 ): string {
   const lore = getLore(entity);
-  if (!lore || typeof lore.story !== 'string' || lore.story.length === 0) return '';
+  if (!lore) return '';
+  if (typeof lore.story !== 'string' || lore.story.length === 0) {
+    // Not a personality — it may still be a place (PlaceLore, keyed on `origin`).
+    return generatePlaceLoreSection(lore, allEntities);
+  }
 
   const lines: string[] = ['## Lore', ''];
 
@@ -449,6 +495,81 @@ function generateLoreSection(
 }
 
 /**
+ * The place half of the lore dispatch: a past and a reputation instead of a
+ * personality (packages/canon `PlaceLore`).
+ *
+ * The knowledge tiers render in-world order — what everyone knows, what
+ * people say, what they argue about — and then cross the line: Hidden Truths
+ * is creator canon, so it carries an explicit caveat rather than trusting
+ * every reader to know the schema's rules. Regional relationships are real
+ * canon refs and render as links, same as a creature's likes — every
+ * neighbour is a doorway to another page.
+ */
+function generatePlaceLoreSection(
+  lore: LoreBlock,
+  allEntities: Map<string, CanonEntity>,
+): string {
+  if (typeof lore.origin !== 'string' || lore.origin.length === 0) return '';
+
+  const lines: string[] = ['## Lore', '', lore.origin.trim(), ''];
+
+  for (const [heading, text] of [
+    ['Recorded History', lore.recorded_history],
+    ['Cultural Significance', lore.cultural_significance],
+  ] as const) {
+    if (typeof text !== 'string' || text.length === 0) continue;
+    lines.push(`### ${heading}`, '', text.trim(), '');
+  }
+
+  for (const [heading, entries] of [
+    ['Common Beliefs', loreStrings(lore.common_beliefs)],
+    ['Disputed Beliefs', loreStrings(lore.disputed_beliefs)],
+  ] as const) {
+    if (entries.length === 0) continue;
+    lines.push(`### ${heading}`, '');
+    for (const entry of entries) {
+      lines.push(`- ${entry.trim()}`);
+    }
+    lines.push('');
+  }
+
+  const hiddenTruths = loreStrings(lore.hidden_truths);
+  if (hiddenTruths.length > 0) {
+    lines.push('### Hidden Truths', '');
+    lines.push('> *Creator canon — not generally known in-world. No NPC recites these.*', '');
+    for (const truth of hiddenTruths) {
+      lines.push(`- ${truth.trim()}`);
+    }
+    lines.push('');
+  }
+
+  const neighbours = loreRegionalRelationships(lore.regional_relationships);
+  if (neighbours.length > 0) {
+    lines.push('### Neighbors', '');
+    for (const entry of neighbours) {
+      const title = getTitleForEntity(entry.place, allEntities);
+      lines.push(`- **[${title}](${entityUrl(entry.place)})** — ${entry.relationship.trim()}`);
+    }
+    lines.push('');
+  }
+
+  for (const [heading, entries] of [
+    ['Current Tensions', loreStrings(lore.current_tensions)],
+    ['Story Hooks', loreStrings(lore.historical_hooks)],
+  ] as const) {
+    if (entries.length === 0) continue;
+    lines.push(`### ${heading}`, '');
+    for (const entry of entries) {
+      lines.push(`- ${entry.trim()}`);
+    }
+    lines.push('');
+  }
+
+  while (lines[lines.length - 1] === '') lines.pop();
+  return lines.join('\n');
+}
+
+/**
  * The infobox half of the same data: resolved titles and URLs so the Hugo
  * partial can render opinion chips without knowing how canon ids work.
  */
@@ -476,17 +597,39 @@ function loreFrontMatterLines(
       lines.push(`    because: "${escapeYamlString(entry.because)}"`);
     }
   }
+  // The place-lore counterpart of the opinion chips: neighbours, resolved the
+  // same way, for the infobox partial.
+  const neighbours = loreRegionalRelationships(lore.regional_relationships);
+  if (neighbours.length > 0) {
+    lines.push('regional_relationships:');
+    for (const entry of neighbours) {
+      lines.push(`  - id: ${entry.place}`);
+      lines.push(`    title: "${escapeYamlString(getTitleForEntity(entry.place, allEntities))}"`);
+      lines.push(`    url: "${entityUrl(entry.place)}"`);
+      lines.push(`    relationship: "${escapeYamlString(entry.relationship)}"`);
+    }
+  }
   return lines;
 }
 
-/** The one-line summary ai_context leads with: the hook, else the story's first sentence. */
+/**
+ * The one-line summary ai_context leads with: the hook, else the first
+ * sentence of the prose that leads the lore section — `story` for a
+ * personality, `origin` for a place.
+ */
 function loreHighlight(entity: CanonEntity): string {
   const lore = getLore(entity);
   if (!lore) return '';
   if (typeof lore.hook === 'string' && lore.hook.length > 0) return lore.hook;
-  if (typeof lore.story === 'string' && lore.story.length > 0) {
-    const period = lore.story.indexOf('. ');
-    return period > 0 ? lore.story.slice(0, period + 1) : lore.story;
+  const prose =
+    typeof lore.story === 'string' && lore.story.length > 0
+      ? lore.story
+      : typeof lore.origin === 'string'
+        ? lore.origin
+        : '';
+  if (prose.length > 0) {
+    const period = prose.indexOf('. ');
+    return period > 0 ? prose.slice(0, period + 1) : prose;
   }
   return '';
 }

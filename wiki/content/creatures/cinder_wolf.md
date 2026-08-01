@@ -3,7 +3,7 @@ title: Cinder Wolf
 id: creature.cinder_wolf
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["dangerous", "foothills", "pack", "predator"]
 classification: dangerous_creature

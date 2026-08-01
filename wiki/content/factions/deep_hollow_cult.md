@@ -3,7 +3,7 @@ title: The Deep Hollow Cult
 id: faction.deep_hollow_cult
 type: faction
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: intentionally_undefined
 draft: true
 tags: ["cult", "underground", "mystical", "antagonist"]

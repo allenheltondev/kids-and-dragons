@@ -3,7 +3,7 @@ title: Gemfall
 id: campaign.gemfall
 type: campaign
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["main_campaign", "treasure_rush", "mount_red_sky", "seal", "exchange", "gemfall"]
 related:

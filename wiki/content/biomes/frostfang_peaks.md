@@ -3,10 +3,23 @@ title: Frostfang Peaks
 id: biome.frostfang_peaks
 type: biome
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["frozen_mountains", "aeries", "griffin_homeland", "cliffs", "rescue"]
 danger_level: high
+regional_relationships:
+  - id: biome.glacier_of_origins
+    title: "Glacier of Origins"
+    url: "/biomes/glacier_of_origins/"
+    relationship: "Partners in the north: the glacier remembers and the peaks respond. Every mountain rescue is half griffin speed and half yeti patience, and neither half works alone."
+  - id: biome.eastern_plains
+    title: "The Eastern Plains"
+    url: "/biomes/eastern_plains/"
+    relationship: "The plains below are where aerie trade lands and where young griffins first encounter flat ground, which they describe to each other for years afterward."
+  - id: location.skullwater_cave
+    title: "Skullwater Cave"
+    url: "/locations/skullwater_cave/"
+    relationship: "The skull rock sits off their coast, and aerie flight rules give it a courteous margin - not fear, the griffins say, just no reason to be rude to a door."
 related:
   - id: biome.glacier_of_origins
     type: biome
@@ -67,7 +80,7 @@ ai_context:
   themes: "Frozen_mountains, Aeries, Griffin_homeland, Cliffs, Rescue"
   visual_style: "Dense ranks of snow-covered peaks, dark exposed rock, high aeries, narrow passes, cloud shadows, ice shelves, and enormous vertical scale."
   common_encounters: "Mountain rescue, aerial travel, watch duties, avalanches, lost messengers, northern signs, dangerous passes, and conflicts between curiosity and caution."
-  lore_highlights: ""
+  lore_highlights: "The accepted account is the visible one: the peaks are the realm's north wall, raised - depending on the teller - by deep time, old magic, or the world needing somewhere to keep its winter."
   related_entities: "biome.glacier_of_origins, biome.red_sky_foothills, feature.great_river, biome.glacier_of_origins, biome.eastern_plains, character.griffin, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river, location.skullwater_cave, npc.yeti"
   writing_guidance: "Griffins are rescuers, scouts, and people with ordinary communities, not merely mounts or guards. The Peaks are distinct from the Glacier of Origins."
   generation_hints: "Aerie communities maintain watches, rescue routes, signals, and pass knowledge while storms and ice frequently close expected paths."
@@ -75,6 +88,52 @@ layout: biomes
 infobox: biome
 ---
 
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+The accepted account is the visible one: the peaks are the realm's north wall, raised - depending on the teller - by deep time, old magic, or the world needing somewhere to keep its winter. The griffins arrived high, stayed high, and have treated the wall as a responsibility ever since.
+
+### Recorded History
+
+Aerie history is kept in pass ledgers and rescue rolls: who was carried out of where, in what weather, by whom. Four centuries of the northern watch run alongside, logged nightly and famous mostly for the entry "nothing" - which is, every griffin will tell you, the point.
+
+### Cultural Significance
+
+The realm sleeps because the peaks do not. Rescue, watch, and weather all come down from the Frostfang, and the mountains hold the north the way a good roof holds - unnoticed until the one night it matters.
+
+### Common Beliefs
+
+- The mountain counts you on the way up and expects the same number on the way down.
+- Never call a pass 'probably fine.' The pass hears the probably.
+- A re-stacked cairn is a griffin saying the route is watched. An un-stacked one is the mountain saying it is not.
+
+### Disputed Beliefs
+
+- The goats' staring-contest record against the griffins. The goats are undefeated; the griffins maintain they have never been playing; the goats find this consistent with being undefeated.
+
+### Hidden Truths
+
+> *Creator canon — not generally known in-world. No NPC recites these.*
+
+- Some watch-log entries reading 'nothing' carry a small feather-stroke in the margin. Asked what it marks, watch-captains say 'nothing' - in a slightly different voice.
+
+### Neighbors
+
+- **[Glacier of Origins](/biomes/glacier_of_origins/)** — Partners in the north: the glacier remembers and the peaks respond. Every mountain rescue is half griffin speed and half yeti patience, and neither half works alone.
+- **[The Eastern Plains](/biomes/eastern_plains/)** — The plains below are where aerie trade lands and where young griffins first encounter flat ground, which they describe to each other for years afterward.
+- **[Skullwater Cave](/locations/skullwater_cave/)** — The skull rock sits off their coast, and aerie flight rules give it a courteous margin - not fear, the griffins say, just no reason to be rude to a door.
+
+### Current Tensions
+
+- Passes are closing earlier and more often as the glacier's melt shifts the ice, and the rescue rolls are filling in seasons that used to be quiet.
+- Frost wyrm tunnels have appeared under two flight routes, and the goats rerouted before the surveys did, which everyone found more reassuring than the surveys.
+
+### Story Hooks
+
+- One rescue cairn high on the north face is maintained by no known aerie. It is always freshly stacked. The watch has opinions it does not log.
+- The oldest pass ledger opens mid-sentence; its first volume has never been found. The aeries' best guess is that it is somewhere sensible, under forty feet of ice.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities
