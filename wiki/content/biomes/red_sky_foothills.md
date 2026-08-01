@@ -3,10 +3,23 @@ title: Red Sky Foothills
 id: biome.red_sky_foothills
 type: biome
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["volcanic_hills", "crystal_veins", "lava_tubes", "caves", "dragonling_homeland"]
 danger_level: high
+regional_relationships:
+  - id: location.mount_red_sky
+    title: "Mount Red Sky"
+    url: "/locations/mount_red_sky/"
+    relationship: "Landlord, weather, calendar, and subject of every song. The foothills exist at the mountain's pleasure and have made a culture out of never forgetting it."
+  - id: biome.plains
+    title: "The Plains"
+    url: "/biomes/plains/"
+    relationship: "The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling."
+  - id: route.northern_river_bridge
+    title: "Northern River Bridge"
+    url: "/routes/northern_river_bridge/"
+    relationship: "The one way east without wings. When the bridge queue backs up, foothill trade holds its breath."
 related:
   - id: location.mount_red_sky
     type: location
@@ -94,7 +107,7 @@ ai_context:
   themes: "Volcanic_hills, Crystal_veins, Lava_tubes, Caves, Dragonling_homeland"
   visual_style: "Ochre and black hills, glowing cracks, crystal outcrops, cave mouths, scorched grasses, volcanic dust, sheltered settlements, and the mountain dominating the northern horizon."
   common_encounters: "Cave exploration, eruption warnings, crystal disputes, rescue routes, dragonling communities, unstable terrain, and changes originating from Mount Red Sky."
-  lore_highlights: ""
+  lore_highlights: "The foothills are what the mountain has been building with its tantrums since before anyone kept count - hills of cooled temper, laced with lava tubes and crystal."
   related_entities: "location.mount_red_sky, biome.eastern_plains, feature.great_river, biome.expanse, biome.enchanted_woods, biome.plains, location.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.frostfang_peaks, campaign.dawn_of_the_red_sky, campaign.gemfall, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, faction.skywardens, feature.great_river, route.northern_river_bridge, item.crimson_shard, location.mount_red_sky, location.mount_red_sky, location.redspire_citadel"
   writing_guidance: "This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are gathered from naturally released material rather than mined from living veins."
   generation_hints: "Tremors, ash, heat, and crystal changes are closely watched. Communities maintain warning systems, safe caves, and evacuation routes."
@@ -102,6 +115,52 @@ layout: biomes
 infobox: biome
 ---
 
+
+<!-- BEGIN GENERATED: lore -->
+## Lore
+
+The foothills are what the mountain has been building with its tantrums since before anyone kept count - hills of cooled temper, laced with lava tubes and crystal. The dragonlings settled them on the sensible theory that the best place to watch a mountain is from partway up it.
+
+### Recorded History
+
+Dragonling history is kept as eruption tallies and boundary stones. The great dates are the eruptions with names, each one the founding of some part of the warning system - the bells after one, the moth-watch after another, the grandmothers' authority after a third, which nobody has been reckless enough to question since.
+
+### Cultural Significance
+
+Every gemstone in the realm started here, which makes the foothills the realm's treasury, and gathering law makes them the realm's most heavily regulated picnic ground: take what the mountain drops, and never pry at what it holds.
+
+### Common Beliefs
+
+- The mountain pays its rent in gemstones. Never bill it early.
+- If the moths are leaving, you already left. You just haven't noticed yet.
+- A cave that stays warm all winter is somebody's house. Knock.
+
+### Disputed Beliefs
+
+- Descent from the legend dragons - told around every fire, confirmed by none of them. The fires continue regardless.
+
+### Hidden Truths
+
+> *Creator canon — not generally known in-world. No NPC recites these.*
+
+- The boundary stones are older than the dragonlings. They were standing when the first families arrived, already marking the same line gathering law marks now; the dragonlings adopted the stones, not the other way around.
+
+### Neighbors
+
+- **[Mount Red Sky](/locations/mount_red_sky/)** — Landlord, weather, calendar, and subject of every song. The foothills exist at the mountain's pleasure and have made a culture out of never forgetting it.
+- **[The Plains](/biomes/plains/)** — The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling.
+- **[Northern River Bridge](/routes/northern_river_bridge/)** — The one way east without wings. When the bridge queue backs up, foothill trade holds its breath.
+
+### Current Tensions
+
+- The Gemfall rush has filled the hills with prospectors who have never heard of gathering law, and the moths, the crabs, and the grandmothers are all being tested at once.
+- Something in the deep lava tubes has been humming since the eruption, and the families who live nearest have begun sleeping with the bells on.
+
+### Story Hooks
+
+- One eruption carved into the oldest boundary stone matches nothing in the dragonlings' own count, and it is recorded as if somebody watched it happen.
+- The grandmothers keep a list of caves that are never assigned to anyone, and the list predates every grandmother on record.
+<!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
 ## Related Entities

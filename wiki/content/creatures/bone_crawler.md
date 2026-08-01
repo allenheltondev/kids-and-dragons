@@ -3,7 +3,7 @@ title: Bone Crawler
 id: creature.bone_crawler
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["dangerous", "bone_yard", "scavenger", "swarm"]
 classification: dangerous_creature

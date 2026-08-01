@@ -3,7 +3,7 @@ title: Jackalope
 id: creature.jackalope
 type: creature
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: confirmed
 tags: ["ambient", "plains", "common", "fast"]
 classification: ambient_creature

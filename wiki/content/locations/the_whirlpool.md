@@ -3,7 +3,7 @@ title: The Whirlpool
 id: location.the_whirlpool
 type: location
 status: draft
-lastReviewed: "2026-07-31"
+lastReviewed: "2026-08-01"
 canon_status: newly_defined
 tags: ["ocean", "hazard", "current", "offshore"]
 related:
@@ -31,6 +31,8 @@ ai_context:
 layout: locations
 infobox: location
 ---
+
+
 
 
 <!-- BEGIN GENERATED: relationships -->
