@@ -295,9 +295,10 @@ derived from it — because it is what makes six species look like one world. It
 your palette, not a set of slots the client writes into. Markings no longer need to be isolatable
 from the coat, so paint them however the creature wants them.
 
-The rigs delivered so far carry dormant `mane`/`accent` tint slots from when the client did drive
-them (`art/rig/<species>.rig.json` → `tintSlots`). They are harmless and nothing reads them; drop
-them at the next rig rebuild.
+The `tintSlots` entries are gone from the six rig configs (`art/rig/<species>.rig.json`), so a
+regeneration will not reintroduce them. The 24 delivered `.riv` files still carry inert slots until
+they are next rebuilt — nothing reads them, and a slot nobody writes is the same as a rig that
+never had one.
 
 ### 4.5 Biomes, effects, tiles
 
@@ -466,8 +467,9 @@ replace it without a second round of specifying what the picture is *for*.
 The single piece of art in the optional sign-in flow
 ([architecture §4.5](./architecture.md#45-accounts-devices-and-joining)). A
 hanging lantern holding **one flame per party member**, each flame tinted with
-that character's `appearance.accent` — the same colour the character itself is
-drawn in.
+that character's `appearance.accent` — the colour that player picked, which
+dresses their chrome rather than their creature (§4.4: the figure is drawn in
+its authored colours and carries its name instead).
 
 ### 8.2 What it is for, which decides everything else
 
