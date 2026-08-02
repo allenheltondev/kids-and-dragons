@@ -490,8 +490,14 @@ export type EncounterEvent =
   | { readonly type: "dazed"; readonly actorId: ActorId }
   /** A ward granted, or a hit landing lighter because of one. */
   | { readonly type: "warded"; readonly actorId: ActorId; readonly amount: number }
-  /** An attack that was going to land, and didn't — Vanish spent. */
-  | { readonly type: "evaded"; readonly actorId: ActorId }
+  /**
+   * An attack that was going to land, and didn't — Vanish spent. `actorId` is
+   * the figure that slipped out of the way; `byId` is the one that swung, and
+   * it is here because a miss is still somebody attacking: an evade is
+   * resolved before any die is thrown, so no `roll` names the attacker and a
+   * client with only `actorId` would animate nobody at all.
+   */
+  | { readonly type: "evaded"; readonly actorId: ActorId; readonly byId: ActorId }
   | { readonly type: "rooted"; readonly actorId: ActorId }
   | { readonly type: "encore"; readonly actorId: ActorId }
   | { readonly type: "walled"; readonly at: Position };
@@ -1451,7 +1457,7 @@ function applyEffect(
       // dice being rigged, which is worse than the miss. Spent on one attack,
       // clears whether or not the attacker had a chance.
       if (recipient.evade) {
-        events.push({ type: "evaded", actorId: recipientId });
+        events.push({ type: "evaded", actorId: recipientId, byId: actorId });
         return {
           state: updateCombatant(state, recipientId, (c) => ({ ...c, evade: false })),
           rolled: false,

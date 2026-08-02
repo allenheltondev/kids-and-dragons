@@ -1389,7 +1389,10 @@ describe("the chapter-5 verbs", () => {
     state = endTurn(state);
     expect(currentActorId(state)).toBe("wisp#1");
     const swing = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "c_hero" }));
-    expect(swing.events).toEqual([{ type: "evaded", actorId: "c_hero" }]);
+    // `byId` names the swinger. Nothing else does: no die is thrown, so there
+    // is no `roll` event, and a client with only `actorId` animated the dodge
+    // and not the attack it dodged (review, #31).
+    expect(swing.events).toEqual([{ type: "evaded", actorId: "c_hero", byId: "wisp#1" }]);
     expect(hpOf(swing.state, "c_hero")).toBe(10);
     expect(combatantById(swing.state, "c_hero")?.evade).toBe(false);
 
