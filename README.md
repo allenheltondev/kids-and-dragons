@@ -76,6 +76,7 @@ to the same behavior:
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:verify:rig` | the rig contract — clips, events, inputs, the turn budget |
 | `npm run art:sheet` | regenerates the review contact sheets |
+| `npm run art:inventory` | what is left to draw ([docs/asset-inventory.md](docs/asset-inventory.md)) — reports, never gates |
 | `npm run e2e` | three browser contexts playing a chapter against the real stack |
 | `npm run infra:lint` | the SAM template, with the transform applied |
 | `npm run infra:build` | bundles the Lambdas — a deploy that would fail, failing here |
