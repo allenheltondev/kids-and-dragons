@@ -73,6 +73,7 @@ import {
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
+import { createPaletteLatch, type PaletteLatch } from "./palette-latch";
 import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
@@ -133,8 +134,12 @@ interface Actor {
   characterId: string;
   /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
-  /** The colours currently bound into it. See `paletteKeyOf`. */
-  paletteKey: string;
+  /**
+   * Requested vs. actually-bound colour. A latch rather than a string because
+   * a rig arrives late and the palette can change while it is loading — see
+   * palette-latch.ts for the race this closes.
+   */
+  palette: PaletteLatch;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -163,7 +168,7 @@ interface Actor {
  * looks. A palette is a data binding on a live rig (`setPalette`), so
  * recolouring is a write rather than a reload; folding it into this key would
  * throw away a megabyte of rig and reload it to change two fills. See
- * `paletteKeyOf` for the half that is handled that way.
+ * `palette-latch.ts` for the half that is handled that way.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
  * way `storyFocusTiles` is.
@@ -171,16 +176,6 @@ interface Actor {
 export function visualKeyOf(member: PartyMember): string {
   const { species, tier } = member.character;
   return [species, tier].join("|");
-}
-
-/**
- * The colours bound into a rig. Compared per update so a recolour re-binds
- * exactly once rather than on every patch — party state arrives constantly and
- * writing the same two fills sixty times a second is work nobody asked for.
- */
-export function paletteKeyOf(member: PartyMember): string {
-  const { appearance } = member.character;
-  return [appearance.palette, appearance.accent].join("|");
 }
 
 /**
@@ -450,7 +445,7 @@ export function createScene(app: Application): PartyScene {
       art,
       characterId: id,
       visualKey: visualKeyOf(member),
-      paletteKey: paletteKeyOf(member),
+      palette: createPaletteLatch(appearance),
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -505,6 +500,10 @@ export function createScene(app: Application): PartyScene {
         art.rotation = 0;
         art.y = 0;
         rive.setKnockedDown(actor.down);
+        // Whatever the latest request is — which may have arrived while the
+        // wasm and the .riv were still downloading, and is not necessarily the
+        // `appearance` this load began with.
+        actor.palette.applyTo(rive);
         art.addChild(rive.sprite);
         actor.rive = rive;
       })
@@ -545,12 +544,11 @@ export function createScene(app: Application): PartyScene {
         if (existing && existing.visualKey === visualKeyOf(member)) {
           existing.down = member.down;
           existing.connected = member.connected;
-          // Same body, different colours — a write, not a reload.
-          const palette = paletteKeyOf(member);
-          if (palette !== existing.paletteKey) {
-            existing.paletteKey = palette;
-            existing.rive?.setPalette(member.character.appearance);
-          }
+          // Same body, different colours — a write, not a reload. The latch
+          // only records success, so a change that lands mid-load is applied
+          // by `makeActor`'s install instead of being lost.
+          existing.palette.request(member.character.appearance);
+          existing.palette.applyTo(existing.rive);
           continue;
         }
         if (existing) {
