@@ -1,5 +1,5 @@
 {
-  "$comment": "bigfoot rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding.",
+  "$comment": "bigfoot rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: mane rides the mane part on every species. NO ACCENT SLOT, on purpose. paletteRule puts the accent \"on the signature part only\", and this species' signature *is* its mane \u2014 one part cannot carry both the mane colour and a brighter accent, and splitting the difference would just be a muddier mane. The player's accent still colours their UI chrome; it does not reach the figure.",
   "root": "body",
   "adjacency": [
     [

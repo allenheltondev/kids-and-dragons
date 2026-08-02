@@ -24,17 +24,51 @@
  *     the data-binding colors the rigs expose (`mane`, `accent`), which is
  *     the chapter-1 "palette slots wired to Rive color properties" item.
  *     Nothing here knows a clip name; clips are the rig's business.
- *   - **Rive handles are C++ objects.** Everything created is deleted in
- *     `destroy()`, in reverse order, exactly once. The loaded *files* are
- *     cached for the session (three party members at the same tier share
- *     one), which is why file handles are deliberately not deleted here.
+ *   - **Rive handles are C++ objects.** Everything this module *owns* is
+ *     deleted in `destroy()`, exactly once — see the ownership audit below,
+ *     which is against the installed `@rive-app/canvas-advanced` and not
+ *     against a general intuition about wasm.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT OWNS A C++ HANDLE, AND WHAT ONLY LOOKS LIKE ONE
+ *
+ * `rive_advanced.mjs.d.ts` is the authority, and it is blunt: a type either
+ * declares `delete()` or it does not. Audited entry by entry, because "delete
+ * everything that came out of wasm" over-deletes and "delete the obvious
+ * three" under-deletes, and both are how a fight ends in a blank stage.
+ *
+ *   Owned, deleted here:
+ *     `Artboard`            — `delete()`; one instance per actor
+ *     `StateMachineInstance`— `delete()`; one per actor
+ *     `Renderer`            — `delete()` (via `RendererWrapper`)
+ *     `ViewModelInstance`   — `delete()`, plus its own refcount pair. Returned
+ *                             by `defaultInstance()`, so the palette binding
+ *                             hands us an owned handle. This one *was* leaking.
+ *
+ *   Not owned, deliberately not deleted:
+ *     `SMIInput`            — no `delete()`. `asBool()` / `asTrigger()` return
+ *                             `SMIInput` again: typed *views* on the same
+ *                             object, not new allocations, so holding both the
+ *                             untyped and the typed handle is one object and
+ *                             deleting "both" would be deleting an alias.
+ *     `ViewModelInstanceValue` (and `…Color`) — no `delete()`. `instance.color(slot)`
+ *                             is a property view; it dies with its instance.
+ *     `ViewModel`           — no `delete()`.
+ *     `File`                — no `delete()`, and cached for the session anyway
+ *                             (three party members at one tier share one file,
+ *                             and every artboard is instanced *from* it).
+ *
+ * Deletion order is consumers before the thing they read: machine, artboard,
+ * then the view-model instance those two were bound to, then the renderer. So
+ * the last reference dropped is ours, whatever the binding did to the
+ * refcount — never a live artboard pointing at a freed instance.
  */
 
 import { Sprite, Texture } from "pixi.js";
 import RiveCanvas from "@rive-app/canvas-advanced";
 import wasmUrl from "@rive-app/canvas-advanced/rive.wasm?url";
 import type { Appearance, SpeciesId, TierId } from "@kad/shared";
-import { characterRigUrl } from "./art-paths";
+import { ANCHOR_Y, characterRigUrl } from "./art-paths";
 import { PALETTES } from "../screens/creationContent";
 
 /**
@@ -92,6 +126,22 @@ function rigFile(url: string): Promise<any | null> {
  * (creationContent PALETTES — "Orchid" is a mane hue first); the accent is
  * already a hex on the appearance. Unknown palette names return no mane
  * rather than a guess, which leaves the rig's authored color standing.
+ *
+ * Two things it deliberately does not answer:
+ *
+ *   - **`coat` is not a slot.** The manifest's `paletteRule` names one, but a
+ *     coat tint traced from a flattened body layer takes the markings with it
+ *     (rive-mcp's rigging playbook §2 says so in as many words), and the rule
+ *     gives markings their own saturation. So the coat is the authored art's,
+ *     and the creation swatches lead with the mane to say so.
+ *   - **Two species have no `accent` surface.** `paletteRule` puts the accent
+ *     "on the signature part only"; bigfoot's signature *is* its mane (one
+ *     part cannot carry both), and the manticore's is a bone-meshed tail,
+ *     where a tint slot stays rigid and would visibly detach mid-strike. Both
+ *     are recorded in their rig configs and enforced by rig-configs.test.ts.
+ *     Returning `accent` regardless is correct and cheap: a slot the rig does
+ *     not expose optional-chains away, and the accent still colors this
+ *     player's UI chrome (SignInFlow) either way.
  */
 export function paletteColorsFor(
   appearance: Appearance,
@@ -139,6 +189,25 @@ export async function createRiveActor(
   let renderer: any = null;
   let artboard: any = null;
   let machine: any = null;
+  /** The palette binding's owned handle — see the ownership audit. */
+  let vmInstance: any = null;
+  let texture: Texture | null = null;
+  let sprite: Sprite | null = null;
+  /** Every owned handle, consumers first. One list, so the success path and
+      the construction-failure path can never drift about what to release. */
+  const release = (): void => {
+    machine?.delete?.();
+    artboard?.delete?.();
+    vmInstance?.delete?.();
+    renderer?.delete?.();
+    machine = artboard = vmInstance = renderer = null;
+    // The Pixi half too: a throw after the texture was made would otherwise
+    // strand a GPU allocation for a rig nobody ever draws.
+    if (sprite && !sprite.destroyed) sprite.destroy();
+    texture?.destroy(true);
+    sprite = null;
+    texture = null;
+  };
   try {
     artboard = file.artboardByName?.(ARTBOARD_NAME) ?? file.defaultArtboard();
     if (!artboard) return null;
@@ -184,11 +253,18 @@ export async function createRiveActor(
         const vm = file.defaultArtboardViewModel?.(artboard) ?? file.viewModelByName?.("Palette");
         const instance = vm?.defaultInstance?.();
         if (instance) {
+          // Kept for the actor's lifetime, not just for this block: the bound
+          // instance is what the fills read on every advance, and dropping it
+          // here would either free it under the artboard or leak it. It is
+          // released in `release()` with everything else.
+          vmInstance = instance;
           artboard.bindViewModelInstance?.(instance);
           machine.bindViewModelInstance?.(instance);
           const colors = paletteColorsFor(appearance);
           for (const [slot, hex] of Object.entries(colors)) {
             const { r, g, b } = hexToRgb(hex);
+            // A slot the rig does not expose optional-chains away. Two species
+            // have no `accent` surface on purpose — see paletteColorsFor.
             instance.color?.(slot)?.rgb?.(r, g, b);
           }
         }
@@ -197,41 +273,53 @@ export async function createRiveActor(
       }
     }
 
-    const texture = Texture.from(canvas);
-    const sprite = new Sprite(texture);
+    texture = Texture.from(canvas);
+    sprite = new Sprite(texture);
     // The artboard is the manifest's 1024 canvas drawn contain-fit into a
-    // square buffer — an exact fill — so the feet sit at originY/height of
-    // the buffer exactly as they do in the PNGs (art-paths ANCHOR_*).
-    sprite.anchor.set(0.5, 900 / 1024);
+    // square buffer — an exact fill — so the feet sit on the manifest origin
+    // exactly as they do in the PNGs. Same constant, one source (art-paths).
+    sprite.anchor.set(0.5, ANCHOR_Y);
     sprite.width = height;
     sprite.height = height;
 
     let destroyed = false;
+    /*
+     * The handles the closures below use. `release()` owns the mutable
+     * references above so a construction failure can null them; the live
+     * actor holds its own consts, so `tick` and `draw` never re-check a
+     * handle they were built with — and nothing they touch can be nulled out
+     * from under them while `destroyed` is false.
+     */
+    const drawnSprite = sprite;
+    const drawnTexture = texture;
+    const drawnRenderer = renderer;
+    const drawnArtboard = artboard;
+    const drawnMachine = machine;
 
     const draw = (): void => {
-      renderer.clear();
-      renderer.save();
-      renderer.align(
+      drawnRenderer.clear();
+      drawnRenderer.save();
+      drawnRenderer.align(
         rive.Fit.contain,
         rive.Alignment.center,
         { minX: 0, minY: 0, maxX: BUFFER_PX, maxY: BUFFER_PX },
-        artboard.bounds,
+        drawnArtboard.bounds,
       );
-      artboard.draw(renderer);
-      renderer.restore();
+      drawnArtboard.draw(drawnRenderer);
+      drawnRenderer.restore();
       // Canvas2D commands are queued; this executes them. Per-actor rather
       // than batched per frame — at a lineup's three figures the difference
       // is noise, and the board pass owns the batching optimisation.
       rive.resolveAnimationFrame();
-      texture.source.update();
+      drawnTexture.source.update();
     };
 
     return {
-      sprite,
+      sprite: drawnSprite,
       tick(dtSeconds: number): void {
         if (destroyed) return;
-        machine.advance(dtSeconds);
-        artboard.advance(dtSeconds);
+        drawnMachine.advance(dtSeconds);
+        drawnArtboard.advance(dtSeconds);
         draw();
       },
       setKnockedDown(down: boolean): void {
@@ -246,20 +334,16 @@ export async function createRiveActor(
       destroy(): void {
         if (destroyed) return;
         destroyed = true;
-        machine?.delete?.();
-        artboard?.delete?.();
-        renderer?.delete?.();
-        if (!sprite.destroyed) sprite.destroy();
-        texture.destroy(true);
+        release();
       },
     };
   } catch {
     // A rig the runtime cannot walk is a fallback, not a crash — the same
     // posture verify-rig takes, minus the red build, because at the table
-    // the PNG is standing right there.
-    machine?.delete?.();
-    artboard?.delete?.();
-    renderer?.delete?.();
+    // the PNG is standing right there. The same `release()` the success path
+    // uses, so a throw between the texture and the return cannot leave a
+    // handle behind either.
+    release();
     return null;
   }
 }
