@@ -131,6 +131,8 @@ interface Actor {
   container: Container;
   art: Container;
   characterId: string;
+  /** What this actor was built to look like. See `visualKeyOf`. */
+  visualKey: string;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -143,6 +145,27 @@ interface Actor {
    * and FALLEN_* pose below stay away from it.
    */
   rive: RiveActorHandle | null;
+}
+
+/**
+ * Everything about a character that decides which asset is loaded and what
+ * colors are bound into it — the identity an actor is *built* from, as opposed
+ * to `character.id`, which is the identity it is *found* by.
+ *
+ * The two are not the same thing, and the difference is this chapter's whole
+ * payoff: a character who levels into a new tier keeps her id and changes her
+ * body. An actor rebuilt only when the id appears would have gone on drawing
+ * the Fledgling rig for the rest of the session — the transformation cutscene
+ * playing over a figure that never actually transformed. Appearance is in here
+ * for the same reason a tier is: the palette is bound into the rig at load, so
+ * a recolour is a rebuild, not a mutation.
+ *
+ * Pure and exported so the rule is testable without a WebGL context, the same
+ * way `storyFocusTiles` is.
+ */
+export function visualKeyOf(member: PartyMember): string {
+  const { species, tier, appearance } = member.character;
+  return [species, tier, appearance.palette, appearance.accent].join("|");
 }
 
 /**
@@ -411,6 +434,7 @@ export function createScene(app: Application): PartyScene {
       container,
       art,
       characterId: id,
+      visualKey: visualKeyOf(member),
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -502,10 +526,24 @@ export function createScene(app: Application): PartyScene {
         const id = member.character.id;
         seen.add(id);
         const existing = actors.get(id);
-        if (existing) {
+        if (existing && existing.visualKey === visualKeyOf(member)) {
           existing.down = member.down;
           existing.connected = member.connected;
           continue;
+        }
+        if (existing) {
+          /*
+           * Same character, different body — a tier crossed, or a colour
+           * changed. Rebuild rather than mutate: the rig file, the bound
+           * palette and the sprite are all decided at load (rive-actor.ts),
+           * so there is nothing on a live actor to patch. Dropping the Rive
+           * handle first, then the container, is the same order `destroy()`
+           * uses and for the same reason — the C++ objects are not the Pixi
+           * tree's to collect.
+           */
+          existing.rive?.destroy();
+          existing.container.destroy({ children: true });
+          actors.delete(id);
         }
         actors.set(id, makeActor(member));
       }

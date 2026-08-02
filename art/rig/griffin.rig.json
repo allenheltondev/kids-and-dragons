@@ -1,5 +1,5 @@
 {
-  "$comment": "griffin rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding.",
+  "$comment": "griffin rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: mane rides the mane part on every species. Accent rides the wings \u2014 the signature part, as paletteRule says.",
   "root": "body",
   "adjacency": [
     [
