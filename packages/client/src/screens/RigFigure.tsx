@@ -3,10 +3,17 @@
  *
  * `CharacterPortrait` draws a tier PNG in an `<img>`, and for every other
  * surface that is exactly right. Here it is not: this screen's whole job is to
- * show the choices as they are made (spec §5), and a PNG cannot show a colour
- * the player just picked. So creation gets the same rig the scene draws, in a
- * plain canvas, with the palette written straight into it — pick "Meadow" and
- * the mane goes green while your finger is still on the swatch.
+ * show the choices as they are made (spec §5), and a species is a way of
+ * moving before it is a shape. So creation gets the same rig the scene draws,
+ * in a plain canvas — pick "griffin" and a griffin walks on and breathes at
+ * you, instead of a photograph of one.
+ *
+ * It does *not* show the palette. It used to: the rigs expose `mane`/`accent`
+ * tint slots and this screen wrote the swatch straight into them, so the mane
+ * went green under your finger. A hue pushed onto authored shading flattens
+ * the art it is painted over, so the recolour is gone everywhere
+ * (world/nameplate.ts) — the palette and accent now dress this player's UI
+ * chrome, and the figure is the creature as drawn.
  *
  * **Rive is loaded on demand and never at rest.** The import is dynamic, so a
  * phone that opens the app and never reaches creation does not download the
@@ -22,44 +29,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import type { Appearance, SpeciesId, TierId } from "@kad/shared";
+import type { SpeciesId, TierId } from "@kad/shared";
 import type { RigHandle } from "../world/rive-rig";
-import { createPaletteLatch } from "../world/palette-latch";
 import "./RigFigure.css";
 
 export interface RigFigureProps {
   species: SpeciesId;
   tier: TierId;
-  appearance: Appearance;
   className?: string;
   /** Drawn while the rig loads, and left in place if it never does. */
   fallback: ReactElement;
 }
 
-export function RigFigure({
-  species,
-  tier,
-  appearance,
-  className,
-  fallback,
-}: RigFigureProps): ReactElement {
+export function RigFigure({ species, tier, className, fallback }: RigFigureProps): ReactElement {
   const host = useRef<HTMLDivElement | null>(null);
   const rig = useRef<RigHandle | null>(null);
   const [ready, setReady] = useState(false);
-  /*
-   * Colour, kept apart from the handle that wears it. A rig takes a dynamic
-   * import, two megabytes of wasm and a megabyte of `.riv` to arrive, and this
-   * screen's whole job is letting somebody change their mind meanwhile — so
-   * the requests are latched and applied at install (palette-latch.ts).
-   */
-  const palette = useRef(createPaletteLatch(appearance));
-  palette.current.request(appearance);
 
   /*
    * Build on species/tier — the asset identity, exactly the split
-   * `world/scene.ts` makes. Appearance is deliberately not a dependency: a
-   * palette is a binding write on a live rig (the effect below), and rebuilding
-   * per tap would make choosing a colour feel like waiting for one.
+   * `world/scene.ts` makes, and now the whole of what this figure depends on.
    */
   useEffect(() => {
     let cancelled = false;
@@ -69,15 +58,13 @@ export function RigFigure({
 
     void (async () => {
       const { createRig } = await import("../world/rive-rig");
-      const handle = await createRig(species, tier, palette.current.wanted());
+      const handle = await createRig(species, tier);
       // The screen may have moved on while the wasm and the file loaded —
       // a different species picked, or creation left altogether.
       if (cancelled || !handle) {
         handle?.destroy();
         return;
       }
-      // Whatever is wanted *now*, which may not be what the load began with.
-      palette.current.applyTo(handle);
       rig.current = handle;
       handle.canvas.className = "rig-figure__canvas";
       // Draw one frame before the fallback comes down. `createRig` does not
@@ -103,23 +90,7 @@ export function RigFigure({
       rig.current = null;
       setReady(false);
     };
-    // `appearance` is read through the latch, deliberately not a dependency:
-    // listing it would rebuild the rig on every tap, which is the thing
-    // `setPalette` exists to avoid.
-  }, [species, tier]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  /*
-   * Colour, written into whatever rig is live. A change that lands while one
-   * is still loading is not lost — the latch holds it and the install above
-   * applies it.
-   *
-   * Keyed on the two values rather than the object: a draft patch makes a new
-   * `appearance` object for unrelated edits too (a name, a stat), and there is
-   * no reason to rewrite fills because somebody typed a letter.
-   */
-  useEffect(() => {
-    palette.current.applyTo(rig.current);
-  }, [appearance.palette, appearance.accent]);
+  }, [species, tier]);
 
   return (
     <div className={`rig-figure${className ? ` ${className}` : ""}`}>
