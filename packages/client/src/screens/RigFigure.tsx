@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type { Appearance, SpeciesId, TierId } from "@kad/shared";
 import type { RigHandle } from "../world/rive-rig";
+import { createPaletteLatch } from "../world/palette-latch";
 import "./RigFigure.css";
 
 export interface RigFigureProps {
@@ -45,6 +46,14 @@ export function RigFigure({
   const host = useRef<HTMLDivElement | null>(null);
   const rig = useRef<RigHandle | null>(null);
   const [ready, setReady] = useState(false);
+  /*
+   * Colour, kept apart from the handle that wears it. A rig takes a dynamic
+   * import, two megabytes of wasm and a megabyte of `.riv` to arrive, and this
+   * screen's whole job is letting somebody change their mind meanwhile — so
+   * the requests are latched and applied at install (palette-latch.ts).
+   */
+  const palette = useRef(createPaletteLatch(appearance));
+  palette.current.request(appearance);
 
   /*
    * Build on species/tier — the asset identity, exactly the split
@@ -60,15 +69,21 @@ export function RigFigure({
 
     void (async () => {
       const { createRig } = await import("../world/rive-rig");
-      const handle = await createRig(species, tier, appearance);
+      const handle = await createRig(species, tier, palette.current.wanted());
       // The screen may have moved on while the wasm and the file loaded —
       // a different species picked, or creation left altogether.
       if (cancelled || !handle) {
         handle?.destroy();
         return;
       }
+      // Whatever is wanted *now*, which may not be what the load began with.
+      palette.current.applyTo(handle);
       rig.current = handle;
       handle.canvas.className = "rig-figure__canvas";
+      // Draw one frame before the fallback comes down. `createRig` does not
+      // paint on its own, so revealing the canvas first would swap the
+      // portrait for an empty box until the next animation frame.
+      handle.tick(0);
       host.current?.appendChild(handle.canvas);
       setReady(true);
 
@@ -86,24 +101,25 @@ export function RigFigure({
       if (frame) cancelAnimationFrame(frame);
       rig.current?.destroy();
       rig.current = null;
+      setReady(false);
     };
-    // `appearance` is read here but deliberately not a dependency — it drives
-    // the binding effect below instead. Listing it would rebuild the rig on
-    // every tap, which is the thing `setPalette` exists to avoid.
+    // `appearance` is read through the latch, deliberately not a dependency:
+    // listing it would rebuild the rig on every tap, which is the thing
+    // `setPalette` exists to avoid.
   }, [species, tier]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /*
-   * Colour, written into whatever rig is currently live — including the one
-   * that is still loading, since the effect above applies the appearance it
-   * was built with and this one catches every change after.
+   * Colour, written into whatever rig is live. A change that lands while one
+   * is still loading is not lost — the latch holds it and the install above
+   * applies it.
    *
    * Keyed on the two values rather than the object: a draft patch makes a new
    * `appearance` object for unrelated edits too (a name, a stat), and there is
    * no reason to rewrite fills because somebody typed a letter.
    */
   useEffect(() => {
-    rig.current?.setPalette(appearance);
-  }, [appearance.palette, appearance.accent]); // eslint-disable-line react-hooks/exhaustive-deps
+    palette.current.applyTo(rig.current);
+  }, [appearance.palette, appearance.accent]);
 
   return (
     <div className={`rig-figure${className ? ` ${className}` : ""}`}>

@@ -17,7 +17,8 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { paletteKeyOf, visualKeyOf } from "./scene";
+import { visualKeyOf } from "./scene";
+import { paletteKeyOf } from "./palette-latch";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 
 const base = makeMember();
@@ -49,7 +50,9 @@ describe("visualKeyOf", () => {
       const member = makeMember({ character });
       expect(visualKeyOf(member)).toBe(visualKeyOf(base));
       // ...but the palette key must notice, or the recolour never lands.
-      expect(paletteKeyOf(member)).not.toBe(paletteKeyOf(base));
+      expect(paletteKeyOf(member.character.appearance)).not.toBe(
+        paletteKeyOf(base.character.appearance),
+      );
     }
   });
 
@@ -76,7 +79,7 @@ describe("visualKeyOf", () => {
     const a = makeMember({ character: makeCharacter({ appearance: { palette: "tide", accent: "#111111" } }) });
     const b = makeMember({ character: makeCharacter({ appearance: { palette: "tide", accent: "#222222" } }) });
     const c = makeMember({ character: makeCharacter({ appearance: { palette: "rose", accent: "#111111" } }) });
-    expect(paletteKeyOf(a)).not.toBe(paletteKeyOf(b));
-    expect(paletteKeyOf(a)).not.toBe(paletteKeyOf(c));
+    expect(paletteKeyOf(a.character.appearance)).not.toBe(paletteKeyOf(b.character.appearance));
+    expect(paletteKeyOf(a.character.appearance)).not.toBe(paletteKeyOf(c.character.appearance));
   });
 });

@@ -68,7 +68,7 @@ import {
 } from "./actor-art";
 
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
-import { BOARD_TILE_PX, beatOffsetsMs, tileVariant } from "./board-math";
+import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
 
 export { BOARD_TILE_PX } from "./board-math";
 
@@ -78,6 +78,22 @@ const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
 
 /** Where feet sit inside a tile — low, so the figure reads as *on* it. */
 const FEET_Y = 0.82;
+
+/**
+ * One `walk` cycle, in seconds — 4 ticks on the contract's 12fps clock
+ * (assets/manifest.json → rigContract.clips.walk, "one cycle, two steps").
+ *
+ * The clip is a *triggered loop*: it returns to idle after each cycle unless
+ * it is re-triggered (rive-mcp's rigging playbook, step 1). A move can cross
+ * six tiles, so firing it once when the beat lands played a third of a second
+ * of walking and then glided the rest of the way. A figure in motion is
+ * re-triggered on this period instead, and stops being when it arrives — which
+ * is the "fires `move` per step" the rig was built expecting.
+ */
+const WALK_CYCLE_S = 4 / 12;
+
+/** Close enough to the target tile to stop walking, in board pixels. */
+const ARRIVED_PX = BOARD_TILE_PX * 0.06;
 
 /** Everything `update()` needs, gathered by PixiStage from the store. */
 export interface BoardViewState {
@@ -118,6 +134,14 @@ interface BoardActor {
    * the cutout and the procedural pose (asset-brief §9.5).
    */
   rive: RiveActorHandle | null;
+  /**
+   * Travelling under its own power, so the walk cycle should keep playing. A
+   * shove moves a figure just as far and is emphatically not this: the slide
+   * reads it, and a walk would say the figure chose to go.
+   */
+  selfMoving: boolean;
+  /** Seconds since the walk clip was last re-triggered. */
+  sinceStep: number;
 }
 
 interface Floater {
@@ -264,6 +288,8 @@ export function createBoardLayer(): BoardLayer {
       targetX: feet.x,
       targetY: feet.y,
       rive: null,
+      selfMoving: false,
+      sinceStep: 0,
     };
     actorContainer.x = feet.x;
     actorContainer.y = feet.y;
@@ -433,6 +459,12 @@ export function createBoardLayer(): BoardLayer {
   }
 
   function playBeat(event: EncounterEvent): void {
+    // The clip, if this beat plays one. The whole table — including the beats
+    // that deliberately play nothing, and why — is `clipForBeat` in
+    // board-math.ts, pure so it can be asserted rather than watched.
+    const clip = clipForBeat(event);
+    if (clip) fireClip(clip.actorId, clip.trigger);
+
     switch (event.type) {
       case "moved":
       case "shoved": {
@@ -443,16 +475,20 @@ export function createBoardLayer(): BoardLayer {
           const feet = feetOf(event.to);
           actor.targetX = feet.x;
           actor.targetY = feet.y;
+          /*
+           * Under its own power, or pushed? Only the first plays a walk, and
+           * `tick` is what plays it — re-triggering the cycle for as long as
+           * the figure is actually travelling (see WALK_CYCLE_S). Setting the
+           * timer to a full cycle makes the first trigger land on the very
+           * next frame rather than a third of a second late.
+           */
+          actor.selfMoving = event.type === "moved";
+          actor.sinceStep = WALK_CYCLE_S;
         }
-        // `move` is the walk cycle, so only a figure walking under its own
-        // power gets it. A shove is somebody else's doing: the slide reads it,
-        // and playing a walk would say the shoved figure chose to go.
-        if (event.type === "moved") fireClip(event.actorId, "move");
         return;
       }
       case "damage":
         spawnFloater(event.actorId, `-${event.amount}`, 0xff6b6b);
-        fireClip(event.actorId, "hurt");
         return;
       case "heal":
         spawnFloater(event.actorId, `+${event.amount}`, 0x4ad991);
@@ -472,47 +508,15 @@ export function createBoardLayer(): BoardLayer {
         spawnFloater(event.actorId, `+${event.amount}`, 0xffc95c);
         return;
       case "roll":
-        /*
-         * The swing. A `roll` is emitted by exactly one effect verb — `attack`
-         * (encounter.ts: nothing else calls `resolveAttack`) — so a roll beat
-         * *is* a figure taking a swing at somebody, and the roller is named on
-         * the roll. That makes this the one action clip the board can fire
-         * without guessing.
-         *
-         * `cast` is the gap, and it is honest about being one: no beat says
-         * "an ability resolved", so a Starweaver's Burst — an `attack` verb in
-         * a spell's clothing — reads as a swing, and a heal-only ability plays
-         * no action clip at all. Closing it means naming the ability on the
-         * COMBAT_SEQUENCE presentation, which is a protocol change and its own
-         * pass; approximating it here would mean picking a clip from a stat,
-         * which is the kind of guess that reads as a bug at the table.
-         */
-        fireClip(event.roll.characterId, "attack");
-        return;
       case "protected":
-        // Brace — the Thornguard plants themselves in front of a friend. The
-        // event names the protector, which is the figure that acts.
-        fireClip(event.byId, "guard");
-        return;
-      case "warded":
-        // Unbreakable — everyone it covers braces, the caster included.
-        fireClip(event.actorId, "guard");
-        return;
-      case "dazed":
       case "evaded":
+      case "warded":
+      case "dazed":
       case "rooted":
       case "encore":
       case "walled":
-        /*
-         * No clip in the contract says any of these. Fox Fire's daze, Vanish's
-         * miss, Tanglelight's root and Encore's bonus action are all *states*
-         * a figure is in rather than motions it makes, and the wall is terrain
-         * — it arrives on the patch and `buildTiles` redraws the floor, since
-         * `setTerrain` hands back a new array and the rebuild is keyed on
-         * identity. Effect sheets (asset-brief §9.7) are where these get their
-         * spectacle; inventing a clip for them would mean the rig contract and
-         * the board disagreed about what a clip means.
-         */
+        // Clip-only or nothing at all; `clipForBeat` above has already said
+        // which, and carries the reasoning for the ones that play nothing.
         return;
     }
   }
@@ -568,6 +572,29 @@ export function createBoardLayer(): BoardLayer {
           // (§9.3 — a frozen pose reads as a corpse). Tilting the sprite as
           // well would be two knockdowns fighting over one figure.
           actor.rive.setKnockedDown(actor.down);
+
+          /*
+           * Keep walking while there is still ground to cover. The clip is one
+           * cycle of two steps and a move can be six tiles, so it is
+           * re-triggered per cycle until the figure arrives — then left alone,
+           * and the triggered loop falls back to idle on its own.
+           */
+          if (actor.selfMoving) {
+            const left = Math.hypot(
+              actor.targetX - actor.container.x,
+              actor.targetY - actor.container.y,
+            );
+            if (left <= ARRIVED_PX) {
+              actor.selfMoving = false;
+            } else {
+              actor.sinceStep += dtSeconds;
+              if (actor.sinceStep >= WALK_CYCLE_S) {
+                actor.sinceStep = 0;
+                actor.rive.fire("move");
+              }
+            }
+          }
+
           actor.rive.tick(dtSeconds);
           continue;
         }
