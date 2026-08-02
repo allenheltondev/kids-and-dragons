@@ -24,8 +24,15 @@
  * starts walking when its `moved` event's moment arrives, a damage number pops
  * on the `damage` beat — and the patch that lands afterwards is the authority
  * that confirms where everybody ended up. A beat we play wrong is corrected by
- * the patch; a beat we skip (roll, protected, dazed — no art yet) costs
- * spectacle, never truth.
+ * the patch; a beat we skip costs spectacle, never truth.
+ *
+ * FIGURES: a party member is a rigged `.riv` (world/rive-actor.ts) and beats
+ * fire the rig contract's triggers on it — `move` on a walk, `hurt` on damage,
+ * `attack` on a roll, `guard` on a brace or a ward — while `knockedDown` walks
+ * the fall and the get-up. Monsters keep the static cutout and the procedural
+ * fallen pose, because no enemy rig is commissioned yet (asset-brief §9.5),
+ * and so does any party figure whose rig will not load. `playBeat` says per
+ * beat which clip it fires and, for the ones it does not, why.
  *
  * TILE ART: sliced from `assets/biomes/<biome>/tiles.png` — row 0 is the four
  * floor variants, row 1 the four blocked variants (asset-brief §4.5). A sheet
@@ -60,6 +67,7 @@ import {
   enemyArtUrl,
 } from "./actor-art";
 
+import { createRiveActor, type RiveActorHandle } from "./rive-actor";
 import { BOARD_TILE_PX, beatOffsetsMs, tileVariant } from "./board-math";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -102,6 +110,14 @@ interface BoardActor {
   /** Board-pixel position of the feet; the container approaches it. */
   targetX: number;
   targetY: number;
+  /**
+   * The rigged figure, once its `.riv` loads. While set, the rig owns the
+   * acting: the fall is `down`/`down_loop` driven by the contract's
+   * `knockedDown`, and beats fire clips instead of nudging a static sprite.
+   * Party figures only — no enemy rig is commissioned yet, so a monster keeps
+   * the cutout and the procedural pose (asset-brief §9.5).
+   */
+  rive: RiveActorHandle | null;
 }
 
 interface Floater {
@@ -247,6 +263,7 @@ export function createBoardLayer(): BoardLayer {
       down: combatant.down,
       targetX: feet.x,
       targetY: feet.y,
+      rive: null,
     };
     actorContainer.x = feet.x;
     actorContainer.y = feet.y;
@@ -255,8 +272,9 @@ export function createBoardLayer(): BoardLayer {
     // Same rule as the story lineup: always ask for the file, keep the
     // placeholder when it is not there. A list of "delivered art" goes stale;
     // a 404 cannot.
-    const url = artUrlFor(combatant, current);
-    if (url) {
+    const loadCutout = (): void => {
+      const url = artUrlFor(combatant, current);
+      if (!url) return;
       void Assets.load<Texture>(url)
         .then((texture) => {
           // Identity, not id — a stale resolve must not draw into a destroyed
@@ -272,7 +290,42 @@ export function createBoardLayer(): BoardLayer {
         .catch(() => {
           /* keep the placeholder: a missing enemy must never blank the board */
         });
+    };
+
+    const member =
+      combatant.side === "party"
+        ? current.party.find((m) => m.character.id === combatant.id)
+        : undefined;
+    if (!member) {
+      // A monster, or a party figure with no member row to read art from.
+      loadCutout();
+      return actor;
     }
+
+    // The rig first, the cutout when there isn't one — the same order and the
+    // same never-goes-stale reasoning the story lineup uses (scene.ts).
+    const { species, tier, appearance } = member.character;
+    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+      .then((rive) => {
+        if (destroyed || actors.get(combatant.id) !== actor) {
+          rive?.destroy();
+          return;
+        }
+        if (!rive) {
+          loadCutout();
+          return;
+        }
+        art.removeChildren();
+        placeholder.destroy();
+        // The rig plays its own fall, so hand it the state it joined in and
+        // clear whatever pose the placeholder was eased into.
+        art.rotation = 0;
+        art.alpha = 1;
+        rive.setKnockedDown(actor.down);
+        art.addChild(rive.sprite);
+        actor.rive = rive;
+      })
+      .catch(loadCutout);
 
     return actor;
   }
@@ -301,6 +354,8 @@ export function createBoardLayer(): BoardLayer {
 
     for (const [id, actor] of [...actors.entries()]) {
       if (seen.has(id)) continue;
+      // The C++ handles first — the container destroy only reaches the sprite.
+      actor.rive?.destroy();
       actor.container.destroy({ children: true });
       actors.delete(id);
     }
@@ -365,6 +420,18 @@ export function createBoardLayer(): BoardLayer {
     floaters.push({ text, age: 0, x, y });
   }
 
+  /**
+   * Fire one of the rig contract's triggers on a figure, if it has a rig.
+   *
+   * A no-op for a cutout (every monster today) and for a name the rig does not
+   * declare, which is the same tolerance everything else here has: spectacle
+   * degrades, truth does not — the state each beat describes arrives on the
+   * patch either way.
+   */
+  function fireClip(actorId: string, trigger: string): void {
+    actors.get(actorId)?.rive?.fire(trigger);
+  }
+
   function playBeat(event: EncounterEvent): void {
     switch (event.type) {
       case "moved":
@@ -377,10 +444,15 @@ export function createBoardLayer(): BoardLayer {
           actor.targetX = feet.x;
           actor.targetY = feet.y;
         }
+        // `move` is the walk cycle, so only a figure walking under its own
+        // power gets it. A shove is somebody else's doing: the slide reads it,
+        // and playing a walk would say the shoved figure chose to go.
+        if (event.type === "moved") fireClip(event.actorId, "move");
         return;
       }
       case "damage":
         spawnFloater(event.actorId, `-${event.amount}`, 0xff6b6b);
+        fireClip(event.actorId, "hurt");
         return;
       case "heal":
         spawnFloater(event.actorId, `+${event.amount}`, 0x4ad991);
@@ -400,10 +472,47 @@ export function createBoardLayer(): BoardLayer {
         spawnFloater(event.actorId, `+${event.amount}`, 0xffc95c);
         return;
       case "roll":
+        /*
+         * The swing. A `roll` is emitted by exactly one effect verb — `attack`
+         * (encounter.ts: nothing else calls `resolveAttack`) — so a roll beat
+         * *is* a figure taking a swing at somebody, and the roller is named on
+         * the roll. That makes this the one action clip the board can fire
+         * without guessing.
+         *
+         * `cast` is the gap, and it is honest about being one: no beat says
+         * "an ability resolved", so a Starweaver's Burst — an `attack` verb in
+         * a spell's clothing — reads as a swing, and a heal-only ability plays
+         * no action clip at all. Closing it means naming the ability on the
+         * COMBAT_SEQUENCE presentation, which is a protocol change and its own
+         * pass; approximating it here would mean picking a clip from a stat,
+         * which is the kind of guess that reads as a bug at the table.
+         */
+        fireClip(event.roll.characterId, "attack");
+        return;
       case "protected":
+        // Brace — the Thornguard plants themselves in front of a friend. The
+        // event names the protector, which is the figure that acts.
+        fireClip(event.byId, "guard");
+        return;
+      case "warded":
+        // Unbreakable — everyone it covers braces, the caster included.
+        fireClip(event.actorId, "guard");
+        return;
       case "dazed":
-        // Effect-sheet territory (brief step 4) — deliberately no art yet.
-        // The state they change still arrives on the patch.
+      case "evaded":
+      case "rooted":
+      case "encore":
+      case "walled":
+        /*
+         * No clip in the contract says any of these. Fox Fire's daze, Vanish's
+         * miss, Tanglelight's root and Encore's bonus action are all *states*
+         * a figure is in rather than motions it makes, and the wall is terrain
+         * — it arrives on the patch and `buildTiles` redraws the floor, since
+         * `setTerrain` hands back a new array and the rebuild is keyed on
+         * identity. Effect sheets (asset-brief §9.7) are where these get their
+         * spectacle; inventing a clip for them would mean the rig contract and
+         * the board disagreed about what a clip means.
+         */
         return;
     }
   }
@@ -453,6 +562,15 @@ export function createBoardLayer(): BoardLayer {
         actor.container.x = approach(actor.container.x, actor.targetX, WALK_RATE, dtSeconds);
         actor.container.y = approach(actor.container.y, actor.targetY, WALK_RATE, dtSeconds);
         actor.container.zIndex = actor.container.y;
+        if (actor.rive) {
+          // The rig owns the fall: `knockedDown` walks it through `down` into
+          // the `down_loop` breathing hold and back out through `revive`
+          // (§9.3 — a frozen pose reads as a corpse). Tilting the sprite as
+          // well would be two knockdowns fighting over one figure.
+          actor.rive.setKnockedDown(actor.down);
+          actor.rive.tick(dtSeconds);
+          continue;
+        }
         if (actor.down) {
           // spec §7.3 — knocked down, never dead. They lie on the grid and
           // wait for someone to come get them. Same pose as the lineup.
@@ -503,7 +621,10 @@ export function createBoardLayer(): BoardLayer {
       pending.length = 0;
       for (const floater of floaters) floater.text.destroy();
       floaters.length = 0;
-      for (const actor of actors.values()) actor.container.destroy({ children: true });
+      for (const actor of actors.values()) {
+        actor.rive?.destroy();
+        actor.container.destroy({ children: true });
+      }
       actors.clear();
       container.destroy({ children: true });
     },
