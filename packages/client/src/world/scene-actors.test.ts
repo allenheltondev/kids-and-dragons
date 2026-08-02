@@ -18,6 +18,7 @@
 
 import { describe, expect, it } from "vitest";
 import { visualKeyOf } from "./scene";
+import { paletteKeyOf } from "./palette-latch";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 
 const base = makeMember();
@@ -28,14 +29,30 @@ describe("visualKeyOf", () => {
     expect(visualKeyOf(grown)).not.toBe(visualKeyOf(base));
   });
 
-  it("changes when the species or either palette choice does", () => {
-    const cases = [
-      makeCharacter({ species: "griffin" }),
+  it("changes when the species does", () => {
+    const swapped = makeMember({ character: makeCharacter({ species: "griffin" }) });
+    expect(visualKeyOf(swapped)).not.toBe(visualKeyOf(base));
+  });
+
+  it("does NOT change for a recolour — that is a binding write, not a reload", () => {
+    /*
+     * The half that is easy to get wrong in the expensive direction. Colours
+     * are data bindings on a live rig, so folding them in here would throw a
+     * megabyte of rig away and reload it to change two fills — and in the
+     * creation flow, where the palette changes on every tap, that is the
+     * difference between picking a colour and waiting for one.
+     */
+    const recoloured = [
       makeCharacter({ appearance: { palette: "ember", accent: "#7FD4C1" } }),
       makeCharacter({ appearance: { palette: "meadow", accent: "#E0C470" } }),
     ];
-    for (const character of cases) {
-      expect(visualKeyOf(makeMember({ character })), character.species).not.toBe(visualKeyOf(base));
+    for (const character of recoloured) {
+      const member = makeMember({ character });
+      expect(visualKeyOf(member)).toBe(visualKeyOf(base));
+      // ...but the palette key must notice, or the recolour never lands.
+      expect(paletteKeyOf(member.character.appearance)).not.toBe(
+        paletteKeyOf(base.character.appearance),
+      );
     }
   });
 
@@ -52,19 +69,17 @@ describe("visualKeyOf", () => {
       makeMember({ down: true, hp: 0 }),
       makeMember({ connected: false }),
       makeMember({ character: makeCharacter({ level: 3, name: "Someone Else" }) }),
-      makeMember({ character: makeCharacter({ hp: 2 } as never) }),
     ];
     for (const member of same) {
       expect(visualKeyOf(member)).toBe(visualKeyOf(base));
     }
   });
 
-  it("distinguishes two characters that differ only in a palette slot", () => {
-    // The key is compared against the actor's own previous key, never across
-    // characters — but a key that collided here would be one that ignores a
-    // field, so this is the cheap canary for that.
+  it("gives the palette key both slots, so either alone is a change", () => {
     const a = makeMember({ character: makeCharacter({ appearance: { palette: "tide", accent: "#111111" } }) });
     const b = makeMember({ character: makeCharacter({ appearance: { palette: "tide", accent: "#222222" } }) });
-    expect(visualKeyOf(a)).not.toBe(visualKeyOf(b));
+    const c = makeMember({ character: makeCharacter({ appearance: { palette: "rose", accent: "#111111" } }) });
+    expect(paletteKeyOf(a.character.appearance)).not.toBe(paletteKeyOf(b.character.appearance));
+    expect(paletteKeyOf(a.character.appearance)).not.toBe(paletteKeyOf(c.character.appearance));
   });
 });
