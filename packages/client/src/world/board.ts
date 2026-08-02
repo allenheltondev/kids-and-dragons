@@ -24,8 +24,15 @@
  * starts walking when its `moved` event's moment arrives, a damage number pops
  * on the `damage` beat — and the patch that lands afterwards is the authority
  * that confirms where everybody ended up. A beat we play wrong is corrected by
- * the patch; a beat we skip (roll, protected, dazed — no art yet) costs
- * spectacle, never truth.
+ * the patch; a beat we skip costs spectacle, never truth.
+ *
+ * FIGURES: a party member is a rigged `.riv` (world/rive-actor.ts) and beats
+ * fire the rig contract's triggers on it — `move` on a walk, `hurt` on damage,
+ * `attack` on a roll, `guard` on a brace or a ward — while `knockedDown` walks
+ * the fall and the get-up. Monsters keep the static cutout and the procedural
+ * fallen pose, because no enemy rig is commissioned yet (asset-brief §9.5),
+ * and so does any party figure whose rig will not load. `playBeat` says per
+ * beat which clip it fires and, for the ones it does not, why.
  *
  * TILE ART: sliced from `assets/biomes/<biome>/tiles.png` — row 0 is the four
  * floor variants, row 1 the four blocked variants (asset-brief §4.5). A sheet
@@ -60,7 +67,8 @@ import {
   enemyArtUrl,
 } from "./actor-art";
 
-import { BOARD_TILE_PX, beatOffsetsMs, tileVariant } from "./board-math";
+import { createRiveActor, type RiveActorHandle } from "./rive-actor";
+import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
 
 export { BOARD_TILE_PX } from "./board-math";
 
@@ -70,6 +78,22 @@ const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
 
 /** Where feet sit inside a tile — low, so the figure reads as *on* it. */
 const FEET_Y = 0.82;
+
+/**
+ * One `walk` cycle, in seconds — 4 ticks on the contract's 12fps clock
+ * (assets/manifest.json → rigContract.clips.walk, "one cycle, two steps").
+ *
+ * The clip is a *triggered loop*: it returns to idle after each cycle unless
+ * it is re-triggered (rive-mcp's rigging playbook, step 1). A move can cross
+ * six tiles, so firing it once when the beat lands played a third of a second
+ * of walking and then glided the rest of the way. A figure in motion is
+ * re-triggered on this period instead, and stops being when it arrives — which
+ * is the "fires `move` per step" the rig was built expecting.
+ */
+const WALK_CYCLE_S = 4 / 12;
+
+/** Close enough to the target tile to stop walking, in board pixels. */
+const ARRIVED_PX = BOARD_TILE_PX * 0.06;
 
 /** Everything `update()` needs, gathered by PixiStage from the store. */
 export interface BoardViewState {
@@ -102,6 +126,22 @@ interface BoardActor {
   /** Board-pixel position of the feet; the container approaches it. */
   targetX: number;
   targetY: number;
+  /**
+   * The rigged figure, once its `.riv` loads. While set, the rig owns the
+   * acting: the fall is `down`/`down_loop` driven by the contract's
+   * `knockedDown`, and beats fire clips instead of nudging a static sprite.
+   * Party figures only — no enemy rig is commissioned yet, so a monster keeps
+   * the cutout and the procedural pose (asset-brief §9.5).
+   */
+  rive: RiveActorHandle | null;
+  /**
+   * Travelling under its own power, so the walk cycle should keep playing. A
+   * shove moves a figure just as far and is emphatically not this: the slide
+   * reads it, and a walk would say the figure chose to go.
+   */
+  selfMoving: boolean;
+  /** Seconds since the walk clip was last re-triggered. */
+  sinceStep: number;
 }
 
 interface Floater {
@@ -247,6 +287,9 @@ export function createBoardLayer(): BoardLayer {
       down: combatant.down,
       targetX: feet.x,
       targetY: feet.y,
+      rive: null,
+      selfMoving: false,
+      sinceStep: 0,
     };
     actorContainer.x = feet.x;
     actorContainer.y = feet.y;
@@ -255,8 +298,9 @@ export function createBoardLayer(): BoardLayer {
     // Same rule as the story lineup: always ask for the file, keep the
     // placeholder when it is not there. A list of "delivered art" goes stale;
     // a 404 cannot.
-    const url = artUrlFor(combatant, current);
-    if (url) {
+    const loadCutout = (): void => {
+      const url = artUrlFor(combatant, current);
+      if (!url) return;
       void Assets.load<Texture>(url)
         .then((texture) => {
           // Identity, not id — a stale resolve must not draw into a destroyed
@@ -272,7 +316,42 @@ export function createBoardLayer(): BoardLayer {
         .catch(() => {
           /* keep the placeholder: a missing enemy must never blank the board */
         });
+    };
+
+    const member =
+      combatant.side === "party"
+        ? current.party.find((m) => m.character.id === combatant.id)
+        : undefined;
+    if (!member) {
+      // A monster, or a party figure with no member row to read art from.
+      loadCutout();
+      return actor;
     }
+
+    // The rig first, the cutout when there isn't one — the same order and the
+    // same never-goes-stale reasoning the story lineup uses (scene.ts).
+    const { species, tier, appearance } = member.character;
+    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+      .then((rive) => {
+        if (destroyed || actors.get(combatant.id) !== actor) {
+          rive?.destroy();
+          return;
+        }
+        if (!rive) {
+          loadCutout();
+          return;
+        }
+        art.removeChildren();
+        placeholder.destroy();
+        // The rig plays its own fall, so hand it the state it joined in and
+        // clear whatever pose the placeholder was eased into.
+        art.rotation = 0;
+        art.alpha = 1;
+        rive.setKnockedDown(actor.down);
+        art.addChild(rive.sprite);
+        actor.rive = rive;
+      })
+      .catch(loadCutout);
 
     return actor;
   }
@@ -301,6 +380,8 @@ export function createBoardLayer(): BoardLayer {
 
     for (const [id, actor] of [...actors.entries()]) {
       if (seen.has(id)) continue;
+      // The C++ handles first — the container destroy only reaches the sprite.
+      actor.rive?.destroy();
       actor.container.destroy({ children: true });
       actors.delete(id);
     }
@@ -365,7 +446,25 @@ export function createBoardLayer(): BoardLayer {
     floaters.push({ text, age: 0, x, y });
   }
 
+  /**
+   * Fire one of the rig contract's triggers on a figure, if it has a rig.
+   *
+   * A no-op for a cutout (every monster today) and for a name the rig does not
+   * declare, which is the same tolerance everything else here has: spectacle
+   * degrades, truth does not — the state each beat describes arrives on the
+   * patch either way.
+   */
+  function fireClip(actorId: string, trigger: string): void {
+    actors.get(actorId)?.rive?.fire(trigger);
+  }
+
   function playBeat(event: EncounterEvent): void {
+    // The clip, if this beat plays one. The whole table — including the beats
+    // that deliberately play nothing, and why — is `clipForBeat` in
+    // board-math.ts, pure so it can be asserted rather than watched.
+    const clip = clipForBeat(event);
+    if (clip) fireClip(clip.actorId, clip.trigger);
+
     switch (event.type) {
       case "moved":
       case "shoved": {
@@ -376,6 +475,15 @@ export function createBoardLayer(): BoardLayer {
           const feet = feetOf(event.to);
           actor.targetX = feet.x;
           actor.targetY = feet.y;
+          /*
+           * Under its own power, or pushed? Only the first plays a walk, and
+           * `tick` is what plays it — re-triggering the cycle for as long as
+           * the figure is actually travelling (see WALK_CYCLE_S). Setting the
+           * timer to a full cycle makes the first trigger land on the very
+           * next frame rather than a third of a second late.
+           */
+          actor.selfMoving = event.type === "moved";
+          actor.sinceStep = WALK_CYCLE_S;
         }
         return;
       }
@@ -401,9 +509,14 @@ export function createBoardLayer(): BoardLayer {
         return;
       case "roll":
       case "protected":
+      case "evaded":
+      case "warded":
       case "dazed":
-        // Effect-sheet territory (brief step 4) — deliberately no art yet.
-        // The state they change still arrives on the patch.
+      case "rooted":
+      case "encore":
+      case "walled":
+        // Clip-only or nothing at all; `clipForBeat` above has already said
+        // which, and carries the reasoning for the ones that play nothing.
         return;
     }
   }
@@ -453,6 +566,38 @@ export function createBoardLayer(): BoardLayer {
         actor.container.x = approach(actor.container.x, actor.targetX, WALK_RATE, dtSeconds);
         actor.container.y = approach(actor.container.y, actor.targetY, WALK_RATE, dtSeconds);
         actor.container.zIndex = actor.container.y;
+        if (actor.rive) {
+          // The rig owns the fall: `knockedDown` walks it through `down` into
+          // the `down_loop` breathing hold and back out through `revive`
+          // (§9.3 — a frozen pose reads as a corpse). Tilting the sprite as
+          // well would be two knockdowns fighting over one figure.
+          actor.rive.setKnockedDown(actor.down);
+
+          /*
+           * Keep walking while there is still ground to cover. The clip is one
+           * cycle of two steps and a move can be six tiles, so it is
+           * re-triggered per cycle until the figure arrives — then left alone,
+           * and the triggered loop falls back to idle on its own.
+           */
+          if (actor.selfMoving) {
+            const left = Math.hypot(
+              actor.targetX - actor.container.x,
+              actor.targetY - actor.container.y,
+            );
+            if (left <= ARRIVED_PX) {
+              actor.selfMoving = false;
+            } else {
+              actor.sinceStep += dtSeconds;
+              if (actor.sinceStep >= WALK_CYCLE_S) {
+                actor.sinceStep = 0;
+                actor.rive.fire("move");
+              }
+            }
+          }
+
+          actor.rive.tick(dtSeconds);
+          continue;
+        }
         if (actor.down) {
           // spec §7.3 — knocked down, never dead. They lie on the grid and
           // wait for someone to come get them. Same pose as the lineup.
@@ -503,7 +648,10 @@ export function createBoardLayer(): BoardLayer {
       pending.length = 0;
       for (const floater of floaters) floater.text.destroy();
       floaters.length = 0;
-      for (const actor of actors.values()) actor.container.destroy({ children: true });
+      for (const actor of actors.values()) {
+        actor.rive?.destroy();
+        actor.container.destroy({ children: true });
+      }
       actors.clear();
       container.destroy({ children: true });
     },
