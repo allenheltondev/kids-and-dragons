@@ -43,7 +43,7 @@
  * ---------------------------------------------------------------------------
  */
 
-import { Application, Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import type { PartyMember, Position } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
@@ -73,7 +73,7 @@ import {
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
-import { createPaletteLatch, type PaletteLatch } from "./palette-latch";
+import { createNameplate, fitNameplate, nameplateLabel } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
@@ -87,6 +87,9 @@ const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / 
 const GROUND_Y = DESIGN.height * 0.82;
 /** A character's drawn height in design units at zoom 1. */
 const ACTOR_HEIGHT = DESIGN.height * 0.46;
+/** How much of a lineup slot a nameplate may fill — the rest is the gutter
+    that keeps two names from running into each other. */
+const NAMEPLATE_SLOT = 0.9;
 
 export type FocusTarget =
   | { kind: "party" }
@@ -135,11 +138,15 @@ interface Actor {
   /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
   /**
-   * Requested vs. actually-bound colour. A latch rather than a string because
-   * a rig arrives late and the palette can change while it is loading — see
-   * palette-latch.ts for the race this closes.
+   * The name under their feet — who this is, when two players picked the same
+   * species (nameplate.ts). Null for a name with nothing in it. A sibling of
+   * `art` rather than a child: the art rotates and fades and the label must
+   * not go with it.
    */
-  palette: PaletteLatch;
+  label: Text | null;
+  /** What `label` is currently saying, so a renamed character is spotted
+      without measuring a Text every patch. */
+  labelText: string | null;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -164,11 +171,11 @@ interface Actor {
  * drawing the Fledgling rig for the rest of the session — the transformation
  * cutscene playing over a figure that visibly never transformed.
  *
- * Colour is deliberately *not* in here, even though it is part of how a figure
- * looks. A palette is a data binding on a live rig (`setPalette`), so
- * recolouring is a write rather than a reload; folding it into this key would
- * throw away a megabyte of rig and reload it to change two fills. See
- * `palette-latch.ts` for the half that is handled that way.
+ * Appearance is deliberately *not* in here. Nothing about a figure is drawn
+ * from it any more — the runtime recolour is gone and every rig wears the
+ * colours it was authored in (`nameplate.ts` explains why) — so folding it in
+ * would throw a megabyte of rig away and reload an identical one because
+ * somebody tapped a swatch that now only colours their UI chrome.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
  * way `storyFocusTiles` is.
@@ -293,7 +300,13 @@ export function createScene(app: Application): PartyScene {
     const list = [...actors.values()];
     const spacing = Math.min(DESIGN.width / (list.length + 1), DESIGN.width * 0.26);
     const start = DESIGN.width / 2 - (spacing * (list.length - 1)) / 2;
+    // A name may be no wider than the slot its character stands in, less a
+    // gutter — two nameplates that touch are one unreadable name, which is the
+    // failure the nameplate was added to fix. The slot is only known here,
+    // because it shrinks as the party grows.
+    const slot = spacing * NAMEPLATE_SLOT;
     list.forEach((actor, index) => {
+      if (actor.label) fitNameplate(actor.label, slot);
       actor.x = start + spacing * index;
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
@@ -430,6 +443,31 @@ export function createScene(app: Application): PartyScene {
 
   // ---------------------------------------------------------------------------
 
+  /**
+   * Put a (possibly new, possibly now-empty) name under a figure that is
+   * staying. Cheap on the common path — every patch carries a name and almost
+   * none of them changed it — and the width is left to `layoutActors`, which
+   * runs at the end of the same `setParty`.
+   */
+  function setLabel(actor: Actor, name: string): void {
+    const next = nameplateLabel(name);
+    if (next === actor.labelText) return;
+    actor.labelText = next;
+
+    if (next === null) {
+      actor.label?.destroy();
+      actor.label = null;
+      return;
+    }
+    if (actor.label) {
+      actor.label.text = next;
+      return;
+    }
+    // Named for the first time — a save from before names were required.
+    actor.label = createNameplate(next, ACTOR_HEIGHT, ACTOR_HEIGHT);
+    if (actor.label) actor.container.addChild(actor.label);
+  }
+
   function makeActor(member: PartyMember): Actor {
     const container = new Container();
     const art = new Container();
@@ -439,13 +477,20 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
-    const { species, tier, id, appearance } = member.character;
+    const { species, tier, id, name } = member.character;
+    // Fitted to the lineup's real spacing by `layoutActors`, which is the only
+    // thing that knows how much room a figure has — and knows it only once the
+    // party size is settled, which is after this runs.
+    const label = createNameplate(name, ACTOR_HEIGHT, ACTOR_HEIGHT);
+    if (label) container.addChild(label);
+
     const actor: Actor = {
       container,
       art,
       characterId: id,
       visualKey: visualKeyOf(member),
-      palette: createPaletteLatch(appearance),
+      label,
+      labelText: nameplateLabel(name),
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -482,8 +527,8 @@ export function createScene(app: Application): PartyScene {
 
     // The rig first, the PNG when there isn't one — same never-goes-stale
     // reasoning as the PNG load: ask for the file, fall back when it is not
-    // there. The rig carries its own acting and the player's palette.
-    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+    // there. The rig carries its own acting.
+    void createRiveActor(species, tier, ACTOR_HEIGHT)
       .then((rive) => {
         if (destroyed || actors.get(id) !== actor) {
           rive?.destroy();
@@ -500,10 +545,6 @@ export function createScene(app: Application): PartyScene {
         art.rotation = 0;
         art.y = 0;
         rive.setKnockedDown(actor.down);
-        // Whatever the latest request is — which may have arrived while the
-        // wasm and the .riv were still downloading, and is not necessarily the
-        // `appearance` this load began with.
-        actor.palette.applyTo(rive);
         art.addChild(rive.sprite);
         actor.rive = rive;
       })
@@ -544,22 +585,20 @@ export function createScene(app: Application): PartyScene {
         if (existing && existing.visualKey === visualKeyOf(member)) {
           existing.down = member.down;
           existing.connected = member.connected;
-          // Same body, different colours — a write, not a reload. The latch
-          // only records success, so a change that lands mid-load is applied
-          // by `makeActor`'s install instead of being lost.
-          existing.palette.request(member.character.appearance);
-          existing.palette.applyTo(existing.rive);
+          // A rename is a label edit, not a reload — the same "write, don't
+          // rebuild" split `visualKeyOf` makes for everything else that
+          // arrives on a patch.
+          setLabel(existing, member.character.name);
           continue;
         }
         if (existing) {
           /*
-           * Same character, different body — a tier crossed, or a colour
-           * changed. Rebuild rather than mutate: the rig file, the bound
-           * palette and the sprite are all decided at load (rive-actor.ts),
-           * so there is nothing on a live actor to patch. Dropping the Rive
-           * handle first, then the container, is the same order `destroy()`
-           * uses and for the same reason — the C++ objects are not the Pixi
-           * tree's to collect.
+           * Same character, different body — a tier crossed. Rebuild rather
+           * than mutate: the rig file and the sprite are both decided at load
+           * (rive-actor.ts), so there is nothing on a live actor to patch.
+           * Dropping the Rive handle first, then the container, is the same
+           * order `destroy()` uses and for the same reason — the C++ objects
+           * are not the Pixi tree's to collect.
            */
           existing.rive?.destroy();
           existing.container.destroy({ children: true });

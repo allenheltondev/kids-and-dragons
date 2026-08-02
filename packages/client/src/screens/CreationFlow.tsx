@@ -645,9 +645,10 @@ export function CreationFlow(): ReactElement {
                     });
                   }}
                   media={
-                    /* Mane in the middle, coat as the ring: the chip shows the
-                       colour that actually changes on the figure, not the one
-                       that stays as painted (creationContent PALETTES). */
+                    /* Mane in the middle, coat as the ring — the pair reads as
+                       a creature rather than a dot. Neither touches the
+                       figure, which is drawn as painted; this is the player's
+                       colour (creationContent PALETTES). */
                     <span
                       className="creation-swatch__chip"
                       style={{ background: palette.mane, borderColor: palette.coat }}

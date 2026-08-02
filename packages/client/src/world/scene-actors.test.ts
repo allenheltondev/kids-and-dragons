@@ -18,7 +18,6 @@
 
 import { describe, expect, it } from "vitest";
 import { visualKeyOf } from "./scene";
-import { paletteKeyOf } from "./palette-latch";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 
 const base = makeMember();
@@ -34,25 +33,21 @@ describe("visualKeyOf", () => {
     expect(visualKeyOf(swapped)).not.toBe(visualKeyOf(base));
   });
 
-  it("does NOT change for a recolour — that is a binding write, not a reload", () => {
+  it("does NOT change for an appearance — nothing draws from one any more", () => {
     /*
-     * The half that is easy to get wrong in the expensive direction. Colours
-     * are data bindings on a live rig, so folding them in here would throw a
-     * megabyte of rig away and reload it to change two fills — and in the
-     * creation flow, where the palette changes on every tap, that is the
-     * difference between picking a colour and waiting for one.
+     * The half that is easy to get wrong in the expensive direction. The
+     * runtime recolour is gone (world/nameplate.ts): every rig wears the
+     * colours it was authored in, and the palette and accent dress this
+     * player's UI chrome instead. Folding them in here would throw a megabyte
+     * of rig away and reload a byte-identical one because somebody tapped a
+     * swatch.
      */
-    const recoloured = [
+    const repainted = [
       makeCharacter({ appearance: { palette: "ember", accent: "#7FD4C1" } }),
       makeCharacter({ appearance: { palette: "meadow", accent: "#E0C470" } }),
     ];
-    for (const character of recoloured) {
-      const member = makeMember({ character });
-      expect(visualKeyOf(member)).toBe(visualKeyOf(base));
-      // ...but the palette key must notice, or the recolour never lands.
-      expect(paletteKeyOf(member.character.appearance)).not.toBe(
-        paletteKeyOf(base.character.appearance),
-      );
+    for (const character of repainted) {
+      expect(visualKeyOf(makeMember({ character }))).toBe(visualKeyOf(base));
     }
   });
 
@@ -63,7 +58,8 @@ describe("visualKeyOf", () => {
      * server patch, and rebuilding on them would tear the rig down and reload
      * it mid-fight — a figure that vanishes for a frame every time it is hit.
      * Level and name are here too: levelling only matters to the figure when
-     * it crosses a tier, which `tier` already says.
+     * it crosses a tier, which `tier` already says, and a rename rewrites the
+     * nameplate in place (scene.ts `setLabel`) rather than reloading a rig.
      */
     const same = [
       makeMember({ down: true, hp: 0 }),
@@ -73,13 +69,5 @@ describe("visualKeyOf", () => {
     for (const member of same) {
       expect(visualKeyOf(member)).toBe(visualKeyOf(base));
     }
-  });
-
-  it("gives the palette key both slots, so either alone is a change", () => {
-    const a = makeMember({ character: makeCharacter({ appearance: { palette: "tide", accent: "#111111" } }) });
-    const b = makeMember({ character: makeCharacter({ appearance: { palette: "tide", accent: "#222222" } }) });
-    const c = makeMember({ character: makeCharacter({ appearance: { palette: "rose", accent: "#111111" } }) });
-    expect(paletteKeyOf(a.character.appearance)).not.toBe(paletteKeyOf(b.character.appearance));
-    expect(paletteKeyOf(a.character.appearance)).not.toBe(paletteKeyOf(c.character.appearance));
   });
 });

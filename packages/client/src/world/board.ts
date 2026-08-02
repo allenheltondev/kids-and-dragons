@@ -32,7 +32,10 @@
  * the fall and the get-up. Monsters keep the static cutout and the procedural
  * fallen pose, because no enemy rig is commissioned yet (asset-brief §9.5),
  * and so does any party figure whose rig will not load. `playBeat` says per
- * beat which clip it fires and, for the ones it does not, why.
+ * beat which clip it fires and, for the ones it does not, why. Every party
+ * figure carries its character's name under its feet (world/nameplate.ts) —
+ * how the table tells two players who picked the same species apart, now that
+ * the runtime recolour that used to do it is gone.
  *
  * TILE ART: sliced from `assets/biomes/<biome>/tiles.png` — row 0 is the four
  * floor variants, row 1 the four blocked variants (asset-brief §4.5). A sheet
@@ -68,6 +71,7 @@ import {
 } from "./actor-art";
 
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
+import { createNameplate, nameplateLabel } from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -78,6 +82,15 @@ const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
 
 /** Where feet sit inside a tile — low, so the figure reads as *on* it. */
 const FEET_Y = 0.82;
+
+/**
+ * How wide a party figure's nameplate may be, in board pixels — a tile and a
+ * little, which is the room a figure has before it runs into whoever is
+ * standing on the next tile across. Party figures only: an enemy's label would
+ * be a spec id, and three goblins are told apart by where they are standing,
+ * not by which one is which (spec §7.3 — a beaten one simply leaves).
+ */
+const NAMEPLATE_MAX_WIDTH = BOARD_TILE_PX * 1.1;
 
 /**
  * One `walk` cycle, in seconds — 4 ticks on the contract's 12fps clock
@@ -134,6 +147,17 @@ interface BoardActor {
    * the cutout and the procedural pose (asset-brief §9.5).
    */
   rive: RiveActorHandle | null;
+  /**
+   * The name under a party figure's feet — who this is, when two players
+   * picked the same species (nameplate.ts). Null for a monster, and for a name
+   * with nothing in it. A sibling of `art` rather than a child: the art
+   * rotates and fades for the fallen pose, and a name is most wanted at
+   * exactly the moment somebody is asking who is down.
+   */
+  label: Text | null;
+  /** What `label` is currently saying, so a renamed character is spotted
+      without measuring a Text every patch. */
+  labelText: string | null;
   /**
    * Travelling under its own power, so the walk cycle should keep playing. A
    * shove moves a figure just as far and is emphatically not this: the slide
@@ -279,6 +303,13 @@ export function createBoardLayer(): BoardLayer {
     art.addChild(placeholder);
 
     const feet = feetOf(at);
+    const named =
+      combatant.side === "party"
+        ? current.party.find((m) => m.character.id === combatant.id)?.character.name ?? ""
+        : "";
+    const label = createNameplate(named, ACTOR_HEIGHT, NAMEPLATE_MAX_WIDTH);
+    if (label) actorContainer.addChild(label);
+
     const actor: BoardActor = {
       container: actorContainer,
       art,
@@ -288,6 +319,8 @@ export function createBoardLayer(): BoardLayer {
       targetX: feet.x,
       targetY: feet.y,
       rive: null,
+      label,
+      labelText: nameplateLabel(named),
       selfMoving: false,
       sinceStep: 0,
     };
@@ -330,8 +363,8 @@ export function createBoardLayer(): BoardLayer {
 
     // The rig first, the cutout when there isn't one — the same order and the
     // same never-goes-stale reasoning the story lineup uses (scene.ts).
-    const { species, tier, appearance } = member.character;
-    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+    const { species, tier } = member.character;
+    void createRiveActor(species, tier, ACTOR_HEIGHT)
       .then((rive) => {
         if (destroyed || actors.get(combatant.id) !== actor) {
           rive?.destroy();
@@ -373,6 +406,18 @@ export function createBoardLayer(): BoardLayer {
         existing.down = combatant.down;
         existing.targetX = feet.x;
         existing.targetY = feet.y;
+        // This module draws what it is given and keeps nothing of its own
+        // (see the header), and a name is state like any other. Only the text
+        // is rewritten — the fit is to the tile, which does not change.
+        if (existing.label) {
+          const name = nameplateLabel(
+            current.party.find((m) => m.character.id === combatant.id)?.character.name ?? "",
+          );
+          if (name !== null && name !== existing.labelText) {
+            existing.labelText = name;
+            existing.label.text = name;
+          }
+        }
         continue;
       }
       actors.set(combatant.id, makeActor(combatant, gridActor, current));
