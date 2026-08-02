@@ -1,0 +1,43 @@
+/*
+ * The rigged figure — see RigFigure.tsx.
+ *
+ * Sized entirely by its box, exactly like `.portrait`: the two are swapped for
+ * each other while the rig loads, so anything that moved the character between
+ * them would read as a jump at the moment the picture finally arrives.
+ */
+
+.rig-figure {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/*
+ * The host and the fallback occupy the same cell, so the canvas arrives over
+ * the portrait rather than after it — no reflow, no gap.
+ */
+.rig-figure > * {
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.rig-figure__host {
+  display: grid;
+  place-items: end center;
+  pointer-events: none;
+}
+
+/*
+ * The rig draws a square buffer whose lower part is the ground the feet stand
+ * on (the manifest's 1024 canvas, origin at y=900). `contain` keeps the whole
+ * figure in the box at any aspect ratio; the square is what makes the feet
+ * land where a portrait's would.
+ */
+.rig-figure__canvas {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}

@@ -131,8 +131,10 @@ interface Actor {
   container: Container;
   art: Container;
   characterId: string;
-  /** What this actor was built to look like. See `visualKeyOf`. */
+  /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
+  /** The colours currently bound into it. See `paletteKeyOf`. */
+  paletteKey: string;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -148,24 +150,37 @@ interface Actor {
 }
 
 /**
- * Everything about a character that decides which asset is loaded and what
- * colors are bound into it — the identity an actor is *built* from, as opposed
- * to `character.id`, which is the identity it is *found* by.
+ * Which *asset* an actor was built from — as opposed to `character.id`, the
+ * identity it is *found* by.
  *
  * The two are not the same thing, and the difference is this chapter's whole
  * payoff: a character who levels into a new tier keeps her id and changes her
- * body. An actor rebuilt only when the id appears would have gone on drawing
- * the Fledgling rig for the rest of the session — the transformation cutscene
- * playing over a figure that never actually transformed. Appearance is in here
- * for the same reason a tier is: the palette is bound into the rig at load, so
- * a recolour is a rebuild, not a mutation.
+ * body. An actor rebuilt only when a new id appeared would have gone on
+ * drawing the Fledgling rig for the rest of the session — the transformation
+ * cutscene playing over a figure that visibly never transformed.
+ *
+ * Colour is deliberately *not* in here, even though it is part of how a figure
+ * looks. A palette is a data binding on a live rig (`setPalette`), so
+ * recolouring is a write rather than a reload; folding it into this key would
+ * throw away a megabyte of rig and reload it to change two fills. See
+ * `paletteKeyOf` for the half that is handled that way.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
  * way `storyFocusTiles` is.
  */
 export function visualKeyOf(member: PartyMember): string {
-  const { species, tier, appearance } = member.character;
-  return [species, tier, appearance.palette, appearance.accent].join("|");
+  const { species, tier } = member.character;
+  return [species, tier].join("|");
+}
+
+/**
+ * The colours bound into a rig. Compared per update so a recolour re-binds
+ * exactly once rather than on every patch — party state arrives constantly and
+ * writing the same two fills sixty times a second is work nobody asked for.
+ */
+export function paletteKeyOf(member: PartyMember): string {
+  const { appearance } = member.character;
+  return [appearance.palette, appearance.accent].join("|");
 }
 
 /**
@@ -435,6 +450,7 @@ export function createScene(app: Application): PartyScene {
       art,
       characterId: id,
       visualKey: visualKeyOf(member),
+      paletteKey: paletteKeyOf(member),
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -529,6 +545,12 @@ export function createScene(app: Application): PartyScene {
         if (existing && existing.visualKey === visualKeyOf(member)) {
           existing.down = member.down;
           existing.connected = member.connected;
+          // Same body, different colours — a write, not a reload.
+          const palette = paletteKeyOf(member);
+          if (palette !== existing.paletteKey) {
+            existing.paletteKey = palette;
+            existing.rive?.setPalette(member.character.appearance);
+          }
           continue;
         }
         if (existing) {
