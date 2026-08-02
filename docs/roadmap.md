@@ -66,7 +66,12 @@ phones and the TV are in a synced room, and all three spikes have a written verd
 - Creation flow: species → class → stats → appearance → name
 - Character data model, `resolveCharacter()`, persistence to DynamoDB
 - Live WorldView preview driven by phone selections
-- Palette slots wired to Rive color properties
+- ~~Palette slots wired to Rive color properties~~ — built, then dropped: a runtime tint over
+  authored shading flattens the detail the tier art exists for, and it was never going to read as
+  commissioned. Figures render as drawn and carry their character's name instead
+  ([asset-brief §4.4](./asset-brief.md#44-mane-as-a-separate-part-),
+  `packages/client/src/world/nameplate.ts`). The palette and accent still get picked; they dress
+  the player's chrome rather than the creature.
 - Species/class/stat rules as data, not code (`content/rules.json`)
 
 **Allen**
