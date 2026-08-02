@@ -95,13 +95,19 @@ Asset generation is **outsourced to a coding agent** (Codex). We do not build a 
 
 What that changes, and what it doesn't:
 
+**Allen owns image assets. Claude owns everything else on the art side.**
+
 | | Owner |
 |---|---|
-| Generating images, cutting parts, hitting the spec | **The agent** |
-| **Rigging — skeleton, state machine, clip table** | **The agent**, via `rive-mcp` (see below) |
-| The spec it works from | **Us** — [asset-brief.md](./asset-brief.md) |
-| The machine gate that decides "done" | **Us** — `npm run art:verify`, `npm run art:verify:rig` |
+| **Image assets** — character parts, gear overlays, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** (commissioning them, and the eye that accepts them) |
+| Rigging — skeleton, state machine, clip table, per-tier export | **Claude**, via `rive-mcp` (see below) |
+| The spec the drawings work from | **Claude** — [asset-brief.md](./asset-brief.md) |
+| The machine gates | **Claude** — `npm run art:verify`, `npm run art:verify:rig` |
 | The taste call | **Allen**, on a contact sheet |
+
+If it is a `.png` or a `.webp`, it is Allen's. What is outstanding at any
+moment is [asset-inventory.md](./asset-inventory.md) — or better,
+`npm run art:inventory`, which derives it instead of restating it.
 
 **Rigging moved from human to agent, and that is the biggest change since this
 document was written.** It was scoped here as the one step that stayed
@@ -111,11 +117,12 @@ long pole of the whole art plan. It is now `rive-mcp`
 table, event ticks and input list from `assets/manifest.json` directly. All 24
 rigs are delivered and `art:verify:rig:strict` is green.
 
-That the contract is the *input* to rigging rather than a description checked
-afterwards is what makes it safe to hand over: a rig cannot drift from the
-manifest, because the manifest is what it was generated from — and the
-verifier still opens every `.riv` and compares it clip by clip, because
-"the agent says it's finished" is not an acceptance criterion here either.
+**The line falls there because rigs are generated from a contract and drawings
+are not.** A rig cannot drift from the manifest, because the manifest is what
+it was generated from — the contract is rigging's *input*, not a description
+checked afterwards. No comparable statement is true of a drawing. So rigging
+could cross over on the strength of a machine gate that decides the whole
+question, and the taste call cannot, for that same reason in reverse.
 
 The important consequence: **"the agent says it's finished" is not an acceptance criterion.** We
 still own an independent verifier that runs in our CI against our repo. Outsourcing the work does
@@ -123,7 +130,7 @@ not outsource the gate — if anything it raises the bar, because the failure mo
 four pixels, a canvas that's 1023 wide, a missing `tail.png`) are exactly the kind that look fine
 in a preview and break at runtime.
 
-So the tooling is five commands:
+So the tooling is six commands:
 
 | Command | Does |
 |---|---|
@@ -132,6 +139,7 @@ So the tooling is five commands:
 | `npm run art:verify:rig` | The rig contract (`tools/art/verify-rig.ts`, §6.1): clip table coherence, the turn budget, effect/clip sync, and any delivered `.riv` against `rigContract`. **Runs in CI.** |
 | `npm run art:verify:rig:strict` | The same, but *missing* rigs fail. **On, and green** — all 24 rigs are delivered, so a rig that goes missing is now a regression rather than a gap. |
 | `npm run art:sheet` | Writes PNG contact sheets from `assets/` to `art/review/` for the human review pass (`tools/art/sheet.py`). |
+| `npm run art:inventory` | **What is left to draw** (`tools/art/inventory.ts`). Derives what is needed from the manifest, checks it against the disk, names every missing file. Reports; never gates. Prose around it: [asset-inventory.md](./asset-inventory.md). |
 
 Nothing counts as accepted without passing both the verifier and an eye on the contact sheet.
 
