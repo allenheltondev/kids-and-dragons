@@ -13,6 +13,7 @@ import {
   biomeBackdropUrl,
   biomeTilesUrl,
   characterArtUrl,
+  characterRigUrl,
   enemyArtUrl,
 } from "./art-paths";
 
@@ -43,4 +44,9 @@ describe("art paths", () => {
   it("stands creation in a biome the art actually ships", () => {
     expect(manifest.biomes).toContain(CREATION_BIOME);
   });
+});
+
+it("rig files live beside the assembled PNG they fall back to", () => {
+  expect(characterRigUrl("unicorn", "mythic")).toBe("/assets/characters/unicorn/mythic/rig.riv");
+  expect(characterRigUrl("griffin")).toBe("/assets/characters/griffin/fledgling/rig.riv");
 });
