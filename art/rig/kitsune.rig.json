@@ -1,0 +1,89 @@
+{
+  "$comment": "kitsune rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding.",
+  "root": "body",
+  "adjacency": [
+    [
+      "body",
+      "head"
+    ],
+    [
+      "head",
+      "mane"
+    ],
+    [
+      "body",
+      "arm_l"
+    ],
+    [
+      "body",
+      "arm_r"
+    ],
+    [
+      "body",
+      "leg_l"
+    ],
+    [
+      "body",
+      "leg_r"
+    ],
+    [
+      "body",
+      "tail"
+    ]
+  ],
+  "zOrder": [
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane"
+  ],
+  "origin": {
+    "x": 512,
+    "y": 900
+  },
+  "artboardWidth": 1024,
+  "artboardHeight": 1024,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": [
+          "idle",
+          "hurt",
+          "walk",
+          "guard"
+        ]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  },
+  "tintSlots": [
+    {
+      "part": "mane",
+      "slot": "mane_tint",
+      "bind": "mane",
+      "color": "#9E512F",
+      "blend": "color"
+    },
+    {
+      "part": "tail",
+      "slot": "accent_tint",
+      "bind": "accent",
+      "color": "#70CEE0",
+      "blend": "color"
+    }
+  ]
+}
