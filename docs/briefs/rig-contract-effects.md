@@ -1,6 +1,16 @@
 # Brief: make the effect↔rig sync data, not code
 
-**Status: done, except the golden `.riv` fixture.** The 2026-07-30 pass landed
+**Status: done.** The last open item — the golden `.riv` fixture — landed in the
+2026-08 rigging pass, authored not in the Rive editor but by `rive-mcp`
+(allenheltondev/rive-mcp), whose `rig --contract` derives a rig's whole clip
+table, event ticks and input list from `assets/manifest.json` directly.
+`tools/art/fixtures/golden-hero.riv` is a two-part rig passing the hero set,
+and `verify-rig.test.ts` now runs `introspectRiv` against it —
+`compareRigToContract` gets real runtime output, and the garbage-bytes promise
+is kept beside it. The same pass delivered the first real rigs (unicorn, all
+four tiers), so the "first delivery" rehearsal below has happened and passed.
+
+The 2026-07-30 pass landed
 everything below that is decidable without the Rive editor: `startsOn` is in
 the manifest for every effect (null for the six auras) and for both concurrent
 clips, `EFFECT_SYNC` is deleted and every pairing derived from the manifest,

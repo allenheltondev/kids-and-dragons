@@ -159,9 +159,11 @@ export function CreationPreview(): ReactElement {
 
           {palette === null ? null : (
             <p className="preview__palette kad-muted">
+              {/* Mane inside, accent as the ring — the two colours the rig
+                  actually binds. See creationContent PALETTES. */}
               <span
                 className="preview__palette-chip"
-                style={{ background: palette.coat, borderColor: draft.appearance.accent }}
+                style={{ background: palette.mane, borderColor: draft.appearance.accent }}
                 aria-hidden="true"
               />
               <Icon name="palette" />

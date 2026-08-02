@@ -32,6 +32,16 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
 }
 
 /**
+ * The rigged character — the Rive file rive-mcp builds from the same tier's
+ * registered parts against `assets/manifest.json`'s rigContract. Sits beside
+ * `assembled.png` on purpose: the PNG is the rig's own fallback, so the two
+ * living in one directory is the statement that they are the same character.
+ */
+export function characterRigUrl(species: SpeciesId, tier: TierId = STARTING_TIER): string {
+  return `/assets/characters/${species}/${tier}/rig.riv`;
+}
+
+/**
  * Enemy cutouts. A chapter authors `art: "enemies/will_o_wisp"`; the files
  * live in `assets/entities/<id>/assembled.png`, so the prefix is convention,
  * not a directory — strip it if present, trust the rest.

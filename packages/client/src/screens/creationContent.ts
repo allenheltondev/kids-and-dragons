@@ -38,7 +38,22 @@ export interface CosmeticOption {
   icon: string;
 }
 
-/** Named palettes. Hues are spread so three party members stay distinguishable. */
+/**
+ * Named palettes. Hues are spread so three party members stay distinguishable.
+ *
+ * **The mane is the part that changes.** `paletteRule` in the manifest calls
+ * the mane "the dominant colour mass; its hue is the species identity", and it
+ * is the slot the rigs actually bind (world/rive-actor.ts) — so picking
+ * "Meadow" turns a mane green on the figure, in play, on every surface that
+ * draws the rig.
+ *
+ * `coat` is here for the swatch's trim and nothing else: it is the authored
+ * art's own colour and no rig exposes a slot for it, because a coat tint
+ * traced from a flattened body layer drags the markings along with it (see
+ * rive-actor's note). A swatch that led with the coat — as this one used to —
+ * promised a body colour change the game never makes, which is the one kind of
+ * lie a five-year-old checks immediately.
+ */
 export const PALETTES: readonly PaletteOption[] = [
   { id: "orchid", name: "Orchid", coat: "#F2E1F2", mane: "#853A85" },
   { id: "meadow", name: "Meadow", coat: "#E1F2E8", mane: "#2B6B46" },

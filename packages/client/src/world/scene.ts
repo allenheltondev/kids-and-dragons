@@ -3,14 +3,16 @@
  * on, the combat board (world/board.ts) in its place.
  *
  * ---------------------------------------------------------------------------
- * WHY STATIC PNGs AND SINE WAVES
+ * RIGS FIRST, PNGs AND SINE WAVES AS THE FALLBACK
  *
- * Rive is the animation runtime (architecture §1) and Allen owns the rigs —
- * one skeleton per species, skinned per tier (roadmap Chapter 1/5). Until those
- * exist, this draws the committed tier PNGs and moves them procedurally. That
- * is a deliberate placeholder, not a design: `setParty`, the knocked-down
- * state, and `focusCamera` are the seams a Rive-backed actor drops into without
- * the callers changing.
+ * Rive is the animation runtime (architecture §1), and the rigs exist now —
+ * all 24 species/tier sets, built by rive-mcp against the manifest's
+ * rigContract and delivered beside each tier's `assembled.png`. An actor asks
+ * for the rig (world/rive-actor.ts) and drops it into exactly the seams this
+ * header always promised — `setParty`, the knocked-down state, `focusCamera`
+ * — with the static PNG + procedural motion kept as the fallback for a rig
+ * that is missing or will not load. The combat board (world/board.ts) still
+ * draws PNG cutouts; that is the next seam.
  *
  * ---------------------------------------------------------------------------
  * ONE CAMERA (docs/briefs/combat-rendering.md, trap 1)
@@ -70,6 +72,7 @@ import {
   characterArtUrl,
   drawPlaceholder,
 } from "./actor-art";
+import { createRiveActor, type RiveActorHandle } from "./rive-actor";
 import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
@@ -128,12 +131,41 @@ interface Actor {
   container: Container;
   art: Container;
   characterId: string;
+  /** What this actor was built to look like. See `visualKeyOf`. */
+  visualKey: string;
   phase: number;
   down: boolean;
   connected: boolean;
   /** Design-space position of the actor's feet. */
   x: number;
   y: number;
+  /**
+   * The rigged figure, once its `.riv` loads. While set, the rig owns the
+   * acting — idle breathing, the fall, the get-up — and the procedural bob
+   * and FALLEN_* pose below stay away from it.
+   */
+  rive: RiveActorHandle | null;
+}
+
+/**
+ * Everything about a character that decides which asset is loaded and what
+ * colors are bound into it — the identity an actor is *built* from, as opposed
+ * to `character.id`, which is the identity it is *found* by.
+ *
+ * The two are not the same thing, and the difference is this chapter's whole
+ * payoff: a character who levels into a new tier keeps her id and changes her
+ * body. An actor rebuilt only when the id appears would have gone on drawing
+ * the Fledgling rig for the rest of the session — the transformation cutscene
+ * playing over a figure that never actually transformed. Appearance is in here
+ * for the same reason a tier is: the palette is bound into the rig at load, so
+ * a recolour is a rebuild, not a mutation.
+ *
+ * Pure and exported so the rule is testable without a WebGL context, the same
+ * way `storyFocusTiles` is.
+ */
+export function visualKeyOf(member: PartyMember): string {
+  const { species, tier, appearance } = member.character;
+  return [species, tier, appearance.palette, appearance.accent].join("|");
 }
 
 /**
@@ -279,6 +311,16 @@ export function createScene(app: Application): PartyScene {
     }
 
     for (const actor of actors.values()) {
+      if (actor.rive) {
+        // The rig owns the acting: idle is a clip, the fall is down/down_loop
+        // driven by the contract's knockedDown boolean, and the procedural
+        // bob and FALLEN_* pose would fight it. Connection fade still
+        // applies — presence is the scene's fact, not the rig's.
+        actor.rive.setKnockedDown(actor.down);
+        actor.rive.tick(dt);
+        actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
+        continue;
+      }
       if (actor.down) {
         // spec §7.3 — knocked down, never dead. They lie on the grid and wait
         // for someone to come get them.
@@ -387,16 +429,18 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
-    const { species, tier, id } = member.character;
+    const { species, tier, id, appearance } = member.character;
     const actor: Actor = {
       container,
       art,
       characterId: id,
+      visualKey: visualKeyOf(member),
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
       x: 0,
       y: GROUND_Y,
+      rive: null,
     };
 
     /*
@@ -406,22 +450,49 @@ export function createScene(app: Application): PartyScene {
      * day all six species were approved. Asking for the file and keeping the
      * placeholder when it isn't there cannot go stale.
      */
-    void Assets.load<Texture>(characterArtUrl(species, tier))
-      .then((texture) => {
-        // Identity, not id: a character who left and rejoined mid-load has a
-        // *new* actor under the same id, and this stale resolve would draw
-        // into containers that were destroyed with the old one.
-        if (destroyed || actors.get(id) !== actor) return;
-        const sprite = new Sprite(texture);
-        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-        sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
+    const loadPng = (): void => {
+      void Assets.load<Texture>(characterArtUrl(species, tier))
+        .then((texture) => {
+          // Identity, not id: a character who left and rejoined mid-load has a
+          // *new* actor under the same id, and this stale resolve would draw
+          // into containers that were destroyed with the old one.
+          if (destroyed || actors.get(id) !== actor) return;
+          const sprite = new Sprite(texture);
+          sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+          sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
+          art.removeChildren();
+          placeholder.destroy();
+          art.addChild(sprite);
+        })
+        .catch(() => {
+          /* keep the placeholder: a missing tier must never blank the stage */
+        });
+    };
+
+    // The rig first, the PNG when there isn't one — same never-goes-stale
+    // reasoning as the PNG load: ask for the file, fall back when it is not
+    // there. The rig carries its own acting and the player's palette.
+    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+      .then((rive) => {
+        if (destroyed || actors.get(id) !== actor) {
+          rive?.destroy();
+          return;
+        }
+        if (!rive) {
+          loadPng();
+          return;
+        }
         art.removeChildren();
         placeholder.destroy();
-        art.addChild(sprite);
+        // The rig plays its own fall, so hand it the state it joined in and
+        // clear any procedural pose the placeholder was eased into.
+        art.rotation = 0;
+        art.y = 0;
+        rive.setKnockedDown(actor.down);
+        art.addChild(rive.sprite);
+        actor.rive = rive;
       })
-      .catch(() => {
-        /* keep the placeholder: a missing tier must never blank the stage */
-      });
+      .catch(loadPng);
 
     return actor;
   }
@@ -455,16 +526,33 @@ export function createScene(app: Application): PartyScene {
         const id = member.character.id;
         seen.add(id);
         const existing = actors.get(id);
-        if (existing) {
+        if (existing && existing.visualKey === visualKeyOf(member)) {
           existing.down = member.down;
           existing.connected = member.connected;
           continue;
+        }
+        if (existing) {
+          /*
+           * Same character, different body — a tier crossed, or a colour
+           * changed. Rebuild rather than mutate: the rig file, the bound
+           * palette and the sprite are all decided at load (rive-actor.ts),
+           * so there is nothing on a live actor to patch. Dropping the Rive
+           * handle first, then the container, is the same order `destroy()`
+           * uses and for the same reason — the C++ objects are not the Pixi
+           * tree's to collect.
+           */
+          existing.rive?.destroy();
+          existing.container.destroy({ children: true });
+          actors.delete(id);
         }
         actors.set(id, makeActor(member));
       }
 
       for (const [id, actor] of [...actors.entries()]) {
         if (seen.has(id)) continue;
+        // Rive handles are C++ objects; the container destroy only reaches
+        // the sprite. Delete the runtime half first, then the tree.
+        actor.rive?.destroy();
         actor.container.destroy({ children: true });
         actors.delete(id);
       }
@@ -559,7 +647,10 @@ export function createScene(app: Application): PartyScene {
       destroyed = true;
       app.ticker.remove(tick);
       removeGestures();
-      for (const actor of actors.values()) actor.container.destroy({ children: true });
+      for (const actor of actors.values()) {
+        actor.rive?.destroy();
+        actor.container.destroy({ children: true });
+      }
       actors.clear();
       board?.destroy();
       board = null;

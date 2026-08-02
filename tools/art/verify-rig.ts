@@ -9,10 +9,12 @@
  *
  *     `compareRigToContract()` is complete and tested, and `introspectRiv()`
  *     runs the real Rive runtime headlessly (see its note for how, and for the
- *     false claim that used to live there). What is *not* yet proven is the
- *     pairing of the two against a rig somebody actually delivered — no `.riv`
- *     exists in the tree, so the first delivery is still the first full
- *     rehearsal, and introspection fails loudly rather than passing a rig it
+ *     false claim that used to live there). The pairing of the two is proven
+ *     both ways now: `tools/art/fixtures/golden-hero.riv` is a committed
+ *     contract-passing rig that `verify-rig.test.ts` introspects on every
+ *     `npm test`, and the first real delivery (unicorn, four tiers, built by
+ *     rive-mcp against this same contract) has been read and compared clip by
+ *     clip. Introspection still fails loudly rather than passing a rig it
  *     could not read.
  *
  * Everything decidable from the manifest and the files that exist today is
