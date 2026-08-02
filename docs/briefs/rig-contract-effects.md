@@ -8,7 +8,8 @@ table, event ticks and input list from `assets/manifest.json` directly.
 and `verify-rig.test.ts` now runs `introspectRiv` against it —
 `compareRigToContract` gets real runtime output, and the garbage-bytes promise
 is kept beside it. The same pass delivered the first real rigs (unicorn, all
-four tiers), so the "first delivery" rehearsal below has happened and passed.
+four tiers), so the "first delivery" rehearsal below has happened and passed —
+and the remaining five species followed, so the count is now all 24.
 
 The 2026-07-30 pass landed
 everything below that is decidable without the Rive editor: `startsOn` is in
@@ -94,4 +95,11 @@ every claim about reading rigs rests on one garbage-bytes test.
 `npm run art:verify:rig` green with every delivered sheet sync-checked and a
 turn budget that charges concurrent overhangs; `npx vitest run tools` green
 including the golden-fixture test; `art:verify:rig:strict` red for exactly one
-reason — no species rigs delivered yet — until Allen's rigging lands.
+reason — no species rigs delivered yet — until the rigging lands.
+
+**Met, and the last clause is now spent.** Rigging landed as `rive-mcp` rather
+than as a human pass in the Rive editor — the ownership change recorded in
+[art-pipeline §3](../art-pipeline.md#3-division-of-labor) — and all 24 rigs
+(6 species × 4 tiers) are delivered. `art:verify:rig:strict` is **green**,
+reading and comparing 24/24 rigs clip by clip, so a missing rig is a
+regression now rather than an expected gap.
