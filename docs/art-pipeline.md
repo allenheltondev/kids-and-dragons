@@ -46,7 +46,7 @@ assets/
           body.png  head.png  mane.png
           arm_l.png arm_r.png  leg_l.png leg_r.png
           tail.png  wings.png  horn.png     ← per species: mane is universal
-                                              (the recolor slot, asset-brief §4.4),
+                                              (secondary motion, asset-brief §4.4),
                                               horn is the unicorn's, wings the flyers'
         rig.riv                  not yet delivered — zero .riv in the repo; the
                                  contract it must meet is manifest.rigContract (§6.1)
