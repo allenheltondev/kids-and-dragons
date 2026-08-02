@@ -645,9 +645,12 @@ export function CreationFlow(): ReactElement {
                     });
                   }}
                   media={
+                    /* Mane in the middle, coat as the ring: the chip shows the
+                       colour that actually changes on the figure, not the one
+                       that stays as painted (creationContent PALETTES). */
                     <span
                       className="creation-swatch__chip"
-                      style={{ background: palette.coat, borderColor: palette.mane }}
+                      style={{ background: palette.mane, borderColor: palette.coat }}
                     />
                   }
                   label={palette.name}

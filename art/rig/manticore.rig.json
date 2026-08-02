@@ -1,0 +1,87 @@
+{
+  "$comment": "manticore rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: mane rides the mane part on every species. NO ACCENT SLOT, on purpose. The signature part is the tail, and this tail is a bone-meshed chain so it can coil and strike \u2014 a tint slot on a meshed part stays rigid (rive-mcp rigging playbook 2.5), so it would sit still while the tail whipped out from under it. A visibly detached patch of colour mid-strike is worse than an accent that only colours UI chrome.",
+  "root": "body",
+  "adjacency": [
+    [
+      "body",
+      "head"
+    ],
+    [
+      "head",
+      "mane"
+    ],
+    [
+      "body",
+      "arm_l"
+    ],
+    [
+      "body",
+      "arm_r"
+    ],
+    [
+      "body",
+      "leg_l"
+    ],
+    [
+      "body",
+      "leg_r"
+    ],
+    [
+      "body",
+      "tail"
+    ]
+  ],
+  "zOrder": [
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane"
+  ],
+  "origin": {
+    "x": 512,
+    "y": 900
+  },
+  "artboardWidth": 1024,
+  "artboardHeight": 1024,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": [
+          "idle",
+          "hurt",
+          "walk",
+          "guard"
+        ]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  },
+  "tintSlots": [
+    {
+      "part": "mane",
+      "slot": "mane_tint",
+      "bind": "mane",
+      "color": "#662E37",
+      "blend": "color"
+    }
+  ],
+  "meshParts": {
+    "tail": {
+      "bones": 5
+    }
+  }
+}

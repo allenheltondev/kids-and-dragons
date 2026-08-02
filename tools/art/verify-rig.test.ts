@@ -27,6 +27,7 @@ import {
   checkEffectSync,
   checkTurnBudget,
   compareRigToContract,
+  introspectRiv,
   Report,
   riveClipTicks,
   riveInputKinds,
@@ -605,4 +606,37 @@ describe("riveClipTicks", () => {
   it("answers 0 rather than Infinity for a zero-fps animation", () => {
     expect(riveClipTicks({ duration: 24, fps: 0, workStart: 0, workEnd: 0 }, 12)).toBe(0);
   });
+});
+
+describe("the golden fixture (integration)", () => {
+  /*
+   * The rig-contract brief's last open item, closed. Everything above judges
+   * fabricated introspections; this one runs `introspectRiv` on a real `.riv`
+   * — `tools/art/fixtures/golden-hero.riv`, a two-part rig generated against
+   * this same manifest's hero set (rive-mcp `rig --contract`) — so the adapter
+   * is exercised against real runtime output, not just the garbage-bytes test.
+   * If the runtime, the wasm loading, or the clip/input walking regresses,
+   * this is the test that goes red before an artist's delivery does.
+   */
+  const FIXTURE = fileURLToPath(new URL("./fixtures/golden-hero.riv", import.meta.url));
+
+  it("introspects and passes the hero set, clip by clip", async () => {
+    const bytes = new Uint8Array(readFileSync(FIXTURE));
+    const rig = await introspectRiv(bytes, manifest.rigContract.tickFps);
+    if (typeof rig === "string") throw new Error(`introspection failed: ${rig}`);
+
+    // 12 hero clips + the down_loop companion, and every contract input.
+    expect(rig.clips.map((c) => c.name)).toContain("down_loop");
+    expect(rig.clips).toHaveLength(13);
+
+    const problems = compareRigToContract(rig, manifest.rigContract, "hero");
+    expect(problems).toEqual([]);
+  }, 120_000);
+
+  it("still fails loudly on bytes that are not a rig", async () => {
+    // The original garbage-bytes promise, kept alongside the real fixture: an
+    // unreadable rig is a reason string, never a silent pass.
+    const result = await introspectRiv(new Uint8Array([1, 2, 3, 4]), manifest.rigContract.tickFps);
+    expect(typeof result).toBe("string");
+  }, 120_000);
 });
