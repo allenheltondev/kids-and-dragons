@@ -1,29 +1,94 @@
 {
-  "$comment": "Unicorn rig config for rive-mcp (rive-mcp docs/rigging-playbook.md). Carries only what the contract cannot know: the art's hierarchy, draw order, origin and palette binding. The clip table, event ticks and inputs all derive from assets/manifest.json rigContract via --contract --set hero, so the tick numbers are never restated here — restating is where the off-by-one gets in. One config covers all four tiers; joints are measured per tier from that tier's own alpha overlaps.",
+  "$comment": "Unicorn rig config for rive-mcp (rive-mcp docs/rigging-playbook.md). Carries only what the contract cannot know: the art's hierarchy, draw order, origin and palette binding. The clip table, event ticks and inputs all derive from assets/manifest.json rigContract via --contract --set hero, so the tick numbers are never restated here \u2014 restating is where the off-by-one gets in. One config covers all four tiers; joints are measured per tier from that tier's own alpha overlaps. PALETTE: mane rides the mane part on every species. Accent rides the horn \u2014 the signature part, as paletteRule says.",
   "root": "body",
   "adjacency": [
-    ["body", "head"],
-    ["head", "mane"],
-    ["head", "horn"],
-    ["body", "arm_l"],
-    ["body", "arm_r"],
-    ["body", "leg_l"],
-    ["body", "leg_r"],
-    ["body", "tail"]
+    [
+      "body",
+      "head"
+    ],
+    [
+      "head",
+      "mane"
+    ],
+    [
+      "head",
+      "horn"
+    ],
+    [
+      "body",
+      "arm_l"
+    ],
+    [
+      "body",
+      "arm_r"
+    ],
+    [
+      "body",
+      "leg_l"
+    ],
+    [
+      "body",
+      "leg_r"
+    ],
+    [
+      "body",
+      "tail"
+    ]
   ],
-  "zOrder": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "horn"],
-  "origin": { "x": 512, "y": 900 },
+  "zOrder": [
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane",
+    "horn"
+  ],
+  "origin": {
+    "x": 512,
+    "y": 900
+  },
   "artboardWidth": 1024,
   "artboardHeight": 1024,
   "wiring": {
-    "triggers": { "move": "walk", "helpUp": "lift" },
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
     "when": {
-      "down": { "input": "knockedDown", "equals": true, "from": ["idle", "hurt", "walk", "guard"] },
-      "revive": { "input": "knockedDown", "equals": false, "from": "down_loop" }
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": [
+          "idle",
+          "hurt",
+          "walk",
+          "guard"
+        ]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
     }
   },
   "tintSlots": [
-    { "part": "mane", "slot": "mane_tint", "bind": "mane", "color": "#853A85", "blend": "color" },
-    { "part": "horn", "slot": "accent_tint", "bind": "accent", "color": "#709FE0", "blend": "color" }
+    {
+      "part": "mane",
+      "slot": "mane_tint",
+      "bind": "mane",
+      "color": "#853A85",
+      "blend": "color"
+    },
+    {
+      "part": "horn",
+      "slot": "accent_tint",
+      "bind": "accent",
+      "color": "#709FE0",
+      "blend": "color"
+    }
   ]
 }

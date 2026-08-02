@@ -1,5 +1,5 @@
 {
-  "$comment": "manticore rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding.",
+  "$comment": "manticore rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: mane rides the mane part on every species. NO ACCENT SLOT, on purpose. The signature part is the tail, and this tail is a bone-meshed chain so it can coil and strike \u2014 a tint slot on a meshed part stays rigid (rive-mcp rigging playbook 2.5), so it would sit still while the tail whipped out from under it. A visibly detached patch of colour mid-strike is worse than an accent that only colours UI chrome.",
   "root": "body",
   "adjacency": [
     [
