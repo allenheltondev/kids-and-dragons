@@ -122,6 +122,17 @@ export interface PartyScene {
    */
   setBiome(biome: string | null): void;
   /**
+   * Whether the figures carry their names (world/nameplate.ts).
+   *
+   * On everywhere by default, and off for the one surface that already
+   * answers the question: the lobby lists every player by name, level and
+   * ready state in a card row directly above the lineup, so a nameplate there
+   * is the same name twice — and the copy nobody needs is the one competing
+   * with the art for the same band of screen. Driven by phase from PixiStage,
+   * because which panel is up is the shell's fact and not the scene's.
+   */
+  setNameplatesVisible(visible: boolean): void;
+  /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
    * "who this device is being asked to act as", so the board comes back
@@ -248,6 +259,10 @@ export function createScene(app: Application): PartyScene {
   let destroyed = false;
   let elapsed = 0;
 
+  /** See `setNameplatesVisible`. Applied to each label as it is laid out, so
+      an actor built while the lobby is up is born hidden like the rest. */
+  let nameplatesVisible = true;
+
   let viewport: Viewport = { width: DESIGN.width, height: DESIGN.height };
   let target: FocusTarget = { kind: "party" };
   let attention = "";
@@ -306,7 +321,10 @@ export function createScene(app: Application): PartyScene {
     // because it shrinks as the party grows.
     const slot = spacing * NAMEPLATE_SLOT;
     list.forEach((actor, index) => {
-      if (actor.label) fitNameplate(actor.label, slot);
+      if (actor.label) {
+        actor.label.visible = nameplatesVisible;
+        fitNameplate(actor.label, slot);
+      }
       actor.x = start + spacing * index;
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
@@ -621,6 +639,14 @@ export function createScene(app: Application): PartyScene {
 
     focusCamera(next) {
       target = next;
+    },
+
+    setNameplatesVisible(visible) {
+      if (destroyed || visible === nameplatesVisible) return;
+      nameplatesVisible = visible;
+      for (const actor of actors.values()) {
+        if (actor.label) actor.label.visible = visible;
+      }
     },
 
     setBiome(next) {
