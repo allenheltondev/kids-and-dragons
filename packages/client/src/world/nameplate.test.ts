@@ -46,3 +46,29 @@ describe("nameplateScale", () => {
     expect(nameplateScale(Number.NaN, 100)).toBe(1);
   });
 });
+
+/**
+ * And the one rule that lives in PixiStage: which phases hide the names.
+ *
+ * It has to agree with WorldView's mount condition for `LobbyContent`, and
+ * nothing structural makes it — they are two lists of phase strings in two
+ * files. They drift silently, and the symptom is either the name twice or no
+ * name in a fight, so the agreement is asserted rather than assumed.
+ */
+describe("nameplatesVisibleIn", () => {
+  it("hides the names for exactly the phases that put the lobby over the lineup", async () => {
+    const { nameplatesVisibleIn } = await import("./PixiStage");
+    // WorldView: `(phase === "lobby" || phase === "creation") && <LobbyContent />`
+    expect(nameplatesVisibleIn("lobby")).toBe(false);
+    expect(nameplatesVisibleIn("creation")).toBe(false);
+
+    for (const phase of ["scene", "check", "encounter", "chapter_complete"]) {
+      expect(nameplatesVisibleIn(phase), phase).toBe(true);
+    }
+    // No state yet resolves to the lobby, exactly as WorldView resolves it
+    // (`useRunState()?.phase ?? "lobby"`). Answer it differently and the
+    // pairing holds everywhere except at startup.
+    expect(nameplatesVisibleIn(null)).toBe(false);
+    expect(nameplatesVisibleIn(undefined)).toBe(false);
+  });
+});
