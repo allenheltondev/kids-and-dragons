@@ -346,6 +346,16 @@ export async function createRig(
         if (destroyed) return;
         destroyed = true;
         release();
+        /*
+         * And take the canvas out of whatever it was put into. A DOM caller
+         * appends this element itself (screens/RigFigure.tsx), and a rig
+         * replaced in place — a tier crossing, which is the one thing this
+         * chapter is *about* — would otherwise leave the dead canvas stacked
+         * under its replacement, still sized, still in the layout. Harmless
+         * for the Pixi callers, whose sprite owns the canvas instead, and
+         * cheaper than asking every caller to remember.
+         */
+        canvas.remove();
       },
     };
   } catch {
