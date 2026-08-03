@@ -33,6 +33,7 @@ import { iso, type HandlerDeps } from "./deps.ts";
 import {
   newCharacterWrite,
   settleChapterCompletion,
+  startPartyCampaign,
   type ChapterSettlement,
 } from "./progression.ts";
 
@@ -160,6 +161,15 @@ export async function applyAction(
    */
   const finishedChapter =
     state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
+  const startedCampaign = input.intent.type === "START_CHAPTER" && Boolean(result.state.campaignId);
+  if (startedCampaign && !finishedChapter) {
+    // Campaign entry is a progression transition too. Seed/re-seed every
+    // stored character and re-resolve the party before diffing so the same
+    // action patch exposes isProvisional and committedLevel to clients. An
+    // entry scene that immediately completes is handled by settlement below,
+    // avoiding two writes to the same character in one transaction.
+    characters.push(...(await startPartyCampaign(result.state, deps, auth.run.householdId)));
+  }
   let settlement: ChapterSettlement | null = null;
   if (finishedChapter) {
     // XP, the chapter's record, the setback counter, and — when this
@@ -168,6 +178,15 @@ export async function applyAction(
     settlement = await settleChapterCompletion(result.state, deps, auth.run.householdId);
     characters.push(...settlement.characters);
   }
+  const progression =
+    startedCampaign || finishedChapter
+      ? {
+          characters: result.state.party.map((member) => member.character),
+          ...(settlement && settlement.awards.length > 0
+            ? { awards: settlement.awards }
+            : {}),
+        }
+      : undefined;
 
   // --- 3. stamp, persist, broadcast ---------------------------------------
   // Normalising seq here is what makes the sequence gapless by construction:
@@ -195,6 +214,7 @@ export async function applyAction(
     runId: input.runId,
     patch,
     ...(result.presentation ? { presentation: result.presentation } : {}),
+    ...(progression ? { progression } : {}),
     at: iso(nowMs),
     playerId: input.playerId,
     intent: input.intent,
@@ -233,6 +253,7 @@ export async function applyAction(
     runId: event.runId,
     patch: event.patch,
     ...(event.presentation ? { presentation: event.presentation } : {}),
+    ...(event.progression ? { progression: event.progression } : {}),
   };
   try {
     await deps.channel.publish(next.roomCode, message);

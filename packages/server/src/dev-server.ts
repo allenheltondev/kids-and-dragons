@@ -31,6 +31,7 @@ import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, createGuestHousehold } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import { setPresence } from "./handlers/presence.ts";
+import { spendStatPoint } from "./handlers/progression.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
@@ -232,6 +233,25 @@ async function main(): Promise<void> {
     // reads `error.code` and resyncs. 200 keeps that path free of fetch()
     // error handling on a phone with a flaky connection.
     res.json(response);
+  });
+
+  app.post("/api/progression/spend", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const session = await resolveSession(req, base);
+    if (!session) {
+      return sendError(res, 401, "FORBIDDEN", "spending a stat point needs a room session token");
+    }
+    if (!Object.prototype.hasOwnProperty.call(req.body ?? {}, "stat")) {
+      return sendError(res, 400, "ILLEGAL", "expected { stat }");
+    }
+
+    const result = await spendStatPoint({ principal: session, stat: req.body.stat }, deps);
+    if (!result.ok) {
+      return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    }
+    res.json(result.value);
   });
 
   app.get("/api/state", async (req: Request, res: Response) => {
