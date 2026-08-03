@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import type { RunState } from "@kad/shared";
+import { CHARACTER_VERSION, type Character, type RunState } from "@kad/shared";
 import { makeClock } from "../test-support.ts";
 import { EVT_SK } from "./keys.ts";
 import { MemoryRepository } from "./memory-repository.ts";
@@ -18,6 +18,40 @@ async function tempFile(): Promise<string> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "kad-store-"));
   tempDirs.push(dir);
   return path.join(dir, ".data", "dev-table.json");
+}
+
+function character(): Character {
+  return {
+    id: "c_1",
+    householdId: "h_1",
+    ownerPlayerId: "p_1",
+    name: "Sparklehoof",
+    species: "unicorn",
+    class: "songkeeper",
+    appearance: { palette: "meadow", accent: "#7FD4C1" },
+    committed: {
+      level: 2,
+      xp: 300,
+      stats: { might: 1, quick: 2, clever: 3, heart: 4 },
+      tier: "fledgling",
+      unlockedActions: ["soothing-song"],
+      inventory: [{ itemId: "healing-herb", kind: "consumable" }],
+      unspentPoints: 1,
+    },
+    provisional: {
+      runId: "r_1",
+      level: 3,
+      xp: 600,
+      stats: { might: 2, quick: 2, clever: 3, heart: 4 },
+      tier: "fledgling",
+      unlockedActions: ["soothing-song", "battle-hymn"],
+      inventory: [{ itemId: "healing-herb", kind: "consumable" }],
+      unspentPoints: 2,
+    },
+    questItems: ["moon-key"],
+    souvenirs: [{ id: "first-song", fromRun: "r_0", earnedAt: "2026-01-01T00:00:00.000Z" }],
+    createdAt: "2026-01-01T00:00:00.000Z",
+  };
 }
 
 function state(runId: string, seq: number): RunState {
@@ -66,6 +100,70 @@ describe("keys", () => {
 });
 
 describe("MemoryRepository", () => {
+  it("round-trips and overwrites the full progression snapshot with a current version stamp", async () => {
+    const filePath = await tempFile();
+    const repo = await MemoryRepository.open({ filePath });
+    const initial = character();
+
+    await repo.putCharacter(initial);
+    expect(await repo.getCharacter("h_1", "c_1")).toEqual(initial);
+
+    const replacement: Character = {
+      ...initial,
+      committed: {
+        ...initial.committed,
+        xp: 900,
+        level: 4,
+        unspentPoints: 3,
+        unlockedActions: [...initial.committed.unlockedActions, "battle-hymn"],
+      },
+      provisional: null,
+    };
+    await repo.putCharacter(replacement);
+
+    expect(await repo.getCharacter("h_1", "c_1")).toEqual(replacement);
+    expect(await repo.listCharacters("h_1")).toEqual([replacement]);
+
+    await repo.flush();
+    const mirror = JSON.parse(await fs.readFile(filePath, "utf8")) as {
+      items: Array<{ entity: string; v?: number; data: unknown }>;
+    };
+    const stored = mirror.items.find((item) => item.entity === "character");
+    expect(stored).toMatchObject({ v: CHARACTER_VERSION, data: replacement });
+  });
+
+  it("migrates an unstamped v0 character on read without dropping progression", async () => {
+    const filePath = await tempFile();
+    const oldCharacter = character();
+    delete oldCharacter.committed.unspentPoints;
+    if (oldCharacter.provisional) delete oldCharacter.provisional.unspentPoints;
+
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(
+      filePath,
+      JSON.stringify({
+        version: 1,
+        items: [
+          {
+            PK: "HH#h_1",
+            SK: "CHAR#c_1",
+            entity: "character",
+            data: oldCharacter,
+          },
+        ],
+      }),
+      "utf8",
+    );
+
+    const repo = await MemoryRepository.open({ filePath });
+    const migrated = await repo.getCharacter("h_1", "c_1");
+
+    expect(migrated?.committed.unspentPoints).toBe(0);
+    expect(migrated?.provisional?.unspentPoints).toBe(0);
+    expect(migrated?.provisional?.unlockedActions).toEqual(["soothing-song", "battle-hymn"]);
+    expect(await repo.getCharacter("h_other", "c_1")).toBeNull();
+  });
+
   it("stores households, players, characters, and devices under the household", async () => {
     const repo = new MemoryRepository();
     await repo.putHousehold({

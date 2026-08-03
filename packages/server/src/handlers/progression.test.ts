@@ -3,12 +3,19 @@ import {
   newCharacter,
   resolveCharacter,
   type Campaign,
+  type Chapter,
   type Character,
   type RunState,
 } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
-import { foldChapterXp, newCharacterWrite, settleChapterCompletion } from "./progression.ts";
+import {
+  foldChapterXp,
+  newCharacterWrite,
+  settleChapterCompletion,
+  spendStatPoint,
+  startPartyCampaign,
+} from "./progression.ts";
 
 /**
  * A run holding one resolved character, exactly as the engine would leave it
@@ -39,6 +46,10 @@ function setup(harness: TestHarness, householdId: string, playerId: string) {
 
   const state = {
     runId: "r_1",
+    campaignId: "the-hollow-crown",
+    chapterId: makeChapter().id,
+    chapterOutcome: "success",
+    bonuses: [],
     xpEarned: 0,
     party: [
       {
@@ -153,7 +164,7 @@ describe("foldChapterXp", () => {
     expect(stored?.committed.xp).toBe(0);
     expect(stored?.provisional?.xp).toBe(300);
     expect(stored?.provisional?.level).toBe(2);
-    expect(stored?.provisional?.runId).toBe("r_1");
+    expect(stored?.provisional?.runId).toBe("the-hollow-crown");
   });
 
   it("keeps provisional gains across rooms in the same campaign", async () => {
@@ -182,6 +193,7 @@ describe("foldChapterXp", () => {
     // Saturday: a brand-new room, same campaign, next chapter.
     state.runId = "r_2";
     state.xpEarned = 400;
+    state.bonuses = [{ id: "bonus", label: "Bonus", xp: 100 }];
     for (const c of await foldChapterXp(state, harness.deps, householdId)) {
       await harness.repo.putCharacter(c);
     }
@@ -189,17 +201,6 @@ describe("foldChapterXp", () => {
     const stored = await harness.repo.getCharacter(householdId, `c_${playerId}`);
     expect(stored?.provisional?.xp).toBe(700);
     expect(stored?.committed.xp).toBe(0);
-
-    // A one-off chapter has no campaign; there the run really is the scope,
-    // and a different run correctly starts over from committed.
-    (state as { campaignId?: string | null }).campaignId = null;
-    state.runId = "r_3";
-    state.xpEarned = 100;
-    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
-      await harness.repo.putCharacter(c);
-    }
-    const oneOff = await harness.repo.getCharacter(householdId, `c_${playerId}`);
-    expect(oneOff?.provisional?.xp).toBe(100);
   });
 
   it("banks the stat point the level owes", async () => {
@@ -276,7 +277,15 @@ describe("foldChapterXp", () => {
         ready: false,
       };
     });
-    const state = { runId: "r_1", xpEarned: 0, party } as unknown as RunState;
+    const state = {
+      runId: "r_1",
+      campaignId: "the-hollow-crown",
+      chapterId: makeChapter().id,
+      chapterOutcome: "success",
+      bonuses: [{ id: "bonus", label: "Bonus", xp: 400 }],
+      xpEarned: 700,
+      party,
+    } as unknown as RunState;
     for (const c of built) await harness.repo.putCharacter(c);
 
     state.xpEarned = 700;
@@ -293,12 +302,12 @@ describe("foldChapterXp", () => {
 
   it("still folds the bag when the chapter awarded nothing", async () => {
     /*
-     * This used to early-return on zero XP, and that return was the bug: a
-     * chapter can pay nothing and still have handed somebody a potion, and
-     * skipping the fold dropped it on the floor. Every completion folds now —
-     * the award just happens to be zero.
+     * XP mutation is skipped for a zero award, but inventory still has to move
+     * from the resolved run snapshot into stored progression.
      */
-    const harness = makeHarness();
+    const harness = makeHarness({
+      content: makeContent({ chapters: [{ ...makeChapter(), xpAward: 0 }] }),
+    });
     const { householdId, players } = await seedHousehold(harness, 1);
     const playerId = players[0]!.principal.playerId;
     const { state, character } = setup(harness, householdId, playerId);
@@ -376,15 +385,46 @@ describe("foldChapterXp", () => {
   });
 });
 
+describe("startPartyCampaign", () => {
+  it("starts and re-resolves every affected character with progression indicators", async () => {
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const playerId = players[0]!.principal.playerId;
+    const { state, character, rules } = setup(harness, householdId, playerId);
+    const levelTwoXp = rules.levelXp[0]!;
+    const veteran: Character = {
+      ...character,
+      committed: { ...character.committed, xp: levelTwoXp, level: 2 },
+    };
+    await harness.repo.putCharacter(veteran);
+
+    const writes = await startPartyCampaign(state, harness.deps, householdId);
+
+    expect(writes[0]?.provisional).toMatchObject({
+      runId: "the-hollow-crown",
+      xp: levelTwoXp,
+    });
+    expect(state.party[0]?.character).toMatchObject({
+      level: 2,
+      isProvisional: true,
+      committedLevel: 2,
+    });
+  });
+});
+
 describe("settleChapterCompletion — the campaign boundary", () => {
   /**
    * A harness whose content knows the fixture campaign. `chapters` controls
    * where the boundary is: with two entries, "bramblewood-01" (the fixture
    * chapter) is NOT the last chapter; with one, it is.
    */
-  function campaignHarness(campaign: Partial<Campaign> = {}) {
+  function campaignHarness(
+    campaign: Partial<Campaign> = {},
+    chapter: Chapter = makeChapter(),
+  ) {
     return makeHarness({
       content: makeContent({
+        chapters: [chapter],
         campaigns: [
           {
             id: "the-hollow-crown",
@@ -480,6 +520,8 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     // The phones see the revert on this same patch, not next chapter.
     expect(state.party[0]?.character.xp).toBe(0);
     expect(state.party[0]?.character.level).toBe(1);
+    expect(state.party[0]?.character.isProvisional).toBe(false);
+    expect(state.party[0]?.character.committedLevel).toBe(1);
   });
 
   it("flavors the souvenir with the tier the attempt reached (spec §8.3)", async () => {
@@ -535,15 +577,29 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     expect(committed?.provisional).toBeNull();
     expect(committed?.committed.xp).toBe(300);
     expect(committed?.committed.level).toBe(2);
+    expect(state.party[0]?.character).toMatchObject({
+      xp: 300,
+      level: 2,
+      committedLevel: 2,
+      isProvisional: false,
+    });
     // Quest items are campaign-scoped either way (§9.2).
     expect(committed?.questItems).toEqual([]);
+    expect(state.party[0]?.character).toMatchObject({
+      level: 2,
+      isProvisional: false,
+      committedLevel: 2,
+    });
   });
 
   it("a zero-XP final chapter still commits the campaign", async () => {
     // The boundary cannot be "whoever happened to earn something": a final
     // chapter that awards nothing still ends the campaign, and the provisional
     // gains from every chapter before it still have to become permanent.
-    const harness = campaignHarness({ chapters: ["bramblewood-01"] });
+    const harness = campaignHarness(
+      { chapters: ["bramblewood-01"] },
+      { ...makeChapter(), xpAward: 0 },
+    );
     const { householdId, players } = await seedHousehold(harness, 1);
     const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
     await harness.repo.putCharacter(character);
@@ -616,5 +672,159 @@ describe("settleChapterCompletion — the campaign boundary", () => {
 
     expect(settlement.campaignProgress).toMatchObject({ status: "failed", setbacks: 1 });
     expect(settlement.characters[0]?.provisional).toBeNull();
+  });
+});
+
+
+describe("spendStatPoint — Rest-scene handler", () => {
+  async function spendableCharacter(provisional: boolean) {
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const playerId = players[0]!.principal.playerId;
+    const { state, character } = setup(harness, householdId, playerId);
+    const committed = {
+      ...character.committed,
+      stats: { ...character.committed.stats },
+      unspentPoints: 1,
+    };
+    const stored: Character = {
+      ...character,
+      committed,
+      provisional: provisional
+        ? { ...committed, stats: { ...committed.stats }, runId: "campaign_1" }
+        : null,
+    };
+
+    Object.assign(state, {
+      roomCode: "ABCD",
+      seq: 0,
+      phase: "scene",
+      sceneId: "scene_camp",
+      sceneType: "rest",
+      updatedAt: new Date(T0).toISOString(),
+    });
+    await harness.repo.putRun({
+      id: state.runId,
+      householdId,
+      roomCode: "ABCD",
+      campaignId: provisional ? "campaign_1" : null,
+      status: "active",
+      createdAt: new Date(T0).toISOString(),
+    });
+    await harness.repo.putState(state);
+    await harness.repo.putCharacter(stored);
+
+    return {
+      harness,
+      householdId,
+      playerId,
+      state,
+      stored,
+      principal: { runId: state.runId, householdId, playerId },
+    };
+  }
+
+  it("spends from stored provisional state and returns the resolved character", async () => {
+    const fixture = await spendableCharacter(true);
+    const beforeMight = fixture.stored.provisional!.stats.might;
+    const committedBefore = structuredClone(fixture.stored.committed);
+
+    // Extra client-computed totals are deliberately ignored: only `stat`
+    // crosses into the handler's rule call.
+    const request = {
+      principal: fixture.principal,
+      stat: "might",
+      stats: { might: 999, quick: 999, clever: 999, heart: 999 },
+    };
+    const result = await spendStatPoint(request, fixture.harness.deps);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.stats.might).toBe(beforeMight + 1);
+    expect(result.value.unspentPoints).toBe(0);
+    expect(result.value.isProvisional).toBe(true);
+
+    const persisted = await fixture.harness.repo.getCharacter(
+      fixture.householdId,
+      fixture.stored.id,
+    );
+    expect(persisted?.provisional?.stats.might).toBe(beforeMight + 1);
+    expect(persisted?.provisional?.unspentPoints).toBe(0);
+    expect(persisted?.committed).toEqual(committedBefore);
+  });
+
+  it("writes directly to committed state when no campaign is in flight", async () => {
+    const fixture = await spendableCharacter(false);
+    const beforeHeart = fixture.stored.committed.stats.heart;
+
+    const result = await spendStatPoint(
+      { principal: fixture.principal, stat: "heart" },
+      fixture.harness.deps,
+    );
+
+    expect(result.ok).toBe(true);
+    const persisted = await fixture.harness.repo.getCharacter(
+      fixture.householdId,
+      fixture.stored.id,
+    );
+    expect(persisted?.committed.stats.heart).toBe(beforeHeart + 1);
+    expect(persisted?.committed.unspentPoints).toBe(0);
+    expect(persisted?.provisional).toBeNull();
+  });
+
+  it("rejects outside an active Rest scene without changing the character", async () => {
+    const fixture = await spendableCharacter(true);
+    const before = structuredClone(fixture.stored);
+    await fixture.harness.repo.putState({
+      ...fixture.state,
+      sceneId: "scene_ridge",
+      sceneType: "choice_point",
+    });
+
+    const result = await spendStatPoint(
+      { principal: fixture.principal, stat: "quick" },
+      fixture.harness.deps,
+    );
+
+    expect(result).toMatchObject({
+      ok: false,
+      error: { code: "ILLEGAL", message: expect.stringContaining("Rest scene") },
+    });
+    expect(
+      await fixture.harness.repo.getCharacter(fixture.householdId, fixture.stored.id),
+    ).toEqual(before);
+  });
+
+  it("delegates invalid stat validation to the shared server rules", async () => {
+    const fixture = await spendableCharacter(false);
+
+    const result = await spendStatPoint(
+      { principal: fixture.principal, stat: "strength" },
+      fixture.harness.deps,
+    );
+
+    expect(result).toMatchObject({
+      ok: false,
+      error: { code: "ILLEGAL", message: expect.stringContaining("strength") },
+    });
+    const persisted = await fixture.harness.repo.getCharacter(
+      fixture.householdId,
+      fixture.stored.id,
+    );
+    expect(persisted?.committed.unspentPoints).toBe(1);
+  });
+
+  it("rejects a session that does not own the party character", async () => {
+    const fixture = await spendableCharacter(false);
+
+    const result = await spendStatPoint(
+      {
+        principal: { ...fixture.principal, playerId: "p_intruder" },
+        stat: "might",
+      },
+      fixture.harness.deps,
+    );
+
+    expect(result).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
   });
 });

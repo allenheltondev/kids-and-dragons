@@ -18,8 +18,10 @@
 import { STAT_IDS } from "./types/domain.js";
 import type {
   Appearance,
+  AwardXpResult,
   Character,
   CharacterProgress,
+  ClassDef,
   ClassId,
   InventoryEntry,
   ItemCatalog,
@@ -29,7 +31,6 @@ import type {
   SpeciesId,
   StatId,
   Stats,
-  TierId,
 } from "./types/domain.js";
 import { getClass, getSpecies, levelForXp, maxLevel, tierForLevel } from "./rules.js";
 
@@ -284,13 +285,32 @@ function xpForLevel(rules: RulesContent, level: number): number {
 // ---------------------------------------------------------------------------
 
 /** Class actions unlocked at or below `level`, in level order. */
-function levelUnlocks(rules: RulesContent, classId: ClassId, level: number): string[] {
-  const classDef = getClass(rules, classId);
+function unlocksForClass(classDef: ClassDef, level: number): string[] {
   return Object.entries(classDef.unlocks)
     .map(([at, action]) => ({ at: Number(at), id: action.id }))
     .filter((u) => Number.isFinite(u.at) && level >= u.at)
     .sort((a, b) => a.at - b.at)
     .map((u) => u.id);
+}
+
+function levelUnlocks(rules: RulesContent, classId: ClassId, level: number): string[] {
+  return unlocksForClass(getClass(rules, classId), level);
+}
+
+/** Every combat action still present in the current rules catalog. */
+function currentActionIds(rules: RulesContent): Set<string> {
+  const ids = new Set<string>();
+  for (const classDef of Object.values(rules.classes)) {
+    if (!classDef) continue;
+    ids.add(classDef.signature.id);
+    for (const action of Object.values(classDef.unlocks)) {
+      if (action) ids.add(action.id);
+    }
+  }
+  for (const species of Object.values(rules.species)) {
+    if (species) ids.add(species.combatAction.id);
+  }
+  return ids;
 }
 
 export function resolveCharacter(
@@ -299,18 +319,21 @@ export function resolveCharacter(
   items: ItemCatalog,
 ): ResolvedCharacter {
   const progress = effectiveProgress(character);
-  const species = getSpecies(rules, character.species);
-  const classDef = getClass(rules, character.class);
+  const species = (rules.species as Partial<typeof rules.species>)[character.species];
+  const classDef = (rules.classes as Partial<typeof rules.classes>)[character.class];
+  const level = levelForXp(rules, progress.xp);
 
   const stats = { ...progress.stats } as Stats;
   let maxHp = rules.baseMaxHp;
-  let steps = classDef.baseSteps ?? rules.baseSteps;
+  let steps = classDef?.baseSteps ?? rules.baseSteps;
 
-  // Species passive: either a stat bump or extra max HP (spec §4.2).
-  if (species.passive.stat) {
+  // Species passive: either a stat bump or extra max HP (spec §4.2). A stale
+  // species id contributes no passive or actions, but does not prevent the
+  // rest of the character from resolving.
+  if (species?.passive.stat) {
     stats[species.passive.stat] += species.passive.amount;
   }
-  if (typeof species.passive.maxHp === "number") {
+  if (typeof species?.passive.maxHp === "number") {
     maxHp += species.passive.maxHp;
   }
 
@@ -337,14 +360,14 @@ export function resolveCharacter(
     }
   }
 
-  const level = progress.level;
+  const knownActions = currentActionIds(rules);
   const actions = [
-    classDef.signature.id,
-    ...levelUnlocks(rules, character.class, level),
+    ...(classDef ? [classDef.signature.id, ...unlocksForClass(classDef, level)] : []),
     // Once per encounter, the combat-flavored world ability (spec §7.2).
-    species.combatAction.id,
-    // Anything the stored progress knows about that the rules no longer do.
-    ...progress.unlockedActions,
+    ...(species ? [species.combatAction.id] : []),
+    // Preserve earned actions that still exist in content, while tolerating
+    // actions removed by a later content revision.
+    ...progress.unlockedActions.filter((id) => knownActions.has(id)),
   ];
 
   return {
@@ -366,29 +389,23 @@ export function resolveCharacter(
     steps,
     // Quick governs dodging (spec §4.1), so it is what an attacker rolls against.
     guard: rules.baseGuard + stats.quick,
-    attackStat: classDef.stat,
+    // Missing content has no class stat or world action to resolve. Keep the
+    // snapshot structurally complete with neutral sentinels for those fields.
+    attackStat: classDef?.stat ?? STAT_IDS[0] ?? "might",
     actions: [...new Set(actions)],
-    worldAbility: species.worldAbility.id,
+    worldAbility: species?.worldAbility.id ?? "",
     inventory: progress.inventory.map((e) => ({ ...e })),
     questItems: [...character.questItems],
     souvenirs: character.souvenirs.map((s) => ({ ...s })),
     isProvisional: Boolean(character.provisional),
-    // Always the committed half, never `progress` — see the field's note.
-    committedLevel: character.committed.level,
+    // Always derived from committed XP, never effective or stored level.
+    committedLevel: levelForXp(rules, character.committed.xp),
   };
 }
 
 // ---------------------------------------------------------------------------
 // Progression — spec §8.1
 // ---------------------------------------------------------------------------
-
-export interface AwardXpResult {
-  character: Character;
-  /** Set only when the award crossed a level boundary. */
-  leveledTo?: number;
-  /** Set only when the new level is an appearance tier — the cutscene trigger. */
-  newTier?: TierId;
-}
 
 /**
  * XP is awarded per chapter, not per kill (spec §8.1), so this is called once
@@ -405,10 +422,15 @@ export function awardXp(
   rules: RulesContent,
   amount: number,
 ): AwardXpResult {
+  if (amount <= 0) return { character };
+
   const before = effectiveProgress(character);
+  const beforeLevel = levelForXp(rules, Math.max(0, before.xp));
+  const beforeTier = tierForLevel(rules, beforeLevel);
   const xp = Math.max(0, before.xp + amount);
   const level = levelForXp(rules, xp);
   const tier = tierForLevel(rules, level);
+  const levelsGained = Math.max(0, level - beforeLevel);
 
   const unlocked = new Set(before.unlockedActions);
   for (const id of levelUnlocks(rules, character.class, level)) unlocked.add(id);
@@ -422,13 +444,13 @@ export function awardXp(
     // One point per level *gained*, not one per award: a big chapter that jumps
     // three levels owes three points, and a level that a setback's half award
     // failed to reach owes none (spec §8.1).
-    unspentPoints: (before.unspentPoints ?? 0) + Math.max(0, level - before.level),
+    unspentPoints: (before.unspentPoints ?? 0) + levelsGained,
   };
 
   return {
     character: writeProgress(character, next),
-    ...(level > before.level ? { leveledTo: level } : {}),
-    ...(tier !== before.tier && level > before.level ? { newTier: tier } : {}),
+    ...(levelsGained > 0 ? { leveledTo: level } : {}),
+    ...(levelsGained > 0 && tier !== beforeTier ? { newTier: tier } : {}),
   };
 }
 
@@ -487,6 +509,13 @@ export function spendStatPoint(
   const available = before.unspentPoints ?? 0;
   if (available < 1) {
     throw new CharacterRuleError("character: no unspent stat points to spend");
+  }
+
+  const maxStat = rules.baseStats[stat] + 9;
+  if (before.stats[stat] >= maxStat) {
+    throw new CharacterRuleError(
+      `character: ${stat} cannot exceed 9 bonus points (maximum ${maxStat})`,
+    );
   }
 
   const next: CharacterProgress = {

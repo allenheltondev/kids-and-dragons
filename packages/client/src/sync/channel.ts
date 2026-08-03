@@ -277,7 +277,12 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     patch: candidate.patch,
   };
   const presentation = (candidate as ServerMessage).presentation;
-  return presentation ? { ...message, presentation } : message;
+  const progression = (candidate as ServerMessage).progression;
+  return {
+    ...message,
+    ...(presentation ? { presentation } : {}),
+    ...(progression ? { progression } : {}),
+  };
 }
 
 // ---------------------------------------------------------------------------

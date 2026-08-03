@@ -23,6 +23,7 @@ import type {
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
+import { spendStatPoint } from "../handlers/progression.ts";
 import { iso } from "../handlers/deps.ts";
 import { createRoom, joinRoom, watchRoom } from "../handlers/room.ts";
 import { getState } from "../handlers/state.ts";
@@ -78,6 +79,7 @@ function matchRoute(req: Req): Route | null {
   if (req.method === "POST") {
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
+    if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps);
 
@@ -221,6 +223,19 @@ async function postAction(req: Req, deps: HandlerDeps) {
   // `error.code` and resyncs. 200 keeps that path free of fetch() error
   // handling on a phone with a flaky connection.
   return json(200, response, resolved?.principal);
+}
+
+async function postProgressionSpend(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) {
+    return error(401, "FORBIDDEN", "spending a stat point needs a room session token");
+  }
+  if (!Object.prototype.hasOwnProperty.call(req.body, "stat")) {
+    return error(400, "ILLEGAL", "expected { stat }");
+  }
+
+  const result = await spendStatPoint({ principal: session, stat: req.body.stat }, deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {

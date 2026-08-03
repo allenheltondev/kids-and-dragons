@@ -7,7 +7,14 @@
  * State and spectacle stay decoupled.
  */
 
-import type { Appearance, ClassId, SpeciesId, Stats } from "./domain.js";
+import type {
+  Appearance,
+  ClassId,
+  ResolvedCharacter,
+  SpeciesId,
+  Stats,
+  TierId,
+} from "./domain.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { EncounterEvent } from "../encounter.js";
@@ -143,11 +150,35 @@ export type Presentation =
    */
   | { kind: "CHAPTER_COMPLETE"; chapterId: string; xp: number; outcome: ChapterOutcome };
 
+/** A character-specific progression trigger emitted by a chapter XP award. */
+export interface ProgressionAward {
+  characterId: string;
+  /** Present only when this award crossed at least one level boundary. */
+  leveledTo?: number;
+  /** Present only when this award crossed an appearance-tier boundary. */
+  newTier?: TierId;
+}
+
+/**
+ * Progression data that accompanies the authoritative state patch.
+ *
+ * `characters` deliberately repeats the resolved snapshots represented by the
+ * patch. It gives UI trigger code one self-contained payload while the patch
+ * remains the source of truth for every existing client.
+ */
+export interface ProgressionUpdate {
+  characters: ResolvedCharacter[];
+  /** Present for chapter XP awards; campaign-only transitions have no awards. */
+  awards?: ProgressionAward[];
+}
+
 export interface ServerMessage {
   seq: number;
   runId: string;
   patch: JsonPatchOp[];
   presentation?: Presentation;
+  /** Additive progression data; older clients safely ignore this field. */
+  progression?: ProgressionUpdate;
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */
