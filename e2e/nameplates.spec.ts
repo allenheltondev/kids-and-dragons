@@ -130,9 +130,11 @@ async function createCharacter(page: Page, species: string, name: string): Promi
     await page.waitForTimeout(150);
   }
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  const fieldsets = page.locator(".creation-fieldset");
-  await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
-  await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);
+  // Straight past the appearance step without touching a swatch. That is the
+  // assertion: colour and accent are optional (CreationFlow `stepDone`), so
+  // "Next" has to be live on arrival. first-playable.spec.ts covers the other
+  // path, where somebody does pick.
+  await expect(page.getByRole("button", { name: /^next$/i })).toBeEnabled();
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
