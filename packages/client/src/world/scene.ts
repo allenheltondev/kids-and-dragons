@@ -73,7 +73,13 @@ import {
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
-import { createNameplate, fitNameplate, nameplateLabel } from "./nameplate";
+import {
+  createNameplate,
+  fitNameplate,
+  nameplateBoxOf,
+  nameplateLabel,
+  type NameplateReading,
+} from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
@@ -132,6 +138,16 @@ export interface PartyScene {
    * because which panel is up is the shell's fact and not the scene's.
    */
   setNameplatesVisible(visible: boolean): void;
+  /**
+   * The names currently drawn, as boxes in whichever space is on screen —
+   * board pixels during a fight, design units otherwise.
+   *
+   * Nameplates live in a canvas, so nothing in the DOM knows they exist and
+   * neither did any test: both defects this feature shipped with were found by
+   * a human looking at a screenshot. This is the seam that makes them
+   * assertable — see `e2e/nameplates.spec.ts`.
+   */
+  nameplateBoxes(): NameplateReading;
   /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
@@ -482,7 +498,11 @@ export function createScene(app: Application): PartyScene {
       return;
     }
     // Named for the first time — a save from before names were required.
-    actor.label = createNameplate(next, ACTOR_HEIGHT, ACTOR_HEIGHT);
+    actor.label = createNameplate(next, {
+      typeHeight: ACTOR_HEIGHT,
+      figureHeight: ACTOR_HEIGHT,
+      maxWidth: ACTOR_HEIGHT,
+    });
     if (actor.label) actor.container.addChild(actor.label);
   }
 
@@ -499,7 +519,11 @@ export function createScene(app: Application): PartyScene {
     // Fitted to the lineup's real spacing by `layoutActors`, which is the only
     // thing that knows how much room a figure has — and knows it only once the
     // party size is settled, which is after this runs.
-    const label = createNameplate(name, ACTOR_HEIGHT, ACTOR_HEIGHT);
+    const label = createNameplate(name, {
+      typeHeight: ACTOR_HEIGHT,
+      figureHeight: ACTOR_HEIGHT,
+      maxWidth: ACTOR_HEIGHT,
+    });
     if (label) container.addChild(label);
 
     const actor: Actor = {
@@ -647,6 +671,27 @@ export function createScene(app: Application): PartyScene {
       for (const actor of actors.values()) {
         if (actor.label) actor.label.visible = visible;
       }
+    },
+
+    nameplateBoxes() {
+      // Whatever is actually on screen, *and which stage that is*. During a
+      // fight the lineup is hidden and the board owns the figures, so
+      // reporting the lineup's labels would be reporting a stage nobody is
+      // looking at — and reporting them without saying so is worse, because
+      // the two are the same shape and a caller cannot tell them apart.
+      if (encounterView !== null && board) {
+        return { space: "board" as const, boxes: board.nameplateBoxes() };
+      }
+      const boxes = [...actors.values()]
+        .filter((actor) => actor.label !== null && actor.label.visible)
+        .map((actor) => {
+          // Lineup labels are children of their actor, so their own x/y is
+          // relative to its feet. Lift both into design space, or every box
+          // comes back centred on zero and nothing can be compared.
+          const box = nameplateBoxOf(actor.label!);
+          return { ...box, x: actor.container.x + box.x, y: actor.container.y + box.y };
+        });
+      return { space: "story" as const, boxes };
     },
 
     setBiome(next) {

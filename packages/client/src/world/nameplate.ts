@@ -39,9 +39,44 @@ import { Text } from "pixi.js";
  * lineup reads as text with animals behind it.
  */
 export const NAMEPLATE_FONT = 0.085;
-/** Gap between the feet and the top of the name, same fraction. Tight, so the
-    label reads as attached to the figure rather than floating on the floor. */
+/** Gap between the feet and the top of the name, as a fraction of the figure's
+    drawn height. Tight, so the label reads as attached to the figure rather
+    than floating on the floor. */
 export const NAMEPLATE_GAP = 0.045;
+
+/**
+ * How far below the feet the name sits, for a figure `figureHeight` tall.
+ *
+ * Exported because the board positions its labels in board space rather than
+ * inside the actor they belong to, so it needs this number too — and the one
+ * thing worse than two coordinate spaces is two copies of the formula that
+ * converts between them.
+ */
+export function nameplateGap(figureHeight: number): number {
+  return figureHeight * NAMEPLATE_GAP;
+}
+
+export interface NameplateSpec {
+  /**
+   * What the type is sized against.
+   *
+   * Kept separate from `figureHeight` because the two stages disagree about
+   * it. The lineup sizes type off the figure — right for one creature in a
+   * 1600×900 rect. The board sizes it off a *tile*, because the same figure is
+   * a much smaller share of a 10×8 grid and the lineup's fraction produced a
+   * name half the on-screen size there, marginal on a TV.
+   */
+  typeHeight: number;
+  /**
+   * The figure's actual drawn height, which is what the drop below its feet is
+   * measured from. One knob used to do both jobs, so retuning type size
+   * silently moved the label down the screen; it did, by 4px, the first time
+   * the board's was retuned.
+   */
+  figureHeight: number;
+  /** How much room the name has beside it, in the caller's units. */
+  maxWidth: number;
+}
 
 /**
  * What a figure's nameplate says, or null when there is nothing to say.
@@ -72,19 +107,19 @@ export function nameplateScale(width: number, maxWidth: number): number {
 
 /**
  * A nameplate positioned under a figure whose feet are at the origin, or null
- * for a name with nothing in it. `height` is the figure's drawn height and
- * `maxWidth` the room it has beside it, both in the caller's own units.
+ * for a name with nothing in it. All three measures are in the caller's own
+ * units — see `NameplateSpec` for why type and figure are measured separately.
  *
  * The caller adds this as a sibling of the art rather than a child of it: the
  * art rotates and fades — the fallen pose, the connection ghost — and a name
  * that tipped over with the character would be harder to read at exactly the
  * moment somebody is looking for it.
  */
-export function createNameplate(name: string, height: number, maxWidth: number): Text | null {
+export function createNameplate(name: string, spec: NameplateSpec): Text | null {
   const label = nameplateLabel(name);
   if (label === null) return null;
 
-  const size = height * NAMEPLATE_FONT;
+  const size = spec.typeHeight * NAMEPLATE_FONT;
   const text = new Text({
     text: label,
     style: {
@@ -100,8 +135,8 @@ export function createNameplate(name: string, height: number, maxWidth: number):
     },
   });
   text.anchor.set(0.5, 0);
-  text.y = height * NAMEPLATE_GAP;
-  fitNameplate(text, maxWidth);
+  text.y = nameplateGap(spec.figureHeight);
+  fitNameplate(text, spec.maxWidth);
   return text;
 }
 
@@ -109,4 +144,79 @@ export function createNameplate(name: string, height: number, maxWidth: number):
 export function fitNameplate(text: Text, maxWidth: number): void {
   text.scale.set(1);
   text.scale.set(nameplateScale(text.width, maxWidth));
+}
+
+/**
+ * One drawn name, as numbers — what it says and the box it occupies, in
+ * whichever space its stage draws in.
+ *
+ * This exists so the nameplates can be *asserted on*. They are drawn into a
+ * canvas, so nothing in the DOM knows they are there: both real defects this
+ * feature shipped with — a name cropped by the figure in front of it, and two
+ * names on adjacent tiles running together into `SparklehoofSkyclaw` — were
+ * found by a human looking at a screenshot, and nothing would have caught
+ * either one twice. A box per label makes both mechanically checkable, which
+ * is what `e2e/nameplates.spec.ts` does with them.
+ */
+export interface NameplateBox {
+  text: string;
+  /** Centre-x and top-y of the drawn label, after fitting. */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * The drawn names, and *which stage drew them*.
+ *
+ * The space is not a convenience. Without it a caller cannot tell a lineup
+ * reading from a board reading, and the two are trivially confusable: an
+ * e2e written against this seam polled for "three names are present", got
+ * three from the story lineup, and asserted the board's geometry against them
+ * for two full runs — passing happily while the reintroduced board bug sat
+ * right there. Naming the space is what makes "I am looking at the board"
+ * something a test can require rather than assume.
+ */
+export interface NameplateReading {
+  space: "story" | "board";
+  boxes: NameplateBox[];
+}
+
+export function nameplateBoxOf(text: Text): NameplateBox {
+  return {
+    text: text.text,
+    x: text.x,
+    y: text.y,
+    width: text.width,
+    height: text.height,
+  };
+}
+
+/**
+ * The smallest gap between two names that still reads as two names, as a
+ * fraction of their type height.
+ *
+ * Not zero, and that distinction is the whole value of this rule. The defect
+ * this was written against rendered `Sparklehoof` and `Skyclaw` on adjacent
+ * tiles with their edges *touching* — which is unreadable, and which a plain
+ * overlap test calls fine, because they did not technically overlap. Asserting
+ * "do not intersect" would have passed the exact bug it exists to catch; it
+ * was checked, and it did.
+ */
+export const NAMEPLATE_MIN_GUTTER = 0.3;
+
+/**
+ * Are two drawn names too close together to read as two names?
+ *
+ * The y-band is consulted only to rule out labels on different rows: on the
+ * board every party figure's label sits at the same offset below its own feet,
+ * so two names in the same row share a band by construction and the question
+ * is decided on x. Pure, so the rule is testable without a canvas.
+ */
+export function nameplatesCollide(a: NameplateBox, b: NameplateBox): boolean {
+  const sameBand = Math.abs(a.y - b.y) < Math.max(a.height, b.height);
+  if (!sameBand) return false;
+  const gap = Math.abs(a.x - b.x) - (a.width + b.width) / 2;
+  return gap < Math.max(a.height, b.height) * NAMEPLATE_MIN_GUTTER;
 }
