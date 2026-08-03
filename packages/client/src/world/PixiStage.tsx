@@ -157,6 +157,15 @@ export function PixiStage(): React.JSX.Element {
       }
 
       app = instance;
+      // A handle for the e2e, dev builds only (`npm run dev`, which is what
+      // playwright.config.ts boots). The nameplates are drawn into the canvas
+      // and are invisible to every DOM query, so without this the only way to
+      // check them is a human looking at a screenshot — which is exactly how
+      // both of their bugs got as far as they did. Vite strips the branch from
+      // a production bundle, so this is not a shipped global.
+      if (import.meta.env.DEV) {
+        (globalThis as Record<string, unknown>).__kadScene = () => sceneRef.current;
+      }
       // autoDensity owns the canvas CSS size (it keeps style px in step with
       // the renderer on every resize); we only stop it rendering inline.
       instance.canvas.style.display = "block";

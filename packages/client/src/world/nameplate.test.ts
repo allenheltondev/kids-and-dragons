@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { nameplateLabel, nameplateScale } from "./nameplate";
+import { nameplateGap, nameplateLabel, nameplateScale, nameplatesCollide } from "./nameplate";
 
 describe("nameplateLabel", () => {
   it("keeps a real name, trimmed", () => {
@@ -44,6 +44,34 @@ describe("nameplateScale", () => {
     expect(nameplateScale(0, 100)).toBe(1);
     expect(nameplateScale(200, 0)).toBe(1);
     expect(nameplateScale(Number.NaN, 100)).toBe(1);
+  });
+});
+
+describe("nameplateGap", () => {
+  it("measures the drop from the figure, so retuning type size cannot move it", () => {
+    // One constant used to feed both, and bumping the board's type size for
+    // legibility silently dropped its labels 4px further down the screen.
+    expect(nameplateGap(400)).toBe(nameplateGap(400));
+    expect(nameplateGap(400)).toBeGreaterThan(nameplateGap(200));
+  });
+});
+
+describe("nameplatesCollide", () => {
+  const box = (x: number, width: number, y = 0) => ({ text: "n", x, y, width, height: 20 });
+
+  it("catches two names running together", () => {
+    // The `SparklehoofSkyclaw` case: adjacent tiles, labels wider than the
+    // pitch between them.
+    expect(nameplatesCollide(box(0, 140), box(128, 140))).toBe(true);
+  });
+
+  it("passes names with a gutter between them", () => {
+    expect(nameplatesCollide(box(0, 110), box(128, 110))).toBe(false);
+  });
+
+  it("ignores labels in different bands", () => {
+    // Different rows of the board: same x, far apart vertically.
+    expect(nameplatesCollide(box(0, 140), box(0, 140, 200))).toBe(false);
   });
 });
 

@@ -71,7 +71,14 @@ import {
 } from "./actor-art";
 
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
-import { NAMEPLATE_GAP, createNameplate, nameplateLabel } from "./nameplate";
+import {
+  createNameplate,
+  fitNameplate,
+  nameplateBoxOf,
+  nameplateGap,
+  nameplateLabel,
+  type NameplateBox,
+} from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -110,11 +117,13 @@ const NAMEPLATE_MAX_WIDTH = BOARD_TILE_PX * 0.9;
  * measure, so sizing against it is what keeps the name the same *readable*
  * thing on both surfaces even though the arithmetic differs.
  */
-const NAMEPLATE_HEIGHT = BOARD_TILE_PX * 2.4;
+const NAMEPLATE_TYPE_HEIGHT = BOARD_TILE_PX * 2.4;
 
-/** The drop below the feet `createNameplate` bakes in. Restated here because
-    a name in `nameLayer` is positioned in board space, not in its actor's. */
-const NAMEPLATE_OFFSET_Y = NAMEPLATE_HEIGHT * NAMEPLATE_GAP;
+/** The drop below the feet, from `ACTOR_HEIGHT` and not from the type size —
+    a name in `nameLayer` is positioned in board space rather than inside its
+    actor, so it needs the number, but it must be the *same* number the label
+    was built with. `nameplateGap` is the one place that formula lives. */
+const NAMEPLATE_OFFSET_Y = nameplateGap(ACTOR_HEIGHT);
 
 /**
  * One `walk` cycle, in seconds — 4 ticks on the contract's 12fps clock
@@ -151,6 +160,9 @@ export interface BoardLayer {
   /** Called from the scene's ticker — this module adds no ticker of its own,
       so PixiStage's stopped-when-hidden discipline holds for free. */
   tick(dtSeconds: number): void;
+  /** The party names currently drawn, as boxes in board pixels. See
+      `NameplateBox` for why this is readable at all. */
+  nameplateBoxes(): NameplateBox[];
   destroy(): void;
 }
 
@@ -345,7 +357,11 @@ export function createBoardLayer(): BoardLayer {
       combatant.side === "party"
         ? current.party.find((m) => m.character.id === combatant.id)?.character.name ?? ""
         : "";
-    const label = createNameplate(named, NAMEPLATE_HEIGHT, NAMEPLATE_MAX_WIDTH);
+    const label = createNameplate(named, {
+      typeHeight: NAMEPLATE_TYPE_HEIGHT,
+      figureHeight: ACTOR_HEIGHT,
+      maxWidth: NAMEPLATE_MAX_WIDTH,
+    });
     if (label) {
       label.x = feet.x;
       label.y = feet.y + NAMEPLATE_OFFSET_Y;
@@ -449,8 +465,14 @@ export function createBoardLayer(): BoardLayer {
         existing.targetX = feet.x;
         existing.targetY = feet.y;
         // This module draws what it is given and keeps nothing of its own
-        // (see the header), and a name is state like any other. Only the text
-        // is rewritten — the fit is to the tile, which does not change.
+        // (see the header), and a name is state like any other.
+        //
+        // Re-fit after the rewrite, not just the text. The *cap* is the tile
+        // and does not change; the width of what is in the label does, so a
+        // short name replaced by a long one would keep the old scale and
+        // overrun into the next tile — the `SparklehoofSkyclaw` collision
+        // NAMEPLATE_MAX_WIDTH exists to prevent, reintroduced by the one path
+        // that skipped the fit.
         if (existing.label) {
           const name = nameplateLabel(
             current.party.find((m) => m.character.id === combatant.id)?.character.name ?? "",
@@ -458,6 +480,7 @@ export function createBoardLayer(): BoardLayer {
           if (name !== null && name !== existing.labelText) {
             existing.labelText = name;
             existing.label.text = name;
+            fitNameplate(existing.label, NAMEPLATE_MAX_WIDTH);
           }
         }
         continue;
@@ -738,6 +761,12 @@ export function createBoardLayer(): BoardLayer {
         floater.text.y = floater.y - FLOATER_RISE * t;
         floater.text.alpha = t < 0.15 ? t / 0.15 : 1 - Math.max(0, (t - 0.6) / 0.4);
       }
+    },
+
+    nameplateBoxes() {
+      return [...actors.values()]
+        .filter((a) => a.label !== null && a.label.visible)
+        .map((a) => nameplateBoxOf(a.label!));
     },
 
     destroy() {
