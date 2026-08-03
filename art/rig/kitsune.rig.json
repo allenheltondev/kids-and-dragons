@@ -1,5 +1,5 @@
 {
-  "$comment": "kitsune rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: mane rides the mane part on every species. Accent rides the tail \u2014 the signature part, as paletteRule says. The tail is a rigid cutout here, which is what lets it take a tint slot at all.",
+  "$comment": "kitsune rig config for rive-mcp — see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: none. The rigs carried `mane`/`accent` tint slots so the client could write the player's palette into them at runtime; that recolour is gone (asset-brief 4.4 — a hue pushed onto authored shading flattens the detail the tier art exists for, and figures carry their character's name instead). Slots removed here so a rebuild does not reintroduce them; the delivered .riv files still carry inert ones until they are next regenerated.",
   "root": "body",
   "adjacency": [
     [
@@ -69,21 +69,5 @@
         "from": "down_loop"
       }
     }
-  },
-  "tintSlots": [
-    {
-      "part": "mane",
-      "slot": "mane_tint",
-      "bind": "mane",
-      "color": "#9E512F",
-      "blend": "color"
-    },
-    {
-      "part": "tail",
-      "slot": "accent_tint",
-      "bind": "accent",
-      "color": "#70CEE0",
-      "blend": "color"
-    }
-  ]
+  }
 }

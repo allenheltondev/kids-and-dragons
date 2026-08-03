@@ -43,7 +43,7 @@
  * ---------------------------------------------------------------------------
  */
 
-import { Application, Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import type { PartyMember, Position } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
@@ -73,7 +73,13 @@ import {
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
-import { createPaletteLatch, type PaletteLatch } from "./palette-latch";
+import {
+  createNameplate,
+  fitNameplate,
+  nameplateBoxOf,
+  nameplateLabel,
+  type NameplateReading,
+} from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
@@ -87,6 +93,9 @@ const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / 
 const GROUND_Y = DESIGN.height * 0.82;
 /** A character's drawn height in design units at zoom 1. */
 const ACTOR_HEIGHT = DESIGN.height * 0.46;
+/** How much of a lineup slot a nameplate may fill — the rest is the gutter
+    that keeps two names from running into each other. */
+const NAMEPLATE_SLOT = 0.9;
 
 export type FocusTarget =
   | { kind: "party" }
@@ -119,6 +128,27 @@ export interface PartyScene {
    */
   setBiome(biome: string | null): void;
   /**
+   * Whether the figures carry their names (world/nameplate.ts).
+   *
+   * On everywhere by default, and off for the one surface that already
+   * answers the question: the lobby lists every player by name, level and
+   * ready state in a card row directly above the lineup, so a nameplate there
+   * is the same name twice — and the copy nobody needs is the one competing
+   * with the art for the same band of screen. Driven by phase from PixiStage,
+   * because which panel is up is the shell's fact and not the scene's.
+   */
+  setNameplatesVisible(visible: boolean): void;
+  /**
+   * The names currently drawn, as boxes in whichever space is on screen —
+   * board pixels during a fight, design units otherwise.
+   *
+   * Nameplates live in a canvas, so nothing in the DOM knows they exist and
+   * neither did any test: both defects this feature shipped with were found by
+   * a human looking at a screenshot. This is the seam that makes them
+   * assertable — see `e2e/nameplates.spec.ts`.
+   */
+  nameplateBoxes(): NameplateReading;
+  /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
    * "who this device is being asked to act as", so the board comes back
@@ -135,11 +165,15 @@ interface Actor {
   /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
   /**
-   * Requested vs. actually-bound colour. A latch rather than a string because
-   * a rig arrives late and the palette can change while it is loading — see
-   * palette-latch.ts for the race this closes.
+   * The name under their feet — who this is, when two players picked the same
+   * species (nameplate.ts). Null for a name with nothing in it. A sibling of
+   * `art` rather than a child: the art rotates and fades and the label must
+   * not go with it.
    */
-  palette: PaletteLatch;
+  label: Text | null;
+  /** What `label` is currently saying, so a renamed character is spotted
+      without measuring a Text every patch. */
+  labelText: string | null;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -164,11 +198,11 @@ interface Actor {
  * drawing the Fledgling rig for the rest of the session — the transformation
  * cutscene playing over a figure that visibly never transformed.
  *
- * Colour is deliberately *not* in here, even though it is part of how a figure
- * looks. A palette is a data binding on a live rig (`setPalette`), so
- * recolouring is a write rather than a reload; folding it into this key would
- * throw away a megabyte of rig and reload it to change two fills. See
- * `palette-latch.ts` for the half that is handled that way.
+ * Appearance is deliberately *not* in here. Nothing about a figure is drawn
+ * from it any more — the runtime recolour is gone and every rig wears the
+ * colours it was authored in (`nameplate.ts` explains why) — so folding it in
+ * would throw a megabyte of rig away and reload an identical one because
+ * somebody tapped a swatch that now only colours their UI chrome.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
  * way `storyFocusTiles` is.
@@ -241,6 +275,10 @@ export function createScene(app: Application): PartyScene {
   let destroyed = false;
   let elapsed = 0;
 
+  /** See `setNameplatesVisible`. Applied to each label as it is laid out, so
+      an actor built while the lobby is up is born hidden like the rest. */
+  let nameplatesVisible = true;
+
   let viewport: Viewport = { width: DESIGN.width, height: DESIGN.height };
   let target: FocusTarget = { kind: "party" };
   let attention = "";
@@ -293,7 +331,16 @@ export function createScene(app: Application): PartyScene {
     const list = [...actors.values()];
     const spacing = Math.min(DESIGN.width / (list.length + 1), DESIGN.width * 0.26);
     const start = DESIGN.width / 2 - (spacing * (list.length - 1)) / 2;
+    // A name may be no wider than the slot its character stands in, less a
+    // gutter — two nameplates that touch are one unreadable name, which is the
+    // failure the nameplate was added to fix. The slot is only known here,
+    // because it shrinks as the party grows.
+    const slot = spacing * NAMEPLATE_SLOT;
     list.forEach((actor, index) => {
+      if (actor.label) {
+        actor.label.visible = nameplatesVisible;
+        fitNameplate(actor.label, slot);
+      }
       actor.x = start + spacing * index;
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
@@ -430,6 +477,35 @@ export function createScene(app: Application): PartyScene {
 
   // ---------------------------------------------------------------------------
 
+  /**
+   * Put a (possibly new, possibly now-empty) name under a figure that is
+   * staying. Cheap on the common path — every patch carries a name and almost
+   * none of them changed it — and the width is left to `layoutActors`, which
+   * runs at the end of the same `setParty`.
+   */
+  function setLabel(actor: Actor, name: string): void {
+    const next = nameplateLabel(name);
+    if (next === actor.labelText) return;
+    actor.labelText = next;
+
+    if (next === null) {
+      actor.label?.destroy();
+      actor.label = null;
+      return;
+    }
+    if (actor.label) {
+      actor.label.text = next;
+      return;
+    }
+    // Named for the first time — a save from before names were required.
+    actor.label = createNameplate(next, {
+      typeHeight: ACTOR_HEIGHT,
+      figureHeight: ACTOR_HEIGHT,
+      maxWidth: ACTOR_HEIGHT,
+    });
+    if (actor.label) actor.container.addChild(actor.label);
+  }
+
   function makeActor(member: PartyMember): Actor {
     const container = new Container();
     const art = new Container();
@@ -439,13 +515,24 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
-    const { species, tier, id, appearance } = member.character;
+    const { species, tier, id, name } = member.character;
+    // Fitted to the lineup's real spacing by `layoutActors`, which is the only
+    // thing that knows how much room a figure has — and knows it only once the
+    // party size is settled, which is after this runs.
+    const label = createNameplate(name, {
+      typeHeight: ACTOR_HEIGHT,
+      figureHeight: ACTOR_HEIGHT,
+      maxWidth: ACTOR_HEIGHT,
+    });
+    if (label) container.addChild(label);
+
     const actor: Actor = {
       container,
       art,
       characterId: id,
       visualKey: visualKeyOf(member),
-      palette: createPaletteLatch(appearance),
+      label,
+      labelText: nameplateLabel(name),
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -482,8 +569,8 @@ export function createScene(app: Application): PartyScene {
 
     // The rig first, the PNG when there isn't one — same never-goes-stale
     // reasoning as the PNG load: ask for the file, fall back when it is not
-    // there. The rig carries its own acting and the player's palette.
-    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+    // there. The rig carries its own acting.
+    void createRiveActor(species, tier, ACTOR_HEIGHT)
       .then((rive) => {
         if (destroyed || actors.get(id) !== actor) {
           rive?.destroy();
@@ -500,10 +587,6 @@ export function createScene(app: Application): PartyScene {
         art.rotation = 0;
         art.y = 0;
         rive.setKnockedDown(actor.down);
-        // Whatever the latest request is — which may have arrived while the
-        // wasm and the .riv were still downloading, and is not necessarily the
-        // `appearance` this load began with.
-        actor.palette.applyTo(rive);
         art.addChild(rive.sprite);
         actor.rive = rive;
       })
@@ -544,22 +627,20 @@ export function createScene(app: Application): PartyScene {
         if (existing && existing.visualKey === visualKeyOf(member)) {
           existing.down = member.down;
           existing.connected = member.connected;
-          // Same body, different colours — a write, not a reload. The latch
-          // only records success, so a change that lands mid-load is applied
-          // by `makeActor`'s install instead of being lost.
-          existing.palette.request(member.character.appearance);
-          existing.palette.applyTo(existing.rive);
+          // A rename is a label edit, not a reload — the same "write, don't
+          // rebuild" split `visualKeyOf` makes for everything else that
+          // arrives on a patch.
+          setLabel(existing, member.character.name);
           continue;
         }
         if (existing) {
           /*
-           * Same character, different body — a tier crossed, or a colour
-           * changed. Rebuild rather than mutate: the rig file, the bound
-           * palette and the sprite are all decided at load (rive-actor.ts),
-           * so there is nothing on a live actor to patch. Dropping the Rive
-           * handle first, then the container, is the same order `destroy()`
-           * uses and for the same reason — the C++ objects are not the Pixi
-           * tree's to collect.
+           * Same character, different body — a tier crossed. Rebuild rather
+           * than mutate: the rig file and the sprite are both decided at load
+           * (rive-actor.ts), so there is nothing on a live actor to patch.
+           * Dropping the Rive handle first, then the container, is the same
+           * order `destroy()` uses and for the same reason — the C++ objects
+           * are not the Pixi tree's to collect.
            */
           existing.rive?.destroy();
           existing.container.destroy({ children: true });
@@ -582,6 +663,35 @@ export function createScene(app: Application): PartyScene {
 
     focusCamera(next) {
       target = next;
+    },
+
+    setNameplatesVisible(visible) {
+      if (destroyed || visible === nameplatesVisible) return;
+      nameplatesVisible = visible;
+      for (const actor of actors.values()) {
+        if (actor.label) actor.label.visible = visible;
+      }
+    },
+
+    nameplateBoxes() {
+      // Whatever is actually on screen, *and which stage that is*. During a
+      // fight the lineup is hidden and the board owns the figures, so
+      // reporting the lineup's labels would be reporting a stage nobody is
+      // looking at — and reporting them without saying so is worse, because
+      // the two are the same shape and a caller cannot tell them apart.
+      if (encounterView !== null && board) {
+        return { space: "board" as const, boxes: board.nameplateBoxes() };
+      }
+      const boxes = [...actors.values()]
+        .filter((actor) => actor.label !== null && actor.label.visible)
+        .map((actor) => {
+          // Lineup labels are children of their actor, so their own x/y is
+          // relative to its feet. Lift both into design space, or every box
+          // comes back centred on zero and nothing can be compared.
+          const box = nameplateBoxOf(actor.label!);
+          return { ...box, x: actor.container.x + box.x, y: actor.container.y + box.y };
+        });
+      return { space: "story" as const, boxes };
     },
 
     setBiome(next) {

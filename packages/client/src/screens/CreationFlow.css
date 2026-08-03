@@ -517,6 +517,67 @@
   color: var(--color-primary, #7c5cff);
 }
 
+/*
+ * Colour and accent — the one genuinely optional choice in creation.
+ *
+ * They dress the *player's* chrome, not the creature, so they must not compete
+ * with the questions that decide who the character is. The weight comes off
+ * the border, the fill and the type — never off the target: spec §11 asks for
+ * big touch targets and "subtle" is not a licence to shrink one, so the chip
+ * keeps its `--touch-min` block size and only stops shouting.
+ */
+.creation-fieldset--quiet .creation-legend {
+  opacity: 0.85;
+}
+
+.creation-legend__optional {
+  margin-inline-start: var(--space-2, 0.5em);
+  padding: 0.1em 0.6em;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999em);
+  font-size: 0.85em;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.8;
+}
+
+/* What the choice actually does, in the player's words. Sits between the
+   legend and the chips so it is read before the tap, not after it. */
+.creation-hint {
+  margin: 0 0 var(--space-2, 0.5em);
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+/*
+ * The columns are the shared ones, deliberately.
+ *
+ * A denser four-up strip was tried first and is why this comment exists: the
+ * labels here are words — "Orchid", "Meadow" — and at a phone's width four
+ * columns set them one letter per line. `.creation-option__label` wraps rather
+ * than truncates on purpose, so a column too narrow for a word does not look
+ * broken, it looks like a ransom note. Only the gap tightens.
+ */
+.creation-options--quiet {
+  gap: var(--space-1, 0.25em);
+}
+
+.creation-option--quiet {
+  border-color: transparent;
+  background: transparent;
+  font-weight: 500;
+}
+
+.creation-option--quiet.creation-option--on {
+  border-color: var(--color-border, #3a3468);
+  background: var(--color-surface, #191534);
+  /* No inset ring: on a chip this small the doubled border reads as a bug.
+     The check glyph is what says "chosen" (spec §11 — never colour alone). */
+  box-shadow: none;
+}
+
 /* The swatch is the colour; the name and the check carry the meaning (spec §11). */
 .creation-swatch__chip {
   display: block;

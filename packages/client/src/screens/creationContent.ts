@@ -3,13 +3,11 @@
  * §5.5).
  *
  * WHY this lives here and not in `content/rules.json`: `RulesContent` has no
- * appearance section — palette slots are an *art* contract, owned by
- * `assets/manifest.json` (art-pipeline §3), and the manifest does not yet name
- * the palette variants a player may pick between. The swatch hexes below are
- * the manifest's own species palettes and `paletteRule` accent guidance, so
- * this file is a thin, replaceable index over art data rather than a second
- * source of truth for rules. When the manifest gains named palette slots this
- * whole file becomes a fetch, and no component changes.
+ * appearance section, and the swatch hexes below are drawn from the manifest's
+ * own species palettes and `paletteRule` guidance (art-pipeline §3) rather than
+ * invented — so this file is a thin, replaceable index over art data rather
+ * than a second source of truth. When the manifest names the variants a player
+ * may pick between, this whole file becomes a fetch and no component changes.
  *
  * Nothing here is mechanical. Appearance is cosmetic in every direction
  * (spec §9.3) so getting these values slightly wrong can never affect play.
@@ -20,7 +18,7 @@ import type { Appearance, SpeciesId } from "@kad/shared";
 export interface PaletteOption {
   id: string;
   name: string;
-  /** Swatch preview only — the real colours are Rive properties on the rig. */
+  /** Both swatch-only: nothing recolours a figure. See PALETTES below. */
   coat: string;
   mane: string;
 }
@@ -41,18 +39,23 @@ export interface CosmeticOption {
 /**
  * Named palettes. Hues are spread so three party members stay distinguishable.
  *
- * **The mane is the part that changes.** `paletteRule` in the manifest calls
- * the mane "the dominant colour mass; its hue is the species identity", and it
- * is the slot the rigs actually bind (world/rive-actor.ts) — so picking
- * "Meadow" turns a mane green on the figure, in play, on every surface that
- * draws the rig.
+ * **This is the player's colour, not the creature's.** The figure is drawn in
+ * the colours it was painted in, on every surface — the runtime recolour that
+ * used to push a chosen hue onto the rig's mane is gone, because it flattened
+ * the art it was painted over and was never going to read as commissioned
+ * (world/nameplate.ts). What the choice still dresses is this player's chrome:
+ * their flame in the sign-in lineup and the keepsake lantern, the light their
+ * portrait stands in, the trim on their panel.
  *
- * `coat` is here for the swatch's trim and nothing else: it is the authored
- * art's own colour and no rig exposes a slot for it, because a coat tint
- * traced from a flattened body layer drags the markings along with it (see
- * rive-actor's note). A swatch that led with the coat — as this one used to —
- * promised a body colour change the game never makes, which is the one kind of
- * lie a five-year-old checks immediately.
+ * So the two hexes are both swatch-only now, and the pair is kept because it
+ * is what makes a swatch look like a colour rather than a dot. `mane` leads it
+ * — it is the dominant mass of the species art `paletteRule` derives every
+ * other region from, so a Meadow chip looks like a creature in a way an
+ * arbitrary green does not.
+ *
+ * The one thing not to do here is imply a body colour change: a swatch that
+ * led with `coat` promised exactly that, and it is the kind of lie a
+ * five-year-old checks immediately.
  */
 export const PALETTES: readonly PaletteOption[] = [
   { id: "orchid", name: "Orchid", coat: "#F2E1F2", mane: "#853A85" },

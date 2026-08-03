@@ -65,9 +65,9 @@ export interface CharacterPortraitProps {
    */
   lit?: boolean;
   /**
-   * The player's chosen accent colour, if there is one. It tints the light —
-   * the one place appearance choices show up before the rigs can recolour the
-   * art itself (creationContent.ts header).
+   * The player's chosen accent colour, if there is one. It tints the light the
+   * figure stands in — never the figure, which is drawn as painted
+   * (creationContent.ts header on what the choice does colour).
    */
   accent?: string;
   /** A slow float, for the places where the hero is the subject of the screen. */
