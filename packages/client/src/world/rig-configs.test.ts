@@ -1,20 +1,22 @@
 /**
- * The rig configs' palette slots, held to the manifest's own rule.
+ * The rig configs' *structure*, held to the manifest's part lists.
  *
- * `assets/manifest.json` → `paletteRule` says the accent "sits on the
- * signature part only", and the mane is the species identity. The rigs are
- * where that becomes real: a `tintSlots` entry per bound colour, which
- * rive-mcp turns into a data-binding view-model property the client drives by
- * name (world/rive-actor.ts).
+ * An earlier version of this file guarded the palette bindings — a `tintSlots`
+ * entry per bound colour, the accent on the signature part, never on a meshed
+ * one. The runtime recolour is gone (world/nameplate.ts) and those slots went
+ * with it, so all five of those assertions were deleted along with their
+ * subject. Deleting the file too was a mistake: the *reason* it existed
+ * outlived the tinting.
  *
- * Two species cannot honour the accent half of the rule, for reasons that are
- * about the art rather than the code — and *that* is why this file exists. A
- * missing slot is invisible: `instance.color("accent")` on a rig without one
- * optional-chains away, the figure renders perfectly, and the only symptom is
- * a colour the player picked never appearing. Silent, cosmetic, and exactly
- * the kind of thing that rots. So the exceptions are named here, and any
- * *third* species losing a slot — a config edited, a rebuild that dropped one
- * — fails the build instead.
+ * That reason is that a rig config names parts as bare strings — in `root`,
+ * `adjacency`, `zOrder` and `meshParts` — and a name that matches nothing is
+ * silent. `rive-mcp` builds the rig from these, `art:verify` checks the
+ * *manifest* against the PNGs and never opens a rig config, and a typo lands
+ * as a joint that does not bend or a limb drawn in the wrong order: visible
+ * only to somebody watching the figure move, and easy to read as an art
+ * problem rather than a one-character bug in a JSON file.
+ *
+ * These are the checks that need no renderer and no `.riv`.
  */
 
 import { readFileSync } from "node:fs";
@@ -24,8 +26,11 @@ import manifest from "../../../../assets/manifest.json";
 
 interface RigConfig {
   $comment?: string;
-  tintSlots?: { part: string; slot: string; bind: string }[];
+  root?: string;
+  adjacency?: [string, string][];
+  zOrder?: string[];
   meshParts?: Record<string, unknown>;
+  tintSlots?: unknown[];
 }
 
 const species = manifest.species as { id: string; signature: string; parts: string[] }[];
@@ -35,61 +40,65 @@ function configFor(id: string): RigConfig {
   return JSON.parse(readFileSync(path, "utf8")) as RigConfig;
 }
 
-/**
- * The two documented exceptions, with the reason each one is real. Written as
- * data so the test below reads as the rule plus its exceptions rather than as
- * a list of species that happen to pass.
- */
-const NO_ACCENT_SURFACE: Record<string, string> = {
-  bigfoot: "its signature part is the mane, which already carries the mane colour",
-  manticore: "its signature part is a bone-meshed tail, and a tint slot on a meshed part stays rigid",
-};
-
 describe("rig configs", () => {
-  it("binds the mane on every species — the identity colour always reaches the figure", () => {
-    for (const sp of species) {
-      const slots = configFor(sp.id).tintSlots ?? [];
-      expect(slots.map((s) => s.bind), sp.id).toContain("mane");
-    }
-  });
-
-  it("binds the accent to the signature part, except where the art cannot carry one", () => {
-    for (const sp of species) {
-      const slots = configFor(sp.id).tintSlots ?? [];
-      const accent = slots.find((s) => s.bind === "accent");
-
-      if (sp.id in NO_ACCENT_SURFACE) {
-        expect(accent, `${sp.id} is documented as having no accent surface`).toBeUndefined();
-        continue;
-      }
-      // paletteRule: "Accent ... sits on the signature part only."
-      expect(accent, `${sp.id} has no accent slot and is not a documented exception`).toBeDefined();
-      expect(accent?.part, sp.id).toBe(sp.signature);
-    }
-  });
-
-  it("says in the config itself why an exception is an exception", () => {
-    // A future reader hits the config before they hit this test.
-    for (const id of Object.keys(NO_ACCENT_SURFACE)) {
-      expect(configFor(id).$comment ?? "", id).toContain("NO ACCENT SLOT");
-    }
-  });
-
-  it("only tints parts the species actually has", () => {
-    for (const sp of species) {
-      for (const slot of configFor(sp.id).tintSlots ?? []) {
-        expect(sp.parts, `${sp.id} tints "${slot.part}"`).toContain(slot.part);
-      }
-    }
-  });
-
-  it("never tints a meshed part — the overlay would not follow the deformation", () => {
+  it("names only parts the species actually has", () => {
     for (const sp of species) {
       const config = configFor(sp.id);
-      const meshed = Object.keys(config.meshParts ?? {});
-      for (const slot of config.tintSlots ?? []) {
-        expect(meshed, `${sp.id} tints meshed part "${slot.part}"`).not.toContain(slot.part);
+      const named = new Set<string>([
+        ...(config.root ? [config.root] : []),
+        ...(config.adjacency ?? []).flat(),
+        ...(config.zOrder ?? []),
+        ...Object.keys(config.meshParts ?? {}),
+      ]);
+      for (const part of named) {
+        expect(sp.parts, `${sp.id} names "${part}", which is not one of its parts`).toContain(part);
       }
+    }
+  });
+
+  it("draws every part, exactly once", () => {
+    // A part missing from zOrder has no defined depth; a part listed twice is
+    // a merge artefact. Both draw *something*, which is why neither shows up
+    // as an error anywhere else.
+    for (const sp of species) {
+      const zOrder = configFor(sp.id).zOrder ?? [];
+      expect([...zOrder].sort(), sp.id).toEqual([...sp.parts].sort());
+    }
+  });
+
+  it("roots the skeleton at a real part, and hangs every other part off it", () => {
+    for (const sp of species) {
+      const config = configFor(sp.id);
+      const adjacency = config.adjacency ?? [];
+      expect(config.root, `${sp.id} has no root`).toBeDefined();
+
+      // Walk the joint graph from the root. Anything unreached is a part the
+      // rig cannot move — it would sit still while the body walked away.
+      const linked = new Map<string, string[]>();
+      for (const [a, b] of adjacency) {
+        linked.set(a, [...(linked.get(a) ?? []), b]);
+        linked.set(b, [...(linked.get(b) ?? []), a]);
+      }
+      const seen = new Set<string>([config.root!]);
+      const queue = [config.root!];
+      while (queue.length > 0) {
+        for (const next of linked.get(queue.shift()!) ?? []) {
+          if (seen.has(next)) continue;
+          seen.add(next);
+          queue.push(next);
+        }
+      }
+      expect([...seen].sort(), `${sp.id} has parts not joined to the skeleton`).toEqual(
+        [...sp.parts].sort(),
+      );
+    }
+  });
+
+  it("carries no tint slots — the runtime recolour is gone", () => {
+    // Guarding the *absence*, so a regenerated config cannot quietly bring
+    // back a binding nothing reads (asset-brief §4.4).
+    for (const sp of species) {
+      expect(configFor(sp.id).tintSlots, `${sp.id} has tintSlots again`).toBeUndefined();
     }
   });
 });

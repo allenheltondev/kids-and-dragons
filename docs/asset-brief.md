@@ -273,23 +273,32 @@ Gear overlays register against the **species-agnostic torso position**, so one o
 across all six species at that tier. Design them to read on both the slimmest (kitsune) and
 bulkiest (bigfoot) silhouettes.
 
-### 4.4 Runtime-recolored regions 🔺
+### 4.4 Mane as a separate part 🔺
 
-Three regions are recolored at runtime from player choices. Each must be a **separate part file**,
-not merely a separable hue within another part:
+**`mane.png` is a required file for every species,** including those where the "mane" is a ridge,
+crest, ruff or dorsal frill. Revision 1 baked it into `head.png`; that prevents secondary mane
+motion in the rig, which is most of what makes a fledgling read as alive rather than as a sticker
+being slid around.
 
-| Slot | Part file | Region |
-|---|---|---|
-| `mane` | **`mane.png`** | Mane, fur ruff, feather crest, or dorsal frill — per species |
-| `accent` | the signature part | Horn / wings / tail |
-| `marking` | on `body.png` and limb parts | Body markings, dapples, stripes |
+**Nothing is recolored at runtime any more.** Earlier revisions of this brief asked for `mane`,
+`accent` and `marking` to be isolatable so the client could tint them from the player's palette
+choice, so two players who picked the same species could be told apart. That never read as
+commissioned work — a hue pushed onto authored shading flattens exactly the detail the tier art
+exists for — and it has been dropped. Figures now render in the colours they are painted in, and
+the character's **name is drawn under their feet** on the story lineup and the combat board
+(`packages/client/src/world/nameplate.ts`), which is explicit, keeps the art sharp, and works for
+a player who cannot separate two hues in the first place (spec §11).
 
-Revision 1 baked the mane into `head.png`. That silently disables the recolor slot **and** prevents
-secondary mane motion in the rig. `mane.png` is a required file for every species, including those
-where the "mane" is a ridge or crest.
+What this changes for you: **nothing about how you paint a species.** `paletteRule` in
+`assets/manifest.json` is still the authoring rule — one mane hue H per species, every other region
+derived from it — because it is what makes six species look like one world. It is now a rule for
+your palette, not a set of slots the client writes into. Markings no longer need to be isolatable
+from the coat, so paint them however the creature wants them.
 
-`marking` is the one slot that stays a hue region rather than a file, because markings span several
-parts. Keep marking hue clearly distinct from coat hue so it can be isolated at runtime.
+The `tintSlots` entries are gone from the six rig configs (`art/rig/<species>.rig.json`), so a
+regeneration will not reintroduce them. The 24 delivered `.riv` files still carry inert slots until
+they are next rebuilt — nothing reads them, and a slot nobody writes is the same as a rig that
+never had one.
 
 ### 4.5 Biomes, effects, tiles
 
@@ -458,8 +467,9 @@ replace it without a second round of specifying what the picture is *for*.
 The single piece of art in the optional sign-in flow
 ([architecture §4.5](./architecture.md#45-accounts-devices-and-joining)). A
 hanging lantern holding **one flame per party member**, each flame tinted with
-that character's `appearance.accent` — the same colour the character itself is
-drawn in.
+that character's `appearance.accent` — the colour that player picked, which
+dresses their chrome rather than their creature (§4.4: the figure is drawn in
+its authored colours and carries its name instead).
 
 ### 8.2 What it is for, which decides everything else
 
@@ -780,8 +790,8 @@ Deliver each as `assets/entities/<canon_id>/` — the same directory §6.4 uses 
 creature, and the one `verify.py` checks — with `assembled.png` and `parts/`, on the **same
 technical contract as §3** — 1024×1024, origin (512, 900), full-canvas registered layers, seam
 overdraw, real alpha. **No tier level in the path**: enemies do not level, so there is nothing for
-§3.2's cross-tier registration to compare and the directory is one deep instead of two. No runtime
-recolour either — §4.4's three slots are player choices, and nobody chooses a wolf.
+§3.2's cross-tier registration to compare and the directory is one deep instead of two. Nothing is
+recoloured at runtime here or anywhere else — see §4.4.
 
 To keep `zOrder` and `adjacency` from needing eight new declarations, every enemy names one of four
 **body plans**:

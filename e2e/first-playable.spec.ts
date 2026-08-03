@@ -45,8 +45,10 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(0);
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
-  // Appearance: a colour and an accent, both deliberate taps — nothing is
-  // preselected, so "Next" stays inert until the choice is actually made.
+  // Appearance: a colour and an accent, both deliberate taps. Neither is
+  // required — picking a species already applied a default, and the step
+  // gates on nothing (CreationFlow `stepDone`) — so this is the "somebody
+  // chose" path. nameplates.spec.ts walks past without touching them.
   const fieldsets = page.locator(".creation-fieldset");
   await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
   await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);

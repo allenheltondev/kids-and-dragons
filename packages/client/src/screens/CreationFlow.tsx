@@ -21,7 +21,7 @@
  * remembering. The animated half is still the rigs' job (world/scene.ts header).
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { STAT_IDS } from "@kad/shared";
 import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
@@ -374,15 +374,46 @@ function StatsStep({
 
 function OptionRow({
   legend,
+  hint,
+  quiet = false,
   children,
 }: {
   legend: string;
+  /**
+   * What this choice actually does, in the player's words. Only worth showing
+   * where the answer is not obvious from the picture — a colour swatch that
+   * dresses your chrome rather than your creature is exactly that case, and
+   * without a line saying so the tap looks like it should have repainted the
+   * animal standing next to it.
+   */
+  hint?: string;
+  /**
+   * Lighter chrome, for a choice that is genuinely optional. Same touch target
+   * — spec §11 wants big ones and "subtle" must never buy itself out of that —
+   * so the weight comes off the border, the fill and the type instead.
+   */
+  quiet?: boolean;
   children: ReactNode;
 }): ReactElement {
+  const classes = ["creation-fieldset"];
+  if (quiet) classes.push("creation-fieldset--quiet");
+  // Tied to the group with `aria-describedby`, not merely placed inside it: a
+  // screen reader lands on a swatch button, and "Orchid, pressed" without the
+  // sentence explaining what a colour does here is exactly the confusion the
+  // sentence was added to remove.
+  const hintId = useId();
   return (
-    <fieldset className="creation-fieldset">
-      <legend className="creation-legend kad-label">{legend}</legend>
-      <div className="creation-options">{children}</div>
+    <fieldset className={classes.join(" ")} aria-describedby={hint ? hintId : undefined}>
+      <legend className="creation-legend kad-label">
+        {legend}
+        {quiet ? <span className="creation-legend__optional">optional</span> : null}
+      </legend>
+      {hint === undefined ? null : (
+        <p id={hintId} className="creation-hint kad-muted">
+          {hint}
+        </p>
+      )}
+      <div className={`creation-options${quiet ? " creation-options--quiet" : ""}`}>{children}</div>
     </fieldset>
   );
 }
@@ -514,7 +545,20 @@ export function CreationFlow(): ReactElement {
       case "stats":
         return remaining === 0;
       case "appearance":
-        return draft.appearance.palette !== "" && draft.appearance.accent !== "";
+        /*
+         * The one step nothing is required on. Colour and accent dress this
+         * player's chrome rather than their creature (creationContent
+         * PALETTES), so there is no answer only they can give and no reason to
+         * hold the flow for one — spec §1.1's "typing must never be required"
+         * reasoning, applied to a tap.
+         *
+         * It was written as `palette !== "" && accent !== ""`, which looked
+         * like a gate and never was one: `chooseSpecies` applies
+         * `defaultAppearance`, so both are set before this step is reachable
+         * and the condition was already true on arrival. Saying `true` is the
+         * same behaviour, stated on purpose instead of by accident.
+         */
+        return true;
       case "name":
         return draft.name.trim().length > 0;
     }
@@ -633,11 +677,15 @@ export function CreationFlow(): ReactElement {
             {/* `creation-swatch` carries no styling of its own — it names the
                 kind of option this is, for the e2e that picks a colour and an
                 accent by role rather than by position. */}
-            <OptionRow legend="Colours">
+            <OptionRow
+              legend="Your colour"
+              hint="Marks your things — your flame in the lantern, the glow behind your picture. Your creature keeps the colours it was painted in."
+              quiet
+            >
               {PALETTES.map((palette) => (
                 <OptionButton
                   key={palette.id}
-                  className="creation-swatch"
+                  className="creation-swatch creation-option--quiet"
                   selected={draft.appearance.palette === palette.id}
                   onSelect={() => {
                     patchCreationDraft({
@@ -645,9 +693,10 @@ export function CreationFlow(): ReactElement {
                     });
                   }}
                   media={
-                    /* Mane in the middle, coat as the ring: the chip shows the
-                       colour that actually changes on the figure, not the one
-                       that stays as painted (creationContent PALETTES). */
+                    /* Mane in the middle, coat as the ring — the pair reads as
+                       a creature rather than a dot. Neither touches the
+                       figure, which is drawn as painted; this is the player's
+                       colour (creationContent PALETTES). */
                     <span
                       className="creation-swatch__chip"
                       style={{ background: palette.mane, borderColor: palette.coat }}
@@ -658,11 +707,11 @@ export function CreationFlow(): ReactElement {
               ))}
             </OptionRow>
 
-            <OptionRow legend="Accent">
+            <OptionRow legend="A second colour" quiet>
               {ACCENTS.map((accent) => (
                 <OptionButton
                   key={accent.id}
-                  className="creation-swatch"
+                  className="creation-swatch creation-option--quiet"
                   selected={draft.appearance.accent === accent.hex}
                   onSelect={() => {
                     patchCreationDraft({ appearance: { ...draft.appearance, accent: accent.hex } });

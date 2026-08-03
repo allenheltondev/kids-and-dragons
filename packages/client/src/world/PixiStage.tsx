@@ -75,6 +75,30 @@ export function attentionKeyFor(
   return `${state?.sceneId ?? ""}:${mine}`;
 }
 
+/**
+ * Whether the figures should carry their names (world/nameplate.ts).
+ *
+ * Off for exactly the phases that put `LobbyContent` over the lineup
+ * (WorldView mounts it on `lobby` and `creation`). That card row already names
+ * every player, with their level and whether they are ready, in a band
+ * directly above the figures — so a nameplate there is the same name twice,
+ * and the copy nobody needs is the one crowding the art. Everywhere else the
+ * name is the only thing that says which unicorn is yours.
+ *
+ * Pure and exported so the pairing with WorldView's mount condition is a test
+ * rather than a coincidence: the two drift apart silently, and the symptom is
+ * either a doubled name or no name at all in a fight.
+ *
+ * No state yet reads as `lobby`, which is WorldView's own default for it
+ * (`useRunState()?.phase ?? "lobby"`) — the two have to answer a missing phase
+ * the same way or the pairing holds everywhere except at startup, which is
+ * precisely where it would not be noticed.
+ */
+export function nameplatesVisibleIn(phase: string | null | undefined): boolean {
+  const resolved = phase ?? "lobby";
+  return resolved !== "lobby" && resolved !== "creation";
+}
+
 function boardView(
   state: RunState | null,
   party: readonly PartyMember[],
@@ -133,6 +157,15 @@ export function PixiStage(): React.JSX.Element {
       }
 
       app = instance;
+      // A handle for the e2e, dev builds only (`npm run dev`, which is what
+      // playwright.config.ts boots). The nameplates are drawn into the canvas
+      // and are invisible to every DOM query, so without this the only way to
+      // check them is a human looking at a screenshot — which is exactly how
+      // both of their bugs got as far as they did. Vite strips the branch from
+      // a production bundle, so this is not a shipped global.
+      if (import.meta.env.DEV) {
+        (globalThis as Record<string, unknown>).__kadScene = () => sceneRef.current;
+      }
       // autoDensity owns the canvas CSS size (it keeps style px in step with
       // the renderer on every resize); we only stop it rendering inline.
       instance.canvas.style.display = "block";
@@ -145,6 +178,10 @@ export function PixiStage(): React.JSX.Element {
       // is async, and anyone who joined — or a fight that began — during it
       // would otherwise be invisible until the next change pushed a fresh one.
       const live = useGameStore.getState();
+      // Before `setParty`, which is what lays the labels out: a scene that
+      // finished initialising during the lobby would otherwise show every
+      // name for one frame before the effect below caught up.
+      scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
       scene.setBiome(live.chapter?.biome ?? null);
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter));
@@ -230,6 +267,13 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setEncounter(boardView(state, party, chapter));
   }, [state, party, chapter]);
+
+  // Names off while the lobby's card row is over the lineup — see
+  // nameplatesVisibleIn.
+  const named = nameplatesVisibleIn(state?.phase);
+  useEffect(() => {
+    sceneRef.current?.setNameplatesVisible(named);
+  }, [named]);
 
   // Whose attention the camera may claim — see attentionKeyFor.
   const me = party.find((member) => member.playerId === (session?.playerId ?? ""));
