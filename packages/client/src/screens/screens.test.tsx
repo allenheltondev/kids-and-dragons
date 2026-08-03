@@ -18,7 +18,7 @@ import { nextFace } from "./DiceOverlay";
 import { isMissingArt } from "./CharacterPortrait";
 import { characterArtUrl } from "../world/art-paths";
 import manifest from "../../../../assets/manifest.json";
-import { HORN_STYLES, MARKINGS, WING_STYLES } from "./creationContent";
+import { HORN_STYLES, MARKINGS, PALETTES, WING_STYLES, defaultAppearance } from "./creationContent";
 import { patchCreationDraft, resetCreationDraft } from "./creationDraft";
 import rules from "../../../../content/rules.json";
 import items from "../../../../content/items.json";
@@ -271,6 +271,29 @@ describe("creation options", () => {
     expect(marks(row("dapple"))).toBe(MARKINGS.length);
     expect(row(undefined)).not.toContain("Chosen");
     expect(row("dapple")).toContain("Chosen");
+  });
+
+  /**
+   * Colour and accent are the one step creation does not require an answer to
+   * (CreationFlow `stepDone`), and this is what makes that safe: a player who
+   * taps straight past still leaves with a real colour, because picking a
+   * species already applied one.
+   *
+   * Worth pinning because the failure is silent and downstream. An empty
+   * accent is not a crash — it is a flame with no colour in the keepsake
+   * lantern and an unlit portrait, noticed weeks later by somebody wondering
+   * why one character looks wrong.
+   */
+  it("leaves every species with a usable colour before the step is even shown", () => {
+    // From the manifest, so a seventh species is covered the day it lands.
+    for (const { id } of manifest.species) {
+      const appearance = defaultAppearance(id as Parameters<typeof defaultAppearance>[0]);
+      expect(appearance.palette, id).not.toBe("");
+      expect(PALETTES.map((p) => p.id), id).toContain(appearance.palette);
+      // The accent is a hex the chrome renders directly — SignInFlow puts it
+      // straight into a `color`, which fails open and invisible on "".
+      expect(appearance.accent, id).toMatch(/^#[0-9a-fA-F]{6}$/);
+    }
   });
 });
 
