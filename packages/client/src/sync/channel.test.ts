@@ -491,6 +491,18 @@ describe("parseChannelMessage", () => {
     expect(parsed).toMatchObject({ presentation: { kind: "DOWN", targetId: "c_1" } });
   });
 
+  it("keeps additive progression snapshots and award triggers", () => {
+    const progression = {
+      characters: [],
+      awards: [{ characterId: "c_1", leveledTo: 4, newTier: "sworn" }],
+    };
+    const parsed = parseChannelMessage(
+      JSON.stringify({ seq: 2, runId: "r_1", patch: [], progression }),
+    );
+
+    expect(parsed).toMatchObject({ progression });
+  });
+
   it("infers a snapshot from its payload when kind is missing", () => {
     const state = makeState({ seq: 4 });
     const parsed = parseChannelMessage(JSON.stringify({ seq: 4, runId: "r_1", state }));

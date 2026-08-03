@@ -69,9 +69,9 @@ describe("migrateCharacter — refusals", () => {
      * field this build would then misread — and a character that loads *wrong*
      * is worse than one that does not load.
      */
-    expect(() => migrateCharacter(current(), CHARACTER_VERSION + 1)).toThrow(
-      /understands up to v/,
-    );
+    const migrateFutureRow = () => migrateCharacter(current(), CHARACTER_VERSION + 1);
+    expect(migrateFutureRow).toThrow(StoredCharacterError);
+    expect(migrateFutureRow).toThrow(/understands up to v/);
   });
 
   it("throws on a row with no committed progress", () => {
@@ -79,6 +79,15 @@ describe("migrateCharacter — refusals", () => {
     // default for "what level is she?" and guessing would be silently wrong.
     const { committed: _c, ...rest } = current();
     expect(() => migrateCharacter(rest, CHARACTER_VERSION)).toThrow(StoredCharacterError);
+  });
+
+  it("throws on a row with no committed stats", () => {
+    const character = current();
+    const { stats: _stats, ...committed } = character.committed;
+    const row = { ...character, committed };
+
+    expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(StoredCharacterError);
+    expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(/committed\.stats/);
   });
 
   it("throws when a stat is missing rather than defaulting it to zero", () => {
@@ -95,11 +104,13 @@ describe("migrateCharacter — refusals", () => {
     expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(/stats\.heart/);
   });
 
-  it("names the field it choked on", () => {
+  it("throws on a row with no name and identifies the missing field", () => {
     // A stored row cannot be re-read from a schema file, so the error message
     // is the entire debugging surface.
-    const row = { ...current(), name: "" };
-    expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(/name/);
+    const { name: _name, ...row } = current();
+    const migrateUnnamedRow = () => migrateCharacter(row, CHARACTER_VERSION);
+    expect(migrateUnnamedRow).toThrow(StoredCharacterError);
+    expect(migrateUnnamedRow).toThrow(/name/);
   });
 
   it("refuses something that is not an object at all", () => {
