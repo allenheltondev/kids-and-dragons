@@ -4,9 +4,9 @@
  * The rig draws into its own canvas (that module); this uploads that canvas as
  * a texture and hands back a sprite the two stages can place. It is the whole
  * of the Rive↔Pixi seam art-pipeline.md §7 names, and it is deliberately thin:
- * everything with an opinion about *rigs* — the contract's inputs, the palette
- * bindings, the handle ownership — lives one module down, where the creation
- * screen can reach it without importing a renderer.
+ * everything with an opinion about *rigs* — the contract's inputs, the handle
+ * ownership — lives one module down, where the creation screen can reach it
+ * without importing a renderer.
  *
  * The upload is per-repaint rather than per-frame-unconditionally: `createRig`
  * calls back when it has actually drawn, so a rig that stops advancing stops
@@ -16,10 +16,8 @@
  */
 
 import { Sprite, Texture } from "pixi.js";
-import type { Appearance, SpeciesId, TierId } from "@kad/shared";
+import type { SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, createRig, type RigHandle } from "./rive-rig";
-
-export { paletteColorsFor } from "./rive-rig";
 
 export interface RiveActorHandle {
   /** Anchored like every character sprite: feet on the manifest origin. */
@@ -30,8 +28,6 @@ export interface RiveActorHandle {
   setKnockedDown(down: boolean): void;
   /** Fire one of the contract's nine triggers by name. Unknown names are ignored. */
   fire(trigger: string): void;
-  /** Re-bind the palette without rebuilding the rig. */
-  setPalette(appearance: Appearance): void;
   destroy(): void;
 }
 
@@ -43,12 +39,11 @@ export async function createRiveActor(
   species: SpeciesId,
   tier: TierId,
   height: number,
-  appearance?: Appearance,
 ): Promise<RiveActorHandle | null> {
   let texture: Texture | null = null;
   let rig: RigHandle | null = null;
 
-  rig = await createRig(species, tier, appearance, () => {
+  rig = await createRig(species, tier, () => {
     // Only after a real repaint. `texture` is still null for the first draw,
     // which happens inside `createRig` before this closure has anything to
     // update — the sprite's first frame comes from the initial upload below.
@@ -81,9 +76,6 @@ export async function createRiveActor(
       },
       fire(trigger: string): void {
         if (!destroyed) built.fire(trigger);
-      },
-      setPalette(next: Appearance): void {
-        if (!destroyed) built.setPalette(next);
       },
       destroy(): void {
         if (destroyed) return;

@@ -46,10 +46,11 @@ assets/
           body.png  head.png  mane.png
           arm_l.png arm_r.png  leg_l.png leg_r.png
           tail.png  wings.png  horn.png     ← per species: mane is universal
-                                              (the recolor slot, asset-brief §4.4),
+                                              (secondary motion, asset-brief §4.4),
                                               horn is the unicorn's, wings the flyers'
-        rig.riv                  not yet delivered — zero .riv in the repo; the
-                                 contract it must meet is manifest.rigContract (§6.1)
+        rig.riv                  all 24 delivered, authored by rive-mcp from
+                                 manifest.rigContract (§6.1) and green through
+                                 `art:verify:rig:strict`
         portrait.webp            *derived*, not commissioned — `npm run art:portraits`
                                  trims assembled.png to the figure, squares it, and
                                  writes 384px WebP for cards and lists (§2.1)
@@ -94,12 +95,34 @@ Asset generation is **outsourced to a coding agent** (Codex). We do not build a 
 
 What that changes, and what it doesn't:
 
+**Allen owns image assets. Claude owns everything else on the art side.**
+
 | | Owner |
 |---|---|
-| Generating images, cutting parts, hitting the spec | **The agent** |
-| The spec it works from | **Us** — [asset-brief.md](./asset-brief.md) |
-| The machine gate that decides "done" | **Us** — `npm run art:verify` |
+| **Image assets** — character parts, gear overlays, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** (commissioning them, and the eye that accepts them) |
+| Rigging — skeleton, state machine, clip table, per-tier export | **Claude**, via `rive-mcp` (see below) |
+| The spec the drawings work from | **Claude** — [asset-brief.md](./asset-brief.md) |
+| The machine gates | **Claude** — `npm run art:verify`, `npm run art:verify:rig` |
 | The taste call | **Allen**, on a contact sheet |
+
+If it is a `.png` or a `.webp`, it is Allen's. What is outstanding at any
+moment is [asset-inventory.md](./asset-inventory.md) — or better,
+`npm run art:inventory`, which derives it instead of restating it.
+
+**Rigging moved from human to agent, and that is the biggest change since this
+document was written.** It was scoped here as the one step that stayed
+hands-on — ~2h per species in the Rive editor, 12 hours across six, and the
+long pole of the whole art plan. It is now `rive-mcp`
+(allenheltondev/rive-mcp), whose `rig --contract` derives a rig's entire clip
+table, event ticks and input list from `assets/manifest.json` directly. All 24
+rigs are delivered and `art:verify:rig:strict` is green.
+
+**The line falls there because rigs are generated from a contract and drawings
+are not.** A rig cannot drift from the manifest, because the manifest is what
+it was generated from — the contract is rigging's *input*, not a description
+checked afterwards. No comparable statement is true of a drawing. So rigging
+could cross over on the strength of a machine gate that decides the whole
+question, and the taste call cannot, for that same reason in reverse.
 
 The important consequence: **"the agent says it's finished" is not an acceptance criterion.** We
 still own an independent verifier that runs in our CI against our repo. Outsourcing the work does
@@ -107,15 +130,16 @@ not outsource the gate — if anything it raises the bar, because the failure mo
 four pixels, a canvas that's 1023 wide, a missing `tail.png`) are exactly the kind that look fine
 in a preview and break at runtime.
 
-So the tooling is five commands:
+So the tooling is six commands:
 
 | Command | Does |
 |---|---|
 | `npm run art:verify` | Checks `assets/` against `assets/manifest.json`: pixels, canvas, registration, alpha, orphans, effect composition. **Runs in CI. Blocking.** |
 | `npm run art:verify:strict` | The same, but *undelivered* art fails too. Runs prod-only in the deploy workflow — on a PR, sets landing over time are not a regression. |
 | `npm run art:verify:rig` | The rig contract (`tools/art/verify-rig.ts`, §6.1): clip table coherence, the turn budget, effect/clip sync, and any delivered `.riv` against `rigContract`. **Runs in CI.** |
-| `npm run art:verify:rig:strict` | The same, but *missing* rigs fail. Off until the first rig is authored. |
+| `npm run art:verify:rig:strict` | The same, but *missing* rigs fail. **On, and green** — all 24 rigs are delivered, so a rig that goes missing is now a regression rather than a gap. |
 | `npm run art:sheet` | Writes PNG contact sheets from `assets/` to `art/review/` for the human review pass (`tools/art/sheet.py`). |
+| `npm run art:inventory` | **What is left to draw** (`tools/art/inventory.ts`). Derives what is needed from the manifest, checks it against the disk, names every missing file. Reports; never gates. Prose around it: [asset-inventory.md](./asset-inventory.md). |
 
 Nothing counts as accepted without passing both the verifier and an eye on the contact sheet.
 
@@ -231,6 +255,13 @@ for them). Same skeleton across all tiers of a species, so a tier change is a **
 identical rig** — which is what makes the transformation cutscene possible. When §9's budget says
 "6 rigs", it is counting the authoring; the export count is 24.
 
+**Authored by `rive-mcp`, not by hand in the Rive editor** — the ownership change in §3. Its
+`rig --contract` reads `assets/manifest.json` and derives the clip table, event ticks and input
+list below directly, which is why the table and the rigs cannot drift: one is generated from the
+other. The per-species art facts a contract cannot know — hierarchy, draw order, origin, which
+parts are meshed — live in `art/rig/<species>.rig.json`. `art:verify:rig:strict` is green across
+all 24.
+
 ### 6.1 Required state machine
 
 Every character rig exposes the same state machine so game code never special-cases a species:
@@ -315,6 +346,14 @@ drive a TV.
 > custom transform rig (a tree of Pixi sprites with keyframed transforms in JSON, ~300 lines of
 > runtime) — cheaper to render, more painful to author. Decide this before any rigging work starts,
 > because it determines the authoring tool.
+>
+> **Outcome: Rive, and the fallback was never built.** The harness is
+> `packages/client/spike/rive-pixi.ts` (`npm run spike:rive`) — seven rigs, no dirty-rig skipping,
+> frame time rather than FPS as the headline, both choices argued in its header. It sized the
+> offscreen buffer at 512px, which is what `world/rive-rig.ts` uses. All 24 rigs shipped through
+> this seam afterwards, so the tooling question is closed in practice. The one thing still owed is
+> a **frame-time number taken on the actual TV and written down** — see the Chapter 0 note in
+> [roadmap.md](./roadmap.md#chapter-0--foundation--spikes).
 
 ---
 
@@ -332,6 +371,12 @@ it survives contact with the game.
 
 The brief is the actual deliverable of steps 1–5. Every problem you find on one character is a
 paragraph you add, and that paragraph saves you twenty-three repeats of the same fix.
+
+**All six steps are done.** The order held: unicorn first, then its remaining three tiers as the
+consistency test, then the other five species batched — 24 part-sets and 24 rigs, green through
+`art:verify` and `art:verify:rig:strict`. Step 3 ("rig and animate it") turned out cheaper than
+budgeted because rigging became generation rather than authoring (§3), which is the one place this
+plan was wrong in the helpful direction.
 
 ---
 
@@ -353,9 +398,10 @@ With generation commissioned, the human time redistributes rather than disappear
 |---|---|---|
 | Writing and iterating the brief | **Highest leverage. Front-loaded.** | It's the thing that scales to 24 characters. |
 | Reviewing contact sheets | ~15 min per gate | No script decides "same character." |
-| **Rigging in Rive** | ~2h per species skeleton | Authoring a skeleton and state machine is design work, not generation. Reused across all four tiers. |
-| Binding tier skins to rigs | ~15 min per tier | Fast *if* cross-tier joint registration held. |
+| ~~**Rigging in Rive**~~ | ~~~2h per species skeleton~~ | **No longer human.** `rive-mcp` generates the skeleton and state machine from `manifest.rigContract`; see §3. |
+| ~~Binding tier skins to rigs~~ | ~~~15 min per tier~~ | **No longer human,** and cross-tier joint registration did hold — all four tiers of all six species are rigged and green. |
 
-The rigging is now the long pole — roughly **12 hours across 6 species**, and it can't start until
-the Rive-vs-custom-rig question (§7) is settled. Sequence that spike before commissioning past the
-first character.
+Rigging was the long pole of this plan — roughly **12 hours across 6 species**, gated on a spike
+that had to settle before commissioning past the first character. Both are closed: the spike
+resolved in Rive's favour, and the work is `rive-mcp`'s. What is left of the human budget is the
+brief and the taste call, which is where it was always most valuable.

@@ -32,7 +32,10 @@
  * the fall and the get-up. Monsters keep the static cutout and the procedural
  * fallen pose, because no enemy rig is commissioned yet (asset-brief §9.5),
  * and so does any party figure whose rig will not load. `playBeat` says per
- * beat which clip it fires and, for the ones it does not, why.
+ * beat which clip it fires and, for the ones it does not, why. Every party
+ * figure carries its character's name under its feet (world/nameplate.ts) —
+ * how the table tells two players who picked the same species apart, now that
+ * the runtime recolour that used to do it is gone.
  *
  * TILE ART: sliced from `assets/biomes/<biome>/tiles.png` — row 0 is the four
  * floor variants, row 1 the four blocked variants (asset-brief §4.5). A sheet
@@ -68,6 +71,14 @@ import {
 } from "./actor-art";
 
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
+import {
+  createNameplate,
+  fitNameplate,
+  nameplateBoxOf,
+  nameplateGap,
+  nameplateLabel,
+  type NameplateBox,
+} from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -78,6 +89,41 @@ const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
 
 /** Where feet sit inside a tile — low, so the figure reads as *on* it. */
 const FEET_Y = 0.82;
+
+/**
+ * How wide a party figure's nameplate may be, in board pixels.
+ *
+ * Strictly *under* one tile, and that is the whole point: tiles are one tile
+ * apart, so a cap of 0.9 leaves a tenth of a tile of gutter between the names
+ * of two figures standing side by side, and no arrangement of the party can
+ * close it. A cap of 1.1 "a tile and a little" looked generous and read as
+ * `SparklehoofSkyclaw` the moment two of them shared a row — the same gutter
+ * reasoning the story lineup applies to its own slot (scene.ts).
+ *
+ * Party figures only: an enemy's label would be a spec id, and three goblins
+ * are told apart by where they are standing, not by which one is which
+ * (spec §7.3 — a beaten one simply leaves).
+ */
+const NAMEPLATE_MAX_WIDTH = BOARD_TILE_PX * 0.9;
+
+/**
+ * What the nameplate is sized against here — a tile, not the figure.
+ *
+ * The story lineup takes it from the figure's own height, and for one figure
+ * standing in a 1600×900 rect that is the right relationship. A board is a
+ * different picture: the same figure is a much smaller share of a 10×8 grid,
+ * so the same fraction produced a name half the on-screen size of the lineup's
+ * and marginal on a TV at full board extent. A tile is the board's unit of
+ * measure, so sizing against it is what keeps the name the same *readable*
+ * thing on both surfaces even though the arithmetic differs.
+ */
+const NAMEPLATE_TYPE_HEIGHT = BOARD_TILE_PX * 2.4;
+
+/** The drop below the feet, from `ACTOR_HEIGHT` and not from the type size —
+    a name in `nameLayer` is positioned in board space rather than inside its
+    actor, so it needs the number, but it must be the *same* number the label
+    was built with. `nameplateGap` is the one place that formula lives. */
+const NAMEPLATE_OFFSET_Y = nameplateGap(ACTOR_HEIGHT);
 
 /**
  * One `walk` cycle, in seconds — 4 ticks on the contract's 12fps clock
@@ -114,6 +160,9 @@ export interface BoardLayer {
   /** Called from the scene's ticker — this module adds no ticker of its own,
       so PixiStage's stopped-when-hidden discipline holds for free. */
   tick(dtSeconds: number): void;
+  /** The party names currently drawn, as boxes in board pixels. See
+      `NameplateBox` for why this is readable at all. */
+  nameplateBoxes(): NameplateBox[];
   destroy(): void;
 }
 
@@ -134,6 +183,17 @@ interface BoardActor {
    * the cutout and the procedural pose (asset-brief §9.5).
    */
   rive: RiveActorHandle | null;
+  /**
+   * The name under a party figure's feet — who this is, when two players
+   * picked the same species (nameplate.ts). Null for a monster, and for a name
+   * with nothing in it. A sibling of `art` rather than a child: the art
+   * rotates and fades for the fallen pose, and a name is most wanted at
+   * exactly the moment somebody is asking who is down.
+   */
+  label: Text | null;
+  /** What `label` is currently saying, so a renamed character is spotted
+      without measuring a Text every patch. */
+  labelText: string | null;
   /**
    * Travelling under its own power, so the walk cycle should keep playing. A
    * shove moves a figure just as far and is emphatically not this: the slide
@@ -166,8 +226,22 @@ export function createBoardLayer(): BoardLayer {
   const actorsLayer = new Container();
   // Painter's order by zIndex: feet further down the board draw in front.
   actorsLayer.sortableChildren = true;
+  /*
+   * Names ride above every figure, not inside the one they belong to.
+   *
+   * They were children of their actor's container at first, which put them in
+   * the depth sort — correct-looking, and wrong. Three party members start a
+   * fight clustered on adjacent tiles, so the figure in front cropped the name
+   * behind it to its last few letters: "…lehoof" where "Sparklehoof" should
+   * be, in the opening frame of every encounter. A name half-eaten by a
+   * teammate is worse than no name, and it fails hardest in exactly the case
+   * the name exists for. So they get their own layer, positions followed per
+   * frame in `tick`, on the same reasoning `floatLayer` sits above this one:
+   * a label nobody can read is a label that is not there.
+   */
+  const nameLayer = new Container();
   const floatLayer = new Container();
-  container.addChild(tilesLayer, highlightLayer, actorsLayer, floatLayer);
+  container.addChild(tilesLayer, highlightLayer, actorsLayer, nameLayer, floatLayer);
 
   const activeRing = new Graphics();
   activeRing.visible = false;
@@ -279,6 +353,21 @@ export function createBoardLayer(): BoardLayer {
     art.addChild(placeholder);
 
     const feet = feetOf(at);
+    const named =
+      combatant.side === "party"
+        ? current.party.find((m) => m.character.id === combatant.id)?.character.name ?? ""
+        : "";
+    const label = createNameplate(named, {
+      typeHeight: NAMEPLATE_TYPE_HEIGHT,
+      figureHeight: ACTOR_HEIGHT,
+      maxWidth: NAMEPLATE_MAX_WIDTH,
+    });
+    if (label) {
+      label.x = feet.x;
+      label.y = feet.y + NAMEPLATE_OFFSET_Y;
+      nameLayer.addChild(label);
+    }
+
     const actor: BoardActor = {
       container: actorContainer,
       art,
@@ -288,6 +377,8 @@ export function createBoardLayer(): BoardLayer {
       targetX: feet.x,
       targetY: feet.y,
       rive: null,
+      label,
+      labelText: nameplateLabel(named),
       selfMoving: false,
       sinceStep: 0,
     };
@@ -330,8 +421,8 @@ export function createBoardLayer(): BoardLayer {
 
     // The rig first, the cutout when there isn't one — the same order and the
     // same never-goes-stale reasoning the story lineup uses (scene.ts).
-    const { species, tier, appearance } = member.character;
-    void createRiveActor(species, tier, ACTOR_HEIGHT, appearance)
+    const { species, tier } = member.character;
+    void createRiveActor(species, tier, ACTOR_HEIGHT)
       .then((rive) => {
         if (destroyed || actors.get(combatant.id) !== actor) {
           rive?.destroy();
@@ -373,6 +464,25 @@ export function createBoardLayer(): BoardLayer {
         existing.down = combatant.down;
         existing.targetX = feet.x;
         existing.targetY = feet.y;
+        // This module draws what it is given and keeps nothing of its own
+        // (see the header), and a name is state like any other.
+        //
+        // Re-fit after the rewrite, not just the text. The *cap* is the tile
+        // and does not change; the width of what is in the label does, so a
+        // short name replaced by a long one would keep the old scale and
+        // overrun into the next tile — the `SparklehoofSkyclaw` collision
+        // NAMEPLATE_MAX_WIDTH exists to prevent, reintroduced by the one path
+        // that skipped the fit.
+        if (existing.label) {
+          const name = nameplateLabel(
+            current.party.find((m) => m.character.id === combatant.id)?.character.name ?? "",
+          );
+          if (name !== null && name !== existing.labelText) {
+            existing.labelText = name;
+            existing.label.text = name;
+            fitNameplate(existing.label, NAMEPLATE_MAX_WIDTH);
+          }
+        }
         continue;
       }
       actors.set(combatant.id, makeActor(combatant, gridActor, current));
@@ -383,6 +493,9 @@ export function createBoardLayer(): BoardLayer {
       // The C++ handles first — the container destroy only reaches the sprite.
       actor.rive?.destroy();
       actor.container.destroy({ children: true });
+      // The name is not in that container (see `nameLayer`), so it does not
+      // come down with it — a beaten figure would leave its label on the grid.
+      actor.label?.destroy();
       actors.delete(id);
     }
   }
@@ -566,6 +679,13 @@ export function createBoardLayer(): BoardLayer {
         actor.container.x = approach(actor.container.x, actor.targetX, WALK_RATE, dtSeconds);
         actor.container.y = approach(actor.container.y, actor.targetY, WALK_RATE, dtSeconds);
         actor.container.zIndex = actor.container.y;
+        // The name lives in its own layer, so it has to be carried rather than
+        // dragged: it follows the eased position, not the target, or it would
+        // arrive a tile ahead of the figure it belongs to.
+        if (actor.label) {
+          actor.label.x = actor.container.x;
+          actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y;
+        }
         if (actor.rive) {
           // The rig owns the fall: `knockedDown` walks it through `down` into
           // the `down_loop` breathing hold and back out through `revive`
@@ -643,6 +763,12 @@ export function createBoardLayer(): BoardLayer {
       }
     },
 
+    nameplateBoxes() {
+      return [...actors.values()]
+        .filter((a) => a.label !== null && a.label.visible)
+        .map((a) => nameplateBoxOf(a.label!));
+    },
+
     destroy() {
       destroyed = true;
       pending.length = 0;
@@ -651,6 +777,11 @@ export function createBoardLayer(): BoardLayer {
       for (const actor of actors.values()) {
         actor.rive?.destroy();
         actor.container.destroy({ children: true });
+        // Released here rather than left to `container.destroy` below, so the
+        // one thing an actor owns outside its own subtree is owned in the
+        // same place as everything else it owns. Destroying detaches it from
+        // `nameLayer`, so the sweep below cannot reach it twice.
+        actor.label?.destroy();
       }
       actors.clear();
       container.destroy({ children: true });

@@ -112,7 +112,6 @@ export function CreationPreview(): ReactElement {
               key={draft.species}
               species={draft.species}
               tier={STARTING_TIER}
-              appearance={draft.appearance}
               className="preview__hero"
               fallback={
                 <CharacterPortrait
@@ -171,8 +170,10 @@ export function CreationPreview(): ReactElement {
 
           {palette === null ? null : (
             <p className="preview__palette kad-muted">
-              {/* Mane inside, accent as the ring — the two colours the rig
-                  actually binds. See creationContent PALETTES. */}
+              {/* Mane inside, accent as the ring. The figure itself is drawn
+                  in its authored colours — these dress this player's UI
+                  chrome, which is what the pair is for now (world/nameplate.ts
+                  on why the rig stopped wearing them). */}
               <span
                 className="preview__palette-chip"
                 style={{ background: palette.mane, borderColor: draft.appearance.accent }}
