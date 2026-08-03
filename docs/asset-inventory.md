@@ -39,8 +39,7 @@ Snapshot — regenerate with `npm run art:inventory`.
 |---|---|---|
 | Character part-sets | **224 / 224** | — |
 | Character rigs *(mine)* | **24 / 24** | — |
-| Biome backdrops + tiles | **34 / 34** | — |
-| Biome props | **102** | — |
+| Biome backdrops, tiles + props | **51 / 51** | — |
 | Effect sheets, declared | **11 / 11** | — |
 | Entity cutouts | **27 / 27** | — |
 | **Gear overlays** | 6 / 24 | **18 files** — 9 sets |
