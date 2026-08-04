@@ -1,0 +1,649 @@
+// @vitest-environment jsdom
+/**
+ * PlayerPanel — the four prompts, the bag, and the rule they all share.
+ *
+ * Same reason as `combat-panel.test.tsx`: `screens.test.tsx` proves this
+ * renders, which for a 746-line panel holding four prompt machines and an
+ * inventory is a smoke test wearing a coverage number. What matters here is
+ * what happens *between* taps, and one rule governs all of it — **nothing is
+ * final until the confirm bar** (spec §11).
+ *
+ * Two things in this file are subtler than they look and are why it exists:
+ *
+ *  - the item-swap answer is a *tri-state*. `undefined` is "not decided",
+ *    `null` is "leave it behind", and a string is "drop this one". Collapsing
+ *    null and undefined turns an un-answered prompt into a silent "leave it",
+ *    which loses the item the party just earned.
+ *  - the bag selection is resolved by *item*, not by slot. The server rewrites
+ *    the inventory underneath an open sheet (a swap, a used potion, a grant),
+ *    and an index that survived that would point "Use it" at whatever slid in.
+ */
+
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type {
+  Campaign,
+  ClientIntent,
+  InventoryEntry,
+  ItemCatalog,
+  PartyMember,
+  Prompt,
+  ResolvedCharacter,
+  RunState,
+} from "@kad/shared";
+import { beginEncounter, parseBoard } from "@kad/shared";
+import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
+import { useGameStore } from "../store";
+import { PlayerPanel } from "./PlayerPanel";
+
+const ITEMS: ItemCatalog = makeItems();
+const POTION: InventoryEntry = { itemId: "sunbloom_draught", kind: "consumable" };
+
+/** The names `makeItems()` actually ships, so the fixture cannot drift. */
+const POTION_NAME = ITEMS["sunbloom_draught"]?.name ?? "Sunbloom Draught";
+
+function character(overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacter {
+  return {
+    id: "c_1",
+    ownerPlayerId: "p_1",
+    name: "Sparklehoof",
+    species: "unicorn",
+    class: "songkeeper",
+    appearance: { palette: "meadow", accent: "#7FD4C1" },
+    level: 1,
+    xp: 0,
+    tier: "fledgling",
+    stats: { might: 2, quick: 3, clever: 3, heart: 5 },
+    unspentPoints: 0,
+    committedLevel: 1,
+    maxHp: 10,
+    steps: 4,
+    guard: 11,
+    attackStat: "heart",
+    actions: [],
+    worldAbility: "mend",
+    inventory: [],
+    questItems: [],
+    souvenirs: [],
+    isProvisional: false,
+    ...overrides,
+  };
+}
+
+function member(overrides: Partial<PartyMember> = {}): PartyMember {
+  const char = overrides.character ?? character();
+  return {
+    character: char,
+    playerId: char.ownerPlayerId,
+    hp: char.maxHp,
+    down: false,
+    connected: true,
+    ready: false,
+    ...overrides,
+  };
+}
+
+const CAMPAIGN = { id: "c", chapters: ["ch_1"] } as unknown as Campaign;
+
+interface MountOptions {
+  party?: PartyMember[];
+  prompt?: Prompt | null;
+  phase?: RunState["phase"];
+  playerId?: string;
+  items?: ItemCatalog | null;
+  campaign?: Campaign | null;
+  narration?: string;
+}
+
+function baseState(options: MountOptions): RunState {
+  return {
+    runId: "r_1",
+    roomCode: "ABCD",
+    mode: "travel",
+    seq: 1,
+    phase: options.phase ?? "scene",
+    campaignId: "c",
+    chapterId: "ch_1",
+    sceneId: "s_1",
+    sceneType: "story",
+    narration: options.narration ?? "",
+    art: null,
+    party: options.party ?? [member()],
+    prompt: options.prompt ?? null,
+    lastRoll: null,
+    flags: {},
+    xpEarned: 0,
+    updatedAt: "2026-07-04T18:00:00.000Z",
+  };
+}
+
+function mount(options: MountOptions = {}) {
+  const sent: ClientIntent[] = [];
+  const send = vi.fn(async (intent: ClientIntent) => {
+    sent.push(intent);
+    return true;
+  });
+
+  useGameStore.setState({
+    session: {
+      runId: "r_1",
+      roomCode: "ABCD",
+      playerId: options.playerId ?? "p_1",
+      mode: "travel",
+      sessionToken: "t",
+    },
+    state: baseState(options),
+    items: options.items === undefined ? ITEMS : options.items,
+    campaign: options.campaign === undefined ? CAMPAIGN : options.campaign,
+    send,
+    // The panel calls this on mount; it must not reach the network here.
+    loadContent: async () => undefined,
+    loadChapter: async () => undefined,
+  });
+
+  const view = render(<PlayerPanel />);
+  return { ...view, sent, send };
+}
+
+/** Push a new server state in, the way a channel patch would. */
+function serverSends(next: Partial<RunState>): void {
+  const current = useGameStore.getState().state!;
+  act(() => {
+    useGameStore.setState({ state: { ...current, ...next, seq: current.seq + 1 } });
+  });
+}
+
+const choicePrompt = (overrides: Partial<Extract<Prompt, { kind: "choice" }>> = {}): Prompt => ({
+  kind: "choice",
+  sceneId: "s_1",
+  options: [
+    { id: "east", label: "Take the east path", icon: "path" },
+    { id: "west", label: "Take the west path", icon: "path" },
+  ],
+  forPlayerIds: [],
+  vote: false,
+  ...overrides,
+});
+
+const doIt = () => screen.getByRole("button", { name: "Do it!" });
+
+/** Every `role="status"` line on screen — `Spinner` carries one of its own. */
+const statusLines = (): string[] => screen.getAllByRole("status").map((n) => n.textContent ?? "");
+const someStatusSays = (text: string): boolean => statusLines().some((t) => t.includes(text));
+
+/** A real, minimal fight, so the in-combat branches are reachable honestly. */
+function realEncounter() {
+  return beginEncounter(
+    {
+      board: parseBoard(["...", "...", "..."]),
+      party: [{ character: character(), at: { x: 0, y: 0 } }],
+      enemies: [
+        {
+          spec: { id: "wisp", name: "Bramblewisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 },
+          at: { x: 2, y: 2 },
+        },
+      ],
+    },
+    { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+  );
+}
+
+afterEach(cleanup);
+
+// ---------------------------------------------------------------------------
+// Before there is anything to show
+// ---------------------------------------------------------------------------
+
+describe("before the character arrives", () => {
+  it("says it is looking rather than rendering an empty sheet", () => {
+    useGameStore.setState({
+      session: null,
+      state: null,
+      loadContent: async () => undefined,
+      loadChapter: async () => undefined,
+    });
+    render(<PlayerPanel />);
+    expect(someStatusSays("Finding your character")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Choice
+// ---------------------------------------------------------------------------
+
+describe("a choice", () => {
+  it("sends nothing on the first tap, and the label on the confirm", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: choicePrompt() });
+
+    await user.click(screen.getByRole("button", { name: /Take the east path/ }));
+    expect(sent).toEqual([]);
+
+    // The bar echoes the option, so what is about to happen is readable.
+    const bar = screen.getByText("Take the east path", { selector: ".confirm__what span" });
+    expect(bar).toBeTruthy();
+
+    await user.click(doIt());
+    expect(sent).toEqual([{ type: "CHOOSE", choiceId: "east" }]);
+  });
+
+  it("marks the pending option as pressed, so the tap is visible before it commits", async () => {
+    const user = userEvent.setup();
+    mount({ prompt: choicePrompt() });
+    const east = screen.getByRole("button", { name: /Take the east path/ });
+    expect(east.getAttribute("aria-pressed")).toBe("false");
+
+    await user.click(east);
+    expect(screen.getByRole("button", { name: /Take the east path/ }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("button", { name: /Take the west path/ }).getAttribute("aria-pressed")).toBe(
+      "false",
+    );
+  });
+
+  it("changes its mind without sending, and can pick the other one", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: choicePrompt() });
+
+    await user.click(screen.getByRole("button", { name: /east/ }));
+    await user.click(screen.getByRole("button", { name: "Change" }));
+    expect(sent).toEqual([]);
+    expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /west/ }));
+    await user.click(doIt());
+    expect(sent).toEqual([{ type: "CHOOSE", choiceId: "west" }]);
+  });
+
+  it("drops a pending choice when the question changes underneath it", async () => {
+    /*
+     * The dangerous one, and the reason `promptKey` exists. A confirm bar left
+     * standing across a scene change commits an answer to a question that is
+     * no longer on screen.
+     */
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: choicePrompt() });
+    await user.click(screen.getByRole("button", { name: /east/ }));
+    expect(screen.getByRole("button", { name: "Do it!" })).toBeTruthy();
+
+    /*
+     * The new scene deliberately reuses the option id "east". A question whose
+     * ids happen not to overlap is cleared for free — `chosenOption` simply
+     * fails to find the old id — so only a scene that reuses one actually
+     * exercises `promptKey`. Chapters reuse "east" constantly.
+     */
+    serverSends({
+      sceneId: "s_2",
+      prompt: choicePrompt({
+        sceneId: "s_2",
+        options: [{ id: "east", label: "Squeeze through the gap", icon: "path" }],
+      }),
+    });
+
+    expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
+    expect(sent).toEqual([]);
+    const gap = screen.getByRole("button", { name: /Squeeze through the gap/ });
+    expect(gap.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("shows who voted for what, by character name", () => {
+    mount({
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+      ],
+      prompt: choicePrompt({ vote: true, votes: { p_2: "west" } }),
+    });
+
+    expect(screen.getByText("Everyone votes")).toBeTruthy();
+    const west = screen.getByRole("button", { name: /Take the west path/ });
+    expect(west.textContent).toContain("Thistle");
+  });
+
+  it("marks my own vote as already cast", () => {
+    // A vote already registered has to read as chosen even across a reload —
+    // the pending selection is local, the vote is the server's.
+    mount({ prompt: choicePrompt({ vote: true, votes: { p_1: "east" } }) });
+    expect(
+      screen.getByRole("button", { name: /Take the east path/ }).getAttribute("aria-pressed"),
+    ).toBe("true");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Roll
+// ---------------------------------------------------------------------------
+
+describe("a roll", () => {
+  const roll: Prompt = {
+    kind: "roll",
+    sceneId: "s_1",
+    stat: "clever",
+    tn: 12,
+    prompt: "Can you read the runes?",
+    characterId: "c_1",
+  };
+
+  it("names the stat and the number to beat, then rolls once", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: roll });
+
+    expect(screen.getByText("Can you read the runes?")).toBeTruthy();
+    // Scoped to the prompt: the stat name also appears down in the stat row.
+    const prompt = screen.getByText("Can you read the runes?").closest(".prompt")!;
+    expect(within(prompt as HTMLElement).getByText("clever")).toBeTruthy();
+    expect(within(prompt as HTMLElement).getByText("beat 12")).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: "Roll!" }));
+    expect(sent).toEqual([{ type: "ROLL" }]);
+  });
+
+  it("will not roll twice while the first one is in flight", async () => {
+    const user = userEvent.setup();
+    let release = (): void => undefined;
+    const send = vi.fn(
+      () => new Promise<boolean>((resolve) => (release = () => resolve(true))),
+    );
+    mount({ prompt: roll });
+    useGameStore.setState({ send });
+
+    await user.click(screen.getByRole("button", { name: "Roll!" }));
+    const rolling = screen.getByRole("button", { name: "Rolling…" });
+    expect(rolling.hasAttribute("disabled")).toBe(true);
+    await user.click(rolling);
+    expect(send).toHaveBeenCalledTimes(1);
+    release();
+  });
+
+  it("is not offered to a player the roll is not for", () => {
+    mount({
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+      ],
+      prompt: { ...roll, characterId: "c_2" },
+      playerId: "p_1",
+    });
+    expect(screen.queryByRole("button", { name: "Roll!" })).toBeNull();
+    // And it says who the table is waiting on, by name.
+    expect(someStatusSays("Thistle is rolling")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The item swap — the tri-state
+// ---------------------------------------------------------------------------
+
+describe("an item swap", () => {
+  const swap: Prompt = {
+    kind: "item_swap",
+    characterId: "c_1",
+    incomingItemId: "sunbloom_draught",
+  };
+  const heldA: InventoryEntry = { itemId: "thorn_charm", kind: "trinket" };
+
+  function mountSwap() {
+    return mount({
+      party: [member({ character: character({ inventory: [heldA] }) })],
+      prompt: swap,
+    });
+  }
+
+  it("shows no confirm bar until something is actually chosen", () => {
+    /*
+     * `undefined` is the un-answered state. If it were collapsed with `null`
+     * the bar would be up from the first render reading "Leave it behind",
+     * one tap from throwing away what the party just earned.
+     */
+    mountSwap();
+    expect(screen.queryByRole("button", { name: "Yes, do that" })).toBeNull();
+  });
+
+  it("sends null for 'leave it behind' — not undefined, not a missing field", async () => {
+    const user = userEvent.setup();
+    const { sent } = mountSwap();
+
+    await user.click(screen.getByRole("button", { name: /Leave it behind/ }));
+    expect(sent).toEqual([]);
+    await user.click(screen.getByRole("button", { name: "Yes, do that" }));
+
+    expect(sent).toEqual([{ type: "RESOLVE_ITEM_SWAP", dropItemId: null }]);
+    // The field has to be present and null — an absent key is a different
+    // answer to the server than an explicit "leave it".
+    expect(Object.hasOwn(sent[0] as object, "dropItemId")).toBe(true);
+  });
+
+  it("sends the id of the item being dropped", async () => {
+    const user = userEvent.setup();
+    const { sent } = mountSwap();
+
+    await user.click(screen.getByRole("button", { name: /Drop/ }));
+    await user.click(screen.getByRole("button", { name: "Yes, do that" }));
+    expect(sent).toEqual([{ type: "RESOLVE_ITEM_SWAP", dropItemId: "thorn_charm" }]);
+  });
+
+  it("goes back to undecided on Change, not to 'leave it'", async () => {
+    const user = userEvent.setup();
+    const { sent } = mountSwap();
+
+    await user.click(screen.getByRole("button", { name: /Leave it behind/ }));
+    await user.click(screen.getByRole("button", { name: "Change" }));
+
+    expect(sent).toEqual([]);
+    expect(screen.queryByRole("button", { name: "Yes, do that" })).toBeNull();
+    expect(
+      screen.getByRole("button", { name: /Leave it behind/ }).getAttribute("aria-pressed"),
+    ).toBe("false");
+  });
+
+  it("names the item that was found", () => {
+    mountSwap();
+    expect(screen.getByText(new RegExp(`You found ${POTION_NAME}`))).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ready and starting
+// ---------------------------------------------------------------------------
+
+describe("readying up", () => {
+  it("toggles to ready, and back", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ phase: "lobby" });
+
+    await user.click(screen.getByRole("button", { name: "I'm ready!" }));
+    expect(sent).toEqual([{ type: "READY", ready: true }]);
+
+    serverSends({ party: [member({ ready: true })] });
+    await user.click(screen.getByRole("button", { name: "Wait, not yet" }));
+    expect(sent[1]).toEqual({ type: "READY", ready: false });
+  });
+
+  it("hides Begin the adventure until the whole party is ready", async () => {
+    /*
+     * It cannot be tapped out from under anyone. One player readying while
+     * another is still building a character would start the chapter without
+     * them — the engine refuses, but the button should never have been there.
+     */
+    const user = userEvent.setup();
+    const half = [
+      member({ ready: true }),
+      member({ character: character({ id: "c_2", ownerPlayerId: "p_2" }), ready: false }),
+    ];
+    const { sent } = mount({ phase: "lobby", party: half });
+    expect(screen.queryByRole("button", { name: /Begin the adventure/ })).toBeNull();
+
+    serverSends({ party: half.map((m) => ({ ...m, ready: true })) });
+    await user.click(screen.getByRole("button", { name: /Begin the adventure/ }));
+    expect(sent).toEqual([{ type: "START_CHAPTER", chapterId: "ch_1" }]);
+  });
+
+  it("does not offer to begin when the campaign names no chapter", () => {
+    // Content is data: an empty campaign is a content bug, and the panel's job
+    // is to not invent a chapter id to send.
+    mount({ phase: "lobby", party: [member({ ready: true })], campaign: null });
+    expect(screen.queryByRole("button", { name: /Begin the adventure/ })).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The bag
+// ---------------------------------------------------------------------------
+
+describe("the bag", () => {
+  function mountBag(inventory: InventoryEntry[], overrides: Partial<PartyMember> = {}) {
+    return mount({
+      party: [member({ character: character({ inventory }), ...overrides })],
+    });
+  }
+
+  it("offers a heal on a run that has never had a fight", async () => {
+    /*
+     * A regression pin, not a nicety. `RunState.encounter` is optional and
+     * arrives three ways: **absent** on a run that has never fought
+     * (`createRunState` in engine.ts does not set the field), `null` once a
+     * fight has ended, and an object during one. This panel tested it with
+     * `!== null`, which reads "absent" as "a fight is happening" — so from the
+     * lobby until the party's first fight was over, every item in the bag said
+     * "Use it from your turn in the fight" and the button was never drawn.
+     *
+     * `baseState` above deliberately leaves the field off for exactly this
+     * reason: it is what the engine really produces.
+     */
+    const user = userEvent.setup();
+    const state = useGameStore.getState().state;
+    expect(state === null || !("encounter" in state)).toBe(true);
+
+    mountBag([POTION], { hp: 4 });
+    expect("encounter" in useGameStore.getState().state!).toBe(false);
+
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+    expect(screen.getByRole("button", { name: /Use it/ })).toBeTruthy();
+  });
+
+  it("opens an item's sheet on tap and closes it again", async () => {
+    const user = userEvent.setup();
+    mountBag([POTION], { hp: 4 });
+
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+    expect(screen.getByRole("button", { name: /Use it/ })).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: /Close/ }));
+    expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
+  });
+
+  it("uses the selected item and closes the sheet behind it", async () => {
+    const user = userEvent.setup();
+    const { sent } = mountBag([POTION], { hp: 4 });
+
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+    await user.click(screen.getByRole("button", { name: /Use it/ }));
+
+    expect(sent).toEqual([{ type: "USE_ITEM", itemId: "sunbloom_draught" }]);
+    expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
+  });
+
+  it("follows the item when the server reshuffles the bag under an open sheet", async () => {
+    /*
+     * The reason the selection stores an id and not just a slot. Something
+     * ahead of the potion is consumed, everything shifts down a slot, and the
+     * sheet must still be describing the potion rather than whatever landed
+     * in slot 1.
+     */
+    const charm: InventoryEntry = { itemId: "thorn_charm", kind: "trinket" };
+    const user = userEvent.setup();
+    mountBag([charm, POTION], { hp: 4 });
+
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+    expect(screen.getByRole("button", { name: /Use it/ })).toBeTruthy();
+
+    serverSends({
+      party: [member({ character: character({ inventory: [POTION] }), hp: 4 })],
+    });
+
+    // Still the potion, now in slot 0 — not the trinket, which is gone.
+    const detail = document.querySelector(".item-detail");
+    expect(detail?.textContent).toContain(POTION_NAME);
+    expect(screen.getByRole("button", { name: /Use it/ })).toBeTruthy();
+  });
+
+  it("closes the sheet when the selected item leaves the bag entirely", async () => {
+    const user = userEvent.setup();
+    mountBag([POTION], { hp: 4 });
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+
+    serverSends({ party: [member({ character: character({ inventory: [] }), hp: 4 })] });
+
+    // Quietly clears rather than adopting a stranger.
+    expect(document.querySelector(".item-detail")).toBeNull();
+  });
+
+  it("explains why a heal cannot be used at full health instead of offering it", async () => {
+    const user = userEvent.setup();
+    mountBag([POTION]);
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+
+    expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
+    expect(document.querySelector(".item-detail__passive")?.textContent).toContain("full health");
+  });
+
+  it("sends a fight-only consumable to the fight rather than offering it here", async () => {
+    const user = userEvent.setup();
+    mountBag([POTION], { hp: 4 });
+    serverSends({ encounter: realEncounter() });
+
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
+    expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
+    expect(document.querySelector(".item-detail__passive")?.textContent).toContain(
+      "from your turn in the fight",
+    );
+  });
+
+  it("says a trinket is always on rather than offering a use", async () => {
+    const user = userEvent.setup();
+    const charm: InventoryEntry = { itemId: "thorn_charm", kind: "trinket" };
+    mountBag([charm], { hp: 4 });
+
+    await user.click(screen.getByRole("button", { name: /thorn_charm|Thorn/ }));
+    expect(screen.getByText("Always on")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Waiting on the rest of the table
+// ---------------------------------------------------------------------------
+
+describe("waiting", () => {
+  it("names who the party is waiting for", () => {
+    mount({
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+      ],
+      prompt: choicePrompt({ forPlayerIds: ["p_2"] }),
+      playerId: "p_1",
+    });
+    expect(someStatusSays("Waiting for Thistle")).toBe(true);
+  });
+
+  it("falls back to listening when there is no question at all", () => {
+    mount({ prompt: null });
+    expect(someStatusSays("Listen to the story")).toBe(true);
+  });
+
+  it("says when a player is knocked down, and that it is recoverable", () => {
+    mount({ party: [member({ down: true, hp: 0 })] });
+    expect(someStatusSays("Knocked down")).toBe(true);
+    expect(someStatusSays("a friend can help you up")).toBe(true);
+  });
+
+  it("echoes the narration next to the answers so they are readable together", () => {
+    // Travel Mode shows one surface at a time; without this the question and
+    // its answers sit on opposite sides of a toggle.
+    mount({ prompt: choicePrompt(), narration: "A wall of thorns twice your height." });
+    expect(screen.getByText("A wall of thorns twice your height.")).toBeTruthy();
+  });
+});
