@@ -31,7 +31,6 @@ import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, createGuestHousehold } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import { setPresence } from "./handlers/presence.ts";
-import { spendStatPoint } from "./handlers/progression.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
@@ -247,11 +246,22 @@ async function main(): Promise<void> {
       return sendError(res, 400, "ILLEGAL", "expected { stat }");
     }
 
-    const result = await spendStatPoint({ principal: session, stat: req.body.stat }, deps);
-    if (!result.ok) {
-      return sendError(res, statusFor(result.error), result.error.code, result.error.message);
-    }
-    res.json(result.value);
+    const state = await deps.repo.getState(session.runId);
+    const response = await applyAction(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        seq: Number(req.body.seq ?? state?.seq ?? 0),
+        intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
+        principal: {
+          householdId: session.householdId,
+          playerId: session.playerId,
+          role: session.role,
+        },
+      },
+      deps,
+    );
+    res.json(response);
   });
 
   app.get("/api/state", async (req: Request, res: Response) => {

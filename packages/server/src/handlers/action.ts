@@ -27,11 +27,13 @@ import type {
   RunState,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
+import type { ApplyIntentResult } from "../engine/port.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
   newCharacterWrite,
+  prepareStatPointSpend,
   settleChapterCompletion,
   startPartyCampaign,
   type ChapterSettlement,
@@ -94,31 +96,53 @@ export async function applyAction(
 
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;
-  const result = deps.engine.applyIntent(
-    state,
-    // The engine re-checks seq itself; passing it keeps that guard armed even
-    // if this handler is ever bypassed.
-    { playerId: input.playerId, intent: input.intent, seq: input.seq },
-    {
-      rules: deps.content.rules(),
-      items: deps.content.items(),
-      chapter,
-      // The board an encounter scene names. A lookup rather than a value: a
-      // chapter can hold several fights, and the engine should not be handed
-      // every map it might reach.
-      map: (id) => deps.content.map(id),
-      // What every class and species action does on the board. A value rather
-      // than a lookup, unlike maps: `legalActions` runs for every combatant on
-      // every turn and needs the whole catalog anyway.
-      abilities: deps.content.abilities(),
-      // Characters belong to the household, not the run (architecture §3), so
-      // CREATE_CHARACTER needs to know which household it is building into.
-      householdId: auth.run.householdId,
-      // Seeded per event, never per wall clock — see the header.
-      rng: deps.rng(`${input.runId}:${nextSeq}`),
-      now: iso(nowMs),
-    },
-  );
+  let spentCharacter: Character | null = null;
+  let result: ApplyIntentResult;
+  if (input.intent.type === "SPEND_STAT_POINT") {
+    if (auth.run.status !== "active") {
+      return {
+        ok: false,
+        seq: state.seq,
+        error: { code: "ILLEGAL", message: "stat points require an active run" },
+      };
+    }
+    const spend = await prepareStatPointSpend(
+      state,
+      deps,
+      auth.run.householdId,
+      input.playerId,
+      input.intent.stat,
+    );
+    if (!spend.ok) return { ok: false, seq: state.seq, error: spend.error };
+    spentCharacter = spend.value.character;
+    result = { state: spend.value.state };
+  } else {
+    result = deps.engine.applyIntent(
+      state,
+      // The engine re-checks seq itself; passing it keeps that guard armed even
+      // if this handler is ever bypassed.
+      { playerId: input.playerId, intent: input.intent, seq: input.seq },
+      {
+        rules: deps.content.rules(),
+        items: deps.content.items(),
+        chapter,
+        // The board an encounter scene names. A lookup rather than a value: a
+        // chapter can hold several fights, and the engine should not be handed
+        // every map it might reach.
+        map: (id) => deps.content.map(id),
+        // What every class and species action does on the board. A value rather
+        // than a lookup, unlike maps: `legalActions` runs for every combatant on
+        // every turn and needs the whole catalog anyway.
+        abilities: deps.content.abilities(),
+        // Characters belong to the household, not the run (architecture §3), so
+        // CREATE_CHARACTER needs to know which household it is building into.
+        householdId: auth.run.householdId,
+        // Seeded per event, never per wall clock — see the header.
+        rng: deps.rng(`${input.runId}:${nextSeq}`),
+        now: iso(nowMs),
+      },
+    );
+  }
 
   if (result.error) {
     // An illegal intent leaves the run exactly where it was. No seq is burned:
@@ -142,6 +166,7 @@ export async function applyAction(
    * loses the seq race cannot leave its XP behind on a character.
    */
   const characters: Character[] = [];
+  if (spentCharacter) characters.push(spentCharacter);
   if (result.created) {
     characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
   }
@@ -179,7 +204,7 @@ export async function applyAction(
     characters.push(...settlement.characters);
   }
   const progression =
-    startedCampaign || finishedChapter
+    startedCampaign || finishedChapter || spentCharacter
       ? {
           characters: result.state.party.map((member) => member.character),
           ...(settlement && settlement.awards.length > 0

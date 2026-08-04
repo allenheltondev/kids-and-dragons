@@ -472,6 +472,18 @@ describe("awardXp (spec §8.1)", () => {
     );
   });
 
+  it("still awards XP when the stored class was removed from current content", () => {
+    const staleRules = {
+      ...rules,
+      classes: { ...rules.classes, songkeeper: undefined },
+    } as unknown as typeof rules;
+
+    const result = awardXp(startCampaign(makeCharacter(), "r_1"), staleRules, 300);
+
+    expect(result.character.provisional).toMatchObject({ xp: 300, level: 2 });
+    expect(result.character.provisional?.unlockedActions).toEqual(["rally"]);
+  });
+
   it("is reverted wholesale by a failed campaign", () => {
     const started = startCampaign(makeCharacter({ level: 1 }), "r_1");
     const gained = awardXp(awardXp(started, rules, 900).character, rules, 900).character;
