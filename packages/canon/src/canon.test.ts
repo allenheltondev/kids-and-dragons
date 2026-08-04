@@ -19,7 +19,7 @@ import type {
   Individual as IndividualEntity,
   Item as ItemEntity,
 } from "./taxonomies.js";
-import { bandTable, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
+import { bandTable, Encounter, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
 import { checkAssets, errors, related } from "./registry.js";
 
@@ -283,6 +283,13 @@ describe("registry integrity", () => {
 describe("encounter blocks — D9/D10", () => {
   const creatures = [...registry.byTaxonomy.get("creature")!] as CreatureEntity[];
   const dangerous = creatures.filter((c) => c.classification !== "ambient_creature");
+  /**
+   * The dangerous creatures that are *fought*. D18 split the two: a bandless
+   * encounter block is a dangerous thing with no stat line — you get past it,
+   * you never beat it — so every assertion below about bands, integers and the
+   * round budget is about this list rather than about `dangerous`.
+   */
+  const fought = dangerous.filter((c) => c.encounter?.band);
 
   it("gives every dangerous creature a stat block and every ambient one none", () => {
     expect(dangerous.every((c) => c.encounter)).toBe(true);
@@ -300,7 +307,7 @@ describe("encounter blocks — D9/D10", () => {
   });
 
   it("resolves stats from the band, so no creature carries loose integers", () => {
-    for (const c of dangerous) {
+    for (const c of fought) {
       const stats = resolveStats(c.encounter!, BANDS);
       expect(stats, c.id).not.toBeNull();
       expect(stats!.hp).toBeGreaterThan(0);
@@ -308,8 +315,8 @@ describe("encounter blocks — D9/D10", () => {
   });
 
   it("keeps band and danger_level from disagreeing", () => {
-    for (const c of dangerous) {
-      expect(BANDS[c.encounter!.band]?.dangerLevels, c.id).toContain(c.danger_level);
+    for (const c of fought) {
+      expect(BANDS[c.encounter!.band!]?.dangerLevels, c.id).toContain(c.danger_level);
     }
   });
 
@@ -349,6 +356,57 @@ describe("encounter blocks — D9/D10", () => {
     const dragon = creatures.find((c) => c.id === "creature.legend_dragon")!;
     const { stats: _dropped, ...rest } = dragon.encounter!;
     expect(resolveStats(rest, BANDS)).toBeNull();
+  });
+
+  it("lets a dangerous creature have no band at all — D18", () => {
+    // The loftmire is the case: a drifting cloud is dangerous, and there is
+    // nothing there to hit. Before D18 the only ways to file one were to give
+    // it hit points nobody would ever roll against, or to call it ambient and
+    // lose the resolutions — which is the prose-only failure D10 ended.
+    const bandless = dangerous.filter((c) => !c.encounter?.band);
+    expect(bandless.map((c) => c.id)).toContain("creature.loftmire");
+    for (const c of bandless) {
+      expect(resolveStats(c.encounter!, BANDS), c.id).toBeNull();
+      expect(c.encounter!.resolutions.length, c.id).toBeGreaterThan(0);
+    }
+  });
+
+  it("refuses combat fields on a bandless block, and refuses it a silent gap", () => {
+    const base = {
+      kind: "escape" as const,
+      stat: "quick" as const,
+      difficulty: "normal" as const,
+    };
+    const ok = { resolutions: [base] };
+    expect(Encounter.safeParse(ok).success).toBe(true);
+
+    // Each of the three is a fact about resolving a fight this thing does not
+    // have. A stat line nothing reads is indistinguishable from one something
+    // reads wrongly, so the schema rejects it rather than ignoring it.
+    for (const field of [
+      { stats: { hp: 6 } },
+      { xp: 5 },
+      { behavior: "holds_ground" },
+    ]) {
+      expect(Encounter.safeParse({ ...ok, ...field }).success, JSON.stringify(field)).toBe(false);
+    }
+
+    // Not fightable *and* no stated way past says nothing at all.
+    expect(Encounter.safeParse({ resolutions: [] }).success).toBe(false);
+  });
+
+  it("keeps a bandless creature out of the engine's projection", () => {
+    // content/bestiary.json is what puts a figure on a board. Something with
+    // no stat line must not appear there at all — a half-filled entry would be
+    // a monster with undefined HP the first time a chapter named it.
+    const bestiary = JSON.parse(
+      fs.readFileSync(path.join(process.cwd(), "content", "bestiary.json"), "utf8"),
+    ) as { creatures: Record<string, unknown> };
+    for (const c of dangerous.filter((x) => !x.encounter?.band)) {
+      expect(bestiary.creatures[slugOf(c.id)], c.id).toBeUndefined();
+    }
+    // And the ones that do have a band are still all there.
+    for (const c of fought) expect(bestiary.creatures[c.asset_id ?? slugOf(c.id)], c.id).toBeDefined();
   });
 
   it("reads its numbers from content/rules.json, not from code", () => {
