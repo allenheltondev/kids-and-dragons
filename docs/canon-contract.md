@@ -672,6 +672,44 @@ stays protected), `current_tensions`, and `historical_hooks`.
 `relationship` prose carries the part a chapter can use. Applied across every
 biome and location in the corpus.
 
+**D18 — RULED, applied. Some dangerous things cannot be fought.**
+D9 gave every non-ambient creature a stat block, and the `superRefine` enforced
+it. The loftmire broke that: a low cloud that drifts through the marsh shedding
+sand which falls *upward*, lifting whatever it settles on. It is dangerous, it
+is a `supernatural_manifestation`, and there is nothing there to hit.
+
+The schema offered two ways to file it and both were lies. Give it a band, and
+canon asserts hit points no chapter will ever roll against — a number a build
+then has to police, which D9's own addendum calls "a liability with a guard on
+it." Or call it an `ambient_creature`, which buys the schema's silence and
+costs the `resolutions` block, putting the entire design back into prose in
+`standard_behavior` — the exact failure D10 was written to end.
+
+So **`encounter.band` is optional, and its absence is a claim**: this is got
+past, never beaten. A bandless block may carry no `stats`, no `xp`, and no
+`behavior` — each is a fact about resolving a fight that does not exist — and
+its `resolutions` may not be empty, because *unfightable with no stated way
+through* is a gap rather than a design. All four rules are one `superRefine` on
+`Encounter`.
+
+The blast radius is small because the band was always the join. `resolveStats`
+returns `null`, so `tools/canon/bestiary.ts` skips the creature and
+`content/bestiary.json` — the projection that puts a figure on a board — never
+learns it exists. `tools/canon/check.ts` skips the band gate for the same
+reason. The one place that needed real work was the wiki: its encounter section
+reads the bestiary, so a bandless creature would have silently lost the five
+resolutions that *are* its encounter. `generateUnfightableSection` reads canon's
+own block instead and renders **Getting Past It** in place of **In a Fight**.
+
+`null` from `resolveStats` now has two meanings — a `legend` that has not
+authored its own stats, which is an error, and a D18 hazard, which is correct.
+Callers tell them apart by checking `band` first, and `check.ts` does.
+
+One line was added to `creatures.yaml` `agent_instructions`, because this is
+precisely the kind of omission a generator would helpfully fill in: *a creature
+whose encounter block names no band cannot be fought at all, and the omission is
+a claim rather than an unfinished entry.*
+
 ---
 
 ## 10. Order
