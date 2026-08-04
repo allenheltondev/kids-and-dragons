@@ -15,6 +15,7 @@ import type {
   ItemCatalog,
   PartyMember,
   Presentation,
+  ProgressionUpdate,
   RoomMode,
   RulesContent,
   RunState,
@@ -41,12 +42,19 @@ export interface PresentationEvent {
   presentation: Presentation;
 }
 
+export interface ProgressionEvent {
+  seq: number;
+  progression: ProgressionUpdate;
+}
+
 export interface GameStore {
   connection: ConnectionStatus;
   session: ClientSession | null;
   /** The server's authoritative run state, mirrored. Never written directly. */
   state: RunState | null;
   presentation: PresentationEvent | null;
+  /** Last ordered progression update; subscribers dedupe by its server seq. */
+  progression: ProgressionEvent | null;
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;

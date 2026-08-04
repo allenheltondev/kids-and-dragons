@@ -23,7 +23,6 @@ import type {
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
-import { spendStatPoint } from "../handlers/progression.ts";
 import { iso } from "../handlers/deps.ts";
 import { createRoom, joinRoom, watchRoom } from "../handlers/room.ts";
 import { getState } from "../handlers/state.ts";
@@ -234,8 +233,22 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
     return error(400, "ILLEGAL", "expected { stat }");
   }
 
-  const result = await spendStatPoint({ principal: session, stat: req.body.stat }, deps);
-  return result.ok ? json(200, result.value) : fromError(result.error);
+  const state = await deps.repo.getState(session.runId);
+  const response = await applyAction(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      seq: Number(req.body.seq ?? state?.seq ?? 0),
+      intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
+      principal: {
+        householdId: session.householdId,
+        playerId: session.playerId,
+        role: session.role,
+      },
+    },
+    deps,
+  );
+  return json(200, response);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {

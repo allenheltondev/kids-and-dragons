@@ -31,7 +31,6 @@ import {
   type Character,
   type Chapter,
   type ProgressionAward,
-  type ResolvedCharacter,
   type RunState,
   type StatId,
 } from "@kad/shared";
@@ -41,7 +40,6 @@ import {
   computeChapterXp,
   type AwardChapterXpResult,
 } from "../engine/shared-engine.ts";
-import type { SessionIdentity } from "../identity.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import type { CampaignProgressRecord, ChapterProgressRecord } from "../store/repository.ts";
 
@@ -110,9 +108,10 @@ export async function newCharacterWrite(
  * in the party, updates the resolved snapshots the phones mirror, and returns
  * the rows to write.
  *
- * The award is derived from the authored chapter: full base XP on success, or
- * `floor(base / 2)` on a setback, followed by the already-earned objective
- * bonuses recorded on the run. Every character receives that full total.
+ * The award is the engine-settled `state.xpEarned` total. It already includes
+ * authored `grantXp` effects, the success/setback base, and paid objectives;
+ * recomputing any subset here would make persisted progression disagree with
+ * the chapter-completion presentation.
  *
  * The inventory rides along because the engine's grants and swaps land on the
  * run's resolved characters and nowhere else (`syncRunInventory`). This fold
@@ -352,63 +351,56 @@ async function transformParty(
 // Rest-scene stat spending
 // ---------------------------------------------------------------------------
 
-/**
- * Authenticated context for a stat-point spend.
- *
- * The transport derives every field here from the room session token. The
- * request body contributes only `stat`, so a client cannot choose another
- * character, household, run, or submit replacement stat totals.
- */
-export interface SpendStatPointInput {
-  principal: Pick<SessionIdentity, "runId" | "householdId" | "playerId">;
-  stat: unknown;
+export interface PreparedStatPointSpend {
+  /** The unresolved durable row written by the run transaction. */
+  character: Character;
+  /** A fresh run snapshot whose party member has been re-resolved. */
+  state: RunState;
 }
 
 /**
- * Spends one point for the authenticated player's stored character.
+ * Computes a stat-point spend for `applyAction` without writing anything.
  *
- * Rest-scene validation happens before the character read or mutation. The
- * stored character — never the resolved party snapshot — is the arithmetic
- * source, preserving the committed/provisional split and preventing a client
- * from supplying precomputed totals.
+ * The stored character is the arithmetic source; the resolved party snapshot
+ * is only the authoritative mirror clients render. Returning both lets the
+ * action handler commit state, event, and character under the same seq guard,
+ * so a concurrent campaign transition wins or loses as one transaction rather
+ * than being overwritten by a delayed full-row write.
  */
-export async function spendStatPoint(
-  input: SpendStatPointInput,
+export async function prepareStatPointSpend(
+  state: RunState,
   deps: HandlerDeps,
-): Promise<HandlerResult<ResolvedCharacter>> {
-  const { principal } = input;
-  const [run, state] = await Promise.all([
-    deps.repo.getRun(principal.runId),
-    deps.repo.getState(principal.runId),
-  ]);
-
-  if (!run || !state) return fail("NOT_FOUND", `no active run ${principal.runId}`);
-  if (run.householdId !== principal.householdId) {
-    return fail("FORBIDDEN", "this session belongs to a different household");
-  }
-  if (run.status !== "active" || state.phase !== "scene" || state.sceneType !== "rest") {
+  householdId: string,
+  playerId: string,
+  stat: unknown,
+): Promise<HandlerResult<PreparedStatPointSpend>> {
+  if (state.phase !== "scene" || state.sceneType !== "rest") {
     return fail("ILLEGAL", "stat points may only be spent during an active Rest scene");
   }
 
-  const member = state.party.find((candidate) => candidate.playerId === principal.playerId);
-  if (!member) return fail("NOT_FOUND", `player ${principal.playerId} has no character in this run`);
+  const member = state.party.find((candidate) => candidate.playerId === playerId);
+  if (!member) return fail("NOT_FOUND", `player ${playerId} has no character in this run`);
 
-  const character = await deps.repo.getCharacter(run.householdId, member.character.id);
+  const character = await deps.repo.getCharacter(householdId, member.character.id);
   if (!character) return fail("NOT_FOUND", `no character ${member.character.id}`);
-  if (
-    character.householdId !== run.householdId ||
-    character.ownerPlayerId !== principal.playerId
-  ) {
+  if (character.householdId !== householdId || character.ownerPlayerId !== playerId) {
     return fail("FORBIDDEN", "this session cannot spend points for that character");
   }
 
   const rules = deps.content.rules();
   try {
-    // The cast only crosses the transport boundary. Shared spendStatPoint owns
-    // validation against STAT_IDS and rejects every other runtime value.
-    const updated = applyStatPointSpend(character, rules, input.stat as StatId);
-    await deps.repo.putCharacter(updated);
-    return ok(resolveCharacter(updated, rules, deps.content.items()));
+    // Shared character rules validate the runtime value against STAT_IDS.
+    const updated = applyStatPointSpend(character, rules, stat as StatId);
+    const resolved = resolveCharacter(updated, rules, deps.content.items());
+    return ok({
+      character: updated,
+      state: {
+        ...state,
+        party: state.party.map((candidate) =>
+          candidate.playerId === playerId ? { ...candidate, character: resolved } : candidate,
+        ),
+      },
+    });
   } catch (err) {
     if (err instanceof CharacterRuleError) return fail("ILLEGAL", err.message);
     throw err;

@@ -12,6 +12,7 @@ import type {
   ClassId,
   ResolvedCharacter,
   SpeciesId,
+  StatId,
   Stats,
   TierId,
 } from "./domain.js";
@@ -51,6 +52,7 @@ export type ClientIntent =
    */
   | { type: "USE_ITEM"; itemId: string; targetId?: string }
   | { type: "RESOLVE_ITEM_SWAP"; dropItemId: string | null }
+  | { type: "SPEND_STAT_POINT"; stat: StatId }
   | { type: "SET_MODE"; mode: RoomMode }
   /**
    * Combat, spec §7.2 — move up to your steps, then take one action.

@@ -68,12 +68,15 @@ export function loadSharedRuntime(): Promise<SharedRuntime> {
   return cached;
 }
 
-/** The XP paid by this completion, independent of prior run-level XP effects. */
-export function computeChapterXp(state: RunState, chapter: Chapter): number {
-  const base =
-    state.chapterOutcome === "setback" ? Math.floor(chapter.xpAward / 2) : chapter.xpAward;
-  const bonus = (state.bonuses ?? []).reduce((total, objective) => total + objective.xp, 0);
-  return base + bonus;
+/**
+ * The authoritative XP total already settled by the engine for this chapter.
+ *
+ * `RunState.xpEarned` includes authored `grantXp` effects as well as the
+ * success/setback base and paid objectives. Reconstructing it from chapter
+ * content here would silently drop effects accumulated earlier in the run.
+ */
+export function computeChapterXp(state: RunState, _chapter: Chapter): number {
+  return state.xpEarned;
 }
 
 export interface AwardChapterXpInput {
