@@ -9,7 +9,7 @@ import {
   type SequencerHandlers,
   type TimerHandle,
 } from "./channel";
-import type { PresentationEvent } from "../store/contract";
+import type { PresentationEvent, ProgressionEvent } from "../store/contract";
 import { makeState } from "../testing/fixtures";
 
 /** A scheduler the test drives by hand, so gap handling needs no real time. */
@@ -38,12 +38,14 @@ function manualScheduler() {
 function harness(options: { gate?: (event: PresentationEvent) => Promise<void> | void } = {}) {
   const states: RunState[] = [];
   const presentations: PresentationEvent[] = [];
+  const progressions: ProgressionEvent[] = [];
   const gaps: number[] = [];
   const scheduler = manualScheduler();
 
   const handlers: SequencerHandlers = {
     onState: (state) => void states.push(state),
     onPresentation: (event) => void presentations.push(event),
+    onProgression: (event) => void progressions.push(event),
     onGap: (sinceSeq) => void gaps.push(sinceSeq),
   };
 
@@ -54,10 +56,14 @@ function harness(options: { gate?: (event: PresentationEvent) => Promise<void> |
     cancel: scheduler.cancel,
   });
 
-  return { sequencer, states, presentations, gaps, scheduler };
+  return { sequencer, states, presentations, progressions, gaps, scheduler };
 }
 
-function patch(seq: number, narration: string, presentation?: ServerMessage["presentation"]): ChannelMessage {
+function patch(
+  seq: number,
+  narration: string,
+  presentation?: ServerMessage["presentation"],
+): { kind: "patch" } & ServerMessage {
   const message: ChannelMessage = {
     kind: "patch",
     seq,
@@ -179,6 +185,50 @@ describe("MessageSequencer", () => {
 
     expect(sequencer.seq).toBe(3);
     expect(sequencer.state?.narration).toBe("three");
+  });
+
+  it("delivers progression in seq order exactly once across replay and duplicate reconnect events", () => {
+    const { sequencer, progressions } = harness();
+    sequencer.reset(makeState({ seq: 1 }), 1);
+    const update = (characterId: string) => ({
+      characters: [],
+      awards: [{ characterId, leveledTo: 2 }],
+    });
+
+    sequencer.ingest({
+      ...patch(3, "three"),
+      progression: update("c_3"),
+    });
+    sequencer.ingestAll([
+      {
+        seq: 2,
+        runId: "r_1",
+        patch: [{ op: "replace", path: "/narration", value: "two" }],
+        progression: update("c_2"),
+      },
+    ]);
+    // A reconnect can replay an event already delivered; the seq watermark
+    // must suppress both its patch and its progression trigger.
+    sequencer.ingestAll([
+      {
+        seq: 2,
+        runId: "r_1",
+        patch: [],
+        progression: update("duplicate"),
+      },
+      {
+        seq: 3,
+        runId: "r_1",
+        patch: [],
+        progression: update("duplicate"),
+      },
+    ]);
+
+    expect(progressions.map((event) => event.seq)).toEqual([2, 3]);
+    expect(progressions.map((event) => event.progression.awards?.[0]?.characterId)).toEqual([
+      "c_2",
+      "c_3",
+    ]);
   });
 
   describe("presentation", () => {
@@ -428,7 +478,12 @@ describe("openChannel", () => {
     const resolvers: (() => void)[] = [];
     const resync = vi.fn(() => new Promise<void>((resolve) => resolvers.push(resolve)));
     const sequencer = new MessageSequencer({
-      handlers: { onState: () => undefined, onPresentation: () => undefined, onGap: () => undefined },
+      handlers: {
+        onState: () => undefined,
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+      },
       schedule: scheduler.schedule,
       cancel: scheduler.cancel,
     });

@@ -9,11 +9,11 @@ import {
 } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
+import { applyAction } from "./action.ts";
 import {
   foldChapterXp,
   newCharacterWrite,
   settleChapterCompletion,
-  spendStatPoint,
   startPartyCampaign,
 } from "./progression.ts";
 
@@ -676,11 +676,12 @@ describe("settleChapterCompletion — the campaign boundary", () => {
 });
 
 
-describe("spendStatPoint — Rest-scene handler", () => {
+describe("SPEND_STAT_POINT — authoritative run transaction", () => {
   async function spendableCharacter(provisional: boolean) {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness, 1);
-    const playerId = players[0]!.principal.playerId;
+    const player = players[0]!;
+    const playerId = player.principal.playerId;
     const { state, character } = setup(harness, householdId, playerId);
     const committed = {
       ...character.committed,
@@ -714,55 +715,65 @@ describe("spendStatPoint — Rest-scene handler", () => {
     await harness.repo.putState(state);
     await harness.repo.putCharacter(stored);
 
-    return {
-      harness,
-      householdId,
-      playerId,
-      state,
-      stored,
-      principal: { runId: state.runId, householdId, playerId },
-    };
+    return { harness, householdId, playerId, player, state, stored };
   }
 
-  it("spends from stored provisional state and returns the resolved character", async () => {
+  async function spend(
+    fixture: Awaited<ReturnType<typeof spendableCharacter>>,
+    stat: string,
+    playerId = fixture.playerId,
+  ) {
+    return applyAction(
+      {
+        runId: fixture.state.runId,
+        playerId,
+        seq: 0,
+        intent: { type: "SPEND_STAT_POINT", stat: stat as never },
+        principal: {
+          householdId: fixture.householdId,
+          playerId,
+          role: fixture.player.principal.role,
+        },
+      },
+      fixture.harness.deps,
+    );
+  }
+
+  it("updates the run snapshot, event, and provisional character in one commit", async () => {
     const fixture = await spendableCharacter(true);
     const beforeMight = fixture.stored.provisional!.stats.might;
     const committedBefore = structuredClone(fixture.stored.committed);
 
-    // Extra client-computed totals are deliberately ignored: only `stat`
-    // crosses into the handler's rule call.
-    const request = {
-      principal: fixture.principal,
-      stat: "might",
-      stats: { might: 999, quick: 999, clever: 999, heart: 999 },
-    };
-    const result = await spendStatPoint(request, fixture.harness.deps);
+    const response = await spend(fixture, "might");
 
-    expect(result.ok).toBe(true);
-    if (!result.ok) return;
-    expect(result.value.stats.might).toBe(beforeMight + 1);
-    expect(result.value.unspentPoints).toBe(0);
-    expect(result.value.isProvisional).toBe(true);
-
+    expect(response).toEqual({ ok: true, seq: 1 });
+    const state = await fixture.harness.repo.getState(fixture.state.runId);
     const persisted = await fixture.harness.repo.getCharacter(
       fixture.householdId,
       fixture.stored.id,
     );
+    const [event] = await fixture.harness.repo.listEvents(fixture.state.runId, 0);
+    expect(state?.party[0]?.character).toMatchObject({
+      stats: { might: beforeMight + 1 },
+      unspentPoints: 0,
+      isProvisional: true,
+    });
     expect(persisted?.provisional?.stats.might).toBe(beforeMight + 1);
     expect(persisted?.provisional?.unspentPoints).toBe(0);
     expect(persisted?.committed).toEqual(committedBefore);
+    expect(event?.intent).toEqual({ type: "SPEND_STAT_POINT", stat: "might" });
+    expect(event?.progression?.characters[0]).toMatchObject({
+      id: fixture.stored.id,
+      unspentPoints: 0,
+    });
   });
 
   it("writes directly to committed state when no campaign is in flight", async () => {
     const fixture = await spendableCharacter(false);
     const beforeHeart = fixture.stored.committed.stats.heart;
 
-    const result = await spendStatPoint(
-      { principal: fixture.principal, stat: "heart" },
-      fixture.harness.deps,
-    );
+    expect(await spend(fixture, "heart")).toEqual({ ok: true, seq: 1 });
 
-    expect(result.ok).toBe(true);
     const persisted = await fixture.harness.repo.getCharacter(
       fixture.householdId,
       fixture.stored.id,
@@ -772,7 +783,7 @@ describe("spendStatPoint — Rest-scene handler", () => {
     expect(persisted?.provisional).toBeNull();
   });
 
-  it("rejects outside an active Rest scene without changing the character", async () => {
+  it("rejects outside an active Rest scene without changing state or character", async () => {
     const fixture = await spendableCharacter(true);
     const before = structuredClone(fixture.stored);
     await fixture.harness.repo.putState({
@@ -781,29 +792,24 @@ describe("spendStatPoint — Rest-scene handler", () => {
       sceneType: "choice_point",
     });
 
-    const result = await spendStatPoint(
-      { principal: fixture.principal, stat: "quick" },
-      fixture.harness.deps,
-    );
+    const response = await spend(fixture, "quick");
 
-    expect(result).toMatchObject({
+    expect(response).toMatchObject({
       ok: false,
       error: { code: "ILLEGAL", message: expect.stringContaining("Rest scene") },
     });
     expect(
       await fixture.harness.repo.getCharacter(fixture.householdId, fixture.stored.id),
     ).toEqual(before);
+    expect(await fixture.harness.repo.listEvents(fixture.state.runId, 0)).toEqual([]);
   });
 
-  it("delegates invalid stat validation to the shared server rules", async () => {
+  it("delegates invalid stat validation to shared character rules", async () => {
     const fixture = await spendableCharacter(false);
 
-    const result = await spendStatPoint(
-      { principal: fixture.principal, stat: "strength" },
-      fixture.harness.deps,
-    );
+    const response = await spend(fixture, "strength");
 
-    expect(result).toMatchObject({
+    expect(response).toMatchObject({
       ok: false,
       error: { code: "ILLEGAL", message: expect.stringContaining("strength") },
     });
@@ -814,17 +820,37 @@ describe("spendStatPoint — Rest-scene handler", () => {
     expect(persisted?.committed.unspentPoints).toBe(1);
   });
 
-  it("rejects a session that does not own the party character", async () => {
+  it("cannot overwrite a concurrent campaign transition after losing the seq race", async () => {
+    const fixture = await spendableCharacter(true);
+    const completed: Character = {
+      ...fixture.stored,
+      committed: {
+        ...fixture.stored.committed,
+        xp: 1200,
+        level: 4,
+        tier: "sworn",
+      },
+      provisional: null,
+    };
+    fixture.harness.repo.commit = async () => {
+      await fixture.harness.repo.putCharacter(completed);
+      await fixture.harness.repo.putState({ ...fixture.state, seq: 1 });
+      return false;
+    };
+
+    const response = await spend(fixture, "might");
+
+    expect(response).toMatchObject({ ok: false, seq: 1, error: { code: "STALE_SEQ" } });
+    expect(
+      await fixture.harness.repo.getCharacter(fixture.householdId, fixture.stored.id),
+    ).toEqual(completed);
+  });
+
+  it("rejects a session that does not own a party character", async () => {
     const fixture = await spendableCharacter(false);
 
-    const result = await spendStatPoint(
-      {
-        principal: { ...fixture.principal, playerId: "p_intruder" },
-        stat: "might",
-      },
-      fixture.harness.deps,
-    );
+    const response = await spend(fixture, "might", "p_intruder");
 
-    expect(result).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
   });
 });

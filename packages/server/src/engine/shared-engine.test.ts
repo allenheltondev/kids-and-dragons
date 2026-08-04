@@ -14,6 +14,7 @@ import {
   awardChapterXp,
   awardChapterXpDetails,
   computeChapterXp,
+  loadSharedRuntime,
 } from "./shared-engine.ts";
 
 function makeCharacter(householdId: string, playerId: string, harness: ReturnType<typeof makeHarness>) {
@@ -45,6 +46,7 @@ function completionState(
     chapterId: "bramblewood-01",
     chapterOutcome: "success",
     bonuses: [],
+    xpEarned: makeChapter().xpAward,
     party: characters.map((character) => ({
       character: resolveCharacter(character, rules, items),
       playerId: character.ownerPlayerId,
@@ -59,11 +61,11 @@ function completionState(
 
 
 describe("computeChapterXp", () => {
-  it("halves only setback base XP before adding earned objective bonuses", () => {
+  it("uses the engine-settled total so authored grantXp effects are preserved", () => {
     const chapter = { ...makeChapter(), xpAward: 101 } as Chapter;
     const state = completionState([], makeHarness(), {
       chapterOutcome: "setback",
-      xpEarned: 999,
+      xpEarned: 60,
       bonuses: [
         { id: "shrine", label: "Found the shrine", xp: 7 },
         { id: "safe", label: "Everyone stayed standing", xp: 3 },
@@ -71,7 +73,7 @@ describe("computeChapterXp", () => {
     });
 
     expect(computeChapterXp(state, chapter)).toBe(60);
-    expect(computeChapterXp({ ...state, chapterOutcome: "success" }, chapter)).toBe(111);
+    expect(computeChapterXp({ ...state, xpEarned: 161 }, chapter)).toBe(161);
   });
 });
 
@@ -89,6 +91,7 @@ describe("awardChapterXp", () => {
     const state = completionState(characters, harness, {
       chapterOutcome: "setback",
       bonuses: [{ id: "bonus", label: "Bonus", xp: 10 }],
+      xpEarned: 60,
     });
     const writes = await awardChapterXp({
       state,
@@ -115,7 +118,7 @@ describe("awardChapterXp", () => {
     const { householdId, players } = await seedHousehold(harness, 1);
     const character = makeCharacter(householdId, players[0]!.principal.playerId, harness);
     await harness.repo.putCharacter(character);
-    const state = completionState([character], harness);
+    const state = completionState([character], harness, { xpEarned: 1200 });
 
     const result = await awardChapterXpDetails({
       state,
@@ -146,7 +149,7 @@ describe("awardChapterXp", () => {
     const { householdId, players } = await seedHousehold(harness, 1);
     const character = makeCharacter(householdId, players[0]!.principal.playerId, harness);
     await harness.repo.putCharacter(character);
-    const state = completionState([character], harness, { bonuses: [] });
+    const state = completionState([character], harness, { bonuses: [], xpEarned: 0 });
     state.party[0]!.character.inventory = [
       { itemId: "sunbloom_draught", kind: "consumable" },
     ];
@@ -328,5 +331,95 @@ describe("campaign state-transition transactions", () => {
     expect(
       (await harness.repo.getCharacter(householdId, character.id))?.provisional?.xp,
     ).toBe(makeChapter().xpAward);
+  });
+
+  it("settles an authored grantXp branch consistently across every durable and UI surface", async () => {
+    const chapter = {
+      ...makeChapter(),
+      entry: "scene_start",
+      scenes: {
+        scene_start: {
+          type: "story" as const,
+          narration: "A hidden cache waits beside the road.",
+          choices: [
+            {
+              id: "finish",
+              label: "Carry it home",
+              icon: "arrow",
+              goto: "scene_ending",
+              effects: [{ type: "grantXp" as const, amount: 50 }],
+            },
+          ],
+        },
+        scene_ending: {
+          type: "story" as const,
+          narration: "Home, with one more story to tell.",
+          choices: [],
+        },
+      },
+    } as Chapter;
+    const harness = makeHarness({ content: makeContent({ chapters: [chapter] }) });
+    const runtime = await loadSharedRuntime();
+    harness.deps.engine = runtime.engine;
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const created = await createRoom({ householdId, mode: "party" }, harness.deps);
+    if (!created.ok) throw new Error("room setup failed");
+
+    const playerId = players[0]!.principal.playerId;
+    const character = makeCharacter(householdId, playerId, harness);
+    await harness.repo.putCharacter(character);
+    const lobby = await harness.repo.getState(created.value.runId);
+    if (!lobby) throw new Error("missing run state");
+    lobby.party = [
+      {
+        character: resolveCharacter(
+          character,
+          harness.deps.content.rules(),
+          harness.deps.content.items(),
+        ),
+        playerId,
+        hp: 10,
+        down: false,
+        connected: true,
+        ready: true,
+      },
+    ];
+    await harness.repo.putState(lobby);
+
+    expect(
+      await applyAction(
+        {
+          runId: created.value.runId,
+          playerId,
+          seq: 0,
+          intent: { type: "START_CHAPTER", chapterId: chapter.id },
+        },
+        harness.deps,
+      ),
+    ).toEqual({ ok: true, seq: 1 });
+    expect(
+      await applyAction(
+        {
+          runId: created.value.runId,
+          playerId,
+          seq: 1,
+          intent: { type: "CHOOSE", choiceId: "finish" },
+        },
+        harness.deps,
+      ),
+    ).toEqual({ ok: true, seq: 2 });
+
+    const settled = await harness.repo.getState(created.value.runId);
+    const stored = await harness.repo.getCharacter(householdId, character.id);
+    const records = await harness.repo.listChapterProgress(created.value.runId);
+    const events = await harness.repo.listEvents(created.value.runId, 1);
+    const completion = events.find((event) => event.seq === 2);
+
+    expect(settled?.xpEarned).toBe(350);
+    expect(settled?.party[0]?.character.xp).toBe(350);
+    expect(stored?.provisional?.xp ?? stored?.committed.xp).toBe(350);
+    expect(records).toContainEqual(expect.objectContaining({ xpEarned: 350 }));
+    expect(completion?.presentation).toMatchObject({ kind: "CHAPTER_COMPLETE", xp: 350 });
+    expect(completion?.progression?.characters[0]?.xp).toBe(350);
   });
 });

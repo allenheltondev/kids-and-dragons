@@ -294,7 +294,8 @@ function unlocksForClass(classDef: ClassDef, level: number): string[] {
 }
 
 function levelUnlocks(rules: RulesContent, classId: ClassId, level: number): string[] {
-  return unlocksForClass(getClass(rules, classId), level);
+  const classDef = (rules.classes as Partial<typeof rules.classes>)[classId];
+  return classDef ? unlocksForClass(classDef, level) : [];
 }
 
 /** Every combat action still present in the current rules catalog. */
