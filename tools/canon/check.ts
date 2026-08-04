@@ -69,6 +69,10 @@ function checkBands(): CanonIssue[] {
     const creature = entity as Creature;
     const encounter = creature.encounter;
     if (!encounter) continue;
+    // D18. No band, no fight, nothing here to check — the schema has already
+    // held it to the rules that *do* apply (no stats, no xp, no behavior, and
+    // at least one way past). A band table has nothing to say about weather.
+    if (!encounter.band) continue;
     const row = bands[encounter.band];
 
     if (!row) {
