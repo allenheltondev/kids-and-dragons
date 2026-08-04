@@ -28,7 +28,7 @@ import { createRoom, joinRoom, watchRoom } from "../handlers/room.ts";
 import { getState } from "../handlers/state.ts";
 import type { DeviceIdentity, SessionIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
-import { requiredEnv, runtime, verifyAccountToken } from "./runtime.ts";
+import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
 /** A request, already parsed into the few things the routes actually read. */
 interface Req {
@@ -39,13 +39,39 @@ interface Req {
   headers: Record<string, string>;
 }
 
+/**
+ * The two things in this file that need AWS, behind an interface — the same
+ * seam `channel-authorizer.ts` uses, and for the same reason. `handler()` binds
+ * the real ones; `http.test.ts` binds a `makeHarness()` and a scripted verifier,
+ * so every route, status code and auth check below is reachable without a
+ * table, a user pool, or a signing key.
+ *
+ * `deps` is a *function* rather than a value on purpose: `route()` must not
+ * resolve it until a path has matched, or an unknown path pays a cold start and
+ * reports a configuration problem in place of its 404.
+ */
+export interface HttpRuntime {
+  deps(): Promise<HandlerDeps>;
+  verifyAccount(token: string): Promise<VerifiedAccount | null>;
+}
+
+const AWS_RUNTIME: HttpRuntime = { deps: runtime, verifyAccount: verifyAccountToken };
+
 export async function handler(
   event: APIGatewayProxyEventV2,
   _context: Context,
 ): Promise<APIGatewayProxyStructuredResultV2> {
+  return respond(event, AWS_RUNTIME);
+}
+
+/** `handler()` with the AWS wiring passed in rather than imported. */
+export async function respond(
+  event: APIGatewayProxyEventV2,
+  rt: HttpRuntime,
+): Promise<APIGatewayProxyStructuredResultV2> {
   const req = parse(event);
   try {
-    return await route(req);
+    return await route(req, rt);
   } catch (err) {
     // The error shape matches `ActionResponse.error` so the client has exactly
     // one parser for every failure it can see. The *message* stays generic on
@@ -56,7 +82,7 @@ export async function handler(
   }
 }
 
-async function route(req: Req): Promise<APIGatewayProxyStructuredResultV2> {
+async function route(req: Req, rt: HttpRuntime): Promise<APIGatewayProxyStructuredResultV2> {
   if (req.method === "OPTIONS") return { statusCode: 204 };
 
   // Neither of these touches the table, the key, or the channel — so both still
@@ -64,22 +90,22 @@ async function route(req: Req): Promise<APIGatewayProxyStructuredResultV2> {
   if (req.method === "GET" && req.path === "/api/health") return health();
   if (req.method === "GET" && req.path === "/api/config") return config();
 
-  const match = matchRoute(req);
+  const match = matchRoute(req, rt);
   if (!match) return error(404, "NOT_FOUND", `no route ${req.method} ${req.path}`);
 
   // Resolved *after* matching, so an unknown path never pays a cold start (or
   // reports a configuration problem in place of the 404 it should have got).
-  return match(await runtime());
+  return match(await rt.deps());
 }
 
 type Route = (deps: HandlerDeps) => Promise<APIGatewayProxyStructuredResultV2>;
 
-function matchRoute(req: Req): Route | null {
+function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "POST") {
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
-    if (req.path === "/api/auth/link") return (deps) => postLink(req, deps);
-    if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps);
+    if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
+    if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
 
     const join = /^\/api\/room\/([A-Za-z]{4})\/join$/.exec(req.path);
     if (join?.[1]) {
@@ -256,8 +282,8 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
 // Optional sign-in
 // ---------------------------------------------------------------------------
 
-async function postLink(req: Req, deps: HandlerDeps) {
-  const account = await verifyAccountToken(bearer(req));
+async function postLink(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
+  const account = await rt.verifyAccount(bearer(req));
   if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
 
   const existing = await resolvePrincipal(req, deps);
@@ -272,8 +298,8 @@ async function postLink(req: Req, deps: HandlerDeps) {
   return result.ok ? json(200, result.value, existing?.principal) : fromError(result.error);
 }
 
-async function postAdopt(req: Req, deps: HandlerDeps) {
-  const account = await verifyAccountToken(bearer(req));
+async function postAdopt(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
+  const account = await rt.verifyAccount(bearer(req));
   if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
 
   const { householdId, playerId } = req.body as { householdId?: unknown; playerId?: unknown };
