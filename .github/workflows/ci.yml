@@ -88,11 +88,32 @@ jobs:
           echo "::error::DynamoDB Local never came up on :8000"
           exit 1
 
+      # Coverage rather than a bare `npm test`: the thresholds in
+      # vitest.config.ts are a ratchet, and a ratchet nothing turns is a
+      # comment. `--coverage` runs the identical suite, so this is the same
+      # gate plus a floor.
       - name: Test
-        run: npm test
+        run: npm run test:coverage
         env:
           KAD_DDB_ENDPOINT: http://localhost:8000
           AWS_REGION: us-east-1
+
+      # The summary lands in the run's front page rather than 400 lines up the
+      # log, because a number nobody sees is a number nobody defends.
+      - name: Report coverage
+        if: always()
+        run: |
+          {
+            echo "### Coverage"
+            echo
+            echo '```'
+            node -e '
+              const s = require("./coverage/coverage-summary.json").total;
+              const row = (k) => `${k.padEnd(12)} ${String(s[k].pct).padStart(6)}%  (${s[k].covered}/${s[k].total})`;
+              for (const k of ["statements", "branches", "functions", "lines"]) console.log(row(k));
+            '
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # The stack is code too. cfn-lint applies the SAM transform, so this
       # catches a bad property on a Serverless resource — the class of mistake
