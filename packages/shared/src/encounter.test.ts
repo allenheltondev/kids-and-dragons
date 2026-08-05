@@ -756,6 +756,159 @@ describe("legalActions", () => {
     );
   });
 
+  /*
+   * §7.2's "illegal moves are not presented" has two halves, and only the
+   * first was tested. `ground_smash` above covers *reach* — nobody is standing
+   * near enough. This covers *state*: everybody is in range and the effect
+   * still would not land, because the recipient already has what the ability
+   * grants.
+   *
+   * It matters more than the reach half. A child gets one action a turn, and
+   * an ability offered here is an action spent buying something she already
+   * had — the server accepts it, the turn passes, and nothing visibly happens.
+   * `effectWouldChange` has an arm per verb and each one is its own rule, so
+   * each one gets its own case.
+   */
+  describe("an ability that would buy nothing is not offered", () => {
+    /** Build a fight, then set a status flag on one of the figures. */
+    function withStatus(
+      actions: string[],
+      id: string,
+      patch: Partial<{
+        down: boolean;
+        hp: number;
+        evade: boolean;
+        rooted: boolean;
+        skipNextTurn: boolean;
+        protectedBy: string | null;
+        ward: { byId: string; amount: number } | null;
+      }>,
+      place: { hero: Position; wisp: Position } = { hero: { x: 1, y: 2 }, wisp: { x: 2, y: 2 } },
+    ): EncounterState {
+      const base = beginEncounter(
+        setup({
+          party: [{ character: hero({ id: "c_hero", quick: 9, actions }), at: place.hero }],
+          enemies: [{ spec: wisp(), at: place.wisp }],
+        }),
+        ctxWith(ALWAYS_MISS),
+      );
+      return {
+        ...base,
+        combatants: base.combatants.map((c) => (c.id === id ? { ...c, ...patch } : c)),
+      };
+    }
+
+    const offered = (state: EncounterState): string[] =>
+      legalActions(state, ctxWith(ALWAYS_MISS)).map((a) => a.abilityId);
+
+    it("hides a status ability aimed at a figure that is already down", () => {
+      /*
+       * Every arm below starts `!recipient.down`, and this is that clause: a
+       * figure on the floor is out of the fight, so nothing that changes how it
+       * will act is worth an action.
+       *
+       * Worth recording what is *not* tested, since it looks like an omission:
+       * the same clause on the `attack` and `damage` arms is unreachable. A
+       * beaten enemy keeps its combatant row but leaves the board
+       * (`removeActor`, §7.3), so it can never be in range of an attack, and no
+       * ability aims an attack at an ally. Those two are defensive, and a test
+       * that reached them would have to build a state the engine cannot produce.
+       */
+      expect(offered(withStatus(["fox_fire"], "wisp#1", { down: true }))).not.toContain("fox_fire");
+    });
+
+    it("hides a heal on a friend who is already at full health", () => {
+      // Mending Light reaches an *adjacent ally*, so this one needs two
+      // figures — a party of one has nobody to touch and would be hidden for
+      // the reach reason instead, which is the half already covered above.
+      const pair = (hp: number): EncounterState => {
+        const base = beginEncounter(
+          setup({
+            party: [
+              { character: hero({ id: "c_uni", quick: 9, actions: ["mending_light"] }), at: { x: 1, y: 2 } },
+              { character: hero({ id: "c_friend", quick: 1 }), at: { x: 2, y: 2 } },
+            ],
+            enemies: [{ spec: wisp(), at: { x: 6, y: 4 } }],
+          }),
+          ctxWith(ALWAYS_MISS),
+        );
+        return {
+          ...base,
+          combatants: base.combatants.map((c) => (c.id === "c_friend" ? { ...c, hp } : c)),
+        };
+      };
+
+      expect(offered(pair(10))).not.toContain("mending_light");
+      expect(offered(pair(4))).toContain("mending_light");
+    });
+
+    it("hides Vanish from somebody already out of sight", () => {
+      expect(offered(withStatus(["vanish"], "c_hero", { evade: true }))).not.toContain("vanish");
+      expect(offered(withStatus(["vanish"], "c_hero", { evade: false }))).toContain("vanish");
+    });
+
+    it("hides Tanglelight from an enemy already rooted", () => {
+      expect(offered(withStatus(["tanglelight"], "wisp#1", { rooted: true }))).not.toContain(
+        "tanglelight",
+      );
+      expect(offered(withStatus(["tanglelight"], "wisp#1", { rooted: false }))).toContain(
+        "tanglelight",
+      );
+    });
+
+    it("hides Fox Fire from an enemy already skipping its turn", () => {
+      expect(offered(withStatus(["fox_fire"], "wisp#1", { skipNextTurn: true }))).not.toContain(
+        "fox_fire",
+      );
+    });
+
+    it("hides Brace when this actor is already the one standing in front", () => {
+      /*
+       * Two heroes side by side. Bracing for a friend you are already bracing
+       * for changes nothing — but bracing for one who is behind *somebody
+       * else* is a real move, so only the self-match is hidden.
+       */
+      const base = beginEncounter(
+        setup({
+          party: [
+            { character: hero({ id: "c_guard", quick: 9, actions: ["brace"] }), at: { x: 1, y: 2 } },
+            { character: hero({ id: "c_friend", quick: 1 }), at: { x: 2, y: 2 } },
+          ],
+          enemies: [{ spec: wisp(), at: { x: 5, y: 4 } }],
+        }),
+        ctxWith(ALWAYS_MISS),
+      );
+      const already = {
+        ...base,
+        combatants: base.combatants.map((c) =>
+          c.id === "c_friend" ? { ...c, protectedBy: "c_guard" } : c,
+        ),
+      };
+      expect(offered(already)).not.toContain("brace");
+
+      const bySomebodyElse = {
+        ...base,
+        combatants: base.combatants.map((c) =>
+          c.id === "c_friend" ? { ...c, protectedBy: "c_someone" } : c,
+        ),
+      };
+      expect(offered(bySomebodyElse)).toContain("brace");
+    });
+
+    it("hides Unbreakable behind a ward that is already as good", () => {
+      // The larger ward wins, so an equal or smaller one is a spent action for
+      // nothing — the same rule `rollBonus` follows, and the same one the
+      // useItemInCombat tests pin for items.
+      const equal = withStatus(["unbreakable"], "c_hero", {
+        ward: { byId: "c_hero", amount: 1 },
+      });
+      expect(offered(equal)).not.toContain("unbreakable");
+
+      const weaker = withStatus(["unbreakable"], "c_hero", { ward: null });
+      expect(offered(weaker)).toContain("unbreakable");
+    });
+  });
+
   it("never offers an initiative-timed signature as a button", () => {
     // Catches First Strike rendering as a dead button on the phone.
     const state = beginEncounter(
