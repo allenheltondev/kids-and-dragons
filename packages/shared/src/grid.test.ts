@@ -9,6 +9,7 @@ import {
   areAdjacent,
   createBoard,
   findPath,
+  inBounds,
   isOpen,
   moveActor,
   parseBoard,
@@ -353,5 +354,68 @@ describe("findPath", () => {
     const snapshot = JSON.stringify(board);
     findPath(board, TOP_LEFT, TOP_RIGHT);
     expect(JSON.stringify(board)).toBe(snapshot);
+  });
+});
+
+/*
+ * The far edge, and the numbers that are not whole.
+ *
+ * Everything above walks inside a board or up against a wall. These are the
+ * cases just outside it — found by flipping `<` to `<=` in `inBounds` and
+ * `Math.floor` to `Math.ceil` on the step budget, and watching nothing object.
+ * Both are the sort of arithmetic that is right in the obvious direction and
+ * wrong by one in the other.
+ */
+describe("the edge of the board", () => {
+  const board = createBoard(4, 3);
+
+  it("puts the far edge outside, not inside", () => {
+    // `width` is a count and the last column is `width - 1`. A board that
+    // answers "yes" for column 4 of 4 hands out a tile whose terrain lookup
+    // runs off the end of the array.
+    expect(inBounds(board, { x: 3, y: 2 })).toBe(true);
+    expect(inBounds(board, { x: 4, y: 2 })).toBe(false);
+    expect(inBounds(board, { x: 3, y: 3 })).toBe(false);
+    expect(inBounds(board, { x: -1, y: 0 })).toBe(false);
+    expect(inBounds(board, { x: 0, y: -1 })).toBe(false);
+  });
+
+  it("wants whole tiles, not fractions of one", () => {
+    // A step bonus can land a character on 4.5 steps. Rounding that up buys a
+    // free tile — and the highlight and the server would disagree about the
+    // same move, since only one of them would round.
+    expect(inBounds(board, { x: 1.5, y: 1 })).toBe(false);
+    expect(inBounds(board, { x: 1, y: 0.5 })).toBe(false);
+  });
+
+  it("spends a fractional step budget downwards", () => {
+    const open = createBoard(9, 9);
+    const middle = { x: 4, y: 4 };
+    // 2.9 steps is two steps, not three: same reach as a flat 2, less than 3.
+    expect(reachableTiles(open, middle, 2.9).length).toBe(reachableTiles(open, middle, 2).length);
+    expect(reachableTiles(open, middle, 2.9).length).toBeLessThan(
+      reachableTiles(open, middle, 3).length,
+    );
+    expect(tilesWithinSteps(open, middle, 2.9).length).toBe(
+      tilesWithinSteps(open, middle, 2).length,
+    );
+  });
+
+  it("offers nothing on a budget that rounds down to nothing", () => {
+    const open = createBoard(9, 9);
+    expect(reachableTiles(open, { x: 4, y: 4 }, 0.9)).toEqual([]);
+    expect(tilesWithinSteps(open, { x: 4, y: 4 }, 0.9)).toEqual([]);
+  });
+
+  it("refuses to path to or from a tile that is not on the board", () => {
+    expect(findPath(board, { x: 0, y: 0 }, { x: 4, y: 0 })).toBeNull();
+    expect(findPath(board, { x: -1, y: 0 }, { x: 1, y: 1 })).toBeNull();
+  });
+
+  it("builds the smallest board there is, and refuses a smaller one", () => {
+    expect(createBoard(1, 1).terrain).toHaveLength(1);
+    expect(() => createBoard(0, 5)).toThrow();
+    expect(() => createBoard(5, 0)).toThrow();
+    expect(() => parseBoard([])).toThrow();
   });
 });

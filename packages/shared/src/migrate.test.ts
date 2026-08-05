@@ -138,3 +138,114 @@ describe("migrateCharacter — tolerances", () => {
     expect(migrateCharacter(row, CHARACTER_VERSION).committed.tier).toBe("fledgling");
   });
 });
+
+/*
+ * Preservation, which is the other half of a migration and the half with no
+ * symptom.
+ *
+ * Every case above asks what happens to a field that is *missing* — the
+ * default fires, the character loads. None asks what happens to one that is
+ * *present*, and that is where a migration does its damage: it reads the row,
+ * writes a fresh one, and anything it forgets to carry across is gone with no
+ * error, no log line, and nothing on screen until somebody notices weeks later
+ * that a stat point they banked never arrived.
+ *
+ * Each of these was found by flipping the `typeof x === "number" ? x : default`
+ * test in a defaulting expression, which swaps "keep it if it is good" for
+ * "throw it away if it is good", and watching the whole suite stay green.
+ */
+describe("migrateCharacter — what it must not lose", () => {
+  it("keeps banked stat points instead of resetting them to zero", () => {
+    /*
+     * The one that costs a child something she earned. `unspentPoints` is the
+     * point a level owes her (spec §8.1); it survives in the store between
+     * sessions and is spent at a Rest scene. Zeroing it on load is a silent
+     * theft that looks exactly like never having levelled.
+     */
+    const character = current();
+    const row = {
+      ...character,
+      committed: { ...character.committed, unspentPoints: 3 },
+    };
+
+    expect(migrateCharacter(row, CHARACTER_VERSION).committed.unspentPoints).toBe(3);
+  });
+
+  it("keeps banked stat points through the v0 ladder too", () => {
+    // The v0 step defaults the field, and a row that already carries one must
+    // come out the far side with the number it went in with.
+    const v0 = v0Row() as Record<string, unknown>;
+    const committed = v0["committed"] as Record<string, unknown>;
+    const withPoints = { ...v0, committed: { ...committed, unspentPoints: 2 } };
+
+    expect(migrateCharacter(withPoints, undefined).committed.unspentPoints).toBe(2);
+  });
+
+  it("keeps a souvenir's provenance", () => {
+    /*
+     * A souvenir is what a failed campaign leaves behind (spec §8.3) — the
+     * proof that the attempt happened. `fromRun` and `earnedAt` are the whole
+     * of that proof, and both default to `""`, so losing them turns a memento
+     * into an anonymous entry that cannot be told from any other.
+     */
+    const character = current();
+    const row = {
+      ...character,
+      souvenirs: [{ id: "s_1", fromRun: "r_88c", earnedAt: "2026-07-04T18:00:00.000Z" }],
+    };
+
+    expect(migrateCharacter(row, CHARACTER_VERSION).souvenirs[0]).toEqual({
+      id: "s_1",
+      fromRun: "r_88c",
+      earnedAt: "2026-07-04T18:00:00.000Z",
+    });
+  });
+
+  it("still tolerates a souvenir that never had a provenance", () => {
+    // The defaults are there for old rows, and must keep working — this is the
+    // half the tests above already implied, pinned so the fix for the case
+    // above cannot be "demand the field".
+    const character = current();
+    const row = { ...character, souvenirs: [{ id: "s_1" }] };
+
+    expect(migrateCharacter(row, CHARACTER_VERSION).souvenirs[0]).toEqual({
+      id: "s_1",
+      fromRun: "",
+      earnedAt: "",
+    });
+  });
+});
+
+describe("migrateCharacter — the field guards, at their edges", () => {
+  /*
+   * Same two guards as `rules.ts`, same blind spot: each is `wrong type ||
+   * wrong value`, and every case above only ever exercises the type half. A
+   * stored row reaches these straight from DynamoDB, so what gets through is
+   * what the rest of the game then does arithmetic on.
+   */
+  it("rejects a stored number that is not finite", () => {
+    const character = current();
+    for (const bad of [Number.NaN, Number.POSITIVE_INFINITY]) {
+      const row = { ...character, committed: { ...character.committed, xp: bad } };
+      expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(StoredCharacterError);
+    }
+  });
+
+  it("rejects an array where an object belongs", () => {
+    // `typeof [] === "object"` and it is not null, so only the third clause
+    // catches this — and a JSON round trip is exactly how a `{}` becomes a `[]`.
+    const row = { ...current(), committed: [] };
+    expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(StoredCharacterError);
+  });
+
+  it("names what it actually got, so a bad row can be found in the table", () => {
+    // The message is the only thing an operator has: these rows are opaque
+    // blobs, and "expected an object" without "(got an array)" means reading
+    // the item by hand to learn what this one already knew.
+    const row = { ...current(), committed: [] };
+    expect(() => migrateCharacter(row, CHARACTER_VERSION)).toThrow(/got an array/);
+
+    const nulled = { ...current(), committed: null };
+    expect(() => migrateCharacter(nulled, CHARACTER_VERSION)).toThrow(/got null/);
+  });
+});

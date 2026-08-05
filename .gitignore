@@ -40,3 +40,6 @@ playwright-report/
 # repo *inside* this repo, created and reaped by the tooling. `.claude/` itself
 # is tracked (settings.json lives there), so this has to be ignored by path.
 .claude/worktrees/
+
+# Coverage output (npm run test:coverage).
+coverage/

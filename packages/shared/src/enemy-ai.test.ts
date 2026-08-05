@@ -309,3 +309,51 @@ describe("reach", () => {
     expect(plan.moveTo).toEqual({ x: 4, y: 1 });
   });
 });
+
+/*
+ * The step budget, at its edges.
+ *
+ * Found by flipping `Math.floor` to `Math.ceil` on the allowance and `>= 1` to
+ * `> 1` in the walk, and watching nothing object. Both are the same kind of
+ * mistake — a monster that gets one more tile than it has, or one fewer — and
+ * both are invisible in a test where the budget is a round number and the
+ * distance is comfortable.
+ */
+describe("how far it actually gets", () => {
+  it("spends a fractional step budget downwards", () => {
+    /*
+     * `wholeSteps` exists because the number arriving here need not be whole —
+     * a step bonus is applied before this is called. Rounding up hands the
+     * monster a free tile, which on the turn it matters is the difference
+     * between "it is coming for you" and "it reached you".
+     */
+    const rowan = hero("c_rowan", { x: 7, y: 2 });
+    const generous = planEnemyTurn(turn(FIELD, { x: 0, y: 2 }, [rowan], 2.9));
+    const whole = planEnemyTurn(turn(FIELD, { x: 0, y: 2 }, [rowan], 2));
+    const rounded = planEnemyTurn(turn(FIELD, { x: 0, y: 2 }, [rowan], 3));
+
+    expect(generous.moveTo).toEqual(whole.moveTo);
+    expect(generous.moveTo).not.toEqual(rounded.moveTo);
+  });
+
+  it("still takes its one step when one step is all it has", () => {
+    /*
+     * The walk counts down from the far end of the path looking for a tile it
+     * can stand on, and stops at 1 — the first step. Stopping at 2 instead
+     * leaves a monster with a single step standing still, which reads as the
+     * fight having quietly stopped rather than as a creature closing in.
+     */
+    const rowan = hero("c_rowan", { x: 7, y: 2 });
+    const plan = planEnemyTurn(turn(FIELD, { x: 0, y: 2 }, [rowan], 1));
+
+    expect(plan.attack).toBeNull();
+    expect(plan.moveTo).not.toBeNull();
+    expect(stepsBetween({ x: 0, y: 2 }, plan.moveTo!)).toBe(1);
+  });
+
+  it("stands still on no budget at all rather than teleporting a tile", () => {
+    const rowan = hero("c_rowan", { x: 7, y: 2 });
+    expect(planEnemyTurn(turn(FIELD, { x: 0, y: 2 }, [rowan], 0)).moveTo).toBeNull();
+    expect(planEnemyTurn(turn(FIELD, { x: 0, y: 2 }, [rowan], 0.9)).moveTo).toBeNull();
+  });
+});
