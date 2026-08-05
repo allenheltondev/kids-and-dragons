@@ -234,6 +234,36 @@ async function main(): Promise<void> {
     res.json(response);
   });
 
+  app.post("/api/progression/spend", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const session = await resolveSession(req, base);
+    if (!session) {
+      return sendError(res, 401, "FORBIDDEN", "spending a stat point needs a room session token");
+    }
+    if (!Object.prototype.hasOwnProperty.call(req.body ?? {}, "stat")) {
+      return sendError(res, 400, "ILLEGAL", "expected { stat }");
+    }
+
+    const state = await deps.repo.getState(session.runId);
+    const response = await applyAction(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        seq: Number(req.body.seq ?? state?.seq ?? 0),
+        intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
+        principal: {
+          householdId: session.householdId,
+          playerId: session.playerId,
+          role: session.role,
+        },
+      },
+      deps,
+    );
+    res.json(response);
+  });
+
   app.get("/api/state", async (req: Request, res: Response) => {
     const deps = await withRuntime(base, res);
     if (!deps) return;

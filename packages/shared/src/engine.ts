@@ -710,6 +710,9 @@ function dispatch(
 
     case "RESOLVE_ITEM_SWAP":
       return doResolveItemSwap(draft, playerId, intent.dropItemId, ctx);
+
+    case "SPEND_STAT_POINT":
+      throw new Illegal("ILLEGAL", "stat points are spent through the authoritative run handler");
   }
 }
 

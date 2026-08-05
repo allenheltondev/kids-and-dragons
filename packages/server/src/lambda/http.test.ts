@@ -616,6 +616,108 @@ describe("POST /api/action", () => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /api/progression/spend
+// ---------------------------------------------------------------------------
+
+describe("POST /api/progression/spend", () => {
+  async function joinedRoom(harness: TestHarness) {
+    const room = await seedRoom(harness);
+    const join = await respond(
+      event("POST", `/api/room/${room.code}/join`, {
+        headers: { "x-kad-device-token": room.player.deviceToken },
+      }),
+      runtimeFor(harness),
+    );
+    const { sessionToken } = bodyOf(join) as unknown as { sessionToken: string };
+    return { ...room, sessionToken };
+  }
+
+  it("refuses a spend with no session token", async () => {
+    const harness = makeHarness();
+    await joinedRoom(harness);
+
+    const result = await respond(
+      event("POST", "/api/progression/spend", { body: { stat: "might" } }),
+      runtimeFor(harness),
+    );
+
+    expect(result.statusCode).toBe(401);
+    expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("refuses a body that names no stat", async () => {
+    const harness = makeHarness();
+    const room = await joinedRoom(harness);
+
+    const result = await respond(
+      event("POST", "/api/progression/spend", {
+        body: {},
+        headers: { authorization: `Bearer ${room.sessionToken}` },
+      }),
+      runtimeFor(harness),
+    );
+
+    expect(result.statusCode).toBe(400);
+    expect(bodyOf(result).error).toMatchObject({ message: "expected { stat }" });
+  });
+
+  it("takes the run and the player from the session, never from the body", async () => {
+    /*
+     * The same rule `postAction` holds, and worth pinning separately because
+     * this route does not forward an intent it was handed — it builds one, from
+     * ids it chooses. Party player ids are in the room state every client
+     * holds, so a body naming somebody else must not spend their stat point.
+     *
+     * Asserted as "the extra fields changed nothing": a request carrying a
+     * foreign runId and playerId gets byte-identical output to one carrying
+     * neither. If either were read, the foreign run would fail its own way
+     * (an unknown run is NOT_FOUND, not this) and the two would diverge.
+     */
+    const harness = makeHarness();
+    const room = await joinedRoom(harness);
+    const rt = runtimeFor(harness);
+    const spend = (body: Record<string, unknown>) =>
+      respond(
+        event("POST", "/api/progression/spend", {
+          body,
+          headers: { authorization: `Bearer ${room.sessionToken}` },
+        }),
+        rt,
+      );
+
+    const honest = await spend({ stat: "might" });
+    const lying = await spend({ stat: "might", runId: "r_somebody_else", playerId: "p_99" });
+
+    expect(lying.statusCode).toBe(honest.statusCode);
+    expect(bodyOf(lying)).toEqual(bodyOf(honest));
+    expect(honest.body).not.toContain("r_somebody_else");
+    expect(honest.body).not.toContain("p_99");
+  });
+
+  it("returns a refused spend as 200 with ok:false, like every other intent", async () => {
+    /*
+     * A stat point that cannot be spent is protocol, not an HTTP failure — the
+     * client reads `error.code` and carries on. The refusal here comes from
+     * `applyAction`'s own guard rather than from the engine: a spend outside a
+     * Rest scene never reaches `applyIntent` at all.
+     */
+    const harness = makeHarness();
+    const room = await joinedRoom(harness);
+
+    const result = await respond(
+      event("POST", "/api/progression/spend", {
+        body: { stat: "might" },
+        headers: { authorization: `Bearer ${room.sessionToken}` },
+      }),
+      runtimeFor(harness),
+    );
+
+    expect(result.statusCode).toBe(200);
+    expect(bodyOf(result)).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+  });
+});
+
+// ---------------------------------------------------------------------------
 // GET /api/state
 // ---------------------------------------------------------------------------
 
@@ -1022,6 +1124,7 @@ const SHARED = [
   { path: "/api/room/:code/join", method: "POST", probe: "/api/room/ABCD/join" },
   { path: "/api/room/:code/watch", method: "POST", probe: "/api/room/ABCD/watch" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
+  { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
   { path: "/api/state", method: "GET", probe: "/api/state" },
   { path: "/api/health", method: "GET", probe: "/api/health" },
 ] as const;

@@ -104,6 +104,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "POST") {
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
+    if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
 
@@ -247,6 +248,33 @@ async function postAction(req: Req, deps: HandlerDeps) {
   // `error.code` and resyncs. 200 keeps that path free of fetch() error
   // handling on a phone with a flaky connection.
   return json(200, response, resolved?.principal);
+}
+
+async function postProgressionSpend(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) {
+    return error(401, "FORBIDDEN", "spending a stat point needs a room session token");
+  }
+  if (!Object.prototype.hasOwnProperty.call(req.body, "stat")) {
+    return error(400, "ILLEGAL", "expected { stat }");
+  }
+
+  const state = await deps.repo.getState(session.runId);
+  const response = await applyAction(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      seq: Number(req.body.seq ?? state?.seq ?? 0),
+      intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
+      principal: {
+        householdId: session.householdId,
+        playerId: session.playerId,
+        role: session.role,
+      },
+    },
+    deps,
+  );
+  return json(200, response);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {

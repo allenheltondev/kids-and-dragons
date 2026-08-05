@@ -49,11 +49,13 @@ describe("levels", () => {
     expect(levelForXp(rules, 999999)).toBe(10);
   });
 
-  it("reports XP owed to the next level, and null at max", () => {
+  it("reports XP owed to the next level, clamps negative XP, and returns null at max", () => {
+    expect(xpToNextLevel(rules, -50)).toBe(300);
     expect(xpToNextLevel(rules, 0)).toBe(300);
     expect(xpToNextLevel(rules, 250)).toBe(50);
     expect(xpToNextLevel(rules, 300)).toBe(400);
     expect(xpToNextLevel(rules, 6300)).toBeNull();
+    expect(xpToNextLevel(rules, 999999)).toBeNull();
   });
 });
 
@@ -105,10 +107,20 @@ describe("assertRulesContent", () => {
     expect(() => assertRulesContent(bad)).toThrow(/either a `stat` or a `maxHp` bonus/);
   });
 
-  it("rejects a non-monotonic XP curve", () => {
+  it("rejects an empty XP curve", () => {
     const bad = JSON.parse(JSON.stringify(rules)) as { levelXp: number[] };
-    bad.levelXp = [300, 200];
-    expect(() => assertRulesContent(bad)).toThrow(/levelXp\[1\] must be greater than/);
+    bad.levelXp = [];
+    expect(() => assertRulesContent(bad)).toThrow(
+      /levelXp must be a non-empty array of XP thresholds/,
+    );
+  });
+
+  it("rejects a non-strictly-increasing XP curve and identifies the offending index", () => {
+    const bad = JSON.parse(JSON.stringify(rules)) as { levelXp: number[] };
+    bad.levelXp = [100, 200, 200, 300];
+    expect(() => assertRulesContent(bad)).toThrow(
+      /levelXp\[2\] must be greater than levelXp\[1\] \(200\)/,
+    );
   });
 
   it("rejects rules where the base tier is not level 1", () => {

@@ -229,6 +229,30 @@ describe("the mirror", () => {
     expect(h.store.getState().state?.narration).toBe("hit");
   });
 
+  it("stores progression for application subscribers once per authoritative seq", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    const seen: number[] = [];
+    const unsubscribe = h.store.subscribe((state) => {
+      if (state.progression) seen.push(state.progression.seq);
+    });
+    const progression = {
+      characters: [],
+      awards: [{ characterId: "c_1", leveledTo: 4, newTier: "sworn" as const }],
+    };
+    const message = {
+      ...patch(2, [{ op: "replace", path: "/narration", value: "level up" }]),
+      progression,
+    };
+
+    h.publish(message);
+    h.publish(message);
+    unsubscribe();
+
+    expect(h.store.getState().progression).toEqual({ seq: 2, progression });
+    expect(seen).toEqual([2]);
+  });
+
   it("holds the patch until a registered world surface has played the animation", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");

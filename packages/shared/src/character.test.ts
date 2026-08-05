@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   awardXp,
+  CharacterRuleError,
   commitCampaign,
   effectiveProgress,
   failCampaign,
@@ -172,26 +173,33 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     expect(resolved.maxHp).toBe(10);
   });
 
-  it("derives the tier from the level instead of trusting the stored one", () => {
-    const character = makeCharacter({ level: 7 });
-    character.committed.tier = "fledgling"; // a hand-edited lie
-    expect(resolveCharacter(character, rules, items).tier).toBe("radiant");
+  it("derives the level and tier from XP instead of trusting stored fields", () => {
+    const character = makeCharacter({ level: 1, xp: 3300 });
+    character.committed.tier = "fledgling"; // hand-edited lies
+    const resolved = resolveCharacter(character, rules, items);
+
+    expect(resolved.level).toBe(7);
+    expect(resolved.tier).toBe("radiant");
   });
 
   it("unlocks the class signature, level unlocks, and the species combat action", () => {
-    const atFive = resolveCharacter(makeCharacter({ level: 5 }), rules, items);
+    const atFive = resolveCharacter(makeCharacter({ level: 1, xp: 1800 }), rules, items);
     expect(atFive.actions).toContain("rally"); // signature, from level 1
     expect(atFive.actions).toContain("soothe"); // unlocked at 3
     expect(atFive.actions).not.toContain("chorus"); // not until 6
     expect(atFive.actions).toContain("mend_pulse"); // species combat action
 
-    const atSix = resolveCharacter(makeCharacter({ level: 6 }), rules, items);
+    const atSix = resolveCharacter(makeCharacter({ level: 1, xp: 2500 }), rules, items);
     expect(atSix.actions).toContain("chorus");
   });
 
-  it("has no duplicate actions", () => {
-    const resolved = resolveCharacter(makeCharacter({ level: 6 }), rules, items);
+  it("has no duplicate actions and skips stored action IDs absent from current content", () => {
+    const character = makeCharacter({ level: 1, xp: 2500 });
+    character.committed.unlockedActions = ["rally", "chorus", "retired_action"];
+    const resolved = resolveCharacter(character, rules, items);
+
     expect(new Set(resolved.actions).size).toBe(resolved.actions.length);
+    expect(resolved.actions).not.toContain("retired_action");
   });
 
   it("attacks with its class stat and guards with Quick", () => {
@@ -223,13 +231,33 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     expect(resolveCharacter(legacy, rules, items).unspentPoints).toBe(0);
   });
 
-  it("reads provisional over committed and says so", () => {
-    const started = startCampaign(makeCharacter({ level: 1 }), "r_88c");
-    const bumped = awardXp(started, rules, 1200).character;
-    const resolved = resolveCharacter(bumped, rules, items);
+  it("reads provisional over committed and derives both effective and committed levels from XP", () => {
+    const started = startCampaign(makeCharacter({ level: 10, xp: 700 }), "r_88c");
+    const provisional = started.provisional!;
+    provisional.level = 1;
+    provisional.xp = 2500;
+
+    const resolved = resolveCharacter(started, rules, items);
     expect(resolved.isProvisional).toBe(true);
-    expect(resolved.level).toBe(4);
-    expect(bumped.committed.level).toBe(1);
+    expect(resolved.level).toBe(6);
+    expect(resolved.committedLevel).toBe(3);
+  });
+
+  it("gracefully skips missing species and class definitions", () => {
+    const incompleteRules = makeRules();
+    delete (incompleteRules.species as Partial<typeof incompleteRules.species>).unicorn;
+    delete (incompleteRules.classes as Partial<typeof incompleteRules.classes>).songkeeper;
+    const character = makeCharacter({ inventory: [{ itemId: "ghost_item", kind: "trinket" }] });
+    character.committed.unlockedActions = ["retired_action"];
+
+    const resolved = resolveCharacter(character, incompleteRules, items);
+
+    expect(resolved.stats).toEqual(character.committed.stats);
+    expect(resolved.maxHp).toBe(incompleteRules.baseMaxHp);
+    expect(resolved.steps).toBe(incompleteRules.baseSteps);
+    expect(resolved.actions).toEqual([]);
+    expect(resolved.worldAbility).toBe("");
+    expect(resolved.attackStat).toBe("might");
   });
 });
 
@@ -342,9 +370,67 @@ describe("the commitment rule", () => {
     expect(done.questItems).toEqual([]);
     expect(done.committed.level).toBe(1);
   });
+
+  it("failCampaign with nothing in flight still preserves committed, clears quest items, and appends a souvenir", () => {
+    const character = makeCharacter({ level: 4, xp: 1200 });
+    character.questItems = ["rusted_key"];
+    const committedBytes = JSON.stringify(character.committed);
+
+    const failed = failCampaign(character, "scrap_of_map", "2026-08-01T12:34:56.000Z");
+
+    expect(failed.provisional).toBeNull();
+    expect(JSON.stringify(failed.committed)).toBe(committedBytes);
+    expect(failed.questItems).toEqual([]);
+    expect(failed.souvenirs).toHaveLength(1);
+    expect(failed.souvenirs[0]).toMatchObject({
+      id: "scrap_of_map",
+      earnedAt: "2026-08-01T12:34:56.000Z",
+    });
+  });
 });
 
 describe("awardXp (spec §8.1)", () => {
+  it.each([0, -1, -500])("is a no-op for a non-positive award of %i XP", (amount) => {
+    const character = startCampaign(makeCharacter(), "r_1");
+    const snapshot = JSON.parse(JSON.stringify(character)) as Character;
+
+    const result = awardXp(character, rules, amount);
+
+    expect(result).toEqual({ character: snapshot });
+    expect(result.character).toBe(character);
+  });
+
+  it("clamps cumulative XP to zero before deriving the level", () => {
+    const character = makeCharacter();
+    character.committed.xp = -500;
+    character.committed.level = 10;
+    character.committed.tier = "mythic";
+
+    const result = awardXp(character, rules, 300);
+
+    expect(result.character.committed.xp).toBe(0);
+    expect(result.character.committed.level).toBe(1);
+    expect(result.character.committed.tier).toBe("fledgling");
+    expect(result.character.committed.unspentPoints).toBe(0);
+    expect(result.leveledTo).toBeUndefined();
+    expect(result.newTier).toBeUndefined();
+  });
+
+  it("derives the level delta and tier signal from XP rather than stored fields", () => {
+    const character = makeCharacter();
+    character.committed.xp = 700;
+    character.committed.level = 1;
+    character.committed.tier = "mythic";
+    character.committed.unspentPoints = 2;
+
+    const result = awardXp(character, rules, 500);
+
+    expect(result.character.committed.level).toBe(4);
+    expect(result.character.committed.unspentPoints).toBe(3);
+    expect(result.leveledTo).toBe(4);
+    expect(result.newTier).toBe("sworn");
+  });
+
   it("writes to provisional while a campaign is in flight", () => {
     const { character, leveledTo } = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 300);
     expect(leveledTo).toBe(2);
@@ -375,6 +461,27 @@ describe("awardXp (spec §8.1)", () => {
   it("appends the class actions the new level unlocks", () => {
     const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 700);
     expect(result.character.provisional?.unlockedActions).toContain("soothe");
+  });
+
+  it("unlocks every class action crossed by a multi-level award", () => {
+    const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500);
+
+    expect(result.leveledTo).toBe(6);
+    expect(result.character.provisional?.unlockedActions).toEqual(
+      expect.arrayContaining(["soothe", "chorus"]),
+    );
+  });
+
+  it("still awards XP when the stored class was removed from current content", () => {
+    const staleRules = {
+      ...rules,
+      classes: { ...rules.classes, songkeeper: undefined },
+    } as unknown as typeof rules;
+
+    const result = awardXp(startCampaign(makeCharacter(), "r_1"), staleRules, 300);
+
+    expect(result.character.provisional).toMatchObject({ xp: 300, level: 2 });
+    expect(result.character.provisional?.unlockedActions).toEqual(["rally"]);
   });
 
   it("is reverted wholesale by a failed campaign", () => {
@@ -441,8 +548,21 @@ describe("spendStatPoint (spec §8.1)", () => {
     expect(() => spendStatPoint(once, rules, "quick")).toThrow(/no unspent stat points/);
   });
 
-  it("rejects a stat id the rules do not know", () => {
+  it("rejects a stat id the rules do not know with CharacterRuleError", () => {
+    expect(() => spendStatPoint(withAPoint(), rules, "luck" as never)).toThrow(
+      CharacterRuleError,
+    );
     expect(() => spendStatPoint(withAPoint(), rules, "luck" as never)).toThrow(/unknown stat/);
+  });
+
+  it("rejects spending beyond nine bonus points in one stat", () => {
+    const atCap = withAPoint();
+    atCap.committed.stats.might = rules.baseStats.might + 9;
+
+    expect(() => spendStatPoint(atCap, rules, "might")).toThrow(CharacterRuleError);
+    expect(() => spendStatPoint(atCap, rules, "might")).toThrow(/9 bonus points/);
+    expect(atCap.committed.unspentPoints).toBe(1);
+    expect(atCap.committed.stats.might).toBe(rules.baseStats.might + 9);
   });
 
   it("writes to provisional while a campaign is in flight, leaving committed alone", () => {
