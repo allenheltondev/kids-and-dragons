@@ -608,3 +608,68 @@ describe("spendStatPoint (spec §8.1)", () => {
     expect(awardXp(legacy, rules, 300).character.committed.unspentPoints).toBe(1);
   });
 });
+
+/*
+ * The guards that only fire on content nobody has written yet.
+ *
+ * Each of these is a clause in an `||` chain whose *other* clauses are already
+ * tested, so the whole condition reads as covered while one arm of it has never
+ * run. They matter because both `rules.json` and the item catalog are authored
+ * by hand: the mistakes below are a wrong field filled in, not a wrong line of
+ * code, and the thing that catches them has to be the thing that reads them.
+ */
+describe("the guards on hand-authored content", () => {
+  it("ignores a passive on something that is not a trinket", () => {
+    /*
+     * "Trinket passives are always on" (spec §9.2) — and only a trinket's.
+     * `effect` and `passive` sit side by side in the catalog schema, so filling
+     * in the wrong one is an ordinary slip; the result would be a consumable
+     * that quietly buffs a character forever *and* can still be drunk.
+     */
+    const odd = {
+      ...items,
+      dubious_tonic: {
+        kind: "consumable" as const,
+        name: "Dubious Tonic",
+        text: "Tastes of pennies.",
+        icon: "icons/items/tonic.svg",
+        passive: { type: "statBonus" as const, stat: "might" as const, amount: 5 },
+      },
+    };
+    const carrying = makeCharacter();
+    carrying.committed.inventory = [{ itemId: "dubious_tonic", kind: "consumable" }];
+
+    const plain = resolveCharacter(makeCharacter(), rules, items);
+    const withTonic = resolveCharacter(carrying, rules, odd);
+    expect(withTonic.stats.might).toBe(plain.stats.might);
+  });
+
+  it("lets a stat end at zero when the rules say the base is zero", () => {
+    /*
+     * The guard is "would end up negative", and every fixture has a base of 1,
+     * so nothing has ever produced a zero. A rules file may legitimately start
+     * a stat at 0 — and refusing that would make a whole class of character
+     * uncreatable with an error about a number that is not negative.
+     */
+    const zeroBase = { ...makeRules(), baseStats: { might: 0, quick: 0, clever: 0, heart: 0 } };
+    const made = newCharacter({ ...creation({ heart: 3 }), rules: zeroBase });
+
+    expect(made.committed.stats.might).toBe(0);
+    expect(made.committed.stats.heart).toBe(3);
+  });
+
+  it("refuses a stat the rules have no base for, not just one off the list", () => {
+    /*
+     * Two ways to be an unknown stat: a name that is not one of the four, and
+     * one that is but which `baseStats` never defines. The second is a
+     * half-edited rules file, and letting it through banks a point into
+     * `undefined + 1`.
+     */
+    const gapped = makeRules();
+    delete (gapped.baseStats as Partial<Stats>)["clever"];
+
+    const levelled = awardXp(makeCharacter(), rules, 300).character;
+    expect(() => spendStatPoint(levelled, gapped, "clever")).toThrow(CharacterRuleError);
+    expect(() => spendStatPoint(levelled, gapped, "clever")).toThrow(/unknown stat/);
+  });
+});
