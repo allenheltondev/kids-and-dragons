@@ -381,15 +381,7 @@ export class MemoryRepository implements GameRepository {
   // --- characters ------------------------------------------------------------
 
   async putCharacter(character: Character): Promise<void> {
-    this.put({
-      PK: HH(character.householdId),
-      SK: CHAR_SK(character.id),
-      entity: "character",
-      // Stamped on every write, so a row's version is a fact rather than an
-      // inference from which fields happen to be present (architecture §3.2).
-      v: CHARACTER_VERSION,
-      data: character,
-    });
+    this.put(characterItem(character));
   }
 
   async getCharacter(householdId: string, characterId: string): Promise<Character | null> {
@@ -505,13 +497,7 @@ export class MemoryRepository implements GameRepository {
     this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
     for (const character of characters) {
-      this.put({
-        PK: HH(character.householdId),
-        SK: CHAR_SK(character.id),
-        entity: "character",
-        v: CHARACTER_VERSION,
-        data: character,
-      });
+      this.put(characterItem(character));
     }
     if (chapterProgress) {
       this.put({
@@ -572,6 +558,18 @@ export class MemoryRepository implements GameRepository {
     this.items.delete(rowKey(ROOM(code), META));
     this.persist();
   }
+}
+
+function characterItem(character: Character): TableItem {
+  return {
+    PK: HH(character.householdId),
+    SK: CHAR_SK(character.id),
+    entity: "character",
+    // Both unconditional puts and transactional commits go through this
+    // builder so neither path can omit progression fields or the schema stamp.
+    v: CHARACTER_VERSION,
+    data: character,
+  };
 }
 
 function rowKey(pk: string, sk: string): string {

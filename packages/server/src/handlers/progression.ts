@@ -22,16 +22,25 @@
  */
 
 import {
-  awardXp,
+  CharacterRuleError,
   commitCampaign,
   failCampaign,
   resolveCharacter,
+  spendStatPoint as applyStatPointSpend,
   startCampaign,
-  syncRunInventory,
   type Character,
+  type Chapter,
+  type ProgressionAward,
   type RunState,
+  type StatId,
 } from "@kad/shared";
-import { iso, type HandlerDeps } from "./deps.ts";
+import {
+  awardChapterXp,
+  awardChapterXpDetails,
+  computeChapterXp,
+  type AwardChapterXpResult,
+} from "../engine/shared-engine.ts";
+import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import type { CampaignProgressRecord, ChapterProgressRecord } from "../store/repository.ts";
 
 /**
@@ -99,73 +108,72 @@ export async function newCharacterWrite(
  * in the party, updates the resolved snapshots the phones mirror, and returns
  * the rows to write.
  *
- * `state.xpEarned` is the whole award — base plus bonus objectives, already
- * halved if the ending was a setback (spec §8.2) — and every character gets the
- * same number. XP is uniform *by design*: the reward for a level is a visible
- * new body, and per-player XP would leave one child visibly smaller than the
- * rest of the party (spec §8.2).
+ * The award is the engine-settled `state.xpEarned` total. It already includes
+ * authored `grantXp` effects, the success/setback base, and paid objectives;
+ * recomputing any subset here would make persisted progression disagree with
+ * the chapter-completion presentation.
  *
  * The inventory rides along because the engine's grants and swaps land on the
- * run's resolved characters and nowhere else (`syncRunInventory`). It also
- * means this runs on *every* completion, not just a paying one: a chapter can
- * award nothing and still have handed somebody a potion, and "the potion she
- * picked up two sessions ago is still in her bag" is this chapter's whole
- * definition of done.
+ * run's resolved characters and nowhere else (`syncRunInventory`). This fold
+ * therefore runs even when no XP is awarded, so chapter items are not lost.
  *
- * `startCampaign()` first, always. It is idempotent for a run, and calling it
- * here means a gain is provisional by construction — there is no path through
- * this function that writes an unrevertible level. Get that wrong and the
- * commitment rule silently stops being true.
+ * When `campaignId` is present, the shared progression flow calls
+ * `startCampaign()` before syncing inventory and awarding XP, keeping both
+ * changes provisional. One-off chapters write directly to committed state.
  */
 export async function foldChapterXp(
   state: RunState,
   deps: HandlerDeps,
   householdId: string,
+  chapter: Chapter | null = state.chapterId ? deps.content.chapter(state.chapterId) : null,
 ): Promise<Character[]> {
-  const rules = deps.content.rules();
-  const items = deps.content.items();
-  const writes: Character[] = [];
+  if (!chapter) return [];
 
-  // One round trip per member was serialized inside the request that completes
-  // the chapter — the one moment three phones are all watching the screen.
-  const stored = await Promise.all(
-    state.party.map(async (member) => {
-      try {
-        return await deps.repo.getCharacter(householdId, member.character.id);
-      } catch (err) {
-        // An unrepairable stored row (`migrateCharacter` throws) gets the same
-        // treatment as a missing one, and for the same reason as
-        // `character-io.readAll`: one bad row must not take the table down at
-        // the exact moment the chapter completes.
-        console.error(`foldChapterXp: skipping character ${member.character.id}:`, err);
-        return null;
-      }
-    }),
-  );
+  return awardChapterXp({
+    state,
+    chapter,
+    householdId,
+    repo: deps.repo,
+    rules: deps.content.rules(),
+    items: deps.content.items(),
+  });
+}
 
-  for (const [i, member] of state.party.entries()) {
-    // A swept household, or a member created before any of this existed. The
-    // character on screen keeps playing; it just does not accrue. Throwing here
-    // would end the session at the table.
-    const row = stored[i];
-    if (!row) continue;
+/** Row writes plus per-character level/tier triggers for response assembly. */
+async function foldChapterXpDetails(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+  chapter: Chapter | null,
+): Promise<AwardChapterXpResult> {
+  if (!chapter) return { characters: [], awards: [] };
 
-    const seeded = startCampaign(row, campaignKey(state));
-    const carried = syncRunInventory(
-      seeded,
-      member.character.inventory,
-      member.character.questItems,
-    );
-    const { character } = awardXp(carried, rules, state.xpEarned);
-    writes.push(character);
+  return awardChapterXpDetails({
+    state,
+    chapter,
+    householdId,
+    repo: deps.repo,
+    rules: deps.content.rules(),
+    items: deps.content.items(),
+  });
+}
 
-    // Re-resolve so the level, tier, unlocked actions and the waiting stat
-    // point reach the phones. The engine resolved this character once at
-    // creation and never again, so without this the sheet would keep showing
-    // the level she started the evening on.
-    member.character = resolveCharacter(character, rules, items);
-  }
-  return writes;
+/**
+ * Starts (or re-enters) the campaign for every stored party character and
+ * immediately refreshes the resolved snapshots carried by the run.
+ *
+ * This runs on the successful `START_CHAPTER` action, before the state diff and
+ * conditional commit. Waiting until chapter completion to seed provisional
+ * state leaves the whole first chapter displaying committed progression and
+ * misses the required campaign-start response entirely.
+ */
+export async function startPartyCampaign(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+): Promise<Character[]> {
+  if (!state.campaignId) return [];
+  return transformParty(state, deps, householdId, [], (character) => character);
 }
 
 /** Spec §8.3's default. A campaign may tune it (`Campaign.setbackLimit`). */
@@ -174,6 +182,8 @@ const DEFAULT_SETBACK_LIMIT = 3;
 /** Everything a chapter completion owes the store, for one `repo.commit()`. */
 export interface ChapterSettlement {
   characters: Character[];
+  /** Award metadata retained for level-up and tier-transformation UI triggers. */
+  awards: ProgressionAward[];
   chapterProgress?: ChapterProgressRecord;
   campaignProgress?: CampaignProgressRecord;
   campaignProgressExpectedVersion?: number | null;
@@ -209,10 +219,12 @@ export async function settleChapterCompletion(
   householdId: string,
 ): Promise<ChapterSettlement> {
   const now = iso(deps.now());
-  const characters = await foldChapterXp(state, deps, householdId);
   const outcome = state.chapterOutcome ?? "success";
-
   const chapter = state.chapterId ? deps.content.chapter(state.chapterId) : null;
+  const award = await foldChapterXpDetails(state, deps, householdId, chapter);
+  const characters = award.characters;
+  const xpEarned = chapter ? computeChapterXp(state, chapter) : 0;
+
   const chapterProgress: ChapterProgressRecord | undefined = chapter
     ? {
         runId: state.runId,
@@ -220,7 +232,7 @@ export async function settleChapterCompletion(
         chapterId: chapter.id,
         status: "complete",
         outcome,
-        xpEarned: state.xpEarned,
+        xpEarned,
         updatedAt: now,
       }
     : undefined;
@@ -228,7 +240,7 @@ export async function settleChapterCompletion(
   const campaignId = state.campaignId;
   const campaign = campaignId ? deps.content.campaign(campaignId) : null;
   if (!campaignId || !campaign || !chapter) {
-    return { characters, ...(chapterProgress ? { chapterProgress } : {}) };
+    return { characters, awards: award.awards, ...(chapterProgress ? { chapterProgress } : {}) };
   }
 
   /*
@@ -262,6 +274,7 @@ export async function settleChapterCompletion(
         const flavored = reached && reached !== c.committed.tier;
         return failCampaign(c, flavored ? `${campaignId}#${reached}` : campaignId, now);
       }),
+      awards: award.awards,
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
       campaignProgressExpectedVersion,
@@ -272,6 +285,7 @@ export async function settleChapterCompletion(
     attempt.status = "complete";
     return {
       characters: await transformParty(state, deps, householdId, characters, commitCampaign),
+      awards: award.awards,
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
       campaignProgressExpectedVersion,
@@ -280,6 +294,7 @@ export async function settleChapterCompletion(
 
   return {
     characters,
+    awards: award.awards,
     ...(chapterProgress ? { chapterProgress } : {}),
     campaignProgress: attempt,
     campaignProgressExpectedVersion,
@@ -329,4 +344,65 @@ async function transformParty(
     member.character = resolveCharacter(settled, rules, items);
   }
   return writes;
+}
+
+
+// ---------------------------------------------------------------------------
+// Rest-scene stat spending
+// ---------------------------------------------------------------------------
+
+export interface PreparedStatPointSpend {
+  /** The unresolved durable row written by the run transaction. */
+  character: Character;
+  /** A fresh run snapshot whose party member has been re-resolved. */
+  state: RunState;
+}
+
+/**
+ * Computes a stat-point spend for `applyAction` without writing anything.
+ *
+ * The stored character is the arithmetic source; the resolved party snapshot
+ * is only the authoritative mirror clients render. Returning both lets the
+ * action handler commit state, event, and character under the same seq guard,
+ * so a concurrent campaign transition wins or loses as one transaction rather
+ * than being overwritten by a delayed full-row write.
+ */
+export async function prepareStatPointSpend(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+  playerId: string,
+  stat: unknown,
+): Promise<HandlerResult<PreparedStatPointSpend>> {
+  if (state.phase !== "scene" || state.sceneType !== "rest") {
+    return fail("ILLEGAL", "stat points may only be spent during an active Rest scene");
+  }
+
+  const member = state.party.find((candidate) => candidate.playerId === playerId);
+  if (!member) return fail("NOT_FOUND", `player ${playerId} has no character in this run`);
+
+  const character = await deps.repo.getCharacter(householdId, member.character.id);
+  if (!character) return fail("NOT_FOUND", `no character ${member.character.id}`);
+  if (character.householdId !== householdId || character.ownerPlayerId !== playerId) {
+    return fail("FORBIDDEN", "this session cannot spend points for that character");
+  }
+
+  const rules = deps.content.rules();
+  try {
+    // Shared character rules validate the runtime value against STAT_IDS.
+    const updated = applyStatPointSpend(character, rules, stat as StatId);
+    const resolved = resolveCharacter(updated, rules, deps.content.items());
+    return ok({
+      character: updated,
+      state: {
+        ...state,
+        party: state.party.map((candidate) =>
+          candidate.playerId === playerId ? { ...candidate, character: resolved } : candidate,
+        ),
+      },
+    });
+  } catch (err) {
+    if (err instanceof CharacterRuleError) return fail("ILLEGAL", err.message);
+    throw err;
+  }
 }
