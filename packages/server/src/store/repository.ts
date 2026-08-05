@@ -222,7 +222,16 @@ export interface GameRepository {
   touchDevice(householdId: string, deviceId: string, lastSeen: string): Promise<void>;
 
   // --- characters (household-scoped, never run-scoped — §3) ----------------
+  /**
+   * Unconditionally persists the complete character snapshot, including both
+   * committed and provisional progression. Implementations stamp the row with
+   * the current character schema version; this is a replacement, not a patch.
+   */
   putCharacter(character: Character): Promise<void>;
+  /**
+   * Returns the character after applying the shared migration ladder to the
+   * stored row, or `null` when the household/id pair does not exist.
+   */
   getCharacter(householdId: string, characterId: string): Promise<Character | null>;
   listCharacters(householdId: string): Promise<Character[]>;
 

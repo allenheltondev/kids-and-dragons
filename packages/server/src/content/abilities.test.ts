@@ -109,9 +109,17 @@ function hero(input: {
     rules,
     now: "2026-01-01T00:00:00.000Z",
   });
+  const level = input.level ?? 1;
   const levelled: Character = {
     ...base,
-    committed: { ...base.committed, level: input.level ?? 1 },
+    committed: {
+      ...base.committed,
+      level,
+      // Progression derives level from cumulative XP. Keep this encounter
+      // fixture honest by placing the character exactly on the requested
+      // level's content-defined threshold instead of changing level alone.
+      xp: level === 1 ? 0 : rules.levelXp[level - 2]!,
+    },
   };
   return resolveCharacter(levelled, rules, items);
 }
