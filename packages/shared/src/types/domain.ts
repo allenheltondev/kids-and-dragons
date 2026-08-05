@@ -148,6 +148,15 @@ export interface Character {
   createdAt: string;
 }
 
+/** Result of applying an XP award to a character's effective progress. */
+export interface AwardXpResult {
+  character: Character;
+  /** Set only when the award crossed a level boundary. */
+  leveledTo?: number;
+  /** Set only when the award crossed into a different appearance tier. */
+  newTier?: TierId;
+}
+
 /**
  * A character with every rule applied: species bonus, trinket passives, tier,
  * derived combat numbers. Nothing downstream of resolveCharacter() should ever

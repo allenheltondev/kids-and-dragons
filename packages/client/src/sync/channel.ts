@@ -13,8 +13,17 @@
  */
 
 import type { Operation } from "fast-json-patch";
-import type { ChannelMessage, Presentation, RunState, ServerMessage } from "@kad/shared";
-import type { ConnectionStatus, PresentationEvent } from "../store/contract";
+import type {
+  ChannelMessage,
+  Presentation,
+  RunState,
+  ServerMessage,
+} from "@kad/shared";
+import type {
+  ConnectionStatus,
+  PresentationEvent,
+  ProgressionEvent,
+} from "../store/contract";
 import { applyPatchShared } from "./apply-patch";
 
 /**
@@ -32,6 +41,8 @@ export interface SequencerHandlers {
   /** A new authoritative mirror. Always a fresh object; never mutated in place. */
   onState(state: RunState, seq: number): void;
   onPresentation(event: PresentationEvent): void;
+  /** Ordered with patches and emitted once per applied server sequence. */
+  onProgression(event: ProgressionEvent): void;
   /** A hole that did not fill in time. Resync from `sinceSeq`. */
   onGap(sinceSeq: number): void;
 }
@@ -177,6 +188,9 @@ export class MessageSequencer {
     this.mirror = applyPatchShared(this.mirror, message.patch as Operation[]);
     this.lastSeq = message.seq;
     this.handlers.onState(this.mirror, this.lastSeq);
+    if (message.progression) {
+      this.handlers.onProgression({ seq: message.seq, progression: message.progression });
+    }
   }
 
   private emitPresentation(
@@ -277,7 +291,12 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     patch: candidate.patch,
   };
   const presentation = (candidate as ServerMessage).presentation;
-  return presentation ? { ...message, presentation } : message;
+  const progression = (candidate as ServerMessage).progression;
+  return {
+    ...message,
+    ...(presentation ? { presentation } : {}),
+    ...(progression ? { progression } : {}),
+  };
 }
 
 // ---------------------------------------------------------------------------

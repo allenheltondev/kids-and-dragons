@@ -28,7 +28,13 @@ import type {
   RunState,
 } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
-import type { ClientSession, ConnectionStatus, GameStore, PresentationEvent } from "./contract";
+import type {
+  ClientSession,
+  ConnectionStatus,
+  GameStore,
+  PresentationEvent,
+  ProgressionEvent,
+} from "./contract";
 import {
   clearSession,
   defaultStorage,
@@ -245,6 +251,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         handlers: {
           onState: (state) => set({ state }),
           onPresentation: (presentation) => set({ presentation }),
+          onProgression: (progression) => set({ progression }),
           onGap: (sinceSeq) => void resync(sinceSeq),
         },
       });
@@ -385,6 +392,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       session: null,
       state: null,
       presentation: null,
+      progression: null,
       error: null,
       rules: null,
       items: null,
@@ -664,6 +672,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           session: null,
           state: null,
           presentation: null,
+          progression: null,
           error: null,
           pendingCode: null,
         });
@@ -850,5 +859,44 @@ export function usePresentation<K extends Presentation["kind"]>(
         handlerRef.current(presentation, event);
       }),
     [kind],
+  );
+}
+
+/** Narrow source used by progression subscribers and their unit tests. */
+interface ProgressionSource {
+  getState(): { progression: ProgressionEvent | null };
+  subscribe(listener: (state: { progression: ProgressionEvent | null }) => void): () => void;
+}
+
+/**
+ * Delivers each ordered progression update once to a subscriber instance,
+ * including an update that arrived immediately before the subscriber mounted.
+ */
+export function watchProgression(
+  source: ProgressionSource,
+  watermark: { current: number },
+  handler: (event: ProgressionEvent) => void,
+): () => void {
+  const deliver = (event: ProgressionEvent | null): void => {
+    if (!event || event.seq <= watermark.current) return;
+    watermark.current = event.seq;
+    handler(event);
+  };
+  deliver(source.getState().progression);
+  return source.subscribe((state) => deliver(state.progression));
+}
+
+/** Subscribe to ordered, replay-safe level/tier progression updates. */
+export function useProgression(handler: (event: ProgressionEvent) => void): void {
+  const handlerRef = useRef(handler);
+  handlerRef.current = handler;
+  const watermark = useRef(0);
+
+  useEffect(
+    () =>
+      watchProgression(useGameStore, watermark, (event) => {
+        handlerRef.current(event);
+      }),
+    [],
   );
 }
