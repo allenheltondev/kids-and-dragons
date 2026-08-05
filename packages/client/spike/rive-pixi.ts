@@ -34,7 +34,11 @@
 import { Application, Container, Sprite, Texture } from "pixi.js";
 import RiveCanvas from "@rive-app/canvas-advanced";
 import wasmUrl from "@rive-app/canvas-advanced/rive.wasm?url";
-import rigUrl from "../../../art/rig/unicorn_fledgling_idle.riv?url";
+// A real delivered rig, not the one-clip spike file this used to load. Its own
+// README asked to be re-pointed the day a full rig existed: thirteen animations
+// and a state machine with real transitions is more to advance per frame than
+// one bare `idle` loop, even though only one animation ever plays at a time.
+import rigUrl from "../../../assets/characters/unicorn/fledgling/rig.riv?url";
 
 /**
  * The design space the real scene uses, so the sprites here are the size they
