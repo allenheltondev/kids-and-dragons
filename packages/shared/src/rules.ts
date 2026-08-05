@@ -105,10 +105,11 @@ export function tierForLevel(rules: RulesContent, level: number): TierId {
  * a permanently full bar.
  */
 export function xpToNextLevel(rules: RulesContent, xp: number): number | null {
-  const level = levelForXp(rules, xp);
+  const normalizedXp = Math.max(0, xp);
+  const level = levelForXp(rules, normalizedXp);
   const nextThreshold = rules.levelXp[level - 1];
   if (nextThreshold === undefined) return null;
-  return Math.max(0, nextThreshold - xp);
+  return nextThreshold - normalizedXp;
 }
 
 // ---------------------------------------------------------------------------
