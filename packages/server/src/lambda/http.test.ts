@@ -1130,19 +1130,36 @@ const SHARED = [
 ] as const;
 
 /**
- * Routes that exist in prod and have no local twin. Every entry here is a code
- * path that `npm run dev` cannot reach and the Playwright suite cannot cover,
- * because e2e drives the dev server — so it is only ever exercised against AWS.
+ * Routes that exist in prod and have no local twin — **by design, not by
+ * drift**, which is the distinction this comment exists to make.
  *
- * The sign-in pair is the live example: `handlers/account.ts` is well tested,
- * but the *route* in front of it — bearer extraction, `verifyAccount`, the 401s
- * — had no coverage at any level until this file. That is why they are pinned
- * rather than merely tolerated: the list is allowed to shrink, and growing it
- * should be a deliberate act with a comment, not a Tuesday.
+ * All three are downstream of one fact: a laptop has no Cognito user pool. The
+ * client reads `region`/`userPoolId`/`clientId` from `/api/config` and talks to
+ * Cognito *directly* (`sync/auth.ts`); with no pool there is no id token, so
+ * there is nothing to present to the two auth routes. `sync/client.ts`
+ * `fetchConfig()` says it outright — the 404 on a laptop "is the correct
+ * answer, not a failure" — and `shouldOfferKeepsake` returns false for a null
+ * config, so the offer never renders locally either. Anonymous play is the
+ * whole local experience on purpose.
+ *
+ * So adding dev-server twins for the auth pair would not make sign-in testable
+ * on a laptop; it would add two endpoints nothing can call, and this list would
+ * then report parity the system does not have. The absence that blocks local
+ * sign-in is the *pool*, not the routes.
+ *
+ * What was genuinely missing — and is what this file fixes — is that the code
+ * in front of those handlers (bearer extraction, `verifyAccount`, the 401s, the
+ * child-device and unowned-household refusals) had no test at any level, which
+ * for prod-only routes meant no coverage anywhere at all. `handlers/account.ts`
+ * was well tested; its transport was not.
+ *
+ * The list may shrink if a dev stand-in for the pool ever exists. Growing it
+ * should be a deliberate act with a reason written down, not a Tuesday.
  */
 const PROD_ONLY = [
-  // Served from the stack's environment; the dev client reads a static config.
+  // Served from the stack's environment; the dev client has no pool to describe.
   { path: "/api/config", method: "GET" },
+  // Reachable only with a Cognito id token, which a laptop cannot mint.
   { path: "/api/auth/link", method: "POST" },
   { path: "/api/auth/device", method: "POST" },
 ] as const;
