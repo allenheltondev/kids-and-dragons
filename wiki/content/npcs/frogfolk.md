@@ -3,7 +3,7 @@ title: Frogfolk
 id: npc.frogfolk
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-08-04"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "amphibious", "navigator"]
 classification: supporting_people
@@ -28,6 +28,10 @@ dislikes:
     title: "Mire Mimic"
     url: "/creatures/mire_mimic/"
     because: "Every marked channel it imitates is a review of frogfolk work, and the review is a trap."
+  - id: creature.loftmire
+    title: "Loftmire"
+    url: "/creatures/loftmire/"
+    because: "It takes the cloth off the marking poles and leaves the pole, which is a season's work rewritten by something that cannot read. The poles are weighted now. It was not a concession."
 related:
   - id: biome.whispering_marsh
     type: biome
@@ -67,6 +71,7 @@ The marsh is passable because frogfolk make it so: safe channels marked, mist la
 - Channel races, poled standing, no wakes allowed. Wakes wake things.
 - Mist-lantern festivals on new-moon nights, when the marsh is darkest and, by long observation, at its most polite.
 - Collecting rain-sounds. A really good roof is famous for three villages in every direction.
+- Brush drill. Every frogfolk child can get a coat clean in one pass, and the ones who cannot are not yet allowed out under an open sky.
 
 ### Getting Along
 
@@ -81,6 +86,7 @@ Reserved and precise, with a hospitality that consists of getting you where you 
 ### Dislikes
 
 - **[Mire Mimic](/creatures/mire_mimic/)** — Every marked channel it imitates is a review of frogfolk work, and the review is a trap.
+- **[Loftmire](/creatures/loftmire/)** — It takes the cloth off the marking poles and leaves the pole, which is a season's work rewritten by something that cannot read. The poles are weighted now. It was not a concession.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
