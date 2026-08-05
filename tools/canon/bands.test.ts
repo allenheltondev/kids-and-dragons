@@ -140,6 +140,25 @@ describe("a creature and the band table disagreeing", () => {
     const issues = checkBands([creature({ encounter: undefined })], rulesWith({}));
     expect(issues).toEqual([]);
   });
+
+  it("passes over a dangerous thing that is not a fight (D18)", () => {
+    /*
+     * A hazard — weather, a quicksand marsh — has an `encounter` block saying
+     * how to get past it and no `band`, because there is nothing to trade
+     * blows with. The band table has nothing to say about it.
+     *
+     * The corpus currently contains one, so `canon:check` would catch a
+     * regression here too; this is the named version, so the rule survives the
+     * day somebody removes that entity for unrelated reasons.
+     */
+    const hazard = creature({
+      id: "the_loftmire",
+      danger_level: "high",
+      encounter: { alternatives: ["observation", "environmental problem-solving"] },
+    });
+
+    expect(checkBands([hazard], rulesWith({ skirmisher: SKIRMISHER }))).toEqual([]);
+  });
 });
 
 describe("the round budget", () => {
