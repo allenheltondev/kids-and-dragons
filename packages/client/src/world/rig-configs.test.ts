@@ -31,6 +31,11 @@ interface RigConfig {
   zOrder?: string[];
   meshParts?: Record<string, unknown>;
   tintSlots?: unknown[];
+  origin?: { x: number; y: number };
+  ground?: { x: number; y: number };
+  artboardWidth?: number;
+  artboardHeight?: number;
+  scale?: number;
 }
 
 const species = manifest.species as { id: string; signature: string; parts: string[] }[];
@@ -90,6 +95,60 @@ describe("rig configs", () => {
       }
       expect([...seen].sort(), `${sp.id} has parts not joined to the skeleton`).toEqual(
         [...sp.parts].sort(),
+      );
+    }
+  });
+
+  /*
+   * The stage, which is the one thing in these files the *client* also depends on.
+   *
+   * A rig is staged on an artboard larger than the art canvas so a knocked-down
+   * figure has room to sweep its own diagonal (manifest `$rigStageComment`,
+   * art-pipeline §6.3). That makes two numbers that used to be one: static art
+   * anchors at `originY / canvas.height`, a rig anchors at `ground.y / stage`.
+   * `rive-rig.ts` currently re-exports the former for the latter, which is only
+   * right while the stage equals the canvas — it no longer does, and repointing
+   * it is part of the outstanding regeneration, not something these tests can do.
+   *
+   * What they can do is stop the configs and the manifest drifting apart in the
+   * meantime, because every one of those numbers is silent when wrong.
+   */
+  it("stages every species on the manifest's rigStage", () => {
+    const stage = manifest.rigStage;
+    for (const sp of species) {
+      const config = configFor(sp.id);
+      expect(config.artboardWidth, `${sp.id} artboard width`).toBe(stage.width);
+      expect(config.artboardHeight, `${sp.id} artboard height`).toBe(stage.height);
+      // A builder default that fits the figure to a fraction of the artboard
+      // height looks fine in isolation and stands in the wrong place in the game.
+      expect(config.scale, `${sp.id} scale`).toBe(1);
+    }
+  });
+
+  it("puts the standing point at the canvas origin, offset into the stage", () => {
+    // `ground` is the manifest origin expressed in artboard coordinates. Get
+    // this wrong and the figure is rigged around a point that is not where its
+    // feet are, which no clip-table check can see.
+    const { canvas, rigStage } = manifest;
+    for (const sp of species) {
+      const config = configFor(sp.id);
+      expect(config.origin, `${sp.id} origin`).toEqual({ x: canvas.originX, y: canvas.originY });
+      expect(config.ground, `${sp.id} ground`).toEqual({
+        x: canvas.originX + rigStage.offsetX,
+        y: canvas.originY + rigStage.offsetY,
+      });
+    }
+  });
+
+  it("leaves the figure centred horizontally on the stage", () => {
+    // The horizontal anchor stays 0.5 across the restage — worth pinning,
+    // because it is the half of the anchor pair that does NOT change, and a
+    // reader repointing the client needs to know which number is moving.
+    const { rigStage } = manifest;
+    for (const sp of species) {
+      expect(configFor(sp.id).ground!.x / rigStage.width, `${sp.id} horizontal anchor`).toBeCloseTo(
+        0.5,
+        6,
       );
     }
   });

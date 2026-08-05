@@ -71,30 +71,18 @@ const RENDER_W = 512;
 /**
  * Render pixels per canvas pixel.
  *
- * A rig may be staged on an artboard LARGER than the art canvas so it has room to
- * rotate in, in which case a fixed 512/1024 would quietly loosen every pixel
- * threshold by the ratio between them. So read the stage size off the configs
- * rather than assuming it: they all agree today (1024, the art canvas itself),
- * and this fails loudly if they ever stop agreeing, because one number here
- * cannot describe two stages.
+ * Rigs are staged on an artboard LARGER than the art canvas so they have room to
+ * rotate in (manifest `$rigStageComment`), so a fixed 512/1024 would quietly
+ * loosen every pixel threshold by the ratio between them.
  *
- * That today's stage IS the art canvas is the open question this tool inherits —
- * see art-pipeline §6.3. A rig with only the art contract's 8px of margin has
- * nowhere to topple into, and `down` is the clip that finds out.
+ * The stage comes from the **manifest**, not from the six rig configs. It is one
+ * pipeline-wide number and the configs restate it for rive-mcp's benefit; reading
+ * it from six files that can disagree would mean this tool's pixel scale depends
+ * on which config it happened to look at. That the delivered `.riv` actually
+ * *is* this size is `art:verify:rig`'s check — it opens each rig and compares the
+ * artboard, and a stale rig fails there before it reaches this tool.
  */
-const STAGE = (() => {
-  const sizes = new Set(
-    MANIFEST.species.map((sp) => {
-      const p = join(ROOT, "art", "rig", `${sp.id}.rig.json`);
-      return existsSync(p) ? (JSON.parse(readFileSync(p, "utf8")).artboardWidth ?? MANIFEST.canvas.width) : null;
-    }).filter((v) => v !== null),
-  );
-  if (sizes.size > 1) {
-    console.error(`error: the rig configs stage on different artboard widths (${[...sizes].join(", ")}). One pixel scale cannot describe both.`);
-    process.exit(2);
-  }
-  return [...sizes][0] ?? MANIFEST.canvas.width;
-})();
+const STAGE = MANIFEST.rigStage?.width ?? MANIFEST.canvas.width;
 const SCALE = RENDER_W / STAGE;
 
 /**
