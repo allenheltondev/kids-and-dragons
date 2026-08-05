@@ -128,4 +128,50 @@ describe("useConsumable", () => {
       status: "not_consumable",
     });
   });
+
+  it("refuses a trinket even when it carries a consumable's effect", () => {
+    /*
+     * The guard is `kind !== "consumable" || !effect`, and the case above only
+     * exercises the second half — `river_charm` is a trinket *and* has no
+     * `effect`, so either half alone would refuse it. A trinket that happens to
+     * author an `effect` is what tells the two apart, and it is the reachable
+     * mistake: `effect` and `passive` sit side by side in the catalog schema,
+     * so an author filling in the wrong one would otherwise get a trinket that
+     * vanishes from the bag the first time somebody taps it.
+     */
+    const odd = {
+      ...items,
+      thorn_charm: {
+        kind: "trinket" as const,
+        name: "Thorn Charm",
+        text: "Prickly.",
+        icon: "icons/items/thorn.svg",
+        effect: { type: "heal" as const, amount: 4 },
+      },
+    };
+    const held = [{ itemId: "thorn_charm", kind: "trinket" as const }];
+    expect(useConsumable(held, "thorn_charm", odd)).toEqual({ status: "not_consumable" });
+  });
+});
+
+describe("counting the slots", () => {
+  it("reports the room actually left, not just whether there is any", () => {
+    /*
+     * `freeSlots` was only ever asserted on a full bag, where the answer is 0 —
+     * and 0 is what a broken implementation returns for every bag. The whole
+     * point of the function is the number in between: the item-swap prompt
+     * (spec §9.1) exists precisely when it hits zero, so a version that read
+     * zero early would prompt a child to drop something to make room she has.
+     */
+    expect(freeSlots([])).toBe(INVENTORY_SLOTS);
+    expect(freeSlots(FULL.slice(0, 1))).toBe(5);
+    expect(freeSlots(FULL.slice(0, 4))).toBe(2);
+    expect(freeSlots(FULL)).toBe(0);
+  });
+
+  it("never reports negative room, however the bag got over-full", () => {
+    // Not reachable through `addItem`, which refuses; reachable through a save
+    // written when the cap was different, which `migrate` hands straight over.
+    expect(freeSlots([...FULL, ...FULL])).toBe(0);
+  });
 });

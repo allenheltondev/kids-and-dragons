@@ -133,4 +133,53 @@ describe("assertRulesContent", () => {
     expect(() => assertRulesContent(null)).toThrow(/root must be an object/);
     expect(() => assertRulesContent([])).toThrow(/root must be an object/);
   });
+
+  /*
+   * The two type guards under every field in the file, tested at the edges the
+   * `typeof` half alone does not reach. Each guard is `wrong type || wrong
+   * value`, and every case above only ever exercises the first half — a string
+   * where a number belongs, a missing key. The second half is what these are
+   * for, and both cases below arrive through ordinary JSON.
+   */
+  describe("the field guards, at their edges", () => {
+    function withRules(mutate: (r: Record<string, unknown>) => void): unknown {
+      const copy = JSON.parse(JSON.stringify(rules)) as Record<string, unknown>;
+      mutate(copy);
+      return copy;
+    }
+
+    it("rejects a number that is not finite", () => {
+      /*
+       * `typeof Infinity === "number"`, so the type half passes it. And it is
+       * not hypothetical: JSON has no Infinity literal, but `1e999` parses to
+       * one, so a fat-fingered zero in a hand-edited rules file produces a
+       * character with Infinity max HP and a health bar that never moves.
+       */
+      expect(JSON.parse("1e999")).toBe(Number.POSITIVE_INFINITY);
+      expect(() => assertRulesContent(withRules((r) => { r["baseMaxHp"] = JSON.parse("1e999"); }))).toThrow(
+        /baseMaxHp.*finite number/s,
+      );
+      expect(() => assertRulesContent(withRules((r) => { r["baseMaxHp"] = Number.NaN; }))).toThrow(
+        /baseMaxHp.*finite number/s,
+      );
+    });
+
+    it("rejects an empty string where a name belongs", () => {
+      // `typeof "" === "string"`, so only the length half catches this — and an
+      // empty name is the most ordinary way a half-authored content file looks.
+      const classes = rules.classes as Record<string, unknown>;
+      const firstClass = Object.keys(classes)[0];
+      if (firstClass === undefined) throw new Error("fixture: rules.json has no classes");
+
+      expect(() =>
+        assertRulesContent(
+          withRules((r) => {
+            const table = r["classes"] as Record<string, Record<string, unknown>>;
+            const entry = table[firstClass];
+            if (entry) entry["name"] = "";
+          }),
+        ),
+      ).toThrow(/non-empty string/);
+    });
+  });
 });
