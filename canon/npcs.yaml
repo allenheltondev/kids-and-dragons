@@ -269,6 +269,7 @@ npcs:
         - "Channel races, poled standing, no wakes allowed. Wakes wake things."
         - "Mist-lantern festivals on new-moon nights, when the marsh is darkest and, by long observation, at its most polite."
         - "Collecting rain-sounds. A really good roof is famous for three villages in every direction."
+        - "Brush drill. Every frogfolk child can get a coat clean in one pass, and the ones who cannot are not yet allowed out under an open sky."
       social: >-
         Reserved and precise, with a hospitality that consists of getting you
         where you are going alive rather than telling you about it. A
@@ -284,6 +285,8 @@ npcs:
       dislikes:
         - of: creature.mire_mimic
           because: "Every marked channel it imitates is a review of frogfolk work, and the review is a trap."
+        - of: creature.loftmire
+          because: "It takes the cloth off the marking poles and leaves the pole, which is a season's work rewritten by something that cannot read. The poles are weighted now. It was not a concession."
     relationships:
       primary_locations: [biome.whispering_marsh]
       secondary_locations: [location.exchange]
@@ -330,6 +333,7 @@ npcs:
         - "Cataloguing, by systems that change weekly, are internally perfect, and have never once been explained to an outsider."
         - "Connoisseurship of overheard sentences. A really good one is retold at boggart gatherings for years, with attribution."
         - "Silent trade meets with silver otters, where nothing is said and everything is appraised."
+        - "Walking under a thinning loftmire with a wide basket, which is the closest a boggart gets to farming and is discussed in exactly those terms."
       social: >-
         Sidelong, delighted, and constitutionally allergic to stating a thing
         plainly when a hint will do. A boggart tests whether you pay attention
@@ -338,6 +342,8 @@ npcs:
       likes:
         - of: creature.will_o_wisp
           because: "A secret that tells itself, on schedule. Boggarts attend with notebooks."
+        - of: creature.loftmire
+          because: "The marsh's other filing system, and the only one that ever gives anything back. A boggart with a jar of its sand can walk a whole cloud home, and charges the Exchange accordingly."
         - of: creature.silver_otter
           because: "A fellow collector with excellent taste and no small talk."
         - of: character.kitsune
