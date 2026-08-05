@@ -337,6 +337,17 @@ export function PlayerPanel(): ReactElement {
   const myVote =
     myPrompt !== null && myPrompt.kind === "choice" ? myPrompt.votes?.[me.playerId] ?? null : null;
 
+  /*
+   * `encounter` is optional on RunState and genuinely arrives three ways: absent
+   * on a run that has never had a fight (`createRunState` does not set it),
+   * `null` once one has ended, and an object during one. `!== null` reads the
+   * first of those as "a fight is happening", which hid "Use it" on every item
+   * from the lobby until the party's first fight was over. Everywhere else in
+   * the client already coalesces (`?? null`, `!state.encounter`); this is the
+   * one place that did not, so it is derived once here.
+   */
+  const inEncounter = state.encounter != null;
+
   // Resolve the selection against the inventory as it is *now*. Same item in
   // the same slot: fine. Item shifted (something before it was removed): follow
   // it. Item gone: the selection quietly clears rather than adopting a stranger.
@@ -702,7 +713,7 @@ export function PlayerPanel(): ReactElement {
               </Button>
               {canUseInventoryItem(
                 selectedEntry,
-                state.encounter !== null,
+                inEncounter,
                 selectedDef,
                 me.hp >= me.character.maxHp,
               ) ? (
@@ -723,7 +734,7 @@ export function PlayerPanel(): ReactElement {
                 <p className="item-detail__passive kad-chip">
                   <Icon name="waiting" />
                   <span>
-                    {state.encounter !== null
+                    {inEncounter
                       ? "Use it from your turn in the fight"
                       : selectedDef?.effect?.type === "heal"
                         ? "You're at full health — save it for later"

@@ -20,13 +20,26 @@
  */
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { basename, join, relative } from "node:path";
+import { basename, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-const ROOT = fileURLToPath(new URL("../..", import.meta.url));
+/**
+ * Which tree to validate. Defaults to this repo; `KAD_CONTENT_ROOT` points it
+ * somewhere else.
+ *
+ * Same idea as `KAD_DDB_ENDPOINT` on the repository contract suite: a gate that
+ * only ever runs against the one corpus it ships with can prove that corpus has
+ * not *changed*, and cannot prove it would catch anything. The override is what
+ * lets `validate.test.mjs` hand it a copy of the real content with exactly one
+ * thing broken and require a specific complaint — the negative half of the gate,
+ * which is the half that says whether the positive half means anything.
+ */
+const ROOT = process.env.KAD_CONTENT_ROOT
+  ? resolve(process.env.KAD_CONTENT_ROOT)
+  : fileURLToPath(new URL("../..", import.meta.url));
 const CONTENT = join(ROOT, "content");
 const SCHEMAS = join(ROOT, "schemas");
 const MANIFEST = join(ROOT, "assets", "manifest.json");

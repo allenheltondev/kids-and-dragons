@@ -20,8 +20,9 @@ import { planEnemyTurn } from "./enemy-ai.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
+import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import type { RunState } from "./types/state.js";
-import type { Chapter, ChapterObjective, ChapterOutcome, StoryScene } from "./types/chapter.js";
+import type { Chapter, ChapterObjective, ChapterOutcome, Scene, StoryScene } from "./types/chapter.js";
 import { APPEARANCE, makeChapter,
   makeMap, makeItems, makeRules } from "./test-fixtures.js";
 
@@ -227,6 +228,166 @@ function seatedPartyNotReady(context = ctx()): RunState {
     context,
   ).state;
 }
+
+/*
+ * Boundaries and tie-breaks — the cases either side of a comparison, which the
+ * tests above reach only from one direction.
+ *
+ * Each of these was found by flipping one operator in `engine.ts` and watching
+ * the whole suite stay green. That is the shape of a rule nobody is holding:
+ * "the party is full at four" is tested with three, "the best roller" with a
+ * clear winner, "a heal lifts you" with a heal that heals. The far side of each
+ * comparison is where the off-by-one lives.
+ */
+describe("the edges of the rules", () => {
+  it("fills the party at exactly MAX_PARTY, not one past it", () => {
+    // Four is the table (spec §2.1 — a family, not a raid). The check is
+    // `>= MAX_PARTY`, so only the fifth join can tell it from `> MAX_PARTY`.
+    let state = newRun();
+    for (let i = 1; i <= MAX_PARTY; i++) {
+      const result = applyIntent(
+        state,
+        { playerId: `p_${i}`, intent: { ...CREATE_UNICORN, name: `Hero ${i}` } },
+        ctx(),
+      );
+      expect(result.error, `player ${i} should fit`).toBeUndefined();
+      state = result.state;
+    }
+    expect(state.party).toHaveLength(MAX_PARTY);
+
+    const overflow = applyIntent(
+      state,
+      { playerId: "p_5", intent: { ...CREATE_UNICORN, name: "One Too Many" } },
+      ctx(),
+    );
+    expect(overflow.error?.code).toBe("ILLEGAL");
+    expect(overflow.state.party).toHaveLength(MAX_PARTY);
+  });
+
+  /** A one-scene chapter, so the check prompt can be reached in one step. */
+  function chapterOf(entry: Scene & { type: "check" }): Chapter {
+    return { ...makeChapter(), entry: "only", scenes: { only: entry } } as Chapter;
+  }
+
+  /** Ready the party, override its state, then walk into `chapter`. */
+  function enter(chapter: Chapter, patch: (state: RunState) => RunState): RunState {
+    const ready = patch(seatedParty());
+    const result = applyIntent(
+      ready,
+      { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: chapter.id } },
+      ctx({ chapter }),
+    );
+    if (result.error) throw new Error(`START_CHAPTER rejected: ${result.error.message}`);
+    return result.state;
+  }
+
+  it("gives a party grant to somebody with room, not to the first full bag", () => {
+    /*
+     * `preferredHolder` exists to answer "who gets it" without a prompt, and
+     * its whole content is "the first character with room". Handing it to a
+     * full bag is not a crash — it falls through to the swap prompt — so it
+     * reads as working while asking a child to drop something to make room
+     * that the player beside her already had.
+     */
+    const seated = seatedPartyNotReady();
+    const stuffed: RunState = {
+      ...seated,
+      party: seated.party.map((m, i) =>
+        i === 0
+          ? {
+              ...m,
+              character: {
+                ...m.character,
+                inventory: Array.from({ length: INVENTORY_SLOTS }, () => ({
+                  itemId: "pebble",
+                  kind: "trinket" as const,
+                })),
+              },
+            }
+          : m,
+      ),
+    };
+
+    const after = applyEffects(stuffed, [{ type: "grantItem", itemId: "acorn", to: "party" }], ctx());
+
+    expect(after.party[0]!.character.inventory).toHaveLength(INVENTORY_SLOTS);
+    expect(after.party[1]!.character.inventory.map((e) => e.itemId)).toContain("acorn");
+  });
+
+  it("does not lift a knocked-down character on a heal that heals nothing", () => {
+    /*
+     * `hp === 0` and `down` are two spellings of one fact (`damage` sets them
+     * together), and a heal of nothing must not split them — a figure standing
+     * at 0 HP is a state no other rule knows how to read. The existing lift
+     * test heals for 3, which lands on the same side of `hp > 0` either way.
+     */
+    const seated = seatedPartyNotReady();
+    const floored: RunState = {
+      ...seated,
+      party: seated.party.map((m, i) => (i === 0 ? { ...m, hp: 0, down: true } : m)),
+    };
+
+    const nothing = applyEffects(floored, [{ type: "heal", amount: 0 }], ctx());
+    expect(nothing.party[0]!.hp).toBe(0);
+    expect(nothing.party[0]!.down).toBe(true);
+
+    // And the lift still happens when there is something to lift with.
+    expect(applyEffects(floored, [{ type: "heal", amount: 3 }], ctx()).party[0]!.down).toBe(false);
+  });
+
+  it("nominates the first of two equally good rollers, every time", () => {
+    /*
+     * Determinism, not fairness. Every device replays this to decide who is
+     * being asked, so "whoever the reduce happened to keep" has to be a rule
+     * rather than an accident — `>` keeps the first of a tie, `>=` would keep
+     * the last, and both look right until two characters have the same stat.
+     */
+    const check = chapterOf({
+      type: "check",
+      stat: "clever",
+      tn: 12,
+      prompt: "Read the runes",
+      roller: "best",
+      onSuccess: { goto: "only" },
+      onFailure: { goto: "only" },
+    } as unknown as Scene & { type: "check" });
+
+    const level = (state: RunState): RunState => ({
+      ...state,
+      party: state.party.map((m) => ({
+        ...m,
+        character: { ...m.character, stats: { might: 2, quick: 2, clever: 3, heart: 3 } },
+      })),
+    });
+
+    const forward = enter(check, level);
+    const backward = enter(check, (s) => {
+      const l = level(s);
+      return { ...l, party: [...l.party].reverse() };
+    });
+
+    const rollerOf = (state: RunState): string | undefined =>
+      state.prompt?.kind === "roll" ? state.prompt.characterId : undefined;
+
+    // The answer follows party order, and party order alone.
+    expect(rollerOf(forward)).toBe(forward.party[0]!.character.id);
+    expect(rollerOf(backward)).toBe(backward.party[0]!.character.id);
+    expect(rollerOf(forward)).not.toBe(rollerOf(backward));
+  });
+
+  it("does not call an empty party wiped", () => {
+    // `isPartyDown` is `every()`, which is true of nothing at all — so the
+    // length guard is the whole rule. Without it a lobby with no characters
+    // yet reads as a party that has just been knocked down.
+    expect(isPartyDown({ ...newRun(), party: [] })).toBe(false);
+    expect(isPartyDown(seatedPartyNotReady())).toBe(false);
+
+    const allDown = seatedPartyNotReady();
+    expect(
+      isPartyDown({ ...allDown, party: allDown.party.map((m) => ({ ...m, hp: 0, down: true })) }),
+    ).toBe(true);
+  });
+});
 
 describe("createRunState", () => {
   it("starts in the lobby with nothing decided", () => {
