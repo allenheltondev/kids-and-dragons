@@ -34,6 +34,7 @@ import {
   type EffectEntry,
   type RigContract,
   type RigIntrospection,
+  type RigContractView,
 } from "./verify-rig.ts";
 
 const MANIFEST = fileURLToPath(new URL("../../assets/manifest.json", import.meta.url));
@@ -46,9 +47,11 @@ const contract = manifest.rigContract;
 /** A rig that satisfies the contract for `kind`, built from the contract itself. */
 // The return type narrows `inputs` to non-null: a good rig by definition has a
 // state machine, and the tests below poke at its inputs without null checks.
+// It is the *contract* half of an introspection — `compareRigToContract` reads
+// exactly this much — so the artboard stage is deliberately not part of it.
 function goodRig(
   kind: "hero" | "enemy",
-): RigIntrospection & { inputs: NonNullable<RigIntrospection["inputs"]> } {
+): RigContractView & { inputs: NonNullable<RigIntrospection["inputs"]> } {
   const clips = (contract.sets[kind] ?? []).map((name) => {
     const spec = contract.clips[name];
     return { name, ticks: spec?.ticks ?? 0, loop: spec?.loop === true };
@@ -68,7 +71,7 @@ function goodRig(
 }
 
 /** The labels of the problems found, for compact assertions. */
-function labels(rig: RigIntrospection, kind = "hero"): string[] {
+function labels(rig: RigContractView, kind = "hero"): string[] {
   return compareRigToContract(rig, contract, kind).map((p) => p.label);
 }
 

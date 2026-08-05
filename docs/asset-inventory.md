@@ -60,8 +60,9 @@ set plus its `assembled.png`. Part counts differ by species because the signatur
 unicorn/dragonling/griffin carry nine, kitsune/manticore eight, bigfoot seven. All green through
 `art:verify`, including cross-tier joint registration — which is what made the rigs cheap.
 
-**Rigs — 24 `.riv`.** Six skeletons, exported per tier. Mine, generated, green through
-`art:verify:rig:strict`. Listed here only so the dependency below is visible.
+**Rigs — 24 `.riv`.** Six skeletons, exported per tier. Mine, generated. Clip tables green;
+**artboard red** — built on the 1024 canvas, and the stage is now 1400 (art-pipeline §6.3). One
+regeneration pass outstanding. Listed here only so the dependency below is visible.
 
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
 12 unique tile sheets shared across the 17 (several destinations share a terrain family).
