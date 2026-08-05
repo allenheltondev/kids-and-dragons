@@ -36,6 +36,11 @@ const creatures = (registry.byTaxonomy.get("creature") ?? []) as Creature[];
 const bestiary: Record<string, unknown> = {};
 for (const creature of creatures) {
   if (!creature.encounter) continue;
+  // D18. A bandless creature is one the engine never puts on a board — there
+  // is no stat line to project, and its `resolutions` reach a table through
+  // the wiki rather than through here. `resolveStats` would return null a few
+  // lines down anyway; saying it out loud keeps that from reading as a bug.
+  if (!creature.encounter.band) continue;
   const id = creature.asset_id ?? slugOf(creature.id);
   const stats = resolveStats(creature.encounter, bands);
   if (!stats) continue;

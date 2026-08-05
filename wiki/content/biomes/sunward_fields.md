@@ -3,7 +3,7 @@ title: The Sunward Fields
 id: biome.sunward_fields
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-08-04"
 canon_status: confirmed
 tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
@@ -181,6 +181,7 @@ The realm eats because the Fields work. Every region knows it, the Fields never 
 
 - The Gemfall rush is hiring away farmhands at exactly the wrong time of year, and this harvest will be sung about either way.
 - The Exchange keeps growing, and the planting maps have run out of polite places to expand.
+- Something followed a cart back from the marsh road and is standing over the western rows, thin and low and taking the crop off the stalk. It is lost rather than hostile, which the Fields have worked out and are finding harder to act on than a pest would have been.
 
 ### Story Hooks
 

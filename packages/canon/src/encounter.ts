@@ -147,8 +147,18 @@ export type Resolution = z.infer<typeof Resolution>;
 // ---------------------------------------------------------------------------
 
 export const Encounter = z.strictObject({
-  /** Names a row of `content/rules.json` `encounterBands`. */
-  band: Band,
+  /**
+   * Names a row of `content/rules.json` `encounterBands`.
+   *
+   * **Optional, and its absence is a claim — D18.** Some dangerous things
+   * cannot be fought: a drifting cloud, a tide, weather with an opinion. Before
+   * this was optional the schema's only way to file one was to hand it hit
+   * points, which is a lie a build then has to police, or to call it
+   * `ambient_creature` and lose the `resolutions` block — the exact prose-only
+   * failure D10 exists to end. No band means no stat line, no XP, no AI
+   * sentence, and at least one authored way past, enforced below.
+   */
+  band: Band.optional(),
   /**
    * Overrides the band's numbers. Required for `legend`, which has none, and
    * otherwise the exception — the band is the dial, and a creature that needs
@@ -177,12 +187,45 @@ export const Encounter = z.strictObject({
   behavior: Slug.optional(),
   /** D10. Required for a dangerous creature; the whole point of the block. */
   resolutions: z.array(Resolution).default([]),
+}).superRefine((encounter, ctx) => {
+  if (encounter.band) return;
+
+  // D18. Everything below is a fact about resolving a *fight*, so authoring one
+  // without a band is authoring a fight for something that has none. Rejected
+  // here rather than ignored downstream, because a stat line nothing reads is
+  // indistinguishable from a stat line something reads wrongly.
+  for (const field of ["stats", "xp", "behavior"] as const) {
+    if (encounter[field] === undefined) continue;
+    ctx.addIssue({
+      code: "custom",
+      path: [field],
+      message: `no band, so there is no fight to give a ${field} to — add a band, or drop this (D18)`,
+    });
+  }
+
+  // A bandless block whose resolutions were also empty would say nothing at
+  // all: not fightable, and no stated way past. That is a gap, not a design.
+  if (encounter.resolutions.length === 0) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["resolutions"],
+      message: `a creature with no band is got past rather than beaten — author at least one resolution (D18)`,
+    });
+  }
 });
 export type Encounter = z.infer<typeof Encounter>;
 
-/** The band's numbers with any per-creature override applied. */
+/**
+ * The band's numbers with any per-creature override applied.
+ *
+ * `null` means "no stat line", which two very different things produce: a
+ * `legend` that has not authored its own — an error `tools/canon/check.ts`
+ * fails the build on — and a bandless D18 hazard, which is correct and
+ * deliberate. Callers that project into the engine (`tools/canon/bestiary.ts`)
+ * skip both; the checker tells them apart by looking at `band` first.
+ */
 export function resolveStats(encounter: Encounter, bands: BandTable): EncounterStats | null {
-  const base = bands[encounter.band]?.stats ?? null;
+  const base = (encounter.band ? bands[encounter.band]?.stats : null) ?? null;
   if (!base) {
     const own = encounter.stats;
     // A band with no default (legend) needs a complete authored block.
@@ -192,5 +235,5 @@ export function resolveStats(encounter: Encounter, bands: BandTable): EncounterS
 }
 
 export function resolveXp(encounter: Encounter, bands: BandTable): number {
-  return encounter.xp ?? bands[encounter.band]?.xp ?? 0;
+  return encounter.xp ?? (encounter.band ? bands[encounter.band]?.xp : undefined) ?? 0;
 }

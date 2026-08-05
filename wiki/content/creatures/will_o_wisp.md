@@ -3,7 +3,7 @@ title: Will-o'-Wisp
 id: creature.will_o_wisp
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-08-04"
 canon_status: confirmed
 tags: ["supernatural", "marsh", "memory", "misdirection"]
 classification: supernatural_manifestation
@@ -20,6 +20,10 @@ likes:
     title: "Witches"
     url: "/npcs/witch_order/"
     because: "Once in a while, one of them can untangle the memory and let it finish. The wisp-equivalent of going home."
+  - id: creature.loftmire
+    title: "Loftmire"
+    url: "/creatures/loftmire/"
+    because: "Drift inside one and you come out somewhere you have never been. It is the only thing in the marsh that has ever given a wisp a new route."
 dislikes:
   - id: creature.mire_mimic
     title: "Mire Mimic"
@@ -82,6 +86,7 @@ A wisp cannot converse, exactly, but it responds — to patience, to being walke
 
 - **[Boggart](/npcs/boggart/)** — They listen to the whole memory, every single time, and they write it down.
 - **[Witches](/npcs/witch_order/)** — Once in a while, one of them can untangle the memory and let it finish. The wisp-equivalent of going home.
+- **[Loftmire](/creatures/loftmire/)** — Drift inside one and you come out somewhere you have never been. It is the only thing in the marsh that has ever given a wisp a new route.
 
 ### Dislikes
 

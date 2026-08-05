@@ -3,7 +3,7 @@ title: Mire Mimic
 id: creature.mire_mimic
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-08-04"
 canon_status: confirmed
 tags: ["dangerous", "marsh", "ambush", "camouflage"]
 classification: dangerous_creature
@@ -25,6 +25,10 @@ dislikes:
     title: "Boggart"
     url: "/npcs/boggart/"
     because: "They treat its staging area as a lost-and-found and its props as inventory."
+  - id: creature.loftmire
+    title: "Loftmire"
+    url: "/creatures/loftmire/"
+    because: "A dusting, and the ground it is currently being begins to hover. There is no worse thing that can happen to a performance."
 related:
   - id: biome.whispering_marsh
     type: biome
@@ -77,6 +81,7 @@ Solitary, patient, and quietly vain. Mimics encounter each other rarely, and wha
 
 - **[Frogfolk](/npcs/frogfolk/)** — The marking poles are reviews, and the reviews are always bad.
 - **[Boggart](/npcs/boggart/)** — They treat its staging area as a lost-and-found and its props as inventory.
+- **[Loftmire](/creatures/loftmire/)** — A dusting, and the ground it is currently being begins to hover. There is no worse thing that can happen to a performance.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->

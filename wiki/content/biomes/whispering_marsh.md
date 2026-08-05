@@ -3,7 +3,7 @@ title: Whispering Marsh
 id: biome.whispering_marsh
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-08-04"
 canon_status: confirmed
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
 danger_level: moderate
@@ -48,6 +48,9 @@ related:
   - id: creature.will_o_wisp
     type: creature
     relationship: supernatural_manifestations
+  - id: creature.loftmire
+    type: creature
+    relationship: supernatural_manifestations
   - id: campaign.gemfall
     type: campaign
     relationship: biomes
@@ -58,6 +61,9 @@ related:
     type: creature
     relationship: primary_locations
   - id: creature.will_o_wisp
+    type: creature
+    relationship: primary_locations
+  - id: creature.loftmire
     type: creature
     relationship: primary_locations
   - id: feature.great_river_west_branch
@@ -105,7 +111,7 @@ ai_context:
   visual_style: "Layered fog, twisted wetland trees, dark reflective water, reed islands, half-submerged paths, hanging moss, dim lanterns, and distant lights with uncertain depth."
   common_encounters: "Spirit encounters, missing memories, hidden communities, navigation by sound, environmental restoration, bargains, warnings, and mysteries that should not always be solved by fighting."
   lore_highlights: "The marsh is where the river's western branch slows down and starts keeping things."
-  related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, campaign.gemfall, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, npc.frogfolk, npc.boggart, npc.witch_order"
+  related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, creature.loftmire, campaign.gemfall, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, creature.loftmire, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, npc.frogfolk, npc.boggart, npc.witch_order"
   writing_guidance: "The marsh is eerie but not inherently evil. Frogfolk, boggarts, and witches have moral agency. Do not make every whisper a ghost or every light a trap."
   generation_hints: "Mist changes visibility, water routes shift with weather and river flow, and whispers sometimes repeat memories or warnings without explaining their source."
 layout: biomes
@@ -131,16 +137,20 @@ People come to the marsh to consult witches, to leave things behind, and to hear
 - Never answer a whisper with your name; a fair trade is a hum.
 - A light that knows where you live got that from somewhere. Ask where.
 - What sinks in the marsh is not lost. It is filed.
+- And what floats is not filed. It is shelved.
+- Check the low sky before you cross. A marking pole with no cloth on it means one came through this week.
 
 ### Disputed Beliefs
 
 - Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way.
+- Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that — which is why every people calls it something different.
 
 ### Hidden Truths
 
 > *Creator canon — not generally known in-world. No NPC recites these.*
 
 - Most whispers are recordings. The mist holds sound the way the northern glacier holds memory, and on still nights the marsh replays conversations older than the peoples having them.
+- The mist that holds sound and the sand that holds nothing down are the same mist, doing the same thing to two different kinds of cargo. Nobody in the marsh has put those two facts beside each other.
 
 ### Neighbors
 
@@ -152,11 +162,13 @@ People come to the marsh to consult witches, to leave things behind, and to hear
 
 - The whispers near the Hollow Gate have changed, and the frogfolk closed two channels this year that had been safe for a century.
 - Wisp traffic is up, and nobody can say whether the marsh is remembering more or being listened to less.
+- A loftmire has been standing over the Exchange road for a month, which is a month of haulage the boggarts are pricing and the Exchange is paying, and the frogfolk have been asked to walk it off and have not said yes.
 
 ### Story Hooks
 
 - A channel closed in a grandmother's time is due for reopening review, and it was somebody's only way home.
 - For eleven years the marsh's most reliable footbridge was a mire mimic. It is still sulking about the unmasking, and the crossing it played has never been as good since.
+- Everything a loftmire has ever taken is still in it, and the older ones are furnished. Somewhere over the marsh is a cloud with a specific missing thing in it, and the only way to get it back is to walk the whole cloud somewhere it will thin.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
@@ -174,6 +186,7 @@ People come to the marsh to consult witches, to leave things behind, and to hear
 - [Bigfoot](/characters/bigfoot/) `Secondary Locations`
 
 ### Creatures
+- [Loftmire](/creatures/loftmire/) `Supernatural Manifestations` `Primary Locations`
 - [Mire Mimic](/creatures/mire_mimic/) `Dangerous Creatures` `Primary Locations`
 - [Will-o'-Wisp](/creatures/will_o_wisp/) `Supernatural Manifestations` `Primary Locations`
 
