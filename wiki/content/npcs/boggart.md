@@ -3,7 +3,7 @@ title: Boggart
 id: npc.boggart
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-08-04"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "collector", "secretive"]
 classification: supporting_people
@@ -15,6 +15,10 @@ likes:
     title: "Will-o'-Wisp"
     url: "/creatures/will_o_wisp/"
     because: "A secret that tells itself, on schedule. Boggarts attend with notebooks."
+  - id: creature.loftmire
+    title: "Loftmire"
+    url: "/creatures/loftmire/"
+    because: "The marsh's other filing system, and the only one that ever gives anything back. A boggart with a jar of its sand can walk a whole cloud home, and charges the Exchange accordingly."
   - id: creature.silver_otter
     title: "Silver Otter"
     url: "/creatures/silver_otter/"
@@ -74,6 +78,7 @@ Boggarts collect what the world drops: buttons, keys, bells, sounds, secrets. A 
 - Cataloguing, by systems that change weekly, are internally perfect, and have never once been explained to an outsider.
 - Connoisseurship of overheard sentences. A really good one is retold at boggart gatherings for years, with attribution.
 - Silent trade meets with silver otters, where nothing is said and everything is appraised.
+- Walking under a thinning loftmire with a wide basket, which is the closest a boggart gets to farming and is discussed in exactly those terms.
 
 ### Getting Along
 
@@ -82,6 +87,7 @@ Sidelong, delighted, and constitutionally allergic to stating a thing plainly wh
 ### Likes
 
 - **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A secret that tells itself, on schedule. Boggarts attend with notebooks.
+- **[Loftmire](/creatures/loftmire/)** — The marsh's other filing system, and the only one that ever gives anything back. A boggart with a jar of its sand can walk a whole cloud home, and charges the Exchange accordingly.
 - **[Silver Otter](/creatures/silver_otter/)** — A fellow collector with excellent taste and no small talk.
 - **[Kitsune](/characters/kitsune/)** — Stories with missing pieces — the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won.
 

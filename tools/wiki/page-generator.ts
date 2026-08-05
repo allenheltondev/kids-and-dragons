@@ -838,7 +838,11 @@ function generateEncounterSection(
 ): string {
   const assetId = entity.assetId ?? extractEntityName(entity.id);
   const entry = bestiary?.[assetId];
-  if (!entry) return '';
+  // D18. A creature with no band never reaches content/bestiary.json, because
+  // there is no stat line to project — but its resolutions are the whole
+  // encounter, and the wiki is the only place they are ever visible. Falling
+  // back to canon's own block is what keeps the best content on the page.
+  if (!entry) return generateUnfightableSection(entity);
 
   const band = bands?.[entry.band];
   const lines: string[] = ['## In a Fight', ''];
@@ -868,6 +872,31 @@ function generateEncounterSection(
   }
 
   if (lines[lines.length - 1] === '') lines.pop();
+  return lines.join('\n');
+}
+
+/**
+ * The counterpart to "In a Fight", for the things there is no fighting — a
+ * drifting cloud, weather with an opinion. Read straight off canon's own
+ * `encounter` block rather than the bestiary, which by design has no row for
+ * anything with no stat line (D18).
+ *
+ * Renders nothing for the ordinary no-encounter cases: an ambient creature has
+ * no block at all, and every other taxonomy has no business with one.
+ */
+function generateUnfightableSection(entity: CanonEntity): string {
+  const encounter = entity.metadata['encounter'] as
+    | { band?: string; resolutions?: BestiaryEntry['resolutions'] }
+    | undefined;
+  if (!encounter || encounter.band || !encounter.resolutions?.length) return '';
+
+  const lines: string[] = ['## Getting Past It', ''];
+  lines.push('There is nothing here to fight. These are the ways through.');
+  lines.push('');
+  for (const r of encounter.resolutions) {
+    const check = `${toTitleCase(r.stat)}, ${r.difficulty}`;
+    lines.push(`- **${toTitleCase(r.kind)}** (${check})${r.text ? ` — ${r.text}` : ''}`);
+  }
   return lines.join('\n');
 }
 

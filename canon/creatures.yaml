@@ -18,6 +18,7 @@ agent_instructions:
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
   - Creature ids must not be invented outside this file or docs/red-sky-creature-canon.yaml.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+  - A creature whose encounter block names no band cannot be fought at all, and the omission is a claim rather than an unfinished entry. Do not give one a stat line, put it on a combat board, or write a chapter that resolves it by defeating it; its resolutions are the encounter.
   - "`lore` is the storyteller's half: story, pastimes, and how a creature engages with others. `likes` and `dislikes` are opinions about kinds with stated reasons, never moral verdicts about a species — the `because` is the story hook, and it is required."
 
 controlled_values:
@@ -72,6 +73,7 @@ creature_ids:
   - echo_hunter
   - will_o_wisp
   - restless_remains
+  - loftmire
   - legend_dragon
 
 creatures:
@@ -623,6 +625,8 @@ creatures:
           because: "The marking poles are reviews, and the reviews are always bad."
         - of: npc.boggart
           because: "They treat its staging area as a lost-and-found and its props as inventory."
+        - of: creature.loftmire
+          because: "A dusting, and the ground it is currently being begins to hover. There is no worse thing that can happen to a performance."
     relationships:
       primary_locations: [biome.whispering_marsh]
       creatures: []
@@ -960,6 +964,8 @@ creatures:
           because: "They listen to the whole memory, every single time, and they write it down."
         - of: npc.witch_order
           because: "Once in a while, one of them can untangle the memory and let it finish. The wisp-equivalent of going home."
+        - of: creature.loftmire
+          because: "Drift inside one and you come out somewhere you have never been. It is the only thing in the marsh that has ever given a wisp a new route."
       dislikes:
         - of: creature.mire_mimic
           because: "It keeps eating the audience in the middle of the story."
@@ -1036,8 +1042,6 @@ creatures:
       creatures: []
       items: []
 
-  # ===== LEGENDARY BEASTS =====
-
     encounter:
       band: brute
       behavior: guards_its_cause
@@ -1054,6 +1058,130 @@ creatures:
           text: >-
             There is enough of a person left to answer, if you are gentle
             about asking.
+
+  - id: creature.loftmire
+    title: "Loftmire"
+    canon_status: newly_defined
+    classification: supernatural_manifestation
+    sapience: unknown
+    featured: false
+    tags: [supernatural, marsh, mist, hazard, drift, lost_things]
+    danger_level: moderate
+    scale: variable
+    short_description: >-
+      A low drifting cloud that sheds a fine sand which falls upward, lifting
+      whatever it settles on toward the cloud the sand is trying to get back to.
+    visual_identity: >-
+      A flat-bottomed cloud hanging a few feet off the water, pale and slow and
+      wider than a barn, with a faint grit coming out of its underside that
+      drifts the wrong way. Reeds beneath it stand straight up. The water under
+      it dimples upward. Its interior, glimpsed from below, is furnished —
+      rope, a lit lantern, boots, somebody's washing, all floating at whatever
+      height their weight decided on.
+    common_story_uses: >-
+      A hazard the party can see coming and steer, separation of the party,
+      recovery of a thing lost years ago, hauling something too heavy to drag,
+      and a stray met far from home that needs walking back.
+    canon_constraints: >-
+      It never hunts, chases, or targets a person. It follows its own sand,
+      which is a different sentence and the one to write. It does not injure,
+      crush, drown, or drop anything it has lifted. Its sand cannot be
+      contained, stored, or carried as equipment — it is always leaving, and a
+      jar of it is a jar with a cloud coming after it. Strays outside the marsh
+      are rare and are always lost; they are never a population.
+    standard_behavior: >-
+      Drifts at walking pace, cannot turn, and sheds grit continuously. Sand
+      that lands on something living or something carried begins pulling it
+      toward the cloud, as hard as the dose is large — a dusting makes a
+      traveler light on their feet, a pocketful takes them off the ground. The
+      pull leans toward the cloud rather than straight up, so the first sign is
+      usually a party all tilting the same way. Brushing, wetting, or muddying
+      the sand ends it. The cloud thins over moving water and open sun, and
+      sets down everything it holds, gently, heaviest first.
+    lore:
+      hook: "It is not chasing you. It is collecting."
+      story: >-
+        Nobody agrees what a loftmire is, which is why nobody agrees what to
+        call one. The witches say loftmire and have a theory. The frogfolk say
+        the low sky, because that is what fits on a chart. Boggarts say the
+        shelf, and something taken by one has been shelved. The Exchange
+        writes lifter on the paperwork and marks the cargo gone up. Everybody
+        else, including every child in the marsh, says upfall.
+        What is agreed is the sand. It comes out of the cloud and it is trying
+        to get home, and a grain on its own manages it in a minute and nobody
+        notices. A grain stuck to a sleeve is a very small thing pulling on a
+        very large one, and losing. Enough grains stop losing. The cloud is
+        never where the danger is; its dust is, and the cloud is only where the
+        dust is going.
+      pastimes:
+        - "Shedding, reclaiming, and shedding again, which appears to be the whole of it and has never been observed to stop."
+        - "Standing over one bend of a channel for a whole afternoon, for no reason anybody has established, though everybody has a theory."
+        - "Coming back. Whatever leaves with its sand on it will be followed, at walking pace, for as long as it takes."
+      social: >-
+        Two loftmires that meet drift through one another and come out the
+        far side having exchanged some unknowable fraction of their sand, after
+        which each spends a season retrieving grains that are arguably no
+        longer theirs. The frogfolk consider this the single most tedious
+        event in the marsh and reroute around it.
+      likes:
+        - of: npc.boggart
+          because: "Boggarts are the only people in the marsh who reliably give it back. They are also the sole reason it is now three miles from where it started."
+        - of: creature.will_o_wisp
+          because: "A wisp that drifts inside becomes the lighting. It is also the only thing that ever hands a wisp a route it does not remember."
+      dislikes:
+        - of: npc.frogfolk
+          because: "They weight the poles, brush the coats, chart the drift, and give it nothing. A frogfolk channel is the emptiest crossing in the marsh."
+    relationships:
+      primary_locations: [biome.whispering_marsh]
+      creatures: []
+      items: []
+    notes:
+      - >-
+        Five peoples, five names, and the disagreement is the point: it is
+        downstream of the marsh's older argument about whether the thing
+        chooses anything at all. A chapter may use whichever name its narrator
+        would use. "Upfall" is the one to put on a card.
+      - >-
+        No asset_id yet. It is weather rather than a figure, so its art is
+        likelier to be a biome effect than an entry in assets/entities/.
+    encounter:
+      # No band. There is nothing here to hit — see D18. What the party does
+      # instead is the whole encounter, so all five ways past are load-bearing.
+      resolutions:
+        - kind: observation
+          stat: clever
+          difficulty: normal
+          text: >-
+            The reeds under it stand straight up and the water dimples upward.
+            Read that, and read who in the party is already carrying how much.
+        - kind: escape
+          stat: quick
+          difficulty: normal
+          text: >-
+            Get out from under it before the dose matters. It drifts at walking
+            pace and it cannot turn.
+        - kind: rescue
+          stat: might
+          difficulty: normal
+          text: >-
+            Someone going up can be held and brushed down. Two hands beat one,
+            and the pull is gentle — it is only constant.
+        - kind: environmental_problem_solving
+          stat: clever
+          difficulty: hard
+          text: >-
+            Carry a doseful and it follows. Walk it over the stuck barge, off
+            the channel the children use, or away from the village — then put
+            the sand down somewhere that does not matter, and go.
+        - kind: restoring_habitat
+          stat: heart
+          difficulty: normal
+          text: >-
+            A stray followed something too far and cannot find the marsh. Getting
+            it home is the same trick as luring it anywhere else, done kindly and
+            for much longer.
+
+  # ===== LEGENDARY BEASTS =====
 
   - id: creature.legend_dragon
     asset_id: legend_dragon
