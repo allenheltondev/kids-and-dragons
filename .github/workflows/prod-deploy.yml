@@ -83,7 +83,7 @@ jobs:
       fresh: ${{ steps.check.outputs.fresh }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # Only refs are compared here; no tree is needed.
           fetch-depth: 1
@@ -118,7 +118,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # The exact commit CI went green on — not the branch tip, which may
           # have moved while CI ran. On workflow_dispatch there is no
