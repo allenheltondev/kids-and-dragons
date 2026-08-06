@@ -132,7 +132,8 @@ not outsource the gate — if anything it raises the bar, because the failure mo
 four pixels, a canvas that's 1023 wide, a missing `tail.png`) are exactly the kind that look fine
 in a preview and break at runtime.
 
-So the tooling is six commands:
+So the tooling is nine commands. The first six run with nothing installed; the last three need the
+Rive CLI, which is not a repo dependency, and therefore never run in CI:
 
 | Command | Does |
 |---|---|
@@ -142,6 +143,9 @@ So the tooling is six commands:
 | `npm run art:verify:rig:strict` | The same, but *missing* rigs fail. **On.** All 24 are delivered, so a missing rig is a regression rather than a gap — but the gate is **red** today on the artboard check (§6.3), not on anything in the clip table. |
 | `npm run art:sheet` | Writes PNG contact sheets from `assets/` to `art/review/` for the human review pass (`tools/art/sheet.py`). |
 | `npm run art:inventory` | **What is left to draw** (`tools/art/inventory.ts`). Derives what is needed from the manifest, checks it against the disk, names every missing file. Reports; never gates. Prose around it: [asset-inventory.md](./asset-inventory.md). |
+| `npm run art:verify:rig:rest` | Frame 0 of `idle` against `assembled.png` — does a rig stand where its art stands, at the size its art is drawn (`tools/art/verify-rig-rest.mjs`). The gate for a regeneration; §6.3. |
+| `npm run art:verify:rig:motion` | What a rig *renders*, clip by clip and through the real state machine (`tools/art/verify-rig-motion.mjs`, §3.1). |
+| `npm run art:sheet:rig` | Contact sheets of art that **moves** — N frames across a clip, one row per species (`tools/art/rig-sheet.mjs`). The taste gate for motion. |
 
 Nothing counts as accepted without passing both the verifier and an eye on the contact sheet.
 
@@ -178,6 +182,14 @@ contain. Three layers — every clip measured frame by frame, every input fired 
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
+
+**`art:verify:rig:rest` (`tools/art/verify-rig-rest.mjs`) — where the rig stands.** Frame 0 of
+`idle`, rendered at the stage's native size and compared to that tier's `assembled.png` in the
+canvas-sized window at `rigStage`'s offset. At rest a rig *is* the art, so any scale, any offset,
+and any overlay that repaints approved pixels shows up here — and nowhere else. Note what this
+covers that the two gates above structurally cannot: `art:verify:rig` reads the file as data, and
+`art:verify:rig:motion` measures every clip against the rig's *own* rest pose, so a rig uniformly
+too small or shifted bodily is internally consistent and passes both of them clean.
 
 **Known blind spots, named honestly.** `verify.py` does not walk `assets/gear/` or the contents of
 `assets/biomes/`: the manifest declares 12 gear sets and 3 are delivered, and the gate is green.
@@ -378,6 +390,25 @@ perfectly correct, and pointing the reader at the clip table would be pointing a
 and the combat board — so this is not a dormant asset problem. The rigs on disk and the client that
 positions them are consistent *today*, both on 1024; they stop being consistent the moment the rigs
 are regenerated, and the client has to move in the same change.
+
+#### Validating the regeneration
+
+The restage changes *only* geometry, and geometry is the one thing the cheap gates cannot see —
+`art:verify:rig` reads the file as data, and `art:verify:rig:motion` measures every clip against
+the rig's *own* rest pose, so a rig uniformly too small or shifted bodily is internally consistent
+and passes both. Run these in order; each one can only be trusted once the one above it is green.
+
+| # | Check | Needs | Catches |
+|---|---|---|---|
+| 1 | `npm run art:verify:rig:strict` | nothing (CI) | The artboard is 1400 and the clip table survived the rebuild. Cheap, and it is the gate that is red today. |
+| 2 | `npm run art:verify:rig:rest` | Rive CLI | **The decisive one.** Frame 0 of `idle` against `assembled.png`, in the canvas window at (188,188). Catches scale, position and repaint — every way the restage can go wrong. A clean rig scores ≥99.8%; a figure fitted to the artboard instead of honouring `scale: 1` scores in the 20s. |
+| 3 | `npm run art:verify:rig:motion` | Rive CLI | The clipping itself: does `down` still leave the artboard on the bigger stage? This is the question the restage exists to answer, and it cannot be asked before 2 passes — measuring motion on a rig that is the wrong size measures the wrong rig. |
+| 4 | `npm run art:sheet:rig -- --clip down` | Rive CLI | A human looking at the fall. The gates prevent *broken*; only the sheet prevents *wrong* (§3.2). |
+| 5 | `--update-baseline` | Rive CLI | Only now. A baseline blessed before 2–4 pins whatever is wrong with the rigs it was generated from. |
+| 6 | Client anchor + `spike:rive` | — | The two consequences below. Not optional: 1–5 can all be green while the game draws the figure in the wrong place. |
+
+Steps 2–5 need the Rive CLI, which is not a repo dependency, so none of them run in CI — a green
+pipeline after a regeneration means step 1 and nothing else.
 
 Three consequences to carry into that regeneration, the first of which is load-bearing:
 
