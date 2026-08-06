@@ -17,7 +17,7 @@
 
 import { Sprite, Texture } from "pixi.js";
 import type { SpeciesId, TierId } from "@kad/shared";
-import { ANCHOR_Y, createRig, type RigHandle } from "./rive-rig";
+import { RIG_ANCHOR_X, RIG_ANCHOR_Y, createRig, type RigHandle } from "./rive-rig";
 
 export interface RiveActorHandle {
   /** Anchored like every character sprite: feet on the manifest origin. */
@@ -58,7 +58,7 @@ export async function createRiveActor(
     // The artboard is the manifest's 1024 canvas drawn contain-fit into a
     // square buffer — an exact fill — so the feet sit on the manifest origin
     // exactly as they do in the PNGs. Same constant, one source (art-paths).
-    sprite.anchor.set(0.5, ANCHOR_Y);
+    sprite.anchor.set(RIG_ANCHOR_X, RIG_ANCHOR_Y);
     sprite.width = height;
     sprite.height = height;
 
