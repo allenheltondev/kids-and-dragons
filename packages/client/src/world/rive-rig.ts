@@ -78,12 +78,23 @@ import type { SpeciesId, TierId } from "@kad/shared";
 import { characterRigUrl } from "./art-paths";
 
 // Re-exported so the Pixi wrapper takes its anchor from the same one source.
-export { ANCHOR_Y } from "./art-paths";
+// The *rig* anchor, not the static-art one: a rig is drawn on the 1400 stage and
+// stands at 1088/1400, where `assembled.png` is 1024 art standing at 900/1024.
+// This module re-exported ANCHOR_Y until the stage grew, which was correct only
+// while the two were the same number (art-paths, art-pipeline §6.3).
+export { RIG_ANCHOR_X, RIG_ANCHOR_Y } from "./art-paths";
 
 /**
  * Offscreen buffer, in px. The spike measured 512 as the size where seven
- * concurrent uploads stayed cheap; the artboard is 1024 but a figure is drawn
- * at ~414 design units, so 512 loses nothing visible on a TV.
+ * concurrent uploads stayed cheap; the artboard was 1024 and a figure is drawn
+ * at ~414 design units, so 512 lost nothing visible on a TV.
+ *
+ * The artboard is 1400 now (art-pipeline §6.3), so the figure occupies 1024/1400
+ * of the texture and 512 buys ~375px of character where it used to buy 512.
+ * Matching the old sharpness means ~700, at ~1.9x the upload bytes — and the
+ * spike has never been re-run at either the new stage or on the TV, which is the
+ * only machine that decides it. Left at 512 deliberately: a number nobody has
+ * measured is not an improvement on a number somebody did.
  */
 export const BUFFER_PX = 512;
 

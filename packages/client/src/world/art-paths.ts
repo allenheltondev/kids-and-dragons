@@ -21,6 +21,25 @@ export const ANCHOR_X = CANVAS.originX / CANVAS.width;
 export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
 
 /**
+ * assets/manifest.json → rigStage. The artboard a **rig** is drawn on, which is
+ * deliberately larger than the canvas above so a knocked-down figure has room to
+ * sweep its own diagonal (art-pipeline §6.3).
+ *
+ * These used to be the same number, and `rive-rig.ts` re-exported `ANCHOR_Y` for
+ * rigs on the strength of it. They are not the same number: a rig's standing
+ * point is `(originX + offsetX) / stage.width` on a texture 1400 wide, while a
+ * static `assembled.png` sprite is still 1024 art anchored at 900/1024. Feeding
+ * a rig the static anchor plants it ~100px of design space below the floor.
+ *
+ * The horizontal anchor survives the difference at 0.5 — the canvas is centred
+ * in the stage — which is exactly why this needs writing down: half the pair
+ * looks unchanged and the other half is a bug.
+ */
+export const RIG_STAGE = { width: 1400, height: 1400, offsetX: 188, offsetY: 188 } as const;
+export const RIG_ANCHOR_X = (CANVAS.originX + RIG_STAGE.offsetX) / RIG_STAGE.width;
+export const RIG_ANCHOR_Y = (CANVAS.originY + RIG_STAGE.offsetY) / RIG_STAGE.height;
+
+/**
  * The tier every character starts at (content/rules.json → tierLevels, level 1).
  * It is what creation has to draw: the draft has no level yet, and the hero the
  * player is building is a fledgling by definition.
