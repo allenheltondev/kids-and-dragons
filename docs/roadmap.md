@@ -100,10 +100,9 @@ phones and the TV are in a synced room, and all three spikes have a written verd
 - Commission Fledgling tier for the remaining 5 species; review each against the contact sheet
 - ~~**Rig all 6 in Rive** — one skeleton per species, reused across tiers. This stays hands-on; it's the step the agent doesn't own.~~ — **moved to Claude, and delivered.** `rive-mcp` generates
   each skeleton and state machine from `manifest.rigContract`, so the rig cannot drift from the
-  contract: the contract is its input. All 24 (6 species × 4 tiers) are in `assets/characters/`.
-  They need one regeneration onto the 1400 stage — the 1024 canvas leaves a knocked-down figure
-  nowhere to topple into, and `art:verify:rig` is red on that until they are rebuilt
-  (art-pipeline §6.3).
+  contract: the contract is its input. All 24 (6 species × 4 tiers) are in `assets/characters/`,
+  staged at 1400 so a knocked-down figure has room to topple, and green through
+  `art:verify:rig:strict` and the motion gate (art-pipeline §6.3).
 - Commission the icon set: 4 stats, 6 species, 4 classes
 - Class descriptions and species flavor text
 

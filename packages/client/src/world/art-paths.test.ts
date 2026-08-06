@@ -8,7 +8,13 @@
 import { describe, expect, it } from "vitest";
 import manifest from "../../../../assets/manifest.json";
 import {
+  ANCHOR_X,
+  ANCHOR_Y,
+  CANVAS,
   CREATION_BIOME,
+  RIG_ANCHOR_X,
+  RIG_ANCHOR_Y,
+  RIG_STAGE,
   STARTING_TIER,
   biomeBackdropUrl,
   biomeTilesUrl,
@@ -49,4 +55,45 @@ describe("art paths", () => {
 it("rig files live beside the assembled PNG they fall back to", () => {
   expect(characterRigUrl("unicorn", "mythic")).toBe("/assets/characters/unicorn/mythic/rig.riv");
   expect(characterRigUrl("griffin")).toBe("/assets/characters/griffin/fledgling/rig.riv");
+});
+
+/*
+ * The two anchors, which used to be one.
+ *
+ * A rig is drawn on `rigStage`; a static `assembled.png` sprite is drawn on the
+ * art canvas. While the stage *was* the canvas those were the same fraction, and
+ * `rive-rig.ts` re-exported the static anchor for rigs on that basis. The stage
+ * is bigger now (art-pipeline §6.3), so they have diverged — and the horizontal
+ * half has NOT, which is what makes the divergence easy to miss.
+ *
+ * Both are checked against the manifest rather than against each other, so this
+ * fails if the client's copy of the geometry drifts from the contract.
+ */
+describe("sprite anchors", () => {
+  it("takes the static-art anchor from the canvas", () => {
+    expect(CANVAS.width).toBe(manifest.canvas.width);
+    expect(CANVAS.originY).toBe(manifest.canvas.originY);
+    expect(ANCHOR_X).toBeCloseTo(manifest.canvas.originX / manifest.canvas.width, 9);
+    expect(ANCHOR_Y).toBeCloseTo(manifest.canvas.originY / manifest.canvas.height, 9);
+  });
+
+  it("takes the rig anchor from the stage, offset and all", () => {
+    expect(RIG_STAGE.width).toBe(manifest.rigStage.width);
+    expect(RIG_STAGE.offsetX).toBe(manifest.rigStage.offsetX);
+    expect(RIG_ANCHOR_X).toBeCloseTo(
+      (manifest.canvas.originX + manifest.rigStage.offsetX) / manifest.rigStage.width,
+      9,
+    );
+    expect(RIG_ANCHOR_Y).toBeCloseTo(
+      (manifest.canvas.originY + manifest.rigStage.offsetY) / manifest.rigStage.height,
+      9,
+    );
+  });
+
+  it("keeps the horizontal anchor and moves the vertical one", () => {
+    // The trap in one assertion: X is unchanged, so a reader checking only the
+    // centring would conclude nothing moved.
+    expect(RIG_ANCHOR_X).toBeCloseTo(ANCHOR_X, 9);
+    expect(RIG_ANCHOR_Y).not.toBeCloseTo(ANCHOR_Y, 3);
+  });
 });
