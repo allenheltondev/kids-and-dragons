@@ -9,9 +9,12 @@ isolated it.
 little-endian `Uint16`s. The fixed writer uses the existing varuint encoder and
 has a 20×32 regression test that crosses indices 127/128 and 255/256.
 
-All four regenerated manticore rigs now score **100.00%** at rest. The manticore
-motion gate also passes all 52 clip measurements and all four state-machine
-drives; its existing leap-speed heuristic warnings remain informational.
+All four regenerated manticore rigs now pass the 99.80% rest floor with **zero
+missing pixels**. An independent render measured fledgling at 99.97% (103
+differing, 62 extra), sworn at 99.98% (59 differing, 49 extra), and
+radiant/mythic at 100.00%. The manticore motion gate also passes all 52 clip
+measurements and all four state-machine drives; its existing leap-speed
+heuristic warnings remain informational.
 
 ---
 
