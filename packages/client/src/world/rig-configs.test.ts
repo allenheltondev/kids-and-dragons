@@ -100,18 +100,19 @@ describe("rig configs", () => {
   });
 
   /*
-   * The stage, which is the one thing in these files the *client* also depends on.
+   * The stage each config hands to rive-mcp, held to the manifest.
    *
    * A rig is staged on an artboard larger than the art canvas so a knocked-down
    * figure has room to sweep its own diagonal (manifest `$rigStageComment`,
-   * art-pipeline §6.3). That makes two numbers that used to be one: static art
-   * anchors at `originY / canvas.height`, a rig anchors at `ground.y / stage`.
-   * `rive-rig.ts` currently re-exports the former for the latter, which is only
-   * right while the stage equals the canvas — it no longer does, and repointing
-   * it is part of the outstanding regeneration, not something these tests can do.
+   * art-pipeline §6.3). These are not the client's anchors — `art-paths.test.ts`
+   * owns those, and the client already draws rigs from `RIG_ANCHOR_X/Y` with the
+   * stage/canvas sprite scaling to match. What these hold is the *input* side:
+   * that every config still stages where the manifest says, grounds where the
+   * manifest says, and does not quietly pick up a builder default.
    *
-   * What they can do is stop the configs and the manifest drifting apart in the
-   * meantime, because every one of those numbers is silent when wrong.
+   * Worth holding because every one of these numbers is silent when wrong. A
+   * config that drifts from the manifest produces a rig that is subtly the wrong
+   * size or in the wrong place, which is exactly what shipped once already.
    */
   it("stages every species on the manifest's rigStage", () => {
     const stage = manifest.rigStage;

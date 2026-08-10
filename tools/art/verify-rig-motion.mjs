@@ -163,6 +163,30 @@ const MOTION_MIN = 0.05;
  */
 const TELEPORT_MAX = 6;
 
+/**
+ * How much enclosed see-through area may open during a clip before it is worth
+ * a look, in px at RENDER_W.
+ *
+ * This is a WARNING and not a failure, and the reason is worth recording so
+ * nobody tightens it into a gate. The metric it reads was dead until recently —
+ * it asked whether a non-solid pixel sat inside an eroded solid mask, which no
+ * image can satisfy, so it returned 0 for every rig ever measured. Repairing it
+ * to a real border-flood enclosure test made it fire on nearly every clip of a
+ * demonstrably clean rig, and rendering the worst case showed why: the largest
+ * enclosed region on a celebrating unicorn is the gap between its hind legs.
+ * Negative space between limbs is enclosed by the silhouette, and it is
+ * animation, not a defect.
+ *
+ * So the number cannot separate "a joint came apart" from "a leg lifted" on its
+ * own, and a threshold low enough to catch the former fires constantly on the
+ * latter. Measured across a sweep of the delivered rigs, clean clips reached
+ * 6198px. This sits well clear of that: it will not notice a hairline seam, and
+ * it will notice a limb detaching. The golden baseline is what actually watches
+ * this metric — it catches the number *changing*, which is the question that can
+ * be answered without knowing anatomy from breakage.
+ */
+const INTERIOR_GAP_WARN = 15000;
+
 /** A loop's last tick back to its first is one step of motion, not a jump. */
 const LOOP_CLOSE_MAX = 3;
 
@@ -329,8 +353,11 @@ function judge(label, clip, m) {
         ` — something is painting over the parts, not just moving them`,
     );
   }
-  if (m.interior_holes > 0) {
-    bad.push(`${m.interior_holes}px of hole inside the silhouette — a joint is opening up`);
+  if (m.interior_holes > INTERIOR_GAP_WARN) {
+    soft.push(
+      `${m.interior_holes}px of enclosed gap opened during the clip — a joint may be coming ` +
+        `apart, or the figure may simply have spread its limbs. Look at it.`,
+    );
   }
   if (m.motion_median < MOTION_MIN) {
     bad.push(`does not move (median inter-tick delta ${m.motion_median})`);
@@ -452,7 +479,44 @@ const DRIVES = [
   // transition re-enters the instant `down` hands off, and the figure falls
   // forever. Passing through down_loop and stopping there is the proof it does not.
   { fire: ["knockedDown=true"], states: ["down", "down_loop"], rests: "down_loop" },
+  // ...and back up again. Every config wires `knockedDown == false` out of
+  // `down_loop` into `revive`, and nothing above proves a character can stand
+  // up: each drive starts from a fresh machine, so the machine that fell over
+  // is never the machine asked to get up. Rendering `revive` as an isolated
+  // clip would not cover it either — what matters is that it is reachable
+  // *from down_loop*, which is a fact about the graph and not about the clip.
+  // Two steps on one machine: fall, settle, then clear the bool.
+  {
+    fire: ["knockedDown=true", "knockedDown=false"],
+    states: ["down", "down_loop", "revive", "idle"],
+    rests: "idle",
+  },
 ];
+
+/** Seconds the CLI advances after each `--fire`. One step per fired input. */
+const ADVANCE = 4;
+
+/**
+ * Every (event, tick) firing the contract promises for the clips a drive walks.
+ *
+ * The check this feeds used to iterate the *actual* firings and grade their
+ * timing, which cannot see an event that never fired at all — a rig that
+ * silently drops `impact` passed, because there was nothing in the list to
+ * object to. Nor could it see a missing firing of a multi-tick event: `leap`
+ * declares dust on the crouch AND the landing, and one firing at either tick
+ * satisfied a `some()` over both.
+ */
+function expectedFirings(states) {
+  const out = [];
+  for (const state of states) {
+    const clip = CONTRACT.clips[state];
+    if (!clip?.events) continue;
+    for (const [name, at] of Object.entries(clip.events)) {
+      for (const tick of Array.isArray(at) ? at : [at]) out.push({ name, tick, state });
+    }
+  }
+  return out;
+}
 
 // Every (rig, drive) pair is independent, so the whole phase goes through the
 // same pool as the clips. Serially it is 200-odd browser launches and it doubled
@@ -462,7 +526,7 @@ const driveResults = await pool(
     DRIVES.map((d) => async () => {
       const argv = [...cli.pre, "events", job.rig, "--sm", "Rig"];
       for (const f of d.fire) argv.push("--fire", f);
-      argv.push("--advance", "4", "--json");
+      argv.push("--advance", String(ADVANCE), "--json");
       return { job, d, r: await run(cli.cmd, argv) };
     }),
   ),
@@ -494,20 +558,40 @@ for (const { job, d, r } of driveResults) {
     if (seen.length && seen[seen.length - 1] !== rests) {
       problems.push(`${d.fire.join("+")}: settles in "${seen[seen.length - 1]}", not "${rests}"`);
     }
-    // Events, against the ticks the contract puts them on. An event may declare
-    // several — `leap`'s dust fires on the crouch AND the landing — so a firing
-    // is correct if it lands on any of them. Matching only the first was this
-    // checker's own first bug, and it read exactly like a rig fault.
+    // Events: presence, cardinality and timing, matched as a set rather than
+    // graded one-sidedly. Each actual firing consumes one expected firing;
+    // whatever is left over at the end is a fault in one direction or the
+    // other — an event the contract promised and the rig never fired, or one
+    // the rig fired that the contract does not describe.
+    //
+    // Times come back as elapsed across the whole drive, and each fired input
+    // gets its own `ADVANCE` seconds, so a firing in step k arrives at
+    // k*ADVANCE + its tick. Every clip is shorter than ADVANCE, so the
+    // remainder recovers the time within the step exactly.
+    const wanted = expectedFirings(d.states);
+    const unmatched = [];
     for (const ev of data.events ?? []) {
-      const owner = Object.entries(CONTRACT.clips).find(([, c]) => c.events && ev.name in c.events);
-      if (!owner) continue;
-      const at = owner[1].events[ev.name];
-      const ticks = Array.isArray(at) ? at : [at];
-      const hit = ticks.some((t) => Math.abs(ev.time - t / CONTRACT.tickFps) <= EVENT_TOLERANCE_S);
-      if (!hit) {
-        const want = ticks.map((t) => `${t} (${(t / CONTRACT.tickFps).toFixed(3)}s)`).join(" or ");
-        problems.push(`${d.fire.join("+")}: event "${ev.name}" fired at ${ev.time}s, contract says tick ${want}`);
-      }
+      const within = ev.time % ADVANCE;
+      const i = wanted.findIndex(
+        (w) => w.name === ev.name && Math.abs(within - w.tick / CONTRACT.tickFps) <= EVENT_TOLERANCE_S,
+      );
+      if (i >= 0) wanted.splice(i, 1);
+      else unmatched.push(ev);
+    }
+    for (const w of wanted) {
+      problems.push(
+        `${d.fire.join("+")}: event "${w.name}" never fired at tick ${w.tick} ` +
+          `(${(w.tick / CONTRACT.tickFps).toFixed(3)}s into "${w.state}")`,
+      );
+    }
+    for (const ev of unmatched) {
+      // Only complain about events the contract knows; a rig may carry its own.
+      const known = Object.values(CONTRACT.clips).some((c) => c.events && ev.name in c.events);
+      if (!known) continue;
+      problems.push(
+        `${d.fire.join("+")}: event "${ev.name}" fired at ${ev.time}s, which is not a tick ` +
+          `the contract puts it on`,
+      );
     }
   }
 }
