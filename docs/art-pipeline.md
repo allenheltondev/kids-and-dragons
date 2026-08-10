@@ -416,30 +416,49 @@ and the combat board — so this is not a dormant asset problem. The rigs on dis
 positions them are consistent *today*, both on 1024; they stop being consistent the moment the rigs
 are regenerated, and the client has to move in the same change.
 
-#### The manticore mesh tail — open, and upstream
+#### The manticore mesh tail — root cause found and fixed upstream; a residual remains
 
-Twenty of twenty-four rigs reproduce their art exactly. All four manticore tiers do not, and the
-miss grows with the tier: fledgling 99.61%, sworn 98.01%, radiant 97.84%, mythic 96.90%.
+Twenty of twenty-four rigs reproduce their art exactly. All four manticore tiers do not, and
+manticore is the only species with a mesh: `meshParts: { tail: { bones: 5 } }`.
 
-It is the tail, and it is not a near-miss of the kind a split edge produces. On mythic, 11,739
-pixels present in `assembled.png` are absent from the render and **100% of them are visible tail**,
-against 21 pixels rendered that the art does not have. The tail is not displaced or recoloured —
-about 15% of it is simply never drawn, everything below y=550 where the art runs to y=759.
+**Cause one — the crop threw art away. Fixed.** `rive-mcp`'s spine analysis builds a mask from the
+*largest 8-connected component*, which is right for the tip search it was written for: a crumb of
+stray alpha would otherwise hijack the search for the far end of the tail. But the same mask was
+then used to crop the part, and that crop is what supplies the mesh its texture — so every
+component except the biggest was silently deleted from the rig. The manticore tail is a **barbed**
+tail: measured on mythic it is **6 components**, the largest 84.9%, and the other five — the barbs,
+which do not touch the shaft — were **15.1% of the part, discarded**. Art that passed every pixel
+gate on the way in, gone at the rigging step, and invisible to every gate after it.
 
-Manticore is the only species with a mesh: `meshParts: { tail: { bones: 5 } }`. Rebuilding the same
-tier from the same config with `meshParts` removed scores **100.00%**, 0 pixels differing. So the
-mesh generation does not cover the whole tail image, and the uncovered part is dropped.
+The fix takes the crop bounds from every opaque pixel while leaving the mask alone for the spine
+search, in `pageScript.ts`. Measured, per tier:
 
-This is upstream in `rive-mcp`, not a fault in this repo's configs, and it is **pre-existing** — the
-rigs on `main` used the same config through the same generator, so their tails were clipped too;
-the 90%-scale error was simply large enough to hide it. The regenerated rigs are strictly better on
-every axis, which is why they ship with this open.
+| | before | after |
+|---|---|---|
+| mythic | 96.90% | **99.58%** |
+| radiant | 97.84% | **99.49%** |
+| sworn | 98.01% | **98.73%** |
+| fledgling | 99.61% | 99.61% *(unchanged — see below)* |
 
-The config is left as authored. Dropping `meshParts` would take manticore to 100% today and cost
-the tail its secondary motion, and that is an art call rather than a pipeline one — the tail was
-made a mesh deliberately (asset-brief §4.4). `art:verify:rig:rest` stays red on those four until
-either the generator is fixed or the mesh is given up, and red is the correct state for a tail with
-a piece missing.
+Mythic's missing pixels went 11,739 → 1,573. `fledgling` rebuilt **byte-identical**, which is its
+own confirmation: its tail's components share a bounding box, so the crop never changed.
+
+**Cause two — unfixed, and it is not the crop.** Every tier still sits under the 99.80% floor, and
+fledgling never moved, so a second defect is in play. On fledgling it is 1,373 missing pixels
+against 11 extra, all inside the tail, concentrated toward the tip, and only a third of them on the
+silhouette rim — the figure is losing interior area, not an antialiased edge. It is mesh-specific:
+the same tier rebuilt with `meshParts` removed scores **100.00%**, 0 pixels differing. It is not
+the skinning bind pose — Rive's skin carries a bind matrix and per-bone inverse-bind tendons, so at
+rest every bone composes to identity and a linear blend of identities is still identity, whatever
+the weights say. Not diagnosed further.
+
+**So the config is left as authored and those four stay red.** Dropping `meshParts` would take
+manticore to 100% today and cost the tail its secondary motion — an art call (asset-brief §4.4),
+not a pipeline one. Red is the correct state for a tail with a piece missing, and the number now
+says how big the piece is.
+
+Both causes are **pre-existing**: the rigs on `main` used the same config through the same
+generator. The 90%-scale error was simply large enough to hide them.
 
 #### Running the Rive CLI
 
