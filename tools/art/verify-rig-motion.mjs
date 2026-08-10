@@ -462,34 +462,49 @@ if (cliMissing) {
 console.log(`\n${BOLD}state machine${RESET}`);
 
 /**
- * What firing each input must do. `states` is what the machine has to pass
- * through, in order; the clip it plays and the state it rests in are both part
- * of the contract's promise to the client, and neither is visible in the file.
+ * What firing each input must do, **step by step**.
+ *
+ * `steps[i]` is the exact list of states the machine newly enters during step i,
+ * in order. Reading it per step rather than flattening the whole run matters
+ * more than it looks, because of what the runtime actually reports: `seek()`
+ * upstream collects state changes with `if (!all.includes(s)) all.push(s)`, so
+ * `statesChanged` is the DISTINCT states first seen during that advance — not a
+ * transition history, and not the state the machine is resting in when the
+ * advance ends.
+ *
+ * Flattening those lists and asking `includes()` therefore proves almost
+ * nothing, and in particular it cannot catch the bug this whole section exists
+ * for. A machine that re-enters on a level-held bool — down, down_loop, down,
+ * down_loop, forever — reports exactly `["down", "down_loop"]`, the same as one
+ * that fell over once and stayed there. Taking the last name as "settles in" is
+ * not valid either; it is only the last name first seen.
+ *
+ * What *is* decidable from this report is that a step which changes nothing
+ * reports nothing. So the knockdown drive holds the bool down across two
+ * advances: the second one must be silent, and a re-entering machine cannot be
+ * silent. That is the assertion the old `rests: "down_loop"` was pretending to
+ * be.
+ *
+ * (The cleaner fix is upstream: `rive-mcp events` could report the full
+ * transition sequence and the active state at the end of each step, and then
+ * this could assert settling directly instead of inferring it from silence.)
  */
 const DRIVES = [
-  { fire: ["move"], states: ["walk", "idle"] },
-  { fire: ["attack"], states: ["attack", "idle"] },
-  { fire: ["cast"], states: ["cast", "idle"] },
-  { fire: ["hurt"], states: ["hurt", "idle"] },
-  { fire: ["leap"], states: ["leap", "idle"] },
-  { fire: ["helpUp"], states: ["lift", "idle"] },
-  { fire: ["celebrate"], states: ["celebrate", "idle"] },
-  { fire: ["guard"], states: ["guard"], rests: "guard" },
-  // The one the playbook warns about: a level-held bool on an any-state
-  // transition re-enters the instant `down` hands off, and the figure falls
-  // forever. Passing through down_loop and stopping there is the proof it does not.
-  { fire: ["knockedDown=true"], states: ["down", "down_loop"], rests: "down_loop" },
-  // ...and back up again. Every config wires `knockedDown == false` out of
-  // `down_loop` into `revive`, and nothing above proves a character can stand
-  // up: each drive starts from a fresh machine, so the machine that fell over
-  // is never the machine asked to get up. Rendering `revive` as an isolated
-  // clip would not cover it either — what matters is that it is reachable
-  // *from down_loop*, which is a fact about the graph and not about the clip.
-  // Two steps on one machine: fall, settle, then clear the bool.
+  { fire: ["move"], steps: [["walk", "idle"]] },
+  { fire: ["attack"], steps: [["attack", "idle"]] },
+  { fire: ["cast"], steps: [["cast", "idle"]] },
+  { fire: ["hurt"], steps: [["hurt", "idle"]] },
+  { fire: ["leap"], steps: [["leap", "idle"]] },
+  { fire: ["helpUp"], steps: [["lift", "idle"]] },
+  { fire: ["celebrate"], steps: [["celebrate", "idle"]] },
+  // Brace holds until your next turn, so it must NOT wander back to idle.
+  { fire: ["guard"], steps: [["guard"]] },
+  // The whole knockdown lifecycle on one machine: fall, prove it stays fallen,
+  // then get back up. Step 2 re-applies the same value precisely so that its
+  // silence means something.
   {
-    fire: ["knockedDown=true", "knockedDown=false"],
-    states: ["down", "down_loop", "revive", "idle"],
-    rests: "idle",
+    fire: ["knockedDown=true", "knockedDown=true", "knockedDown=false"],
+    steps: [["down", "down_loop"], [], ["revive", "idle"]],
   },
 ];
 
@@ -548,16 +563,25 @@ for (const { job, d, r } of driveResults) {
       problems.push(`${d.fire.join("+")}: unreadable report`);
       continue;
     }
-    const seen = data.report.flatMap((s) => s.statesChanged ?? []);
-    for (const want of d.states) {
-      if (!seen.includes(want)) {
-        problems.push(`${d.fire.join("+")}: never entered "${want}" (saw ${seen.join(" -> ") || "nothing"})`);
-      }
+    // One report entry per fired step, after the "init" settle.
+    const steps = (data.report ?? []).filter((r) => r.step !== "init");
+    if (steps.length !== d.steps.length) {
+      problems.push(`${d.fire.join("+")}: ${steps.length} step(s) reported, expected ${d.steps.length}`);
     }
-    const rests = d.rests ?? "idle";
-    if (seen.length && seen[seen.length - 1] !== rests) {
-      problems.push(`${d.fire.join("+")}: settles in "${seen[seen.length - 1]}", not "${rests}"`);
-    }
+    d.steps.forEach((want, i) => {
+      const got = steps[i]?.statesChanged ?? [];
+      const same = got.length === want.length && got.every((v, k) => v === want[k]);
+      if (same) return;
+      const shown = got.length ? got.join(" -> ") : "nothing";
+      problems.push(
+        want.length === 0
+          ? `${d.fire.join("+")}: step ${i + 1} should change nothing — it is meant to be resting ` +
+            `in "${d.steps[i - 1]?.[d.steps[i - 1].length - 1] ?? "?"}" — but entered ${shown}. ` +
+            `A level-held bool re-entering its own transition looks exactly like this.`
+          : `${d.fire.join("+")}: step ${i + 1} entered ${shown}, expected ${want.join(" -> ")}`,
+      );
+    });
+
     // Events: presence, cardinality and timing, matched as a set rather than
     // graded one-sidedly. Each actual firing consumes one expected firing;
     // whatever is left over at the end is a fault in one direction or the
@@ -568,7 +592,7 @@ for (const { job, d, r } of driveResults) {
     // gets its own `ADVANCE` seconds, so a firing in step k arrives at
     // k*ADVANCE + its tick. Every clip is shorter than ADVANCE, so the
     // remainder recovers the time within the step exactly.
-    const wanted = expectedFirings(d.states);
+    const wanted = expectedFirings(d.steps.flat());
     const unmatched = [];
     for (const ev of data.events ?? []) {
       const within = ev.time % ADVANCE;
