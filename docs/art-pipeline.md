@@ -179,16 +179,21 @@ metadata; by design it **renders nothing**.
 command above cannot see, because it is not in the file, only in the frames: a figure sinking below
 its own standing line, leaving the artboard, not moving at all, teleporting between ticks, failing
 to close a loop, or acquiring colours the approved art does not contain. Its state-machine layer
-drives every input for real, including the full knockdown lifecycle — fall, settle in `down_loop`,
-then clear the bool and get back up — and matches fired events against the contract as a *set*, so a
+drives every gameplay path for real, including the full knockdown lifecycle — fall, settle in
+`down_loop`, then clear the bool and get back up — and matches fired events against the contract as a *set*, so a
 dropped event fails as loudly as a mistimed one.
+
+What it does **not** drive, so the line above is not read as more than it is: `transform` is
+deferred (Chapter 5) and no rig is required to ship it, and `facing` is a number the client sets to
+mirror a figure rather than a transition to walk through. Nine of the eleven declared inputs are
+exercised; those two are named exclusions, not oversights.
 
 One measurement there is deliberately a warning rather than a gate: enclosed see-through area. It
 was written as a joint-opening check and was, until this change, incapable of returning anything but
 zero. Repaired, it turns out to measure anatomy as readily as breakage — the biggest enclosed region
 on a celebrating unicorn is the gap between its hind legs — so it warns at a level no clean rig has
 reached and otherwise leaves the judgement to the golden baseline, which can see the number change
-without needing to know a leg from a seam. Three layers — every clip measured frame by frame, every input fired through the real state
+without needing to know a leg from a seam. Three layers — every clip measured frame by frame, every driven input fired through the real state
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
@@ -407,7 +412,8 @@ set measured 7.79-10.55% against its own art. And the client *draws these*, so e
 character in the game was a tenth too small and sunk into the floor.
 
 **The stage question itself is settled.** `art:verify:rig:motion` has now run for the first time —
-312 clips across all 24 rigs, plus all 9 inputs driven through every state machine: **PASS**, 0
+312 clips across all 24 rigs, plus nine of the eleven declared inputs driven through every state
+machine: **PASS**, 0
 failures, 10 warnings. Every clip stays on its feet and inside the artboard, `down` and `down_loop`
 included, and every machine passes through the states the contract promises and fires its events on
 the contracted ticks. The 10 warnings are all the same one — `leap` moving 6-7x the median on a
