@@ -444,10 +444,11 @@ describe("checkEffectSync, derived from the manifest's startsOn", () => {
   });
 
   it("warns, and does not fail, on an event no effect consumes", () => {
-    // leap's `dust` — dust_scuff is specified (§9.7 item 1) but not
-    // commissioned, and undelivered work is tolerated, not silently dropped.
+    // Model an undelivered consumer by removing dust_scuff. The real manifest
+    // now consumes every authored combat event.
+    const effects = manifest.effects.filter((e) => e.id !== "dust_scuff");
     const { failures, warnings } = quietly((rep) =>
-      checkEffectSync(rep, contract, manifest.effects),
+      checkEffectSync(rep, contract, effects),
     );
     expect(failures).toEqual([]);
     expect(warnings.some((w) => w.includes("leap.dust"))).toBe(true);
@@ -524,7 +525,9 @@ describe("checkTurnBudget, including concurrent overhangs", () => {
     // data: attack picks up a 12-frame tail from its tick-3 impact (ticks 3–14,
     // 6 past its 8), so the worst turn becomes 18 + 12 + 8 + 6 = 44 — the
     // attack turn, because the cast turn lost its sheets and fell to 40.
-    const effects = structuredClone(manifest.effects).filter((e) => e.id !== "heal_bloom");
+    const effects = structuredClone(manifest.effects).filter(
+      (e) => e.id === "burst_star" || e.startsOn?.clip !== "cast",
+    );
     const star = effects.find((e) => e.id === "burst_star");
     if (!star) throw new Error("bad fixture");
     star.startsOn = { clip: "attack", event: "impact" };
