@@ -757,7 +757,7 @@ entities:
       - "Powerful individual whose goals are not immediately understood"
     canon_constraints:
       - "Legend dragons are not the rulers or parents of dragonling society."
-      - "No specific legend dragon has yet been named or designed."
+      - "The Gemfall Seal-Keeper is the first approved individual design and must not be reused as a species-default or interchangeable enemy."
       - "Do not assume a legend dragon is evil, friendly, asleep, or responsible for the volcano without story-specific canon."
 
   # ---------------------------------------------------------------------------
