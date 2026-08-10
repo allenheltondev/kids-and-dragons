@@ -50,7 +50,7 @@ jobs:
     # port that is not listening yet and fail intermittently.
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Node 22 — the same runtime the Lambdas use (architecture §1).
       - uses: actions/setup-node@v7
@@ -225,7 +225,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
         with:
