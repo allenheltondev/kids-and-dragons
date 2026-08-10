@@ -441,10 +441,10 @@ with its feet on the same world point. `art-paths.test.ts` pins all three agains
 including the trap that the horizontal anchor is unchanged at 0.5 while the vertical one moves —
 half the pair looking untouched is what made this easy to miss.
 
-#### The manticore mesh tail — root cause found and fixed upstream; a residual remains
+#### The manticore mesh tail — both root causes fixed upstream
 
-Twenty of twenty-four rigs reproduce their art exactly. All four manticore tiers do not, and
-manticore is the only species with a mesh: `meshParts: { tail: { bones: 5 } }`.
+All twenty-four rigs reproduce their art exactly. The four manticore tiers were the last holdouts,
+and manticore is the only species with a mesh: `meshParts: { tail: { bones: 5 } }`.
 
 **Cause one — the crop threw art away. Fixed.** `rive-mcp`'s spine analysis builds a mask from the
 *largest 8-connected component*, which is right for the tip search it was written for: a crumb of
@@ -486,19 +486,19 @@ Measured, per tier:
 Mythic's missing pixels went 11,739 → 1,573. `fledgling` rebuilt **byte-identical**, which is its
 own confirmation: its tail's components share a bounding box, so the crop never changed.
 
-**Cause two — unfixed, and it is not the crop.** Every tier still sits under the 99.80% floor, and
-fledgling never moved, so a second defect is in play. On fledgling it is 1,373 missing pixels
-against 11 extra, all inside the tail, concentrated toward the tip, and only a third of them on the
-silhouette rim — the figure is losing interior area, not an antialiased edge. It is mesh-specific:
-the same tier rebuilt with `meshParts` removed scores **100.00%**, 0 pixels differing. It is not
-the skinning bind pose — Rive's skin carries a bind matrix and per-bone inverse-bind tendons, so at
-rest every bone composes to identity and a linear blend of identities is still identity, whatever
-the weights say. Not diagnosed further.
+**Cause two — triangle indices used the wrong wire encoding. Fixed.** `triangleIndexBytes` sounds
+like a packed integer buffer, and `rivWriter.ts` wrote every index as a little-endian `Uint16`.
+Rive's `Mesh::decodeTriangleIndexBytes` actually reads that byte payload as concatenated varuints.
+The fixed-width stream injected zero indices below 128 and corrupted values at later byte
+boundaries, making the runtime assemble the wrong triangles and leave whole cells undrawn. That
+also explains why loss changed non-monotonically with grid density and fell off a cliff as the
+vertex count crossed byte boundaries.
 
-**So the config is left as authored and those four stay red.** Dropping `meshParts` would take
-manticore to 100% today and cost the tail its secondary motion — an art call (asset-brief §4.4),
-not a pipeline one. Red is the correct state for a tail with a piece missing, and the number now
-says how big the piece is.
+`rive-mcp` commit `660bcc0` routes the indices through the writer's varuint encoder and adds a
+20×32 regression test spanning 127/128 and 255/256. After regenerating the four manticore rigs,
+`art:verify:rig:rest -- manticore` reports **100.00% on every tier**. The manticore motion gate
+passes all 52 clip measurements and all four state-machine drives; the existing leap-speed
+heuristic warnings remain informational.
 
 Both causes are **pre-existing**: the rigs on `main` used the same config through the same
 generator. The 90%-scale error was simply large enough to hide them.

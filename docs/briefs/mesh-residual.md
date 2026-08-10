@@ -1,10 +1,17 @@
 # Brief: the manticore mesh residual
 
-Four rigs fail `art:verify:rig:rest` and one defect is why. This is everything
-known about it, so the next person does not re-derive it.
+Four rigs failed `art:verify:rig:rest` because their mesh triangle indices were
+serialized in the wrong encoding. This brief preserves the investigation that
+isolated it.
 
-**Status:** open, undiagnosed. Not a regression — it predates the 1400 restage
-and was simply invisible until the gates that could see it existed.
+**Status:** resolved in `rive-mcp` commit `660bcc0`. Rive decodes
+`triangleIndexBytes` as concatenated varuints, but the writer emitted packed
+little-endian `Uint16`s. The fixed writer uses the existing varuint encoder and
+has a 20×32 regression test that crosses indices 127/128 and 255/256.
+
+All four regenerated manticore rigs now score **100.00%** at rest. The manticore
+motion gate also passes all 52 clip measurements and all four state-machine
+drives; its existing leap-speed heuristic warnings remain informational.
 
 ---
 
