@@ -503,6 +503,45 @@ says how big the piece is.
 Both causes are **pre-existing**: the rigs on `main` used the same config through the same
 generator. The 90%-scale error was simply large enough to hide them.
 
+#### The stage is paired with a canvas, not global
+
+`rigStage` reads like one number for the whole repo, and for the six playable species it is: they
+all draw on the manifest's 1024 canvas, so they all stage on 1400. Entities are the exception, and
+it is worth stating before anybody rigs one.
+
+`verify.py` already honours a per-entity `canvas` override (`entity.get("canvas", mf["canvas"])`),
+and `legend_dragon` uses it — its art is **2048**, not 1024. A rig generated for it against the
+1024-derived 1400 stage would be staged for a drawing half its size: the clipping this stage exists
+to prevent, arriving through the one door nothing was watching. So **anything that declares its own
+`canvas` declares its own `rigStage` beside it**, on the same ratio and centred. legend_dragon's is
+2800 with a 376px offset.
+
+`rig-configs.test.ts` holds that pairing — every declared canvas has a stage, every stage is the
+same ratio as its canvas, centred, on whole pixels. It is written against the contract rather than
+against delivered files on purpose: `rigContract.sets.enemy` exists (`idle`, `walk`, `attack`,
+`hurt`, `down`) and no entity `.riv` does, so the cheap moment to fix this is now, at one assertion,
+rather than later at twenty rebuilt rigs.
+
+Two honest caveats on the number itself. The 1.3671875 ratio is **empirical, not derived** — 1400
+was the size that cleared every off-artboard failure on the 1024 canvas, and it generalises by
+proportion because nothing better is known. And the tempting derivation, "a toppling figure needs
+its own diagonal", does not actually hold: a rig rotates about its feet rather than its centre, so a
+90° fall wants roughly the figure's *height* clear to one side — 883px for `dragonling/mythic`
+against the 700px the stage offers from the pivot. It does not clip, because the authored `down`
+does not rotate a full 90° about a fixed point. Which is the real lesson: the diagonal is a sizing
+guide, and `art:verify:rig:motion` is the arbiter.
+
+Headroom, measured against the current art, so a future tier knows how much room is left:
+
+| | widest figure | diagonal | stage |
+|---|---|---|---|
+| `dragonling/mythic` (worst hero) | 978×883 | 1318 | 1400 |
+| `river_drake` (worst 1024 entity) | 1002×860 | 1320 | 1400 |
+| `legend_dragon` | 1907×1999 | 2763 | 2800 |
+
+Under a hundred pixels spare in every case. A noticeably chunkier mythic tier would need the ratio
+revisited, not just the art re-approved.
+
 #### Running the Rive CLI
 
 Steps 2-5 below shell out to `rive-mcp-build`, which is not a dependency of this repo. Two
