@@ -142,6 +142,8 @@ interface Manifest {
   species: { id: string }[];
   effects: EffectEntry[];
   rigContract?: RigContract;
+  /** The artboard rigs are staged on. Optional so an older manifest still reads. */
+  rigStage?: { width: number; height: number; offsetX: number; offsetY: number };
 }
 
 /**
@@ -699,7 +701,29 @@ export interface RigIntrospection {
    * is eleven, and only one of them is what actually happened.
    */
   inputs: { name: string; kind: "trigger" | "boolean" | "number" }[] | null;
+  /**
+   * The default artboard's own size — the stage the rig was actually built on.
+   *
+   * This is the one fact here that is about the rig's *geometry* rather than its
+   * clip table, and it is here because nothing else in the pipeline can see it.
+   * A rig staged on the bare 1024 art canvas has 8px of margin to topple into,
+   * which is not enough (manifest `$rigStageComment`, art-pipeline §6.3), and a
+   * rig that clips off its artboard is clip-for-clip identical to one that does
+   * not as far as every other check in this file is concerned.
+   */
+  stage: { width: number; height: number };
 }
+
+/**
+ * The half of an introspection that the *contract* is about — the clip table and
+ * the state machine, and nothing geometric.
+ *
+ * `compareRigToContract` takes this rather than the whole thing because it reads
+ * exactly this much. The artboard a rig was staged on is checked in
+ * `checkRigFiles` instead, where the remedy it points at (regenerate the rig) is
+ * a different remedy from anything in the clip table.
+ */
+export type RigContractView = Pick<RigIntrospection, "clips" | "inputs">;
 
 /** One thing wrong with a rig, ready to hand to `Report.fail`. */
 export interface RigProblem {
@@ -727,7 +751,7 @@ export interface RigProblem {
  * worse than no `transform`.
  */
 export function compareRigToContract(
-  rig: RigIntrospection,
+  rig: RigContractView,
   contract: RigContract,
   kind: string,
 ): RigProblem[] {
@@ -1159,7 +1183,16 @@ export async function introspectRiv(
       }
     }
 
-    return { clips, inputs };
+    // `bounds` is the authoritative answer and `width`/`height` are the
+    // convenience one; ask for both so a runtime that drops either still gets
+    // read rather than reporting a 0x0 stage that would fail every rig.
+    const bounds = artboard.bounds as { maxX: number; maxY: number } | undefined;
+    const stage = {
+      width: Math.round(bounds?.maxX ?? (artboard as unknown as { width: number }).width ?? 0),
+      height: Math.round(bounds?.maxY ?? (artboard as unknown as { height: number }).height ?? 0),
+    };
+
+    return { clips, inputs, stage };
   } catch (err) {
     // A .riv Rive can parse but this code cannot walk — a wasm abort, a handle
     // that came back null, an API drift. One bad file must report as one bad
@@ -1243,9 +1276,31 @@ async function checkRigFiles(
     read += 1;
     const problems = compareRigToContract(rig, contract, "hero");
     for (const p of problems) rep.fail(`rig ${rel}  ${p.label}`, p.expected, p.actual, p.hint);
-    if (problems.length === 0) {
+
+    // The stage is checked separately from the contract because it is not a
+    // contract fact: `compareRigToContract` answers "does this rig declare the
+    // right clips", and a rig can answer yes perfectly while being built on an
+    // artboard it does not fit inside. Deliberately not folded into `problems`
+    // for that reason — the fix is a rebuild, not an edit to the clip table.
+    const stage = mf.rigStage;
+    const stageWrong =
+      stage && (rig.stage.width !== stage.width || rig.stage.height !== stage.height);
+    if (stageWrong) {
+      rep.fail(
+        `rig ${rel}  artboard`,
+        `${stage.width}x${stage.height} (manifest rigStage)`,
+        `${rig.stage.width}x${rig.stage.height}`,
+        "Built on a stage the manifest no longer describes. A rig on the bare art canvas has only " +
+          "tolerance.edgeMarginPx to topple into, which is not enough — `down`, `down_loop` and `leap` " +
+          "push the figure off the artboard. Regenerate it from art/rig/<species>.rig.json with rive-mcp; " +
+          "art-pipeline §6.3 has the why and the consequences.",
+      );
+    }
+
+    if (problems.length === 0 && !stageWrong) {
       rep.ok(
-        `rig ${rel}  ${rig.clips.length} clips, ${rig.inputs?.length ?? 0} inputs, matches the hero set`,
+        `rig ${rel}  ${rig.clips.length} clips, ${rig.inputs?.length ?? 0} inputs, ` +
+          `${rig.stage.width}x${rig.stage.height} stage, matches the hero set`,
       );
     }
   }
