@@ -1203,8 +1203,9 @@ creatures:
       Legendary guardian, dangerous source of ancient knowledge, powerful
       individual whose goals are not understood.
     canon_constraints: >-
-      Not the rulers or parents of dragonling society. No specific legend dragon
-      has yet been named or designed.
+      Not the rulers or parents of dragonling society. The Gemfall Seal-Keeper
+      is the first approved individual design and must not be reused as a
+      species-default or interchangeable enemy.
     standard_behavior: >-
       Guards a claimed lair or purpose, monitors intrusions, may warn, test,
       bargain with, or attack depending on individual.

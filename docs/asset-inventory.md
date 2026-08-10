@@ -44,10 +44,10 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Entity cutouts | **27 / 27** | — |
 | **Gear overlays** | 6 / 24 | **18 files** — 9 sets |
 | **Effect sheets, specified but undeclared** | 0 / 6 | **6 sheets** |
-| **Entity part-sets (combat roster)** | 0 / 9 | **9 creatures** |
+| **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**33 files outstanding.** The cast, the world and the rigs are done; what is left is gear, six
-combat effects, and the part breakdowns that would let enemies be rigged.
+**24 files outstanding.** Creature generation is complete; what is left is gear and six combat
+effects.
 
 ---
 
@@ -123,16 +123,24 @@ delete it from that constant.
 or 1.0s and is what §9.2's turn budget affords. `transform_flash`'s 18 is the exception that proves
 it: that one plays when the fighting has stopped.
 
-### 4.3 Entity part-sets — 9 creatures
+### 4.3 Entity part-sets — 9 delivered
 
-The 27 cutouts are delivered and the board draws them today. Part-sets are the separate,
-rig-shaped delivery — and **enemy rigs cannot start without them**, which is the one place your
-list blocks mine.
+The 27 cutouts are delivered and the board draws them today. The approved `will_o_wisp` ships the
+floating proof (`core`, `halo`, `trail`), and the approved `cinder_wolf` now ships the first shared
+quadruped plan plus its `ruff_alt` pack variant. The approved `glassback_crab` adds the first
+`low_shell` plan, and the approved `mire_mimic` extends it with the retractable `whiskers` sensory
+layer and disguised idle. The approved `bone_crawler` completes that shared plan and adds its
+registered `shell_alt` fossil pattern. The approved `frost_wyrm` adds the first compact serpentine
+plan with a wedge-head signature and separate ice-ridge `fin`; the approved `river_drake` completes
+that shared plan with a continuous river-fin signature and crossing-keeper idle. The approved
+`echo_hunter` completes the shared quadruped plan with its broad `frills`, gentle sound-cartographer
+face, and ground-listening stance. The approved `legend_dragon` completes the roster as the
+campaign-specific Gemfall Seal-Keeper: a custom 2048×2048, 2×2 rig with a speaking jaw, independent
+display wings, and a deliberate ancient-curator personality.
 
 Keep it in proportion: **shipped content fights exactly one of these** (`will_o_wisp`, the
 bramblewisps). The other eight are the planned roster, not a backlog anything is currently waiting
-on. If you want one to unblock enemy rigging as a proof, `will_o_wisp` is the one that pays off
-immediately — it is `floating`, the three-part plan, and the cheapest of the four.
+on; `cinder_wolf` is delivered because it proves the quadruped plan and restrained ember rule.
 
 | Body plan | Parts | Creatures |
 |---|---|---|
@@ -140,13 +148,16 @@ immediately — it is `floating`, the three-part plan, and the cheapest of the f
 | `low_shell` | `body` `shell` `claw_l` `claw_r` `leg_l` `leg_r` | `glassback_crab`, `mire_mimic`, `bone_crawler` |
 | `serpentine` | `head` `neck` `body` `coil` `limb_l` `limb_r` `fin` | `frost_wyrm`, `river_drake` |
 | `floating` | `core` `halo` `trail` | `will_o_wisp` |
+| `legend_dragon` | `body` `head` `jaw` `crown` `mantle` `wing_far` `wing_near` `limb_fl` `limb_fr` `limb_bl` `limb_br` `tail` | Gemfall Seal-Keeper only |
 
-`legend_dragon` is deferred. Two creatures add exactly one part to their plan — `mire_mimic`'s
+Two creatures add exactly one part to their shared plan — `mire_mimic`'s
 `whiskers`, `echo_hunter`'s `frills` — and nobody else adds anything: a plan three creatures all
 bend is not a plan.
 
-Same technical contract as the heroes (1024×1024, origin (512, 900), registered layers, seam
-overdraw, real alpha), one directory deep rather than two.
+The four shared plans use the same technical contract as the heroes (1024×1024, origin (512, 900),
+registered layers, seam overdraw, real alpha), one directory deep rather than two. The Seal-Keeper
+is the declared exception: 2048×2048, origin (1024, 2024), and a four-tile footprint. Its art is
+complete; grid occupancy and enemy-rig playback remain separate engine integration work.
 
 ---
 
@@ -167,9 +178,10 @@ Both are invisible to tooling, and both are mine to close rather than yours:
 1. **`effects[]` is missing the six sheets of §4.2 above.** Until they are declared, nothing checks
    frame counts, tint tolerance or clip sync for them.
 2. **`enemyPlans` and `enemies[]` are missing from the manifest** ([asset-brief §9.7](./asset-brief.md)
-   items 4 and 5, deliberately unadded — "there is nothing yet to describe"). The body-plan table
-   in §4.3 is prose, which is why `tools/art/inventory.ts` restates it by hand. The first delivered
-   part-set is the moment to add both and delete the constant.
+   items 4 and 5). All nine part-sets now exist, so this is manifest/rig tooling debt rather than
+   art still to draw. The body-plan table in §4.3 remains prose, which is why
+   `tools/art/inventory.ts` still restates the roster by hand; adding both declarations should
+   delete that constant.
 
-Nothing is blocked on either today. They are noted so that neither becomes a surprise the day the
-first enemy part-set lands.
+Neither changes the image inventory. They are noted so rig integration does not mistake completed
+art for a complete machine-readable enemy contract.

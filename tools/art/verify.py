@@ -686,7 +686,9 @@ def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
             f"{', '.join(entity['canonicalLocations'])}"
         )
 
-    check_format(rep, path, mf["canvas"], mf["tolerance"])
+    # Colossal, multi-tile individuals may declare their own canvas while the
+    # ordinary one-tile entity contract continues to use manifest.canvas.
+    check_format(rep, path, entity.get("canvas", mf["canvas"]), mf["tolerance"])
 
 
 def check_gear(rep: Report, mf: dict, skipped: list[str]) -> None:
