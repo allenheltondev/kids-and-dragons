@@ -3,6 +3,9 @@
 
   "canvas": { "width": 1024, "height": 1024, "originX": 512, "originY": 900 },
 
+  "$rigStageComment": "The artboard a rig is staged on, which is deliberately LARGER than the art canvas above. The canvas is commissioned with 8px of margin (tolerance.edgeMarginPx), which is enough that a part is not born against the edge and nowhere near enough for a figure to rotate, leap or topple inside — a knocked-down character sweeps its own diagonal, and a mythic tier fills the canvas standing still. Rigs built on the canvas itself clipped; that is measured, not predicted (art-pipeline §6.3). So the 1024 canvas sits centred in a 1400 stage with 188px of blank on every side, at scale 1, and the standing point still lands on the manifest origin: offsetX/Y below is that 188, and canvas origin + offset is where a rig's feet go. Rest stays 1:1 with assembled.png inside the sub-rect, which is what keeps art-paths.ts's anchors true when the renderer swaps.",
+  "rigStage": { "width": 1400, "height": 1400, "offsetX": 188, "offsetY": 188 },
+
   "tolerance": {
     "edgeMarginPx": 8,
     "originYTolerancePx": 12,
