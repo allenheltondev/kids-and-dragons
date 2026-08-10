@@ -42,7 +42,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
         with:
@@ -56,7 +56,7 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: "1.22"
           cache-dependency-path: wiki/go.sum
@@ -75,7 +75,7 @@ jobs:
 
       - name: Configure Pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       # Creature pages show stat blocks, and they read content/bestiary.json —
       # the join of canon's `encounter` blocks with rules.json's band table.
@@ -114,7 +114,7 @@ jobs:
         run: npx pagefind --site wiki/public
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: wiki/public
 
@@ -131,4 +131,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
