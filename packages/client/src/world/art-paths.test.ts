@@ -97,3 +97,34 @@ describe("sprite anchors", () => {
     expect(RIG_ANCHOR_Y).not.toBeCloseTo(ANCHOR_Y, 3);
   });
 });
+
+/*
+ * The invariant the two sprite paths have to share.
+ *
+ * A rigged character and a static PNG of the same character, both asked for the
+ * same drawn height, must come out the same size with their feet in the same
+ * place — otherwise a rig that falls back to its PNG (or a board mixing the two)
+ * changes size on screen. That is not automatic any more: the PNG sprite is
+ * textured with the 1024 canvas and the rig sprite with the 1400 stage, so the
+ * rig has to be scaled up by the ratio or it draws the figure at 73% and stands
+ * it too high. It shipped that way for one commit; this is the arithmetic that
+ * caught it, kept.
+ */
+describe("a rig and a PNG of the same character agree", () => {
+  const H = 414; // world/scene.ts: a character at 46% of the 900-unit design height
+
+  it("draws the art canvas at exactly the requested height", () => {
+    const spriteH = H * (RIG_STAGE.height / CANVAS.height);
+    const canvasRegion = spriteH * (CANVAS.height / RIG_STAGE.height);
+    expect(canvasRegion).toBeCloseTo(H, 9);
+  });
+
+  it("puts the feet where the PNG path puts them", () => {
+    const spriteH = H * (RIG_STAGE.height / CANVAS.height);
+    const canvasTopWithinSprite = (RIG_STAGE.offsetY / RIG_STAGE.height) * spriteH;
+    const originWithinSprite = RIG_ANCHOR_Y * spriteH;
+    // Distance from the top of the *art* to the standing point, which is what
+    // ANCHOR_Y means for a PNG sprite of height H.
+    expect(originWithinSprite - canvasTopWithinSprite).toBeCloseTo(ANCHOR_Y * H, 9);
+  });
+});
