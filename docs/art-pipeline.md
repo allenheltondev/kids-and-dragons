@@ -316,9 +316,9 @@ Every character rig exposes the same state machine so game code never special-ca
 | `attack` | 8 | `attack` | Preceded by the roll (`rolls`). **`impact` event at tick 3** so effects sync. |
 | `cast` | 10 | `cast` | Preceded by the roll. **`release` event at tick 4.** Two ticks longer than `attack` on purpose. |
 | `hurt` | 5 | `hurt` | Concurrent — starts on the attacker's `impact` event and adds nothing to the turn. |
-| `guard` | 6, then hold | `guard` | A plant and a hold, not a loop — Brace lasts until your next turn. |
+| `guard` | 6, then hold | `guard` | A plant and a hold, not a loop — Brace lasts until your next turn. **`ward` event at tick 3.** |
 | `leap` | 11 | `leap` | 3 crouch, 5 airborne, 3 land; **`dust` events at ticks 3 and 8.** |
-| `down` | 6 fall + `down_loop` (24, looped) | `knockedDown` (bool) | **Not held** — the fall hands off to `down_loop`, a breathing loop at half `idle`'s amplitude and a second Rive animation the rig must ship with `down` (the manifest's `loopClip` names it). A frozen pose reads as a corpse (asset-brief §9.3). |
+| `down` | 6 fall + `down_loop` (24, looped) | `knockedDown` (bool) | **Not held** — the tick-6 `settle` event starts `down_settle` exactly as the fall hands off to `down_loop`, a breathing loop at half `idle`'s amplitude and a second Rive animation the rig must ship with `down` (the manifest's `loopClip` names it). A frozen pose reads as a corpse (asset-brief §9.3). |
 | `lift` | 10 | `helpUp` | The helper's reach-down. **`contact` event at tick 6.** |
 | `revive` | 10 | the lift's `contact` event | Concurrent with `lift` — the contact, not the button press, brings the downed figure up. It runs 5 ticks past the lift's end, and the verifier charges that overhang to the Help Up turn. |
 | `celebrate` | 24 | `celebrate` | Victory and level-up. Out of combat, so outside the turn budget. |
@@ -621,7 +621,7 @@ plan was wrong in the helpful direction.
 | Character part-sets | 24 | 6 species × 4 tiers |
 | Gear overlay sets | 12 | 4 classes × 3 tiers (fledgling has no gear) |
 | Rigs | 6 | One skeleton per species, reused across tiers |
-| Effect sheets | 17 | 11 delivered (attacks, heals, auras, transformation) + 6 specified in asset-brief §9.4 |
+| Effect sheets | 17 | 17 delivered (attacks, heals, auras, transformation); asset-brief §9.4 is complete |
 | Biome backdrops | 17 | The Realm of Red Sky destinations (asset-brief §4.5), plus prop sets. Shipped. |
 | Tile sets | 12 | One per terrain family, copied into each destination directory. |
 | UI icons | ~60 | SVG, hand-authored or traced |
