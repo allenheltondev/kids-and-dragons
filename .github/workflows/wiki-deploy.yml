@@ -56,7 +56,7 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: "1.22"
           cache-dependency-path: wiki/go.sum
