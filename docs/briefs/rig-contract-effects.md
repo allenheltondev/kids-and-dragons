@@ -17,15 +17,11 @@ the manifest for every effect (null for the six auras) and for both concurrent
 clips, `EFFECT_SYNC` is deleted and every pairing derived from the manifest,
 `checkTurnBudget` charges concurrent overhangs (worst turn still cast at
 exactly 45/45), `down`'s hand-off loop is named `down_loop` and required with
-its host, and `transform` gained the `flash` event (tick 4, rationale in its
-manifest `$comment`) so `transform_flash` has a start. `guard` still declares
-no event — `guard_ward` is not in the manifest yet (asset-brief §9.7 item 1),
-and the startsOn rule means it cannot arrive without declaring one. **The one
-remaining item is "The fixture that makes it real" below**: authoring the
-golden `.riv` needs the Rive editor, which no agent pass has. Until it exists,
-`introspectRiv` still rests on one garbage-bytes test, exactly as written
-there. (The two provenance tolerances stay put by design — they move only on a
-re-export of `heal_bloom`/`impact_strike`.)
+its host, `transform` has its tick-4 `flash`, `guard` has its tick-3 `ward`
+consumed by `guard_ward`, and `down` has its tick-6 `settle` consumed by
+`down_settle`. The golden `.riv` fixture described below is also delivered and
+exercised by `introspectRiv`. (The two provenance tolerances stay put by design
+— they move only on a re-export of `heal_bloom`/`impact_strike`.)
 
 Written during the 2026-07 pass, which fixed the rig
 verifier's bugs (wrong Rive input-type codes, the broken wasm load path, the
@@ -68,7 +64,7 @@ In `manifest.rigContract`:
   data and `checkTurnBudget` can charge any overhang past its host clip.
 - `down` gains `loopClip: "down_loop"` (or the name the rigger prefers —
   agree *before* the first export) with its 24 ticks moved there.
-- `guard` and `transform` declare the events their specified sheets need.
+- `guard`, `down` and `transform` declare the events their specified sheets need.
 
 In `verify-rig.ts`: delete `EFFECT_SYNC`; derive every pairing from the
 manifest; extend `checkEffectSync` to every effect with a `startsOn`; extend
