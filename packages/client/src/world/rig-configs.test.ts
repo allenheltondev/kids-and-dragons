@@ -154,6 +154,46 @@ describe("rig configs", () => {
     }
   });
 
+  /*
+   * The stage is paired with a canvas, and every canvas needs its own.
+   *
+   * `rigStage` reads like a global, and for the six species it is one — they all
+   * draw on the manifest's 1024 canvas. Entities do not: `verify.py` already
+   * honours a per-entity `canvas` override, and `legend_dragon` is 2048 art. A
+   * rig generated for it against the 1024-derived 1400 stage would be staged for
+   * a drawing half its size, which is the clipping bug this whole stage exists to
+   * prevent, arriving through the one door nobody was watching.
+   *
+   * No entity is rigged yet (`rigContract.sets.enemy` exists, no `.riv` does), so
+   * this holds the contract rather than any delivered file — which is the point of
+   * writing it now, while the cost is one assertion instead of twenty rebuilt rigs.
+   */
+  it("pairs a rigStage with every canvas, on one ratio, centred", () => {
+    const base = manifest.canvas;
+    const baseStage = manifest.rigStage;
+    const ratio = baseStage.width / base.width;
+
+    const pairs: { what: string; canvas: typeof base; stage: typeof baseStage }[] = [
+      { what: "manifest default", canvas: base, stage: baseStage },
+    ];
+    for (const e of manifest.entities as { id: string; canvas?: typeof base; rigStage?: typeof baseStage }[]) {
+      if (!e.canvas) continue; // inherits the default canvas, so it inherits the default stage
+      expect(e.rigStage, `${e.id} declares its own canvas but no rigStage to go with it`).toBeDefined();
+      pairs.push({ what: e.id, canvas: e.canvas, stage: e.rigStage! });
+    }
+
+    for (const { what, canvas, stage } of pairs) {
+      expect(stage.width / canvas.width, `${what}: stage/canvas ratio`).toBeCloseTo(ratio, 9);
+      expect(stage.height / canvas.height, `${what}: stage/canvas ratio`).toBeCloseTo(ratio, 9);
+      // Centred, and on whole pixels — a half-pixel offset puts every rig built
+      // from it a half-pixel off its own origin.
+      expect(stage.offsetX, `${what}: offsetX`).toBe((stage.width - canvas.width) / 2);
+      expect(stage.offsetY, `${what}: offsetY`).toBe((stage.height - canvas.height) / 2);
+      expect(Number.isInteger(stage.offsetX), `${what}: offsetX is whole`).toBe(true);
+      expect(Number.isInteger(stage.offsetY), `${what}: offsetY is whole`).toBe(true);
+    }
+  });
+
   it("carries no tint slots — the runtime recolour is gone", () => {
     // Guarding the *absence*, so a regenerated config cannot quietly bring
     // back a binding nothing reads (asset-brief §4.4).
