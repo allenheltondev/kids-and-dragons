@@ -19,7 +19,7 @@ import json
 import hashlib
 
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw
 
 path, step, rest_bottom, art_path = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
 
@@ -42,11 +42,50 @@ def box(a):
     return int(cols.min()), int(rows.min()), int(cols.max()), int(rows.max())
 
 
-def interior_holes(a):
-    """Semi-transparent pixels well inside an opaque region — a joint opening up."""
-    solid = Image.fromarray((a > 250).astype(np.uint8) * 255)
-    inner = np.array(solid.filter(ImageFilter.MinFilter(9))) > 0
-    return int(((a < 250) & (a > 0) & inner).sum())
+# How transparent a pixel has to be before it counts as a gap rather than as an
+# antialiased edge. Parts overlap, and the seam between two of them is a band of
+# alpha in the 200s that is not a hole in anything. Measured on a clean rig, the
+# enclosed-pixel count falls from 1734 at `a < 250` to 484 at `a < 64` and barely
+# moves below that, which is the antialiasing dropping out and the real geometry
+# staying put.
+SEE_THROUGH = 64
+
+
+def enclosed_gap(a):
+    """
+    Pixels you can see through that are surrounded by figure.
+
+    Enclosure is decided by flooding the see-through region inward from the frame
+    border: anything see-through the flood cannot reach is walled in by the
+    character. That is a topological question, and it has to be — the obvious
+    local test cannot answer it. The version this replaces asked whether a
+    non-solid pixel sat inside an eroded solid mask, which is unsatisfiable by
+    construction: the erosion includes the centre pixel, so a pixel that is not
+    solid is never inside the eroded solid region. It returned 0 for every input
+    ever given to it, including a square with a hole punched through it, and the
+    gate above it had therefore never once fired.
+
+    Flooding only the figure's bounding box rather than the whole frame is worth
+    the four extra lines: identical answers, and ~5x faster (72ms against 366ms
+    on a 512px frame), which matters at ~4,000 frames a run.
+    """
+    gap = a < SEE_THROUGH
+    solid = ~gap
+    if not solid.any():
+        return 0
+    ys, xs = np.nonzero(solid)
+    y0, y1, x0, x1 = int(ys.min()), int(ys.max()), int(xs.min()), int(xs.max())
+    sub = gap[y0:y1 + 1, x0:x1 + 1]
+    h, w = sub.shape
+    # One ring of guaranteed-outside pixels, so a single flood from the corner
+    # reaches every gap that touches the crop edge.
+    pad = np.zeros((h + 2, w + 2), np.uint8)
+    pad[1:-1, 1:-1] = np.where(sub, 255, 0)
+    pad[0, :] = pad[-1, :] = pad[:, 0] = pad[:, -1] = 255
+    img = Image.fromarray(pad).copy()
+    ImageDraw.floodfill(img, (0, 0), 128)
+    outside = np.asarray(img)[1:-1, 1:-1] == 128
+    return int((sub & ~outside).sum())
 
 
 # The approved art's colours, quantised to a 16-level cube.
@@ -78,6 +117,7 @@ def delta(i, j):
     return float(np.abs(frames[i].astype(np.int32) - frames[j].astype(np.int32)).max(axis=2).mean())
 
 
+_gaps = [enclosed_gap(a) for a in alpha]
 boxes = [box(a) for a in alpha]
 if any(b is None for b in boxes):
     print(json.dumps({"error": "a frame rendered empty"}))
@@ -134,7 +174,12 @@ print(json.dumps({
     # mid-topple; losing it for most of the clip means it is off stage.
     "edge_cover_max": round(float(max(covers)), 4),
     "edge_cover_median": round(float(np.median(covers)), 4),
-    "interior_holes": int(max(interior_holes(a) for a in alpha)),
+    # Holes that OPEN during the clip, not holes the art already has. A figure
+    # legitimately encloses gaps — the space under a wing, the loop of a curled
+    # tail — and a clean rig measures a few hundred pixels of them standing
+    # still. What says "a joint is coming apart" is that number growing once the
+    # chain moves, so the baseline is this clip's own first tick.
+    "interior_holes": int(max(0, max(_gaps) - _gaps[0])),
     # Worst tick and typical tick. A defect that only shows on some frames is
     # exactly what the max is for.
     "novel_colour_max": round(max(novel_colour_share(f) for f in frames), 5),

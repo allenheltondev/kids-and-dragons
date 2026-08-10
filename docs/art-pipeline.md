@@ -177,9 +177,18 @@ metadata; by design it **renders nothing**.
 
 **`art:verify:rig:motion` (`tools/art/verify-rig-motion.mjs`) — the rig as it moves.** What the
 command above cannot see, because it is not in the file, only in the frames: a figure sinking below
-its own standing line, leaving the artboard, opening a hole at a joint, not moving at all,
-teleporting between ticks, failing to close a loop, or acquiring colours the approved art does not
-contain. Three layers — every clip measured frame by frame, every input fired through the real state
+its own standing line, leaving the artboard, not moving at all, teleporting between ticks, failing
+to close a loop, or acquiring colours the approved art does not contain. Its state-machine layer
+drives every input for real, including the full knockdown lifecycle — fall, settle in `down_loop`,
+then clear the bool and get back up — and matches fired events against the contract as a *set*, so a
+dropped event fails as loudly as a mistimed one.
+
+One measurement there is deliberately a warning rather than a gate: enclosed see-through area. It
+was written as a joint-opening check and was, until this change, incapable of returning anything but
+zero. Repaired, it turns out to measure anatomy as readily as breakage — the biggest enclosed region
+on a celebrating unicorn is the gap between its hind legs — so it warns at a level no clean rig has
+reached and otherwise leaves the judgement to the golden baseline, which can see the number change
+without needing to know a leg from a seam. Three layers — every clip measured frame by frame, every input fired through the real state
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
@@ -412,9 +421,19 @@ now `art:verify:rig:rest` (§3.1), and it is why the ladder below puts it second
 decisive one.
 
 **The client draws these rigs** — `world/rive-rig.ts` and `world/rive-actor.ts`, on the story lineup
-and the combat board — so this is not a dormant asset problem. The rigs on disk and the client that
-positions them are consistent *today*, both on 1024; they stop being consistent the moment the rigs
-are regenerated, and the client has to move in the same change.
+and the combat board — so this was never a dormant asset problem, and the client moved in the same
+change. The invariant it now holds:
+
+- Static art stays on the **1024 canvas** and anchors at `ANCHOR_X/Y` = (0.5, 900/1024).
+- Rigs live on the **1400 stage** and anchor at `RIG_ANCHOR_X/Y` = (0.5, 1088/1400), because the
+  standing point sits at a different fraction of a bigger texture.
+- `createRiveActor` scales the rig sprite by `RIG_STAGE / CANVAS`, so the 1024 canvas *region*
+  measures the requested character height rather than the whole artboard measuring it.
+
+Different anchors and a scale factor, so that both paths draw the same character at the same size
+with its feet on the same world point. `art-paths.test.ts` pins all three against the manifest,
+including the trap that the horizontal anchor is unchanged at 0.5 while the vertical one moves —
+half the pair looking untouched is what made this easy to miss.
 
 #### The manticore mesh tail — root cause found and fixed upstream; a residual remains
 
@@ -430,8 +449,26 @@ tail: measured on mythic it is **6 components**, the largest 84.9%, and the othe
 which do not touch the shaft — were **15.1% of the part, discarded**. Art that passed every pixel
 gate on the way in, gone at the rigging step, and invisible to every gate after it.
 
-The fix takes the crop bounds from every opaque pixel while leaving the mask alone for the spine
-search, in `pageScript.ts`. Measured, per tier:
+**The fix, as merged.** Two domains instead of one, in `pageScript.ts`:
+
+- `mask` — the largest connected component, unchanged. Still the domain for the tip search, the
+  geodesic distances and the spine, because that is the job it was right for.
+- `kept` — every component big enough to be artwork (64px, or 0.1% of the largest, whichever is
+  larger). This is what the crop is taken from. The area filter matters: bounding the crop by raw
+  alpha instead would let one stray pixel in a far corner stretch the crop across the canvas and
+  thin the mesh over the shaft, which is the coarse-deformation problem the crop exists to prevent.
+  Measured across the four tails, real barbs run 119–5351px and are all kept; two antialiasing
+  specks of 34 and 19px are dropped.
+
+Retained components also had to enter the *deformation* model, not just the texture — a barb drawn
+in the right place that then rides the base of the tail is still wrong. A vertex resolves through an
+unbounded search for the nearest primary-component pixel when there is retained artwork **within
+half a cell** of it, and the cell-level test is load-bearing: the mesh is far coarser than the
+texture, so a barb can sit entirely between four vertices and leave all four reading "transparent".
+
+An earlier iteration of this took the crop from every opaque pixel and tested `kept` per vertex.
+Both were superseded in review before merge; the two-domain, per-cell version above is what shipped.
+Measured, per tier:
 
 | | before | after |
 |---|---|---|
@@ -487,7 +524,7 @@ and passes both. Run these in order; each one can only be trusted once the one a
 
 | # | Check | Needs | Catches |
 |---|---|---|---|
-| 1 | `npm run art:verify:rig:strict` | nothing (CI) | The artboard is 1400 and the clip table survived the rebuild. Cheap, and it is the gate that is red today. |
+| 1 | `npm run art:verify:rig:strict` | nothing (CI) | The artboard is 1400 and the clip table and inputs survived the rebuild. Cheap, runs in CI, and **green on all 24** since the regeneration. |
 | 2 | `npm run art:verify:rig:rest` | Rive CLI | **The decisive one.** Frame 0 of `idle` against `assembled.png`, in the canvas window at (188,188). Catches scale, position and repaint — every way the restage can go wrong. A clean rig scores ≥99.8%; a figure fitted to the artboard instead of honouring `scale: 1` scores in the 20s. |
 | 3 | `npm run art:verify:rig:motion` | Rive CLI | The clipping itself: does `down` still leave the artboard on the bigger stage? This is the question the restage exists to answer, and it cannot be asked before 2 passes — measuring motion on a rig that is the wrong size measures the wrong rig. |
 | 4 | `npm run art:sheet:rig -- --clip down` | Rive CLI | A human looking at the fall. The gates prevent *broken*; only the sheet prevents *wrong* (§3.2). |
@@ -500,19 +537,22 @@ pipeline after a regeneration means step 1 and nothing else.
 Three consequences to carry into that regeneration, the first of which is load-bearing:
 
 - **The client's rig anchor moved with the stage — done in this change.**
-  `rive-rig.ts` re-exports `ANCHOR_Y` from `art-paths.ts`, which is `originY / canvas.height` =
-  900/1024 = **0.879**, and `rive-actor.ts` anchors the rig sprite at `(0.5, ANCHOR_Y)`. That is
-  right only while the stage *is* the art canvas. On a 1400 stage the rig's standing point is
-  `ground / stage` = 1088/1400 = **0.777** horizontally centred at 700/1400 = 0.5. Static PNG
-  sprites must keep 0.879 — they are still 1024 art. So the two anchors, one constant today, become
-  two different constants, and re-exporting one for the other stopped being a convenience and became
-  a bug. `art-paths.ts` now derives `RIG_ANCHOR_X/Y` from `rigStage`, `rive-rig.ts` re-exports those,
-  and `art-paths.test.ts` pins both anchors against the manifest — including the trap, that X is
-  unchanged at 0.5 while Y moves, so a reader checking only the centring concludes nothing happened.
-- **The figure gets smaller in its own texture.** A character occupies ~73% of the linear texture it
-  used to (1024/1400), so `BUFFER_PX = 512` in `rive-rig.ts` — sized off the §7 spike for sharpness
-  at the old stage — is effectively ~375px of figure. Re-run the spike at the larger stage before
-  trusting either its performance numbers or that buffer size.
+  *Before:* `rive-rig.ts` re-exported `ANCHOR_Y` from `art-paths.ts` — `originY / canvas.height` =
+  900/1024 = 0.879 — and `rive-actor.ts` anchored the rig at `(0.5, ANCHOR_Y)`. Correct only while
+  the stage *was* the art canvas.
+  *Now:* `art-paths.ts` derives `RIG_ANCHOR_X/Y` from `rigStage` — (0.5, 1088/1400 = **0.777**) —
+  `rive-rig.ts` exports those instead, and `rive-actor.ts` uses them. Static PNG sprites keep
+  `ANCHOR_X/Y` at 0.879, because they are still 1024 art. One constant became two.
+  `art-paths.test.ts` pins both against the manifest, including the trap: X is unchanged at 0.5
+  while Y moves, so a reader checking only the centring concludes nothing happened.
+- **The figure got smaller in its own texture — also fixed here.** A character occupies 1024/1400 =
+  ~73% of the stage, and `createRiveActor` sized the sprite to the whole texture, so it drew
+  characters at 73% of the height asked for. It now scales the sprite by `RIG_STAGE / CANVAS` so the
+  canvas *region* measures the requested height; `art-paths.test.ts` carries the invariant that a rig
+  and a PNG of the same character come out the same size with their feet in the same place.
+  What is **not** fixed is `BUFFER_PX = 512` in `rive-rig.ts`: the figure now occupies ~73% of the
+  linear buffer, so 512 buys ~375px of character where it used to buy 512. Left alone rather than
+  guessed at — the §7 spike has never been re-run at the larger stage, or on the TV.
 - **`art/rig/motion-baseline.json` does not exist yet.** The motion gate's third layer is a golden
   baseline, and a baseline is only worth having once the thing it pins is the thing we intend to
   ship. Generate it (`--update-baseline`) after the restage and after a human has looked at a
