@@ -40,14 +40,13 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Character part-sets | **224 / 224** | — |
 | Character rigs *(mine)* | **24 / 24** | — |
 | Biome backdrops, tiles + props | **51 / 51** | — |
-| Effect sheets, declared | **11 / 11** | — |
+| Effect sheets, declared | **17 / 17** | — |
 | Entity cutouts | **27 / 27** | — |
 | **Gear overlays** | 6 / 24 | **18 files** — 9 sets |
-| **Effect sheets, specified but undeclared** | 0 / 6 | **6 sheets** |
+| Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**24 files outstanding.** Creature generation is complete; what is left is gear and six combat
-effects.
+**18 files outstanding.** Creature and combat-effect generation are complete; what is left is gear.
 
 ---
 
@@ -68,8 +67,9 @@ the dependency below is visible.
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
 12 unique tile sheets shared across the 17 (several destinations share a terrain family).
 
-**Effect sheets — 11.** Six `aura_<species>` loops plus `impact_strike`, `burst_star`,
-`heal_bloom`, `revive_lift` and `transform_flash`.
+**Effect sheets — 17.** Six `aura_<species>` loops plus `impact_strike`, `miss_veer`,
+`bonus_spark`, `dust_scuff`, `daze_swirl`, `guard_ward`, `burst_star`, `heal_bloom`,
+`revive_lift`, `down_settle` and `transform_flash`.
 
 **Entity cutouts — 27.** Every canonical creature as a single `assembled.png`. No tier dimension:
 enemies do not level. Together with the six playable species these are the 33 entities in
@@ -103,21 +103,11 @@ silhouette. Themes are in [asset-brief §4.3](./asset-brief.md#43-gear-overlays)
 transformation is Chapter 5's emotional payload and three of four classes currently level into
 nothing visible.
 
-### 4.2 Effect sheets — 6
+### 4.2 Effect sheets — complete
 
-Specified in [asset-brief §9.4](./asset-brief.md#94-effects--mapping-the-ten-verbs) and **not yet in
-the manifest's `effects[]`**, which means no tool in this repo can see them. That is why they are
-named by hand in `tools/art/inventory.ts`; add each to `effects[]` when it is commissioned and
-delete it from that constant.
-
-| Sheet | Frames | For |
-|---|---|---|
-| `miss_veer` | 8 | `attack` — miss. **A miss needs its own sheet: absence is not a signal.** `hurt` simply not playing leaves a child reading a d20 to find out whether the swing landed. |
-| `bonus_spark` | 8 | the `rollBonus` verb |
-| `dust_scuff` | 8 | `moveSelf`, and `shove` shares it |
-| `daze_swirl` | 12 | the `skipTurn` verb |
-| `guard_ward` | 8 | the `protect` verb — and `guard` must gain an event in `rigContract` before this can start (mine) |
-| `down_settle` | 12 | the `down` event that damage produces |
+All 17 are delivered and declared in the manifest. The six combat gaps identified by
+[asset-brief §9.4](./asset-brief.md#94-effects--mapping-the-ten-verbs) are closed, including
+`down_settle` on the `down.settle` event.
 
 **No new combat sheet may exceed 12 frames** — 8 or 12 and nothing else, which at 12fps is 0.667s
 or 1.0s and is what §9.2's turn budget affords. `transform_flash`'s 18 is the exception that proves
