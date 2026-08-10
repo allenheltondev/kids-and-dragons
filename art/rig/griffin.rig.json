@@ -1,5 +1,5 @@
 {
-  "$comment": "griffin rig config for rive-mcp — see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: none. The rigs carried `mane`/`accent` tint slots so the client could write the player's palette into them at runtime; that recolour is gone (asset-brief 4.4 — a hue pushed onto authored shading flattens the detail the tier art exists for, and figures carry their character's name instead). Slots removed here so a rebuild does not reintroduce them; the delivered .riv files still carry inert ones until they are next regenerated.",
+  "$comment": "griffin rig config for rive-mcp \u2014 see unicorn.rig.json for the conventions. Clip table, event ticks and inputs derive from assets/manifest.json rigContract (--contract --set hero); this carries only the art's hierarchy, draw order, origin and palette binding. PALETTE: none. The rigs carried `mane`/`accent` tint slots so the client could write the player's palette into them at runtime; that recolour is gone (asset-brief 4.4 \u2014 a hue pushed onto authored shading flattens the detail the tier art exists for, and figures carry their character's name instead). Slots removed here so a rebuild does not reintroduce them; the delivered .riv files still carry inert ones until they are next regenerated.",
   "root": "body",
   "adjacency": [
     [
@@ -50,8 +50,13 @@
     "x": 512,
     "y": 900
   },
-  "artboardWidth": 1024,
-  "artboardHeight": 1024,
+  "ground": {
+    "x": 700,
+    "y": 1088
+  },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
   "wiring": {
     "triggers": {
       "move": "walk",
@@ -74,5 +79,6 @@
         "from": "down_loop"
       }
     }
-  }
+  },
+  "$stageComment": "STAGE: the artboard is deliberately LARGER than the 1024 art canvas. The canvas is commissioned with 8px of margin (manifest tolerance.edgeMarginPx), which is enough that a part is not born against the edge and nowhere near enough for a rig to rotate, leap or topple inside one \u2014 a knocked-down figure sweeps its own diagonal, and a mythic tier fills the canvas standing still. Rigs staged on the canvas itself clipped; that is measured, not predicted. So the canvas sits centred in the manifest's rigStage (1400x1400, 188px of blank on every side) at scale 1, and `ground` is where the feet go in artboard coordinates: the canvas origin (512,900) plus that 188. `scale: 1` is load-bearing \u2014 a builder default that fits the figure to a fraction of the artboard height looks fine in isolation and stands in the wrong place in the game. Rest must stay 1:1 with assembled.png inside the sub-rect."
 }

@@ -17,7 +17,8 @@
 
 import { Sprite, Texture } from "pixi.js";
 import type { SpeciesId, TierId } from "@kad/shared";
-import { ANCHOR_Y, createRig, type RigHandle } from "./rive-rig";
+import { CANVAS, RIG_STAGE } from "./art-paths";
+import { RIG_ANCHOR_X, RIG_ANCHOR_Y, createRig, type RigHandle } from "./rive-rig";
 
 export interface RiveActorHandle {
   /** Anchored like every character sprite: feet on the manifest origin. */
@@ -55,12 +56,22 @@ export async function createRiveActor(
   try {
     texture = Texture.from(built.canvas);
     const sprite = new Sprite(texture);
-    // The artboard is the manifest's 1024 canvas drawn contain-fit into a
-    // square buffer — an exact fill — so the feet sit on the manifest origin
-    // exactly as they do in the PNGs. Same constant, one source (art-paths).
-    sprite.anchor.set(0.5, ANCHOR_Y);
-    sprite.width = height;
-    sprite.height = height;
+    // `height` is how tall the CHARACTER should be, and the character is not
+    // the whole texture. The artboard is the manifest's rigStage (1400), with
+    // the 1024 art canvas centred inside it so a knocked-down figure has room
+    // to sweep its own diagonal (art-pipeline §6.3) — so the canvas is 1024/1400
+    // of the buffer and a sprite sized to `height` draws the character at 73% of
+    // the size asked for. Scale the sprite so the *canvas region* measures
+    // `height`, and the surrounding margin simply hangs off the edges.
+    //
+    // The anchor needs no adjustment: RIG_ANCHOR_Y is a fraction of the stage,
+    // so it lands on the manifest origin at any sprite size. Checked in
+    // art-paths.test.ts, which pins both to the manifest rather than to numbers
+    // written here.
+    const stageOverCanvas = RIG_STAGE.width / CANVAS.width;
+    sprite.anchor.set(RIG_ANCHOR_X, RIG_ANCHOR_Y);
+    sprite.width = height * stageOverCanvas;
+    sprite.height = height * stageOverCanvas;
 
     let destroyed = false;
     const drawnTexture = texture;

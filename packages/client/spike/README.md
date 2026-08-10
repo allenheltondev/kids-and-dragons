@@ -47,15 +47,21 @@ hardware specifically, and it is the only row that settles the question.
 
 | Machine | Rigs | Offscreen | p95 frame | rive / upload / pixi | Verdict |
 |---|---|---|---|---|---|
-| Dev box — Win11, Chrome 150, 3440×1440 @ dpr 1 | 7 | 512px | **2.20 ms** | 1.15 / 0.10 / 0.09 ms | holds (0/361 frames over budget) |
+| Dev box — Win11, Chrome 150, 3440×1440 @ dpr 1 | 7 | 512px | **2.20 ms** | 1.15 / 0.10 / 0.09 ms | holds (0/361 frames over budget) — *one-clip rig* |
 | **TV-connected machine** | 7 | 512px | — | — | **not yet run** |
 
 Read the dev-box row as "the approach is not obviously doomed", nothing more. It has ~7× headroom
 on hardware that is not the constraint; the TV is.
 
-## Caveat worth keeping in mind
+## The caveat this used to carry, and where it stands
 
-The rig this loads (`art/rig/unicorn_fledgling_idle.riv`) has **one clip**. A finished rig has
-eleven, plus a state machine with real transitions — more objects to advance per frame, though
-still only one animation playing at a time. Re-run this once a full rig exists; if the TV row is
-close to the line, that difference matters.
+It used to read: *"the rig this loads (`art/rig/unicorn_fledgling_idle.riv`) has one clip. A
+finished rig has eleven, plus a state machine with real transitions … re-run this once a full rig
+exists."*
+
+Full rigs exist — all 24, `assets/characters/<species>/<tier>/rig.riv` (art-pipeline §6.3) — and
+this spike now loads one of them: unicorn/fledgling, thirteen animations behind a state machine
+with real transitions. **Neither row has been re-measured against it.** The dev-box row is marked
+as what it is; its 7× headroom is a long way from the line, which is the condition the old caveat
+itself set for the difference mattering, so it is kept rather than deleted. The row that decides
+§7 is the TV one, and it has never been run at all.
