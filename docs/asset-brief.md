@@ -420,6 +420,8 @@ The playable peoples keep the rigged, four-tier contract above. Every other draw
 
 - **Path:** `assets/entities/<entity-id>/assembled.png`
 - **Format:** 1024 × 1024 RGBA PNG with real transparency and at least 8px clear edge margin.
+  The approved Gemfall Seal-Keeper is the sole declared exception: 2048 × 2048 for its 2×2
+  footprint.
 - **Contents:** one definitive, complete cutout. The Witch Order is the intentional exception: its
   representative asset is a cross-species group.
 - **Scale:** the figure fills the asset canvas for readability; `assets/manifest.json` carries the
@@ -789,7 +791,8 @@ Enemy designs come from `docs/red-sky-creature-canon.yaml` and **nothing else.**
 Deliver each as `assets/entities/<canon_id>/` — the same directory §6.4 uses for every canonical
 creature, and the one `verify.py` checks — with `assembled.png` and `parts/`, on the **same
 technical contract as §3** — 1024×1024, origin (512, 900), full-canvas registered layers, seam
-overdraw, real alpha. **No tier level in the path**: enemies do not level, so there is nothing for
+overdraw, real alpha. The Gemfall Seal-Keeper is the §9.5.1 exception at 2048×2048 with origin
+(1024, 2024). **No tier level in the path**: enemies do not level, so there is nothing for
 §3.2's cross-tier registration to compare and the directory is one deep instead of two. Nothing is
 recoloured at runtime here or anywhere else — see §4.4.
 
@@ -802,6 +805,7 @@ To keep `zOrder` and `adjacency` from needing eight new declarations, every enem
 | `low_shell` | `body` `shell` `claw_l` `claw_r` `leg_l` `leg_r` | `glassback_crab`, `mire_mimic`, `bone_crawler` |
 | `serpentine` | `head` `neck` `body` `coil` `limb_l` `limb_r` `fin` | `frost_wyrm`, `river_drake` |
 | `floating` | `core` `halo` `trail` | `will_o_wisp` |
+| `legend_dragon` | `body` `head` `jaw` `crown` `mantle` `wing_far` `wing_near` `limb_fl` `limb_fr` `limb_bl` `limb_br` `tail` | Gemfall Seal-Keeper only |
 
 A plan's part list is the **minimum**. Two enemies have a signature the plan does not contain —
 `mire_mimic`'s `whiskers` and `echo_hunter`'s `frills` — and each adds exactly that one part,
@@ -833,7 +837,7 @@ size difference stops being legible at all):
 | `bone_crawler` | moderate | `low_shell` | `shell` | 450 | Canon is emphatic: the bone shell "should look **assembled**, not like an animated skeleton", and they "do not intentionally animate bones". Pale many-legged body mostly hidden under it. Its `move` is the "sudden rolling beneath a closed shell". Appears up to §7.1's four at once, so ship `shell` plus `shell_alt`. |
 | `echo_hunter` | high | `quadruped` | `frills` | 860 | Blind, pale, broad listening frills, long gripping limbs, and canon's own constraint: "designed for darkness **without gore or grotesque human features**". §2.4's face rule is unavailable — there are no eyes to carry the read — so the frills are the head and they must be the thing you recognise at 64px. Its canon ceiling-clinging belongs in scene art: the grid has no ceiling, so its `move` is a ground scuttle. |
 | `will_o_wisp` | moderate | `floating` | `core` | 205 | Classification is `supernatural_manifestation`, but the canon's own `regional_population_index` files it under `dangerous_creatures` for the Enchanted Woods and the marsh — **and `content/chapters/bramblewood-01.json` already fights three of them**, so it is required, not optional. "Colour and motion reflect the memory that formed it" makes it the one enemy authored luminance-only and tinted at runtime, exactly like a tintable sheet (§9.4). It hovers: draw the body above the anchor and put a **ground shadow at (512, 900)** so she can still tell which square it is standing on. Canon: it is not automatically a ghost, and it does not necessarily understand the danger it causes. |
-| `legend_dragon` | legendary | — | — | — | **Do not produce this. See §9.5.1.** |
+| `legend_dragon` | legendary | `legend_dragon` | `crown` | 2000 | The approved Gemfall Seal-Keeper is a specific character, not a reusable species sprite: patient ancient curator and examiner, asymmetric worn crown, mineral scholar-mantle, restrained ember-gold seams, speaking jaw, and independent display wings. |
 
 Excluded, with the reason in each case:
 
@@ -850,23 +854,22 @@ Excluded, with the reason in each case:
   roster by `world_rules.moral_alignment`: villains are named individuals or mixed factions, and
   none is canon yet (`current_content_gaps`).
 
-#### 9.5.1 Why the legendary beast is blocked
+#### 9.5.1 The legendary beast is a delivered art exception
 
-Two independent blocks, and both are in the canon rather than in your way:
+The generic version remains forbidden: legend dragons are characters, not interchangeable
+enemies. `docs/campaigns/gemfall.md` supplies a specific individual and purpose — the ancient seal
+keeper who listens to the mountain, curates its hoard, and examines visitors — and the approved
+Gemfall Seal-Keeper design resolves the former identity block without becoming a species default.
 
-1. **Canon forbids the generic version.** "Individual design should be unique; legend dragons are
-   characters, not interchangeable enemies", and "no specific legend dragon has yet been named or
-   designed". A roster sprite is *precisely* the interchangeable enemy that sentence rules out.
-2. **`colossal` does not fit the board.** The ceiling above is 890px — 1.09 heroes — and
-   `grid.ts`/`encounter.ts` place an actor on **exactly one tile**, with no concept of a footprint.
-   A colossal dragon is therefore either hero-sized, which breaks canon, or multi-tile, which
-   breaks the engine.
+Its art contract is now delivered exactly at the previously reserved size: **2048×2048**, a
+**2×2** / four-tile footprint, and its own twelve-part body plan. `jaw` supports sapient speaking
+idle; `wing_far` and `wing_near` support the extra `display` clip. The full-canvas registered parts
+recompose exactly to `assembled.png`.
 
-So the entry exists to hold the contract, not the work. When a named individual is written and
-`grid.ts` grows a footprint, it will need: a **2048×2048** canvas at a **2×2** tile footprint, its
-own body plan, and clips beyond the enemy minimum — canon gives it "fully sapient speech" and
-"displays of power", which means a `display` clip and a speaking idle. **Not now.** Flag it in your
-report rather than guessing at it.
+The remaining limitation is engine integration, not art. `grid.ts`/`encounter.ts` still place an
+actor on exactly one logical tile, so footprint-aware occupancy and the final enemy rig must land
+before this individual can participate in a normal grid encounter. The 2048 cutout may still serve
+story, wiki, and review surfaces in the meantime.
 
 #### 9.5.2 Enemy clips — the minimum set, and what is missing on purpose
 
@@ -949,14 +952,13 @@ enforced; the rest are not, and §9 is not enforceable for them. Do not commissi
 3. ✅ **`fps` on every `effects[]` entry**, so a sheet that claims 24 cannot arrive undetected.
 4. **`enemyPlans`** — the four body plans of §9.5, each with its own `parts`, `zOrder` and
    `adjacency`. The existing top-level `zOrder`/`adjacency` are the hero part list and cannot
-   describe a crab. *Not added: no enemy part-sets exist yet. The canonical creatures that shipped
-   are single `assembled.png` cutouts (`assets/entities/`), which `verify_entity` checks; a plan
-   describes a rig-ready part breakdown and there is nothing yet to describe.*
+   describe a crab. *Still not added: all nine part-sets now exist, so this is overdue manifest
+   tooling rather than missing art. The body-plan table in §9.5 remains the current source.*
 5. **`enemies[]`** — nine entries: `id`, `plan`, `signature`, `heightPx`, `anchor`
    (`"feet"` | `"hover"`), `variants` (the `_alt` parts for pack creatures), and
-   `deferred: true` on `legend_dragon`. *Not added, for the same reason as item 4 — and note the
-   canonical roster shipped 27 entities under `entities[]`, so whoever adds this should reconcile
-   the two rather than open a second list of the same creatures.*
+   `footprint` for the Seal-Keeper. *Still not added: this is now a machine-readable rig-contract
+   follow-up. The canonical roster already ships 27 entries under `entities[]`, so whoever adds it
+   should reconcile the two rather than open a second list of the same creatures.*
 6. ✅ **`rigContract`** — the clip table of §9.2 as data: per-clip `ticks`, event ticks, hero/enemy
    clip sets, the input list, and `turnBudgetTicks`. Two flags the table above does not state are
    carried here because the verifier needs them and they are engine facts, not preferences: `rolls`

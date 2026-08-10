@@ -50,12 +50,10 @@ interface Manifest {
  * asset-brief §9.5's body-plan table — the creatures meant to be rig-ready, as
  * opposed to the 27 that only ever need a cutout.
  *
- * Also listed by hand, and for a worse reason than the effects above: §9.7
- * items 4 and 5 specify `enemyPlans` and `enemies[]` for the manifest and both
- * are deliberately unadded ("no enemy part-sets exist yet... there is nothing
- * yet to describe"). So the roster lives in prose, invisible to every tool.
- * Adding `enemies[]` is what would let this be derived, and would let this
- * constant be deleted.
+ * Also listed by hand because §9.7's `enemyPlans` and `enemies[]` declarations
+ * have not yet been added to the manifest. All nine part-sets now exist, so the
+ * roster living in prose is tooling debt rather than an art deferment. Adding
+ * `enemies[]` is what will let this be derived and this constant be deleted.
  *
  * Worth keeping in proportion: shipped content fights exactly one of these
  * (`will_o_wisp`, the bramblewisps). The other eight are the planned roster,
