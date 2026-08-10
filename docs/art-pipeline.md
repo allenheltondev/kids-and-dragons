@@ -443,8 +443,9 @@ half the pair looking untouched is what made this easy to miss.
 
 #### The manticore mesh tail — both root causes fixed upstream
 
-All twenty-four rigs reproduce their art exactly. The four manticore tiers were the last holdouts,
-and manticore is the only species with a mesh: `meshParts: { tail: { bones: 5 } }`.
+All twenty-four rigs pass the rest gate. The four manticore tiers were the last holdouts, and
+manticore is the only species with a mesh: `meshParts: { tail: { bones: 5 } }`. No regenerated
+manticore tier is missing approved pixels; two retain tiny edge-level extra/colour differences.
 
 **Cause one — the crop threw art away. Fixed.** `rive-mcp`'s spine analysis builds a mask from the
 *largest 8-connected component*, which is right for the tip search it was written for: a crumb of
@@ -496,9 +497,12 @@ vertex count crossed byte boundaries.
 
 `rive-mcp` commit `660bcc0` routes the indices through the writer's varuint encoder and adds a
 20×32 regression test spanning 127/128 and 255/256. After regenerating the four manticore rigs,
-`art:verify:rig:rest -- manticore` reports **100.00% on every tier**. The manticore motion gate
-passes all 52 clip measurements and all four state-machine drives; the existing leap-speed
-heuristic warnings remain informational.
+`art:verify:rig:rest -- manticore` passes every tier with **zero missing pixels**. An independent
+render measured fledgling at 99.97% (103 differing, 62 extra), sworn at 99.98% (59 differing,
+49 extra), and radiant/mythic at 100.00%. The first two use a 9×14 grid (150 vertices), while the
+pixel-exact two use 8×14 (135 vertices), so the small asymmetry is not evidence of another index
+encoding boundary. The manticore motion gate passes all 52 clip measurements and all four
+state-machine drives; the existing leap-speed heuristic warnings remain informational.
 
 Both causes are **pre-existing**: the rigs on `main` used the same config through the same
 generator. The 90%-scale error was simply large enough to hide them.
