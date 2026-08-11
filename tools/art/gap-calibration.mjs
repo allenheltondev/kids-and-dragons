@@ -47,7 +47,15 @@ const { clips } = JSON.parse(readFileSync(file, "utf8"));
  * any distribution look bimodal at zero.
  */
 const opened = clips.filter((c) => c.interior_holes > 0 && c.worst.length > 0);
-const walls = opened.map((c) => Math.max(...c.worst.map((w) => w.wall)));
+/*
+ * The wall of the region that OPENED most, not of the biggest region on the
+ * frame. `worst` is already ranked by `new` (the part of each region that was
+ * solid figure at rest), which is what makes it comparable to interior_holes.
+ * Ranking by absolute area instead describes the figure's anatomy — permanent
+ * enclosed space that no clip opened — and that is what the first calibration
+ * run reported before this was fixed.
+ */
+const walls = opened.map((c) => c.worst[0].wall);
 
 const BUCKETS = [
   [0, 5],
@@ -70,25 +78,27 @@ if (opened.length === 0) {
 } else {
   p(md ? "| wall thickness | clips | |" : "wall thickness   clips");
   if (md) p("|---|---:|---|");
+  // Scaled to the tallest bucket. Clamping instead of scaling drew 42, 69, 80
+  // and 91 as four identical 40-wide bars, which is a histogram that hides its
+  // own shape — the one thing it exists to show.
+  const tallest = Math.max(1, ...BUCKETS.map(([lo, hi]) => walls.filter((w) => w >= lo && w < hi).length));
   for (const [lo, hi] of BUCKETS) {
     const n = walls.filter((w) => w >= lo && w < hi).length;
     const label = hi > 1e8 ? `${lo}+ px` : `${lo}-${hi - 1} px`;
-    const bar = "#".repeat(Math.min(40, n));
+    const bar = "#".repeat(Math.round((n / tallest) * 40));
     p(md ? `| ${label} | ${n} | \`${bar}\` |` : `  ${label.padEnd(14)} ${String(n).padStart(5)}  ${bar}`);
   }
   p();
 
-  const sorted = [...opened].sort(
-    (a, b) => Math.max(...b.worst.map((w) => w.wall)) - Math.max(...a.worst.map((w) => w.wall)),
-  );
+  const sorted = [...opened].sort((a, b) => b.worst[0].wall - a.worst[0].wall);
   p(md ? "### Deepest-walled gaps — look at these clips" : "deepest-walled gaps — look at these clips");
   p();
   p(md ? "| clip | area opened | worst region |" : "clip                                area    worst region");
   if (md) p("|---|---:|---|");
   for (const c of sorted.slice(0, 15)) {
-    const w = c.worst.reduce((a, b) => (b.wall > a.wall ? b : a));
+    const w = c.worst[0];
     const name = `${c.species}/${c.tier} ${c.clip}`;
-    const region = `${w.px}px walled in by ${w.wall}px at (${w.at[0]},${w.at[1]})`;
+    const region = `${w.new}px opened (of ${w.px}px) walled in by ${w.wall}px at (${w.at[0]},${w.at[1]})`;
     p(md ? `| \`${name}\` | ${c.interior_holes}px | ${region} |` : `  ${name.padEnd(34)} ${String(c.interior_holes).padStart(6)}px  ${region}`);
   }
   p();

@@ -27,6 +27,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 
+type Metrics = { interior_worst: { px: number; new: number; wall: number }[] };
+
 const SCRIPT = fileURLToPath(new URL("./rig_motion.py", import.meta.url));
 const work = mkdtempSync(join(tmpdir(), "kad-rig-motion-test-"));
 afterAll(() => rmSync(work, { recursive: true, force: true }));
@@ -103,7 +105,17 @@ img.save(${JSON.stringify(apng)}, save_all=True, append_images=[img], duration=1
 img.save(${JSON.stringify(art)})
 `;
     execFileSync("python3", ["-c", py], { stdio: "pipe" });
-    expect(measure(apng, art).interior_holes).toBe(0);
+    const m = measure(apng, art) as unknown as Metrics & { interior_holes: number };
+    expect(m.interior_holes).toBe(0);
+    /*
+     * And the description has to agree with the number. Reporting the peak
+     * frame's absolute gaps while `interior_holes` is rest-subtracted describes
+     * a different thing: the first calibration run in CI listed a bigfoot
+     * `revive` that opened 3px as a 76px region walled in by 47px, at
+     * coordinates that hardly moved between clips, because it was measuring
+     * anatomy every clip shares rather than anything that opened.
+     */
+    expect(m.interior_worst).toEqual([]);
   });
 });
 
@@ -120,8 +132,6 @@ img.save(${JSON.stringify(art)})
  * crossing back over the silhouette. A human sees the difference instantly;
  * this asserts the measurement does too.
  */
-type Metrics = { interior_worst: { px: number; wall: number }[] };
-
 describe("interior_worst", () => {
   function shaped(name: string, kind: "hole" | "pinch"): { apng: string; art: string } {
     const apng = join(work, `${name}.png`);
@@ -160,6 +170,7 @@ Image.fromarray(rest, "RGBA").save(${JSON.stringify(art)})
     const worst = (measure(apng, art) as unknown as Metrics).interior_worst[0];
     expect(worst).toBeDefined();
     expect(worst!.px).toBeGreaterThan(300);
+    expect(worst!.new).toBe(worst!.px); // all of it opened; none was there at rest
     expect(worst!.wall).toBeGreaterThan(20);
   });
 
