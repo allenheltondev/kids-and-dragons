@@ -197,7 +197,22 @@ was written as a joint-opening check and was, until this change, incapable of re
 zero. Repaired, it turns out to measure anatomy as readily as breakage — the biggest enclosed region
 on a celebrating unicorn is the gap between its hind legs — so it warns at a level no clean rig has
 reached and otherwise leaves the judgement to the golden baseline, which can see the number change
-without needing to know a leg from a seam. Three layers — every clip measured frame by frame, every driven input fired through the real state
+without needing to know a leg from a seam.
+
+**How high a bar that is has now been measured, and it is higher than "the threshold is loose".** A
+real defect — parts carrying a detached copy of another part's artwork
+([briefs/part-fragments.md](./briefs/part-fragments.md)) — opened 2,716px of enclosed gap on a
+bigfoot `attack`, against clean clips that reach 6,198px. The defect is *below* the clean
+population, so no setting of the area threshold separates them: the instrument is wrong for this
+defect, not merely tuned wrong. Two consequences. That defect class is caught at source instead, by
+`verify.py`'s duplicated-fragment check, which needs no renderer and no threshold. And the metric
+now reports what its number is made of — each enclosed region's area, position, and how thick a wall
+of figure seals it off — because that last figure is what a human uses to tell a lifted limb from a
+joint, and it separates the two where area does not: a hole punched through a torso measures a
+31px wall against 400px of area, a gap pinched shut between limbs 7px against 880px. It describes,
+and does not decide. Turning it into a gate needs the distribution over *moving* rigs, which means a
+calibration run against the real renderer — `npm run art:verify:rig:motion`, or CI's `rig-motion`
+workflow, neither of which can run in an environment without the Rive CLI. Three layers — every clip measured frame by frame, every driven input fired through the real state
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
