@@ -13,7 +13,7 @@
  * docs/art-pipeline.md own. Nothing derives a filename anywhere else.
  */
 
-import type { SpeciesId, TierId } from "@kad/shared";
+import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 
 /** assets/manifest.json → canvas. */
 export const CANVAS = { width: 1024, height: 1024, originX: 512, originY: 900 } as const;
@@ -48,6 +48,43 @@ export const STARTING_TIER: TierId = "fledgling";
 
 export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER): string {
   return `/assets/characters/${species}/${tier}/assembled.png`;
+}
+
+/**
+ * Approved class-gear portraits currently exist for the three creatures used
+ * to prove the winged quadruped, unwinged quadruped, and upright fits. They are
+ * complete opaque illustrations, not rig parts, so this path is deliberately
+ * separate from `assets/gear/` and is consumed only by portrait surfaces.
+ *
+ * Returning `null` is part of the contract: fledglings wear no class gear,
+ * Songkeeper still uses its separable overlays, and the other three species
+ * have not had their own composites painted yet. Callers can fall back to the
+ * species/tier art without probing a URL known not to exist.
+ */
+export function gearPortraitUrl(
+  species: SpeciesId,
+  characterClass: ClassId,
+  tier: TierId,
+): string | null {
+  const hasClass =
+    characterClass === "thornguard" ||
+    characterClass === "duskrunner" ||
+    characterClass === "starweaver";
+  const hasSpecies = species === "dragonling" || species === "unicorn" || species === "bigfoot";
+  if (!hasClass || !hasSpecies || tier === "fledgling") return null;
+  return `/assets/gear-portraits/${characterClass}/${tier}/${species}.png`;
+}
+
+/** The best commissioned still image available for a resolved character. */
+export function characterPortraitArtUrl(
+  species: SpeciesId,
+  tier: TierId = STARTING_TIER,
+  characterClass?: ClassId,
+): string {
+  return (
+    (characterClass === undefined ? null : gearPortraitUrl(species, characterClass, tier)) ??
+    characterArtUrl(species, tier)
+  );
 }
 
 /**

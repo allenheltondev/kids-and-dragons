@@ -92,6 +92,7 @@ export function ChapterCompletePanel(): ReactElement {
                 <CharacterPortrait
                   species={member.character.species}
                   tier={(newTier as TierId | undefined) ?? member.character.tier}
+                  characterClass={member.character.class}
                   className="complete-card__art"
                   lit={newTier !== undefined}
                 />
