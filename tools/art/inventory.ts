@@ -18,10 +18,9 @@
  * and the canonical entities. Adding a species to the manifest adds it here on
  * the next run, which is the only way this stays true.
  *
- * The one thing it cannot derive is the six effect sheets specified in
- * asset-brief §9.4 but not yet in `effects[]`. A sheet that is specified and
- * undeclared is invisible to every other tool in this repo, which is exactly
- * why it is worth naming — see SPECIFIED_NOT_DECLARED.
+ * The explicit audit hook for prose-specified effects remains below. All six
+ * sheets from asset-brief §9.4 are now declared, so the list is empty; keeping
+ * the typed hook makes a future prose-only commission visible to this report.
  *
  * Exit code is always 0: this reports, it does not gate. `art:verify` and
  * `art:verify:rig` are the gates.
@@ -72,19 +71,10 @@ const COMBAT_ROSTER = [
 ];
 
 /**
- * asset-brief §9.4's six missing combat sheets, which are specified in prose
- * and absent from `effects[]`. Listed by hand because there is nowhere else to
- * read them from — and the moment one is added to the manifest it drops out of
- * the report on its own, which is the cue to delete it from here.
+ * Effects specified in prose but not yet declared in `effects[]`. All six from
+ * asset-brief §9.4 are delivered; retain this typed list as an audit hook.
  */
-const SPECIFIED_NOT_DECLARED = [
-  { id: "miss_veer", frames: 8, why: "a miss must be marked — absence is not a signal" },
-  { id: "bonus_spark", frames: 8, why: "the `rollBonus` verb" },
-  { id: "dust_scuff", frames: 8, why: "`moveSelf` and `shove` share it" },
-  { id: "daze_swirl", frames: 12, why: "the `skipTurn` verb" },
-  { id: "guard_ward", frames: 8, why: "the `protect` verb; `guard` must also declare its event" },
-  { id: "down_settle", frames: 12, why: "the `down` event damage produces" },
-];
+const SPECIFIED_NOT_DECLARED: { id: string; frames: number; why: string }[] = [];
 
 const root = process.cwd();
 const manifest = JSON.parse(
@@ -202,7 +192,7 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     category: "Effect sheets (spec'd, undeclared)",
     need: stillUndeclared.length,
     missing: stillUndeclared.map((s) => `${s.id} (${s.frames}f) — ${s.why}`),
-    note: "asset-brief §9.4 — add to effects[] when commissioned",
+    note: "asset-brief §9.4 audit hook — all six commissioned sheets are declared",
   });
 }
 
