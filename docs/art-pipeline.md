@@ -136,7 +136,9 @@ four pixels, a canvas that's 1023 wide, a missing `tail.png`) are exactly the ki
 in a preview and break at runtime.
 
 So the tooling is nine commands. The first six run with nothing installed; the last three need the
-Rive CLI, which is not a repo dependency, and therefore never run in CI:
+Rive CLI, which is not a repo dependency. Two of those three — the rest gate and the motion gate —
+do run in CI, which builds the CLI from a private repo with a token; the contact sheet is a human
+artefact and stays local. §3.1 has the table.
 
 | Command | Does |
 |---|---|
@@ -213,9 +215,36 @@ too small or shifted bodily is internally consistent and passes both of them cle
 An existence check for both is being wired up separately; until it lands, gear and biome
 completeness are review-sheet facts, not CI facts.
 
-`art:verify:rig:motion` shells out to the Rive CLI, which is **not** a dependency of this repo, so
-it does not run in CI and a green pipeline says nothing about it. It is a local gate, run
-deliberately. Its baseline has never been generated against these rigs — §6.3.
+**All three rig gates run in CI**, which took until the rest gate went 24/24 to be worth doing.
+`art:verify:rig` is a step in CI's `build` job and needs nothing but `node_modules`. The other two
+shell out to the Rive CLI, which is **not** an npm dependency of this repo — the published package
+ships only the MCP server — so CI builds it from source at the commit pinned in
+[`art/rig/rive-mcp.pin.json`](../art/rig/rive-mcp.pin.json), and that file's own comment is where
+the reasoning for pinning a *renderer* lives. Which job, and why they are split:
+
+| Gate | Where | When | Cost |
+|---|---|---|---|
+| `art:verify:rig` | `ci.yml`, `build` job | every PR | seconds |
+| `art:verify:rig:rest` | `ci.yml`, `rigs` job | every PR | ~40s behind ~90s of setup |
+| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig, the contract or the gate; every main push likewise | ~20 min |
+
+Motion is a separate *workflow* rather than a third job, and the reason is `prod-deploy.yml`: it
+triggers on the CI workflow **completing**, so twenty minutes inside CI would be twenty minutes
+between every merge and every deploy, including the merges that touch no art at all.
+
+**Both of those jobs need a credential.** `rive-mcp` is private, and the default `GITHUB_TOKEN` is
+scoped to this repository — against a private one it fails with `Repository not found`, which is
+how we found out. So the checkout uses `secrets.RIVE_MCP_TOKEN`, a fine-grained PAT with read
+access to that repo and nothing else. Both jobs assert the secret is non-empty before they use it,
+because a missing *or expired* token otherwise presents as that same `Repository not found` two
+steps later, and a lapsed credential reading as a moved repository is the kind of thing that costs
+an afternoon. **When the token expires, both rig jobs go red and nothing about rigging changed** —
+mint a new one before investigating anything else.
+
+One layer inside the motion gate is still inert: its golden baseline has never been generated
+against these rigs (§6.3), so layer 3 currently prints "no baseline yet" and passes. Layers 1 and 2
+are live. Until that baseline is written, the motion gate catches what it was told to measure and
+nothing else.
 
 Failures print the offending file, the expected value, and the actual value. The agent should be
 able to run this itself and iterate to green without a human in the loop.
@@ -552,21 +581,28 @@ revisited, not just the art re-approved.
 
 #### Running the Rive CLI
 
-Steps 2-5 below shell out to `rive-mcp-build`, which is not a dependency of this repo. Two
-environment variables, and the second one is not obvious:
+Steps 2-5 below shell out to `rive-mcp-build`, which is not an npm dependency of this repo and
+cannot become one: the published `rive-mcp-server` package ships only the MCP server, not this CLI.
+Build it from source, at the pinned commit — the same one CI uses, so a rig you build locally and a
+rig CI measures come from the same tool:
 
 ```bash
-git clone https://github.com/allenheltondev/rive-mcp && cd rive-mcp && npm install && npm run build
-export KAD_RIVE_CLI=/path/to/rive-mcp/dist/cli.js
-export RIVE_MCP_CHROME=/path/to/a/chromium          # see below
+git clone https://github.com/allenheltondev/rive-mcp && cd rive-mcp
+git checkout "$(jq -r .ref /path/to/kids-and-dragons/art/rig/rive-mcp.pin.json)"
+npm ci && npm run build
+export KAD_RIVE_CLI=$PWD/dist/cli.js
+export RIVE_MCP_CHROME=/path/to/a/chromium          # only if the next paragraph applies
 ```
 
 `rig`, `render` and `events` drive the real Rive runtime through headless Chromium via
-`playwright-core`, and the CLI looks for a *branded* browser — `/opt/google/chrome/chrome`, then
-`/opt/microsoft/msedge/msedge`. A Playwright-managed Chromium does not live at either path, so a
-machine with a perfectly good browser still fails with "No Chromium-based browser found". Point
-`RIVE_MCP_CHROME` at the executable; under Playwright's layout that is
-`$PLAYWRIGHT_BROWSERS_PATH/chromium-<build>/chrome-linux/chrome`.
+`playwright-core`. The CLI looks for a browser in four places, in order: `RIVE_MCP_CHROME`, then any
+Playwright-managed Chromium under `~/.cache/ms-playwright` (highest revision wins), then the branded
+`chrome` and `msedge` channels. So on a normal machine with `npx playwright install chromium` done,
+nothing needs setting. It does **not** honour `PLAYWRIGHT_BROWSERS_PATH`, which is the case that
+still bites: if your browsers live somewhere else — a container that sets that variable, for
+instance — a machine with a perfectly good browser fails with "No Chromium-based browser found", and
+`RIVE_MCP_CHROME` is the fix. Under Playwright's layout the executable is
+`<browsers-path>/chromium-<build>/chrome-linux/chrome`.
 
 #### Validating the regeneration
 
@@ -584,8 +620,10 @@ and passes both. Run these in order; each one can only be trusted once the one a
 | 5 | `--update-baseline` | Rive CLI | Only now. A baseline blessed before 2–4 pins whatever is wrong with the rigs it was generated from. |
 | 6 | Client anchor + `spike:rive` | — | The two consequences below. Not optional: 1–5 can all be green while the game draws the figure in the wrong place. |
 
-Steps 2–5 need the Rive CLI, which is not a repo dependency, so none of them run in CI — a green
-pipeline after a regeneration means step 1 and nothing else.
+Steps 2 and 3 now run in CI as well (§3.1), so a green pipeline after a regeneration means the rest
+pose and the clips have both been checked. Steps 4 and 5 do not and cannot: the contact sheet exists
+to be looked at, and blessing a baseline is a judgement. Run them anyway, in this order — a CI pass
+is not a substitute for step 4.
 
 Three consequences to carry into that regeneration, the first of which is load-bearing:
 
