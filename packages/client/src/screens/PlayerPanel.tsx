@@ -129,6 +129,7 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
         <CharacterPortrait
           species={character.species}
           tier={character.tier}
+          characterClass={character.class}
           className="sheet__art"
         />
       </span>
