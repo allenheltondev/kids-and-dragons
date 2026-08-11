@@ -354,9 +354,16 @@ function judge(label, clip, m) {
     );
   }
   if (m.interior_holes > INTERIOR_GAP_WARN) {
+    // The area cannot say which of the two it is, so print what it is made of.
+    // A gap pinched shut between two limbs is walled in by a few px of figure; a
+    // hole in the middle of a torso by tens. That is the thing to look at.
+    const where = (m.interior_worst ?? [])
+      .map((r) => `${r.px}px walled in by ${r.wall}px at (${r.at[0]},${r.at[1]})`)
+      .join(", ");
     soft.push(
       `${m.interior_holes}px of enclosed gap opened during the clip — a joint may be coming ` +
-        `apart, or the figure may simply have spread its limbs. Look at it.`,
+        `apart, or the figure may simply have spread its limbs. Look at it.` +
+        (where ? `\n      worst tick: ${where}` : ""),
     );
   }
   if (m.motion_median < MOTION_MIN) {
