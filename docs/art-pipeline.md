@@ -223,7 +223,23 @@ threshold; if they do not, say so and leave the warning soft. One caveat travels
 and is printed in it — the delivered art still carries the 179 duplicated fragments, so part of
 today's sample *is* the defect. Re-run after the re-cut before setting a number from it.
 
-**The first run has already earned its keep, by being wrong in a way worth recording.** It measured
+**What the first corrected run says.** 312 clips, 300 of which opened something, and the walls are
+now weakly bimodal: 93 clips at 0–4px, 121 at 5–9, then a trough of 41 at 10–19, a second bump of 44
+at 20–39, and a single clip beyond 40. A trough is what a threshold is made of, so the candidate is
+**around 20px** — and rather than set it now, treat it as a prediction that the next run can falsify:
+the delivered art still carries the 179 duplicated fragments, so *if* the 20–39 bump is the defect,
+re-running after the re-cut should collapse it. If it collapses, 20px is the line and the gate can
+harden. If it survives, the bump is anatomy and the warning stays soft. Either answer is worth
+having; neither is available today.
+
+**A second thing that run found, which matters more than the threshold.** `interior_holes` is a
+*net* — peak-frame enclosed area minus the rest frame's. `griffin/radiant revive` reports 3px of net
+change over a region with 141px that had been solid figure at rest: a hole opened while a limb
+closed an equal amount of the figure's own negative space, and the two cancelled. So the gate's
+headline number can read ~zero through a real joint opening, which no threshold on it can fix. The
+per-region `new` figure does not cancel, and the calibration is keyed on it rather than on the net.
+
+**The very first run earned its keep by being wrong in a way worth recording.** It measured
 312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,
 no threshold. It also reported a bigfoot `revive` that opened 3px as a 76px region walled in by
 47px, at coordinates that barely moved from clip to clip. That is the tell: `interior_holes` is
