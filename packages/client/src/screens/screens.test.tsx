@@ -125,6 +125,22 @@ describe("CharacterPortrait", () => {
     expect(html).toContain('src="/assets/characters/griffin/mythic/assembled.png"');
   });
 
+  it("draws approved class gear for the exact creature and tier", () => {
+    const html = renderToStaticMarkup(
+      <CharacterPortrait species="unicorn" characterClass="duskrunner" tier="radiant" />,
+    );
+    expect(html).toContain('src="/assets/gear-portraits/duskrunner/radiant/unicorn.png"');
+    expect(html).toContain("portrait--gear");
+  });
+
+  it("keeps base species art for a creature without its own gear portrait", () => {
+    const html = renderToStaticMarkup(
+      <CharacterPortrait species="kitsune" characterClass="starweaver" tier="mythic" />,
+    );
+    expect(html).toContain('src="/assets/characters/kitsune/mythic/assembled.png"');
+    expect(html).not.toContain("portrait--gear");
+  });
+
   it("is decoration: no alt text, because the name is beside it in every use", () => {
     const html = renderToStaticMarkup(<CharacterPortrait species="kitsune" />);
     expect(html).toContain('alt=""');
@@ -157,10 +173,8 @@ describe("CharacterPortrait", () => {
    *
    * This is asserted on the predicate rather than by driving a rerender because
    * the package has no DOM environment (vitest runs `node`, and screens are
-   * tested through `renderToStaticMarkup` — see signin.test.tsx). It is the
-   * whole of the behaviour either way: after this change nothing about the
-   * failure is held in component state that a rerender could carry, so
-   * "what does the next render show" *is* this function.
+   * tested through `renderToStaticMarkup` — see signin.test.tsx). The component
+   * uses the same predicate for its independent gear and base-art failure URLs.
    */
   /*
    * A box that is a *place* stands the figure on its floor; a box that is a

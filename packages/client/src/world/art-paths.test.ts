@@ -6,6 +6,7 @@
  */
 
 import { describe, expect, it } from "vitest";
+import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import {
   ANCHOR_X,
@@ -19,8 +20,10 @@ import {
   biomeBackdropUrl,
   biomeTilesUrl,
   characterArtUrl,
+  characterPortraitArtUrl,
   characterRigUrl,
   enemyArtUrl,
+  gearPortraitUrl,
 } from "./art-paths";
 
 describe("art paths", () => {
@@ -33,6 +36,53 @@ describe("art paths", () => {
   it("defaults to the tier a new character starts at", () => {
     expect(STARTING_TIER).toBe("fledgling");
     expect(characterArtUrl("griffin")).toBe(characterArtUrl("griffin", "fledgling"));
+  });
+
+  it("addresses approved class gear portraits by exact creature, class, and tier", () => {
+    expect(gearPortraitUrl("dragonling", "thornguard", "sworn")).toBe(
+      "/assets/gear-portraits/thornguard/sworn/dragonling.png",
+    );
+    expect(characterPortraitArtUrl("bigfoot", "mythic", "starweaver")).toBe(
+      "/assets/gear-portraits/starweaver/mythic/bigfoot.png",
+    );
+  });
+
+  it("falls back when that exact gear portrait was not commissioned", () => {
+    expect(gearPortraitUrl("griffin", "thornguard", "sworn")).toBeNull();
+    expect(gearPortraitUrl("unicorn", "songkeeper", "radiant")).toBeNull();
+    expect(gearPortraitUrl("unicorn", "duskrunner", "fledgling")).toBeNull();
+    expect(characterPortraitArtUrl("griffin", "mythic", "thornguard")).toBe(
+      characterArtUrl("griffin", "mythic"),
+    );
+  });
+
+  it("keeps the client selector in lockstep with the manifest", () => {
+    const classes: ClassId[] = ["thornguard", "duskrunner", "starweaver", "songkeeper"];
+    const species: SpeciesId[] = [
+      "unicorn",
+      "dragonling",
+      "griffin",
+      "bigfoot",
+      "kitsune",
+      "manticore",
+    ];
+    const tiers: TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
+    const declared = manifest.gearPortraits.flatMap((group) =>
+      group.tiers.flatMap((tier) =>
+        group.species.map((creature) => `${group.class}/${tier}/${creature}`),
+      ),
+    );
+    const addressed = classes.flatMap((characterClass) =>
+      tiers.flatMap((tier) =>
+        species.flatMap((creature) =>
+          gearPortraitUrl(creature, characterClass, tier) === null
+            ? []
+            : [`${characterClass}/${tier}/${creature}`],
+        ),
+      ),
+    );
+
+    expect(addressed.sort()).toEqual(declared.sort());
   });
 
   it("treats a chapter's `enemies/` prefix as convention, not a directory", () => {

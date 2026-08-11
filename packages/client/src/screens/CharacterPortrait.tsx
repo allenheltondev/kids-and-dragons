@@ -26,8 +26,13 @@
 
 import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
-import type { SpeciesId, TierId } from "@kad/shared";
-import { ANCHOR_Y, STARTING_TIER, characterArtUrl } from "../world/art-paths";
+import type { ClassId, SpeciesId, TierId } from "@kad/shared";
+import {
+  ANCHOR_Y,
+  STARTING_TIER,
+  characterArtUrl,
+  characterPortraitArtUrl,
+} from "../world/art-paths";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
 
@@ -55,6 +60,8 @@ export function isMissingArt(failedSrc: string | null, src: string): boolean {
 
 export interface CharacterPortraitProps {
   species: SpeciesId;
+  /** Enables an approved creature/class/tier gear portrait when one exists. */
+  characterClass?: ClassId;
   /** Defaults to the tier every character starts at. */
   tier?: TierId;
   /** Any CSS length. The art scales to fit; the box is what you size. */
@@ -89,6 +96,7 @@ export interface CharacterPortraitProps {
 
 export function CharacterPortrait({
   species,
+  characterClass,
   tier = STARTING_TIER,
   size,
   lit = false,
@@ -97,9 +105,16 @@ export function CharacterPortrait({
   stand = "floor",
   className = "",
 }: CharacterPortraitProps): ReactElement {
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const src = characterArtUrl(species, tier);
-  const missing = isMissingArt(failedSrc, src);
+  const [failedGearSrc, setFailedGearSrc] = useState<string | null>(null);
+  const [failedBaseSrc, setFailedBaseSrc] = useState<string | null>(null);
+  const baseSrc = characterArtUrl(species, tier);
+  const preferredSrc = characterPortraitArtUrl(species, tier, characterClass);
+  const gearSrc = preferredSrc === baseSrc ? null : preferredSrc;
+  // A separately deployed gear portrait may briefly 404 before its bundle
+  // catches up. Step down to the known species art before conceding to an icon.
+  const src = gearSrc !== null && !isMissingArt(failedGearSrc, gearSrc) ? gearSrc : baseSrc;
+  const missing = src === baseSrc && isMissingArt(failedBaseSrc, baseSrc);
+  const showingGear = gearSrc !== null && src === gearSrc;
 
   const style: CSSProperties & Record<string, string | undefined> = {
     // The ground-contact contract, handed to CSS so the stylesheet never has
@@ -114,9 +129,10 @@ export function CharacterPortrait({
 
   return (
     <span
-      className={`portrait portrait--${stand}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
+      className={`portrait portrait--${stand}${showingGear ? " portrait--gear" : ""}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
       style={style}
       data-species={species}
+      data-character-class={characterClass}
     >
       {missing ? (
         <Icon name={species} className="portrait__fallback" size="72%" />
@@ -134,7 +150,11 @@ export function CharacterPortrait({
           // The URL that failed, not "this portrait failed" — a later species,
           // a later tier, or a later deploy of the same file all get another go.
           onError={() => {
-            setFailedSrc(src);
+            if (gearSrc !== null && src === gearSrc) {
+              setFailedGearSrc(src);
+            } else {
+              setFailedBaseSrc(src);
+            }
           }}
         />
       )}

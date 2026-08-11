@@ -218,6 +218,8 @@ assets/
         arm_l.png arm_r.png leg_l.png leg_r.png  tail.png
   gear/<class>/<tier>/
       overlay_torso.png  prop_held.png
+  gear-portraits/<class>/<tier>/
+      <species>.png              opaque approved portrait composite
   effects/
       <name>.sheet.png           horizontal strip, N frames of 256×256
       <name>.json                { "frames": N, "fps": 12, "size": 256 }
@@ -227,7 +229,9 @@ assets/
       props/*.png
 ```
 
-`assembled.png` ships as a reference and review artifact; the game loads only `parts/`.
+`assembled.png` ships as the rig fallback and un-geared portrait. The game also loads approved
+`gear-portraits/` composites on still-image UI surfaces; animated world figures load only separable
+character and gear parts.
 
 The authoritative part list per species is in `assets/manifest.json`. **Every part named there must
 exist as its own file** — see §4.4.
@@ -272,6 +276,18 @@ manifest; **3 are delivered** (`songkeeper`, all three tiers) and 9 are still to
 Gear overlays register against the **species-agnostic torso position**, so one overlay set works
 across all six species at that tier. Design them to read on both the slimmest (kitsune) and
 bulkiest (bigfoot) silhouettes.
+
+#### Approved gear portraits
+
+The three deferred classes also ship **27 approved opaque portrait composites**: three classes ×
+three geared tiers × dragonling, unicorn, and bigfoot. These are the exact creature fits reviewed
+in the app art pass and live at `assets/gear-portraits/<class>/<tier>/<species>.png`.
+
+They are used anywhere the app draws a still portrait (lobby, player sheet, dice, combat controls,
+and level-up). They do **not** satisfy the overlay deliverable above: the background and creature
+are baked into each square, so they cannot follow bones or animate. Griffin, kitsune, and manticore
+continue to use their species/tier portrait until their own composites are approved, and the story
+and combat stages continue to use Rive until transparent per-rig gear parts ship.
 
 ### 4.4 Mane as a separate part 🔺
 
