@@ -1,0 +1,136 @@
+# The rig motion gate — every clip of every rig, rendered and measured.
+#
+# Its own workflow rather than a job in ci.yml, for one specific reason:
+# prod-deploy.yml triggers on the CI *workflow* completing, so a twenty-minute
+# job inside CI would put twenty minutes between a merge to main and the deploy
+# of a change that has nothing to do with rigging. Splitting it keeps the deploy
+# path fast and lets this one take as long as it needs.
+#
+# It is the third of the three rig gates, and the split between them is worth
+# holding in your head (art-pipeline.md section 3.1):
+#
+#   art:verify:rig       the .riv as data — clip table, lengths, inputs. In CI's
+#                        `build` job, needs nothing but node_modules.
+#   art:verify:rig:rest  frame 0 against the approved art — absolute scale and
+#                        position, which neither of the others can see. In CI's
+#                        `rigs` job, ~40s.
+#   art:verify:rig:motion  <- here. Every clip rendered tick by tick: does the
+#                        figure sink through the floor, leave the artboard, come
+#                        apart at a joint, paint colours that are in no part PNG,
+#                        and do the state machine's events actually fire.
+#
+# On pull requests it runs only when something that could change a rendered frame
+# changed — the rigs themselves, the contract they derive from, or the gate. Rigs
+# are regenerated rarely and in bulk, so this is nearly always "not this PR", and
+# when it is this PR it is exactly the PR you want it on.
+
+name: Rig motion
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "assets/characters/**/rig.riv"
+      - "assets/manifest.json"
+      - "art/rig/**"
+      - "tools/art/verify-rig-motion.mjs"
+      - "tools/art/rig_motion.py"
+      - ".github/workflows/rig-motion.yml"
+  pull_request:
+    paths:
+      - "assets/characters/**/rig.riv"
+      - "assets/manifest.json"
+      - "art/rig/**"
+      - "tools/art/verify-rig-motion.mjs"
+      - "tools/art/rig_motion.py"
+      - ".github/workflows/rig-motion.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: rig-motion-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  motion:
+    name: every clip of every rig
+    runs-on: ubuntu-latest
+    # 24 rigs x 13 clips, ~40s per rig at the default concurrency on a local
+    # 4-core box. The ceiling is generous on purpose: a timeout that trips on a
+    # slow runner reads as a rig failure, which is the wrong thing to have to
+    # rule out first.
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      # Same pin as the `rigs` job in ci.yml, read from the same file. See
+      # art/rig/rive-mcp.pin.json for why the renderer is pinned at all.
+      - name: Read the pinned rive-mcp
+        id: pin
+        run: |
+          ref=$(jq -r '.ref' art/rig/rive-mcp.pin.json)
+          if ! printf '%s' "$ref" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::art/rig/rive-mcp.pin.json ref is not a full 40-char sha: $ref"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - name: Check out the pinned rive-mcp
+        uses: actions/checkout@v7
+        with:
+          repository: allenheltondev/rive-mcp
+          ref: ${{ steps.pin.outputs.ref }}
+          path: .rive-mcp
+
+      - name: Build the Rive CLI
+        run: npm ci && npm run build
+        working-directory: .rive-mcp
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Point the CLI at Chromium
+        run: |
+          exe=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | sort -V | tail -1)
+          if [ -z "$exe" ]; then
+            echo "::error::no Playwright chromium under ~/.cache/ms-playwright — the install step above put one somewhere else"
+            exit 1
+          fi
+          echo "RIVE_MCP_CHROME=$exe" >> "$GITHUB_ENV"
+          echo "KAD_RIVE_CLI=$PWD/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
+
+      # `--jobs` is left to the tool, which sizes itself to the runner's cores.
+      - name: Verify rig motion
+        run: npm run art:verify:rig:motion
