@@ -196,16 +196,44 @@ const EVENT_TOLERANCE_S = 1 / 60 + 1e-3;
 // ---------------------------------------------------------------------------
 
 const args = process.argv.slice(2);
+/*
+ * Every option that takes a value, in one list, because the positional filter
+ * below has to know them: a bare word is a species name unless the thing before
+ * it was an option expecting a value. Adding an option and forgetting this list
+ * does not error — it reads the option's value as a species, matches nothing,
+ * and measures zero rigs while still exiting 0. `--gap-report out.json` did
+ * exactly that before this list existed.
+ */
+const VALUE_OPTS = ["tier", "clip", "jobs", "gap-report"];
 const flag = (n) => args.includes(`--${n}`);
 const opt = (n, d) => {
   const i = args.indexOf(`--${n}`);
   return i >= 0 && args[i + 1] ? args[i + 1] : d;
 };
 const updateBaseline = flag("update-baseline");
+/*
+ * Where to write the enclosed-gap measurements for every clip, defect or not.
+ *
+ * This is calibration data, not a gate. `INTERIOR_GAP_WARN` is a *warning*
+ * because enclosed area cannot separate a joint coming apart from a limb
+ * lifting — measured, a real defect opened 2,716px where clean clips reach
+ * 6,198px, so the defect sits below the clean population and no threshold on
+ * area separates them. The figure that does separate them is how thickly each
+ * gap is walled in (rig_motion.py `gap_regions`), and turning THAT into a
+ * threshold needs its distribution over moving rigs — which needs the real
+ * renderer, so it can only be collected where the renderer runs. That is CI.
+ *
+ * Written for every clip, including the ones that pass, because a threshold set
+ * from failures alone is set without knowing what normal looks like.
+ */
+const gapReport = opt("gap-report", null);
+const gapRows = [];
 const jobs = Math.max(1, Number(opt("jobs", String(Math.min(6, Math.max(1, cpus().length - 2))))));
 const onlyTier = opt("tier", null);
 const onlyClip = opt("clip", null);
-const wanted = args.filter((a) => !a.startsWith("--") && !["--tier", "--clip", "--jobs"].includes(args[args.indexOf(a) - 1]));
+const wanted = args.filter(
+  (a, i) => !a.startsWith("--") && !VALUE_OPTS.includes((args[i - 1] ?? "").replace(/^--/, "")),
+);
 
 const SPECIES = MANIFEST.species.map((s) => s.id).filter((id) => wanted.length === 0 || wanted.includes(id));
 const TIERS = MANIFEST.tiers.filter((t) => !onlyTier || t === onlyTier);
@@ -433,6 +461,15 @@ for (const job of rigJobs) {
     }
     checked += 1;
     hashes[`${job.id}/${job.tier}/${clip.name}`] = m.hash;
+    if (gapReport) {
+      gapRows.push({
+        species: job.id,
+        tier: job.tier,
+        clip: clip.name,
+        interior_holes: m.interior_holes,
+        worst: m.interior_worst ?? [],
+      });
+    }
     const { bad, soft } = judge(label, clip, m);
     for (const b of bad) {
       failures.push(label);
@@ -450,6 +487,12 @@ for (const job of rigJobs) {
     console.log(`  ${BOLD}${job.id}/${job.tier}${RESET}`);
     for (const l of lines) console.log(l);
   }
+}
+
+// Before the CLI-missing exit below, so a partial run still yields its rows.
+if (gapReport && gapRows.length > 0) {
+  writeFileSync(gapReport, JSON.stringify({ clips: gapRows }, null, 1));
+  console.log(`\n  ${DIM}gap measurements for ${gapRows.length} clips -> ${gapReport}${RESET}`);
 }
 
 if (cliMissing) {

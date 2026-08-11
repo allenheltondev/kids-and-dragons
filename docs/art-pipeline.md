@@ -210,9 +210,18 @@ now reports what its number is made of — each enclosed region's area, position
 of figure seals it off — because that last figure is what a human uses to tell a lifted limb from a
 joint, and it separates the two where area does not: a hole punched through a torso measures a
 31px wall against 400px of area, a gap pinched shut between limbs 7px against 880px. It describes,
-and does not decide. Turning it into a gate needs the distribution over *moving* rigs, which means a
-calibration run against the real renderer — `npm run art:verify:rig:motion`, or CI's `rig-motion`
-workflow, neither of which can run in an environment without the Rive CLI. Three layers — every clip measured frame by frame, every driven input fired through the real state
+and does not decide. Turning it into a gate needs the distribution over *moving* rigs, and that
+cannot be collected anywhere but CI: it needs the real renderer, which is built from a private repo
+in the `rig-motion` workflow and is not an npm dependency of this one.
+
+**So the workflow now collects it on every run.** `art:verify:rig:motion --gap-report` writes each
+clip's enclosed-gap measurements, passing or failing, and `tools/art/gap-calibration.mjs` turns them
+into a wall-thickness histogram in the job summary plus a `gap-report` artifact with the rows. It is
+data collection, never a gate — it runs under `always()` so a red run's sample is kept, and it
+cannot change the job's exit code. Read it as: if the walls come out bimodal, the trough is the
+threshold; if they do not, say so and leave the warning soft. One caveat travels with the output
+and is printed in it — the delivered art still carries the 179 duplicated fragments, so part of
+today's sample *is* the defect. Re-run after the re-cut before setting a number from it. Three layers — every clip measured frame by frame, every driven input fired through the real state
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
