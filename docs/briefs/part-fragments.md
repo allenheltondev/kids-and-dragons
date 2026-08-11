@@ -42,9 +42,19 @@ re-runs them:
 | `art:verify:rig:rest` | Renders frame 0, where a duplicate sits exactly on its original. Invisible by construction. |
 | `art:verify:rig:motion` | **Measured it and said nothing.** Enclosed gaps on that bigfoot frame go 683 px at rest → 3,399 mid-attack. `INTERIOR_GAP_WARN` is 15,000, and it is a warning rather than a failure. |
 
-That last row is the one to fix beyond the art. The threshold was calibrated on
-74 of 312 clips and sits about five times too high, and the metric it reads is
-the one written specifically to catch a joint coming apart.
+That last row looks like a loose threshold and is not one. The gap the defect
+opens is 3,399 − 683 = **2,716 px**, and clean clips of demonstrably good rigs
+reach **6,198 px** — the defect is *below* the clean population, so no setting of
+`INTERIOR_GAP_WARN` catches it without firing constantly on legitimate
+animation. Enclosed area cannot separate "a joint came apart" from "a leg
+lifted", which is why the gate's own comment says it warns instead of failing.
+
+The consequence is that this defect class has to be caught at source, which is
+what §3 does: no renderer, no threshold, and it fires on the art rather than on
+one clip that happens to swing the arm far enough. The motion gate's own
+follow-up is separate and smaller — it now reports how thickly each enclosed gap
+is walled in, which is the figure that *does* separate the two cases, so the
+warning it already prints is triageable without a re-render.
 
 ## 3. Telling a duplicate from real artwork
 
