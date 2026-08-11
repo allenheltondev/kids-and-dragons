@@ -216,8 +216,8 @@ jobs:
   rigs:
     # Where a rig stands, checked on every pull request.
     #
-    # A rig is a binary a generated-rigging tool produced, and until this job
-    # existed nothing in CI could see inside one. Not hypothetical: all 24
+    # A rig is a binary somebody else's tool produced, and until this job existed
+    # nothing in CI could see inside one. That is not a hypothetical gap: all 24
     # rigs shipped built at 90% scale with their feet 73px low, and separately the
     # four manticore tiers shipped with a corrupt mesh — both passed every check
     # the pipeline had, because `art:verify:rig` reads the file as data and
@@ -253,15 +253,64 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
+      # The version is data, not a literal in this file: `art/rig/rive-mcp.pin.json`
+      # is what both this job and rig-motion.yml read, so the renderer moves in one
+      # visible commit rather than in two workflows that can disagree.
+      # A missing secret and an expired one both surface as "Repository not
+      # found" two steps down, which points at the wrong thing. Say it plainly
+      # while we still can tell the difference.
+      - name: Check the rive-mcp token exists
+        env:
+          TOKEN: ${{ secrets.RIVE_MCP_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::secret RIVE_MCP_TOKEN is not set. The rig gates render with rive-mcp's CLI, which lives in a private repo; this needs a fine-grained PAT with read access to allenheltondev/rive-mcp. See the rigs job in .github/workflows/ci.yml."
+            exit 1
+          fi
+
+      - name: Read the pinned rive-mcp
+        id: pin
+        run: |
+          ref=$(jq -r '.ref' art/rig/rive-mcp.pin.json)
+          # A short sha or a branch name would still check out, and would make
+          # "which renderer measured this" unanswerable six months from now.
+          if ! printf '%s' "$ref" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::art/rig/rive-mcp.pin.json ref is not a full 40-char sha: $ref"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      # rive-mcp is a separate *private* repository and is not an npm dependency
+      # of this one — its published package ships only the MCP server, not the
+      # `rive-mcp-build` CLI this gate drives, so there is nothing to `npm i`.
+      #
+      # RIVE_MCP_TOKEN is a fine-grained PAT with read access to that repo and
+      # nothing else. The default GITHUB_TOKEN cannot stand in: it is scoped to
+      # this repository, and against a private one it fails with "Repository not
+      # found" — which is how we learned rive-mcp was private in the first place.
+      #
+      # THE TRAP, named on purpose: PATs expire. When this one does, both rig
+      # jobs fail at this step with that same "Repository not found", which reads
+      # like the repo moved rather than like a credential lapsed. If you are here
+      # because of that message and nothing about rigging changed, mint a new
+      # token before looking at anything else.
+      - name: Check out the pinned rive-mcp
+        uses: actions/checkout@v7
+        with:
+          repository: allenheltondev/rive-mcp
+          ref: ${{ steps.pin.outputs.ref }}
+          path: .rive-mcp
+          token: ${{ secrets.RIVE_MCP_TOKEN }}
+
+      - name: Build the Rive CLI
+        run: npm ci && npm run build
+        working-directory: .rive-mcp
+
       # `render` drives the real Rive runtime through headless Chromium, and it
       # has to be a real browser: the in-process runtime `art:verify:rig` uses
       # reports "No WebGL support. Image mesh will not be drawn.", so a node-only
       # renderer would score the one meshed species against a tail that was never
       # drawn — passing exactly the rig most likely to be broken.
-      #
-      # Nothing points the CLI at the browser it installs. `rive-mcp-server`
-      # searches ~/.cache/ms-playwright itself, which is exactly where this puts
-      # one; RIVE_MCP_CHROME is for machines whose browsers live elsewhere.
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v4
@@ -277,13 +326,24 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
+      # rive-mcp finds a Playwright chromium under ~/.cache/ms-playwright on its
+      # own, which is where the step above puts it. Named explicitly anyway: it
+      # picks the highest revision it finds, and this job should measure with the
+      # browser it just installed rather than with whatever the cache holds.
+      - name: Point the CLI at Chromium
+        run: |
+          exe=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | sort -V | tail -1)
+          # Fail here rather than four steps down. Without this the CLI reports
+          # "No Chromium-based browser found", which reads like a rig problem.
+          if [ -z "$exe" ]; then
+            echo "::error::no Playwright chromium under ~/.cache/ms-playwright — the install step above put one somewhere else"
+            exit 1
+          fi
+          echo "RIVE_MCP_CHROME=$exe" >> "$GITHUB_ENV"
+          echo "KAD_RIVE_CLI=$PWD/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
+
       # Frame 0 of `idle` against that tier's approved assembled.png, in the
       # canvas-sized window at the stage offset. 24 rigs, ~40s.
-      #
-      # No KAD_RIVE_CLI: `rive-mcp-server` is a devDependency, so `npm run` puts
-      # its `rive-mcp-build` on PATH and the tool's own fallback finds it. Which
-      # version is in package-lock.json — the renderer is pinned by the lockfile,
-      # in this repo's history, which is what makes a rig regression bisectable.
       - name: Verify rigs at rest
         run: npm run art:verify:rig:rest
 

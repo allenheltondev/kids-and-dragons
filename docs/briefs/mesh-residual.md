@@ -142,12 +142,11 @@ signal nobody has read.
 ## 5. Reproducing it
 
 ```bash
-# Written when the CLI had to be built from source. It is now the
-# `rive-mcp-server` devDependency, so `npm ci` is the setup and `npm run` finds
-# `rive-mcp-build` on PATH — see art-pipeline.md section 6.3. The overrides below
-# still work and are what to use against an upstream working tree.
-export KAD_RIVE_CLI=/path/to/rive-mcp/dist/cli.js
-# Only if your browsers are not under ~/.cache/ms-playwright
+# Build the CLI (not a dependency of this repo)
+git clone https://github.com/allenheltondev/rive-mcp && cd rive-mcp
+npm install && npm run build
+export KAD_RIVE_CLI=$PWD/dist/cli.js
+# It wants a *branded* Chrome; a Playwright chromium needs pointing at explicitly
 export RIVE_MCP_CHROME=/path/to/chrome-linux/chrome
 
 cd /path/to/kids-and-dragons
