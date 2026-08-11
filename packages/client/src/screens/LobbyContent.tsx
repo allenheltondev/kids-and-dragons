@@ -74,6 +74,7 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
         <CharacterPortrait
           species={character.species}
           tier={character.tier}
+          characterClass={character.class}
           className="lobby-member__art"
           lit={member.ready}
         />
