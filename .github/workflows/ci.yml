@@ -311,36 +311,42 @@ jobs:
       # reports "No WebGL support. Image mesh will not be drawn.", so a node-only
       # renderer would score the one meshed species against a tail that was never
       # drawn — passing exactly the rig most likely to be broken.
-      - name: Cache Playwright browsers
-        id: playwright-cache
+      #
+      # The browser is installed by *rive-mcp's own* playwright-core rather than
+      # this repo's @playwright/test, and the cache is keyed on rive-mcp's
+      # lockfile, because that is what decides which Chromium revision the CLI
+      # will ask for. Two Playwright versions want two revisions, and installing
+      # one to satisfy the other is how you get a browser on disk that the tool
+      # still will not use.
+      - name: Cache Playwright browsers for the Rive CLI
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: rive-playwright-${{ runner.os }}-${{ hashFiles('.rive-mcp/package-lock.json') }}
 
-      - name: Install Chromium
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+      # Unconditional, not gated on a cache hit. `install` is a no-op when the
+      # browser is already there, and gating it meant a cache that restored
+      # *something* under ms-playwright skipped the install and left the job with
+      # no browser at all — which is exactly what happened the first time this ran.
+      - name: Install Chromium for the Rive CLI
+        working-directory: .rive-mcp
+        run: npx playwright-core install --with-deps chromium
 
-      - name: Install Chromium system dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
-      # rive-mcp finds a Playwright chromium under ~/.cache/ms-playwright on its
-      # own, which is where the step above puts it. Named explicitly anyway: it
-      # picks the highest revision it finds, and this job should measure with the
-      # browser it just installed rather than with whatever the cache holds.
+      # Ask Playwright where it put the browser instead of guessing the layout.
+      # The guess was wrong: this glob used to look for `chrome-linux/chrome`,
+      # and playwright-core 1.61 installs `chrome-linux64/chrome`. rive-mcp's own
+      # search has the same stale list, so it cannot find the browser either —
+      # RIVE_MCP_CHROME is required here, not a nicety.
       - name: Point the CLI at Chromium
+        working-directory: .rive-mcp
         run: |
-          exe=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | sort -V | tail -1)
-          # Fail here rather than four steps down. Without this the CLI reports
-          # "No Chromium-based browser found", which reads like a rig problem.
-          if [ -z "$exe" ]; then
-            echo "::error::no Playwright chromium under ~/.cache/ms-playwright — the install step above put one somewhere else"
+          exe=$(node -e "console.log(require('playwright-core').chromium.executablePath())")
+          if [ ! -x "$exe" ]; then
+            echo "::error::playwright-core reports its chromium at $exe, and nothing executable is there — the install step above did not complete"
             exit 1
           fi
           echo "RIVE_MCP_CHROME=$exe" >> "$GITHUB_ENV"
-          echo "KAD_RIVE_CLI=$PWD/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
+          echo "KAD_RIVE_CLI=$GITHUB_WORKSPACE/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
 
       # Frame 0 of `idle` against that tier's approved assembled.png, in the
       # canvas-sized window at the stage offset. 24 rigs, ~40s.
