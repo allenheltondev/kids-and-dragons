@@ -117,9 +117,10 @@ def delta(i, j):
     return float(np.abs(frames[i].astype(np.int32) - frames[j].astype(np.int32)).max(axis=2).mean())
 
 
-def gap_regions(a, limit=3):
+def gap_regions(a, rest, limit=3):
     """
-    The enclosed gaps of one frame, each with how deeply it is walled in.
+    The enclosed gaps of one frame, each with how much of it is NEW and how
+    deeply it is walled in.
 
     `interior_holes` is a single number, and a single number cannot say which of
     the two things it might be. Both populations are real and both are large:
@@ -129,6 +130,14 @@ def gap_regions(a, limit=3):
     produces the same kind of number. So this does not decide anything; it is
     printed next to the warning that already says "look at it", so that looking
     is a second rather than a render.
+
+    `new` is the part of the region that was solid figure at rest, and it is what
+    makes this comparable to `interior_holes` — which is rest-subtracted, so a
+    description of the peak frame's *absolute* gaps describes something else
+    entirely. The first calibration run made exactly that mistake: it reported a
+    bigfoot `revive` that opened 3px of gap as a 76px region walled in by 47px,
+    at coordinates that barely moved from clip to clip, because it was measuring
+    the figure's permanent anatomy rather than anything that opened.
 
     `wall` is how far the outside has to be dilated before it reaches the region,
     which is the thickness of figure sealing it off: a gap pinched shut where two
@@ -169,7 +178,13 @@ def gap_regions(a, limit=3):
         ImageDraw.floodfill(lab, (int(rx[0]), int(ry[0])), label)
         found.append(np.asarray(lab) == label)
         label += 1
-    found.sort(key=lambda r: -int(r.sum()))
+    # Rank by what OPENED, not by total area, and drop regions that are entirely
+    # the art's own enclosed space — those are anatomy and say nothing about this
+    # clip.
+    was_gap = rest < SEE_THROUGH
+    newness = {id(r): int((r & ~was_gap[y0:y1 + 1, x0:x1 + 1]).sum()) for r in found}
+    found = [r for r in found if newness[id(r)] > 0]
+    found.sort(key=lambda r: -newness[id(r)])
     found = found[:limit]
 
     out = []
@@ -198,6 +213,7 @@ def gap_regions(a, limit=3):
         ry, rx = np.nonzero(r)
         out.append({
             "px": int(r.sum()),
+            "new": newness[id(r)],
             "wall": depth.get(id(r), 121),
             "at": [int(rx.mean()) + x0, int(ry.mean()) + y0],
         })
@@ -270,7 +286,7 @@ print(json.dumps({
     # What that number is made of, on the tick where it peaks. See gap_regions:
     # the area alone cannot tell a lifted limb from a joint, and this is what a
     # human needs in order to tell them apart without re-rendering the clip.
-    "interior_worst": gap_regions(alpha[int(np.argmax(_gaps))]),
+    "interior_worst": gap_regions(alpha[int(np.argmax(_gaps))], alpha[0]),
     # Worst tick and typical tick. A defect that only shows on some frames is
     # exactly what the max is for.
     "novel_colour_max": round(max(novel_colour_share(f) for f in frames), 5),

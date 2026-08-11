@@ -221,7 +221,16 @@ data collection, never a gate — it runs under `always()` so a red run's sample
 cannot change the job's exit code. Read it as: if the walls come out bimodal, the trough is the
 threshold; if they do not, say so and leave the warning soft. One caveat travels with the output
 and is printed in it — the delivered art still carries the 179 duplicated fragments, so part of
-today's sample *is* the defect. Re-run after the re-cut before setting a number from it. Three layers — every clip measured frame by frame, every driven input fired through the real state
+today's sample *is* the defect. Re-run after the re-cut before setting a number from it.
+
+**The first run has already earned its keep, by being wrong in a way worth recording.** It measured
+312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,
+no threshold. It also reported a bigfoot `revive` that opened 3px as a 76px region walled in by
+47px, at coordinates that barely moved from clip to clip. That is the tell: `interior_holes` is
+rest-subtracted and the region description was not, so it was describing each figure's permanent
+anatomy rather than anything the clip opened. Regions now carry `new` — the part that was solid
+figure at rest — and are ranked and filtered by it. Treat any wall distribution from before that fix
+as measuring the wrong population. Three layers — every clip measured frame by frame, every driven input fired through the real state
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
