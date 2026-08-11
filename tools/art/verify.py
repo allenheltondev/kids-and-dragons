@@ -739,6 +739,69 @@ def check_gear(rep: Report, mf: dict, skipped: list[str]) -> None:
               f"(roadmap chapter 5) - {', '.join(deferred)}{RESET}")
 
 
+def check_gear_portraits(rep: Report, mf: dict) -> None:
+    """Opaque portrait composites, distinct from transparent rig gear.
+
+    Each declaration is a deliberate cross-product of exact species, class,
+    and tier combinations. A missing file would otherwise degrade silently to
+    base species art in the client, so the manifest owns both existence and the
+    square canvas these commissioned illustrations were approved on.
+    """
+    root = os.path.join(ROOT, "assets", "gear-portraits")
+    declared: set[str] = set()
+
+    for group in mf.get("gearPortraits", []):
+        cls = group["class"]
+        canvas = group["canvas"]
+        expected_size = (canvas["width"], canvas["height"])
+        for tier in group.get("tiers", []):
+            for species in group.get("species", []):
+                rel = os.path.join(cls, tier, f"{species}.png")
+                label = f"gear-portraits/{cls}/{tier}/{species}.png"
+                path = os.path.join(root, rel)
+                declared.add(os.path.normcase(os.path.normpath(path)))
+                if not os.path.exists(path):
+                    rep.fail(label, "present", "missing")
+                    continue
+                try:
+                    with Image.open(path) as im:
+                        actual_size = im.size
+                        mode = im.mode
+                        image_format = im.format
+                        im.verify()
+                except Exception as err:  # noqa: BLE001 - a bad PNG is the finding
+                    rep.fail(label, "a decodable PNG", str(err))
+                    continue
+                if image_format != "PNG":
+                    rep.fail(f"{label} format", "PNG", image_format)
+                    continue
+                if actual_size != expected_size:
+                    rep.fail(
+                        f"{label} canvas",
+                        f"{expected_size[0]}x{expected_size[1]}",
+                        f"{actual_size[0]}x{actual_size[1]}",
+                    )
+                    continue
+                if mode not in ("RGB", "RGBA"):
+                    rep.fail(f"{label} mode", "RGB or RGBA", mode)
+                    continue
+                rep.ok(f"{label}  {actual_size[0]}x{actual_size[1]} {mode}")
+
+    if not os.path.isdir(root):
+        return
+    for base, _, files in os.walk(root):
+        for filename in files:
+            if not filename.lower().endswith(".png"):
+                continue
+            path = os.path.normcase(os.path.normpath(os.path.join(base, filename)))
+            if path not in declared:
+                rep.fail(
+                    os.path.relpath(path, ROOT),
+                    "declared in manifest.gearPortraits",
+                    "undeclared PNG",
+                )
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -795,6 +858,7 @@ def main() -> int:
     # Nor is gear: it is per-class, not per-species, and the whole point of
     # checking it is that nobody was going to remember to ask.
     check_gear(rep, mf, skipped)
+    check_gear_portraits(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:
