@@ -45,8 +45,17 @@ const { clips } = JSON.parse(readFileSync(file, "utf8"));
  * A clip whose figure never encloses anything new says nothing about where to
  * draw the line, and letting hundreds of zeroes into the histogram would make
  * any distribution look bimodal at zero.
+ *
+ * Keyed on the regions, NOT on `interior_holes`, and the difference is not
+ * academic. `interior_holes` is a *net*: the peak frame's enclosed area minus
+ * the rest frame's. A clip can open a real hole at a joint while a limb closes
+ * an equal amount of the figure's own negative space, and the net reads zero.
+ * The first good calibration run caught one — `griffin/radiant revive` reported
+ * 3px of net change over a region with 141px that had been solid figure at rest.
+ * Filtering on the net would have dropped exactly the clips most worth looking
+ * at, which is also a fact about the gate above: its headline number can cancel.
  */
-const opened = clips.filter((c) => c.interior_holes > 0 && c.worst.length > 0);
+const opened = clips.filter((c) => c.worst.length > 0);
 /*
  * The wall of the region that OPENED most, not of the biggest region on the
  * frame. `worst` is already ranked by `new` (the part of each region that was
@@ -71,6 +80,7 @@ const p = (s = "") => out.push(s);
 p(md ? "## Enclosed-gap calibration" : "enclosed-gap calibration");
 p();
 p(`${clips.length} clips measured, ${opened.length} opened a gap during the clip.`);
+p("(\"opened\" counts regions that were solid figure at rest, not the net area change.)");
 p();
 
 if (opened.length === 0) {
@@ -93,7 +103,7 @@ if (opened.length === 0) {
   const sorted = [...opened].sort((a, b) => b.worst[0].wall - a.worst[0].wall);
   p(md ? "### Deepest-walled gaps — look at these clips" : "deepest-walled gaps — look at these clips");
   p();
-  p(md ? "| clip | area opened | worst region |" : "clip                                area    worst region");
+  p(md ? "| clip | net change | worst region |" : "clip                                 net    worst region");
   if (md) p("|---|---:|---|");
   for (const c of sorted.slice(0, 15)) {
     const w = c.worst[0];
