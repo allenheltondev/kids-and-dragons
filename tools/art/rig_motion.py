@@ -135,9 +135,10 @@ def gap_regions(a, limit=3):
     limbs cross reads a handful of pixels, a hole in the middle of a torso reads
     tens. That is the distinction a human makes instantly from the picture and
     could not make from an area, and it is a *description*, not a threshold —
-    calibrating it into a gate needs the moving population, which means a run
-    against the real renderer (`npm run art:verify:rig:motion`, CI's `rig-motion`
-    workflow). Nothing here is on the hot path: it runs on one frame per clip.
+    calibrating it into a gate needs the moving population, which only the real
+    renderer can produce — CI's `rig-motion` workflow collects it every run via
+    `--gap-report` and summarises it with `tools/art/gap-calibration.mjs`.
+    Nothing here is on the hot path: it runs on one frame per clip.
     """
     gap = a < SEE_THROUGH
     solid = ~gap
