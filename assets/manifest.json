@@ -165,6 +165,13 @@
   ],
   "$gearDeferredComment": "Same stance as abilities.json $deferred: declared and waited on, never silently absent. Songkeeper's three sets shipped with the split scripts; the other three classes are roadmap chapter 5 commissions. The verifier reports a deferred class instead of failing on it (strict mode included, so the prod gate stays armed for what *is* due), and checks it like anything else the moment its directory appears. Delivering a class is: commission it, drop the deferred flag.",
 
+  "$gearPortraitsComment": "Approved opaque creature-and-gear composites for portrait surfaces. These are not substitutes for assets/gear's transparent rig parts: each file depicts one exact species, class, and tier, and the animated world/board rigs continue to use separable character art. Fledglings have no class gear. The verifier checks every declared cross-product at assets/gear-portraits/<class>/<tier>/<species>.png.",
+  "gearPortraits": [
+    { "class": "thornguard", "tiers": ["sworn", "radiant", "mythic"], "species": ["dragonling", "unicorn", "bigfoot"], "canvas": { "width": 1254, "height": 1254 } },
+    { "class": "duskrunner", "tiers": ["sworn", "radiant", "mythic"], "species": ["dragonling", "unicorn", "bigfoot"], "canvas": { "width": 1254, "height": 1254 } },
+    { "class": "starweaver", "tiers": ["sworn", "radiant", "mythic"], "species": ["dragonling", "unicorn", "bigfoot"], "canvas": { "width": 1254, "height": 1254 } }
+  ],
+
   "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question.",
 
   "effects": [

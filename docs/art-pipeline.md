@@ -58,6 +58,8 @@ assets/
                                  writes 384px WebP for cards and lists (§2.1)
   gear/
     <class>/<tier>/              overlay parts, same registration
+  gear-portraits/
+    <class>/<tier>/<species>.png opaque still-image composites; never rig input
   entities/
     <entity-id>/assembled.png    canonical non-player creatures — single cutouts,
                                  no parts, no tiers (asset-brief §6.4)
@@ -274,6 +276,7 @@ chunk that the join screen must not wait for.
 |---|---|---|
 | `characters/<species>/<tier>/assembled.png` | `screens/CharacterPortrait.tsx` (DOM) | the six species cards, the hero pinned above every later creation step, the creation preview, the lobby lineup, your own sheet |
 | ” | `world/scene.ts`, `world/board.ts` (Pixi) | the party standing in a scene, the figures on the combat grid |
+| `gear-portraits/<class>/<tier>/<species>.png` | `screens/CharacterPortrait.tsx` (DOM) | approved geared stills in the lobby, player sheet, dice, combat controls, and level-up |
 | `entities/<id>/assembled.png` | `world/board.ts` | monsters in a fight |
 | `biomes/<b>/bg.webp` | `world/scene.ts` → `setBiome`, and the creation preview's stage | behind the party in every story scene |
 | `biomes/<b>/tiles.png` | `world/board.ts` | the combat floor |
@@ -283,7 +286,8 @@ Two rules hold across all of them, because art is deployed separately from the b
 therefore 404 against a perfectly good build:
 
 - **A missing file degrades, never blanks.** Pixi keeps `drawPlaceholder`'s hatched silhouette;
-  the DOM portrait falls back to the species icon; a missing backdrop leaves the drawn stand-in.
+  a missing gear portrait steps down to species art, then the DOM portrait falls back to the
+  species icon; a missing backdrop leaves the drawn stand-in.
 - **No screen depends on a picture to be usable.** Every portrait sits beside the name it belongs
   to, so the art is decoration on top of text that already says the same thing (spec §11).
 
