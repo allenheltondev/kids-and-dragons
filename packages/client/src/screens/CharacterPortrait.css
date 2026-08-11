@@ -94,6 +94,19 @@
   place-items: center;
 }
 
+/*
+ * Gear portraits are complete, opaque square illustrations rather than the
+ * transparent 1024px rig canvas. Keep their authored navy field inside the
+ * portrait box and do not apply the transparent-canvas floor correction.
+ */
+.portrait--gear .portrait__img,
+.portrait--floor.portrait--gear .portrait__img,
+.portrait--centre.portrait--gear .portrait__img {
+  block-size: 100%;
+  object-position: 50% 50%;
+  translate: none;
+}
+
 /* The light follows the feet up with it, or it pools under empty air. */
 .portrait--centre.portrait--lit::before {
   inset-block-end: calc(var(--portrait-floor, 12.109375%) / 2);
