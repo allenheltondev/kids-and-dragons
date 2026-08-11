@@ -213,6 +213,118 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  rigs:
+    # Where a rig stands, checked on every pull request.
+    #
+    # A rig is a binary somebody else's tool produced, and until this job existed
+    # nothing in CI could see inside one. That is not a hypothetical gap: all 24
+    # rigs shipped built at 90% scale with their feet 73px low, and separately the
+    # four manticore tiers shipped with a corrupt mesh — both passed every check
+    # the pipeline had, because `art:verify:rig` reads the file as data and
+    # `art:verify:rig:motion` measures each clip against *that rig's own* rest
+    # pose. A rig uniformly too small is internally consistent. Only comparing it
+    # against the approved art catches it, and that needs a renderer.
+    #
+    # Separate job rather than a step in `build` so it runs in parallel and adds
+    # nothing to the critical path — it is ~40s of gate behind ~90s of setup.
+    name: rigs stand where their art stands
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      # numpy and Pillow: the comparison itself is a few lines of python inside
+      # verify-rig-rest.mjs, the same as the rest of the art tooling.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      # The version is data, not a literal in this file: `art/rig/rive-mcp.pin.json`
+      # is what both this job and rig-motion.yml read, so the renderer moves in one
+      # visible commit rather than in two workflows that can disagree.
+      - name: Read the pinned rive-mcp
+        id: pin
+        run: |
+          ref=$(jq -r '.ref' art/rig/rive-mcp.pin.json)
+          # A short sha or a branch name would still check out, and would make
+          # "which renderer measured this" unanswerable six months from now.
+          if ! printf '%s' "$ref" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::art/rig/rive-mcp.pin.json ref is not a full 40-char sha: $ref"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      # rive-mcp is a separate public repository and is not an npm dependency of
+      # this one — its published package ships only the MCP server, not the
+      # `rive-mcp-build` CLI this gate drives, so there is nothing to `npm i`.
+      # (If it ever goes private, this step is where it fails, and it would need a
+      # PAT in `token:` rather than the default GITHUB_TOKEN.)
+      - name: Check out the pinned rive-mcp
+        uses: actions/checkout@v7
+        with:
+          repository: allenheltondev/rive-mcp
+          ref: ${{ steps.pin.outputs.ref }}
+          path: .rive-mcp
+
+      - name: Build the Rive CLI
+        run: npm ci && npm run build
+        working-directory: .rive-mcp
+
+      # `render` drives the real Rive runtime through headless Chromium, and it
+      # has to be a real browser: the in-process runtime `art:verify:rig` uses
+      # reports "No WebGL support. Image mesh will not be drawn.", so a node-only
+      # renderer would score the one meshed species against a tail that was never
+      # drawn — passing exactly the rig most likely to be broken.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Chromium system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      # rive-mcp finds a Playwright chromium under ~/.cache/ms-playwright on its
+      # own, which is where the step above puts it. Named explicitly anyway: it
+      # picks the highest revision it finds, and this job should measure with the
+      # browser it just installed rather than with whatever the cache holds.
+      - name: Point the CLI at Chromium
+        run: |
+          exe=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | sort -V | tail -1)
+          # Fail here rather than four steps down. Without this the CLI reports
+          # "No Chromium-based browser found", which reads like a rig problem.
+          if [ -z "$exe" ]; then
+            echo "::error::no Playwright chromium under ~/.cache/ms-playwright — the install step above put one somewhere else"
+            exit 1
+          fi
+          echo "RIVE_MCP_CHROME=$exe" >> "$GITHUB_ENV"
+          echo "KAD_RIVE_CLI=$PWD/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
+
+      # Frame 0 of `idle` against that tier's approved assembled.png, in the
+      # canvas-sized window at the stage offset. 24 rigs, ~40s.
+      - name: Verify rigs at rest
+        run: npm run art:verify:rig:rest
+
   e2e:
     # The roadmap's dev loop says a change isn't done until it has been seen on
     # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
