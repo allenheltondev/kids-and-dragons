@@ -158,6 +158,7 @@ export function DiceOverlay(): ReactElement | null {
             <CharacterPortrait
               species={roller.character.species}
               tier={roller.character.tier}
+              characterClass={roller.character.class}
               className="dice__roller"
             />
           )}

@@ -200,6 +200,7 @@ export function CreationPreview(): ReactElement {
               <CharacterPortrait
                 species={member.character.species}
                 tier={member.character.tier}
+                characterClass={member.character.class}
                 className="preview__done-art"
               />
               <span>{member.character.name}</span>
