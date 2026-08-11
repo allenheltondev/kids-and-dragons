@@ -38,9 +38,14 @@
  *     npm run art:verify:rig:rest
  *     node tools/art/verify-rig-rest.mjs unicorn --tier mythic
  *
- * Needs the Rive CLI (KAD_RIVE_CLI, or rive-mcp-build on PATH), which is not a
- * dependency of this repo — so this does not run in CI, and a green pipeline
- * says nothing about it.
+ * Needs the Rive CLI (KAD_RIVE_CLI, or rive-mcp-build on PATH), which is not an
+ * npm dependency of this repo — its published package ships only the MCP server,
+ * not this CLI. CI builds it from source instead: the `rigs` job in ci.yml checks
+ * out `rive-mcp` at the commit pinned in `art/rig/rive-mcp.pin.json` and runs this
+ * on every pull request, ~40s for all 24. So a green pipeline does now say
+ * something about it — which it did not when this file was written, and which is
+ * the whole reason the pin exists: the renderer is the measuring instrument, and
+ * an instrument that moves on its own turns this gate into a coin toss.
  */
 
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
