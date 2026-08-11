@@ -405,8 +405,8 @@ Do **not** batch all 24 characters. Deliver in this order and **stop for review 
 2. Remaining three unicorn tiers. **Stop** — this is the cross-tier consistency test. *(Delivered.)*
 3. One gear set (`songkeeper`, three tiers) on the unicorn. **Stop.** *(Delivered.)*
 4. Remaining five species, all tiers. *(Delivered — the full 24-set cast is in.)*
-5. Remaining gear, effects, biomes, tiles. *(Partial: biomes and tiles are delivered; effects stand
-   at 11 of 17 — §9.4's six combat sheets remain; gear stands at 3 of 12 — §4.3.)*
+5. Remaining gear, effects, biomes, tiles. *(Partial: biomes and tiles are delivered; effects are
+   complete at 17 of 17; gear stands at 3 of 12 — §4.3.)*
 
 🔺 Revision 1 produced `sworn` before `fledgling` was reviewed. Don't. A character approved at
 gate 1 defines all later tiers; producing them early guarantees rework.
@@ -628,9 +628,9 @@ triggered it.
 | `attack` | 8, **impact event at tick 3** | 0.667 | §6.1's "~0.6s", snapped to the 12fps grid |
 | `cast` | 10, **release event at tick 4** | 0.833 | Two ticks longer than `attack` on purpose: a cast that is the same length as a swing reads as a swing |
 | `hurt` | 5 | 0.417 | Starts on the impact event, ends with the attack clip. Adds nothing to the turn. |
-| `guard` | 6, then hold | 0.5 | Brace lasts until your next turn (`encounter.ts`), so the clip is a plant and a hold, not a loop |
+| `guard` | 6, then hold, **ward event at tick 3** | 0.5 | Brace lasts until your next turn (`encounter.ts`), so the clip is a plant and a hold, not a loop; the ward blooms when the stance plants |
 | `leap` | 11 — 3 crouch, 5 airborne, 3 land | 0.917 | The engine translates the figure during the airborne 5; the sheet's `dust_scuff` plays on ticks 3 and 8 |
-| `down` | 6 fall, then `down_loop` (24, looped) | 0.5 + loop | §9.3. The loop is its own Rive animation, named in the manifest (`loopClip`), and ships with `down` — a rig delivering one without the other fails. |
+| `down` | 6 fall, **settle event at tick 6**, then `down_loop` (24, looped) | 0.5 + loop | §9.3. The event starts `down_settle` exactly when the fall hands off to the breathing loop. The loop is its own Rive animation, named in the manifest (`loopClip`), and ships with `down` — a rig delivering one without the other fails. |
 | `lift` | 10, **contact event at tick 6** | 0.833 | §9.3 |
 | `revive` | 10, started by the lift's contact event | 0.833 | §9.3. Runs to tick 15 where the lift ends at 10; the verifier charges the overhang to the Help Up turn. |
 | `celebrate` | 24 | 2.0 | Unchanged. Plays after the fight, so it is outside the budget. |
@@ -708,26 +708,25 @@ game is built on stops being legible.
 
 ### 9.4 Effects — mapping the ten verbs
 
-Five sheets exist, of which **four are combat sheets** — `transform_flash` belongs to Chapter 5's
-cutscene. The ten verbs plus two moments the verbs imply rather than name (a *miss* is the same
-verb as a hit and the opposite information; a *knockdown* is the `down` event that damage produces)
-come to eleven moments needing **ten sheets**, because `moveSelf` and `shove` share one. **Six are
-missing.**
+All ten combat sheets now exist; `transform_flash` is the additional Chapter 5 cutscene sheet.
+The ten verbs plus two moments the verbs imply rather than name (a *miss* is the same verb as a hit
+and the opposite information; a *knockdown* is the `down` event that damage produces) come to
+eleven moments needing **ten sheets**, because `moveSelf` and `shove` share one.
 
 | Verb | Sheet | Status |
 |---|---|---|
 | `attack` — hit | `impact_strike` | exists, 8 |
-| `attack` — miss | **`miss_veer`** | **new, 8** |
+| `attack` — miss | `miss_veer` | exists, 8 |
 | `damage` (area) | `burst_star` | exists, 12 |
 | `heal` | `heal_bloom` | exists, 12 |
 | `revive` | `revive_lift` | exists, 12 |
-| `rollBonus` | **`bonus_spark`** | **new, 8** |
-| `moveSelf` | **`dust_scuff`** | **new, 8** |
+| `rollBonus` | `bonus_spark` | exists, 8 |
+| `moveSelf` | `dust_scuff` | exists, 8 |
 | `shove` | `dust_scuff` | same sheet |
-| `skipTurn` | **`daze_swirl`** | **new, 12** |
-| `protect` | **`guard_ward`** | **new, 8** |
+| `skipTurn` | `daze_swirl` | exists, 12 |
+| `protect` | `guard_ward` | exists, 8 |
 | `goFirst` | — | **nothing.** Initiative-time; the turn-order strip is vector UI |
-| (the `down` event) | **`down_settle`** | **new, 12** |
+| (the `down` event) | `down_settle` | exists, 12 |
 
 **A miss gets its own sheet because absence is not a signal.** `resolveAttack` produces a real
 miss result and `hurt` simply does not play; if nothing else marks it, the child is left reading a
@@ -942,11 +941,9 @@ And two rules that follow from "what just hit whom":
 this brief's job; adding them is the manifest's owner's job.** Items marked ✅ are in the manifest and
 enforced; the rest are not, and §9 is not enforceable for them. Do not commission against §9 alone.
 
-1. **`effects[]` — six new entries**, each `size: 256`, `fps: 12`:
-   `miss_veer` (8), `bonus_spark` (8, `tintable: true`), `dust_scuff` (8), `daze_swirl`
-   (12, `tintable: true`), `guard_ward` (8, `tintable: true`), `down_settle` (12).
-   *Not added — this is art that has not been commissioned yet. `tintable` is checked the moment one
-   arrives.*
+1. ✅ **`effects[]` — all six new entries**, `size: 256`, `fps: 12`: `miss_veer` (8),
+   `bonus_spark` (8), `dust_scuff` (8), `daze_swirl` (12), `guard_ward` (8), and
+   `down_settle` (12). *Delivered and declared.*
 2. ✅ **`effects[]` — six entries for art that already shipped undeclared.** The six
    `aura_<species>` sheets, with `tileScoped: false`.
 3. ✅ **`fps` on every `effects[]` entry**, so a sheet that claims 24 cannot arrive undetected.
