@@ -23,15 +23,6 @@
 # changed — the rigs themselves, the contract they derive from, or the gate. Rigs
 # are regenerated rarely and in bulk, so this is nearly always "not this PR", and
 # when it is this PR it is exactly the PR you want it on.
-#
-# One thing that path list deliberately does not catch: a `rive-mcp-server` bump,
-# which changes the renderer without touching a rig. Matching on package.json or
-# the lockfile would run this twenty-minute job on every dependency PR, which is
-# most of them. The cover is that `rigs` in ci.yml runs on *every* pull request
-# including Dependabot's, so a renderer that rasterises differently fails on the
-# PR that introduced it. A renderer change that breaks a clip without moving the
-# rest pose would get through to main and be caught there — dispatch this
-# manually on a renderer bump if that matters more than the minutes.
 
 name: Rig motion
 
@@ -92,9 +83,43 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
-      # The renderer arrives with `npm ci` — `rive-mcp-server` is a devDependency
-      # and `npm run` puts its `rive-mcp-build` on PATH, so nothing here needs to
-      # name a version or a path. The version is package-lock.json's.
+      # Same pin as the `rigs` job in ci.yml, read from the same file. See
+      # art/rig/rive-mcp.pin.json for why the renderer is pinned at all.
+      # Same reasoning as ci.yml's `rigs` job: a missing or expired secret would
+      # otherwise present as "Repository not found".
+      - name: Check the rive-mcp token exists
+        env:
+          TOKEN: ${{ secrets.RIVE_MCP_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::secret RIVE_MCP_TOKEN is not set — see the rigs job in .github/workflows/ci.yml."
+            exit 1
+          fi
+
+      - name: Read the pinned rive-mcp
+        id: pin
+        run: |
+          ref=$(jq -r '.ref' art/rig/rive-mcp.pin.json)
+          if ! printf '%s' "$ref" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::art/rig/rive-mcp.pin.json ref is not a full 40-char sha: $ref"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      # Same private repo and the same fine-grained PAT as ci.yml's `rigs` job —
+      # including the same expiry trap, which is documented there.
+      - name: Check out the pinned rive-mcp
+        uses: actions/checkout@v7
+        with:
+          repository: allenheltondev/rive-mcp
+          ref: ${{ steps.pin.outputs.ref }}
+          path: .rive-mcp
+          token: ${{ secrets.RIVE_MCP_TOKEN }}
+
+      - name: Build the Rive CLI
+        run: npm ci && npm run build
+        working-directory: .rive-mcp
+
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v4
@@ -109,6 +134,16 @@ jobs:
       - name: Install Chromium system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
+
+      - name: Point the CLI at Chromium
+        run: |
+          exe=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux/chrome 2>/dev/null | sort -V | tail -1)
+          if [ -z "$exe" ]; then
+            echo "::error::no Playwright chromium under ~/.cache/ms-playwright — the install step above put one somewhere else"
+            exit 1
+          fi
+          echo "RIVE_MCP_CHROME=$exe" >> "$GITHUB_ENV"
+          echo "KAD_RIVE_CLI=$PWD/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
 
       # `--jobs` is left to the tool, which sizes itself to the runner's cores.
       - name: Verify rig motion

@@ -38,16 +38,14 @@
  *     npm run art:verify:rig:rest
  *     node tools/art/verify-rig-rest.mjs unicorn --tier mythic
  *
- * Needs the Rive CLI, which is the `rive-mcp-server` devDependency: `npm run`
- * puts its `rive-mcp-build` on PATH, so the fallback below finds it and nothing
- * needs configuring. `KAD_RIVE_CLI` still overrides, for running this against a
- * working tree while developing the rigging upstream.
- *
- * The `rigs` job in ci.yml runs this on every pull request, ~40s for all 24. So a
- * green pipeline does now say something about it, which it did not when this file
- * was written. That the version comes from package-lock.json is the load-bearing
- * part: this gate's verdict is only as stable as the renderer producing the
- * pixels, and the floor below has 0.17 points of headroom on two rigs.
+ * Needs the Rive CLI (KAD_RIVE_CLI, or rive-mcp-build on PATH), which is not an
+ * npm dependency of this repo — its published package ships only the MCP server,
+ * not this CLI. CI builds it from source instead: the `rigs` job in ci.yml checks
+ * out `rive-mcp` at the commit pinned in `art/rig/rive-mcp.pin.json` and runs this
+ * on every pull request, ~40s for all 24. So a green pipeline does now say
+ * something about it — which it did not when this file was written, and which is
+ * the whole reason the pin exists: the renderer is the measuring instrument, and
+ * an instrument that moves on its own turns this gate into a coin toss.
  */
 
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
