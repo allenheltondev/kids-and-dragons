@@ -283,6 +283,7 @@ export function CombatControls(): ReactElement | null {
               <CharacterPortrait
                 species={member.character.species}
                 tier={member.character.tier}
+                characterClass={member.character.class}
                 className="combat__face"
               />
             )}
