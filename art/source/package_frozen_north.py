@@ -22,7 +22,7 @@ DESTINATIONS = {
         ),
     },
     "glacier_of_origins": {
-        "background": "biome_glacier_of_origins_bg_v2_raw.png",
+        "background": "biome_glacier_of_origins_bg_raw.png",
         "props": "glacier_of_origins_props_alpha.png",
         "prop_names": (
             "trapped_stone_pillar",
@@ -139,7 +139,7 @@ for index, (destination, background) in enumerate(backgrounds.items()):
         550,
         x + 480,
     )
-background_review.save(REVIEW / "frozen_north_backdrops_v2.png", optimize=True)
+background_review.save(REVIEW / "frozen_north_backdrops.png", optimize=True)
 
 shared_tiles.save(REVIEW / "frozen_north_tiles.png", optimize=True)
 

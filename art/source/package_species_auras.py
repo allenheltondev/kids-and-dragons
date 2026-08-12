@@ -128,7 +128,7 @@ for species in SPECIES:
     composites[species] = make_composite(species, species_frames[6])
 
 unicorn_composite = Image.open(
-    REVIEW / "aura_unicorn_mythic_composite_v2.png"
+    REVIEW / "aura_unicorn_mythic_composite.png"
 ).convert("RGB")
 composites = {"unicorn": unicorn_composite, **composites}
 
@@ -152,7 +152,7 @@ for index, (species, composite) in enumerate(composites.items()):
 overview.save(REVIEW / "mythic_species_auras.png", optimize=True)
 
 frame_reviews = {
-    "unicorn": Image.open(REVIEW / "aura_unicorn_frames_v2.png").convert("RGB")
+    "unicorn": Image.open(REVIEW / "aura_unicorn_frames.png").convert("RGB")
 }
 for species in SPECIES:
     frame_reviews[species] = Image.open(
