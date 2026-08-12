@@ -239,6 +239,28 @@ closed an equal amount of the figure's own negative space, and the two cancelled
 headline number can read ~zero through a real joint opening, which no threshold on it can fix. The
 per-region `new` figure does not cancel, and the calibration is keyed on it rather than on the net.
 
+**And the run after that corrected the correction.** Re-keying the calibration off the net changed
+nothing — 300 clips of 312 opened something both times, every bucket identical — and that null
+result is the useful part, because it is guaranteed rather than incidental. `interior_worst` is
+measured at `argmax(_gaps)`, and frame 0 is in `_gaps`, so the max is never below rest: either the
+peak beats rest (`interior_holes > 0`) or the peak *is* rest, in which case `gap_regions` compares
+the rest frame against itself, every region scores `new = 0`, and the list comes back empty. So
+`worst` non-empty already implies `interior_holes > 0` — the old filter's net clause was redundant,
+and it never dropped a clip. The commit that removed it claimed otherwise; it was wrong, and
+`griffin/radiant revive` was never at risk, since 3px passes a `> 0` test perfectly well.
+
+**Which leaves the real blind spot, still open and worth a follow-up.** The cancellation is not in
+the filter, it is in the *frame selection*: regions are only ever read off the frame with the largest
+**total** enclosed area, and total is exactly the quantity that cancels. A frame where a joint opens
+141px while a limb closes 140px of the figure's own negative space contributes +1px to `_gaps` and
+loses the argmax to some blander frame, so the gate reports regions from the wrong tick. In the limit
+— cancellation dead even across the whole clip — `interior_holes` is 0, `interior_worst` is `[]`, and
+the clip is invisible to the gate *and* to this calibration, which is why no amount of sampling here
+will turn one up. The fix is to pick the peak frame by the largest **new** region rather than by
+total enclosed area, i.e. run `gap_regions` per frame and take the max of `new`. That changes every
+number the gate reports, so it wants its own change and its own motion run, not a hitchhike on this
+one.
+
 **The very first run earned its keep by being wrong in a way worth recording.** It measured
 312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,
 no threshold. It also reported a bigfoot `revive` that opened 3px as a 76px region walled in by
