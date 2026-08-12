@@ -270,11 +270,29 @@ clip — measured at 1.02x on real 1024px art, ~27s across a 312-clip run.
 Two consequences worth knowing. `interior_worst` and `interior_holes` can now come from **different
 ticks** by design — the number answers "how much gap did this clip end up with", the regions answer
 "where did it tear worst" — so `interior_worst_tick` says which frame to actually open. And every
-wall number collected before this change was read off a tick chosen the old way: **the 93/121/41/44/1
-histogram and the ~20px trough above describe a partly different population and have to be
-re-measured.** Treat the 20px candidate as unconfirmed until a run on this code reproduces it. The
-clip count moves too, and for an unrelated reason — the class rigs are motion jobs now — so the next
-run differing from 312 is not evidence of anything by itself.
+wall number collected before this change was read off a tick chosen the old way, so the
+93/121/41/44/1 histogram above describes a partly different population.
+
+**The run on the corrected selection re-derives it, and the trough holds.** 390 clips measured,
+walls **132 / 160 / 43 / 54 / 1** — the same shape as before (34% / 41% / 11% / 14% / 0.3% against
+31% / 40% / 14% / 15% / 0.3%), with the trough still at 10–19px and slightly deeper relative to the
+bump above it. **The ~20px candidate survives being re-measured on a sounder instrument**, which is
+the outcome that was genuinely in doubt. The clip count rose from 312 for the unrelated reason that
+class rigs are motion jobs now, so counts are not comparable across the two runs; the shares are.
+
+Two things did change, and both are the fix working. **"Opened a gap" went from 300 of 312 to 390 of
+390** — every clip now opens *some* enclosed region on *some* tick, because the description is no
+longer read off a single frame that was often the rest pose. As a filter it now discriminates
+nothing, and the wall distribution is the whole signal. And the clips whose *net* is ~0 while a real
+region opens are visible at last: `griffin/radiant down` reports **0px net against 472px opened,
+walled in by 29px**, `griffin/fledgling revive` 8px against 293px by 31px, `bigfoot/mythic leap` 13px
+against 129px by 33px. Under the old selection those three contributed nothing at all. They are the
+first direct evidence that the cancelling population is real and present in this corpus, and they are
+the clips to eyeball first.
+
+The threshold still should not be set from this run: the 179 duplicated fragments are still in the
+delivered art, so part of the 20–39 bump may be the defect rather than anatomy. That prediction is
+unchanged and still needs the re-cut to settle.
 
 **The very first run earned its keep by being wrong in a way worth recording.** It measured
 312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,
