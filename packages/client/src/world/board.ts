@@ -66,6 +66,7 @@ import {
   approach,
   biomeTilesUrl,
   characterArtUrl,
+  characterWorldArtUrl,
   drawPlaceholder,
   enemyArtUrl,
 } from "./actor-art";
@@ -335,7 +336,11 @@ export function createBoardLayer(): BoardLayer {
     if (combatant.side === "party") {
       const member = current.party.find((m) => m.character.id === combatant.id);
       if (!member) return null;
-      return characterArtUrl(member.character.species, member.character.tier);
+      return characterWorldArtUrl(
+        member.character.species,
+        member.character.tier,
+        member.character.class,
+      );
     }
     // Enemy ids are `<specId>#<n>` (encounter.ts); the art hangs off the spec.
     const specId = combatant.id.split("#")[0] ?? combatant.id;
@@ -421,8 +426,8 @@ export function createBoardLayer(): BoardLayer {
 
     // The rig first, the cutout when there isn't one — the same order and the
     // same never-goes-stale reasoning the story lineup uses (scene.ts).
-    const { species, tier } = member.character;
-    void createRiveActor(species, tier, ACTOR_HEIGHT)
+    const { species, tier, class: characterClass } = member.character;
+    void createRiveActor(species, tier, ACTOR_HEIGHT, characterClass)
       .then((rive) => {
         if (destroyed || actors.get(combatant.id) !== actor) {
           rive?.destroy();
