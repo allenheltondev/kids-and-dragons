@@ -9,7 +9,7 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "expanse"
-BACKGROUND = "biome_expanse_bg_v2_raw.png"
+BACKGROUND = "biome_expanse_bg_raw.png"
 TILES = "expanse_tiles_raw.png"
 PROPS = "expanse_props_alpha.png"
 PROP_NAMES = (

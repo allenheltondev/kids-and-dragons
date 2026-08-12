@@ -9,7 +9,7 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "sky_islands"
-BACKGROUND = "biome_sky_islands_bg_v4_raw.png"
+BACKGROUND = "biome_sky_islands_bg_raw.png"
 TILES = "sky_islands_tiles_raw.png"
 PROPS = "sky_islands_props_alpha.png"
 PROP_NAMES = (
