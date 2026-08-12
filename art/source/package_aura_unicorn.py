@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "art" / "source" / "aura_unicorn_storyboard_v2_raw.png"
+SOURCE = ROOT / "art" / "source" / "aura_unicorn_storyboard_raw.png"
 CHARACTER = ROOT / "assets" / "characters" / "unicorn" / "mythic" / "assembled.png"
 EFFECTS = ROOT / "assets" / "effects"
 REVIEW = ROOT / "art" / "review"
@@ -79,7 +79,7 @@ for index, frame in enumerate(frames):
     y = (index // COLS) * FRAME_SIZE
     review.paste(frame.convert("RGB"), (x, y), frame)
     draw.text((x + 10, y + 9), f"{index + 1:02}", fill=(210, 205, 216), font=font)
-review.save(REVIEW / "aura_unicorn_frames_v2.png", optimize=True)
+review.save(REVIEW / "aura_unicorn_frames.png", optimize=True)
 
 composite = Image.new("RGBA", (FRAME_SIZE, FRAME_SIZE), (29, 27, 38, 255))
 composite.alpha_composite(frames[6])
@@ -88,5 +88,5 @@ character = Image.open(CHARACTER).convert("RGBA").resize(
 )
 composite.alpha_composite(character)
 composite.resize((512, 512), Image.Resampling.LANCZOS).convert("RGB").save(
-    REVIEW / "aura_unicorn_mythic_composite_v2.png", optimize=True
+    REVIEW / "aura_unicorn_mythic_composite.png", optimize=True
 )

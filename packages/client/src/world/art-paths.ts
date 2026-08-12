@@ -51,27 +51,59 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
 }
 
 /**
- * Approved class-gear portraits currently exist for the three creatures used
- * to prove the winged quadruped, unwinged quadruped, and upright fits. They are
- * complete opaque illustrations, not rig parts, so this path is deliberately
- * separate from `assets/gear/` and is consumed only by portrait surfaces.
+ * Class rigs are commissioned one exact species/class/tier combination at a
+ * time. This set is intentionally tested against manifest.rigVariants: the
+ * runtime stays tiny while the manifest remains the source of truth.
+ */
+const CLASS_RIG_VARIANTS = new Set<string>([
+  "thornguard/sworn/bigfoot",
+  "thornguard/sworn/dragonling",
+  "thornguard/sworn/griffin",
+  "thornguard/sworn/kitsune",
+  "thornguard/sworn/manticore",
+  "thornguard/sworn/unicorn",
+]);
+
+function classRigKey(species: SpeciesId, tier: TierId, characterClass: ClassId): string {
+  return `${characterClass}/${tier}/${species}`;
+}
+
+function hasClassRig(species: SpeciesId, tier: TierId, characterClass?: ClassId): boolean {
+  return (
+    characterClass !== undefined &&
+    CLASS_RIG_VARIANTS.has(classRigKey(species, tier, characterClass))
+  );
+}
+
+/** The still-image fallback matching the rig selected for a world figure. */
+export function characterWorldArtUrl(
+  species: SpeciesId,
+  tier: TierId = STARTING_TIER,
+  characterClass?: ClassId,
+): string {
+  if (hasClassRig(species, tier, characterClass)) {
+    return `/assets/character-rigs/${characterClass}/${tier}/${species}/assembled.png`;
+  }
+  return characterArtUrl(species, tier);
+}
+
+/**
+ * Approved purpose-drawn class-gear variants exist for every species and geared
+ * tier. They are complete opaque illustrations, not rig parts, so this path is
+ * deliberately separate from `assets/gear/` and is consumed only by portrait
+ * surfaces.
  *
  * Returning `null` is part of the contract: fledglings wear no class gear,
- * Songkeeper still uses its separable overlays, and the other three species
- * have not had their own composites painted yet. Callers can fall back to the
- * species/tier art without probing a URL known not to exist.
+ * while every ClassId has an accepted Sworn, Radiant, and Mythic variant.
+ * Callers can fall back to the species/tier art without probing a fledgling URL
+ * known not to exist.
  */
 export function gearPortraitUrl(
   species: SpeciesId,
   characterClass: ClassId,
   tier: TierId,
 ): string | null {
-  const hasClass =
-    characterClass === "thornguard" ||
-    characterClass === "duskrunner" ||
-    characterClass === "starweaver";
-  const hasSpecies = species === "dragonling" || species === "unicorn" || species === "bigfoot";
-  if (!hasClass || !hasSpecies || tier === "fledgling") return null;
+  if (tier === "fledgling") return null;
   return `/assets/gear-portraits/${characterClass}/${tier}/${species}.png`;
 }
 
@@ -93,7 +125,14 @@ export function characterPortraitArtUrl(
  * `assembled.png` on purpose: the PNG is the rig's own fallback, so the two
  * living in one directory is the statement that they are the same character.
  */
-export function characterRigUrl(species: SpeciesId, tier: TierId = STARTING_TIER): string {
+export function characterRigUrl(
+  species: SpeciesId,
+  tier: TierId = STARTING_TIER,
+  characterClass?: ClassId,
+): string {
+  if (hasClassRig(species, tier, characterClass)) {
+    return `/assets/character-rigs/${characterClass}/${tier}/${species}/rig.riv`;
+  }
   return `/assets/characters/${species}/${tier}/rig.riv`;
 }
 

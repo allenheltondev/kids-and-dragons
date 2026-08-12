@@ -103,7 +103,7 @@ What that changes, and what it doesn't:
 
 | | Owner |
 |---|---|
-| **Image assets** — character parts, gear overlays, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** (commissioning them, and the eye that accepts them) |
+| **Image assets** — character parts, gear portraits, class-rig parts, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** (commissioning them, and the eye that accepts them) |
 | Rigging — skeleton, state machine, clip table, per-tier export | **Claude**, via `rive-mcp` (see below) |
 | The spec the drawings work from | **Claude** — [asset-brief.md](./asset-brief.md) |
 | The machine gates | **Claude** — `npm run art:verify`, `npm run art:verify:rig` |
@@ -272,7 +272,9 @@ ticks** by design — the number answers "how much gap did this clip end up with
 "where did it tear worst" — so `interior_worst_tick` says which frame to actually open. And every
 wall number collected before this change was read off a tick chosen the old way: **the 93/121/41/44/1
 histogram and the ~20px trough above describe a partly different population and have to be
-re-measured.** Treat the 20px candidate as unconfirmed until a run on this code reproduces it.
+re-measured.** Treat the 20px candidate as unconfirmed until a run on this code reproduces it. The
+clip count moves too, and for an unrelated reason — the class rigs are motion jobs now — so the next
+run differing from 312 is not evidence of anything by itself.
 
 **The very first run earned its keep by being wrong in a way worth recording.** It measured
 312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,

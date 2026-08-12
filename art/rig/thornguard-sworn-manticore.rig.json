@@ -1,0 +1,29 @@
+{
+  "$comment": "Thornguard Sworn Manticore variant. The shoulder harness follows the body behind the mane; the breastplate follows the body in front.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane_armor"],
+    ["body", "seam_fill"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "armor_back"],
+    ["body", "armor_chest"]
+  ],
+  "zOrder": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "seam_fill", "armor_back", "armor_chest", "mane_armor"],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": { "input": "knockedDown", "equals": true, "from": ["idle", "hurt", "walk", "guard"] },
+      "revive": { "input": "knockedDown", "equals": false, "from": "down_loop" }
+    }
+  }
+}

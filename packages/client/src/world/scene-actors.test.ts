@@ -33,6 +33,32 @@ describe("visualKeyOf", () => {
     expect(visualKeyOf(swapped)).not.toBe(visualKeyOf(base));
   });
 
+  it("changes when the class selects a delivered rig variant", () => {
+    const thornguard = makeMember({
+      character: makeCharacter({
+        species: "bigfoot",
+        tier: "sworn",
+        level: 4,
+        class: "thornguard",
+      }),
+    });
+    const duskrunner = makeMember({
+      character: makeCharacter({
+        species: "bigfoot",
+        tier: "sworn",
+        level: 4,
+        class: "duskrunner",
+      }),
+    });
+    expect(visualKeyOf(thornguard)).not.toBe(visualKeyOf(duskrunner));
+  });
+
+  it("does not change class when both combinations use the same base rig", () => {
+    const thornguard = makeMember({ character: makeCharacter({ class: "thornguard" }) });
+    const duskrunner = makeMember({ character: makeCharacter({ class: "duskrunner" }) });
+    expect(visualKeyOf(thornguard)).toBe(visualKeyOf(duskrunner));
+  });
+
   it("does NOT change for an appearance — nothing draws from one any more", () => {
     /*
      * The half that is easy to get wrong in the expensive direction. The

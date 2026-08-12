@@ -30,6 +30,7 @@ export {
   biomeBackdropUrl,
   biomeTilesUrl,
   characterArtUrl,
+  characterWorldArtUrl,
   enemyArtUrl,
 } from "./art-paths";
 

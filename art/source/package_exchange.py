@@ -9,9 +9,9 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "exchange"
-BACKGROUND = "biome_exchange_bg_v3_raw.png"
+BACKGROUND = "biome_exchange_bg_raw.png"
 TILES = "cliffside_exchange_tiles_raw.png"
-PROPS = "exchange_props_alpha_v2.png"
+PROPS = "exchange_props_alpha.png"
 PROP_NAMES = (
     "multicultural_market_pavilion",
     "organized_harbor_cargo",

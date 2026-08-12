@@ -422,12 +422,38 @@ for (const id of SPECIES) {
   for (const tier of TIERS) {
     const rig = join(ROOT, "assets", "characters", id, tier, "rig.riv");
     if (!existsSync(rig)) continue;
-    rigJobs.push({ id, tier, rig, tag: `${id}_${tier}` });
+    rigJobs.push({
+      label: `${id}/${tier}`,
+      key: `${id}/${tier}`,
+      rig,
+      art: join(ROOT, "assets", "characters", id, tier, "assembled.png"),
+      tag: `${id}_${tier}`,
+    });
   }
+}
+for (const variant of MANIFEST.rigVariants ?? []) {
+  if (!SPECIES.includes(variant.species) || !TIERS.includes(variant.tier)) continue;
+  const base = join(
+    ROOT,
+    "assets",
+    "character-rigs",
+    variant.class,
+    variant.tier,
+    variant.species,
+  );
+  const rig = join(base, "rig.riv");
+  if (!existsSync(rig)) continue;
+  rigJobs.push({
+    label: `${variant.class}/${variant.tier}/${variant.species}`,
+    key: `class:${variant.class}/${variant.tier}/${variant.species}`,
+    rig,
+    art: join(base, "assembled.png"),
+    tag: `class_${variant.class}_${variant.tier}_${variant.species}`,
+  });
 }
 
 if (rigJobs.length === 0) {
-  console.error("error: no rigs found at assets/characters/<species>/<tier>/rig.riv — rigging is rive-mcp's (art-pipeline §3)");
+  console.error("error: no base or manifest-declared class rigs found — rigging is rive-mcp's (art-pipeline §3)");
   process.exit(2);
 }
 
@@ -439,19 +465,19 @@ for (const job of rigJobs) {
     break;
   }
   if (rest.error) {
-    failures.push(`${job.id}/${job.tier}: could not render a rest frame`);
-    console.log(`  ${RED}FAIL${RESET}  ${job.id}/${job.tier}  rest frame: ${rest.error}`);
+    failures.push(`${job.label}: could not render a rest frame`);
+    console.log(`  ${RED}FAIL${RESET}  ${job.label}  rest frame: ${rest.error}`);
     continue;
   }
 
   const results = await pool(
-    clips.map((clip) => () => measureClip(job.rig, job.tag, clip, rest, join(ROOT, "assets", "characters", job.id, job.tier, "assembled.png")).then((m) => ({ clip, m }))),
+    clips.map((clip) => () => measureClip(job.rig, job.tag, clip, rest, job.art).then((m) => ({ clip, m }))),
     jobs,
   );
 
   const lines = [];
   for (const { clip, m } of results) {
-    const label = `${job.id}/${job.tier} ${clip.name}`;
+    const label = `${job.label} ${clip.name}`;
     if (m.error === "cli") {
       cliMissing = true;
       break;
@@ -462,11 +488,12 @@ for (const job of rigJobs) {
       continue;
     }
     checked += 1;
-    hashes[`${job.id}/${job.tier}/${clip.name}`] = m.hash;
+    hashes[`${job.key}/${clip.name}`] = m.hash;
     if (gapReport) {
       gapRows.push({
-        species: job.id,
-        tier: job.tier,
+        // `job.label` rather than species+tier: class rigs are jobs too now, and
+        // they have no species/tier pair to spell.
+        rig: job.label,
         clip: clip.name,
         interior_holes: m.interior_holes,
         // Which tick `worst` was read off. It is chosen by what opened, while
@@ -487,9 +514,9 @@ for (const job of rigJobs) {
   }
   if (cliMissing) break;
   if (lines.length === 0) {
-    console.log(`  ${GREEN}ok${RESET}    ${job.id}/${job.tier}  ${results.length} clips`);
+    console.log(`  ${GREEN}ok${RESET}    ${job.label}  ${results.length} clips`);
   } else {
-    console.log(`  ${BOLD}${job.id}/${job.tier}${RESET}`);
+    console.log(`  ${BOLD}${job.label}${RESET}`);
     for (const l of lines) console.log(l);
   }
 }
@@ -678,11 +705,11 @@ for (const { job, d, r } of driveResults) {
 for (const job of rigJobs) {
   const problems = byRig.get(job.tag) ?? [];
   if (problems.length === 0) {
-    console.log(`  ${GREEN}ok${RESET}    ${job.id}/${job.tier}  ${DRIVES.length} drives, states and event ticks as contracted`);
+    console.log(`  ${GREEN}ok${RESET}    ${job.label}  ${DRIVES.length} drives, states and event ticks as contracted`);
   } else {
     for (const p of problems) {
-      failures.push(`${job.id}/${job.tier} sm`);
-      console.log(`  ${RED}FAIL${RESET}  ${job.id}/${job.tier}  ${p}`);
+      failures.push(`${job.label} sm`);
+      console.log(`  ${RED}FAIL${RESET}  ${job.label}  ${p}`);
     }
   }
 }

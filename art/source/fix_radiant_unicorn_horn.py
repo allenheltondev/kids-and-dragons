@@ -71,7 +71,6 @@ def radiant_panel_region(path: Path) -> tuple[int, int, int, int]:
 def fix_review_sources() -> None:
     names = (
         "songkeeper_unicorn_tiers.png",
-        "songkeeper_unicorn_tiers_v2.png",
         "thornguard_unicorn_tiers.png",
         "duskrunner_unicorn_tiers.png",
         "starweaver_unicorn_tiers.png",
@@ -83,7 +82,6 @@ def fix_review_sources() -> None:
 
     raw_names = (
         "songkeeper_unicorn_tiers_raw.png",
-        "songkeeper_unicorn_tiers_v2_raw.png",
         "thornguard_unicorn_tiers_raw.png",
         "duskrunner_unicorn_tiers_raw.png",
         "starweaver_unicorn_tiers_raw.png",
