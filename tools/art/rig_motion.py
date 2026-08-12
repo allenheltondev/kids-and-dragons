@@ -51,9 +51,10 @@ def box(a):
 SEE_THROUGH = 64
 
 
-def enclosed_gap(a):
+def enclosed(a):
     """
-    Pixels you can see through that are surrounded by figure.
+    Pixels you can see through that are surrounded by figure, the flood that
+    decided it, and the crop the two live in.
 
     Enclosure is decided by flooding the see-through region inward from the frame
     border: anything see-through the flood cannot reach is walled in by the
@@ -67,12 +68,14 @@ def enclosed_gap(a):
 
     Flooding only the figure's bounding box rather than the whole frame is worth
     the four extra lines: identical answers, and ~5x faster (72ms against 366ms
-    on a 512px frame), which matters at ~4,000 frames a run.
+    on a 512px frame), which matters at ~4,000 frames a run. The flood is handed
+    back still padded because the wall-depth walk below grows outward from it and
+    needs the ring; every caller that wants pixels crops it.
     """
     gap = a < SEE_THROUGH
     solid = ~gap
     if not solid.any():
-        return 0
+        return None
     ys, xs = np.nonzero(solid)
     y0, y1, x0, x1 = int(ys.min()), int(ys.max()), int(xs.min()), int(xs.max())
     sub = gap[y0:y1 + 1, x0:x1 + 1]
@@ -84,8 +87,13 @@ def enclosed_gap(a):
     pad[0, :] = pad[-1, :] = pad[:, 0] = pad[:, -1] = 255
     img = Image.fromarray(pad).copy()
     ImageDraw.floodfill(img, (0, 0), 128)
-    outside = np.asarray(img)[1:-1, 1:-1] == 128
-    return int((sub & ~outside).sum())
+    outside = np.asarray(img) == 128
+    return sub & ~outside[1:-1, 1:-1], outside, (y0, y1, x0, x1)
+
+
+def enclosed_area(e):
+    """Total enclosed gap of one frame — the scalar `interior_holes` is built from."""
+    return 0 if e is None else int(e[0].sum())
 
 
 # The approved art's colours, quantised to a 16-level cube.
@@ -117,7 +125,41 @@ def delta(i, j):
     return float(np.abs(frames[i].astype(np.int32) - frames[j].astype(np.int32)).max(axis=2).mean())
 
 
-def gap_regions(a, rest, limit=3):
+def openings(e, rest):
+    """
+    Every enclosed region of one frame, paired with how much of it was solid
+    figure at rest, biggest opening first. Regions that opened nothing at all are
+    dropped: they are the art's own anatomy and say nothing about this clip.
+
+    Splitting this out from the description below is what lets the peak frame be
+    chosen by what opened. Labelling every frame costs one flood and a handful of
+    region fills per frame; the wall-depth walk, which is the expensive half,
+    still runs once per clip.
+    """
+    if e is None:
+        return []
+    encl, _outside, (y0, y1, x0, x1) = e
+    if not encl.any():
+        return []
+
+    lab = Image.fromarray(np.where(encl, 255, 0).astype(np.uint8)).copy()
+    found = []
+    label = 1
+    while label < 200:
+        cur = np.asarray(lab)
+        ry, rx = np.nonzero(cur == 255)
+        if not len(ry):
+            break
+        ImageDraw.floodfill(lab, (int(rx[0]), int(ry[0])), label)
+        found.append(np.asarray(lab) == label)
+        label += 1
+
+    was_gap = rest[y0:y1 + 1, x0:x1 + 1] < SEE_THROUGH
+    scored = [(int((r & ~was_gap).sum()), r) for r in found]
+    return sorted((t for t in scored if t[0] > 0), key=lambda t: -t[0])
+
+
+def gap_regions(opened, e, limit=3):
     """
     The enclosed gaps of one frame, each with how much of it is NEW and how
     deeply it is walled in.
@@ -147,45 +189,13 @@ def gap_regions(a, rest, limit=3):
     calibrating it into a gate needs the moving population, which only the real
     renderer can produce — CI's `rig-motion` workflow collects it every run via
     `--gap-report` and summarises it with `tools/art/gap-calibration.mjs`.
-    Nothing here is on the hot path: it runs on one frame per clip.
+    The expensive half is the wall walk below, and it runs once per clip.
     """
-    gap = a < SEE_THROUGH
-    solid = ~gap
-    if not solid.any():
+    if e is None or not opened:
         return []
-    ys, xs = np.nonzero(solid)
-    y0, y1, x0, x1 = int(ys.min()), int(ys.max()), int(xs.min()), int(xs.max())
-    sub = gap[y0:y1 + 1, x0:x1 + 1]
-    h, w = sub.shape
-    pad = np.zeros((h + 2, w + 2), np.uint8)
-    pad[1:-1, 1:-1] = np.where(sub, 255, 0)
-    pad[0, :] = pad[-1, :] = pad[:, 0] = pad[:, -1] = 255
-    img = Image.fromarray(pad).copy()
-    ImageDraw.floodfill(img, (0, 0), 128)
-    outside = np.asarray(img) == 128
-    enclosed = sub & ~outside[1:-1, 1:-1]
-    if not enclosed.any():
-        return []
-
-    lab = Image.fromarray(np.where(enclosed, 255, 0).astype(np.uint8)).copy()
-    found = []
-    label = 1
-    while label < 200:
-        cur = np.asarray(lab)
-        ry, rx = np.nonzero(cur == 255)
-        if not len(ry):
-            break
-        ImageDraw.floodfill(lab, (int(rx[0]), int(ry[0])), label)
-        found.append(np.asarray(lab) == label)
-        label += 1
-    # Rank by what OPENED, not by total area, and drop regions that are entirely
-    # the art's own enclosed space — those are anatomy and say nothing about this
-    # clip.
-    was_gap = rest < SEE_THROUGH
-    newness = {id(r): int((r & ~was_gap[y0:y1 + 1, x0:x1 + 1]).sum()) for r in found}
-    found = [r for r in found if newness[id(r)] > 0]
-    found.sort(key=lambda r: -newness[id(r)])
-    found = found[:limit]
+    _encl, outside, (y0, y1, x0, x1) = e
+    newness = {id(r): n for n, r in opened[:limit]}
+    found = [r for _n, r in opened[:limit]]
 
     out = []
     frontier = outside.copy()
@@ -220,7 +230,27 @@ def gap_regions(a, rest, limit=3):
     return out
 
 
-_gaps = [enclosed_gap(a) for a in alpha]
+_encl = [enclosed(a) for a in alpha]
+_gaps = [enclosed_area(e) for e in _encl]
+
+# What each tick OPENED, per region. The peak is picked off this rather than off
+# `_gaps`, and the difference is the whole point of the two-pass split above.
+#
+# `_gaps` is a total, and a total cancels. A tick that tears 141px open at a
+# joint while a limb swings shut across 140px of the figure's own negative space
+# nets +1px, loses `argmax` to some blander tick, and the regions then get read
+# off that blander tick instead — so the gate described the wrong frame exactly
+# when there was most to see. Cancel it completely and `_gaps` never moves at
+# all: the old selection had no peak to find, `interior_worst` came back empty,
+# and the clip was invisible to the description and to the calibration both.
+#
+# An opening cannot cancel, because closing figure back over anatomy adds nothing
+# to it: a region only scores for the pixels that were solid at rest. So the tick
+# with the largest single opening is the tick worth describing, and it is found
+# without the wall walk, which stays at one frame per clip.
+_opens = [openings(e, alpha[0]) for e in _encl]
+_peak = int(np.argmax([o[0][0] if o else 0 for o in _opens]))
+
 boxes = [box(a) for a in alpha]
 if any(b is None for b in boxes):
     print(json.dumps({"error": "a frame rendered empty"}))
@@ -283,10 +313,19 @@ print(json.dumps({
     # still. What says "a joint is coming apart" is that number growing once the
     # chain moves, so the baseline is this clip's own first tick.
     "interior_holes": int(max(0, max(_gaps) - _gaps[0])),
-    # What that number is made of, on the tick where it peaks. See gap_regions:
-    # the area alone cannot tell a lifted limb from a joint, and this is what a
-    # human needs in order to tell them apart without re-rendering the clip.
-    "interior_worst": gap_regions(alpha[int(np.argmax(_gaps))], alpha[0]),
+    # What that number is made of, on the tick that opened the most. See
+    # gap_regions: the area alone cannot tell a lifted limb from a joint, and
+    # this is what a human needs in order to tell them apart without re-rendering
+    # the clip.
+    #
+    # This tick is chosen by what opened while `interior_holes` is a net over all
+    # ticks, so the two can now come from different frames — deliberately. The
+    # number answers "how much gap did this clip end up with", the regions answer
+    # "where did it tear worst", and on a clip where something opens as something
+    # else closes those have different answers. `interior_worst_tick` is which
+    # frame to actually look at, since it is no longer implied by the number.
+    "interior_worst": gap_regions(_opens[_peak], _encl[_peak]),
+    "interior_worst_tick": _peak,
     # Worst tick and typical tick. A defect that only shows on some frames is
     # exactly what the max is for.
     "novel_colour_max": round(max(novel_colour_share(f) for f in frames), 5),
