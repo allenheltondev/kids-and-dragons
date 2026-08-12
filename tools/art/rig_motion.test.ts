@@ -183,4 +183,67 @@ Image.fromarray(rest, "RGBA").save(${JSON.stringify(art)})
     expect(worst!.px).toBeGreaterThan(300);
     expect(worst!.wall).toBeLessThan(10);
   });
+
+  /*
+   * The tick these regions are read off used to be `argmax` of the frame's TOTAL
+   * enclosed area, and a total cancels. This clip is that cancellation taken to
+   * its limit: as the joint tears open, a limb swings shut over a gap the art
+   * encloses at rest, and the two areas very nearly annihilate.
+   *
+   * Every summary number stays quiet. `interior_holes` is a net, so it is 0. The
+   * total peaks on the REST frame, so the old selection compared frame 0 with
+   * itself, scored every region `new = 0`, and returned nothing — the torn joint
+   * was invisible to the description and to the calibration sample both, which is
+   * why no amount of sampling those runs would ever have turned one up.
+   *
+   * Choosing the tick by what opened cannot cancel: closing figure back over
+   * anatomy adds nothing to an opening. So the tear is described even though the
+   * clip's headline number never moves.
+   */
+  it("describes a tear the clip's own total cancels out", () => {
+    const apng = join(work, "cancelled.png");
+    const art = join(work, "cancelled_art.png");
+    const py = `
+import numpy as np
+from PIL import Image
+def body():
+    a = np.zeros((160, 160, 4), np.uint8)
+    a[30:130, 40:120] = (200, 120, 90, 255)
+    return a
+
+# At rest the figure encloses 144px of its own negative space — the loop between
+# an arm and the torso.
+rest = body()
+rest[40:52, 50:62, 3] = 0
+
+# Mid-clip the limb closes that loop (-144px) and a joint tears open (+143px).
+# The frame's total enclosed area therefore goes DOWN by one pixel.
+moved = body()
+moved[90:101, 90:103, 3] = 0
+
+Image.fromarray(rest, "RGBA").save(${JSON.stringify(apng)}, save_all=True,
+    append_images=[Image.fromarray(moved, "RGBA")], duration=16, loop=0)
+Image.fromarray(rest, "RGBA").save(${JSON.stringify(art)})
+`;
+    execFileSync("python3", ["-c", py], { stdio: "pipe" });
+    const m = measure(apng, art) as unknown as Metrics & {
+      interior_holes: number;
+      interior_worst_tick: number;
+    };
+
+    // The number the gate reads never moves — that is the premise, not a bug
+    // this test is asking to be fixed. `interior_holes` is a net and the net is
+    // negative here, so it floors at 0.
+    expect(m.interior_holes).toBe(0);
+
+    // ...and the description still finds the tear, on the later tick, because it
+    // is chosen by what opened rather than by the total.
+    expect(m.interior_worst_tick).toBe(1);
+    const worst = m.interior_worst[0];
+    expect(worst).toBeDefined();
+    expect(worst!.new).toBe(143);
+    // Deep in the torso, not pinched at the silhouette: this is the shape the
+    // whole metric exists to point at.
+    expect(worst!.wall).toBeGreaterThan(10);
+  });
 });

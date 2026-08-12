@@ -249,17 +249,30 @@ the rest frame against itself, every region scores `new = 0`, and the list comes
 and it never dropped a clip. The commit that removed it claimed otherwise; it was wrong, and
 `griffin/radiant revive` was never at risk, since 3px passes a `> 0` test perfectly well.
 
-**Which leaves the real blind spot, still open and worth a follow-up.** The cancellation is not in
-the filter, it is in the *frame selection*: regions are only ever read off the frame with the largest
-**total** enclosed area, and total is exactly the quantity that cancels. A frame where a joint opens
-141px while a limb closes 140px of the figure's own negative space contributes +1px to `_gaps` and
-loses the argmax to some blander frame, so the gate reports regions from the wrong tick. In the limit
-— cancellation dead even across the whole clip — `interior_holes` is 0, `interior_worst` is `[]`, and
-the clip is invisible to the gate *and* to this calibration, which is why no amount of sampling here
-will turn one up. The fix is to pick the peak frame by the largest **new** region rather than by
-total enclosed area, i.e. run `gap_regions` per frame and take the max of `new`. That changes every
-number the gate reports, so it wants its own change and its own motion run, not a hitchhike on this
-one.
+**Which left the real blind spot — now fixed, and the fix invalidates the numbers above.** The
+cancellation was never in the filter, it was in the *frame selection*: regions were only ever read
+off the frame with the largest **total** enclosed area, and total is exactly the quantity that
+cancels. A frame where a joint opens 141px while a limb closes 140px of the figure's own negative
+space contributes +1px to `_gaps` and loses the argmax to some blander frame, so the gate described
+the wrong tick precisely when there was most to see. In the limit — cancellation dead even across the
+clip — the total peaks on the *rest* frame, `gap_regions` compares frame 0 with itself, every region
+scores `new = 0`, and both `interior_holes` and `interior_worst` come back empty: the clip is
+invisible to the gate *and* to this calibration, which is why no amount of sampling those runs could
+ever turn one up.
+
+The peak tick is now chosen by the largest single **opening** — the part of a region that was solid
+figure at rest — which cannot cancel, because closing figure back over anatomy contributes nothing to
+it. `rig_motion.test.ts` pins the limit case: a clip that tears 143px open while a limb shuts 144px
+of anatomy, whose `interior_holes` stays 0 and whose tear is described anyway. It fails against the
+old selection. Cost is a region-labelling pass per frame against a wall walk that still runs once per
+clip — measured at 1.02x on real 1024px art, ~27s across a 312-clip run.
+
+Two consequences worth knowing. `interior_worst` and `interior_holes` can now come from **different
+ticks** by design — the number answers "how much gap did this clip end up with", the regions answer
+"where did it tear worst" — so `interior_worst_tick` says which frame to actually open. And every
+wall number collected before this change was read off a tick chosen the old way: **the 93/121/41/44/1
+histogram and the ~20px trough above describe a partly different population and have to be
+re-measured.** Treat the 20px candidate as unconfirmed until a run on this code reproduces it.
 
 **The very first run earned its keep by being wrong in a way worth recording.** It measured
 312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,
