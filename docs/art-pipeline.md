@@ -210,6 +210,16 @@ covers that the two gates above structurally cannot: `art:verify:rig` reads the 
 `art:verify:rig:motion` measures every clip against the rig's *own* rest pose, so a rig uniformly
 too small or shifted bodily is internally consistent and passes both of them clean.
 
+**A part may not carry a copy of another part's artwork.** `check_part_fragments` looks for
+detached fragments that some other part in the set already draws in full, which is the one defect
+class every other check here is structurally blind to: `check_recomposite` only asks that the parts
+stack back into `assembled.png`, and any partition satisfies that — including one that hands the
+same pixels to two parts. At rest the copy sits on its original; when the part rotates it flies off.
+Detached artwork is *not* the trigger, because it is often legitimate — the manticore's barbed tail
+is six components. Redundancy is. It **warns** rather than fails while 179 such fragments are still
+in the corpus; [docs/briefs/part-fragments.md](./briefs/part-fragments.md) is the re-cut worklist
+and says when to flip it.
+
 **Known blind spots, named honestly.** `verify.py` does not walk `assets/gear/` or the contents of
 `assets/biomes/`: the manifest declares 12 gear sets and 3 are delivered, and the gate is green.
 An existence check for both is being wired up separately; until it lands, gear and biome

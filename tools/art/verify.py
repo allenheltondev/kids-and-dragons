@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 
 try:
     import numpy as np
-    from PIL import Image
+    from PIL import Image, ImageDraw
 except ImportError:
     sys.exit("error: needs Pillow and numpy  ->  pip install pillow numpy")
 
@@ -185,6 +185,105 @@ def check_seams(rep: Report, label: str, parts: dict[str, np.ndarray],
             print(f"        {DIM}all zero -> parts are exact cutouts. See asset-brief.md section 3.3.{RESET}")
     else:
         rep.ok(f"{label} seam overdraw  ({len(adjacency)} pairs checked)")
+
+
+def components(mask: np.ndarray, cap: int = 250) -> list[np.ndarray]:
+    """
+    8-connected components of a boolean mask, via repeated flood fill.
+
+    Pillow rather than scipy on purpose: `requirements-dev.txt` is Pillow, numpy
+    and cfn-lint, and one check is not worth a third numeric dependency on every
+    contributor's machine and in every workflow.
+    """
+    h, w = mask.shape
+    pad = np.zeros((h + 2, w + 2), np.uint8)
+    pad[1:-1, 1:-1] = np.where(mask, 255, 0)
+    img = Image.fromarray(pad).copy()
+    out: list[np.ndarray] = []
+    label = 1
+    while label <= cap:
+        cur = np.asarray(img)
+        ys, xs = np.nonzero(cur == 255)
+        if not len(ys):
+            break
+        ImageDraw.floodfill(img, (int(xs[0]), int(ys[0])), label)
+        out.append(np.asarray(img)[1:-1, 1:-1] == label)
+        label += 1
+    return out
+
+
+# A fragment smaller than this is antialiasing debris, not artwork. Same figure
+# rive-mcp uses when it decides which components of a part to keep.
+FRAGMENT_MIN_PX = 64
+
+# How much of a fragment another part has to already draw before we call it a
+# copy. Measured across all 24 part sets, this is not a judgement call: of 743
+# detached fragments, 507 sit at 0.00 coverage and 173 at >=0.95, with 63 in
+# between. The two populations are that far apart because they are different
+# things — one is artwork only this part has, the other is a duplicate.
+FRAGMENT_DUPLICATE_COVERAGE = 0.95
+
+
+def check_part_fragments(rep: Report, label: str, parts: dict[str, np.ndarray],
+                         tol: dict) -> None:
+    """
+    A part may not carry a detached copy of something another part already draws.
+
+    This is the one defect class that every other check in this pipeline is
+    structurally blind to, and it took a human looking at a contact sheet to
+    find it. `check_recomposite` asks that the parts stack back into
+    `assembled.png`, which *any* partition of the image satisfies — including
+    one that hands the same pixels to two different parts. The rig gates render
+    the rest pose, where a duplicate sits exactly on top of the original and is
+    invisible by construction. So a fragment can pass the whole pipeline and
+    only appear when the part it is attached to rotates away, carrying the copy
+    with it: a disc of torso flying beside the arm, a rectangle of hip hanging
+    in the air.
+
+    Note what is *not* flagged. Detached artwork is legitimate and common — the
+    manticore's barbed tail is six components, and the barbs do not touch the
+    shaft. Nothing else in the set draws those barbs, so they are the only
+    source of those pixels and removing them would lose art. Measured, every
+    manticore tail fragment scores 0.00 coverage and none are reported here.
+    The rule is redundancy, not detachment.
+
+    Warning rather than failure, for now: 173 fragments across 175 parts are in
+    the corpus as delivered, and a check that reds the build on art nobody has
+    re-cut yet is a check people learn to skip. Flip it when the re-cut lands.
+    """
+    thr = tol["alphaThreshold"]
+    masks = {k: opaque_mask(v, thr) for k, v in parts.items()}
+    found: list[tuple[str, int, float]] = []
+
+    for name, mask in masks.items():
+        comps = components(mask)
+        if len(comps) < 2:
+            continue
+        comps.sort(key=lambda c: -int(c.sum()))
+        # Every other part in the set, unioned once per part rather than per
+        # fragment — this runs over 24 sets and the masks are 1024x1024.
+        others = np.zeros_like(mask)
+        for other, m in masks.items():
+            if other != name:
+                others |= m
+        for frag in comps[1:]:
+            n = int(frag.sum())
+            if n < FRAGMENT_MIN_PX:
+                continue
+            covered = float((frag & others).sum()) / n
+            if covered >= FRAGMENT_DUPLICATE_COVERAGE:
+                found.append((name, n, covered))
+
+    if found:
+        worst = sorted(found, key=lambda f: -f[1])[:4]
+        detail = ", ".join(f"{n}={px:,}px ({cov * 100:.0f}% duplicated)" for n, px, cov in worst)
+        if len(found) > len(worst):
+            detail += f", and {len(found) - len(worst)} more"
+        rep.warn(f"{label} duplicated part fragments  ({len(found)})", detail)
+        print(f"        {DIM}These are invisible at rest and fly off when the part rotates. "
+              f"Re-cut so each part carries only its own artwork.{RESET}")
+    else:
+        rep.ok(f"{label} part fragments  ({len(masks)} parts, no duplicated artwork)")
 
 
 def check_silhouette(rep: Report, label: str, assembled: np.ndarray,
@@ -445,6 +544,7 @@ def verify_set(rep: Report, mf: dict, species: dict, tier: str):
     check_origin(rep, label, assembled, canvas, tol)
     check_recomposite(rep, label, assembled, parts, mf["zOrder"], tol)
     check_seams(rep, label, parts, mf["adjacency"], tol)
+    check_part_fragments(rep, label, parts, tol)
     check_silhouette(rep, label, assembled, parts.get(species["signature"]), species["signature"], tol)
     check_palette(rep, label, species, parts, tol)
     return parts, assembled
