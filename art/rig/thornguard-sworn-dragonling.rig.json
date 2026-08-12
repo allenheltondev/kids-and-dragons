@@ -1,0 +1,51 @@
+{
+  "$comment": "Thornguard Sworn Dragonling variant. It reuses the Dragonling skeleton and hero contract; wings remain behind the body, the chest harness follows body, and each purpose-drawn pauldron follows its matching foreleg.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["body", "wings"],
+    ["body", "arm_l"],
+    ["arm_l", "armor_arm_l"],
+    ["body", "arm_r"],
+    ["arm_r", "armor_arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "armor_torso"]
+  ],
+  "zOrder": [
+    "wings",
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane",
+    "armor_torso",
+    "armor_arm_l",
+    "armor_arm_r"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}
