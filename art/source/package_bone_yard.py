@@ -9,8 +9,8 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "bone_yard"
-BACKGROUND = "biome_bone_yard_bg_v2_raw.png"
-TILES = "bone_yard_tiles_v2_raw.png"
+BACKGROUND = "biome_bone_yard_bg_raw.png"
+TILES = "bone_yard_tiles_raw.png"
 PROPS = "bone_yard_props_alpha.png"
 PROP_NAMES = (
     "fossil_rib_arch",

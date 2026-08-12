@@ -107,7 +107,7 @@ if (opened.length === 0) {
   if (md) p("|---|---:|---|");
   for (const c of sorted.slice(0, 15)) {
     const w = c.worst[0];
-    const name = `${c.species}/${c.tier} ${c.clip}`;
+    const name = `${c.rig} ${c.clip}`;
     // The tick is part of "look at these clips": it is chosen by what opened, so
     // it is not the tick the net change points at.
     const at = c.worst_tick == null ? "" : ` on tick ${c.worst_tick}`;

@@ -1,4 +1,4 @@
-"""Build the review candidate for the eight-frame tintable guard_ward effect."""
+"""Build the review candidate for the eight-frame tintable bonus_spark effect."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_DIR = ROOT / "art" / "source" / "guard_ward_candidate"
+SOURCE_DIR = ROOT / "art" / "source" / "bonus_spark"
 REVIEW_DIR = ROOT / "art" / "review"
 FRAME_SIZE = 256
 
@@ -24,6 +24,7 @@ def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFo
 
 
 def neutralize(source: Image.Image) -> Image.Image:
+    """Force all visible RGB to luminance so runtime accent tinting stays honest."""
     alpha = source.getchannel("A")
     luminance = ImageOps.grayscale(source)
     return Image.merge("RGBA", (luminance, luminance, luminance, alpha))
@@ -50,16 +51,17 @@ def multiply_alpha(image: Image.Image, factor: float) -> Image.Image:
     return result
 
 
-def render_frame(source: Image.Image, scale: float, opacity: float, dy: int) -> Image.Image:
-    base_width = 128
+def render_frame(source: Image.Image, scale: float, opacity: float, angle: float, dx: int, dy: int) -> Image.Image:
+    base_width = 120
     width = max(1, round(base_width * scale))
     height = max(1, round(width * source.height / source.width))
     painted = source.resize((width, height), Image.Resampling.LANCZOS)
+    painted = painted.rotate(angle, Image.Resampling.BICUBIC, expand=True)
     painted = multiply_alpha(painted, opacity)
 
     frame = Image.new("RGBA", (FRAME_SIZE, FRAME_SIZE), (0, 0, 0, 0))
-    centre_x = 128
-    centre_y = 144 + dy
+    centre_x = 128 + dx
+    centre_y = 139 + dy
     frame.alpha_composite(
         painted,
         (round(centre_x - painted.width / 2), round(centre_y - painted.height / 2)),
@@ -83,10 +85,10 @@ def build_review(frames: list[Image.Image], output: Path) -> None:
     height = header + card * 2 + gap + footer + margin
     board = Image.new("RGB", (width, height), (18, 23, 34))
     draw = ImageDraw.Draw(board)
-    draw.text((margin, 22), "guard_ward — 8 frame review", font=load_font(28, True), fill=(244, 238, 222))
+    draw.text((margin, 22), "bonus_spark — 8 frame review", font=load_font(28, True), fill=(244, 238, 222))
     draw.text(
         (margin, 61),
-        "Protect transition · open shield bloom · runtime accent tint · 12 fps",
+        "Roll bonus · luminance-only source for runtime accent tint · 12 fps",
         font=load_font(17),
         fill=(169, 182, 204),
     )
@@ -137,25 +139,25 @@ def main() -> None:
     source = visible_crop(source)
 
     timing = [
-        # scale, opacity, vertical shift
-        (0.20, 0.56, 9),
-        (0.46, 0.78, 6),
-        (0.74, 0.94, 3),
-        (0.96, 1.00, 0),
-        (1.04, 1.00, -1),
-        (0.98, 0.84, -3),
-        (0.68, 0.62, -6),
-        (0.20, 0.48, -9),
+        # scale, opacity, rotation, x shift, y shift
+        (0.20, 0.56, -7.0, -2, 14),
+        (0.44, 0.78, -5.0, -1, 10),
+        (0.72, 0.94, -3.0, 0, 6),
+        (0.96, 1.00, -1.0, 0, 2),
+        (1.00, 1.00, 1.0, 0, -1),
+        (0.86, 0.84, 3.0, 1, -5),
+        (0.56, 0.64, 5.0, 2, -9),
+        (0.20, 0.50, 7.0, 3, -13),
     ]
     frames = [render_frame(source, *values) for values in timing]
 
     sheet = Image.new("RGBA", (FRAME_SIZE * len(frames), FRAME_SIZE), (0, 0, 0, 0))
     for index, frame in enumerate(frames):
         sheet.alpha_composite(frame, (index * FRAME_SIZE, 0))
-    sheet.save(SOURCE_DIR / "guard_ward.sheet.png", optimize=True)
+    sheet.save(SOURCE_DIR / "bonus_spark.sheet.png", optimize=True)
 
-    build_review(frames, REVIEW_DIR / "guard_ward_candidate.png")
-    build_gif(frames, REVIEW_DIR / "guard_ward_candidate.gif")
+    build_review(frames, REVIEW_DIR / "bonus_spark.png")
+    build_gif(frames, REVIEW_DIR / "bonus_spark.gif")
 
 
 if __name__ == "__main__":

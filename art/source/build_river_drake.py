@@ -1,65 +1,30 @@
 #!/usr/bin/env python3
-"""Build the registered Frost Wyrm approval candidate and serpentine parts."""
+"""Build the registered River Drake approval candidate and serpentine parts."""
 
 from __future__ import annotations
 
 from pathlib import Path
-from collections import deque
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_DIR = ROOT / "art" / "source" / "frost_wyrm_rig_candidate"
+SOURCE_DIR = ROOT / "art" / "source" / "river_drake_rig"
 PARTS_DIR = SOURCE_DIR / "parts"
-REVIEW_PATH = ROOT / "art" / "review" / "frost_wyrm_rig_candidate.png"
+REVIEW_PATH = ROOT / "art" / "review" / "river_drake_rig.png"
 
 CANVAS = 1024
 ANCHOR_Y = 900
 TARGET_HEIGHT = 860
 ALPHA_THRESHOLD = 8
-Z_ORDER = ["coil", "body", "neck", "fin", "limb_l", "limb_r", "head"]
+Z_ORDER = ["coil", "body", "neck", "limb_l", "limb_r", "head", "fin"]
 
 
 def polygon_mask(points: list[tuple[int, int]]) -> np.ndarray:
     mask = Image.new("L", (CANVAS, CANVAS), 0)
     ImageDraw.Draw(mask).polygon(points, fill=255)
     return np.asarray(mask) > 0
-
-
-def remove_small_components(mask: np.ndarray, min_pixels: int) -> np.ndarray:
-    """Drop isolated mask flecks while preserving the connected ridge groups."""
-    height, width = mask.shape
-    visited = np.zeros(mask.shape, dtype=bool)
-    kept = np.zeros(mask.shape, dtype=bool)
-    ys, xs = np.nonzero(mask)
-    for start_y, start_x in zip(ys, xs, strict=True):
-        if visited[start_y, start_x]:
-            continue
-        queue = deque([(int(start_y), int(start_x))])
-        visited[start_y, start_x] = True
-        component: list[tuple[int, int]] = []
-        while queue:
-            y, x = queue.popleft()
-            component.append((y, x))
-            for dy in (-1, 0, 1):
-                for dx in (-1, 0, 1):
-                    if dx == 0 and dy == 0:
-                        continue
-                    ny, nx = y + dy, x + dx
-                    if (
-                        0 <= ny < height
-                        and 0 <= nx < width
-                        and mask[ny, nx]
-                        and not visited[ny, nx]
-                    ):
-                        visited[ny, nx] = True
-                        queue.append((ny, nx))
-        if len(component) >= min_pixels:
-            cy, cx = zip(*component, strict=True)
-            kept[np.asarray(cy), np.asarray(cx)] = True
-    return kept
 
 
 def register_source() -> Image.Image:
@@ -94,55 +59,53 @@ def make_parts(assembled: Image.Image) -> dict[str, Image.Image]:
     subject = alpha > ALPHA_THRESHOLD
     yy, xx = np.indices(alpha.shape)
 
-    regions = {
-        "limb_l": (xx < 390) & (yy >= 560),
-        "limb_r": (xx >= 500) & (xx < 720) & (yy >= 535) & (yy < 845),
-        "head": polygon_mask(
-            [(235, 495), (410, 390), (555, 505), (530, 690), (475, 855), (285, 735), (210, 565)]
-        ),
-        "neck": polygon_mask(
-            [(145, 285), (505, 230), (620, 430), (565, 650), (255, 710), (120, 520)]
-        ),
-        "coil": ((xx >= 620) & (yy >= 430)) | ((xx >= 475) & (yy >= 690)),
-        "body": polygon_mask(
-            [(260, 35), (850, 25), (930, 390), (755, 650), (400, 600), (170, 350)]
-        ),
-    }
+    head = polygon_mask(
+        [(70, 145), (305, 105), (465, 210), (440, 390), (285, 475), (80, 390), (55, 245)]
+    )
+    neck = polygon_mask(
+        [(140, 205), (470, 170), (560, 450), (455, 650), (185, 595), (105, 350)]
+    )
+    limb_l = (xx < 270) & (yy >= 500)
+    limb_r = (xx >= 245) & (xx < 535) & (yy >= 485)
+    coil = ((xx >= 540) & (yy >= 285)) | ((xx >= 480) & (yy >= 650))
+    body_core = polygon_mask(
+        [(285, 245), (655, 210), (735, 430), (650, 635), (360, 680), (245, 455)]
+    )
 
-    # Isolate the bright, plate-like dorsal and tail ridges as a single fin
-    # layer without stealing the wedge-shaped crown from the head signature.
-    upper_fin_zone = polygon_mask(
-        [(185, 35), (790, 25), (900, 305), (760, 370), (525, 270), (245, 445), (155, 305)]
+    # The drake's green-blue membranes are its defining signature. Restrict
+    # that color cue to the three physical fin zones so the jade belly remains
+    # on the torso and the entire fin system can animate as one layer.
+    fin_zones = (
+        polygon_mask([(120, 35), (470, 35), (535, 330), (445, 385), (245, 265), (105, 225)])
+        | polygon_mask([(405, 105), (890, 110), (955, 390), (825, 405), (620, 285), (470, 330)])
+        | polygon_mask([(555, 640), (1015, 650), (1015, 900), (675, 900), (540, 805)])
     )
-    tail_fin_zone = polygon_mask(
-        [(650, 515), (955, 535), (975, 825), (730, 875), (650, 690)]
-    )
-    bright_ice = (
+    membrane_seed = (
         subject
-        & (rgb[..., 0] > 132)
-        & (rgb[..., 1] > 145)
-        & (rgb[..., 2] > 165)
-        & (rgb[..., 2] > rgb[..., 0] * 1.02)
-    )
-    occupancy = np.asarray(
-        Image.fromarray((subject * 255).astype(np.uint8), "L").filter(ImageFilter.BoxBlur(12))
-    )
-    fin_seed = (
-        bright_ice
-        & (upper_fin_zone | tail_fin_zone)
-        & (occupancy < 245)
-        & ~regions["head"]
+        & fin_zones
+        & (rgb[..., 1] > rgb[..., 0] * 1.05)
+        & (rgb[..., 1] > 62)
+        & (rgb[..., 2] > 48)
     )
     fin = np.asarray(
-        Image.fromarray((fin_seed * 255).astype(np.uint8), "L").filter(ImageFilter.MaxFilter(21))
+        Image.fromarray((membrane_seed * 255).astype(np.uint8), "L").filter(ImageFilter.MaxFilter(17))
     ) > 0
-    regions["fin"] = remove_small_components(fin & subject, min_pixels=250)
+    fin &= subject & fin_zones
 
+    regions = {
+        "head": head,
+        "neck": neck,
+        "body": body_core,
+        "coil": coil,
+        "limb_l": limb_l,
+        "limb_r": limb_r,
+        "fin": fin,
+    }
     names = ["head", "neck", "body", "coil", "limb_l", "limb_r", "fin"]
     index = {name: i for i, name in enumerate(names)}
     owner = np.full((CANVAS, CANVAS), -1, dtype=np.int8)
 
-    for name in ("limb_l", "limb_r", "head", "neck", "fin", "coil", "body"):
+    for name in ("limb_l", "limb_r", "head", "fin", "body", "neck", "coil"):
         take = subject & regions[name] & (owner < 0)
         owner[take] = index[name]
     owner[subject & (owner < 0)] = index["body"]
@@ -178,7 +141,7 @@ def make_review(assembled: Image.Image, parts: dict[str, Image.Image]) -> Image.
     draw = ImageDraw.Draw(board)
     draw.text(
         (35, 24),
-        "frost_wyrm v1 - wary tunnel guardian + compact serpentine rig",
+        "river_drake v1 - watchful crossing keeper + serpentine rig",
         fill=(240, 243, 249),
     )
     panels = [(30, 65, 865, 1080), (895, 65, 1770, 760), (895, 790, 1770, 1080)]
@@ -203,10 +166,10 @@ def make_review(assembled: Image.Image, parts: dict[str, Image.Image]) -> Image.
     small.thumbnail((260, 64), Image.Resampling.LANCZOS)
     board.paste(small, (965, 905), small)
     draw.text((965, 820), "64px combat read", fill=(226, 232, 242))
-    draw.text((965, 845), "Wedge head + braced digging claws", fill=(190, 201, 220))
+    draw.text((965, 845), "Continuous fin + deliberate barrier pose", fill=(190, 201, 220))
     draw.text(
         (1325, 820),
-        "Protective snow-burrower, not a fire dragon.\nDefensive mist belongs to the action rig.",
+        "Routine-minded crossing keeper, not a predator.\nRiver-stone scales keep it below legend status.",
         fill=(205, 214, 229),
         spacing=5,
     )

@@ -133,12 +133,12 @@ describe("CharacterPortrait", () => {
     expect(html).toContain("portrait--gear");
   });
 
-  it("keeps base species art for a creature without its own gear portrait", () => {
+  it("draws the approved purpose-drawn gear variant for every species", () => {
     const html = renderToStaticMarkup(
       <CharacterPortrait species="kitsune" characterClass="starweaver" tier="mythic" />,
     );
-    expect(html).toContain('src="/assets/characters/kitsune/mythic/assembled.png"');
-    expect(html).not.toContain("portrait--gear");
+    expect(html).toContain('src="/assets/gear-portraits/starweaver/mythic/kitsune.png"');
+    expect(html).toContain("portrait--gear");
   });
 
   it("is decoration: no alt text, because the name is beside it in every use", () => {

@@ -39,7 +39,18 @@ const RESET = tty ? "\x1b[0m" : "";
 interface Manifest {
   tiers: string[];
   species: { id: string; signature: string; parts: string[] }[];
-  gear: { class: string; tiers: string[]; parts: string[]; deferred?: boolean }[];
+  gearPortraits: {
+    class: string;
+    tiers: string[];
+    species: string[];
+    canvas: { width: number; height: number };
+  }[];
+  rigVariants: {
+    class: string;
+    tier: string;
+    species: string;
+    parts: string[];
+  }[];
   effects: { id: string; frames: number }[];
   biomes: string[];
   entities: { id: string; classification: string }[];
@@ -108,6 +119,7 @@ interface Line {
   /** What is missing, named — a count alone is not a work list. */
   missing: string[];
   note?: string;
+  missingLabel?: string;
 }
 
 const lines: Line[] = [];
@@ -152,25 +164,69 @@ const delivered = (line: Line): number => line.need - line.missing.length;
   });
 }
 
-// --- Gear overlays -----------------------------------------------------------
+// --- Approved purpose-drawn gear portraits ----------------------------------
 {
   const missing: string[] = [];
   let need = 0;
-  for (const g of manifest.gear) {
-    for (const tier of g.tiers) {
-      need += g.parts.length;
-      for (const part of g.parts) {
-        if (!has(`assets/gear/${g.class}/${tier}`, `${part}.png`)) {
-          missing.push(`${g.class}/${tier}/${part}.png`);
+  for (const group of manifest.gearPortraits) {
+    for (const tier of group.tiers) {
+      for (const species of group.species) {
+        need += 1;
+        if (!has(`assets/gear-portraits/${group.class}/${tier}`, `${species}.png`)) {
+          missing.push(`${group.class}/${tier}/${species}.png`);
         }
       }
     }
   }
   lines.push({
-    category: "Gear overlays",
+    category: "Gear portraits",
     need,
     missing,
-    note: "species-agnostic torso registration — one set works on all six",
+    note: "approved opaque source art — one exact fit per class, tier, and species",
+  });
+}
+
+// --- Species-specific class rig variants ------------------------------------
+{
+  const missing: string[] = [];
+  let need = 0;
+  const declared = new Map(
+    manifest.rigVariants.map((variant) => [
+      `${variant.class}/${variant.tier}/${variant.species}`,
+      variant,
+    ]),
+  );
+
+  for (const group of manifest.gearPortraits) {
+    for (const tier of group.tiers) {
+      for (const species of group.species) {
+        need += 1;
+        const key = `${group.class}/${tier}/${species}`;
+        const variant = declared.get(key);
+        if (!variant) {
+          missing.push(key);
+          continue;
+        }
+
+        const dir = `assets/character-rigs/${key}`;
+        const absent = [
+          ...(has(dir, "assembled.png") ? [] : ["assembled.png"]),
+          ...(has(dir, "rig.riv") ? [] : ["rig.riv"]),
+          ...variant.parts
+            .filter((part) => !has(dir, "parts", `${part}.png`))
+            .map((part) => `parts/${part}.png`),
+        ];
+        if (absent.length > 0) missing.push(`${key} (missing ${absent.join(", ")})`);
+      }
+    }
+  }
+
+  lines.push({
+    category: "Class rig variants",
+    need,
+    missing,
+    missingLabel: "to split",
+    note: "exact-pose transparent parts + assembled.png + rig.riv; no new character painting",
   });
 }
 
@@ -260,7 +316,9 @@ let outstanding = 0;
 for (const line of lines) {
   const short = line.missing.length;
   outstanding += short;
-  const mark = short === 0 ? `${GREEN}complete${RESET}` : `${YELLOW}${short} to draw${RESET}`;
+  const mark = short === 0
+    ? `${GREEN}complete${RESET}`
+    : `${YELLOW}${short} ${line.missingLabel ?? "to draw"}${RESET}`;
   console.log(`  ${line.category.padEnd(pad)}  ${String(delivered(line)).padStart(4)}/${String(line.need).padEnd(4)}  ${mark}`);
   if (line.note) console.log(`  ${" ".repeat(pad)}  ${DIM}${line.note}${RESET}`);
 }
@@ -279,5 +337,5 @@ for (const line of lines) {
 if (!any) console.log(`\n  ${GREEN}nothing outstanding${RESET}`);
 
 console.log(
-  `\n${DIM}${outstanding} file(s) outstanding. This reports; it does not gate — see art:verify.${RESET}`,
+  `\n${DIM}${outstanding} deliverable(s) outstanding. This reports; it does not gate — see art:verify.${RESET}`,
 );

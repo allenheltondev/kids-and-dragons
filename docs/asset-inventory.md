@@ -16,7 +16,7 @@ is, and it assumes the brief for every "how".
 
 | | Owner |
 |---|---|
-| **Image assets** — character parts, gear overlays, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** |
+| **Image assets** — character parts, gear portraits, class-rig parts, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** |
 | Rigs — skeleton, state machine, clip table, per-tier export | **Claude**, via `rive-mcp` |
 | The manifest, the verifiers, the briefs | **Claude** |
 
@@ -39,14 +39,16 @@ Snapshot — regenerate with `npm run art:inventory`.
 |---|---|---|
 | Character part-sets | **224 / 224** | — |
 | Character rigs *(mine)* | **24 / 24** | — |
+| Gear portraits | **72 / 72** | — |
+| **Class rig variants** | **6 / 72** | **66 exact-pose splits** |
 | Biome backdrops, tiles + props | **51 / 51** | — |
 | Effect sheets, declared | **17 / 17** | — |
 | Entity cutouts | **27 / 27** | — |
-| **Gear overlays** | 6 / 24 | **18 files** — 9 sets |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**18 files outstanding.** Creature and combat-effect generation are complete; what is left is gear.
+**66 rig variants outstanding.** The character-and-gear paintings are complete. What remains is
+splitting those approved exact poses into transparent registered parts and building their rigs.
 
 ---
 
@@ -63,6 +65,13 @@ unicorn/dragonling/griffin carry nine, kitsune/manticore eight, bigfoot seven. A
 through `art:verify:rig:strict` and the motion gate; manticore's four are red on the rest check,
 where its mesh tail drops ~15% of itself in the generator (art-pipeline §6.3). Listed here only so
 the dependency below is visible.
+
+**Gear portraits — 72 files.** Four classes × three geared tiers × six species. Each is an approved,
+purpose-drawn creature-and-gear composite and is the visual source of truth for its exact fit.
+
+**Class rig variants — 6 `.riv`.** The full Thornguard Sworn set is split and rigged for all six
+species. Each build keeps its species skeleton and clip contract while replacing the skin with
+registered transparent parts from the approved exact pose.
 
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
 12 unique tile sheets shared across the 17 (several destinations share a terrain family).
@@ -84,24 +93,26 @@ one. UI icons are likewise not on this list: they are hand-authored inline SVG i
 
 ## 4. What is left
 
-### 4.1 Gear overlays — 9 sets, 18 files
+### 4.1 Class rig variants — 66 exact-pose splits
 
-Three of twelve are delivered (`songkeeper`, all three tiers). Outstanding:
+Every approved geared character needs one animated variant. Six of 72 are delivered: the complete
+Thornguard Sworn set. Outstanding:
 
-| Class | Tiers | Files |
-|---|---|---|
-| `thornguard` | sworn, radiant, mythic | `overlay_torso.png`, `prop_held.png` each |
-| `duskrunner` | sworn, radiant, mythic | same |
-| `starweaver` | sworn, radiant, mythic | same |
+| Class | Tiers | Variants |
+|---|---|---:|
+| `thornguard` | radiant, mythic | 12 |
+| `duskrunner` | sworn, radiant, mythic | 18 |
+| `starweaver` | sworn, radiant, mythic | 18 |
+| `songkeeper` | sworn, radiant, mythic | 18 |
 
-No gear at `fledgling`, by design. Overlays register against the **species-agnostic torso
-position**, so one set works across all six species at that tier — which is why this is nine sets
-and not fifty-four. Design them to read on both the slimmest (kitsune) and bulkiest (bigfoot)
-silhouette. Themes are in [asset-brief §4.3](./asset-brief.md#43-gear-overlays).
+No gear at `fledgling`, by design. This is production work from art already approved, not a new
+painting commission: recover registered transparent body and gear layers from each exact pose,
+declare their draw order in `manifest.rigVariants`, build the species rig, and run the rest-pose
+and all-clip motion gates. Undelivered combinations fall back to the un-geared species rig on
+animated surfaces; still-image surfaces already use the approved gear portrait.
 
-**This is the largest outstanding block and the only one blocking a shipped feature** — the
-transformation is Chapter 5's emotional payload and three of four classes currently level into
-nothing visible.
+Thornguard Radiant is next, using the same one-species-at-a-time exact-pose review sequence that
+proved Thornguard Sworn.
 
 ### 4.2 Effect sheets — complete
 
@@ -161,17 +172,12 @@ art, or widen bigfoot's latitude in the manifest and say why.
 
 ---
 
-## 6. Two things specified only in prose
+## 6. One thing specified only in prose
 
-Both are invisible to tooling, and both are mine to close rather than yours:
+**`enemyPlans` and `enemies[]` are missing from the manifest** ([asset-brief §9.7](./asset-brief.md)
+items 4 and 5). All nine part-sets now exist, so this is manifest/rig tooling debt rather than art
+still to draw. The body-plan table in §4.3 remains prose, which is why `tools/art/inventory.ts`
+still restates the roster by hand; adding both declarations should delete that constant.
 
-1. **`effects[]` is missing the six sheets of §4.2 above.** Until they are declared, nothing checks
-   frame counts, tint tolerance or clip sync for them.
-2. **`enemyPlans` and `enemies[]` are missing from the manifest** ([asset-brief §9.7](./asset-brief.md)
-   items 4 and 5). All nine part-sets now exist, so this is manifest/rig tooling debt rather than
-   art still to draw. The body-plan table in §4.3 remains prose, which is why
-   `tools/art/inventory.ts` still restates the roster by hand; adding both declarations should
-   delete that constant.
-
-Neither changes the image inventory. They are noted so rig integration does not mistake completed
+This does not change the image inventory. It is noted so rig integration does not mistake completed
 art for a complete machine-readable enemy contract.
