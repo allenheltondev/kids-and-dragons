@@ -1,0 +1,47 @@
+{
+  "$comment": "Class-specific pilot built from the Bigfoot rig contract. The base limb/body parts are byte-for-byte copies of assets/characters/bigfoot/sworn/parts; purpose-drawn Thornguard torso, chest, and pauldron layers are added. Chest and lower torso share the body bone but sit on opposite sides of the arms in z-order, preserving both the inner shoulder fit and the hands. The armored head is a deterministic face-plus-brown-mane extraction from the base head/mane layers so pale shoulder fur cannot punch holes through the cuirass. Each pauldron follows its matching arm.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["body", "arm_l"],
+    ["arm_l", "armor_arm_l"],
+    ["body", "arm_r"],
+    ["arm_r", "armor_arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "armor_torso"],
+    ["body", "armor_chest"]
+  ],
+  "zOrder": [
+    "leg_l",
+    "leg_r",
+    "body",
+    "armor_torso",
+    "arm_l",
+    "arm_r",
+    "armor_chest",
+    "armor_arm_l",
+    "armor_arm_r",
+    "head"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}

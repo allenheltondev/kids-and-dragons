@@ -22,6 +22,7 @@ import {
   characterArtUrl,
   characterPortraitArtUrl,
   characterRigUrl,
+  characterWorldArtUrl,
   enemyArtUrl,
   gearPortraitUrl,
 } from "./art-paths";
@@ -45,14 +46,18 @@ describe("art paths", () => {
     expect(characterPortraitArtUrl("bigfoot", "mythic", "starweaver")).toBe(
       "/assets/gear-portraits/starweaver/mythic/bigfoot.png",
     );
+    expect(gearPortraitUrl("griffin", "thornguard", "radiant")).toBe(
+      "/assets/gear-portraits/thornguard/radiant/griffin.png",
+    );
+    expect(gearPortraitUrl("manticore", "songkeeper", "mythic")).toBe(
+      "/assets/gear-portraits/songkeeper/mythic/manticore.png",
+    );
   });
 
-  it("falls back when that exact gear portrait was not commissioned", () => {
-    expect(gearPortraitUrl("griffin", "thornguard", "sworn")).toBeNull();
-    expect(gearPortraitUrl("unicorn", "songkeeper", "radiant")).toBeNull();
+  it("falls back for fledglings, who do not wear class gear", () => {
     expect(gearPortraitUrl("unicorn", "duskrunner", "fledgling")).toBeNull();
-    expect(characterPortraitArtUrl("griffin", "mythic", "thornguard")).toBe(
-      characterArtUrl("griffin", "mythic"),
+    expect(characterPortraitArtUrl("griffin", "fledgling", "thornguard")).toBe(
+      characterArtUrl("griffin", "fledgling"),
     );
   });
 
@@ -105,6 +110,71 @@ describe("art paths", () => {
 it("rig files live beside the assembled PNG they fall back to", () => {
   expect(characterRigUrl("unicorn", "mythic")).toBe("/assets/characters/unicorn/mythic/rig.riv");
   expect(characterRigUrl("griffin")).toBe("/assets/characters/griffin/fledgling/rig.riv");
+});
+
+describe("class rig variants", () => {
+  it("selects the exact delivered species, class, and tier", () => {
+    expect(characterRigUrl("bigfoot", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/bigfoot/rig.riv",
+    );
+    expect(characterWorldArtUrl("bigfoot", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/bigfoot/assembled.png",
+    );
+    expect(characterRigUrl("dragonling", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/dragonling/rig.riv",
+    );
+    expect(characterRigUrl("griffin", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/griffin/rig.riv",
+    );
+    expect(characterRigUrl("kitsune", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/kitsune/rig.riv",
+    );
+    expect(characterRigUrl("manticore", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/manticore/rig.riv",
+    );
+    expect(characterRigUrl("unicorn", "sworn", "thornguard")).toBe(
+      "/assets/character-rigs/thornguard/sworn/unicorn/rig.riv",
+    );
+  });
+
+  it("keeps every undeclared combination on its species rig", () => {
+    expect(characterRigUrl("bigfoot", "radiant", "thornguard")).toBe(
+      characterRigUrl("bigfoot", "radiant"),
+    );
+    expect(characterRigUrl("griffin", "radiant", "thornguard")).toBe(
+      characterRigUrl("griffin", "radiant"),
+    );
+    expect(characterWorldArtUrl("bigfoot", "sworn", "duskrunner")).toBe(
+      characterArtUrl("bigfoot", "sworn"),
+    );
+  });
+
+  it("keeps the runtime selector in lockstep with manifest.rigVariants", () => {
+    const classes: ClassId[] = ["thornguard", "duskrunner", "starweaver", "songkeeper"];
+    const species: SpeciesId[] = [
+      "unicorn",
+      "dragonling",
+      "griffin",
+      "bigfoot",
+      "kitsune",
+      "manticore",
+    ];
+    const tiers: TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
+    const declared = manifest.rigVariants.map(
+      (variant) => `${variant.class}/${variant.tier}/${variant.species}`,
+    );
+    const addressed = classes.flatMap((characterClass) =>
+      tiers.flatMap((tier) =>
+        species.flatMap((creature) =>
+          characterRigUrl(creature, tier, characterClass) === characterRigUrl(creature, tier)
+            ? []
+            : [`${characterClass}/${tier}/${creature}`],
+        ),
+      ),
+    );
+
+    expect(addressed.sort()).toEqual(declared.sort());
+  });
 });
 
 /*

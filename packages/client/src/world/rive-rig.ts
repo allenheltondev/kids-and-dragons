@@ -74,7 +74,7 @@
 
 import RiveCanvas from "@rive-app/canvas-advanced";
 import wasmUrl from "@rive-app/canvas-advanced/rive.wasm?url";
-import type { SpeciesId, TierId } from "@kad/shared";
+import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { characterRigUrl } from "./art-paths";
 
 // Re-exported so the Pixi wrapper takes its anchor from the same one source.
@@ -159,10 +159,12 @@ export async function createRig(
   tier: TierId,
   /** Called after every repaint — how the Pixi wrapper knows to re-upload. */
   onDrawn?: () => void,
+  /** Selects an exact manifest.rigVariants build when one is delivered. */
+  characterClass?: ClassId,
 ): Promise<RigHandle | null> {
   const rive = await runtime();
   if (!rive) return null;
-  const file = await rigFile(characterRigUrl(species, tier));
+  const file = await rigFile(characterRigUrl(species, tier, characterClass));
   if (!file) return null;
 
   let renderer: any = null;

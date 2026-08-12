@@ -802,6 +802,88 @@ def check_gear_portraits(rep: Report, mf: dict) -> None:
                 )
 
 
+def check_rig_variants(rep: Report, mf: dict) -> None:
+    """Species/class/tier rigs: registered layers, fallback still, and binary.
+
+    These deliberately live outside ``assets/characters`` so the 24 base rigs
+    stay one stable skeleton per species/tier. That new root must not become a
+    verifier blind spot: the manifest owns every directory and its exact draw
+    order, and the ordinary format/recomposition/origin checks apply unchanged.
+    The Rive contract itself is checked by ``verify-rig.ts``.
+    """
+    root = os.path.join(ROOT, "assets", "character-rigs")
+    declared: set[str] = set()
+    canvas, tol = mf["canvas"], mf["tolerance"]
+
+    for variant in mf.get("rigVariants", []):
+        cls = variant["class"]
+        tier = variant["tier"]
+        species = variant["species"]
+        label = f"character-rigs/{cls}/{tier}/{species}"
+        base = os.path.join(root, cls, tier, species)
+        declared.add(os.path.normcase(os.path.normpath(base)))
+        print(f"\n{BOLD}{label}{RESET}")
+
+        assembled_path = os.path.join(base, "assembled.png")
+        assembled = (
+            check_format(rep, assembled_path, canvas, tol)
+            if os.path.exists(assembled_path)
+            else None
+        )
+        if assembled is None:
+            if not os.path.exists(assembled_path):
+                rep.fail(f"{label} assembled.png", "present", "missing")
+
+        expected = variant["parts"]
+        parts_dir = os.path.join(base, "parts")
+        found = sorted(
+            os.path.splitext(f)[0]
+            for f in os.listdir(parts_dir)
+            if f.endswith(".png")
+        ) if os.path.isdir(parts_dir) else []
+        missing = [p for p in expected if p not in found]
+        extra = [p for p in found if p not in expected]
+        if missing or extra:
+            rep.fail(
+                f"{label} part inventory",
+                f"exactly {expected}",
+                f"missing={missing or 'none'}  unexpected={extra or 'none'}",
+            )
+        else:
+            rep.ok(f"{label} part inventory  ({len(expected)} parts)")
+
+        parts: dict[str, np.ndarray] = {}
+        for name in expected:
+            path = os.path.join(parts_dir, f"{name}.png")
+            if not os.path.exists(path):
+                continue
+            arr = check_format(rep, path, canvas, tol)
+            if arr is not None:
+                parts[name] = arr
+        if assembled is not None and parts:
+            check_origin(rep, label, assembled, canvas, tol)
+            check_recomposite(rep, label, assembled, parts, expected, tol)
+
+        rig = os.path.join(base, "rig.riv")
+        if not os.path.isfile(rig) or os.path.getsize(rig) == 0:
+            rep.fail(f"{label} rig.riv", "present and non-empty", "missing or empty")
+        else:
+            rep.ok(f"{label} rig.riv  ({os.path.getsize(rig):,} bytes)")
+
+    if not os.path.isdir(root):
+        return
+    for base, _, files in os.walk(root):
+        if "rig.riv" not in files and "assembled.png" not in files:
+            continue
+        normalized = os.path.normcase(os.path.normpath(base))
+        if normalized not in declared:
+            rep.fail(
+                os.path.relpath(base, ROOT),
+                "declared in manifest.rigVariants",
+                "undeclared class-rig directory",
+            )
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -859,6 +941,7 @@ def main() -> int:
     # checking it is that nobody was going to remember to ask.
     check_gear(rep, mf, skipped)
     check_gear_portraits(rep, mf)
+    check_rig_variants(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

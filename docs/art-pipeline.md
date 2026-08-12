@@ -103,7 +103,7 @@ What that changes, and what it doesn't:
 
 | | Owner |
 |---|---|
-| **Image assets** — character parts, gear overlays, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** (commissioning them, and the eye that accepts them) |
+| **Image assets** — character parts, gear portraits, class-rig parts, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** (commissioning them, and the eye that accepts them) |
 | Rigging — skeleton, state machine, clip table, per-tier export | **Claude**, via `rive-mcp` (see below) |
 | The spec the drawings work from | **Claude** — [asset-brief.md](./asset-brief.md) |
 | The machine gates | **Claude** — `npm run art:verify`, `npm run art:verify:rig` |
