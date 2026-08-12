@@ -216,10 +216,12 @@ assets/
       parts/
         body.png  head.png  mane.png  <signature>.png
         arm_l.png arm_r.png leg_l.png leg_r.png  tail.png
-  gear/<class>/<tier>/
-      overlay_torso.png  prop_held.png
   gear-portraits/<class>/<tier>/
       <species>.png              opaque approved portrait composite
+  character-rigs/<class>/<tier>/<species>/
+      assembled.png              exact-pose animated fallback
+      parts/*.png                registered transparent body + gear layers
+      rig.riv                    species skeleton with the class skin
   effects/
       <name>.sheet.png           horizontal strip, N frames of 256×256
       <name>.json                { "frames": N, "fps": 12, "size": 256 }
@@ -229,9 +231,9 @@ assets/
       props/*.png
 ```
 
-`assembled.png` ships as the rig fallback and un-geared portrait. The game also loads approved
-`gear-portraits/` composites on still-image UI surfaces; animated world figures load only separable
-character and gear parts.
+`assembled.png` ships as the base-rig fallback and un-geared portrait. The game loads approved
+`gear-portraits/` composites on still-image UI surfaces. Animated world figures select an exact
+`character-rigs/` variant when it is declared and fall back to the un-geared species rig otherwise.
 
 The authoritative part list per species is in `assets/manifest.json`. **Every part named there must
 exist as its own file** — see §4.4.
@@ -261,10 +263,11 @@ Tiers escalate in impressiveness while remaining recognisably the same individua
 **`fledgling` is generated first and approved before any other tier of that species is attempted.**
 Every later tier is produced conditioned on the approved `fledgling` image, not from text alone.
 
-### 4.3 Gear overlays
+### 4.3 Purpose-drawn class gear
 
-Four classes × three tiers (no gear at `fledgling`) = **12 sets.** All 12 are declared in the
-manifest; **3 are delivered** (`songkeeper`, all three tiers) and 9 are still to come.
+Four classes × three tiers × six species (no gear at `fledgling`) = **72 exact fits.** All 72
+approved opaque portraits are delivered. Each one is the visual source for a matching animated
+class-rig variant; Thornguard Sworn's six variants are the first complete split set.
 
 | Class | Visual theme |
 |---|---|
@@ -273,21 +276,23 @@ manifest; **3 are delivered** (`songkeeper`, all three tiers) and 9 are still to
 | `starweaver` | Layered robes, floating focus stone, deep teal with brass |
 | `songkeeper` | Woven shawl, chime pendant, warm amber and cream |
 
-Gear overlays register against the **species-agnostic torso position**, so one overlay set works
-across all six species at that tier. Design them to read on both the slimmest (kitsune) and
-bulkiest (bigfoot) silhouettes.
+The early species-agnostic torso-overlay approach did not survive review: armor that fit one body
+floated, clipped, or hid signature features on another. The accepted contract is exact-pose and
+species-specific. A class-rig variant reuses the species skeleton and clip table, but its
+transparent body and gear layers are recovered from the approved composite so the armor can wrap
+the actual torso, sit under a mane, or clear a wing as that design requires.
 
 #### Approved gear portraits
 
-The three deferred classes also ship **27 approved opaque portrait composites**: three classes ×
-three geared tiers × dragonling, unicorn, and bigfoot. These are the exact creature fits reviewed
-in the app art pass and live at `assets/gear-portraits/<class>/<tier>/<species>.png`.
+All four classes ship **72 approved opaque purpose-drawn portrait variants**: four classes × three
+geared tiers × all six species. These are the exact creature fits reviewed in the app art pass and
+live at `assets/gear-portraits/<class>/<tier>/<species>.png`.
 
 They are used anywhere the app draws a still portrait (lobby, player sheet, dice, combat controls,
-and level-up). They do **not** satisfy the overlay deliverable above: the background and creature
-are baked into each square, so they cannot follow bones or animate. Griffin, kitsune, and manticore
-continue to use their species/tier portrait until their own composites are approved, and the story
-and combat stages continue to use Rive until transparent per-rig gear parts ship.
+and level-up). They do **not** by themselves satisfy the animated deliverable: the background and
+creature are baked into each square, so they cannot follow bones. Story and combat stages use the
+corresponding `assets/character-rigs/<class>/<tier>/<species>/` build after its transparent split
+ships.
 
 ### 4.4 Mane as a separate part 🔺
 
@@ -561,15 +566,15 @@ gear that hangs off two bones and in which clip a given button fires.
 |---|---|---|
 | **Species rig** | Every clip. Every pose. All of the motion in the game. | **6** — one per species |
 | **Tier skin** | Nothing that moves. A skin swap on an identical skeleton (§3.2). | 0 clips |
-| **Class / gear layer** | `overlay_torso` and `prop_held` parented to the torso and hand bones — they inherit motion for free (§4.3). | 0 clips |
+| **Class / gear skin** | Exact-pose transparent layers per class, tier, and species; attached to the existing species bones (§4.3). | 0 clips |
 | **Content** | Which clip and which sheet an ability id maps to. A table, not art. | 0 clips |
 
 Nine clips make a fight (§9.2: `walk`, `attack`, `cast`, `hurt`, `guard`, `leap`, `down`, `lift`,
 `revive` — `idle`, `celebrate` and `transform` already exist or belong to Chapter 5). Read the
 roadmap line as per-class-per-tier and the commission is 6 species × 4 tiers × 4 classes × 9 clips
-= **864.** Read the layers correctly and it is 6 × 9 = **54.** That factor of sixteen is the entire
-reason §4.3 makes gear overlays register against a species-agnostic torso position, and the reason
-§3.2 makes joints hold still across tiers. You are now spending that saving.
+= **864.** Read the layers correctly and it is 6 × 9 = **54.** Exact-pose class skins add splitting
+and rig-build work, but no new animation authoring: every variant reuses those same 54 species
+clips. That distinction is the saving.
 
 **The whole commission, then:**
 
@@ -1060,9 +1065,9 @@ the first one is the gate:
   that reads as evil has failed a rule, not a preference.
 - Is anything here frightening enough that she would rather not play? The canon's `child_hero_tone`
   allows danger and frightening mysteries. It does not allow gore, cruelty, or dread.
-- Does the gear survive the pose extremes — `prop_held` at the `attack` impact tick, the `cast`
-  release, the `guard` hold, and mid-`leap` — on the slimmest (kitsune) and bulkiest (bigfoot)
-  bodies alike (§4.3)? No script can see this; it is why the gate exists.
+- Does each exact-pose class skin survive the pose extremes — the `attack` impact tick, the `cast`
+  release, the `guard` hold, and mid-`leap` — without floating, clipping a signature feature, or
+  hiding the face (§4.3)? No script can see this; it is why the gate exists.
 
 #### 9.8.3 Order of work
 

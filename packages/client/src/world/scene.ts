@@ -70,6 +70,7 @@ import {
   approach,
   biomeBackdropUrl,
   characterArtUrl,
+  characterWorldArtUrl,
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
@@ -198,7 +199,10 @@ interface Actor {
  * drawing the Fledgling rig for the rest of the session — the transformation
  * cutscene playing over a figure that visibly never transformed.
  *
- * Appearance is deliberately *not* in here. Nothing about a figure is drawn
+ * Class matters only when it selects a delivered manifest.rigVariants build;
+ * `characterWorldArtUrl` folds that exact distinction into the key without
+ * rebuilding an undeclared class/species/tier combination onto the same base
+ * rig. Appearance is deliberately *not* in here. Nothing about a figure is drawn
  * from it any more — the runtime recolour is gone and every rig wears the
  * colours it was authored in (`nameplate.ts` explains why) — so folding it in
  * would throw a megabyte of rig away and reload an identical one because
@@ -208,8 +212,8 @@ interface Actor {
  * way `storyFocusTiles` is.
  */
 export function visualKeyOf(member: PartyMember): string {
-  const { species, tier } = member.character;
-  return [species, tier].join("|");
+  const { species, tier, class: characterClass } = member.character;
+  return characterWorldArtUrl(species, tier, characterClass);
 }
 
 /**
@@ -515,7 +519,7 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
-    const { species, tier, id, name } = member.character;
+    const { species, tier, id, name, class: characterClass } = member.character;
     // Fitted to the lineup's real spacing by `layoutActors`, which is the only
     // thing that knows how much room a figure has — and knows it only once the
     // party size is settled, which is after this runs.
@@ -549,7 +553,7 @@ export function createScene(app: Application): PartyScene {
      * placeholder when it isn't there cannot go stale.
      */
     const loadPng = (): void => {
-      void Assets.load<Texture>(characterArtUrl(species, tier))
+      void Assets.load<Texture>(characterWorldArtUrl(species, tier, characterClass))
         .then((texture) => {
           // Identity, not id: a character who left and rejoined mid-load has a
           // *new* actor under the same id, and this stale resolve would draw
@@ -570,7 +574,7 @@ export function createScene(app: Application): PartyScene {
     // The rig first, the PNG when there isn't one — same never-goes-stale
     // reasoning as the PNG load: ask for the file, fall back when it is not
     // there. The rig carries its own acting.
-    void createRiveActor(species, tier, ACTOR_HEIGHT)
+    void createRiveActor(species, tier, ACTOR_HEIGHT, characterClass)
       .then((rive) => {
         if (destroyed || actors.get(id) !== actor) {
           rive?.destroy();

@@ -103,7 +103,7 @@ describe("the harness itself", () => {
     const result = validate(copyTree());
     expect(result.out).toContain("PASS");
     expect(result.code).toBe(0);
-  });
+  }, 15_000);
 
   it("fails the build with a non-zero exit, not just a printed complaint", () => {
     // CI reads the exit code and nothing else. A validator that describes

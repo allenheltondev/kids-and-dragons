@@ -144,6 +144,7 @@ interface Manifest {
   rigContract?: RigContract;
   /** The artboard rigs are staged on. Optional so an older manifest still reads. */
   rigStage?: { width: number; height: number; offsetX: number; offsetY: number };
+  rigVariants?: { class: string; tier: string; species: string; parts: string[] }[];
 }
 
 /**
@@ -1238,12 +1239,28 @@ async function checkRigFiles(
       }
     }
   }
+  for (const variant of mf.rigVariants ?? []) {
+    const dir = join(
+      ROOT,
+      "assets",
+      "character-rigs",
+      variant.class,
+      variant.tier,
+      variant.species,
+    );
+    const path = join(dir, "rig.riv");
+    if (!existsSync(path)) continue;
+    found.push({
+      rel: `assets/character-rigs/${variant.class}/${variant.tier}/${variant.species}/rig.riv`,
+      path,
+    });
+  }
 
   if (found.length === 0) {
     if (strict) {
       rep.fail(
         "rig files",
-        "at least one .riv under assets/characters/ (--strict: undelivered work fails)",
+        "at least one base or manifest-declared class .riv (--strict: undelivered work fails)",
         `none in any of ${dirs} species/tier directories`,
       );
     } else {
