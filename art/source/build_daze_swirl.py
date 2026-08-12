@@ -1,14 +1,14 @@
-"""Build the review candidate for the twelve-frame down_settle combat effect."""
+"""Build the review candidate for the twelve-frame tintable daze_swirl effect."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_DIR = ROOT / "art" / "source" / "down_settle_candidate"
+SOURCE_DIR = ROOT / "art" / "source" / "daze_swirl"
 REVIEW_DIR = ROOT / "art" / "review"
 FRAME_SIZE = 256
 
@@ -21,6 +21,12 @@ def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFo
         except OSError:
             pass
     return ImageFont.load_default()
+
+
+def neutralize(source: Image.Image) -> Image.Image:
+    alpha = source.getchannel("A")
+    luminance = ImageOps.grayscale(source)
+    return Image.merge("RGBA", (luminance, luminance, luminance, alpha))
 
 
 def visible_crop(source: Image.Image, pad: int = 8) -> Image.Image:
@@ -44,23 +50,17 @@ def multiply_alpha(image: Image.Image, factor: float) -> Image.Image:
     return result
 
 
-def render_frame(
-    source: Image.Image,
-    scale_x: float,
-    scale_y: float,
-    opacity: float,
-    dy: int,
-) -> Image.Image:
-    base_width = 150
-    base_height = round(base_width * source.height / source.width)
-    width = max(1, round(base_width * scale_x))
-    height = max(1, round(base_height * scale_y))
+def render_frame(source: Image.Image, scale: float, opacity: float, angle: float, dy: int) -> Image.Image:
+    base_width = 136
+    width = max(1, round(base_width * scale))
+    height = max(1, round(width * source.height / source.width))
     painted = source.resize((width, height), Image.Resampling.LANCZOS)
+    painted = painted.rotate(angle, Image.Resampling.BICUBIC, expand=True)
     painted = multiply_alpha(painted, opacity)
 
     frame = Image.new("RGBA", (FRAME_SIZE, FRAME_SIZE), (0, 0, 0, 0))
     centre_x = 128
-    centre_y = 158 + dy
+    centre_y = 140 + dy
     frame.alpha_composite(
         painted,
         (round(centre_x - painted.width / 2), round(centre_y - painted.height / 2)),
@@ -85,10 +85,10 @@ def build_review(frames: list[Image.Image], output: Path) -> None:
     height = header + card * rows + gap * (rows - 1) + footer + margin
     board = Image.new("RGB", (width, height), (18, 23, 34))
     draw = ImageDraw.Draw(board)
-    draw.text((margin, 22), "down_settle — 12 frame review", font=load_font(28, True), fill=(244, 238, 222))
+    draw.text((margin, 22), "daze_swirl — 12 frame review", font=load_font(28, True), fill=(244, 238, 222))
     draw.text(
         (margin, 61),
-        "Knockdown transition · gentle cushion compression · down for now, still safe · 12 fps",
+        "Skip-turn transition · playful rotating wisps · runtime accent tint · 12 fps",
         font=load_font(17),
         fill=(169, 182, 204),
     )
@@ -134,31 +134,26 @@ def build_gif(frames: list[Image.Image], output: Path) -> None:
 
 def main() -> None:
     REVIEW_DIR.mkdir(parents=True, exist_ok=True)
-    source = visible_crop(Image.open(SOURCE_DIR / "source_alpha.png").convert("RGBA"))
-    timing = [
-        # horizontal scale, vertical scale, opacity, vertical shift
-        (0.22, 0.55, 0.56, -12),
-        (0.42, 0.70, 0.76, -9),
-        (0.64, 0.86, 0.90, -6),
-        (0.82, 0.98, 0.98, -3),
-        (0.96, 1.04, 1.00, 0),
-        (1.04, 1.00, 1.00, 2),
-        (1.08, 0.92, 0.94, 4),
-        (1.10, 0.84, 0.86, 5),
-        (1.08, 0.74, 0.76, 6),
-        (1.00, 0.64, 0.60, 7),
-        (0.74, 0.52, 0.40, 8),
-        (0.30, 0.36, 0.10, 9),
+    source = neutralize(Image.open(SOURCE_DIR / "source_alpha.png").convert("RGBA"))
+    source.save(SOURCE_DIR / "source_neutral.png", optimize=True)
+    source = visible_crop(source)
+
+    scales = (0.24, 0.50, 0.75, 0.95, 1.00, 1.00, 1.00, 1.00, 0.95, 0.80, 0.55, 0.24)
+    opacities = (0.55, 0.76, 0.92, 1.00, 1.00, 1.00, 1.00, 1.00, 0.92, 0.80, 0.62, 0.50)
+    angles = tuple(-10 + 30 * index for index in range(12))
+    vertical = (5, 4, 3, 1, 0, -1, 0, 1, 0, -1, -3, -5)
+    frames = [
+        render_frame(source, scale, opacity, angle, dy)
+        for scale, opacity, angle, dy in zip(scales, opacities, angles, vertical)
     ]
-    frames = [render_frame(source, *values) for values in timing]
 
     sheet = Image.new("RGBA", (FRAME_SIZE * len(frames), FRAME_SIZE), (0, 0, 0, 0))
     for index, frame in enumerate(frames):
         sheet.alpha_composite(frame, (index * FRAME_SIZE, 0))
-    sheet.save(SOURCE_DIR / "down_settle.sheet.png", optimize=True)
+    sheet.save(SOURCE_DIR / "daze_swirl.sheet.png", optimize=True)
 
-    build_review(frames, REVIEW_DIR / "down_settle_candidate.png")
-    build_gif(frames, REVIEW_DIR / "down_settle_candidate.gif")
+    build_review(frames, REVIEW_DIR / "daze_swirl.png")
+    build_gif(frames, REVIEW_DIR / "daze_swirl.gif")
 
 
 if __name__ == "__main__":

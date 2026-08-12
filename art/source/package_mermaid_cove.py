@@ -9,7 +9,7 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "mermaid_cove"
-BACKGROUND = "biome_mermaid_cove_bg_v2_raw.png"
+BACKGROUND = "biome_mermaid_cove_bg_raw.png"
 TILES = "mermaid_cove_tiles_raw.png"
 PROPS = "mermaid_cove_props_alpha.png"
 PROP_NAMES = (

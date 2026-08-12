@@ -10,9 +10,9 @@ from PIL import Image, ImageDraw, ImageFilter
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_DIR = ROOT / "art" / "source" / "legend_dragon_rig_candidate"
+SOURCE_DIR = ROOT / "art" / "source" / "legend_dragon_rig"
 PARTS_DIR = SOURCE_DIR / "parts"
-REVIEW_PATH = ROOT / "art" / "review" / "legend_dragon_rig_candidate.png"
+REVIEW_PATH = ROOT / "art" / "review" / "legend_dragon_rig.png"
 
 CANVAS = 2048
 EDGE_MARGIN = 24

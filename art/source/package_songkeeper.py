@@ -8,16 +8,6 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "art" / "source"
 REVIEW = ROOT / "art" / "review"
 SPECIES = ("unicorn", "dragonling", "griffin", "bigfoot", "kitsune", "manticore")
-VERSIONS = {
-    "unicorn": "v4",
-    "dragonling": "v2",
-    "griffin": "v2",
-    "bigfoot": "v2",
-    "kitsune": "v2",
-    "manticore": "v2",
-}
-
-
 def crop_generated_border(image: Image.Image) -> Image.Image:
     rgb = image.convert("RGB")
     pixels = np.asarray(rgb)
@@ -39,10 +29,9 @@ REVIEW.mkdir(parents=True, exist_ok=True)
 rows = []
 
 for species in SPECIES:
-    version = VERSIONS[species]
-    raw_path = SOURCE / f"songkeeper_{species}_tiers_{version}_raw.png"
+    raw_path = SOURCE / f"songkeeper_{species}_tiers_raw.png"
     row = crop_generated_border(Image.open(raw_path))
-    review_path = REVIEW / f"songkeeper_{species}_tiers_{version}.png"
+    review_path = REVIEW / f"songkeeper_{species}_tiers.png"
     row.save(review_path, optimize=True)
     rows.append((species, row))
 
@@ -67,4 +56,4 @@ for species, row in resized_rows:
     sheet.paste(row, (0, y + header_height))
     y += header_height + row.height
 
-sheet.save(REVIEW / "songkeeper_all_species_tiers_v2.png", optimize=True)
+sheet.save(REVIEW / "songkeeper_all_species_tiers.png", optimize=True)

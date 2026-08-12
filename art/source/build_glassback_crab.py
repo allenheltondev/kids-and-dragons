@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the registered River Drake approval candidate and serpentine parts."""
+"""Build the registered Glassback Crab approval candidate and low-shell parts."""
 
 from __future__ import annotations
 
@@ -10,15 +10,15 @@ from PIL import Image, ImageDraw, ImageFilter
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_DIR = ROOT / "art" / "source" / "river_drake_rig_candidate"
+SOURCE_DIR = ROOT / "art" / "source" / "glassback_crab_rig"
 PARTS_DIR = SOURCE_DIR / "parts"
-REVIEW_PATH = ROOT / "art" / "review" / "river_drake_rig_candidate.png"
+REVIEW_PATH = ROOT / "art" / "review" / "glassback_crab_rig.png"
 
 CANVAS = 1024
 ANCHOR_Y = 900
-TARGET_HEIGHT = 860
+TARGET_HEIGHT = 704
 ALPHA_THRESHOLD = 8
-Z_ORDER = ["coil", "body", "neck", "limb_l", "limb_r", "head", "fin"]
+Z_ORDER = ["leg_l", "leg_r", "shell", "body", "claw_l", "claw_r"]
 
 
 def polygon_mask(points: list[tuple[int, int]]) -> np.ndarray:
@@ -55,72 +55,55 @@ def register_source() -> Image.Image:
 def make_parts(assembled: Image.Image) -> dict[str, Image.Image]:
     rgba = np.asarray(assembled).copy()
     alpha = rgba[..., 3]
-    rgb = rgba[..., :3]
     subject = alpha > ALPHA_THRESHOLD
     yy, xx = np.indices(alpha.shape)
 
-    head = polygon_mask(
-        [(70, 145), (305, 105), (465, 210), (440, 390), (285, 475), (80, 390), (55, 245)]
-    )
-    neck = polygon_mask(
-        [(140, 205), (470, 170), (560, 450), (455, 650), (185, 595), (105, 350)]
-    )
-    limb_l = (xx < 270) & (yy >= 500)
-    limb_r = (xx >= 245) & (xx < 535) & (yy >= 485)
-    coil = ((xx >= 540) & (yy >= 285)) | ((xx >= 480) & (yy >= 650))
-    body_core = polygon_mask(
-        [(285, 245), (655, 210), (735, 430), (650, 635), (360, 680), (245, 455)]
-    )
-
-    # The drake's green-blue membranes are its defining signature. Restrict
-    # that color cue to the three physical fin zones so the jade belly remains
-    # on the torso and the entire fin system can animate as one layer.
-    fin_zones = (
-        polygon_mask([(120, 35), (470, 35), (535, 330), (445, 385), (245, 265), (105, 225)])
-        | polygon_mask([(405, 105), (890, 110), (955, 390), (825, 405), (620, 285), (470, 330)])
-        | polygon_mask([(555, 640), (1015, 650), (1015, 900), (675, 900), (540, 805)])
-    )
-    membrane_seed = (
-        subject
-        & fin_zones
-        & (rgb[..., 1] > rgb[..., 0] * 1.05)
-        & (rgb[..., 1] > 62)
-        & (rgb[..., 2] > 48)
-    )
-    fin = np.asarray(
-        Image.fromarray((membrane_seed * 255).astype(np.uint8), "L").filter(ImageFilter.MaxFilter(17))
-    ) > 0
-    fin &= subject & fin_zones
-
     regions = {
-        "head": head,
-        "neck": neck,
-        "body": body_core,
-        "coil": coil,
-        "limb_l": limb_l,
-        "limb_r": limb_r,
-        "fin": fin,
+        "claw_l": ((xx < 325) & (yy < 650)) | (
+            (xx >= 250) & (xx < 440) & (yy >= 575) & (yy < 675)
+        ),
+        "claw_r": (xx >= 350) & (xx < 670) & (yy >= 620),
+        "leg_l": (xx < 410) & (yy >= 630),
+        "leg_r": (xx >= 680) & (yy >= 535),
+        "body_face": (xx >= 235) & (xx < 800) & (yy >= 425) & (yy < 710),
+        "shell": (xx >= 175) & (xx < 940) & (yy < 625),
     }
-    names = ["head", "neck", "body", "coil", "limb_l", "limb_r", "fin"]
+
+    names = ["body", "shell", "claw_l", "claw_r", "leg_l", "leg_r"]
     index = {name: i for i, name in enumerate(names)}
     owner = np.full((CANVAS, CANVAS), -1, dtype=np.int8)
 
-    for name in ("limb_l", "limb_r", "head", "fin", "body", "neck", "coil"):
+    # Foreground appendages receive their visible pixels before the torso and
+    # shell. The broad face band keeps both expressive eyestalks on the body.
+    for name in ("claw_l", "claw_r", "leg_l", "leg_r"):
         take = subject & regions[name] & (owner < 0)
         owner[take] = index[name]
+    take = subject & regions["body_face"] & (owner < 0)
+    owner[take] = index["body"]
+    take = subject & regions["shell"] & (owner < 0)
+    owner[take] = index["shell"]
     owner[subject & (owner < 0)] = index["body"]
 
     exclusive = {name: owner == index[name] for name in names}
     fully_opaque = alpha == 255
+    body_joint_overdraw = polygon_mask(
+        [(90, 490), (925, 465), (985, 680), (850, 760), (150, 770), (65, 650)]
+    )
+
     parts: dict[str, Image.Image] = {}
     for name in names:
         base = Image.fromarray((exclusive[name] * 255).astype(np.uint8), "L")
         expanded = np.asarray(base.filter(ImageFilter.MaxFilter(31))) > 0
         include = subject & (exclusive[name] | (expanded & fully_opaque))
+        if name == "body":
+            include |= subject & fully_opaque & body_joint_overdraw
+        if name == "claw_l":
+            include &= ~((xx >= 285) & (yy < 585))
         part = rgba.copy()
         part[..., 3] = np.where(include, alpha, 0)
         part[~include, :3] = 0
         parts[name] = Image.fromarray(part, "RGBA")
+
     return parts
 
 
@@ -137,39 +120,38 @@ def content_crop(image: Image.Image) -> Image.Image:
 
 
 def make_review(assembled: Image.Image, parts: dict[str, Image.Image]) -> Image.Image:
-    board = Image.new("RGB", (1800, 1120), (23, 29, 43))
+    board = Image.new("RGB", (1800, 1080), (23, 29, 43))
     draw = ImageDraw.Draw(board)
     draw.text(
         (35, 24),
-        "river_drake v1 - watchful crossing keeper + serpentine rig",
+        "glassback_crab v1 - cautious warning idle + low-shell rig",
         fill=(240, 243, 249),
     )
-    panels = [(30, 65, 865, 1080), (895, 65, 1770, 760), (895, 790, 1770, 1080)]
+    panels = [(30, 65, 890, 1040), (920, 65, 1770, 750), (920, 780, 1770, 1040)]
     for box in panels:
         draw.rounded_rectangle(box, radius=14, fill=(35, 42, 59), outline=(69, 80, 103), width=2)
 
     hero = content_crop(assembled)
-    hero.thumbnail((790, 930), Image.Resampling.LANCZOS)
-    board.paste(hero, (52 + (790 - hero.width) // 2, 115), hero)
-    draw.text((50, 82), "Assembled idle - 860px target height", fill=(226, 232, 242))
+    hero.thumbnail((820, 900), Image.Resampling.LANCZOS)
+    board.paste(hero, (50 + (820 - hero.width) // 2, 105), hero)
+    draw.text((50, 82), "Assembled idle - 704px", fill=(226, 232, 242))
 
-    ordered = ["head", "neck", "body", "coil", "limb_l", "limb_r", "fin"]
+    ordered = ["body", "shell", "claw_l", "claw_r", "leg_l", "leg_r"]
     for i, name in enumerate(ordered):
-        col, row = i % 4, i // 4
-        x, y = 925 + col * 205, 105 + row * 305
+        col, row = i % 3, i // 3
+        x, y = 950 + col * 270, 110 + row * 305
         tile = content_crop(parts[name])
-        tile.thumbnail((175, 230), Image.Resampling.LANCZOS)
-        board.paste(tile, (x + (175 - tile.width) // 2, y + 25), tile)
+        tile.thumbnail((235, 235), Image.Resampling.LANCZOS)
+        board.paste(tile, (x + (235 - tile.width) // 2, y + 25), tile)
         draw.text((x, y), name, fill=(215, 222, 235))
 
     small = content_crop(assembled)
-    small.thumbnail((260, 64), Image.Resampling.LANCZOS)
-    board.paste(small, (965, 905), small)
-    draw.text((965, 820), "64px combat read", fill=(226, 232, 242))
-    draw.text((965, 845), "Continuous fin + deliberate barrier pose", fill=(190, 201, 220))
+    small.thumbnail((300, 64), Image.Resampling.LANCZOS)
+    board.paste(small, (970, 900), small)
+    draw.text((970, 825), "64px combat read", fill=(226, 232, 242))
     draw.text(
-        (1325, 820),
-        "Routine-minded crossing keeper, not a predator.\nRiver-stone scales keep it below legend status.",
+        (1320, 825),
+        "Shell remains the pale signature;\nface reads cautious, not hostile.",
         fill=(205, 214, 229),
         spacing=5,
     )
