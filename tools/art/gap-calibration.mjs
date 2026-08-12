@@ -108,7 +108,10 @@ if (opened.length === 0) {
   for (const c of sorted.slice(0, 15)) {
     const w = c.worst[0];
     const name = `${c.species}/${c.tier} ${c.clip}`;
-    const region = `${w.new}px opened (of ${w.px}px) walled in by ${w.wall}px at (${w.at[0]},${w.at[1]})`;
+    // The tick is part of "look at these clips": it is chosen by what opened, so
+    // it is not the tick the net change points at.
+    const at = c.worst_tick == null ? "" : ` on tick ${c.worst_tick}`;
+    const region = `${w.new}px opened (of ${w.px}px) walled in by ${w.wall}px at (${w.at[0]},${w.at[1]})${at}`;
     p(md ? `| \`${name}\` | ${c.interior_holes}px | ${region} |` : `  ${name.padEnd(34)} ${String(c.interior_holes).padStart(6)}px  ${region}`);
   }
   p();

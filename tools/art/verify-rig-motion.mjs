@@ -391,7 +391,9 @@ function judge(label, clip, m) {
     soft.push(
       `${m.interior_holes}px of enclosed gap opened during the clip — a joint may be coming ` +
         `apart, or the figure may simply have spread its limbs. Look at it.` +
-        (where ? `\n      worst tick: ${where}` : ""),
+        // The tick is named because it is picked by what opened, not by this
+        // number, so it is not the tick the reader would guess from it.
+        (where ? `\n      tick ${m.interior_worst_tick}: ${where}` : ""),
     );
   }
   if (m.motion_median < MOTION_MIN) {
@@ -467,6 +469,9 @@ for (const job of rigJobs) {
         tier: job.tier,
         clip: clip.name,
         interior_holes: m.interior_holes,
+        // Which tick `worst` was read off. It is chosen by what opened, while
+        // interior_holes is a net over the clip, so the two need not agree.
+        worst_tick: m.interior_worst_tick ?? null,
         worst: m.interior_worst ?? [],
       });
     }
