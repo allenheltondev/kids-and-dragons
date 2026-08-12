@@ -175,16 +175,3 @@ for destination_index, (destination, props) in enumerate(all_props.items()):
         label_font,
     )
 props_review.save(REVIEW / "open_plains_props_v2.png", optimize=True)
-
-original_review_path = REVIEW / "open_plains_backdrops.png"
-if original_review_path.exists():
-    original_review = Image.open(original_review_path).convert("RGB")
-    comparison = Image.new("RGB", (1920, 850), (18, 17, 24))
-    comparison.paste(original_review, (0, 25))
-    comparison.paste(background_review, (0, 450))
-    label_centered(comparison, "ORIGINAL", 0, 960, label_font)
-    label_centered(comparison, "BLUE-GREEN REVISION", 425, 960, label_font)
-    comparison.save(
-        REVIEW / "open_plains_palette_comparison.png",
-        optimize=True,
-    )
