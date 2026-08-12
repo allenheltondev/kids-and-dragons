@@ -10,8 +10,8 @@ REVIEW = ROOT / "art" / "review"
 
 DESTINATIONS = {
     "plains": {
-        "background": "biome_plains_bg_v2_raw.png",
-        "props": "plains_props_v2_alpha.png",
+        "background": "biome_plains_bg_raw.png",
+        "props": "plains_props_alpha.png",
         "prop_names": (
             "standing_stone",
             "trail_sign",
@@ -22,8 +22,8 @@ DESTINATIONS = {
         ),
     },
     "eastern_plains": {
-        "background": "biome_eastern_plains_bg_v2_raw.png",
-        "props": "eastern_plains_props_v2_alpha.png",
+        "background": "biome_eastern_plains_bg_raw.png",
+        "props": "eastern_plains_props_alpha.png",
         "prop_names": (
             "wind_tree",
             "river_stones",
@@ -34,8 +34,8 @@ DESTINATIONS = {
         ),
     },
     "sunward_fields": {
-        "background": "biome_sunward_fields_bg_v2_raw.png",
-        "props": "sunward_fields_props_v2_alpha.png",
+        "background": "biome_sunward_fields_bg_raw.png",
+        "props": "sunward_fields_props_alpha.png",
         "prop_names": (
             "haystack",
             "wheat_sheaf",
@@ -68,7 +68,7 @@ def package_background(source_name: str, output_dir: Path) -> Image.Image:
 
 
 def package_tiles() -> Image.Image:
-    source = Image.open(SOURCE / "open_plains_tiles_v2_raw.png").convert("RGB")
+    source = Image.open(SOURCE / "open_plains_tiles_raw.png").convert("RGB")
     sheet = Image.new("RGB", (512, 512))
     for row in range(4):
         for col in range(4):
@@ -154,9 +154,9 @@ for index, (destination, background) in enumerate(backgrounds.items()):
         x + 320,
         label_font,
     )
-background_review.save(REVIEW / "open_plains_backdrops_v2.png", optimize=True)
+background_review.save(REVIEW / "open_plains_backdrops.png", optimize=True)
 
-shared_tiles.save(REVIEW / "open_plains_tiles_v2.png", optimize=True)
+shared_tiles.save(REVIEW / "open_plains_tiles.png", optimize=True)
 
 props_review = Image.new("RGB", (1536, 390), (18, 17, 24))
 for destination_index, (destination, props) in enumerate(all_props.items()):
@@ -174,4 +174,4 @@ for destination_index, (destination, props) in enumerate(all_props.items()):
         panel_x + 256,
         label_font,
     )
-props_review.save(REVIEW / "open_plains_props_v2.png", optimize=True)
+props_review.save(REVIEW / "open_plains_props.png", optimize=True)

@@ -9,7 +9,7 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "skullwater_cave"
-BACKGROUND = "biome_skullwater_cave_bg_v2_raw.png"
+BACKGROUND = "biome_skullwater_cave_bg_raw.png"
 TILES = "skullwater_caverns_tiles_raw.png"
 PROPS = "skullwater_cave_props_alpha.png"
 PROP_NAMES = (

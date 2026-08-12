@@ -70,10 +70,10 @@ def radiant_panel_region(path: Path) -> tuple[int, int, int, int]:
 
 def fix_review_sources() -> None:
     names = (
-        "songkeeper_unicorn_tiers_v4.png",
-        "thornguard_unicorn_tiers_v4.png",
-        "duskrunner_unicorn_tiers_v2.png",
-        "starweaver_unicorn_tiers_v3.png",
+        "songkeeper_unicorn_tiers.png",
+        "thornguard_unicorn_tiers.png",
+        "duskrunner_unicorn_tiers.png",
+        "starweaver_unicorn_tiers.png",
     )
     for name in names:
         path = REVIEW_DIR / name
@@ -81,17 +81,17 @@ def fix_review_sources() -> None:
             recolor_green_to_blue(path, radiant_panel_region(path))
 
     raw_names = (
-        "songkeeper_unicorn_tiers_v4_raw.png",
-        "thornguard_unicorn_tiers_v4_raw.png",
-        "duskrunner_unicorn_tiers_v2_raw.png",
-        "starweaver_unicorn_tiers_v3_raw.png",
+        "songkeeper_unicorn_tiers_raw.png",
+        "thornguard_unicorn_tiers_raw.png",
+        "duskrunner_unicorn_tiers_raw.png",
+        "starweaver_unicorn_tiers_raw.png",
     )
     for name in raw_names:
         path = SOURCE_DIR / name
         if path.exists():
             recolor_green_to_blue(path, radiant_panel_region(path))
 
-    combined = REVIEW_DIR / "remaining_gear_classes_unicorn_tiers_v4.png"
+    combined = REVIEW_DIR / "remaining_gear_classes_unicorn_tiers.png"
     if combined.exists():
         with Image.open(combined) as image:
             width, height = image.size
