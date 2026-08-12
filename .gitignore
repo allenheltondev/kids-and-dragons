@@ -6,6 +6,7 @@ __pycache__/
 
 # art workflow — nothing reaches assets/ without passing verify + human review
 staging/
+art/review/
 
 # build output
 dist/

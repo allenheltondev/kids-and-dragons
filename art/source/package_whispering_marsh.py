@@ -9,7 +9,7 @@ BIOMES = ROOT / "assets" / "biomes"
 REVIEW = ROOT / "art" / "review"
 
 DESTINATION = "whispering_marsh"
-BACKGROUND = "biome_whispering_marsh_bg_v3_raw.png"
+BACKGROUND = "biome_whispering_marsh_bg_raw.png"
 TILES = "whispering_marsh_tiles_raw.png"
 PROPS = "whispering_marsh_props_alpha.png"
 PROP_NAMES = (
