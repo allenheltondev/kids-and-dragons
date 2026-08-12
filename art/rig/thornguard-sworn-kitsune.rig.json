@@ -1,0 +1,28 @@
+{
+  "$comment": "Thornguard Sworn Kitsune variant. It reuses the Kitsune skeleton and hero contract; the fitted harness follows body and the leaf-emblem guard follows the foreground foreleg.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["head", "mane_armor"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "armor_torso"]
+  ],
+  "zOrder": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "mane_armor", "head", "mane", "armor_torso"],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": { "input": "knockedDown", "equals": true, "from": ["idle", "hurt", "walk", "guard"] },
+      "revive": { "input": "knockedDown", "equals": false, "from": "down_loop" }
+    }
+  }
+}

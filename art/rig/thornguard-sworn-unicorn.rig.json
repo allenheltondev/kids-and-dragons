@@ -1,0 +1,28 @@
+{
+  "$comment": "Thornguard Sworn Unicorn variant. The fitted cuirass follows the body while the mane, braid, and horn remain in front.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["head", "horn"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "armor_torso"]
+  ],
+  "zOrder": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_torso", "mane", "horn"],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": { "input": "knockedDown", "equals": true, "from": ["idle", "hurt", "walk", "guard"] },
+      "revive": { "input": "knockedDown", "equals": false, "from": "down_loop" }
+    }
+  }
+}

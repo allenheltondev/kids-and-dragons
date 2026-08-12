@@ -16,7 +16,7 @@
  */
 
 import { Sprite, Texture } from "pixi.js";
-import type { SpeciesId, TierId } from "@kad/shared";
+import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { CANVAS, RIG_STAGE } from "./art-paths";
 import { RIG_ANCHOR_X, RIG_ANCHOR_Y, createRig, type RigHandle } from "./rive-rig";
 
@@ -40,6 +40,7 @@ export async function createRiveActor(
   species: SpeciesId,
   tier: TierId,
   height: number,
+  characterClass?: ClassId,
 ): Promise<RiveActorHandle | null> {
   let texture: Texture | null = null;
   let rig: RigHandle | null = null;
@@ -49,7 +50,7 @@ export async function createRiveActor(
     // which happens inside `createRig` before this closure has anything to
     // update — the sprite's first frame comes from the initial upload below.
     texture?.source.update();
-  });
+  }, characterClass);
   if (!rig) return null;
 
   const built = rig;
