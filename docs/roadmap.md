@@ -276,8 +276,9 @@ The largest chapter. Budget accordingly.
 **Allen**
 - ~~Commission Sworn, Radiant, and Mythic tiers for all 6 species~~ — delivered: all 24 sets
   (6 species × 4 tiers) are in `assets/characters/` and green through `art:verify`
-- Commission gear overlays for all 4 classes; item icons (~25); souvenir icons — songkeeper's
-  three tiers are delivered; the other three classes' overlays remain
+- ~~Commission purpose-drawn gear for all 4 classes~~; item icons (~25); souvenir icons — all 72
+  exact species/class/tier gear portraits are approved. Transparent class-rig splitting is now the
+  remaining animation work: Thornguard Sworn is complete (6/72 variants), with Thornguard Radiant next.
 - ~~**Bind the new tiers to the existing rigs** — same skeleton, skin swap. If cross-tier joint registration was right, this is fast; if it wasn't, you'll find out here.~~ — **moved to Claude,
   and delivered.** Cross-tier joint registration held: all four tiers of all six species are rigged
   from one config per species (`art/rig/<species>.rig.json`, joints measured per tier).

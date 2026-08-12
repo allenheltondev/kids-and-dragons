@@ -126,6 +126,35 @@ const wanted = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--t
 const SPECIES = MANIFEST.species.map((s) => s.id).filter((id) => wanted.length === 0 || wanted.includes(id));
 const TIERS = MANIFEST.tiers.filter((t) => !onlyTier || t === onlyTier);
 
+const targets = [];
+for (const id of SPECIES) {
+  for (const tier of TIERS) {
+    targets.push({
+      label: `${id}/${tier}`,
+      tag: `${id}_${tier}`,
+      rig: join(ROOT, "assets", "characters", id, tier, "rig.riv"),
+      art: join(ROOT, "assets", "characters", id, tier, "assembled.png"),
+    });
+  }
+}
+for (const variant of MANIFEST.rigVariants ?? []) {
+  if (!SPECIES.includes(variant.species) || !TIERS.includes(variant.tier)) continue;
+  const base = join(
+    ROOT,
+    "assets",
+    "character-rigs",
+    variant.class,
+    variant.tier,
+    variant.species,
+  );
+  targets.push({
+    label: `${variant.class}/${variant.tier}/${variant.species}`,
+    tag: `class_${variant.class}_${variant.tier}_${variant.species}`,
+    rig: join(base, "rig.riv"),
+    art: join(base, "assembled.png"),
+  });
+}
+
 /** Same resolution rule as the other rig tools — the CLI is not a repo dependency. */
 function resolveCli() {
   const env = process.env.KAD_RIVE_CLI;
@@ -149,16 +178,13 @@ console.log(
 const failures = [];
 let checked = 0;
 
-for (const id of SPECIES) {
-  for (const tier of TIERS) {
-    const rig = join(ROOT, "assets", "characters", id, tier, "rig.riv");
-    const art = join(ROOT, "assets", "characters", id, tier, "assembled.png");
+for (const target of targets) {
+    const { rig, art, label } = target;
     if (!existsSync(rig) || !existsSync(art)) continue;
-    const label = `${id}/${tier}`;
 
     // Render the WHOLE stage at its native size, so the crop below is in
     // artboard pixels and no scaling stands between the rig and the art.
-    const png = join(work, `${id}_${tier}.png`);
+    const png = join(work, `${target.tag}.png`);
     const r = spawnSync(
       cli.cmd,
       [...cli.pre, "render", rig, "--animation", "idle", "--time", "0", "--width", String(STAGE.width), "-o", png],
@@ -220,14 +246,13 @@ for (const id of SPECIES) {
     } else {
       console.log(`  ${GREEN}ok${RESET}    ${label}  ${(match * 100).toFixed(2)}% at rest`);
     }
-  }
 }
 
 rmSync(work, { recursive: true, force: true });
 
 console.log(`\n${"-".repeat(60)}`);
 if (checked === 0) {
-  console.error("error: no rigs compared — nothing at assets/characters/<species>/<tier>/rig.riv");
+  console.error("error: no base or manifest-declared class rigs compared");
   process.exit(2);
 }
 if (failures.length > 0) {
