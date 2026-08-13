@@ -197,6 +197,35 @@ def rest_gaps_seen_from(a, rest_gap, rest_centre):
     return out
 
 
+def thicker_than_a_hair(m):
+    """
+    Whether a mask is more than a hairline anywhere — survives a 1px erosion.
+
+    A one-pixel gap between two overlapping parts is not a hole in the figure,
+    it is the seam between them opening by a pixel as they rotate. `SEE_THROUGH`
+    already drops the antialiased band around that seam; this drops the hairline
+    the band was wrapped around.
+
+    Without it the calibration measured pinholes. Ranking regions by wall depth
+    put whatever is deepest inside the body at the top of every clip, and the
+    deepest thing inside a body is usually a speck: across 390 clips the fifteen
+    deepest-walled were all 1-16px, four of them a single pixel walled in by
+    ~90px of figure, and 321 clips landed at 20px or deeper — 82% of the corpus
+    in the two buckets a threshold would be drawn between, which is an
+    instrument that has stopped discriminating.
+
+    A morphological floor rather than a minimum area, because "thinner than two
+    pixels" is a statement about the seam this is rejecting, where "smaller than
+    N pixels" would be a number invented to make a histogram look right.
+    """
+    e = m.copy()
+    e[1:, :] &= m[:-1, :]
+    e[:-1, :] &= m[1:, :]
+    e[:, 1:] &= m[:, :-1]
+    e[:, :-1] &= m[:, 1:]
+    return bool(e.any())
+
+
 def openings(e, was_gap):
     """
     Every enclosed region of one frame, paired with how much of it was solid
@@ -230,8 +259,14 @@ def openings(e, was_gap):
         label += 1
 
     wg = was_gap[y0:y1 + 1, x0:x1 + 1]
-    scored = [(int((r & ~wg).sum()), r) for r in found]
-    return sorted((t for t in scored if t[0] > 0), key=lambda t: -t[0])
+    scored = []
+    for r in found:
+        n = r & ~wg
+        # The NEW part has to clear the hairline, not the whole region: a gap
+        # that was already there and widened by one pixel has not opened.
+        if n.any() and thicker_than_a_hair(n):
+            scored.append((int(n.sum()), r))
+    return sorted(scored, key=lambda t: -t[0])
 
 
 def wall_depths(regions, outside):

@@ -362,4 +362,54 @@ Image.fromarray(rest, "RGBA").save(${JSON.stringify(art)})
     // Deep in the torso. Ranking by area reported 1920px walled in by 7px here.
     expect(worst!.wall).toBeGreaterThan(20);
   });
+
+  /*
+   * Ranking by wall depth put whatever is deepest inside the body at the top of
+   * every clip, and the deepest thing inside a body is usually a speck. The first
+   * corpus run under that ranking measured pinholes: of 390 clips the fifteen
+   * deepest-walled openings were all 1-16px, four of them a single pixel walled
+   * in by ~90px of figure, and 321 clips landed at 20px or deeper — 82% of the
+   * corpus piled into the two buckets a threshold would be drawn between.
+   *
+   * Those are seams between overlapping parts opening by a pixel as they rotate,
+   * not holes in the character, so an opening has to clear a hairline first.
+   */
+  describe("a one-pixel seam is not a hole", () => {
+    function torso(name: string, cut: string) {
+      const apng = join(work, `${name}.png`);
+      const art = join(work, `${name}_art.png`);
+      const py = `
+import numpy as np
+from PIL import Image
+def body():
+    a = np.zeros((200, 200, 4), np.uint8)
+    a[40:160, 50:150] = (200, 120, 90, 255)
+    return a
+
+moved = body()
+${cut}
+
+Image.fromarray(body(), "RGBA").save(${JSON.stringify(apng)}, save_all=True,
+    append_images=[Image.fromarray(moved, "RGBA")], duration=16, loop=0)
+Image.fromarray(body(), "RGBA").save(${JSON.stringify(art)})
+`;
+      execFileSync("python3", ["-c", py], { stdio: "pipe" });
+      return measure(apng, art) as unknown as Metrics;
+    }
+
+    it("ignores a hairline seam however deeply it sits", () => {
+      // 1px wide, 12px long, dead centre of the torso — walled in by ~46px, so
+      // under a pure wall ranking this outranks any real tear in the corpus.
+      const m = torso("seam", "moved[100:112, 100:101, 3] = 0");
+      expect(m.interior_worst).toEqual([]);
+    });
+
+    it("keeps a hole that is genuinely more than a hair", () => {
+      const m = torso("small", "moved[100:105, 100:105, 3] = 0");
+      const worst = m.interior_worst[0];
+      expect(worst).toBeDefined();
+      expect(worst!.new).toBe(25);
+      expect(worst!.wall).toBeGreaterThan(20);
+    });
+  });
 });
