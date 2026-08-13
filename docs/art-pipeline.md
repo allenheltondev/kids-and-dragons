@@ -292,10 +292,28 @@ and `new` cannot tell a tear from a limb that moved. Worse for the histogram abo
 tick by `argmax(new)` systematically selects the tick of *greatest displacement from rest*, which is
 exactly where this artefact is largest, and the artefact's wall is the moved anatomy's own — 21px in
 the measurement above, landing squarely in the 20–39 bump that the ~20px line was drawn under.
-**Treat every wall distribution collected so far as contaminated by figure motion, and the ~20px
-candidate as unconfirmed.** Fixing it means comparing against rest in the figure's frame of reference
-rather than the canvas's — compensating for the body's displacement before scoring `new` — which
-handles translation cleanly and rotation and articulation only partly.
+**So every wall distribution collected before this was contaminated by figure motion, the 132/160/43/54/1
+histogram included, and the ~20px candidate rests on none of them.**
+
+**The fix, now in place: score `new` in the figure's frame of reference rather than the canvas's.**
+Each tick is compared against the rest gaps *carried into that tick* — shifted by how far the
+figure's centre of mass has travelled — so a gap that only moved lines back up with itself. On the
+fixtures above the artefact goes to nothing at every shift (4, 12 and 30px all report `[]`), while a
+genuine 288px tear in the same translated figure is still reported at exactly 288px through all
+three. Both directions are pinned by tests, and all six fail without the alignment — including the
+one that matters most, where the moved 500px loop *outranks* the real 288px tear and is described in
+its place.
+
+Two limits, because this does not make the number clean. The estimate is a single translation, so
+**rotation and articulation are only partly compensated** — a topple still smears, and a limb
+swinging while the body stays put is not corrected at all. And a tear is part of the mass whose
+centre is being measured, so a large one perturbs its own alignment by roughly
+`area x distance / total`; a pixel or so at realistic sizes, absorbed by the 1px of slack the
+comparison allows. Cost is ~79ms per clip at 1024px, under 2% on top of the gap work.
+
+The threshold still waits on a run of this code *and* on the re-cut, for two independent reasons: the
+walls have never yet been measured on an instrument free of both flaws, and the 179 duplicated
+fragments are still in the delivered art.
 
 Two things did change, and both are the fix working. **"Opened a gap" went from 300 of 312 to 390 of
 390** — every clip now opens *some* enclosed region on *some* tick, because the description is no

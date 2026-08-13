@@ -125,11 +125,86 @@ def delta(i, j):
     return float(np.abs(frames[i].astype(np.int32) - frames[j].astype(np.int32)).max(axis=2).mean())
 
 
-def openings(e, rest):
+def centroid(a):
+    """Centre of mass of the solid figure, or None for an empty frame."""
+    m = a >= SEE_THROUGH
+    if not m.any():
+        return None
+    ys, xs = np.nonzero(m)
+    return float(ys.mean()), float(xs.mean())
+
+
+def resampled(mask, dy, dx):
+    """
+    `mask` read at `p - (dy, dx)` — dragged by (dy, dx) into this frame.
+
+    Pixels whose source falls off the canvas read False. The contract keeps the
+    figure inset by an edge margin, so that only happens outside the silhouette.
+    """
+    out = np.zeros_like(mask)
+    h, w = mask.shape
+    y0, y1 = max(0, dy), min(h, h + dy)
+    x0, x1 = max(0, dx), min(w, w + dx)
+    if y0 >= y1 or x0 >= x1:
+        return out
+    out[y0:y1, x0:x1] = mask[y0 - dy:y1 - dy, x0 - dx:x1 - dx]
+    return out
+
+
+def rest_gaps_seen_from(a, rest_gap, rest_centre):
+    """
+    The rest pose's gaps, moved into this frame's frame of reference.
+
+    `new` asks whether a region was solid figure at rest, and asking that at a
+    fixed CANVAS coordinate makes a gap that merely moved look like one that
+    opened: translate a figure whose arm encloses a loop against its torso, and
+    the loop lands on pixels that were torso a moment ago. Measured on a
+    synthetic figure with no tear anywhere, translated bodily, the old comparison
+    reported 80px "opened" at a 4px shift, 240px at 12px, and the whole 500px gap
+    at 30px — each walled in by 21px, the moved anatomy's own wall, which put the
+    artefact in the same bucket the threshold candidate was being read out of.
+    `interior_holes` stayed 0 throughout, correctly, since translation preserves
+    enclosed area: the two measures fail in opposite directions, the net
+    cancelling an opening against a closing and this one mistaking movement for
+    an opening.
+
+    So the comparison happens in the figure's frame rather than the canvas's:
+    shift the rest gaps by how far the figure's centre of mass has travelled, and
+    a gap that only moved lines back up with itself.
+
+    Two limits worth knowing, because this does not make the number clean. The
+    estimate is a single translation, so **rotation and articulation are only
+    partly compensated** — a topple still smears, and a limb swinging while the
+    body stays put is not corrected at all. And a tear is itself part of the mass
+    whose centre is measured, so a large one perturbs its own alignment by about
+    `area x distance / total`, a pixel or so at realistic sizes. The 1px of slack
+    below absorbs that along with the rounding to whole pixels.
+    """
+    c = centroid(a)
+    if c is None or rest_centre is None:
+        return rest_gap
+    dy = int(round(c[0] - rest_centre[0]))
+    dx = int(round(c[1] - rest_centre[1]))
+    if dy == 0 and dx == 0:
+        g = rest_gap
+    else:
+        g = resampled(rest_gap, dy, dx)
+    out = g.copy()
+    out[1:, :] |= g[:-1, :]
+    out[:-1, :] |= g[1:, :]
+    out[:, 1:] |= g[:, :-1]
+    out[:, :-1] |= g[:, 1:]
+    return out
+
+
+def openings(e, was_gap):
     """
     Every enclosed region of one frame, paired with how much of it was solid
     figure at rest, biggest opening first. Regions that opened nothing at all are
     dropped: they are the art's own anatomy and say nothing about this clip.
+
+    `was_gap` is the rest pose already moved into this frame's reference — see
+    `rest_gaps_seen_from` for why it is not simply the rest frame's own gaps.
 
     Splitting this out from the description below is what lets the peak frame be
     chosen by what opened. Labelling every frame costs one flood and a handful of
@@ -154,8 +229,8 @@ def openings(e, rest):
         found.append(np.asarray(lab) == label)
         label += 1
 
-    was_gap = rest[y0:y1 + 1, x0:x1 + 1] < SEE_THROUGH
-    scored = [(int((r & ~was_gap).sum()), r) for r in found]
+    wg = was_gap[y0:y1 + 1, x0:x1 + 1]
+    scored = [(int((r & ~wg).sum()), r) for r in found]
     return sorted((t for t in scored if t[0] > 0), key=lambda t: -t[0])
 
 
@@ -248,7 +323,17 @@ _gaps = [enclosed_area(e) for e in _encl]
 # to it: a region only scores for the pixels that were solid at rest. So the tick
 # with the largest single opening is the tick worth describing, and it is found
 # without the wall walk, which stays at one frame per clip.
-_opens = [openings(e, alpha[0]) for e in _encl]
+#
+# Each tick is scored against the rest pose carried into ITS frame of reference,
+# not against the rest frame where it sits on the canvas — otherwise a figure
+# that simply walks reports its own anatomy as freshly torn. See
+# `rest_gaps_seen_from`.
+_rest_gap = alpha[0] < SEE_THROUGH
+_rest_centre = centroid(alpha[0])
+_opens = [
+    openings(e, rest_gaps_seen_from(a, _rest_gap, _rest_centre))
+    for a, e in zip(alpha, _encl)
+]
 _peak = int(np.argmax([o[0][0] if o else 0 for o in _opens]))
 
 boxes = [box(a) for a in alpha]
