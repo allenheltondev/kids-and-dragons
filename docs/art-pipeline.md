@@ -197,7 +197,199 @@ was written as a joint-opening check and was, until this change, incapable of re
 zero. Repaired, it turns out to measure anatomy as readily as breakage — the biggest enclosed region
 on a celebrating unicorn is the gap between its hind legs — so it warns at a level no clean rig has
 reached and otherwise leaves the judgement to the golden baseline, which can see the number change
-without needing to know a leg from a seam. Three layers — every clip measured frame by frame, every driven input fired through the real state
+without needing to know a leg from a seam.
+
+**How high a bar that is has now been measured, and it is higher than "the threshold is loose".** A
+real defect — parts carrying a detached copy of another part's artwork
+([briefs/part-fragments.md](./briefs/part-fragments.md)) — opened 2,716px of enclosed gap on a
+bigfoot `attack`, against clean clips that reach 6,198px. The defect is *below* the clean
+population, so no setting of the area threshold separates them: the instrument is wrong for this
+defect, not merely tuned wrong. Two consequences. That defect class is caught at source instead, by
+`verify.py`'s duplicated-fragment check, which needs no renderer and no threshold. And the metric
+now reports what its number is made of — each enclosed region's area, position, and how thick a wall
+of figure seals it off — because that last figure is what a human uses to tell a lifted limb from a
+joint, and it separates the two where area does not: a hole punched through a torso measures a
+31px wall against 400px of area, a gap pinched shut between limbs 7px against 880px. It describes,
+and does not decide. Turning it into a gate needs the distribution over *moving* rigs, and that
+cannot be collected anywhere but CI: it needs the real renderer, which is built from a private repo
+in the `rig-motion` workflow and is not an npm dependency of this one.
+
+**So the workflow now collects it on every run.** `art:verify:rig:motion --gap-report` writes each
+clip's enclosed-gap measurements, passing or failing, and `tools/art/gap-calibration.mjs` turns them
+into a wall-thickness histogram in the job summary plus a `gap-report` artifact with the rows. It is
+data collection, never a gate — it runs under `always()` so a red run's sample is kept, and it
+cannot change the job's exit code. Read it as: if the walls come out bimodal, the trough is the
+threshold; if they do not, say so and leave the warning soft. One caveat travels with the output
+and is printed in it — the delivered art still carries the 179 duplicated fragments, so part of
+today's sample *is* the defect. Re-run after the re-cut before setting a number from it.
+
+**What the first corrected run says.** 312 clips, 300 of which opened something, and the walls are
+now weakly bimodal: 93 clips at 0–4px, 121 at 5–9, then a trough of 41 at 10–19, a second bump of 44
+at 20–39, and a single clip beyond 40. A trough is what a threshold is made of, so the candidate is
+**around 20px** — and rather than set it now, treat it as a prediction that the next run can falsify:
+the delivered art still carries the 179 duplicated fragments, so *if* the 20–39 bump is the defect,
+re-running after the re-cut should collapse it. If it collapses, 20px is the line and the gate can
+harden. If it survives, the bump is anatomy and the warning stays soft. Either answer is worth
+having; neither is available today.
+
+**A second thing that run found, which matters more than the threshold.** `interior_holes` is a
+*net* — peak-frame enclosed area minus the rest frame's. `griffin/radiant revive` reports 3px of net
+change over a region with 141px that had been solid figure at rest: a hole opened while a limb
+closed an equal amount of the figure's own negative space, and the two cancelled. So the gate's
+headline number can read ~zero through a real joint opening, which no threshold on it can fix. The
+per-region `new` figure does not cancel, and the calibration is keyed on it rather than on the net.
+
+**And the run after that corrected the correction.** Re-keying the calibration off the net changed
+nothing — 300 clips of 312 opened something both times, every bucket identical — and that null
+result is the useful part, because it is guaranteed rather than incidental. `interior_worst` is
+measured at `argmax(_gaps)`, and frame 0 is in `_gaps`, so the max is never below rest: either the
+peak beats rest (`interior_holes > 0`) or the peak *is* rest, in which case `gap_regions` compares
+the rest frame against itself, every region scores `new = 0`, and the list comes back empty. So
+`worst` non-empty already implies `interior_holes > 0` — the old filter's net clause was redundant,
+and it never dropped a clip. The commit that removed it claimed otherwise; it was wrong, and
+`griffin/radiant revive` was never at risk, since 3px passes a `> 0` test perfectly well.
+
+**Which left the real blind spot — now fixed, and the fix invalidates the numbers above.** The
+cancellation was never in the filter, it was in the *frame selection*: regions were only ever read
+off the frame with the largest **total** enclosed area, and total is exactly the quantity that
+cancels. A frame where a joint opens 141px while a limb closes 140px of the figure's own negative
+space contributes +1px to `_gaps` and loses the argmax to some blander frame, so the gate described
+the wrong tick precisely when there was most to see. In the limit — cancellation dead even across the
+clip — the total peaks on the *rest* frame, `gap_regions` compares frame 0 with itself, every region
+scores `new = 0`, and both `interior_holes` and `interior_worst` come back empty: the clip is
+invisible to the gate *and* to this calibration, which is why no amount of sampling those runs could
+ever turn one up.
+
+The peak tick is now chosen by the largest single **opening** — the part of a region that was solid
+figure at rest — which cannot cancel, because closing figure back over anatomy contributes nothing to
+it. `rig_motion.test.ts` pins the limit case: a clip that tears 143px open while a limb shuts 144px
+of anatomy, whose `interior_holes` stays 0 and whose tear is described anyway. It fails against the
+old selection. Cost is a region-labelling pass per frame against a wall walk that still runs once per
+clip — measured at 1.02x on real 1024px art, ~27s across a 312-clip run.
+
+Two consequences worth knowing. `interior_worst` and `interior_holes` can now come from **different
+ticks** by design — the number answers "how much gap did this clip end up with", the regions answer
+"where did it tear worst" — so `interior_worst_tick` says which frame to actually open. And every
+wall number collected before this change was read off a tick chosen the old way, so the
+93/121/41/44/1 histogram above describes a partly different population.
+
+**The run on the corrected selection reproduces the shape.** 390 clips measured, walls
+**132 / 160 / 43 / 54 / 1** — 34% / 41% / 11% / 14% / 0.3% against the previous
+31% / 40% / 14% / 15% / 0.3%, with the trough still at 10–19px and slightly deeper relative to the
+bump above it. The clip count rose from 312 for the unrelated reason that class rigs are motion jobs
+now, so counts are not comparable across the two runs; the shares are.
+
+**Do not read that as the 20px candidate being confirmed.** Code review found a second flaw in `new`
+itself, and it is confirmed: the rest comparison is done *by pixel coordinate*, so an anatomical gap
+that merely MOVES — because the figure translates, rotates or articulates — lands over pixels that
+were solid at rest and is counted as newly opened. Measured on a synthetic figure with no tear
+anywhere, translated bodily: a 4px shift reports 80px "opened", 12px reports 240px, and 30px reports
+the entire 500px gap, walled in by 21px. `interior_holes` stays 0 throughout, correctly, because
+translation preserves total enclosed area.
+
+So the two measures fail in complementary directions — the net cancels an opening against a closing,
+and `new` cannot tell a tear from a limb that moved. Worse for the histogram above: choosing the peak
+tick by `argmax(new)` systematically selects the tick of *greatest displacement from rest*, which is
+exactly where this artefact is largest, and the artefact's wall is the moved anatomy's own — 21px in
+the measurement above, landing squarely in the 20–39 bump that the ~20px line was drawn under.
+**So every wall distribution collected before this was contaminated by figure motion, the 132/160/43/54/1
+histogram included, and the ~20px candidate rests on none of them.**
+
+**The fix, now in place: score `new` in the figure's frame of reference rather than the canvas's.**
+Each tick is compared against the rest gaps *carried into that tick* — shifted by how far the
+figure's centre of mass has travelled — so a gap that only moved lines back up with itself. On the
+fixtures above the artefact goes to nothing at every shift (4, 12 and 30px all report `[]`), while a
+genuine 288px tear in the same translated figure is still reported at exactly 288px through all
+three. Both directions are pinned by tests, and all six fail without the alignment — including the
+one that matters most, where the moved 500px loop *outranks* the real 288px tear and is described in
+its place.
+
+Two limits, because this does not make the number clean. The estimate is a single translation, so
+**rotation and articulation are only partly compensated** — a topple still smears, and a limb
+swinging while the body stays put is not corrected at all. And a tear is part of the mass whose
+centre is being measured, so a large one perturbs its own alignment by roughly
+`area x distance / total`; a pixel or so at realistic sizes, absorbed by the 1px of slack the
+comparison allows. Cost is ~79ms per clip at 1024px, under 2% on top of the gap work.
+
+**And a third, from the same review: which tick gets described was itself ranked by area.** That is
+the mistake this whole section argues against, one level up — area cannot separate anatomy from
+breakage, so a clip that spreads its legs into a broad shallow gap on one tick and tears a small deep
+hole on another chose the legs. Nothing downstream could recover it, because the wall walk only ever
+ran on the chosen tick: the tear reached neither the warning nor the histogram. On a fixture with
+exactly that shape, a 1920px opening walled in by 7px was described while a 288px hole walled in by
+43px two ticks later went unreported.
+
+**Walls are now measured on every tick, and the tick with the deepest one is the tick described**;
+regions within it rank by wall too, since `gap-calibration.mjs` buckets on the first entry. The
+dilation is shared across a tick's regions, so this costs the walk itself rather than the walk times
+the regions — 53ms to 544ms per clip at 1024px, about 4% of the job at the 512px the gate actually
+renders.
+
+**That change was flagged as risking speck domination, and the next run confirmed it — decisively.**
+The deepest thing inside a body is usually a speck, so ranking by wall put one at the top of nearly
+every clip. Of 390 clips the fifteen deepest-walled openings were all 1–16px, four of them a *single
+pixel* walled in by ~90px of figure, and the histogram collapsed:
+
+| wall | ranked by area | ranked by wall | with the hairline floor |
+|---|---|---|---|
+| clips opening at all | 390 | 390 | **316** |
+| 0–4px | 132 | 51 | 9 |
+| 5–9px | 160 | 7 | 16 |
+| 10–19px | 43 | 11 | 50 |
+| 20–39px | 54 | 98 | **136** |
+| 40+px | 1 | **223** | 105 |
+
+321 of 390 clips at 20px or deeper is 82% of the corpus piled into the two buckets a threshold would
+be drawn between: an instrument that has stopped discriminating. What it was measuring is seams —
+two overlapping parts separating by one pixel as they rotate — not holes in a character.
+
+**So an opening now has to clear a hairline: its new area must survive a 1px erosion.** `SEE_THROUGH`
+already drops the antialiased band around a seam; this drops the hairline that band was wrapped
+around. A morphological floor rather than a minimum area, deliberately — "thinner than two pixels"
+describes the seam being rejected, where "smaller than N pixels" would be a number invented to make a
+histogram look right, which is the error this section exists to record.
+
+**That worked, and it is still not a usable distribution.** The floor did what it was for: 74 clips
+stopped reporting an opening at all, the 40+ bucket halved, and the deepest-walled clips now carry
+openings of 5–82px rather than 1–16px. But the shape is wrong for a threshold. It rises monotonically
+to a peak at 20–39px and falls — **there is no trough anywhere in it**, so there is no valley to cut
+at, and the 10–19px trough the ~20px candidate was drawn under is gone. 241 of 316 clips still sit at
+20px or deeper.
+
+**The likely reason is the defect this corpus already has.** The art carries 179 duplicated fragments
+— a fragment composited twice, slightly offset, is exactly a seam a few pixels wide buried deep in a
+body, which is what the deep tail still looks like: `unicorn/radiant hurt` opening 5px walled in by
+76px, `bigfoot/mythic attack` 8px by 80px. So the sample is being read on art whose known defect
+produces the same signature the instrument is trying to calibrate against, and the calibration output
+says so itself every run.
+
+Which is the point to stop tuning. Three instrument changes in a row each moved every number, and the
+next honest measurement is not another floor — it is this same code run **after the re-cut**, against
+art whose fragments have been fixed. Until then there is no threshold candidate at all: the ~20px
+line is withdrawn and nothing has replaced it.
+
+Two things did change, and both are the fix working. **"Opened a gap" went from 300 of 312 to 390 of
+390**, and then to 316 of 390 once the hairline floor rejected the pinholes — every clip opens *some*
+enclosed region on *some* tick, because the description is no longer read off a single frame that was
+often the rest pose, and the floor is what makes that count mean something again. And the clips whose *net* is ~0 while a real
+region opens are visible at last: `griffin/radiant down` reports **0px net against 472px opened,
+walled in by 29px**, `griffin/fledgling revive` 8px against 293px by 31px, `bigfoot/mythic leap` 13px
+against 129px by 33px. Under the old selection those three contributed nothing at all. They are the
+first direct evidence that the cancelling population is real and present in this corpus, and they are
+the clips to eyeball first.
+
+The threshold still should not be set from this run: the 179 duplicated fragments are still in the
+delivered art, so part of the 20–39 bump may be the defect rather than anatomy. That prediction is
+unchanged and still needs the re-cut to settle.
+
+**The very first run earned its keep by being wrong in a way worth recording.** It measured
+312 clips, said 303 of them opened a gap, and reported walls spread across every bucket — no trough,
+no threshold. It also reported a bigfoot `revive` that opened 3px as a 76px region walled in by
+47px, at coordinates that barely moved from clip to clip. That is the tell: `interior_holes` is
+rest-subtracted and the region description was not, so it was describing each figure's permanent
+anatomy rather than anything the clip opened. Regions now carry `new` — the part that was solid
+figure at rest — and are ranked and filtered by it. Treat any wall distribution from before that fix
+as measuring the wrong population. Three layers — every clip measured frame by frame, every driven input fired through the real state
 machine (isolated clips lie: standalone, `down_loop` plays as a *standing* loop and only inherits
 the prone pose under the machine), and a golden baseline in `art/rig/motion-baseline.json` so a
 rebuild reports which clips moved instead of leaving 312 to re-watch.
