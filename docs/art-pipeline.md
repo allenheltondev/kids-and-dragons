@@ -273,12 +273,29 @@ ticks** by design — the number answers "how much gap did this clip end up with
 wall number collected before this change was read off a tick chosen the old way, so the
 93/121/41/44/1 histogram above describes a partly different population.
 
-**The run on the corrected selection re-derives it, and the trough holds.** 390 clips measured,
-walls **132 / 160 / 43 / 54 / 1** — the same shape as before (34% / 41% / 11% / 14% / 0.3% against
-31% / 40% / 14% / 15% / 0.3%), with the trough still at 10–19px and slightly deeper relative to the
-bump above it. **The ~20px candidate survives being re-measured on a sounder instrument**, which is
-the outcome that was genuinely in doubt. The clip count rose from 312 for the unrelated reason that
-class rigs are motion jobs now, so counts are not comparable across the two runs; the shares are.
+**The run on the corrected selection reproduces the shape.** 390 clips measured, walls
+**132 / 160 / 43 / 54 / 1** — 34% / 41% / 11% / 14% / 0.3% against the previous
+31% / 40% / 14% / 15% / 0.3%, with the trough still at 10–19px and slightly deeper relative to the
+bump above it. The clip count rose from 312 for the unrelated reason that class rigs are motion jobs
+now, so counts are not comparable across the two runs; the shares are.
+
+**Do not read that as the 20px candidate being confirmed.** Code review found a second flaw in `new`
+itself, and it is confirmed: the rest comparison is done *by pixel coordinate*, so an anatomical gap
+that merely MOVES — because the figure translates, rotates or articulates — lands over pixels that
+were solid at rest and is counted as newly opened. Measured on a synthetic figure with no tear
+anywhere, translated bodily: a 4px shift reports 80px "opened", 12px reports 240px, and 30px reports
+the entire 500px gap, walled in by 21px. `interior_holes` stays 0 throughout, correctly, because
+translation preserves total enclosed area.
+
+So the two measures fail in complementary directions — the net cancels an opening against a closing,
+and `new` cannot tell a tear from a limb that moved. Worse for the histogram above: choosing the peak
+tick by `argmax(new)` systematically selects the tick of *greatest displacement from rest*, which is
+exactly where this artefact is largest, and the artefact's wall is the moved anatomy's own — 21px in
+the measurement above, landing squarely in the 20–39 bump that the ~20px line was drawn under.
+**Treat every wall distribution collected so far as contaminated by figure motion, and the ~20px
+candidate as unconfirmed.** Fixing it means comparing against rest in the figure's frame of reference
+rather than the canvas's — compensating for the body's displacement before scoring `new` — which
+handles translation cleanly and rotation and articulation only partly.
 
 Two things did change, and both are the fix working. **"Opened a gap" went from 300 of 312 to 390 of
 390** — every clip now opens *some* enclosed region on *some* tick, because the description is no
