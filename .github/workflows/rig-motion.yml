@@ -23,6 +23,11 @@
 # changed — the rigs themselves, the contract they derive from, or the gate. Rigs
 # are regenerated rarely and in bulk, so this is nearly always "not this PR", and
 # when it is this PR it is exactly the PR you want it on.
+#
+# `gap-calibration.mjs` is in the list for a different reason: it changes no
+# frame, but this is the only place it is ever run against a real report, so a
+# calibration-only PR would otherwise merge a broken formatter or a mis-bucketed
+# histogram and surface it on some later, unrelated rig change.
 
 name: Rig motion
 
@@ -35,6 +40,7 @@ on:
       - "art/rig/**"
       - "tools/art/verify-rig-motion.mjs"
       - "tools/art/rig_motion.py"
+      - "tools/art/gap-calibration.mjs"
       - ".github/workflows/rig-motion.yml"
   pull_request:
     paths:
@@ -43,6 +49,7 @@ on:
       - "art/rig/**"
       - "tools/art/verify-rig-motion.mjs"
       - "tools/art/rig_motion.py"
+      - "tools/art/gap-calibration.mjs"
       - ".github/workflows/rig-motion.yml"
   workflow_dispatch:
 
@@ -146,5 +153,39 @@ jobs:
           echo "KAD_RIVE_CLI=$GITHUB_WORKSPACE/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"
 
       # `--jobs` is left to the tool, which sizes itself to the runner's cores.
+      #
+      # `--gap-report` costs nothing here and cannot fail the run: it writes the
+      # enclosed-gap measurements for every clip, which is the one piece of data
+      # the gate is still missing. See the calibration step below.
       - name: Verify rig motion
-        run: npm run art:verify:rig:motion
+        run: npm run art:verify:rig:motion -- --gap-report gap-report.json
+
+      # The calibration, and the reason it lives in CI rather than in a
+      # contributor's terminal: it needs the real renderer, and the renderer is
+      # built from a private repo two steps above. Nowhere else in the project
+      # can measure a moving rig.
+      #
+      # `always()` because a failing clip is exactly the sample worth keeping —
+      # gating the data collection on the gate passing would throw away every
+      # run that had something to say. The gate's own exit code is untouched;
+      # this step never fails the job.
+      - name: Summarise the enclosed-gap distribution
+        if: always()
+        run: |
+          if [ ! -f gap-report.json ]; then
+            echo "No gap-report.json — the gate did not get far enough to measure a clip." \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node tools/art/gap-calibration.mjs gap-report.json --markdown >> "$GITHUB_STEP_SUMMARY"
+          node tools/art/gap-calibration.mjs gap-report.json
+
+      # Kept because the summary is a histogram and the threshold argument will
+      # want the rows. 90 days is the default; there is no reason to hoard it.
+      - name: Upload the gap measurements
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gap-report
+          path: gap-report.json
+          if-no-files-found: ignore
