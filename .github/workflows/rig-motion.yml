@@ -125,7 +125,7 @@ jobs:
       # what the CLI will ask for, never gate the install on a cache hit, and ask
       # Playwright for the path rather than guessing the directory layout.
       - name: Cache Playwright browsers for the Rive CLI
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: rive-playwright-${{ runner.os }}-${{ hashFiles('.rive-mcp/package-lock.json') }}
