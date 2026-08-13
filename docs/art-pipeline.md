@@ -323,11 +323,30 @@ exactly that shape, a 1920px opening walled in by 7px was described while a 288p
 regions within it rank by wall too, since `gap-calibration.mjs` buckets on the first entry. The
 dilation is shared across a tick's regions, so this costs the walk itself rather than the walk times
 the regions — 53ms to 544ms per clip at 1024px, about 4% of the job at the 512px the gate actually
-renders. One consequence to watch in the next run: the histogram now reports the *deepest* wall in
-each clip rather than the wall of its largest opening, so it should shift upward, and a tiny
-deep-seated speck now outranks a large tear. If specks start dominating the deep buckets, that is the
-thing to look at — deliberately not pre-empted with an area floor, since inventing a number here is
-the error this file exists to record.
+renders.
+
+**That change was flagged as risking speck domination, and the next run confirmed it — decisively.**
+The deepest thing inside a body is usually a speck, so ranking by wall put one at the top of nearly
+every clip. Of 390 clips the fifteen deepest-walled openings were all 1–16px, four of them a *single
+pixel* walled in by ~90px of figure, and the histogram collapsed:
+
+| wall | ranked by area | ranked by wall | with the hairline floor |
+|---|---|---|---|
+| 0–4px | 132 | 51 | *pending* |
+| 5–9px | 160 | 7 | |
+| 10–19px | 43 | 11 | |
+| 20–39px | 54 | 98 | |
+| 40+px | 1 | **223** | |
+
+321 of 390 clips at 20px or deeper is 82% of the corpus piled into the two buckets a threshold would
+be drawn between: an instrument that has stopped discriminating. What it was measuring is seams —
+two overlapping parts separating by one pixel as they rotate — not holes in a character.
+
+**So an opening now has to clear a hairline: its new area must survive a 1px erosion.** `SEE_THROUGH`
+already drops the antialiased band around a seam; this drops the hairline that band was wrapped
+around. A morphological floor rather than a minimum area, deliberately — "thinner than two pixels"
+describes the seam being rejected, where "smaller than N pixels" would be a number invented to make a
+histogram look right, which is the error this section exists to record.
 
 The threshold now waits on a run of this code *and* on the re-cut, for two independent reasons: the
 walls have never yet been measured on an instrument free of both flaws, and the 179 duplicated
