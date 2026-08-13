@@ -1,0 +1,46 @@
+{
+  "$comment": "Thornguard Radiant Bigfoot variant rig. The approved geared portrait is painted into the normal Bigfoot parts so armor follows each existing bone; armor_visible carries only armor pixels that protrude beyond the anatomy masks. It renders before mane so the authored hair remains above both shoulder plates.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "armor_visible"]
+  ],
+  "zOrder": [
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "armor_visible",
+    "mane"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}
