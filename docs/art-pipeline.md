@@ -332,11 +332,12 @@ pixel* walled in by ~90px of figure, and the histogram collapsed:
 
 | wall | ranked by area | ranked by wall | with the hairline floor |
 |---|---|---|---|
-| 0–4px | 132 | 51 | *pending* |
-| 5–9px | 160 | 7 | |
-| 10–19px | 43 | 11 | |
-| 20–39px | 54 | 98 | |
-| 40+px | 1 | **223** | |
+| clips opening at all | 390 | 390 | **316** |
+| 0–4px | 132 | 51 | 9 |
+| 5–9px | 160 | 7 | 16 |
+| 10–19px | 43 | 11 | 50 |
+| 20–39px | 54 | 98 | **136** |
+| 40+px | 1 | **223** | 105 |
 
 321 of 390 clips at 20px or deeper is 82% of the corpus piled into the two buckets a threshold would
 be drawn between: an instrument that has stopped discriminating. What it was measuring is seams —
@@ -348,14 +349,29 @@ around. A morphological floor rather than a minimum area, deliberately — "thin
 describes the seam being rejected, where "smaller than N pixels" would be a number invented to make a
 histogram look right, which is the error this section exists to record.
 
-The threshold now waits on a run of this code *and* on the re-cut, for two independent reasons: the
-walls have never yet been measured on an instrument free of both flaws, and the 179 duplicated
-fragments are still in the delivered art.
+**That worked, and it is still not a usable distribution.** The floor did what it was for: 74 clips
+stopped reporting an opening at all, the 40+ bucket halved, and the deepest-walled clips now carry
+openings of 5–82px rather than 1–16px. But the shape is wrong for a threshold. It rises monotonically
+to a peak at 20–39px and falls — **there is no trough anywhere in it**, so there is no valley to cut
+at, and the 10–19px trough the ~20px candidate was drawn under is gone. 241 of 316 clips still sit at
+20px or deeper.
+
+**The likely reason is the defect this corpus already has.** The art carries 179 duplicated fragments
+— a fragment composited twice, slightly offset, is exactly a seam a few pixels wide buried deep in a
+body, which is what the deep tail still looks like: `unicorn/radiant hurt` opening 5px walled in by
+76px, `bigfoot/mythic attack` 8px by 80px. So the sample is being read on art whose known defect
+produces the same signature the instrument is trying to calibrate against, and the calibration output
+says so itself every run.
+
+Which is the point to stop tuning. Three instrument changes in a row each moved every number, and the
+next honest measurement is not another floor — it is this same code run **after the re-cut**, against
+art whose fragments have been fixed. Until then there is no threshold candidate at all: the ~20px
+line is withdrawn and nothing has replaced it.
 
 Two things did change, and both are the fix working. **"Opened a gap" went from 300 of 312 to 390 of
-390** — every clip now opens *some* enclosed region on *some* tick, because the description is no
-longer read off a single frame that was often the rest pose. As a filter it now discriminates
-nothing, and the wall distribution is the whole signal. And the clips whose *net* is ~0 while a real
+390**, and then to 316 of 390 once the hairline floor rejected the pinholes — every clip opens *some*
+enclosed region on *some* tick, because the description is no longer read off a single frame that was
+often the rest pose, and the floor is what makes that count mean something again. And the clips whose *net* is ~0 while a real
 region opens are visible at last: `griffin/radiant down` reports **0px net against 472px opened,
 walled in by 29px**, `griffin/fledgling revive` 8px against 293px by 31px, `bigfoot/mythic leap` 13px
 against 129px by 33px. Under the old selection those three contributed nothing at all. They are the
