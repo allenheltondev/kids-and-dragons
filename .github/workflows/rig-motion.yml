@@ -23,6 +23,11 @@
 # changed — the rigs themselves, the contract they derive from, or the gate. Rigs
 # are regenerated rarely and in bulk, so this is nearly always "not this PR", and
 # when it is this PR it is exactly the PR you want it on.
+#
+# `gap-calibration.mjs` is in the list for a different reason: it changes no
+# frame, but this is the only place it is ever run against a real report, so a
+# calibration-only PR would otherwise merge a broken formatter or a mis-bucketed
+# histogram and surface it on some later, unrelated rig change.
 
 name: Rig motion
 
@@ -35,6 +40,7 @@ on:
       - "art/rig/**"
       - "tools/art/verify-rig-motion.mjs"
       - "tools/art/rig_motion.py"
+      - "tools/art/gap-calibration.mjs"
       - ".github/workflows/rig-motion.yml"
   pull_request:
     paths:
@@ -43,6 +49,7 @@ on:
       - "art/rig/**"
       - "tools/art/verify-rig-motion.mjs"
       - "tools/art/rig_motion.py"
+      - "tools/art/gap-calibration.mjs"
       - ".github/workflows/rig-motion.yml"
   workflow_dispatch:
 
