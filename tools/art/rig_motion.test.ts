@@ -310,4 +310,56 @@ Image.fromarray(body(0), "RGBA").save(${JSON.stringify(art)})
       });
     }
   });
+
+  /*
+   * Which tick gets described is itself a ranking, and ranking it by AREA is the
+   * mistake this whole file argues against, one level up: area cannot separate
+   * anatomy from breakage, so a clip that spreads its legs into a broad shallow
+   * gap on one tick and tears a small deep hole on another picked the legs.
+   * Nothing downstream could recover the tear — the wall walk only ever ran on
+   * the chosen tick, so the hole reached neither the warning nor the histogram.
+   *
+   * Caught in review. This is the fixture from that report: 1920px of shallow
+   * gap on tick 1, a 288px hole deep in the torso on tick 2.
+   */
+  it("describes the deep tear, not the bigger shallow gap on another tick", () => {
+    const apng = join(work, "deepest.png");
+    const art = join(work, "deepest_art.png");
+    const py = `
+import numpy as np
+from PIL import Image
+def base():
+    a = np.zeros((200, 200, 4), np.uint8)
+    a[40:160, 50:150] = (200, 120, 90, 255)
+    return a
+
+rest = base()
+
+# Tick 1 — a broad gap pinched shut at the silhouette, the shape legs spreading
+# makes. Nearly seven times the area of the tear below, and legitimate.
+wide = base()
+wide[70:100, 50:120, 3] = 0
+wide[70:100, 50:56] = (200, 120, 90, 255)
+
+# Tick 2 — a small hole in the middle of the torso, sealed off by the full
+# half-width of the body. This is the one worth looking at.
+deep = base()
+deep[100:118, 92:108, 3] = 0
+
+Image.fromarray(rest, "RGBA").save(${JSON.stringify(apng)}, save_all=True,
+    append_images=[Image.fromarray(wide, "RGBA"), Image.fromarray(deep, "RGBA")],
+    duration=16, loop=0)
+Image.fromarray(rest, "RGBA").save(${JSON.stringify(art)})
+`;
+    execFileSync("python3", ["-c", py], { stdio: "pipe" });
+    const m = measure(apng, art) as unknown as Metrics & { interior_worst_tick: number };
+
+    // Tick 2, not tick 1 — chosen by how deeply the gap is sealed off.
+    expect(m.interior_worst_tick).toBe(2);
+    const worst = m.interior_worst[0];
+    expect(worst).toBeDefined();
+    expect(worst!.new).toBe(288);
+    // Deep in the torso. Ranking by area reported 1920px walled in by 7px here.
+    expect(worst!.wall).toBeGreaterThan(20);
+  });
 });
