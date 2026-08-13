@@ -8,6 +8,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
+from rig_residuals import keep_body_residual
+
 
 ROOT = Path(__file__).resolve().parents[2]
 CANVAS = (1024, 1024)
@@ -32,6 +34,7 @@ Z_ORDER = (
     "hawk",
 )
 REGISTER_Y = -15
+ARMOR_ENVELOPE = (130, 330, 711, 706)
 
 
 def approved_portrait() -> Image.Image:
@@ -145,9 +148,14 @@ def main() -> None:
     yy, xx = np.indices((CANVAS[1], CANVAS[0]))
     hawk_region = (xx >= 500) & (xx < 760) & (yy >= 130) & (yy < 390)
     hawk_alpha = np.where(hawk_region, visible, 0).astype(np.uint8)
-    armor_alpha = np.where(hawk_region, 0, visible).astype(np.uint8)
+    armor_residual = np.where(hawk_region, 0, visible).astype(np.uint8)
+    armor_alpha = keep_body_residual(
+        parts, armor_residual, ARMOR_ENVELOPE
+    )
+    for name in BASE_PARTS:
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["armor_underlay"] = masked_portrait(
-        portrait, Image.fromarray(armor_alpha, "L")
+        portrait, armor_alpha
     )
     parts["armor_underlay"].save(PARTS / "armor_underlay.png", optimize=True)
     parts["hawk"] = masked_portrait(
