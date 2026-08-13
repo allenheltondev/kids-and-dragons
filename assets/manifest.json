@@ -210,6 +210,42 @@
       "tier": "sworn",
       "species": "unicorn",
       "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_torso", "mane", "horn"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "unicorn",
+      "parts": ["armor_underlay", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane", "horn"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "dragonling",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "armor_visible"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "griffin",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "armor_visible"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "bigfoot",
+      "parts": ["leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "kitsune",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "manticore",
+      "parts": ["tail", "armor_underlay", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "hawk"]
     }
   ],
 
