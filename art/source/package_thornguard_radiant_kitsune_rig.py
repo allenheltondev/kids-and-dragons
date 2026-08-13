@@ -8,6 +8,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
+from rig_residuals import keep_body_residual
+
 
 ROOT = Path(__file__).resolve().parents[2]
 CANVAS = (1024, 1024)
@@ -21,6 +23,7 @@ BASE_PARTS = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane"
 # drawn last so it retains the approved overlap along the breastplate edge.
 Z_ORDER = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane")
 REGISTER_Y = -16
+ARMOR_ENVELOPE = (120, 170, 681, 706)
 
 
 def approved_portrait() -> Image.Image:
@@ -137,9 +140,14 @@ def main() -> None:
         )
         parts[name] = masked_portrait(portrait, part_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
-    visible_alpha = Image.fromarray(
-        np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8), "L"
+    visible = np.minimum(
+        np.asarray(subject), 255 - np.asarray(anatomy_alpha)
+    ).astype(np.uint8)
+    visible_alpha = keep_body_residual(
+        parts, visible, ARMOR_ENVELOPE
     )
+    for name in BASE_PARTS:
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["armor_visible"] = masked_portrait(portrait, visible_alpha)
     parts["armor_visible"].save(PARTS / "armor_visible.png", optimize=True)
     assembled = compose(parts)
