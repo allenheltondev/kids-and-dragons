@@ -246,4 +246,68 @@ Image.fromarray(rest, "RGBA").save(${JSON.stringify(art)})
     // whole metric exists to point at.
     expect(worst!.wall).toBeGreaterThan(10);
   });
+
+  /*
+   * `new` asks whether a region was solid figure at rest. Asked at a fixed
+   * CANVAS coordinate, a gap that merely MOVED answers yes: translate a figure
+   * whose arm encloses a loop against its torso, and the loop lands where torso
+   * used to be. Code review caught this; before the fix these fixtures reported
+   * 80px "opened" at a 4px shift, 240px at 12px and the whole 500px gap at 30px,
+   * each walled in by 21px — deep enough to sit in the bucket the threshold
+   * candidate was being read out of, on a figure with no tear anywhere.
+   *
+   * Both halves matter and a fix can fail either way: suppress the artefact by
+   * going blind to real tears, or keep the sensitivity and keep the artefact.
+   * So this drives the same translations twice, once with a tear and once
+   * without, and pins both answers.
+   */
+  describe("a figure that moves is not a figure that tore", () => {
+    function translated(name: string, dx: number, tear: boolean) {
+      const apng = join(work, `${name}.png`);
+      const art = join(work, `${name}_art.png`);
+      const py = `
+import numpy as np
+from PIL import Image
+def body(dx=0, tear=False):
+    a = np.zeros((200, 200, 4), np.uint8)
+    a[40:160, 60:140] = (200, 120, 90, 255)
+    # Anatomy: the loop an arm encloses against the torso. 500px, and it is
+    # present at rest, so nothing about it is news.
+    a[70:90, 80:105, 3] = 0
+    if tear:
+        # A genuine 288px tear, elsewhere in the torso so it cannot be confused
+        # with the loop above.
+        a[120:136, 95:113, 3] = 0
+    if dx:
+        a = np.roll(a, dx, axis=1)
+    return a
+
+Image.fromarray(body(0), "RGBA").save(${JSON.stringify(apng)}, save_all=True,
+    append_images=[Image.fromarray(body(${dx}, ${tear ? "True" : "False"}), "RGBA")],
+    duration=16, loop=0)
+Image.fromarray(body(0), "RGBA").save(${JSON.stringify(art)})
+`;
+      execFileSync("python3", ["-c", py], { stdio: "pipe" });
+      return measure(apng, art) as unknown as Metrics & { interior_holes: number };
+    }
+
+    for (const dx of [4, 12, 30]) {
+      it(`reports nothing when the figure only shifts ${dx}px`, () => {
+        const m = translated(`shift${dx}`, dx, false);
+        // Translation preserves enclosed area, so the net was always right here.
+        // It is the description that used to invent a tear.
+        expect(m.interior_holes).toBe(0);
+        expect(m.interior_worst).toEqual([]);
+      });
+
+      it(`still finds a real tear through a ${dx}px shift`, () => {
+        const m = translated(`shifttear${dx}`, dx, true);
+        const worst = m.interior_worst[0];
+        expect(worst).toBeDefined();
+        // Exactly the tear, none of the loop that travelled with the body.
+        expect(worst!.new).toBe(288);
+        expect(worst!.wall).toBeGreaterThan(20);
+      });
+    }
+  });
 });
