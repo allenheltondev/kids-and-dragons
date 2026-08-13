@@ -311,7 +311,25 @@ centre is being measured, so a large one perturbs its own alignment by roughly
 `area x distance / total`; a pixel or so at realistic sizes, absorbed by the 1px of slack the
 comparison allows. Cost is ~79ms per clip at 1024px, under 2% on top of the gap work.
 
-The threshold still waits on a run of this code *and* on the re-cut, for two independent reasons: the
+**And a third, from the same review: which tick gets described was itself ranked by area.** That is
+the mistake this whole section argues against, one level up — area cannot separate anatomy from
+breakage, so a clip that spreads its legs into a broad shallow gap on one tick and tears a small deep
+hole on another chose the legs. Nothing downstream could recover it, because the wall walk only ever
+ran on the chosen tick: the tear reached neither the warning nor the histogram. On a fixture with
+exactly that shape, a 1920px opening walled in by 7px was described while a 288px hole walled in by
+43px two ticks later went unreported.
+
+**Walls are now measured on every tick, and the tick with the deepest one is the tick described**;
+regions within it rank by wall too, since `gap-calibration.mjs` buckets on the first entry. The
+dilation is shared across a tick's regions, so this costs the walk itself rather than the walk times
+the regions — 53ms to 544ms per clip at 1024px, about 4% of the job at the 512px the gate actually
+renders. One consequence to watch in the next run: the histogram now reports the *deepest* wall in
+each clip rather than the wall of its largest opening, so it should shift upward, and a tiny
+deep-seated speck now outranks a large tear. If specks start dominating the deep buckets, that is the
+thing to look at — deliberately not pre-empted with an area floor, since inventing a number here is
+the error this file exists to record.
+
+The threshold now waits on a run of this code *and* on the re-cut, for two independent reasons: the
 walls have never yet been measured on an instrument free of both flaws, and the 179 duplicated
 fragments are still in the delivered art.
 

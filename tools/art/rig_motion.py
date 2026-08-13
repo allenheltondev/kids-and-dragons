@@ -234,7 +234,40 @@ def openings(e, was_gap):
     return sorted((t for t in scored if t[0] > 0), key=lambda t: -t[0])
 
 
-def gap_regions(opened, e, limit=3):
+def wall_depths(regions, outside):
+    """
+    How far the outside has to be dilated before it reaches each region — the
+    thickness of figure sealing it off.
+
+    Every region of the tick is walked at once: the dilation is the cost and it
+    is shared, so measuring all of them costs barely more than measuring three.
+    That matters because the tick cannot be chosen until the walls are known.
+    """
+    depth = {}
+    frontier = outside.copy()
+    pending = list(regions)
+    for k in range(1, 121):
+        g = frontier.copy()
+        g[1:, :] |= frontier[:-1, :]
+        g[:-1, :] |= frontier[1:, :]
+        g[:, 1:] |= frontier[:, :-1]
+        g[:, :-1] |= frontier[:, 1:]
+        frontier = g
+        still = []
+        for r in pending:
+            rp = np.zeros_like(frontier)
+            rp[1:-1, 1:-1] = r
+            if (frontier & rp).any():
+                depth[id(r)] = k
+            else:
+                still.append(r)
+        pending = still
+        if not pending:
+            break
+    return depth
+
+
+def gap_regions(opened, walls, e, limit=3):
     """
     The enclosed gaps of one frame, each with how much of it is NEW and how
     deeply it is walled in.
@@ -264,42 +297,22 @@ def gap_regions(opened, e, limit=3):
     calibrating it into a gate needs the moving population, which only the real
     renderer can produce — CI's `rig-motion` workflow collects it every run via
     `--gap-report` and summarises it with `tools/art/gap-calibration.mjs`.
-    The expensive half is the wall walk below, and it runs once per clip.
+    Ranked by `wall`, deepest first, with a bigger opening breaking ties — not by
+    area. Area is the thing this whole file argues cannot tell anatomy from
+    breakage, so ranking by it would bury a small deep tear under a large shallow
+    one, and `gap-calibration.mjs` buckets on the first entry.
     """
     if e is None or not opened:
         return []
-    _encl, outside, (y0, y1, x0, x1) = e
-    newness = {id(r): n for n, r in opened[:limit]}
-    found = [r for _n, r in opened[:limit]]
-
+    _encl, _outside, (y0, y1, x0, x1) = e
+    ranked = sorted(opened, key=lambda t: (-walls.get(id(t[1]), 121), -t[0]))
     out = []
-    frontier = outside.copy()
-    pending = list(found)
-    depth = {}
-    for k in range(1, 121):
-        g = frontier.copy()
-        g[1:, :] |= frontier[:-1, :]
-        g[:-1, :] |= frontier[1:, :]
-        g[:, 1:] |= frontier[:, :-1]
-        g[:, :-1] |= frontier[:, 1:]
-        frontier = g
-        still = []
-        for r in pending:
-            rp = np.zeros_like(frontier)
-            rp[1:-1, 1:-1] = r
-            if (frontier & rp).any():
-                depth[id(r)] = k
-            else:
-                still.append(r)
-        pending = still
-        if not pending:
-            break
-    for r in found:
+    for n, r in ranked[:limit]:
         ry, rx = np.nonzero(r)
         out.append({
             "px": int(r.sum()),
-            "new": newness[id(r)],
-            "wall": depth.get(id(r), 121),
+            "new": n,
+            "wall": walls.get(id(r), 121),
             "at": [int(rx.mean()) + x0, int(ry.mean()) + y0],
         })
     return out
@@ -320,9 +333,7 @@ _gaps = [enclosed_area(e) for e in _encl]
 # and the clip was invisible to the description and to the calibration both.
 #
 # An opening cannot cancel, because closing figure back over anatomy adds nothing
-# to it: a region only scores for the pixels that were solid at rest. So the tick
-# with the largest single opening is the tick worth describing, and it is found
-# without the wall walk, which stays at one frame per clip.
+# to it: a region only scores for the pixels that were solid at rest.
 #
 # Each tick is scored against the rest pose carried into ITS frame of reference,
 # not against the rest frame where it sits on the canvas — otherwise a figure
@@ -334,7 +345,25 @@ _opens = [
     openings(e, rest_gaps_seen_from(a, _rest_gap, _rest_centre))
     for a, e in zip(alpha, _encl)
 ]
-_peak = int(np.argmax([o[0][0] if o else 0 for o in _opens]))
+
+# And the tick is chosen by the DEEPEST wall, not by the largest opening.
+#
+# Choosing by area was the same mistake as choosing by the total, one level up:
+# area is precisely what this file argues cannot separate anatomy from breakage,
+# so a clip that spreads its legs into a broad shallow gap on one tick and tears
+# a small deep hole on another picked the legs, and the tear reached neither the
+# warning nor the calibration — the wall walk only ever ran on the chosen tick,
+# so nothing downstream could recover it. Measured on a fixture with exactly that
+# shape: a 1920px opening walled in by 7px was described, while a 288px hole
+# walled in by 25px two ticks later went unreported.
+#
+# Walls are therefore measured on every tick. The dilation is shared across a
+# tick's regions, so this costs the walk itself, not the walk times the regions.
+_walls = [
+    wall_depths([r for _n, r in o], e[1]) if o else {}
+    for o, e in zip(_opens, _encl)
+]
+_peak = int(np.argmax([max(w.values()) if w else 0 for w in _walls]))
 
 boxes = [box(a) for a in alpha]
 if any(b is None for b in boxes):
@@ -409,7 +438,7 @@ print(json.dumps({
     # "where did it tear worst", and on a clip where something opens as something
     # else closes those have different answers. `interior_worst_tick` is which
     # frame to actually look at, since it is no longer implied by the number.
-    "interior_worst": gap_regions(_opens[_peak], _encl[_peak]),
+    "interior_worst": gap_regions(_opens[_peak], _walls[_peak], _encl[_peak]),
     "interior_worst_tick": _peak,
     # Worst tick and typical tick. A defect that only shows on some frames is
     # exactly what the max is for.
