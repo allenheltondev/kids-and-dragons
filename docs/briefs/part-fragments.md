@@ -5,8 +5,12 @@ part already draws.** They are invisible at rest and fly off when the part
 rotates. This is the worklist for re-cutting them, and the record of how the
 whole pipeline missed it.
 
-**Status:** open. `art:verify` warns (`duplicated part fragments`); it does not
-fail yet — see §5.
+**Status:** open, and **most of the worklist turned out not to be deletable**.
+28 of the 179 fragments are gone (`tools/art/recut_fragments.py`). The other
+151 are load-bearing: they are the seam overlap the rig derives its joints
+from, and deleting them opens the joint they were holding shut. §4.1 has the
+measurement and §4.2 what it leaves to do. `art:verify` still warns; the flip
+to failing described in §5 cannot happen until those 151 are resolved.
 
 ---
 
@@ -101,317 +105,376 @@ legitimately draws them, and `check_recomposite` still passes.
 Regenerate this list any time with `npm run art:verify` — the per-tier counts
 are in the warnings.
 
+### 4.1 Except that deleting them breaks the rig
+
+The paragraph above is true about pixels and wrong about rigs, and running the
+re-cut is what showed it. Deleting all 179 leaves every set recompositing at
+IoU=1.00000 — and **fails `check_seams` on 21 of the 24 sets**.
+
+`check_seams` requires adjacent parts to share at least 2,000 px, because a
+joint with no overlap opens a gap the moment it rotates. At most joints in this
+corpus **the duplicated disc is that overlap**. Delete it and the pair shares
+nothing at all:
+
+```
+unicorn/sworn seam overdraw
+  expected: every adjacent pair >= 2,000px shared
+  actual:   head/horn=0px, body/tail=256px
+```
+
+It is worse than a failed check. `joint_centroids` derives each pivot as the
+centroid of the seam band, and `rive-mcp` rigs from the same geometry — so
+where the disc is the only overlap, the disc *is* the joint definition.
+Measured across all 179 fragments, against the pivot of the nearest joint:
+
+| | count | median distance to pivot | within 2 px of it |
+|---|---|---|---|
+| the joint's only overlap | 141 | **0.0 px** | 98 of 141 |
+| joint overlaps without it | 38 | 110.5 px | 0 of 38 |
+
+The load-bearing ones sit *on* the pivot. A disc centred on the pivot rotates
+in place and keeps the joint sealed, which is what it is for. The redundant
+ones sit as much as 323 px away, on no pivot at all, and those are the ones
+that swing.
+
+A second, quieter version of the same trap: a fragment can be redundant for
+`check_seams` and still be part of the band whose centroid *locates* the joint.
+Removing 3 such fragments moved dragonling's `head/body` joint far enough to
+fail cross-tier registration by 93 px against a 70 px tolerance — art deleted,
+skeleton moved.
+
+### 4.2 What was re-cut, and what is left
+
+`tools/art/recut_fragments.py` removes what is safely removable and reports the
+rest. It imports the verifier's own detection rather than restating it, and
+holds back three classes: the last copy of any artwork, anything that is a
+joint's only overlap, and anything whose removal would move a structural joint
+more than 5 px.
+
+**Removed: 28 fragments, 27,357 px, across 12 sets.** `art:verify` is 740 pass
+/ 28 warn / 0 fail, recomposite unchanged at IoU=1.00000, cross-tier
+registration unchanged. Each guard is pinned by `recut_fragments.test.ts` and
+fails without it — the seam case removes 2,209 px with the guard defeated, and
+the seam and joint guards are not redundant with each other: the seam guard
+alone holds 38, the joint guard alone holds 10, and 103 are held by both.
+
+**This does not fix what the human saw.** `bigfoot/fledgling` — the contact
+sheet in §1 — has 5 fragments and all 5 are load-bearing, so none of them came
+out. Whatever is punching holes in that torso at t=0.33s, deleting duplicated
+artwork is not the fix for it, and §1's diagnosis should be treated as
+unconfirmed until someone re-renders that clip and looks. The rest gate cannot
+see it and the motion gate reports area, which §2 already establishes cannot
+tell this defect from a lifted leg.
+
+**Left: 151 fragments, and they are not a deletion job.** Each one is a joint
+whose two parts share no artwork of their own. Fixing them properly means
+drawing real overlap into the parts — the arm's own pixels extending under the
+shoulder — after which the disc becomes redundant and the re-cut takes it. That
+is an art change, so it belongs to whoever owns the drawings (art-pipeline §3),
+not to this tool. `python3 tools/art/recut_fragments.py` prints the list, joint
+by joint, with what each would drop to.
+
+The alternative is to decide these discs are the intended joint-cap mechanism
+and teach `check_part_fragments` to exempt a fragment sitting on a pivot it is
+the overlap for. That is a smaller change and a real option — but it should be
+a decision about how these rigs are built, not a way to silence a warning.
+
 ## 5. Why the check warns instead of failing
 
 `check_part_fragments` in `verify.py` is a warning today because 179 fragments
 are in the corpus as delivered, and a check that reds the build on art nobody
-has re-cut yet is a check people learn to skip. **Flip
-`rep.warn` to `rep.fail` once the re-cut lands** — the discriminator is tested
+has re-cut yet is a check people learn to skip. The discriminator is tested
 (`verify_fragments.test.ts`, which fails against a naive any-detached-fragment
-rule), so the only thing standing between it and blocking is the backlog.
+rule).
+
+**It was going to flip to failing once the re-cut landed. It cannot.** 151
+fragments remain and none of them can be deleted — §4.1 — so a failing check
+would red the build on art that is doing its job. The flip now waits on the
+decision in §4.2: either the joints get real overlap drawn, or the check learns
+to exempt a fragment that sits on the pivot it is the overlap for. Until one of
+those happens, warning is the honest setting, and the count in the warning is
+the backlog.
 
 ## 6. Also open
 
 The `down` clips rotate the figure rigidly rather than collapsing it — it reads
 as tilting, not as a knockdown. That is an authoring judgement, not a defect,
 and it is separate from everything above.
+## 7. The 151 still held, joint by joint
 
-**bigfoot/fledgling**
+Regenerate with `python3 tools/art/recut_fragments.py`. "Holding" is why the
+re-cut refuses it: *all of `x/y`* means that pair shares nothing else, so the
+fragment is the joint; *`x/y` pivot* means removing it would move that joint by
+the distance shown. Fragments already removed are not listed — this is what is
+left, not what was delivered.
 
-| part | fragment | bbox | at | duplicated |
+**unicorn/fledgling** — 1 held
+
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 53x53 | (599,449) | 100% |
-| `head` | 2,100 px | 51x51 | (485,410) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (565,595) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (405,595) | 100% |
-| `mane` | 2,100 px | 51x51 | (475,205) | 100% |
+| `body` | 1,408 px | 85x33 | (181,397) | `head/body` pivot (28px) |
 
-**bigfoot/mythic**
+**unicorn/sworn** — 2 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (600,462) | 100% |
-| `arm_r` | 2,100 px | 51x51 | (358,463) | 100% |
-| `body` | 2,100 px | 51x51 | (358,463) | 100% |
-| `body` | 166 px | 14x33 | (603,619) | 100% |
-| `head` | 2,100 px | 51x51 | (486,424) | 100% |
-| `leg_l` | 1,934 px | 46x53 | (564,602) | 100% |
-| `leg_l` | 166 px | 14x33 | (603,619) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (407,603) | 100% |
-| `mane` | 2,100 px | 51x51 | (477,214) | 100% |
+| `body` | 2,100 px | 51x51 | (682,405) | all of `body/tail` |
+| `head` | 2,100 px | 55x50 | (244,162) | all of `head/horn` |
 
-**bigfoot/radiant**
+**unicorn/radiant** — 8 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,099 px | 53x53 | (598,468) | 100% |
-| `head` | 2,100 px | 51x51 | (486,431) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (564,607) | 100% |
-| `mane` | 2,100 px | 51x51 | (477,214) | 100% |
+| `body` | 2,100 px | 51x51 | (681,415) | all of `body/tail` |
+| `body` | 447 px | 22x33 | (212,389) | `head/body` pivot (9px) |
+| `body` | 396 px | 18x33 | (190,380) | `head/body` pivot (10px) |
+| `body` | 359 px | 37x22 | (527,365) | `head/body` pivot (10px) |
+| `head` | 2,100 px | 59x50 | (253,167) | all of `head/horn` |
+| `head` | 447 px | 22x33 | (212,389) | `head/body` pivot (9px) |
+| `head` | 396 px | 18x33 | (190,380) | `head/body` pivot (10px) |
+| `head` | 359 px | 37x22 | (527,365) | `head/body` pivot (10px) |
 
-**bigfoot/sworn**
+**unicorn/mythic** — 5 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 55x55 | (591,463) | 100% |
-| `head` | 2,100 px | 51x51 | (485,427) | 100% |
-| `leg_l` | 2,100 px | 52x52 | (560,605) | 100% |
-| `mane` | 2,100 px | 51x51 | (475,214) | 100% |
+| `body` | 2,089 px | 61x61 | (635,415) | all of `body/tail` |
+| `body` | 1,555 px | 45x38 | (242,408) | `head/body` pivot (29px) |
+| `head` | 914 px | 51x42 | (267,251) | all of `head/horn` |
+| `horn` | 716 px | 35x24 | (332,327) | all of `head/horn` |
+| `horn` | 470 px | 17x34 | (255,316) | all of `head/horn` |
 
-**dragonling/fledgling**
+**dragonling/fledgling** — 7 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,100 px | 51x51 | (275,415) | 100% |
-| `body` | 2,100 px | 51x51 | (520,415) | 100% |
-| `body` | 2,100 px | 46x57 | (203,492) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (595,525) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (485,535) | 100% |
-| `mane` | 2,100 px | 82x38 | (557,530) | 100% |
-| `mane` | 204 px | 10x22 | (203,517) | 100% |
-| `tail` | 2,100 px | 51x51 | (655,585) | 100% |
+| `body` | 2,100 px | 46x57 | (203,492) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (275,415) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (520,415) | all of `body/wings` |
+| `leg_l` | 2,100 px | 51x51 | (595,525) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (485,535) | all of `body/leg_r` |
+| `mane` | 2,100 px | 82x38 | (557,530) | all of `body/mane` |
+| `tail` | 2,100 px | 51x51 | (655,585) | all of `body/tail` |
 
-**dragonling/mythic**
+**dragonling/sworn** — 9 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (276,467) | 100% |
-| `arm_r` | 2,100 px | 51x51 | (170,468) | 100% |
-| `body` | 4,152 px | 56x100 | (602,451) | 100% |
-| `body` | 2,100 px | 51x51 | (253,382) | 100% |
-| `body` | 2,100 px | 51x51 | (276,467) | 100% |
-| `body` | 2,100 px | 51x51 | (170,468) | 100% |
-| `body` | 2,100 px | 51x51 | (486,510) | 100% |
-| `leg_l` | 2,100 px | 52x53 | (606,498) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (486,510) | 100% |
-| `tail` | 2,086 px | 68x105 | (659,585) | 100% |
+| `body` | 2,100 px | 51x51 | (185,468) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (264,382) | `head/body` pivot (39px) |
+| `body` | 2,100 px | 51x51 | (286,467) | all of `body/arm_l` |
+| `body` | 2,100 px | 51x51 | (565,415) | all of `body/wings` |
+| `leg_l` | 2,100 px | 51x51 | (602,500) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (486,510) | all of `body/leg_r` |
+| `mane` | 2,100 px | 51x51 | (290,145) | all of `head/mane` |
+| `mane` | 2,100 px | 51x51 | (620,490) | all of `body/mane` |
+| `tail` | 2,100 px | 53x53 | (699,584) | all of `body/tail` |
 
-**dragonling/radiant**
+**dragonling/radiant** — 8 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,100 px | 51x51 | (259,381) | 100% |
-| `body` | 2,100 px | 51x51 | (555,415) | 100% |
-| `body` | 2,100 px | 51x51 | (282,466) | 100% |
-| `body` | 2,100 px | 51x51 | (180,467) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (602,498) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (485,509) | 100% |
-| `mane` | 2,100 px | 51x51 | (280,145) | 100% |
-| `tail` | 2,100 px | 49x55 | (694,583) | 100% |
+| `body` | 2,100 px | 51x51 | (180,467) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (259,381) | `head/body` pivot (39px) |
+| `body` | 2,100 px | 51x51 | (282,466) | all of `body/arm_l` |
+| `body` | 2,100 px | 51x51 | (555,415) | all of `body/wings` |
+| `leg_l` | 2,100 px | 51x51 | (602,498) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (485,509) | all of `body/leg_r` |
+| `mane` | 2,100 px | 51x51 | (280,145) | all of `head/mane` |
+| `tail` | 2,100 px | 49x55 | (694,583) | all of `body/tail` |
 
-**dragonling/sworn**
+**dragonling/mythic** — 10 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,100 px | 51x51 | (264,382) | 100% |
-| `body` | 2,100 px | 51x51 | (565,415) | 100% |
-| `body` | 2,100 px | 51x51 | (286,467) | 100% |
-| `body` | 2,100 px | 51x51 | (185,468) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (602,500) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (486,510) | 100% |
-| `mane` | 2,100 px | 51x51 | (290,145) | 100% |
-| `mane` | 2,100 px | 51x51 | (620,490) | 100% |
-| `tail` | 2,100 px | 53x53 | (699,584) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (276,467) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 51x51 | (170,468) | all of `body/arm_r` |
+| `body` | 4,152 px | 56x100 | (602,451) | all of `body/leg_l` |
+| `body` | 2,100 px | 51x51 | (170,468) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (253,382) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (276,467) | all of `body/arm_l` |
+| `body` | 2,100 px | 51x51 | (486,510) | all of `body/leg_r` |
+| `leg_l` | 2,100 px | 52x53 | (606,498) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (486,510) | all of `body/leg_r` |
+| `tail` | 2,086 px | 68x105 | (659,585) | all of `body/tail` |
 
-**griffin/fledgling**
+**griffin/fledgling** — 5 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,100 px | 51x51 | (530,380) | 100% |
-| `body` | 2,100 px | 51x51 | (220,500) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (640,525) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (490,530) | 100% |
-| `mane` | 2,100 px | 51x51 | (290,185) | 100% |
-| `tail` | 2,061 px | 74x85 | (682,529) | 100% |
+| `body` | 2,100 px | 51x51 | (220,500) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (530,380) | all of `body/wings` |
+| `leg_l` | 2,100 px | 51x51 | (640,525) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (490,530) | all of `body/leg_r` |
+| `tail` | 2,061 px | 74x85 | (682,529) | all of `body/tail` |
 
-**griffin/mythic**
+**griffin/sworn** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (318,504) | 100% |
-| `arm_r` | 2,100 px | 40x85 | (215,486) | 100% |
-| `body` | 2,100 px | 51x51 | (545,380) | 100% |
-| `body` | 2,100 px | 51x51 | (284,430) | 100% |
-| `body` | 2,100 px | 40x85 | (215,486) | 100% |
-| `body` | 2,100 px | 51x51 | (318,504) | 100% |
-| `body` | 180 px | 15x15 | (735,603) | 100% |
-| `body` | 110 px | 8x25 | (754,620) | 100% |
-| `leg_l` | 2,100 px | 55x57 | (660,526) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (491,534) | 100% |
-| `mane` | 2,100 px | 72x43 | (319,206) | 100% |
-| `tail` | 180 px | 15x15 | (735,603) | 100% |
-| `tail` | 110 px | 8x25 | (754,620) | 100% |
+| `body` | 2,100 px | 51x51 | (215,510) | all of `body/arm_r` |
+| `body` | 422 px | 28x32 | (733,596) | all of `body/tail` |
+| `head` | 2,100 px | 51x51 | (307,438) | all of `head/mane` |
+| `leg_l` | 2,100 px | 51x51 | (644,534) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (491,539) | all of `body/leg_r` |
+| `tail` | 422 px | 28x32 | (733,596) | all of `body/tail` |
 
-**griffin/radiant**
+**griffin/radiant** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_r` | 2,123 px | 51x52 | (182,485) | 99% |
-| `body` | 2,100 px | 51x51 | (515,380) | 100% |
-| `body` | 2,100 px | 51x51 | (182,485) | 100% |
-| `leg_l` | 2,100 px | 53x53 | (661,510) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (491,516) | 100% |
-| `mane` | 2,100 px | 59x59 | (271,181) | 100% |
-| `mane` | 2,100 px | 41x61 | (330,460) | 100% |
+| `arm_r` | 2,123 px | 51x52 | (182,485) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (182,485) | all of `body/mane` |
+| `body` | 2,100 px | 51x51 | (515,380) | all of `body/wings` |
+| `leg_l` | 2,100 px | 53x53 | (661,510) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (491,516) | all of `body/leg_r` |
+| `mane` | 2,100 px | 59x59 | (271,181) | all of `head/mane` |
 
-**griffin/sworn**
+**griffin/mythic** — 12 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,100 px | 51x51 | (540,380) | 100% |
-| `body` | 2,100 px | 51x51 | (215,510) | 100% |
-| `body` | 422 px | 28x32 | (733,596) | 100% |
-| `head` | 2,100 px | 51x51 | (307,438) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (644,534) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (491,539) | 100% |
-| `mane` | 2,100 px | 51x51 | (300,185) | 100% |
-| `tail` | 422 px | 28x32 | (733,596) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (318,504) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 40x85 | (215,486) | all of `body/arm_r` |
+| `body` | 2,100 px | 40x85 | (215,486) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (284,430) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (318,504) | all of `body/arm_l` |
+| `body` | 180 px | 15x15 | (735,603) | all of `body/tail` |
+| `body` | 110 px | 8x25 | (754,620) | all of `body/tail` |
+| `leg_l` | 2,100 px | 55x57 | (660,526) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (491,534) | all of `body/leg_r` |
+| `mane` | 2,100 px | 72x43 | (319,206) | all of `head/mane` |
+| `tail` | 180 px | 15x15 | (735,603) | all of `body/tail` |
+| `tail` | 110 px | 8x25 | (754,620) | all of `body/tail` |
 
-**kitsune/fledgling**
+**bigfoot/fledgling** — 5 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (295,520) | 100% |
-| `arm_r` | 2,100 px | 51x51 | (195,520) | 100% |
-| `body` | 6,109 px | 66x141 | (295,430) | 100% |
-| `body` | 2,100 px | 51x51 | (630,475) | 100% |
-| `body` | 2,100 px | 51x51 | (195,520) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (595,545) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (445,555) | 100% |
-| `mane` | 2,100 px | 51x51 | (260,245) | 100% |
+| `arm_l` | 2,100 px | 53x53 | (599,449) | all of `body/arm_l` |
+| `head` | 2,100 px | 51x51 | (485,410) | all of `head/body` |
+| `leg_l` | 2,100 px | 51x51 | (565,595) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (405,595) | all of `body/leg_r` |
+| `mane` | 2,100 px | 51x51 | (475,205) | all of `head/mane` |
 
-**kitsune/mythic**
+**bigfoot/sworn** — 4 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (286,507) | 100% |
-| `body` | 4,152 px | 87x83 | (286,475) | 100% |
-| `body` | 2,100 px | 51x51 | (302,413) | 100% |
-| `body` | 2,100 px | 51x51 | (641,475) | 100% |
-| `body` | 2,100 px | 51x51 | (182,507) | 100% |
-| `body` | 2,100 px | 51x51 | (598,533) | 100% |
-| `mane` | 2,100 px | 51x51 | (278,245) | 100% |
+| `arm_l` | 2,100 px | 55x55 | (591,463) | all of `body/arm_l` |
+| `head` | 2,100 px | 51x51 | (485,427) | all of `head/body` |
+| `leg_l` | 2,100 px | 52x52 | (560,605) | all of `body/leg_l` |
+| `mane` | 2,100 px | 51x51 | (475,214) | all of `head/mane` |
 
-**kitsune/radiant**
+**bigfoot/radiant** — 4 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (282,516) | 100% |
-| `body` | 6,277 px | 79x142 | (282,425) | 100% |
-| `body` | 2,100 px | 51x51 | (635,475) | 100% |
-| `body` | 2,100 px | 51x51 | (175,516) | 100% |
-| `body` | 2,100 px | 51x51 | (603,541) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (603,541) | 100% |
-| `mane` | 2,100 px | 51x51 | (265,245) | 100% |
+| `arm_l` | 2,099 px | 53x53 | (598,468) | all of `body/arm_l` |
+| `head` | 2,100 px | 51x51 | (486,431) | all of `head/body` |
+| `leg_l` | 2,100 px | 51x51 | (564,607) | all of `body/leg_l` |
+| `mane` | 2,100 px | 51x51 | (477,214) | all of `head/mane` |
 
-**kitsune/sworn**
+**bigfoot/mythic** — 8 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (286,515) | 100% |
-| `arm_r` | 2,100 px | 51x51 | (181,515) | 100% |
-| `body` | 2,100 px | 51x51 | (302,424) | 100% |
-| `body` | 2,100 px | 51x51 | (323,475) | 100% |
-| `body` | 2,100 px | 51x51 | (648,475) | 100% |
-| `body` | 2,100 px | 51x51 | (181,515) | 100% |
-| `body` | 2,100 px | 51x51 | (286,515) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (600,541) | 100% |
-| `mane` | 2,100 px | 51x51 | (278,245) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (600,462) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 51x51 | (358,463) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (358,463) | all of `body/arm_r` |
+| `body` | 166 px | 14x33 | (603,619) | all of `body/leg_l` |
+| `head` | 2,100 px | 51x51 | (486,424) | all of `head/mane` |
+| `leg_l` | 1,934 px | 46x53 | (564,602) | all of `body/leg_l` |
+| `leg_l` | 166 px | 14x33 | (603,619) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (407,603) | all of `body/leg_r` |
 
-**manticore/fledgling**
+**kitsune/fledgling** — 8 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (320,520) | 100% |
-| `arm_r` | 2,100 px | 54x65 | (212,510) | 100% |
-| `body` | 2,100 px | 54x65 | (212,510) | 100% |
-| `body` | 2,100 px | 51x51 | (320,520) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (675,530) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (530,540) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (295,520) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 51x51 | (195,520) | all of `body/arm_r` |
+| `body` | 6,109 px | 66x141 | (295,430) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (195,520) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (630,475) | all of `body/tail` |
+| `leg_l` | 2,100 px | 51x51 | (595,545) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (445,555) | all of `body/leg_r` |
+| `mane` | 2,100 px | 51x51 | (260,245) | all of `head/mane` |
 
-**manticore/mythic**
+**kitsune/sworn** — 8 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (321,531) | 100% |
-| `body` | 2,100 px | 51x51 | (219,524) | 100% |
-| `body` | 2,100 px | 51x51 | (321,531) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (673,541) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (529,551) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (286,515) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 51x51 | (181,515) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (181,515) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (286,515) | all of `body/arm_l` |
+| `body` | 2,100 px | 51x51 | (302,424) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (648,475) | all of `body/tail` |
+| `leg_l` | 2,100 px | 51x51 | (600,541) | all of `body/leg_l` |
+| `mane` | 2,100 px | 51x51 | (278,245) | all of `head/mane` |
 
-**manticore/radiant**
+**kitsune/radiant** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (322,517) | 100% |
-| `arm_r` | 2,100 px | 51x51 | (221,509) | 100% |
-| `body` | 2,100 px | 51x51 | (221,509) | 100% |
-| `body` | 2,100 px | 51x51 | (322,517) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (673,527) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (529,537) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (282,516) | all of `body/arm_l` |
+| `body` | 6,277 px | 79x142 | (282,425) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (175,516) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (603,541) | all of `body/leg_l` |
+| `leg_l` | 2,100 px | 51x51 | (603,541) | all of `body/leg_l` |
+| `mane` | 2,100 px | 51x51 | (265,245) | all of `head/mane` |
 
-**manticore/sworn**
+**kitsune/mythic** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_l` | 2,100 px | 51x51 | (326,534) | 100% |
-| `arm_r` | 2,100 px | 52x53 | (227,526) | 100% |
-| `body` | 2,100 px | 52x53 | (227,526) | 100% |
-| `body` | 2,100 px | 51x51 | (326,534) | 100% |
-| `leg_l` | 2,100 px | 51x51 | (669,543) | 100% |
-| `leg_r` | 2,100 px | 51x51 | (529,553) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (286,507) | all of `body/arm_l` |
+| `body` | 4,152 px | 87x83 | (286,475) | all of `body/arm_l` |
+| `body` | 2,100 px | 51x51 | (182,507) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (302,413) | all of `head/body` |
+| `body` | 2,100 px | 51x51 | (598,533) | all of `body/leg_l` |
+| `mane` | 2,100 px | 51x51 | (278,245) | all of `head/mane` |
 
-**unicorn/fledgling**
+**manticore/fledgling** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 1,408 px | 85x33 | (181,397) | 98% |
-| `head` | 3,728 px | 71x80 | (159,87) | 96% |
-| `head` | 517 px | 45x23 | (309,93) | 96% |
-| `head` | 219 px | 22x19 | (494,362) | 97% |
-| `head` | 184 px | 20x13 | (224,81) | 100% |
-| `mane` | 372 px | 25x22 | (181,396) | 100% |
-| `mane` | 160 px | 14x13 | (224,81) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (320,520) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 54x65 | (212,510) | all of `body/arm_r` |
+| `body` | 2,100 px | 54x65 | (212,510) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (320,520) | all of `body/arm_l` |
+| `leg_l` | 2,100 px | 51x51 | (675,530) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (530,540) | all of `body/leg_r` |
 
-**unicorn/mythic**
+**manticore/sworn** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,089 px | 61x61 | (635,415) | 100% |
-| `body` | 1,555 px | 45x38 | (242,408) | 100% |
-| `head` | 914 px | 51x42 | (267,251) | 100% |
-| `horn` | 716 px | 35x24 | (332,327) | 100% |
-| `horn` | 470 px | 17x34 | (255,316) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (326,534) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 52x53 | (227,526) | all of `body/arm_r` |
+| `body` | 2,100 px | 52x53 | (227,526) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (326,534) | all of `body/arm_l` |
+| `leg_l` | 2,100 px | 51x51 | (669,543) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (529,553) | all of `body/leg_r` |
 
-**unicorn/radiant**
+**manticore/radiant** — 6 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `arm_r` | 104 px | 8x13 | (206,494) | 100% |
-| `body` | 2,101 px | 51x51 | (430,395) | 100% |
-| `body` | 2,100 px | 51x51 | (681,415) | 100% |
-| `body` | 447 px | 22x33 | (212,389) | 100% |
-| `body` | 396 px | 18x33 | (190,380) | 100% |
-| `body` | 359 px | 37x22 | (527,365) | 100% |
-| `body` | 104 px | 8x13 | (206,494) | 100% |
-| `head` | 2,100 px | 59x50 | (253,167) | 100% |
-| `head` | 447 px | 22x33 | (212,389) | 100% |
-| `head` | 396 px | 18x33 | (190,380) | 100% |
-| `head` | 359 px | 37x22 | (527,365) | 100% |
-| `horn` | 346 px | 27x36 | (178,213) | 96% |
-| `horn` | 95 px | 15x9 | (183,261) | 97% |
-| `horn` | 76 px | 13x12 | (372,113) | 97% |
-| `horn` | 75 px | 13x8 | (324,109) | 96% |
-| `horn` | 66 px | 13x9 | (324,101) | 97% |
-| `horn` | 64 px | 11x9 | (360,104) | 98% |
-| `mane` | 66 px | 10x12 | (394,412) | 100% |
+| `arm_l` | 2,100 px | 51x51 | (322,517) | all of `body/arm_l` |
+| `arm_r` | 2,100 px | 51x51 | (221,509) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (221,509) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (322,517) | all of `body/arm_l` |
+| `leg_l` | 2,100 px | 51x51 | (673,527) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (529,537) | all of `body/leg_r` |
 
-**unicorn/sworn**
+**manticore/mythic** — 5 held
 
-| part | fragment | bbox | at | duplicated |
+| part | fragment | bbox | at | holding |
 |---|---|---|---|---|
-| `body` | 2,100 px | 51x51 | (682,405) | 100% |
-| `body` | 91 px | 15x10 | (262,405) | 100% |
-| `head` | 2,100 px | 55x50 | (244,162) | 100% |
-| `mane` | 64 px | 10x12 | (435,495) | 100% |
-
+| `arm_l` | 2,100 px | 51x51 | (321,531) | all of `body/arm_l` |
+| `body` | 2,100 px | 51x51 | (219,524) | all of `body/arm_r` |
+| `body` | 2,100 px | 51x51 | (321,531) | all of `body/arm_l` |
+| `leg_l` | 2,100 px | 51x51 | (673,541) | all of `body/leg_l` |
+| `leg_r` | 2,100 px | 51x51 | (529,551) | all of `body/leg_r` |
