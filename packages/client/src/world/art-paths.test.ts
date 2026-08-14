@@ -135,6 +135,42 @@ describe("class rig variants", () => {
     expect(characterRigUrl("unicorn", "sworn", "thornguard")).toBe(
       "/assets/character-rigs/thornguard/sworn/unicorn/rig.riv",
     );
+    expect(characterRigUrl("unicorn", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/unicorn/rig.riv",
+    );
+    expect(characterWorldArtUrl("unicorn", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/unicorn/assembled.png",
+    );
+    expect(characterRigUrl("dragonling", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/dragonling/rig.riv",
+    );
+    expect(characterWorldArtUrl("dragonling", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/dragonling/assembled.png",
+    );
+    expect(characterRigUrl("griffin", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/griffin/rig.riv",
+    );
+    expect(characterWorldArtUrl("griffin", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/griffin/assembled.png",
+    );
+    expect(characterRigUrl("bigfoot", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/bigfoot/rig.riv",
+    );
+    expect(characterWorldArtUrl("bigfoot", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/bigfoot/assembled.png",
+    );
+    expect(characterRigUrl("kitsune", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/kitsune/rig.riv",
+    );
+    expect(characterWorldArtUrl("kitsune", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/kitsune/assembled.png",
+    );
+    expect(characterRigUrl("manticore", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/manticore/rig.riv",
+    );
+    expect(characterWorldArtUrl("manticore", "sworn", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/sworn/manticore/assembled.png",
+    );
   });
 
   it("keeps every undeclared combination on its species rig", () => {
@@ -144,7 +180,7 @@ describe("class rig variants", () => {
     expect(characterRigUrl("griffin", "radiant", "duskrunner")).toBe(
       characterRigUrl("griffin", "radiant"),
     );
-    expect(characterWorldArtUrl("bigfoot", "sworn", "duskrunner")).toBe(
+    expect(characterWorldArtUrl("bigfoot", "sworn", "starweaver")).toBe(
       characterArtUrl("bigfoot", "sworn"),
     );
   });
