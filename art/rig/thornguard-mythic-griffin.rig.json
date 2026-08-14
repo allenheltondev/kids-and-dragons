@@ -1,0 +1,50 @@
+{
+  "$comment": "Thornguard Mythic Griffin variant rig. The approved Griffin silhouette is painted into the normal Mythic Griffin parts so armor follows each existing bone; the separate hummingbird is excluded and armor_visible carries only armor pixels beyond the anatomy masks. Clip timing and inputs derive from assets/manifest.json rigContract (--contract --set hero).",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["body", "wings"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "armor_visible"]
+  ],
+  "zOrder": [
+    "wings",
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane",
+    "armor_visible"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}
