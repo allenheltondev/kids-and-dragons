@@ -246,6 +246,42 @@
       "tier": "radiant",
       "species": "manticore",
       "parts": ["tail", "armor_underlay", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "hawk"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "unicorn",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "horn", "armor_visible"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "dragonling",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "armor_visible"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "griffin",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "armor_visible"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "bigfoot",
+      "parts": ["leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "kitsune",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane"]
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "manticore",
+      "parts": ["tail", "armor_underlay", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "hawk"]
     }
   ],
 

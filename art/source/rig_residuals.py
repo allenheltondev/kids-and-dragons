@@ -6,6 +6,21 @@ import numpy as np
 from PIL import Image
 
 
+def _manhattan_distance(alpha: np.ndarray) -> np.ndarray:
+    """Return the distance to the nearest nonzero alpha pixel."""
+    height, width = alpha.shape
+    distance = np.where(alpha, 0, height + width).astype(np.int16)
+    for y in range(1, height):
+        distance[y] = np.minimum(distance[y], distance[y - 1] + 1)
+    for y in range(height - 2, -1, -1):
+        distance[y] = np.minimum(distance[y], distance[y + 1] + 1)
+    for x in range(1, width):
+        distance[:, x] = np.minimum(distance[:, x], distance[:, x - 1] + 1)
+    for x in range(width - 2, -1, -1):
+        distance[:, x] = np.minimum(distance[:, x], distance[:, x + 1] + 1)
+    return distance
+
+
 def keep_body_residual(
     parts: dict[str, Image.Image],
     residual_alpha: np.ndarray,
@@ -32,26 +47,12 @@ def keep_body_residual(
 
     names = tuple(parts)
     assignments = np.zeros((height, width), dtype=np.int16)
+    nearest = np.full((height, width), height + width + 1, dtype=np.int16)
     for index, name in enumerate(names, 1):
-        alpha = np.asarray(parts[name].getchannel("A")) > 0
-        assignments[(assignments == 0) & alpha] = index
-
-    # Grow every anatomy label by one Manhattan pixel per pass. Residuals sit
-    # immediately along anatomy edges, so this reaches every target quickly
-    # without the heavyweight image-distance dependencies the art scripts avoid.
-    targets = moving_alpha > 0
-    while np.any(targets & (assignments == 0)):
-        previous = assignments
-        grown = previous.copy()
-        for source, target in (
-            (previous[:-1, :], grown[1:, :]),
-            (previous[1:, :], grown[:-1, :]),
-            (previous[:, :-1], grown[:, 1:]),
-            (previous[:, 1:], grown[:, :-1]),
-        ):
-            take = (target == 0) & (source != 0)
-            target[take] = source[take]
-        assignments = grown
+        distance = _manhattan_distance(np.asarray(parts[name].getchannel("A")) > 0)
+        closer = distance < nearest
+        assignments[closer] = index
+        nearest[closer] = distance[closer]
 
     for index, name in enumerate(names, 1):
         existing = np.asarray(parts[name].getchannel("A"), dtype=np.uint16)

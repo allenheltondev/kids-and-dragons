@@ -138,8 +138,8 @@ describe("class rig variants", () => {
   });
 
   it("keeps every undeclared combination on its species rig", () => {
-    expect(characterRigUrl("bigfoot", "mythic", "thornguard")).toBe(
-      characterRigUrl("bigfoot", "mythic"),
+    expect(characterRigUrl("manticore", "mythic", "duskrunner")).toBe(
+      characterRigUrl("manticore", "mythic"),
     );
     expect(characterRigUrl("griffin", "radiant", "duskrunner")).toBe(
       characterRigUrl("griffin", "radiant"),
