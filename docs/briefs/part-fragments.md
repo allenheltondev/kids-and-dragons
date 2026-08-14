@@ -69,6 +69,45 @@ keeps the openings the figure *encloses* — a wing sweeping away leaves empty
 space, and that is animation — and names the part that drew each one. It needs
 the Rive CLI, like the other two rig gates.
 
+### 1.2 The corpus, and what it is a worklist for
+
+`python3 tools/art/rig_holes.py`, two ticks of `attack`:
+
+| set | holes | largest | carried off by |
+|---|---|---|---|
+| dragonling/radiant | 3 | 5,587 px | arm_r, wings |
+| griffin/radiant | 6 | 4,106 px | wings |
+| dragonling/sworn | 3 | 3,430 px | arm_r, wings |
+| griffin/mythic | 2 | 2,662 px | wings |
+| bigfoot/fledgling | 1 | 2,238 px | arm_l |
+| griffin/sworn | 2 | 2,183 px | wings |
+| kitsune/radiant | 4 | 2,022 px | mane |
+| bigfoot/mythic | 2 | 1,737 px | arm_l, mane |
+| manticore/sworn | 3 | 1,591 px | arm_r, mane |
+| manticore/radiant | 1 | 1,584 px | arm_r |
+| kitsune/sworn | 2 | 1,508 px | mane |
+| bigfoot/sworn | 2 | 1,338 px | arm_l, mane |
+| kitsune/mythic | 2 | 1,301 px | mane |
+| kitsune/fledgling | 1 | 1,208 px | mane |
+| dragonling/fledgling | 1 | 1,157 px | wings |
+| manticore/mythic | 1 | 1,121 px | arm_r |
+
+**36 holes across 16 of 24 sets** — wings ×15, mane ×13, arm_r ×5, arm_l ×3.
+Two ticks of one clip, so this is a floor and not an inventory: `down` and
+`hurt` move parts `attack` barely touches, and each clip would add its own.
+
+The fix is per hole, and it is a drawing: the part underneath needs to draw the
+pixels the moving part is currently the only source of. Where `arm_l` is 99% of
+an opening, the body should carry that artwork too and the arm should keep only
+what is arm. That makes the pixels duplicated on purpose — which is what a seam
+is, and why §3's redundancy measure cannot be the whole rule for what a part
+may carry.
+
+Note the shape of the list against §4's. That one is led by manticore and
+bigfoot; this one by griffin and dragonling wings, and by manes. They are
+different defects in different sets, and the only reason to read them together
+is that one was mistaken for the other.
+
 Two theories were tested and killed first, which is worth recording so nobody
 re-runs them:
 
