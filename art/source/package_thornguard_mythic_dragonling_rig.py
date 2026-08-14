@@ -20,7 +20,9 @@ PARTS = OUT / "parts"
 REVIEW = ROOT / "art/review/thornguard_mythic_dragonling_rig_split.png"
 BASE_PARTS = ("wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
 Z_ORDER = (*BASE_PARTS, "armor_visible")
-ARMOR_ENVELOPE = (170, 475, 590, 750)
+REGISTERED_SIZE = (993, 993)
+REGISTERED_OFFSET = (12, -7)
+ARMOR_ENVELOPE = (175, 451, 590, 726)
 
 
 def approved_portrait() -> Image.Image:
@@ -39,6 +41,18 @@ def foreground_alpha(portrait: Image.Image) -> Image.Image:
         & (blue > green * 1.12)
     )
     return Image.fromarray(np.where(navy, 0, 255).astype(np.uint8), "L")
+
+
+def register_subject(
+    portrait: Image.Image, foreground: Image.Image
+) -> tuple[Image.Image, Image.Image]:
+    """Scale and place the approved pose on the shared 1024px rig canvas."""
+    subject = portrait.convert("RGBA")
+    subject.putalpha(foreground)
+    subject = subject.resize(REGISTERED_SIZE, Image.Resampling.LANCZOS)
+    registered = Image.new("RGBA", CANVAS)
+    registered.alpha_composite(subject, dest=REGISTERED_OFFSET)
+    return registered.convert("RGB"), registered.getchannel("A")
 
 
 def visible_overhang(portrait: Image.Image, anatomy_alpha: Image.Image) -> Image.Image:
@@ -138,7 +152,7 @@ def main() -> None:
     for stale in PARTS.glob("*.png"):
         stale.unlink()
     portrait = approved_portrait()
-    foreground = foreground_alpha(portrait)
+    portrait, foreground = register_subject(portrait, foreground_alpha(portrait))
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
         for name in BASE_PARTS
