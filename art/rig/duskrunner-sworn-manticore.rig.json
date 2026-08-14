@@ -1,0 +1,45 @@
+{
+  "$comment": "Duskrunner Sworn Manticore variant rig. The approved exact-pose portrait is painted into the normal Sworn Manticore parts so the hood and raised chest strap follow the existing head and body bones; gear_visible carries garment detail beyond the anatomy masks.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "gear_visible"]
+  ],
+  "zOrder": [
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "gear_visible",
+    "mane"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}
