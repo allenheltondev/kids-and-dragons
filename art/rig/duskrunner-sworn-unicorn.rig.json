@@ -1,0 +1,50 @@
+{
+  "$comment": "Duskrunner Sworn Unicorn variant rig. The approved exact-pose portrait is painted into the normal Sworn Unicorn parts so the fitted outfit follows each existing bone; gear_visible carries only the outfit detail beyond the anatomy masks. Clip timing and inputs derive from assets/manifest.json rigContract (--contract --set hero).",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["head", "horn"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "gear_visible"]
+  ],
+  "zOrder": [
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "gear_visible",
+    "mane",
+    "horn"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}
