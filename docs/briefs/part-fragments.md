@@ -5,7 +5,9 @@ part already draws.** They are invisible at rest and fly off when the part
 rotates. This is the worklist for re-cutting them, and the record of how the
 whole pipeline missed it.
 
-**Status:** open, and **most of the worklist turned out not to be deletable**.
+**Status:** open, and this brief blames the wrong defect for the symptom that
+started it — see §1.1, which a render settles. Separately, **most of the
+worklist turned out not to be deletable**.
 28 of the 179 fragments are gone (`tools/art/recut_fragments.py`). The other
 151 are load-bearing: they are the seam overlap the rig derives its joints
 from, and deleting them opens the joint they were holding shut. §4.1 has the
@@ -21,10 +23,51 @@ full resolution, `bigfoot/fledgling` at t=0.33s has sharp axis-aligned holes
 punched through the torso and hips, with rectangular fragments floating beside
 the forearms.
 
+> **The cause named below is wrong.** It was written from the source art
+> without re-rendering, and rendering it disproves it: deleting all five of
+> `bigfoot/fledgling`'s duplicated fragments and rebuilding the rig leaves the
+> holes and the floating blocks exactly where they were. §1.1 has what is
+> actually happening. Everything from §2 on is about duplicated fragments,
+> which are a real defect — just not this one.
+
 The cause is not in the rig. `arm_l.png` as delivered contains a detached disc
 and a hard-edged block that are not arm. At rest they sit exactly where they
 were cut from, so the parts stack back into `assembled.png` perfectly. The
 moment the arm rotates, the fragments travel with it.
+
+### 1.1 What is actually happening
+
+Rebuilt from parts with every duplicated fragment deleted, that frame is
+unchanged: transparent pixels inside the figure went 144,655 → 147,132, and the
+rig came back with five joints whose pivots it had to guess, because deleting
+the discs is also what takes a joint's overlap away (§4.1).
+
+Rendering rest against t=0.33 and mapping each opening back to the source art
+says who took the pixels:
+
+| opening | drawn at rest by |
+|---|---|
+| 7,353 px | **arm_l 86%**, body 12%, leg_l 2% |
+| 6,318 px | **arm_r 97%**, mane 1% |
+| 4,583 px | **arm_r 83%**, body 14% |
+| 3,986 px | **arm_l 99%**, mane 0% |
+
+The arms are the *sole* owners of pixels sitting over the torso. Nothing else
+draws them, so when the arm swings they leave a hole — and this is the exact
+opposite of a duplicate, which leaves no hole precisely *because* another part
+still draws it. Same symptom, opposite cause.
+
+It is invisible to every source-level check for that reason. `check_recomposite`
+is satisfied by any partition of the image, this one included. The block is
+attached to the arm's own artwork, so it is not a detached component and no
+fragment rule sees it. And it is not duplicated, so the redundancy measure in
+§3 scores it at zero — the one number that would flag a duplicate is the number
+that clears this.
+
+`tools/art/rig_holes.py` measures it: renders each rig at rest and mid-clip,
+keeps the openings the figure *encloses* — a wing sweeping away leaves empty
+space, and that is animation — and names the part that drew each one. It needs
+the Rive CLI, like the other two rig gates.
 
 Two theories were tested and killed first, which is worth recording so nobody
 re-runs them:
