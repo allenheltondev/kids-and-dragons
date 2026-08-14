@@ -20,7 +20,8 @@ PARTS = OUT / "parts"
 REVIEW = ROOT / "art/review/thornguard_mythic_kitsune_rig_split.png"
 BASE_PARTS = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
 Z_ORDER = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "armor_visible", "mane")
-ARMOR_ENVELOPE = (65, 195, 700, 735)
+REGISTERED_OFFSET = (0, -21)
+ARMOR_ENVELOPE = (65, 174, 700, 714)
 
 
 def approved_portrait() -> Image.Image:
@@ -55,6 +56,17 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
         & (blue > green * 1.05)
     )
     return Image.fromarray(np.where(backdrop, 0, 255).astype(np.uint8), "L")
+
+
+def register_subject(
+    portrait: Image.Image, subject_alpha: Image.Image
+) -> tuple[Image.Image, Image.Image]:
+    """Place the approved pose on the shared 1024px rig standing line."""
+    subject = portrait.convert("RGBA")
+    subject.putalpha(subject_alpha)
+    registered = Image.new("RGBA", CANVAS)
+    registered.alpha_composite(subject, dest=REGISTERED_OFFSET)
+    return registered.convert("RGB"), registered.getchannel("A")
 
 
 def masked_portrait(portrait: Image.Image, alpha: Image.Image) -> Image.Image:
@@ -120,7 +132,7 @@ def main() -> None:
     for stale in PARTS.glob("*.png"):
         stale.unlink()
     portrait = approved_portrait()
-    subject = subject_alpha(portrait)
+    portrait, subject = register_subject(portrait, subject_alpha(portrait))
     anatomy_alpha = Image.new("L", CANVAS, 0)
     parts: dict[str, Image.Image] = {}
     for name in BASE_PARTS:
