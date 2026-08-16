@@ -56,6 +56,7 @@ function character(overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacte
     tier: "fledgling",
     stats: { might: 2, quick: 3, clever: 3, heart: 5 },
     unspentPoints: 0,
+    spendableStats: ["might", "quick", "clever", "heart"],
     committedLevel: 1,
     maxHp: 10,
     steps: 4,
@@ -94,6 +95,7 @@ interface MountOptions {
   items?: ItemCatalog | null;
   campaign?: Campaign | null;
   narration?: string;
+  sceneType?: RunState["sceneType"];
 }
 
 function baseState(options: MountOptions): RunState {
@@ -106,7 +108,7 @@ function baseState(options: MountOptions): RunState {
     campaignId: "c",
     chapterId: "ch_1",
     sceneId: "s_1",
-    sceneType: "story",
+    sceneType: options.sceneType ?? "story",
     narration: options.narration ?? "",
     art: null,
     party: options.party ?? [member()],
@@ -645,5 +647,152 @@ describe("waiting", () => {
     // its answers sit on opposite sides of a toggle.
     mount({ prompt: choicePrompt(), narration: "A wall of thorns twice your height." });
     expect(screen.getByText("A wall of thorns twice your height.")).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Growing up — spending a banked stat point (spec §8.1)
+// ---------------------------------------------------------------------------
+
+/**
+ * Levelling banks a point; a Rest scene is where it becomes a stat. The engine
+ * and the server transaction for this were built first and nothing dispatched
+ * the intent, so a character could bank points for a whole campaign and never
+ * be offered a way to spend one.
+ *
+ * The two rules under test are the ones the server also enforces
+ * (`prepareStatPointSpend`): **only at a Rest scene**, and **only into a stat
+ * that is under its ceiling**. The panel does not re-derive either — it reads
+ * `sceneType` and `spendableStats` off the mirrored state — so what these
+ * assert is that it reads them at all, and that nothing is spent before the
+ * confirm bar is tapped (spec §11).
+ */
+describe("spending a banked stat point", () => {
+  const withPoints = (unspentPoints: number, overrides: Partial<ResolvedCharacter> = {}) =>
+    member({ character: character({ unspentPoints, ...overrides }) });
+
+  it("offers every legal stat once the party is resting", () => {
+    mount({ party: [withPoints(1)], sceneType: "rest" });
+
+    expect(screen.getByText("You have a point to spend!")).toBeTruthy();
+    for (const stat of ["might", "quick", "clever", "heart"]) {
+      expect(screen.getByRole("button", { name: new RegExp(stat, "i") })).toBeTruthy();
+    }
+  });
+
+  it("counts the points when there is more than one", () => {
+    mount({ party: [withPoints(3)], sceneType: "rest" });
+    expect(screen.getByText("You have 3 points to spend!")).toBeTruthy();
+  });
+
+  it("stays out of the way anywhere but a Rest scene", () => {
+    // The server refuses the intent outside one, so offering it here would be
+    // a button that fails — which on a phone is indistinguishable from a bug.
+    mount({ party: [withPoints(2)], sceneType: "story" });
+    expect(screen.queryByText(/points to spend!/)).toBeNull();
+  });
+
+  it("stays out of the way when there is nothing banked", () => {
+    mount({ party: [withPoints(0)], sceneType: "rest" });
+    expect(screen.queryByText(/to spend!/)).toBeNull();
+  });
+
+  it("never draws a stat that has hit its ceiling", () => {
+    mount({
+      party: [withPoints(1, { spendableStats: ["quick", "clever", "heart"] })],
+      sceneType: "rest",
+    });
+    // Hidden, not disabled — the panel's rule for every other prompt.
+    expect(screen.queryByRole("button", { name: /might/i })).toBeNull();
+    expect(screen.getByRole("button", { name: /quick/i })).toBeTruthy();
+  });
+
+  it("says so when there is a point in hand and nowhere left to put it", () => {
+    mount({ party: [withPoints(1, { spendableStats: [] })], sceneType: "rest" });
+    expect(screen.getByText(/as strong as it can get/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Grow!/ })).toBeNull();
+  });
+
+  it("sends nothing until the confirm bar is tapped", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ party: [withPoints(1)], sceneType: "rest" });
+
+    await user.click(screen.getByRole("button", { name: /might/i }));
+    expect(sent).toEqual([]);
+
+    await user.click(screen.getByRole("button", { name: /Grow!/ }));
+    expect(sent).toEqual([{ type: "SPEND_STAT_POINT", stat: "might" }]);
+  });
+
+  it("lets a mis-tap be taken back", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ party: [withPoints(1)], sceneType: "rest" });
+
+    await user.click(screen.getByRole("button", { name: /clever/i }));
+    await user.click(screen.getByRole("button", { name: /Change/ }));
+    expect(screen.queryByRole("button", { name: /Grow!/ })).toBeNull();
+    expect(sent).toEqual([]);
+  });
+
+  it("shows what the point actually buys", async () => {
+    // "3 → 4" is the whole basis for choosing one stat over another, and the
+    // player it is aimed at is eight.
+    const user = userEvent.setup();
+    mount({ party: [withPoints(1)], sceneType: "rest" });
+
+    await user.click(screen.getByRole("button", { name: /clever/i }));
+    // character() ships clever: 3.
+    expect(screen.getByText(/clever 3 → 4/i)).toBeTruthy();
+  });
+
+  it("drops a pending selection the server has since made illegal", async () => {
+    // Somebody else's trinket, a re-resolve, a stat that hit its cap between
+    // the tap and the confirm: the selection clears rather than confirming
+    // against a stat the server would now refuse.
+    const user = userEvent.setup();
+    mount({ party: [withPoints(2)], sceneType: "rest" });
+
+    await user.click(screen.getByRole("button", { name: /might/i }));
+    expect(screen.getByRole("button", { name: /Grow!/ })).toBeTruthy();
+
+    act(() => {
+      serverSends({
+        party: [withPoints(1, { stats: { might: 3, quick: 3, clever: 3, heart: 5 }, spendableStats: ["quick", "clever", "heart"] })],
+      });
+    });
+
+    expect(screen.queryByRole("button", { name: /Grow!/ })).toBeNull();
+  });
+
+  it("survives a party snapshot persisted before spendableStats existed", () => {
+    /*
+     * `RunState.party[]` holds *resolved* characters and is persisted as plain
+     * JSON; `getState` hands the stored object back verbatim and a member is
+     * re-resolved only when something touches it. So a run in flight across a
+     * deploy arrives with no list at all, and reading `.length` off it would
+     * white-screen the controller at the Rest scene — the Friday-evening
+     * failure `RunState`'s own comments exist to rule out.
+     *
+     * Absent means unknown, not none: the panel offers all four and lets the
+     * server refuse, rather than telling a player owed a point that every stat
+     * is maxed and eating the spend.
+     */
+    const stale = character({ unspentPoints: 1 });
+    delete (stale as { spendableStats?: unknown }).spendableStats;
+
+    expect(() => mount({ party: [member({ character: stale })], sceneType: "rest" })).not.toThrow();
+    expect(screen.getByText("You have a point to spend!")).toBeTruthy();
+    for (const stat of ["might", "quick", "clever", "heart"]) {
+      expect(screen.getByRole("button", { name: new RegExp(stat, "i") })).toBeTruthy();
+    }
+  });
+
+  it("keeps the reminder on the pinned strip, where a whole sitting can pass without scrolling to it", () => {
+    mount({ party: [withPoints(1)], sceneType: "story" });
+    expect(screen.getByText("1 point to spend when you rest")).toBeTruthy();
+
+    cleanup();
+    mount({ party: [withPoints(2)], sceneType: "story" });
+    expect(screen.getByText("2 points to spend when you rest")).toBeTruthy();
   });
 });

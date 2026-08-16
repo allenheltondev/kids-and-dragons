@@ -10,6 +10,15 @@
  * not its previous one, and the protocol already announces the change
  * (architecture §4.2). A client that joined after the event simply sees the
  * new level without the fanfare, which is the right failure.
+ *
+ * How the chapter *ended* comes from state rather than from an event, because
+ * it is a fact about the run and not a beat: a phone that reconnects onto the
+ * summary has to read the same ending as the two that watched it happen.
+ *
+ * A setback is drawn as a different ending, never as a loss (spec §8.2). It
+ * pays half rather than nothing precisely so the evening still counts, and the
+ * screen has to say the same thing the rule does — the party is not being told
+ * they wasted a sitting. There is no red anywhere in this file.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -48,14 +57,26 @@ export function ChapterCompletePanel(): ReactElement {
   );
 
   const xp = state?.xpEarned ?? 0;
+  /*
+   * Absent means success, the same default `completeChapter` applies — a run
+   * persisted before the field existed, or a chapter authored before setbacks
+   * did, must not read as a setback on the strength of a missing key.
+   */
+  const setback = state?.chapterOutcome === "setback";
+  const bonuses = state?.bonuses ?? [];
+  const heading = setback ? "The story took a turn" : "Chapter finished!";
 
   // Spoken once — the summary is narration like any other (spec §11).
   const spoken = useRef(false);
   useEffect(() => {
     if (spoken.current) return;
     spoken.current = true;
-    speak(`Chapter finished! The party earned ${String(xp)} experience.`);
-  }, [xp]);
+    speak(
+      setback
+        ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
+        : `Chapter finished! The party earned ${String(xp)} experience.`,
+    );
+  }, [xp, setback]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -65,16 +86,54 @@ export function ChapterCompletePanel(): ReactElement {
     <section className="complete" aria-labelledby="complete-heading">
       <header className="complete__head">
         <h2 className="complete__heading" id="complete-heading">
-          <Icon name="trophy" />
-          <span>Chapter finished!</span>
+          {/* Icon and words carry the difference — never colour (spec §11). */}
+          <Icon name={setback ? "scroll" : "trophy"} />
+          <span>{heading}</span>
         </h2>
         <p className="complete__xp">
           <Icon name="star" />
           <span>
+            {/* Per chapter, never per player (spec §8.1) — "for everyone" is
+                the line that keeps the youngest player from counting hers
+                against the adults'. */}
             <b>{xp}</b> XP for everyone
           </span>
         </p>
+        {setback ? (
+          <p className="complete__setback">
+            <Icon name="forward" />
+            <span>Not how you hoped — and the adventure carries on from here.</span>
+          </p>
+        ) : null}
       </header>
+
+      {/*
+       * spec §8.2 — objectives pay the whole party or nobody, and they pay on a
+       * setback too, because they are about what the party *did* on the way and
+       * not about which ending it arrived at. Itemised rather than folded
+       * silently into the total: the XP above already includes these, and a
+       * number nobody can account for teaches the table that the number is
+       * arbitrary.
+       */}
+      {bonuses.length === 0 ? null : (
+        <div className="complete__bonuses">
+          <h3 className="complete__bonus-heading">
+            <Icon name="star" />
+            <span>And you did these too</span>
+          </h3>
+          <ul className="complete__bonus-list">
+            {bonuses.map((bonus) => (
+              <li className="complete-bonus" key={bonus.id}>
+                <Icon name="check" />
+                <span className="complete-bonus__label">{bonus.label}</span>
+                {/* A clamped objective can honestly pay 0 (the 25% budget is
+                    shared). It still shows: the party did the thing. */}
+                <span className="complete-bonus__xp kad-muted">+{bonus.xp}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <ul className="complete__party">
         {party.map((member) => {

@@ -218,7 +218,12 @@ The largest chapter. Budget accordingly.
 
 **Claude**
 - XP → level, stat point spend, action unlocks. `CharacterProgress.unspentPoints`, inside the
-  provisional/committed pair so a failed campaign reverts earned *and* spent points together
+  provisional/committed pair so a failed campaign reverts earned *and* spent points together.
+  *(Built through to the phone: the Rest scene draws the spend, and `resolveCharacter` ships
+  `spendableStats` so it can obey "only legal actions are ever rendered" without re-deriving the
+  ceiling — which is measured against stored progress, not the species-and-trinket sheet a player
+  sees. The reference chapter grew a rest **waypoint** to spend one at; its only rest used to be its
+  ending, and the engine refuses a spend once the run has left `phase: "scene"`.)*
 - ~~**The eight deferred abilities** (`content/abilities.json` `$deferred`).~~ — built: the six
   verbs landed in `encounter.ts` (`ward`, `evade`, `root`, `extraMove`, `extraTurn`, `growWall`),
   plus the board-wide `enemies` scope, chosen-multi targets (`count`, Storm of Blades' "two
@@ -230,8 +235,15 @@ The largest chapter. Budget accordingly.
 - **Chapter outcomes** (spec §8.2): a terminal scene declares `success` or `setback`; a setback
   pays half XP and branches rather than retrying. This is what makes campaign failure — and
   therefore the whole souvenir system — reachable at all; today `completeChapter()` is the engine's
-  only exit
-- **Bonus objectives** — optional, party-wide or nobody, capped at 25% of `xpAward`
+  only exit. *(Built in the engine, and now drawn: both surfaces read `chapterOutcome` and give a
+  setback its own words and icon — never a colour, and never a loss screen. Still unreachable in
+  play for a content reason rather than a code one: **no authored ending declares
+  `"outcome": "setback"`.** It is one key on one terminal scene, and until some chapter has it, the
+  halved award and the setback counter under campaign failure never fire at the table.)*
+- **Bonus objectives** — optional, party-wide or nobody, capped at 25% of `xpAward`. *(Built, and
+  now visible: the completion screen itemises what they paid, because a total nobody can account for
+  teaches the table that the number is arbitrary. The reference chapter carries two, pointed at
+  flags it already set.)*
 - Campaign setback counter, defaulting to failure at three
 - **Joining a party already underway** (spec §8.4): `startingLevel` of 1 or a tier floor, starting
   XP set to that level's threshold, validated server-side against the party's committed level

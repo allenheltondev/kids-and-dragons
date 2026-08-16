@@ -88,6 +88,25 @@
   text-transform: capitalize;
 }
 
+/*
+ * The waiting stat point. Accent-coloured *and* carrying its own icon and
+ * words — spec §11: never a bare colour, because the one player this is aimed
+ * at is the one who cannot read a legend.
+ */
+.sheet__points {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  margin-block-start: var(--space-1, 0.25em);
+  padding: 0.1em var(--space-2, 0.5em);
+  border-radius: var(--radius-pill, 999em);
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 18%, transparent);
+  color: var(--color-accent, #ffc95c);
+  font-size: var(--font-size-sm, 0.875em);
+  font-weight: 700;
+  align-self: flex-start;
+}
+
 .sheet__hp {
   display: flex;
   flex-direction: column;
@@ -294,6 +313,30 @@
 
 .confirm__actions > :last-child {
   flex: 1 1 auto;
+}
+
+/* --- Growing up (spec §8.1) -------------------------------------------- */
+
+/* Stat names are ids on the wire (`might`) and words on the phone. */
+.grow__label {
+  text-transform: capitalize;
+}
+
+/*
+ * "3 → 4" — the reason to pick this stat over the other three, so it is sized
+ * like a number that matters rather than like a caption.
+ */
+.grow__math {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.grow__after {
+  color: var(--color-accent, #ffc95c);
+  font-size: var(--font-size-lg, 1.25em);
 }
 
 .player__waiting {
