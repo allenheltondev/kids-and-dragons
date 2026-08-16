@@ -29,6 +29,7 @@ import {
   DiceOverlay,
   LobbyContent,
   NarrationPanel,
+  TransformCutscene,
 } from "../screens";
 import { useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
@@ -95,6 +96,14 @@ export function WorldView(): React.JSX.Element {
           that ate every first roll — the ROLL event is what would trigger the
           mount, so the overlay always subscribed one event too late. */}
       <DiceOverlay />
+
+      {/* spec §8.1's "the whole party stops to watch". Mounted unconditionally
+          for the same reason the dice are: the progression update that summons
+          it is what would have triggered a conditional mount, so a
+          mount-on-transform overlay would subscribe one event too late and eat
+          the single most important moment in the game. It draws nothing until
+          somebody crosses a tier. */}
+      <TransformCutscene />
     </div>
   );
 }
