@@ -17,11 +17,10 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ItemCatalog, PartyMember, ResolvedCharacter, Souvenir } from "@kad/shared";
-import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
+import { makeItems } from "../../../shared/src/test-fixtures";
 import { CharacterSheet, prettyCampaign, readSouvenir, tierHistory } from "./CharacterSheet";
 
 const ITEMS: ItemCatalog = makeItems();
-const RULES = makeRules();
 
 function character(overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacter {
   return {
@@ -65,7 +64,6 @@ function show(overrides: Partial<ResolvedCharacter> = {}, isMe = true) {
       member={member(overrides)}
       isMe={isMe}
       items={ITEMS}
-      rules={RULES}
       onClose={() => undefined}
     />,
   );
@@ -101,7 +99,7 @@ describe("reading a souvenir id", () => {
 
 describe("tier history", () => {
   it("counts every tier at or below the current level as reached", () => {
-    const ladder = tierHistory(member({ level: 7, tier: "radiant" }), RULES);
+    const ladder = tierHistory(member({ level: 7, tier: "radiant" }));
     expect(ladder.map((rung) => rung.standing)).toEqual(["reached", "reached", "reached", "ahead"]);
   });
 
@@ -117,7 +115,7 @@ describe("tier history", () => {
       tier: "fledgling",
       souvenirs: [souvenir("the-hollow-crown#sworn")],
     });
-    const ladder = tierHistory(reverted, RULES);
+    const ladder = tierHistory(reverted);
 
     expect(ladder[0]).toEqual({ tier: "fledgling", standing: "reached" });
     expect(ladder[1]).toEqual({ tier: "sworn", standing: "lost" });
@@ -132,15 +130,26 @@ describe("tier history", () => {
       tier: "sworn",
       souvenirs: [souvenir("the-hollow-crown#sworn")],
     });
-    expect(tierHistory(again, RULES)[1]).toEqual({ tier: "sworn", standing: "reached" });
+    expect(tierHistory(again)[1]).toEqual({ tier: "sworn", standing: "reached" });
   });
 
-  it("draws the ladder even before the rules have loaded", () => {
-    // Content is fetched separately from the bundle. A sheet with no rules can
-    // still name the four tiers; only "have you got there" goes unanswered.
-    const ladder = tierHistory(member({ level: 7 }), null);
-    expect(ladder).toHaveLength(4);
-    expect(ladder.every((rung) => rung.standing === "ahead")).toBe(true);
+  it("needs no content loaded, because the resolved tier is already the answer", () => {
+    /*
+     * The version this replaces recomputed the ladder from level and
+     * `rules.tierLevels`, and content is fetched separately from the bundle —
+     * so a sheet opened before the rules landed spent that moment claiming the
+     * tier she is *standing in* was "still to come". Known-false, not unknown.
+     *
+     * `resolveCharacter` already ran `tierForLevel` server-side and stamped the
+     * result, so the same derivation is available without the dependency.
+     */
+    const ladder = tierHistory(member({ level: 7, tier: "radiant" }));
+    expect(ladder.map((rung) => rung.standing)).toEqual(["reached", "reached", "reached", "ahead"]);
+  });
+
+  it("claims nothing for a tier id this bundle does not know", () => {
+    const future = member({ tier: "ascendant" as never });
+    expect(tierHistory(future).every((rung) => rung.standing === "ahead")).toBe(true);
   });
 });
 
