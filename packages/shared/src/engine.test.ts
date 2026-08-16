@@ -1364,6 +1364,123 @@ describe("trading at a Rest scene (spec §9.4)", () => {
     expect(bagOf(done.state, "p_2")).toContain("sunbloom_draught");
   });
 
+  /*
+   * The finding that mattered most, and it was never only about trading:
+   * `RunState` holds *resolved* characters, nothing re-resolves during a
+   * chapter, and every path that changed a bag used to assign `inventory`
+   * alone. So a trinket's effect stayed wherever the last full resolve had put
+   * it — spec §9.2 calls them "passive, always on" and for a whole sitting
+   * they were not.
+   */
+  describe("a trinket brings its effect with it", () => {
+    function withCharm(context: EngineContext): RunState {
+      return applyEffects(
+        atCamp(context),
+        [{ type: "grantItem", itemId: "river_charm", to: "p_1" }],
+        context,
+      );
+    }
+
+    const stepsOf = (state: RunState, playerId: string): number =>
+      state.party.find((m) => m.playerId === playerId)!.character.steps;
+
+    it("lands the moment it is picked up, not at the end of the chapter", () => {
+      // The pre-existing half of this: a trinket found mid-chapter did nothing
+      // until chapter-completion persistence re-resolved the party.
+      const context = ctx();
+      const before = atCamp(context);
+      const after = withCharm(context);
+      expect(stepsOf(after, "p_1")).toBe(stepsOf(before, "p_1") + 1);
+    });
+
+    it("moves to the receiver and off the giver when it is handed over", () => {
+      const context = ctx();
+      const start = withCharm(context);
+      const giverBefore = stepsOf(start, "p_1");
+      const takerBefore = stepsOf(start, "p_2");
+
+      const offered = applyIntent(start, { playerId: "p_1", intent: offer("p_2", "river_charm") }, context).state;
+      const done = applyIntent(
+        offered,
+        { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+        context,
+      );
+
+      expect(done.error).toBeUndefined();
+      expect(stepsOf(done.state, "p_1")).toBe(giverBefore - 1);
+      expect(stepsOf(done.state, "p_2")).toBe(takerBefore + 1);
+    });
+
+    it("does not leave anybody standing above their own ceiling", () => {
+      // An oak token is +2 max HP. Handing it away has to take the hit points
+      // it was holding up with it, or the sheet reads 12/10.
+      const context = ctx();
+      const start = applyEffects(
+        atCamp(context),
+        [
+          { type: "grantItem", itemId: "oak_token", to: "p_1" },
+          { type: "heal", amount: 99, to: "p_1" },
+        ],
+        context,
+      );
+      const giver = (state: RunState) => state.party.find((m) => m.playerId === "p_1")!;
+      // The unicorn's own passive is Heart, so the token is the only thing
+      // holding this ceiling up: 10 + 2.
+      expect(giver(start).character.maxHp).toBe(rules.baseMaxHp + 2);
+      expect(giver(start).hp).toBe(rules.baseMaxHp + 2);
+
+      const offered = applyIntent(start, { playerId: "p_1", intent: offer("p_2", "oak_token") }, context).state;
+      const done = applyIntent(
+        offered,
+        { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+        context,
+      ).state;
+
+      // The ceiling came down, and the hit points that were resting on it came
+      // down with it — no 12/10 on anybody's sheet.
+      expect(giver(done).character.maxHp).toBe(rules.baseMaxHp);
+      expect(giver(done).hp).toBe(rules.baseMaxHp);
+      // And the receiver got the ceiling, without being handed the hit points.
+      const taker = done.party.find((m) => m.playerId === "p_2")!;
+      expect(taker.character.maxHp).toBe(rules.baseMaxHp + 2);
+      expect(taker.hp).toBeLessThanOrEqual(taker.character.maxHp);
+    });
+  });
+
+  it("refuses a drop when the receiver has room, rather than destroying it for nothing", () => {
+    /*
+     * Reachable without a bad client: she picks what to put down while her bag
+     * is full, then drinks something before tapping accept. `dropItemId` means
+     * "make room", there is none to make, and obeying it would lose an item —
+     * the same rule doUseItem states in the other direction.
+     */
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const armed = applyEffects(offered, [{ type: "grantItem", itemId: "firecracker", to: "p_2" }], context);
+
+    const refused = applyIntent(
+      armed,
+      {
+        playerId: "p_2",
+        intent: {
+          type: "RESOLVE_TRADE",
+          tradeId: onlyOffer(offered).id,
+          accept: true,
+          dropItemId: "firecracker",
+        },
+      },
+      context,
+    );
+
+    expect(refused.error?.code).toBe("ILLEGAL");
+    expect(refused.error?.message).toMatch(/nothing needs to go down/);
+    expect(bagOf(refused.state, "p_2")).toContain("firecracker");
+  });
+
   it("refuses an offer to yourself", () => {
     const context = ctx();
     const refused = applyIntent(

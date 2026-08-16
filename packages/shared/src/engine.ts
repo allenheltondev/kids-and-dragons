@@ -34,6 +34,7 @@
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import type {
   Character,
+  InventoryEntry,
   ItemCatalog,
   ResolvedCharacter,
   RulesContent,
@@ -80,7 +81,7 @@ import type {
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { resolveCheck } from "./dice.js";
-import { newCharacter, resolveCharacter } from "./character.js";
+import { newCharacter, resolveCharacter, withInventory } from "./character.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
@@ -301,6 +302,24 @@ function preferredHolder(members: PartyMember[]): PartyMember | undefined {
   return members.find((m) => m.character.inventory.length < INVENTORY_SLOTS) ?? members[0];
 }
 
+/**
+ * The one way a bag changes on a run.
+ *
+ * Every trinket-dependent number is re-derived through `withInventory`, and the
+ * HP clamp lives here rather than there because hit points are on the member
+ * and not on the character. Handing out a +2 max-HP trinket and then taking it
+ * back would otherwise leave somebody standing above their own ceiling.
+ *
+ * Centralised so no future path can change an inventory without both. That is
+ * exactly how trinkets came to be inert for the length of a chapter: four
+ * places assigned `character.inventory` directly and none of them owed
+ * anything else.
+ */
+function setBag(member: PartyMember, next: readonly InventoryEntry[], ctx: EngineContext): void {
+  member.character = withInventory(member.character, next, ctx.rules, ctx.items);
+  member.hp = Math.min(member.hp, member.character.maxHp);
+}
+
 function damage(member: PartyMember, amount: number): void {
   member.hp = Math.max(0, member.hp - amount);
   // spec §7.3 — knocked down, never dead. Even a full-party wipe is a story
@@ -361,7 +380,7 @@ function applyEffectsDraft(
         for (const member of candidates) {
           const result = addItem(member.character.inventory, effect.itemId, ctx.items);
           if (result.status === "added") {
-            member.character.inventory = result.inventory;
+            setBag(member, result.inventory, ctx);
           } else if (result.status === "quest") {
             member.character.questItems = addQuestItem(
               member.character.questItems,
@@ -1385,7 +1404,7 @@ function doUseItem(
     });
     if (!applied.ok) throw new Illegal("ILLEGAL", applied.reason);
 
-    member.character.inventory = held.inventory;
+    setBag(member, held.inventory, ctx);
     draft.encounter = applied.state;
     // The throw may have felled the last wisp; the branch waits behind the
     // damage beats, exactly as it does for an attack.
@@ -1422,7 +1441,7 @@ function doUseItem(
     throw new Illegal("ILLEGAL", "already at full health");
   }
 
-  member.character.inventory = result.inventory;
+  setBag(member, result.inventory, ctx);
   if (result.effect.type === "heal") {
     heal(member, result.effect.amount);
     return { kind: "HEAL", targetId: member.character.id, amount: result.effect.amount };
@@ -1450,11 +1469,10 @@ function doResolveItemSwap(
     if (!member.character.inventory.some((e) => e.itemId === dropItemId)) {
       throw new Illegal("ILLEGAL", `${member.character.name} is not carrying "${dropItemId}"`);
     }
-    member.character.inventory = swapItem(
-      member.character.inventory,
-      prompt.incomingItemId,
-      dropItemId,
-      ctx.items,
+    setBag(
+      member,
+      swapItem(member.character.inventory, prompt.incomingItemId, dropItemId, ctx.items),
+      ctx,
     );
   }
   // dropItemId === null → "leave it". One decision, no menu (§9.1).
@@ -1634,6 +1652,19 @@ function doResolveTrade(
   if (full && dropItemId === undefined) {
     throw new Illegal("ILLEGAL", `${to.character.name}'s bag is full — something has to go down`);
   }
+  /*
+   * A drop named when there is room is refused, not honoured. `dropItemId`
+   * means one thing — "make room" — and there is no room to make, so obeying
+   * it would destroy an item for nothing. That is the rule `doUseItem` already
+   * states in the other direction: rejected rather than consumed, because
+   * losing a thing for nothing is worse than being told no.
+   *
+   * Reachable without a bad client: she picks what to put down while her bag
+   * is full, then frees a slot before tapping accept.
+   */
+  if (!full && dropItemId !== undefined) {
+    throw new Illegal("ILLEGAL", `${to.character.name} has room — nothing needs to go down`);
+  }
   if (dropItemId !== undefined && !hasItem(to.character.inventory, dropItemId)) {
     throw new Illegal("ILLEGAL", `${to.character.name} is not carrying "${dropItemId}"`);
   }
@@ -1657,8 +1688,8 @@ function doResolveTrade(
   if (received.status !== "added") {
     throw new Illegal("ILLEGAL", "that cannot be handed over");
   }
-  from.character.inventory = removeItem(from.character.inventory, offer.itemId);
-  to.character.inventory = received.inventory;
+  setBag(from, removeItem(from.character.inventory, offer.itemId), ctx);
+  setBag(to, received.inventory, ctx);
 
   /*
    * Every other offer of this item from this giver dies with it — they only
