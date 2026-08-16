@@ -839,7 +839,7 @@ describe("passing an item to a friend", () => {
     await openThePotion(user);
     expect(screen.getByText("Give it to a friend")).toBeTruthy();
 
-    await user.click(screen.getByRole("button", { name: /Thistle/ }));
+    await user.click(screen.getByRole("button", { name: /Give to Thistle/ }));
     expect(sent).toEqual([
       { type: "OFFER_ITEM", itemId: POTION.itemId, toPlayerId: "p_2" },
     ]);
@@ -868,7 +868,7 @@ describe("passing an item to a friend", () => {
     });
 
     await openThePotion(user);
-    await user.click(screen.getByRole("button", { name: /Thistle/ }));
+    await user.click(screen.getByRole("button", { name: /Give to Thistle/ }));
     expect(sent).toEqual([{ type: "OFFER_ITEM", itemId: POTION.itemId, toPlayerId: "p_2" }]);
   });
 
@@ -881,7 +881,7 @@ describe("passing an item to a friend", () => {
 
     await openThePotion(user);
     // Not in the give list any more...
-    expect(screen.queryByRole("button", { name: /^Thistle$/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Give to Thistle/ })).toBeNull();
     // ...and the offer is visible as outstanding instead.
     expect(screen.getByText("Waiting for an answer")).toBeTruthy();
   });
@@ -925,8 +925,9 @@ describe("being offered an item", () => {
 
   it("names who is giving what", () => {
     offeredToMe();
-    expect(screen.getByText(/wants to give you/)).toBeTruthy();
-    expect(screen.getByText("Sparklehoof")).toBeTruthy();
+    // The giver is named in the offer itself; the party strip lists them too,
+    // which is why this asks the offer card rather than the whole screen.
+    expect(screen.getByText(/wants to give you/).textContent).toContain("Sparklehoof");
   });
 
   it("takes it", async () => {
@@ -1087,5 +1088,73 @@ describe("being offered an item with a full bag", () => {
     // Room again, so the question is gone entirely rather than half-answered.
     expect(screen.queryByText(/Your bag is full/)).toBeNull();
     expect(screen.getByRole("button", { name: /Yes please!/ })).toBeTruthy();
+  });
+});
+
+/**
+ * Looking at each other's characters — spec §6.1 lists it beside healing,
+ * spending a level-up and trading as a thing a Rest scene is for.
+ *
+ * Not gated to a Rest scene, though, and that is deliberate: reading a sheet
+ * sends nothing and decides nothing, so there is no rule to enforce — and
+ * "what is her Guard?" is a question a fight raises more often than a camp.
+ */
+describe("the party strip", () => {
+  const THISTLE = character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" });
+
+  function twoPlayers() {
+    return mount({ party: [member(), member({ character: THISTLE })] });
+  }
+
+  it("opens your own sheet", async () => {
+    const user = userEvent.setup();
+    twoPlayers();
+
+    await user.click(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }));
+    expect(screen.getByText(/How far you have come/)).toBeTruthy();
+  });
+
+  it("opens somebody else's, and says so in their words", async () => {
+    const user = userEvent.setup();
+    twoPlayers();
+
+    await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
+    expect(screen.getByText(/How far they have come/)).toBeTruthy();
+  });
+
+  it("gives the controller back when the sheet is closed", async () => {
+    // The sheet covers the prompt rather than sitting under it, so closing it
+    // has to put the question back exactly as it was.
+    const user = userEvent.setup();
+    mount({ party: [member(), member({ character: THISTLE })], prompt: choicePrompt() });
+    expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
+    expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /Done looking at Thistle/ }));
+    expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+  });
+
+  it("advertises a souvenir, which is the hook that gets a sheet opened at all", () => {
+    mount({
+      party: [
+        member({
+          character: character({
+            souvenirs: [{ id: "the-hollow-crown#sworn", fromRun: "r_1", earnedAt: "2026-07-01" }],
+          }),
+        }),
+      ],
+    });
+    expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).textContent).toContain(
+      "1",
+    );
+  });
+
+  it("is available outside a Rest scene too", async () => {
+    const user = userEvent.setup();
+    mount({ party: [member(), member({ character: THISTLE })], sceneType: "story" });
+    await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
+    expect(screen.getByText(/How far they have come/)).toBeTruthy();
   });
 });
