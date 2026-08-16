@@ -53,6 +53,29 @@ export type ClientIntent =
   | { type: "USE_ITEM"; itemId: string; targetId?: string }
   | { type: "RESOLVE_ITEM_SWAP"; dropItemId: string | null }
   | { type: "SPEND_STAT_POINT"; stat: StatId }
+  /**
+   * Trading at a Rest scene, spec §9.4 — offer, then the other phone answers.
+   *
+   * Two intents rather than one because it is two taps on two devices, and the
+   * gap between them is the point: "drag on your phone, tap to accept on
+   * theirs" is a conversation, not a transfer. Nothing leaves the giver's bag
+   * until the answer arrives.
+   */
+  | { type: "OFFER_ITEM"; itemId: string; toPlayerId: string }
+  /**
+   * `accept: true` is the receiver's alone. `accept: false` is either end of
+   * it — declining and taking it back are the same event from opposite sides,
+   * and an offer nobody can retract is an offer that strands an item.
+   *
+   * `dropItemId` answers §9.1's "keep it and drop one, or leave it" when the
+   * receiver's six slots are full. It rides on the accept rather than raising
+   * a separate swap prompt so the whole hand-off stays *one* event: a prompt
+   * would put the item in limbo between the accept and the answer — out of the
+   * giver's bag, not yet in the receiver's — and "leave it behind" would then
+   * have to mean "give it back", which is a rule nobody at the table would
+   * guess. One intent, and the item is either where it was or where it went.
+   */
+  | { type: "RESOLVE_TRADE"; tradeId: string; accept: boolean; dropItemId?: string }
   | { type: "SET_MODE"; mode: RoomMode }
   /**
    * Combat, spec §7.2 — move up to your steps, then take one action.
