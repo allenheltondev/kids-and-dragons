@@ -32,7 +32,7 @@ import type {
   ResolvedCharacter,
   RunState,
 } from "@kad/shared";
-import { beginEncounter, parseBoard } from "@kad/shared";
+import { beginEncounter, INVENTORY_SLOTS, parseBoard } from "@kad/shared";
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { PlayerPanel } from "./PlayerPanel";
@@ -794,5 +794,298 @@ describe("spending a banked stat point", () => {
     cleanup();
     mount({ party: [withPoints(2)], sceneType: "story" });
     expect(screen.getByText("2 points to spend when you rest")).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Trading at a Rest scene (spec §9.4)
+// ---------------------------------------------------------------------------
+
+/**
+ * "Drag on your phone, tap to accept on theirs." The two-tap rule (spec §11)
+ * is spread across two devices here rather than two taps on one: the offer is
+ * the selection — nothing leaves the giver's bag — and the other phone holds
+ * the confirm.
+ *
+ * What this file is really guarding is the *giving* side's list of names. The
+ * server refuses an offer into a full bag, and a name that always fails is
+ * worse than a name that is not there, so the panel has to leave those out —
+ * and it has to leave out somebody already holding this exact offer, or a
+ * second tap sends a duplicate the server rejects.
+ */
+describe("passing an item to a friend", () => {
+  const THISTLE = character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" });
+
+  function twoAtRest(overrides: Partial<MountOptions> = {}) {
+    return mount({
+      party: [
+        member({ character: character({ inventory: [POTION] }) }),
+        member({ character: THISTLE }),
+      ],
+      sceneType: "rest",
+      ...overrides,
+    });
+  }
+
+  /** Open the bag entry, which is where the give list hangs. */
+  async function openThePotion(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME, "i") }));
+  }
+
+  it("offers the item to the friend, once", async () => {
+    const user = userEvent.setup();
+    const { sent } = twoAtRest();
+
+    await openThePotion(user);
+    expect(screen.getByText("Give it to a friend")).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: /Thistle/ }));
+    expect(sent).toEqual([
+      { type: "OFFER_ITEM", itemId: POTION.itemId, toPlayerId: "p_2" },
+    ]);
+  });
+
+  it("does not offer to give anything away outside a Rest scene", async () => {
+    const user = userEvent.setup();
+    twoAtRest({ sceneType: "story" });
+
+    await openThePotion(user);
+    expect(screen.queryByText("Give it to a friend")).toBeNull();
+  });
+
+  it("still offers to a friend whose bag is full — §9.1 answers that on their end", async () => {
+    // Hiding the name would teach a second, worse answer ("that name is just
+    // not there") for a situation the game has already taught once, with the
+    // swap prompt she meets when she finds something with six slots full.
+    const user = userEvent.setup();
+    const stuffed = Array.from({ length: INVENTORY_SLOTS }, () => POTION);
+    const { sent } = mount({
+      party: [
+        member({ character: character({ inventory: [POTION] }) }),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle", inventory: stuffed }) }),
+      ],
+      sceneType: "rest",
+    });
+
+    await openThePotion(user);
+    await user.click(screen.getByRole("button", { name: /Thistle/ }));
+    expect(sent).toEqual([{ type: "OFFER_ITEM", itemId: POTION.itemId, toPlayerId: "p_2" }]);
+  });
+
+  it("leaves out a friend who is already being offered this exact item", async () => {
+    const user = userEvent.setup();
+    twoAtRest();
+    serverSends({
+      trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: POTION.itemId }],
+    });
+
+    await openThePotion(user);
+    // Not in the give list any more...
+    expect(screen.queryByRole("button", { name: /^Thistle$/ })).toBeNull();
+    // ...and the offer is visible as outstanding instead.
+    expect(screen.getByText("Waiting for an answer")).toBeTruthy();
+  });
+
+  it("says so when there is nobody to give anything to", async () => {
+    const user = userEvent.setup();
+    mount({ party: [member({ character: character({ inventory: [POTION] }) })], sceneType: "rest" });
+
+    await openThePotion(user);
+    expect(screen.getByText(/Nobody else is here/)).toBeTruthy();
+  });
+
+  it("lets an unanswered offer be taken back", async () => {
+    const user = userEvent.setup();
+    const { sent } = twoAtRest();
+    serverSends({
+      trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: POTION.itemId }],
+    });
+
+    await user.click(screen.getByRole("button", { name: /Take it back/ }));
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: false }]);
+  });
+});
+
+describe("being offered an item", () => {
+  function offeredToMe(overrides: Partial<RunState> = {}) {
+    const view = mount({
+      party: [
+        member({ character: character({ inventory: [POTION] }) }),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+      ],
+      playerId: "p_2",
+      sceneType: "rest",
+    });
+    serverSends({
+      trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: POTION.itemId }],
+      ...overrides,
+    });
+    return view;
+  }
+
+  it("names who is giving what", () => {
+    offeredToMe();
+    expect(screen.getByText(/wants to give you/)).toBeTruthy();
+    expect(screen.getByText("Sparklehoof")).toBeTruthy();
+  });
+
+  it("takes it", async () => {
+    const user = userEvent.setup();
+    const { sent } = offeredToMe();
+
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: true }]);
+  });
+
+  it("declines it", async () => {
+    const user = userEvent.setup();
+    const { sent } = offeredToMe();
+
+    await user.click(screen.getByRole("button", { name: /No thanks/ }));
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: false }]);
+  });
+
+  it("shows somebody else's offer to neither of the wrong phones", () => {
+    // p_1 gives to p_2; a third player's phone is not part of that conversation.
+    mount({
+      party: [
+        member({ character: character({ inventory: [POTION] }) }),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+        member({ character: character({ id: "c_3", ownerPlayerId: "p_3", name: "Bramble" }) }),
+      ],
+      playerId: "p_3",
+      sceneType: "rest",
+    });
+    serverSends({
+      trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: POTION.itemId }],
+    });
+
+    expect(screen.queryByText(/wants to give you/)).toBeNull();
+    expect(screen.queryByText("Waiting for an answer")).toBeNull();
+  });
+
+  it("renders a run persisted before trading existed", () => {
+    // `trades` is optional on RunState; the panel coalesces rather than
+    // indexing into undefined.
+    expect(() => mount({ sceneType: "rest" })).not.toThrow();
+    expect(screen.queryByText(/wants to give you/)).toBeNull();
+  });
+});
+
+/**
+ * The receiving end with six slots full — §9.1's "keep it and drop one, or
+ * leave it", answered on the accept rather than by a second prompt.
+ *
+ * The rule under test is that **the confirm does not exist until she has said
+ * what goes down**. The panel never draws a button that would be refused, and
+ * an accept without a drop is exactly that.
+ */
+describe("being offered an item with a full bag", () => {
+  const STUFFED = Array.from({ length: INVENTORY_SLOTS }, () => POTION);
+  const TRINKET: InventoryEntry = { itemId: "river_charm", kind: "trinket" };
+
+  function offeredWithFullBag(mine: InventoryEntry[] = STUFFED) {
+    const view = mount({
+      party: [
+        member({ character: character({ inventory: [TRINKET] }) }),
+        member({
+          character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle", inventory: mine }),
+        }),
+      ],
+      playerId: "p_2",
+      sceneType: "rest",
+    });
+    serverSends({
+      trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: TRINKET.itemId }],
+    });
+    return view;
+  }
+
+  it("asks what to put down instead of offering an accept that would be refused", () => {
+    offeredWithFullBag();
+    expect(screen.getByText(/Your bag is full/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Yes please!/ })).toBeNull();
+    // Saying no is always available — declining is free at any bag size.
+    expect(screen.getByRole("button", { name: /No thanks/ })).toBeTruthy();
+  });
+
+  it("sends the drop alongside the accept, in one event", async () => {
+    const user = userEvent.setup();
+    const { sent } = offeredWithFullBag();
+
+    await user.click(screen.getAllByRole("button", { name: new RegExp(`Put down ${POTION_NAME}`) })[0]!);
+    expect(sent).toEqual([]);
+
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    expect(sent).toEqual([
+      { type: "RESOLVE_TRADE", tradeId: "t1", accept: true, dropItemId: POTION.itemId },
+    ]);
+  });
+
+  it("asks nothing when there is room", async () => {
+    const user = userEvent.setup();
+    const { sent } = offeredWithFullBag([POTION]);
+
+    expect(screen.queryByText(/Your bag is full/)).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    // No dropItemId at all, rather than an explicit undefined.
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: true }]);
+  });
+
+  it("stops sending the drop once a slot has been freed", async () => {
+    /*
+     * She picks what to put down while her bag is full, then drinks something
+     * before tapping accept. Sending the drop anyway would destroy that item
+     * for nothing — the server refuses it, and the panel should never have
+     * offered it.
+     */
+    const user = userEvent.setup();
+    const { sent } = offeredWithFullBag();
+
+    await user.click(screen.getAllByRole("button", { name: new RegExp(`Put down ${POTION_NAME}`) })[0]!);
+
+    act(() => {
+      useGameStore.setState((prev) => ({
+        state: {
+          ...prev.state!,
+          party: [
+            prev.state!.party[0]!,
+            {
+              ...prev.state!.party[1]!,
+              character: {
+                ...prev.state!.party[1]!.character,
+                inventory: STUFFED.slice(0, INVENTORY_SLOTS - 1),
+              },
+            },
+          ],
+        },
+      }));
+    });
+
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: true }]);
+  });
+
+  it("drops a chosen item that the server has since taken away", () => {
+    // The same rule the bag's own selection follows: the server rewrites
+    // inventories under an open card, and a stale choice must not be confirmed.
+    offeredWithFullBag();
+    act(() => {
+      useGameStore.setState((prev) => ({
+        state: {
+          ...prev.state!,
+          party: [
+            prev.state!.party[0]!,
+            {
+              ...prev.state!.party[1]!,
+              character: { ...prev.state!.party[1]!.character, inventory: [POTION] },
+            },
+          ],
+        },
+      }));
+    });
+    // Room again, so the question is gone entirely rather than half-answered.
+    expect(screen.queryByText(/Your bag is full/)).toBeNull();
+    expect(screen.getByRole("button", { name: /Yes please!/ })).toBeTruthy();
   });
 });
