@@ -233,6 +233,14 @@ describe("the transformation cutscene (spec §8.1)", () => {
 
     expect(screen.queryByText("Sparklehoof")).toBeNull();
     expect(screen.getByText("Thistle")).toBeTruthy();
+    /*
+     * And she starts from the beginning of her own beat, not the end of the
+     * last one. Dequeuing without resetting the swap left the flag true for
+     * this render, so the second hero flashed her *result* — new picture, tier
+     * word — before snapping back to "is changing…".
+     */
+    expect(screen.getByText(/is changing/)).toBeTruthy();
+    expect(screen.queryByText("Sworn!")).toBeNull();
 
     playBeat();
     expect(screen.queryByText("Thistle")).toBeNull();
