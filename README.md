@@ -124,7 +124,10 @@ measured against stored progress and not against the sheet the player is looking
 completion screen tells the truth about how the chapter ended and itemises the bonus objectives that
 paid into its XP. **Trading works too** — at a Rest scene you pick a friend from the item's own card
 and their phone answers; nothing leaves your bag until it does, so a declined offer costs nobody
-anything and a stale one disappears rather than waiting to refuse a tap. Still outstanding: the
+anything and a stale one disappears rather than waiting to refuse a tap. A full bag is not a refusal
+but §9.1's own question, asked on the accept: keep it and drop one, or leave it. The offer is spoken
+and drawn on the shared screen, because a hand-off is a table event and in Party Mode everyone is
+looking at the TV. Still outstanding: the
 transformation cutscene as a full-screen beat rather than a card on the summary, the character sheet
 with tier history, the authoring tools, and the live LLM layer.
 One content gap goes with them: no authored ending declares `"outcome": "setback"` yet, so the

@@ -66,8 +66,16 @@ export type ClientIntent =
    * `accept: true` is the receiver's alone. `accept: false` is either end of
    * it — declining and taking it back are the same event from opposite sides,
    * and an offer nobody can retract is an offer that strands an item.
+   *
+   * `dropItemId` answers §9.1's "keep it and drop one, or leave it" when the
+   * receiver's six slots are full. It rides on the accept rather than raising
+   * a separate swap prompt so the whole hand-off stays *one* event: a prompt
+   * would put the item in limbo between the accept and the answer — out of the
+   * giver's bag, not yet in the receiver's — and "leave it behind" would then
+   * have to mean "give it back", which is a rule nobody at the table would
+   * guess. One intent, and the item is either where it was or where it went.
    */
-  | { type: "RESOLVE_TRADE"; tradeId: string; accept: boolean }
+  | { type: "RESOLVE_TRADE"; tradeId: string; accept: boolean; dropItemId?: string }
   | { type: "SET_MODE"; mode: RoomMode }
   /**
    * Combat, spec §7.2 — move up to your steps, then take one action.

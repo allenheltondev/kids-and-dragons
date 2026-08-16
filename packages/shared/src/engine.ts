@@ -726,7 +726,7 @@ function dispatch(
       return doOfferItem(draft, playerId, intent.itemId, intent.toPlayerId, ctx);
 
     case "RESOLVE_TRADE":
-      return doResolveTrade(draft, playerId, intent.tradeId, intent.accept, ctx);
+      return doResolveTrade(draft, playerId, intent.tradeId, intent.accept, intent.dropItemId, ctx);
 
     case "SPEND_STAT_POINT":
       throw new Illegal("ILLEGAL", "stat points are spent through the authoritative run handler");
@@ -1556,15 +1556,13 @@ function doOfferItem(
     throw new Illegal("NOT_FOUND", `${from.character.name} is not carrying "${itemId}"`);
   }
   /*
-   * Refused at the offer rather than deferred to the accept. A full bag is the
-   * receiver's business to fix, and an offer that can only ever fail is worse
-   * than no offer: it sits on their phone looking like a gift.
-   *
-   * Re-checked on accept too — the bag can fill in between.
+   * A full bag is deliberately *not* a refusal here. It is the case §9.1
+   * already has an answer for — "keep it and drop one, or leave it" — and the
+   * receiver answers it on the accept, in the same shape she already knows
+   * from finding something with six slots full. Hiding the offer instead would
+   * teach a second, worse answer ("that name is just not there") for a
+   * situation the game has already taught her once.
    */
-  if (freeSlots(to.character.inventory) === 0) {
-    throw new Illegal("ILLEGAL", `${to.character.name}'s bag is full`);
-  }
 
   const id = tradeId(from.playerId, to.playerId, itemId);
   const trades = draft.trades ?? [];
@@ -1583,6 +1581,7 @@ function doResolveTrade(
   playerId: string,
   id: string,
   accept: boolean,
+  dropItemId: string | undefined,
   ctx: EngineContext,
 ): Presentation | undefined {
   requireRestScene(draft, "items are passed around");
@@ -1622,27 +1621,44 @@ function doResolveTrade(
     throw new Illegal("NOT_FOUND", `${from.character.name} does not have it any more`);
   }
   /*
-   * The receiver's room, by contrast, is genuinely re-checked here and nowhere
-   * else: they may have accepted somebody else's offer into their last slot
-   * since this one arrived. Refused, never forced — the item stays where it is
-   * and the offer stands, so making room and tapping again works.
+   * The receiver's room is settled here and nowhere else, because it is the
+   * one thing that genuinely moves between the offer and the tap — she may
+   * have taken somebody else's offer into her last slot since this arrived.
+   *
+   * Six slots full is §9.1's question, and it is answered in this same intent:
+   * `dropItemId` names what goes down. Splitting it into a second prompt would
+   * leave the item in limbo — off the giver, not yet on her — for as long as
+   * the prompt stood.
    */
-  if (freeSlots(to.character.inventory) === 0) {
-    throw new Illegal("ILLEGAL", "your bag is full — make room and they can offer again");
+  const full = freeSlots(to.character.inventory) === 0;
+  if (full && dropItemId === undefined) {
+    throw new Illegal("ILLEGAL", `${to.character.name}'s bag is full — something has to go down`);
+  }
+  if (dropItemId !== undefined && !hasItem(to.character.inventory, dropItemId)) {
+    throw new Illegal("ILLEGAL", `${to.character.name} is not carrying "${dropItemId}"`);
   }
 
-  const added = addItem(to.character.inventory, offer.itemId, ctx.items);
   /*
-   * `needs_swap` is unreachable — the free slot was just checked — and `quest`
-   * is unreachable because the offer refused a quest item. Neither is silently
-   * tolerated: falling through on either would drop the item out of the world
-   * having already taken it off the giver.
+   * The giver's side is the same either way, and it happens *after* both
+   * refusals above: a hand-off that cannot complete must not have already
+   * emptied one bag. That is the one failure this whole design exists to make
+   * impossible — an item in nobody's hands.
    */
-  if (added.status !== "added") {
+  const received =
+    dropItemId === undefined
+      ? addItem(to.character.inventory, offer.itemId, ctx.items)
+      : { status: "added" as const, inventory: swapItem(to.character.inventory, offer.itemId, dropItemId, ctx.items) };
+  /*
+   * `needs_swap` is unreachable — a full bag has already been sent down the
+   * `swapItem` branch — and `quest` is unreachable because the offer refused a
+   * quest item. Neither is silently tolerated: falling through on either would
+   * lose the item having already taken it off the giver.
+   */
+  if (received.status !== "added") {
     throw new Illegal("ILLEGAL", "that cannot be handed over");
   }
   from.character.inventory = removeItem(from.character.inventory, offer.itemId);
-  to.character.inventory = added.inventory;
+  to.character.inventory = received.inventory;
 
   /*
    * Every other offer of this item from this giver dies with it — they only

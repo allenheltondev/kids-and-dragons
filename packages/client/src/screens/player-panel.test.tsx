@@ -853,10 +853,13 @@ describe("passing an item to a friend", () => {
     expect(screen.queryByText("Give it to a friend")).toBeNull();
   });
 
-  it("leaves out a friend whose bag is full, rather than offering a tap that always fails", async () => {
+  it("still offers to a friend whose bag is full — §9.1 answers that on their end", async () => {
+    // Hiding the name would teach a second, worse answer ("that name is just
+    // not there") for a situation the game has already taught once, with the
+    // swap prompt she meets when she finds something with six slots full.
     const user = userEvent.setup();
     const stuffed = Array.from({ length: INVENTORY_SLOTS }, () => POTION);
-    mount({
+    const { sent } = mount({
       party: [
         member({ character: character({ inventory: [POTION] }) }),
         member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle", inventory: stuffed }) }),
@@ -865,8 +868,8 @@ describe("passing an item to a friend", () => {
     });
 
     await openThePotion(user);
-    expect(screen.queryByRole("button", { name: /Thistle/ })).toBeNull();
-    expect(screen.getByText(/full bag/)).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /Thistle/ }));
+    expect(sent).toEqual([{ type: "OFFER_ITEM", itemId: POTION.itemId, toPlayerId: "p_2" }]);
   });
 
   it("leaves out a friend who is already being offered this exact item", async () => {
@@ -966,5 +969,89 @@ describe("being offered an item", () => {
     // indexing into undefined.
     expect(() => mount({ sceneType: "rest" })).not.toThrow();
     expect(screen.queryByText(/wants to give you/)).toBeNull();
+  });
+});
+
+/**
+ * The receiving end with six slots full — §9.1's "keep it and drop one, or
+ * leave it", answered on the accept rather than by a second prompt.
+ *
+ * The rule under test is that **the confirm does not exist until she has said
+ * what goes down**. The panel never draws a button that would be refused, and
+ * an accept without a drop is exactly that.
+ */
+describe("being offered an item with a full bag", () => {
+  const STUFFED = Array.from({ length: INVENTORY_SLOTS }, () => POTION);
+  const TRINKET: InventoryEntry = { itemId: "river_charm", kind: "trinket" };
+
+  function offeredWithFullBag(mine: InventoryEntry[] = STUFFED) {
+    const view = mount({
+      party: [
+        member({ character: character({ inventory: [TRINKET] }) }),
+        member({
+          character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle", inventory: mine }),
+        }),
+      ],
+      playerId: "p_2",
+      sceneType: "rest",
+    });
+    serverSends({
+      trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: TRINKET.itemId }],
+    });
+    return view;
+  }
+
+  it("asks what to put down instead of offering an accept that would be refused", () => {
+    offeredWithFullBag();
+    expect(screen.getByText(/Your bag is full/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Yes please!/ })).toBeNull();
+    // Saying no is always available — declining is free at any bag size.
+    expect(screen.getByRole("button", { name: /No thanks/ })).toBeTruthy();
+  });
+
+  it("sends the drop alongside the accept, in one event", async () => {
+    const user = userEvent.setup();
+    const { sent } = offeredWithFullBag();
+
+    await user.click(screen.getAllByRole("button", { name: new RegExp(`Put down ${POTION_NAME}`) })[0]!);
+    expect(sent).toEqual([]);
+
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    expect(sent).toEqual([
+      { type: "RESOLVE_TRADE", tradeId: "t1", accept: true, dropItemId: POTION.itemId },
+    ]);
+  });
+
+  it("asks nothing when there is room", async () => {
+    const user = userEvent.setup();
+    const { sent } = offeredWithFullBag([POTION]);
+
+    expect(screen.queryByText(/Your bag is full/)).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    // No dropItemId at all, rather than an explicit undefined.
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: true }]);
+  });
+
+  it("drops a chosen item that the server has since taken away", () => {
+    // The same rule the bag's own selection follows: the server rewrites
+    // inventories under an open card, and a stale choice must not be confirmed.
+    offeredWithFullBag();
+    act(() => {
+      useGameStore.setState((prev) => ({
+        state: {
+          ...prev.state!,
+          party: [
+            prev.state!.party[0]!,
+            {
+              ...prev.state!.party[1]!,
+              character: { ...prev.state!.party[1]!.character, inventory: [POTION] },
+            },
+          ],
+        },
+      }));
+    });
+    // Room again, so the question is gone entirely rather than half-answered.
+    expect(screen.queryByText(/Your bag is full/)).toBeNull();
+    expect(screen.getByRole("button", { name: /Yes please!/ })).toBeTruthy();
   });
 });
