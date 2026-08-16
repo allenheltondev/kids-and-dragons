@@ -35,6 +35,17 @@ The Vite server binds `0.0.0.0`, so testing with real devices is the laptop's LA
 
 Any surface can be hard-refreshed at any time without losing the session.
 
+### Playtesting a chapter
+
+The dev server — and only the dev server — carries two cheats, so that reaching a branch is not the
+same as playing to it. Open the **Playtest** drawer at the bottom of any phone pane to jump to any
+scene in the chapter, or to load the next d20 with a face of your choosing. A jump runs the scene's
+`onEnter` and opens its prompt, so what you land in is the scene the game actually produces.
+
+Both are refused with `FORBIDDEN` by any server that did not opt in, and `lambda/runtime.ts` opts out
+with a literal — there is no environment variable to set by accident. The drawer itself is compiled
+out of the production bundle ([`packages/shared/src/playtest.ts`](packages/shared/src/playtest.ts)).
+
 ---
 
 ## Layout

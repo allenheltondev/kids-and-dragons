@@ -64,6 +64,13 @@ async function build(): Promise<HandlerDeps> {
     rng: shared.rng,
     random: cryptoRandom,
     now: () => Date.now(),
+    /*
+     * Not an env var, not a config lookup, not a default — a literal. Roadmap
+     * chapter 6's playtest cheats warp the run to any scene and load the next
+     * d20, and the only safe number of ways to switch that on in production is
+     * zero (playtest.ts).
+     */
+    playtest: false,
   };
 }
 

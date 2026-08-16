@@ -152,6 +152,12 @@ export interface HarnessOptions {
   clock?: TestClock;
   /** Scripted room-code randomness. Defaults to a seeded generator. */
   random?: () => number;
+  /**
+   * Roadmap chapter 6's playtest cheats. Off by default, so a test has to ask
+   * for them the same way a server does — a harness that quietly enabled them
+   * could not tell a gate that works from one that is missing.
+   */
+  playtest?: boolean;
 }
 
 export function makeHarness(options: HarnessOptions = {}): TestHarness {
@@ -175,6 +181,7 @@ export function makeHarness(options: HarnessOptions = {}): TestHarness {
       rng: makeRng,
       random: options.random ?? (() => seeded.next()),
       now: clock.now,
+      playtest: options.playtest ?? false,
     },
   };
 }
