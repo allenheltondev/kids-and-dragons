@@ -27,6 +27,7 @@ import type {
   ItemDef,
   PartyMember,
   Prompt,
+  StatId,
 } from "@kad/shared";
 import {
   useCampaign,
@@ -141,6 +142,24 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
           <span aria-hidden="true">·</span>
           <span className="sheet__tier">{character.tier}</span>
         </span>
+        {/*
+         * The waiting point (spec §8.1). Pinned here rather than beside the
+         * stat row because a point is earned at the end of a chapter and spent
+         * at the *next* Rest scene, which can be a whole sitting later — so the
+         * reminder has to live on the one strip that is never scrolled away.
+         * It says where to spend it, because "1 point" alone tells an
+         * eight-year-old nothing about what to do next.
+         */}
+        {character.unspentPoints > 0 ? (
+          <span className="sheet__points">
+            <Icon name="levelup" />
+            <span>
+              {character.unspentPoints === 1
+                ? "1 point to spend when you rest"
+                : `${String(character.unspentPoints)} points to spend when you rest`}
+            </span>
+          </span>
+        ) : null}
       </span>
       <span className="sheet__hp">
         <span className="sheet__hp-label">
@@ -287,6 +306,8 @@ export function PlayerPanel(): ReactElement {
    * would quietly point "Use it" at whatever slid into the slot.
    */
   const [selected, setSelected] = useState<{ itemId: string; index: number } | null>(null);
+  /** The stat a banked point is aimed at, before the confirm bar (spec §11). */
+  const [pendingStat, setPendingStat] = useState<StatId | null>(null);
   const [busy, setBusy] = useState(false);
 
   const globalPrompt = state?.prompt ?? null;
@@ -297,6 +318,7 @@ export function PlayerPanel(): ReactElement {
   useEffect(() => {
     setPendingChoice(null);
     setPendingDrop(undefined);
+    setPendingStat(null);
     setBusy(false);
   }, [key]);
 
@@ -349,6 +371,34 @@ export function PlayerPanel(): ReactElement {
    */
   const inEncounter = state.encounter != null;
 
+  /*
+   * Where a banked point may be spent — the same two facts the server checks
+   * before it will take the intent (`prepareStatPointSpend`), read off the
+   * mirrored state rather than guessed at. A Rest scene is the *only* place:
+   * spending mid-fight would change the numbers under an open turn order, and
+   * spending mid-story would put a stat sheet in front of a question.
+   */
+  const atRest = state.phase === "scene" && state.sceneType === "rest";
+  const banked = me.character.unspentPoints;
+  /*
+   * A party snapshot persisted before `spendableStats` existed has no list at
+   * all — `getState` returns the stored JSON verbatim and a member is only
+   * re-resolved when something touches it — so a run in flight across a deploy
+   * arrives here shaped like the old code.
+   *
+   * Absent means *unknown*, not *none*, and the two have opposite consequences:
+   * falling back to an empty list would tell a player who is owed a point that
+   * every stat is maxed and quietly eat the spend, while falling back to all
+   * four defers to the server, which validates the ceiling anyway and refuses
+   * with a message. The only case the fallback can get wrong is a stat already
+   * at +9, and it closes the moment anything re-resolves the member.
+   */
+  const spendable: readonly StatId[] = me.character.spendableStats ?? STAT_IDS;
+  // A selection that no longer resolves is dropped rather than confirmed
+  // against a stat the server would now refuse — the same rule the bag's
+  // selection follows.
+  const aimedStat = pendingStat !== null && spendable.includes(pendingStat) ? pendingStat : null;
+
   // Resolve the selection against the inventory as it is *now*. Same item in
   // the same slot: fine. Item shifted (something before it was removed): follow
   // it. Item gone: the selection quietly clears rather than adopting a stranger.
@@ -399,6 +449,99 @@ export function PlayerPanel(): ReactElement {
             (the pre-fight ready-up runs before the board goes up), so nothing
             below competes with it. */}
         <CombatControls />
+
+        {/* ---------------- growing up (spec §8.1) ----------------
+            Above the Rest scene's own choices on purpose: tapping one of those
+            leaves the scene, and the point would then wait until the next Rest
+            — which may be a different evening. The reward beat goes first. */}
+        {atRest && banked > 0 ? (
+          <div className="prompt grow">
+            <h3 className="prompt__title">
+              <Icon name="levelup" />
+              <span>
+                {banked === 1 ? "You have a point to spend!" : `You have ${String(banked)} points to spend!`}
+              </span>
+            </h3>
+
+            {spendable.length === 0 ? (
+              /* Points in hand and nowhere to put them — a real state at the
+                 top of the ladder, and one that has to say so rather than
+                 render four buttons the server would refuse. */
+              <p className="prompt__sub kad-muted">
+                <Icon name="star" />
+                <span>Every one of your stats is as strong as it can get. Nothing left to grow!</span>
+              </p>
+            ) : (
+              <>
+                <p className="prompt__sub kad-muted">
+                  <Icon name="rest" />
+                  <span>Resting is when you grow. What gets stronger?</span>
+                </p>
+
+                <ul className="prompt__options">
+                  {spendable.map((stat) => {
+                    const isAimed = aimedStat === stat;
+                    return (
+                      <li key={stat}>
+                        <button
+                          type="button"
+                          className={`choice kad-tap kad-focusable${isAimed ? " choice--on" : ""}`}
+                          aria-pressed={isAimed}
+                          onClick={() => setPendingStat(stat)}
+                        >
+                          <span className="choice__icon">
+                            <Icon name={stat} size="1.8em" />
+                          </span>
+                          <span className="choice__label grow__label">{stat}</span>
+                          {/* The arithmetic, spelled out. She is eight: "3 → 4"
+                              is the whole reason to pick this one. */}
+                          <span className="choice__trail grow__math">
+                            <b>{me.character.stats[stat]}</b>
+                            <Icon name="forward" />
+                            <b className="grow__after">{me.character.stats[stat] + 1}</b>
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {aimedStat === null ? null : (
+                  <div className="confirm">
+                    <p className="confirm__what">
+                      <Icon name={aimedStat} />
+                      <span className="grow__label">
+                        {aimedStat} {me.character.stats[aimedStat]} → {me.character.stats[aimedStat] + 1}
+                      </span>
+                    </p>
+                    <div className="confirm__actions">
+                      <Button
+                        variant="ghost"
+                        size="md"
+                        icon={<Icon name="back" />}
+                        onClick={() => setPendingStat(null)}
+                      >
+                        Change
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        icon={<Icon name="check" />}
+                        disabled={busy}
+                        onClick={() => {
+                          setPendingStat(null);
+                          void dispatch({ type: "SPEND_STAT_POINT", stat: aimedStat });
+                        }}
+                      >
+                        {busy ? "Growing…" : "Grow!"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        ) : null}
 
         {/* ---------------- choice / vote (spec §6.1) ---------------- */}
         {myPrompt !== null && myPrompt.kind === "choice" ? (
@@ -637,9 +780,15 @@ export function PlayerPanel(): ReactElement {
         {/* ---------------- chapter finished ---------------- */}
         {state.phase === "chapter_complete" && myPrompt === null ? (
           <div className="prompt">
+            {/* The same ending the WorldView is showing (spec §8.2). Absent
+                means success, matching the engine's own default — a run
+                persisted before the field existed must not read as a setback
+                on the strength of a missing key. */}
             <h3 className="prompt__title">
-              <Icon name="trophy" />
-              <span>Chapter finished!</span>
+              <Icon name={state.chapterOutcome === "setback" ? "scroll" : "trophy"} />
+              <span>
+                {state.chapterOutcome === "setback" ? "The story took a turn" : "Chapter finished!"}
+              </span>
             </h3>
             {/*
              * The one moment the keepsake offer earns its place (roadmap open

@@ -1,5 +1,5 @@
 {
-  "$comment": "REFERENCE CHAPTER \u2014 the engine's proof that the loader, the schema, and the renderer work end to end. Allen hand-writes the real first chapter (roadmap Chapter 3); this one exists so there is something valid to load before he does. It deliberately touches every non-combat scene type, one encounter, species gates, a flag gate, an item gate, an item grant, a quest item, a branch that reconverges, and a failed roll that keeps the story going. See content/README.md.",
+  "$comment": "REFERENCE CHAPTER \u2014 the engine's proof that the loader, the schema, and the renderer work end to end. Allen hand-writes the real first chapter (roadmap Chapter 3); this one exists so there is something valid to load before he does. It deliberately touches every non-combat scene type, one encounter, species gates, a flag gate, an item gate, an item grant, a quest item, a branch that reconverges, a failed roll that keeps the story going, a rest waypoint that is not the ending, and bonus objectives. See content/README.md.",
   "id": "bramblewood-01",
   "campaignId": "the-hollow-crown",
   "index": 1,
@@ -8,6 +8,20 @@
   "estimatedMinutes": 25,
   "xpAward": 100,
   "entry": "scene_hedge_wall",
+  "objectives": [
+    {
+      "id": "scouted",
+      "label": "Saw the whole wood from above",
+      "flag": "scouted_the_path",
+      "xp": 15
+    },
+    {
+      "id": "doorway",
+      "label": "Made a doorway in the thorn hedge",
+      "flag": "made_a_doorway",
+      "xp": 10
+    }
+  ],
   "props": {
     "$comment": "D7 chapter-scoped props: items this chapter brings with it, which the world does not otherwise have. The key opens one door, in this chapter. Putting it in canon/items.yaml would assert it as a fact about the Realm to make a lock work. They still project into content/items.json, because a quest item outlives the chapter that granted it and an inventory screen has to be able to name it.",
     "rusted_key": {
@@ -432,7 +446,7 @@
           "label": "Take the key to the door in the hill",
           "icon": "key",
           "requiresItem": "rusted_key",
-          "goto": "scene_crown_door"
+          "goto": "rest_mossbank"
         }
       ]
     },
@@ -445,6 +459,20 @@
           "id": "to_door",
           "label": "Follow the humming to the hill",
           "icon": "key",
+          "goto": "rest_mossbank"
+        }
+      ]
+    },
+    "rest_mossbank": {
+      "type": "rest",
+      "art": "bg/bramblewood/shrine",
+      "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while — this is the part of an afternoon where you notice you have got a little bit better at something.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "up_the_hill",
+          "label": "Up to the door in the hill",
+          "icon": "arrow",
           "goto": "scene_crown_door"
         }
       ]
