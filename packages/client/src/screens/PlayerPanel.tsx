@@ -308,6 +308,18 @@ export function PlayerPanel(): ReactElement {
   const [selected, setSelected] = useState<{ itemId: string; index: number } | null>(null);
   /** The stat a banked point is aimed at, before the confirm bar (spec §11). */
   const [pendingStat, setPendingStat] = useState<StatId | null>(null);
+  /**
+   * What goes down to make room for an offer, when six slots are full — kept
+   * *per offer* and separate from `pendingDrop`.
+   *
+   * Not the same state as the item-swap prompt's answer, though both name an
+   * item to drop, because both can be open at once: a grant can fill the last
+   * slot and raise the swap prompt while a friend's offer is still on screen.
+   * One variable would let an answer to one question be confirmed against the
+   * other. Keyed by trade id for the same reason at a smaller scale — two
+   * offers arriving together would otherwise share one highlighted choice.
+   */
+  const [tradeDrop, setTradeDrop] = useState<{ tradeId: string; itemId: string } | null>(null);
   const [busy, setBusy] = useState(false);
 
   const globalPrompt = state?.prompt ?? null;
@@ -319,6 +331,7 @@ export function PlayerPanel(): ReactElement {
     setPendingChoice(null);
     setPendingDrop(undefined);
     setPendingStat(null);
+    setTradeDrop(null);
     setBusy(false);
   }, [key]);
 
@@ -421,11 +434,16 @@ export function PlayerPanel(): ReactElement {
   const offersToMe = trades.filter((offer) => offer.toPlayerId === me.playerId);
   const offersFromMe = trades.filter((offer) => offer.fromPlayerId === me.playerId);
   /*
-   * Who this item can go to. Full bags are left out rather than shown greyed:
-   * the server refuses an offer into one, and a name you can tap that always
-   * fails is worse than a name that is not there (§9.1's "one decision, no
-   * menu" applied to the other end of the same rule). Somebody already being
-   * offered this exact item drops out for the same reason.
+   * Who this item can go to. A full bag is deliberately *not* a reason to
+   * leave somebody out: §9.1 already has an answer for six full slots — "keep
+   * it and drop one, or leave it" — and the receiver gives it on the accept,
+   * in the same shape she already knows from finding something. Hiding the
+   * name instead would teach a second, worse answer for a situation the game
+   * has taught her once already.
+   *
+   * Somebody already holding this exact offer does drop out, because a second
+   * identical offer is a duplicate the server refuses rather than a decision
+   * anybody can make.
    *
    * Quest items need no exclusion here and cannot get one: they are slot-free
    * (§9.2), so they are never `InventoryEntry`s and never selectable in the
@@ -438,7 +456,6 @@ export function PlayerPanel(): ReactElement {
       : party.filter(
           (member) =>
             member.playerId !== me.playerId &&
-            member.character.inventory.length < INVENTORY_SLOTS &&
             !trades.some(
               (offer) =>
                 offer.fromPlayerId === me.playerId &&
@@ -446,6 +463,8 @@ export function PlayerPanel(): ReactElement {
                 offer.itemId === selectedEntry.itemId,
             ),
         );
+  /** Six full slots at the moment of the tap — §9.1's question, on the accept. */
+  const myBagIsFull = inventory.length >= INVENTORY_SLOTS;
 
   return (
     <section className="player">
@@ -597,6 +616,18 @@ export function PlayerPanel(): ReactElement {
               {offersToMe.map((offer) => {
                 const def = items?.[offer.itemId];
                 const giver = nameOfPlayer(party, offer.fromPlayerId);
+                /*
+                 * Resolved against the bag as it is *now*, the same rule the
+                 * bag's own selection follows: the server rewrites inventories
+                 * underneath an open card, and a drop choice that outlived the
+                 * item it named would send the server an id she is no longer
+                 * carrying.
+                 */
+                const chosenDrop =
+                  tradeDrop?.tradeId === offer.id &&
+                  inventory.some((entry) => entry.itemId === tradeDrop.itemId)
+                    ? tradeDrop.itemId
+                    : null;
                 return (
                   <li className="trade" key={offer.id}>
                     <p className="trade__what">
@@ -606,6 +637,50 @@ export function PlayerPanel(): ReactElement {
                       </span>
                     </p>
                     {def?.text ? <p className="trade__text kad-muted">{def.text}</p> : null}
+
+                    {/*
+                      Six full slots is §9.1's question — "keep it and drop one,
+                      or leave it" — and it is answered here rather than by a
+                      separate swap prompt, so the whole hand-off stays one
+                      event and the item is never in limbo between two taps.
+
+                      Deliberately the same shape as the item_swap prompt above:
+                      pick what goes down, then confirm. She has met this screen
+                      before, when her bag was full and she found something.
+                    */}
+                    {myBagIsFull ? (
+                      <>
+                        <p className="trade__text kad-muted">
+                          Your bag is full. What should you put down?
+                        </p>
+                        <ul className="prompt__options">
+                          {inventory.map((entry, index) => {
+                            const held = items?.[entry.itemId];
+                            const chosen = chosenDrop === entry.itemId;
+                            return (
+                              <li key={`${entry.itemId}-${String(index)}`}>
+                                <button
+                                  type="button"
+                                  className={`choice kad-tap kad-focusable${chosen ? " choice--on" : ""}`}
+                                  aria-pressed={chosen}
+                                  onClick={() =>
+                                    setTradeDrop({ tradeId: offer.id, itemId: entry.itemId })
+                                  }
+                                >
+                                  <span className="choice__icon">
+                                    <Icon name={held?.icon ?? entry.kind} size="1.8em" />
+                                  </span>
+                                  <span className="choice__label">
+                                    Put down {held?.name ?? entry.itemId}
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </>
+                    ) : null}
+
                     <div className="confirm__actions">
                       <Button
                         variant="ghost"
@@ -618,17 +693,27 @@ export function PlayerPanel(): ReactElement {
                       >
                         No thanks
                       </Button>
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        icon={<Icon name="check" />}
-                        disabled={busy}
-                        onClick={() =>
-                          void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: true })
-                        }
-                      >
-                        Yes please!
-                      </Button>
+                      {/* Hidden until she has said what goes down, rather than
+                          shown and refused — the panel's rule everywhere else. */}
+                      {myBagIsFull && chosenDrop === null ? null : (
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          icon={<Icon name="check" />}
+                          disabled={busy}
+                          onClick={() => {
+                            setTradeDrop(null);
+                            void dispatch({
+                              type: "RESOLVE_TRADE",
+                              tradeId: offer.id,
+                              accept: true,
+                              ...(chosenDrop === null ? {} : { dropItemId: chosenDrop }),
+                            });
+                          }}
+                        >
+                          Yes please!
+                        </Button>
+                      )}
                     </div>
                   </li>
                 );
@@ -1015,7 +1100,7 @@ export function PlayerPanel(): ReactElement {
                     <span>
                       {party.length < 2
                         ? "Nobody else is here to give it to."
-                        : "Everyone either has a full bag or is already being offered this."}
+                        : "Everyone is already being offered this one."}
                     </span>
                   </p>
                 ) : (

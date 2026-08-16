@@ -262,8 +262,15 @@ The largest chapter. Budget accordingly.
   is gone before anybody can tap it rather than refused after. It has to be there rather than in the
   refusal path — `applyIntent` returns the *original* state when a handler throws, so an offer
   dropped on the way out of a rejected accept is dropped into a discarded draft.
+  A receiver with six full slots is asked §9.1's own question — "keep it and drop one, or leave it"
+  — **on the accept**, in the same intent, rather than through a second swap prompt: a prompt would
+  leave the item in limbo between the two taps, and "leave it behind" would have to mean "give it
+  back", which is a rule nobody at the table would guess.
   Quest items are refused: they cost no slot and `itemMatches` is satisfied by *anyone* in the
-  party, so passing a story key can never open a choice that was not already open
+  party, so passing a story key can never open a choice that was not already open.
+  The offer is announced through `speak()` on the shared surface and drawn on it — a hand-off is a
+  table event, and in Party Mode everybody is looking at the television, so an offer that only ever
+  appeared on the receiving phone would be silent in the room it is meant to start a conversation in
 - ~~Provisional/committed state machine covering level, stats, **and inventory** together~~ —
   built, and the seam that made "and inventory" a half-truth is closed: the engine's grants and
   swaps land on the run's *resolved* characters, and nothing copied them back — so every pickup

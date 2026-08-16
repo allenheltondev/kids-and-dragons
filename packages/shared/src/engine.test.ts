@@ -1109,24 +1109,136 @@ describe("trading at a Rest scene (spec §9.4)", () => {
     expect(refused.error?.code).toBe("NOT_FOUND");
   });
 
-  it("refuses an offer into a bag with no room, rather than letting it sit there looking like a gift", () => {
-    const context = ctx();
-    const full = applyEffects(
-      atCamp(context),
-      Array.from({ length: INVENTORY_SLOTS }, () => ({
-        type: "grantItem" as const,
-        itemId: "firecracker",
-        to: "p_2",
-      })),
-      context,
-    );
-    expect(full.party.find((m) => m.playerId === "p_2")!.character.inventory).toHaveLength(
-      INVENTORY_SLOTS,
-    );
+  /**
+   * Six full slots is §9.1's question — "keep it and drop one, or leave it" —
+   * and a trade answers it in the *same* intent as the accept.
+   *
+   * The alternative, raising the swap prompt the way a grant does, would put
+   * the item in limbo between the accept and the answer: off the giver, not yet
+   * on the receiver, with "leave it behind" forced to mean "give it back" — a
+   * rule nobody at the table would guess. One intent, and the item is either
+   * where it was or where it went.
+   */
+  describe("when the receiver's six slots are full", () => {
+    function receiverFull(context: EngineContext): RunState {
+      const full = applyEffects(
+        atCamp(context),
+        Array.from({ length: INVENTORY_SLOTS }, () => ({
+          type: "grantItem" as const,
+          itemId: "firecracker",
+          to: "p_2",
+        })),
+        context,
+      );
+      expect(bagOf(full, "p_2")).toHaveLength(INVENTORY_SLOTS);
+      return full;
+    }
 
-    const refused = applyIntent(full, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context);
-    expect(refused.error?.code).toBe("ILLEGAL");
-    expect(refused.error?.message).toMatch(/bag is full/);
+    it("still lets the offer be made", () => {
+      // Hiding it would teach a second, worse answer for a situation §9.1 has
+      // already taught once.
+      const context = ctx();
+      const offered = applyIntent(
+        receiverFull(context),
+        { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+        context,
+      );
+      expect(offered.error).toBeUndefined();
+      expect(offered.state.trades).toHaveLength(1);
+    });
+
+    it("takes it, dropping the named thing, in one event", () => {
+      const context = ctx();
+      const offered = applyIntent(
+        receiverFull(context),
+        { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+        context,
+      ).state;
+      const done = applyIntent(
+        offered,
+        {
+          playerId: "p_2",
+          intent: {
+            type: "RESOLVE_TRADE",
+            tradeId: onlyOffer(offered).id,
+            accept: true,
+            dropItemId: "firecracker",
+          },
+        },
+        context,
+      );
+
+      expect(done.error).toBeUndefined();
+      const bag = bagOf(done.state, "p_2");
+      expect(bag).toHaveLength(INVENTORY_SLOTS);
+      expect(bag).toContain("sunbloom_draught");
+      // Exactly one firecracker went down, not all of them.
+      expect(bag.filter((id) => id === "firecracker")).toHaveLength(INVENTORY_SLOTS - 1);
+      expect(bagOf(done.state, "p_1")).not.toContain("sunbloom_draught");
+    });
+
+    it("refuses an accept that does not say what goes down, without emptying the giver's bag", () => {
+      const context = ctx();
+      const offered = applyIntent(
+        receiverFull(context),
+        { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+        context,
+      ).state;
+      const refused = applyIntent(
+        offered,
+        { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+        context,
+      );
+
+      expect(refused.error?.code).toBe("ILLEGAL");
+      expect(refused.error?.message).toMatch(/something has to go down/);
+      // The failure this whole design exists to make impossible.
+      expect(bagOf(refused.state, "p_1")).toContain("sunbloom_draught");
+      expect(refused.state.trades).toHaveLength(1);
+    });
+
+    it("refuses a drop of something the receiver is not carrying", () => {
+      const context = ctx();
+      const offered = applyIntent(
+        receiverFull(context),
+        { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+        context,
+      ).state;
+      const refused = applyIntent(
+        offered,
+        {
+          playerId: "p_2",
+          intent: {
+            type: "RESOLVE_TRADE",
+            tradeId: onlyOffer(offered).id,
+            accept: true,
+            dropItemId: "oak_token",
+          },
+        },
+        context,
+      );
+
+      expect(refused.error?.code).toBe("ILLEGAL");
+      expect(bagOf(refused.state, "p_1")).toContain("sunbloom_draught");
+    });
+
+    it("declining is still free, and still drops nothing", () => {
+      const context = ctx();
+      const offered = applyIntent(
+        receiverFull(context),
+        { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+        context,
+      ).state;
+      const declined = applyIntent(
+        offered,
+        { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: false } },
+        context,
+      );
+
+      expect(declined.error).toBeUndefined();
+      expect(bagOf(declined.state, "p_2")).toHaveLength(INVENTORY_SLOTS);
+      expect(bagOf(declined.state, "p_1")).toContain("sunbloom_draught");
+    });
   });
 
   it("refuses a second identical offer instead of stacking two answers onto one item", () => {
@@ -1206,7 +1318,10 @@ describe("trading at a Rest scene (spec §9.4)", () => {
     expect(bagOf(late.state, "p_2")).not.toContain("sunbloom_draught");
   });
 
-  it("refuses an accept into a bag that filled up after the offer", () => {
+  it("asks what goes down when the bag filled up between the offer and the tap", () => {
+    // The receiver's room is the one thing that genuinely moves in the gap —
+    // she may have taken somebody else's offer into her last slot. So it is
+    // settled at the tap, not reserved at the offer.
     const context = ctx();
     const offered = applyIntent(
       atCamp(context),
@@ -1223,15 +1338,30 @@ describe("trading at a Rest scene (spec §9.4)", () => {
       context,
     );
 
-    const late = applyIntent(
+    const bare = applyIntent(
       filled,
       { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
       context,
     );
+    expect(bare.error?.code).toBe("ILLEGAL");
+    expect(bagOf(bare.state, "p_1")).toContain("sunbloom_draught");
 
-    expect(late.error?.code).toBe("ILLEGAL");
-    // Still theirs to accept once room is made — nothing was destroyed.
-    expect(bagOf(late.state, "p_1")).toContain("sunbloom_draught");
+    // And it goes through once she says what to put down.
+    const done = applyIntent(
+      filled,
+      {
+        playerId: "p_2",
+        intent: {
+          type: "RESOLVE_TRADE",
+          tradeId: onlyOffer(offered).id,
+          accept: true,
+          dropItemId: "firecracker",
+        },
+      },
+      context,
+    );
+    expect(done.error).toBeUndefined();
+    expect(bagOf(done.state, "p_2")).toContain("sunbloom_draught");
   });
 
   it("refuses an offer to yourself", () => {
