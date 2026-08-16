@@ -14,7 +14,7 @@ import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
 import { speak } from "@kad/shared";
 import type { SceneType } from "@kad/shared";
-import { useRunState } from "../store";
+import { useItems, useParty, useRunState } from "../store";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./NarrationPanel.css";
@@ -45,8 +45,27 @@ function prettyChapter(chapterId: string): string {
     .join(" ");
 }
 
+/**
+ * "Sparklehoof wants to give Thistle a Sunbloom Draught."
+ *
+ * Third person and on the shared surface, because a hand-off is a table event
+ * rather than a private one (spec §9.4 — it is "the point in the session where
+ * the three of you talk to each other"). Said out loud on the TV, the giving
+ * is something the room hears; said only on the receiving phone, it is a card
+ * that appears while she is looking at the television.
+ */
+function offerLine(
+  offer: { fromPlayerId: string; toPlayerId: string; itemId: string },
+  nameOf: (playerId: string) => string,
+  itemName: (itemId: string) => string,
+): string {
+  return `${nameOf(offer.fromPlayerId)} wants to give ${nameOf(offer.toPlayerId)} a ${itemName(offer.itemId)}.`;
+}
+
 export function NarrationPanel(): ReactElement | null {
   const state = useRunState();
+  const party = useParty();
+  const items = useItems();
   const narration = state?.narration ?? "";
   const sceneId = state?.sceneId ?? null;
   const prompt = state?.prompt ?? null;
@@ -88,6 +107,30 @@ export function NarrationPanel(): ReactElement | null {
     spokenRoll.current = rollText;
     speak(rollText, { source: "prompt" });
   }, [rollText]);
+
+  /*
+   * Hand-offs (spec §9.4). `trades` is optional on RunState — a run persisted
+   * before trading existed comes back without it — so it is coalesced here.
+   *
+   * Each offer is announced once, keyed by its id, and an id is derived from
+   * the three things that identify a hand-off. So re-offering the same item to
+   * the same person after a decline is deliberately *not* re-announced: it is
+   * the same sentence about the same thing, and saying it twice at the table
+   * is nagging.
+   */
+  const nameOfPlayer = (playerId: string): string =>
+    party.find((m) => m.playerId === playerId)?.character.name ?? "Someone";
+  const nameOfItem = (itemId: string): string => items?.[itemId]?.name ?? "thing";
+  const trades = state?.trades ?? [];
+  const offerText = trades.map((offer) => offerLine(offer, nameOfPlayer, nameOfItem)).join(" ");
+  const spokenOffers = useRef<string | null>(null);
+  useEffect(() => {
+    if (offerText === "" || spokenOffers.current === offerText) return;
+    spokenOffers.current = offerText;
+    // Never `interrupt` — the scene's own narration outranks it, and an offer
+    // is an aside rather than a new beat.
+    speak(offerText, { source: "prompt" });
+  }, [offerText]);
 
   if (state === null) return null;
 
@@ -133,6 +176,26 @@ export function NarrationPanel(): ReactElement | null {
           <span>{prompt.prompt}</span>
         </p>
       ) : null}
+
+      {/*
+        Hand-offs in the air (spec §9.4). On the shared screen for the same
+        reason the choices are: the buttons belong to the phones, but the table
+        should be able to see what is being passed around without reading over
+        somebody's shoulder. Read-only, like everything else on WorldView.
+      */}
+      {trades.length === 0 ? null : (
+        <ul className="narration__trades">
+          {trades.map((offer) => (
+            <li className="narration__trade" key={offer.id}>
+              <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
+              <span>
+                <b>{nameOfPlayer(offer.fromPlayerId)}</b> offers{" "}
+                {nameOfItem(offer.itemId)} to <b>{nameOfPlayer(offer.toPlayerId)}</b>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

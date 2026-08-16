@@ -84,6 +84,31 @@
   list-style: none;
 }
 
+/*
+ * Hand-offs (spec §9.4). Sized a step under the choices: what the party is
+ * being *asked* outranks what two of them are passing to each other, and the
+ * table should be able to take it in without losing the question.
+ */
+.narration__trades {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.narration__trade {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border: 0.08em dashed var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-pill, 999em);
+  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
 .narration__choice,
 .narration__prompt {
   display: flex;
