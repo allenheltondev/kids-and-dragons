@@ -140,6 +140,10 @@ export async function applyAction(
         // Seeded per event, never per wall clock — see the header.
         rng: deps.rng(`${input.runId}:${nextSeq}`),
         now: iso(nowMs),
+        // Roadmap chapter 6's playtest cheats, refused by the engine unless
+        // this is true. `dev-server.ts` sets it; `lambda/runtime.ts` passes a
+        // literal `false` (playtest.ts).
+        playtest: deps.playtest,
       },
     );
   }
