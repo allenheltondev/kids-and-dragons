@@ -36,12 +36,14 @@ import {
   useMe,
   useParty,
   usePrompt,
+  useRules,
   useRunState,
   useSend,
 } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
+import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
@@ -288,6 +290,7 @@ export function PlayerPanel(): ReactElement {
   const myPrompt = usePrompt();
   const isMyPrompt = useIsMyPrompt();
   const items = useItems();
+  const rules = useRules();
   const campaign = useCampaign();
   const send = useSend();
 
@@ -320,6 +323,13 @@ export function PlayerPanel(): ReactElement {
    * offers arriving together would otherwise share one highlighted choice.
    */
   const [tradeDrop, setTradeDrop] = useState<{ tradeId: string; itemId: string } | null>(null);
+  /**
+   * Whose sheet is open, by character id — spec §6.1 lists "look at each
+   * other's characters" beside healing and trading as a thing a Rest scene is
+   * for, and it is not an intent at all: nothing is sent, nothing is decided,
+   * so it is legal to read one whenever there is a phone to read it on.
+   */
+  const [sheetFor, setSheetFor] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const globalPrompt = state?.prompt ?? null;
@@ -465,6 +475,31 @@ export function PlayerPanel(): ReactElement {
         );
   /** Six full slots at the moment of the tap — §9.1's question, on the accept. */
   const myBagIsFull = inventory.length >= INVENTORY_SLOTS;
+
+  /*
+   * An open sheet takes the whole pane rather than sitting under the prompt.
+   * It is reference material, not a decision — putting it beside the question
+   * on a 40%-of-a-phone pane would push the answer off the bottom, which is the
+   * layout mistake the shell's own header records having made once already.
+   *
+   * Nothing is dispatched from it, so nothing is lost by covering the prompt:
+   * closing it puts the question back exactly as it was.
+   */
+  const openSheetFor =
+    sheetFor === null ? null : party.find((m) => m.character.id === sheetFor) ?? null;
+  if (openSheetFor !== null) {
+    return (
+      <section className="player player--sheet kad-scroll">
+        <CharacterSheet
+          member={openSheetFor}
+          isMe={openSheetFor.playerId === me.playerId}
+          items={items}
+          rules={rules}
+          onClose={() => setSheetFor(null)}
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="player">
@@ -1017,6 +1052,53 @@ export function PlayerPanel(): ReactElement {
       <div className="player__scroll kad-scroll">
         <StatRow me={me} />
 
+        {/*
+          spec §6.1 lists "look at each other's characters" as one of the four
+          things a Rest scene is for, beside healing, spending a level-up and
+          trading. Not gated to a Rest scene though: reading a sheet sends
+          nothing and decides nothing, so there is no rule to enforce, and
+          "what is her Guard?" is a question a fight raises more often than a
+          camp does.
+        */}
+        <div className="party-strip">
+          <h3 className="party-strip__heading">
+            <Icon name="party" />
+            <span>Everyone</span>
+          </h3>
+          <ul className="party-strip__list">
+            {party.map((member) => (
+              <li key={member.playerId}>
+                <button
+                  type="button"
+                  className="party-strip__button kad-tap kad-focusable"
+                  aria-label={`${member.character.name}'s character sheet`}
+                  onClick={() => setSheetFor(member.character.id)}
+                >
+                  <span className="party-strip__portrait" aria-hidden="true">
+                    <CharacterPortrait
+                      species={member.character.species}
+                      characterClass={member.character.class}
+                      tier={member.character.tier}
+                      className="party-strip__art"
+                    />
+                  </span>
+                  <span className="party-strip__name">
+                    {member.playerId === me.playerId ? "You" : member.character.name}
+                  </span>
+                  {/* A souvenir is permanent and worth advertising (spec §8.3);
+                      the count is the hook that makes anybody open the sheet. */}
+                  {member.character.souvenirs.length > 0 ? (
+                    <span className="party-strip__mark kad-chip">
+                      <Icon name="ribbon" />
+                      <span>{member.character.souvenirs.length}</span>
+                    </span>
+                  ) : null}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <InventoryGrid
           entries={inventory}
           questItems={me.character.questItems}
@@ -1129,7 +1211,13 @@ export function PlayerPanel(): ReactElement {
                           <span className="choice__icon">
                             <Icon name={member.character.species} size="1.8em" />
                           </span>
-                          <span className="choice__label">{member.character.name}</span>
+                          {/* "Give to Thistle", not "Thistle": a bare name beside
+                              an item is not obviously a button that does
+                              something, and the party strip below has a button
+                              with that name already. */}
+                          <span className="choice__label">
+                            Give to {member.character.name}
+                          </span>
                         </button>
                       </li>
                     ))}
