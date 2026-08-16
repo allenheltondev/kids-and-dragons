@@ -37,6 +37,7 @@ function member(playerId: string, name: string, accent: string): PartyMember {
       tier: "fledgling",
       stats: { might: 1, quick: 2, clever: 2, heart: 4 },
       unspentPoints: 0,
+      spendableStats: ["might", "quick", "clever", "heart"],
       maxHp: 10,
       steps: 4,
       guard: 10,

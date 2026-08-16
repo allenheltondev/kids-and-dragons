@@ -303,6 +303,7 @@ function hero(input: HeroInput): ResolvedCharacter {
     // `ResolvedCharacter` promises them — the stat point a level owes (spec
     // §8.1) and the level that survives a failed campaign (spec §8.3).
     unspentPoints: 0,
+    spendableStats: ["might", "quick", "clever", "heart"],
     committedLevel: 1,
     name: input.id,
     species: "unicorn",

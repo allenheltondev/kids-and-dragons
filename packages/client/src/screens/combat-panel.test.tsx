@@ -122,6 +122,7 @@ function character(overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacte
     // below can say "her turn" without pinning a die.
     stats: { might: 4, quick: 9, clever: 1, heart: 1 },
     unspentPoints: 0,
+    spendableStats: ["might", "quick", "clever", "heart"],
     committedLevel: 1,
     maxHp: 10,
     steps: 4,
