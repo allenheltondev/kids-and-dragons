@@ -308,6 +308,18 @@ export function PlayerPanel(): ReactElement {
   const [selected, setSelected] = useState<{ itemId: string; index: number } | null>(null);
   /** The stat a banked point is aimed at, before the confirm bar (spec §11). */
   const [pendingStat, setPendingStat] = useState<StatId | null>(null);
+  /**
+   * What goes down to make room for an offer, when six slots are full — kept
+   * *per offer* and separate from `pendingDrop`.
+   *
+   * Not the same state as the item-swap prompt's answer, though both name an
+   * item to drop, because both can be open at once: a grant can fill the last
+   * slot and raise the swap prompt while a friend's offer is still on screen.
+   * One variable would let an answer to one question be confirmed against the
+   * other. Keyed by trade id for the same reason at a smaller scale — two
+   * offers arriving together would otherwise share one highlighted choice.
+   */
+  const [tradeDrop, setTradeDrop] = useState<{ tradeId: string; itemId: string } | null>(null);
   const [busy, setBusy] = useState(false);
 
   const globalPrompt = state?.prompt ?? null;
@@ -319,6 +331,7 @@ export function PlayerPanel(): ReactElement {
     setPendingChoice(null);
     setPendingDrop(undefined);
     setPendingStat(null);
+    setTradeDrop(null);
     setBusy(false);
   }, [key]);
 
@@ -411,6 +424,47 @@ export function PlayerPanel(): ReactElement {
   })();
   const selectedEntry = selectedIndex === null ? null : inventory[selectedIndex] ?? null;
   const selectedDef = selectedEntry === null ? undefined : items?.[selectedEntry.itemId];
+
+  /*
+   * Trading, spec §9.4. `trades` is optional on RunState — a run persisted
+   * before this existed comes back without the key — so it is coalesced once
+   * here and every reader below works off an array.
+   */
+  const trades = state.trades ?? [];
+  const offersToMe = trades.filter((offer) => offer.toPlayerId === me.playerId);
+  const offersFromMe = trades.filter((offer) => offer.fromPlayerId === me.playerId);
+  /*
+   * Who this item can go to. A full bag is deliberately *not* a reason to
+   * leave somebody out: §9.1 already has an answer for six full slots — "keep
+   * it and drop one, or leave it" — and the receiver gives it on the accept,
+   * in the same shape she already knows from finding something. Hiding the
+   * name instead would teach a second, worse answer for a situation the game
+   * has taught her once already.
+   *
+   * Somebody already holding this exact offer does drop out, because a second
+   * identical offer is a duplicate the server refuses rather than a decision
+   * anybody can make.
+   *
+   * Quest items need no exclusion here and cannot get one: they are slot-free
+   * (§9.2), so they are never `InventoryEntry`s and never selectable in the
+   * bag. The engine refuses them anyway, for the client that does not go
+   * through this grid.
+   */
+  const canReceive =
+    selectedEntry === null
+      ? []
+      : party.filter(
+          (member) =>
+            member.playerId !== me.playerId &&
+            !trades.some(
+              (offer) =>
+                offer.fromPlayerId === me.playerId &&
+                offer.toPlayerId === member.playerId &&
+                offer.itemId === selectedEntry.itemId,
+            ),
+        );
+  /** Six full slots at the moment of the tap — §9.1's question, on the accept. */
+  const myBagIsFull = inventory.length >= INVENTORY_SLOTS;
 
   return (
     <section className="player">
@@ -540,6 +594,138 @@ export function PlayerPanel(): ReactElement {
                 )}
               </>
             )}
+          </div>
+        ) : null}
+
+        {/* ---------------- somebody is handing you something (spec §9.4) ----------------
+            Not guarded on `atRest`: the engine clears every offer on scene
+            entry, so an offer being here at all is the server saying the party
+            is resting. Guarding it again would be a second copy of a rule that
+            already has one home.
+
+            The two-tap rule (spec §11) is spread across two phones here rather
+            than two taps on one. Their offer is the selection — nothing has
+            left their bag — and this is the confirm. */}
+        {offersToMe.length > 0 ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name="bag" />
+              <span>{offersToMe.length === 1 ? "A present!" : "Presents!"}</span>
+            </h3>
+            <ul className="prompt__options">
+              {offersToMe.map((offer) => {
+                const def = items?.[offer.itemId];
+                const giver = nameOfPlayer(party, offer.fromPlayerId);
+                /*
+                 * Resolved against the bag as it is *now*, the same rule the
+                 * bag's own selection follows: the server rewrites inventories
+                 * underneath an open card, and a drop choice that outlived the
+                 * item it named would send the server an id she is no longer
+                 * carrying.
+                 *
+                 * `myBagIsFull` is part of the test for the same reason: she
+                 * can pick what to put down and *then* free a slot by drinking
+                 * something. A drop sent once there is room would destroy that
+                 * item for nothing — the server refuses it, and the panel
+                 * should never have offered it.
+                 */
+                const chosenDrop =
+                  myBagIsFull &&
+                  tradeDrop?.tradeId === offer.id &&
+                  inventory.some((entry) => entry.itemId === tradeDrop.itemId)
+                    ? tradeDrop.itemId
+                    : null;
+                return (
+                  <li className="trade" key={offer.id}>
+                    <p className="trade__what">
+                      <Icon name={def?.icon ?? "bag"} size="1.8em" />
+                      <span>
+                        <b>{giver}</b> wants to give you {def?.name ?? offer.itemId}
+                      </span>
+                    </p>
+                    {def?.text ? <p className="trade__text kad-muted">{def.text}</p> : null}
+
+                    {/*
+                      Six full slots is §9.1's question — "keep it and drop one,
+                      or leave it" — and it is answered here rather than by a
+                      separate swap prompt, so the whole hand-off stays one
+                      event and the item is never in limbo between two taps.
+
+                      Deliberately the same shape as the item_swap prompt above:
+                      pick what goes down, then confirm. She has met this screen
+                      before, when her bag was full and she found something.
+                    */}
+                    {myBagIsFull ? (
+                      <>
+                        <p className="trade__text kad-muted">
+                          Your bag is full. What should you put down?
+                        </p>
+                        <ul className="prompt__options">
+                          {inventory.map((entry, index) => {
+                            const held = items?.[entry.itemId];
+                            const chosen = chosenDrop === entry.itemId;
+                            return (
+                              <li key={`${entry.itemId}-${String(index)}`}>
+                                <button
+                                  type="button"
+                                  className={`choice kad-tap kad-focusable${chosen ? " choice--on" : ""}`}
+                                  aria-pressed={chosen}
+                                  onClick={() =>
+                                    setTradeDrop({ tradeId: offer.id, itemId: entry.itemId })
+                                  }
+                                >
+                                  <span className="choice__icon">
+                                    <Icon name={held?.icon ?? entry.kind} size="1.8em" />
+                                  </span>
+                                  <span className="choice__label">
+                                    Put down {held?.name ?? entry.itemId}
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </>
+                    ) : null}
+
+                    <div className="confirm__actions">
+                      <Button
+                        variant="ghost"
+                        size="md"
+                        icon={<Icon name="close" />}
+                        disabled={busy}
+                        onClick={() =>
+                          void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
+                        }
+                      >
+                        No thanks
+                      </Button>
+                      {/* Hidden until she has said what goes down, rather than
+                          shown and refused — the panel's rule everywhere else. */}
+                      {myBagIsFull && chosenDrop === null ? null : (
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          icon={<Icon name="check" />}
+                          disabled={busy}
+                          onClick={() => {
+                            setTradeDrop(null);
+                            void dispatch({
+                              type: "RESOLVE_TRADE",
+                              tradeId: offer.id,
+                              accept: true,
+                              ...(chosenDrop === null ? {} : { dropItemId: chosenDrop }),
+                            });
+                          }}
+                        >
+                          Yes please!
+                        </Button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         ) : null}
 
@@ -898,8 +1084,95 @@ export function PlayerPanel(): ReactElement {
                 </p>
               )}
             </div>
+
+            {/*
+              Passing it on (spec §9.4). One tap per name, because on this side
+              nothing moves — the offer is the selection and their phone holds
+              the confirm. It is also the closest a tap gets to the "drag on
+              your phone" the spec asks for, and a drag is not something to ask
+              of an eight-year-old's thumb on a 40%-of-a-phone pane.
+
+              Only at a Rest scene, which is the rule the server enforces on
+              both trade intents.
+            */}
+            {atRest ? (
+              <div className="give">
+                <h4 className="give__heading">
+                  <Icon name="hand" />
+                  <span>Give it to a friend</span>
+                </h4>
+                {canReceive.length === 0 ? (
+                  <p className="give__none kad-muted">
+                    <Icon name="waiting" />
+                    <span>
+                      {party.length < 2
+                        ? "Nobody else is here to give it to."
+                        : "Everyone is already being offered this one."}
+                    </span>
+                  </p>
+                ) : (
+                  <ul className="give__list">
+                    {canReceive.map((member) => (
+                      <li key={member.playerId}>
+                        <button
+                          type="button"
+                          className="choice kad-tap kad-focusable"
+                          disabled={busy}
+                          onClick={() =>
+                            void dispatch({
+                              type: "OFFER_ITEM",
+                              itemId: selectedEntry.itemId,
+                              toPlayerId: member.playerId,
+                            })
+                          }
+                        >
+                          <span className="choice__icon">
+                            <Icon name={member.character.species} size="1.8em" />
+                          </span>
+                          <span className="choice__label">{member.character.name}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : null}
           </div>
         )}
+
+        {/* Offers of yours still in the air, with the way out of each. An offer
+            nobody answers would otherwise sit on a friend's phone all evening
+            with no way to take it back. */}
+        {offersFromMe.length > 0 ? (
+          <div className="give give--waiting">
+            <h4 className="give__heading">
+              <Icon name="waiting" />
+              <span>Waiting for an answer</span>
+            </h4>
+            <ul className="give__list">
+              {offersFromMe.map((offer) => (
+                <li className="give__pending" key={offer.id}>
+                  <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
+                  <span className="give__pending-label">
+                    {items?.[offer.itemId]?.name ?? offer.itemId} →{" "}
+                    {nameOfPlayer(party, offer.toPlayerId)}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    icon={<Icon name="back" />}
+                    disabled={busy}
+                    onClick={() =>
+                      void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
+                    }
+                  >
+                    Take it back
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
       </div>
     </section>
