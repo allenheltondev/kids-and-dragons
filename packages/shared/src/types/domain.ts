@@ -187,6 +187,17 @@ export interface ResolvedCharacter {
    * of a fully-derived character write `?? 0`.
    */
   unspentPoints: number;
+  /**
+   * The stats a banked point could legally go into — the +9 ceiling
+   * `spendStatPoint()` enforces, resolved here so the Rest-scene spend panel
+   * can obey "only legal actions are ever rendered" (spec §7.2) without
+   * re-deriving the stored halves the ceiling is measured against.
+   *
+   * Independent of `unspentPoints`: a full list with zero points means "not
+   * yet", an empty list with points in hand means "nowhere left to put them",
+   * and those are different sentences on a phone.
+   */
+  spendableStats: StatId[];
   maxHp: number;
   steps: number;
   guard: number;

@@ -50,6 +50,7 @@ function character(overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacte
     tier: "fledgling",
     stats: { might: 2, quick: 9, clever: 3, heart: 5 },
     unspentPoints: 0,
+    spendableStats: ["might", "quick", "clever", "heart"],
     committedLevel: 1,
     maxHp: 10,
     steps: 4,

@@ -47,6 +47,63 @@
   font-weight: 700;
 }
 
+/*
+ * A setback ending. Deliberately in the ordinary text colour rather than a
+ * warning one: spec §8.2 says this is a different path, not a loss, and the
+ * screen an eight-year-old reads should not be the one place that disagrees.
+ */
+.complete__setback {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/* --- Bonus objectives (spec §8.2) -------------------------------------- */
+
+.complete__bonus-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-2, 0.5em);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+}
+
+.complete__bonus-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.complete-bonus {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, rgba(190, 178, 255, 0.16));
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #1a1730);
+  color: var(--color-accent, #f5c86c);
+}
+
+.complete-bonus__label {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  color: var(--color-text, #f4f0ff);
+  overflow-wrap: break-word;
+}
+
+.complete-bonus__xp {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
 .complete__party {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16em), 1fr));
