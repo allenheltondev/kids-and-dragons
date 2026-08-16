@@ -38,11 +38,11 @@
  * the layout harder to judge, which is the thing the author is here to do.
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { ReactElement } from "react";
 import { DIE_MAX, DIE_MIN } from "@kad/shared";
 import type { Chapter, SceneId } from "@kad/shared";
-import { useChapter, useRunState, useSend } from "../store";
+import { useChapter, useGameStore, useSend } from "../store";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import "./shared.css";
@@ -79,16 +79,36 @@ export function sceneList(chapter: Chapter): { id: SceneId; type: string }[] {
 
 export function PlaytestPanel(): ReactElement | null {
   const chapter = useChapter();
-  const run = useRunState();
   const send = useSend();
   const [open, setOpen] = useState(false);
 
+  /*
+   * Two primitives, not the run.
+   *
+   * This is the difference between a dev tool that is free and one that taxes
+   * the game. `useRunState()` hands back the whole state object, and the server
+   * mints a new one for every patch — so subscribing to it re-rendered this
+   * component on every tick of every fight, on every phone. Selecting the two
+   * scalars it actually reads means the store compares numbers and strings and
+   * skips the render entirely unless one of them moved.
+   *
+   * It cost an e2e run to find, and the mechanism is worth keeping written down:
+   * combat holds every phone's patch for up to four seconds to play the round
+   * out (`world/presentation.ts`), and the playthrough test fails if the party
+   * has nothing to tap for long enough. Anything that adds work per patch eats
+   * that budget. A drawer nobody has opened should not be in the fight at all.
+   */
+  const loaded = useGameStore((store) => store.state?.playtestDie ?? null);
+  const here = useGameStore((store) => store.state?.sceneId ?? null);
+  const started = useGameStore((store) => store.state !== null);
+
+  // The scene list is derived from the chapter, which changes once a session —
+  // not from anything a patch touches.
+  const scenes = useMemo(() => (chapter ? sceneList(chapter) : []), [chapter]);
+
   // Nothing to jump to before a chapter is loaded, and no roll to load a die
   // for either. The toggle would be a button that opens an empty box.
-  if (!chapter || !run) return null;
-
-  const loaded = run.playtestDie ?? null;
-  const scenes = sceneList(chapter);
+  if (!chapter || !started) return null;
 
   if (!open) {
     return (
@@ -157,10 +177,10 @@ export function PlaytestPanel(): ReactElement | null {
           {scenes.map(({ id, type }) => (
             <li key={id}>
               <Button
-                variant={run.sceneId === id ? "primary" : "secondary"}
+                variant={here === id ? "primary" : "secondary"}
                 size="md"
                 block
-                selected={run.sceneId === id}
+                selected={here === id}
                 icon={<Icon name={SCENE_ICON[type] ?? "scroll"} />}
                 onClick={() => void send({ type: "PLAYTEST_GOTO", sceneId: id })}
               >

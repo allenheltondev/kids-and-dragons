@@ -8,8 +8,9 @@
  * evening — does it say when a die is still loaded.
  */
 
+import { Profiler } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { Chapter, ClientIntent, RunState } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
@@ -19,7 +20,7 @@ const CHAPTER: Chapter = makeChapter();
 
 const sent: ClientIntent[] = [];
 
-function mount(run: Partial<RunState> = {}, chapter: Chapter | null = CHAPTER) {
+function mountStore(run: Partial<RunState> = {}, chapter: Chapter | null = CHAPTER) {
   sent.length = 0;
   useGameStore.setState({
     session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t" },
@@ -49,7 +50,29 @@ function mount(run: Partial<RunState> = {}, chapter: Chapter | null = CHAPTER) {
       return true;
     },
   });
+}
+
+function mount(run: Partial<RunState> = {}, chapter: Chapter | null = CHAPTER) {
+  mountStore(run, chapter);
   return render(<PlaytestPanel />);
+}
+
+/**
+ * The drawer under a `Profiler`, which fires only when the subtree actually
+ * commits — so a component that bails out of a re-render is measurable from the
+ * outside. Counting renders of a *wrapper* would not work: the store re-renders
+ * the subscriber itself, not its parent, so the wrapper's count never moves
+ * either way and the assertion would be vacuous.
+ */
+function mountProfiled(run: Partial<RunState> = {}) {
+  let commits = 0;
+  mountStore(run);
+  render(
+    <Profiler id="playtest" onRender={() => { commits += 1; }}>
+      <PlaytestPanel />
+    </Profiler>,
+  );
+  return { commits: () => commits };
 }
 
 /** Opens the drawer, which starts shut so it does not cover the game. */
@@ -125,6 +148,50 @@ describe("the drawer", () => {
     mount();
     open();
     expect(screen.getByText(/A deployed server refuses both/)).toBeTruthy();
+  });
+});
+
+describe("what it costs the game", () => {
+  it("does not re-render when a patch touches nothing it reads", () => {
+    /*
+     * The regression that broke an e2e run. `useRunState()` hands back the whole
+     * state object and the server mints a new one for every patch, so the drawer
+     * re-rendered — and rebuilt its scene list — on every tick of every fight,
+     * on all three phones.
+     *
+     * That matters because combat holds every phone's patch for up to four
+     * seconds to play the round out (`world/presentation.ts`), and the
+     * playthrough test fails when the party has nothing to tap for long enough.
+     * Work added per patch comes straight out of that budget. A drawer nobody
+     * has opened should not be in the fight at all.
+     */
+    const { commits } = mountProfiled();
+    const before = commits();
+
+    // A patch that moves the sequence number and the XP — what every tick of a
+    // fight does, and nothing this component reads.
+    act(() => {
+      useGameStore.setState((store) => ({
+        state: store.state === null ? null : { ...store.state, seq: store.state.seq + 1, xpEarned: 12 },
+      }));
+    });
+
+    expect(commits()).toBe(before);
+  });
+
+  it("still re-renders when the die or the scene moves", () => {
+    // The other half: narrowing the subscription must not make it blind.
+    const { commits } = mountProfiled();
+    const before = commits();
+
+    act(() => {
+      useGameStore.setState((store) => ({
+        state: store.state === null ? null : { ...store.state, playtestDie: 9 },
+      }));
+    });
+
+    expect(commits()).toBeGreaterThan(before);
+    expect(screen.getByRole("button", { name: /Playtest · d20 = 9/ })).toBeTruthy();
   });
 });
 
