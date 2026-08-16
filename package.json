@@ -19,6 +19,7 @@
     "content:validate": "node tools/content/validate.mjs",
     "content:balance": "tsx tools/content/balance.ts",
     "content:graph": "tsx tools/content/graph.ts",
+    "content:generate": "tsx tools/content/generate.ts",
     "canon:check": "tsx tools/canon/check.ts",
     "canon:bestiary": "tsx tools/canon/bestiary.ts",
     "canon:items": "tsx tools/canon/items.ts",
@@ -44,6 +45,7 @@
     "spike:rive": "npm run spike:rive --workspace @kad/client"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.117.1",
     "@playwright/test": "^1.62.0",
     "@rive-app/canvas-advanced": "^2.39.1",
     "@testing-library/dom": "^10.4.1",
