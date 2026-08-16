@@ -6,6 +6,7 @@ import {
   commitCampaign,
   effectiveProgress,
   failCampaign,
+  MAX_STAT_GAIN,
   newCharacter,
   resolveCharacter,
   spendStatPoint,
@@ -229,6 +230,54 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     const legacy = makeCharacter();
     delete (legacy.committed as { unspentPoints?: number }).unspentPoints;
     expect(resolveCharacter(legacy, rules, items).unspentPoints).toBe(0);
+  });
+
+  it("lists every stat as spendable while all four are below the ceiling", () => {
+    expect(resolveCharacter(makeCharacter(), rules, items).spendableStats).toEqual([
+      "might",
+      "quick",
+      "clever",
+      "heart",
+    ]);
+  });
+
+  it("drops a stat from the spendable list once it reaches the ceiling", () => {
+    const capped = makeCharacter();
+    capped.committed.stats.might = rules.baseStats.might + MAX_STAT_GAIN;
+    const resolved = resolveCharacter(capped, rules, items);
+
+    expect(resolved.spendableStats).not.toContain("might");
+    expect(resolved.spendableStats).toEqual(["quick", "clever", "heart"]);
+    // And the list the client renders agrees with the rule the server enforces.
+    capped.committed.unspentPoints = 1;
+    expect(() => spendStatPoint(capped, rules, "might")).toThrow(CharacterRuleError);
+  });
+
+  it("measures the ceiling against stored progress, not the sheet the player sees", () => {
+    /*
+     * The bug this exists to prevent. A unicorn's species passive and a trinket
+     * both land on `stats` and neither one is a spent point, so a stat sitting
+     * one under the ceiling can *read* over it. Deriving the list from the
+     * resolved sheet would hide a stat the server would have happily accepted.
+     */
+    const nearCap = makeCharacter();
+    nearCap.committed.stats.heart = rules.baseStats.heart + MAX_STAT_GAIN - 1;
+    const resolved = resolveCharacter(nearCap, rules, items);
+
+    expect(resolved.stats.heart).toBeGreaterThan(rules.baseStats.heart + MAX_STAT_GAIN - 1);
+    expect(resolved.spendableStats).toContain("heart");
+    nearCap.committed.unspentPoints = 1;
+    expect(spendStatPoint(nearCap, rules, "heart").committed.stats.heart).toBe(
+      rules.baseStats.heart + MAX_STAT_GAIN,
+    );
+  });
+
+  it("says nothing about whether there is a point to spend", () => {
+    // The two facts are independent on purpose: "not yet" and "nowhere left to
+    // put it" are different sentences on a phone.
+    const broke = resolveCharacter(makeCharacter(), rules, items);
+    expect(broke.unspentPoints).toBe(0);
+    expect(broke.spendableStats).toHaveLength(4);
   });
 
   it("reads provisional over committed and derives both effective and committed levels from XP", () => {

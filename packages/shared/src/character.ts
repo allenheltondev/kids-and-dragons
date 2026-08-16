@@ -39,6 +39,41 @@ export class CharacterRuleError extends Error {
   override name = "CharacterRuleError";
 }
 
+/**
+ * How far above its base a single stat can ever be pushed by banked points.
+ *
+ * Nine, so a character who put every point of the level ladder into one stat
+ * arrives at the ceiling exactly as they hit the last level — the cap is the
+ * end of the road rather than a wall in the middle of it.
+ */
+export const MAX_STAT_GAIN = 9;
+
+/**
+ * Which stats a banked point may still be spent on — the ceiling above, read
+ * off *stored progress* rather than a resolved sheet.
+ *
+ * The distinction is the reason this is a function and not four comparisons at
+ * the call site. `ResolvedCharacter.stats` is base + species + trinkets, so a
+ * kitsune wearing a Clever charm reads two points higher than the number the
+ * cap is actually measured against. A phone that tried to derive the legal
+ * list from the sheet in front of it would hide a stat the server would have
+ * accepted — and PlayerPanel's rule is that a legal action is the only kind it
+ * ever draws, which means the legality has to be computed here and shipped,
+ * the same way `unspentPoints` is.
+ *
+ * Says nothing about whether there is a point to spend; that is
+ * `unspentPoints`, and keeping the two facts apart lets the UI tell "you have
+ * nothing to spend" apart from "there is nowhere left to put it".
+ */
+export function spendableStatsOf(progress: CharacterProgress, rules: RulesContent): StatId[] {
+  return STAT_IDS.filter((stat) => {
+    const base = rules.baseStats[stat];
+    // A stat the current rules do not define has no ceiling to measure against;
+    // refusing it here matches spendStatPoint, which rejects the same spend.
+    return typeof base === "number" && progress.stats[stat] < base + MAX_STAT_GAIN;
+  });
+}
+
 // ---------------------------------------------------------------------------
 // The commitment rule
 // ---------------------------------------------------------------------------
@@ -386,6 +421,10 @@ export function resolveCharacter(
     // Normalized here so the badge has one number to read, whichever half of
     // the character it came from and however old the stored record is.
     unspentPoints: progress.unspentPoints ?? 0,
+    // Measured against `progress.stats`, deliberately — see spendableStatsOf.
+    // `stats` above has already had species and trinkets folded in and is the
+    // wrong number to compare a ceiling against.
+    spendableStats: spendableStatsOf(progress, rules),
     maxHp,
     steps,
     // Quick governs dodging (spec §4.1), so it is what an attacker rolls against.
@@ -512,10 +551,10 @@ export function spendStatPoint(
     throw new CharacterRuleError("character: no unspent stat points to spend");
   }
 
-  const maxStat = rules.baseStats[stat] + 9;
-  if (before.stats[stat] >= maxStat) {
+  if (!spendableStatsOf(before, rules).includes(stat)) {
     throw new CharacterRuleError(
-      `character: ${stat} cannot exceed 9 bonus points (maximum ${maxStat})`,
+      `character: ${stat} cannot exceed ${String(MAX_STAT_GAIN)} bonus points ` +
+        `(maximum ${String(rules.baseStats[stat] + MAX_STAT_GAIN)})`,
     );
   }
 
