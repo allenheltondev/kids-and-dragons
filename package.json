@@ -18,6 +18,7 @@
     "test:coverage": "vitest run --coverage",
     "content:validate": "node tools/content/validate.mjs",
     "content:balance": "tsx tools/content/balance.ts",
+    "content:graph": "tsx tools/content/graph.ts",
     "canon:check": "tsx tools/canon/check.ts",
     "canon:bestiary": "tsx tools/canon/bestiary.ts",
     "canon:items": "tsx tools/canon/items.ts",

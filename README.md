@@ -85,6 +85,7 @@ to the same behavior:
 | `npm test` | unit tests |
 | `npm run content:validate` | schemas, plus unresolved `goto`, unreachable scenes, unknown `itemId` |
 | `npm run content:balance` | estimated rounds and damage for every fight, and every band — reports, never gates |
+| `npm run content:graph` | draws each chapter into `.graph/*.html` — scene graph, branch inspection, the validator's findings on the picture |
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:verify:rig` | the rig contract — clips, events, inputs, the turn budget |
 | `npm run art:sheet` | regenerates the review contact sheets |
