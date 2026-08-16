@@ -44,6 +44,15 @@ export interface HandlerDeps {
   random: () => number;
   /** Epoch millis. */
   now: () => number;
+  /**
+   * Whether this entry point may run roadmap chapter 6's playtest cheats —
+   * warping the run to any scene, and loading the next d20.
+   *
+   * Required rather than optional on purpose. A new entry point has to state
+   * its position, and the answer a forgotten field would default to is the one
+   * that must never be reached by accident (playtest.ts).
+   */
+  playtest: boolean;
 }
 
 /** The error shape the protocol already defines (`ActionResponse.error`). */

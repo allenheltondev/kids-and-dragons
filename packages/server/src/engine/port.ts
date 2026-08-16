@@ -56,6 +56,13 @@ export interface EngineContext {
   rng: Rng;
   /** ISO timestamp — the caller owns the clock so the engine stays pure. */
   now: string;
+  /**
+   * Whether the engine may run roadmap chapter 6's playtest cheats. Named in
+   * the port for the reason the port exists: this is the surface the server
+   * depends on, and "can this entry point warp the run to any scene" belongs
+   * in it rather than being discovered from the implementation.
+   */
+  playtest?: boolean;
 }
 
 export interface IntentInput {
