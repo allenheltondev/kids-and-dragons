@@ -315,6 +315,89 @@
   flex: 1 1 auto;
 }
 
+/* --- Trading (spec §9.4) ----------------------------------------------- */
+
+/*
+ * An offer on its way in. Sized like a prompt rather than like a notification:
+ * it *is* a decision, and it is the one the table is talking about.
+ */
+.trade {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface-raised, #221d44);
+}
+
+.trade__what {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+}
+
+.trade__text {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+/* The giving side lives under the item it belongs to, in the scrolling sheet
+   rather than the pinned prompt — offering is something you go looking for. */
+.give {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em);
+  border-top: 0.08em solid var(--color-border, #3a3468);
+}
+
+.give--waiting {
+  border: 0.08em dashed var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 1.25em);
+}
+
+.give__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 700;
+}
+
+.give__none {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.give__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.give__pending {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.give__pending-label {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow-wrap: break-word;
+}
+
 /* --- Growing up (spec §8.1) -------------------------------------------- */
 
 /* Stat names are ids on the wire (`might`) and words on the phone. */

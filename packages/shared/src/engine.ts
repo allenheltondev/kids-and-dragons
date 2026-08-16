@@ -75,13 +75,14 @@ import type {
   Prompt,
   RoomMode,
   RunState,
+  TradeOffer,
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter } from "./character.js";
 import { tierForLevel } from "./rules.js";
-import { addItem, addQuestItem, swapItem, useConsumable } from "./inventory.js";
+import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 
 // ---------------------------------------------------------------------------
@@ -192,6 +193,7 @@ export function createRunState(input: CreateRunInput): RunState {
     xpEarned: 0,
     chapterOutcome: null,
     bonuses: [],
+    trades: [],
     updatedAt: input.now,
   };
 }
@@ -573,6 +575,14 @@ function enterSceneDraft(
   draft.sceneType = scene.type;
   draft.art = scene.art ?? null;
   draft.prompt = carriedSwap ?? null;
+  /*
+   * Offers do not travel (spec §9.4 — trading is a Rest-scene thing). An
+   * unanswered offer left standing would be acceptable two scenes later in the
+   * middle of a fight, which is the one place §7.2 says the bag is not open.
+   * Unlike the swap prompt above there is nothing to carry: nothing has left
+   * anybody's bag, so dropping the offer costs the party nothing.
+   */
+  draft.trades = [];
   draft.phase = scene.type === "encounter" ? "encounter" : scene.type === "check" ? "check" : "scene";
 
   const authored =
@@ -647,6 +657,7 @@ export function applyIntent(
   const effects: EngineEffects = {};
   try {
     const presentation = dispatch(draft, envelope, ctx, effects);
+    pruneTrades(draft);
     touch(draft, ctx);
     return {
       state: draft,
@@ -710,6 +721,12 @@ function dispatch(
 
     case "RESOLVE_ITEM_SWAP":
       return doResolveItemSwap(draft, playerId, intent.dropItemId, ctx);
+
+    case "OFFER_ITEM":
+      return doOfferItem(draft, playerId, intent.itemId, intent.toPlayerId, ctx);
+
+    case "RESOLVE_TRADE":
+      return doResolveTrade(draft, playerId, intent.tradeId, intent.accept, ctx);
 
     case "SPEND_STAT_POINT":
       throw new Illegal("ILLEGAL", "stat points are spent through the authoritative run handler");
@@ -1451,6 +1468,191 @@ function doResolveItemSwap(
     const completion = openScenePrompt(draft, scene, sceneId, ctx);
     if (completion) return completion;
   }
+  return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Trading — spec §9.4
+// ---------------------------------------------------------------------------
+
+/** Stable across a replay of the event log; see `TradeOffer.id`. */
+function tradeId(fromPlayerId: string, toPlayerId: string, itemId: string): string {
+  return `t:${fromPlayerId}>${toPlayerId}:${itemId}`;
+}
+
+/**
+ * Drops every offer whose giver is no longer holding the thing.
+ *
+ * Runs after *every* intent rather than at the two or three call sites that
+ * happen to empty a bag today, and that placement is the whole point: a bag
+ * changes under a standing offer in more ways than trading knows about — the
+ * potion gets drunk, a swap prompt drops it to make room for a grant, a later
+ * feature moves it somewhere nobody here has thought of. Pruning at the seam
+ * means an offer cannot outlive its item whatever did the emptying.
+ *
+ * It also cannot be done from the refusal path instead. `applyIntent` returns
+ * the *original* state when a handler throws, so an offer dropped on the way
+ * out of a rejected accept is dropped into a discarded draft: the receiver's
+ * phone would go on showing a gift that is not there, refusing every tap.
+ * Removing it here means they never get the chance to tap it.
+ */
+function pruneTrades(draft: RunState): void {
+  const trades = draft.trades ?? [];
+  if (trades.length === 0) return;
+  draft.trades = trades.filter((offer) => {
+    const from = memberByPlayer(draft, offer.fromPlayerId);
+    return (
+      from !== undefined &&
+      memberByPlayer(draft, offer.toPlayerId) !== undefined &&
+      hasItem(from.character.inventory, offer.itemId)
+    );
+  });
+}
+
+/**
+ * The one gate both trade intents share, and the same one `prepareStatPointSpend`
+ * applies to a banked point: a Rest scene, with the run still in play.
+ *
+ * Not merely a UI convention. Passing an item mid-fight would move a
+ * consumable across an open turn order — the thrower and the holder are
+ * different figures with different turns — and mid-story it would put a bag in
+ * front of an unanswered question.
+ */
+function requireRestScene(draft: RunState, what: string): void {
+  if (draft.phase !== "scene" || draft.sceneType !== "rest") {
+    throw new Illegal("ILLEGAL", `${what} only at a Rest scene`);
+  }
+}
+
+function doOfferItem(
+  draft: RunState,
+  playerId: string,
+  itemId: string,
+  toPlayerId: string,
+  ctx: EngineContext,
+): Presentation | undefined {
+  requireRestScene(draft, "items are passed around");
+
+  const from = memberByPlayer(draft, playerId);
+  if (!from) throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+  const to = memberByPlayer(draft, toPlayerId);
+  if (!to) throw new Illegal("NOT_FOUND", `player "${toPlayerId}" is not in this run`);
+  if (to.playerId === from.playerId) {
+    throw new Illegal("ILLEGAL", "you already have it");
+  }
+
+  const def = ctx.items[itemId];
+  if (!def) throw new Illegal("NOT_FOUND", `unknown item "${itemId}"`);
+  /*
+   * §9.2 — a quest item costs no slot and `itemMatches` is satisfied by
+   * *anyone* in the party, so handing a story key across the table can never
+   * unlock a choice that was not already open. There is nothing to trade for,
+   * and the same refusal `doUseItem` gives is the honest answer here.
+   */
+  if (def.kind === "quest") {
+    throw new Illegal("ILLEGAL", `"${def.name}" belongs to the whole party's story`);
+  }
+  if (!hasItem(from.character.inventory, itemId)) {
+    throw new Illegal("NOT_FOUND", `${from.character.name} is not carrying "${itemId}"`);
+  }
+  /*
+   * Refused at the offer rather than deferred to the accept. A full bag is the
+   * receiver's business to fix, and an offer that can only ever fail is worse
+   * than no offer: it sits on their phone looking like a gift.
+   *
+   * Re-checked on accept too — the bag can fill in between.
+   */
+  if (freeSlots(to.character.inventory) === 0) {
+    throw new Illegal("ILLEGAL", `${to.character.name}'s bag is full`);
+  }
+
+  const id = tradeId(from.playerId, to.playerId, itemId);
+  const trades = draft.trades ?? [];
+  if (trades.some((offer) => offer.id === id)) {
+    // A second tap on the same button, or two phones racing. Loud rather than
+    // silent: two identical offers would need two answers to clear one item.
+    throw new Illegal("ILLEGAL", `${to.character.name} already has that offer`);
+  }
+
+  draft.trades = [...trades, { id, fromPlayerId: from.playerId, toPlayerId: to.playerId, itemId }];
+  return undefined;
+}
+
+function doResolveTrade(
+  draft: RunState,
+  playerId: string,
+  id: string,
+  accept: boolean,
+  ctx: EngineContext,
+): Presentation | undefined {
+  requireRestScene(draft, "items are passed around");
+
+  const trades = draft.trades ?? [];
+  const offer = trades.find((candidate) => candidate.id === id);
+  if (!offer) throw new Illegal("NOT_FOUND", "that offer is no longer on the table");
+
+  if (!accept) {
+    // Declining and taking it back are the same event from opposite ends, and
+    // both are always allowed: nothing has moved, so nothing is at stake.
+    if (playerId !== offer.toPlayerId && playerId !== offer.fromPlayerId) {
+      throw new Illegal("FORBIDDEN", "that offer is between two other people");
+    }
+    draft.trades = (draft.trades ?? []).filter((candidate) => candidate.id !== offer.id);
+    return undefined;
+  }
+
+  if (playerId !== offer.toPlayerId) {
+    throw new Illegal("FORBIDDEN", "only the person being offered it can take it");
+  }
+
+  const from = memberByPlayer(draft, offer.fromPlayerId);
+  const to = memberByPlayer(draft, offer.toPlayerId);
+  /*
+   * Both of these are belt-and-braces: `pruneTrades` has already removed any
+   * offer whose giver has left or is no longer holding the thing, so a stale
+   * offer is gone from the receiver's phone before they can tap it rather than
+   * refused after. They stay because this function must not depend on a
+   * caller's housekeeping to avoid taking an item out of a bag that no longer
+   * has it — the failure that puts an item in nobody's hands.
+   */
+  if (!from || !to) {
+    throw new Illegal("NOT_FOUND", "one of them has left the party");
+  }
+  if (!hasItem(from.character.inventory, offer.itemId)) {
+    throw new Illegal("NOT_FOUND", `${from.character.name} does not have it any more`);
+  }
+  /*
+   * The receiver's room, by contrast, is genuinely re-checked here and nowhere
+   * else: they may have accepted somebody else's offer into their last slot
+   * since this one arrived. Refused, never forced — the item stays where it is
+   * and the offer stands, so making room and tapping again works.
+   */
+  if (freeSlots(to.character.inventory) === 0) {
+    throw new Illegal("ILLEGAL", "your bag is full — make room and they can offer again");
+  }
+
+  const added = addItem(to.character.inventory, offer.itemId, ctx.items);
+  /*
+   * `needs_swap` is unreachable — the free slot was just checked — and `quest`
+   * is unreachable because the offer refused a quest item. Neither is silently
+   * tolerated: falling through on either would drop the item out of the world
+   * having already taken it off the giver.
+   */
+  if (added.status !== "added") {
+    throw new Illegal("ILLEGAL", "that cannot be handed over");
+  }
+  from.character.inventory = removeItem(from.character.inventory, offer.itemId);
+  to.character.inventory = added.inventory;
+
+  /*
+   * Every other offer of this item from this giver dies with it — they only
+   * had the one. Leaving them up would show two people a gift that one tap
+   * already spent, and the loser would find out by being refused.
+   */
+  draft.trades = (draft.trades ?? []).filter(
+    (candidate) =>
+      !(candidate.fromPlayerId === offer.fromPlayerId && candidate.itemId === offer.itemId),
+  );
   return undefined;
 }
 
