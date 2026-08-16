@@ -5,11 +5,20 @@
  * chapter — not for killing things (spec §8.1) — what everyone is carrying,
  * and who grew.
  *
- * Level and tier *changes* come from the LEVEL_UP and TRANSFORM presentation
- * events rather than from state: `RunState` carries the party's current level,
- * not its previous one, and the protocol already announces the change
- * (architecture §4.2). A client that joined after the event simply sees the
- * new level without the fanfare, which is the right failure.
+ * Level and tier *changes* come from the **progression** channel rather than
+ * from state: `RunState` carries the party's current level, not its previous
+ * one, so "who grew" is not derivable from the snapshot.
+ *
+ * They used to be read off `LEVEL_UP` and `TRANSFORM` *presentation* events,
+ * and those chips never once rendered at a table: nothing in the codebase has
+ * ever constructed either presentation. The server puts level and tier
+ * crossings in `progression.awards` — the channel documented for exactly this,
+ * and the one `TransformCutscene` plays off — while `Presentation` carries one
+ * event per patch and the patch that crosses a tier has already spent its one
+ * on CHAPTER_COMPLETE.
+ *
+ * A client that joined after the event simply sees the new level without the
+ * fanfare, which is the right failure.
  *
  * How the chapter *ended* comes from state rather than from an event, because
  * it is a fact about the run and not a beat: a phone that reconnects onto the
@@ -25,7 +34,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { speak } from "@kad/shared";
 import type { TierId } from "@kad/shared";
-import { useItems, useParty, usePresentation, useRunState } from "../store";
+import { useItems, useParty, useProgression, useRunState } from "../store";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
@@ -40,19 +49,16 @@ export function ChapterCompletePanel(): ReactElement {
   const [leveled, setLeveled] = useState<Record<string, number>>({});
   const [transformed, setTransformed] = useState<Record<string, string>>({});
 
-  usePresentation(
-    "LEVEL_UP",
+  useProgression(
     useCallback((event) => {
-      if (event.kind !== "LEVEL_UP") return;
-      setLeveled((prev) => ({ ...prev, [event.characterId]: event.level }));
-    }, []),
-  );
-
-  usePresentation(
-    "TRANSFORM",
-    useCallback((event) => {
-      if (event.kind !== "TRANSFORM") return;
-      setTransformed((prev) => ({ ...prev, [event.characterId]: event.tier }));
+      for (const award of event.progression.awards ?? []) {
+        if (award.leveledTo !== undefined) {
+          setLeveled((prev) => ({ ...prev, [award.characterId]: award.leveledTo! }));
+        }
+        if (award.newTier !== undefined) {
+          setTransformed((prev) => ({ ...prev, [award.characterId]: award.newTier! }));
+        }
+      }
     }, []),
   );
 
@@ -143,9 +149,9 @@ export function ChapterCompletePanel(): ReactElement {
             <li className="complete-card" key={member.playerId}>
               {/*
                * The new tier if they crossed one this chapter, not the tier
-               * they walked in with: TRANSFORM is announced right here, and a
-               * "you grew!" chip beside the same picture as before is the one
-               * moment in the game where the art has to change.
+               * they walked in with. The cutscene has already played the moment
+               * itself; this is the receipt for it, so the summary and the beat
+               * that preceded it agree about what she is now.
                */}
               <span className="complete-card__portrait" aria-hidden="true">
                 <CharacterPortrait

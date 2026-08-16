@@ -12,6 +12,7 @@
  * | `LobbyContent`         | WorldView  | phase === "lobby"                    |
  * | `NarrationPanel`       | WorldView  | phase is scene-like                  |
  * | `DiceOverlay`          | WorldView  | a ROLL presentation arrives          |
+ * | `TransformCutscene`    | WorldView  | a progression award crosses a tier   |
  * | `ChapterCompletePanel` | WorldView  | phase === "chapter_complete"         |
  * | `CreationPreview`      | WorldView  | phase === "creation"                 |
  * | `CreationFlow`         | PlayerView | phase === "creation" and I have none |
@@ -28,6 +29,7 @@ export { HomeScreen } from "./HomeScreen";
 export { LobbyContent } from "./LobbyContent";
 export { NarrationPanel } from "./NarrationPanel";
 export { DiceOverlay } from "./DiceOverlay";
+export { TransformCutscene, previousTier } from "./TransformCutscene";
 export { ChapterCompletePanel } from "./ChapterCompletePanel";
 export { CreationPreview } from "./CreationPreview";
 export { CreationFlow } from "./CreationFlow";
