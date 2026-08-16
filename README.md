@@ -35,6 +35,22 @@ The Vite server binds `0.0.0.0`, so testing with real devices is the laptop's LA
 
 Any surface can be hard-refreshed at any time without losing the session.
 
+### Writing a chapter
+
+```bash
+npm run content:generate -- "the party finds a bridge that only lets one of them across"
+```
+
+Generates a chapter with `claude-opus-5`, then runs the **real** `content:validate` over it in a
+staging tree and hands the gate's own complaints back for repair, until it passes or the attempts
+run out. Nothing it writes can fail the build, because the loop only stops when the build gate is
+green. Needs `ANTHROPIC_API_KEY` or an `ant auth login` profile; `--dry-run` generates without
+writing.
+
+A generated chapter validates; it is not finished. Look at its shape with `content:graph`, at its
+fights with `content:balance`, and play it — then add it to a campaign's `chapters` array, which is
+the one edit the generator deliberately leaves to you.
+
 ### Playtesting a chapter
 
 The dev server — and only the dev server — carries two cheats, so that reaching a branch is not the
@@ -86,6 +102,7 @@ to the same behavior:
 | `npm run content:validate` | schemas, plus unresolved `goto`, unreachable scenes, unknown `itemId` |
 | `npm run content:balance` | estimated rounds and damage for every fight, and every band — reports, never gates |
 | `npm run content:graph` | draws each chapter into `.graph/*.html` — scene graph, branch inspection, the validator's findings on the picture |
+| `npm run content:generate` | writes a chapter from a one-line brief, repairing it against `content:validate` until it passes |
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:verify:rig` | the rig contract — clips, events, inputs, the turn budget |
 | `npm run art:sheet` | regenerates the review contact sheets |
