@@ -130,8 +130,13 @@ and drawn on the shared screen, because a hand-off is a table event and in Party
 looking at the TV. **The transformation lands too** — spec §8.1's "single most
 important moment in the game" is a full-screen beat now: the party stops, the camera pushes in, and
 the figure swaps from the tier she walked in with to the one she just earned, one moment per
-character because uniform XP means the whole party crosses together. Still outstanding: the
-character sheet with tier history, the authoring tools, and the live LLM layer.
+character because uniform XP means the whole party crosses together. And there is a **character
+sheet**, openable for anybody in the party (spec §6.1's "look at each other's characters"), which is
+where souvenirs finally show up — §8.3 calls the souvenir the point of a failed campaign, and
+nothing had ever drawn one. It also says which half of a level is still on loan while a campaign is
+in flight, rather than letting the commitment rule stay invisible until the evening it takes
+something back. **That closes roadmap Chapter 5.** Still outstanding: the authoring tools
+(Chapter 6) and the live LLM layer (Chapter 7).
 One content gap goes with them: no authored ending declares `"outcome": "setback"` yet, so the
 halved award and — through the setback counter — campaign failure are unreachable in play, though
 both are built and tested.
