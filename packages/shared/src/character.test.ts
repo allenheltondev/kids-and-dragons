@@ -272,6 +272,19 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     );
   });
 
+  it("always writes the list, even though the field is optional to read", () => {
+    /*
+     * The asymmetry is deliberate and this is what holds it. `spendableStats`
+     * is optional on `ResolvedCharacter` because those snapshots are persisted
+     * inside `RunState` and a run written by an older deploy has to keep
+     * loading — not because resolution may skip it. A reader tolerating its
+     * absence must never become a producer allowed to omit it.
+     */
+    const resolved = resolveCharacter(makeCharacter(), rules, items);
+    expect(Object.prototype.hasOwnProperty.call(resolved, "spendableStats")).toBe(true);
+    expect(Array.isArray(resolved.spendableStats)).toBe(true);
+  });
+
   it("says nothing about whether there is a point to spend", () => {
     // The two facts are independent on purpose: "not yet" and "nowhere left to
     // put it" are different sentences on a phone.

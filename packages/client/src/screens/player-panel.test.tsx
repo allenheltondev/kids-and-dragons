@@ -764,6 +764,29 @@ describe("spending a banked stat point", () => {
     expect(screen.queryByRole("button", { name: /Grow!/ })).toBeNull();
   });
 
+  it("survives a party snapshot persisted before spendableStats existed", () => {
+    /*
+     * `RunState.party[]` holds *resolved* characters and is persisted as plain
+     * JSON; `getState` hands the stored object back verbatim and a member is
+     * re-resolved only when something touches it. So a run in flight across a
+     * deploy arrives with no list at all, and reading `.length` off it would
+     * white-screen the controller at the Rest scene — the Friday-evening
+     * failure `RunState`'s own comments exist to rule out.
+     *
+     * Absent means unknown, not none: the panel offers all four and lets the
+     * server refuse, rather than telling a player owed a point that every stat
+     * is maxed and eating the spend.
+     */
+    const stale = character({ unspentPoints: 1 });
+    delete (stale as { spendableStats?: unknown }).spendableStats;
+
+    expect(() => mount({ party: [member({ character: stale })], sceneType: "rest" })).not.toThrow();
+    expect(screen.getByText("You have a point to spend!")).toBeTruthy();
+    for (const stat of ["might", "quick", "clever", "heart"]) {
+      expect(screen.getByRole("button", { name: new RegExp(stat, "i") })).toBeTruthy();
+    }
+  });
+
   it("keeps the reminder on the pinned strip, where a whole sitting can pass without scrolling to it", () => {
     mount({ party: [withPoints(1)], sceneType: "story" });
     expect(screen.getByText("1 point to spend when you rest")).toBeTruthy();
