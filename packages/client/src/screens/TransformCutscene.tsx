@@ -43,6 +43,18 @@ import "./TransformCutscene.css";
 const BEFORE_MS = 900;
 const AFTER_MS = 2400;
 
+/**
+ * How long one character's moment lasts, end to end.
+ *
+ * Exported because a second clock has to stay in step with it: in Travel Mode
+ * the shell hands the world pane the whole screen for the cutscene, exactly as
+ * it does for the roll, and it sizes that hold from this. DiceOverlay's header
+ * notes the same arrangement for its three clocks — the difference here is that
+ * this one is imported rather than re-typed, because a cutscene queue's length
+ * is not a constant anybody could keep in their head.
+ */
+export const TRANSFORM_BEAT_MS = BEFORE_MS + AFTER_MS;
+
 /** What a tier is called out loud. Capitalised for the sentence, not the id. */
 const TIER_WORD: Record<TierId, string> = {
   fledgling: "Fledgling",
@@ -92,7 +104,20 @@ function prefersReducedMotion(): boolean {
 export function TransformCutscene(): ReactElement | null {
   const party = useParty();
   const [queue, setQueue] = useState<Beat[]>([]);
-  const [swapped, setSwapped] = useState(false);
+  /*
+   * *Which beat* has swapped, not whether one has.
+   *
+   * A boolean here is a flash waiting to happen: when a beat ends and the queue
+   * advances, the flag is still true for the next character's first committed
+   * render, so the second hero in a queue shows her *result* — new picture, tier
+   * word — for a frame before snapping back to "is changing…". Resetting it in
+   * the same batch as the dequeue fixes the ordering; keying it to a beat id
+   * removes the possibility, because a flag that names beat 1 simply does not
+   * apply to beat 2. React flushes passive effects after the commit, so the
+   * ordering version depends on a paint not happening in between — which is not
+   * something to rely on for the one screen the design says to over-polish.
+   */
+  const [swappedFor, setSwappedFor] = useState<number | null>(null);
   const nextId = useRef(0);
 
   useProgression(
@@ -161,15 +186,19 @@ export function TransformCutscene(): ReactElement | null {
      * immediately and schedules no swap at all. A zero-delay timer *and* an
      * immediate call would say the line twice.
      */
-    setSwapped(before === 0);
-    if (before === 0) announce();
+    if (before === 0) {
+      setSwappedFor(currentId);
+      announce();
+    }
     const swap =
       before === 0
         ? null
         : window.setTimeout(() => {
-            setSwapped(true);
+            setSwappedFor(currentId);
             announce();
           }, before);
+    // No reset needed on the way out: the flag names the beat it belongs to, so
+    // the next one starts un-swapped by construction rather than by ordering.
     const done = window.setTimeout(() => {
       setQueue((pending) => pending.slice(1));
     }, before + after);
@@ -180,6 +209,7 @@ export function TransformCutscene(): ReactElement | null {
     };
   }, [currentId]);
 
+  const swapped = current !== null && swappedFor === current.id;
   const member =
     current === null ? null : party.find((m) => m.character.id === current.characterId) ?? null;
 
