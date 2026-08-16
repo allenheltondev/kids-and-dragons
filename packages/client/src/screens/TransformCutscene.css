@@ -1,0 +1,156 @@
+/*
+ * The transformation — spec §8.1's "single most important moment in the game".
+ *
+ * Fills its *surface*, not the viewport (WorldView rule 2). On a TV that is the
+ * room; in Travel Mode it is the world pane, and a `100vh` overlay here would
+ * hang off the bottom of that pane and swallow PlayerView. `%` and `em` only.
+ *
+ * Sits above the dice (z-index 2) because a tier crossing lands on the chapter
+ * completion, and nothing may be drawn over the one screen this game is built
+ * around.
+ */
+
+.transform {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em);
+  /* The token theme.css names for exactly this ("scrim behind full-bleed
+     overlays (dice, cutscenes)"), and no backdrop-filter for the reason
+     DiceOverlay gives: this sits on the live WebGL canvas, and blurring that
+     backdrop re-filters every frame for the whole beat. */
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
+  color: var(--color-text, #f4f0ff);
+  text-align: center;
+  animation: transform-in var(--kad-dur-base, 260ms) ease-out;
+}
+
+/*
+ * The camera push.
+ *
+ * The *stage* scales, never the figure, so the light pooled under the feet
+ * grows with it instead of sliding out from underneath — the same reason the
+ * dice tumble inside a stage that does not itself rotate.
+ */
+.transform__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: min(60%, 18em);
+  block-size: 55%;
+  transform: scale(0.86);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.transform--after .transform__stage {
+  transform: scale(1.06);
+}
+
+.transform__figure {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/*
+ * The moment of the swap. A ring that expands out of the figure once, on the
+ * boundary — decoration on top of the picture changing, which is the actual
+ * information. Never the only signal.
+ */
+.transform__burst {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  inline-size: 30%;
+  block-size: 30%;
+  border-radius: 50%;
+  border: 0.14em solid var(--color-accent, #ffc95c);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.transform--after .transform__burst {
+  animation: transform-burst 850ms ease-out;
+}
+
+.transform__name {
+  margin: 0;
+  font-size: var(--font-size-2xl, 2em);
+  font-weight: 800;
+  line-height: 1.1;
+  /* break-word, not `anywhere`: `anywhere` collapses min-content width to one
+     character and a long name wraps one letter per line. */
+  overflow-wrap: break-word;
+}
+
+.transform__tier {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  min-block-size: 1.6em;
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 700;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/* The tier word is the thing she has waited a whole campaign for. */
+.transform--after .transform__tier {
+  color: var(--color-accent, #ffc95c);
+  font-size: var(--font-size-2xl, 2em);
+  animation: transform-word var(--kad-dur-base, 260ms) ease-out;
+}
+
+@keyframes transform-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes transform-burst {
+  from {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@keyframes transform-word {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+/*
+ * Reduced motion takes the push, the ring and the pop — but never the swap.
+ * The picture changing is the information; the motion is decoration on top of
+ * it, and the component shortens its own timers to match (the JS asks too,
+ * because a media query cannot shorten a setTimeout).
+ */
+@media (prefers-reduced-motion: reduce) {
+  .transform,
+  .transform--after .transform__burst,
+  .transform--after .transform__tier {
+    animation: none;
+  }
+
+  .transform__stage,
+  .transform--after .transform__stage {
+    transform: none;
+    transition: none;
+  }
+
+  .transform__burst {
+    display: none;
+  }
+}
