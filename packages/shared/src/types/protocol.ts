@@ -53,6 +53,21 @@ export type ClientIntent =
   | { type: "USE_ITEM"; itemId: string; targetId?: string }
   | { type: "RESOLVE_ITEM_SWAP"; dropItemId: string | null }
   | { type: "SPEND_STAT_POINT"; stat: StatId }
+  /**
+   * Trading at a Rest scene, spec §9.4 — offer, then the other phone answers.
+   *
+   * Two intents rather than one because it is two taps on two devices, and the
+   * gap between them is the point: "drag on your phone, tap to accept on
+   * theirs" is a conversation, not a transfer. Nothing leaves the giver's bag
+   * until the answer arrives.
+   */
+  | { type: "OFFER_ITEM"; itemId: string; toPlayerId: string }
+  /**
+   * `accept: true` is the receiver's alone. `accept: false` is either end of
+   * it — declining and taking it back are the same event from opposite sides,
+   * and an offer nobody can retract is an offer that strands an item.
+   */
+  | { type: "RESOLVE_TRADE"; tradeId: string; accept: boolean }
   | { type: "SET_MODE"; mode: RoomMode }
   /**
    * Combat, spec §7.2 — move up to your steps, then take one action.

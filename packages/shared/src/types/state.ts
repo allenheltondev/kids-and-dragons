@@ -124,7 +124,45 @@ export interface RunState {
    * combat existed has to keep loading.
    */
   encounter?: EncounterState | null;
+  /**
+   * Hand-offs waiting on an answer (spec §9.4). Only ever non-empty during a
+   * Rest scene; `enterSceneDraft` clears it on every scene change, so an offer
+   * can never be accepted three scenes later in the middle of a fight.
+   *
+   * Optional for the same reason as the three above, and this one is load
+   * bearing: a run persisted before trading existed comes back without the
+   * key, and every reader coalesces rather than indexing into `undefined`.
+   */
+  trades?: TradeOffer[];
   updatedAt: string;
+}
+
+/**
+ * An item one player has offered another at a Rest scene (spec §9.4).
+ *
+ * The offer is a *claim on* the item, not a move of it: the thing stays in the
+ * giver's bag until the receiver taps accept, the same rule `addItem` follows
+ * when it returns `needs_swap` rather than applying anything. That is what
+ * makes a declined offer cost nobody anything, and it is why an offer carries
+ * no slot reservation — the receiver's room is re-checked when they answer,
+ * because a bag can fill between the offer and the tap.
+ *
+ * Not a `Prompt`. Only one prompt is ever open, and the Rest scene's own
+ * choices are already in it; trading is meant to be the part of the evening
+ * where three people talk to each other, so it runs beside the question on the
+ * table rather than blocking it, and several offers may be in the air at once.
+ */
+export interface TradeOffer {
+  /**
+   * Derived from the three ids rather than generated, so it is stable across a
+   * replay of the event log and cannot collide: the engine refuses a second
+   * offer of the same item to the same person, which is exactly the case that
+   * would otherwise need a counter.
+   */
+  id: string;
+  fromPlayerId: string;
+  toPlayerId: string;
+  itemId: string;
 }
 
 /**

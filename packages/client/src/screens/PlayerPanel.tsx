@@ -412,6 +412,41 @@ export function PlayerPanel(): ReactElement {
   const selectedEntry = selectedIndex === null ? null : inventory[selectedIndex] ?? null;
   const selectedDef = selectedEntry === null ? undefined : items?.[selectedEntry.itemId];
 
+  /*
+   * Trading, spec §9.4. `trades` is optional on RunState — a run persisted
+   * before this existed comes back without the key — so it is coalesced once
+   * here and every reader below works off an array.
+   */
+  const trades = state.trades ?? [];
+  const offersToMe = trades.filter((offer) => offer.toPlayerId === me.playerId);
+  const offersFromMe = trades.filter((offer) => offer.fromPlayerId === me.playerId);
+  /*
+   * Who this item can go to. Full bags are left out rather than shown greyed:
+   * the server refuses an offer into one, and a name you can tap that always
+   * fails is worse than a name that is not there (§9.1's "one decision, no
+   * menu" applied to the other end of the same rule). Somebody already being
+   * offered this exact item drops out for the same reason.
+   *
+   * Quest items need no exclusion here and cannot get one: they are slot-free
+   * (§9.2), so they are never `InventoryEntry`s and never selectable in the
+   * bag. The engine refuses them anyway, for the client that does not go
+   * through this grid.
+   */
+  const canReceive =
+    selectedEntry === null
+      ? []
+      : party.filter(
+          (member) =>
+            member.playerId !== me.playerId &&
+            member.character.inventory.length < INVENTORY_SLOTS &&
+            !trades.some(
+              (offer) =>
+                offer.fromPlayerId === me.playerId &&
+                offer.toPlayerId === member.playerId &&
+                offer.itemId === selectedEntry.itemId,
+            ),
+        );
+
   return (
     <section className="player">
       <IdentityStrip me={me} />
@@ -540,6 +575,65 @@ export function PlayerPanel(): ReactElement {
                 )}
               </>
             )}
+          </div>
+        ) : null}
+
+        {/* ---------------- somebody is handing you something (spec §9.4) ----------------
+            Not guarded on `atRest`: the engine clears every offer on scene
+            entry, so an offer being here at all is the server saying the party
+            is resting. Guarding it again would be a second copy of a rule that
+            already has one home.
+
+            The two-tap rule (spec §11) is spread across two phones here rather
+            than two taps on one. Their offer is the selection — nothing has
+            left their bag — and this is the confirm. */}
+        {offersToMe.length > 0 ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name="bag" />
+              <span>{offersToMe.length === 1 ? "A present!" : "Presents!"}</span>
+            </h3>
+            <ul className="prompt__options">
+              {offersToMe.map((offer) => {
+                const def = items?.[offer.itemId];
+                const giver = nameOfPlayer(party, offer.fromPlayerId);
+                return (
+                  <li className="trade" key={offer.id}>
+                    <p className="trade__what">
+                      <Icon name={def?.icon ?? "bag"} size="1.8em" />
+                      <span>
+                        <b>{giver}</b> wants to give you {def?.name ?? offer.itemId}
+                      </span>
+                    </p>
+                    {def?.text ? <p className="trade__text kad-muted">{def.text}</p> : null}
+                    <div className="confirm__actions">
+                      <Button
+                        variant="ghost"
+                        size="md"
+                        icon={<Icon name="close" />}
+                        disabled={busy}
+                        onClick={() =>
+                          void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
+                        }
+                      >
+                        No thanks
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        icon={<Icon name="check" />}
+                        disabled={busy}
+                        onClick={() =>
+                          void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: true })
+                        }
+                      >
+                        Yes please!
+                      </Button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         ) : null}
 
@@ -898,8 +992,95 @@ export function PlayerPanel(): ReactElement {
                 </p>
               )}
             </div>
+
+            {/*
+              Passing it on (spec §9.4). One tap per name, because on this side
+              nothing moves — the offer is the selection and their phone holds
+              the confirm. It is also the closest a tap gets to the "drag on
+              your phone" the spec asks for, and a drag is not something to ask
+              of an eight-year-old's thumb on a 40%-of-a-phone pane.
+
+              Only at a Rest scene, which is the rule the server enforces on
+              both trade intents.
+            */}
+            {atRest ? (
+              <div className="give">
+                <h4 className="give__heading">
+                  <Icon name="hand" />
+                  <span>Give it to a friend</span>
+                </h4>
+                {canReceive.length === 0 ? (
+                  <p className="give__none kad-muted">
+                    <Icon name="waiting" />
+                    <span>
+                      {party.length < 2
+                        ? "Nobody else is here to give it to."
+                        : "Everyone either has a full bag or is already being offered this."}
+                    </span>
+                  </p>
+                ) : (
+                  <ul className="give__list">
+                    {canReceive.map((member) => (
+                      <li key={member.playerId}>
+                        <button
+                          type="button"
+                          className="choice kad-tap kad-focusable"
+                          disabled={busy}
+                          onClick={() =>
+                            void dispatch({
+                              type: "OFFER_ITEM",
+                              itemId: selectedEntry.itemId,
+                              toPlayerId: member.playerId,
+                            })
+                          }
+                        >
+                          <span className="choice__icon">
+                            <Icon name={member.character.species} size="1.8em" />
+                          </span>
+                          <span className="choice__label">{member.character.name}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : null}
           </div>
         )}
+
+        {/* Offers of yours still in the air, with the way out of each. An offer
+            nobody answers would otherwise sit on a friend's phone all evening
+            with no way to take it back. */}
+        {offersFromMe.length > 0 ? (
+          <div className="give give--waiting">
+            <h4 className="give__heading">
+              <Icon name="waiting" />
+              <span>Waiting for an answer</span>
+            </h4>
+            <ul className="give__list">
+              {offersFromMe.map((offer) => (
+                <li className="give__pending" key={offer.id}>
+                  <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
+                  <span className="give__pending-label">
+                    {items?.[offer.itemId]?.name ?? offer.itemId} →{" "}
+                    {nameOfPlayer(party, offer.toPlayerId)}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    icon={<Icon name="back" />}
+                    disabled={busy}
+                    onClick={() =>
+                      void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
+                    }
+                  >
+                    Take it back
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
       </div>
     </section>
