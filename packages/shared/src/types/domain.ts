@@ -196,8 +196,23 @@ export interface ResolvedCharacter {
    * Independent of `unspentPoints`: a full list with zero points means "not
    * yet", an empty list with points in hand means "nowhere left to put them",
    * and those are different sentences on a phone.
+   *
+   * Optional for the reason `RunState.bonuses` is (state.ts): a resolved
+   * character is not only produced, it is *persisted* — `RunState.party[]`
+   * holds these snapshots, `getState` hands back the stored JSON verbatim, and
+   * a member is re-resolved only when something touches it (an XP award, a
+   * campaign settling, a spend). So a run in flight across a deploy carries
+   * characters shaped like the code that wrote them, and a Friday-evening
+   * session must not end because a field was added under it.
+   *
+   * Why this one is optional while `unspentPoints` beside it is not: a missing
+   * number reads as `undefined` and every comparison against it is quietly
+   * false, so an old snapshot degrades to "no points waiting". A missing array
+   * throws on the first `.length` or `.includes`, which is a white screen
+   * instead of a controller. `resolveCharacter()` always writes it; readers
+   * still have to survive a snapshot that predates it.
    */
-  spendableStats: StatId[];
+  spendableStats?: StatId[];
   maxHp: number;
   steps: number;
   guard: number;

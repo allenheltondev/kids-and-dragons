@@ -380,7 +380,20 @@ export function PlayerPanel(): ReactElement {
    */
   const atRest = state.phase === "scene" && state.sceneType === "rest";
   const banked = me.character.unspentPoints;
-  const spendable = me.character.spendableStats;
+  /*
+   * A party snapshot persisted before `spendableStats` existed has no list at
+   * all — `getState` returns the stored JSON verbatim and a member is only
+   * re-resolved when something touches it — so a run in flight across a deploy
+   * arrives here shaped like the old code.
+   *
+   * Absent means *unknown*, not *none*, and the two have opposite consequences:
+   * falling back to an empty list would tell a player who is owed a point that
+   * every stat is maxed and quietly eat the spend, while falling back to all
+   * four defers to the server, which validates the ceiling anyway and refuses
+   * with a message. The only case the fallback can get wrong is a stat already
+   * at +9, and it closes the moment anything re-resolves the member.
+   */
+  const spendable: readonly StatId[] = me.character.spendableStats ?? STAT_IDS;
   // A selection that no longer resolves is dropped rather than confirmed
   // against a stat the server would now refuse — the same rule the bag's
   // selection follows.
