@@ -16,7 +16,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import { setSpeaker } from "@kad/shared";
 import type { ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeItems } from "../../../shared/src/test-fixtures";
@@ -61,7 +61,7 @@ function member(playerId: string, name: string): PartyMember {
 
 const PARTY = [member("p_1", "Sparklehoof"), member("p_2", "Thistle")];
 
-function mount(overrides: Partial<RunState> = {}) {
+function mount(overrides: Partial<RunState> = {}, itemsLoaded: ItemCatalog | null = ITEMS) {
   useGameStore.setState({
     session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "party", sessionToken: "t" },
     state: {
@@ -84,7 +84,7 @@ function mount(overrides: Partial<RunState> = {}) {
       updatedAt: "2026-08-16T12:00:00.000Z",
       ...overrides,
     },
-    items: ITEMS,
+    items: itemsLoaded,
     loadContent: async () => undefined,
     loadChapter: async () => undefined,
   });
@@ -162,7 +162,70 @@ describe("announcing a hand-off (spec §9.4)", () => {
   it("falls back rather than throwing when the item catalog has not loaded", () => {
     // Content is fetched separately from the bundle; the TV can be refreshed
     // into a scene before it lands.
-    useGameStore.setState({ items: null });
-    expect(() => mount({ trades: [OFFER] })).not.toThrow();
+    expect(() => mount({ trades: [OFFER] }, null)).not.toThrow();
+    expect(spoken.some((t) => t.includes("wants to give"))).toBe(true);
+  });
+});
+
+/**
+ * Announcing is per *offer*, not per rendering of the list.
+ *
+ * Keying the dedup on the joined sentence made every change of shape a reason
+ * to say everything again: a second offer turned "A" into "A B" and repeated A,
+ * resolving A turned "A B" into "B" and repeated B, and the item catalog
+ * arriving late turned "a thing" into "a Sunbloom Draught" and said the lot.
+ * Three people around a television get interrupted by every one of those.
+ */
+describe("announcing several hand-offs", () => {
+  const SECOND = {
+    id: "t2",
+    fromPlayerId: "p_2",
+    toPlayerId: "p_1",
+    itemId: "river_charm",
+  };
+
+  function push(trades: RunState["trades"]) {
+    act(() => {
+      useGameStore.setState((prev) => ({
+        state: { ...prev.state!, trades, seq: prev.state!.seq + 1 },
+      }));
+    });
+  }
+
+  it("says only the new one when a second offer arrives", () => {
+    const { rerender } = mount({ trades: [OFFER] });
+    expect(spoken.filter((t) => t.includes("Sunbloom"))).toHaveLength(1);
+
+    push([OFFER, SECOND]);
+    rerender(<NarrationPanel />);
+
+    expect(spoken.filter((t) => t.includes("Sunbloom"))).toHaveLength(1);
+    expect(spoken.filter((t) => t.includes("River Charm"))).toHaveLength(1);
+  });
+
+  it("does not re-announce the survivor when one is resolved", () => {
+    const { rerender } = mount({ trades: [OFFER] });
+    push([OFFER, SECOND]);
+    rerender(<NarrationPanel />);
+    push([SECOND]);
+    rerender(<NarrationPanel />);
+
+    expect(spoken.filter((t) => t.includes("River Charm"))).toHaveLength(1);
+  });
+
+  it("does not re-announce when the item catalog arrives late", () => {
+    // Content is fetched separately from the bundle, so a TV can be in a scene
+    // before the names it needs have landed. The sentence then changes from
+    // "a thing" to "a Sunbloom Draught" — which must not be a reason to speak.
+    const { rerender } = mount({ trades: [OFFER] }, null);
+    const saidWhileNameless = spoken.length;
+    expect(spoken.some((t) => t.includes("a thing"))).toBe(true);
+
+    act(() => {
+      useGameStore.setState({ items: ITEMS });
+    });
+    rerender(<NarrationPanel />);
+
+    expect(spoken).toHaveLength(saidWhileNameless);
   });
 });

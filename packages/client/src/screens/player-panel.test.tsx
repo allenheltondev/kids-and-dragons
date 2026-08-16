@@ -1032,6 +1032,40 @@ describe("being offered an item with a full bag", () => {
     expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: true }]);
   });
 
+  it("stops sending the drop once a slot has been freed", async () => {
+    /*
+     * She picks what to put down while her bag is full, then drinks something
+     * before tapping accept. Sending the drop anyway would destroy that item
+     * for nothing — the server refuses it, and the panel should never have
+     * offered it.
+     */
+    const user = userEvent.setup();
+    const { sent } = offeredWithFullBag();
+
+    await user.click(screen.getAllByRole("button", { name: new RegExp(`Put down ${POTION_NAME}`) })[0]!);
+
+    act(() => {
+      useGameStore.setState((prev) => ({
+        state: {
+          ...prev.state!,
+          party: [
+            prev.state!.party[0]!,
+            {
+              ...prev.state!.party[1]!,
+              character: {
+                ...prev.state!.party[1]!.character,
+                inventory: STUFFED.slice(0, INVENTORY_SLOTS - 1),
+              },
+            },
+          ],
+        },
+      }));
+    });
+
+    await user.click(screen.getByRole("button", { name: /Yes please!/ }));
+    expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: true }]);
+  });
+
   it("drops a chosen item that the server has since taken away", () => {
     // The same rule the bag's own selection follows: the server rewrites
     // inventories under an open card, and a stale choice must not be confirmed.

@@ -112,25 +112,53 @@ export function NarrationPanel(): ReactElement | null {
    * Hand-offs (spec §9.4). `trades` is optional on RunState — a run persisted
    * before trading existed comes back without it — so it is coalesced here.
    *
-   * Each offer is announced once, keyed by its id, and an id is derived from
-   * the three things that identify a hand-off. So re-offering the same item to
-   * the same person after a decline is deliberately *not* re-announced: it is
-   * the same sentence about the same thing, and saying it twice at the table
-   * is nagging.
+   * Announced **per offer id**, not per rendering of the whole list. Keying on
+   * the joined text re-announced everything whenever the list changed shape: a
+   * second offer arriving turned "A" into "A B" and said A again, resolving A
+   * turned "A B" into "B" and said B again, and the item catalog arriving
+   * late turned "a thing" into "a Sunbloom Draught" and said the lot. Three
+   * people at a table get interrupted by every one of those.
+   *
+   * An id is derived from the three things that identify a hand-off, so
+   * re-offering the same item to the same person after a decline is
+   * deliberately not re-announced either.
    */
   const nameOfPlayer = (playerId: string): string =>
     party.find((m) => m.playerId === playerId)?.character.name ?? "Someone";
   const nameOfItem = (itemId: string): string => items?.[itemId]?.name ?? "thing";
   const trades = state?.trades ?? [];
-  const offerText = trades.map((offer) => offerLine(offer, nameOfPlayer, nameOfItem)).join(" ");
-  const spokenOffers = useRef<string | null>(null);
+  const spokenOffers = useRef<Set<string>>(new Set());
+  /*
+   * Read through a ref so the effect depends on the offer *ids* alone. The
+   * sentence is built from party names and the item catalog, both of which can
+   * arrive after the offer; depending on the text would make their arrival a
+   * reason to speak again.
+   */
+  const line = useRef(offerLine);
+  line.current = offerLine;
+  const namesRef = useRef({ nameOfPlayer, nameOfItem });
+  namesRef.current = { nameOfPlayer, nameOfItem };
+  const pending = trades.filter((offer) => !spokenOffers.current.has(offer.id));
+  const pendingKey = pending.map((offer) => offer.id).join("|");
   useEffect(() => {
-    if (offerText === "" || spokenOffers.current === offerText) return;
-    spokenOffers.current = offerText;
+    if (pendingKey === "") return;
+    const fresh = (state?.trades ?? []).filter((offer) => !spokenOffers.current.has(offer.id));
+    if (fresh.length === 0) return;
+    for (const offer of fresh) spokenOffers.current.add(offer.id);
     // Never `interrupt` — the scene's own narration outranks it, and an offer
     // is an aside rather than a new beat.
-    speak(offerText, { source: "prompt" });
-  }, [offerText]);
+    speak(
+      fresh
+        .map((offer) =>
+          line.current(offer, namesRef.current.nameOfPlayer, namesRef.current.nameOfItem),
+        )
+        .join(" "),
+      { source: "prompt" },
+    );
+    // `state` is read through the guard above rather than depended on: only a
+    // genuinely new offer id may cause a new utterance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingKey]);
 
   if (state === null) return null;
 
