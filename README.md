@@ -127,9 +127,11 @@ and their phone answers; nothing leaves your bag until it does, so a declined of
 anything and a stale one disappears rather than waiting to refuse a tap. A full bag is not a refusal
 but §9.1's own question, asked on the accept: keep it and drop one, or leave it. The offer is spoken
 and drawn on the shared screen, because a hand-off is a table event and in Party Mode everyone is
-looking at the TV. Still outstanding: the
-transformation cutscene as a full-screen beat rather than a card on the summary, the character sheet
-with tier history, the authoring tools, and the live LLM layer.
+looking at the TV. **The transformation lands too** — spec §8.1's "single most
+important moment in the game" is a full-screen beat now: the party stops, the camera pushes in, and
+the figure swaps from the tier she walked in with to the one she just earned, one moment per
+character because uniform XP means the whole party crosses together. Still outstanding: the
+character sheet with tier history, the authoring tools, and the live LLM layer.
 One content gap goes with them: no authored ending declares `"outcome": "setback"` yet, so the
 halved award and — through the setback counter — campaign failure are unreachable in play, though
 both are built and tested.
