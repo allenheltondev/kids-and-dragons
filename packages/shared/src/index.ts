@@ -24,4 +24,5 @@ export * from "./grid.js";
 export * from "./encounter.js";
 export * from "./engine.js";
 export * from "./enemy-ai.js";
+export * from "./balance.js";
 export * from "./speak.js";
