@@ -1,0 +1,182 @@
+/*
+ * The character sheet.
+ *
+ * Rendered inside PlayerView's pane, which is 40% of a phone in Travel Mode and
+ * a whole one otherwise — so it scrolls inside its container and sizes in `em`
+ * and `%`. No viewport units (the WorldView rule applies to every surface a
+ * shell composes).
+ */
+
+.sheetview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+}
+
+.sheetview__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3, 0.75em);
+}
+
+/* Taller than wide: the art is a standing figure, not a headshot — the same
+   well the lobby lineup and the identity strip use. */
+.sheetview__portrait {
+  display: grid;
+  place-items: end center;
+  inline-size: 5em;
+  block-size: 6em;
+  flex: 0 0 auto;
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface-sunken, #120f26);
+  overflow: hidden;
+}
+
+.sheetview__id {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  min-inline-size: 0;
+}
+
+.sheetview__name {
+  margin: 0;
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
+  /* break-word, not `anywhere`: `anywhere` collapses min-content width to one
+     character and a long name wraps one letter per line. */
+  overflow-wrap: break-word;
+}
+
+.sheetview__kind,
+.sheetview__level {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+/* Species, class, stat and tier ids are lowercase on the wire and words here. */
+.sheetview__word {
+  text-transform: capitalize;
+}
+
+/*
+ * The provisional caveat (spec §8.3). Deliberately not a warning colour: this
+ * is how the game works, not something going wrong, and the screen an
+ * eight-year-old reads should not imply she is in trouble for levelling up.
+ */
+.sheetview__provisional {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: var(--space-1, 0.25em) 0 0;
+  font-size: var(--font-size-sm, 0.875em);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.sheetview__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheetview__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #191534);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.sheetview__stat b {
+  margin-inline-start: auto;
+  font-size: var(--font-size-lg, 1.25em);
+}
+
+.sheetview__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
+
+.sheetview__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 700;
+}
+
+.sheetview__ladder,
+.sheetview__souvenirs,
+.sheetview__bag,
+.sheetview__quest {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheetview__rung,
+.sheetview__souvenir,
+.sheetview__slot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface, #191534);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.sheetview__rung-note {
+  margin-inline-start: auto;
+}
+
+/* Reached is solid; still-to-come is dimmed; a tier a failed campaign took back
+   is dashed — a shape difference, so it does not rely on colour (spec §11). */
+.sheetview__rung--reached {
+  border-color: var(--color-accent, #ffc95c);
+}
+
+.sheetview__rung--lost {
+  border-style: dashed;
+  border-color: var(--color-accent, #ffc95c);
+}
+
+.sheetview__rung--ahead {
+  opacity: 0.6;
+}
+
+.sheetview__souvenir {
+  border-style: dashed;
+}
+
+.sheetview__bag {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
+}
+
+.sheetview__slot--empty {
+  border-style: dashed;
+  justify-content: center;
+}
+
+.sheetview__quest {
+  flex-direction: row;
+  flex-wrap: wrap;
+}

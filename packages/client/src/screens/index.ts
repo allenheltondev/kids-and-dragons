@@ -43,3 +43,14 @@ export { Icon, hasIcon, statIcon, speciesIcon, classIcon, itemKindIcon } from ".
 export type { IconProps } from "./icons";
 /** The commissioned character art, wherever a face belongs (spec §5.1). */
 export { CharacterPortrait, type CharacterPortraitProps } from "./CharacterPortrait";
+/** Who somebody is and who they have been (spec §6.1, §8.3). Takes props: it is
+    opened *for* a party member, so it is a sub-component of PlayerPanel rather
+    than a surface a shell composes. */
+export {
+  CharacterSheet,
+  readSouvenir,
+  prettyCampaign,
+  tierHistory,
+  type CharacterSheetProps,
+  type TierStanding,
+} from "./CharacterSheet";
