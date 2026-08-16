@@ -36,7 +36,6 @@ import {
   useMe,
   useParty,
   usePrompt,
-  useRules,
   useRunState,
   useSend,
 } from "../store";
@@ -290,7 +289,6 @@ export function PlayerPanel(): ReactElement {
   const myPrompt = usePrompt();
   const isMyPrompt = useIsMyPrompt();
   const items = useItems();
-  const rules = useRules();
   const campaign = useCampaign();
   const send = useSend();
 
@@ -494,7 +492,6 @@ export function PlayerPanel(): ReactElement {
           member={openSheetFor}
           isMe={openSheetFor.playerId === me.playerId}
           items={items}
-          rules={rules}
           onClose={() => setSheetFor(null)}
         />
       </section>
