@@ -27,7 +27,7 @@
 
 import type { ReactElement } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, TIER_IDS } from "@kad/shared";
-import type { ItemCatalog, PartyMember, RulesContent, TierId } from "@kad/shared";
+import type { ItemCatalog, PartyMember, TierId } from "@kad/shared";
 import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -82,37 +82,38 @@ export type TierStanding = "reached" | "lost" | "ahead";
  * The ladder, annotated — the tier history, derived rather than stored.
  *
  * There is no record of which tiers a character has *been*, and there does not
- * need to be: tier is derived from level, so every tier at or below the current
- * one was climbed, and the only tier you can have reached without still holding
- * it is one a failed campaign took back — which is exactly what a tier-flavoured
+ * need to be: tier follows level, so every tier at or below the current one was
+ * climbed, and the only tier you can have reached without still holding it is
+ * one a failed campaign took back — which is exactly what a tier-flavoured
  * souvenir records. The two halves of §8.3 answer the whole question between
  * them.
+ *
+ * Read off `character.tier` rather than recomputed from level and
+ * `rules.tierLevels`, and that matters for more than brevity. Content is
+ * fetched separately from the bundle, so a sheet can open before the rules
+ * land — and a ladder that needs them would spend that moment claiming the tier
+ * she is *standing in* is "still to come". `resolveCharacter` already ran
+ * `tierForLevel` server-side and stamped the answer ("Derived, never trusted
+ * from storage"), so this is the same derivation by the same authority, minus a
+ * dependency that can be missing.
  *
  * Pure and exported so the derivation is testable without a WebGL context or a
  * DOM, the same way `storyFocusTiles` and `previousTier` are.
  */
-export function tierHistory(
-  member: PartyMember,
-  rules: RulesContent | null,
-): { tier: TierId; standing: TierStanding }[] {
-  const level = member.character.level;
+export function tierHistory(member: PartyMember): { tier: TierId; standing: TierStanding }[] {
+  const now = TIER_IDS.indexOf(member.character.tier);
   const lost = new Set(
     member.character.souvenirs
       .map((souvenir) => readSouvenir(souvenir.id).tier)
       .filter((tier): tier is TierId => tier !== null),
   );
 
-  return TIER_IDS.map((tier) => {
-    const at = rules?.tierLevels[tier];
-    // Without rules loaded the ladder still draws; only "have you got there"
-    // goes unanswered, and claiming "ahead" is the honest default for a screen
-    // that is decoration on top of a name.
-    const reached = typeof at === "number" && level >= at;
-    return {
-      tier,
-      standing: reached ? "reached" : lost.has(tier) ? "lost" : "ahead",
-    };
-  });
+  return TIER_IDS.map((tier, index) => ({
+    tier,
+    // `indexOf` is -1 only for a tier id this bundle does not know, which
+    // leaves every rung "ahead" — the one case where nothing is claimed.
+    standing: index <= now ? "reached" : lost.has(tier) ? "lost" : "ahead",
+  }));
 }
 
 export interface CharacterSheetProps {
@@ -120,20 +121,13 @@ export interface CharacterSheetProps {
   /** Whose sheet this is, which changes the words rather than the facts. */
   isMe: boolean;
   items: ItemCatalog | null;
-  rules: RulesContent | null;
   onClose: () => void;
 }
 
-export function CharacterSheet({
-  member,
-  isMe,
-  items,
-  rules,
-  onClose,
-}: CharacterSheetProps): ReactElement {
+export function CharacterSheet({ member, isMe, items, onClose }: CharacterSheetProps): ReactElement {
   const { character } = member;
   const they = isMe ? "You" : character.name;
-  const ladder = tierHistory(member, rules);
+  const ladder = tierHistory(member);
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => character.inventory[i] ?? null);
 
   return (
