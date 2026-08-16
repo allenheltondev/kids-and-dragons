@@ -495,6 +495,89 @@ export function awardXp(
 }
 
 /**
+ * Hands a resolved character a new bag, and keeps every number that depends on
+ * it honest.
+ *
+ * This exists because of a seam that is easy to miss. `RunState` holds
+ * **resolved** characters, and a resolved character's `stats`, `steps`,
+ * `maxHp` and `guard` already have its trinket passives folded in — but the
+ * engine cannot call `resolveCharacter()` to redo that, because resolution
+ * needs the *stored* character and the engine has never seen one. So every
+ * place that changed a bag mid-chapter used to assign `inventory` alone, and a
+ * trinket's effect stayed exactly where the last full resolve had put it: a
+ * River Charm handed across the table left its +1 step on the giver and never
+ * reached the receiver, and one found mid-chapter did nothing at all until the
+ * chapter ended. spec §9.2 calls trinkets "passive, always on", and for the
+ * length of a sitting they were not.
+ *
+ * Applied as a delta between the two bags rather than recomputed from a base,
+ * which is the only honest option: the base is not recoverable from a resolved
+ * character, and the difference between the two bags is exactly what changed.
+ * Unknown ids are skipped for the same reason `resolveCharacter()` skips them
+ * — a stale save must not take the table down mid-session.
+ *
+ * `guard` is re-derived rather than adjusted, because it is a function of Quick
+ * (`baseGuard + stats.quick`) and a Quick trinket has to move both.
+ *
+ * Does *not* touch HP: hit points live on `PartyMember`, not on the character.
+ * A caller that removes a max-HP trinket owes a clamp — see `setBag` in
+ * engine.ts, which is why every call site goes through it rather than here.
+ */
+export function withInventory(
+  resolved: ResolvedCharacter,
+  next: readonly InventoryEntry[],
+  rules: RulesContent,
+  items: ItemCatalog,
+): ResolvedCharacter {
+  const countTrinkets = (inv: readonly InventoryEntry[]): Map<string, number> => {
+    const counts = new Map<string, number>();
+    for (const entry of inv) {
+      const def = items[entry.itemId];
+      if (!def || def.kind !== "trinket" || !def.passive) continue;
+      counts.set(entry.itemId, (counts.get(entry.itemId) ?? 0) + 1);
+    }
+    return counts;
+  };
+
+  const before = countTrinkets(resolved.inventory);
+  const after = countTrinkets(next);
+  const stats = { ...resolved.stats };
+  let steps = resolved.steps;
+  let maxHp = resolved.maxHp;
+
+  for (const itemId of new Set([...before.keys(), ...after.keys()])) {
+    const delta = (after.get(itemId) ?? 0) - (before.get(itemId) ?? 0);
+    if (delta === 0) continue;
+    // Guarded by countTrinkets, which only counts ids with a passive.
+    const passive = items[itemId]?.passive;
+    if (!passive) continue;
+    switch (passive.type) {
+      case "statBonus":
+        stats[passive.stat] += passive.amount * delta;
+        break;
+      case "stepBonus":
+        steps += passive.amount * delta;
+        break;
+      case "maxHpBonus":
+        maxHp += passive.amount * delta;
+        break;
+      case "rerollOnes":
+        // Read from the bag inside an encounter; nothing derived to move.
+        break;
+    }
+  }
+
+  return {
+    ...resolved,
+    inventory: next.map((e) => ({ ...e })),
+    stats,
+    steps,
+    maxHp,
+    guard: rules.baseGuard + stats.quick,
+  };
+}
+
+/**
  * Folds a run's inventory back into the stored character.
  *
  * The engine mutates bags on the *resolved* characters inside `RunState` —

@@ -8,6 +8,7 @@ import {
   failCampaign,
   MAX_STAT_GAIN,
   newCharacter,
+  withInventory,
   resolveCharacter,
   spendStatPoint,
   startCampaign,
@@ -733,5 +734,113 @@ describe("the guards on hand-authored content", () => {
     const levelled = awardXp(makeCharacter(), rules, 300).character;
     expect(() => spendStatPoint(levelled, gapped, "clever")).toThrow(CharacterRuleError);
     expect(() => spendStatPoint(levelled, gapped, "clever")).toThrow(/unknown stat/);
+  });
+});
+
+/*
+ * `withInventory` — the seam between a bag and every number derived from it.
+ *
+ * `RunState` holds *resolved* characters, whose stats, steps, maxHp and guard
+ * already have trinket passives folded in, and the engine cannot call
+ * `resolveCharacter()` to redo that because resolution needs the stored
+ * character. So a bag that changes mid-chapter has to move the passives with
+ * it — otherwise spec §9.2's "passive, always on" is false for the length of a
+ * sitting, which is exactly what it was.
+ */
+describe("withInventory (spec §9.2 — trinkets are always on)", () => {
+  const resolved = () => resolveCharacter(makeCharacter(), rules, items);
+
+  it("carries a trinket's bonus in with it", () => {
+    const before = resolved();
+    const after = withInventory(before, [{ itemId: "river_charm", kind: "trinket" }], rules, items);
+
+    expect(after.steps).toBe(before.steps + 1);
+    expect(after.inventory).toHaveLength(1);
+  });
+
+  it("takes the bonus away again when the trinket leaves", () => {
+    const before = resolved();
+    const wearing = withInventory(before, [{ itemId: "emberglass_shard", kind: "trinket" }], rules, items);
+    expect(wearing.stats.might).toBe(before.stats.might + 1);
+
+    const empty = withInventory(wearing, [], rules, items);
+    expect(empty.stats.might).toBe(before.stats.might);
+    expect(empty.steps).toBe(before.steps);
+    expect(empty.maxHp).toBe(before.maxHp);
+  });
+
+  it("re-derives guard, because Quick decides it", () => {
+    // guard = baseGuard + quick, so a Quick trinket has to move both or the
+    // sheet says one thing and the fight uses another.
+    const before = resolved();
+    const quickCharm = { ...items, quick_charm: {
+      kind: "trinket" as const,
+      name: "Quick Charm",
+      text: "+1 Quick.",
+      icon: "icons/items/quick.svg",
+      passive: { type: "statBonus" as const, stat: "quick" as const, amount: 1 },
+    } };
+    const after = withInventory(before, [{ itemId: "quick_charm", kind: "trinket" }], rules, quickCharm);
+
+    expect(after.stats.quick).toBe(before.stats.quick + 1);
+    expect(after.guard).toBe(rules.baseGuard + after.stats.quick);
+    expect(after.guard).toBe(before.guard + 1);
+  });
+
+  it("counts two of the same trinket as two", () => {
+    const before = resolved();
+    const pair = [
+      { itemId: "river_charm", kind: "trinket" as const },
+      { itemId: "river_charm", kind: "trinket" as const },
+    ];
+    expect(withInventory(before, pair, rules, items).steps).toBe(before.steps + 2);
+  });
+
+  it("leaves consumables alone", () => {
+    const before = resolved();
+    const after = withInventory(before, [{ itemId: "sunbloom_draught", kind: "consumable" }], rules, items);
+
+    expect(after.stats).toEqual(before.stats);
+    expect(after.steps).toBe(before.steps);
+    expect(after.maxHp).toBe(before.maxHp);
+    expect(after.inventory).toHaveLength(1);
+  });
+
+  it("skips an id the catalog has lost rather than throwing", () => {
+    // Same policy as resolveCharacter: a stale save must not take the table
+    // down mid-session.
+    const before = resolved();
+    const after = withInventory(before, [{ itemId: "ghost_item", kind: "trinket" }], rules, items);
+    expect(after.steps).toBe(before.steps);
+  });
+
+  it("never mutates the character it was handed", () => {
+    const before = resolved();
+    const snapshot = JSON.parse(JSON.stringify(before)) as typeof before;
+    withInventory(before, [{ itemId: "river_charm", kind: "trinket" }], rules, items);
+    expect(before).toEqual(snapshot);
+  });
+
+  it("agrees with a full resolve", () => {
+    /*
+     * The delta is only correct if it lands where `resolveCharacter()` would
+     * have. This is the test that keeps the two from drifting — if the passive
+     * loop there grows a case, this fails until the delta grows it too.
+     */
+    const bag = [
+      { itemId: "river_charm", kind: "trinket" as const },
+      { itemId: "emberglass_shard", kind: "trinket" as const },
+      { itemId: "sunbloom_draught", kind: "consumable" as const },
+    ];
+    const stored = makeCharacter();
+    stored.committed.inventory = bag;
+
+    const byResolve = resolveCharacter(stored, rules, items);
+    const byDelta = withInventory(resolved(), bag, rules, items);
+
+    expect(byDelta.stats).toEqual(byResolve.stats);
+    expect(byDelta.steps).toBe(byResolve.steps);
+    expect(byDelta.maxHp).toBe(byResolve.maxHp);
+    expect(byDelta.guard).toBe(byResolve.guard);
   });
 });

@@ -622,8 +622,15 @@ export function PlayerPanel(): ReactElement {
                  * underneath an open card, and a drop choice that outlived the
                  * item it named would send the server an id she is no longer
                  * carrying.
+                 *
+                 * `myBagIsFull` is part of the test for the same reason: she
+                 * can pick what to put down and *then* free a slot by drinking
+                 * something. A drop sent once there is room would destroy that
+                 * item for nothing — the server refuses it, and the panel
+                 * should never have offered it.
                  */
                 const chosenDrop =
+                  myBagIsFull &&
                   tradeDrop?.tradeId === offer.id &&
                   inventory.some((entry) => entry.itemId === tradeDrop.itemId)
                     ? tradeDrop.itemId
