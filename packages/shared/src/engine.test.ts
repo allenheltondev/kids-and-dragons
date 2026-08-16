@@ -921,6 +921,342 @@ describe("rest scenes", () => {
   });
 });
 
+/*
+ * Trading — spec §9.4. "At Rest scenes, the party can freely pass items between
+ * characters. Drag on your phone, tap to accept on theirs."
+ *
+ * The rule the whole design turns on: **an offer moves nothing.** The item sits
+ * in the giver's bag until the other phone answers, which is what makes a
+ * declined offer free and a stale one harmless. Every test below is really
+ * asking the same question — after this sequence, who is holding it? — because
+ * the failure that matters is an item that ends up in two bags or in none.
+ */
+describe("trading at a Rest scene (spec §9.4)", () => {
+  /** The party at `scene_camp`, p_1 carrying two things and p_2 nothing. */
+  function atCamp(context = ctx()): RunState {
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const stocked = applyEffects(
+      started,
+      [
+        { type: "grantItem", itemId: "sunbloom_draught", to: "p_1" },
+        { type: "grantItem", itemId: "river_charm", to: "p_1" },
+      ],
+      context,
+    );
+    return enterScene(stocked, "scene_camp", context).state;
+  }
+
+  const bagOf = (state: RunState, playerId: string): string[] =>
+    state.party
+      .find((m) => m.playerId === playerId)!
+      .character.inventory.map((e) => e.itemId);
+
+  const offer = (toPlayerId: string, itemId: string): ClientIntent => ({
+    type: "OFFER_ITEM",
+    itemId,
+    toPlayerId,
+  });
+
+  const onlyOffer = (state: RunState) => (state.trades ?? [])[0]!;
+
+  it("an offer moves nothing until it is answered", () => {
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    );
+
+    expect(offered.error).toBeUndefined();
+    expect(offered.state.trades).toHaveLength(1);
+    // Still hers. This is the whole point of the two-tap shape.
+    expect(bagOf(offered.state, "p_1")).toContain("sunbloom_draught");
+    expect(bagOf(offered.state, "p_2")).toEqual([]);
+  });
+
+  it("accepting hands it over exactly once", () => {
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const done = applyIntent(
+      offered,
+      { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+      context,
+    );
+
+    expect(done.error).toBeUndefined();
+    expect(bagOf(done.state, "p_1")).toEqual(["river_charm"]);
+    expect(bagOf(done.state, "p_2")).toEqual(["sunbloom_draught"]);
+    expect(done.state.trades).toEqual([]);
+  });
+
+  it("declining costs nobody anything", () => {
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const declined = applyIntent(
+      offered,
+      { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: false } },
+      context,
+    );
+
+    expect(declined.error).toBeUndefined();
+    expect(bagOf(declined.state, "p_1")).toContain("sunbloom_draught");
+    expect(declined.state.trades).toEqual([]);
+  });
+
+  it("lets the giver take an offer back", () => {
+    // Declining and withdrawing are the same event from opposite ends. An
+    // offer only the receiver could clear would strand an item behind a phone
+    // nobody is holding.
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const back = applyIntent(
+      offered,
+      { playerId: "p_1", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: false } },
+      context,
+    );
+
+    expect(back.error).toBeUndefined();
+    expect(back.state.trades).toEqual([]);
+    expect(bagOf(back.state, "p_1")).toContain("sunbloom_draught");
+  });
+
+  it("refuses an accept from anybody but the person it was offered to", () => {
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const grabbed = applyIntent(
+      offered,
+      { playerId: "p_1", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+      context,
+    );
+
+    expect(grabbed.error?.code).toBe("FORBIDDEN");
+    expect(grabbed.state.trades).toHaveLength(1);
+  });
+
+  it("only at a Rest scene", () => {
+    // The same gate a banked stat point passes. Mid-fight a consumable would
+    // cross an open turn order; mid-story it puts a bag in front of a question.
+    const context = ctx();
+    const story = applyEffects(
+      walk(
+        seatedParty(context),
+        [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+        context,
+      ).state,
+      [{ type: "grantItem", itemId: "sunbloom_draught", to: "p_1" }],
+      context,
+    );
+
+    expect(story.sceneType).toBe("story");
+    const refused = applyIntent(story, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context);
+    expect(refused.error?.code).toBe("ILLEGAL");
+    expect(refused.error?.message).toMatch(/Rest scene/);
+  });
+
+  it("drops unanswered offers when the party leaves the scene", () => {
+    // Nothing has moved, so dropping them costs the party nothing — and an
+    // offer left standing would be acceptable two scenes later, in a fight.
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const moved = enterScene(offered, "scene_ridge", context).state;
+
+    expect(moved.trades).toEqual([]);
+    expect(bagOf(moved, "p_1")).toContain("sunbloom_draught");
+  });
+
+  it("refuses a quest item, which the whole party already benefits from", () => {
+    // §9.2 plus `itemMatches`: a gate is satisfied by *anyone* holding it, so
+    // handing a story key over can never open a choice that was not already
+    // open. There is nothing to trade for.
+    const context = ctx();
+    const withKey = applyEffects(atCamp(context), [{ type: "grantQuestItem", itemId: "rusted_key" }], context);
+    const refused = applyIntent(withKey, { playerId: "p_1", intent: offer("p_2", "rusted_key") }, context);
+
+    expect(refused.error?.code).toBe("ILLEGAL");
+  });
+
+  it("refuses an offer of something the giver is not carrying", () => {
+    const context = ctx();
+    const refused = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "firecracker") },
+      context,
+    );
+    expect(refused.error?.code).toBe("NOT_FOUND");
+  });
+
+  it("refuses an offer into a bag with no room, rather than letting it sit there looking like a gift", () => {
+    const context = ctx();
+    const full = applyEffects(
+      atCamp(context),
+      Array.from({ length: INVENTORY_SLOTS }, () => ({
+        type: "grantItem" as const,
+        itemId: "firecracker",
+        to: "p_2",
+      })),
+      context,
+    );
+    expect(full.party.find((m) => m.playerId === "p_2")!.character.inventory).toHaveLength(
+      INVENTORY_SLOTS,
+    );
+
+    const refused = applyIntent(full, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context);
+    expect(refused.error?.code).toBe("ILLEGAL");
+    expect(refused.error?.message).toMatch(/bag is full/);
+  });
+
+  it("refuses a second identical offer instead of stacking two answers onto one item", () => {
+    const context = ctx();
+    const once = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const twice = applyIntent(once, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context);
+
+    expect(twice.error?.code).toBe("ILLEGAL");
+    expect(twice.state.trades).toHaveLength(1);
+  });
+
+  it("clears the losing offer when the same item was offered to two people", () => {
+    /*
+     * The race that would otherwise show two players a gift one tap already
+     * spent. p_1 has one potion; both friends are offered it; the first accept
+     * takes it and the other offer goes with it, rather than waiting to refuse
+     * somebody who thought they had it.
+     */
+    const context = ctx();
+    const three = walk(
+      atCamp(context),
+      [{ playerId: "p_3", intent: { ...CREATE_GRIFFIN, name: "Thistle" } as ClientIntent }],
+      context,
+    ).state;
+    let state = applyIntent(three, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context).state;
+    state = applyIntent(state, { playerId: "p_1", intent: offer("p_3", "sunbloom_draught") }, context).state;
+    expect(state.trades).toHaveLength(2);
+
+    const toP2 = (state.trades ?? []).find((t) => t.toPlayerId === "p_2")!;
+    const settled = applyIntent(
+      state,
+      { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: toP2.id, accept: true } },
+      context,
+    );
+
+    expect(settled.error).toBeUndefined();
+    expect(settled.state.trades).toEqual([]);
+    expect(bagOf(settled.state, "p_2")).toContain("sunbloom_draught");
+    expect(bagOf(settled.state, "p_3")).not.toContain("sunbloom_draught");
+    expect(bagOf(settled.state, "p_1")).not.toContain("sunbloom_draught");
+  });
+
+  it("takes the offer off the table the moment the giver drinks the potion", () => {
+    /*
+     * Not "refuses the accept" — the offer has to be *gone*, before the other
+     * phone can tap it. A refusal cannot clear it: `applyIntent` returns the
+     * original state when a handler throws, so an offer dropped on the way out
+     * of a rejected accept is dropped into a discarded draft, and the receiver
+     * would be left tapping a gift that is not there.
+     */
+    const context = ctx();
+    const hurt = applyEffects(atCamp(context), [{ type: "damage", amount: 4, to: "p_1" }], context);
+    const offered = applyIntent(hurt, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context).state;
+    expect(offered.trades).toHaveLength(1);
+
+    const drunk = applyIntent(
+      offered,
+      { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+      context,
+    );
+
+    expect(drunk.error).toBeUndefined();
+    expect(drunk.state.trades).toEqual([]);
+
+    // And the item cannot be conjured out of a bag that no longer holds it,
+    // even by a client replaying the old id.
+    const late = applyIntent(
+      drunk.state,
+      { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+      context,
+    );
+    expect(late.error?.code).toBe("NOT_FOUND");
+    expect(bagOf(late.state, "p_2")).not.toContain("sunbloom_draught");
+  });
+
+  it("refuses an accept into a bag that filled up after the offer", () => {
+    const context = ctx();
+    const offered = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") },
+      context,
+    ).state;
+    const filled = applyEffects(
+      offered,
+      Array.from({ length: INVENTORY_SLOTS }, () => ({
+        type: "grantItem" as const,
+        itemId: "firecracker",
+        to: "p_2",
+      })),
+      context,
+    );
+
+    const late = applyIntent(
+      filled,
+      { playerId: "p_2", intent: { type: "RESOLVE_TRADE", tradeId: onlyOffer(offered).id, accept: true } },
+      context,
+    );
+
+    expect(late.error?.code).toBe("ILLEGAL");
+    // Still theirs to accept once room is made — nothing was destroyed.
+    expect(bagOf(late.state, "p_1")).toContain("sunbloom_draught");
+  });
+
+  it("refuses an offer to yourself", () => {
+    const context = ctx();
+    const refused = applyIntent(
+      atCamp(context),
+      { playerId: "p_1", intent: offer("p_1", "sunbloom_draught") },
+      context,
+    );
+    expect(refused.error?.code).toBe("ILLEGAL");
+  });
+
+  it("survives a run persisted before trading existed", () => {
+    // `trades` is optional on RunState for the same reason `bonuses` is, and
+    // every reader coalesces rather than indexing into undefined.
+    const context = ctx();
+    const legacy = { ...atCamp(context) };
+    delete (legacy as { trades?: unknown }).trades;
+
+    const offered = applyIntent(legacy, { playerId: "p_1", intent: offer("p_2", "sunbloom_draught") }, context);
+    expect(offered.error).toBeUndefined();
+    expect(offered.state.trades).toHaveLength(1);
+  });
+});
+
 describe("items in play", () => {
   function withDraught(context: EngineContext): RunState {
     const state = walk(
