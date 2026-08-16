@@ -299,7 +299,16 @@ The largest chapter. Budget accordingly.
   every read in both stores, `putCharacter` stamps `v: CHARACTER_VERSION` on every write, and
   `listCharacters` skips-and-logs a row it cannot repair rather than taking the household down
   with it
-- **The transformation cutscene** — party stops, camera pushes in, tier swap, full-screen moment
+- ~~**The transformation cutscene** — party stops, camera pushes in, tier swap, full-screen moment~~
+  — built (`screens/TransformCutscene.tsx`), and the wiring was the finding. It plays off the
+  **progression** channel, because the `TRANSFORM` and `LEVEL_UP` *presentation* kinds are in the
+  protocol and **nothing has ever constructed one** — the completion screen's "you grew" chips
+  subscribed to them and so had never rendered once at a table. `Presentation` carries one event per
+  patch and the patch that crosses a tier has already spent its one on CHAPTER_COMPLETE; awards ride
+  `progression`, which is documented for exactly this and dedupes on server seq the same way.
+  One beat *per character* rather than a crowd shot: XP is uniform (§8.1), so a whole party crossing
+  together is the normal case, and one shot of three would cost the eight-year-old the moment the
+  screen exists for
 - Character sheet with tier history
 
 **Allen**

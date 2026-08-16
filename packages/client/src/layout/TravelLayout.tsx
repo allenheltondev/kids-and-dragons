@@ -24,6 +24,10 @@
  *   • The toggle takes you back to the world for the art, the party, the detail
  *     — and back again. Never sticky past the turn it was used in.
  *   • A roll takes the world for its ~1.5s wherever you were, then returns you.
+ *   • A transformation takes it for as long as the cutscene runs. Same rule,
+ *     bigger stakes: without it, spec §8.1's "single most important moment in
+ *     the game" plays inside a `display: none` pane for whoever last tapped
+ *     something — which, at the end of a chapter, is whoever just finished it.
  *
  * **Both surfaces stay mounted.** Hiding is visual only. Unmounting the world
  * would tear down the Pixi context on every toggle and — worse — drop the
@@ -40,12 +44,19 @@ import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
 import { ModeSwitch } from "./ModeSwitch";
 import { Icon } from "../screens/icons";
-import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation } from "../store";
+import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation, useProgression } from "../store";
+import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 
 type Focus = "world" | "player";
 
 /** Long enough for the die to land and be read (spec §2.2). */
 const ROLL_HOLD_MS = 2000;
+
+/**
+ * A little past the last beat, so the world is not yanked away on the exact
+ * frame the cutscene clears itself.
+ */
+const TRANSFORM_TAIL_MS = 400;
 
 export function TravelLayout(): React.JSX.Element {
   /*
@@ -65,7 +76,9 @@ export function TravelLayout(): React.JSX.Element {
   const myTurn = isMyPrompt || isMyCombatTurn || me === null;
   const [focus, setFocus] = useState<Focus>("world");
   const [rolling, setRolling] = useState(false);
+  const [transforming, setTransforming] = useState(false);
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transformTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Needing you pushes your controls in front of you. Deliberately keyed on
   // the turn rather than set once: going back to the world to re-read a scene
@@ -81,14 +94,41 @@ export function TravelLayout(): React.JSX.Element {
     rollTimer.current = setTimeout(() => setRolling(false), ROLL_HOLD_MS);
   });
 
+  /*
+   * And the transformation takes it for the whole queue.
+   *
+   * Sized from the cutscene's own beat length times the number of characters
+   * crossing, because a queue is not a fixed duration: uniform XP (spec §8.1)
+   * means the whole party can cross on the same evening, and a hold sized for
+   * one would drop the pane back on somebody else's moment. `TRANSFORM_BEAT_MS`
+   * is imported rather than re-typed so the two clocks cannot drift.
+   */
+  useProgression((event) => {
+    const crossings = (event.progression.awards ?? []).filter(
+      (award) => award.newTier !== undefined,
+    ).length;
+    if (crossings === 0) return;
+    setTransforming(true);
+    if (transformTimer.current) clearTimeout(transformTimer.current);
+    transformTimer.current = setTimeout(
+      () => setTransforming(false),
+      crossings * TRANSFORM_BEAT_MS + TRANSFORM_TAIL_MS,
+    );
+  });
+
   useEffect(
     () => () => {
       if (rollTimer.current) clearTimeout(rollTimer.current);
+      if (transformTimer.current) clearTimeout(transformTimer.current);
     },
     [],
   );
 
-  const showing: Focus = rolling ? "world" : focus;
+  /*
+   * The transformation outranks the roll, which outranks whatever you were
+   * looking at. Nothing outranks the transformation.
+   */
+  const showing: Focus = transforming || rolling ? "world" : focus;
 
   return (
     <div className="kad-travel">
