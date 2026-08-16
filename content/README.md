@@ -55,9 +55,27 @@ something valid and complete to run against before that happens.
 
 It is deliberately a superset of what one chapter normally uses: every non-combat scene type
 (`story`, `check`, `choice_point`, `rest`), one `encounter`, species-gated choices for all six
-species, a flag gate, an item gate, item grants, a quest item, a branch that reconverges, and — the
-one that matters — **a failed roll that keeps the story going.** If a renderer handles this chapter,
-it handles anything.
+species, a flag gate, an item gate, item grants, a quest item, a branch that reconverges, bonus
+objectives, and — the one that matters — **a failed roll that keeps the story going.** If a renderer
+handles this chapter, it handles anything.
+
+It carries **two** rest scenes, and the difference between them is the point. `rest_lanternfall`
+ends the chapter; `rest_mossbank` is a waypoint the party passes through on every route out of the
+shrine. A banked stat point can only be spent at a Rest scene *while the run is still in play*
+(`prepareStatPointSpend` refuses one outside `phase: "scene"`), so a chapter whose only rest is its
+ending gives a levelled character nowhere to spend what they earned. Any real chapter wants at least
+one of each.
+
+Its two objectives watch `scouted_the_path` and `made_a_doorway` — flags the chapter already sets
+from optional choices, because spec §8.2's rule is that an objective is *pointed at* a `setFlag` and
+never given a mechanism of its own. Their 15 + 10 is exactly the 25%-of-`xpAward` ceiling, so the
+shared budget is exercised rather than left with slack in it.
+
+What it still does **not** have is a **setback ending** (spec §8.2). Every route through it
+succeeds, so the halved award, the setback counter, and — through that counter — campaign failure
+and the souvenir it leaves behind are all unreachable in play, though each is built and unit-tested.
+Whoever writes the first authored chapter should give it an ending that declares
+`"outcome": "setback"`; it is one key on one terminal scene.
 
 ## Conventions the schema cannot state
 
@@ -68,7 +86,10 @@ it handles anything.
 - **A scene with an empty `choices` array ends the chapter.** The `Chapter` type has no terminal
   marker, and this is the only representable one. `rest_lanternfall` is that scene here, which
   matches spec §6.1 — Rest *is* the end-of-session beat. Every chapter needs at least one, and every
-  other scene must lead somewhere; the validator enforces both.
+  other scene must lead somewhere; the validator enforces both. Note what follows: a rest scene with
+  choices is a waypoint and a rest scene without them is the ending, so the *same scene type* means
+  two different things depending on one array. `rest_mossbank` and `rest_lanternfall` are both here
+  so a renderer cannot pass by handling only one of them.
 - **`items.json` and `bestiary.json` are generated — do not edit them.** Both are projections of
   `canon/*.yaml`, which is the source of truth ([canon contract](../docs/canon-contract.md)). Run
   `npm run canon:items` / `npm run canon:bestiary`; CI regenerates and fails on any diff. They carry
