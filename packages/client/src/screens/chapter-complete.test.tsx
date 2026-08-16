@@ -17,7 +17,7 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import type { EarnedBonus, ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
@@ -87,6 +87,7 @@ function mount(overrides: Partial<RunState> = {}) {
       ...overrides,
     },
     items: ITEMS,
+    progression: null,
     loadContent: async () => undefined,
     loadChapter: async () => undefined,
   });
@@ -167,5 +168,57 @@ describe("bonus objectives (spec §8.2)", () => {
     mount({ chapterOutcome: "setback", xpEarned: 70, bonuses: [bonus()] });
     expect(screen.getByText("The story took a turn")).toBeTruthy();
     expect(screen.getByText("Found the hidden shrine")).toBeTruthy();
+  });
+});
+
+/**
+ * Who grew — off the **progression** channel.
+ *
+ * These chips were wired to `LEVEL_UP` and `TRANSFORM` *presentation* events,
+ * which nothing in the codebase has ever constructed, so they never rendered
+ * once at a table. The server sends level and tier crossings in
+ * `progression.awards`; a test that emits presentations would pass against a
+ * panel wired to nothing, which is exactly what the old code was.
+ */
+describe("who grew (progression awards)", () => {
+  function progress(seq: number, list: { characterId: string; newTier?: string; leveledTo?: number }[]) {
+    act(() => {
+      useGameStore.setState({
+        progression: {
+          seq,
+          progression: { characters: [MEMBER.character], awards: list as never },
+        },
+      });
+    });
+  }
+
+  it("shows nothing about growing when nobody did", () => {
+    mount();
+    expect(screen.queryByText("Levelled up!")).toBeNull();
+    expect(screen.queryByText(/New look/)).toBeNull();
+  });
+
+  it("marks a level-up and shows the new number", () => {
+    mount();
+    progress(10, [{ characterId: "c_1", leveledTo: 3 }]);
+
+    expect(screen.getByText("Levelled up!")).toBeTruthy();
+    expect(screen.getByText("Level 3")).toBeTruthy();
+  });
+
+  it("marks a tier crossing, which is the receipt for the cutscene", () => {
+    mount();
+    progress(10, [{ characterId: "c_1", leveledTo: 4, newTier: "sworn" }]);
+
+    expect(screen.getByText("New look: sworn")).toBeTruthy();
+  });
+
+  it("ignores a progression update it has already handled", () => {
+    // Dedupes on server seq, so React strict mode's resubscribe cannot double
+    // anything up.
+    mount();
+    progress(10, [{ characterId: "c_1", leveledTo: 3 }]);
+    progress(10, [{ characterId: "c_1", leveledTo: 9 }]);
+    expect(screen.getByText("Level 3")).toBeTruthy();
   });
 });
