@@ -165,8 +165,21 @@ sheet**, openable for anybody in the party (spec §6.1's "look at each other's c
 where souvenirs finally show up — §8.3 calls the souvenir the point of a failed campaign, and
 nothing had ever drawn one. It also says which half of a level is still on loan while a campaign is
 in flight, rather than letting the commitment rule stay invisible until the evening it takes
-something back. **That closes roadmap Chapter 5.** Still outstanding: the authoring tools
-(Chapter 6) and the live LLM layer (Chapter 7).
+something back. **That closes roadmap Chapter 5.**
+
+**Chapter 6 — the authoring tools — is closed too**, and it is four commands. `content:balance`
+plays each authored fight out round by round and reports what it costs; it is the tuning note in
+`content/rules.json` turned into something that can be run, and the first thing it found was that
+the `brute` band at its usual count takes ten rounds rather than the four spec §7.1 asks for.
+`content:graph` draws each chapter into a self-contained HTML page — the scene graph laid out by
+longest path from the entry, so an arrow pointing back up the page is a real loop, with every scene
+clickable for its branches and the validator's findings drawn on the boxes they belong to.
+**Playtest mode** puts two cheats on the dev server and nowhere else: jump to any scene, and load
+the next d20. Both go through `applyIntent`, so a jump runs `onEnter` and opens the scene's prompt
+rather than showing you a scene the game never produces. And `content:generate` writes a chapter
+from a one-line brief — then runs the *real* content validator over it and hands the gate's own
+complaints back for repair until it passes, which means nothing it writes can fail the build.
+Still outstanding: the live LLM layer (Chapter 7).
 One content gap goes with them: no authored ending declares `"outcome": "setback"` yet, so the
 halved award and — through the setback counter — campaign failure are unreachable in play, though
 both are built and tested.
