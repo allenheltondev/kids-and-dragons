@@ -75,6 +75,21 @@ export interface PartyProfile {
 export interface EncounterEstimate {
   /** Rounds until the last enemy falls, or `ROUND_CAP` if it never does. */
   rounds: number;
+  /**
+   * The same fight if the party drags a revived hero out of reach for a round.
+   *
+   * §7.3 has two readings and the model cannot pick between them, because the
+   * difference is *movement* and the model does not move anybody. Strict rules
+   * re-target the hero who was just helped up — standing, at 1 HP, next to the
+   * thing that floored them. A real table walks them clear.
+   *
+   * Reported rather than chosen, because the gap between the two is the honest
+   * width of the answer. On a fight with no knockdowns they are the same number
+   * and nothing is said; on one with a spiral they can differ by a lot, and an
+   * author quoting only the first would be quoting the pessimistic end of a
+   * bracket as though it were a measurement.
+   */
+  roundsIfRetreating: number;
   /** Total damage the party absorbs across the fight. */
   damageTaken: number;
   /** How the round count sits against spec §7.1's target. */
@@ -152,6 +167,15 @@ export function hitChance(mod: number, target: number): number {
   return Math.max(0, Math.min(1, (21 - needed) / 20));
 }
 
+/** What one playthrough of the model produced. */
+interface Run {
+  rounds: number;
+  damageTaken: number;
+  heroesDown: number;
+  knockdowns: number;
+  partyWiped: boolean;
+}
+
 /** One authored spec expanded into individuals, and averaged where it must be. */
 interface EnemyPool {
   hp: number[];
@@ -224,6 +248,7 @@ export function estimateEncounter(
   if (enemyCount === 0) {
     return {
       rounds: 0,
+      roundsIfRetreating: 0,
       damageTaken: 0,
       verdict: "short",
       heroesDown: 0,
@@ -242,7 +267,8 @@ export function estimateEncounter(
     );
   }
 
-  const damagePerAttacker = hitChance(party.attackMod, meanGuard) * attackDamage;
+  const damagePerAttacker =
+    hitChance(party.attackMod, meanGuard) * attackDamage;
   const damagePerEnemy = hitChance(meanAttack, party.guard) * attackDamage;
 
   if (damagePerAttacker <= 0) {
@@ -252,6 +278,7 @@ export function estimateEncounter(
     );
     return {
       rounds: ROUND_CAP,
+      roundsIfRetreating: ROUND_CAP,
       damageTaken: partyHp,
       verdict: "long",
       heroesDown: party.size,
@@ -264,85 +291,131 @@ export function estimateEncounter(
     };
   }
 
-  let enemyPool = startingHp;
-  // Heroes are tracked one at a time because the AI focuses one at a time.
-  let heroes = Array.from({ length: party.size }, () => party.hp);
-  const everDown = new Set<number>();
-  let knockdowns = 0;
-  let rounds = 0;
-  let damageTaken = 0;
-  let partyWiped = false;
+  /**
+   * One playthrough. `retreat` is the only difference between the two readings
+   * of §7.3 the model cannot choose between — see `Run` above.
+   */
+  function simulate(retreat: boolean): Run {
+    let enemyPool = startingHp;
+    // Heroes are tracked one at a time because the AI focuses one at a time.
+    let heroes = Array.from({ length: party.size }, () => party.hp);
+    const everDown = new Set<number>();
+    let knockdowns = 0;
+    let rounds = 0;
+    let damageTaken = 0;
+    let partyWiped = false;
 
-  while (enemyPool.length > 0 && rounds < ROUND_CAP) {
-    let standing = heroes.filter((each) => each > 0).length;
-    if (standing === 0) {
-      // Nobody left to pick anybody up, and nobody left to swing. The fight is
-      // over without a round in it.
-      partyWiped = true;
-      break;
-    }
-
-    rounds += 1;
-    const enemiesAtStart = enemyPool.length;
-
-    /*
-     * §7.3 — one friend spends their action on Help Up, and the hero comes back
-     * at 1 HP. One per round, because everybody has exactly one action; a party
-     * with two heroes on the floor takes two rounds to get them both back, and
-     * that is the shape of the spiral rather than a shortcut around it.
-     */
-    const floored = heroes.findIndex((each) => each <= 0);
-    if (floored !== -1) {
-      heroes = heroes.map((each, index) => (index === floored ? REVIVE_HP : each));
-      standing -= 1;
-    }
-
-    enemyPool = focusDamage(enemyPool, standing * damagePerAttacker);
-
-    /*
-     * Turn order is rerolled every round (§7.2), so each enemy has its own
-     * chance of swinging before the party's damage lands. Averaging the count
-     * across the round is that expectation, and it is the difference between
-     * "dead things still hit you" and "dying is instant" — both wrong, in
-     * opposite directions.
-     */
-    const swinging = (enemiesAtStart + enemyPool.length) / 2;
-    const swung = swinging * damagePerEnemy;
-    let incoming = swung;
-
-    while (incoming > 0) {
-      const front = heroes.findIndex((each) => each > 0);
-      if (front === -1) break;
-      const hp = heroes[front] ?? 0;
-      if (hp > incoming) {
-        heroes = heroes.map((each, index) => (index === front ? hp - incoming : each));
-        incoming = 0;
-      } else {
-        // Down, and the AI moves on to the next standing hero (`enemy-ai.ts`
-        // filters them out rather than finishing them off — §7.3).
-        incoming -= hp;
-        heroes = heroes.map((each, index) => (index === front ? 0 : each));
-        everDown.add(front);
-        knockdowns += 1;
+    while (enemyPool.length > 0 && rounds < ROUND_CAP) {
+      let standing = heroes.filter((each) => each > 0).length;
+      if (standing === 0) {
+        // Nobody left to pick anybody up, and nobody left to swing. The fight is
+        // over without a round in it.
+        partyWiped = true;
+        break;
       }
+
+      rounds += 1;
+      const enemiesAtStart = enemyPool.length;
+
+      /*
+       * §7.3 — one friend spends their action on Help Up, and the hero comes back
+       * at 1 HP. One per round, because everybody has exactly one action; a party
+       * with two heroes on the floor takes two rounds to get them both back, and
+       * that is the shape of the spiral rather than a shortcut around it.
+       */
+      const floored = heroes.findIndex((each) => each <= 0);
+      let sheltered = -1;
+      if (floored !== -1) {
+        heroes = heroes.map((each, index) =>
+          index === floored ? REVIVE_HP : each,
+        );
+        standing -= 1;
+        // Under the retreating reading, the friend who spent their action getting
+        // them up also gets them out of reach for the round.
+        if (retreat) sheltered = floored;
+      }
+
+      enemyPool = focusDamage(enemyPool, standing * damagePerAttacker);
+
+      /*
+       * Turn order is rerolled every round (§7.2), so each enemy has its own
+       * chance of swinging before the party's damage lands. Averaging the count
+       * across the round is that expectation, and it is the difference between
+       * "dead things still hit you" and "dying is instant" — both wrong, in
+       * opposite directions.
+       */
+      const swinging = (enemiesAtStart + enemyPool.length) / 2;
+      const swung = swinging * damagePerEnemy;
+      let incoming = swung;
+
+      while (incoming > 0) {
+        const front = heroes.findIndex(
+          (each, index) => each > 0 && index !== sheltered,
+        );
+        if (front === -1) break;
+        const hp = heroes[front] ?? 0;
+        if (hp > incoming) {
+          heroes = heroes.map((each, index) =>
+            index === front ? hp - incoming : each,
+          );
+          incoming = 0;
+        } else {
+          // Down, and the AI moves on to the next standing hero (`enemy-ai.ts`
+          // filters them out rather than finishing them off — §7.3).
+          incoming -= hp;
+          heroes = heroes.map((each, index) => (index === front ? 0 : each));
+          everDown.add(front);
+          knockdowns += 1;
+        }
+      }
+
+      // Whatever is left over had nobody standing to land on, which only happens
+      // on the round the party goes over. Overkill is not damage taken.
+      damageTaken += swung - incoming;
     }
 
-    // Whatever is left over had nobody standing to land on, which only happens
-    // on the round the party goes over. Overkill is not damage taken.
-    damageTaken += swung - incoming;
+    return {
+      rounds,
+      damageTaken,
+      heroesDown: everDown.size,
+      knockdowns,
+      partyWiped,
+    };
   }
+
+  /*
+   * Both readings, because the difference between them is the honest width of
+   * the answer rather than a detail. Strict rules re-target the hero who was
+   * just helped up — they are standing, at 1 HP, next to the thing that floored
+   * them, and `enemy-ai.ts` walks at the nearest standing hero. A real table
+   * drags them clear. The model cannot move anybody, so it reports both.
+   */
+  const strict = simulate(false);
+  const retreating = simulate(true);
+  const { rounds, damageTaken, heroesDown, knockdowns, partyWiped } = strict;
 
   if (rounds >= ROUND_CAP) {
-    notes.push(`Stopped at ${String(ROUND_CAP)} rounds — the party never finished it.`);
+    notes.push(
+      `Stopped at ${String(ROUND_CAP)} rounds — the party never finished it.`,
+    );
   }
   if (partyWiped) {
-    notes.push("Everybody ends up on the floor with nobody left to help them up.");
+    notes.push(
+      "Everybody ends up on the floor with nobody left to help them up.",
+    );
   }
 
   notes.push(
     "Positioning is ignored: round one is usually spent walking, so a real fight runs about a round longer.",
   );
   notes.push("Plain attacks only — no abilities, no items, no terrain.");
+  if (retreating.rounds !== rounds) {
+    notes.push(
+      `Nobody moves in this model. A party that walks a revived hero out of reach ` +
+        `finishes in ${String(retreating.rounds)} rounds instead of ${String(rounds)} — ` +
+        `treat the pair as the range.`,
+    );
+  }
 
   /*
    * A wipe is "long" rather than anything else, and that is not a fudge: the
@@ -360,9 +433,10 @@ export function estimateEncounter(
 
   return {
     rounds,
+    roundsIfRetreating: retreating.rounds,
     damageTaken: Math.round(damageTaken * 10) / 10,
     verdict,
-    heroesDown: everDown.size,
+    heroesDown,
     knockdowns,
     partyWiped,
     partyHp,
