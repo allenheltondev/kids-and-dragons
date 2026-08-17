@@ -88,6 +88,46 @@ export interface PrefetchKey {
   sceneId: SceneId;
   /** The label of the choice that leads here, or null for a direct arrival. */
   choiceId: string | null;
+  /**
+   * A fingerprint of the state the line was written against.
+   *
+   * §6.4 keys the cache on `(sceneId, choiceId)` alone, which is enough for a
+   * party that only ever moves forward and wrong for one that loops. A chapter
+   * may route back through a scene it has already been through, and the entry
+   * from the first pass is still sitting in the map: the same edge, the same
+   * key, a line written before an intervening fight, before three flags got
+   * set, and before somebody got knocked down.
+   *
+   * Serving that is worse than serving nothing, because it is *specifically*
+   * wrong — the layer's whole job is to know what has happened, so a stale line
+   * fails at exactly the thing it was added to do.
+   *
+   * So the key carries what the prompt actually read. Anything the narration
+   * depends on changing makes the key miss, and a miss is the authored text.
+   * Deliberately conservative: an intervening fight invalidates warm entries
+   * that would still have been fine, and that costs one live call.
+   */
+  stamp: string;
+}
+
+/**
+ * The fingerprint — the state a line was written against, as a short string.
+ *
+ * Covers exactly what reaches the prompt: who is hurt or down (`partyBlock`)
+ * and which flags are set (`sceneBlock`). Not `seq`, which moves on every
+ * READY and every roll and would miss every single time; not the whole state,
+ * which would do the same for a different reason.
+ */
+export function stampOf(state: RunState): string {
+  const health = state.party
+    .map((member) => `${member.character.id}:${String(member.hp)}${member.down ? "d" : ""}`)
+    .join(",");
+  const flags = Object.entries(state.flags)
+    .filter(([, on]) => on)
+    .map(([flag]) => flag)
+    .sort()
+    .join(",");
+  return `${health}|${flags}`;
 }
 
 export interface Narrator {
@@ -101,14 +141,27 @@ export interface Narrator {
   take(key: PrefetchKey, request: NarrationRequest): string | null;
 
   /**
-   * Warms the cache for what can happen next. Returns immediately; the work
-   * happens after the response has already gone out.
+   * Warms the cache for what can happen next.
    *
-   * Fire-and-forget on purpose — a rejected promise here must not fail the
-   * action that triggered it, and there is nothing to await because nothing
-   * downstream is allowed to block on the result.
+   * **Returns a promise the caller must await**, which is the opposite of what
+   * fire-and-forget wants and is forced by where this runs. On Lambda the
+   * execution environment is frozen the moment the handler's promise resolves:
+   * a request dispatched and not awaited does not continue during the gap it
+   * was dispatched into. It resumes on the *next* invocation — which is the tap
+   * it was supposed to be ready for, arriving after `take()` has already
+   * missed. Speculative work that lands after the moment it was speculating
+   * about is worse than none: it is paid for and never read.
+   *
+   * Awaiting costs the player nothing, because of *where* it is awaited. The
+   * patch is published to every phone before this is called, so the television
+   * and all three controllers have already moved on; the only thing still
+   * waiting is the acting phone's HTTP response, which carries `{ ok, seq }`
+   * and which nothing renders from.
+   *
+   * Never rejects — a failure to warm is a cache miss, and a cache miss is the
+   * authored text.
    */
-  warm(moments: { key: PrefetchKey; request: NarrationRequest }[]): void;
+  warm(moments: { key: PrefetchKey; request: NarrationRequest }[]): Promise<void>;
 
   /** The end-of-chapter recap, or `null`. This one may take its time. */
   recap(request: RecapRequest): Promise<string | null>;
@@ -123,7 +176,7 @@ export interface Narrator {
  */
 export const silentNarrator: Narrator = {
   take: () => null,
-  warm: () => undefined,
+  warm: () => Promise.resolve(),
   recap: () => Promise.resolve(null),
 };
 

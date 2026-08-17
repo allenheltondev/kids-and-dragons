@@ -346,11 +346,25 @@ export async function applyAction(
    * for the next lines before the response was sent would have spent it on the
    * wrong side of the wire.
    *
-   * Not awaited, and it never rejects — `warm` swallows its own failures. The
-   * turn has already committed and already been published, so nothing this does
-   * or fails to do can change the answer below.
+   * **Awaited**, which took a review to get right. Firing and forgetting works
+   * in a long-lived dev server and does not work on Lambda: the execution
+   * environment is frozen the moment the handler's promise resolves, so a
+   * request dispatched and not awaited does not run during the gap it was
+   * dispatched into. It thaws on the *next* invocation — the tap it was meant
+   * to be ready for — and lands after `take()` has already missed. Every line
+   * would be paid for and none would ever be read.
+   *
+   * Awaiting costs the table nothing because of where it sits: `publish` is
+   * above it, so all three phones and the television already have the patch.
+   * The only thing still waiting is this request's `{ ok, seq }`, which the
+   * client uses to arm a resync watchdog and never renders.
+   *
+   * It never rejects and it is bounded — `warm` swallows its own failures and
+   * gives up after four seconds. The turn has already committed and already
+   * been published, so nothing this does or fails to do can change the answer
+   * below.
    */
-  if (deps.narrator && chapter) deps.narrator.warm(nextMoments(next, chapter));
+  if (deps.narrator && chapter) await deps.narrator.warm(nextMoments(next, chapter));
 
   return { ok: true, seq: nextSeq };
 }

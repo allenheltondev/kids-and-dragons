@@ -179,8 +179,34 @@ describe("what to warm", () => {
         },
       },
     };
-    expect(exitsOf(shared.scenes.scene_fork!).map((e) => e.label)).toEqual(["Smash it", "Walk through"]);
     expect(nextMoments(runAt("scene_fork"), shared)).toHaveLength(2);
+
+    /*
+     * And the label is **dropped** for the shared destination, which is the
+     * half that makes collapsing safe rather than merely cheap.
+     *
+     * Keeping the first label meant a party who *flew over* the hedge got a
+     * line generated from "Smash it": the prompt was told they chose something
+     * they did not choose, and the result could contradict the authored
+     * transition sitting directly above it on the same screen. Confidently
+     * wrong about how they got here is worse than saying nothing, because
+     * knowing how they got here is the entire reason this layer exists.
+     *
+     * The prefetch runs before anybody has tapped. When several buttons lead to
+     * one room, "I do not know which" is the true answer, and `null` is how it
+     * is said.
+     */
+    const exits = exitsOf(shared.scenes.scene_fork!);
+    expect(exits.map((e) => e.goto)).toEqual(["scene_hedge", "scene_river"]);
+    expect(exits.map((e) => e.label)).toEqual([null, "Walk through"]);
+    expect(nextMoments(runAt("scene_fork"), shared).map((m) => m.request.via)).toEqual([null, "Walk through"]);
+  });
+
+  it("keeps the label when exactly one button leads somewhere", () => {
+    // The other side of the rule: dropping every label would throw away the
+    // most useful thing the prompt gets, on every scene that does not have the
+    // collision.
+    expect(exitsOf(CHAPTER.scenes.scene_fork!).every((exit) => exit.label !== null)).toBe(true);
   });
 
   it("skips a destination with no authored text", () => {
@@ -265,5 +291,88 @@ describe("what to take on arrival", () => {
   it("has nothing to take on the first scene of a chapter", () => {
     // Nobody was anywhere before, so there was no scene to prefetch from.
     expect(arrivalKey(runAt(null), runAt("scene_fork"), CHAPTER)).toBeNull();
+  });
+});
+
+describe("the state fingerprint", () => {
+  /**
+   * A run at a scene with the party in a given condition. The default fixture
+   * has an empty party, so these build one — the fingerprint is about hit
+   * points and flags, and neither is observable without somebody to have them.
+   */
+  function runWith(sceneId: string, hp: number, flags: Record<string, boolean>): RunState {
+    const base = runAt(sceneId);
+    return {
+      ...base,
+      flags,
+      party: [
+        {
+          character: { id: "c_1", maxHp: 10 } as RunState["party"][number]["character"],
+          playerId: "p_1",
+          hp,
+          down: false,
+          connected: true,
+          ready: false,
+        },
+      ],
+    };
+  }
+
+  it("makes a loop back through the same edge miss rather than serve a stale line", () => {
+    /*
+     * §6.4 keys the cache on `(sceneId, choiceId)`, which is enough for a party
+     * that only ever moves forward and wrong for one that loops. A chapter may
+     * route back through a scene it has already been through, and the entry
+     * from the first pass is still in the map under an identical key: same
+     * edge, same button, a line written before an intervening fight and before
+     * three flags got set.
+     *
+     * Serving that is worse than serving nothing. The layer's whole job is to
+     * know what has happened, so a stale line fails at precisely the thing it
+     * was added to do — and does it confidently, on a television.
+     */
+    const first = nextMoments(runWith("scene_fork", 10, { freed_sprite: true }), CHAPTER);
+    const hurt = runWith("scene_fork", 3, { freed_sprite: true, met_the_door: true });
+    const second = nextMoments(hurt, CHAPTER);
+
+    expect(first[0]?.key.sceneId).toBe(second[0]?.key.sceneId);
+    expect(first[0]?.key.choiceId).toBe(second[0]?.key.choiceId);
+    expect(first[0]?.key.stamp).not.toBe(second[0]?.key.stamp);
+  });
+
+  it("agrees between the scene being left and the scene arrived at", () => {
+    // The two halves have to compute the same fingerprint from the same state,
+    // or nothing is ever taken and the layer is silently off.
+    const before = runWith("scene_fork", 7, { freed_sprite: true });
+    const after = { ...runWith("scene_hedge", 7, { freed_sprite: true }), sceneId: "scene_hedge" };
+
+    const warmed = nextMoments(before, CHAPTER).find((m) => m.key.sceneId === "scene_hedge");
+    const arrival = arrivalKey(before, after, CHAPTER);
+
+    expect(arrival).not.toBeNull();
+    expect(arrival?.stamp).toBe(warmed?.key.stamp);
+  });
+
+  it("is fingerprinted from where they were, not from where they landed", () => {
+    /*
+     * The subtlety that would break every hit. The line was written while the
+     * party stood in the *previous* scene, so the fingerprint has to be of that
+     * state — and arriving somewhere applies `onEnter`, which can set a flag
+     * and change the answer.
+     */
+    const before = runWith("scene_fork", 7, {});
+    const after = { ...runWith("scene_hedge", 7, { arrived_at_hedge: true }), sceneId: "scene_hedge" };
+
+    const warmed = nextMoments(before, CHAPTER).find((m) => m.key.sceneId === "scene_hedge");
+    expect(arrivalKey(before, after, CHAPTER)?.stamp).toBe(warmed?.key.stamp);
+  });
+
+  it("ignores seq, which moves on every tap and would miss every time", () => {
+    // A READY, a roll, a trade — all bump seq without touching anything the
+    // prompt reads. Folding seq in would invalidate the batch before the party
+    // had finished reading the scene it was warmed for.
+    const a = runWith("scene_fork", 10, { freed_sprite: true });
+    const b = { ...a, seq: a.seq + 5 };
+    expect(nextMoments(a, CHAPTER)[0]?.key.stamp).toBe(nextMoments(b, CHAPTER)[0]?.key.stamp);
   });
 });
