@@ -235,6 +235,54 @@ describe("jumping to a scene", () => {
     const jumped = send(hurt, { type: "PLAYTEST_GOTO", sceneId: "scene_ridge" });
     expect(jumped.state.party[0]?.hp).toBe(4);
   });
+
+  it("carries damage out of a fight it interrupts", () => {
+    /*
+     * The half of "leaves damage alone" that the obvious test misses, and the
+     * one that actually bites. Between scenes, `party[].hp` is where a hero's
+     * hit points live and a jump cannot lose them. *During a fight* they live on
+     * `encounter.combatants` instead, and `party[].hp` still holds what they
+     * walked in with — `settleEncounter` is what copies them back, and it only
+     * runs on a win or a loss.
+     *
+     * So a jump that dropped the board without copying first would hand back a
+     * party healed to full, silently. An author who jumped out of a losing fight
+     * to try the boss at half health would get a fresh party and be told
+     * nothing — the exact opposite of what the jump promises, and unfalsifiable
+     * from the screen.
+     */
+    const fighting = walk(
+      inChapter(),
+      [
+        { playerId: "p_1", intent: { type: "PLAYTEST_GOTO", sceneId: "encounter_wisps" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+      ],
+      ctx(),
+    );
+
+    const board = fighting.encounter;
+    expect(board).toBeTruthy();
+    if (!board) return;
+
+    // Wound one hero on the board, leaving `party[].hp` untouched — which is
+    // exactly the state a real fight in progress is in.
+    const heroId = fighting.party[0]?.character.id;
+    const walkedInWith = fighting.party[0]?.hp;
+    expect(board.combatants.some((c) => c.id === heroId)).toBe(true);
+    const wounded: RunState = {
+      ...fighting,
+      encounter: {
+        ...board,
+        combatants: board.combatants.map((c) => (c.id === heroId ? { ...c, hp: 2 } : c)),
+      },
+    };
+    expect(wounded.party[0]?.hp).toBe(walkedInWith);
+
+    const away = send(wounded, { type: "PLAYTEST_GOTO", sceneId: "scene_ridge" });
+    expect(away.state.encounter).toBeNull();
+    expect(away.state.party[0]?.hp).toBe(2);
+  });
 });
 
 describe("loading the next roll", () => {
