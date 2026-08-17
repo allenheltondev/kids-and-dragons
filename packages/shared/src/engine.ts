@@ -621,6 +621,21 @@ function enterSceneDraft(
   // it above the destination's text is how it reads at the table.
   draft.narration = transitionNarration ? `${transitionNarration}\n\n${authored}`.trim() : authored;
 
+  /*
+   * The trail, for the end-of-chapter recap (roadmap chapter 7).
+   *
+   * Appended here because this is the one function every arrival goes through —
+   * a choice, a branch off a roll, a fight ending, a playtest jump. Coalesced
+   * rather than assumed, because `RunState` is persisted plain JSON and a run
+   * that started before this field existed has to keep playing.
+   *
+   * Consecutive duplicates are dropped: re-entering the scene you are already
+   * on is not a step in the story, and a recap that says the same room twice in
+   * a row reads like a bug.
+   */
+  const trail = draft.visited ?? [];
+  if (trail.at(-1) !== sceneId) draft.visited = [...trail, sceneId];
+
   applyEffectsDraft(draft, scene.onEnter, ctx);
 
   // Rest scenes heal on arrival (spec §6.1) — the natural end-of-session beat.
