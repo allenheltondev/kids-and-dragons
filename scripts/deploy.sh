@@ -117,6 +117,12 @@ PARAMS=("StageName=$STAGE")
 if [ -n "${WEBAUTHN_RP_ID:-}" ]; then
   PARAMS+=("WebAuthnRelyingPartyId=$WEBAUTHN_RP_ID")
 fi
+# The live narration layer (roadmap chapter 7). Unset means off, which is the
+# template default too — so the "every parameter, every time" rule above costs
+# nothing here: leaving it out and passing `false` are the same deploy.
+if [ -n "${LIVE_LLM_ENABLED:-}" ]; then
+  PARAMS+=("LiveLlmEnabled=$LIVE_LLM_ENABLED")
+fi
 
 sam deploy \
   --template-file infra/template.yaml \

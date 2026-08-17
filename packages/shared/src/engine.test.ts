@@ -1859,9 +1859,13 @@ describe("chapter outcomes (spec §8.2)", () => {
     const context = ctx({ chapter: chapterWith({ outcome: "setback" }), rng: fixedRng(20) });
     const ended = playToEnding(context);
     expect(ended.state.chapterOutcome).toBe("setback");
+    // The trail is built by playing, so it is real rather than planted — and a
+    // recap, which only the live layer writes, is stood in for here.
+    expect((ended.state.visited ?? []).length).toBeGreaterThan(0);
+    const finished: RunState = { ...ended.state, recap: "You went into the wood and came out friends with a door." };
 
     const restarted = walk(
-      ended.state,
+      finished,
       [
         { playerId: "p_1", intent: { type: "ADVANCE" } },
         { playerId: "p_1", intent: { type: "READY", ready: true } },
@@ -1876,6 +1880,21 @@ describe("chapter outcomes (spec §8.2)", () => {
     expect(restarted.state.chapterOutcome).toBeNull();
     expect(restarted.state.bonuses).toEqual([]);
     expect(restarted.state.xpEarned).toBe(0);
+
+    /*
+     * The live layer's two fields, which are chapter-scoped for exactly the
+     * same reason and were missed the first time.
+     *
+     * `visited` is the spine of the recap: carried across, the second chapter's
+     * recap retells the first one's scenes and names rooms that are not in this
+     * chapter at all. And `recap` is the previous chapter's finished story —
+     * left standing it is shown again on *this* chapter's completion screen
+     * every time the live layer is off, times out, or has its answer rejected,
+     * which the layer being optional makes the normal case rather than the edge
+     * one.
+     */
+    expect(restarted.state.visited).toEqual(["scene_clearing"]);
+    expect(restarted.state.recap).toBeNull();
   });
 });
 
