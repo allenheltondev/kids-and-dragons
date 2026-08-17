@@ -103,6 +103,31 @@ async function chooseUntil(page: Page, label: RegExp, done: () => Promise<boolea
 }
 
 /**
+ * Does this option's label carry one of the party's names?
+ *
+ * The question is "has somebody already voted for this", and the answer has to
+ * be a **whole-word** match rather than a substring. `includes` looked
+ * equivalent and was not: a hero called Bramble made every `Bramblewisp` in the
+ * chapter read as a party member.
+ *
+ * That is not hypothetical. It is the ~1-in-10 e2e failure: the walk test names
+ * its third hero Bramble, the fight it can route into is three Bramblewisps, and
+ * so every attack target was skipped as "already voted". With no option left to
+ * tap, the party stood in front of the wisps until the budget ran out — a fight
+ * nobody could ever take a swing at, on a run that had done nothing wrong except
+ * fail a check and end up in combat.
+ *
+ * `\b` is exactly the fix: `Bramble` matches `Bramble` and not `Bramblewisp`,
+ * because there is no word boundary in the middle of a word.
+ */
+function labelNamesAHero(label: string, heroes: readonly string[]): boolean {
+  return heroes.some((hero) => {
+    const escaped = hero.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`\\b${escaped}\\b`, "i").test(label);
+  });
+}
+
+/**
  * Answer whatever this phone is being asked, if anything. Returns whether it
  * acted. Choices are select-then-confirm (spec §11), and an option already
  * carrying a voter's name is this player's own vote — tapping it again would
@@ -115,7 +140,7 @@ async function answerPrompt(page: Page, heroes: readonly string[]): Promise<bool
     const label = (await option.innerText().catch(() => "")).trim();
     if (!label) continue;
     if (/do it!|yes, do that|wait, not yet|change/i.test(label)) continue;
-    if (heroes.some((hero) => label.includes(hero))) continue;
+    if (labelNamesAHero(label, heroes)) continue;
     fresh.push(option);
   }
   if (fresh.length === 0) return false;
