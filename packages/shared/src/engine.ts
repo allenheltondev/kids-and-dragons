@@ -1239,6 +1239,26 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
     { board: parseBoard(map.rows), party, enemies },
     combatCtx(ctx),
   );
+
+  /*
+   * The ready-up has been answered — close it.
+   *
+   * `enterSceneDraft` opens a `ready` prompt in front of every encounter so
+   * three phones can swap to a combat UI before anybody's figure takes a hit.
+   * Its whole job is to gate this moment, and this is the moment; leaving it
+   * open means the board goes up *and* the ready prompt is still standing.
+   *
+   * That is not cosmetic. Only one prompt is ever open at a time, and a stale
+   * one is a control that outlives its question: for the rest of the fight
+   * every phone renders "You're ready / Wait, not yet" beside the combat UI,
+   * and tapping it un-readies a player in the middle of a round it has no
+   * business touching. It also gives anything driving the game by what is on
+   * screen — a test, or a person — a prompt to answer forever instead of a
+   * turn to take, which is exactly how it was found: a fight stuck in round 2
+   * with a ready prompt still open and all three players already ready.
+   */
+  draft.prompt = null;
+
   // Whoever the initiative roll put first might be a monster, so the fight has
   // to be walked forward before anybody's phone is asked for anything.
   return runEnemyTurns(draft, ctx);

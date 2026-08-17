@@ -868,6 +868,21 @@ describe("a full walk of a chapter", () => {
     expect(begun.presentation).toMatchObject({ kind: "ENCOUNTER_BEGAN", mapId: "thicket" });
     // Whoever won initiative is on the clock, and it is a real figure.
     expect(begun.state.encounter?.order.length).toBe(5); // 2 heroes + 3 wisps
+
+    /*
+     * And the ready-up is **closed**, because it has been answered.
+     *
+     * Left open it is a control that outlives its question. Only one prompt is
+     * ever open at a time, so for the rest of the fight every phone renders
+     * "You're ready / Wait, not yet" beside the combat UI, and tapping it
+     * un-readies a player in the middle of a round it has no business
+     * touching — while the turn that actually needs taking goes untaken.
+     *
+     * Found by an intermittent e2e failure: a fight stuck in round 2, all
+     * three players already ready, a `ready` prompt still standing, and the
+     * playthrough answering it forever instead of ending anybody's turn.
+     */
+    expect(begun.state.prompt).toBeNull();
   });
 
   it("refuses a combat intent from a player whose turn it is not", () => {
