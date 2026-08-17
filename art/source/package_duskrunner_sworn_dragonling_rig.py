@@ -18,7 +18,14 @@ BASE = ROOT / "assets/characters/dragonling/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/dragonling"
 PARTS = OUT / "parts"
 REVIEW = ROOT / "art/review/duskrunner_sworn_dragonling_rig_split.png"
+REVIEW_TITLE = "Duskrunner Sworn Dragonling - rig split"
+REVIEW_NOTE = (
+    "Approved exact pose   -   scarf and harness follow the body   -   "
+    "wings and mane remain unobstructed"
+)
 BASE_PARTS = ("wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
+EDGE_ALPHA_CLIP_TOP = 0
+EDGE_ALPHA_CLIP_PARTS: tuple[str, ...] = ()
 
 # Registered against the canonical Sworn rest pose using unchanged landmarks
 # on the face, wings, feet, and tail. The approved portrait needs only a small
@@ -112,10 +119,10 @@ def review_board(assembled: Image.Image) -> None:
         note = ImageFont.truetype("arial.ttf", 20)
     except OSError:
         title = label = note = ImageFont.load_default()
-    draw.text((50, 34), "Duskrunner Sworn Dragonling - rig split", font=title, fill="white")
+    draw.text((50, 34), REVIEW_TITLE, font=title, fill="white")
     draw.text(
         (52, 88),
-        "Approved exact pose   -   scarf and harness follow the body   -   wings and mane remain unobstructed",
+        REVIEW_NOTE,
         font=note,
         fill="#b9c7d8",
     )
@@ -183,6 +190,11 @@ def main() -> None:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    if EDGE_ALPHA_CLIP_TOP > 0:
+        for name in EDGE_ALPHA_CLIP_PARTS:
+            clipped_alpha = np.asarray(parts[name].getchannel("A")).copy()
+            clipped_alpha[:EDGE_ALPHA_CLIP_TOP, :] = 0
+            parts[name].putalpha(Image.fromarray(clipped_alpha.astype(np.uint8), "L"))
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)

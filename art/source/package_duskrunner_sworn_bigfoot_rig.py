@@ -18,12 +18,19 @@ BASE = ROOT / "assets/characters/bigfoot/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/bigfoot"
 PARTS = OUT / "parts"
 REVIEW = ROOT / "art/review/duskrunner_sworn_bigfoot_rig_split.png"
+REVIEW_TITLE = "Duskrunner Sworn Bigfoot - rig split"
+REVIEW_NOTE = (
+    "Approved exact pose   -   fitted harness follows the torso   -   "
+    "mane remains above the garment"
+)
 BASE_PARTS = ("leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
 
 # Registered against unchanged face, hand, foot, and mane landmarks.
 REGISTERED_SIZE = (969, 936)
 REGISTERED_OFFSET = (21, 56)
 GEAR_ENVELOPE = (290, 280, 750, 730)
+SUBJECT_CLOSE_SIZE = 1
+SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
 Z_ORDER = (
     "leg_l",
     "leg_r",
@@ -60,7 +67,14 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
     connected = Image.fromarray(np.where(residual > 7, 255, 0).astype(np.uint8), "L")
     connected = connected.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))
     ImageDraw.floodfill(connected, (500, 500), 128, thresh=0)
-    return Image.fromarray(np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L")
+    subject = Image.fromarray(
+        np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L"
+    )
+    if SUBJECT_CLOSE_SIZE > 1:
+        subject = subject.filter(ImageFilter.MaxFilter(SUBJECT_CLOSE_SIZE)).filter(
+            ImageFilter.MinFilter(SUBJECT_CLOSE_SIZE)
+        )
+    return subject
 
 
 def register_subject(portrait: Image.Image, alpha: Image.Image) -> tuple[Image.Image, Image.Image]:
@@ -105,10 +119,10 @@ def review_board(assembled: Image.Image) -> None:
         note = ImageFont.truetype("arial.ttf", 20)
     except OSError:
         title = label = note = ImageFont.load_default()
-    draw.text((50, 34), "Duskrunner Sworn Bigfoot - rig split", font=title, fill="white")
+    draw.text((50, 34), REVIEW_TITLE, font=title, fill="white")
     draw.text(
         (52, 88),
-        "Approved exact pose   -   fitted harness follows the torso   -   mane remains above the garment",
+        REVIEW_NOTE,
         font=note,
         fill="#b9c7d8",
     )
@@ -161,10 +175,18 @@ def main() -> None:
     parts: dict[str, Image.Image] = {}
     for name in BASE_PARTS:
         base_alpha = base_parts[name].getchannel("A")
+        part_alpha_array = np.asarray(base_alpha).copy()
+        if SUBJECT_CLIP_ENVELOPE is not None:
+            left, top, right, bottom = SUBJECT_CLIP_ENVELOPE
+            part_alpha_array[top:bottom, left:right] = np.minimum(
+                part_alpha_array[top:bottom, left:right],
+                subject_array[top:bottom, left:right],
+            )
+        part_alpha = Image.fromarray(part_alpha_array.astype(np.uint8), "L")
         anatomy_alpha = Image.fromarray(
-            np.maximum(np.asarray(anatomy_alpha), np.asarray(base_alpha)).astype(np.uint8), "L"
+            np.maximum(np.asarray(anatomy_alpha), np.asarray(part_alpha)).astype(np.uint8), "L"
         )
-        parts[name] = masked_portrait(portrait, base_alpha)
+        parts[name] = masked_portrait(portrait, part_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
