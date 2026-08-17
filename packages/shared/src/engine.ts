@@ -805,17 +805,23 @@ function dispatch(
  * The two things it does on top are both about leaving the *old* scene in a
  * state a jump can legally depart from:
  *
- *   - An encounter in progress is dropped. A fight is the one thing on the run
- *     that outlives a scene change — `settleEncounter` normally carries HP back
- *     out of it — and a board left standing after a warp would put the party in
- *     a fight belonging to a scene they are no longer in.
+ *   - An encounter in progress is dropped — but its damage is carried out onto
+ *     the party first, exactly as `settleEncounter` does after a win or a loss.
+ *     A fight is the one thing on the run that outlives a scene change, and a
+ *     board left standing after a warp would put the party in a fight belonging
+ *     to a scene they are no longer in. Dropping it without the carry-out would
+ *     be worse than leaving it: `combatants` is where current hit points live
+ *     while the board is up, so the jump would quietly hand back a party healed
+ *     to full — and an author who jumped out of a fight to check whether the
+ *     boss is survivable at half health would be testing it at full health
+ *     without being told.
  *   - Ready flags are cleared, because the next scene may be an encounter, and
  *     three phones still holding a ready from before the jump would start it
  *     before anybody had looked up.
  *
- * Damage is deliberately *not* undone. An author checking whether the boss is
- * survivable at half health wants the party they have, not a fresh one; hit
- * points are what `PLAYTEST_SET_DIE` and replaying are for.
+ * Damage is therefore never undone, mid-fight or between scenes. An author
+ * checking whether the boss is survivable at half health wants the party they
+ * have, not a fresh one; healing is what a Rest scene is for.
  */
 function doPlaytestGoto(
   draft: RunState,
@@ -823,6 +829,7 @@ function doPlaytestGoto(
   ctx: EngineContext,
 ): Presentation | undefined {
   requireScene(requireChapter(ctx), sceneId);
+  if (draft.encounter) carryDamageOut(draft, draft.encounter);
   draft.encounter = null;
   for (const member of draft.party) member.ready = false;
   return enterSceneDraft(draft, sceneId, ctx);
@@ -1379,14 +1386,17 @@ function positionOfActor(encounter: EncounterState, id: string): Position {
  * on from there. There is deliberately no losing phase for this to put the run
  * into.
  */
-function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
-  const encounter = draft.encounter;
-  if (!encounter) return undefined;
-  const outcome = encounterOutcome(encounter);
-  if (outcome === "ongoing") return undefined;
-
-  // Carry the damage out with them. A fight that cost her six hit points is a
-  // fight she is still six hit points down from at the next scene.
+/**
+ * Carries a fight's damage out onto the party.
+ *
+ * A fight that cost her six hit points is a fight she is still six hit points
+ * down from at the next scene. While the board is up, `combatants` is where a
+ * hero's current hit points live and `draft.party` still holds what they walked
+ * in with — so this has to run before `draft.encounter` is dropped, on **every**
+ * path that drops it. There are two, and the second one is easy to miss: a
+ * playtest jump also ends a fight, just not by winning or losing it.
+ */
+function carryDamageOut(draft: RunState, encounter: EncounterState): void {
   for (const member of draft.party) {
     const combatant = encounter.combatants.find((c) => c.id === member.character.id);
     if (!combatant) continue;
@@ -1394,6 +1404,15 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
     member.down = combatant.down;
     member.ready = false;
   }
+}
+
+function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
+  const encounter = draft.encounter;
+  if (!encounter) return undefined;
+  const outcome = encounterOutcome(encounter);
+  if (outcome === "ongoing") return undefined;
+
+  carryDamageOut(draft, encounter);
 
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "no encounter is running");
