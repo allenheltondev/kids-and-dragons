@@ -32,6 +32,7 @@ GEAR_ENVELOPE = (120, 80, 700, 720)
 FILL_SUBJECT_HOLES = False
 SUBJECT_CLOSE_SIZE = 1
 SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
+PART_ALPHA_ERASE_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
 Z_ORDER = (
     "wings",
     "tail",
@@ -209,6 +210,14 @@ def main() -> None:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    # Apply intentional per-part trims after residual assignment so an erased
+    # overlap is not immediately reassigned to the body fallback.
+    for erase_part, envelope in PART_ALPHA_ERASE_ENVELOPES:
+        if erase_part not in parts:
+            continue
+        part_alpha = parts[erase_part].getchannel("A")
+        part_alpha.paste(0, envelope)
+        parts[erase_part].putalpha(part_alpha)
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
