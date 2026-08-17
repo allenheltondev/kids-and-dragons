@@ -74,6 +74,15 @@ async function main(): Promise<void> {
     identity,
     random: cryptoRandom,
     now: () => Date.now(),
+    /*
+     * Roadmap chapter 6's playtest cheats — warp to any scene, load the next
+     * d20 — are on here and only here. This is the same line `DevIdentity`
+     * sits on above: the local server is allowed to do things a deployed one
+     * must not, and the boundary is which file constructs the dependency
+     * rather than a flag either of them could read. `lambda/runtime.ts` passes
+     * a literal `false`, so there is nothing to misconfigure in prod.
+     */
+    playtest: true,
   };
 
   const app = express();

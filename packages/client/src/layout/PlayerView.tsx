@@ -22,6 +22,10 @@
 
 import { useEffect } from "react";
 import { CreationFlow, PlayerPanel, SignInFlow } from "../screens";
+// Imported by path rather than through the `screens` barrel on purpose: the
+// barrel is what every surface pulls in, and the playtest drawer should reach
+// exactly one call site — the one below, behind `import.meta.env.DEV`.
+import { PlaytestPanel } from "../screens/PlaytestPanel";
 import { useMe } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 
@@ -57,6 +61,17 @@ export function PlayerView(): React.JSX.Element {
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
       <SignInFlow />
+      {/*
+       * Roadmap chapter 6's playtest drawer — warp to a scene, load the next
+       * d20. `import.meta.env.DEV` is replaced with a literal `false` in the
+       * production build, so the branch is dead code there and the component
+       * drops out of the bundle with it.
+       *
+       * This is a convenience, not the boundary. The refusal that matters is
+       * the server's (`playtest.ts`), because a lock the client holds is one a
+       * client can lie about.
+       */}
+      {import.meta.env.DEV ? <PlaytestPanel /> : null}
     </div>
   );
 }
