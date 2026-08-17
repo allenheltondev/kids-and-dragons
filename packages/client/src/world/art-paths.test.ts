@@ -177,8 +177,8 @@ describe("class rig variants", () => {
     expect(characterRigUrl("manticore", "mythic", "duskrunner")).toBe(
       characterRigUrl("manticore", "mythic"),
     );
-    expect(characterRigUrl("griffin", "radiant", "duskrunner")).toBe(
-      characterRigUrl("griffin", "radiant"),
+    expect(characterRigUrl("griffin", "mythic", "duskrunner")).toBe(
+      characterRigUrl("griffin", "mythic"),
     );
     expect(characterWorldArtUrl("bigfoot", "sworn", "starweaver")).toBe(
       characterArtUrl("bigfoot", "sworn"),

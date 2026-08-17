@@ -18,12 +18,21 @@ BASE = ROOT / "assets/characters/griffin/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/griffin"
 PARTS = OUT / "parts"
 REVIEW = ROOT / "art/review/duskrunner_sworn_griffin_rig_split.png"
+REVIEW_TITLE = "Duskrunner Sworn Griffin - rig split"
+REVIEW_NOTE = (
+    "Approved exact pose   -   hood and scarf follow the head and body   -   "
+    "wings remain unobstructed"
+)
 BASE_PARTS = ("wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
 
 # Registered against unchanged feet, wing, flank, and tail landmarks.
 REGISTERED_SIZE = (999, 996)
 REGISTERED_OFFSET = (13, 0)
 GEAR_ENVELOPE = (120, 80, 700, 720)
+FILL_SUBJECT_HOLES = False
+SUBJECT_CLOSE_SIZE = 1
+SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
+PART_ALPHA_ERASE_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
 Z_ORDER = (
     "wings",
     "tail",
@@ -66,7 +75,22 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
     connected = Image.fromarray(np.where(residual > 7, 255, 0).astype(np.uint8), "L")
     connected = connected.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))
     ImageDraw.floodfill(connected, (500, 500), 128, thresh=0)
-    return Image.fromarray(np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L")
+    subject = Image.fromarray(
+        np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L"
+    )
+    if FILL_SUBJECT_HOLES:
+        # Keep gaps that connect to the exterior (between legs, beneath the
+        # belly), but close isolated chroma holes inside the dark garment.
+        exterior = subject.copy()
+        ImageDraw.floodfill(exterior, (0, 0), 128, thresh=0)
+        subject = Image.fromarray(
+            np.where(np.asarray(exterior) == 128, 0, 255).astype(np.uint8), "L"
+        )
+    if SUBJECT_CLOSE_SIZE > 1:
+        subject = subject.filter(ImageFilter.MaxFilter(SUBJECT_CLOSE_SIZE)).filter(
+            ImageFilter.MinFilter(SUBJECT_CLOSE_SIZE)
+        )
+    return subject
 
 
 def register_subject(portrait: Image.Image, alpha: Image.Image) -> tuple[Image.Image, Image.Image]:
@@ -111,10 +135,10 @@ def review_board(assembled: Image.Image) -> None:
         note = ImageFont.truetype("arial.ttf", 20)
     except OSError:
         title = label = note = ImageFont.load_default()
-    draw.text((50, 34), "Duskrunner Sworn Griffin - rig split", font=title, fill="white")
+    draw.text((50, 34), REVIEW_TITLE, font=title, fill="white")
     draw.text(
         (52, 88),
-        "Approved exact pose   -   hood and scarf follow the head and body   -   wings remain unobstructed",
+        REVIEW_NOTE,
         font=note,
         fill="#b9c7d8",
     )
@@ -171,13 +195,29 @@ def main() -> None:
     parts: dict[str, Image.Image] = {}
     for name in BASE_PARTS:
         base_alpha = base_parts[name].getchannel("A")
+        part_alpha_array = np.asarray(base_alpha).copy()
+        if SUBJECT_CLIP_ENVELOPE is not None:
+            left, top, right, bottom = SUBJECT_CLIP_ENVELOPE
+            part_alpha_array[top:bottom, left:right] = np.minimum(
+                part_alpha_array[top:bottom, left:right],
+                subject_array[top:bottom, left:right],
+            )
+        part_alpha = Image.fromarray(part_alpha_array.astype(np.uint8), "L")
         anatomy_alpha = Image.fromarray(
-            np.maximum(np.asarray(anatomy_alpha), np.asarray(base_alpha)).astype(np.uint8), "L"
+            np.maximum(np.asarray(anatomy_alpha), np.asarray(part_alpha)).astype(np.uint8), "L"
         )
-        parts[name] = masked_portrait(portrait, base_alpha)
+        parts[name] = masked_portrait(portrait, part_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    # Apply intentional per-part trims after residual assignment so an erased
+    # overlap is not immediately reassigned to the body fallback.
+    for erase_part, envelope in PART_ALPHA_ERASE_ENVELOPES:
+        if erase_part not in parts:
+            continue
+        part_alpha = parts[erase_part].getchannel("A")
+        part_alpha.paste(0, envelope)
+        parts[erase_part].putalpha(part_alpha)
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
