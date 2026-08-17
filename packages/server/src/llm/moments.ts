@@ -23,7 +23,7 @@
 
 import type { Chapter, RunState, Scene, SceneId } from "@kad/shared";
 import type { NarrationRequest, PrefetchKey } from "./port.ts";
-import { partyBrief } from "./port.ts";
+import { partyBrief, stampOf } from "./port.ts";
 
 /** §6.4's "3–4 likely reactions". */
 export const PREFETCH_WIDTH = 4;
@@ -50,7 +50,7 @@ export function authoredLine(scene: Scene): string {
  * take them. Filtering would need the party's species and would save at most one
  * call; including them means a gate that opens later is already warm.
  */
-export function exitsOf(scene: Scene): { label: string; goto: SceneId }[] {
+export function exitsOf(scene: Scene): { label: string | null; goto: SceneId }[] {
   switch (scene.type) {
     case "encounter":
       // A fight has exactly two ways out and the party does not choose either.
@@ -71,27 +71,45 @@ export function exitsOf(scene: Scene): { label: string; goto: SceneId }[] {
 }
 
 /**
- * One exit per destination, keeping the first label.
+ * One exit per destination — and **no label at all** when more than one choice
+ * leads there.
  *
- * Not an optimisation — a correctness rule, and the two functions in this file
- * disagreed without it. `arrivalKey` identifies an arrival by `.find()`ing the
- * first branch that leads where the party ended up, so a second branch to the
- * same scene produces a key that can never be read back. Warming it spends a
- * call on a line nothing will ever take.
+ * The collapsing is not an optimisation but a correctness rule, and the two
+ * functions in this file disagreed without it. `arrivalKey` identifies an
+ * arrival by finding the branch that leads where the party ended up, so a second
+ * branch to the same scene would produce a key that can never be read back:
+ * warming it spends a call on a line nothing will ever take.
  *
- * The reference chapter's entry scene is exactly this shape: three
- * species-gated choices — smash it, fly over it, walk through it — all arriving
- * at the same clearing. Before this, they filled the prefetch window and pushed
- * one of the scene's only two *ungated* choices out of it, so the branch the
- * party was most likely to take was the one branch never warmed.
+ * The reference chapter's entry scene is exactly this shape — three
+ * species-gated choices, smash it, fly over it, walk through it, all arriving at
+ * the same clearing. Before this they filled the prefetch window and pushed one
+ * of the scene's only two *ungated* choices out of it, so the branch the party
+ * was most likely to take was the one branch never warmed.
+ *
+ * **Dropping the label is the other half, and without it the fix was a bug.**
+ * Keeping the first label meant a party who flew over the hedge got a line
+ * generated from "smash it" — the prompt was told they got here by choosing
+ * something they did not choose, and the line could then contradict the
+ * authored transition sitting directly above it on the same screen. That is a
+ * worse failure than no line at all, because it is confidently wrong about the
+ * one thing this layer exists to know.
+ *
+ * The prefetch runs before anybody has tapped, so when several buttons lead to
+ * the same room the honest answer is that we do not know which one they will
+ * press. `via: null` says so, and `momentBlock` renders it as a plain arrival.
  */
-function dedupe(exits: { label: string; goto: SceneId }[]): { label: string; goto: SceneId }[] {
+function dedupe(exits: { label: string; goto: SceneId }[]): { label: string | null; goto: SceneId }[] {
+  const count = new Map<SceneId, number>();
+  for (const exit of exits) count.set(exit.goto, (count.get(exit.goto) ?? 0) + 1);
+
   const seen = new Set<SceneId>();
-  return exits.filter((exit) => {
-    if (seen.has(exit.goto)) return false;
+  const collapsed: { label: string | null; goto: SceneId }[] = [];
+  for (const exit of exits) {
+    if (seen.has(exit.goto)) continue;
     seen.add(exit.goto);
-    return true;
-  });
+    collapsed.push({ label: (count.get(exit.goto) ?? 0) > 1 ? null : exit.label, goto: exit.goto });
+  }
+  return collapsed;
 }
 
 /**
@@ -107,6 +125,10 @@ export function nextMoments(state: RunState, chapter: Chapter): Moment[] {
   if (!here) return [];
 
   const party = partyBrief(state);
+  // One fingerprint for the whole batch: every line in it is written against
+  // the state the party is standing in right now, which is the state
+  // `arrivalKey` will fingerprint when they leave.
+  const stamp = stampOf(state);
   const moments: Moment[] = [];
 
   for (const exit of exitsOf(here).slice(0, PREFETCH_WIDTH)) {
@@ -121,7 +143,7 @@ export function nextMoments(state: RunState, chapter: Chapter): Moment[] {
     if (authored.trim().length === 0) continue;
 
     moments.push({
-      key: { runId: state.runId, sceneId: exit.goto, choiceId: exit.label },
+      key: { runId: state.runId, sceneId: exit.goto, choiceId: exit.label, stamp },
       request: {
         runId: state.runId,
         chapter,
@@ -161,5 +183,8 @@ export function arrivalKey(
   const exit = exitsOf(from).find((each) => each.goto === after.sceneId);
   if (!exit) return null;
 
-  return { runId: after.runId, sceneId: after.sceneId, choiceId: exit.label };
+  // Fingerprinted from `before` — the state the party was standing in when the
+  // batch was warmed — so a loop back through the same edge after anything has
+  // happened misses rather than serving a line written for the first pass.
+  return { runId: after.runId, sceneId: after.sceneId, choiceId: exit.label, stamp: stampOf(before) };
 }

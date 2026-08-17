@@ -41,7 +41,7 @@ const CHAPTER: Chapter = {
   },
 };
 
-const KEY: PrefetchKey = { runId: "r_1", sceneId: "scene_hedge", choiceId: "Squeeze through" };
+const KEY: PrefetchKey = { runId: "r_1", sceneId: "scene_hedge", choiceId: "Squeeze through", stamp: "c_1:10|" };
 
 const REQUEST: NarrationRequest = {
   runId: "r_1",
@@ -75,7 +75,12 @@ function build(answers: string[] | (() => string), extra: Parameters<typeof crea
   return { narrator, ...fake, log };
 }
 
-/** `warm` is fire-and-forget, so a test has to let the microtasks drain. */
+/**
+ * `warm` used to be fire-and-forget and is now awaited — see the Lambda-freeze
+ * note on `Narrator.warm`. Kept as a helper so the tests below read the same
+ * either way, and so a regression back to fire-and-forget would show up here
+ * rather than as a silent 100% miss rate in production.
+ */
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe("taking a line", () => {
@@ -88,8 +93,7 @@ describe("taking a line", () => {
 
   it("hands back what was warmed", async () => {
     const { narrator } = build([GOOD]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(narrator.take(KEY, REQUEST)).toBe(GOOD);
   });
 
@@ -100,8 +104,7 @@ describe("taking a line", () => {
      * sentence twice is worse than the authored line both times.
      */
     const { narrator } = build([GOOD]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(narrator.take(KEY, REQUEST)).toBe(GOOD);
     expect(narrator.take(KEY, REQUEST)).toBeNull();
   });
@@ -114,8 +117,7 @@ describe("taking a line", () => {
      * television.
      */
     const { narrator } = build([GOOD]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(narrator.take({ ...KEY, runId: "r_2" }, REQUEST)).toBeNull();
   });
 
@@ -125,7 +127,7 @@ describe("taking a line", () => {
     // deserve different sentences.
     const other = "You go the long way round and the hedge does not comment, which somehow feels worse.";
     const { narrator } = build([GOOD, other]);
-    narrator.warm([
+    await narrator.warm([
       { key: KEY, request: REQUEST },
       { key: { ...KEY, choiceId: "Go around" }, request: { ...REQUEST, via: "Go around" } },
     ]);
@@ -140,7 +142,7 @@ describe("taking a line", () => {
     vi.useFakeTimers();
     try {
       const { narrator } = build([GOOD]);
-      narrator.warm([{ key: KEY, request: REQUEST }]);
+      await narrator.warm([{ key: KEY, request: REQUEST }]);
       await vi.advanceTimersByTimeAsync(1);
       vi.advanceTimersByTime(11 * 60 * 1000);
       expect(narrator.take(KEY, REQUEST)).toBeNull();
@@ -199,8 +201,7 @@ describe("warming", () => {
     // The layout §6.3 asks for: everything stable in the cached block, the
     // party and the scene and the moment behind it.
     const { narrator, seen } = build([GOOD]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     const request = seen[0];
     expect(request?.cached).toContain("Examples");
     expect(request?.cached).not.toContain("Squeeze through");
@@ -211,8 +212,7 @@ describe("warming", () => {
     // Prefix matching is on bytes; two renders that differ by a space are two
     // cache entries and zero cache hits.
     const { narrator, seen } = build([GOOD, GOOD]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     narrator.warm([{ key: { ...KEY, choiceId: "Go around" }, request: REQUEST }]);
     await settle();
     expect(seen[0]?.cached).toBe(seen[1]?.cached);
@@ -225,8 +225,7 @@ describe("the validator, from the narrator's side", () => {
     // worth adding. It is a good outcome, not a failure, and the authored line
     // stands.
     const { narrator, log } = build(["PASS"]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(narrator.take(KEY, REQUEST)).toBeNull();
     expect(log).not.toHaveBeenCalledWith(expect.stringContaining("rejected"));
   });
@@ -235,8 +234,7 @@ describe("the validator, from the narrator's side", () => {
     // §6.5: "Anything that fails is discarded and the authored text is used.
     // Silently." The log line is for a developer; nothing reaches the game.
     const { narrator, log } = build(["The hedge is covered in blood and something here has met its death."]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(narrator.take(KEY, REQUEST)).toBeNull();
     expect(log).toHaveBeenCalledWith(expect.stringContaining("forbidden topic"));
   });
@@ -245,8 +243,7 @@ describe("the validator, from the narrator's side", () => {
     // §6.5: "no retry loop, no waiting". A second attempt would spend the
     // prefetch window that the whole design exists to protect.
     const { narrator, seen } = build(["nope"]);
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(seen).toHaveLength(1);
   });
 });
@@ -287,8 +284,7 @@ describe("the dev-mode cache assertion", () => {
     const log = vi.fn();
     const send = () => Promise.resolve({ text: GOOD, cacheRead: 0, cacheWrite: 4200 });
     const narrator = createNarrator({ rules: RULES, awsRegion: "us-east-1", send, log, assertCache: true });
-    narrator.warm([{ key: KEY, request: REQUEST }]);
-    await settle();
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
     expect(log).not.toHaveBeenCalledWith(expect.stringContaining("not hitting"));
   });
 
@@ -340,5 +336,91 @@ describe("the recap", () => {
   it("holds a recap to the recap gate", async () => {
     const { narrator } = build(["Good job!"]);
     await expect(narrator.recap(request)).resolves.toBeNull();
+  });
+});
+
+describe("finishing before the invocation does", () => {
+  it("resolves only once every line it started has landed", async () => {
+    /*
+     * The P1 a review caught, and the one that would have made the whole layer
+     * a no-op in production while passing every test.
+     *
+     * On Lambda the execution environment is frozen the instant the handler's
+     * promise resolves. A request dispatched and not awaited does not continue
+     * during the gap it was dispatched into — it thaws on the *next*
+     * invocation, which is the tap it was supposed to be ready for, arriving
+     * after `take()` has already missed. Every line paid for, none ever read.
+     *
+     * So `warm` has to be awaitable and has to actually be complete when it
+     * resolves.
+     *
+     * The sender answers on a **timer** rather than a resolved promise, and
+     * that detail is the test. A fake that resolves in microtasks lands its
+     * entry during the `await` regardless of whether `warm` waited for it, so
+     * the obvious version of this test passed against a `warm` that returned
+     * immediately — it was measuring the fake, not the code. A macrotask cannot
+     * be drained by an early return.
+     */
+    const narrator = createNarrator({
+      rules: RULES,
+      awsRegion: "us-east-1",
+      send: () =>
+        new Promise<LiveReply>((resolve) => {
+          setTimeout(() => {
+            resolve({ text: GOOD, cacheRead: 0, cacheWrite: 0 });
+          }, 25);
+        }),
+      log: () => undefined,
+    });
+
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
+    expect(narrator.take(KEY, REQUEST)).toBe(GOOD);
+  });
+
+  it("gives up rather than holding the invocation open on a hung request", async () => {
+    /*
+     * The bound that makes awaiting safe. The turn has already committed and
+     * already broadcast by the time this runs, so one stuck socket must not be
+     * able to push a healthy turn into the function's own timeout.
+     *
+     * Fake timers, because the budget is four seconds and a test that waited
+     * them out would be four seconds slower for no extra confidence.
+     */
+    vi.useFakeTimers();
+    try {
+      const hung = createNarrator({
+        rules: RULES,
+        awsRegion: "us-east-1",
+        send: () => new Promise<never>(() => undefined),
+        log: () => undefined,
+      });
+
+      let done = false;
+      const warming = hung.warm([{ key: KEY, request: REQUEST }]).then(() => {
+        done = true;
+      });
+
+      await vi.advanceTimersByTimeAsync(3_000);
+      expect(done).toBe(false);
+      await vi.advanceTimersByTimeAsync(1_500);
+      await warming;
+      expect(done).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("resolves immediately when there is nothing new to warm", async () => {
+    // Every intent that is not an arrival — a READY, a trade, a stat spend —
+    // goes through this path. Arming a four-second timer on each of them would
+    // add latency to the whole session in exchange for nothing.
+    vi.useFakeTimers();
+    try {
+      const { narrator, seen } = build([GOOD]);
+      await narrator.warm([]);
+      expect(seen).toHaveLength(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

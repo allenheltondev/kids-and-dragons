@@ -1035,6 +1035,22 @@ function doStartChapter(
   draft.bonuses = [];
   draft.flags = {};
   draft.lastRoll = null;
+  /*
+   * The live layer's two fields, cleared for exactly the reason above them.
+   *
+   * `visited` is the spine of the recap, so a trail carried across the boundary
+   * makes the second chapter's recap retell the first one's scenes — naming
+   * rooms that are not in this chapter at all. And `recap` is the previous
+   * chapter's finished story: left standing, the completion screen shows it
+   * again at the end of *this* chapter every time the live layer is off, times
+   * out, or has its answer rejected — which, the layer being optional, is the
+   * normal case rather than the edge one.
+   *
+   * Both are the same omission: this function is the chapter boundary, and
+   * anything scoped to a chapter dies here.
+   */
+  draft.visited = [];
+  draft.recap = null;
   for (const member of draft.party) member.ready = false;
 
   return enterSceneDraft(draft, chapter.entry, ctx);
