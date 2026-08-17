@@ -134,6 +134,19 @@ export interface RunState {
    * key, and every reader coalesces rather than indexing into `undefined`.
    */
   trades?: TradeOffer[];
+  /**
+   * A d20 face the next roll will come up (roadmap chapter 6's playtest mode).
+   *
+   * On the run rather than in the request that sets it, because loading the die
+   * and rolling it are two taps and usually two devices: an author pins a 3 on
+   * the laptop and then hands the phone to whoever is testing the failure
+   * branch. Spent by the first roll that draws it — see `loadDie`.
+   *
+   * Optional for the same reason as everything above it, and it is read behind
+   * `EngineContext.playtest` besides: a run persisted by a dev server and
+   * somehow opened by a deployed one rolls honest dice.
+   */
+  playtestDie?: number | null;
   updatedAt: string;
 }
 

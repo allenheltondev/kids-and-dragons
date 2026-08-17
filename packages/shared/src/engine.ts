@@ -85,6 +85,7 @@ import { newCharacter, resolveCharacter, withInventory } from "./character.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
+import { loadDie, readDie } from "./playtest.js";
 
 // ---------------------------------------------------------------------------
 // Surface
@@ -123,6 +124,16 @@ export interface EngineContext {
   now: string;
   /** Used when a CREATE_CHARACTER intent builds a character. */
   householdId?: string;
+  /**
+   * Whether this server is allowed to cheat on the author's behalf — roadmap
+   * chapter 6's playtest mode, and the lock everything else about it hangs off.
+   *
+   * Absent means no. Only `dev-server.ts` ever passes `true`; the Lambda
+   * runtime passes a literal `false` so a deployed build has no path to it,
+   * the same way `DevIdentity` is never constructible in prod. See
+   * playtest.ts for the whole gate.
+   */
+  playtest?: boolean;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -674,8 +685,23 @@ export function applyIntent(
 
   const draft = draftOf(state);
   const effects: EngineEffects = {};
+
+  /*
+   * A die the author loaded, if this server is one that lets them (playtest.ts).
+   * Read here rather than inside the roll because this is where `ctx` is
+   * assembled for the whole intent, and because the die has to be *spent* on
+   * the way back out — a forced 20 that stayed loaded would turn the rest of
+   * the evening into a straight line.
+   */
+  const loaded =
+    ctx.playtest === true && typeof draft.playtestDie === "number"
+      ? loadDie(ctx.rng, draft.playtestDie)
+      : null;
+  const rolling = loaded ? { ...ctx, rng: loaded.rng } : ctx;
+
   try {
-    const presentation = dispatch(draft, envelope, ctx, effects);
+    const presentation = dispatch(draft, envelope, rolling, effects);
+    if (loaded?.spent()) draft.playtestDie = null;
     pruneTrades(draft);
     touch(draft, ctx);
     return {
@@ -701,6 +727,18 @@ function dispatch(
   effects: EngineEffects,
 ): Presentation | undefined {
   const { playerId, intent } = envelope;
+
+  /*
+   * The playtest gate, in one place rather than in each handler. A second
+   * cheat added later gets the check for free, and there is exactly one line
+   * to read when the question is "can a deployed server do this" (playtest.ts).
+   */
+  if (intent.type === "PLAYTEST_GOTO" || intent.type === "PLAYTEST_SET_DIE") {
+    if (ctx.playtest !== true) {
+      throw new Illegal("FORBIDDEN", "playtest mode is not enabled on this server");
+    }
+  }
+
   switch (intent.type) {
     case "MOVE":
       return doCombatMove(draft, playerId, intent.to, ctx);
@@ -749,7 +787,52 @@ function dispatch(
 
     case "SPEND_STAT_POINT":
       throw new Illegal("ILLEGAL", "stat points are spent through the authoritative run handler");
+
+    case "PLAYTEST_GOTO":
+      return doPlaytestGoto(draft, intent.sceneId, ctx);
+
+    case "PLAYTEST_SET_DIE":
+      draft.playtestDie = readDie(intent.die);
+      return undefined;
   }
+}
+
+/**
+ * Warps the run to a scene — roadmap chapter 6, gated in `dispatch` above.
+ *
+ * `enterSceneDraft` and nothing else, because a jump that skipped `onEnter`
+ * would be showing the author a scene the game never produces (playtest.ts).
+ * The two things it does on top are both about leaving the *old* scene in a
+ * state a jump can legally depart from:
+ *
+ *   - An encounter in progress is dropped — but its damage is carried out onto
+ *     the party first, exactly as `settleEncounter` does after a win or a loss.
+ *     A fight is the one thing on the run that outlives a scene change, and a
+ *     board left standing after a warp would put the party in a fight belonging
+ *     to a scene they are no longer in. Dropping it without the carry-out would
+ *     be worse than leaving it: `combatants` is where current hit points live
+ *     while the board is up, so the jump would quietly hand back a party healed
+ *     to full — and an author who jumped out of a fight to check whether the
+ *     boss is survivable at half health would be testing it at full health
+ *     without being told.
+ *   - Ready flags are cleared, because the next scene may be an encounter, and
+ *     three phones still holding a ready from before the jump would start it
+ *     before anybody had looked up.
+ *
+ * Damage is therefore never undone, mid-fight or between scenes. An author
+ * checking whether the boss is survivable at half health wants the party they
+ * have, not a fresh one; healing is what a Rest scene is for.
+ */
+function doPlaytestGoto(
+  draft: RunState,
+  sceneId: SceneId,
+  ctx: EngineContext,
+): Presentation | undefined {
+  requireScene(requireChapter(ctx), sceneId);
+  if (draft.encounter) carryDamageOut(draft, draft.encounter);
+  draft.encounter = null;
+  for (const member of draft.party) member.ready = false;
+  return enterSceneDraft(draft, sceneId, ctx);
 }
 
 function doReady(
@@ -1303,14 +1386,17 @@ function positionOfActor(encounter: EncounterState, id: string): Position {
  * on from there. There is deliberately no losing phase for this to put the run
  * into.
  */
-function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
-  const encounter = draft.encounter;
-  if (!encounter) return undefined;
-  const outcome = encounterOutcome(encounter);
-  if (outcome === "ongoing") return undefined;
-
-  // Carry the damage out with them. A fight that cost her six hit points is a
-  // fight she is still six hit points down from at the next scene.
+/**
+ * Carries a fight's damage out onto the party.
+ *
+ * A fight that cost her six hit points is a fight she is still six hit points
+ * down from at the next scene. While the board is up, `combatants` is where a
+ * hero's current hit points live and `draft.party` still holds what they walked
+ * in with — so this has to run before `draft.encounter` is dropped, on **every**
+ * path that drops it. There are two, and the second one is easy to miss: a
+ * playtest jump also ends a fight, just not by winning or losing it.
+ */
+function carryDamageOut(draft: RunState, encounter: EncounterState): void {
   for (const member of draft.party) {
     const combatant = encounter.combatants.find((c) => c.id === member.character.id);
     if (!combatant) continue;
@@ -1318,6 +1404,15 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
     member.down = combatant.down;
     member.ready = false;
   }
+}
+
+function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
+  const encounter = draft.encounter;
+  if (!encounter) return undefined;
+  const outcome = encounterOutcome(encounter);
+  if (outcome === "ongoing") return undefined;
+
+  carryDamageOut(draft, encounter);
 
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "no encounter is running");

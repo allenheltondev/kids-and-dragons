@@ -17,6 +17,9 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "content:validate": "node tools/content/validate.mjs",
+    "content:balance": "tsx tools/content/balance.ts",
+    "content:graph": "tsx tools/content/graph.ts",
+    "content:generate": "tsx tools/content/generate.ts",
     "canon:check": "tsx tools/canon/check.ts",
     "canon:bestiary": "tsx tools/canon/bestiary.ts",
     "canon:items": "tsx tools/canon/items.ts",
@@ -41,7 +44,12 @@
     "wiki:build": "tsx tools/wiki/generate.ts && hugo --source wiki && pagefind --site wiki/public",
     "spike:rive": "npm run spike:rive --workspace @kad/client"
   },
+  "_comment_overrides": "@anthropic-ai/bedrock-sdk brings a second @smithy/types, nested under @smithy/core. Two copies means the DynamoDB client's PutCommand and its own middleware stack are typed from different files, and packages/server stops compiling on a change that has nothing to do with it. Pinned to one.",
+  "overrides": {
+    "@smithy/types": "^4.17.2"
+  },
   "devDependencies": {
+    "@anthropic-ai/bedrock-sdk": "^0.32.4",
     "@playwright/test": "^1.62.0",
     "@rive-app/canvas-advanced": "^2.39.1",
     "@testing-library/dom": "^10.4.1",

@@ -102,7 +102,22 @@ export type ClientIntent =
       targetIds?: string[];
       targetTiles?: { x: number; y: number }[];
     }
-  | { type: "END_TURN" };
+  | { type: "END_TURN" }
+  /**
+   * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
+   * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
+   * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no
+   * path to them at all. See playtest.ts for why the gate is here rather than
+   * in a separate dev-only code path.
+   *
+   * They are in the shared protocol rather than a side channel because they go
+   * through `applyIntent` like everything else: a jump has to run `onEnter`,
+   * open the scene's prompt and heal at a Rest, or the author is playtesting a
+   * scene the game does not produce.
+   */
+  | { type: "PLAYTEST_GOTO"; sceneId: string }
+  /** The next d20 this run rolls, or null to let the dice go back to normal. */
+  | { type: "PLAYTEST_SET_DIE"; die: number | null };
 
 export interface ActionRequest {
   runId: string;
