@@ -9,7 +9,7 @@ import {
   type InternalGameStore,
 } from "./index";
 import type { ChannelOptions } from "../sync/channel";
-import type { Api } from "../sync/client";
+import { ApiError, type Api } from "../sync/client";
 import type { KeyValueStorage } from "./persistence";
 import { makeMember, makeState } from "../testing/fixtures";
 
@@ -698,5 +698,138 @@ describe("choosing a transport (architecture §4.4)", () => {
 
     expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD");
     expect(h.channelOptions().createEventSource).toBeTypeOf("function");
+  });
+});
+
+describe("recovering a stored session from the URL", () => {
+  /**
+   * A phone that has already joined, reloaded. This is the state every surface
+   * is in after a hard refresh: a session in storage, nothing in memory.
+   */
+  async function refreshed(h: ReturnType<typeof harness>) {
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    // Wipe the in-memory half only — storage keeps the session, exactly as a
+    // page load does.
+    h.store.setState({ session: null, state: null, connection: "idle" });
+    h.api.fetchState.mockClear();
+    return h;
+  }
+
+  it("keeps asking when the server is briefly unreachable", async () => {
+    /*
+     * Architecture §4.3 promises a surface can be hard-refreshed mid-encounter
+     * and recover. That held only while the *first* `fetchState` succeeded: one
+     * failure set `connection: "error"` and stopped forever, and with `session`
+     * still null on a cold load, `App.pickLayout` renders the **home screen**
+     * on the `/p/CODE` URL — run still live on the server, token still in
+     * storage.
+     *
+     * The stranding is not the worst of it. The home screen's first button is
+     * "Start a game", so the obvious move at a table creates a second room and
+     * abandons the evening in progress. A phone that cannot reach the server
+     * for a moment has to wait, not offer to throw the game away.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState
+        .mockRejectedValueOnce(new Error("network down"))
+        .mockRejectedValueOnce(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(3);
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+      expect(h.store.getState().error).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("shows the spinner rather than the home screen while it retries", async () => {
+    /*
+     * `App.pickLayout` renders `HomeScreen` for a code with no session unless
+     * `connection === "connecting"`. So the status during the retries is not
+     * cosmetic — it is the whole difference between a spinner and a button
+     * that starts a second game.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValueOnce(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(100);
+      expect(h.store.getState().connection).toBe("connecting");
+      expect(h.store.getState().session).toBeNull();
+
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("gives up on a room that is genuinely gone, without spinning", async () => {
+    /*
+     * The other half. A 410 answers the same way forever, so retrying it would
+     * hold a spinner in front of an eight-year-old until somebody gave up —
+     * a worse failure than the honest one. Told plainly, once.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValue(new ApiError(410, "That room has expired."));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+      expect(h.store.getState().error).toBe("That room has expired.");
+      expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("gives up on a token this device may no longer use", async () => {
+    // 401/403 are as permanent as 410 and for the same reason: asking again
+    // with the same token cannot change the answer.
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValue(new ApiError(403, "Not your room."));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("stops trying after a bounded number of attempts", async () => {
+    // The retry has to be able to end. A phone that spins forever is the
+    // failure this fix would otherwise have replaced the old one with.
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValue(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(60_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(5);
+      expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
