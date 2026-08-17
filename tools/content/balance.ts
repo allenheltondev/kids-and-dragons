@@ -62,6 +62,20 @@ const VERDICT: Record<EncounterEstimate["verdict"], { word: string; colour: stri
   long: { word: "long", colour: RED },
 };
 
+/**
+ * The round count, as a range when the two readings of §7.3 disagree.
+ *
+ * Nobody moves in this model, and whether a revived hero gets walked out of
+ * reach is exactly the difference between a §7.3 beat and a grind. Printing one
+ * number would be quoting the pessimistic end of a bracket as a measurement.
+ */
+function roundRange(estimate: EncounterEstimate): string {
+  const { rounds, roundsIfRetreating } = estimate;
+  return roundsIfRetreating === rounds
+    ? String(rounds)
+    : `${String(Math.min(rounds, roundsIfRetreating))}\u2013${String(Math.max(rounds, roundsIfRetreating))}`;
+}
+
 interface Finding {
   chapter: string;
   scene: string;
@@ -115,7 +129,7 @@ for (const { chapter, scene, estimate } of findings) {
       `${String(estimate.enemyHp)} HP ${DIM}vs${OFF} ${String(estimate.partyHp)} party HP`,
   );
   console.log(
-    `  ${colour}${String(estimate.rounds)} rounds — ${word}${OFF}` +
+    `  ${colour}${roundRange(estimate)} rounds — ${word}${OFF}` +
       `${DIM}, ${String(estimate.damageTaken)} damage taken${OFF}`,
   );
 
@@ -197,7 +211,7 @@ if (bands.length > 0) {
     const block = `${String(band.usualCount)}×${String(band.stats.hp)} HP, Guard ${String(band.stats.guard)}, +${String(band.stats.attack)}`;
     console.log(
       `  ${name.padEnd(11)} ${DIM}${block.padEnd(26)}${OFF}` +
-        `${colour}${`${String(estimate.rounds)} rounds, ${word}`.padEnd(20)}${OFF}` +
+        `${colour}${`${roundRange(estimate)} rounds, ${word}`.padEnd(20)}${OFF}` +
         `${DIM}${String(estimate.damageTaken)} damage, ${String(estimate.knockdowns)} knockdown` +
         `${estimate.knockdowns === 1 ? "" : "s"}${OFF}`,
     );
