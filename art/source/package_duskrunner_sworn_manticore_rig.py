@@ -20,6 +20,7 @@ SOURCE = Path(
         ROOT / "assets/gear-portraits/duskrunner/sworn/manticore.png",
     )
 )
+SOURCE_MATTE: Path | None = None
 BASE = ROOT / "assets/characters/manticore/sworn"
 OUT = Path(
     os.environ.get(
@@ -34,12 +35,19 @@ REVIEW = Path(
         ROOT / "art/review/duskrunner_sworn_manticore_rig_split.png",
     )
 )
+REVIEW_TITLE = "Duskrunner Sworn Manticore - rig split"
+REVIEW_NOTE = (
+    "Approved exact pose   -   hood and scarf follow the head and chest   -   "
+    "scorpion tail remains clear"
+)
 BASE_PARTS = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
 
 # Registered against unchanged tail, flank, leg, and foot landmarks.
 REGISTERED_SIZE = (951, 938)
 REGISTERED_OFFSET = (16, 35)
 GEAR_ENVELOPE = (90, 70, 720, 770)
+SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
+CLIP_LOWER_BODY_TO_BASE = True
 Z_ORDER = (
     "tail",
     "leg_l",
@@ -83,12 +91,13 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
 
 
 def register_subject(portrait: Image.Image, alpha: Image.Image) -> tuple[Image.Image, Image.Image]:
-    subject = portrait.convert("RGBA")
-    subject.putalpha(alpha)
-    subject = subject.resize(REGISTERED_SIZE, Image.Resampling.LANCZOS)
-    registered = Image.new("RGBA", CANVAS)
-    registered.alpha_composite(subject, dest=REGISTERED_OFFSET)
-    return registered.convert("RGB"), registered.getchannel("A")
+    resized_rgb = portrait.resize(REGISTERED_SIZE, Image.Resampling.LANCZOS)
+    registered_rgb = Image.new("RGB", CANVAS)
+    registered_rgb.paste(resized_rgb, REGISTERED_OFFSET)
+    resized_alpha = alpha.resize(REGISTERED_SIZE, Image.Resampling.LANCZOS)
+    registered_alpha = Image.new("L", CANVAS)
+    registered_alpha.paste(resized_alpha, REGISTERED_OFFSET)
+    return registered_rgb, registered_alpha
 
 
 def masked_portrait(portrait: Image.Image, alpha: Image.Image) -> Image.Image:
@@ -124,10 +133,10 @@ def review_board(assembled: Image.Image) -> None:
         note = ImageFont.truetype("arial.ttf", 20)
     except OSError:
         title = label = note = ImageFont.load_default()
-    draw.text((50, 34), "Duskrunner Sworn Manticore - rig split", font=title, fill="white")
+    draw.text((50, 34), REVIEW_TITLE, font=title, fill="white")
     draw.text(
         (52, 88),
-        "Approved exact pose   -   hood and scarf follow the head and chest   -   scorpion tail remains clear",
+        REVIEW_NOTE,
         font=note,
         fill="#b9c7d8",
     )
@@ -154,7 +163,12 @@ def main() -> None:
     for stale in PARTS.glob("*.png"):
         stale.unlink()
     portrait = approved_portrait()
-    portrait, subject = register_subject(portrait, subject_alpha(portrait))
+    if SOURCE_MATTE is not None:
+        source_alpha = Image.open(SOURCE_MATTE).convert("RGBA").getchannel("A")
+        source_alpha = source_alpha.resize(CANVAS, Image.Resampling.LANCZOS)
+    else:
+        source_alpha = subject_alpha(portrait)
+    portrait, subject = register_subject(portrait, source_alpha)
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
@@ -165,9 +179,10 @@ def main() -> None:
         base_union = np.maximum(base_union, np.asarray(base_part.getchannel("A")))
 
     subject_array = np.asarray(subject).copy()
-    yy = np.indices((CANVAS[1], CANVAS[0]))[0]
-    lower_body = yy > 800
-    subject_array[lower_body] = np.minimum(subject_array[lower_body], base_union[lower_body])
+    if CLIP_LOWER_BODY_TO_BASE:
+        yy = np.indices((CANVAS[1], CANVAS[0]))[0]
+        lower_body = yy > 800
+        subject_array[lower_body] = np.minimum(subject_array[lower_body], base_union[lower_body])
     subject = Image.fromarray(subject_array.astype(np.uint8), "L")
 
     portrait_array = np.asarray(portrait).copy()
@@ -179,7 +194,14 @@ def main() -> None:
     anatomy_alpha = Image.new("L", CANVAS, 0)
     parts: dict[str, Image.Image] = {}
     for name in BASE_PARTS:
-        base_alpha = base_parts[name].getchannel("A")
+        base_alpha_array = np.asarray(base_parts[name].getchannel("A")).copy()
+        if SUBJECT_CLIP_ENVELOPE is not None:
+            left, top, right, bottom = SUBJECT_CLIP_ENVELOPE
+            base_alpha_array[top:bottom, left:right] = np.minimum(
+                base_alpha_array[top:bottom, left:right],
+                subject_array[top:bottom, left:right],
+            )
+        base_alpha = Image.fromarray(base_alpha_array.astype(np.uint8), "L")
         anatomy_alpha = Image.fromarray(
             np.maximum(np.asarray(anatomy_alpha), np.asarray(base_alpha)).astype(np.uint8), "L"
         )

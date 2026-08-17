@@ -18,6 +18,11 @@ BASE = ROOT / "assets/characters/unicorn/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/unicorn"
 PARTS = OUT / "parts"
 REVIEW = ROOT / "art/review/duskrunner_sworn_unicorn_rig_split.png"
+REVIEW_TITLE = "Duskrunner Sworn Unicorn - rig split"
+REVIEW_NOTE = (
+    "Approved exact pose   -   scarf and harness follow the body   -   "
+    "mane and braid remain above gear"
+)
 BASE_PARTS = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "horn")
 REGISTERED_SIZE = (983, 983)
 REGISTERED_OFFSET = (5, 7)
@@ -108,10 +113,10 @@ def review_board(assembled: Image.Image) -> None:
         note = ImageFont.truetype("arial.ttf", 20)
     except OSError:
         title = label = note = ImageFont.load_default()
-    draw.text((50, 34), "Duskrunner Sworn Unicorn - rig split", font=title, fill="white")
+    draw.text((50, 34), REVIEW_TITLE, font=title, fill="white")
     draw.text(
         (52, 88),
-        "Approved exact pose   -   scarf and harness follow the body   -   mane and braid remain above gear",
+        REVIEW_NOTE,
         font=note,
         fill="#b9c7d8",
     )

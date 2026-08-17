@@ -173,7 +173,7 @@
     { "class": "songkeeper", "tiers": ["sworn", "radiant", "mythic"], "species": ["unicorn", "dragonling", "griffin", "bigfoot", "kitsune", "manticore"], "canvas": { "width": 1254, "height": 1254 } }
   ],
 
-  "$rigVariantsComment": "Purpose-drawn class armor that has been split onto a species rig. Each entry lives at assets/character-rigs/<class>/<tier>/<species>/ with assembled.png, rig.riv, and the exact registered PNG part inventory below. The order of parts is draw order. These variants reuse the hero rig contract and species skeleton; undeclared combinations continue to use assets/characters/<species>/<tier>/rig.riv. Thornguard is complete across all three geared tiers, and Duskrunner Sworn is complete across all six species.",
+  "$rigVariantsComment": "Purpose-drawn class armor that has been split onto a species rig. Each entry lives at assets/character-rigs/<class>/<tier>/<species>/ with assembled.png, rig.riv, and the exact registered PNG part inventory below. The order of parts is draw order. These variants reuse the hero rig contract and species skeleton; undeclared combinations continue to use assets/characters/<species>/<tier>/rig.riv. Thornguard is complete across all three geared tiers, and Duskrunner Sworn and Radiant are complete across all six species.",
   "rigVariants": [
     {
       "class": "duskrunner",
@@ -208,6 +208,42 @@
     {
       "class": "duskrunner",
       "tier": "sworn",
+      "species": "manticore",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "unicorn",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "horn"]
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "dragonling",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "griffin",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "bigfoot",
+      "parts": ["leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "kitsune",
+      "parts": ["tail", "gear_behind", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "gear_head"]
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
       "species": "manticore",
       "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
     },
