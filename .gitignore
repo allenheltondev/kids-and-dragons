@@ -14,6 +14,12 @@ dist/
 cdk.out/
 *.tsbuildinfo
 
+# generated chapter graphs (npm run content:graph) — regenerated on each run
+.graph/
+
+# rejected drafts from `npm run content:generate` — kept to read, never content
+.generated/
+
 # wiki generator manifest (local dev state, regenerated on each run)
 wiki/.gen-manifest.json
 wiki/public/

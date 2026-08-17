@@ -346,10 +346,27 @@ she picked up two sessions ago is still in her bag.
 ## Chapter 6 — Authoring tools
 
 **Claude**
-- CLI chapter generator using `claude-opus-5`: prompt → chapter JSON → schema validation
-- Local chapter editor: visual scene graph, branch inspection, dead-end and orphan-scene detection
-- Encounter balance checker (estimated rounds, expected damage)
-- Playtest mode: jump to any scene, force any roll result
+- ~~CLI chapter generator using `claude-opus-5`: prompt → chapter JSON → schema validation~~ —
+  **delivered** (`npm run content:generate`). Generates, then runs the *real* `content:validate`
+  over a staging tree and hands the gate's own complaints back for repair until it passes. Nothing
+  it writes can fail the build. Runs through **Claude in Amazon Bedrock** — same AWS account the
+  server deploys into, SigV4 off the ordinary credential chain, no key for the tool to hold. Not
+  structured outputs, for two reasons: Bedrock does not support them, and they would not fit anyway
+  — `output_config.format` covers a subset of JSON Schema and `chapter.schema.json` is built out of
+  the parts outside it (`if`/`then`, `oneOf`, `propertyNames`, numeric bounds), so a schema
+  simplified to fit would be a second copy of the contract with the interesting half deleted.
+- ~~Local chapter editor: visual scene graph, branch inspection, dead-end and orphan-scene
+  detection~~ — **delivered as a viewer** (`npm run content:graph`). Detection already shipped
+  inside `content:validate`; layout is `chapter-map.ts`, laid out by *longest* path from the entry
+  so an arrow pointing up the page is a real loop. It reads and does not edit — the chapter is
+  still authored in a text editor beside it.
+- ~~Encounter balance checker (estimated rounds, expected damage)~~ — **delivered**
+  (`npm run content:balance`). Round-by-round, tracking heroes individually because `enemy-ai.ts`
+  focuses the nearest one. Reports, never gates. Found that the `brute` band at its usual count
+  runs ten rounds rather than four.
+- ~~Playtest mode: jump to any scene, force any roll result~~ — **delivered**. Two intents through
+  `applyIntent`, so a jump runs `onEnter` and opens the scene's prompt; refused with FORBIDDEN
+  unless the server opted in, and `lambda/runtime.ts` opts out with a literal.
 
 **Allen**
 - Generate and hand-edit a full 6-chapter campaign
