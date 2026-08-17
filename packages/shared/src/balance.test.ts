@@ -229,6 +229,29 @@ describe("who gets hurt", () => {
     expect(grinding.knockdowns).toBeGreaterThan(3);
   });
 
+  it("reports both readings of §7.3, because the difference is movement", () => {
+    /*
+     * The model cannot move anybody, and whether a revived hero gets walked out
+     * of reach is the whole difference between a beat and a grind. Strict rules
+     * re-target them — standing, at 1 HP, next to the thing that floored them.
+     * A real table drags them clear.
+     *
+     * Reporting only the strict number would be quoting the pessimistic end of a
+     * bracket as though it were a measurement.
+     */
+    const grinding = estimateEncounter([enemy({ count: 1, hp: 28, attack: 8 })], PARTY);
+    expect(grinding.roundsIfRetreating).toBeLessThan(grinding.rounds);
+    expect(grinding.notes.join(" ")).toMatch(/treat the pair as the range/);
+  });
+
+  it("says nothing about retreating when nobody ever goes down", () => {
+    // No knockdowns, no difference, no note — the caveat only earns its place
+    // on a fight it actually changes.
+    const safe = estimateEncounter([enemy({ count: 1, hp: 4, attack: -20 })], PARTY);
+    expect(safe.roundsIfRetreating).toBe(safe.rounds);
+    expect(safe.notes.join(" ")).not.toMatch(/retreat|range/);
+  });
+
   it("says so when the party goes over", () => {
     const hopeless = estimateEncounter([enemy({ count: 4, hp: 20, guard: 14, attack: 5 })], PARTY);
     expect(hopeless.partyWiped).toBe(true);
@@ -333,6 +356,10 @@ describe("the shipped encounter bands", () => {
      */
     const brute = fought.find((f) => f.name === "brute")?.estimate;
     expect(brute?.rounds).toBe(10);
+    // And still long at the optimistic end of the bracket, which is what makes
+    // this a finding about the band rather than about the model's assumptions.
+    expect(brute?.roundsIfRetreating).toBe(7);
+    expect(brute?.roundsIfRetreating).toBeGreaterThan(TARGET_ROUNDS.max);
     expect(brute?.heroesDown).toBe(1);
     expect(brute?.knockdowns).toBeGreaterThan(5);
     // Still winnable — it is a slog, not a defeat.
