@@ -424,3 +424,58 @@ describe("finishing before the invocation does", () => {
     }
   });
 });
+
+describe("the state fingerprint, where the map actually is", () => {
+  /*
+   * A second review caught that the previous fix was a no-op, and the shape of
+   * the miss is worth keeping in front of whoever reads this next.
+   *
+   * `stamp` was added to `PrefetchKey`, `nextMoments` and `arrivalKey` were
+   * taught to compute it, and tests were written proving they computed it
+   * differently when the party's state changed. All true, and all beside the
+   * point: `keyOf()` — the function that turns a key into the string the map is
+   * indexed by — never serialised the field. So `ready.has()` matched on the
+   * parts that had not changed, suppressed the regeneration, and `take()`
+   * handed back the line written before the fight, exactly as before.
+   *
+   * The tests passed because they measured what the two pure functions
+   * *produced*, never what the narrator did with it. These measure the map.
+   */
+  const HURT: PrefetchKey = { ...KEY, stamp: "c_1:3|freed_sprite" };
+
+  it("misses when the state moved under an otherwise identical key", async () => {
+    const { narrator } = build([GOOD]);
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
+
+    // Same run, same scene, same button — only the party's condition differs.
+    expect(HURT.runId).toBe(KEY.runId);
+    expect(HURT.sceneId).toBe(KEY.sceneId);
+    expect(HURT.choiceId).toBe(KEY.choiceId);
+
+    expect(narrator.take(HURT, REQUEST)).toBeNull();
+  });
+
+  it("warms a fresh line rather than treating the stale one as already done", async () => {
+    /*
+     * The other half, and the one that made the bug invisible. `warm` skips a
+     * key it already holds, so a stamp the map could not see meant the *new*
+     * state's line was never even requested — the layer looked like it was
+     * working and was serving history.
+     */
+    const { narrator, seen } = build([GOOD, "The hedge leans away from Pib, who is pretending that was his idea all along."]);
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
+    expect(seen).toHaveLength(1);
+
+    await narrator.warm([{ key: HURT, request: REQUEST }]);
+    expect(seen).toHaveLength(2);
+    expect(narrator.take(HURT, REQUEST)).toBe("The hedge leans away from Pib, who is pretending that was his idea all along.");
+  });
+
+  it("still hits when nothing the narration reads has changed", async () => {
+    // The rule has to be able to hit, or "always miss" would pass every
+    // assertion above while turning the layer off.
+    const { narrator } = build([GOOD]);
+    await narrator.warm([{ key: KEY, request: REQUEST }]);
+    expect(narrator.take({ ...KEY }, REQUEST)).toBe(GOOD);
+  });
+});
