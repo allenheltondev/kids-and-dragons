@@ -31,6 +31,26 @@ Parameters:
       from every pull request and `prod` from main; `dev` exists for a stack you
       drive by hand from a laptop.
 
+  LiveLlmEnabled:
+    Type: String
+    Default: "false"
+    AllowedValues: ["true", "false"]
+    Description: >-
+      Whether the live narration layer runs in this stack (roadmap chapter 7,
+      architecture §6.6).
+
+      Off by default, and the default is the point. The game is built so that
+      turning this off changes nothing about whether it works, and the two ways
+      of being wrong do not cost the same: a layer that is off when somebody
+      meant it on is one evening of plainer narration, and announces itself the
+      moment anybody looks. A layer that is on when nobody meant it on is
+      unreviewed text on a television in a child's living room, plus a bill, and
+      announces itself to nobody.
+
+      Turning it on also needs `anthropic.claude-haiku-4-5` enabled under
+      Bedrock > Model access in this account and region. The IAM grant below is
+      attached either way; the grant is not what switches the layer on.
+
   GuestSweepSchedule:
     Type: String
     Default: rate(24 hours)
@@ -404,6 +424,10 @@ Resources:
           USER_POOL_CLIENT_ID: !Ref UserPoolClient
           APPSYNC_HTTP_DOMAIN: !GetAtt EventApi.Dns.Http
           APPSYNC_REALTIME_DOMAIN: !GetAtt EventApi.Dns.Realtime
+          # Roadmap chapter 7. Read as an exact match on the string "true"
+          # (llm/enabled.ts), because "false" is a non-empty string and every
+          # `if (process.env.X)` ever written would turn it on.
+          LIVE_LLM_ENABLED: !Ref LiveLlmEnabled
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -433,6 +457,31 @@ Resources:
               # anything on a channel.
               Action: appsync:EventPublish
               Resource: !Sub "${EventApi.ApiArn}/*"
+            - Effect: Allow
+              # Claude in Amazon Bedrock, for the live narration layer
+              # (architecture §6.1 — `claude-haiku-4-5` at table time).
+              #
+              # One action, and it is a narrow one: `CreateInference` can start
+              # an inference and do nothing else. It cannot read the table,
+              # publish to a room, or reach any other service.
+              #
+              # `Resource: "*"` is deliberate and is the one thing here worth
+              # tightening later. Anthropic's docs say to grant this "only on
+              # the allowed model ARNs" but do not publish the ARN format for
+              # this endpoint, and a *guessed* ARN is the worst option available:
+              # the live layer fails silently by design, so a wrong resource
+              # would look exactly like a layer that is simply never finding
+              # anything. Correct-and-wide beats plausible-and-broken here.
+              #
+              # To narrow it: deploy, make one call, read the resource ARN off
+              # the CloudTrail event, and put it here.
+              #
+              # Attached whether or not `LiveLlmEnabled` is true. A permission
+              # is not a switch — the switch is the environment variable, and
+              # keeping the two separate means turning the layer on is a
+              # parameter change rather than a change to the stack's IAM.
+              Action: bedrock-mantle:CreateInference
+              Resource: "*"
       Events:
         Api:
           Type: HttpApi

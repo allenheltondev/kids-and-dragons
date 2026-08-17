@@ -27,6 +27,7 @@ import { LocalSseChannel } from "./channel/room-channel.ts";
 import type { ContentStore } from "./content/loader.ts";
 import type { ApplyIntentResult, Engine, EngineContext, IntentInput } from "./engine/port.ts";
 import type { HandlerDeps } from "./handlers/deps.ts";
+import type { Narrator } from "./llm/port.ts";
 import { DevIdentity, type DeviceIdentity } from "./identity.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
@@ -158,6 +159,12 @@ export interface HarnessOptions {
    * could not tell a gate that works from one that is missing.
    */
   playtest?: boolean;
+  /**
+   * The live narration layer — roadmap chapter 7. Absent by default, and that
+   * default is the AI-optional invariant: every test in this repo that does not
+   * name a narrator is running the `LIVE_LLM_ENABLED=false` path for free.
+   */
+  narrator?: Narrator;
 }
 
 export function makeHarness(options: HarnessOptions = {}): TestHarness {
@@ -182,6 +189,7 @@ export function makeHarness(options: HarnessOptions = {}): TestHarness {
       random: options.random ?? (() => seeded.next()),
       now: clock.now,
       playtest: options.playtest ?? false,
+      ...(options.narrator ? { narrator: options.narrator } : {}),
     },
   };
 }

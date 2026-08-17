@@ -17,6 +17,7 @@ import type { ActionResponse, RoomChannel } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import type { IdentityService } from "../identity.ts";
+import type { Narrator } from "../llm/port.ts";
 import type { GameRepository } from "../store/repository.ts";
 
 export interface HandlerDeps {
@@ -53,6 +54,22 @@ export interface HandlerDeps {
    * that must never be reached by accident (playtest.ts).
    */
   playtest: boolean;
+  /**
+   * The live narration layer — roadmap chapter 7, architecture §6.
+   *
+   * Optional, and the *absence* is the working configuration rather than a
+   * degraded one. `silentNarrator` and "field not set" behave identically, so
+   * every test in this directory that does not set it is exercising the
+   * `LIVE_LLM_ENABLED=false` path — which is the cross-cutting table's
+   * "AI-optional invariant: tested in CI, not assumed", obtained by
+   * construction instead of by a suite anybody has to remember to run.
+   *
+   * The contrast with `playtest` above is deliberate and the two are opposite
+   * cases. A forgotten `playtest` would default to the answer that must never
+   * be reached by accident, so it is required. A forgotten `narrator` defaults
+   * to the game working exactly as it shipped, so it is not.
+   */
+  narrator?: Narrator;
 }
 
 /** The error shape the protocol already defines (`ActionResponse.error`). */
