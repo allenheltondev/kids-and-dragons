@@ -349,10 +349,12 @@ she picked up two sessions ago is still in her bag.
 - ~~CLI chapter generator using `claude-opus-5`: prompt → chapter JSON → schema validation~~ —
   **delivered** (`npm run content:generate`). Generates, then runs the *real* `content:validate`
   over a staging tree and hands the gate's own complaints back for repair until it passes. Nothing
-  it writes can fail the build. Not structured outputs: `output_config.format` supports a subset of
-  JSON Schema, and `chapter.schema.json` is built out of the parts outside it (`if`/`then`,
-  `oneOf`, `propertyNames`, numeric bounds) — a schema simplified to fit would be a second copy of
-  the contract with the interesting half deleted.
+  it writes can fail the build. Runs through **Claude in Amazon Bedrock** — same AWS account the
+  server deploys into, SigV4 off the ordinary credential chain, no key for the tool to hold. Not
+  structured outputs, for two reasons: Bedrock does not support them, and they would not fit anyway
+  — `output_config.format` covers a subset of JSON Schema and `chapter.schema.json` is built out of
+  the parts outside it (`if`/`then`, `oneOf`, `propertyNames`, numeric bounds), so a schema
+  simplified to fit would be a second copy of the contract with the interesting half deleted.
 - ~~Local chapter editor: visual scene graph, branch inspection, dead-end and orphan-scene
   detection~~ — **delivered as a viewer** (`npm run content:graph`). Detection already shipped
   inside `content:validate`; layout is `chapter-map.ts`, laid out by *longest* path from the entry

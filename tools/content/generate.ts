@@ -15,28 +15,41 @@
  *   - this file — `ask`, the argument parsing, and the prompt.
  *
  * ---------------------------------------------------------------------------
+ * IT GOES THROUGH BEDROCK
+ *
+ * This project already deploys into AWS — the server runs on Lambda and CI runs
+ * `sam deploy` — so the model goes through the same account rather than adding a
+ * second vendor relationship and a second secret to hold. `AnthropicBedrockMantle`
+ * speaks the same Messages API at
+ * `https://bedrock-mantle.{region}.api.aws/anthropic`, signs with SigV4, and
+ * resolves credentials through the ordinary AWS chain — env vars, a named
+ * profile, SSO, an assumed role. There is no key for this tool to own.
+ *
+ * ---------------------------------------------------------------------------
  * WHY IT DOES NOT USE STRUCTURED OUTPUTS
  *
- * The obvious move is `output_config.format` with `schemas/chapter.schema.json`,
- * so the reply is valid by construction. It does not work here, and the reason
- * is worth writing down rather than rediscovering: structured outputs support a
- * subset of JSON Schema, and the chapter schema is built out of exactly the
- * parts outside it — `if`/`then` (which effect fields go with which `type`),
- * `oneOf` (a species gate is a string or a list), `propertyNames` and `pattern`
- * (scene ids are kebab-case keys), and the numeric bounds on `index`,
- * `estimatedMinutes` and `xp`.
+ * Two reasons, and the second one holds even if the first ever stops being true.
  *
- * A simplified schema written to fit would be a second copy of the contract with
- * the interesting half deleted — the duplication `bestiary.ts` argues against at
- * length, and worse here, because the deleted half is where the mistakes are.
- * The loop already handles a reply that does not conform; that is what it is
- * for.
+ * The plain one: Bedrock does not support them. `output_config.format` is on the
+ * unsupported list for this endpoint, so the question does not arise there.
+ *
+ * The one worth writing down rather than rediscovering: they would not fit
+ * anyway. Structured outputs support a subset of JSON Schema, and
+ * `schemas/chapter.schema.json` is built out of exactly the parts outside it —
+ * `if`/`then` (which effect fields go with which `type`), `oneOf` (a species
+ * gate is a string or a list), `propertyNames` and `pattern` (scene ids are
+ * kebab-case keys), and the numeric bounds on `index`, `estimatedMinutes` and
+ * `xp`. A simplified schema written to fit would be a second copy of the
+ * contract with the interesting half deleted — the duplication `bestiary.ts`
+ * argues against at length, and worse here, because the deleted half is where
+ * the mistakes are. The loop already handles a reply that does not conform; that
+ * is what it is for.
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import Anthropic from "@anthropic-ai/sdk";
+import { AnthropicBedrockMantle } from "@anthropic-ai/bedrock-sdk";
 import { DEFAULT_ATTEMPTS, generateChapter } from "./generate-core.ts";
 import type { Turn } from "./generate-core.ts";
 import { baselineIsClean, chapterIdOf, checkCandidate } from "./generate-gate.ts";
@@ -51,14 +64,19 @@ const BOLD = tty ? "\x1b[1m" : "";
 const OFF = tty ? "\x1b[0m" : "";
 
 /**
- * `claude-opus-5`, as the roadmap names it.
+ * `claude-opus-5`, as the roadmap names it, under Bedrock's `anthropic.` prefix.
  *
  * A chapter is a long, highly-constrained structured document with a graph
  * inside it — the shape of work where the loop below converges in one or two
  * rounds rather than four, which is the difference between the tool being worth
  * running and not.
+ *
+ * `--model` exists because access to this one is granted per model in the AWS
+ * console rather than being open to every Bedrock account, and an author who has
+ * not been granted it should be able to fall back to `anthropic.claude-opus-4-8`
+ * without editing this file.
  */
-const MODEL = "claude-opus-5";
+const MODEL = "anthropic.claude-opus-5";
 
 /** A 25-scene chapter is comfortably 20k tokens of JSON; the ceiling is 128k. */
 const MAX_TOKENS = 64000;
@@ -218,6 +236,8 @@ interface Options {
   attempts: number;
   out: string | null;
   write: boolean;
+  model: string;
+  region: string | null;
 }
 
 function parseArgs(argv: string[]): Options | string {
@@ -225,6 +245,8 @@ function parseArgs(argv: string[]): Options | string {
   let attempts = DEFAULT_ATTEMPTS;
   let out: string | null = null;
   let write = true;
+  let model = MODEL;
+  let region: string | null = null;
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -235,6 +257,12 @@ function parseArgs(argv: string[]): Options | string {
     } else if (arg === "--out") {
       out = argv[++i] ?? null;
       if (out === null) return "--out takes a path";
+    } else if (arg === "--model") {
+      model = argv[++i] ?? "";
+      if (model === "") return "--model takes a Bedrock model id, e.g. anthropic.claude-opus-4-8";
+    } else if (arg === "--region") {
+      region = argv[++i] ?? "";
+      if (region === "") return "--region takes an AWS region, e.g. us-east-1";
     } else if (arg === "--dry-run") {
       write = false;
     } else if (arg !== undefined) {
@@ -250,13 +278,29 @@ function parseArgs(argv: string[]): Options | string {
       "  --attempts N   how many times to ask (default " + String(DEFAULT_ATTEMPTS) + "; after the first, each",
       "                 attempt carries the build gate's complaints about the last one)",
       "  --out PATH     where to write it (default content/chapters/<id>.json)",
+      "  --model ID     Bedrock model id (default " + MODEL + ")",
+      "  --region NAME  AWS region (default $AWS_REGION, then $AWS_DEFAULT_REGION)",
       "  --dry-run      generate and check, but write nothing",
       "",
-      "Needs ANTHROPIC_API_KEY, or an `ant auth login` profile.",
+      "Runs through Claude in Amazon Bedrock. It needs AWS credentials the way the",
+      "AWS CLI does — env vars, a named profile, SSO, or an assumed role — and the",
+      "model enabled under Bedrock > Model access in the console.",
     ].join("\n");
   }
 
-  return { brief, attempts, out, write };
+  return { brief, attempts, out, write, model, region };
+}
+
+/**
+ * The region, resolved the way the SDK resolves it — and refused when it can't
+ * be.
+ *
+ * The client builds its base URL out of the region, so an unset one doesn't
+ * fail as "no region": it fails as a DNS error for `bedrock-mantle.undefined`,
+ * several seconds and one confusing stack trace later.
+ */
+function resolveRegion(explicit: string | null): string | null {
+  return explicit ?? process.env.AWS_REGION ?? process.env.AWS_DEFAULT_REGION ?? null;
 }
 
 // --- Run ---------------------------------------------------------------------
@@ -267,8 +311,22 @@ if (typeof options === "string") {
   process.exit(1);
 }
 
+const { model } = options;
+const region = resolveRegion(options.region);
+if (region === null) {
+  console.log(`${RED}No AWS region.${OFF}`);
+  console.log(
+    `${DIM}Set AWS_REGION, or pass --region. Claude in Amazon Bedrock is in most regions;` +
+      ` us-east-1 and us-west-2 both serve every model.${OFF}`,
+  );
+  process.exit(1);
+}
+
 console.log(`${BOLD}Kids & Dragons — chapter generator${OFF}`);
-console.log(`${DIM}${MODEL} · up to ${String(options.attempts)} attempt(s) against the real build gate${OFF}\n`);
+console.log(
+  `${DIM}${model} on Bedrock (${region}) · up to ${String(options.attempts)} ` +
+    `attempt(s) against the real build gate${OFF}\n`,
+);
 
 /*
  * The baseline check, before spending a single token. Every failure the staging
@@ -284,7 +342,13 @@ if (!baseline.ok) {
   process.exit(1);
 }
 
-const client = new Anthropic();
+/*
+ * No credentials passed. The client walks the ordinary AWS chain — env vars, a
+ * named profile, SSO, an assumed role, the instance role — which is the same
+ * chain the AWS CLI walks, so an author whose `aws sts get-caller-identity`
+ * works has already configured this tool.
+ */
+const client = new AnthropicBedrockMantle({ awsRegion: region });
 const system = systemPrompt();
 
 /**
@@ -298,10 +362,12 @@ const system = systemPrompt();
  * The system prompt carries a cache breakpoint and nothing volatile: the schema,
  * the rules, the catalogs and the reference chapter are byte-identical on every
  * attempt, so each repair round reads the prefix instead of paying for it again.
+ * The breakpoint is explicit rather than left to automatic caching, which
+ * Bedrock does not do.
  */
 async function ask(turns: Turn[]): Promise<string> {
   const stream = client.messages.stream({
-    model: MODEL,
+    model,
     max_tokens: MAX_TOKENS,
     system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
     output_config: { effort: "high" },
@@ -312,21 +378,61 @@ async function ask(turns: Turn[]): Promise<string> {
   if (message.stop_reason === "refusal") {
     throw new Error("The model declined the request. Try rewording the brief.");
   }
-  return message.content
-    .filter((block): block is Anthropic.TextBlock => block.type === "text")
-    .map((block) => block.text)
-    .join("");
+  return message.content.map((block) => (block.type === "text" ? block.text : "")).join("");
 }
 
-const result = await generateChapter({
-  brief: options.brief,
-  ask,
-  check: (candidate) => Promise.resolve(checkCandidate(candidate)),
-  maxAttempts: options.attempts,
-  log: (line) => {
-    console.log(`  ${DIM}${line}${OFF}`);
-  },
-});
+/**
+ * The two ways a first run fails, told apart and answered.
+ *
+ * Both come back as an HTTP status with a stack trace attached, and the fix for
+ * each is somewhere other than this repo — a `aws configure`, or a checkbox in
+ * the Bedrock console. Reprinting the stack would be leaving an author to work
+ * out which of those two it was from a SigV4 error message.
+ */
+function explain(error: unknown): string[] | null {
+  const status = (error as { status?: unknown }).status;
+  if (status !== 401 && status !== 403 && status !== 404) return null;
+
+  /*
+   * Both arrive as a 403 often enough that the status alone does not separate
+   * them — a denied model and a bad key are the same HTTP code. The message is
+   * what tells them apart, so it is read first and the credential advice is the
+   * fallback rather than the other way round.
+   */
+  if (/model|access ?denied|not authorized to (?:perform|invoke)/i.test(String(error))) {
+    return [
+      `Bedrock would not serve \`${model}\` in ${region}.`,
+      "Model access is granted per model: enable it under Bedrock > Model access in the AWS",
+      "console. `anthropic.claude-opus-5` is granted per account rather than open to everyone —",
+      "`--model anthropic.claude-opus-4-8` is open, and writes a good chapter.",
+    ];
+  }
+  return [
+    "AWS rejected the credentials.",
+    "Check `aws sts get-caller-identity` works, and that AWS_PROFILE / AWS_REGION point where",
+    "you mean. Temporary credentials expire — an SSO session or an assumed role may need",
+    "renewing.",
+  ];
+}
+
+let result;
+try {
+  result = await generateChapter({
+    brief: options.brief,
+    ask,
+    check: (candidate) => Promise.resolve(checkCandidate(candidate)),
+    maxAttempts: options.attempts,
+    log: (line) => {
+      console.log(`  ${DIM}${line}${OFF}`);
+    },
+  });
+} catch (error) {
+  const explanation = explain(error);
+  if (explanation === null) throw error;
+  console.log(`\n${RED}${explanation[0]}${OFF}`);
+  for (const line of explanation.slice(1)) console.log(`${DIM}${line}${OFF}`);
+  process.exit(1);
+}
 
 console.log("");
 
