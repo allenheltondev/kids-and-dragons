@@ -44,8 +44,13 @@ npm run content:generate -- "the party finds a bridge that only lets one of them
 Generates a chapter with `claude-opus-5`, then runs the **real** `content:validate` over it in a
 staging tree and hands the gate's own complaints back for repair, until it passes or the attempts
 run out. Nothing it writes can fail the build, because the loop only stops when the build gate is
-green. Needs `ANTHROPIC_API_KEY` or an `ant auth login` profile; `--dry-run` generates without
-writing.
+green. `--dry-run` generates without writing.
+
+It goes through **Claude in Amazon Bedrock**, so it holds no key of its own: it signs with whatever
+credentials `aws sts get-caller-identity` would use — env vars, a named profile, SSO, an assumed
+role — and needs `AWS_REGION` set (or `--region`). The model has to be enabled under **Bedrock >
+Model access** in the console; if `anthropic.claude-opus-5` isn't granted on your account, `--model
+anthropic.claude-opus-4-8` is open to everyone.
 
 A generated chapter validates; it is not finished. Look at its shape with `content:graph`, at its
 fights with `content:balance`, and play it — then add it to a campaign's `chapters` array, which is
