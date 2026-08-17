@@ -71,6 +71,7 @@ export function ChapterCompletePanel(): ReactElement {
   const setback = state?.chapterOutcome === "setback";
   const bonuses = state?.bonuses ?? [];
   const heading = setback ? "The story took a turn" : "Chapter finished!";
+  const recap = state?.recap ?? null;
 
   // Spoken once — the summary is narration like any other (spec §11).
   const spoken = useRef(false);
@@ -78,11 +79,18 @@ export function ChapterCompletePanel(): ReactElement {
     if (spoken.current) return;
     spoken.current = true;
     speak(
-      setback
-        ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
-        : `Chapter finished! The party earned ${String(xp)} experience.`,
+      [
+        setback
+          ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
+          : `Chapter finished! The party earned ${String(xp)} experience.`,
+        // Read aloud too, because a recap that only exists on the television is
+        // a recap nobody hears — the §11 seam is where every line of narration
+        // goes and this is narration. Appended to the same utterance rather
+        // than spoken separately so it cannot interrupt or be interrupted.
+        ...(recap === null ? [] : [recap]),
+      ].join(" "),
     );
-  }, [xp, setback]);
+  }, [xp, setback, recap]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -111,6 +119,23 @@ export function ChapterCompletePanel(): ReactElement {
             <span>Not how you hoped — and the adventure carries on from here.</span>
           </p>
         ) : null}
+        {/*
+         * The live layer's recap of the session, when there is one — roadmap
+         * chapter 7, architecture §6.
+         *
+         * Rendered under a conditional and nothing else changes shape around
+         * it, which is the AI-optional invariant on the screen rather than on
+         * the server: with the layer off this element does not exist, and the
+         * panel is exactly the panel that shipped. `recap` is optional on
+         * `RunState` and null is the ordinary case, so this is a coalesce and
+         * never an error state.
+         */}
+        {recap === null ? null : (
+          <p className="complete__recap">
+            <Icon name="scroll" />
+            <span>{recap}</span>
+          </p>
+        )}
       </header>
 
       {/*

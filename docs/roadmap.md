@@ -379,17 +379,33 @@ she picked up two sessions ago is still in her bag.
 ## Chapter 7 — The live AI layer
 
 **Claude**
-- Lambda LLM proxy on Claude Platform on AWS, `claude-haiku-4-5`
-- Prompt cache prefix design, with a dev-mode assertion that it's actually hitting (>4096 token minimum)
-- Speculative prefetch during scene transitions
-- `validateNarration()` + silent fallback to authored text
-- `LIVE_LLM_ENABLED` kill switch, CI suite running with the layer stubbed
-- Session recap generation
+- ~~Lambda LLM proxy on Claude Platform on AWS, `claude-haiku-4-5`~~ — **delivered on Bedrock**
+  (`anthropic.claude-haiku-4-5`), the same account the rest of the stack deploys into. SigV4 off
+  the Lambda's execution role, so the server holds no key.
+- ~~Prompt cache prefix design, with a dev-mode assertion that it's actually hitting (>4096 token
+  minimum)~~ — **delivered, and it corrected §6.3's layout.** Two of the three breakpoints that
+  section sketched do not clear the floor, and a breakpoint under the floor is not a smaller saving
+  but no saving. One breakpoint, measured by a unit test against the *shipped* content with a 15%
+  margin. The runtime assertion shouts after three calls with zero cache reads.
+- ~~Speculative prefetch during scene transitions~~ — **delivered**. Fired after the broadcast, so
+  the gap it spends is the transition animation rather than the request. `take()` is synchronous:
+  there is no code path from a tap to a network call.
+- ~~`validateNarration()` + silent fallback to authored text~~ — **delivered**. Length band, the
+  chapter's own `forbidden` list, a screen for instructions the game cannot carry out, an on-topic
+  check, and an echo check. Every failure is silent and every failure lands in the same place.
+- ~~`LIVE_LLM_ENABLED` kill switch, CI suite running with the layer stubbed~~ — **delivered**, and
+  the stub is structural rather than a mode: `HandlerDeps.narrator` is optional and absence is the
+  working configuration, so every test that does not name one runs the off path.
+- ~~Session recap generation~~ — **delivered**. The one live call allowed to be awaited, bounded at
+  four seconds, on the completion screen and through the `speak()` seam.
 
 **Allen**
-- Tone rules and few-shot examples for the cached prefix
-- Per-chapter `llmHints` for existing content
-- Judge the output at the table — is it adding anything?
+- ~~Tone rules and few-shot examples for the cached prefix~~ — 26 examples written, each teaching a
+  rule the validator enforces. Yours to rewrite in your own voice; they are the highest-leverage
+  text in the project and a stranger wrote them.
+- `llmHints` exist for `bramblewood-01` only. Every future chapter needs its own.
+- **Judge the output at the table — is it adding anything?** Nothing here has faced a real model.
+  This is the open question of the chapter.
 
 **Done when:** unexpected action combinations get a reaction, and turning the whole layer off
 changes nothing about whether the game works.

@@ -30,6 +30,8 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
+import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
+import { partyBrief } from "../llm/port.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
   newCharacterWrite,
@@ -217,11 +219,38 @@ export async function applyAction(
         }
       : undefined;
 
-  // --- 3. stamp, persist, broadcast ---------------------------------------
-  // Normalising seq here is what makes the sequence gapless by construction:
-  // every published patch takes a client from seq-1 to seq, whatever the engine
-  // did internally.
-  const next: RunState = { ...result.state, seq: nextSeq, updatedAt: iso(nowMs) };
+  /*
+   * The live layer — roadmap chapter 7, architecture §6.
+   *
+   * Here, and not in the engine, for the reason the engine takes an `Rng` and a
+   * clock: `applyIntent` is pure and replayable, and a language model is
+   * neither. Decorating afterwards keeps the engine's output a function of
+   * `(state, intent, seed)` — replay the log and the same authored line comes
+   * out, whatever the layer said on the night.
+   *
+   * It runs before `diff()` so the decorated line rides out on this turn's
+   * patch, and it cannot wait: `take()` reads a map that was filled while the
+   * party was still reading the previous scene (§6.4). A miss is the authored
+   * text, which is what shipped, which is fine.
+   */
+  const decorated = liveNarration(state, result.state, chapter, deps);
+  /*
+   * The session recap — the one live call that is allowed to be awaited.
+   *
+   * Everything else in this layer refuses to wait because somebody is holding a
+   * phone mid-tap. Here the chapter is over: the completion screen is the next
+   * thing anybody sees, nothing is queued behind this, and a second and a half
+   * at the end of half an hour of play is not a pause anybody experiences as
+   * one. It is still bounded — see `recapFor`.
+   */
+  const recap = await recapFor(result.state, chapter, deps, finishedChapter);
+  const next: RunState = {
+    ...result.state,
+    ...(decorated === null ? {} : { narration: decorated }),
+    ...(recap === null ? {} : { recap }),
+    seq: nextSeq,
+    updatedAt: iso(nowMs),
+  };
   const patch = diff(state, next);
 
   /*
@@ -308,7 +337,117 @@ export async function applyAction(
     }
   }
 
+  /*
+   * §6.4's speculative prefetch, fired *after* the broadcast has gone out.
+   *
+   * The position in this function is the whole trick. Every phone already has
+   * the patch; the television is already playing the transition; somebody is
+   * already reading the new scene out loud. That gap is the budget, and asking
+   * for the next lines before the response was sent would have spent it on the
+   * wrong side of the wire.
+   *
+   * Not awaited, and it never rejects — `warm` swallows its own failures. The
+   * turn has already committed and already been published, so nothing this does
+   * or fails to do can change the answer below.
+   */
+  if (deps.narrator && chapter) deps.narrator.warm(nextMoments(next, chapter));
+
   return { ok: true, seq: nextSeq };
+}
+
+/**
+ * The live line for this turn, or `null` to keep what the engine wrote.
+ *
+ * Synchronous, and that is the design rather than a convenience: §6.4's promise
+ * is that "the player should never observe a wait", and the only way to keep a
+ * promise like that is to remove the ability to break it. `take()` reads a map.
+ * There is no path from here to the network.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT IT REPLACES, AND WHAT IT LEAVES ALONE
+ *
+ * `enterSceneDraft` builds the narration as the *branch's* line — "the thorns
+ * part for you" — followed by the destination scene's own text. Only the second
+ * half is replaced. The first half is authored content about this specific
+ * transition, and a live layer that quietly ate it would be deleting the
+ * author's work to make room for its own.
+ */
+function liveNarration(
+  before: RunState,
+  after: RunState,
+  chapter: Chapter | null,
+  deps: HandlerDeps,
+): string | null {
+  if (!deps.narrator || !chapter || after.sceneId === null) return null;
+
+  const arrival = arrivalKey(before, after, chapter);
+  if (!arrival) return null;
+
+  const scene = chapter.scenes[after.sceneId];
+  if (!scene) return null;
+  const authored = authoredLine(scene);
+  if (authored.trim().length === 0) return null;
+
+  const live = deps.narrator.take(arrival, {
+    runId: after.runId,
+    chapter,
+    sceneId: after.sceneId,
+    scene,
+    authored,
+    via: arrival.choiceId,
+    party: partyBrief(after),
+    flags: after.flags,
+  });
+  if (live === null) return null;
+
+  // The branch's own line, recovered by subtraction rather than by threading it
+  // through — the engine already joined the two and this is the seam it used.
+  const whole = after.narration;
+  const transition = whole.endsWith(authored) ? whole.slice(0, whole.length - authored.length).trim() : "";
+  return transition.length > 0 ? `${transition}\n\n${live}` : live;
+}
+
+/** How long the end-of-chapter recap may take before the game stops caring. */
+const RECAP_BUDGET_MS = 4000;
+
+/**
+ * The recap for a chapter that just ended, or `null`.
+ *
+ * Bounded rather than trusted. `recap()` already swallows its own failures, but
+ * "returns null on error" and "returns" are different promises: a request that
+ * hangs rather than fails would hold the completion of a chapter open behind a
+ * socket nobody is watching. The race is what turns the second one into the
+ * first.
+ *
+ * Losing the race is not an error and not retried. The recap was a bonus on top
+ * of a completion screen that already has content on it.
+ */
+async function recapFor(
+  state: RunState,
+  chapter: Chapter | null,
+  deps: HandlerDeps,
+  finished: boolean,
+): Promise<string | null> {
+  if (!finished || !deps.narrator || !chapter) return null;
+
+  const timeout = new Promise<null>((resolve) => {
+    const timer = setTimeout(() => { resolve(null); }, RECAP_BUDGET_MS);
+    // Node keeps the process alive for a pending timer, which in a test runner
+    // means a suite that will not exit until the budget elapses.
+    if (typeof timer.unref === "function") timer.unref();
+  });
+
+  return Promise.race([
+    deps.narrator.recap({
+      runId: state.runId,
+      chapter,
+      party: partyBrief(state),
+      flags: state.flags,
+      visited: state.visited ?? [],
+      outcome: state.chapterOutcome ?? null,
+    }),
+    timeout,
+  ]);
 }
 
 /**

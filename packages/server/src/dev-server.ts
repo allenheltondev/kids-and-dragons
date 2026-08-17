@@ -37,6 +37,7 @@ import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom, watchRoom } from "./handlers/room.ts";
 import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
+import { installNarrator } from "./llm/install.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
@@ -83,6 +84,12 @@ async function main(): Promise<void> {
      * a literal `false`, so there is nothing to misconfigure in prod.
      */
     playtest: true,
+    /*
+     * The live narration layer — roadmap chapter 7. Off unless
+     * `LIVE_LLM_ENABLED=true` is in the environment, which is why the local
+     * loop is unchanged for anybody who has not asked for it (§6.6).
+     */
+    narrator: installNarrator(content),
   };
 
   const app = express();
