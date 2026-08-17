@@ -17,6 +17,7 @@ import { AppSyncEventsChannel } from "../channel/appsync-events-channel.ts";
 import { loadContent, type ContentStore } from "../content/loader.ts";
 import { loadSharedRuntime } from "../engine/shared-engine.ts";
 import type { HandlerDeps } from "../handlers/deps.ts";
+import { installNarrator } from "../llm/install.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
 
@@ -47,6 +48,7 @@ async function build(): Promise<HandlerDeps> {
   const region = requiredEnv("AWS_REGION");
   const repo = new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") });
   const shared = await loadSharedRuntime();
+  const loaded = await content();
 
   return {
     repo,
@@ -54,7 +56,7 @@ async function build(): Promise<HandlerDeps> {
       httpDomain: requiredEnv("APPSYNC_HTTP_DOMAIN"),
       region,
     }),
-    content: await content(),
+    content: loaded,
     engine: shared.engine,
     identity: new TokenIdentity({
       repo,
@@ -71,6 +73,15 @@ async function build(): Promise<HandlerDeps> {
      * zero (playtest.ts).
      */
     playtest: false,
+    /*
+     * The live narration layer — roadmap chapter 7. Unlike `playtest` directly
+     * above, this one *is* an environment lookup, and the difference is which
+     * way the default has to fall. A playtest cheat reaching production is a
+     * stranger warping a child's run, so it is a literal `false`. The live
+     * layer reaching production is the feature working, so it is a switch —
+     * one that still has to be turned on explicitly (§6.6, enabled.ts).
+     */
+    narrator: installNarrator(loaded),
   };
 }
 

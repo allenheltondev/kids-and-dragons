@@ -19,7 +19,7 @@ chapter schema, and LLM integration.
 | Realtime | **AWS AppSync Events** | Managed pub/sub. Room = channel. No connection table to maintain. |
 | Data | **DynamoDB, single table** | |
 | Assets & hosting | **S3 + CloudFront** | |
-| LLM | **Claude on Claude Platform on AWS** | Anthropic-operated, SigV4 auth, IAM, Marketplace billing, same-day feature parity. |
+| LLM | **Claude in Amazon Bedrock** | Same AWS account the rest of the stack deploys into. SigV4 off the Lambda's execution role, so the server holds no key. |
 | Art assets | **Commissioned from a coding agent** | We own the contract ([asset-brief.md](./asset-brief.md)) and the CI gate, not a generation pipeline. |
 | IaC | **AWS SAM** — [`infra/template.yaml`](../infra/template.yaml) | One template, one region, two long-lived stacks (staging, prod) plus an optional dev stack. See [deploy.md](./deploy.md). |
 
@@ -732,8 +732,13 @@ the play session.
 
 | Job | Model | Where |
 |---|---|---|
-| Chapter generation, encounter design | `claude-opus-5` | Local CLI, authoring time |
-| Live flavor text, NPC lines, recaps | `claude-haiku-4-5` | Lambda, table time |
+| Chapter generation, encounter design | `anthropic.claude-opus-5` | Local CLI, authoring time |
+| Live flavor text, NPC lines, recaps | `anthropic.claude-haiku-4-5` | Lambda, table time |
+
+Both go through **Claude in Amazon Bedrock** — the Messages API at
+`bedrock-mantle.{region}.api.aws/anthropic`, hence the `anthropic.` prefix on the model ids.
+Neither surface holds an API key: the CLI signs with whatever credentials `aws sts
+get-caller-identity` would use, and the Lambda signs with its execution role.
 
 ### 6.2 Cost
 
@@ -760,11 +765,29 @@ pay full input price on every call. Two mitigations:
 Prefix layout, in render order (`tools` → `system` → `messages`) — most stable first:
 
 ```
-system  [cached] : tone rules, vocabulary constraints, forbidden topics, output format, few-shots
-system  [cached] : party composition (species/class/level/appearance)   ← changes ~once/session
-messages[cached] : chapter context + scene text                        ← changes per scene
+system  [cached] : writing rules + few-shots, the cast, chapter tone, chapter scenes
+system           : party composition, including who is hurt            ← changes every fight
+messages         : chapter context + scene text                        ← changes per scene
 messages         : the specific moment being narrated                  ← changes every call
 ```
+
+**This is a correction to the three-breakpoint layout this section used to describe**, made after
+building it and measuring (`packages/server/src/llm/prompt.ts`). Two of those three breakpoints do
+not survive contact with the floor:
+
+1. **The tone block does not reach 4096 tokens on its own** — tone rules plus a generous set of
+   few-shots comes to roughly 1300. A breakpoint there is not a smaller saving, it is *no* saving.
+   The prefix reaches the floor only once the cast (`content/rules.json`'s species and class
+   blurbs) and the chapter's own scenes are in front of it — all of which is real context that
+   improves the writing, not padding bought to clear a threshold.
+2. **The party block cannot sit inside the cached prefix**, because it says who is hurt. "Changes
+   ~once/session" is true of names and levels and false of hit points, and hit points are the half
+   a narrator actually needs. A block that changes every fight, placed in front of the scene text,
+   invalidates the scene text on every fight.
+
+So: **one breakpoint**, at the end of everything stable for a whole session. A unit test measures
+the real prefix against the floor with a 15% margin, because the estimate is a heuristic and the
+floor is a cliff with no warning on the far side.
 
 Never interpolate a timestamp, UUID, or request ID into the system prompt. It sits at the front of
 the prefix and invalidates everything after it.
@@ -777,9 +800,18 @@ that turn-based games always know the small set of things that can happen next:
 > When the party enters a scene, immediately fire off generation for the 3–4 likely reactions
 > **during the transition animation.** By the time she taps, the text is already in hand.
 
-Prefetched results go into a per-run cache keyed by `(sceneId, choiceId)`. A hit renders instantly;
-a miss streams; a failure falls through to authored text. In practice the player should never
-observe a wait.
+Prefetched results go into a per-run cache keyed by `(runId, sceneId, choiceId)` — the run id is
+explicit because one process serves many households, and without it one family's prefetched line
+reaches another's television.
+
+A hit renders instantly; **a miss is the authored text**. Nothing streams and nothing waits: the
+take is a synchronous map read, so there is no code path from a player's tap to a network call and
+therefore none from a slow model to a stalled television. "Should never observe a wait" is kept by
+removing the ability to wait rather than by keeping one short.
+
+One exit per *destination*, not one per button. Three species-gated choices that all arrive in the
+same clearing are one line, because the arrival cannot tell them apart — and warming all three
+filled the window and pushed the scene's only ungated choice out of it.
 
 ### 6.5 Safety validator
 
@@ -796,7 +828,19 @@ no retry loop, no waiting.
 ### 6.6 The kill switch
 
 `LIVE_LLM_ENABLED=false` disables the entire live layer. The game remains fully playable.
-CI runs the integration suite with the live layer stubbed out — this invariant is tested, not hoped for.
+
+Read as an **exact match on the string `"true"`**, so anything else — including `"false"`, which is
+a non-empty string every `if (process.env.X)` would treat as on — leaves the layer off. The default
+falls that way because the two mistakes do not cost the same: a layer wrongly off is one evening of
+plainer narration and announces itself immediately; a layer wrongly on is unreviewed text on a
+television in a child's living room, plus a bill, and announces itself to nobody.
+
+CI runs the integration suite with the live layer stubbed out — this invariant is tested, not hoped
+for. It is also **structural**: `HandlerDeps.narrator` is optional, absence and `silentNarrator`
+behave identically, so every test that does not name a narrator is running the off path for free.
+`handlers/live-layer.test.ts` plays the same opening twice, with and without, and asserts the two
+runs differ in the narration and in nothing else — not "the game still works", but the same seq,
+flags, party, prompt and dice.
 
 ---
 

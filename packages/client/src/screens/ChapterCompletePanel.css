@@ -61,6 +61,41 @@
   color: var(--color-text-muted, #b7b0d8);
 }
 
+/*
+ * The live layer's session recap (roadmap chapter 7).
+ *
+ * Set as a block of running prose rather than as a chip: it is two or three
+ * sentences about the evening, and it is the one thing on this screen that is
+ * about the story instead of about the numbers. Italic and indented behind a
+ * rule so it reads as a voice rather than as another statistic — and in the
+ * ordinary text colour, because there is nothing to warn anybody about.
+ *
+ * The icon is aligned to the first line rather than centred: the text wraps to
+ * several lines and a vertically-centred icon next to a paragraph drifts into
+ * the middle of it.
+ */
+.complete__recap {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 0.5em);
+  margin: var(--space-2, 0.5em) 0 0;
+  padding-left: var(--space-3, 0.75em);
+  border-left: 2px solid var(--color-border, #3a3358);
+  font-size: var(--font-size-md, 1em);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-text, #efeaff);
+  /* The recap is the widest text on the screen; unbounded it would run the
+     full width of a television and become a single unreadable line. */
+  max-width: 46ch;
+}
+
+.complete__recap svg {
+  /* Nudged onto the first line's baseline rather than its box top. */
+  margin-top: 0.15em;
+  flex: 0 0 auto;
+}
+
 /* --- Bonus objectives (spec §8.2) -------------------------------------- */
 
 .complete__bonus-heading {
