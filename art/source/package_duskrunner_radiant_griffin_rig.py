@@ -44,6 +44,13 @@ builder.SUBJECT_CLOSE_SIZE = 9
 # seam overdraw inside the creature while preventing base wing, paw, and tail
 # edges from leaking around the approved pose.
 builder.SUBJECT_CLIP_ENVELOPE = (0, 0, 1024, 1024)
+# Four lower-left talon pixels are overlap padding in the canonical wings mask.
+# They read only as a 2x2 antialias fringe at rest, but otherwise follow the wing
+# bone 5px below the standing line during attack and guard. Remove exactly that
+# stale fringe rather than eroding the wing or changing the motion threshold.
+builder.PART_ALPHA_ERASE_ENVELOPES = (
+    ("wings", (119, 818, 121, 820)),
+)
 
 
 if __name__ == "__main__":
