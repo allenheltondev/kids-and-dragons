@@ -18,6 +18,7 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
+import { setSpeaker } from "@kad/shared";
 import type { EarnedBonus, ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
@@ -220,5 +221,54 @@ describe("who grew (progression awards)", () => {
     progress(10, [{ characterId: "c_1", leveledTo: 3 }]);
     progress(10, [{ characterId: "c_1", leveledTo: 9 }]);
     expect(screen.getByText("Level 3")).toBeTruthy();
+  });
+});
+
+describe("the session recap (roadmap chapter 7)", () => {
+  const RECAP =
+    "You went into the Bramblewood after a way through a hedge and came out with a sprite who " +
+    "will not stop following you. Nobody has explained the acorn.";
+
+  it("shows nothing at all when the live layer is off", () => {
+    /*
+     * The AI-optional invariant, on the screen. With the layer off `recap` is
+     * absent from the state — which is every run by default — and the panel has
+     * to be exactly the panel that shipped, not a panel with an empty slot in
+     * it.
+     */
+    mount();
+    expect(screen.queryByText(/Bramblewood/)).toBeNull();
+    expect(document.querySelector(".complete__recap")).toBeNull();
+  });
+
+  it("shows the recap when there is one", () => {
+    mount({ recap: RECAP });
+    expect(screen.getByText(RECAP)).toBeTruthy();
+  });
+
+  it("treats an explicit null the same as absent", () => {
+    // `recap` is `string | null | undefined` on the wire: null is what a run
+    // that asked and was refused carries, and it must render identically to a
+    // run that never asked.
+    mount({ recap: null });
+    expect(document.querySelector(".complete__recap")).toBeNull();
+  });
+
+  it("reads it aloud with the summary rather than after it", () => {
+    /*
+     * §11 — all narration flows through `speak()`, and a recap that only
+     * existed on the television is a recap nobody hears. One utterance rather
+     * than two so it cannot interrupt or be interrupted by the summary line.
+     */
+    const spoken: string[] = [];
+    setSpeaker((text) => spoken.push(text));
+    try {
+      mount({ recap: RECAP });
+      expect(spoken).toHaveLength(1);
+      expect(spoken[0]).toContain("Chapter finished!");
+      expect(spoken[0]).toContain(RECAP);
+    } finally {
+      setSpeaker(null);
+    }
   });
 });

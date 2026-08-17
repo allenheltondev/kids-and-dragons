@@ -111,6 +111,29 @@ export interface RunState {
    */
   bonuses?: EarnedBonus[];
   /**
+   * Every scene this run has entered, in order — the spine of the story, for
+   * the end-of-chapter recap (roadmap chapter 7, architecture §6).
+   *
+   * On the run rather than derived from the event log, because the log is a
+   * server-side store and the recap is written from what a *client* can see: a
+   * phone that mirrors the state has the whole road it travelled without a
+   * second fetch.
+   *
+   * Optional, and readers coalesce, for the reason `bonuses` above is: `RunState`
+   * is persisted plain JSON and a run in flight across a deploy predates the
+   * field. A missing trail means a recap with a thinner spine, never a crash.
+   */
+  visited?: SceneId[];
+  /**
+   * The live layer's end-of-chapter recap, or null when there isn't one —
+   * which is every run with the layer off, and every run where the model
+   * declined or failed its gate (architecture §6.5, §6.6).
+   *
+   * Null is the normal case, not an error state. The completion screen has its
+   * own content and this rides on top of it.
+   */
+  recap?: string | null;
+  /**
    * The fight in progress, or null when there is not one (spec §7).
    *
    * Held on the run rather than beside it because everything else about a
