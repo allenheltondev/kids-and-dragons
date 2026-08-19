@@ -160,7 +160,11 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
   for (let step = 0; step < 3; step += 1) {
     const confirm = panel.getByRole("button", { name: /do it!|yes, do that/i });
     if (await confirm.first().isVisible().catch(() => false)) {
-      await confirm.first().click().catch(() => {});
+      // Bounded for the same reason as the roll click above: between the
+      // isVisible check and the click, another phone's action can resolve the
+      // prompt out from under this one, and an unbounded click on a vanished
+      // button waits forever.
+      await confirm.first().click({ timeout: 3_000 }).catch(() => {});
       await page.waitForTimeout(500);
       return true;
     }
@@ -389,7 +393,20 @@ test.describe("first playable", () => {
       for (const page of phones) {
         const roll = page.getByRole("button", { name: /^roll/i });
         if ((await roll.count()) > 0 && (await roll.first().isVisible().catch(() => false))) {
-          await roll.first().click();
+          /*
+           * Bounded and caught, and this line is why. The button's label is
+           * "Roll!" until the tap is in flight and "Rolling…" after — both
+           * match this locator — and a disabled button still passes the
+           * isVisible gate above. So between that check and this click the
+           * button can disable or unmount (the roll landing), and an
+           * unbounded click on it waits for the rest of the test: the config
+           * sets no actionTimeout, and Playwright's default is no limit.
+           * That race, struck once anywhere in a walk full of checks, was a
+           * whole run reported as "Test timeout" with a stack pointing at
+           * whichever line happened to be next. A missed click costs one
+           * loop iteration; the next pass reads the world again.
+           */
+          await roll.first().click({ timeout: 5_000 }).catch(() => {});
           // The roll is the centrepiece and takes its ~1.5s (spec §2.2).
           await page.waitForTimeout(2600);
           acted = true;
