@@ -167,20 +167,31 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
 
     const targets = panel.locator(".combat__targets button");
     if ((await targets.count()) > 0) {
-      await targets.first().click().catch(() => {});
+      // First target, whoever it is — for Attack that is an enemy, for Help Up
+      // it is the fallen friend, and the server only ever offers legal ones.
+      await targets.first().click({ timeout: 3_000 }).catch(() => {});
       await page.waitForTimeout(200);
       continue;
     }
 
     const cards = panel.locator(".prompt__options > li > button");
     const labels = await cards.allInnerTexts().catch(() => [] as string[]);
-    // Attack first because it is what ends a fight; End turn when nothing else
-    // is offered, which is what an unreachable enemy looks like from here.
+    /*
+     * Priorities, in table order. **Help Up first**: §7.3 makes picking a
+     * fallen friend up the beat of every fight, and it is also what keeps the
+     * fight inside any budget at all — a driver that never helped anyone up
+     * left the party fighting shorthanded, and a two-hero fight against three
+     * wisps runs long enough to blow the whole test's budget on its own (a
+     * captured run was at round 6 with a hero still on the floor). Attack
+     * second because it is what ends a fight; End turn when nothing else is
+     * offered, which is what an unreachable enemy looks like from here.
+     */
+    const help = labels.findIndex((label) => /help up/i.test(label));
     const attack = labels.findIndex((label) => /attack/i.test(label));
     const end = labels.findIndex((label) => /end turn/i.test(label));
-    const pick = attack >= 0 ? attack : end;
+    const pick = help >= 0 ? help : attack >= 0 ? attack : end;
     if (pick < 0) return false;
-    await cards.nth(pick).click().catch(() => {});
+    await cards.nth(pick).click({ timeout: 3_000 }).catch(() => {});
     await page.waitForTimeout(200);
   }
 
@@ -206,7 +217,11 @@ async function answerPrompt(page: Page, heroes: readonly string[]): Promise<bool
   }
   if (fresh.length === 0) return false;
 
-  await fresh[0]!.click().catch(() => {});
+  // Bounded, because the config sets no actionTimeout and Playwright's default
+  // is *no limit*: one never-actionable button (a toast overlapping it, a
+  // re-render mid-click) would otherwise hang the whole walk until the test
+  // budget dies, with a stack trace pointing at whichever line came next.
+  await fresh[0]!.click({ timeout: 5_000 }).catch(() => {});
   // The confirm can vanish under us — another player's answer can resolve the
   // prompt between the tap and the confirm. That is the game working, not a
   // failure, so a missed confirm is fine; the next turn re-reads the state.
@@ -309,6 +324,17 @@ test.describe("first playable", () => {
   });
 
   test("three players take a chapter from the lobby to the end", async ({ browser }) => {
+    /*
+     * 540s, the same number for the same reason as the bramblewisp fight test
+     * below: a route through the stream lands this walk in the identical
+     * fight, and that test's own measurement — "6-10 rounds when three novice
+     * thornguards keep missing, ~30s of genuine presentation holds per round"
+     * — is exactly why its comment says 300s "fits the median run, not the
+     * tail". The walk was given the fight when it was ungated, and never the
+     * budget that came with it: story routes finish in under a minute either
+     * way, and fight routes need what fights need.
+     */
+    test.setTimeout(540_000);
     const phones = [await phone(browser), await phone(browser), await phone(browser)];
     const [host] = phones as [Page, ...Page[]];
 
