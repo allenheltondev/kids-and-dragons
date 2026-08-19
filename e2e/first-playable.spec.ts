@@ -128,6 +128,67 @@ function labelNamesAHero(label: string, heroes: readonly string[]): boolean {
 }
 
 /**
+ * Take this phone's combat turn, if it has one.
+ *
+ * Combat is the one prompt the generic driver below cannot play. It taps the
+ * first option it finds and hopes; a turn is *three* deliberate steps — pick an
+ * action, pick a target, confirm — and each blind tap costs a loop iteration
+ * plus its waits. The walk test's own note admits it: "a route through the
+ * stream can land in real combat, which the generic driver plays one card at a
+ * time."
+ *
+ * That is the ~1-in-10 CI failure. On the branch that reaches the bramblewisps
+ * the fight takes so many iterations that the walk runs past its 300s budget
+ * and dies as `Test timeout`, several rounds from the end. Given a longer
+ * budget the same runs eventually wedge instead — same cause, later symptom.
+ *
+ * So combat gets driven properly: one turn per call, in the order the UI asks
+ * for it, ending the turn when there is nothing worth doing. `End turn` is the
+ * important fallback — a hero whose enemies are all out of reach has no legal
+ * action at all, and passing lets the monsters close the distance on their own
+ * turn rather than leaving three phones staring at each other.
+ */
+async function takeCombatTurn(page: Page): Promise<boolean> {
+  const panel = page.locator(".prompt.combat");
+  if ((await panel.count()) === 0) return false;
+  // Only the phone actually on the clock has anything to do.
+  if ((await panel.getByText(/Your turn,/i).count()) === 0) return false;
+
+  // Up to three steps: action -> target -> confirm. Bounded rather than
+  // `while (true)`, because a driver that cannot get out of a step should fail
+  // the test loudly instead of spinning inside a helper.
+  for (let step = 0; step < 3; step += 1) {
+    const confirm = panel.getByRole("button", { name: /do it!|yes, do that/i });
+    if (await confirm.first().isVisible().catch(() => false)) {
+      await confirm.first().click().catch(() => {});
+      await page.waitForTimeout(500);
+      return true;
+    }
+
+    const targets = panel.locator(".combat__targets button");
+    if ((await targets.count()) > 0) {
+      await targets.first().click().catch(() => {});
+      await page.waitForTimeout(200);
+      continue;
+    }
+
+    const cards = panel.locator(".prompt__options > li > button");
+    const labels = await cards.allInnerTexts().catch(() => [] as string[]);
+    // Attack first because it is what ends a fight; End turn when nothing else
+    // is offered, which is what an unreachable enemy looks like from here.
+    const attack = labels.findIndex((label) => /attack/i.test(label));
+    const end = labels.findIndex((label) => /end turn/i.test(label));
+    const pick = attack >= 0 ? attack : end;
+    if (pick < 0) return false;
+    await cards.nth(pick).click().catch(() => {});
+    await page.waitForTimeout(200);
+  }
+
+  await page.waitForTimeout(400);
+  return true;
+}
+
+/**
  * Answer whatever this phone is being asked, if anything. Returns whether it
  * acted. Choices are select-then-confirm (spec §11), and an option already
  * carrying a voter's name is this player's own vote — tapping it again would
@@ -305,6 +366,8 @@ test.describe("first playable", () => {
           await roll.first().click();
           // The roll is the centrepiece and takes its ~1.5s (spec §2.2).
           await page.waitForTimeout(2600);
+          acted = true;
+        } else if (await takeCombatTurn(page)) {
           acted = true;
         } else if (await answerPrompt(page, heroes)) {
           acted = true;
