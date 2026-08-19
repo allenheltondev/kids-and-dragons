@@ -143,18 +143,53 @@ export interface Api {
 
 const JSON_HEADERS = { "content-type": "application/json" };
 
-async function request<T>(
+/**
+ * How long any one request may live before the client gives up on it.
+ *
+ * This bound is what stands between a flaky network and a bricked phone. Every
+ * screen that sends an intent disables its buttons while the send is in
+ * flight (`busy`), and un-disables them when the promise settles — so a fetch
+ * that never settles is a controller whose every button is "Sending…" until
+ * somebody hard-refreshes it. That is not hypothetical: a single hung
+ * `/action` through the dev proxy was the intermittent e2e failure, and a
+ * phone on a dropped-but-open wifi connection at a real table is the same
+ * brick. A timeout turns it into a ten-second hiccup with a toast, and the
+ * answer to a toast is the game's normal answer: tap it again.
+ *
+ * Ten seconds: comfortably past a Lambda cold start plus a slow hop, and
+ * comfortably inside the patience of an eight-year-old holding the phone.
+ */
+export const REQUEST_TIMEOUT_MS = 10_000;
+
+/**
+ * Exported for its tests, which cannot fake `AbortSignal.timeout` — it lives
+ * below the JS timer layer — and so pass a tiny real `timeoutMs` instead.
+ * Nothing in the app passes one; the default is the contract.
+ */
+export async function request<T>(
   path: string,
-  init: RequestInit & { token?: string } = {},
+  init: RequestInit & { token?: string; timeoutMs?: number } = {},
 ): Promise<T> {
-  const { token, headers, ...rest } = init;
-  const response = await fetch(path, {
-    ...rest,
-    headers: {
-      ...headers,
-      ...(token ? { authorization: `Bearer ${token}` } : {}),
-    },
-  });
+  const { token, headers, timeoutMs, ...rest } = init;
+  let response: Response;
+  try {
+    response = await fetch(path, {
+      ...rest,
+      headers: {
+        ...headers,
+        ...(token ? { authorization: `Bearer ${token}` } : {}),
+      },
+      signal: AbortSignal.timeout(timeoutMs ?? REQUEST_TIMEOUT_MS),
+    });
+  } catch (error) {
+    // The abort arrives as a DOMException whose message ("The operation was
+    // aborted due to timeout") is written for a developer. The person holding
+    // the phone gets the sentence that tells them what to do about it.
+    if (error instanceof DOMException && (error.name === "TimeoutError" || error.name === "AbortError")) {
+      throw new ApiError(0, "The game took too long to answer. Tap again.");
+    }
+    throw error;
+  }
 
   const body: unknown = await response.json().catch(() => null);
 
