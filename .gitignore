@@ -50,3 +50,6 @@ playwright-report/
 
 # Coverage output (npm run test:coverage).
 coverage/
+
+# Temporary e2e instrumentation for chasing the session-loss flake. Never committed.
+e2e/*.local.spec.ts
