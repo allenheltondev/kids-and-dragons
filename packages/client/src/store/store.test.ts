@@ -9,7 +9,7 @@ import {
   type InternalGameStore,
 } from "./index";
 import type { ChannelOptions } from "../sync/channel";
-import type { Api } from "../sync/client";
+import { ApiError, type Api } from "../sync/client";
 import type { KeyValueStorage } from "./persistence";
 import { makeMember, makeState } from "../testing/fixtures";
 
@@ -696,7 +696,279 @@ describe("choosing a transport (architecture §4.4)", () => {
 
     await h.store.getState().attach("ABCD", "display");
 
-    expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD");
+    expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD", expect.any(Number));
     expect(h.channelOptions().createEventSource).toBeTypeOf("function");
+  });
+});
+
+describe("recovering a stored session from the URL", () => {
+  /**
+   * A phone that has already joined, reloaded. This is the state every surface
+   * is in after a hard refresh: a session in storage, nothing in memory.
+   */
+  async function refreshed(h: ReturnType<typeof harness>) {
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    // Wipe the in-memory half only — storage keeps the session, exactly as a
+    // page load does.
+    h.store.setState({ session: null, state: null, connection: "idle" });
+    h.api.fetchState.mockClear();
+    return h;
+  }
+
+  it("keeps asking when the server is briefly unreachable", async () => {
+    /*
+     * Architecture §4.3 promises a surface can be hard-refreshed mid-encounter
+     * and recover. That held only while the *first* `fetchState` succeeded: one
+     * failure set `connection: "error"` and stopped forever, and with `session`
+     * still null on a cold load, `App.pickLayout` renders the **home screen**
+     * on the `/p/CODE` URL — run still live on the server, token still in
+     * storage.
+     *
+     * The stranding is not the worst of it. The home screen's first button is
+     * "Start a game", so the obvious move at a table creates a second room and
+     * abandons the evening in progress. A phone that cannot reach the server
+     * for a moment has to wait, not offer to throw the game away.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState
+        .mockRejectedValueOnce(new Error("network down"))
+        .mockRejectedValueOnce(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(3);
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+      expect(h.store.getState().error).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("shows the spinner rather than the home screen while it retries", async () => {
+    /*
+     * `App.pickLayout` renders `HomeScreen` for a code with no session unless
+     * `connection === "connecting"`. So the status during the retries is not
+     * cosmetic — it is the whole difference between a spinner and a button
+     * that starts a second game.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValueOnce(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(100);
+      expect(h.store.getState().connection).toBe("connecting");
+      expect(h.store.getState().session).toBeNull();
+
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("gives up on a room that is genuinely gone, without spinning", async () => {
+    /*
+     * The other half. A 410 answers the same way forever, so retrying it would
+     * hold a spinner in front of an eight-year-old until somebody gave up —
+     * a worse failure than the honest one. Told plainly, once.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValue(new ApiError(410, "That room has expired."));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+      expect(h.store.getState().error).toBe("That room has expired.");
+      expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("gives up on a token this device may no longer use", async () => {
+    // 401/403 are as permanent as 410 and for the same reason: asking again
+    // with the same token cannot change the answer.
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValue(new ApiError(403, "Not your room."));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("stops trying after a bounded number of attempts", async () => {
+    // The retry has to be able to end. A phone that spins forever is the
+    // failure this fix would otherwise have replaced the old one with.
+    vi.useFakeTimers();
+    try {
+      const h = await refreshed(harness());
+      h.api.fetchState.mockRejectedValue(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(60_000);
+      await attaching;
+
+      expect(h.api.fetchState).toHaveBeenCalledTimes(5);
+      expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("recovering a display surface from the URL", () => {
+  it("keeps asking when the server is briefly unreachable", async () => {
+    /*
+     * The review catch on the review catch: the first §4.3 fix retried the
+     * stored-session path and left the display branch on one attempt — and the
+     * TV is §4.3's *headline case* ("The TV can be hard-refreshed mid-encounter
+     * and recover"). It holds no session and recovers from the URL alone, so a
+     * single cold Lambda on that single attempt left the room's biggest screen
+     * on an error card for the rest of the evening.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      h.api.watchRoom
+        .mockRejectedValueOnce(new Error("network down"))
+        .mockRejectedValueOnce(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "display");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.watchRoom).toHaveBeenCalledTimes(3);
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+      expect(h.store.getState().session?.playerId).toBe("");
+      expect(h.store.getState().error).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("gives up on a room that is genuinely gone", async () => {
+    // Same permanence rule as the phone path: 404/410 answer the same way
+    // forever, and a spinner that never ends is worse than the honest error.
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      h.api.watchRoom.mockRejectedValue(new ApiError(404, "No such room."));
+
+      const attaching = h.store.getState().attach("ABCD", "display");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.watchRoom).toHaveBeenCalledTimes(1);
+      expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("the recovery deadline", () => {
+  /**
+   * A fetchState that behaves like the real failure: a dropped-but-open
+   * connection that consumes its entire per-request bound before failing.
+   * The earlier tests rejected instantly, which proved the attempt count and
+   * the retry classification while hiding the actual wall-clock — five 10s
+   * request timeouts plus backoff is nearly a minute of spinner, not the
+   * "about seven seconds" the first version claimed. Review caught it.
+   */
+  function hangingApi(h: ReturnType<typeof harness>, calls: number[]) {
+    h.api.fetchState.mockImplementation(
+      (_q: unknown, _t: unknown, timeoutMs?: number) =>
+        new Promise((_resolve, reject) => {
+          calls.push(timeoutMs ?? -1);
+          setTimeout(() => {
+            reject(new ApiError(0, "The game took too long to answer. Tap again."));
+          }, timeoutMs ?? 10_000);
+        }) as never,
+    );
+  }
+
+  it("gives up within ~20 seconds against a dead connection, not a minute", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.store.setState({ session: null, state: null, connection: "idle" });
+      h.api.fetchState.mockClear();
+      const calls: number[] = [];
+      hangingApi(h, calls);
+
+      const started = Date.now();
+      let settledAt = 0;
+      // The attach's own settle time, not the timer advance's: fake time keeps
+      // moving after recovery has already given up.
+      const attaching = h.store.getState().attach("ABCD", "player").then(() => {
+        settledAt = Date.now();
+      });
+      await vi.advanceTimersByTimeAsync(60_000);
+      await attaching;
+      const elapsed = settledAt - started;
+
+      /*
+       * The contract under test: recovery is bounded by a deadline, not only
+       * an attempt count. 22s of slack over the 20s deadline covers the last
+       * attempt's residual budget; anything near a minute means the deadline
+       * stopped binding the per-request timeout again.
+       */
+      expect(elapsed).toBeLessThanOrEqual(22_000);
+      expect(h.store.getState().connection).toBe("error");
+
+      // Every attempt's request was bounded by the remaining budget: the
+      // first gets the funnel default, the rest strictly less.
+      expect(calls[0]).toBe(10_000);
+      for (const ms of calls.slice(1)) expect(ms).toBeLessThan(10_000);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("still recovers when the second attempt succeeds inside the budget", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      const state = h.store.getState().state!;
+      h.store.setState({ session: null, state: null, connection: "idle" });
+      h.api.fetchState.mockClear();
+      h.api.fetchState
+        .mockImplementationOnce(
+          (_q: unknown, _t: unknown, timeoutMs?: number) =>
+            new Promise((_res, rej) => {
+              setTimeout(() => { rej(new ApiError(0, "timed out")); }, timeoutMs ?? 10_000);
+            }) as never,
+        )
+        .mockResolvedValueOnce({ seq: state.seq, state } as never);
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(15_000);
+      await attaching;
+
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+      expect(h.store.getState().error).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

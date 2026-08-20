@@ -103,6 +103,107 @@ async function chooseUntil(page: Page, label: RegExp, done: () => Promise<boolea
 }
 
 /**
+ * Does this option's label carry one of the party's names?
+ *
+ * The question is "has somebody already voted for this", and the answer has to
+ * be a **whole-word** match rather than a substring. `includes` looked
+ * equivalent and was not: a hero called Bramble made every `Bramblewisp` in the
+ * chapter read as a party member.
+ *
+ * That is not hypothetical. It is the ~1-in-10 e2e failure: the walk test names
+ * its third hero Bramble, the fight it can route into is three Bramblewisps, and
+ * so every attack target was skipped as "already voted". With no option left to
+ * tap, the party stood in front of the wisps until the budget ran out — a fight
+ * nobody could ever take a swing at, on a run that had done nothing wrong except
+ * fail a check and end up in combat.
+ *
+ * `\b` is exactly the fix: `Bramble` matches `Bramble` and not `Bramblewisp`,
+ * because there is no word boundary in the middle of a word.
+ */
+function labelNamesAHero(label: string, heroes: readonly string[]): boolean {
+  return heroes.some((hero) => {
+    const escaped = hero.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`\\b${escaped}\\b`, "i").test(label);
+  });
+}
+
+/**
+ * Take this phone's combat turn, if it has one.
+ *
+ * Combat is the one prompt the generic driver below cannot play. It taps the
+ * first option it finds and hopes; a turn is *three* deliberate steps — pick an
+ * action, pick a target, confirm — and each blind tap costs a loop iteration
+ * plus its waits. The walk test's own note admits it: "a route through the
+ * stream can land in real combat, which the generic driver plays one card at a
+ * time."
+ *
+ * That is the ~1-in-10 CI failure. On the branch that reaches the bramblewisps
+ * the fight takes so many iterations that the walk runs past its 300s budget
+ * and dies as `Test timeout`, several rounds from the end. Given a longer
+ * budget the same runs eventually wedge instead — same cause, later symptom.
+ *
+ * So combat gets driven properly: one turn per call, in the order the UI asks
+ * for it, ending the turn when there is nothing worth doing. `End turn` is the
+ * important fallback — a hero whose enemies are all out of reach has no legal
+ * action at all, and passing lets the monsters close the distance on their own
+ * turn rather than leaving three phones staring at each other.
+ */
+async function takeCombatTurn(page: Page): Promise<boolean> {
+  const panel = page.locator(".prompt.combat");
+  if ((await panel.count()) === 0) return false;
+  // Only the phone actually on the clock has anything to do.
+  if ((await panel.getByText(/Your turn,/i).count()) === 0) return false;
+
+  // Up to three steps: action -> target -> confirm. Bounded rather than
+  // `while (true)`, because a driver that cannot get out of a step should fail
+  // the test loudly instead of spinning inside a helper.
+  for (let step = 0; step < 3; step += 1) {
+    const confirm = panel.getByRole("button", { name: /do it!|yes, do that/i });
+    if (await confirm.first().isVisible().catch(() => false)) {
+      // Bounded for the same reason as the roll click above: between the
+      // isVisible check and the click, another phone's action can resolve the
+      // prompt out from under this one, and an unbounded click on a vanished
+      // button waits forever.
+      await confirm.first().click({ timeout: 3_000 }).catch(() => {});
+      await page.waitForTimeout(500);
+      return true;
+    }
+
+    const targets = panel.locator(".combat__targets button");
+    if ((await targets.count()) > 0) {
+      // First target, whoever it is — for Attack that is an enemy, for Help Up
+      // it is the fallen friend, and the server only ever offers legal ones.
+      await targets.first().click({ timeout: 3_000 }).catch(() => {});
+      await page.waitForTimeout(200);
+      continue;
+    }
+
+    const cards = panel.locator(".prompt__options > li > button");
+    const labels = await cards.allInnerTexts().catch(() => [] as string[]);
+    /*
+     * Priorities, in table order. **Help Up first**: §7.3 makes picking a
+     * fallen friend up the beat of every fight, and it is also what keeps the
+     * fight inside any budget at all — a driver that never helped anyone up
+     * left the party fighting shorthanded, and a two-hero fight against three
+     * wisps runs long enough to blow the whole test's budget on its own (a
+     * captured run was at round 6 with a hero still on the floor). Attack
+     * second because it is what ends a fight; End turn when nothing else is
+     * offered, which is what an unreachable enemy looks like from here.
+     */
+    const help = labels.findIndex((label) => /help up/i.test(label));
+    const attack = labels.findIndex((label) => /attack/i.test(label));
+    const end = labels.findIndex((label) => /end turn/i.test(label));
+    const pick = help >= 0 ? help : attack >= 0 ? attack : end;
+    if (pick < 0) return false;
+    await cards.nth(pick).click({ timeout: 3_000 }).catch(() => {});
+    await page.waitForTimeout(200);
+  }
+
+  await page.waitForTimeout(400);
+  return true;
+}
+
+/**
  * Answer whatever this phone is being asked, if anything. Returns whether it
  * acted. Choices are select-then-confirm (spec §11), and an option already
  * carrying a voter's name is this player's own vote — tapping it again would
@@ -115,12 +216,16 @@ async function answerPrompt(page: Page, heroes: readonly string[]): Promise<bool
     const label = (await option.innerText().catch(() => "")).trim();
     if (!label) continue;
     if (/do it!|yes, do that|wait, not yet|change/i.test(label)) continue;
-    if (heroes.some((hero) => label.includes(hero))) continue;
+    if (labelNamesAHero(label, heroes)) continue;
     fresh.push(option);
   }
   if (fresh.length === 0) return false;
 
-  await fresh[0]!.click().catch(() => {});
+  // Bounded, because the config sets no actionTimeout and Playwright's default
+  // is *no limit*: one never-actionable button (a toast overlapping it, a
+  // re-render mid-click) would otherwise hang the whole walk until the test
+  // budget dies, with a stack trace pointing at whichever line came next.
+  await fresh[0]!.click({ timeout: 5_000 }).catch(() => {});
   // The confirm can vanish under us — another player's answer can resolve the
   // prompt between the tap and the confirm. That is the game working, not a
   // failure, so a missed confirm is fine; the next turn re-reads the state.
@@ -223,6 +328,17 @@ test.describe("first playable", () => {
   });
 
   test("three players take a chapter from the lobby to the end", async ({ browser }) => {
+    /*
+     * 540s, the same number for the same reason as the bramblewisp fight test
+     * below: a route through the stream lands this walk in the identical
+     * fight, and that test's own measurement — "6-10 rounds when three novice
+     * thornguards keep missing, ~30s of genuine presentation holds per round"
+     * — is exactly why its comment says 300s "fits the median run, not the
+     * tail". The walk was given the fight when it was ungated, and never the
+     * budget that came with it: story routes finish in under a minute either
+     * way, and fight routes need what fights need.
+     */
+    test.setTimeout(540_000);
     const phones = [await phone(browser), await phone(browser), await phone(browser)];
     const [host] = phones as [Page, ...Page[]];
 
@@ -268,18 +384,38 @@ test.describe("first playable", () => {
     let completed: { phase: string; xpEarned: number } | null = null;
     let quiet = 0;
 
-    // 90 rather than 60: with the bramblewisp fight ungated, a route through
-    // the stream can land in real combat, which the generic driver plays one
-    // card at a time.
-    for (let turn = 0; turn < 90 && completed === null; turn++) {
+    /*
+     * 150 rather than 90. The cap is headroom, not the stuck-detector — the
+     * quiet counter below is what catches a genuinely wedged game. A 10-round
+     * fight is ~30 hero turns, each costing a loop pass or two around the
+     * presentation holds, plus the story on either side; 90 was measured to
+     * clip exactly the long-fight tail that the 540s budget was raised for,
+     * failing runs as "the chapter never finished" with everything healthy.
+     */
+    for (let turn = 0; turn < 150 && completed === null; turn++) {
       let acted = false;
 
       for (const page of phones) {
         const roll = page.getByRole("button", { name: /^roll/i });
         if ((await roll.count()) > 0 && (await roll.first().isVisible().catch(() => false))) {
-          await roll.first().click();
+          /*
+           * Bounded and caught, and this line is why. The button's label is
+           * "Roll!" until the tap is in flight and "Rolling…" after — both
+           * match this locator — and a disabled button still passes the
+           * isVisible gate above. So between that check and this click the
+           * button can disable or unmount (the roll landing), and an
+           * unbounded click on it waits for the rest of the test: the config
+           * sets no actionTimeout, and Playwright's default is no limit.
+           * That race, struck once anywhere in a walk full of checks, was a
+           * whole run reported as "Test timeout" with a stack pointing at
+           * whichever line happened to be next. A missed click costs one
+           * loop iteration; the next pass reads the world again.
+           */
+          await roll.first().click({ timeout: 5_000 }).catch(() => {});
           // The roll is the centrepiece and takes its ~1.5s (spec §2.2).
           await page.waitForTimeout(2600);
+          acted = true;
+        } else if (await takeCombatTurn(page)) {
           acted = true;
         } else if (await answerPrompt(page, heroes)) {
           acted = true;
