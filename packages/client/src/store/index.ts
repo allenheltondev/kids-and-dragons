@@ -650,20 +650,29 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * that never receives a patch. The token it hands back names this
            * room and nothing else — it cannot act, and `playerId: ""` below is
            * still what actually denies authority (spec §2.1).
+           *
+           * Retried for the same reason the stored-session path above is —
+           * caught by review, because the first fix covered only the phones.
+           * The TV *is* §4.3's headline case ("The TV can be hard-refreshed
+           * mid-encounter and recover"), it recovers from the URL alone, and
+           * one cold Lambda on that one attempt used to leave the room's
+           * biggest screen on an error card for the rest of the evening.
            */
-          const response = await deps.api.watchRoom(roomCode);
-          if (!current()) return;
-          const display: ClientSession = {
-            runId: response.runId,
-            roomCode,
-            playerId: "", // no player on this device — it is a screen, not a seat
-            mode: response.mode,
-            sessionToken: response.viewerToken,
-          };
-          // Deliberately not persisted: a display client has nothing worth
-          // storing, and it recovers from the URL alone.
-          set({ session: display, error: null, pendingCode: null });
-          await connect(display, response.state, response.state.seq);
+          await withRetry(current, async () => {
+            const response = await deps.api.watchRoom(roomCode);
+            if (!current()) return;
+            const display: ClientSession = {
+              runId: response.runId,
+              roomCode,
+              playerId: "", // no player on this device — it is a screen, not a seat
+              mode: response.mode,
+              sessionToken: response.viewerToken,
+            };
+            // Deliberately not persisted: a display client has nothing worth
+            // storing, and it recovers from the URL alone.
+            set({ session: display, error: null, pendingCode: null });
+            await connect(display, response.state, response.state.seq);
+          });
         })()
           .catch((error: unknown) => {
             // A superseded attach's failure is not this surface's failure.
