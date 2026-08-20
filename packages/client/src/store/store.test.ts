@@ -696,7 +696,7 @@ describe("choosing a transport (architecture §4.4)", () => {
 
     await h.store.getState().attach("ABCD", "display");
 
-    expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD");
+    expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD", expect.any(Number));
     expect(h.channelOptions().createEventSource).toBeTypeOf("function");
   });
 });
@@ -878,6 +878,95 @@ describe("recovering a display surface from the URL", () => {
 
       expect(h.api.watchRoom).toHaveBeenCalledTimes(1);
       expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("the recovery deadline", () => {
+  /**
+   * A fetchState that behaves like the real failure: a dropped-but-open
+   * connection that consumes its entire per-request bound before failing.
+   * The earlier tests rejected instantly, which proved the attempt count and
+   * the retry classification while hiding the actual wall-clock — five 10s
+   * request timeouts plus backoff is nearly a minute of spinner, not the
+   * "about seven seconds" the first version claimed. Review caught it.
+   */
+  function hangingApi(h: ReturnType<typeof harness>, calls: number[]) {
+    h.api.fetchState.mockImplementation(
+      (_q: unknown, _t: unknown, timeoutMs?: number) =>
+        new Promise((_resolve, reject) => {
+          calls.push(timeoutMs ?? -1);
+          setTimeout(() => {
+            reject(new ApiError(0, "The game took too long to answer. Tap again."));
+          }, timeoutMs ?? 10_000);
+        }) as never,
+    );
+  }
+
+  it("gives up within ~20 seconds against a dead connection, not a minute", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.store.setState({ session: null, state: null, connection: "idle" });
+      h.api.fetchState.mockClear();
+      const calls: number[] = [];
+      hangingApi(h, calls);
+
+      const started = Date.now();
+      let settledAt = 0;
+      // The attach's own settle time, not the timer advance's: fake time keeps
+      // moving after recovery has already given up.
+      const attaching = h.store.getState().attach("ABCD", "player").then(() => {
+        settledAt = Date.now();
+      });
+      await vi.advanceTimersByTimeAsync(60_000);
+      await attaching;
+      const elapsed = settledAt - started;
+
+      /*
+       * The contract under test: recovery is bounded by a deadline, not only
+       * an attempt count. 22s of slack over the 20s deadline covers the last
+       * attempt's residual budget; anything near a minute means the deadline
+       * stopped binding the per-request timeout again.
+       */
+      expect(elapsed).toBeLessThanOrEqual(22_000);
+      expect(h.store.getState().connection).toBe("error");
+
+      // Every attempt's request was bounded by the remaining budget: the
+      // first gets the funnel default, the rest strictly less.
+      expect(calls[0]).toBe(10_000);
+      for (const ms of calls.slice(1)) expect(ms).toBeLessThan(10_000);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("still recovers when the second attempt succeeds inside the budget", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      const state = h.store.getState().state!;
+      h.store.setState({ session: null, state: null, connection: "idle" });
+      h.api.fetchState.mockClear();
+      h.api.fetchState
+        .mockImplementationOnce(
+          (_q: unknown, _t: unknown, timeoutMs?: number) =>
+            new Promise((_res, rej) => {
+              setTimeout(() => { rej(new ApiError(0, "timed out")); }, timeoutMs ?? 10_000);
+            }) as never,
+        )
+        .mockResolvedValueOnce({ seq: state.seq, state } as never);
+
+      const attaching = h.store.getState().attach("ABCD", "player");
+      await vi.advanceTimersByTimeAsync(15_000);
+      await attaching;
+
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+      expect(h.store.getState().error).toBeNull();
     } finally {
       vi.useRealTimers();
     }
