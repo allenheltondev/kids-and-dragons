@@ -833,3 +833,53 @@ describe("recovering a stored session from the URL", () => {
     }
   });
 });
+
+describe("recovering a display surface from the URL", () => {
+  it("keeps asking when the server is briefly unreachable", async () => {
+    /*
+     * The review catch on the review catch: the first §4.3 fix retried the
+     * stored-session path and left the display branch on one attempt — and the
+     * TV is §4.3's *headline case* ("The TV can be hard-refreshed mid-encounter
+     * and recover"). It holds no session and recovers from the URL alone, so a
+     * single cold Lambda on that single attempt left the room's biggest screen
+     * on an error card for the rest of the evening.
+     */
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      h.api.watchRoom
+        .mockRejectedValueOnce(new Error("network down"))
+        .mockRejectedValueOnce(new Error("network down"));
+
+      const attaching = h.store.getState().attach("ABCD", "display");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.watchRoom).toHaveBeenCalledTimes(3);
+      expect(h.store.getState().session?.roomCode).toBe("ABCD");
+      expect(h.store.getState().session?.playerId).toBe("");
+      expect(h.store.getState().error).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("gives up on a room that is genuinely gone", async () => {
+    // Same permanence rule as the phone path: 404/410 answer the same way
+    // forever, and a spinner that never ends is worse than the honest error.
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      h.api.watchRoom.mockRejectedValue(new ApiError(404, "No such room."));
+
+      const attaching = h.store.getState().attach("ABCD", "display");
+      await vi.advanceTimersByTimeAsync(10_000);
+      await attaching;
+
+      expect(h.api.watchRoom).toHaveBeenCalledTimes(1);
+      expect(h.store.getState().connection).toBe("error");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
