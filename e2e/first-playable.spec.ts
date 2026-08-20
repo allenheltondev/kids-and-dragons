@@ -384,10 +384,15 @@ test.describe("first playable", () => {
     let completed: { phase: string; xpEarned: number } | null = null;
     let quiet = 0;
 
-    // 90 rather than 60: with the bramblewisp fight ungated, a route through
-    // the stream can land in real combat, which the generic driver plays one
-    // card at a time.
-    for (let turn = 0; turn < 90 && completed === null; turn++) {
+    /*
+     * 150 rather than 90. The cap is headroom, not the stuck-detector — the
+     * quiet counter below is what catches a genuinely wedged game. A 10-round
+     * fight is ~30 hero turns, each costing a loop pass or two around the
+     * presentation holds, plus the story on either side; 90 was measured to
+     * clip exactly the long-fight tail that the 540s budget was raised for,
+     * failing runs as "the chapter never finished" with everything healthy.
+     */
+    for (let turn = 0; turn < 150 && completed === null; turn++) {
       let acted = false;
 
       for (const page of phones) {
