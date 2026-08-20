@@ -108,9 +108,15 @@ export interface WatchRoomResponse {
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
-  watchRoom(code: string): Promise<WatchRoomResponse>;
+  watchRoom(code: string, timeoutMs?: number): Promise<WatchRoomResponse>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
-  fetchState(query: StateQuery, token?: string): Promise<StateResponse>;
+  /**
+   * `timeoutMs` narrows the request funnel's default bound for this one call.
+   * Refresh recovery passes the *remaining* recovery budget here, so five
+   * retries against a dead connection share one deadline instead of each
+   * spending the full default (store `withRetry`).
+   */
+  fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
   loadCampaign(id: string): Promise<Campaign>;
@@ -237,11 +243,12 @@ export const api: Api = {
     });
   },
 
-  watchRoom(code) {
+  watchRoom(code, timeoutMs) {
     return request<WatchRoomResponse>(`/api/room/${encodeURIComponent(code)}/watch`, {
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify({}),
+      ...(timeoutMs !== undefined ? { timeoutMs } : {}),
     });
   },
 
@@ -259,8 +266,11 @@ export const api: Api = {
     });
   },
 
-  fetchState(query, token) {
-    return request<StateResponse>(`/api/state?${stateQueryString(query)}`, { token });
+  fetchState(query, token, timeoutMs) {
+    return request<StateResponse>(`/api/state?${stateQueryString(query)}`, {
+      token,
+      ...(timeoutMs !== undefined ? { timeoutMs } : {}),
+    });
   },
 
   /* Content is data, served statically and never deployed with game code

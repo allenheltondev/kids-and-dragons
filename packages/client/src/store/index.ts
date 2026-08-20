@@ -48,6 +48,7 @@ import {
   api as defaultApi,
   eventsUrl as defaultEventsUrl,
   ApiError,
+  REQUEST_TIMEOUT_MS,
   type Api,
   type ClientConfig,
 } from "../sync/client";
@@ -357,10 +358,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       stored: ClientSession,
       roomCode: string,
       current: () => boolean,
+      timeoutMs: number,
     ): Promise<void> {
       const response = await deps.api.fetchState(
         { runId: stored.runId, code: roomCode },
         stored.sessionToken || undefined,
+        timeoutMs,
       );
       if (!current()) return;
       if (!response.state) throw new ApiError(410, "That room has expired.");
@@ -391,30 +394,49 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     /**
-     * How many times a stored session is worth re-asserting, and how long that
-     * takes: ~0.5s, 1s, 2s, 4s between five attempts, so a surface spends about
-     * seven seconds trying before it admits defeat.
+     * The whole recovery's budget, wall-clock — the contract a review had to
+     * correct. The first version bounded recovery by *attempt count* alone and
+     * described itself as "about seven seconds"; against the exact failure it
+     * exists for — a dropped-but-open connection, where every attempt runs to
+     * the request funnel's full 10s — five attempts plus backoff is nearly a
+     * minute of spinner. Attempt counts bound work; only a deadline bounds
+     * waiting.
      *
-     * Long enough to cover a server cold start or a phone's wifi waking up;
-     * short enough that a genuinely dead room does not hold a spinner for a
-     * minute in front of an eight-year-old.
+     * Twenty seconds: room for a cold start plus one honest retry on a woken
+     * wifi, and short enough that a genuinely dead connection fails while the
+     * table's patience is still intact. Each attempt's request is bounded by
+     * whatever budget remains, so the last attempt cannot overshoot the
+     * deadline by its own full timeout.
      */
+    const RESUME_DEADLINE_MS = 20_000;
+    /** Attempts stay bounded too — a fast-failing server should not be hammered. */
     const RESUME_ATTEMPTS = 5;
+    /** Under this there is no time for a real round trip; stop honestly. */
+    const RESUME_FLOOR_MS = 500;
 
-    async function withRetry(current: () => boolean, attempt: () => Promise<void>): Promise<void> {
-      for (let tries = 0; ; tries += 1) {
+    async function withRetry(
+      current: () => boolean,
+      attempt: (timeoutMs: number) => Promise<void>,
+    ): Promise<void> {
+      const deadline = Date.now() + RESUME_DEADLINE_MS;
+      let lastError: unknown = new ApiError(0, "The game took too long to answer. Tap again.");
+      for (let tries = 0; tries < RESUME_ATTEMPTS; tries += 1) {
+        const remaining = deadline - Date.now();
+        if (remaining < RESUME_FLOOR_MS) break;
         try {
-          await attempt();
+          await attempt(Math.min(remaining, REQUEST_TIMEOUT_MS));
           return;
         } catch (error) {
           // A superseded attach stops quietly: the URL moved on, and this
           // room's failure is no longer anybody's problem.
           if (!current()) return;
-          if (tries >= RESUME_ATTEMPTS - 1 || !worthRetrying(error)) throw error;
+          if (!worthRetrying(error)) throw error;
+          lastError = error;
           await new Promise((resolve) => setTimeout(resolve, backoffDelay(tries, { baseMs: 500, maxMs: 4_000 })));
           if (!current()) return;
         }
       }
+      throw lastError;
     }
 
     /**
@@ -633,7 +655,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
              * than one attempt. `connection` stays `"connecting"` throughout,
              * which is what keeps the spinner up instead of the home screen.
              */
-            await withRetry(current, () => resumeStored(stored, roomCode, current));
+            await withRetry(current, (timeoutMs) => resumeStored(stored, roomCode, current, timeoutMs));
             return;
           }
 
@@ -658,8 +680,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * one cold Lambda on that one attempt used to leave the room's
            * biggest screen on an error card for the rest of the evening.
            */
-          await withRetry(current, async () => {
-            const response = await deps.api.watchRoom(roomCode);
+          await withRetry(current, async (timeoutMs) => {
+            const response = await deps.api.watchRoom(roomCode, timeoutMs);
             if (!current()) return;
             const display: ClientSession = {
               runId: response.runId,
