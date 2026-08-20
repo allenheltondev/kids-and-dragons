@@ -48,11 +48,13 @@ import {
   api as defaultApi,
   eventsUrl as defaultEventsUrl,
   ApiError,
+  REQUEST_TIMEOUT_MS,
   type Api,
   type ClientConfig,
 } from "../sync/client";
 import {
   MessageSequencer,
+  backoffDelay,
   openChannel as defaultOpenChannel,
   type Channel,
   type EventSourceLike,
@@ -345,6 +347,99 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     /**
+     * One attempt at resuming a stored session.
+     *
+     * No `sinceSeq`: attaching is always a cold start — the mirror did not
+     * survive the refresh, so we want the snapshot. Sending 0 would mean
+     * "caught up through seq 0", and a room still sitting at seq 0 would
+     * correctly answer with an empty event list and no state (§4.3).
+     */
+    async function resumeStored(
+      stored: ClientSession,
+      roomCode: string,
+      current: () => boolean,
+      timeoutMs: number,
+    ): Promise<void> {
+      const response = await deps.api.fetchState(
+        { runId: stored.runId, code: roomCode },
+        stored.sessionToken || undefined,
+        timeoutMs,
+      );
+      if (!current()) return;
+      if (!response.state) throw new ApiError(410, "That room has expired.");
+      await establish(stored, response.state);
+    }
+
+    /**
+     * Whether a failed resume is worth trying again.
+     *
+     * The distinction is the whole safety of retrying at all. A room that is
+     * genuinely gone, or a token this device may no longer use, will answer the
+     * same way forever — retrying those would spin a spinner until somebody
+     * gives up, which is a worse failure than the honest one.
+     *
+     * Everything else is treated as weather: a dropped connection, a cold
+     * Lambda, a 5xx, a phone that woke up before its wifi did. Those are the
+     * cases where the room is still there and the surface simply has to ask
+     * again. Unknown errors retry too — a network stack has more ways to fail
+     * transiently than any list can name, and the cost of retrying a permanent
+     * error is a few seconds of spinner, while the cost of *not* retrying a
+     * transient one is a phone offering to start a second game.
+     */
+    function worthRetrying(error: unknown): boolean {
+      if (!(error instanceof ApiError)) return true;
+      // 404/410: no such room, or it has expired. 401/403: this token cannot
+      // have it. None of those change by asking twice.
+      return ![401, 403, 404, 410].includes(error.status);
+    }
+
+    /**
+     * The whole recovery's budget, wall-clock — the contract a review had to
+     * correct. The first version bounded recovery by *attempt count* alone and
+     * described itself as "about seven seconds"; against the exact failure it
+     * exists for — a dropped-but-open connection, where every attempt runs to
+     * the request funnel's full 10s — five attempts plus backoff is nearly a
+     * minute of spinner. Attempt counts bound work; only a deadline bounds
+     * waiting.
+     *
+     * Twenty seconds: room for a cold start plus one honest retry on a woken
+     * wifi, and short enough that a genuinely dead connection fails while the
+     * table's patience is still intact. Each attempt's request is bounded by
+     * whatever budget remains, so the last attempt cannot overshoot the
+     * deadline by its own full timeout.
+     */
+    const RESUME_DEADLINE_MS = 20_000;
+    /** Attempts stay bounded too — a fast-failing server should not be hammered. */
+    const RESUME_ATTEMPTS = 5;
+    /** Under this there is no time for a real round trip; stop honestly. */
+    const RESUME_FLOOR_MS = 500;
+
+    async function withRetry(
+      current: () => boolean,
+      attempt: (timeoutMs: number) => Promise<void>,
+    ): Promise<void> {
+      const deadline = Date.now() + RESUME_DEADLINE_MS;
+      let lastError: unknown = new ApiError(0, "The game took too long to answer. Tap again.");
+      for (let tries = 0; tries < RESUME_ATTEMPTS; tries += 1) {
+        const remaining = deadline - Date.now();
+        if (remaining < RESUME_FLOOR_MS) break;
+        try {
+          await attempt(Math.min(remaining, REQUEST_TIMEOUT_MS));
+          return;
+        } catch (error) {
+          // A superseded attach stops quietly: the URL moved on, and this
+          // room's failure is no longer anybody's problem.
+          if (!current()) return;
+          if (!worthRetrying(error)) throw error;
+          lastError = error;
+          await new Promise((resolve) => setTimeout(resolve, backoffDelay(tries, { baseMs: 500, maxMs: 4_000 })));
+          if (!current()) return;
+        }
+      }
+      throw lastError;
+    }
+
+    /**
      * Take a seat from whatever seated us — create or join, they answer with
      * the same shape — and keep the device binding that came with it.
      */
@@ -539,18 +634,28 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
         const task: Promise<void> = (async () => {
           if (stored) {
-            // No `sinceSeq`: attaching is always a cold start — the mirror did
-            // not survive the refresh, so we want the snapshot. Sending 0 would
-            // mean "caught up through seq 0", and a room still sitting at seq 0
-            // would correctly answer with an empty event list and no state
-            // (architecture §4.3).
-            const response = await deps.api.fetchState(
-              { runId: stored.runId, code: roomCode },
-              stored.sessionToken || undefined,
-            );
-            if (!current()) return;
-            if (!response.state) throw new ApiError(410, "That room has expired.");
-            await establish(stored, response.state);
+            /*
+             * Retried, and this is the half of architecture §4.3 that was
+             * missing.
+             *
+             * §4.3 promises a surface can be hard-refreshed mid-encounter and
+             * recover. That held only when the *first* `fetchState` succeeded:
+             * one failure set `connection: "error"` and stopped forever, and
+             * because `session` is still null on a cold load, `App.pickLayout`
+             * then rendered the **home screen** — on the `/p/CODE` URL, with
+             * the run still live on the server and the token still in storage.
+             *
+             * The stranding is not the worst part. The home screen's first
+             * button is "Start a game", so the obvious thing to do at a table
+             * creates a *second* room and abandons the evening in progress.
+             * A phone that cannot reach the server for a moment must wait, not
+             * offer to throw the game away.
+             *
+             * So: a stored session is a claim on a room, and it is worth more
+             * than one attempt. `connection` stays `"connecting"` throughout,
+             * which is what keeps the spinner up instead of the home screen.
+             */
+            await withRetry(current, (timeoutMs) => resumeStored(stored, roomCode, current, timeoutMs));
             return;
           }
 
@@ -567,20 +672,29 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * that never receives a patch. The token it hands back names this
            * room and nothing else — it cannot act, and `playerId: ""` below is
            * still what actually denies authority (spec §2.1).
+           *
+           * Retried for the same reason the stored-session path above is —
+           * caught by review, because the first fix covered only the phones.
+           * The TV *is* §4.3's headline case ("The TV can be hard-refreshed
+           * mid-encounter and recover"), it recovers from the URL alone, and
+           * one cold Lambda on that one attempt used to leave the room's
+           * biggest screen on an error card for the rest of the evening.
            */
-          const response = await deps.api.watchRoom(roomCode);
-          if (!current()) return;
-          const display: ClientSession = {
-            runId: response.runId,
-            roomCode,
-            playerId: "", // no player on this device — it is a screen, not a seat
-            mode: response.mode,
-            sessionToken: response.viewerToken,
-          };
-          // Deliberately not persisted: a display client has nothing worth
-          // storing, and it recovers from the URL alone.
-          set({ session: display, error: null, pendingCode: null });
-          await connect(display, response.state, response.state.seq);
+          await withRetry(current, async (timeoutMs) => {
+            const response = await deps.api.watchRoom(roomCode, timeoutMs);
+            if (!current()) return;
+            const display: ClientSession = {
+              runId: response.runId,
+              roomCode,
+              playerId: "", // no player on this device — it is a screen, not a seat
+              mode: response.mode,
+              sessionToken: response.viewerToken,
+            };
+            // Deliberately not persisted: a display client has nothing worth
+            // storing, and it recovers from the URL alone.
+            set({ session: display, error: null, pendingCode: null });
+            await connect(display, response.state, response.state.seq);
+          });
         })()
           .catch((error: unknown) => {
             // A superseded attach's failure is not this surface's failure.
