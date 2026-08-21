@@ -39,8 +39,3 @@ export function liveEnabled(env: Record<string, string | undefined>): boolean {
 export function liveRegion(env: Record<string, string | undefined>): string | null {
   return env.LIVE_LLM_REGION ?? env.AWS_REGION ?? env.AWS_DEFAULT_REGION ?? null;
 }
-
-/** Whether the cache assertion should shout — §6.3's "fail loudly in development". */
-export function assertCacheHits(env: Record<string, string | undefined>): boolean {
-  return env.NODE_ENV !== "production";
-}
