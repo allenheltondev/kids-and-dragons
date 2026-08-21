@@ -105,24 +105,26 @@ say "Deploying the stack ($STACK)"
 
 # Every parameter, every time.
 #
-# `sam deploy` does not carry previous values forward: a parameter left out of
-# `--parameter-overrides` reverts to the template default. That is quiet and
-# specific here — WebAuthnRelyingPartyId defaults to empty, and empty means
-# `AllowedFirstAuthFactors` drops WEB_AUTHN, so an automated deploy would turn
-# everybody's passkeys off and nothing would say so. Passing it explicitly on
-# every deploy is what stops that.
+# A parameter left out of `--parameter-overrides` does whichever quiet thing is
+# worse for you: the template default on a fresh stack, the *previous stack
+# value* on an update. Either way it is a state nobody wrote down anywhere.
+# WebAuthnRelyingPartyId defaults to empty, and empty means
+# `AllowedFirstAuthFactors` drops WEB_AUTHN, so a deploy that lost the variable
+# could turn everybody's passkeys off and nothing would say so. Passing every
+# parameter explicitly on every deploy is what stops that.
 # An array, not a word-split string: a value with a space becomes an error
 # from sam rather than a silently malformed override.
 PARAMS=("StageName=$STAGE")
 if [ -n "${WEBAUTHN_RP_ID:-}" ]; then
   PARAMS+=("WebAuthnRelyingPartyId=$WEBAUTHN_RP_ID")
 fi
-# The live narration layer (roadmap chapter 7). Unset means off, which is the
-# template default too — so the "every parameter, every time" rule above costs
-# nothing here: leaving it out and passing `false` are the same deploy.
-if [ -n "${LIVE_LLM_ENABLED:-}" ]; then
-  PARAMS+=("LiveLlmEnabled=$LIVE_LLM_ENABLED")
-fi
+# The live narration layer (roadmap chapter 7). Passed on every deploy with
+# unset meaning `false`, because "left out" is not a state a kill switch may
+# have: on an update to an existing stack an omitted parameter keeps its
+# previous stack value, so a stack once deployed with `true` would stay on
+# after the workflow line was deleted — the documented off switch would not
+# switch anything off. `${VAR:-false}` makes absence genuinely mean off.
+PARAMS+=("LiveLlmEnabled=${LIVE_LLM_ENABLED:-false}")
 
 sam deploy \
   --template-file infra/template.yaml \

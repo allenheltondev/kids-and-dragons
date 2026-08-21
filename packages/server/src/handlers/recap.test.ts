@@ -205,4 +205,24 @@ describe("when the recap arrives", () => {
     expect(final.phase).toBe("chapter_complete");
     expect(final.recap ?? null).toBeNull();
   });
+
+  it("never turns the action that finished the chapter into a failure", async () => {
+    /*
+     * `commit()` returns `false` for the seq race — but the Dynamo
+     * implementation rethrows everything else, and by recap time the player's
+     * action has already committed and broadcast. A thrown follow-up commit
+     * must be swallowed, not surfaced as a 500 on a request that succeeded.
+     * `playToTheEnd` asserts every action's `response.ok`, so an escape here
+     * fails this test on the PLAYTEST_GOTO that completed the chapter.
+     */
+    const { final } = await playToTheEnd(narrator(RECAP), (harness) => {
+      const real = harness.repo.commit.bind(harness.repo);
+      vi.spyOn(harness.repo, "commit").mockImplementation(async (input) => {
+        if (input.event.intent === undefined) throw new Error("throughput exceeded");
+        return real(input);
+      });
+    });
+    expect(final.phase).toBe("chapter_complete");
+    expect(final.recap ?? null).toBeNull();
+  });
 });
