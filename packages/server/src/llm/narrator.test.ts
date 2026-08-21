@@ -197,6 +197,30 @@ describe("warming", () => {
     expect(log).toHaveBeenCalledWith(expect.stringContaining("prefetch failed"));
   });
 
+  it("buys a fresh line when the one it holds has expired", async () => {
+    /*
+     * An expired entry is a miss that has not been read yet, not a reason to
+     * skip. This matters because a fight's stamp holds still for the whole
+     * fight (port.ts): every mid-fight warm is the same key, and if a held
+     * entry blocked re-warming forever, a fight that outlasted the TTL would
+     * turn its exit lines into a guaranteed miss with the layer still paying
+     * for the first one.
+     */
+    vi.useFakeTimers();
+    try {
+      const second = "The hedge has stopped creaking, which somehow feels worse. Pib is nowhere to be seen.";
+      const { narrator, seen } = build([GOOD, second]);
+      await narrator.warm([{ key: KEY, request: REQUEST }]);
+      await vi.advanceTimersByTimeAsync(11 * 60 * 1000);
+      await narrator.warm([{ key: KEY, request: REQUEST }]);
+      await vi.advanceTimersByTimeAsync(1);
+      expect(seen).toHaveLength(2);
+      expect(narrator.take(KEY, REQUEST)).toBe(second);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("puts one cache breakpoint at the end of the stable prefix", async () => {
     // The layout §6.3 asks for: everything stable in the cached block, the
     // party and the scene and the moment behind it.

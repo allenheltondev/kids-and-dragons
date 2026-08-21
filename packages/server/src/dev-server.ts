@@ -89,7 +89,9 @@ async function main(): Promise<void> {
      * `LIVE_LLM_ENABLED=true` is in the environment, which is why the local
      * loop is unchanged for anybody who has not asked for it (§6.6).
      */
-    narrator: installNarrator(content),
+    // `assertCache: true` — this is the development environment §6.3 wants the
+    // cache assertion loud in.
+    narrator: installNarrator(content, true),
   };
 
   const app = express();

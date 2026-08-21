@@ -234,20 +234,9 @@ export async function applyAction(
    * text, which is what shipped, which is fine.
    */
   const decorated = liveNarration(state, result.state, chapter, deps);
-  /*
-   * The session recap — the one live call that is allowed to be awaited.
-   *
-   * Everything else in this layer refuses to wait because somebody is holding a
-   * phone mid-tap. Here the chapter is over: the completion screen is the next
-   * thing anybody sees, nothing is queued behind this, and a second and a half
-   * at the end of half an hour of play is not a pause anybody experiences as
-   * one. It is still bounded — see `recapFor`.
-   */
-  const recap = await recapFor(result.state, chapter, deps, finishedChapter);
   const next: RunState = {
     ...result.state,
     ...(decorated === null ? {} : { narration: decorated }),
-    ...(recap === null ? {} : { recap }),
     seq: nextSeq,
     updatedAt: iso(nowMs),
   };
@@ -338,6 +327,24 @@ export async function applyAction(
   }
 
   /*
+   * The session recap — behind the broadcast, never in front of it.
+   *
+   * It used to be awaited *before* the commit, which put up to `RECAP_BUDGET_MS`
+   * of language model between a chapter ending and anybody being told: the
+   * completion screen is the one moment the whole table is looking at the
+   * television, and it sat blank behind a call nobody was going to render until
+   * it finished. Worse, the wait sat inside the optimistic-concurrency window —
+   * four seconds in which any other tap made this whole turn lose the seq race.
+   *
+   * So the chapter's completion ships in the patch above, immediately, and the
+   * recap follows as its own tiny commit when it arrives. A recap is a bonus
+   * paragraph on a screen that already has its content; the only thing it must
+   * never do is make that screen late. Like `warm` below, awaiting it here only
+   * holds this request's `{ ok, seq }`, which nothing renders.
+   */
+  await deliverRecap(next, chapter, deps, finishedChapter);
+
+  /*
    * §6.4's speculative prefetch, fired *after* the broadcast has gone out.
    *
    * The position in this function is the whole trick. Every phone already has
@@ -423,6 +430,65 @@ function liveNarration(
 
 /** How long the end-of-chapter recap may take before the game stops caring. */
 const RECAP_BUDGET_MS = 4000;
+
+/**
+ * Waits for the recap and lands it as its own follow-up turn.
+ *
+ * The follow-up is a real commit — expected seq, event record, broadcast — and
+ * not a special channel, because clients already know exactly what to do with
+ * a patch and nothing needs to learn a second way for text to arrive. It has no
+ * `playerId` and no `intent` (both optional on `EventRecord`): nobody tapped
+ * anything, the server is finishing a sentence.
+ *
+ * Losing the follow-up's seq race is silent and final. It means somebody acted
+ * between the completion and the recap arriving — almost certainly "back to the
+ * lobby" — and a recap for a screen the table has already left is not worth
+ * fighting for. Same for a failed broadcast: one retry, then the next resync
+ * carries it, or nothing does.
+ */
+async function deliverRecap(
+  committed: RunState,
+  chapter: Chapter | null,
+  deps: HandlerDeps,
+  finished: boolean,
+): Promise<void> {
+  const recap = await recapFor(committed, chapter, deps, finished);
+  if (recap === null) return;
+
+  const nowMs = deps.now();
+  const followUp: RunState = {
+    ...committed,
+    recap,
+    seq: committed.seq + 1,
+    updatedAt: iso(nowMs),
+  };
+  const patch = diff(committed, followUp);
+  const event: EventRecord = {
+    seq: followUp.seq,
+    runId: committed.runId,
+    patch,
+    at: iso(nowMs),
+  };
+  const landed = await deps.repo.commit({
+    runId: committed.runId,
+    expectedSeq: committed.seq,
+    state: followUp,
+    event,
+  });
+  if (!landed) return;
+
+  const message = { kind: "patch" as const, seq: event.seq, runId: event.runId, patch: event.patch };
+  try {
+    await deps.channel.publish(followUp.roomCode, message);
+  } catch (err) {
+    console.error(`recap publish failed for run ${event.runId} seq ${event.seq}, retrying:`, err);
+    try {
+      await deps.channel.publish(followUp.roomCode, message);
+    } catch (retryErr) {
+      console.error(`recap publish retry failed for run ${event.runId} seq ${event.seq}:`, retryErr);
+    }
+  }
+}
 
 /**
  * The recap for a chapter that just ended, or `null`.
