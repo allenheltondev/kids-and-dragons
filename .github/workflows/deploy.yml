@@ -127,6 +127,14 @@ jobs:
           # `sam deploy` reverts any parameter it is not given. Empty is a
           # complete state: email-code sign-in only.
           WEBAUTHN_RP_ID: ${{ vars.WEBAUTHN_RP_ID }}
+          # The live narration layer (roadmap chapter 7, architecture §6.6) —
+          # on, deliberately. The switch stays a real switch: remove this line
+          # (or set anything but "true") and the next deploy turns the layer
+          # off with no other change, because a parameter left out of a deploy
+          # reverts to the template's default of "false". Needs
+          # anthropic.claude-haiku-4-5 enabled under Bedrock > Model access in
+          # this account and region.
+          LIVE_LLM_ENABLED: "true"
 
       - name: Diagnose failed deploy
         if: ${{ failure() }}
