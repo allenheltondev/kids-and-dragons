@@ -469,12 +469,26 @@ async function deliverRecap(
     patch,
     at: iso(nowMs),
   };
-  const landed = await deps.repo.commit({
-    runId: committed.runId,
-    expectedSeq: committed.seq,
-    state: followUp,
-    event,
-  });
+  /*
+   * `commit()` answers the expected seq race with `false`, but the Dynamo
+   * implementation *rethrows* everything else — throttling, a transient AWS
+   * error. By the time this runs the player's action has already committed and
+   * already broadcast, so a throw escaping here would reject a request that
+   * succeeded: the same committed-but-failed shape the publish path below
+   * refuses to produce, caught for the same reason.
+   */
+  let landed = false;
+  try {
+    landed = await deps.repo.commit({
+      runId: committed.runId,
+      expectedSeq: committed.seq,
+      state: followUp,
+      event,
+    });
+  } catch (err) {
+    console.error(`recap commit failed for run ${event.runId} seq ${event.seq}:`, err);
+    return;
+  }
   if (!landed) return;
 
   const message = { kind: "patch" as const, seq: event.seq, runId: event.runId, patch: event.patch };
