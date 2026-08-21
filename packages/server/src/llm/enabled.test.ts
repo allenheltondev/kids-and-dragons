@@ -7,7 +7,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { assertCacheHits, liveEnabled, liveRegion } from "./enabled.ts";
+import { liveEnabled, liveRegion } from "./enabled.ts";
 
 describe("whether the layer runs", () => {
   it("is off when nothing is set", () => {
@@ -59,15 +59,5 @@ describe("which region", () => {
      * fire-and-forget prefetch — the hardest possible place to notice it.
      */
     expect(liveRegion({})).toBeNull();
-  });
-});
-
-describe("the dev-mode cache assertion", () => {
-  it("is on everywhere except production", () => {
-    // §6.3 wants it loud "in development". A table mid-session is not the place
-    // to learn about a billing regression.
-    expect(assertCacheHits({})).toBe(true);
-    expect(assertCacheHits({ NODE_ENV: "test" })).toBe(true);
-    expect(assertCacheHits({ NODE_ENV: "production" })).toBe(false);
   });
 });

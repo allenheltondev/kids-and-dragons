@@ -42,7 +42,6 @@ const CHAPTER: Chapter = {
     check_squeeze: {
       type: "check",
       stat: "might",
-      difficulty: "medium",
       tn: 12,
       prompt: "Push through the gap?",
       onSuccess: { goto: "scene_hedge" },
@@ -99,6 +98,36 @@ describe("where a scene can lead", () => {
       "passed the check",
       "failed the check",
     ]);
+  });
+
+  it("drops the label when both of a check's branches land in the same place", () => {
+    /*
+     * The choices case has collapsed shared destinations for a while; this pins
+     * that checks and fights go through the same rule. The shipped chapter has
+     * checks whose success and failure share a `goto` — the branch changes the
+     * state, not the destination — and `arrivalKey` finds the exit by
+     * destination, so without the collapse a failed check was served the line
+     * written for "passed the check". Confidently telling a child she passed a
+     * check she failed is the exact failure the null label exists to prevent.
+     */
+    const gap: Scene = {
+      type: "check",
+      stat: "might",
+      tn: 12,
+      prompt: "Push through the gap?",
+      onSuccess: { goto: "scene_hedge" },
+      onFailure: { goto: "scene_hedge" },
+    };
+    expect(exitsOf(gap)).toEqual([{ label: null, goto: "scene_hedge" }]);
+  });
+
+  it("drops the label when a fight's outcomes do too", () => {
+    const both: Scene = {
+      ...(CHAPTER.scenes.encounter_wisps as Scene & { type: "encounter" }),
+      onVictory: { goto: "scene_hedge" },
+      onDefeat: { goto: "scene_hedge" },
+    };
+    expect(exitsOf(both)).toEqual([{ label: null, goto: "scene_hedge" }]);
   });
 });
 
@@ -292,6 +321,30 @@ describe("what to take on arrival", () => {
     // Nobody was anywhere before, so there was no scene to prefetch from.
     expect(arrivalKey(runAt(null), runAt("scene_fork"), CHAPTER)).toBeNull();
   });
+
+  it("does not claim an outcome when a check's branches share a destination", () => {
+    // The read half of the collapse pinned above: the arrival's `choiceId` is
+    // null — an arrival, not a verdict — and it still round-trips with what
+    // `nextMoments` warmed.
+    const shared: Chapter = {
+      ...CHAPTER,
+      scenes: {
+        ...CHAPTER.scenes,
+        check_gap: {
+          type: "check",
+          stat: "might",
+          tn: 12,
+          prompt: "Push through the gap?",
+          onSuccess: { goto: "scene_hedge" },
+          onFailure: { goto: "scene_hedge" },
+        },
+      } as Record<string, Scene>,
+    };
+    const written = nextMoments(runAt("check_gap"), shared)[0]?.key;
+    const read = arrivalKey(runAt("check_gap"), runAt("scene_hedge"), shared);
+    expect(read?.choiceId).toBeNull();
+    expect(read).toEqual(written);
+  });
 });
 
 describe("the state fingerprint", () => {
@@ -374,5 +427,42 @@ describe("the state fingerprint", () => {
     const a = runWith("scene_fork", 10, { freed_sprite: true });
     const b = { ...a, seq: a.seq + 5 };
     expect(nextMoments(a, CHAPTER)[0]?.key.stamp).toBe(nextMoments(b, CHAPTER)[0]?.key.stamp);
+  });
+
+  it("holds still across a fight, whose every turn moves somebody's hp", () => {
+    /*
+     * In a fight the party's health changes on nearly every accepted action,
+     * and `warm()` runs after every accepted action. A stamp that included hp
+     * was therefore a key that changed every turn: each turn of a fight bought
+     * fresh "won the fight"/"lost the fight" lines for the same two exits and
+     * orphaned the last turn's — a typical fight paid for its exit lines
+     * twenty times over and read one. So a fight's stamp is hp-blind, and the
+     * mid-fight re-warm becomes a cache hit that sends nothing.
+     */
+    const entry = nextMoments(runWith("encounter_wisps", 10, { freed_sprite: true }), CHAPTER);
+    const bruised = nextMoments(runWith("encounter_wisps", 3, { freed_sprite: true }), CHAPTER);
+    expect(entry[0]?.key.stamp).toBe(bruised[0]?.key.stamp);
+    expect(entry[0]?.key).toEqual(bruised[0]?.key);
+  });
+
+  it("lets the fight's exit line land however the fight went", () => {
+    // The other half: the line warmed when the fight began is the one
+    // `arrivalKey` finds when it ends, whatever the hp is by then.
+    const entry = runWith("encounter_wisps", 10, { freed_sprite: true });
+    const exiting = runWith("encounter_wisps", 2, { freed_sprite: true });
+    const landed = runWith("scene_hedge", 2, { freed_sprite: true });
+
+    const warmed = nextMoments(entry, CHAPTER).find((m) => m.key.sceneId === "scene_hedge");
+    const read = arrivalKey(exiting, landed, CHAPTER);
+    expect(read?.choiceId).toBe("won the fight");
+    expect(read).toEqual(warmed?.key);
+  });
+
+  it("still re-warms a fight when a flag lands mid-fight", () => {
+    // Hp-blind is not state-blind: a flag is rare, the prompt reads it, and a
+    // line written before it is the staleness the stamp exists to catch.
+    const entry = nextMoments(runWith("encounter_wisps", 10, {}), CHAPTER);
+    const flagged = nextMoments(runWith("encounter_wisps", 10, { rang_the_bell: true }), CHAPTER);
+    expect(entry[0]?.key.stamp).not.toBe(flagged[0]?.key.stamp);
   });
 });
