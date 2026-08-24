@@ -9,6 +9,7 @@
  */
 
 import { useEffect } from "react";
+import { cue } from "../audio/cue";
 import { useGameStore } from "../store";
 import { Button } from "./Button";
 
@@ -20,6 +21,8 @@ export function ErrorToast(): React.JSX.Element | null {
 
   useEffect(() => {
     if (!error) return;
+    // A gentle "no" for eyes that are on the board rather than the toast.
+    cue("error");
     const timer = setTimeout(dismissError, DISMISS_AFTER_MS);
     return () => clearTimeout(timer);
   }, [error, dismissError]);
