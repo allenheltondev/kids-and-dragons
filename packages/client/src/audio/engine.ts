@@ -141,8 +141,24 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     return prefs.muted ? 0 : prefs.volume;
   }
 
+  /**
+   * Best-effort resume, every time. A context is not resumed once and settled:
+   * the first resume() can reject, and a backgrounded tab can re-suspend a
+   * running context — after either, the only cure is another resume from
+   * inside another gesture.
+   */
+  function resume(target: BaseAudioContext): void {
+    const resumable = target as { resume?: () => Promise<void> };
+    resumable.resume?.().catch(() => undefined);
+  }
+
   function unlock(): void {
-    if (ctx || !createContext) return;
+    if (ctx) {
+      // Creation is once; resuming is every gesture — see resume().
+      resume(ctx);
+      return;
+    }
+    if (!createContext) return;
     try {
       ctx = createContext();
     } catch {
@@ -160,8 +176,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     musicBus.connect(master);
 
     // The context may still arrive suspended even inside a gesture handler.
-    const resumable = ctx as { resume?: () => Promise<void> };
-    resumable.resume?.().catch(() => undefined);
+    resume(ctx);
 
     // A biome asked for before the gesture starts its pad now — music is a
     // *state*, unlike a cue, so honouring it late is honouring it.
