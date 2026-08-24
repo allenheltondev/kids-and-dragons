@@ -1,0 +1,22 @@
+/*
+ * The speaker button sits in the world surface's top-right corner, dimmed to
+ * furniture until somebody wants it. Container-relative offsets only — this
+ * corner is a whole TV in Party Mode and one pane of a phone in Travel Mode,
+ * and (architecture §4.6 rule 2) it is not allowed to know which.
+ */
+
+.kad-audio-control {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  /* Over the panels, under nothing that matters: the dice and the
+     transformation draw full-screen and simply cover it for their moment. */
+  z-index: 5;
+  opacity: 0.55;
+  transition: opacity 120ms ease;
+}
+
+.kad-audio-control:hover,
+.kad-audio-control:focus-within {
+  opacity: 1;
+}
