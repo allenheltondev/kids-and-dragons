@@ -31,11 +31,14 @@ import {
   NarrationPanel,
   TransformCutscene,
 } from "../screens";
-import { useGameStore, useMe, useRunState, useSession } from "../store";
+import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
 // paces its damage numbers across the same hold this gate enforces.
 import { presentationDuration } from "../world/presentation";
+// Sound rides the same two facts the renderer already consumes: presentations
+// (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
+import { AudioControl, cue, cueForPresentation, music } from "../audio";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -63,12 +66,30 @@ export function WorldView(): React.JSX.Element {
    * arrive and presentation is ignored. That falls out; nobody branches on it.
    */
   useEffect(() => {
-    const play = (event: PresentationEvent): Promise<void> =>
-      new Promise((resolve) => {
+    const play = (event: PresentationEvent): Promise<void> => {
+      // The cue fires at the beat's head, alongside the visuals it underscores.
+      // A no-op wherever no sink is installed — which is every phone that
+      // never mounts a WorldView, and every test.
+      cue(cueForPresentation(event.presentation));
+      return new Promise((resolve) => {
         setTimeout(resolve, presentationDuration(event.presentation));
       });
+    };
     return useGameStore.getState().registerPresentationPlayer(play);
   }, []);
+
+  /*
+   * The music bed follows where the party is standing: the loaded chapter's
+   * biome while a story is running, silence in the lobby and during creation.
+   * State, not an event — the seam is idempotent, so re-renders cost nothing.
+   */
+  const biome = useChapter()?.biome ?? null;
+  const storyRunning = phase !== "lobby" && phase !== "creation";
+  useEffect(() => {
+    music(storyRunning ? biome : null);
+    // The surface unmounting is the story leaving this screen.
+    return () => { music(null); };
+  }, [biome, storyRunning]);
 
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">
@@ -104,6 +125,12 @@ export function WorldView(): React.JSX.Element {
           the single most important moment in the game. It draws nothing until
           somebody crosses a tier. */}
       <TransformCutscene />
+
+      {/* The speaker toggle — and, inside it, the whole audio engine's
+          lifecycle. On the world surface because that is the surface that
+          makes sound; see AudioControl.tsx for why that is a fact about the
+          surface and not about being a TV. */}
+      <AudioControl />
     </div>
   );
 }
