@@ -73,6 +73,29 @@
   font-weight: 500;
   line-height: 1.3;
   text-wrap: pretty;
+  /* A new scene's text arrives instead of snapping — the DOM half of the
+     scene step (roadmap ch.8). The element is keyed on its content, so this
+     runs exactly when the words change. Timed to land inside SCENE_ENTER's
+     350ms hold. */
+  animation: narration-arrive 320ms ease-out;
+}
+
+@keyframes narration-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The words still change; they just stop travelling. */
+@media (prefers-reduced-motion: reduce) {
+  .narration__body {
+    animation: none;
+  }
 }
 
 .narration__choices {

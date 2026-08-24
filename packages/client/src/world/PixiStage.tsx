@@ -31,6 +31,7 @@ import { currentActorId, enemyArtId } from "@kad/shared";
 import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
 import { presentationDuration } from "./presentation";
+import { shakeStrengthFor } from "./shake";
 import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSession } from "../store";
 import { useEnsureChapter } from "../screens/content";
 
@@ -287,6 +288,7 @@ export function PixiStage(): React.JSX.Element {
   // board still shows the world they happened to.
   usePresentation("COMBAT_SEQUENCE", (presentation) => {
     sceneRef.current?.playCombatEvents(presentation.events, presentationDuration(presentation));
+    sceneRef.current?.shake(shakeStrengthFor(presentation));
   });
   usePresentation("ENCOUNTER_BEGAN", (presentation) => {
     if (presentation.events && presentation.events.length > 0) {
@@ -295,6 +297,26 @@ export function PixiStage(): React.JSX.Element {
         presentationDuration(presentation),
       );
     }
+    sceneRef.current?.shake(shakeStrengthFor(presentation));
+  });
+
+  /*
+   * The impacts — roadmap chapter 8. Strengths live in world/shake.ts's
+   * table (zero for most kinds); these hooks name exactly the kinds whose
+   * strength is non-zero plus the scene step, because usePresentation
+   * subscribes one kind at a time. Wired here rather than in WorldView's
+   * gate so pixi-adjacent code stays inside the lazy chunk.
+   */
+  usePresentation("ATTACK", (presentation) => {
+    sceneRef.current?.shake(shakeStrengthFor(presentation));
+  });
+  usePresentation("DOWN", (presentation) => {
+    sceneRef.current?.shake(shakeStrengthFor(presentation));
+  });
+  // Moving to a new scene reads as going somewhere: a dip toward dark and
+  // back, sized to the SCENE_ENTER hold the gate is already enforcing.
+  usePresentation("SCENE_ENTER", (presentation) => {
+    sceneRef.current?.playSceneStep(presentationDuration(presentation));
   });
 
   return <div ref={hostRef} className="kad-stage" aria-hidden="true" />;
