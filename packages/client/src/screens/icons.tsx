@@ -340,6 +340,20 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M5.5 5.5l13 13M18.5 5.5l-13 13" />
     </g>
   ),
+  // The two sound states are distinguished by *shape* (spec §11): waves out
+  // of the horn versus a cross over where the waves would be.
+  sound: (
+    <g {...S}>
+      <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" />
+      <path d="M15.5 9.5a3.5 3.5 0 010 5M18 7.5a6.5 6.5 0 010 9" />
+    </g>
+  ),
+  muted: (
+    <g {...S}>
+      <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" />
+      <path d="M15.5 9.5l5 5M20.5 9.5l-5 5" />
+    </g>
+  ),
   plus: (
     <g {...S}>
       <path d="M12 5v14M5 12h14" strokeWidth="2.4" />
