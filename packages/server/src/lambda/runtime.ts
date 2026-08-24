@@ -81,7 +81,10 @@ async function build(): Promise<HandlerDeps> {
      * layer reaching production is the feature working, so it is a switch —
      * one that still has to be turned on explicitly (§6.6, enabled.ts).
      */
-    narrator: installNarrator(loaded),
+    // The literal `false` is the cache assertion staying quiet in every
+    // deployed stack, the same shape as `playtest` above — a table mid-session
+    // is not where anybody learns about a billing regression.
+    narrator: installNarrator(loaded, false),
   };
 }
 

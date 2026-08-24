@@ -133,6 +133,37 @@ describe("the chapter's forbidden list", () => {
     expect(check(GOOD, SCENE, strict).ok).toBe(false);
   });
 
+  it("keeps the floor under a chapter that brings its own list", () => {
+    /*
+     * The bug this pins: `hints?.forbidden ?? DEFAULT_FORBIDDEN` reads the
+     * floor as a *default*, so the moment a chapter named one extra topic its
+     * list replaced the floor instead of adding to it — and "death" was back
+     * on the table in exactly the chapters an author had looked at hardest.
+     * The floor is the game's premise (§7.3, "knocked down, never dead"), not
+     * a fallback.
+     */
+    const spiders: Chapter = {
+      ...CHAPTER,
+      llmHints: { ...CHAPTER.llmHints!, forbidden: ["spiders"] },
+    };
+    const verdict = check(
+      "The hedge is covered in blood, honestly quite a lot of it, which is unusual for a hedge.",
+      SCENE,
+      spiders,
+    );
+    expect(verdict.ok).toBe(false);
+    if (!verdict.ok) expect(verdict.reason).toMatch(/forbidden topic/);
+  });
+
+  it("cannot be disarmed by an empty list", () => {
+    // `forbidden: []` is the degenerate case of the same bug: under `??` it is
+    // defined, so it replaced the floor with nothing at all.
+    const empty: Chapter = { ...CHAPTER, llmHints: { ...CHAPTER.llmHints!, forbidden: [] } };
+    expect(
+      check("Past the hedge somebody speaks quietly of death, which is a strange thing for a hedge to do.", SCENE, empty).ok,
+    ).toBe(false);
+  });
+
   it("still works for a chapter with no hints at all", () => {
     // `llmHints` is optional in the schema, and a chapter without it must get
     // the defaults rather than an unguarded layer.
@@ -288,5 +319,15 @@ describe("the recap", () => {
   it("keeps a floor too", () => {
     expect(validateRecap("Good job!", CHAPTER).ok).toBe(false);
     expect(FLAVOR_MIN).toBeGreaterThan(0);
+  });
+
+  it("keeps the forbidden floor under a chapter that brings its own list", () => {
+    // Same pin as the narration gate: the chapter's list adds to the floor,
+    // it never replaces it.
+    const spiders: Chapter = {
+      ...CHAPTER,
+      llmHints: { ...CHAPTER.llmHints!, forbidden: ["spiders"] },
+    };
+    expect(validateRecap(`${RECAP} There was blood.`, spiders).ok).toBe(false);
   });
 });

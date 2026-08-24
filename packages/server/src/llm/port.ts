@@ -117,11 +117,32 @@ export interface PrefetchKey {
  * and which flags are set (`sceneBlock`). Not `seq`, which moves on every
  * READY and every roll and would miss every single time; not the whole state,
  * which would do the same for a different reason.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY A FIGHT'S STAMP IGNORES THE PARTY'S HEALTH
+ *
+ * `leaving` is the scene these exits leave *from*, and when it is an encounter
+ * the health half is dropped. In a fight hp moves on nearly every accepted
+ * action, so a stamp that includes it is a key that changes every turn — and
+ * since `warm()` runs after every action, each turn of a fight bought fresh
+ * lines for the same two exits and threw away the last turn's. A typical fight
+ * paid for its "won"/"lost" lines twenty times over and read one of them.
+ *
+ * Keeping the stamp still across the fight means the entry warmed when the
+ * fight began is the one `arrivalKey` finds when it ends: mid-fight warms hit
+ * `ready` and send nothing. The price is honest and small — the line was
+ * written against the party as it stood when the fight started, and the one
+ * fact that matters about how it ended is already in the label ("won the
+ * fight" / "lost the fight"). Flags stay in the stamp either way: a flag set
+ * mid-fight is rare and worth a re-warm.
  */
-export function stampOf(state: RunState): string {
-  const health = state.party
-    .map((member) => `${member.character.id}:${String(member.hp)}${member.down ? "d" : ""}`)
-    .join(",");
+export function stampOf(state: RunState, leaving: Scene): string {
+  const health =
+    leaving.type === "encounter"
+      ? ""
+      : state.party
+          .map((member) => `${member.character.id}:${String(member.hp)}${member.down ? "d" : ""}`)
+          .join(",");
   const flags = Object.entries(state.flags)
     .filter(([, on]) => on)
     .map(([flag]) => flag)
