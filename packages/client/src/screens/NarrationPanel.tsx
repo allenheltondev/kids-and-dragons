@@ -181,7 +181,15 @@ export function NarrationPanel(): ReactElement | null {
         )}
       </header>
 
-      <p className="narration__body">{narration}</p>
+      {/*
+        Keyed on the text so a new narration is a new element, which is what
+        lets one CSS animation give every scene change a soft entrance —
+        roadmap chapter 8's transitions, DOM half. The key is the content
+        itself: same words, same node, no re-animation on unrelated patches.
+      */}
+      <p className="narration__body" key={narration}>
+        {narration}
+      </p>
 
       {/*
         The shared screen shows *what* the choices are; the buttons live on the
