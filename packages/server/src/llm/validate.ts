@@ -50,18 +50,23 @@ export const RECAP_MAX = 400;
 export const FLAVOR_MIN = 20;
 
 /**
- * What is forbidden when a chapter does not say.
- *
- * `llmHints` is optional in the schema, so this is what a chapter written
- * before chapter 7 — or by an author who has not got to the hints yet — gets.
- * The alternative is that a missing block means an *unguarded* validator, which
- * is the wrong way round: the chapters most likely to be missing hints are the
- * ones nobody has looked at through this lens at all.
+ * What is forbidden in every chapter, whatever its hints say.
  *
  * These three are the floor of the game's premise rather than a house style:
- * spec §7.3's "knocked down, never dead" is not a tone preference.
+ * spec §7.3's "knocked down, never dead" is not a tone preference. So they are
+ * a floor the chapter's own list adds to, never a default it replaces —
+ * `llmHints.forbidden` is how an author says "also not spiders", not how an
+ * author opts a chapter out of the premise. The wrong reading is easy to write
+ * (`hints?.forbidden ?? DEFAULT_FORBIDDEN`) and quietly means that the moment
+ * a chapter names one extra topic, `forbidden: []` — or just a list that
+ * forgot "death" — disarms the screen entirely.
  */
 export const DEFAULT_FORBIDDEN = ["death", "blood", "permanent loss"];
+
+/** The floor plus the chapter's own additions. */
+export function forbiddenFor(chapter: Chapter): string[] {
+  return [...DEFAULT_FORBIDDEN, ...(chapter.llmHints?.forbidden ?? [])];
+}
 
 export type Verdict = { ok: true; text: string } | { ok: false; reason: string };
 
@@ -244,12 +249,11 @@ export function validateNarration(candidate: string, context: NarrationCheck): V
   }
 
   /*
-   * The chapter's own forbidden list, which is the half of this an author
-   * controls (`llmHints.forbidden`). Substring rather than word match on
-   * purpose: the entries are topics, not tokens, and an author who forbids
-   * "blood" means "bloodied" too.
+   * The floor plus the chapter's own forbidden list (`llmHints.forbidden`).
+   * Substring rather than word match on purpose: the entries are topics, not
+   * tokens, and an author who forbids "blood" means "bloodied" too.
    */
-  for (const banned of context.chapter.llmHints?.forbidden ?? DEFAULT_FORBIDDEN) {
+  for (const banned of forbiddenFor(context.chapter)) {
     if (lower.includes(banned.toLowerCase())) return reject(`forbidden topic: "${banned}"`);
   }
 
@@ -300,7 +304,7 @@ export function validateRecap(candidate: string, chapter: Chapter): Verdict {
   for (const phrase of PREAMBLE) {
     if (opening.startsWith(phrase)) return reject(`preamble: "${phrase}"`);
   }
-  for (const banned of chapter.llmHints?.forbidden ?? DEFAULT_FORBIDDEN) {
+  for (const banned of forbiddenFor(chapter)) {
     if (lower.includes(banned.toLowerCase())) return reject(`forbidden topic: "${banned}"`);
   }
   for (const phrase of IMPOSSIBLE) {
