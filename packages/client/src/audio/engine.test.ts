@@ -66,6 +66,7 @@ class FakeContext {
   oscillators: FakeOscillator[] = [];
   sources: FakeBufferSource[] = [];
   closed = false;
+  resumes = 0;
   createGain(): FakeGain {
     const gain = new FakeGain();
     this.gains.push(gain);
@@ -86,6 +87,7 @@ class FakeContext {
     return source;
   }
   resume(): Promise<void> {
+    this.resumes += 1;
     return Promise.resolve();
   }
   close(): Promise<void> {
@@ -194,6 +196,21 @@ describe("promise 2: nothing before a gesture", () => {
     engine.unlock();
     engine.unlock();
     expect(contexts).toHaveLength(1);
+  });
+
+  it("retries resume on every gesture, because a context can be re-suspended", () => {
+    /*
+     * Creation is once; resuming is not once-and-settled. The first resume()
+     * can reject, and a backgrounded tab can re-suspend a running context —
+     * an unlock that bails early on "ctx exists" would leave the engine
+     * silent for the rest of the evening with the gesture listeners still
+     * firing uselessly.
+     */
+    const { engine, contexts } = build();
+    engine.unlock();
+    engine.unlock();
+    engine.unlock();
+    expect(contexts[0]!.resumes).toBe(3);
   });
 });
 
