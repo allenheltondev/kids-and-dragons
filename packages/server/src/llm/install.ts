@@ -15,10 +15,20 @@
 import type { ContentStore } from "../content/loader.ts";
 import { createNarrator } from "./narrator.ts";
 import type { Narrator } from "./port.ts";
-import { assertCacheHits, liveEnabled, liveRegion } from "./enabled.ts";
+import { liveEnabled, liveRegion } from "./enabled.ts";
 
 export function installNarrator(
   content: ContentStore,
+  /*
+   * §6.3's "fail loudly in development if the cache never hits" — decided by
+   * the entry point, the same way `playtest` is (deps.ts). It used to key on
+   * `NODE_ENV !== "production"`, which read as dev-only and was not: nothing
+   * in the Lambda runtime or the template sets NODE_ENV, so the "dev"
+   * assertion was armed in every deployed stack and the production branch was
+   * never selected anywhere. The dev server is the development environment,
+   * so it passes `true`; `lambda/runtime.ts` passes a literal `false`.
+   */
+  assertCache: boolean,
   env: Record<string, string | undefined> = process.env,
   log: (line: string) => void = (line) => { console.log(line); },
 ): Narrator | undefined {
@@ -41,7 +51,7 @@ export function installNarrator(
   return createNarrator({
     rules: content.rules(),
     awsRegion: region,
-    assertCache: assertCacheHits(env),
+    assertCache,
     log,
   });
 }

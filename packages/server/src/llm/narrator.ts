@@ -299,7 +299,14 @@ export function createNarrator(config: NarratorConfig): Narrator {
       const started: Promise<void>[] = [];
       for (const { key, request } of moments) {
         const id = keyOf(key);
-        if (ready.has(id) || pending.has(id)) continue;
+        if (pending.has(id)) continue;
+        // An entry past its TTL is a miss that has not been read yet, not a
+        // reason to skip: with a fight's stamp held still for the whole fight
+        // (port.ts `stampOf`), a fight that outlasts the TTL warms this same
+        // key again and should get a fresh line, not a guaranteed miss.
+        const held = ready.get(id);
+        if (held && Date.now() - held.at <= ENTRY_TTL_MS) continue;
+        ready.delete(id);
         pending.add(id);
         started.push(
           generate(id, request)

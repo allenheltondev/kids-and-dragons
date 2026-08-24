@@ -56,15 +56,15 @@ export function exitsOf(scene: Scene): { label: string | null; goto: SceneId }[]
       // A fight has exactly two ways out and the party does not choose either.
       // Both are worth having: the losing branch is where the layer earns the
       // most, because §7.3 says a loss is a story beat rather than a failure.
-      return [
+      return dedupe([
         { label: "won the fight", goto: scene.onVictory.goto },
         { label: "lost the fight", goto: scene.onDefeat.goto },
-      ];
+      ]);
     case "check":
-      return [
+      return dedupe([
         { label: "passed the check", goto: scene.onSuccess.goto },
         { label: "failed the check", goto: scene.onFailure.goto },
-      ];
+      ]);
     default:
       return dedupe(scene.choices.map((choice) => ({ label: choice.label, goto: choice.goto })));
   }
@@ -97,6 +97,13 @@ export function exitsOf(scene: Scene): { label: string | null; goto: SceneId }[]
  * The prefetch runs before anybody has tapped, so when several buttons lead to
  * the same room the honest answer is that we do not know which one they will
  * press. `via: null` says so, and `momentBlock` renders it as a plain arrival.
+ *
+ * **Every case above goes through this, not just choices.** A check or a fight
+ * whose two branches share a `goto` — and the shipped chapter has such checks —
+ * has the same disagreement in a nastier costume: `arrivalKey` finds the branch
+ * by destination, so a failed check would be served the line written for
+ * "passed the check". Being told you passed a check you failed is exactly the
+ * confidently-wrong failure the label collapse exists to prevent.
  */
 function dedupe(exits: { label: string; goto: SceneId }[]): { label: string | null; goto: SceneId }[] {
   const count = new Map<SceneId, number>();
@@ -127,8 +134,9 @@ export function nextMoments(state: RunState, chapter: Chapter): Moment[] {
   const party = partyBrief(state);
   // One fingerprint for the whole batch: every line in it is written against
   // the state the party is standing in right now, which is the state
-  // `arrivalKey` will fingerprint when they leave.
-  const stamp = stampOf(state);
+  // `arrivalKey` will fingerprint when they leave. Both hand `stampOf` the
+  // scene being left, so a fight's hp-blind stamp is hp-blind on both ends.
+  const stamp = stampOf(state, here);
   const moments: Moment[] = [];
 
   for (const exit of exitsOf(here).slice(0, PREFETCH_WIDTH)) {
@@ -186,5 +194,5 @@ export function arrivalKey(
   // Fingerprinted from `before` — the state the party was standing in when the
   // batch was warmed — so a loop back through the same edge after anything has
   // happened misses rather than serving a line written for the first pass.
-  return { runId: after.runId, sceneId: after.sceneId, choiceId: exit.label, stamp: stampOf(before) };
+  return { runId: after.runId, sceneId: after.sceneId, choiceId: exit.label, stamp: stampOf(before, from) };
 }
