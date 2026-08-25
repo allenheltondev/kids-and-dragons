@@ -75,6 +75,14 @@ import {
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
 import {
+  advanceShake,
+  impactBeats,
+  SHAKE_MAX_FRACTION,
+  shakeOffset,
+  startShake,
+  type Shake,
+} from "./shake";
+import {
   createNameplate,
   fitNameplate,
   nameplateBoxOf,
@@ -84,6 +92,13 @@ import {
 import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
+
+/**
+ * How long the scene-step veil takes to lift after its window — after the
+ * gated patch has applied, so the new scene is revealed rather than watched
+ * arriving. Exported for the test that pins the swap stays covered.
+ */
+export const SCENE_STEP_TAIL_MS = 250;
 
 /** The story scene is authored at this size and framed into whatever pane it gets. */
 const DESIGN = { width: 1600, height: 900 } as const;
@@ -121,6 +136,20 @@ export interface PartyScene {
   setEncounter(view: BoardViewState | null): void;
   /** Feed a COMBAT_SEQUENCE's beats to the board (damage numbers, walks). */
   playCombatEvents(events: readonly EncounterEvent[], totalMs: number): void;
+  /**
+   * Jolt the stage — an impact landed (world/shake.ts). Strength 0..1;
+   * suppressed entirely for a viewer who asked the OS for reduced motion,
+   * because a shaking screen is exactly what that setting is for.
+   */
+  shake(strength: number): void;
+  /**
+   * The step between story scenes: a veil rises across `ms` — SCENE_ENTER's
+   * hold, at whose end the gated patch applies — and lifts over a short tail
+   * with the new scene already behind it, so moving reads as *going
+   * somewhere* and the swap itself is never watched happening. Gentle enough
+   * that a redundant call costs nothing but the dip.
+   */
+  playSceneStep(ms: number): void;
   /**
    * Where the story is happening (spec §6.2). The chapter's biome art replaces
    * the drawn stand-in behind the lineup; null, an unknown biome, or a missing
@@ -279,6 +308,54 @@ export function createScene(app: Application): PartyScene {
   let destroyed = false;
   let elapsed = 0;
 
+  /** The current jolt, if the stage is still ringing (world/shake.ts). */
+  let shakeState: Shake | null = null;
+  /**
+   * Impacts waiting for their beat, on the same clock as `elapsed`. Scheduled
+   * off the same `beatOffsetsMs` the board paces its damage numbers with, so
+   * the flinch and the number land on the same frame — a jolt at a sequence's
+   * head flinched during the walk-up and was still by the time the blow
+   * played.
+   */
+  let pendingShakes: { at: number; strength: number }[] = [];
+
+  /** The one gate every jolt passes: a viewer who asked the OS for reduced
+      motion gets none, scheduled or immediate alike. */
+  function jolt(strength: number): void {
+    if (prefersReducedMotion()) return;
+    shakeState = startShake(shakeState, strength);
+  }
+
+  /** Hand a round to the board and put its impacts on the clock. */
+  function dispatchCombat(events: readonly EncounterEvent[], totalMs: number): void {
+    board?.playEvents(events, totalMs);
+    for (const beat of impactBeats(events, totalMs)) {
+      pendingShakes.push({ at: elapsed + beat.atMs / 1000, strength: beat.strength });
+    }
+  }
+
+  /*
+   * The scene-step dip: a full-pane veil over everything, driven by tick().
+   * `stepAge < 0` means idle. Drawn once at viewport size in resize() —
+   * a Graphics rect, so it weighs nothing while its alpha is 0.
+   *
+   * The profile is deliberately asymmetric around the thing it exists to
+   * cover. SCENE_ENTER's *patch* — the new narration, the new state — is held
+   * by the presentation gate and applies only when the hold elapses
+   * (sync/channel.ts). A veil that rose and fell inside the hold would be
+   * back at zero at exactly that moment, leaving the actual swap fully
+   * visible. So the veil **rises across the hold** to peak as the patch
+   * lands, then lifts over a short tail with the new scene already behind it.
+   */
+  const stepVeil = new Graphics();
+  stepVeil.alpha = 0;
+  stage.addChild(stepVeil);
+  let stepAge = -1;
+  let stepMs = 0;
+
+  /** How deep the scene-step dip goes. A veil, not a blackout. */
+  const STEP_DEPTH = 0.4;
+
   /** See `setNameplatesVisible`. Applied to each label as it is laid out, so
       an actor built while the lobby is up is born hidden like the rest. */
   let nameplatesVisible = true;
@@ -363,6 +440,40 @@ export function createScene(app: Application): PartyScene {
 
     applyCamera(dt);
     board?.tick(dt);
+
+    // Impacts whose beat has come. The queue is at most a round of events.
+    for (let i = 0; i < pendingShakes.length; ) {
+      const beat = pendingShakes[i];
+      if (beat && beat.at <= elapsed) {
+        pendingShakes.splice(i, 1);
+        jolt(beat.strength);
+      } else {
+        i += 1;
+      }
+    }
+
+    // The jolt rides the whole stage — backdrop, lineup and board move as one
+    // piece, which is what makes it read as the *camera* flinching rather
+    // than the world sliding. Applied after the camera so the two never
+    // argue about who owns the layer transforms.
+    shakeState = advanceShake(shakeState, dt);
+    const displacement = shakeOffset(shakeState, viewport.height);
+    stage.position.set(displacement.x, displacement.y);
+
+    // The scene-step veil: up across the hold, down across the tail — see the
+    // declaration for why the peak sits at the hold's end, where the patch
+    // lands. Past the whole window it parks at exactly 0.
+    if (stepAge >= 0) {
+      stepAge += dt * 1000;
+      if (stepAge >= stepMs + SCENE_STEP_TAIL_MS) {
+        stepAge = -1;
+        stepVeil.alpha = 0;
+      } else if (stepAge < stepMs) {
+        stepVeil.alpha = STEP_DEPTH * (stepAge / stepMs);
+      } else {
+        stepVeil.alpha = STEP_DEPTH * (1 - (stepAge - stepMs) / SCENE_STEP_TAIL_MS);
+      }
+    }
 
     // The backdrop arrives over the stand-in rather than cutting to it: a
     // chapter's art can take a moment on a phone, and a hard swap under a party
@@ -613,10 +724,26 @@ export function createScene(app: Application): PartyScene {
        * bleed instead of the picture — which with a real biome backdrop in there
        * showed up as a 200px band of nothing down one side of a 1280px TV.
        */
-      const cover = Math.max(width / DESIGN.width, height / DESIGN.height);
+      /*
+       * Overscanned by the shake's maximum displacement. The jolt translates
+       * the whole stage, and a backdrop that fits the pane exactly — which is
+       * what plain cover produces on a pane with the design rect's own 16:9 —
+       * exposes a bare strip of the DOM surface along the trailing edge on
+       * every nonzero offset. Bleeding the cover by one jolt's worth on each
+       * side means the stage can move that far in any direction and still be
+       * showing backdrop.
+       */
+      const bleed = Math.ceil(height * SHAKE_MAX_FRACTION) + 2;
+      const cover = Math.max(
+        (width + bleed * 2) / DESIGN.width,
+        (height + bleed * 2) / DESIGN.height,
+      );
       backdropArt.scale.set(cover);
       backdropArt.x = (width - DESIGN.width * cover) / 2;
       backdropArt.y = (height - DESIGN.height * cover) / 2;
+      // The veil covers the pane, whatever the pane is right now. A margin of
+      // one shake's amplitude so a jolt mid-step never shows a bright edge.
+      stepVeil.clear().rect(-32, -32, width + 64, height + 64).fill({ color: 0x0a0820 });
       applyCamera(0);
     },
 
@@ -755,11 +882,14 @@ export function createScene(app: Application): PartyScene {
         camState = createCameraState({ board: STORY_BOARD, attention });
         camNow = null;
         heldEvents = [];
+        // Impacts scheduled for a fight that is over would land on the
+        // lineup — cleared for the same reason heldEvents is.
+        pendingShakes = [];
       }
       if (view) {
         board?.update(view);
         for (const held of heldEvents.splice(0)) {
-          board?.playEvents(held.events, held.totalMs);
+          dispatchCombat(held.events, held.totalMs);
         }
       }
     },
@@ -769,7 +899,20 @@ export function createScene(app: Application): PartyScene {
         heldEvents.push({ events, totalMs });
         return;
       }
-      board?.playEvents(events, totalMs);
+      dispatchCombat(events, totalMs);
+    },
+
+    shake(strength) {
+      if (destroyed) return;
+      jolt(strength);
+    },
+
+    playSceneStep(ms) {
+      if (destroyed || ms <= 0) return;
+      // Reduced motion keeps the veil: it is a crossfade, not motion — the
+      // thing that setting asks to be spared is the shake above.
+      stepAge = 0;
+      stepMs = ms;
     },
 
     setCameraAttention(key) {
@@ -781,6 +924,10 @@ export function createScene(app: Application): PartyScene {
       destroyed = true;
       app.ticker.remove(tick);
       removeGestures();
+      // Leave the stage where the next scene expects to find it — a stage
+      // torn down mid-jolt must not bequeath its displacement.
+      stage.position.set(0, 0);
+      stepVeil.destroy();
       for (const actor of actors.values()) {
         actor.rive?.destroy();
         actor.container.destroy({ children: true });
@@ -844,4 +991,27 @@ export function getActiveScene(): PartyScene | null {
 /** No-ops before the stage mounts, which is exactly what a display client wants. */
 export function focusCamera(target: FocusTarget): void {
   active?.focusCamera(target);
+}
+
+/** Jolt the mounted stage, if there is one. Same contract as focusCamera. */
+export function shakeStage(strength: number): void {
+  active?.shake(strength);
+}
+
+/** Play the between-scenes dip on the mounted stage, if there is one. */
+export function sceneStep(ms: number): void {
+  active?.playSceneStep(ms);
+}
+
+/**
+ * Whether this viewer asked the OS to skip motion effects. Read per call —
+ * it is one media query, and a preference flipped mid-session should win
+ * the very next beat.
+ */
+function prefersReducedMotion(): boolean {
+  try {
+    return typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch {
+    return false;
+  }
 }
