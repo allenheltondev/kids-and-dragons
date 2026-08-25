@@ -17,7 +17,7 @@ import { PartyLayout } from "./layout/PartyLayout";
 import { TravelLayout } from "./layout/TravelLayout";
 import { routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode } from "./store";
-import { ErrorToast, Spinner } from "./ui";
+import { ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -49,6 +49,9 @@ export function App(): React.JSX.Element {
     <>
       {pickLayout()}
       <ErrorToast />
+      {/* Shell-level like the toast, and for the same reason: a dropped
+          connection is true on every surface in every mode at once. */}
+      <ConnectionBanner />
     </>
   );
 
