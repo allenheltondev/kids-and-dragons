@@ -6,13 +6,15 @@
 import { describe, expect, it } from "vitest";
 import type { Presentation } from "@kad/shared";
 import { PRESENTATION_MS } from "./presentation";
+import type { EncounterEvent } from "@kad/shared";
+import { beatOffsetsMs } from "./board-math";
 import {
   advanceShake,
+  impactBeats,
   PRESENTATION_SHAKES,
   SHAKE_DURATION_S,
   shakeOffset,
   shakeStrengthFor,
-  shakeStrengthForEvents,
   startShake,
 } from "./shake";
 
@@ -35,42 +37,43 @@ describe("what hits how hard", () => {
     expect(shakeStrengthFor({ kind: "LEVEL_UP" } as Presentation)).toBe(0);
   });
 
-  it("judges a combat sequence by what happened in it, not by its wrapper", () => {
+  it("gives a sequence no head shake — its impacts are scheduled to their beats", () => {
+    // The engine wraps everything a fight does in COMBAT_SEQUENCE, and the
+    // board paces those events across the hold. A jolt at the head flinched
+    // during the walk-up and was still when the blow actually played.
+    expect(shakeStrengthFor({ kind: "COMBAT_SEQUENCE", events: [] } as unknown as Presentation)).toBe(0);
+  });
+});
+
+describe("where a round's impacts land", () => {
+  const damage = { type: "damage", actorId: "a", amount: 3, hp: 4 } as EncounterEvent;
+  const down = { type: "down", actorId: "a" } as EncounterEvent;
+  const moved = { type: "moved", actorId: "a", to: { x: 1, y: 1 } } as EncounterEvent;
+  const roll = { type: "roll", roll: {} } as unknown as EncounterEvent;
+
+  it("schedules nothing for a round of walking and missing", () => {
+    const evaded = { type: "evaded", actorId: "a", byId: "b" } as EncounterEvent;
+    expect(impactBeats([moved, roll, evaded], 1500)).toEqual([]);
+  });
+
+  it("puts each impact on the same beat the board plays it on", () => {
     /*
-     * The engine wraps *everything* a fight does in COMBAT_SEQUENCE — walks,
-     * heals, whole enemy rounds — and never emits standalone ATTACK/DOWN from
-     * those paths. A flat per-kind strength shook the screen for a stroll and
-     * capped a real knockdown at a scratch's flinch.
+     * moved → roll → damage → down, the common attack shape. The flinch has
+     * to land with the damage number, which rides `beatOffsetsMs` — so the
+     * offsets must be exactly that table's, at the impact's own index.
      */
-    const seq = (events: unknown) =>
-      shakeStrengthFor({ kind: "COMBAT_SEQUENCE", events } as Presentation);
-    // Walking and missing move nothing.
-    expect(seq([{ type: "moved", actorId: "a", to: { x: 1, y: 1 } }])).toBe(0);
-    expect(seq([{ type: "roll", roll: {} }, { type: "evaded", actorId: "a", byId: "b" }])).toBe(0);
-    // A hit is a hit, and a knockdown inside the round is the full hit.
-    expect(seq([{ type: "damage", actorId: "a", amount: 3, hp: 4 }])).toBe(0.7);
-    expect(
-      seq([
-        { type: "damage", actorId: "a", amount: 3, hp: 0 },
-        { type: "down", actorId: "a" },
-      ]),
-    ).toBe(1);
+    const events = [moved, roll, damage, down];
+    const offsets = beatOffsetsMs(events.length, 1900);
+    expect(impactBeats(events, 1900)).toEqual([
+      { atMs: offsets[2], strength: 0.7 },
+      { atMs: offsets[3], strength: 1 },
+    ]);
   });
 
-  it("lets a fight's violent opening outrank the arrival thump", () => {
-    const began = shakeStrengthFor({
-      kind: "ENCOUNTER_BEGAN",
-      events: [{ type: "down", actorId: "a" }],
-    } as unknown as Presentation);
-    expect(began).toBe(1);
-    // And a quiet opening keeps the gentle arrival.
-    expect(shakeStrengthFor({ kind: "ENCOUNTER_BEGAN" } as Presentation)).toBe(
-      PRESENTATION_SHAKES.ENCOUNTER_BEGAN,
-    );
-  });
-
-  it("reads a shove as a nudge", () => {
-    expect(shakeStrengthForEvents([{ type: "shoved", actorId: "a", to: { x: 0, y: 0 } }])).toBe(0.45);
+  it("reads a knockdown as the full hit and a shove as a nudge", () => {
+    const shoved = { type: "shoved", actorId: "a", to: { x: 0, y: 0 } } as EncounterEvent;
+    const beats = impactBeats([down, shoved], 1000);
+    expect(beats.map((beat) => beat.strength)).toEqual([1, 0.45]);
   });
 });
 

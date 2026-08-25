@@ -287,8 +287,10 @@ export function PixiStage(): React.JSX.Element {
   // until its hold elapses (sync/channel.ts) — so the numbers pop while the
   // board still shows the world they happened to.
   usePresentation("COMBAT_SEQUENCE", (presentation) => {
+    // No head shake: the sequence's impacts jolt on the beats they belong
+    // to, scheduled by the scene alongside the damage numbers (shake.ts,
+    // `impactBeats`).
     sceneRef.current?.playCombatEvents(presentation.events, presentationDuration(presentation));
-    sceneRef.current?.shake(shakeStrengthFor(presentation));
   });
   usePresentation("ENCOUNTER_BEGAN", (presentation) => {
     if (presentation.events && presentation.events.length > 0) {
@@ -297,6 +299,8 @@ export function PixiStage(): React.JSX.Element {
         presentationDuration(presentation),
       );
     }
+    // The arrival thump; any opening turns' own impacts ride the schedule
+    // above.
     sceneRef.current?.shake(shakeStrengthFor(presentation));
   });
 
