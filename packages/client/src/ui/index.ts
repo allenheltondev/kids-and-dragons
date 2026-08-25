@@ -30,3 +30,4 @@ export { Panel, type PanelProps } from "./Panel";
 export { Spinner, type SpinnerProps } from "./Spinner";
 export { ScreenReaderOnly, type ScreenReaderOnlyProps } from "./ScreenReaderOnly";
 export { ErrorToast } from "./ErrorToast";
+export { ConnectionBanner, RECONNECT_GRACE_MS } from "./ConnectionBanner";
