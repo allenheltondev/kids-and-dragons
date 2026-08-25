@@ -32,6 +32,8 @@ import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./
 import type { BoardViewState } from "./board";
 import { presentationDuration } from "./presentation";
 import { shakeStrengthFor } from "./shake";
+import { justWonAFight } from "./victory";
+import { cue } from "../audio/cue";
 import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSession } from "../store";
 import { useEnsureChapter } from "../screens/content";
 
@@ -268,6 +270,25 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setEncounter(boardView(state, party, chapter));
   }, [state, party, chapter]);
+
+  /*
+   * The victory beat — roadmap chapter 8, read off the state rather than
+   * announced by a presentation (world/victory.ts explains why the engine
+   * should not grow a VICTORY kind for something the state already says).
+   *
+   * The previous state is held in a ref rather than derived, because this is a
+   * *transition*: the fight that was running one patch ago is the only thing
+   * that knows the fight was won, and by this patch the engine has cleared it.
+   */
+  const previousState = useRef<RunState | null>(null);
+  useEffect(() => {
+    const before = previousState.current;
+    previousState.current = state;
+    if (justWonAFight(before, state)) {
+      sceneRef.current?.playVictory();
+      cue("victory");
+    }
+  }, [state]);
 
   // Names off while the lobby's card row is over the lineup — see
   // nameplatesVisibleIn.
