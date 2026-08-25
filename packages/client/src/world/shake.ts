@@ -18,6 +18,7 @@
  */
 
 import type { EncounterEvent, Presentation } from "@kad/shared";
+import { beatOffsetsMs } from "./board-math";
 
 /** Seconds from jolt to stillness. */
 export const SHAKE_DURATION_S = 0.4;
@@ -36,12 +37,12 @@ export const PRESENTATION_SHAKES: Record<Presentation["kind"], number> = {
   ROLL: 0,
   CHOICE_MADE: 0,
   // The board arriving is an event, but a gentle one — the fight has not
-  // landed a blow yet. Opening monster turns ride in its events and can
-  // outrank this via `shakeStrengthForEvents`.
+  // landed a blow yet. Any opening monster turns ride in its events, and
+  // their impacts are scheduled to their own beats via `impactBeats`.
   ENCOUNTER_BEGAN: 0.4,
-  // Never read: a sequence's strength comes from what actually happened in
-  // it — see `shakeStrengthForEvents`. The entry only satisfies the Record,
-  // the same convention as its row in PRESENTATION_MS.
+  // Never read at the sequence's head: a round's impacts are scheduled to
+  // the beats they belong to — see `impactBeats`. The entry only satisfies
+  // the Record, the same convention as its row in PRESENTATION_MS.
   COMBAT_SEQUENCE: 0,
   ATTACK: 0.7,
   HEAL: 0,
@@ -54,41 +55,44 @@ export const PRESENTATION_SHAKES: Record<Presentation["kind"], number> = {
   CHAPTER_COMPLETE: 0,
 };
 
-/**
- * How hard a combat sequence hits, judged by what is *in* it.
- *
- * The engine wraps everything a fight does — walks, heals, misses, whole
- * enemy rounds — in COMBAT_SEQUENCE presentations, and a standalone
- * ATTACK/DOWN presentation is not what those paths emit. A flat per-kind
- * strength therefore shook the screen for somebody strolling two tiles and
- * gave a real knockdown the same flinch as a scratch. So a sequence is read:
- * a `down` anywhere in it is the full hit, damage is a normal one, a shove is
- * a nudge, and a round of walking and missing moves nothing at all.
- */
-export function shakeStrengthForEvents(events: readonly EncounterEvent[]): number {
-  let strength = 0;
-  for (const event of events) {
-    if (event.type === "down") strength = Math.max(strength, 1);
-    else if (event.type === "damage") strength = Math.max(strength, 0.7);
-    else if (event.type === "shoved") strength = Math.max(strength, 0.45);
-  }
-  return strength;
+export function shakeStrengthFor(presentation: Presentation): number {
+  return PRESENTATION_SHAKES[presentation.kind] ?? 0;
 }
 
-export function shakeStrengthFor(presentation: Presentation): number {
-  if (presentation.kind === "COMBAT_SEQUENCE") {
-    return shakeStrengthForEvents(presentation.events);
-  }
-  if (presentation.kind === "ENCOUNTER_BEGAN") {
-    // The arrival thump, or the opening monster turns' own impact — whichever
-    // is bigger. A fight a wisp opens by knocking somebody down should not
-    // arrive more gently than the same hit one round later.
-    return Math.max(
-      PRESENTATION_SHAKES.ENCOUNTER_BEGAN,
-      shakeStrengthForEvents(presentation.events ?? []),
-    );
-  }
-  return PRESENTATION_SHAKES[presentation.kind] ?? 0;
+/** How hard one combat event hits, 0 for everything that is not an impact. */
+export function impactStrengthOf(event: EncounterEvent): number {
+  if (event.type === "down") return 1;
+  if (event.type === "damage") return 0.7;
+  if (event.type === "shoved") return 0.45;
+  return 0;
+}
+
+/**
+ * When a combat sequence's impacts land, and how hard — each on the *beat it
+ * belongs to*, not at the sequence's head.
+ *
+ * Two facts force this shape. The engine wraps everything a fight does —
+ * walks, heals, misses, whole enemy rounds — in COMBAT_SEQUENCE
+ * presentations, so a flat per-kind strength shook the screen for somebody
+ * strolling two tiles and never gave a real knockdown its full hit. And the
+ * board paces those events across the hold (`beatOffsetsMs`, the same table
+ * the damage numbers ride), so a single aggregate jolt at the head had the
+ * screen flinching during the walk-up and already still when the blow
+ * actually played. The scene schedules these alongside the beats it hands
+ * the board, off the same offsets, so the flinch and the number land on the
+ * same frame.
+ */
+export function impactBeats(
+  events: readonly EncounterEvent[],
+  totalMs: number,
+): { atMs: number; strength: number }[] {
+  const offsets = beatOffsetsMs(events.length, totalMs);
+  const beats: { atMs: number; strength: number }[] = [];
+  events.forEach((event, index) => {
+    const strength = impactStrengthOf(event);
+    if (strength > 0) beats.push({ atMs: offsets[index] ?? 0, strength });
+  });
+  return beats;
 }
 
 export interface Shake {

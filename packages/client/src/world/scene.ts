@@ -74,7 +74,14 @@ import {
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
-import { advanceShake, shakeOffset, startShake, type Shake } from "./shake";
+import {
+  advanceShake,
+  impactBeats,
+  SHAKE_MAX_FRACTION,
+  shakeOffset,
+  startShake,
+  type Shake,
+} from "./shake";
 import {
   createNameplate,
   fitNameplate,
@@ -303,6 +310,29 @@ export function createScene(app: Application): PartyScene {
 
   /** The current jolt, if the stage is still ringing (world/shake.ts). */
   let shakeState: Shake | null = null;
+  /**
+   * Impacts waiting for their beat, on the same clock as `elapsed`. Scheduled
+   * off the same `beatOffsetsMs` the board paces its damage numbers with, so
+   * the flinch and the number land on the same frame — a jolt at a sequence's
+   * head flinched during the walk-up and was still by the time the blow
+   * played.
+   */
+  let pendingShakes: { at: number; strength: number }[] = [];
+
+  /** The one gate every jolt passes: a viewer who asked the OS for reduced
+      motion gets none, scheduled or immediate alike. */
+  function jolt(strength: number): void {
+    if (prefersReducedMotion()) return;
+    shakeState = startShake(shakeState, strength);
+  }
+
+  /** Hand a round to the board and put its impacts on the clock. */
+  function dispatchCombat(events: readonly EncounterEvent[], totalMs: number): void {
+    board?.playEvents(events, totalMs);
+    for (const beat of impactBeats(events, totalMs)) {
+      pendingShakes.push({ at: elapsed + beat.atMs / 1000, strength: beat.strength });
+    }
+  }
 
   /*
    * The scene-step dip: a full-pane veil over everything, driven by tick().
@@ -411,13 +441,24 @@ export function createScene(app: Application): PartyScene {
     applyCamera(dt);
     board?.tick(dt);
 
+    // Impacts whose beat has come. The queue is at most a round of events.
+    for (let i = 0; i < pendingShakes.length; ) {
+      const beat = pendingShakes[i];
+      if (beat && beat.at <= elapsed) {
+        pendingShakes.splice(i, 1);
+        jolt(beat.strength);
+      } else {
+        i += 1;
+      }
+    }
+
     // The jolt rides the whole stage — backdrop, lineup and board move as one
     // piece, which is what makes it read as the *camera* flinching rather
     // than the world sliding. Applied after the camera so the two never
     // argue about who owns the layer transforms.
     shakeState = advanceShake(shakeState, dt);
-    const jolt = shakeOffset(shakeState, viewport.height);
-    stage.position.set(jolt.x, jolt.y);
+    const displacement = shakeOffset(shakeState, viewport.height);
+    stage.position.set(displacement.x, displacement.y);
 
     // The scene-step veil: up across the hold, down across the tail — see the
     // declaration for why the peak sits at the hold's end, where the patch
@@ -683,7 +724,20 @@ export function createScene(app: Application): PartyScene {
        * bleed instead of the picture — which with a real biome backdrop in there
        * showed up as a 200px band of nothing down one side of a 1280px TV.
        */
-      const cover = Math.max(width / DESIGN.width, height / DESIGN.height);
+      /*
+       * Overscanned by the shake's maximum displacement. The jolt translates
+       * the whole stage, and a backdrop that fits the pane exactly — which is
+       * what plain cover produces on a pane with the design rect's own 16:9 —
+       * exposes a bare strip of the DOM surface along the trailing edge on
+       * every nonzero offset. Bleeding the cover by one jolt's worth on each
+       * side means the stage can move that far in any direction and still be
+       * showing backdrop.
+       */
+      const bleed = Math.ceil(height * SHAKE_MAX_FRACTION) + 2;
+      const cover = Math.max(
+        (width + bleed * 2) / DESIGN.width,
+        (height + bleed * 2) / DESIGN.height,
+      );
       backdropArt.scale.set(cover);
       backdropArt.x = (width - DESIGN.width * cover) / 2;
       backdropArt.y = (height - DESIGN.height * cover) / 2;
@@ -828,11 +882,14 @@ export function createScene(app: Application): PartyScene {
         camState = createCameraState({ board: STORY_BOARD, attention });
         camNow = null;
         heldEvents = [];
+        // Impacts scheduled for a fight that is over would land on the
+        // lineup — cleared for the same reason heldEvents is.
+        pendingShakes = [];
       }
       if (view) {
         board?.update(view);
         for (const held of heldEvents.splice(0)) {
-          board?.playEvents(held.events, held.totalMs);
+          dispatchCombat(held.events, held.totalMs);
         }
       }
     },
@@ -842,12 +899,12 @@ export function createScene(app: Application): PartyScene {
         heldEvents.push({ events, totalMs });
         return;
       }
-      board?.playEvents(events, totalMs);
+      dispatchCombat(events, totalMs);
     },
 
     shake(strength) {
-      if (destroyed || prefersReducedMotion()) return;
-      shakeState = startShake(shakeState, strength);
+      if (destroyed) return;
+      jolt(strength);
     },
 
     playSceneStep(ms) {
