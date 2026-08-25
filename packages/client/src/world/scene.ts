@@ -100,6 +100,10 @@ export { characterArtUrl };
  */
 export const SCENE_STEP_TAIL_MS = 250;
 
+/** How long the victory bloom lasts, and how bright it gets. */
+export const VICTORY_MS = 900;
+const VICTORY_PEAK = 0.5;
+
 /** The story scene is authored at this size and framed into whatever pane it gets. */
 const DESIGN = { width: 1600, height: 900 } as const;
 /** One camera "tile" of story space, in design units. See the header. */
@@ -150,6 +154,14 @@ export interface PartyScene {
    * that a redundant call costs nothing but the dip.
    */
   playSceneStep(ms: number): void;
+  /**
+   * The victory flourish — a bloom of light over the scene the party is
+   * walking into, roadmap chapter 8's "victory sequences". Deliberately not a
+   * screen and not a pause: §7.3 makes a loss a story branch rather than a
+   * failure, and the mirror of that is that a win is not a trophy ceremony
+   * either. Suppressed under reduced motion, like the jolt.
+   */
+  playVictory(): void;
   /**
    * Where the story is happening (spec §6.2). The chapter's biome art replaces
    * the drawn stand-in behind the lineup; null, an unknown biome, or a missing
@@ -356,6 +368,17 @@ export function createScene(app: Application): PartyScene {
   /** How deep the scene-step dip goes. A veil, not a blackout. */
   const STEP_DEPTH = 0.4;
 
+  /*
+   * The victory bloom: one warm radial flash over the whole pane, drawn at
+   * resize like the veil and driven by the same clock. `victoryAge < 0` is
+   * idle. A flash rather than a burst of particles because it has to read
+   * across a room at 3 metres and cost nothing on a mini-PC (spec §1's TV).
+   */
+  const victoryGlow = new Graphics();
+  victoryGlow.alpha = 0;
+  stage.addChild(victoryGlow);
+  let victoryAge = -1;
+
   /** See `setNameplatesVisible`. Applied to each label as it is laid out, so
       an actor built while the lobby is up is born hidden like the rest. */
   let nameplatesVisible = true;
@@ -459,6 +482,22 @@ export function createScene(app: Application): PartyScene {
     shakeState = advanceShake(shakeState, dt);
     const displacement = shakeOffset(shakeState, viewport.height);
     stage.position.set(displacement.x, displacement.y);
+
+    /*
+     * The victory bloom: a fast arrival and a slower fall, so it lands like a
+     * cheer rather than a fade. Sized well under a second — the next scene is
+     * arriving underneath it and this must not be in the way of reading it.
+     */
+    if (victoryAge >= 0) {
+      victoryAge += dt * 1000;
+      if (victoryAge >= VICTORY_MS) {
+        victoryAge = -1;
+        victoryGlow.alpha = 0;
+      } else {
+        const t = victoryAge / VICTORY_MS;
+        victoryGlow.alpha = VICTORY_PEAK * (t < 0.2 ? t / 0.2 : 1 - (t - 0.2) / 0.8);
+      }
+    }
 
     // The scene-step veil: up across the hold, down across the tail — see the
     // declaration for why the peak sits at the hold's end, where the patch
@@ -744,6 +783,12 @@ export function createScene(app: Application): PartyScene {
       // The veil covers the pane, whatever the pane is right now. A margin of
       // one shake's amplitude so a jolt mid-step never shows a bright edge.
       stepVeil.clear().rect(-32, -32, width + 64, height + 64).fill({ color: 0x0a0820 });
+      // Warm, centred, and wider than the pane so its falloff is off-screen
+      // rather than a visible disc edge.
+      victoryGlow
+        .clear()
+        .ellipse(width / 2, height / 2, width * 0.8, height * 0.8)
+        .fill({ color: 0xffd98a });
       applyCamera(0);
     },
 
@@ -907,6 +952,11 @@ export function createScene(app: Application): PartyScene {
       jolt(strength);
     },
 
+    playVictory() {
+      if (destroyed || prefersReducedMotion()) return;
+      victoryAge = 0;
+    },
+
     playSceneStep(ms) {
       if (destroyed || ms <= 0) return;
       // Reduced motion keeps the veil: it is a crossfade, not motion — the
@@ -928,6 +978,7 @@ export function createScene(app: Application): PartyScene {
       // torn down mid-jolt must not bequeath its displacement.
       stage.position.set(0, 0);
       stepVeil.destroy();
+      victoryGlow.destroy();
       for (const actor of actors.values()) {
         actor.rive?.destroy();
         actor.container.destroy({ children: true });
