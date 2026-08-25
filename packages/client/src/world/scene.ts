@@ -86,6 +86,13 @@ import type { EncounterEvent } from "@kad/shared";
 
 export { characterArtUrl };
 
+/**
+ * How long the scene-step veil takes to lift after its window — after the
+ * gated patch has applied, so the new scene is revealed rather than watched
+ * arriving. Exported for the test that pins the swap stays covered.
+ */
+export const SCENE_STEP_TAIL_MS = 250;
+
 /** The story scene is authored at this size and framed into whatever pane it gets. */
 const DESIGN = { width: 1600, height: 900 } as const;
 /** One camera "tile" of story space, in design units. See the header. */
@@ -129,10 +136,11 @@ export interface PartyScene {
    */
   shake(strength: number): void;
   /**
-   * The step between story scenes: a brief dip toward dark and back across
-   * `ms`, so moving to a new scene reads as *going somewhere* instead of the
-   * text under the art snapping. Sized to SCENE_ENTER's hold, and gentle
-   * enough that a redundant call costs nothing but the dip.
+   * The step between story scenes: a veil rises across `ms` — SCENE_ENTER's
+   * hold, at whose end the gated patch applies — and lifts over a short tail
+   * with the new scene already behind it, so moving reads as *going
+   * somewhere* and the swap itself is never watched happening. Gentle enough
+   * that a redundant call costs nothing but the dip.
    */
   playSceneStep(ms: number): void;
   /**
@@ -300,6 +308,14 @@ export function createScene(app: Application): PartyScene {
    * The scene-step dip: a full-pane veil over everything, driven by tick().
    * `stepAge < 0` means idle. Drawn once at viewport size in resize() —
    * a Graphics rect, so it weighs nothing while its alpha is 0.
+   *
+   * The profile is deliberately asymmetric around the thing it exists to
+   * cover. SCENE_ENTER's *patch* — the new narration, the new state — is held
+   * by the presentation gate and applies only when the hold elapses
+   * (sync/channel.ts). A veil that rose and fell inside the hold would be
+   * back at zero at exactly that moment, leaving the actual swap fully
+   * visible. So the veil **rises across the hold** to peak as the patch
+   * lands, then lifts over a short tail with the new scene already behind it.
    */
   const stepVeil = new Graphics();
   stepVeil.alpha = 0;
@@ -403,15 +419,18 @@ export function createScene(app: Application): PartyScene {
     const jolt = shakeOffset(shakeState, viewport.height);
     stage.position.set(jolt.x, jolt.y);
 
-    // The scene-step veil: up and back down across its window, sine-shaped so
-    // both edges are soft. `stepAge` past the window parks it at exactly 0.
+    // The scene-step veil: up across the hold, down across the tail — see the
+    // declaration for why the peak sits at the hold's end, where the patch
+    // lands. Past the whole window it parks at exactly 0.
     if (stepAge >= 0) {
       stepAge += dt * 1000;
-      if (stepAge >= stepMs) {
+      if (stepAge >= stepMs + SCENE_STEP_TAIL_MS) {
         stepAge = -1;
         stepVeil.alpha = 0;
+      } else if (stepAge < stepMs) {
+        stepVeil.alpha = STEP_DEPTH * (stepAge / stepMs);
       } else {
-        stepVeil.alpha = STEP_DEPTH * Math.sin(Math.PI * (stepAge / stepMs));
+        stepVeil.alpha = STEP_DEPTH * (1 - (stepAge - stepMs) / SCENE_STEP_TAIL_MS);
       }
     }
 
