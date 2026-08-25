@@ -328,6 +328,33 @@
   }
 }
 
+/*
+ * The reconnecting banner (ui/ConnectionBanner.tsx). Top-centre, opposite
+ * corner from the toast so a drop and a rejection can be on screen together
+ * without stacking. The panel's own colours, deliberately not the danger
+ * ones: it is a wait, not an alarm, and there is nothing to dismiss.
+ */
+.kad-connection {
+  position: fixed;
+  inset-block-start: calc(var(--kad-safe-top, 0px) + 0.75rem);
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: fit-content;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-line, var(--kad-bg-sunken));
+  box-shadow: var(--kad-shadow-lg);
+  color: var(--kad-ink);
+  font-size: 0.95rem;
+  animation: kad-toast-in var(--kad-dur-base) var(--kad-ease-out);
+}
+
 /* Party Mode's slim chrome for the mid-session mode switch, mirroring the
    Travel bar. In flow, never floating: on a phone the thing underneath a
    floating control is the primary action of whatever screen you are on. */
