@@ -12,6 +12,7 @@ import {
   SHAKE_DURATION_S,
   shakeOffset,
   shakeStrengthFor,
+  shakeStrengthForEvents,
   startShake,
 } from "./shake";
 
@@ -32,6 +33,44 @@ describe("what hits how hard", () => {
     expect(shakeStrengthFor({ kind: "HEAL" } as Presentation)).toBe(0);
     expect(shakeStrengthFor({ kind: "ROLL" } as Presentation)).toBe(0);
     expect(shakeStrengthFor({ kind: "LEVEL_UP" } as Presentation)).toBe(0);
+  });
+
+  it("judges a combat sequence by what happened in it, not by its wrapper", () => {
+    /*
+     * The engine wraps *everything* a fight does in COMBAT_SEQUENCE — walks,
+     * heals, whole enemy rounds — and never emits standalone ATTACK/DOWN from
+     * those paths. A flat per-kind strength shook the screen for a stroll and
+     * capped a real knockdown at a scratch's flinch.
+     */
+    const seq = (events: unknown) =>
+      shakeStrengthFor({ kind: "COMBAT_SEQUENCE", events } as Presentation);
+    // Walking and missing move nothing.
+    expect(seq([{ type: "moved", actorId: "a", to: { x: 1, y: 1 } }])).toBe(0);
+    expect(seq([{ type: "roll", roll: {} }, { type: "evaded", actorId: "a", byId: "b" }])).toBe(0);
+    // A hit is a hit, and a knockdown inside the round is the full hit.
+    expect(seq([{ type: "damage", actorId: "a", amount: 3, hp: 4 }])).toBe(0.7);
+    expect(
+      seq([
+        { type: "damage", actorId: "a", amount: 3, hp: 0 },
+        { type: "down", actorId: "a" },
+      ]),
+    ).toBe(1);
+  });
+
+  it("lets a fight's violent opening outrank the arrival thump", () => {
+    const began = shakeStrengthFor({
+      kind: "ENCOUNTER_BEGAN",
+      events: [{ type: "down", actorId: "a" }],
+    } as unknown as Presentation);
+    expect(began).toBe(1);
+    // And a quiet opening keeps the gentle arrival.
+    expect(shakeStrengthFor({ kind: "ENCOUNTER_BEGAN" } as Presentation)).toBe(
+      PRESENTATION_SHAKES.ENCOUNTER_BEGAN,
+    );
+  });
+
+  it("reads a shove as a nudge", () => {
+    expect(shakeStrengthForEvents([{ type: "shoved", actorId: "a", to: { x: 0, y: 0 } }])).toBe(0.45);
   });
 });
 

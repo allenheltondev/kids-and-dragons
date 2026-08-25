@@ -17,7 +17,7 @@
  * is testable with no WebGL context, and the scene only integrates it.
  */
 
-import type { Presentation } from "@kad/shared";
+import type { EncounterEvent, Presentation } from "@kad/shared";
 
 /** Seconds from jolt to stillness. */
 export const SHAKE_DURATION_S = 0.4;
@@ -36,11 +36,13 @@ export const PRESENTATION_SHAKES: Record<Presentation["kind"], number> = {
   ROLL: 0,
   CHOICE_MADE: 0,
   // The board arriving is an event, but a gentle one — the fight has not
-  // landed a blow yet.
+  // landed a blow yet. Opening monster turns ride in its events and can
+  // outrank this via `shakeStrengthForEvents`.
   ENCOUNTER_BEGAN: 0.4,
-  // The enemy round: one flinch for the round, like its one cue — the board
-  // already paces the per-hit damage numbers.
-  COMBAT_SEQUENCE: 0.7,
+  // Never read: a sequence's strength comes from what actually happened in
+  // it — see `shakeStrengthForEvents`. The entry only satisfies the Record,
+  // the same convention as its row in PRESENTATION_MS.
+  COMBAT_SEQUENCE: 0,
   ATTACK: 0.7,
   HEAL: 0,
   // The hardest hit in the vocabulary, because §7.3 makes going down the
@@ -52,7 +54,40 @@ export const PRESENTATION_SHAKES: Record<Presentation["kind"], number> = {
   CHAPTER_COMPLETE: 0,
 };
 
+/**
+ * How hard a combat sequence hits, judged by what is *in* it.
+ *
+ * The engine wraps everything a fight does — walks, heals, misses, whole
+ * enemy rounds — in COMBAT_SEQUENCE presentations, and a standalone
+ * ATTACK/DOWN presentation is not what those paths emit. A flat per-kind
+ * strength therefore shook the screen for somebody strolling two tiles and
+ * gave a real knockdown the same flinch as a scratch. So a sequence is read:
+ * a `down` anywhere in it is the full hit, damage is a normal one, a shove is
+ * a nudge, and a round of walking and missing moves nothing at all.
+ */
+export function shakeStrengthForEvents(events: readonly EncounterEvent[]): number {
+  let strength = 0;
+  for (const event of events) {
+    if (event.type === "down") strength = Math.max(strength, 1);
+    else if (event.type === "damage") strength = Math.max(strength, 0.7);
+    else if (event.type === "shoved") strength = Math.max(strength, 0.45);
+  }
+  return strength;
+}
+
 export function shakeStrengthFor(presentation: Presentation): number {
+  if (presentation.kind === "COMBAT_SEQUENCE") {
+    return shakeStrengthForEvents(presentation.events);
+  }
+  if (presentation.kind === "ENCOUNTER_BEGAN") {
+    // The arrival thump, or the opening monster turns' own impact — whichever
+    // is bigger. A fight a wisp opens by knocking somebody down should not
+    // arrive more gently than the same hit one round later.
+    return Math.max(
+      PRESENTATION_SHAKES.ENCOUNTER_BEGAN,
+      shakeStrengthForEvents(presentation.events ?? []),
+    );
+  }
   return PRESENTATION_SHAKES[presentation.kind] ?? 0;
 }
 

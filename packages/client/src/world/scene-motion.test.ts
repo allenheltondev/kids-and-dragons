@@ -9,7 +9,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Application, Graphics } from "pixi.js";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
-import { createScene, type PartyScene } from "./scene";
+import { createScene, SCENE_STEP_TAIL_MS, type PartyScene } from "./scene";
 import { SHAKE_DURATION_S } from "./shake";
 
 beforeAll(installFakeCanvas2D);
@@ -69,19 +69,32 @@ describe("the scene step", () => {
     return app.stage.children[app.stage.children.length - 1] as Graphics;
   }
 
-  it("dips toward dark and comes all the way back", () => {
+  it("peaks when the patch lands, and keeps the swap covered", () => {
+    /*
+     * The timing that matters: SCENE_ENTER's patch is gated until the hold
+     * elapses, so the veil's deepest point has to sit at the hold's *end* —
+     * a symmetric dip inside the hold is transparent again at exactly the
+     * moment the scene actually changes, and the swap plays fully visible.
+     */
     const { scene: s, app } = scene();
     const veil = veilOf(app);
     expect(veil.alpha).toBe(0);
 
     s.playSceneStep(320);
-    app.ticker.frame(160); // the middle of the window: the deepest point
+    app.ticker.frame(160); // mid-hold: rising
     const mid = veil.alpha;
     expect(mid).toBeGreaterThan(0);
-    // A veil, not a blackout — the party never disappears.
-    expect(mid).toBeLessThan(0.6);
 
-    app.ticker.frame(200); // past the window
+    app.ticker.frame(156); // just before the hold ends: the deepest point
+    const atSwap = veil.alpha;
+    expect(atSwap).toBeGreaterThan(mid);
+    // A veil, not a blackout — the party never disappears.
+    expect(atSwap).toBeLessThan(0.6);
+
+    app.ticker.frame(20); // the patch has applied; the new scene is behind it
+    expect(veil.alpha).toBeGreaterThan(0);
+
+    app.ticker.frame(SCENE_STEP_TAIL_MS + 20); // the tail has lifted
     expect(veil.alpha).toBe(0);
   });
 
