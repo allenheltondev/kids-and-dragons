@@ -13,10 +13,19 @@ import type { EncounterEvent, ResolvedCharacter } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
 import type { BoardViewState } from "./board";
-import { createScene, SCENE_STEP_TAIL_MS, type PartyScene } from "./scene";
+import { createScene, SCENE_STEP_TAIL_MS, VICTORY_MS, type PartyScene } from "./scene";
 import { SHAKE_DURATION_S, SHAKE_MAX_FRACTION } from "./shake";
 
 beforeAll(installFakeCanvas2D);
+
+/*
+ * The stage's children, in the order createScene adds them: backdrop,
+ * storyLayer, boardWrap, stepVeil, victoryGlow. Indexed rather than searched
+ * because both overlays are bare Graphics — telling them apart by anything
+ * else would mean asserting on their fill colours.
+ */
+const veilOf = (app: FakeApp): Graphics => app.stage.children[3] as Graphics;
+const glowOf = (app: FakeApp): Graphics => app.stage.children[4] as Graphics;
 
 function scene(): { scene: PartyScene; app: FakeApp } {
   const app = fakeApp();
@@ -163,10 +172,11 @@ describe("the backdrop under a jolt", () => {
 });
 
 describe("the scene step", () => {
-  /** The veil is the topmost child of the stage — see createScene. */
-  function veilOf(app: FakeApp): Graphics {
-    return app.stage.children[app.stage.children.length - 1] as Graphics;
-  }
+  it("is the fourth child, above the world and under the victory glow", () => {
+    // Pinning the order the two overlay helpers below index into: backdrop,
+    // storyLayer, boardWrap, stepVeil, victoryGlow (createScene).
+    expect(scene().app.stage.children).toHaveLength(5);
+  });
 
   it("peaks when the patch lands, and keeps the swap covered", () => {
     /*
@@ -202,5 +212,38 @@ describe("the scene step", () => {
     s.playSceneStep(0);
     app.ticker.frame(16);
     expect(veilOf(app).alpha).toBe(0);
+  });
+});
+
+describe("the victory bloom", () => {
+  it("blooms and clears, without ever hiding the scene arriving underneath", () => {
+    const { scene: s, app } = scene();
+    const glow = glowOf(app);
+    expect(glow.alpha).toBe(0);
+
+    s.playVictory();
+    app.ticker.frame(180); // past the fast arrival: the brightest point
+    const peak = glow.alpha;
+    expect(peak).toBeGreaterThan(0);
+    // A flourish over the next scene, not a curtain across it — §7.3's mirror:
+    // winning is not a trophy ceremony.
+    expect(peak).toBeLessThan(0.7);
+
+    app.ticker.frame(VICTORY_MS); // past the fall
+    expect(glow.alpha).toBe(0);
+  });
+
+  it("stays dark for a viewer who asked for reduced motion", () => {
+    const original = globalThis.matchMedia;
+    globalThis.matchMedia = ((query: string) =>
+      ({ matches: query.includes("prefers-reduced-motion"), media: query }) as MediaQueryList) as typeof matchMedia;
+    try {
+      const { scene: s, app } = scene();
+      s.playVictory();
+      app.ticker.frame(180);
+      expect(glowOf(app).alpha).toBe(0);
+    } finally {
+      globalThis.matchMedia = original;
+    }
   });
 });
