@@ -113,6 +113,57 @@ export function encodeToWebm(raw: Buffer, destination: string): void {
   }
 }
 
+export interface RunOutcome {
+  made: number;
+  /** Selectors that were asked for and did not produce a file. */
+  failed: string[];
+}
+
+/**
+ * Run the jobs, and *say whether they worked*.
+ *
+ * Extracted from `main` for the reason the exit code exists: a loop that
+ * printed "failed" per job and then returned normally told the shell the run
+ * had succeeded. A person reads the word; a script reads the code, and the two
+ * disagreed — which is the shape of bug that only shows up once somebody
+ * automates this.
+ *
+ * Every job is still attempted: one dead cue must not take the other twelve
+ * down with it. The failures are collected and reported at the end, and the
+ * caller turns them into the exit status.
+ */
+export async function runJobs(
+  jobs: AudioJob[],
+  provider: Provider,
+  io: {
+    exists: (file: string) => boolean;
+    write: (raw: Buffer, file: string) => void;
+    force: boolean;
+    log?: (line: string) => void;
+  },
+): Promise<RunOutcome> {
+  const log = io.log ?? ((line: string) => { console.log(line); });
+  const outcome: RunOutcome = { made: 0, failed: [] };
+
+  for (const job of jobs) {
+    const file = path.join(AUDIO, job.file);
+    if (io.exists(file) && !io.force) {
+      log(`· ${job.selector} already exists (--force to replace)`);
+      continue;
+    }
+    try {
+      const raw = await provider({ brief: job.brief, seconds: job.seconds, kind: job.kind });
+      io.write(raw, file);
+      outcome.made += 1;
+      log(`✓ ${job.selector} → assets/audio/${job.file}`);
+    } catch (error) {
+      outcome.failed.push(job.selector);
+      log(`✗ ${job.selector}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  return outcome;
+}
+
 /** Which jobs the command line asked for. Exported for the test. */
 export function selectJobs(all: AudioJob[], wanted: string[]): AudioJob[] {
   if (wanted.length === 0) return all;
@@ -144,25 +195,18 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
-  let made = 0;
-  for (const job of jobs) {
-    const file = path.join(AUDIO, job.file);
-    if (fs.existsSync(file) && !force) {
-      console.log(`· ${job.selector} already exists (--force to replace)`);
-      continue;
-    }
-    process.stdout.write(`… ${job.selector} (${String(job.seconds)}s) `);
-    try {
-      const raw = await provider({ brief: job.brief, seconds: job.seconds, kind: job.kind });
-      encodeToWebm(raw, file);
-      made += 1;
-      console.log(`→ assets/audio/${job.file}`);
-    } catch (error) {
-      console.log("failed");
-      console.error(`  ${error instanceof Error ? error.message : String(error)}`);
-    }
+  const outcome = await runJobs(jobs, provider, {
+    exists: (file) => fs.existsSync(file),
+    write: encodeToWebm,
+    force,
+  });
+
+  console.log(`\n${String(outcome.made)} written. \`npm run audio:verify\` says what is left.`);
+  if (outcome.failed.length > 0) {
+    console.error(`${String(outcome.failed.length)} failed: ${outcome.failed.join(", ")}`);
+    // The shell hears what the person reading the output already knows.
+    process.exitCode = 1;
   }
-  console.log(`\n${String(made)} written. \`npm run audio:verify\` says what is left.`);
 }
 
 // Importable by the test without generating anything.
