@@ -32,6 +32,7 @@
  */
 
 import type { AudioSink, CueId } from "./cue";
+import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_TONES, padFor, renderTones } from "./synth";
 
 export interface AudioPrefs {
@@ -63,6 +64,13 @@ export interface AudioEngineOptions {
    */
   createContext?: (() => BaseAudioContext) | undefined;
   storage?: PrefStore | undefined;
+  /**
+   * Real audio, when there is any (samples.ts). Injected so tests can supply
+   * a library — or none at all, which is the placeholder-only path the game
+   * shipped with and still runs on.
+   */
+  samples?: ((ctx: BaseAudioContext) => SampleLibrary) | undefined;
+  sampleOptions?: SampleLoaderOptions | undefined;
 }
 
 export interface AudioEngine {
@@ -136,6 +144,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   /** The biome whose pad is (or would be) playing, and its teardown. */
   let musicBiome: string | null = null;
   let stopPad: (() => void) | null = null;
+  let library: SampleLibrary | null = null;
 
   function masterLevel(): number {
     return prefs.muted ? 0 : prefs.volume;
@@ -178,6 +187,18 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     // The context may still arrive suspended even inside a gesture handler.
     resume(ctx);
 
+    /*
+     * Real audio starts downloading here rather than at import: a display
+     * client that never makes a sound should never spend a byte on it, and
+     * the unlock gesture is the first moment we know sound is wanted.
+     */
+    const build =
+      options.samples ??
+      ((context: BaseAudioContext) => createSampleLibrary(context, options.sampleOptions ?? {}));
+    library = build(ctx);
+    library.preload();
+    if (musicBiome !== null) library.wantMusic(musicBiome);
+
     // A biome asked for before the gesture starts its pad now — music is a
     // *state*, unlike a cue, so honouring it late is honouring it.
     if (musicBiome !== null) startPad(musicBiome);
@@ -190,6 +211,36 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   function startPad(biome: string): void {
     if (!ctx || !musicBus) return;
     const now = ctx.currentTime;
+
+    /*
+     * A real loop, when the biome has one. Faded in over the same window the
+     * synth pad uses, so swapping a chapter's music from placeholder to
+     * composed changes what plays and nothing about how it arrives.
+     */
+    const recorded = library?.music(biome) ?? null;
+    if (recorded) {
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(1, now + MUSIC_FADE_S);
+      gain.connect(musicBus);
+      const source = ctx.createBufferSource();
+      source.buffer = recorded;
+      source.loop = true;
+      source.connect(gain);
+      source.start(now);
+      stopPad = () => {
+        const at = ctx ? ctx.currentTime : 0;
+        try {
+          gain.gain.cancelScheduledValues(at);
+          gain.gain.setValueAtTime(gain.gain.value, at);
+          gain.gain.linearRampToValueAtTime(0, at + MUSIC_FADE_S);
+          source.stop(at + MUSIC_FADE_S);
+        } catch {
+          // A context torn down mid-fade has already achieved the silence.
+        }
+      };
+      return;
+    }
 
     const padGain = ctx.createGain();
     padGain.gain.setValueAtTime(0, now);
@@ -235,11 +286,26 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   const sink: AudioSink = {
     cue(id: CueId): void {
       if (!ctx || !sfx || prefs.muted) return;
+      const sample = library?.cue(id) ?? null;
+      if (sample) {
+        const source = ctx.createBufferSource();
+        source.buffer = sample;
+        source.connect(sfx);
+        source.start(ctx.currentTime);
+        return;
+      }
+      // No file for this cue yet, or it did not decode: the recipe stands in
+      // (samples.ts — real audio is an upgrade, never a requirement).
       renderTones(ctx, sfx, CUE_TONES[id], ctx.currentTime);
     },
     music(biome: string | null): void {
       if (biome === musicBiome) return;
       musicBiome = biome;
+      // Ask for the file. It may arrive after the pad has started, in which
+      // case this biome plays synthesized tonight and recorded next time —
+      // swapping mid-scene would be a jump-cut in the one sound that is
+      // supposed to be continuous.
+      if (biome !== null) library?.wantMusic(biome);
       stopPad?.();
       stopPad = null;
       if (biome !== null) startPad(biome);
