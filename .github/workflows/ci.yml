@@ -173,6 +173,13 @@ jobs:
       - name: Verify rig contract
         run: npm run art:verify:rig
 
+      # Sound is checked the same way art is, with one difference the gate
+      # itself explains: a missing file is a *placeholder*, not a failure —
+      # every cue has a synthesized recipe behind it — so this goes red only
+      # for a file that is present and would reach a table broken.
+      - name: Verify audio assets
+        run: npm run audio:verify
+
       - name: Build
         run: npm run build
 
