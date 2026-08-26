@@ -8,7 +8,7 @@
 
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Application, Container, Graphics } from "pixi.js";
-import { beginEncounter, parseBoard } from "@kad/shared";
+import { beginEncounter, currentActorId, parseBoard } from "@kad/shared";
 import type { EncounterEvent, ResolvedCharacter } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
@@ -245,5 +245,91 @@ describe("the victory bloom", () => {
     } finally {
       globalThis.matchMedia = original;
     }
+  });
+});
+
+describe("the combat camera", () => {
+  /** The board layer — third child, above the story lineup (createScene). */
+  const boardLayerOf = (app: FakeApp): Container => app.stage.children[2] as Container;
+
+  /** A phone-sized pane over a full 10x8 board: the case where the 7x7
+      auto-frame is genuinely smaller than the board and things can be off
+      screen. On a TV the clamp opens to the whole board and none of this
+      matters — which is the point of testing it here. */
+  function bigFight(): { scene: PartyScene; app: FakeApp; view: BoardViewState } {
+    const app = fakeApp();
+    const made = createScene(app as unknown as Application);
+    made.resize(390, 700);
+    const base = encounterView();
+    const hero = base.party[0]!.character;
+    const encounter = beginEncounter(
+      {
+        board: parseBoard([
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+        ]),
+        party: [{ character: hero, at: { x: 0, y: 0 } }],
+        enemies: [
+          {
+            spec: { id: "wisp", name: "Bramblewisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 },
+            at: { x: 9, y: 7 },
+          },
+        ],
+      },
+      { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+    );
+    const view = { ...base, encounter };
+    made.setEncounter(view);
+    for (let i = 0; i < 120; i++) app.ticker.frame(16);
+    return { scene: made, app, view };
+  }
+
+  /** Whoever is not taking the turn — the figure a beat can happen to
+      off screen. */
+  function bystander(view: BoardViewState): string {
+    const active = currentActorId(view.encounter);
+    const other = view.encounter.board.actors.find((actor) => actor.id !== active);
+    return other!.id;
+  }
+
+  it("widens to hold whoever a beat is about, then closes back", () => {
+    /*
+     * The gap this exists for: the frame follows the *active actor*, so a blow
+     * landing on somebody five tiles away pops its damage number outside the
+     * window — the one thing the table needed to see is the one thing off
+     * screen. The frame has to open for the beat and, just as importantly,
+     * close again.
+     */
+    const { scene: s, app, view } = bigFight();
+    const layer = boardLayerOf(app);
+    const framed = layer.scale.x;
+
+    const hit = { type: "damage", actorId: bystander(view), amount: 3, hp: 3 } as EncounterEvent;
+    s.playCombatEvents([hit], 900);
+    for (let i = 0; i < 60; i++) app.ticker.frame(16); // into the beat
+
+    // Zoomed out: holding two distant figures needs a wider view than one.
+    expect(layer.scale.x).toBeLessThan(framed);
+
+    // Past the hold's tail, the frame comes back to whose turn it is.
+    for (let i = 0; i < 240; i++) app.ticker.frame(16);
+    expect(layer.scale.x).toBeCloseTo(framed, 3);
+  });
+
+  it("forgets its holds when the fight ends", () => {
+    // A hold surviving into the lineup would frame a board that is gone.
+    const { scene: s, app, view } = bigFight();
+    const hit = { type: "damage", actorId: bystander(view), amount: 3, hp: 3 } as EncounterEvent;
+    s.playCombatEvents([hit], 900);
+    s.setEncounter(null);
+    expect(() => {
+      for (let i = 0; i < 60; i++) app.ticker.frame(16);
+    }).not.toThrow();
   });
 });

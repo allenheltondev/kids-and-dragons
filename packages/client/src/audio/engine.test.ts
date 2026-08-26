@@ -234,6 +234,61 @@ describe("cues", () => {
   });
 });
 
+describe("real audio, when there is any", () => {
+  const BUFFER = { duration: 1 } as AudioBuffer;
+
+  function withLibrary(cue: (id: string) => AudioBuffer | null) {
+    const contexts: FakeContext[] = [];
+    const engine = createAudioEngine({
+      createContext: () => {
+        const ctx = new FakeContext();
+        contexts.push(ctx);
+        return ctx as unknown as BaseAudioContext;
+      },
+      storage: memoryStore(),
+      samples: () => ({
+        preload: () => undefined,
+        wantMusic: () => undefined,
+        cue: (id) => cue(id),
+        music: () => null,
+      }),
+    });
+    return { engine, contexts };
+  }
+
+  it("plays the file instead of the recipe when one has loaded", () => {
+    const { engine, contexts } = withLibrary(() => BUFFER);
+    engine.unlock();
+    const ctx = contexts[0]!;
+    const oscillatorsBefore = ctx.oscillators.length;
+
+    engine.sink.cue("dice");
+
+    // A buffer source, and *not* the synth's oscillators — otherwise both
+    // would play and the dice would rattle twice.
+    expect(ctx.sources.length).toBe(1);
+    expect(ctx.oscillators.length).toBe(oscillatorsBefore);
+  });
+
+  it("falls back to the recipe for a cue with no file", () => {
+    // The ordinary state until every cue is sourced: real audio is an upgrade,
+    // never a requirement.
+    const { engine, contexts } = withLibrary(() => null);
+    engine.unlock();
+    const ctx = contexts[0]!;
+    engine.sink.cue("tap");
+    expect(ctx.oscillators.filter((osc) => osc.startedAt !== null).length).toBeGreaterThan(0);
+  });
+
+  it("still plays nothing while muted, file or not", () => {
+    const { engine, contexts } = withLibrary(() => BUFFER);
+    engine.unlock();
+    engine.setMuted(true);
+    engine.sink.cue("dice");
+    expect(contexts[0]!.sources.length).toBe(0);
+  });
+});
+
 describe("music", () => {
   it("is idempotent for the biome already playing", () => {
     const { engine, contexts } = build();

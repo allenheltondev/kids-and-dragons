@@ -30,6 +30,8 @@
     "art:verify:rig:rest": "node tools/art/verify-rig-rest.mjs",
     "art:verify:rig:motion": "node tools/art/verify-rig-motion.mjs",
     "art:sheet": "python3 tools/art/sheet.py",
+    "audio:verify": "tsx tools/audio/verify.ts",
+    "audio:generate": "tsx tools/audio/generate.ts",
     "art:sheet:rig": "node tools/art/rig-sheet.mjs",
     "art:inventory": "node tools/art/inventory.ts",
     "art:portraits": "python3 tools/art/portraits.py",
