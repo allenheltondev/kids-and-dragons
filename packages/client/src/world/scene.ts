@@ -74,6 +74,7 @@ import {
   drawPlaceholder,
 } from "./actor-art";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
+import { focusHolds, type FocusHold } from "./attention";
 import {
   advanceShake,
   impactBeats,
@@ -330,6 +331,12 @@ export function createScene(app: Application): PartyScene {
    * played.
    */
   let pendingShakes: { at: number; strength: number }[] = [];
+  /**
+   * Who a beat is about, held in frame while it plays (world/attention.ts).
+   * On the same clock as the jolts above, so the flinch, the damage number
+   * and the frame all describe the same moment.
+   */
+  let pendingFocus: { at: number; until: number; actorIds: string[] }[] = [];
 
   /** The one gate every jolt passes: a viewer who asked the OS for reduced
       motion gets none, scheduled or immediate alike. */
@@ -343,6 +350,13 @@ export function createScene(app: Application): PartyScene {
     board?.playEvents(events, totalMs);
     for (const beat of impactBeats(events, totalMs)) {
       pendingShakes.push({ at: elapsed + beat.atMs / 1000, strength: beat.strength });
+    }
+    for (const hold of focusHolds(events, totalMs) as FocusHold[]) {
+      pendingFocus.push({
+        at: elapsed + hold.atMs / 1000,
+        until: elapsed + hold.untilMs / 1000,
+        actorIds: hold.actorIds,
+      });
     }
   }
 
@@ -396,11 +410,27 @@ export function createScene(app: Application): PartyScene {
 
   function boardFocus(): Position[] {
     if (!encounterView) return [];
+    const board = encounterView.encounter.board;
+    const tiles: Position[] = [];
+
     const activeId = currentActorId(encounterView.encounter);
-    const actor = activeId
-      ? encounterView.encounter.board.actors.find((a) => a.id === activeId)
-      : null;
-    return actor ? [{ x: actor.x, y: actor.y }] : [];
+    const actor = activeId ? board.actors.find((a) => a.id === activeId) : null;
+    if (actor) tiles.push({ x: actor.x, y: actor.y });
+
+    /*
+     * Whoever the beat now playing is about, alongside her. `setFocus` grows
+     * the frame to hold every tile it is given, so a wisp hitting somebody
+     * across the board pulls the target into shot for as long as the beat
+     * lasts and no longer (world/attention.ts).
+     */
+    for (const hold of pendingFocus) {
+      if (hold.at > elapsed) continue;
+      for (const id of hold.actorIds) {
+        const subject = board.actors.find((a) => a.id === id);
+        if (subject) tiles.push({ x: subject.x, y: subject.y });
+      }
+    }
+    return tiles;
   }
 
   function applyCamera(dt: number): void {
@@ -463,6 +493,10 @@ export function createScene(app: Application): PartyScene {
 
     applyCamera(dt);
     board?.tick(dt);
+
+    // Holds whose tail has passed. Dropped rather than kept so the frame
+    // closes back onto the active actor instead of widening all round.
+    pendingFocus = pendingFocus.filter((hold) => hold.until > elapsed);
 
     // Impacts whose beat has come. The queue is at most a round of events.
     for (let i = 0; i < pendingShakes.length; ) {
@@ -928,8 +962,10 @@ export function createScene(app: Application): PartyScene {
         camNow = null;
         heldEvents = [];
         // Impacts scheduled for a fight that is over would land on the
-        // lineup — cleared for the same reason heldEvents is.
+        // lineup — cleared for the same reason heldEvents is, and the frame
+        // holds with them.
         pendingShakes = [];
+        pendingFocus = [];
       }
       if (view) {
         board?.update(view);
