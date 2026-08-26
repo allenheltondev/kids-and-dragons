@@ -62,12 +62,25 @@ npm run audio:verify
 
 Prints what is real and what is still synthesized, and **fails only on a file
 that would reach a table broken**: empty, over budget (512KB a cue, 4MB a
-loop), silent, or wildly longer than its brief. Absence is reported, never
-fatal — a gate that failed on missing files would have been red the day the
-sound system shipped, with every cue missing by design.
+loop), unplayable, silent, or wildly longer than its brief. Absence is
+reported, never fatal — a gate that failed on missing files would have been
+red the day the sound system shipped, with every cue missing by design.
 
-Runs in CI beside `art:verify`. Length checks need `ffprobe`; without it those
-are skipped and the size and emptiness checks still run.
+Runs in CI beside `art:verify`. What it can check depends on what is
+installed, and it keeps the two apart deliberately:
+
+| available | checks |
+|---|---|
+| nothing | exists, non-empty, within budget |
+| `ffmpeg` | + playable, + not silent |
+| `+ ffprobe` | + duration against the brief |
+
+"The tool is not installed" and "the tool read this file and refused it" are
+never the same answer — the second fails the gate. ffmpeg is the playability
+check rather than ffprobe, because decoding the whole file to nowhere is the
+closest thing to "will a browser play this", and it answers the silence
+question in the same pass. A duration is not audio: a bad encode produces a
+file of exactly the right length full of nothing.
 
 ## Where files live
 
