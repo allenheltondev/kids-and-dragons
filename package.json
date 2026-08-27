@@ -34,6 +34,7 @@
     "audio:generate": "tsx tools/audio/generate.ts",
     "audio:import": "tsx tools/audio/import.ts",
     "audio:briefs": "tsx tools/audio/briefs.ts",
+    "perf:bundle": "tsx tools/perf/bundle-budget.ts",
     "art:sheet:rig": "node tools/art/rig-sheet.mjs",
     "art:inventory": "node tools/art/inventory.ts",
     "art:portraits": "python3 tools/art/portraits.py",
