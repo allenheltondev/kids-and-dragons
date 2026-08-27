@@ -491,6 +491,13 @@ export function createScene(app: Application): PartyScene {
     const dt = app.ticker.deltaMS / 1000;
     elapsed += dt;
 
+    // What the last frame cost, for whoever is measuring (see `onFrame`).
+    // Nothing is listening unless somebody asked for `?perf`, so this is a
+    // set-size check per frame in the ordinary case.
+    if (frameListeners.size > 0) {
+      for (const listener of frameListeners) listener(app.ticker.deltaMS);
+    }
+
     applyCamera(dt);
     board?.tick(dt);
 
@@ -1078,6 +1085,28 @@ export function getActiveScene(): PartyScene | null {
 /** No-ops before the stage mounts, which is exactly what a display client wants. */
 export function focusCamera(target: FocusTarget): void {
   active?.focusCamera(target);
+}
+
+/**
+ * Frame durations, for anything that wants to know what the renderer costs
+ * (world/frame-stats.ts).
+ *
+ * A subscription to the ticker the scene already runs rather than a loop of
+ * its own: a second requestAnimationFrame competing with the renderer would
+ * change the number it was reporting, which is the classic way a performance
+ * meter becomes the performance problem.
+ *
+ * Module-level, like `setActiveScene`, because the meter is a shell component
+ * and the scene is a plain Pixi module — neither can hold a reference to the
+ * other without one of them learning about React.
+ */
+const frameListeners = new Set<(ms: number) => void>();
+
+export function onFrame(listener: (ms: number) => void): () => void {
+  frameListeners.add(listener);
+  return () => {
+    frameListeners.delete(listener);
+  };
 }
 
 /** Jolt the mounted stage, if there is one. Same contract as focusCamera. */
