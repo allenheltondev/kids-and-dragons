@@ -183,6 +183,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      # What a cold start costs, which is the performance number CI can
+      # honestly police — frame time is measured on the machine driving the
+      # television (`?perf`), and the gate says why at length.
+      - name: Check payload budget
+        run: npm run perf:bundle
+
       # The bytes production ships. On a main push, prod-deploy.yml downloads
       # this artifact from the triggering run instead of rebuilding — so what
       # goes live is the exact output CI just tested, not a second npm ci +

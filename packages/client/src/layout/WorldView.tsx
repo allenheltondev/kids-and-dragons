@@ -22,7 +22,7 @@
  * what keeps rule 1 enforceable: there is no prop to smuggle the mode through.
  */
 
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import {
   ChapterCompletePanel,
   CreationPreview,
@@ -39,6 +39,7 @@ import { presentationDuration } from "../world/presentation";
 // Sound rides the same two facts the renderer already consumes: presentations
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
 import { AudioControl, cue, cueForPresentation, music } from "../audio";
+import { perfRequested } from "../world/FrameMeter";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -48,8 +49,22 @@ const PixiStage = lazy(() =>
   import("../world/PixiStage").then((module) => ({ default: module.PixiStage })),
 );
 
+/*
+ * The frame meter, and only when `?perf` is in the URL — roadmap chapter 8's
+ * performance pass. Lazy like the stage: measuring the renderer is not worth
+ * a byte in the bundle of a game nobody is measuring.
+ */
+const FrameMeter = lazy(() =>
+  import("../world/FrameMeter").then((module) => ({ default: module.FrameMeter })),
+);
+
 export function WorldView(): React.JSX.Element {
   const phase = useRunState()?.phase ?? "lobby";
+  // Read once at mount: the meter is asked for when the page is opened, and a
+  // URL that changes mid-session is a route change, not a settings panel.
+  const [measuring] = useState(() =>
+    typeof location === "undefined" ? false : perfRequested(location.search),
+  );
   const me = useMe();
   // A display client has no player (spec §2.1), so it never has a character and
   // must never be parked on the creation preview waiting for one.
@@ -131,6 +146,12 @@ export function WorldView(): React.JSX.Element {
           makes sound; see AudioControl.tsx for why that is a fact about the
           surface and not about being a TV. */}
       <AudioControl />
+
+      {measuring ? (
+        <Suspense fallback={null}>
+          <FrameMeter />
+        </Suspense>
+      ) : null}
     </div>
   );
 }
