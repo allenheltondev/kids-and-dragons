@@ -32,6 +32,8 @@
     "art:sheet": "python3 tools/art/sheet.py",
     "audio:verify": "tsx tools/audio/verify.ts",
     "audio:generate": "tsx tools/audio/generate.ts",
+    "audio:import": "tsx tools/audio/import.ts",
+    "audio:briefs": "tsx tools/audio/briefs.ts",
     "art:sheet:rig": "node tools/art/rig-sheet.mjs",
     "art:inventory": "node tools/art/inventory.ts",
     "art:portraits": "python3 tools/art/portraits.py",

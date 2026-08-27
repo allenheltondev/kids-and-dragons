@@ -41,6 +41,35 @@ Needs two things:
   (`-18 LUFS`), mono, so no cue is startling next to another.
 - **A provider key.** `ELEVENLABS_API_KEY` for the implemented provider.
 
+### When the API is not the road
+
+A free tier, a pack you bought, a friend with a microphone — all of them end
+with files in a folder rather than an API call. Same destination, one more
+step:
+
+```
+npm run audio:briefs                        # what is still missing, and the
+                                            # prompt for each one
+npm run audio:import -- ~/Downloads         # match, encode, file them
+npm run audio:import -- take7.mp3 --as dice # when the name is hopeless
+```
+
+Keep the cue name somewhere in the filename and the rest is automatic —
+`dice.mp3`, `ElevenLabs_2026-…_dice_pvc.mp3`, `level-up final.mp3` all land
+correctly. Matching is on *words*, so a cue name inside a longer word does not
+count and neither does the folder the file sits in.
+
+Import never guesses. Two files claiming one cue, or one file naming two cues,
+are reported and skipped — a Downloads folder accumulates takes, the newest is
+not reliably the best, and mislabelling a sound is worse than importing
+nothing: the game would chime cheerfully when somebody is knocked over. The
+downloads themselves are never moved or deleted.
+
+The encode is the part not worth doing by hand: files arrive at whatever level
+the tool that made them felt like, and a set of cues that are individually fine
+but three decibels apart is the kind of wrong nobody can point at — it just
+sounds cheap.
+
 ### Changing provider
 
 `PROVIDERS` in `tools/audio/generate.ts` is the whole seam: a function from
