@@ -7,7 +7,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { AudioControl } from "./AudioControl";
 import { getAudioSink } from "./cue";
 
@@ -46,5 +46,39 @@ describe("the toggle", () => {
 
     render(<AudioControl />);
     expect(screen.getByRole("button", { name: "Turn sound on" })).toBeTruthy();
+  });
+});
+
+describe("asking for the gesture", () => {
+  const HINT = "Click or press a key for sound";
+
+  it("asks, because the screen everybody watches never gets tapped", () => {
+    /*
+     * The bug this exists for: a display client is opened on the laptop wired
+     * to the television and then left alone. No gesture means no audio
+     * context, every cue dropped, and sound that was built and never heard —
+     * indistinguishable, from the sofa, from sound that was never built.
+     */
+    render(<AudioControl />);
+    expect(screen.getByText(HINT)).toBeTruthy();
+  });
+
+  it("keeps asking while the browser still refuses a context", () => {
+    // jsdom has no AudioContext, so the gesture cannot succeed here — and the
+    // prompt must stay honest rather than vanish on a gesture that achieved
+    // nothing.
+    render(<AudioControl />);
+    act(() => {
+      fireEvent.keyDown(window, { key: "Enter" });
+    });
+    expect(screen.queryByText(HINT)).toBeTruthy();
+  });
+
+  it("says nothing when sound is off anyway", () => {
+    // Muted is a decision already made; asking for a gesture to enable
+    // something you turned off is nagging.
+    render(<AudioControl />);
+    fireEvent.click(screen.getByRole("button", { name: "Turn sound off" }));
+    expect(screen.queryByText(HINT)).toBeNull();
   });
 });
