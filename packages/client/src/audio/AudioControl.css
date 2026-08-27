@@ -20,3 +20,26 @@
 .kad-audio-control:focus-within {
   opacity: 1;
 }
+
+/*
+ * The unlock hint. Sits beside the speaker until a gesture opens the audio
+ * context — see AudioControl.tsx for why the television is the screen that
+ * needs asking. Quiet enough to ignore, legible from a sofa.
+ */
+.kad-audio-control__hint {
+  margin: 0;
+  padding: 0.35em 0.7em;
+  border-radius: 999px;
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-line, var(--kad-bg-sunken));
+  color: var(--kad-ink);
+  font-size: 0.8em;
+  white-space: nowrap;
+}
+
+/* The control becomes a row once there is something beside the button. */
+.kad-audio-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}

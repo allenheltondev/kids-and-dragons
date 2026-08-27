@@ -77,6 +77,15 @@ export interface AudioEngine {
   sink: AudioSink;
   /** Call from a user gesture. Idempotent. */
   unlock(): void;
+  /**
+   * Whether a gesture has actually opened the context yet.
+   *
+   * Surfaced because the *absence* of one is invisible and permanent: a
+   * display client loads, nobody touches it, and every cue is dropped for the
+   * rest of the evening with nothing on screen saying why. Something has to be
+   * able to ask, so it can offer the gesture.
+   */
+  unlocked(): boolean;
   muted(): boolean;
   setMuted(next: boolean): void;
   /** 0..1. */
@@ -320,6 +329,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   return {
     sink,
     unlock,
+    unlocked: () => ctx !== null,
     muted: () => prefs.muted,
     setMuted(next: boolean): void {
       prefs.muted = next;
