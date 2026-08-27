@@ -332,7 +332,7 @@ jobs:
       # one to satisfy the other is how you get a browser on disk that the tool
       # still will not use.
       - name: Cache Playwright browsers for the Rive CLI
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: rive-playwright-${{ runner.os }}-${{ hashFiles('.rive-mcp/package-lock.json') }}
@@ -393,7 +393,7 @@ jobs:
       # which browser build it wants.
       - name: Cache Playwright browsers
         id: playwright-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
