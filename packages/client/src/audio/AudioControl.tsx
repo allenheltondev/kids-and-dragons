@@ -14,6 +14,21 @@
  * anywhere unlocks the engine. They stay registered for the surface's whole
  * life because `unlock()` is idempotent and a first *successful* unlock can
  * happen on any gesture after a failed one.
+ *
+ * ---------------------------------------------------------------------------
+ * AND SOMETHING HAS TO *ASK* FOR THAT GESTURE
+ *
+ * On a phone the gesture is free: you cannot play without tapping. The screen
+ * everybody is actually looking at is the one where it is not — a display
+ * client (`/tv/:code`) is opened on a laptop wired to the television and then
+ * left alone all evening. Nothing about the game asks it for a click, so the
+ * context never opens, every cue is dropped, and the sound nobody hears looks
+ * exactly like sound that was never built.
+ *
+ * So while the engine is still locked and unmuted, the surface says so, once,
+ * quietly. It costs a click on the machine driving the TV and disappears for
+ * good — including if somebody simply presses a key, which is what a remote's
+ * D-pad sends if the television is running the page itself.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -27,14 +42,22 @@ import "./AudioControl.css";
 export function AudioControl(): React.JSX.Element {
   const engineRef = useRef<AudioEngine | null>(null);
   const [muted, setMuted] = useState(false);
+  const [locked, setLocked] = useState(true);
 
   useEffect(() => {
     const engine = createAudioEngine();
     engineRef.current = engine;
     setMuted(engine.muted());
+    setLocked(!engine.unlocked());
     setAudioSink(engine.sink);
 
-    const unlock = (): void => engine.unlock();
+    const unlock = (): void => {
+      engine.unlock();
+      // Asking the engine rather than assuming: a browser that refuses a
+      // context leaves this locked, and the prompt stays honest rather than
+      // vanishing on a gesture that achieved nothing.
+      setLocked(!engine.unlocked());
+    };
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
     return () => {
@@ -56,6 +79,9 @@ export function AudioControl(): React.JSX.Element {
 
   return (
     <div className="kad-audio-control">
+      {locked && !muted ? (
+        <p className="kad-audio-control__hint">Click or press a key for sound</p>
+      ) : null}
       <Button
         variant="ghost"
         size="md"
