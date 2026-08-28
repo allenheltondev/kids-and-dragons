@@ -987,15 +987,15 @@ The whole thing does not need building now. The intended sequence:
 
 1. `content/campaigns/gemfall.json` + `gemfall-01` (Exchange chapter) as the
    first authored chapter, following the `bramblewood-01` scene-graph shape.
-2. **The route-variant pipeline extension**, before any paired chapter is
-   authored. Today `campaign.schema.json` + `tools/content/validate.mjs`
-   require chapter indexes to run 1..n uniquely, and a chapter carries a
-   single `biome` (it drives backdrop, palette, and music) — so a route
-   triple like 3A/3B/3C cannot live in one chapter file. The smallest honest
-   change: let chapter files share an index when each declares a distinct
-   `routeFlag`, have the loader pick the member matching the party's flag,
-   and teach the validator that a routed index is complete only when every
-   declared route has a member. Chapter 7's variants are separate files
+2. ~~**The route-variant pipeline extension**~~ — **done.** A chapter may
+   declare `route: { set, flag }`; a campaign declares its `routeSets`;
+   chapters sharing an index are a *beat*, and `chapterFor()`
+   (`packages/shared/src/routes.ts`) picks the member whose flag the party
+   carries. `content:validate` now requires the distinct indexes to run 1..n
+   and every routed beat to cover its set exactly — the check exists because
+   authoring two roads of three strands a party mid-evening at a beat with no
+   chapter in it. Unrouted chapters are untouched: absent `route` means a beat
+   of one, which is every chapter authored before this. Chapter 7's variants are separate files
    using the same mechanism keyed on the pursuit flag — Returning,
    Collection, and Tether have different objectives, scenes, faction
    behavior, and success conditions, so they are chapter variants, not one

@@ -265,6 +265,13 @@ export interface LlmHints {
 export interface Chapter {
   id: string;
   campaignId: string;
+  /**
+   * Position within the campaign, 1-based.
+   *
+   * **Not unique.** A story beat that happens in three different countries is
+   * three chapter files at the same index — see `route` below — because the
+   * party tours eight chapters through a corpus of sixteen.
+   */
   index: number;
   title: string;
   biome: string;
@@ -292,14 +299,55 @@ export interface Chapter {
    * chapter's prop, which is what keeps that namespace honest.
    */
   props?: Record<string, ItemDef>;
+  /**
+   * Which member of a routed index this is, if the index is routed.
+   *
+   * A campaign whose middle branches has several chapters per beat: the same
+   * beat, a different country, chosen by something the party did earlier.
+   * Gemfall's chapters 3-5 are triples keyed on the road out of Bramblewood,
+   * and its chapter 7 is a triple keyed on the pursuit the party has been
+   * playing toward — different axis, same mechanism, which is why the set is
+   * named rather than assumed.
+   *
+   * This is a chapter *variant*, not a scene branch, and the difference is
+   * load-bearing: `biome` drives backdrop, palette and music, so three roads
+   * through three countries cannot be one file however clever the graph is.
+   *
+   * Absent means the index has exactly one chapter, which is every chapter
+   * ever authored before this existed.
+   */
+  route?: ChapterRoute;
   llmHints?: LlmHints;
+}
+
+/** A chapter's membership of a routed index. */
+export interface ChapterRoute {
+  /** Which set of alternatives this index is chosen from (`Campaign.routeSets`). */
+  set: string;
+  /** The story flag that selects this member. */
+  flag: string;
 }
 
 export interface Campaign {
   id: string;
   title: string;
   blurb: string;
+  /**
+   * Every chapter file in the campaign, including every member of a routed
+   * index. A playthrough visits one member per index, so this list is longer
+   * than the campaign is — sixteen files, eight indexes, in Gemfall's case.
+   */
   chapters: string[];
+  /**
+   * The named sets a routed index chooses from, each a list of story flags.
+   *
+   * Declared here rather than inferred from the chapters that exist, because
+   * the failure this prevents is a *missing* member: author 3A and 3B, forget
+   * 3C, and a party that took the third road arrives at a beat with no
+   * chapter in it. Only a declared set can notice an absence — which is why
+   * `content:validate` requires a routed index to cover its set exactly.
+   */
+  routeSets?: Record<string, string[]>;
   /**
    * Setbacks before the campaign fails — spec §8.3's "fails at three
    * setbacks, tunable per campaign". Absent means three; authored here so a
