@@ -28,6 +28,7 @@ import {
   resolveCharacter,
   spendStatPoint as applyStatPointSpend,
   startCampaign,
+  type Campaign,
   type Character,
   type Chapter,
   type ProgressionAward,
@@ -258,6 +259,8 @@ export async function settleChapterCompletion(
       ? { ...existing, version, updatedAt: now }
       : { householdId, campaignId, status: "active", setbacks: 0, version, updatedAt: now };
   if (outcome === "setback") attempt.setbacks += 1;
+  const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
+  if (roads) attempt.routeFlags = roads;
 
   const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;
   const finalChapter = campaign.chapters[campaign.chapters.length - 1] === chapter.id;
@@ -299,6 +302,42 @@ export async function settleChapterCompletion(
     campaignProgress: attempt,
     campaignProgressExpectedVersion,
   };
+}
+
+/**
+ * The roads this attempt has taken, after this chapter — or null if it has
+ * taken none and had none.
+ *
+ * Only flags the campaign *declares* in `routeSets` survive the chapter
+ * boundary (`CampaignProgressRecord.routeFlags`). The filter is the whole
+ * point: a chapter's own flags are scoped to the chapter and die with it, and
+ * the declaration is what tells the two apart. Inferring "looks like a route
+ * flag" from the flags a run happens to hold would make the opened door and
+ * the paid objective permanent too.
+ *
+ * Additive within an attempt. Gemfall picks a road at beat 2 and a pursuit at
+ * beat 6, and the second choice must not erase the first — the party is still
+ * walking the road they chose. A flag set false is not carried: `chapterFor`
+ * reads `=== true`, so recording a false would be recording nothing, loudly.
+ */
+function routesTaken(
+  campaign: Campaign,
+  flags: Readonly<Record<string, boolean>>,
+  carried: Readonly<Record<string, boolean>> | undefined,
+): Record<string, boolean> | null {
+  const declared = new Set(Object.values(campaign.routeSets ?? {}).flat());
+  if (declared.size === 0) return carried ? { ...carried } : null;
+
+  const taken: Record<string, boolean> = { ...(carried ?? {}) };
+  let added = false;
+  for (const flag of declared) {
+    if (flags[flag] === true && taken[flag] !== true) {
+      taken[flag] = true;
+      added = true;
+    }
+  }
+  if (!added && !carried) return null;
+  return taken;
 }
 
 /**

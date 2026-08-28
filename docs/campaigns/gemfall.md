@@ -995,7 +995,13 @@ The whole thing does not need building now. The intended sequence:
    and every routed beat to cover its set exactly — the check exists because
    authoring two roads of three strands a party mid-evening at a beat with no
    chapter in it. Unrouted chapters are untouched: absent `route` means a beat
-   of one, which is every chapter authored before this. Chapter 7's variants are separate files
+   of one, which is every chapter authored before this. The choice itself is
+   durable and server-owned: a campaign-declared route flag is written onto
+   the campaign attempt when a chapter completes and seeded back into the run
+   when the next one starts, so a road chosen on Tuesday is still the road on
+   Saturday in a different room — and chapter start re-derives which file the
+   party enters from those flags rather than trusting the id a client sent.
+   Chapter 7's variants are separate files
    using the same mechanism keyed on the pursuit flag — Returning,
    Collection, and Tether have different objectives, scenes, faction
    behavior, and success conditions, so they are chapter variants, not one
