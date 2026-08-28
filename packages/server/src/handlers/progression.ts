@@ -305,8 +305,8 @@ export async function settleChapterCompletion(
 }
 
 /**
- * The roads this attempt has taken, after this chapter — or null if it has
- * taken none and had none.
+ * Where this attempt stands, after this chapter — or null if it stands
+ * nowhere and never did.
  *
  * Only flags the campaign *declares* in `routeSets` survive the chapter
  * boundary (`CampaignProgressRecord.routeFlags`). The filter is the whole
@@ -315,28 +315,62 @@ export async function settleChapterCompletion(
  * flag" from the flags a run happens to hold would make the opened door and
  * the paid objective permanent too.
  *
- * Additive within an attempt. Gemfall picks a road at beat 2 and a pursuit at
- * beat 6, and the second choice must not erase the first — the party is still
- * walking the road they chose. A flag set false is not carried: `chapterFor`
- * reads `=== true`, so recording a false would be recording nothing, loudly.
+ * ---------------------------------------------------------------------------
+ * ONE ROAD PER SET, AND THE NEWEST ONE WINS
+ *
+ * A set is a fork, so at most one of its flags may be standing. Accumulating
+ * them strands the party, and Gemfall strands them on purpose: fail the ford
+ * on the Rush Road and the current carries you west into the marsh, so you
+ * finish chapter 3 in the Enchanted Woods on a road you did not choose
+ * (design brief, "their storyline has changed under them"). Carry both flags
+ * and `chapterFor` sees two members of one set match, correctly refuses to
+ * guess, and the party arrives at beat 4 with nothing to enter — mid-evening,
+ * at a table.
+ *
+ * Different sets do coexist: the road is one fork and the pursuit is another,
+ * and choosing what you are chasing does not take you off the road you are
+ * walking.
+ *
+ * "Newest" cannot mean "true", because a party walks into a routed chapter
+ * with its road already in `flags` — that is the seed. It means **newly**
+ * true: set during this chapter, not carried in. Which is exactly what a
+ * re-route is, and exactly what a first choice is.
  */
 function routesTaken(
   campaign: Campaign,
   flags: Readonly<Record<string, boolean>>,
   carried: Readonly<Record<string, boolean>> | undefined,
 ): Record<string, boolean> | null {
-  const declared = new Set(Object.values(campaign.routeSets ?? {}).flat());
-  if (declared.size === 0) return carried ? { ...carried } : null;
+  const sets = Object.values(campaign.routeSets ?? {});
+  if (sets.length === 0) return carried ? { ...carried } : null;
 
   const taken: Record<string, boolean> = { ...(carried ?? {}) };
-  let added = false;
-  for (const flag of declared) {
-    if (flags[flag] === true && taken[flag] !== true) {
-      taken[flag] = true;
-      added = true;
+  let changed = false;
+
+  for (const members of sets) {
+    // A road explicitly revoked — the chapter said "not this way any more"
+    // without naming a replacement. Rare, and cheap to honour: leaving it
+    // standing would put the party back on a road the story took away.
+    for (const flag of members) {
+      if (taken[flag] === true && flags[flag] === false) {
+        delete taken[flag];
+        changed = true;
+      }
     }
+
+    const picked = members.filter((flag) => flags[flag] === true && carried?.[flag] !== true);
+    // None: they kept the road they arrived on, which is the common case and
+    // is already in `taken`. Two: a content bug no rule can resolve — the
+    // chapter set two roads of one fork — so the set is left as it was rather
+    // than replaced by whichever sorted first. `chapterFor` refuses on the
+    // same ambiguity for the same reason.
+    if (picked.length !== 1) continue;
+    for (const flag of members) delete taken[flag];
+    taken[picked[0]!] = true;
+    changed = true;
   }
-  if (!added && !carried) return null;
+
+  if (!changed && !carried) return null;
   return taken;
 }
 
