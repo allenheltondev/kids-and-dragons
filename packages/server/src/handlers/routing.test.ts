@@ -217,10 +217,9 @@ describe("the road survives the drive home", () => {
 });
 
 describe("what a completed chapter writes down", () => {
-  async function settle(flags: Record<string, boolean>) {
-    const harness = makeHarness({ content: routedContent() });
-    const { householdId } = await seedHousehold(harness, 1);
-    const state = {
+  /** A run sitting on a finished chapter, holding exactly these flags. */
+  function completed(flags: Record<string, boolean>) {
+    return {
       runId: "r_1",
       campaignId: CAMPAIGN.id,
       chapterId: "bramblewood-01",
@@ -230,7 +229,12 @@ describe("what a completed chapter writes down", () => {
       flags,
       party: [],
     } as unknown as Parameters<typeof settleChapterCompletion>[0];
-    return settleChapterCompletion(state, harness.deps, householdId);
+  }
+
+  async function settle(flags: Record<string, boolean>) {
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    return settleChapterCompletion(completed(flags), harness.deps, householdId);
   }
 
   it("carries the road the party took", async () => {
@@ -245,7 +249,92 @@ describe("what a completed chapter writes down", () => {
     expect(settlement.campaignProgress?.routeFlags).toEqual({ [RIVER]: true });
   });
 
-  it("adds to the roads already taken rather than replacing them", async () => {
+  it("replaces the road when the party changes roads", async () => {
+    /*
+     * The review finding this exists for. Gemfall re-routes parties on
+     * purpose: fail the ford on one road and the current carries you into
+     * another country, so a chapter can end on a road the party did not
+     * choose. Recorded additively, both flags stand, `chapterFor` sees two
+     * members of one set and refuses — and the party is stranded at the next
+     * beat with nothing to enter.
+     *
+     * The run's flags hold *both* here, exactly as they do in play: the wild
+     * road was seeded at chapter start, the river was set by the chapter.
+     */
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: "active",
+      setbacks: 0,
+      routeFlags: { [WILD]: true },
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
+
+    const settlement = await settleChapterCompletion(
+      completed({ [WILD]: true, [RIVER]: true }),
+      harness.deps,
+      householdId,
+    );
+
+    expect(settlement.campaignProgress?.routeFlags).toEqual({ [RIVER]: true });
+    // And the point of all of it: the next beat resolves to one chapter.
+    expect(
+      harness.deps.content.chapterAt(CAMPAIGN.id, 2, settlement.campaignProgress?.routeFlags ?? {})
+        ?.id,
+    ).toBe("river-02");
+  });
+
+  it("keeps the road when the party stays on it", async () => {
+    // The seed arrives in the run's flags every chapter. Nothing new was
+    // chosen, so nothing changes — a re-route rule that read "true" rather
+    // than "newly true" could not tell this from a choice.
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: "active",
+      setbacks: 0,
+      routeFlags: { [WILD]: true },
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
+
+    const settlement = await settleChapterCompletion(
+      completed({ [WILD]: true }),
+      harness.deps,
+      householdId,
+    );
+
+    expect(settlement.campaignProgress?.routeFlags).toEqual({ [WILD]: true });
+  });
+
+  it("drops a road the chapter explicitly took away", async () => {
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: "active",
+      setbacks: 0,
+      routeFlags: { [WILD]: true },
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
+
+    const settlement = await settleChapterCompletion(
+      completed({ [WILD]: false }),
+      harness.deps,
+      householdId,
+    );
+
+    expect(settlement.campaignProgress?.routeFlags).toEqual({});
+  });
+
+  it("keeps a choice from another set beside the road", async () => {
     // Gemfall picks a road at one beat and a pursuit at another; the second
     // choice must not erase the first.
     const harness = makeHarness({
@@ -267,17 +356,12 @@ describe("what a completed chapter writes down", () => {
       updatedAt: new Date(T0).toISOString(),
     });
 
-    const state = {
-      runId: "r_1",
-      campaignId: CAMPAIGN.id,
-      chapterId: "bramblewood-01",
-      chapterOutcome: "success",
-      bonuses: [],
-      xpEarned: 0,
-      flags: { chasing_the_thief: true },
-      party: [],
-    } as unknown as Parameters<typeof settleChapterCompletion>[0];
-    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+    const settlement = await settleChapterCompletion(
+      // The road was seeded in; the pursuit is what this chapter chose.
+      completed({ [RIVER]: true, chasing_the_thief: true }),
+      harness.deps,
+      householdId,
+    );
 
     expect(settlement.campaignProgress?.routeFlags).toEqual({
       [RIVER]: true,
