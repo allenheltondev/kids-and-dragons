@@ -264,3 +264,121 @@ describe("the files themselves", () => {
     expect(result.out).toContain("chapters/bramblewood-01.json");
   });
 });
+
+// ---------------------------------------------------------------------------
+
+describe("routed beats", () => {
+  const CAMPAIGN = ["content", "campaigns", "the-hollow-crown.json"];
+
+  /**
+   * A campaign whose beat 2 is a triple, built by cloning the reference
+   * chapter three times. The scene graph is beside the point here — what is
+   * under test is the arithmetic of beats, routes and sets.
+   */
+  function routedTree(mutate = () => {}) {
+    const dir = copyTree();
+    const base = readJson(dir, ...CHAPTER);
+    const roads = [
+      ["beat2-river", "route_river"],
+      ["beat2-rush", "route_rush"],
+      ["beat2-wild", "route_wild"],
+    ];
+    for (const [id, flag] of roads) {
+      const variant = { ...structuredClone(base), id, index: 2, title: id, route: { set: "road", flag } };
+      writeJson(dir, ["content", "chapters", `${id}.json`], variant);
+    }
+    const campaign = readJson(dir, ...CAMPAIGN);
+    campaign.chapters = ["bramblewood-01", ...roads.map(([id]) => id)];
+    campaign.routeSets = { road: roads.map(([, flag]) => flag) };
+    mutate({ dir, campaign, roads });
+    writeJson(dir, CAMPAIGN, campaign);
+    return validate(dir);
+  }
+
+  it("accepts a beat that covers its route set", () => {
+    const { code, out } = routedTree();
+    expect(code, out).toBe(0);
+    // The summary says the shape, so a routed campaign reads as routed.
+    expect(out).toMatch(/2 beat\(s\), 1 routed/);
+  });
+
+  it("refuses a beat with a road missing", () => {
+    /*
+     * The failure this whole feature exists to prevent: author two roads of
+     * three, and a party that took the third arrives at a beat with no
+     * chapter in it — at a table, mid-evening, with no way forward.
+     */
+    const { code, out } = routedTree(({ dir, campaign }) => {
+      rmSync(join(dir, "content", "chapters", "beat2-wild.json"));
+      campaign.chapters = campaign.chapters.filter((id) => id !== "beat2-wild");
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/missing route\(s\) route_wild/);
+    expect(out).toMatch(/no chapter to enter/);
+  });
+
+  it("refuses two chapters at one beat with no routes between them", () => {
+    // The old duplicate-index bug in a new hat: nothing could ever choose one.
+    const { code, out } = routedTree(({ dir, roads }) => {
+      for (const [id] of roads) {
+        const file = ["content", "chapters", `${id}.json`];
+        const chapter = readJson(dir, ...file);
+        delete chapter.route;
+        writeJson(dir, file, chapter);
+      }
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/and no routes; only a routed beat may share an index/);
+  });
+
+  it("refuses a beat that mixes routed and unrouted chapters", () => {
+    const { code, out } = routedTree(({ dir }) => {
+      const file = ["content", "chapters", "beat2-wild.json"];
+      const chapter = readJson(dir, ...file);
+      delete chapter.route;
+      writeJson(dir, file, chapter);
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/mixes routed and unrouted/);
+  });
+
+  it("refuses a route the campaign never declared", () => {
+    const { code, out } = routedTree(({ dir }) => {
+      const file = ["content", "chapters", "beat2-wild.json"];
+      const chapter = readJson(dir, ...file);
+      chapter.route = { set: "road", flag: "route_sea" };
+      writeJson(dir, file, chapter);
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/not in set "road"/);
+  });
+
+  it("refuses a beat drawn from two different sets", () => {
+    // A beat is chosen along one axis: the road you took, or the pursuit you
+    // are playing — never a mixture nothing could evaluate.
+    const { code, out } = routedTree(({ dir, campaign }) => {
+      campaign.routeSets.pursuit = ["pursuit_reckoning", "pursuit_collection"];
+      const file = ["content", "chapters", "beat2-wild.json"];
+      const chapter = readJson(dir, ...file);
+      chapter.route = { set: "pursuit", flag: "pursuit_reckoning" };
+      writeJson(dir, file, chapter);
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/more than one route set/);
+  });
+
+  it("still refuses a gap in the beats themselves", () => {
+    // Routing loosened index *uniqueness*, not contiguity: the player still
+    // sees "Chapter 3 of 6".
+    const { code, out } = routedTree(({ dir, roads }) => {
+      for (const [id] of roads) {
+        const file = ["content", "chapters", `${id}.json`];
+        const chapter = readJson(dir, ...file);
+        chapter.index = 4;
+        writeJson(dir, file, chapter);
+      }
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/out of sequence/);
+  });
+});

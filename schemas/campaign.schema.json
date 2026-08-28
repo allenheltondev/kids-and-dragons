@@ -2,32 +2,64 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kids-and-dragons.local/schemas/campaign.schema.json",
   "title": "Campaign",
-  "description": "content/campaigns/*.json. Mirrors packages/shared/src/types/chapter.ts Campaign; where the two disagree the TypeScript type wins. A campaign is a story arc of 4-8 chapters and the unit of the carryover commitment rule (spec §6, §8.2).",
-
+  "description": "content/campaigns/*.json. Mirrors packages/shared/src/types/chapter.ts Campaign; where the two disagree the TypeScript type wins. A campaign is a story arc of 4-8 chapters and the unit of the carryover commitment rule (spec \u00a76, \u00a78.2).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "title", "blurb", "chapters"],
-
+  "required": [
+    "id",
+    "title",
+    "blurb",
+    "chapters"
+  ],
   "properties": {
-    "$comment": { "type": "string" },
+    "$comment": {
+      "type": "string"
+    },
     "_note": {
       "description": "Author-facing note that survives into the shipped JSON. Ignored by the loader.",
       "type": "string"
     },
-
-    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
-    "title": { "type": "string", "minLength": 1 },
-    "blurb": { "type": "string", "minLength": 1 },
-
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "blurb": {
+      "type": "string",
+      "minLength": 1
+    },
     "chapters": {
-      "description": "Chapter ids in play order. Each must exist under content/chapters/ and their `index` values must run 1..n with no gaps — checked by tools/content/validate.mjs.",
+      "description": "Every chapter file in the campaign, including every member of a routed beat. Each must exist under content/chapters/. The set of distinct `index` values must run 1..n with no gaps, and a routed index must cover its route set exactly \u2014 checked by tools/content/validate.mjs.",
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    "routeSets": {
+      "description": "Named sets of story flags a routed beat chooses from, e.g. the three roads north, or the three pursuits. Declared here rather than inferred from the files that exist, because the failure worth catching is a *missing* member: only a declared set can notice an absence.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 2,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      },
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
     },
     "setbackLimit": {
-      "description": "Setbacks before the campaign fails — spec §8.3's 'fails at three setbacks, tunable per campaign'. Absent means 3.",
+      "description": "Setbacks before the campaign fails \u2014 spec \u00a78.3's 'fails at three setbacks, tunable per campaign'. Absent means 3.",
       "type": "integer",
       "minimum": 1
     }
