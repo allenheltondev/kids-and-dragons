@@ -20,6 +20,7 @@ export * from "./dice.js";
 export * from "./inventory.js";
 export * from "./bestiary.js";
 export * from "./chapter-graph.js";
+export * from "./routes.js";
 export * from "./chapter-map.js";
 export * from "./grid.js";
 export * from "./encounter.js";
