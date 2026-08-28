@@ -96,6 +96,30 @@ export async function applyAction(
     };
   }
 
+  /*
+   * Which road this party is on — and, because the two are the same question,
+   * whether they are allowed to start the chapter they just asked for.
+   *
+   * `resolveChapter` above answers "does this id name a chapter", which is all
+   * a chapter start ever checked. That was enough while a campaign's beats
+   * were one file each. A routed beat is several (`shared/routes.ts`), so a
+   * client that sends the id of the river variant while the party carries the
+   * wild-road flag would have been handed the river — the client picking the
+   * branch, which is precisely what architecture §4.1 says it may never do.
+   *
+   * So the server re-derives the answer from the durable flags and refuses
+   * anything else. The same read supplies `campaignFlags` below, because "what
+   * road are they on" is one fact, not two.
+   */
+  let campaignFlags: Record<string, boolean> = {};
+  if (input.intent.type === "START_CHAPTER" && chapter) {
+    const road = await roadTo(chapter, auth.run.householdId, deps);
+    if ("refusal" in road) {
+      return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
+    }
+    campaignFlags = road.flags;
+  }
+
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;
   let spentCharacter: Character | null = null;
@@ -139,6 +163,10 @@ export async function applyAction(
         // Characters belong to the household, not the run (architecture §3), so
         // CREATE_CHARACTER needs to know which household it is building into.
         householdId: auth.run.householdId,
+        // The roads this campaign attempt has already taken, which a chapter
+        // start seeds its flags from rather than starting empty. Empty for
+        // every other intent — nothing else touches the chapter boundary.
+        campaignFlags,
         // Seeded per event, never per wall clock — see the header.
         rng: deps.rng(`${input.runId}:${nextSeq}`),
         now: iso(nowMs),
@@ -561,6 +589,57 @@ function resolveChapter(
     input.intent.type === "START_CHAPTER" ? input.intent.chapterId : state.chapterId;
   if (!chapterId) return null;
   return deps.content.chapter(chapterId) ?? undefined;
+}
+
+/**
+ * The durable route flags for the chapter a party is trying to start, or the
+ * reason they may not start it.
+ *
+ * Three cases, and only the third is new:
+ *
+ *  - **A chapter the campaign does not claim** — a one-off, a fixture, a
+ *    chapter whose campaign file is not in this content set. Nothing to check
+ *    and no flags to seed. This is every chapter authored before routing
+ *    existed, and it stays the common case.
+ *  - **An unrouted beat** — one chapter at that index, so `chapterAt` returns
+ *    it and the check is a tautology that costs one map lookup.
+ *  - **A routed beat** — several chapters at that index. The party's road
+ *    decides which, and the *server* decides the road: whatever id arrived on
+ *    the intent, only the chapter the flags select may be entered.
+ *
+ * A finished attempt (`complete` or `failed`) seeds nothing, matching the
+ * setback counter directly above it in the record: the next chapter completion
+ * starts a fresh attempt, and a fresh attempt has taken no roads yet. That
+ * means a party replaying a campaign chooses again rather than inheriting the
+ * country they walked through last time.
+ */
+async function roadTo(
+  chapter: Chapter,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<{ flags: Record<string, boolean> } | { refusal: string }> {
+  const campaign = deps.content.campaign(chapter.campaignId);
+  if (!campaign || !campaign.chapters.includes(chapter.id)) return { flags: {} };
+
+  const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
+  const flags =
+    attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
+
+  const road = deps.content.chapterAt(chapter.campaignId, chapter.index, flags);
+  if (!road) {
+    // Only reachable at a routed beat the party has no flag for — they are
+    // standing at a fork having never chosen. Stopping here with a message is
+    // the whole reason `chapterFor` refuses rather than picking a file.
+    return {
+      refusal: `chapter "${chapter.id}" is one of several roads through beat ${chapter.index}, and this party has not taken one`,
+    };
+  }
+  if (road.id !== chapter.id) {
+    return {
+      refusal: `this party's road through beat ${chapter.index} is "${road.id}", not "${chapter.id}"`,
+    };
+  }
+  return { flags };
 }
 
 /**

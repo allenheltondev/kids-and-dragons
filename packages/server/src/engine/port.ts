@@ -63,6 +63,14 @@ export interface EngineContext {
    * in it rather than being discovered from the implementation.
    */
   playtest?: boolean;
+  /**
+   * The route flags this campaign attempt has already set, seeded into the run
+   * when a chapter starts (the engine clears everything else at that
+   * boundary). Named in the port for the same reason `playtest` is: "a chapter
+   * start inherits the road the party is on" is part of the surface the server
+   * depends on, not an implementation detail to be discovered.
+   */
+  campaignFlags?: Readonly<Record<string, boolean>>;
 }
 
 export interface IntentInput {
