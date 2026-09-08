@@ -537,6 +537,124 @@ describe("attach as a player", () => {
 });
 
 describe("leave", () => {
+  it("does not restore a room when its pending attach finishes after leaving", async () => {
+    const h = harness();
+    let finish!: (value: unknown) => void;
+    h.api.watchRoom.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+    const attaching = h.store.getState().attach("ABCD", "display");
+    h.store.getState().leave();
+    finish({ runId: "r_1", mode: "party", viewerToken: "viewer", state: makeState() });
+    await attaching;
+    expect(h.store.getState().session).toBeNull();
+    expect(h.store.getState().state).toBeNull();
+    expect(h.store.getState().connection).toBe("idle");
+  });
+
+  it("coalesces overlapping recovery requests and catches up again from the latest sequence", async () => {
+    const h = harness(makeState({ seq: 1 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    let finish!: (value: unknown) => void;
+    h.api.fetchState
+      .mockImplementationOnce(() => new Promise((resolve) => { finish = resolve; }))
+      .mockResolvedValueOnce({ seq: 3, state: makeState({ seq: 3 }) });
+    const first = h.channelOptions().resync(1);
+    const second = h.channelOptions().resync(1);
+    const third = h.channelOptions().resync(1);
+    expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+    finish({ seq: 2, state: makeState({ seq: 2 }) });
+    await Promise.all([first, second, third]);
+    expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+    expect(h.api.fetchState).toHaveBeenLastCalledWith(
+      { runId: "r_1", code: "ABCD", sinceSeq: 2 }, "tok_1",
+    );
+    expect(h.store.getState().state?.seq).toBe(3);
+  });
+
+  it("retries a failed reconnect catch-up without requiring another channel event", async () => {
+    vi.useFakeTimers();
+    const h = harness(makeState({ seq: 1 }));
+    try {
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.fetchState.mockRejectedValueOnce(new Error("offline"))
+        .mockResolvedValueOnce({ seq: 2, state: makeState({ seq: 2 }) });
+      await expect(h.channelOptions().resync(1)).rejects.toThrow("offline");
+      await vi.advanceTimersByTimeAsync(501);
+      expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+      expect(h.store.getState().state?.seq).toBe(2);
+      await vi.advanceTimersByTimeAsync(30_000);
+      expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+    } finally {
+      h.store.getState().leave();
+      vi.useRealTimers();
+    }
+  });
+
+  it("cancels failed catch-up retries on leave", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.fetchState.mockRejectedValue(new Error("offline"));
+      await expect(h.channelOptions().resync(1)).rejects.toThrow("offline");
+      h.store.getState().leave();
+      await vi.advanceTimersByTimeAsync(30_000);
+      expect(h.api.fetchState).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not let repeated gap notifications bypass recovery backoff", async () => {
+    vi.useFakeTimers();
+    const random = vi.spyOn(Math, "random").mockReturnValue(1);
+    const h = harness(makeState({ seq: 1 }));
+    try {
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.fetchState.mockRejectedValue(new Error("offline"));
+      h.publish(patch(3, [{ op: "replace", path: "/seq", value: 3 }]));
+      await vi.advanceTimersByTimeAsync(2_000);
+      // Gap at 750ms, retry at 1250ms. The next gap at 1500ms must wait
+      // for the scheduled second retry at 2250ms.
+      expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+    } finally {
+      h.store.getState().leave();
+      random.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it("retries failed broadcast recovery and stops once caught up", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness(makeState({ seq: 7 }));
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.api.postAction.mockResolvedValueOnce({ ok: true, seq: 8 });
+      h.api.fetchState
+        .mockRejectedValueOnce(new Error("offline"))
+        .mockResolvedValueOnce({ seq: 8, state: makeState({ seq: 8 }) });
+      await h.store.getState().send({ type: "READY", ready: true });
+      await vi.advanceTimersByTimeAsync(8_100);
+      expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+      expect(h.store.getState().state?.seq).toBe(8);
+      await vi.advanceTimersByTimeAsync(8_000);
+      expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("ignores a resync snapshot that completes after leaving", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    let finish!: (value: unknown) => void;
+    h.api.fetchState.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+    const syncing = h.channelOptions().resync(0);
+    h.store.getState().leave();
+    finish({ seq: 8, state: makeState({ seq: 8 }) });
+    await syncing;
+    expect(h.store.getState().state).toBeNull();
+  });
+
   it("closes the channel, forgets the session, and goes home", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");
@@ -669,14 +787,37 @@ describe("choosing a transport (architecture §4.4)", () => {
     expect(h.channelOptions().createEventSource).toBeUndefined();
   });
 
-  it("falls back to SSE rather than failing when the config cannot be read", async () => {
+  it("retries failed config discovery and opens the production transport", async () => {
+    vi.useFakeTimers();
     const h = harness();
-    h.api.fetchConfig.mockRejectedValue(new Error("offline"));
+    try {
+      h.api.fetchConfig.mockRejectedValueOnce(new Error("offline")).mockResolvedValue(REALTIME);
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      expect(h.store.getState().connection).toBe("reconnecting");
+      expect(() => h.channelOptions()).toThrow("no channel");
+      await vi.advanceTimersByTimeAsync(501);
+      expect(h.api.fetchConfig).toHaveBeenCalledTimes(2);
+      expect(h.channelOptions().createEventSource).toBeTypeOf("function");
+      expect(h.store.getState().connection).toBe("open");
+    } finally {
+      h.store.getState().leave();
+      vi.useRealTimers();
+    }
+  });
 
-    await h.store.getState().joinRoom("ABCD", "Allen");
-
-    expect(h.store.getState().session).not.toBeNull();
-    expect(h.channelOptions().createEventSource).toBeUndefined();
+  it("cancels config retries when leaving", async () => {
+    vi.useFakeTimers();
+    try {
+      const h = harness();
+      h.api.fetchConfig.mockRejectedValue(new Error("offline"));
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      h.store.getState().leave();
+      await vi.advanceTimersByTimeAsync(30_000);
+      expect(h.api.fetchConfig).toHaveBeenCalledTimes(1);
+      expect(h.store.getState().session).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("asks for the config once, however many rooms are joined", async () => {
