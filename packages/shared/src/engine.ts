@@ -134,6 +134,27 @@ export interface EngineContext {
    * playtest.ts for the whole gate.
    */
   playtest?: boolean;
+  /**
+   * The roads this campaign attempt has already taken — the durable half of
+   * `RunState.flags`, handed in by the authoritative handler.
+   *
+   * A chapter boundary clears the run's flags, and that is right for every
+   * flag a chapter sets about itself. It is wrong for exactly one kind: the
+   * flag that says which country the party is walking through. Gemfall's road
+   * is chosen at the end of chapter 2 and read at the start of chapters 3, 4
+   * and 5 — three chapters that are, by design, three different evenings in
+   * three different rooms, each a fresh run whose flags start empty (spec
+   * §8.1). Held only on the run, the choice would not survive the drive home.
+   *
+   * So the durable ones live on the campaign attempt
+   * (`CampaignProgressRecord.routeFlags`) and are seeded back in here. The
+   * engine stays pure: it is handed the flags, it never asks a store for them,
+   * and a replay of the log replays with the same context it was given.
+   *
+   * Absent means an empty seed, which is every one-off chapter and every
+   * campaign with no routed beat.
+   */
+  campaignFlags?: Readonly<Record<string, boolean>>;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -1033,7 +1054,9 @@ function doStartChapter(
   // evening's second chapter under the first one's ending banner.
   draft.chapterOutcome = null;
   draft.bonuses = [];
-  draft.flags = {};
+  // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
+  // about itself dies here; the road the party is on does not.
+  draft.flags = { ...(ctx.campaignFlags ?? {}) };
   draft.lastRoll = null;
   /*
    * The live layer's two fields, cleared for exactly the reason above them.

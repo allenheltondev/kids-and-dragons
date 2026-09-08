@@ -21,6 +21,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
+import { chapterFor } from "@kad/shared";
 import type {
   AbilityCatalog,
   AuthoredEnemySpec,
@@ -84,6 +85,20 @@ export interface ContentStore {
    */
   campaign(id: string): Campaign | null;
   /**
+   * The chapter a party plays at a beat, given the story flags they carry.
+   *
+   * A beat is not always one chapter: a campaign whose middle branches has a
+   * file per road at the same index (shared `routes.ts`). Handlers ask for a
+   * *beat* and let this pick the member, rather than every caller learning
+   * which campaigns branch.
+   *
+   * `null` means no chapter fits: an index the campaign does not have, or a
+   * routed beat the party has no flag for. Both are the caller's to report —
+   * from a handler's side they are the same "there is nothing to start here",
+   * which is a refusal rather than a guess.
+   */
+  chapterAt(campaignId: string, index: number, flags: Readonly<Record<string, boolean>>): Chapter | null;
+  /**
    * What every ability *does on the board*, by id — handed to the engine as
    * `EngineContext.abilities`.
    *
@@ -113,6 +128,19 @@ class LoadedContent implements ContentStore {
     private readonly _abilities: AbilityCatalog,
     private readonly _campaigns: ReadonlyMap<string, Campaign>,
   ) {}
+
+  chapterAt(
+    campaignId: string,
+    index: number,
+    flags: Readonly<Record<string, boolean>>,
+  ): Chapter | null {
+    const campaign = this.campaign(campaignId);
+    if (!campaign) return null;
+    const members = campaign.chapters
+      .map((id) => this.chapter(id))
+      .filter((chapter): chapter is Chapter => chapter !== null);
+    return chapterFor(members, index, flags);
+  }
 
   campaign(id: string): Campaign | null {
     return this._campaigns.get(id) ?? null;

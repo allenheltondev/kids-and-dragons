@@ -50,6 +50,31 @@ export interface CampaignProgressRecord {
   /** `active` is the attempt in flight; anything else is history. */
   status: "active" | "complete" | "failed";
   setbacks: number;
+  /**
+   * Where this attempt stands — at most one flag from each route set the
+   * campaign declares, carried across the evenings the campaign spans.
+   *
+   * Here rather than on the run for the same reason the setback count is: a
+   * campaign is 4-8 chapters over weeks (spec §8.1) and every one of those
+   * evenings is a new run whose `flags` start empty. A road chosen at the end
+   * of chapter 2 and read at the start of chapter 3 has to survive a drive
+   * home, a new room, and three phones that have never seen it — so it
+   * belongs to the attempt, beside the counter that already had to.
+   *
+   * Only flags a campaign declares in `routeSets` are kept. A chapter's own
+   * flags — the door it opened, the objective it paid — die at the chapter
+   * boundary exactly as they always have; widening this to every flag would
+   * quietly make every chapter's leftovers permanent.
+   *
+   * A set is a fork, so a later choice from it *replaces* the earlier one
+   * rather than joining it (`routesTaken`). Two members of one set standing at
+   * once is precisely what `chapterFor` refuses to resolve, so accumulating
+   * them would strand a re-routed party at the next beat.
+   *
+   * Absent on rows written before routing existed, and on every campaign
+   * without a routed beat.
+   */
+  routeFlags?: Record<string, boolean>;
   /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
   version?: number;
   updatedAt: string;

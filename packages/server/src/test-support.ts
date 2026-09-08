@@ -11,6 +11,7 @@
  * disagreeing about the rules.
  */
 
+import { chapterFor } from "@kad/shared";
 import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
 import type {
@@ -88,6 +89,17 @@ export function makeContent(
     map: (id) => maps.get(id) ?? null,
     abilities: () => abilities,
     campaign: (id) => campaigns.get(id) ?? null,
+    // The same selection the real store makes (shared `chapterFor`), over
+    // whatever chapters this fixture was given — so a test about a routed
+    // beat exercises the rule rather than a fixture's idea of it.
+    chapterAt: (campaignId, index, flags) => {
+      const campaign = campaigns.get(campaignId);
+      if (!campaign) return null;
+      const members = campaign.chapters
+        .map((id) => chapters.get(id))
+        .filter((chapter): chapter is Chapter => chapter !== undefined);
+      return chapterFor(members, index, flags);
+    },
   };
 }
 
