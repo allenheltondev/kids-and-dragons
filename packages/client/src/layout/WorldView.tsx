@@ -40,6 +40,7 @@ import { presentationDuration } from "../world/presentation";
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
 import { AudioControl, cue, cueForPresentation, music } from "../audio";
 import { perfRequested } from "../world/FrameMeter";
+import { RendererBoundary } from "../world/RendererFallback";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -108,9 +109,11 @@ export function WorldView(): React.JSX.Element {
 
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">
-      <Suspense fallback={null}>
-        <PixiStage />
-      </Suspense>
+      <RendererBoundary>
+        <Suspense fallback={null}>
+          <PixiStage />
+        </Suspense>
+      </RendererBoundary>
 
       {/* The preview is a view of *this device's* draft, so it belongs on
           screen only while this device is still choosing. Once your character

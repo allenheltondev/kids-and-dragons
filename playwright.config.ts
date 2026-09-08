@@ -33,7 +33,8 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:5173",
+    // Wait for the API through Vite, so a fast client boot cannot race the server.
+    url: "http://localhost:5173/api/health",
     // Locally, reuse the dev server you already have running. On CI there
     // should never be one — if something is already on :5173 it is a leaked
     // process from an earlier step, and testing against it would silently

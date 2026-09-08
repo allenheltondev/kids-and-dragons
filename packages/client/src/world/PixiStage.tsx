@@ -1,30 +1,6 @@
-/**
- * Mounts a Pixi 8 Application sized to its container.
- *
- * Container-sized, never viewport-sized: this canvas is 60% of a phone in
- * Travel Mode and a whole TV in Party Mode, and it must not know which
- * (architecture §4.6 rule 2). A ResizeObserver is the only size input.
- *
- * React 19 strict mode double-invokes effects, and `Application.init()` is
- * async — the naive version leaks a WebGL context per mount and eventually the
- * browser starts dropping them. The `cancelled` flag plus the promise chain in
- * the cleanup is what makes mount → unmount → mount land on exactly one live
- * renderer.
- *
- * The ticker runs only while there is something to draw *to*: it stops when
- * the tab is hidden and when the host box is zero-sized — which is exactly the
- * Travel Mode `display: none` pane (components.css). A GPU pass per frame into
- * an invisible canvas is pure battery drain on the phone this mode exists for.
- * The combat board adds no ticker of its own — it rides this one — so that
- * discipline survives a fight.
- *
- * This component is also where the store meets the scene: it pushes the party,
- * the encounter (with the chapter's biome and enemy art), the camera's
- * attention key, and the COMBAT_SEQUENCE beats. The scene stays a plain Pixi
- * module with no React and no store in it.
- */
+/** Container-sized renderer; state updates do not recreate its WebGL context. */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import type { Chapter, PartyMember, RunState } from "@kad/shared";
 import { currentActorId, enemyArtId } from "@kad/shared";
@@ -36,6 +12,7 @@ import { justWonAFight } from "./victory";
 import { cue } from "../audio/cue";
 import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSession } from "../store";
 import { useEnsureChapter } from "../screens/content";
+import { RendererFallback } from "./RendererFallback";
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -118,6 +95,7 @@ function boardView(
 }
 
 export function PixiStage(): React.JSX.Element {
+  const [failed, setFailed] = useState(false);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const sceneRef = useRef<PartyScene | null>(null);
   const party = useParty();
@@ -141,8 +119,26 @@ export function PixiStage(): React.JSX.Element {
     let scene: PartyScene | null = null;
     let removeVisibilityListener: (() => void) | null = null;
 
-    const ready = (async () => {
+    const dispose = () => {
+      removeVisibilityListener?.();
+      removeVisibilityListener = null;
+      observer?.disconnect();
+      observer = null;
+      if (scene) {
+        // Strict Mode may already have installed a newer scene.
+        if (getActiveScene() === scene) setActiveScene(null);
+        if (sceneRef.current === scene) sceneRef.current = null;
+        scene.destroy();
+        scene = null;
+      }
+      if (app?.renderer) app.destroy(true, { children: true });
+      else app?.stage.destroy({ children: true });
+      app = null;
+    };
+
+    void (async () => {
       const instance = new Application();
+      app = instance;
       await instance.init({
         antialias: true,
         backgroundAlpha: 0,
@@ -155,17 +151,11 @@ export function PixiStage(): React.JSX.Element {
       });
 
       if (cancelled) {
-        instance.destroy(true, { children: true });
+        dispose();
         return;
       }
 
-      app = instance;
-      // A handle for the e2e, dev builds only (`npm run dev`, which is what
-      // playwright.config.ts boots). The nameplates are drawn into the canvas
-      // and are invisible to every DOM query, so without this the only way to
-      // check them is a human looking at a screenshot — which is exactly how
-      // both of their bugs got as far as they did. Vite strips the branch from
-      // a production bundle, so this is not a shipped global.
+      // Canvas inspection for development browser tests.
       if (import.meta.env.DEV) {
         (globalThis as Record<string, unknown>).__kadScene = () => sceneRef.current;
       }
@@ -227,32 +217,17 @@ export function PixiStage(): React.JSX.Element {
           document.removeEventListener("visibilitychange", syncTicker);
         };
       }
-    })();
+    })().catch(() => {
+      dispose();
+      if (!cancelled) setFailed(true);
+    });
 
     return () => {
       cancelled = true;
-      void ready
-        .catch(() => undefined)
-        .then(() => {
-          removeVisibilityListener?.();
-          removeVisibilityListener = null;
-          observer?.disconnect();
-          observer = null;
-          if (scene) {
-            // Only clear the module-level handles if they still point at *this*
-            // scene — a newer effect instance may already own them.
-            if (getActiveScene() === scene) setActiveScene(null);
-            if (sceneRef.current === scene) sceneRef.current = null;
-            scene.destroy();
-            scene = null;
-          }
-          app?.destroy(true, { children: true });
-          app = null;
-        });
+      // Pending init owns disposal until it settles.
+      if (app?.renderer && scene) dispose();
     };
-    // Deliberately empty deps: state is pushed in by the effects below.
-    // Re-initialising a WebGL context whenever someone's HP changes would be
-    // absurd, and `party` is intentionally not a dependency here.
+    // State is pushed through the effects below without restarting WebGL.
   }, []);
 
   useEffect(() => {
@@ -344,5 +319,6 @@ export function PixiStage(): React.JSX.Element {
     sceneRef.current?.playSceneStep(presentationDuration(presentation));
   });
 
+  if (failed) return <RendererFallback />;
   return <div ref={hostRef} className="kad-stage" aria-hidden="true" />;
 }

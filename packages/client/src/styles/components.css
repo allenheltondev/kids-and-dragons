@@ -120,6 +120,24 @@
   touch-action: none;
 }
 
+.kad-stage-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--kad-space-3);
+  pointer-events: none;
+  color: var(--kad-ink-dim);
+  text-align: center;
+}
+
+.kad-stage-fallback p {
+  max-inline-size: 28em;
+  padding: var(--kad-space-3);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+}
+
 /* ==========================================================================
  * Primitives
  * ======================================================================== */
