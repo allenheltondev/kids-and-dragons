@@ -107,10 +107,17 @@ function campaigns(): string[] {
         chapters?: string[];
       };
       const listed = campaign.chapters ?? [];
+      const indexes = listed.map((id) => {
+        const chapter = JSON.parse(
+          fs.readFileSync(path.join(ROOT, "content", "chapters", `${id}.json`), "utf8"),
+        ) as { index?: number };
+        return chapter.index ?? 0;
+      });
+      const nextIndex = indexes.length === 0 ? 1 : Math.max(...indexes) + 1;
       return (
         `- \`${campaign.id ?? name}\` (${campaign.title ?? "untitled"}) — ` +
         `${listed.length === 0 ? "no chapters yet" : `chapters so far: ${listed.join(", ")}`}. ` +
-        `A new chapter here takes \`"index": ${String(listed.length + 1)}\`.`
+        `A new chapter here takes \`"index": ${String(nextIndex)}\`.`
       );
     });
 }
