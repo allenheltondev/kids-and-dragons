@@ -1,6 +1,18 @@
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  plugins: [{
+    name: "coverage-cli-shebang",
+    enforce: "pre",
+    transform(code, id) {
+      if (id.endsWith(".mjs") && code.startsWith("#!")) {
+        // Vite's SSR imports can move the shebang below line one, which makes
+        // coverage parsing fail. A same-length comment preserves source offsets
+        // while leaving the executable scripts on disk untouched.
+        return { code: `//${code.slice(2)}`, map: null };
+      }
+    },
+  }],
   test: {
     include: [
       "packages/*/src/**/*.test.ts",
@@ -9,6 +21,9 @@ export default defineConfig({
       "tools/**/*.test.ts",
     ],
     environment: "node",
+    // DOM workers and Python image checks are memory-heavy; avoid spawning
+    // one of each per CPU and timing out otherwise fast tests under load.
+    maxWorkers: 4,
 
     /*
      * Coverage is off unless asked for (`npm run test:coverage`), so `npm test`
@@ -17,7 +32,7 @@ export default defineConfig({
      */
     coverage: {
       provider: "v8",
-      include: ["packages/*/src/**", "tools/**"],
+      include: ["packages/*/src/**/*.{ts,tsx,js,mjs}", "tools/**/*.{ts,tsx,js,mjs}"],
       exclude: [
         "**/*.test.ts",
         "**/*.test.tsx",

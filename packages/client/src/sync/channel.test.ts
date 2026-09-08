@@ -77,6 +77,18 @@ function patch(
 }
 
 describe("MessageSequencer", () => {
+  it("ignores snapshots older than realtime state and snapshots after disposal", () => {
+    const { sequencer, states } = harness();
+    sequencer.reset(makeState({ seq: 1 }), 1);
+    sequencer.ingest(patch(2, "current"));
+    sequencer.reset(makeState({ seq: 1 }), 1);
+    expect(sequencer.state?.narration).toBe("current");
+    sequencer.dispose();
+    sequencer.reset(makeState({ seq: 3 }), 3);
+    expect(sequencer.seq).toBe(2);
+    expect(states).toHaveLength(2);
+  });
+
   it("applies patches in order and advances seq", () => {
     const { sequencer, states } = harness();
     sequencer.reset(makeState({ seq: 1, narration: "one" }), 1);
@@ -468,11 +480,38 @@ describe("MessageSequencer", () => {
 });
 
 describe("openChannel", () => {
+  it("ignores duplicate errors and late callbacks from an abandoned source", () => {
+    const { sequencer, scheduler } = harness();
+    const sources: EventSourceLike[] = [];
+    const status = vi.fn();
+    const channel = openChannel({
+      url: () => "/events/ABCD", sequencer, onStatus: status,
+      resync: async () => undefined,
+      createEventSource: () => {
+        const source = fakeSource();
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule, cancel: scheduler.cancel,
+    });
+    const first = sources[0]!;
+    first.onerror?.({});
+    first.onerror?.({});
+    expect(scheduler.size).toBe(1);
+    scheduler.flush();
+    expect(sources).toHaveLength(2);
+    first.onopen?.({});
+    expect(status).not.toHaveBeenCalledWith("open");
+    channel.close();
+    sources[1]!.onopen?.({});
+    expect(status).toHaveBeenLastCalledWith("idle");
+  });
+
   function fakeSource(): EventSourceLike {
     return { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
   }
 
-  it("re-issues a resync that was asked for while one was in flight", async () => {
+  it("forwards every reconnect to the store even while catch-up is pending", async () => {
     const scheduler = manualScheduler();
     const sources: EventSourceLike[] = [];
     const resolvers: (() => void)[] = [];
@@ -514,7 +553,7 @@ describe("openChannel", () => {
     sources[0]?.onerror?.({});
     scheduler.flush(); // the backoff timer → reconnect
     sources[1]?.onopen?.({});
-    expect(resync).toHaveBeenCalledTimes(1); // still busy: recorded, not fired
+    expect(resync).toHaveBeenCalledTimes(2);
 
     resolvers[0]?.();
     await Promise.resolve();
@@ -523,6 +562,7 @@ describe("openChannel", () => {
 
     expect(resync).toHaveBeenCalledTimes(2);
     expect(resync).toHaveBeenLastCalledWith(sequencer.seq);
+    resolvers[1]?.();
   });
 });
 

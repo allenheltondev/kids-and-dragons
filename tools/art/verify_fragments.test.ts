@@ -68,9 +68,9 @@ for layer in (body, arm):
     asm[..., :3] = (layer[..., :3] * a + asm[..., :3] * (1 - a)).astype(np.uint8)
     asm[..., 3:4] = (a * 255 + asm[..., 3:4] * (1 - a)).astype(np.uint8)
 
-Image.fromarray(body).save("${join(dir, "parts", "body.png")}")
-Image.fromarray(arm).save("${join(dir, "parts", "arm.png")}")
-Image.fromarray(asm).save("${join(dir, "assembled.png")}")
+Image.fromarray(body).save(${JSON.stringify(join(dir, "parts", "body.png"))})
+Image.fromarray(arm).save(${JSON.stringify(join(dir, "parts", "arm.png"))})
+Image.fromarray(asm).save(${JSON.stringify(join(dir, "assembled.png"))})
 `;
   execFileSync("python3", ["-c", py], { stdio: "pipe" });
   return dir;
