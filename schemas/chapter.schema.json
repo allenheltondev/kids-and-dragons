@@ -27,7 +27,7 @@
       "$ref": "#/$defs/kebabId"
     },
     "index": {
-      "description": "Position within the campaign, 1-based and contiguous (checked across files).",
+      "description": "Position within the campaign, 1-based. NOT unique: a routed beat has one chapter file per route, all sharing an index (see `route`). tools/content/validate.mjs checks that the set of distinct indexes runs 1..n with no gaps.",
       "type": "integer",
       "minimum": 1
     },
@@ -63,7 +63,7 @@
       }
     },
     "props": {
-      "description": "Chapter-scoped props (D7): items this chapter brings with it that the world does not otherwise have. The world owns a honeycake; a chapter owns the key to its own door. These project into content/items.json alongside canon's items, because a quest item outlives the chapter that granted it and an inventory screen still has to name it — so the ids must not collide with canon's, which tools/canon/items.ts enforces. Same shape as an entry in schemas/items.schema.json.",
+      "description": "Chapter-scoped props (D7): items this chapter brings with it that the world does not otherwise have. The world owns a honeycake; a chapter owns the key to its own door. These project into content/items.json alongside canon's items, because a quest item outlives the chapter that granted it and an inventory screen still has to name it \u2014 so the ids must not collide with canon's, which tools/canon/items.ts enforces. Same shape as an entry in schemas/items.schema.json.",
       "type": "object",
       "minProperties": 1,
       "properties": {
@@ -73,12 +73,36 @@
       },
       "propertyNames": {
         "anyOf": [
-          { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
-          { "const": "$comment" }
+          {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          {
+            "const": "$comment"
+          }
         ]
       },
       "additionalProperties": {
         "$ref": "https://kids-and-dragons.local/schemas/items.schema.json#/$defs/itemDef"
+      }
+    },
+    "route": {
+      "description": "Which member of a routed index this chapter is. Absent means the index has exactly one chapter, which is the ordinary case. `set` names a list in the campaign's `routeSets`; `flag` is the story flag that selects this member. See packages/shared/src/routes.ts.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "set",
+        "flag"
+      ],
+      "properties": {
+        "set": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "flag": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
       }
     },
     "scenes": {
@@ -482,14 +506,30 @@
       "anyOf": [
         {
           "$comment": "Borrowing from canon. (The stubbed `properties` are only here to satisfy ajv's strictRequired, which wants every required key declared in the same subschema; the real definitions are below.)",
-          "required": ["creature"],
-          "properties": { "creature": {} }
+          "required": [
+            "creature"
+          ],
+          "properties": {
+            "creature": {}
+          }
         },
         {
           "$comment": "A one-off with no canon creature behind it says every number itself.",
-          "required": ["count", "hp", "guard", "quick", "steps", "attack"],
+          "required": [
+            "count",
+            "hp",
+            "guard",
+            "quick",
+            "steps",
+            "attack"
+          ],
           "properties": {
-            "count": {}, "hp": {}, "guard": {}, "quick": {}, "steps": {}, "attack": {}
+            "count": {},
+            "hp": {},
+            "guard": {},
+            "quick": {},
+            "steps": {},
+            "attack": {}
           }
         }
       ],

@@ -867,7 +867,8 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     fail("/id", `id "${campaign.id}" does not match filename "${expectedId}.json"`);
   }
 
-  const indexes = [];
+  /** Every listed chapter that exists, grouped by the beat it is. */
+  const beats = new Map();
   campaign.chapters.forEach((id, i) => {
     const chapter = chaptersById.get(id);
     if (!chapter) {
@@ -881,21 +882,94 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     if (chapter.campaignId !== campaign.id) {
       fail(`/chapters/${i}`, `chapter "${id}" belongs to campaign "${chapter.campaignId}"`);
     }
-    indexes.push([id, chapter.index]);
+    const members = beats.get(chapter.index) ?? [];
+    members.push(chapter);
+    beats.set(chapter.index, members);
   });
 
-  // Chapters are the save unit and the player sees "Chapter 3 of 6" - a gap or a
-  // duplicate here is a bug in the progress UI long before anyone notices the content.
-  indexes
-    .slice()
-    .sort((a, b) => a[1] - b[1])
-    .forEach(([id, index], i) => {
-      if (index !== i + 1) {
-        fail("/chapters", `chapter "${id}" has index ${index}; the listed chapters must be indexed 1..${indexes.length} with no gaps`);
-      }
-    });
+  /*
+   * Beats are the save unit and the player sees "Chapter 3 of 6" - a gap here is
+   * a bug in the progress UI long before anyone notices the content. Indexes are
+   * no longer *unique*, though: a routed beat is several chapter files sharing
+   * one index, so what has to run 1..n is the set of distinct indexes.
+   */
+  const ordered = [...beats.keys()].sort((a, b) => a - b);
+  ordered.forEach((index, i) => {
+    if (index !== i + 1) {
+      const names = beats.get(index).map((chapter) => chapter.id).join(", ");
+      fail(
+        "/chapters",
+        `beat ${index} (${names}) is out of sequence; the listed chapters must cover beats 1..${ordered.length} with no gaps`,
+      );
+    }
+  });
 
-  if (ok) rep.ok(`${f}  campaign  (${campaign.chapters.length} chapter(s), contiguous indexes)`);
+  /*
+   * A routed beat has to be *complete*. This is the check the whole feature
+   * exists for: author two of three roads, and a party that took the third
+   * arrives at a beat with no chapter in it and the run stops dead — at a
+   * table, mid-evening, with no way forward. A declared set is the only thing
+   * that can notice an absence, which is why `routeSets` is authored rather
+   * than inferred from the files that happen to exist.
+   */
+  const routeSets = campaign.routeSets ?? {};
+  for (const index of ordered) {
+    const members = beats.get(index);
+    const routed = members.filter((chapter) => chapter.route);
+
+    if (routed.length === 0) {
+      // An unrouted beat is one chapter. Two files sharing an index with no
+      // route between them is the old duplicate-index bug wearing a new hat:
+      // nothing could ever choose one.
+      if (members.length > 1) {
+        const names = members.map((chapter) => chapter.id).join(", ");
+        fail("/chapters", `beat ${index} has ${members.length} chapters (${names}) and no routes; only a routed beat may share an index`);
+      }
+      continue;
+    }
+    if (routed.length !== members.length) {
+      const plain = members.filter((chapter) => !chapter.route).map((chapter) => chapter.id).join(", ");
+      fail("/chapters", `beat ${index} mixes routed and unrouted chapters (${plain} declare no route); every member of a routed beat needs one`);
+      continue;
+    }
+
+    const sets = new Set(routed.map((chapter) => chapter.route.set));
+    if (sets.size > 1) {
+      fail("/chapters", `beat ${index} draws from more than one route set (${[...sets].join(", ")}); a beat is chosen along one axis`);
+      continue;
+    }
+    const setName = [...sets][0];
+    const declared = routeSets[setName];
+    if (!declared) {
+      fail("/chapters", `beat ${index} uses route set "${setName}", which the campaign does not declare in routeSets`);
+      continue;
+    }
+
+    const covered = routed.map((chapter) => chapter.route.flag);
+    const duplicates = covered.filter((flag, at) => covered.indexOf(flag) !== at);
+    if (duplicates.length > 0) {
+      fail("/chapters", `beat ${index} has two chapters on route "${duplicates[0]}"; each member of a beat takes a different one`);
+      continue;
+    }
+    const missing = declared.filter((flag) => !covered.includes(flag));
+    const unknown = covered.filter((flag) => !declared.includes(flag));
+    if (missing.length > 0) {
+      fail(
+        "/chapters",
+        `beat ${index} is missing route(s) ${missing.join(", ")} of set "${setName}"`,
+        "a party that took that road would reach this beat with no chapter to enter",
+      );
+    }
+    if (unknown.length > 0) {
+      fail("/chapters", `beat ${index} declares route(s) ${unknown.join(", ")}, which are not in set "${setName}"`);
+    }
+  }
+
+  if (ok) {
+    const routed = ordered.filter((index) => beats.get(index).length > 1).length;
+    const shape = routed > 0 ? `, ${routed} routed` : "";
+    rep.ok(`${f}  campaign  (${campaign.chapters.length} chapter(s), ${ordered.length} beat(s)${shape})`);
+  }
   return ok;
 }
 
