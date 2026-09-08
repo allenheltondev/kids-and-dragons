@@ -5,6 +5,7 @@ import { afterEach, expect, it, vi } from "vitest";
 const action = vi.hoisted(() => vi.fn());
 vi.mock("../world/PixiStage", () => { throw new Error("Failed to fetch dynamically imported module"); });
 vi.mock("../store", () => ({
+  useChapter: () => null,
   useRunState: () => ({ phase: "scene" }),
   useMe: () => null,
   useSession: () => null,
