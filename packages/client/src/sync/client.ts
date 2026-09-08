@@ -301,15 +301,19 @@ export const api: Api = {
 
   async fetchConfig() {
     try {
-      return await request<ClientConfig>("/api/config");
-    } catch {
-      /*
-       * The dev server has no `/api/config` and no user pool, so this 404s on a
-       * laptop — which is the correct answer, not a failure. Sign-in is offered
-       * only where it can actually work; locally, anonymous play is all there
-       * is, and that is the whole point of anonymous play.
-       */
-      return null;
+      const config = await request<ClientConfig>("/api/config");
+      const fields = [config?.region, config?.realtime?.httpDomain,
+        config?.realtime?.realtimeDomain, config?.realtime?.namespace,
+        config?.auth?.userPoolId, config?.auth?.clientId];
+      if (!fields.every((field) => typeof field === "string" && field.length > 0)) {
+        throw new Error("Invalid game configuration.");
+      }
+      return config;
+    } catch (error) {
+      // Only the local server's missing endpoint means SSE. Network failures,
+      // server errors and malformed responses must be retried as failures.
+      if (error instanceof ApiError && error.status === 404) return null;
+      throw error;
     }
   },
 
