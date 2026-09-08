@@ -103,6 +103,8 @@ export class MessageSequencer {
 
   /** Seed or replace the mirror from a snapshot (join, or a too-large gap). */
   reset(state: RunState, seq: number): void {
+    // An HTTP snapshot can arrive after newer realtime state, or after leave.
+    if (this.disposed || seq < this.lastSeq) return;
     this.mirror = state;
     this.lastSeq = seq;
     for (const key of [...this.buffer.keys()]) {
@@ -362,33 +364,6 @@ export function openChannel(options: ChannelOptions): Channel {
   let retryTimer: TimerHandle | null = null;
   let attempt = 0;
   let closed = false;
-  /** Serializes resyncs so a gap during a reconnect doesn't double-fetch. */
-  let resyncing: Promise<void> | null = null;
-  /** A resync asked for while one was in flight. Dropping it outright left a
-      reconnect that raced a slow catch-up permanently behind. */
-  let resyncAgain = false;
-
-  function resync(sinceSeq: number): void {
-    if (closed) return;
-    if (resyncing) {
-      resyncAgain = true;
-      return;
-    }
-    resyncing = options
-      .resync(sinceSeq)
-      .catch(() => {
-        /* the next reconnect or gap will try again */
-      })
-      .finally(() => {
-        resyncing = null;
-        if (resyncAgain && !closed) {
-          resyncAgain = false;
-          // From wherever the mirror is *now* — the finished resync may have
-          // moved it well past the seq the dropped request named.
-          resync(options.sequencer.seq);
-        }
-      });
-  }
 
   function connect(): void {
     if (closed) return;
@@ -398,22 +373,25 @@ export function openChannel(options: ChannelOptions): Channel {
     source = es;
 
     es.onopen = () => {
+      if (closed || source !== es) return;
       attempt = 0;
       options.onStatus("open");
       // Anything published while we were away is fetched, not waited for
       // (architecture §4.3 — hard-refresh recovery in under a second).
-      resync(options.sequencer.seq);
+      // The store owns fetch serialization, catch-up requests and retries.
+      void options.resync(options.sequencer.seq).catch(() => undefined);
     };
 
     es.onmessage = (event) => {
+      if (closed || source !== es) return;
       const message = parseChannelMessage(event.data);
       if (message) options.sequencer.ingest(message);
     };
 
     es.onerror = () => {
-      if (closed) return;
+      if (closed || source !== es) return;
+      source = null;
       es.close();
-      if (source === es) source = null;
       options.onStatus("reconnecting");
       const delay = backoffDelay(attempt, options.backoff);
       attempt += 1;
