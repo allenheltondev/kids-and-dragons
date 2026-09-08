@@ -157,6 +157,10 @@ interface Runtime {
   gate: PresentationGate | null;
   content: Promise<void> | null;
   resyncing: Promise<void> | null;
+  resyncAgain: boolean;
+  resyncRetry: ReturnType<typeof setTimeout> | null;
+  resyncAttempt: number;
+  connectRetry: ReturnType<typeof setTimeout> | null;
   /**
    * Watchdog for a broadcast the server owes us. A successful action response
    * names the seq it committed; the patch normally arrives on the channel a
@@ -201,28 +205,26 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       gate: null,
       content: null,
       resyncing: null,
+      resyncAgain: false,
+      resyncRetry: null,
+      resyncAttempt: 0,
+      connectRetry: null,
       attaching: null,
       realtime: null,
       broadcastWatchdog: null,
       chapter: null,
     };
 
-    /**
-     * Which transport to open, asked once per page load.
-     *
-     * The seam already existed on the server (`RoomChannel`) and in the
-     * sequencer (`EventSourceLike`); this is the third and last place that has
-     * to know both exist. Failing the lookup falls back to SSE rather than
-     * throwing — on a laptop that is simply the right answer, and in prod a
-     * `/api/config` that cannot be reached means the API is down, which the
-     * reconnect loop already handles better than a hard failure here would.
-     */
+    /** Cache successful discovery, including the explicit local 404 answer. */
     function realtimeConfig(): Promise<ClientConfig["realtime"] | null> {
-      runtime.realtime ??= deps.api
+      const task = runtime.realtime ??= deps.api
         .fetchConfig()
         .then((config) => config?.realtime ?? null)
-        .catch(() => null);
-      return runtime.realtime;
+        .catch((error: unknown) => {
+          if (runtime.realtime === task) runtime.realtime = null;
+          throw error;
+        });
+      return task;
     }
 
     /**
@@ -254,7 +256,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onState: (state) => set({ state }),
           onPresentation: (presentation) => set({ presentation }),
           onProgression: (progression) => set({ progression }),
-          onGap: (sinceSeq) => void resync(sinceSeq),
+          onGap: (sinceSeq) => {
+            // Repeated hole notifications must respect a failed fetch's backoff.
+            if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
+          },
         },
       });
       return sequencer;
@@ -264,19 +269,36 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       const session = get().session;
       const sequencer = runtime.sequencer;
       if (!session || !sequencer) return;
-      if (runtime.resyncing) return runtime.resyncing;
+      if (runtime.resyncing) {
+        runtime.resyncAgain = true;
+        return runtime.resyncing;
+      }
+      if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
+      runtime.resyncRetry = null;
 
       const task = (async () => {
-        const response = await deps.api.fetchState(
-          { runId: session.runId, code: session.roomCode, sinceSeq },
-          session.sessionToken || undefined,
-        );
-        // The server chooses: replay the missed events, or hand back a whole
-        // snapshot when the gap was too big to be worth replaying (§4.3).
-        if (response.state) sequencer.reset(response.state, response.seq);
-        else if (response.events) sequencer.ingestAll(response.events);
-      })().finally(() => {
-        runtime.resyncing = null;
+        do {
+          runtime.resyncAgain = false;
+          const response = await deps.api.fetchState(
+            { runId: session.runId, code: session.roomCode, sinceSeq },
+            session.sessionToken || undefined,
+          );
+          if (runtime.sequencer !== sequencer) return;
+          if (response.state) sequencer.reset(response.state, response.seq);
+          else if (response.events) sequencer.ingestAll(response.events);
+          runtime.resyncAttempt = 0;
+          sinceSeq = sequencer.seq;
+        } while (runtime.resyncAgain);
+      })().catch((error: unknown) => {
+        if (runtime.sequencer === sequencer) {
+          runtime.resyncRetry = setTimeout(() => {
+            runtime.resyncRetry = null;
+            void resync(sequencer.seq).catch(() => undefined);
+          }, backoffDelay(runtime.resyncAttempt++));
+        }
+        throw error;
+      }).finally(() => {
+        if (runtime.resyncing === task) runtime.resyncing = null;
       });
 
       runtime.resyncing = task;
@@ -296,18 +318,29 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       // than a blank screen.
       sequencer.reset(snapshot, seq);
 
-      const createEventSource = await transportFor(session);
-      // A `leave()` or a second attach can land during that await.
-      if (runtime.sequencer !== sequencer) return;
-
-      runtime.channel = deps.openChannel({
-        url: (sinceSeq) =>
-          deps.eventsUrl(session.roomCode, sinceSeq, session.sessionToken || undefined),
-        sequencer,
-        onStatus: (connection) => set({ connection }),
-        resync,
-        ...(createEventSource ? { createEventSource } : {}),
-      });
+      let attempt = 0;
+      const openTransport = async (): Promise<void> => {
+        try {
+          const createEventSource = await transportFor(session);
+          if (runtime.sequencer !== sequencer) return;
+          runtime.channel = deps.openChannel({
+            url: (sinceSeq) =>
+              deps.eventsUrl(session.roomCode, sinceSeq, session.sessionToken || undefined),
+            sequencer,
+            onStatus: (connection) => set({ connection }),
+            resync,
+            ...(createEventSource ? { createEventSource } : {}),
+          });
+        } catch {
+          if (runtime.sequencer !== sequencer) return;
+          set({ connection: "reconnecting" });
+          runtime.connectRetry = setTimeout(() => {
+            runtime.connectRetry = null;
+            void openTransport();
+          }, backoffDelay(attempt++));
+        }
+      };
+      await openTransport();
     }
 
     function disconnect(): void {
@@ -316,6 +349,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.sequencer?.dispose();
       runtime.sequencer = null;
       runtime.resyncing = null;
+      runtime.resyncAgain = false;
+      runtime.resyncAttempt = 0;
+      if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
+      runtime.resyncRetry = null;
+      if (runtime.connectRetry !== null) clearTimeout(runtime.connectRetry);
+      runtime.connectRetry = null;
       if (runtime.broadcastWatchdog) {
         clearTimeout(runtime.broadcastWatchdog);
         runtime.broadcastWatchdog = null;
@@ -336,7 +375,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         runtime.broadcastWatchdog = null;
         const current = runtime.sequencer;
         if (!current || current.seq >= seq) return;
-        void resync(current.seq);
+        const recovery = runtime.resyncRetry === null ? resync(current.seq) : Promise.resolve();
+        void recovery
+          .catch(() => undefined)
+          .finally(() => {
+            if (runtime.sequencer === sequencer && runtime.broadcastWatchdog === null) {
+              expectBroadcast(seq);
+            }
+          });
       }, BROADCAST_GRACE_MS);
     }
 
@@ -779,6 +825,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       leave() {
         const session = get().session;
+        runtime.attaching = null;
         disconnect();
         if (session) clearSession(session.roomCode, deps.storage);
         set({
