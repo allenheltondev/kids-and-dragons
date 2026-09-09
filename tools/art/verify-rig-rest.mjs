@@ -42,10 +42,15 @@
  * npm dependency of this repo — its published package ships only the MCP server,
  * not this CLI. CI builds it from source instead: the `rigs` job in ci.yml checks
  * out `rive-mcp` at the commit pinned in `art/rig/rive-mcp.pin.json` and runs this
- * on every pull request, ~40s for all 24. So a green pipeline does now say
- * something about it — which it did not when this file was written, and which is
- * the whole reason the pin exists: the renderer is the measuring instrument, and
- * an instrument that moves on its own turns this gate into a coin toss.
+ * on every pull request. So a green pipeline does now say something about it —
+ * which it did not when this file was written, and which is the whole reason the
+ * pin exists: the renderer is the measuring instrument, and an instrument that
+ * moves on its own turns this gate into a coin toss.
+ *
+ * The 54 rest frames are rendered as one CLI `batch` — one browser, four pages —
+ * rather than one process each, because a process is a Chromium launch and the
+ * launch was the whole cost: ~100s for the corpus as 54 launches, ~10s as one.
+ * The comparison is still python, one process per rig; it was never the cost.
  */
 
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
@@ -53,6 +58,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { cannotRunMessage, resolveChrome, resolveCli, runBatch, runCli } from "./rive-cli.mjs";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const MANIFEST = JSON.parse(readFileSync(join(ROOT, "assets", "manifest.json"), "utf8"));
@@ -121,7 +127,15 @@ const opt = (n, d) => {
   return i >= 0 && args[i + 1] ? args[i + 1] : d;
 };
 const onlyTier = opt("tier", null);
-const wanted = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--tier");
+/** Pages the batch opens. Four is where a 4-core box stops gaining; see the motion gate. */
+const jobs = Number(opt("jobs", "4"));
+if (!Number.isInteger(jobs) || jobs < 1) {
+  // The same rule as build-rigs.mjs: a bad worker count fails here, not as a
+  // NaN or a fraction somewhere inside the batching or the pool.
+  console.error("error: --jobs expects a whole number of workers, at least 1");
+  process.exit(2);
+}
+const wanted = args.filter((a, i) => !a.startsWith("--") && !["--tier", "--jobs"].includes(args[i - 1]));
 
 const SPECIES = MANIFEST.species.map((s) => s.id).filter((id) => wanted.length === 0 || wanted.includes(id));
 const TIERS = MANIFEST.tiers.filter((t) => !onlyTier || t === onlyTier);
@@ -155,16 +169,30 @@ for (const variant of MANIFEST.rigVariants ?? []) {
   });
 }
 
-/** Same resolution rule as the other rig tools — the CLI is not a repo dependency. */
-function resolveCli() {
-  const env = process.env.KAD_RIVE_CLI;
-  if (env) {
-    if (env.endsWith(".js") || env.endsWith(".mjs")) return { cmd: process.execPath, pre: [env] };
-    return { cmd: env, pre: [] };
-  }
-  return { cmd: process.platform === "win32" ? "rive-mcp-build.cmd" : "rive-mcp-build", pre: [] };
-}
 const cli = resolveCli();
+resolveChrome();
+
+/**
+ * Fail before rendering anything if the comparison cannot run.
+ *
+ * The comparison is python, and python3 without Pillow and numpy does not fail
+ * this gate — it fails every comparison, one ModuleNotFoundError per rig, after
+ * the render before it has already been paid for: 54 rigs and ~100s of rendering
+ * before the first line said what was wrong. One import up front is the same
+ * fact for a hundredth of the price, and it names the fix.
+ */
+{
+  const r = spawnSync("python3", ["-c", "import PIL, numpy"], { encoding: "utf8" });
+  if (r.status !== 0) {
+    const why = r.error ? String(r.error) : (r.stderr || r.stdout).trim().split("\n").pop();
+    console.error(
+      `${RED}error${RESET}: the rest check needs Pillow and numpy, and python3 cannot import them (${why}).\n` +
+        `Install the art tooling's Python dependencies, then re-run:\n\n` +
+        `    python3 -m pip install -r requirements-dev.txt\n    npm run art:verify:rig:rest\n`,
+    );
+    process.exit(2);
+  }
+}
 
 const work = join(tmpdir(), `kad-rig-rest-${process.pid}`);
 mkdirSync(work, { recursive: true });
@@ -178,32 +206,58 @@ console.log(
 const failures = [];
 let checked = 0;
 
-for (const target of targets) {
-    const { rig, art, label } = target;
-    if (!existsSync(rig) || !existsSync(art)) continue;
+const present = targets.filter((t) => existsSync(t.rig) && existsSync(t.art));
 
-    // Render the WHOLE stage at its native size, so the crop below is in
-    // artboard pixels and no scaling stands between the rig and the art.
-    const png = join(work, `${target.tag}.png`);
-    const r = spawnSync(
-      cli.cmd,
-      [...cli.pre, "render", rig, "--animation", "idle", "--time", "0", "--width", String(STAGE.width), "-o", png],
-      { encoding: "utf8" },
+// Render the WHOLE stage at its native size, so the crop below is in artboard
+// pixels and no scaling stands between the rig and the art. Every rig's frame
+// goes into one batch; the results come back keyed by the rig's tag.
+const renderJobs = present.map((t) => ({
+  id: t.tag,
+  cmd: "render",
+  file: t.rig,
+  animation: "idle",
+  time: 0,
+  width: STAGE.width,
+  out: join(work, `${t.tag}.png`),
+}));
+
+let rendered;
+try {
+  rendered = runBatch(renderJobs, { concurrency: jobs, cli }).results;
+} catch (err) {
+  if (!err.unsupported) {
+    console.error(`\n${RED}error${RESET}: ${err.message}`);
+    rmSync(work, { recursive: true, force: true });
+    process.exit(2);
+  }
+  // The pinned CLI is older than `batch`: same frames, one process each —
+  // slower, and said so, rather than a red gate over a convenience.
+  console.log(`  ${DIM}note: ${err.message}; rendering one process per rig instead${RESET}`);
+  rendered = renderJobs.map((job) => {
+    const r = runCli(
+      ["render", job.file, "--animation", job.animation, "--time", String(job.time), "--width", String(job.width), "-o", job.out],
+      { cli },
     );
     if (r.error) {
-      console.error(
-        `\n${RED}error${RESET}: could not run the Rive CLI.\n` +
-          `Set KAD_RIVE_CLI to its cli.js, or put rive-mcp-build on your PATH:\n\n` +
-          `    KAD_RIVE_CLI=/path/to/rive-mcp/dist/cli.js npm run art:verify:rig:rest\n`,
-      );
+      console.error(`\n${RED}error${RESET}: ${cannotRunMessage(cli)}`);
       rmSync(work, { recursive: true, force: true });
       process.exit(2);
     }
-    if (r.status !== 0) {
+    if (r.status !== 0) return { id: job.id, ok: false, error: (r.stderr || r.stdout).trim().split("\n").pop() };
+    return { id: job.id, ok: true, out: job.out };
+  });
+}
+const byTag = new Map(rendered.map((r) => [r.id, r]));
+
+for (const target of present) {
+    const { art, label } = target;
+    const r = byTag.get(target.tag) ?? { ok: false, error: "the batch returned no result for this rig" };
+    if (!r.ok) {
       failures.push(label);
-      console.log(`  ${RED}FAIL${RESET}  ${label}  could not render frame 0: ${(r.stderr || r.stdout).trim().split("\n").pop()}`);
+      console.log(`  ${RED}FAIL${RESET}  ${label}  could not render frame 0: ${r.error}`);
       continue;
     }
+    const png = r.out;
 
     const d = spawnSync(
       "python3",
