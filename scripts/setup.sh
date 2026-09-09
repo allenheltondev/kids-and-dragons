@@ -48,6 +48,23 @@ else
     || warn "could not install requirements-dev.txt — the art commands will explain what is missing"
 fi
 
+# --- The Rive CLI (optional) -------------------------------------------------
+# The rig builder and the rest/motion gates drive rive-mcp's CLI, built from a
+# *private* repo at the commit pinned in art/rig/rive-mcp.pin.json — see
+# tools/art/setup-rive.mjs. A fresh web session has no token for that repo and
+# a laptop may have no network, and neither should cost anyone the rest of this
+# script: everything above works without it, so this is the one step that warns
+# instead of failing. RIVE_MCP_TOKEN (a read-only PAT) or KAD_RIVE_SRC (a
+# checkout you already have) makes it succeed. Fast once done: a stat and a
+# `git rev-parse`.
+if [ -n "${KAD_SKIP_RIVE_SETUP:-}" ]; then
+  say "skipping the Rive CLI (KAD_SKIP_RIVE_SETUP is set)"
+elif node tools/art/setup-rive.mjs; then
+  :
+else
+  warn "the Rive CLI is not set up — 'npm run art:rig:build', 'art:verify:rig:rest' and 'art:verify:rig:motion' need it. Set RIVE_MCP_TOKEN (or KAD_RIVE_SRC=/path/to/rive-mcp) and run 'npm run art:rig:setup'."
+fi
+
 say "ready"
 cat <<'EOF'
   npm run typecheck          tsc across shared, server, client
@@ -55,5 +72,7 @@ cat <<'EOF'
   npm run content:validate   schemas + scene graphs  (tools/content/validate.mjs)
   npm run art:verify         the art gate            (tools/art/verify.py)
   npm run art:sheet          contact sheets for review -> art/review/
+  npm run art:rig:setup      the Rive CLI at the pin -> .rive-mcp/  (tools/art/setup-rive.mjs)
+  npm run art:rig:build      rebuild the rigs; --check proves the committed ones
   npm run dev                server + client
 EOF

@@ -135,10 +135,11 @@ not outsource the gate — if anything it raises the bar, because the failure mo
 four pixels, a canvas that's 1023 wide, a missing `tail.png`) are exactly the kind that look fine
 in a preview and break at runtime.
 
-So the tooling is nine commands. The first six run with nothing installed; the last three need the
-Rive CLI, which is not a repo dependency. Two of those three — the rest gate and the motion gate —
-do run in CI, which builds the CLI from a private repo with a token; the contact sheet is a human
-artefact and stays local. §3.1 has the table.
+So the tooling is eleven commands. The first six run with nothing installed; the last five need the
+Rive CLI, which is not a repo dependency — `art:rig:setup` is the one that builds it, at the pinned
+commit, into a gitignored `.rive-mcp/`. Three of the other four — the rest gate, the motion gate and
+the rebuild check — run in CI, which builds the CLI the same way from a private repo with a token;
+the contact sheet is a human artefact and stays local. §3.1 has the table.
 
 | Command | Does |
 |---|---|
@@ -151,6 +152,8 @@ artefact and stays local. §3.1 has the table.
 | `npm run art:verify:rig:rest` | Frame 0 of `idle` against `assembled.png` — does a rig stand where its art stands, at the size its art is drawn (`tools/art/verify-rig-rest.mjs`). The gate for a regeneration; §6.3. |
 | `npm run art:verify:rig:motion` | What a rig *renders*, clip by clip and through the real state machine (`tools/art/verify-rig-motion.mjs`, §3.1). |
 | `npm run art:sheet:rig` | Contact sheets of art that **moves** — N frames across a clip, one row per species (`tools/art/rig-sheet.mjs`). The taste gate for motion. |
+| `npm run art:rig:setup` | The Rive CLI itself, built from `allenheltondev/rive-mcp` at the commit in `art/rig/rive-mcp.pin.json` into `.rive-mcp/`, with the Chromium it renders with (`tools/art/setup-rive.mjs`). What the four commands above and below run through; §6.3. |
+| `npm run art:rig:build` | **Builds the rigs** — all 54, or the ones named — from their configs, parts and the contract, through one `batch` invocation (`tools/art/build-rigs.mjs`). `--check` rebuilds to a temp dir and compares bytes with the committed `.riv`: **runs in CI** on any PR that touches a rig input, and is how "the rig matches its config" stops being an assertion in a commit message; §6.3. |
 
 Nothing counts as accepted without passing both the verifier and an eye on the contact sheet.
 
@@ -785,36 +788,90 @@ revisited, not just the art re-approved.
 
 Steps 2-5 below shell out to `rive-mcp-build`, which is not an npm dependency of this repo and
 cannot become one: the published `rive-mcp-server` package ships only the MCP server, not this CLI.
-Build it from source, at the pinned commit — the same one CI uses, so a rig you build locally and a
-rig CI measures come from the same tool:
+One command builds it from source, at the pinned commit — the same one CI uses, so a rig you build
+locally and a rig CI measures come from the same tool:
 
 ```bash
-git clone https://github.com/allenheltondev/rive-mcp && cd rive-mcp
-git checkout "$(jq -r .ref /path/to/kids-and-dragons/art/rig/rive-mcp.pin.json)"
-npm ci && npm run build
-export KAD_RIVE_CLI=$PWD/dist/cli.js
-export RIVE_MCP_CHROME=/path/to/a/chromium          # only if the next paragraph applies
+npm run art:rig:setup
 ```
+
+That fetches `allenheltondev/rive-mcp` at the `ref` in `art/rig/rive-mcp.pin.json` into
+`.rive-mcp/` (gitignored), runs `npm ci && npm run build` there, and installs the Chromium that
+checkout's own `playwright-core` asks for — unless it is already on disk. Idempotent: with the
+checkout at the pin and built, it is a `git rev-parse` and a stat, which is why `scripts/setup.sh`
+runs it on every session start and only *warns* when it cannot. The repo is private; two ways in:
+
+```bash
+RIVE_MCP_TOKEN=github_pat_...  npm run art:rig:setup   # a read-only PAT, sent as a header, never written down
+KAD_RIVE_SRC=~/src/rive-mcp    npm run art:rig:setup   # a checkout you already have, no network
+```
+
+Every command in this repo that needs the CLI (`tools/art/rive-cli.mjs`) then finds it without
+being told: `KAD_RIVE_CLI` if set, else `.rive-mcp/dist/cli.js`, else `rive-mcp-build` on `PATH`.
+The exports it prints at the end are for running `rive-mcp-build` by hand.
 
 `rig`, `render` and `events` drive the real Rive runtime through headless Chromium via
 `playwright-core`. The CLI looks for a browser in four places, in order: `RIVE_MCP_CHROME`, then any
 Playwright-managed Chromium under `~/.cache/ms-playwright` (highest revision wins), then the branded
-`chrome` and `msedge` channels. So on a normal machine with `npx playwright install chromium` done,
-nothing needs setting. It does **not** honour `PLAYWRIGHT_BROWSERS_PATH`, which is the case that
-still bites: if your browsers live somewhere else — a container that sets that variable, for
-instance — a machine with a perfectly good browser fails with "No Chromium-based browser found", and
-`RIVE_MCP_CHROME` is the fix. Under Playwright's layout the executable is
-`<browsers-path>/chromium-<build>/chrome-linux/chrome`.
+`chrome` and `msedge` channels. It does **not** honour `PLAYWRIGHT_BROWSERS_PATH`, which is the case
+that bites in a container that sets it: a machine with a perfectly good browser fails with "No
+Chromium-based browser found". `rive-cli.mjs` sidesteps that by asking the checkout's own
+`playwright-core` where its browser is and passing the answer as `RIVE_MCP_CHROME` — so with
+`art:rig:setup` done, nothing needs setting; set `RIVE_MCP_CHROME` yourself only when driving the
+CLI outside this repo's scripts.
+
+#### Building the rigs
+
+Rigging is generated, so a rig is never edited — its config, its parts or the contract is, and the
+rig is rebuilt:
+
+```bash
+npm run art:rig:build                                # all 54: 24 species × tier, 30 class variants
+npm run art:rig:build -- manticore                   # every rig of one species, class variants included
+npm run art:rig:build -- unicorn/mythic              # one base rig
+npm run art:rig:build -- thornguard/mythic/unicorn   # one class rig
+```
+
+Every job is derived from the manifest — `species` × `tiers` for the base rigs at
+`assets/characters/<species>/<tier>/`, `rigVariants` for the class rigs at
+`assets/character-rigs/<class>/<tier>/<species>/` — with the config at `art/rig/<species>.rig.json`
+or `art/rig/<class>-<tier>-<species>.rig.json`, `--contract assets/manifest.json --set hero`. All of
+them go through one `batch` invocation, so Chromium starts once rather than 54 times (the pinned
+commit predates `batch`; on it the tool says so and runs one `rig` per rig, same bytes, slower).
+The report is one line per rig: parts, pivots measured against guessed (a guessed joint is two parts
+whose alpha does not overlap — the class armor overlays, by design), the parts the acting recipes
+matched no role for and so ride their parent, the builder's warnings, and the contract result. A
+missing config or parts directory is a failure, not a skip: a tier directory that exists without its
+`parts/` is art that was lost, and only a tier directory that does not exist at all is "not yet
+delivered", the same line `verify.py` draws.
+
+**The generator is deterministic**, and `--check` is built on that:
+
+```bash
+npm run art:rig:build -- --check
+```
+
+rebuilds every rig into a temp directory and compares bytes with the committed one. `54/54
+reproducible` is the answer you want; anything else lists the rigs that differ and exits 1, and the
+message names the two fixes — rebuild with `art:rig:build` and commit the result, or the pin moved
+(`art/rig/rive-mcp.pin.json`) and the committed rigs came from a different generator. CI runs it as
+the `rig-build` job on any pull request that touches `art/rig/`, a `parts/` directory, a `rig.riv`,
+the manifest, or the builder itself, through `.github/actions/rive-cli`, which is the same
+checkout-build-browser sequence as the `rigs` job. On a push to main it runs unconditionally.
+Locally, 54 rigs on a 4-core box is about a minute.
 
 #### Validating the regeneration
 
-The restage changes *only* geometry, and geometry is the one thing the cheap gates cannot see —
-`art:verify:rig` reads the file as data, and `art:verify:rig:motion` measures every clip against
-the rig's *own* rest pose, so a rig uniformly too small or shifted bodily is internally consistent
-and passes both. Run these in order; each one can only be trusted once the one above it is green.
+A regeneration is `npm run art:rig:build` after a config, a part or the contract changed — or after
+the pin moved, in which case `art:rig:setup` first. The restage changes *only* geometry, and
+geometry is the one thing the cheap gates cannot see — `art:verify:rig` reads the file as data, and
+`art:verify:rig:motion` measures every clip against the rig's *own* rest pose, so a rig uniformly
+too small or shifted bodily is internally consistent and passes both. Run these in order; each one
+can only be trusted once the one above it is green.
 
 | # | Check | Needs | Catches |
 |---|---|---|---|
+| 0 | `npm run art:rig:build -- --check` | Rive CLI (CI) | That what you committed is what the config builds — every rig, byte for byte, under the pinned generator. Green means the rebuild was complete and the pin is the tool that made it; a config edited without a rebuild, or a rebuild under the wrong CLI, fails here before anything is measured. |
 | 1 | `npm run art:verify:rig:strict` | nothing (CI) | The artboard is 1400 and the clip table and inputs survived the rebuild. Cheap, runs in CI, and **green on all 24** since the regeneration. |
 | 2 | `npm run art:verify:rig:rest` | Rive CLI | **The decisive one.** Frame 0 of `idle` against `assembled.png`, in the canvas window at (188,188). Catches scale, position and repaint — every way the restage can go wrong. A clean rig scores ≥99.8%; a figure fitted to the artboard instead of honouring `scale: 1` scores in the 20s. |
 | 3 | `npm run art:verify:rig:motion` | Rive CLI | The clipping itself: does `down` still leave the artboard on the bigger stage? This is the question the restage exists to answer, and it cannot be asked before 2 passes — measuring motion on a rig that is the wrong size measures the wrong rig. |
@@ -822,10 +879,10 @@ and passes both. Run these in order; each one can only be trusted once the one a
 | 5 | `--update-baseline` | Rive CLI | Only now. A baseline blessed before 2–4 pins whatever is wrong with the rigs it was generated from. |
 | 6 | Client anchor + `spike:rive` | — | The two consequences below. Not optional: 1–5 can all be green while the game draws the figure in the wrong place. |
 
-Steps 2 and 3 now run in CI as well (§3.1), so a green pipeline after a regeneration means the rest
-pose and the clips have both been checked. Steps 4 and 5 do not and cannot: the contact sheet exists
-to be looked at, and blessing a baseline is a judgement. Run them anyway, in this order — a CI pass
-is not a substitute for step 4.
+Steps 0, 2 and 3 run in CI (§3.1), so a green pipeline after a regeneration means the rigs are what
+their configs build, and the rest pose and the clips have both been checked. Steps 4 and 5 do not and
+cannot: the contact sheet exists to be looked at, and blessing a baseline is a judgement. Run them
+anyway, in this order — a CI pass is not a substitute for step 4.
 
 Three consequences to carry into that regeneration, the first of which is load-bearing:
 
