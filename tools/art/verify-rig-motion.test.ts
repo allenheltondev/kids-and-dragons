@@ -24,10 +24,21 @@ import { describe, expect, it } from "vitest";
 const SCRIPT = fileURLToPath(new URL("./verify-rig-motion.mjs", import.meta.url));
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 
-/** The banner prints before anything needs the renderer, so this works CLI-less. */
+/**
+ * The banner prints before anything needs the renderer, so this works CLI-less
+ * — and it is made CLI-less on purpose: with `art:rig:setup` done, the gate
+ * would find `.rive-mcp/dist/cli.js` and a parsing test would become a full
+ * corpus render. A path that does not exist keeps it to the banner.
+ */
+function run(...args: string[]) {
+  return spawnSync("node", [SCRIPT, ...args], {
+    cwd: ROOT,
+    encoding: "utf8",
+    env: { ...process.env, KAD_RIVE_CLI: "/nonexistent/rive-mcp/cli.js" },
+  });
+}
 function banner(...args: string[]): string {
-  const r = spawnSync("node", [SCRIPT, ...args], { cwd: ROOT, encoding: "utf8" });
-  return (r.stdout ?? "").split("\n").find((l) => l.includes("species")) ?? "";
+  return (run(...args).stdout ?? "").split("\n").find((l) => l.includes("species")) ?? "";
 }
 
 describe("verify-rig-motion argument parsing", () => {
@@ -41,9 +52,25 @@ describe("verify-rig-motion argument parsing", () => {
   });
 
   it("does not mistake any value-taking option's argument for a species", () => {
-    for (const opt of ["--tier", "--clip", "--jobs", "--gap-report"]) {
-      // A value that is not a species id, and must not be read as one.
-      expect(banner(opt, "griffin-not-a-real-arg")).toContain("6 species");
+    // A value that is not a species id, and must not be read as one. `--jobs`
+    // validates its value as a worker count before the banner, so it gets a
+    // number — which is no more a species than the string is.
+    const values: Record<string, string> = {
+      "--tier": "griffin-not-a-real-arg",
+      "--clip": "griffin-not-a-real-arg",
+      "--jobs": "3",
+      "--gap-report": "griffin-not-a-real-arg",
+    };
+    for (const [opt, value] of Object.entries(values)) {
+      expect(banner(opt, value)).toContain("6 species");
+    }
+  });
+
+  it("refuses a --jobs that is not a whole number of workers", () => {
+    for (const bad of ["nope", "1.5", "0"]) {
+      const r = run("--jobs", bad);
+      expect(r.status).toBe(2);
+      expect(r.stderr).toContain("--jobs expects a whole number of workers");
     }
   });
 });
