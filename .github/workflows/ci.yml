@@ -366,6 +366,78 @@ jobs:
       - name: Verify rigs at rest
         run: npm run art:verify:rig:rest
 
+  rig-build:
+    # Are the committed rigs what their configs build?
+    #
+    # Rigging is generated (art-pipeline.md §3): every rig.riv is the output of
+    # `rive-mcp-build rig` given a config in art/rig/, a parts directory and the
+    # manifest's contract, and the generator is deterministic — the same inputs
+    # at the pinned commit give the same bytes. That makes "does the committed
+    # rig still match its config" a question with a yes-or-no answer, and this
+    # job asks it: `art:rig:build --check` rebuilds all 54 into a temp dir and
+    # compares. It catches the two things the other rig gates cannot: a PR that
+    # edited a config (or a part PNG) without rebuilding, and a rebuild under a
+    # generator other than the pinned one. The `rigs` job above measures a rig
+    # against its art; this one measures it against its recipe.
+    #
+    # Only on a pull request that touches a rig input, because it is ~3 minutes
+    # of building the CLI in front of ~2 minutes of building rigs, and rigs
+    # change rarely and in bulk. ci.yml has no path filters (one workflow, run
+    # on everything), so the filter is a diff against the PR base and an `if:`
+    # on every step after it. On a push to main and on dispatch it runs
+    # unconditionally — the rigs on main should always be reproducible.
+    name: rigs are what their configs build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # The PR's own changes: the base tip fetched shallow, and a tree diff
+      # from it to the merge commit checkout@v7 gives us. The list is the set
+      # of inputs a rig is built from, plus the tooling that builds it — a
+      # broken builder should fail here, not on the next rig change.
+      - name: Did this change touch a rig input?
+        id: touched
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE"
+          changed=$(git diff --name-only "$BASE" HEAD)
+          if printf '%s\n' "$changed" | grep -Eq '^(art/rig/|assets/manifest\.json$|assets/.*/parts/|assets/.*/rig\.riv$|tools/art/build-rigs\.mjs$|tools/art/rive-cli\.mjs$|\.github/actions/rive-cli/)'; then
+            echo "hit=true" >> "$GITHUB_OUTPUT"
+            echo "A rig input changed; checking the committed rigs still match their configs."
+          else
+            echo "hit=false" >> "$GITHUB_OUTPUT"
+            echo "No rig input changed; nothing to check."
+          fi
+
+      - uses: actions/setup-node@v7
+        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
+        run: npm ci
+
+      # The same checkout, build and browser install as the `rigs` job above,
+      # as a composite action; the reasoning behind each step is written there.
+      - name: Build the Rive CLI at the pin
+        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
+        uses: ./.github/actions/rive-cli
+        with:
+          token: ${{ secrets.RIVE_MCP_TOKEN }}
+
+      # One `batch` invocation, one browser, 54 rigs. A difference lists the
+      # rigs and says which of the two fixes applies: rebuild and commit, or the
+      # pin moved and the committed rigs came from a different generator.
+      - name: Rebuild every rig and compare bytes
+        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
+        run: npm run art:rig:build -- --check --jobs 2
+
   e2e:
     # The roadmap's dev loop says a change isn't done until it has been seen on
     # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
