@@ -43,6 +43,11 @@ infra/.build/
 test-results/
 playwright-report/
 
+# the Rive CLI, built from the private rive-mcp repo at the commit pinned in
+# art/rig/rive-mcp.pin.json — `npm run art:rig:setup` puts it here, and CI's
+# rig jobs check it out to the same path. A build product, never source.
+.rive-mcp/
+
 # scratch git worktrees for background agents — each is a full checkout of this
 # repo *inside* this repo, created and reaped by the tooling. `.claude/` itself
 # is tracked (settings.json lives there), so this has to be ignored by path.
