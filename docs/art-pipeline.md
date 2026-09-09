@@ -933,6 +933,26 @@ missing config or parts directory is a failure, not a skip: a tier directory tha
 `parts/` is art that was lost, and only a tier directory that does not exist at all is "not yet
 delivered", the same line `verify.py` draws.
 
+**What a part does when it moves is a config fact, not a naming accident.** The builder picks a
+motion role for each part by name — `/arm|wing/`, `/leg|foot/`, `/tail/`, `/head/` — and that regex
+reads the *arm* in `armor`: until 2026-09-09 every `armor_*` and `mane_armor` part on the eighteen
+Thornguard rigs was also swinging as a right arm on top of its parent's motion, chest plates
+lunging during `attack`, arm and wing armor doubling their limb's swing. Nothing caught it: the
+contract gate reads clip metadata, the rest gate looks at frame 0 where nothing has moved yet, and
+the motion gate measures a figure against its own rest pose. The `roles` report in
+`art:rig:build`'s output is what surfaced it, and `roles` in the config is the fix:
+
+```jsonc
+"roles": { "armor_torso": "none", "armor_arm_l": "none", "mane_armor": "none" }
+```
+
+`none` means "ride the part you hang from in `adjacency`", which is what an overlay painted onto a
+limb wants. The same block can promote a part (`"wings": "arm"` is what the regex already does;
+`"tail": "arm_r"` is not) and the `motion` block beside it scales amplitudes globally, per part or
+per clip — see rive-mcp's `docs/rigging-playbook.md`, "Tuning the acting". Any part the report
+lists as *no role* is riding its parent; read that list on every build, because the alternative
+is finding out on a contact sheet.
+
 **The generator is deterministic**, and `--check` is built on that:
 
 ```bash
