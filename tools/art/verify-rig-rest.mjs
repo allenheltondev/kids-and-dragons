@@ -128,7 +128,13 @@ const opt = (n, d) => {
 };
 const onlyTier = opt("tier", null);
 /** Pages the batch opens. Four is where a 4-core box stops gaining; see the motion gate. */
-const jobs = Math.max(1, Number(opt("jobs", "4")));
+const jobs = Number(opt("jobs", "4"));
+if (!Number.isInteger(jobs) || jobs < 1) {
+  // The same rule as build-rigs.mjs: a bad worker count fails here, not as a
+  // NaN or a fraction somewhere inside the batching or the pool.
+  console.error("error: --jobs expects a whole number of workers, at least 1");
+  process.exit(2);
+}
 const wanted = args.filter((a, i) => !a.startsWith("--") && !["--tier", "--jobs"].includes(args[i - 1]));
 
 const SPECIES = MANIFEST.species.map((s) => s.id).filter((id) => wanted.length === 0 || wanted.includes(id));
