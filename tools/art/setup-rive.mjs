@@ -29,7 +29,8 @@
  *      the checkout's Chromium on its own, so from this repo's npm scripts they
  *      are not needed; they are for running `rive-mcp-build` by hand.
  *
- * Idempotent: with the checkout at the pin and `dist/cli.js` built, steps 1
+ * Idempotent: with the checkout at the pin, clean, its node_modules present and
+ * `dist/cli.js` built, steps 1
  * and 2 are skipped, and step 3 is a stat. Moving the pin and running this
  * again is the whole upgrade procedure — the CLI is rebuilt, and the browser is
  * re-installed only if the new commit's `playwright-core` asks for a different
@@ -146,10 +147,33 @@ const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
 const npxCmd = process.platform === "win32" ? "npx.cmd" : "npx";
 const cliPath = join(CHECKOUT_DIR, "dist", "cli.js");
 
-let built = existsSync(cliPath);
+// "Built" is more than dist/cli.js existing. The CLI needs the checkout's own
+// node_modules at run time (playwright-core drives the browser, the Rive
+// runtime is vendored from @rive-app at build time), and a dist left over from
+// a deleted or half-installed node_modules would report ready and then fail on
+// the first render — or worse, run a stale build. And the whole point of the
+// pin is that what runs is the pinned commit, so a checkout with local edits
+// is not "at the pin" whatever HEAD says: refuse it rather than build it.
+const depsPresent = ["playwright-core", "@rive-app/canvas-advanced", "zod"].every((d) =>
+  existsSync(join(CHECKOUT_DIR, "node_modules", d, "package.json")),
+);
+let built = existsSync(cliPath) && depsPresent;
 let fetchedNow = false;
 if (headOf(CHECKOUT_DIR) === pin.ref) {
-  step(`${relative(ROOT, CHECKOUT_DIR)}/ is at the pin${built ? ", and built" : ""}`);
+  const dirty = spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], { cwd: CHECKOUT_DIR, encoding: "utf8" });
+  if (dirty.status === 0 && dirty.stdout.trim() !== "") {
+    console.error(
+      `${RED}error${RESET}: ${relative(ROOT, CHECKOUT_DIR)}/ is at the pin but has local changes:\n` +
+        dirty.stdout.trimEnd().split("\n").map((l) => `    ${l}`).join("\n") +
+        `\n  A pinned checkout with edits is not the pin. Discard them (git -C ${relative(ROOT, CHECKOUT_DIR)} checkout -- .) ` +
+        `or point KAD_RIVE_SRC at the checkout you are actually developing in.`,
+    );
+    process.exit(1);
+  }
+  step(
+    `${relative(ROOT, CHECKOUT_DIR)}/ is at the pin` +
+      (built ? ", and built" : existsSync(cliPath) ? ", but its node_modules are incomplete — rebuilding" : ""),
+  );
 } else {
   built = false;
   if (existsSync(CHECKOUT_DIR) && !existsSync(join(CHECKOUT_DIR, ".git"))) {
