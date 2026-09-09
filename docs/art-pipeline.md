@@ -811,14 +811,14 @@ being told: `KAD_RIVE_CLI` if set, else `.rive-mcp/dist/cli.js`, else `rive-mcp-
 The exports it prints at the end are for running `rive-mcp-build` by hand.
 
 `rig`, `render` and `events` drive the real Rive runtime through headless Chromium via
-`playwright-core`. The CLI looks for a browser in four places, in order: `RIVE_MCP_CHROME`, then any
-Playwright-managed Chromium under `~/.cache/ms-playwright` (highest revision wins), then the branded
-`chrome` and `msedge` channels. It does **not** honour `PLAYWRIGHT_BROWSERS_PATH`, which is the case
-that bites in a container that sets it: a machine with a perfectly good browser fails with "No
-Chromium-based browser found". `rive-cli.mjs` sidesteps that by asking the checkout's own
-`playwright-core` where its browser is and passing the answer as `RIVE_MCP_CHROME` — so with
-`art:rig:setup` done, nothing needs setting; set `RIVE_MCP_CHROME` yourself only when driving the
-CLI outside this repo's scripts.
+`playwright-core`. The CLI looks for a browser in this order: `RIVE_MCP_CHROME`, then wherever its
+own `playwright-core` says its Chromium is (`chromium.executablePath()`, which honours
+`PLAYWRIGHT_BROWSERS_PATH` — an earlier revision of this paragraph said it did not, and that was
+true of the CLI before rive-mcp #7), then a scan of the Playwright caches (highest revision wins),
+then the branded `chrome` and `msedge` channels. `rive-cli.mjs` asks the checkout's own
+`playwright-core` the same question and passes the answer as `RIVE_MCP_CHROME`, so with
+`art:rig:setup` done nothing needs setting; set `RIVE_MCP_CHROME` yourself only when driving the
+CLI outside this repo's scripts, or when the browser you want is not the one Playwright installed.
 
 #### Building the rigs
 
