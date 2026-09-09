@@ -77,7 +77,7 @@ Image.fromarray(asm).save(${JSON.stringify(join(dir, "assembled.png"))})
 }
 
 /** Drive the check directly — the CLI walks the real asset tree, which this is not. */
-function runCheck(dir: string): string {
+function runCheck(dir: string, fail = false): string {
   const py = `
 import sys, os, json
 sys.path.insert(0, ${JSON.stringify(fileURLToPath(new URL(".", import.meta.url)))})
@@ -90,8 +90,8 @@ for n in ("body", "arm"):
     parts[n] = np.array(Image.open(os.path.join(${JSON.stringify(dir)}, "parts", n + ".png")).convert("RGBA"))
 
 rep = verify.Report()
-verify.check_part_fragments(rep, "test", parts, {"alphaThreshold": 8})
-print(json.dumps({"warnings": rep.warnings, "passed": rep.passed}))
+verify.check_part_fragments(rep, "test", parts, {"alphaThreshold": 8}, fail=${fail ? "True" : "False"})
+print(json.dumps({"warnings": rep.warnings, "failures": rep.failures, "passed": rep.passed}))
 `;
   const out = execFileSync("python3", ["-c", py], { encoding: "utf8" });
   return out.trim().split("\n").pop() as string;
@@ -110,5 +110,23 @@ describe("verify.py duplicated part fragments", () => {
     const r = JSON.parse(runCheck(partSet("unique", false)));
     expect(r.warnings).toEqual([]);
     expect(r.passed).toBe(1);
+  });
+
+  /*
+   * The flip the brief plans (part-fragments.md §5) is `--fail-fragments`, and
+   * it has to be the same discriminator wearing a different hat: a duplicate
+   * fails, the barb still passes. If arming it changed *what* is flagged, the
+   * warning that everyone has been reading would have been calibrating the
+   * wrong check.
+   */
+  it("fails rather than warns once --fail-fragments is armed", () => {
+    const dup = JSON.parse(runCheck(partSet("dup-armed", true), true));
+    expect(dup.warnings).toEqual([]);
+    expect(dup.failures.length).toBe(1);
+    expect(dup.failures[0]).toContain("duplicated part fragments");
+
+    const unique = JSON.parse(runCheck(partSet("unique-armed", false), true));
+    expect(unique.failures).toEqual([]);
+    expect(unique.passed).toBe(1);
   });
 });

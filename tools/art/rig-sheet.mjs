@@ -18,6 +18,11 @@
  *
  * Writes art/review/rig_<clip>_<tier>.png. Needs the Rive CLI (KAD_RIVE_CLI), the
  * same as `art:verify:rig:motion`, and Pillow, the same as the other art tooling.
+ *
+ * The frames come from one CLI `batch`: one `render` job per rig with the clip's
+ * sample times, which the CLI writes as a filmstrip from a single file load, all
+ * in one browser. Before that it was one process — one Chromium launch — per
+ * frame, thirty-six launches for a six-frame sheet of six species.
  */
 
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
@@ -25,6 +30,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
+import { cannotRunMessage, resolveChrome, resolveCli, runBatch, runCli } from "./rive-cli.mjs";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const MANIFEST = JSON.parse(readFileSync(join(ROOT, "assets", "manifest.json"), "utf8"));
@@ -49,16 +55,8 @@ if (!MANIFEST.rigContract?.clips?.[clip]) {
   process.exit(2);
 }
 
-/** Same resolution rule as verify-rig-motion.mjs — the tool is not a repo dependency. */
-function resolveCli() {
-  const env = process.env.KAD_RIVE_CLI;
-  if (env) {
-    if (env.endsWith(".js") || env.endsWith(".mjs")) return { cmd: process.execPath, pre: [env] };
-    return { cmd: env, pre: [] };
-  }
-  return { cmd: process.platform === "win32" ? "rive-mcp-build.cmd" : "rive-mcp-build", pre: [] };
-}
 const cli = resolveCli();
+resolveChrome();
 
 // The clip's own length, off the contract — a sheet that sampled a fixed two
 // seconds would show `walk` four times and `idle` once, and the eye would read
@@ -99,40 +97,59 @@ sheet.save(spec["out"])
 const work = join(tmpdir(), `kad-rig-sheet-${process.pid}`);
 mkdirSync(work, { recursive: true });
 
+// The last sample is one step short of the loop point: for a looping clip
+// frame N would be frame 0 again, and a duplicate cell reads as a stall.
+const times = Array.from({ length: frames }, (_, i) => (seconds * i) / frames);
+
 const rows = [];
 try {
+  const jobs = [];
   for (const sp of MANIFEST.species) {
     const rig = join(ROOT, "assets", "characters", sp.id, tier, "rig.riv");
     if (!existsSync(rig)) {
       console.log(`  skip  ${sp.id}/${tier}  no rig.riv`);
       continue;
     }
-    const cells = [];
-    for (let i = 0; i < frames; i++) {
-      // The last sample is one step short of the loop point: for a looping clip
-      // frame N would be frame 0 again, and a duplicate cell reads as a stall.
-      const t = (seconds * i) / frames;
-      const out = join(work, `${sp.id}_${i}.png`);
-      const r = spawnSync(
-        cli.cmd,
-        [...cli.pre, "render", rig, "--animation", clip, "--time", String(t), "--width", String(cell), "-o", out],
-        { encoding: "utf8" },
-      );
-      if (r.error) {
-        console.error(
-          `\nerror: could not run the Rive CLI (${r.error.code ?? r.error.message}).\n` +
-            `Set KAD_RIVE_CLI to its cli.js, or put rive-mcp-build on your PATH.\n`,
-        );
-        process.exit(2);
-      }
-      if (r.status !== 0) {
-        console.error(`error: rendering ${sp.id} at t=${t.toFixed(3)}s failed\n${r.stdout}${r.stderr}`);
-        process.exit(1);
-      }
-      cells.push(out);
+    // `{i}` is the CLI's filmstrip pattern: one PNG per time, in the order given.
+    jobs.push({ id: sp.id, cmd: "render", file: rig, animation: clip, times, width: cell, out: join(work, `${sp.id}_{i}.png`) });
+  }
+
+  let results;
+  try {
+    ({ results } = runBatch(jobs, { concurrency: 4, cli }));
+  } catch (err) {
+    if (!err.unsupported) {
+      console.error(`\nerror: ${err.message}`);
+      process.exit(2);
     }
-    rows.push({ id: sp.id, cells });
-    console.log(`  ok    ${sp.id}/${tier}  ${frames} frames of ${clip}`);
+    // A CLI older than `batch` is also older than `--times`: one process per
+    // frame, as this tool always did. Slower, and said so.
+    console.log(`  note: ${err.message}; rendering one process per frame instead`);
+    results = jobs.map((job) => {
+      const outs = [];
+      for (const [i, t] of times.entries()) {
+        const out = job.out.replace("{i}", String(i));
+        const r = runCli(["render", job.file, "--animation", job.animation, "--time", String(t), "--width", String(job.width), "-o", out], { cli });
+        if (r.error) {
+          console.error(`\nerror: ${cannotRunMessage(cli)}`);
+          process.exit(2);
+        }
+        if (r.status !== 0) return { id: job.id, ok: false, error: `t=${t.toFixed(3)}s: ${(r.stderr || r.stdout).trim().split("\n").pop()}` };
+        outs.push(out);
+      }
+      return { id: job.id, ok: true, outs };
+    });
+  }
+
+  const byId = new Map(results.map((r) => [r.id, r]));
+  for (const job of jobs) {
+    const r = byId.get(job.id) ?? { ok: false, error: "the batch returned no result for this rig" };
+    if (!r.ok || !Array.isArray(r.outs) || r.outs.length !== frames) {
+      console.error(`error: rendering ${job.id} failed: ${r.error ?? "not every frame was written"}`);
+      process.exit(1);
+    }
+    rows.push({ id: job.id, cells: r.outs });
+    console.log(`  ok    ${job.id}/${tier}  ${frames} frames of ${clip}`);
   }
 
   if (rows.length === 0) {
@@ -141,6 +158,8 @@ try {
   }
 
   const outPath = join(ROOT, "art", "review", `rig_${clip}_${tier}.png`);
+  // Gitignored output, so a fresh checkout has no such directory yet.
+  mkdirSync(join(ROOT, "art", "review"), { recursive: true });
   const py = spawnSync(
     "python3",
     ["-c", PY, JSON.stringify({ rows, out: outPath, cell, clip, tier, seconds })],
