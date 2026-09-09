@@ -10,6 +10,7 @@ Usage:
     python tools/art/verify.py unicorn         # one species
     python tools/art/verify.py unicorn/sworn   # one species/tier
     python tools/art/verify.py --strict        # also fail on not-yet-delivered sets
+    python tools/art/verify.py --fail-fragments  # duplicated part fragments fail instead of warn
 
 What this CANNOT check: whether it looks right. That is the human gate.
 See docs/asset-brief.md section6.2.
@@ -223,9 +224,18 @@ FRAGMENT_MIN_PX = 64
 # things — one is artwork only this part has, the other is a duplicate.
 FRAGMENT_DUPLICATE_COVERAGE = 0.95
 
+# Whether a duplicated fragment fails the run or only warns. Off by default while
+# the corpus still carries them (docs/briefs/part-fragments.md §5); `--fail-
+# fragments` turns it on, so the flip the brief plans is one flag on one command
+# line rather than an edit to this file. CI runs `art:verify` without it, and the
+# deploy workflow runs `--strict` — which is about undelivered sets and does NOT
+# imply this, on purpose: tying the two together would red the deploy the day
+# the flag was armed rather than the day the re-cut landed.
+FAIL_FRAGMENTS = False
+
 
 def check_part_fragments(rep: Report, label: str, parts: dict[str, np.ndarray],
-                         tol: dict) -> None:
+                         tol: dict, fail: bool | None = None) -> None:
     """
     A part may not carry a detached copy of something another part already draws.
 
@@ -249,8 +259,11 @@ def check_part_fragments(rep: Report, label: str, parts: dict[str, np.ndarray],
 
     Warning rather than failure, for now: 173 fragments across 175 parts are in
     the corpus as delivered, and a check that reds the build on art nobody has
-    re-cut yet is a check people learn to skip. Flip it when the re-cut lands.
+    re-cut yet is a check people learn to skip. `fail` (default: the
+    `--fail-fragments` flag) is the switch; flip it when the re-cut lands.
     """
+    if fail is None:
+        fail = FAIL_FRAGMENTS
     thr = tol["alphaThreshold"]
     masks = {k: opaque_mask(v, thr) for k, v in parts.items()}
     found: list[tuple[str, int, float]] = []
@@ -279,9 +292,14 @@ def check_part_fragments(rep: Report, label: str, parts: dict[str, np.ndarray],
         detail = ", ".join(f"{n}={px:,}px ({cov * 100:.0f}% duplicated)" for n, px, cov in worst)
         if len(found) > len(worst):
             detail += f", and {len(found) - len(worst)} more"
-        rep.warn(f"{label} duplicated part fragments  ({len(found)})", detail)
-        print(f"        {DIM}These are invisible at rest and fly off when the part rotates. "
-              f"Re-cut so each part carries only its own artwork.{RESET}")
+        why = ("These are invisible at rest and fly off when the part rotates. "
+               "Re-cut so each part carries only its own artwork.")
+        if fail:
+            rep.fail(f"{label} duplicated part fragments  ({len(found)})",
+                     "no detached fragment another part already draws", detail, why)
+        else:
+            rep.warn(f"{label} duplicated part fragments  ({len(found)})", detail)
+            print(f"        {DIM}{why}{RESET}")
     else:
         rep.ok(f"{label} part fragments  ({len(masks)} parts, no duplicated artwork)")
 
@@ -987,6 +1005,8 @@ def check_rig_variants(rep: Report, mf: dict) -> None:
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
+    global FAIL_FRAGMENTS
+    FAIL_FRAGMENTS = "--fail-fragments" in sys.argv
 
     if not os.path.exists(MANIFEST):
         sys.exit(f"error: no manifest at {MANIFEST}")
