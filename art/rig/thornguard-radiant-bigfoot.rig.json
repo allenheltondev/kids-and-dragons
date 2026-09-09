@@ -2,13 +2,34 @@
   "$comment": "Thornguard Radiant Bigfoot variant rig. The approved geared portrait is painted into the normal Bigfoot parts so armor follows each existing bone; armor_visible carries only armor pixels that protrude beyond the anatomy masks. It renders before mane so the authored hair remains above both shoulder plates.",
   "root": "body",
   "adjacency": [
-    ["body", "head"],
-    ["head", "mane"],
-    ["body", "arm_l"],
-    ["body", "arm_r"],
-    ["body", "leg_l"],
-    ["body", "leg_r"],
-    ["body", "armor_visible"]
+    [
+      "body",
+      "head"
+    ],
+    [
+      "head",
+      "mane"
+    ],
+    [
+      "body",
+      "arm_l"
+    ],
+    [
+      "body",
+      "arm_r"
+    ],
+    [
+      "body",
+      "leg_l"
+    ],
+    [
+      "body",
+      "leg_r"
+    ],
+    [
+      "body",
+      "armor_visible"
+    ]
   ],
   "zOrder": [
     "leg_l",
@@ -20,8 +41,14 @@
     "armor_visible",
     "mane"
   ],
-  "origin": { "x": 512, "y": 900 },
-  "ground": { "x": 700, "y": 1088 },
+  "origin": {
+    "x": 512,
+    "y": 900
+  },
+  "ground": {
+    "x": 700,
+    "y": 1088
+  },
   "artboardWidth": 1400,
   "artboardHeight": 1400,
   "scale": 1,
@@ -34,7 +61,12 @@
       "down": {
         "input": "knockedDown",
         "equals": true,
-        "from": ["idle", "hurt", "walk", "guard"]
+        "from": [
+          "idle",
+          "hurt",
+          "walk",
+          "guard"
+        ]
       },
       "revive": {
         "input": "knockedDown",
@@ -42,5 +74,9 @@
         "from": "down_loop"
       }
     }
-  }
+  },
+  "roles": {
+    "armor_visible": "none"
+  },
+  "$rolesComment": "Armor and gear overlays ride the part they are painted on. Without this the builder's name regex reads the 'arm' in 'armor' and swings every armor part as a right arm on top of its parent's motion; rive-mcp's roles report is what surfaced it."
 }
