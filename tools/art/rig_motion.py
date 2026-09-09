@@ -400,6 +400,77 @@ _walls = [
 ]
 _peak = int(np.argmax([max(w.values()) if w else 0 for w in _walls]))
 
+
+# The silhouette threshold: what `box` and `edge_cover` already call figure. An
+# island is measured on the same mask so that "the figure" means one thing in
+# this file.
+SILHOUETTE = 8
+
+# Smallest solid component that counts as an island, in px at the render width.
+#
+# Antialiasing leaves specks around a silhouette at `a > 8` — a hair of mane, a
+# claw tip resampled into a two-pixel crumb — and they come and go tick to tick.
+# Measured at 350px wide, a floor of 6px dropped them; the render is 512px, so
+# the same floor scales by (512/350)^2 to ~13. A real detached part is hundreds
+# of px, so nothing hinges on the exact number: the calibration below reports
+# the sizes of everything it counted, and the smallest thing ever counted on a
+# clean rig was well clear of this.
+ISLAND_MIN_PX = 12
+
+
+def islands(a):
+    """
+    Areas of the 4-connected solid components of one frame, largest first,
+    ignoring anything under ISLAND_MIN_PX.
+
+    This is the measurement the enclosed-gap work above cannot make. A gap is
+    figure with a hole in it; a part that has come off is figure with a PIECE
+    somewhere else, and there is no hole to find — the armour plate that flies
+    off a griffin mid-`cast` leaves a silhouette that is whole and an artboard
+    with seven things on it. Counting the things is the whole method.
+
+    Pillow rather than scipy, for the reason `verify.py` gives: one check is not
+    worth a third numeric dependency on every machine that runs the gate.
+    """
+    m = a > SILHOUETTE
+    if not m.any():
+        return []
+    h, w = m.shape
+    pad = np.zeros((h + 2, w + 2), np.uint8)
+    pad[1:-1, 1:-1] = np.where(m, 255, 0)
+    img = Image.fromarray(pad).copy()
+    sizes = []
+    label = 1
+    while label < 250:
+        cur = np.asarray(img)
+        ys, xs = np.nonzero(cur == 255)
+        if not len(ys):
+            break
+        ImageDraw.floodfill(img, (int(xs[0]), int(ys[0])), label)
+        n = int((np.asarray(img) == label).sum())
+        if n >= ISLAND_MIN_PX:
+            sizes.append(n)
+        label += 1
+    return sorted(sizes, reverse=True)
+
+
+# Islands are counted AGAINST THE REST TICK, not in absolute terms, because
+# detached artwork is legitimate: the manticore's barbed tail is six components
+# standing still, and nothing else draws those barbs. What a clean rig cannot do
+# is grow MORE of them once it moves. So each tick's count is compared with tick
+# 0's, and the excess is what is reported.
+#
+# Which islands are the excess is decided by size: the rest count's worth of
+# largest components are taken to be the figure, and whatever is smaller than
+# those is new. Tracking islands by position would be the more literal answer
+# and the wrong one — the barbs travel with the tail, so a part that legitimately
+# moves would read as one that left and one that arrived.
+_islands = [islands(a) for a in alpha]
+_rest_islands = len(_islands[0])
+_new_islands = [s[_rest_islands:] for s in _islands]
+_new_px = [sum(s) for s in _new_islands]
+_islands_peak = int(np.argmax(_new_px)) if any(_new_px) else 0
+
 boxes = [box(a) for a in alpha]
 if any(b is None for b in boxes):
     print(json.dumps({"error": "a frame rendered empty"}))
@@ -475,6 +546,17 @@ print(json.dumps({
     # frame to actually look at, since it is no longer implied by the number.
     "interior_worst": gap_regions(_opens[_peak], _walls[_peak], _encl[_peak]),
     "interior_worst_tick": _peak,
+    # Pieces of figure that exist mid-clip and did not at rest — a part flying
+    # off. Count and area are both reported because a single armour plate and a
+    # spray of a dozen crumbs are different faults with different thresholds:
+    # `islands_new_max` is the most extra islands on any tick, `islands_new_px_max`
+    # the most extra area on any tick, and the tick and sizes are named so the
+    # calibration can be re-cut at a different floor without re-rendering.
+    "islands_rest": _rest_islands,
+    "islands_new_max": int(max(len(s) for s in _new_islands)),
+    "islands_new_px_max": int(max(_new_px)),
+    "islands_new_tick": _islands_peak,
+    "islands_new_sizes": _new_islands[_islands_peak],
     # Worst tick and typical tick. A defect that only shows on some frames is
     # exactly what the max is for.
     "novel_colour_max": round(max(novel_colour_share(f) for f in frames), 5),
