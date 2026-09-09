@@ -22,7 +22,12 @@
 # On pull requests it runs only when something that could change a rendered frame
 # changed — the rigs themselves, the contract they derive from, or the gate. Rigs
 # are regenerated rarely and in bulk, so this is nearly always "not this PR", and
-# when it is this PR it is exactly the PR you want it on.
+# when it is this PR it is exactly the PR you want it on. "The rigs themselves"
+# is two trees: the 24 base rigs under assets/characters/ and the 30 class
+# variants under assets/character-rigs/, which the gate has measured since class
+# rigs became motion jobs — for a while the filter listed only the first, so a PR
+# that regenerated every class rig ran no motion gate at all. ci.yml has no path
+# filter, so its `rigs` job (the rest gate) already covers both.
 #
 # `gap-calibration.mjs` is in the list for a different reason: it changes no
 # frame, but this is the only place it is ever run against a real report, so a
@@ -36,6 +41,7 @@ on:
     branches: [main]
     paths:
       - "assets/characters/**/rig.riv"
+      - "assets/character-rigs/**/rig.riv"
       - "assets/manifest.json"
       - "art/rig/**"
       - "tools/art/verify-rig-motion.mjs"
@@ -45,6 +51,7 @@ on:
   pull_request:
     paths:
       - "assets/characters/**/rig.riv"
+      - "assets/character-rigs/**/rig.riv"
       - "assets/manifest.json"
       - "art/rig/**"
       - "tools/art/verify-rig-motion.mjs"
@@ -64,8 +71,11 @@ jobs:
   motion:
     name: every clip of every rig
     runs-on: ubuntu-latest
-    # 24 rigs x 13 clips, ~40s per rig at the default concurrency on a local
-    # 4-core box. The ceiling is generous on purpose: a timeout that trips on a
+    # 54 rigs (24 base + 30 class) x 13 clips. Measured on a local 4-core box:
+    # ~24 minutes with a CLI that has `batch` (every render and drive in one
+    # browser), ~45 as one process per job — which is what the gate falls back
+    # to when the pinned rive-mcp commit predates `batch`, and it says so in its
+    # output. The ceiling is generous on purpose: a timeout that trips on a
     # slow runner reads as a rig failure, which is the wrong thing to have to
     # rule out first.
     timeout-minutes: 60

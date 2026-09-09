@@ -6,7 +6,7 @@ rotates. This is the worklist for re-cutting them, and the record of how the
 whole pipeline missed it.
 
 **Status:** open. `art:verify` warns (`duplicated part fragments`); it does not
-fail yet — see §5.
+fail yet — `--fail-fragments` makes it, and §5 says when to turn that on.
 
 ---
 
@@ -105,10 +105,32 @@ are in the warnings.
 
 `check_part_fragments` in `verify.py` is a warning today because 179 fragments
 are in the corpus as delivered, and a check that reds the build on art nobody
-has re-cut yet is a check people learn to skip. **Flip
-`rep.warn` to `rep.fail` once the re-cut lands** — the discriminator is tested
+has re-cut yet is a check people learn to skip. The discriminator is tested
 (`verify_fragments.test.ts`, which fails against a naive any-detached-fragment
 rule), so the only thing standing between it and blocking is the backlog.
+
+**How to flip it.** The failure mode already exists behind a flag:
+
+    python3 tools/art/verify.py --fail-fragments
+
+reports every duplicated fragment as a `FAIL` instead of a `warn`, and exits 1.
+Run that against the re-cut; when it exits 0, add `--fail-fragments` to the
+`art:verify` script in `package.json` (which is what CI's `build` job runs) and
+the check is blocking. Nothing else changes — `verify_fragments.test.ts` pins
+that arming the flag changes the verdict and not what is flagged, so the
+manticore's barbs stay green either way. It is deliberately not tied to
+`--strict`: that flag is about undelivered sets and the deploy workflow runs it,
+so coupling the two would red a deploy on the day the flag was armed rather than
+the day the art was fixed. Measured on the corpus as delivered, `--fail-fragments`
+fails 24 of the 24 base sets, which is the backlog above restated.
+
+**The motion gate now sees these fly off.** `art:verify:rig:motion` counts solid
+pieces per tick against the rest tick (`islands_new_px_max`, art-pipeline
+§3.1) and warns above 512px at its 512px render. On the corpus as delivered
+that is 169 of 702 clips on 40 of 54 rigs — griffin and dragonling worst, the
+unicorn and bigfoot almost never — which is this backlog measured from the
+rendered side rather than from the parts. The same run after the re-cut is the
+check that the re-cut worked, and the run that lets that warning harden.
 
 ## 6. Also open
 
