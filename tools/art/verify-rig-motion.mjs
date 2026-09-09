@@ -287,7 +287,13 @@ const gapRows = [];
  * ~45 minutes to ~5, and 6 bought nothing more). The same number bounds the
  * python measurements afterwards, and the one-process-per-job fallback below.
  */
-const jobs = Math.max(1, Number(opt("jobs", "4")));
+const jobs = Number(opt("jobs", "4"));
+if (!Number.isInteger(jobs) || jobs < 1) {
+  // The same rule as build-rigs.mjs: a bad worker count fails here, not as a
+  // NaN or a fraction somewhere inside the batching or the pool.
+  console.error("error: --jobs expects a whole number of workers, at least 1");
+  process.exit(2);
+}
 const onlyTier = opt("tier", null);
 const onlyClip = opt("clip", null);
 const wanted = args.filter(
