@@ -1,0 +1,97 @@
+# The Rive CLI, built at the pinned commit, for a job that needs it.
+#
+# `rive-mcp-build` is not an npm dependency of this repo (the published
+# package ships only the MCP server), so every job that renders or builds a
+# rig first checks out allenheltondev/rive-mcp at the commit in
+# `art/rig/rive-mcp.pin.json`, builds it, and installs the Chromium that
+# checkout's own playwright-core asks for. ci.yml's `rigs` job and
+# rig-motion.yml each carry that sequence as inline steps, with the reasoning
+# written beside each one — the token trap, the never-gate-on-cache-hit rule,
+# the two-Playwright-versions problem. Those two are left as they are: they
+# are the documented originals, and the reasons are worth reading in place.
+#
+# This action is the same sequence for the *third* consumer, the rig
+# reproducibility job, which is where a third inline copy would have stopped
+# agreeing with the first two. It sets `KAD_RIVE_CLI` and `RIVE_MCP_CHROME` in
+# the job's environment, exactly as the `rigs` job does.
+#
+# Not a reusable workflow: the whole point of ci.yml being one file is that it
+# reads top to bottom, and a composite action is a step, not a second file of
+# jobs.
+
+name: Rive CLI
+description: Check out and build rive-mcp at the pinned commit, with its Chromium, and export KAD_RIVE_CLI / RIVE_MCP_CHROME.
+
+inputs:
+  token:
+    description: A fine-grained PAT with read access to allenheltondev/rive-mcp (the RIVE_MCP_TOKEN secret).
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # A missing secret and an expired one both surface as "Repository not
+    # found" at the checkout below, which points at the wrong thing. Say it
+    # plainly while we still can tell the difference.
+    - name: Check the rive-mcp token exists
+      shell: bash
+      env:
+        TOKEN: ${{ inputs.token }}
+      run: |
+        if [ -z "$TOKEN" ]; then
+          echo "::error::secret RIVE_MCP_TOKEN is not set. The rig jobs build rive-mcp's CLI from a private repo; this needs a fine-grained PAT with read access to allenheltondev/rive-mcp. See the rigs job in .github/workflows/ci.yml."
+          exit 1
+        fi
+
+    - name: Read the pinned rive-mcp
+      id: pin
+      shell: bash
+      run: |
+        ref=$(jq -r '.ref' art/rig/rive-mcp.pin.json)
+        if ! printf '%s' "$ref" | grep -Eq '^[0-9a-f]{40}$'; then
+          echo "::error::art/rig/rive-mcp.pin.json ref is not a full 40-char sha: $ref"
+          exit 1
+        fi
+        echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+    # Same path `npm run art:rig:setup` uses locally, so rive-cli.mjs finds it
+    # either way. The PAT expiry trap is documented on ci.yml's `rigs` job.
+    - name: Check out the pinned rive-mcp
+      uses: actions/checkout@v7
+      with:
+        repository: allenheltondev/rive-mcp
+        ref: ${{ steps.pin.outputs.ref }}
+        path: .rive-mcp
+        token: ${{ inputs.token }}
+
+    - name: Build the Rive CLI
+      shell: bash
+      working-directory: .rive-mcp
+      run: npm ci && npm run build
+
+    # Keyed on rive-mcp's lockfile, because that is what decides the Chromium
+    # revision its playwright-core will ask for.
+    - name: Cache Playwright browsers for the Rive CLI
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: rive-playwright-${{ runner.os }}-${{ hashFiles('.rive-mcp/package-lock.json') }}
+
+    # Unconditional: `install` is a no-op when the browser is there, and gating
+    # it on a cache hit once left a job with a restored directory and no browser.
+    - name: Install Chromium for the Rive CLI
+      shell: bash
+      working-directory: .rive-mcp
+      run: npx playwright-core install --with-deps chromium
+
+    - name: Point the CLI at Chromium
+      shell: bash
+      working-directory: .rive-mcp
+      run: |
+        exe=$(node -e "console.log(require('playwright-core').chromium.executablePath())")
+        if [ ! -x "$exe" ]; then
+          echo "::error::playwright-core reports its chromium at $exe, and nothing executable is there — the install step above did not complete"
+          exit 1
+        fi
+        echo "RIVE_MCP_CHROME=$exe" >> "$GITHUB_ENV"
+        echo "KAD_RIVE_CLI=$GITHUB_WORKSPACE/.rive-mcp/dist/cli.js" >> "$GITHUB_ENV"

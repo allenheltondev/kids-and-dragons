@@ -413,3 +413,127 @@ Image.fromarray(body(), "RGBA").save(${JSON.stringify(art)})
     });
   });
 });
+
+/*
+ * `islands_new_*` — parts that come OFF.
+ *
+ * Every measurement above is about gaps: figure with a hole in it. The defect
+ * that finally showed the gate's blind spot has no hole in it at all — the
+ * griffin's armour plates and feet fly off mid-`cast`, the silhouette that is
+ * left is whole, and the artboard simply has more things on it. Enclosed area
+ * cannot see that, and the golden baseline only says a clip changed. So this
+ * counts the things: connected solid components, against the rest tick.
+ *
+ * Against the rest tick, and not absolutely, because detached artwork is
+ * legitimate — the manticore's barbed tail is six components standing still.
+ * Both halves are pinned here: a part that detaches is reported, and art that
+ * was always in pieces is not, even when the pieces move.
+ */
+describe("islands", () => {
+  type Islands = {
+    islands_rest: number;
+    islands_new_max: number;
+    islands_new_px_max: number;
+    islands_new_tick: number;
+    islands_new_sizes: number[];
+  };
+
+  /** A two-frame clip: `rest` and `moved` are python that draws into `a`. */
+  function figure(name: string, rest: string, moved: string): Islands {
+    const apng = join(work, `${name}.png`);
+    const art = join(work, `${name}_art.png`);
+    const py = `
+import numpy as np
+from PIL import Image
+def frame(draw):
+    a = np.zeros((160, 160, 4), np.uint8)
+    draw(a)
+    return a
+def rest(a):
+    a[30:130, 40:120] = (200, 120, 90, 255)
+${rest}
+def moved(a):
+    a[30:130, 40:120] = (200, 120, 90, 255)
+${moved}
+r, m = frame(rest), frame(moved)
+Image.fromarray(r, "RGBA").save(${JSON.stringify(apng)}, save_all=True,
+    append_images=[Image.fromarray(m, "RGBA")], duration=16, loop=0)
+Image.fromarray(r, "RGBA").save(${JSON.stringify(art)})
+`;
+    execFileSync("python3", ["-c", py], { stdio: "pipe" });
+    return measure(apng, art) as unknown as Islands;
+  }
+
+  it("reports a fragment that detaches from the figure mid-clip", () => {
+    // A 12x12 plate flies off to the right, clear of the body.
+    const m = figure("detach", "", "    a[60:72, 135:147] = (200, 120, 90, 255)");
+    expect(m.islands_rest).toBe(1);
+    expect(m.islands_new_max).toBe(1);
+    expect(m.islands_new_px_max).toBe(144);
+    expect(m.islands_new_tick).toBe(1);
+    expect(m.islands_new_sizes).toEqual([144]);
+  });
+
+  it("counts every piece and sums them at the worst tick", () => {
+    const m = figure(
+      "spray",
+      "",
+      "    a[60:72, 135:147] = (200, 120, 90, 255)\n    a[90:100, 135:150] = (200, 120, 90, 255)\n    a[5:20, 60:80] = (200, 120, 90, 255)",
+    );
+    expect(m.islands_new_max).toBe(3);
+    expect(m.islands_new_px_max).toBe(144 + 150 + 300);
+    // Largest first, so a reader sees the plate before the crumbs.
+    expect(m.islands_new_sizes).toEqual([300, 150, 144]);
+  });
+
+  it("stays at zero for a figure that holds together", () => {
+    const m = figure("whole", "", "");
+    expect(m.islands_new_max).toBe(0);
+    expect(m.islands_new_px_max).toBe(0);
+    expect(m.islands_new_sizes).toEqual([]);
+  });
+
+  it("does not count artwork that was already detached at rest, even when it moves", () => {
+    // The manticore's barbs: two pieces beside the body at rest, and in the
+    // next tick they have travelled with the tail. Still two pieces.
+    const m = figure(
+      "barbs",
+      "    a[40:50, 130:140] = (200, 120, 90, 255)\n    a[70:80, 130:140] = (200, 120, 90, 255)",
+      "    a[50:60, 135:145] = (200, 120, 90, 255)\n    a[80:90, 135:145] = (200, 120, 90, 255)",
+    );
+    expect(m.islands_rest).toBe(3);
+    expect(m.islands_new_max).toBe(0);
+    expect(m.islands_new_px_max).toBe(0);
+  });
+
+  it("still sees a new piece on a figure that was already in pieces", () => {
+    // Which islands are "the excess" is decided by size — the rest count's worth
+    // of largest components are the figure, whatever is smaller is new — so the
+    // piece that detaches here is smaller than the barb the art already had.
+    // A detached part bigger than legitimate loose artwork would be reported
+    // at the barb's size instead; the count is exact either way.
+    const m = figure(
+      "barbs-plus-one",
+      "    a[40:50, 130:140] = (200, 120, 90, 255)",
+      "    a[40:50, 130:140] = (200, 120, 90, 255)\n    a[100:108, 135:143] = (200, 120, 90, 255)",
+    );
+    expect(m.islands_rest).toBe(2);
+    expect(m.islands_new_max).toBe(1);
+    expect(m.islands_new_px_max).toBe(64);
+  });
+
+  it("ignores antialiasing crumbs under the size floor", () => {
+    // Three specks of 4px each: the resampled tip of a hair, not a part.
+    const m = figure(
+      "crumbs",
+      "",
+      "    a[60:62, 135:137] = (200, 120, 90, 255)\n    a[80:82, 135:137] = (200, 120, 90, 255)\n    a[100:102, 135:137] = (200, 120, 90, 255)",
+    );
+    expect(m.islands_new_max).toBe(0);
+  });
+
+  it("does not mistake a figure that only moves for one that came apart", () => {
+    const m = figure("slide", "", "    a[:] = np.roll(a, 20, axis=1)");
+    expect(m.islands_new_max).toBe(0);
+  });
+});

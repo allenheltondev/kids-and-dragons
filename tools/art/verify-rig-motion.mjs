@@ -13,7 +13,8 @@
  *   1. **Per-clip measurement.** Every clip of every rig is rendered and checked
  *      for things that are wrong regardless of taste: the figure sinking below
  *      its own standing line, leaving the artboard, opening a hole at a joint,
- *      not moving at all, teleporting between ticks, or failing to close a loop.
+ *      coming apart into pieces, not moving at all, teleporting between ticks,
+ *      or failing to close a loop.
  *   2. **State-machine behaviour.** Rendering clips in isolation lies: standalone,
  *      `down_loop` plays as a *standing* breathing loop, and only under the state
  *      machine does it inherit the prone pose from `down`. So every trigger is
@@ -26,13 +27,26 @@
  *      clips to look at — rather than a sweep of three hundred.
  *
  * A note on the render, because it invalidated the first version of this file.
- * The Rive CLI's `--fps` does not reach the frame stepper (it sends
- * `stepSeconds`, `renderFrames` reads `opts.fps`), so every gif and apng advances
- * at 1/60s per frame whatever you ask for. Measured at `--fps 12` this tool saw
+ * The Rive CLI's `--fps` did not reach the frame stepper (it sent
+ * `stepSeconds`, `renderFrames` read `opts.fps`), so every gif and apng advanced
+ * at 1/60s per frame whatever you asked for. Measured at `--fps 12` this tool saw
  * only the first fifth of every clip and pronounced the rigs clean — including
  * the fall it was written to catch. So: render at `--fps 60`, where the bug
- * cancels out, and take every fifth frame as a tick. If that upstream bug is ever
- * fixed, TICK_STEP is the one line that has to change.
+ * cancels out, and take every fifth frame as a tick. Upstream has since fixed
+ * `--fps` (the same commit that added `batch`), and at 60 the fixed and the
+ * broken stepper agree exactly, so nothing here changed with it — TICK_STEP is
+ * simply the honest number now rather than a workaround, and it stays the one
+ * line to change if the render rate ever does.
+ *
+ * On how the rendering is driven, because it is where the time goes. Every
+ * render and every state-machine drive used to be its own CLI process, and each
+ * process is a Chromium launch: ~2s of launch around ~50ms of render, times
+ * 23 jobs per rig, times 54 rigs — ~50s a rig, ~45 minutes for the corpus. The
+ * CLI's `batch` command runs a whole job list in one browser, so this tool
+ * builds every job for every rig up front — the rest frame, the thirteen clips,
+ * the nine drives — and hands them over as one list (`rive-cli.mjs`). The
+ * measurement half is unchanged: python still reads each apng, one process per
+ * clip, because that half was never the cost.
  *
  * Usage:
  *     npm run art:verify:rig:motion
@@ -42,10 +56,11 @@
  */
 
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { spawn } from "node:child_process";
-import { cpus, tmpdir } from "node:os";
+import { spawn, spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveChrome, resolveCli, runBatch } from "./rive-cli.mjs";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const MANIFEST = JSON.parse(readFileSync(join(ROOT, "assets", "manifest.json"), "utf8"));
@@ -187,6 +202,43 @@ const TELEPORT_MAX = 6;
  */
 const INTERIOR_GAP_WARN = 15000;
 
+/**
+ * How much figure may exist mid-clip in pieces that were not there at rest, in
+ * px at RENDER_W, before the clip is worth a look.
+ *
+ * This is the measurement for a part coming OFF — an armour plate, a foot —
+ * which no gap metric can see, because the silhouette that is left behind is
+ * whole. `rig_motion.py` counts connected solid components per tick against
+ * tick 0's count (so the manticore's six barbs, detached at rest, are not
+ * pieces), and reports the extra area at the worst tick.
+ *
+ * It is a WARNING, and the calibration that decided that is worth keeping,
+ * because it was meant to be a failure. The brief was: the griffin's radiant
+ * class rigs lose their armour and feet mid-`cast` (1 island at rest, 8-11
+ * mid-clip, 1.1-1.7k px), the base rigs do not, so find the line between them.
+ * Measured over all 702 clips of the 54 rigs, there is no line: the base rigs
+ * of four species come apart at least as badly — griffin/fledgling `cast` 5
+ * pieces / 3,257px, griffin/sworn `walk` 6 / 3,719px, dragonling/mythic `lift`
+ * 10 / 7,641px — and rendering those ticks shows feet detached and torsos in
+ * blocks, identically under the pinned renderer and the current one. The
+ * "clean base rig" premise held for two species only: of the 104 base unicorn
+ * and bigfoot clips, 102 stay under 300px (the unicorn fledgling under 80px),
+ * and the two that do not — unicorn/radiant `hurt` at 2,170px, bigfoot/fledgling
+ * `lift` at 1,220px — are single pieces the size of a hoof. What the class rigs
+ * have, the base rigs gave them; it is the duplicated-fragment defect
+ * (part-fragments.md) seen from the other side, and a gate that reds 40 of 54
+ * rigs on art nobody has re-cut is a gate that gets switched off.
+ *
+ * So the number is set where the clean population and the shredded one part:
+ * 512px is 1.7x above the 299px the clean unicorn and bigfoot clips reach, and
+ * every clip eyeballed above sits 2-15x over it. At 512px, 169 of 702 clips
+ * warn (24%; griffin 62 of its 117, dragonling 45, kitsune 30, manticore 23,
+ * bigfoot 6, unicorn 3), on 40 of the 54 rigs; the other 14 never do. Re-run
+ * the calibration after the re-cut (`--gap-report`, then `gap-calibration.mjs`):
+ * if the 169 collapse to the griffin `cast` clips, this becomes a failure.
+ */
+const ISLANDS_WARN_PX = 512;
+
 /** A loop's last tick back to its first is one step of motion, not a jump. */
 const LOOP_CLOSE_MAX = 3;
 
@@ -228,7 +280,20 @@ const updateBaseline = flag("update-baseline");
  */
 const gapReport = opt("gap-report", null);
 const gapRows = [];
-const jobs = Math.max(1, Number(opt("jobs", String(Math.min(6, Math.max(1, cpus().length - 2))))));
+/*
+ * How many jobs run at once. In the batch this is the number of pages the one
+ * browser opens; each page renders on its own, so it is CPU-bound and four is
+ * where a 4-core box stops gaining (measured: 4 pages took the corpus from
+ * ~45 minutes to ~5, and 6 bought nothing more). The same number bounds the
+ * python measurements afterwards, and the one-process-per-job fallback below.
+ */
+const jobs = Number(opt("jobs", "4"));
+if (!Number.isInteger(jobs) || jobs < 1) {
+  // The same rule as build-rigs.mjs: a bad worker count fails here, not as a
+  // NaN or a fraction somewhere inside the batching or the pool.
+  console.error("error: --jobs expects a whole number of workers, at least 1");
+  process.exit(2);
+}
 const onlyTier = opt("tier", null);
 const onlyClip = opt("clip", null);
 const wanted = args.filter(
@@ -238,15 +303,31 @@ const wanted = args.filter(
 const SPECIES = MANIFEST.species.map((s) => s.id).filter((id) => wanted.length === 0 || wanted.includes(id));
 const TIERS = MANIFEST.tiers.filter((t) => !onlyTier || t === onlyTier);
 
-function resolveCli() {
-  const env = process.env.KAD_RIVE_CLI;
-  if (env) {
-    if (env.endsWith(".js") || env.endsWith(".mjs")) return { cmd: process.execPath, pre: [env] };
-    return { cmd: env, pre: [] };
-  }
-  return { cmd: process.platform === "win32" ? "rive-mcp-build.cmd" : "rive-mcp-build", pre: [] };
-}
 const cli = resolveCli();
+resolveChrome();
+
+/**
+ * Fail before rendering anything if the Python half cannot run.
+ *
+ * Every measurement here is a render followed by a python3 call, and python3
+ * without Pillow and numpy does not fail the run — it fails every *measurement*,
+ * one ModuleNotFoundError per clip, after the render that preceded it has
+ * already been paid for. On the rest gate that was 54 rigs rendered over ~100s
+ * before the first comparison said what was wrong. One import up front is the
+ * same fact for a hundredth of the price, and it names the fix.
+ */
+function requirePythonDeps(command) {
+  const r = spawnSync("python3", ["-c", "import PIL, numpy"], { encoding: "utf8" });
+  if (r.status === 0) return;
+  const why = r.error ? String(r.error) : (r.stderr || r.stdout).trim().split("\n").pop();
+  console.error(
+    `${RED}error${RESET}: the pixel checks need Pillow and numpy, and python3 cannot import them (${why}).\n` +
+      `Install the art tooling's Python dependencies, then re-run:\n\n` +
+      `    python3 -m pip install -r requirements-dev.txt\n    ${command}\n`,
+  );
+  process.exit(2);
+}
+requirePythonDeps("npm run art:verify:rig:motion");
 
 function run(cmd, argv) {
   return new Promise((resolve) => {
@@ -294,7 +375,6 @@ const failures = [];
 const warnings = [];
 const hashes = {};
 let checked = 0;
-let cliMissing = null;
 
 /**
  * The row the figure's lowest pixel rests on, measured from the rig's own rest
@@ -302,12 +382,13 @@ let cliMissing = null;
  * reference for everything else. Measuring against the manifest instead would
  * fold "the rig stands in the wrong place" into every clip's floor result; that
  * is a separate fault, and `art:verify:rig` is where it belongs.
+ *
+ * `rendered` is the batch's result for this rig's rest job; the frame itself
+ * was rendered with everything else, and this only reads it.
  */
-async function restBottom(rig, tag) {
-  const png = join(work, `${tag}_rest.png`);
-  const r = await run(cli.cmd, [...cli.pre, "render", rig, "--animation", "idle", "--time", "0", "--width", String(RENDER_W), "-o", png]);
-  if (r.spawnError) return { error: "cli" };
-  if (r.status !== 0) return { error: r.err || r.out };
+async function restBottom(rendered) {
+  if (!rendered.ok) return { error: rendered.error ?? "the batch returned no result for the rest frame" };
+  const png = rendered.out;
   const m = await run("python3", ["-c", REST_PY, png]);
   const [row, area] = m.out.trim().split(/\s+/).map(Number);
   return Number.isFinite(row) && Number.isFinite(area) ? { row, area, png } : { error: m.out + m.err };
@@ -323,19 +404,10 @@ rows = np.nonzero(m.any(axis=1))[0]
 print(int(rows.max()) if len(rows) else -1, int(m.sum()))
 `;
 
-async function measureClip(rig, tag, clip, rest, art) {
-  // One frame past the end, so the tick at T — the pose a loop must return to —
-  // is actually in the sample. Without it a loop is judged on its penultimate
-  // tick and every loop looks like it pops.
-  const frameCount = clip.ticks * TICK_STEP + 1;
-  const apng = join(work, `${tag}_${clip.name}.png`);
-  const r = await run(cli.cmd, [
-    ...cli.pre, "render", rig, "--animation", clip.name, "--apng",
-    "--duration", String(frameCount / 60), "--fps", "60",
-    "--width", String(RENDER_W), "-o", apng,
-  ]);
-  if (r.spawnError) return { error: "cli" };
-  if (r.status !== 0) return { error: (r.err || r.out).trim().split("\n").pop() };
+/** Measure one clip whose apng the batch already rendered (`rendered` is its result). */
+async function measureClip(rendered, rest, art) {
+  if (!rendered.ok) return { error: rendered.error ?? "the batch returned no result for this clip" };
+  const apng = rendered.out;
   const m = await run("python3", [join(ROOT, "tools", "art", "rig_motion.py"), apng, String(TICK_STEP), String(rest.row), art]);
   if (m.status !== 0) return { error: (m.err || m.out).trim().split("\n").pop() };
   try {
@@ -394,6 +466,17 @@ function judge(label, clip, m) {
         // The tick is named because it is picked by what opened, not by this
         // number, so it is not the tick the reader would guess from it.
         (where ? `\n      tick ${m.interior_worst_tick}: ${where}` : ""),
+    );
+  }
+  if (m.islands_new_px_max > ISLANDS_WARN_PX) {
+    // The sizes are printed so a reader can tell one plate from a spray of
+    // crumbs without re-rendering; the tick says which frame to open.
+    const sizes = (m.islands_new_sizes ?? []).slice(0, 6).join(", ");
+    soft.push(
+      `comes apart: ${m.islands_new_max} piece(s) totalling ${m.islands_new_px_max}px that were not ` +
+        `separate at rest (${m.islands_rest} at rest, warn above ${ISLANDS_WARN_PX}px) — a part is ` +
+        `flying off, or a fragment another part also draws.` +
+        (sizes ? `\n      tick ${m.islands_new_tick}: pieces of ${sizes}px` : ""),
     );
   }
   if (m.motion_median < MOTION_MIN) {
@@ -457,92 +540,12 @@ if (rigJobs.length === 0) {
   process.exit(2);
 }
 
-console.log(`\n${BOLD}clips${RESET}`);
-for (const job of rigJobs) {
-  const rest = await restBottom(job.rig, job.tag);
-  if (rest.error === "cli") {
-    cliMissing = true;
-    break;
-  }
-  if (rest.error) {
-    failures.push(`${job.label}: could not render a rest frame`);
-    console.log(`  ${RED}FAIL${RESET}  ${job.label}  rest frame: ${rest.error}`);
-    continue;
-  }
-
-  const results = await pool(
-    clips.map((clip) => () => measureClip(job.rig, job.tag, clip, rest, job.art).then((m) => ({ clip, m }))),
-    jobs,
-  );
-
-  const lines = [];
-  for (const { clip, m } of results) {
-    const label = `${job.label} ${clip.name}`;
-    if (m.error === "cli") {
-      cliMissing = true;
-      break;
-    }
-    if (m.error) {
-      failures.push(label);
-      lines.push(`  ${RED}FAIL${RESET}  ${label}  ${m.error}`);
-      continue;
-    }
-    checked += 1;
-    hashes[`${job.key}/${clip.name}`] = m.hash;
-    if (gapReport) {
-      gapRows.push({
-        // `job.label` rather than species+tier: class rigs are jobs too now, and
-        // they have no species/tier pair to spell.
-        rig: job.label,
-        clip: clip.name,
-        interior_holes: m.interior_holes,
-        // Which tick `worst` was read off. It is chosen by what opened, while
-        // interior_holes is a net over the clip, so the two need not agree.
-        worst_tick: m.interior_worst_tick ?? null,
-        worst: m.interior_worst ?? [],
-      });
-    }
-    const { bad, soft } = judge(label, clip, m);
-    for (const b of bad) {
-      failures.push(label);
-      lines.push(`  ${RED}FAIL${RESET}  ${label}  ${b}`);
-    }
-    for (const s of soft) {
-      warnings.push(label);
-      lines.push(`  ${YELLOW}warn${RESET}  ${label}  ${s}`);
-    }
-  }
-  if (cliMissing) break;
-  if (lines.length === 0) {
-    console.log(`  ${GREEN}ok${RESET}    ${job.label}  ${results.length} clips`);
-  } else {
-    console.log(`  ${BOLD}${job.label}${RESET}`);
-    for (const l of lines) console.log(l);
-  }
-}
-
-// Before the CLI-missing exit below, so a partial run still yields its rows.
-if (gapReport && gapRows.length > 0) {
-  writeFileSync(gapReport, JSON.stringify({ clips: gapRows }, null, 1));
-  console.log(`\n  ${DIM}gap measurements for ${gapRows.length} clips -> ${gapReport}${RESET}`);
-}
-
-if (cliMissing) {
-  console.error(
-    `\n${RED}error${RESET}: could not run the Rive CLI.\n` +
-      `Set KAD_RIVE_CLI to its cli.js, or put rive-mcp-build on your PATH:\n\n` +
-      `    KAD_RIVE_CLI=/path/to/rive-mcp/dist/cli.js npm run art:verify:rig:motion\n`,
-  );
-  rmSync(work, { recursive: true, force: true });
-  process.exit(2);
-}
-
-// ---------------------------------------------------------------------------
-// Layer 2 — the state machine, driven for real
-// ---------------------------------------------------------------------------
-
-console.log(`\n${BOLD}state machine${RESET}`);
-
+/*
+ * Layer 2's inputs, declared ahead of layer 1 because both layers are rendered
+ * together: every drive goes into the same batch as the clips, so the table
+ * has to exist before the batch does. It is read in the state-machine
+ * section below.
+ */
 /**
  * What firing each input must do, **step by step**.
  *
@@ -593,6 +596,188 @@ const DRIVES = [
 /** Seconds the CLI advances after each `--fire`. One step per fired input. */
 const ADVANCE = 4;
 
+// ---------------------------------------------------------------------------
+// The render, all of it at once
+// ---------------------------------------------------------------------------
+
+/**
+ * Every CLI job this run needs, for every rig, as `batch` job objects: the rest
+ * frame, one apng per clip, one `events` drive per row of DRIVES. Ids are
+ * `<tag>/rest`, `<tag>/clip/<name>` and `<tag>/drive/<n>`, and the results are
+ * read back by those ids — the batch keeps order, but naming is what survives a
+ * job that failed to report at all.
+ */
+function batchJobs() {
+  const list = [];
+  for (const job of rigJobs) {
+    list.push({
+      id: `${job.tag}/rest`,
+      cmd: "render",
+      file: job.rig,
+      animation: "idle",
+      time: 0,
+      width: RENDER_W,
+      out: join(work, `${job.tag}_rest.png`),
+    });
+    for (const clip of clips) {
+      // One frame past the end, so the tick at T — the pose a loop must return
+      // to — is actually in the sample. Without it a loop is judged on its
+      // penultimate tick and every loop looks like it pops.
+      const frameCount = clip.ticks * TICK_STEP + 1;
+      list.push({
+        id: `${job.tag}/clip/${clip.name}`,
+        cmd: "render",
+        file: job.rig,
+        animation: clip.name,
+        apng: true,
+        duration: frameCount / 60,
+        fps: 60,
+        width: RENDER_W,
+        out: join(work, `${job.tag}_${clip.name}.png`),
+      });
+    }
+    DRIVES.forEach((d, i) => {
+      list.push({ id: `${job.tag}/drive/${i}`, cmd: "events", file: job.rig, sm: "Rig", fire: d.fire, advance: ADVANCE });
+    });
+  }
+  return list;
+}
+
+/**
+ * The same job as a single-command argv, for a CLI that predates `batch`.
+ *
+ * The commit pinned in `art/rig/rive-mcp.pin.json` may be older than the
+ * command — it was when this was written — and the answer to that is not a red
+ * gate: it is the same jobs, one process each, pooled as they always were. The
+ * job object stays the single statement of what to render; this only spells it.
+ */
+function argvFor(job) {
+  if (job.cmd === "render") {
+    const argv = ["render", job.file, "--animation", job.animation, "--width", String(job.width), "-o", job.out];
+    if (job.apng) argv.push("--apng", "--duration", String(job.duration), "--fps", String(job.fps));
+    else argv.push("--time", String(job.time));
+    return argv;
+  }
+  const argv = ["events", job.file, "--sm", job.sm];
+  for (const f of job.fire) argv.push("--fire", f);
+  argv.push("--advance", String(job.advance), "--json");
+  return argv;
+}
+
+/** Run every job, by batch where the CLI has it and one process at a time otherwise. */
+async function renderAll(list) {
+  try {
+    return runBatch(list, { concurrency: jobs, cli }).results;
+  } catch (err) {
+    if (!err.unsupported) {
+      console.error(`\n${RED}error${RESET}: ${err.message}`);
+      rmSync(work, { recursive: true, force: true });
+      process.exit(2);
+    }
+    console.log(`  ${YELLOW}note${RESET}: ${err.message}; running one process per job instead (a browser start each)`);
+    return pool(
+      list.map((job) => async () => {
+        const r = await run(cli.cmd, [...cli.pre, ...argvFor(job)]);
+        if (r.status !== 0) return { id: job.id, ok: false, error: (r.err || r.out).trim().split("\n").pop() };
+        if (job.cmd === "render") return { id: job.id, ok: true, out: job.out };
+        try {
+          return { id: job.id, ...JSON.parse(r.out) };
+        } catch {
+          return { id: job.id, ok: false, error: "unreadable report" };
+        }
+      }),
+      jobs,
+    );
+  }
+}
+
+const allJobs = batchJobs();
+console.log(`\n${DIM}rendering ${allJobs.length} jobs for ${rigJobs.length} rig(s) in one browser...${RESET}`);
+const renderStart = performance.now();
+const rendered = new Map((await renderAll(allJobs)).map((r) => [r.id, r]));
+console.log(`${DIM}rendered in ${((performance.now() - renderStart) / 1000).toFixed(1)}s${RESET}`);
+const result = (id) => rendered.get(id) ?? { ok: false, error: "the batch returned no result for this job" };
+
+// ---------------------------------------------------------------------------
+// Layer 1 — every clip, measured
+// ---------------------------------------------------------------------------
+
+console.log(`\n${BOLD}clips${RESET}`);
+for (const job of rigJobs) {
+  const rest = await restBottom(result(`${job.tag}/rest`));
+  if (rest.error) {
+    failures.push(`${job.label}: could not render a rest frame`);
+    console.log(`  ${RED}FAIL${RESET}  ${job.label}  rest frame: ${rest.error}`);
+    continue;
+  }
+
+  const results = await pool(
+    clips.map((clip) => () => measureClip(result(`${job.tag}/clip/${clip.name}`), rest, job.art).then((m) => ({ clip, m }))),
+    jobs,
+  );
+
+  const lines = [];
+  for (const { clip, m } of results) {
+    const label = `${job.label} ${clip.name}`;
+    if (m.error) {
+      failures.push(label);
+      lines.push(`  ${RED}FAIL${RESET}  ${label}  ${m.error}`);
+      continue;
+    }
+    checked += 1;
+    hashes[`${job.key}/${clip.name}`] = m.hash;
+    if (gapReport) {
+      gapRows.push({
+        // `job.label` rather than species+tier: class rigs are jobs too now, and
+        // they have no species/tier pair to spell.
+        rig: job.label,
+        clip: clip.name,
+        interior_holes: m.interior_holes,
+        // Which tick `worst` was read off. It is chosen by what opened, while
+        // interior_holes is a net over the clip, so the two need not agree.
+        worst_tick: m.interior_worst_tick ?? null,
+        worst: m.interior_worst ?? [],
+        // The detached-islands figures, for the same reason the gaps are here:
+        // a threshold is set from the whole population or it is a guess.
+        islands_rest: m.islands_rest ?? null,
+        islands_new_max: m.islands_new_max ?? null,
+        islands_new_px_max: m.islands_new_px_max ?? null,
+        islands_new_tick: m.islands_new_tick ?? null,
+        islands_new_sizes: m.islands_new_sizes ?? [],
+      });
+    }
+    const { bad, soft } = judge(label, clip, m);
+    for (const b of bad) {
+      failures.push(label);
+      lines.push(`  ${RED}FAIL${RESET}  ${label}  ${b}`);
+    }
+    for (const s of soft) {
+      warnings.push(label);
+      lines.push(`  ${YELLOW}warn${RESET}  ${label}  ${s}`);
+    }
+  }
+  if (lines.length === 0) {
+    console.log(`  ${GREEN}ok${RESET}    ${job.label}  ${results.length} clips`);
+  } else {
+    console.log(`  ${BOLD}${job.label}${RESET}`);
+    for (const l of lines) console.log(l);
+  }
+}
+
+// Written here rather than at the end, so a run that dies in layer 2 still
+// yields its rows.
+if (gapReport && gapRows.length > 0) {
+  writeFileSync(gapReport, JSON.stringify({ clips: gapRows }, null, 1));
+  console.log(`\n  ${DIM}gap measurements for ${gapRows.length} clips -> ${gapReport}${RESET}`);
+}
+
+// ---------------------------------------------------------------------------
+// Layer 2 — the state machine, driven for real
+// ---------------------------------------------------------------------------
+
+console.log(`\n${BOLD}state machine${RESET}`);
+
+
 /**
  * Every (event, tick) firing the contract promises for the clips a drive walks.
  *
@@ -615,34 +800,17 @@ function expectedFirings(states) {
   return out;
 }
 
-// Every (rig, drive) pair is independent, so the whole phase goes through the
-// same pool as the clips. Serially it is 200-odd browser launches and it doubled
-// the run time on its own.
-const driveResults = await pool(
-  rigJobs.flatMap((job) =>
-    DRIVES.map((d) => async () => {
-      const argv = [...cli.pre, "events", job.rig, "--sm", "Rig"];
-      for (const f of d.fire) argv.push("--fire", f);
-      argv.push("--advance", String(ADVANCE), "--json");
-      return { job, d, r: await run(cli.cmd, argv) };
-    }),
-  ),
-  jobs,
-);
+// The drives were rendered with the clips — every (rig, drive) pair went into
+// the batch as an `events` job — so this phase only reads. (Before the batch
+// it was 200-odd browser launches, and it doubled the run time on its own.)
+const driveResults = rigJobs.flatMap((job) => DRIVES.map((d, i) => ({ job, d, data: result(`${job.tag}/drive/${i}`) })));
 
 const byRig = new Map(rigJobs.map((j) => [j.tag, []]));
-for (const { job, d, r } of driveResults) {
+for (const { job, d, data } of driveResults) {
   const problems = byRig.get(job.tag);
   {
-    if (r.status !== 0) {
-      problems.push(`${d.fire.join("+")}: ${(r.err || r.out).trim().split("\n").pop()}`);
-      continue;
-    }
-    let data;
-    try {
-      data = JSON.parse(r.out);
-    } catch {
-      problems.push(`${d.fire.join("+")}: unreadable report`);
+    if (!data.ok) {
+      problems.push(`${d.fire.join("+")}: ${data.error ?? "the drive did not report"}`);
       continue;
     }
     // One report entry per fired step, after the "init" settle.

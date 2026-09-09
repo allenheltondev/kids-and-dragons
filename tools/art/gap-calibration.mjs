@@ -133,4 +133,65 @@ if (opened.length === 0) {
   );
 }
 
+/*
+ * The second population in the same report: pieces that come OFF.
+ *
+ * Enclosed gaps are figure with a hole in it; this is figure with a piece
+ * somewhere else, which no hole detector can see — the griffin's armour plates
+ * fly off mid-`cast` and the silhouette that is left is perfectly whole. The
+ * motion gate counts the pieces against the rest tick (rig_motion.py `islands`)
+ * and, like the walls above, this one did NOT separate on the first corpus run:
+ * the base griffin and dragonling rigs come apart as badly as the class rigs
+ * that prompted the metric, so it warns (verify-rig-motion.mjs
+ * ISLANDS_WARN_PX says where and why). It is summarised here so the run after
+ * the re-cut shows whether the shredded population collapsed, which is what
+ * would let the warning harden into a failure.
+ */
+const islands = clips.filter((c) => typeof c.islands_new_max === "number");
+if (islands.length > 0) {
+  p();
+  p(md ? "## Detached-islands calibration" : "detached-islands calibration");
+  p();
+  const came = islands.filter((c) => c.islands_new_max > 0);
+  p(`${islands.length} clips measured, ${came.length} had more solid pieces on some tick than at rest.`);
+  p();
+  const PX = [
+    [0, 1],
+    [1, 64],
+    [64, 256],
+    [256, 1024],
+    [1024, 1e9],
+  ];
+  p(md ? "| new island area at the worst tick | clips | |" : "new island area   clips");
+  if (md) p("|---|---:|---|");
+  const tallest = Math.max(
+    1,
+    ...PX.map(([lo, hi]) => islands.filter((c) => c.islands_new_px_max >= lo && c.islands_new_px_max < hi).length),
+  );
+  for (const [lo, hi] of PX) {
+    const n = islands.filter((c) => c.islands_new_px_max >= lo && c.islands_new_px_max < hi).length;
+    const label = hi > 1e8 ? `${lo}+ px` : hi === 1 ? "0 px" : `${lo}-${hi - 1} px`;
+    const bar = "#".repeat(Math.round((n / tallest) * 40));
+    p(md ? `| ${label} | ${n} | \`${bar}\` |` : `  ${label.padEnd(14)} ${String(n).padStart(5)}  ${bar}`);
+  }
+  p();
+  const worst = [...came].sort((a, b) => b.islands_new_px_max - a.islands_new_px_max).slice(0, 15);
+  if (worst.length > 0) {
+    p(md ? "### Most detached area — look at these clips" : "most detached area — look at these clips");
+    p();
+    p(md ? "| clip | new islands | area | sizes |" : "clip                                 new   area   sizes");
+    if (md) p("|---|---:|---:|---|");
+    for (const c of worst) {
+      const name = `${c.rig} ${c.clip}`;
+      const sizes = (c.islands_new_sizes ?? []).slice(0, 6).join(", ");
+      const at = c.islands_new_tick == null ? "" : ` on tick ${c.islands_new_tick}`;
+      p(
+        md
+          ? `| \`${name}\` | ${c.islands_new_max} | ${c.islands_new_px_max}px${at} | ${sizes} |`
+          : `  ${name.padEnd(34)} ${String(c.islands_new_max).padStart(4)} ${String(c.islands_new_px_max).padStart(6)}px${at}  ${sizes}`,
+      );
+    }
+  }
+}
+
 console.log(out.join("\n"));
