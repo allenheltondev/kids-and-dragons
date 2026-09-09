@@ -2,16 +2,46 @@
   "$comment": "Thornguard Sworn Griffin variant. It reuses the Griffin skeleton and hero contract; the purpose-drawn fitted cuirass follows the body while the golden wing and neck plumage remain in front.",
   "root": "body",
   "adjacency": [
-    ["body", "head"],
-    ["head", "mane"],
-    ["body", "wings"],
-    ["body", "arm_l"],
-    ["body", "arm_r"],
-    ["body", "leg_l"],
-    ["body", "leg_r"],
-    ["body", "tail"],
-    ["body", "armor_torso"],
-    ["wings", "armor_wings"]
+    [
+      "body",
+      "head"
+    ],
+    [
+      "head",
+      "mane"
+    ],
+    [
+      "body",
+      "wings"
+    ],
+    [
+      "body",
+      "arm_l"
+    ],
+    [
+      "body",
+      "arm_r"
+    ],
+    [
+      "body",
+      "leg_l"
+    ],
+    [
+      "body",
+      "leg_r"
+    ],
+    [
+      "body",
+      "tail"
+    ],
+    [
+      "body",
+      "armor_torso"
+    ],
+    [
+      "wings",
+      "armor_wings"
+    ]
   ],
   "zOrder": [
     "wings",
@@ -26,18 +56,32 @@
     "armor_torso",
     "armor_wings"
   ],
-  "origin": { "x": 512, "y": 900 },
-  "ground": { "x": 700, "y": 1088 },
+  "origin": {
+    "x": 512,
+    "y": 900
+  },
+  "ground": {
+    "x": 700,
+    "y": 1088
+  },
   "artboardWidth": 1400,
   "artboardHeight": 1400,
   "scale": 1,
   "wiring": {
-    "triggers": { "move": "walk", "helpUp": "lift" },
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
     "when": {
       "down": {
         "input": "knockedDown",
         "equals": true,
-        "from": ["idle", "hurt", "walk", "guard"]
+        "from": [
+          "idle",
+          "hurt",
+          "walk",
+          "guard"
+        ]
       },
       "revive": {
         "input": "knockedDown",
@@ -45,5 +89,10 @@
         "from": "down_loop"
       }
     }
-  }
+  },
+  "roles": {
+    "armor_torso": "none",
+    "armor_wings": "none"
+  },
+  "$rolesComment": "Armor and gear overlays ride the part they are painted on. Without this the builder's name regex reads the 'arm' in 'armor' and swings every armor part as a right arm on top of its parent's motion; rive-mcp's roles report is what surfaced it."
 }
