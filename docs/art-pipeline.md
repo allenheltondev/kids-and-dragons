@@ -181,8 +181,9 @@ metadata; by design it **renders nothing**.
 
 **`art:verify:rig:motion` (`tools/art/verify-rig-motion.mjs`) — the rig as it moves.** What the
 command above cannot see, because it is not in the file, only in the frames: a figure sinking below
-its own standing line, leaving the artboard, not moving at all, teleporting between ticks, failing
-to close a loop, or acquiring colours the approved art does not contain. Its state-machine layer
+its own standing line, leaving the artboard, coming apart into pieces, not moving at all,
+teleporting between ticks, failing to close a loop, or acquiring colours the approved art does not
+contain. Its state-machine layer
 drives every gameplay path for real, including the full knockdown lifecycle — fall, settle in
 `down_loop`, then clear the bool and get back up — and matches fired events against the contract as a *set*, so a
 dropped event fails as loudly as a mistimed one.
@@ -410,7 +411,79 @@ same pixels to two parts. At rest the copy sits on its original; when the part r
 Detached artwork is *not* the trigger, because it is often legitimate — the manticore's barbed tail
 is six components. Redundancy is. It **warns** rather than fails while 179 such fragments are still
 in the corpus; [docs/briefs/part-fragments.md](./briefs/part-fragments.md) is the re-cut worklist
-and says when to flip it.
+and says when to flip it. The flip is one flag: `python3 tools/art/verify.py --fail-fragments`
+turns the warning into a failure, and `verify_fragments.test.ts` pins that arming it changes the
+verdict and not the discriminator. It is deliberately *not* folded into `--strict`, which the deploy
+workflow runs and which is about undelivered sets — armed today, `--fail-fragments` fails 24 of
+the base sets, so it goes into `package.json`'s `art:verify` the day the re-cut lands and not before.
+
+**Parts that come off: the detached-islands measurement, and why it warns.** Every gap metric
+above is blind to the defect that prompted this one — the griffin's radiant class rigs lose their
+armour plates and feet mid-`cast`, and the silhouette left behind is perfectly whole; there is no
+hole to find, the artboard simply has more things on it. So `rig_motion.py` counts the things:
+4-connected solid components of at least `ISLAND_MIN_PX` (12px at the 512px render, an
+antialiasing crumb and nothing bigger) on every tick, **against the rest tick's count**, because
+detached artwork is legitimate — the manticore's barbed tail is six components standing still, and
+nothing else draws those barbs. What a clean rig cannot do is grow *more* of them once it moves.
+The clip reports `islands_rest`, `islands_new_max` (the most extra pieces on any tick),
+`islands_new_px_max` (the most extra area on any tick), the tick, and the piece sizes, and
+`rig_motion.test.ts` pins both halves: a plate that detaches is reported, barbs that travel with
+the tail are not.
+
+The brief was to find the line between those class rigs (1 island at rest, 8–11 mid-clip,
+1.1–1.7k px) and clean base rigs, and fail on it. Measured over all 702 clips of the 54 rigs,
+**there is no line, because the base rigs are not clean.** Four species come apart at least as
+badly in their base rigs — griffin/fledgling `cast` 5 pieces / 3,257px, griffin/sworn `walk`
+6 / 3,719px, dragonling/mythic `lift` 10 / 7,641px — and rendering those ticks shows feet detached
+and torsos in blocks, identically under the pinned renderer and the current one, so it is the art
+and not the instrument. It is [briefs/part-fragments.md](./briefs/part-fragments.md) seen from the
+other side: the fragment a part carries of another part's artwork sits on its original at rest and
+flies off when the part rotates, which is exactly an island that was not there at tick 0. The
+"clean base rig" premise held for two species: of the 104 base unicorn and bigfoot clips, 102 stay
+under 300px, and the two that do not (unicorn/radiant `hurt` 2,170px, bigfoot/fledgling `lift`
+1,220px) are single hoof-sized pieces.
+
+Distribution of `islands_new_px_max` over the 702 clips: 282 at 0, 79 at 1–63px, 111 at 64–255,
+137 at 256–1023, 93 at 1024 and above. The warning is set where the clean population and the
+shredded one part: **`ISLANDS_WARN_PX = 512`**, 1.7x above the 299px the clean unicorn and bigfoot
+clips reach and 2–15x below every clip eyeballed. At that line 169 clips warn (24%: griffin 62 of
+its 117, dragonling 45, kitsune 30, manticore 23, bigfoot 6, unicorn 3) on 40 of the 54 rigs, and
+the other 14 rigs never do. A gate that reds 40 of 54 rigs on art nobody has re-cut yet is a gate
+people learn to skip, so it warns, with the pieces and the tick printed so the frame can be opened
+without re-rendering. `gap-calibration.mjs` summarises the same numbers on every CI run. **Re-run
+the calibration after the re-cut**: if the 169 collapse to the griffin `cast` clips, the warning
+becomes a failure at the same number.
+
+**The rendering gates drive the CLI as one batch.** Every render and every state-machine drive used
+to be its own CLI process, and a process is a Chromium launch: ~2s of launch around ~50ms of
+render, 23 jobs per rig. `tools/art/rive-cli.mjs` (shared with the rig builder — the two copies are
+kept byte-identical, so a change to one is a change to both) finds the CLI and the browser and runs
+a job list through the CLI's `batch` command, one browser, `--jobs` pages (default 4, where a
+4-core box stops gaining). The motion gate builds every job for every rig up front — rest frame,
+thirteen clips, nine drives, 1,242 jobs for the corpus — and hands them over as one list; the rest
+gate batches its 54 rest frames; `art:sheet:rig` renders each rig's frames as one filmstrip job.
+Judging is untouched, and the python measurement is still one process per clip, because it was
+never the cost. Measured on a local 4-core box:
+
+| | before (one process per job) | after (`batch`) |
+|---|---|---|
+| motion gate, one rig (`unicorn --tier fledgling`) | 50s | 23s |
+| motion gate, all 54 rigs | ~45 min (extrapolated from 50s/rig) | 24 min — 13 of rendering, the rest python measurement, and the render half was timed alongside another job on the same cores |
+| rest gate, all 54 rigs | ~100s (as documented before this change; not re-measured) | 31s |
+| `art:sheet:rig`, 36 frames | ~70s (36 launches at ~2s; estimated) | 5s |
+
+One caveat governs what CI sees of this. The commit pinned in `art/rig/rive-mcp.pin.json` predates
+`batch`, and the gates do not fail on that: `runBatch` reports it, and each tool falls back to one
+process per job — the same frames, pooled as they always were, and a line in the output saying so.
+So the batch timings arrive in CI with the pin bump, not with this change, and until then the
+`rig-motion` workflow's cost is the old one.
+
+**The two rendering gates fail fast without their Python.** `art:verify:rig:rest` and
+`art:verify:rig:motion` do their pixel work in python3 with Pillow and numpy, and a machine missing
+either used to find out the expensive way: every rig rendered — 54 of them, ~100s on the rest gate —
+and then every comparison failing with the same `ModuleNotFoundError`. Both now import the two
+modules once before touching the renderer, and exit 2 with the `pip install -r requirements-dev.txt`
+line if they cannot.
 
 **Known blind spots, named honestly.** `verify.py` does not walk `assets/gear/` or the contents of
 `assets/biomes/`: the manifest declares 12 gear sets and 3 are delivered, and the gate is green.
@@ -427,8 +500,8 @@ the reasoning for pinning a *renderer* lives. Which job, and why they are split:
 | Gate | Where | When | Cost |
 |---|---|---|---|
 | `art:verify:rig` | `ci.yml`, `build` job | every PR | seconds |
-| `art:verify:rig:rest` | `ci.yml`, `rigs` job | every PR | ~40s behind ~90s of setup |
-| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig, the contract or the gate; every main push likewise | ~20 min |
+| `art:verify:rig:rest` | `ci.yml`, `rigs` job | every PR | ~30s for all 54 as one batch (~100s on the pinned, pre-`batch` CLI) behind ~90s of setup |
+| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig (base **or** class — both `assets/characters/**/rig.riv` and `assets/character-rigs/**/rig.riv` are in the path filter; for a while only the first was, so a class-rig regeneration ran no motion gate), the contract or the gate; every main push likewise | ~45 min on the pinned CLI, ~24 with `batch` — see the batch note above |
 
 Motion is a separate *workflow* rather than a third job, and the reason is `prod-deploy.yml`: it
 triggers on the CI workflow **completing**, so twenty minutes inside CI would be twenty minutes
@@ -443,10 +516,25 @@ steps later, and a lapsed credential reading as a moved repository is the kind o
 an afternoon. **When the token expires, both rig jobs go red and nothing about rigging changed** —
 mint a new one before investigating anything else.
 
-One layer inside the motion gate is still inert: its golden baseline has never been generated
-against these rigs (§6.3), so layer 3 currently prints "no baseline yet" and passes. Layers 1 and 2
-are live. Until that baseline is written, the motion gate catches what it was told to measure and
-nothing else.
+**The golden baseline, and what it actually holds.** `art/rig/motion-baseline.json` exists and
+covers **12 of the 54 rigs**: 156 clip hashes, 13 per rig, for the six base `sworn` rigs and the six
+`thornguard/sworn` class rigs (keyed `<species>/sworn/<clip>` and
+`class:thornguard/sworn/<species>/<clip>`). Nothing else is in it — no other tier, no other class —
+so read the gate's `baseline` section knowing that. Three words appear there:
+
+- `changed` — the clip is in the baseline and hashes differently now. This is the one that carries
+  information, and it is a **warning**, not a failure: a changed rig is usually somebody's intended
+  change, and the value is the short list of clips to look at.
+- `new` — the clip was measured but the baseline has no entry for it. On a full run today that is
+  **42 rigs' worth**, printed dim and counted nowhere; it is not a fault, it is the 42 rigs nobody
+  has blessed yet.
+- `gone` — the baseline has an entry no rig produced. Only reported on a full run (a filtered run
+  cannot tell "gone" from "not asked for").
+
+It is not regenerated by the tooling and should not be regenerated to make the `new` lines go
+away: a baseline is blessed by a human after a contact sheet (§6.3 step 5), because a hash blessed
+over a rig that topples off-stage pins the bug. Layers 1 and 2 are live for every rig regardless;
+layer 3 is live for the twelve.
 
 Failures print the offending file, the expected value, and the actual value. The agent should be
 able to run this itself and iterate to green without a human in the loop.
@@ -846,10 +934,13 @@ Three consequences to carry into that regeneration, the first of which is load-b
   What is **not** fixed is `BUFFER_PX = 512` in `rive-rig.ts`: the figure now occupies ~73% of the
   linear buffer, so 512 buys ~375px of character where it used to buy 512. Left alone rather than
   guessed at — the §7 spike has never been re-run at the larger stage, or on the TV.
-- **`art/rig/motion-baseline.json` does not exist yet.** The motion gate's third layer is a golden
-  baseline, and a baseline is only worth having once the thing it pins is the thing we intend to
-  ship. Generate it (`--update-baseline`) after the restage and after a human has looked at a
-  contact sheet — not before. A baseline blessed over a rig that topples off-stage pins the bug.
+- **`art/rig/motion-baseline.json` covers 12 of the 54 rigs** — the six base `sworn` rigs and the
+  six `thornguard/sworn` class rigs, 156 clips (§3.1 says what `new`, `changed` and `gone` mean in
+  the gate's output). The other 42 print as `new` and are not a fault. The motion gate's third layer
+  is a golden baseline, and a baseline is only worth having once the thing it pins is the thing we
+  intend to ship, so extend it (`--update-baseline`, optionally filtered to one species or tier)
+  only after a human has looked at that rig's contact sheet — not before. A baseline blessed over a
+  rig that topples off-stage pins the bug.
 
 ---
 
