@@ -62,11 +62,11 @@ function configFor(v: RigVariant): RigConfig {
 }
 
 describe("class-variant rig configs", () => {
-  it("declares thirty variants, each with a config", () => {
+  it("declares thirty-six variants, each with a config", () => {
     // The number is pinned on purpose: a variant dropped from the manifest
-    // takes its rig out of every gate at once, and thirty is the count the
-    // rest of the tooling (art:rig:build's "54/54") is written against.
-    expect(variants).toHaveLength(30);
+    // takes its rig out of every gate at once, and thirty-six is the count the
+    // rest of the tooling (art:rig:build's "60/60") is written against.
+    expect(variants).toHaveLength(36);
     for (const v of variants) {
       expect(existsSync(configPath(v)), `${label(v)} has no config at ${configPath(v)}`).toBe(true);
     }
