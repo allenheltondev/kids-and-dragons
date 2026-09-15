@@ -1,0 +1,51 @@
+{
+  "$comment": "Duskrunner Mythic Griffin variant rig. Canonical anatomy remains independently rigged; gear_behind_head carries the opaque hood lining between the wing and face, head_foreground restores face and crown pixels owned by the canonical wing texture, and gear_visible carries the front rim, scarf, straps, and cloak.",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["head", "head_foreground"],
+    ["head", "gear_behind_head"],
+    ["body", "wings"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "tail"],
+    ["body", "gear_visible"]
+  ],
+  "zOrder": [
+    "wings",
+    "gear_behind_head",
+    "tail",
+    "leg_l",
+    "leg_r",
+    "body",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane",
+    "head_foreground",
+    "gear_visible"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": { "move": "walk", "helpUp": "lift" },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}
