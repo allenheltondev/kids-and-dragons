@@ -27,6 +27,7 @@ BASE_PARTS = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane"
 REGISTERED_SIZE = (983, 983)
 REGISTERED_OFFSET = (5, 7)
 GEAR_ENVELOPE = (240, 380, 690, 650)
+SUBJECT_THRESHOLD = 7
 Z_ORDER = (
     "tail",
     "leg_l",
@@ -62,7 +63,9 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
         coefficients = np.linalg.lstsq(features[samples], rgb[..., channel][samples], rcond=None)[0]
         predicted[..., channel] = features @ coefficients
     residual = np.sqrt(np.mean((rgb - predicted) ** 2, axis=2))
-    connected = Image.fromarray(np.where(residual > 7, 255, 0).astype(np.uint8), "L")
+    connected = Image.fromarray(
+        np.where(residual > SUBJECT_THRESHOLD, 255, 0).astype(np.uint8), "L"
+    )
     connected = connected.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
     ImageDraw.floodfill(connected, (500, 500), 128, thresh=0)
     return Image.fromarray(np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L")
