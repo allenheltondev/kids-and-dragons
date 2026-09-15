@@ -1,0 +1,46 @@
+{
+  "$comment": "Duskrunner Mythic Bigfoot variant rig. The canonical Mythic Bigfoot anatomy remains unchanged; gear_visible is an independently extracted final-form harness. It renders above the torso but below the arms, head, and selectively foregrounded mane so no garment pixels can duplicate the hands or lower legs. Clip timing and inputs derive from assets/manifest.json rigContract (--contract --set hero).",
+  "root": "body",
+  "adjacency": [
+    ["body", "head"],
+    ["head", "mane"],
+    ["body", "arm_l"],
+    ["body", "arm_r"],
+    ["body", "leg_l"],
+    ["body", "leg_r"],
+    ["body", "gear_visible"]
+  ],
+  "zOrder": [
+    "leg_l",
+    "leg_r",
+    "body",
+    "gear_visible",
+    "arm_l",
+    "arm_r",
+    "head",
+    "mane"
+  ],
+  "origin": { "x": 512, "y": 900 },
+  "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400,
+  "artboardHeight": 1400,
+  "scale": 1,
+  "wiring": {
+    "triggers": {
+      "move": "walk",
+      "helpUp": "lift"
+    },
+    "when": {
+      "down": {
+        "input": "knockedDown",
+        "equals": true,
+        "from": ["idle", "hurt", "walk", "guard"]
+      },
+      "revive": {
+        "input": "knockedDown",
+        "equals": false,
+        "from": "down_loop"
+      }
+    }
+  }
+}

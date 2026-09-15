@@ -47,6 +47,11 @@ REGISTERED_SIZE = (951, 938)
 REGISTERED_OFFSET = (16, 35)
 GEAR_ENVELOPE = (90, 70, 720, 770)
 SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
+SUBJECT_HOLE_FILL_ENVELOPE: tuple[int, int, int, int] | None = None
+GEAR_VISIBLE_ERASE_ENVELOPES: tuple[tuple[int, int, int, int], ...] = ()
+PORTRAIT_GREEN_RESTORE_ENVELOPES: tuple[
+    tuple[str, tuple[int, int, int, int], int, int], ...
+] = ()
 CLIP_LOWER_BODY_TO_BASE = True
 Z_ORDER = (
     "tail",
@@ -179,6 +184,20 @@ def main() -> None:
         base_union = np.maximum(base_union, np.asarray(base_part.getchannel("A")))
 
     subject_array = np.asarray(subject).copy()
+    subject_hole_fill = np.zeros_like(subject_array, dtype=bool)
+    if SUBJECT_HOLE_FILL_ENVELOPE is not None:
+        inverse = Image.fromarray(255 - subject_array, "L").copy()
+        exterior = inverse.copy()
+        ImageDraw.floodfill(exterior, (0, 0), 128, thresh=0)
+        enclosed_holes = np.asarray(exterior) == 255
+        left, top, right, bottom = SUBJECT_HOLE_FILL_ENVELOPE
+        envelope = np.zeros_like(enclosed_holes)
+        envelope[top:bottom, left:right] = True
+        enclosed_mask = Image.fromarray(
+            np.where(enclosed_holes & envelope, 255, 0).astype(np.uint8), "L"
+        ).filter(ImageFilter.MaxFilter(5))
+        subject_hole_fill = (np.asarray(enclosed_mask) > 0) & envelope
+        subject_array[subject_hole_fill] = 255
     if CLIP_LOWER_BODY_TO_BASE:
         yy = np.indices((CANVAS[1], CANVAS[0]))[0]
         lower_body = yy > 800
@@ -186,6 +205,29 @@ def main() -> None:
     subject = Image.fromarray(subject_array.astype(np.uint8), "L")
 
     portrait_array = np.asarray(portrait).copy()
+    if subject_hole_fill.any():
+        remaining = subject_hole_fill.copy()
+        known = ~remaining
+        for _ in range(64):
+            color_sum = np.zeros_like(portrait_array, dtype=np.float64)
+            sample_count = np.zeros(subject_array.shape, dtype=np.float64)
+            for dy, dx in (
+                (-1, -1), (-1, 0), (-1, 1),
+                (0, -1),             (0, 1),
+                (1, -1),  (1, 0),    (1, 1),
+            ):
+                neighbor_known = np.roll(known, (dy, dx), axis=(0, 1))
+                neighbor_rgb = np.roll(portrait_array, (dy, dx), axis=(0, 1))
+                color_sum += neighbor_rgb * neighbor_known[..., None]
+                sample_count += neighbor_known
+            fillable = remaining & (sample_count > 0)
+            if not fillable.any():
+                break
+            portrait_array[fillable] = np.rint(
+                color_sum[fillable] / sample_count[fillable][:, None]
+            ).astype(np.uint8)
+            remaining[fillable] = False
+            known[fillable] = True
     base_array = np.asarray(base_assembled)[..., :3]
     clipped_anatomy = (subject_array == 0) & (base_union > 0)
     portrait_array[clipped_anatomy] = base_array[clipped_anatomy]
@@ -208,11 +250,29 @@ def main() -> None:
         parts[name] = masked_portrait(portrait, base_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
+    for left, top, right, bottom in GEAR_VISIBLE_ERASE_ENVELOPES:
+        visible[top:bottom, left:right] = 0
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
+    for name, envelope, minimum_green, dominance in PORTRAIT_GREEN_RESTORE_ENVELOPES:
+        left, top, right, bottom = envelope
+        restored = np.asarray(parts[name]).copy()
+        rgb = np.asarray(portrait)
+        green = (
+            (rgb[..., 1] >= minimum_green)
+            & (rgb[..., 1].astype(np.int16) - rgb[..., 0].astype(np.int16) >= dominance)
+            & (rgb[..., 1].astype(np.int16) - rgb[..., 2].astype(np.int16) >= dominance)
+            & (np.asarray(subject) > 0)
+        )
+        restore = np.zeros_like(green)
+        restore[top:bottom, left:right] = green[top:bottom, left:right]
+        restored[restore, :3] = rgb[restore]
+        restored[restore, 3] = np.asarray(subject)[restore]
+        parts[name] = Image.fromarray(restored.astype(np.uint8), "RGBA")
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)
     review_board(assembled)

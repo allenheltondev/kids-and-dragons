@@ -14,6 +14,13 @@ from rig_residuals import keep_body_residual
 ROOT = Path(__file__).resolve().parents[2]
 CANVAS = (1024, 1024)
 SOURCE = ROOT / "assets/gear-portraits/duskrunner/sworn/griffin.png"
+GEAR_OVERLAY_SOURCE: Path | None = None
+GEAR_OVERLAY_ERASE_SOURCE: Path | None = None
+GEAR_BEHIND_HEAD_SOURCE: Path | None = None
+GEAR_BEHIND_HEAD_CLIP_PARTS: tuple[str, ...] = ()
+GEAR_BEHIND_HEAD_ERASES_OVERLAY = True
+HEAD_FOREGROUND_POLYGON: tuple[tuple[int, int], ...] = ()
+HEAD_FOREGROUND_GOLD_KEEP_ENVELOPE: tuple[int, int, int, int] | None = None
 BASE = ROOT / "assets/characters/griffin/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/griffin"
 PARTS = OUT / "parts"
@@ -165,12 +172,71 @@ def main() -> None:
     for stale in PARTS.glob("*.png"):
         stale.unlink()
     portrait = approved_portrait()
+    registered_gear = None
+    registered_gear_alpha = None
+    registered_gear_erase_alpha = None
+    registered_gear_behind = None
+    registered_gear_behind_alpha = None
+    if GEAR_OVERLAY_SOURCE is not None:
+        gear = Image.open(GEAR_OVERLAY_SOURCE).convert("RGBA").resize(
+            CANVAS,
+            Image.Resampling.LANCZOS,
+        )
+        registered_gear, registered_gear_alpha = register_subject(
+            gear.convert("RGB"),
+            gear.getchannel("A"),
+        )
+    if GEAR_OVERLAY_ERASE_SOURCE is not None:
+        gear_erase = Image.open(GEAR_OVERLAY_ERASE_SOURCE).convert("RGBA").resize(
+            CANVAS,
+            Image.Resampling.LANCZOS,
+        )
+        _, registered_gear_erase_alpha = register_subject(
+            gear_erase.convert("RGB"),
+            gear_erase.getchannel("A"),
+        )
+    if GEAR_BEHIND_HEAD_SOURCE is not None:
+        gear_behind = Image.open(GEAR_BEHIND_HEAD_SOURCE).convert("RGBA").resize(
+            CANVAS,
+            Image.Resampling.LANCZOS,
+        )
+        registered_gear_behind, registered_gear_behind_alpha = register_subject(
+            gear_behind.convert("RGB"),
+            gear_behind.getchannel("A"),
+        )
     portrait, subject = register_subject(portrait, subject_alpha(portrait))
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
         for name in BASE_PARTS
     }
+    head_foreground = None
+    head_foreground_alpha = None
+    if HEAD_FOREGROUND_POLYGON:
+        head_foreground_alpha = Image.new("L", CANVAS, 0)
+        ImageDraw.Draw(head_foreground_alpha).polygon(HEAD_FOREGROUND_POLYGON, fill=255)
+        head_foreground_alpha = Image.fromarray(
+            np.minimum(
+                np.asarray(head_foreground_alpha),
+                np.asarray(base_assembled.getchannel("A")),
+            ).astype(np.uint8),
+            "L",
+        )
+        if HEAD_FOREGROUND_GOLD_KEEP_ENVELOPE is not None:
+            foreground_array = np.asarray(head_foreground_alpha).copy()
+            assembled_rgb = np.asarray(base_assembled)[..., :3]
+            gold = (
+                (assembled_rgb[..., 0] > 150)
+                & (assembled_rgb[..., 1] > 100)
+                & (assembled_rgb[..., 2] < 140)
+            )
+            left, top, right, bottom = HEAD_FOREGROUND_GOLD_KEEP_ENVELOPE
+            keep_gold = np.zeros(gold.shape, dtype=bool)
+            keep_gold[top:bottom, left:right] = True
+            foreground_array[gold & ~keep_gold] = 0
+            head_foreground_alpha = Image.fromarray(foreground_array, "L")
+        head_foreground = base_assembled.copy()
+        head_foreground.putalpha(head_foreground_alpha)
     base_union = np.zeros((CANVAS[1], CANVAS[0]), dtype=np.uint8)
     for base_part in base_parts.values():
         base_union = np.maximum(base_union, np.asarray(base_part.getchannel("A")))
@@ -196,20 +262,53 @@ def main() -> None:
     for name in BASE_PARTS:
         base_alpha = base_parts[name].getchannel("A")
         part_alpha_array = np.asarray(base_alpha).copy()
+        # Keep the canonical head pixels beneath its foreground cutout. The
+        # duplicate pixels are visually identical, and their overlap gives the
+        # Rive builder a measured attachment point instead of a guessed pivot.
+        if head_foreground_alpha is not None and name != "head":
+            part_alpha_array = np.minimum(
+                part_alpha_array,
+                255 - np.asarray(head_foreground_alpha),
+            )
         if SUBJECT_CLIP_ENVELOPE is not None:
             left, top, right, bottom = SUBJECT_CLIP_ENVELOPE
             part_alpha_array[top:bottom, left:right] = np.minimum(
                 part_alpha_array[top:bottom, left:right],
                 subject_array[top:bottom, left:right],
             )
+        if registered_gear_behind_alpha is not None and name in GEAR_BEHIND_HEAD_CLIP_PARTS:
+            part_alpha_array = np.minimum(
+                part_alpha_array,
+                255 - np.asarray(registered_gear_behind_alpha),
+            )
         part_alpha = Image.fromarray(part_alpha_array.astype(np.uint8), "L")
         anatomy_alpha = Image.fromarray(
             np.maximum(np.asarray(anatomy_alpha), np.asarray(part_alpha)).astype(np.uint8), "L"
         )
-        parts[name] = masked_portrait(portrait, part_alpha)
+        if GEAR_OVERLAY_SOURCE is not None:
+            parts[name] = base_parts[name].copy()
+            parts[name].putalpha(part_alpha)
+        else:
+            parts[name] = masked_portrait(portrait, part_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
-    visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
-    visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    if GEAR_OVERLAY_SOURCE is not None:
+        visible_alpha_array = np.asarray(registered_gear_alpha).copy()
+        if registered_gear_erase_alpha is not None:
+            visible_alpha_array = np.minimum(
+                visible_alpha_array,
+                255 - np.asarray(registered_gear_erase_alpha),
+            )
+        if registered_gear_behind_alpha is not None and GEAR_BEHIND_HEAD_ERASES_OVERLAY:
+            visible_alpha_array = np.minimum(
+                visible_alpha_array,
+                255 - np.asarray(registered_gear_behind_alpha),
+            )
+        visible_alpha = Image.fromarray(visible_alpha_array.astype(np.uint8), "L")
+        gear_portrait = registered_gear
+    else:
+        visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
+        visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+        gear_portrait = portrait
     # Apply intentional per-part trims after residual assignment so an erased
     # overlap is not immediately reassigned to the body fallback.
     for erase_part, envelope in PART_ALPHA_ERASE_ENVELOPES:
@@ -220,7 +319,16 @@ def main() -> None:
         parts[erase_part].putalpha(part_alpha)
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
-    parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
+    if registered_gear_behind_alpha is not None:
+        parts["gear_behind_head"] = masked_portrait(
+            registered_gear_behind,
+            registered_gear_behind_alpha,
+        )
+        parts["gear_behind_head"].save(PARTS / "gear_behind_head.png", optimize=True)
+    if head_foreground is not None:
+        parts["head_foreground"] = head_foreground
+        parts["head_foreground"].save(PARTS / "head_foreground.png", optimize=True)
+    parts["gear_visible"] = masked_portrait(gear_portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)

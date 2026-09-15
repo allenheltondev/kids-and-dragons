@@ -32,7 +32,16 @@ REGISTERED_OFFSET = (35, -57)
 GEAR_ENVELOPE = (60, 40, 690, 760)
 GEAR_BEHIND_ENVELOPE: tuple[int, int, int, int] | None = None
 GEAR_BEHIND_SUBJECT_MAX_GREEN: int | None = None
+GEAR_BEHIND_ONLY_DARK = False
+GEAR_BEHIND_EXCLUDE_CYAN = False
 SUBJECT_RESIDUAL_THRESHOLD = 7
+BACKGROUND_KEY_COLOR: tuple[int, int, int] | None = None
+BACKGROUND_KEY_INNER_DISTANCE = 5
+BACKGROUND_KEY_OUTER_DISTANCE = 18
+BACKGROUND_KEY_SOLID_SUBJECT = False
+BACKGROUND_KEY_SEED = (500, 500)
+BACKGROUND_KEY_CLOSE_SIZE = 0
+BACKGROUND_KEY_BLUR_RADIUS = 0.0
 SUBJECT_ALLOWED_DILATION = 0
 SUBJECT_OVERHANG_ENVELOPE: tuple[int, int, int, int] | None = None
 SUBJECT_OVERHANG_DILATION = 0
@@ -53,7 +62,15 @@ BASE_LIGHT_RESTORE_FEATHER = 0
 BASE_EXACT_RESTORE_POLYGONS: tuple[tuple[tuple[int, int], ...], ...] = ()
 BASE_EXACT_RESTORE_FEATHER = 0
 HEAD_GEAR_ENVELOPE: tuple[int, int, int, int] | None = None
+GEAR_VISIBLE_BODY_OVERLAP_ENVELOPE: tuple[int, int, int, int] | None = None
+GEAR_BEHIND_BODY_OVERLAP_ENVELOPE: tuple[int, int, int, int] | None = None
 PART_ALPHA_ERASE_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
+PART_ALPHA_ERASE_POLYGONS: tuple[
+    tuple[str, tuple[tuple[int, int], ...]], ...
+] = ()
+PART_ALPHA_ERASE_NON_CYAN_POLYGONS: tuple[
+    tuple[str, tuple[tuple[int, int], ...]], ...
+] = ()
 Z_ORDER = (
     "tail",
     "gear_behind",
@@ -76,6 +93,45 @@ def approved_portrait() -> Image.Image:
 def subject_alpha(portrait: Image.Image) -> Image.Image:
     """Remove the smooth purple portrait backdrop and keep the connected figure."""
     rgb = np.asarray(portrait).astype(np.float64)
+    if BACKGROUND_KEY_COLOR is not None:
+        background = np.asarray(BACKGROUND_KEY_COLOR, dtype=np.float64)
+        distance = np.sqrt(np.sum((rgb - background) ** 2, axis=2))
+        if BACKGROUND_KEY_SOLID_SUBJECT:
+            connected = Image.fromarray(
+                np.where(distance >= BACKGROUND_KEY_INNER_DISTANCE, 255, 0).astype(np.uint8),
+                "L",
+            ).copy()
+            ImageDraw.floodfill(connected, BACKGROUND_KEY_SEED, 128, thresh=0)
+            silhouette = Image.fromarray(
+                np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8),
+                "L",
+            )
+            return silhouette.filter(ImageFilter.GaussianBlur(0.35))
+        alpha = np.clip(
+            (distance - BACKGROUND_KEY_INNER_DISTANCE)
+            / (BACKGROUND_KEY_OUTER_DISTANCE - BACKGROUND_KEY_INNER_DISTANCE),
+            0,
+            1,
+        )
+        alpha_array = np.rint(alpha * 255).astype(np.uint8)
+        connected = Image.fromarray(
+            np.where(alpha_array >= 128, 255, 0).astype(np.uint8), "L"
+        ).copy()
+        ImageDraw.floodfill(connected, BACKGROUND_KEY_SEED, 128, thresh=0)
+        subject_support = Image.fromarray(
+            np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L"
+        ).filter(ImageFilter.MaxFilter(5))
+        alpha_array = np.minimum(alpha_array, np.asarray(subject_support))
+        alpha_image = Image.fromarray(alpha_array, "L")
+        if BACKGROUND_KEY_CLOSE_SIZE >= 3:
+            alpha_image = alpha_image.filter(
+                ImageFilter.MaxFilter(BACKGROUND_KEY_CLOSE_SIZE)
+            ).filter(ImageFilter.MinFilter(BACKGROUND_KEY_CLOSE_SIZE))
+        if BACKGROUND_KEY_BLUR_RADIUS > 0:
+            alpha_image = alpha_image.filter(
+                ImageFilter.GaussianBlur(BACKGROUND_KEY_BLUR_RADIUS)
+            )
+        return alpha_image
     yy, xx = np.indices((CANVAS[1], CANVAS[0]))
     x = (xx - CANVAS[0] / 2) / (CANVAS[0] / 2)
     y = (yy - CANVAS[1] / 2) / (CANVAS[1] / 2)
@@ -319,6 +375,36 @@ def main() -> None:
                 continue
             left, top, right, bottom = envelope
             part_alpha_array[top:bottom, left:right] = 0
+        for erase_part, polygon in PART_ALPHA_ERASE_POLYGONS:
+            if erase_part != name:
+                continue
+            erase_mask = Image.new("L", CANVAS, 0)
+            ImageDraw.Draw(erase_mask).polygon(polygon, fill=255)
+            part_alpha_array = np.minimum(
+                part_alpha_array,
+                255 - np.asarray(erase_mask),
+            )
+        for erase_part, polygon in PART_ALPHA_ERASE_NON_CYAN_POLYGONS:
+            if erase_part != name:
+                continue
+            polygon_mask = Image.new("L", CANVAS, 0)
+            ImageDraw.Draw(polygon_mask).polygon(polygon, fill=255)
+            portrait_rgb = np.asarray(portrait)
+            red = portrait_rgb[..., 0].astype(np.int16)
+            green = portrait_rgb[..., 1].astype(np.int16)
+            blue = portrait_rgb[..., 2].astype(np.int16)
+            cyan = (
+                (green >= 105)
+                & (blue >= 105)
+                & ((green - red) >= 25)
+                & ((blue - red) >= 25)
+            )
+            garment_overlap = (
+                (np.asarray(polygon_mask) > 0)
+                & (subject_array > 0)
+                & ~cyan
+            )
+            part_alpha_array[garment_overlap] = 0
         if SUBJECT_CLIP_ENVELOPE is not None:
             left, top, right, bottom = SUBJECT_CLIP_ENVELOPE
             part_alpha_array[top:bottom, left:right] = np.minimum(
@@ -344,16 +430,48 @@ def main() -> None:
                 subject_array,
                 0,
             ).astype(np.uint8)
-            behind_source = np.maximum(behind_source, dark_subject)
+            behind_source = (
+                dark_subject
+                if GEAR_BEHIND_ONLY_DARK
+                else np.maximum(behind_source, dark_subject)
+            )
+        if GEAR_BEHIND_EXCLUDE_CYAN:
+            portrait_rgb = np.asarray(portrait)
+            red = portrait_rgb[..., 0].astype(np.int16)
+            green = portrait_rgb[..., 1].astype(np.int16)
+            blue = portrait_rgb[..., 2].astype(np.int16)
+            cyan = (
+                (green >= 105)
+                & (blue >= 105)
+                & ((green - red) >= 25)
+                & ((blue - red) >= 25)
+            )
+            behind_source = np.where(cyan, 0, behind_source).astype(np.uint8)
         behind_array = np.where(behind_mask, behind_source, 0).astype(np.uint8)
         visible = np.where(behind_mask, 0, visible).astype(np.uint8)
         behind_alpha = Image.fromarray(behind_array, "L")
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    if GEAR_VISIBLE_BODY_OVERLAP_ENVELOPE is not None:
+        left, top, right, bottom = GEAR_VISIBLE_BODY_OVERLAP_ENVELOPE
+        overlap = np.zeros_like(subject_array, dtype=np.uint8)
+        body_alpha = np.asarray(parts["body"].getchannel("A"))
+        overlap[top:bottom, left:right] = body_alpha[top:bottom, left:right]
+        visible_alpha = Image.fromarray(
+            np.maximum(np.asarray(visible_alpha), overlap).astype(np.uint8), "L"
+        )
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
     if behind_alpha is not None:
+        if GEAR_BEHIND_BODY_OVERLAP_ENVELOPE is not None:
+            left, top, right, bottom = GEAR_BEHIND_BODY_OVERLAP_ENVELOPE
+            overlap = np.zeros_like(subject_array, dtype=np.uint8)
+            body_alpha = np.asarray(parts["body"].getchannel("A"))
+            overlap[top:bottom, left:right] = body_alpha[top:bottom, left:right]
+            behind_alpha = Image.fromarray(
+                np.maximum(np.asarray(behind_alpha), overlap).astype(np.uint8), "L"
+            )
         parts["gear_behind"] = masked_portrait(portrait, behind_alpha)
         parts["gear_behind"].save(PARTS / "gear_behind.png", optimize=True)
     if HEAD_GEAR_ENVELOPE is not None:
