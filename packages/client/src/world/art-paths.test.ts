@@ -171,15 +171,15 @@ describe("class rig variants", () => {
     expect(characterWorldArtUrl("manticore", "sworn", "duskrunner")).toBe(
       "/assets/character-rigs/duskrunner/sworn/manticore/assembled.png",
     );
+    expect(characterRigUrl("manticore", "mythic", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/mythic/manticore/rig.riv",
+    );
+    expect(characterWorldArtUrl("griffin", "mythic", "duskrunner")).toBe(
+      "/assets/character-rigs/duskrunner/mythic/griffin/assembled.png",
+    );
   });
 
   it("keeps every undeclared combination on its species rig", () => {
-    expect(characterRigUrl("manticore", "mythic", "duskrunner")).toBe(
-      characterRigUrl("manticore", "mythic"),
-    );
-    expect(characterRigUrl("griffin", "mythic", "duskrunner")).toBe(
-      characterRigUrl("griffin", "mythic"),
-    );
     expect(characterWorldArtUrl("bigfoot", "sworn", "starweaver")).toBe(
       characterArtUrl("bigfoot", "sworn"),
     );
