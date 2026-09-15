@@ -14,6 +14,7 @@ from rig_residuals import keep_body_residual
 ROOT = Path(__file__).resolve().parents[2]
 CANVAS = (1024, 1024)
 SOURCE = ROOT / "assets/gear-portraits/duskrunner/sworn/bigfoot.png"
+GEAR_OVERLAY_SOURCE: Path | None = None
 BASE = ROOT / "assets/characters/bigfoot/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/bigfoot"
 PARTS = OUT / "parts"
@@ -31,6 +32,8 @@ REGISTERED_OFFSET = (21, 56)
 GEAR_ENVELOPE = (290, 280, 750, 730)
 SUBJECT_CLOSE_SIZE = 1
 SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
+MANE_GEAR_REVEAL_REGIONS: tuple[tuple[int, int, int, int], ...] = ()
+GEAR_VISIBLE_POLYGON: tuple[tuple[int, int], ...] = ()
 Z_ORDER = (
     "leg_l",
     "leg_r",
@@ -149,6 +152,17 @@ def main() -> None:
     for stale in PARTS.glob("*.png"):
         stale.unlink()
     portrait = approved_portrait()
+    registered_gear = None
+    registered_gear_alpha = None
+    if GEAR_OVERLAY_SOURCE is not None:
+        gear = Image.open(GEAR_OVERLAY_SOURCE).convert("RGBA").resize(
+            CANVAS,
+            Image.Resampling.LANCZOS,
+        )
+        registered_gear, registered_gear_alpha = register_subject(
+            gear.convert("RGB"),
+            gear.getchannel("A"),
+        )
     portrait, subject = register_subject(portrait, subject_alpha(portrait))
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
@@ -186,13 +200,38 @@ def main() -> None:
         anatomy_alpha = Image.fromarray(
             np.maximum(np.asarray(anatomy_alpha), np.asarray(part_alpha)).astype(np.uint8), "L"
         )
-        parts[name] = masked_portrait(portrait, part_alpha)
+        part = masked_portrait(portrait, part_alpha)
+        if GEAR_OVERLAY_SOURCE is not None:
+            part = base_parts[name].copy()
+            part.putalpha(part_alpha)
+        parts[name] = part
         parts[name].save(PARTS / f"{name}.png", optimize=True)
-    visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
-    visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    if GEAR_OVERLAY_SOURCE is not None:
+        visible_alpha = registered_gear_alpha
+        gear_portrait = registered_gear
+    else:
+        visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
+        visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+        gear_portrait = portrait
+    if GEAR_VISIBLE_POLYGON:
+        visible_mask = Image.new("L", CANVAS, 0)
+        ImageDraw.Draw(visible_mask).polygon(GEAR_VISIBLE_POLYGON, fill=255)
+        visible_alpha = Image.fromarray(
+            np.minimum(np.asarray(visible_alpha), np.asarray(visible_mask)).astype(np.uint8),
+            "L",
+        )
+    if MANE_GEAR_REVEAL_REGIONS:
+        mane_alpha = np.asarray(parts["mane"].getchannel("A")).copy()
+        gear_alpha = np.asarray(visible_alpha)
+        for left, top, right, bottom in MANE_GEAR_REVEAL_REGIONS:
+            mane_alpha[top:bottom, left:right] = np.minimum(
+                mane_alpha[top:bottom, left:right],
+                255 - gear_alpha[top:bottom, left:right],
+            )
+        parts["mane"].putalpha(Image.fromarray(mane_alpha.astype(np.uint8), "L"))
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
-    parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
+    parts["gear_visible"] = masked_portrait(gear_portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)
