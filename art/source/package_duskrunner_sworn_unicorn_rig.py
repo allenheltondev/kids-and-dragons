@@ -27,6 +27,12 @@ BASE_PARTS = ("tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane"
 REGISTERED_SIZE = (983, 983)
 REGISTERED_OFFSET = (5, 7)
 GEAR_ENVELOPE = (240, 380, 690, 650)
+GEAR_VISIBLE_KEEP_ENVELOPE: tuple[int, int, int, int] | None = None
+DETACHED_PART_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
+BASE_PARTS_BELOW_Y: tuple[str, ...] = ()
+BASE_PARTS_CUT_Y = 0
+LOWER_BODY_BASE_DILATION = 1
+LOWER_BODY_REJECT_NAVY = False
 SUBJECT_THRESHOLD = 7
 Z_ORDER = (
     "tail",
@@ -46,8 +52,8 @@ def approved_portrait() -> Image.Image:
     return Image.open(SOURCE).convert("RGB").resize(CANVAS, Image.Resampling.LANCZOS)
 
 
-def subject_alpha(portrait: Image.Image) -> Image.Image:
-    """Remove the smooth navy portrait backdrop and keep the connected figure."""
+def foreground_candidates(portrait: Image.Image) -> Image.Image:
+    """Remove the smooth navy portrait backdrop, retaining detached candidates."""
     rgb = np.asarray(portrait).astype(np.float64)
     yy, xx = np.indices((CANVAS[1], CANVAS[0]))
     x = (xx - CANVAS[0] / 2) / (CANVAS[0] / 2)
@@ -67,6 +73,12 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
         np.where(residual > SUBJECT_THRESHOLD, 255, 0).astype(np.uint8), "L"
     )
     connected = connected.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
+    return connected
+
+
+def subject_alpha(portrait: Image.Image) -> Image.Image:
+    """Keep the connected creature while excluding detached props and backdrop."""
+    connected = foreground_candidates(portrait)
     ImageDraw.floodfill(connected, (500, 500), 128, thresh=0)
     return Image.fromarray(np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L")
 
@@ -145,8 +157,13 @@ def main() -> None:
     PARTS.mkdir(parents=True, exist_ok=True)
     for stale in PARTS.glob("*.png"):
         stale.unlink()
-    portrait = approved_portrait()
-    portrait, subject = register_subject(portrait, subject_alpha(portrait))
+    source_portrait = approved_portrait()
+    detached_candidates = foreground_candidates(source_portrait)
+    portrait, subject = register_subject(source_portrait, subject_alpha(source_portrait))
+    registered_source, _ = register_subject(
+        source_portrait, Image.new("L", CANVAS, 255)
+    )
+    _, registered_detached = register_subject(source_portrait, detached_candidates)
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
         for name in BASE_PARTS
@@ -160,7 +177,24 @@ def main() -> None:
     subject_array = np.asarray(subject).copy()
     yy = np.indices((CANVAS[1], CANVAS[0]))[0]
     lower_body = yy > 800
-    subject_array[lower_body] = np.minimum(subject_array[lower_body], base_union[lower_body])
+    lower_guide = Image.fromarray(base_union, "L")
+    if LOWER_BODY_BASE_DILATION > 1:
+        lower_guide = lower_guide.filter(ImageFilter.MaxFilter(LOWER_BODY_BASE_DILATION))
+    lower_guide_array = np.asarray(lower_guide)
+    subject_array[lower_body] = np.minimum(
+        subject_array[lower_body], lower_guide_array[lower_body]
+    )
+    if LOWER_BODY_REJECT_NAVY:
+        registered_rgb = np.asarray(portrait)
+        red = registered_rgb[..., 0].astype(np.uint16)
+        green = registered_rgb[..., 1].astype(np.uint16)
+        blue = registered_rgb[..., 2].astype(np.uint16)
+        navy_shadow = (
+            (blue < 72)
+            & (blue * 5 > red * 6)
+            & (blue * 5 > green * 6)
+        )
+        subject_array[lower_body & navy_shadow] = 0
     subject = Image.fromarray(subject_array.astype(np.uint8), "L")
 
     anatomy_alpha = Image.new("L", CANVAS, 0)
@@ -175,12 +209,36 @@ def main() -> None:
         )
         parts[name] = masked_portrait(portrait, part_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
+    anatomy_parts = {name: part.copy() for name, part in parts.items()}
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
     visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    if GEAR_VISIBLE_KEEP_ENVELOPE is not None:
+        left, top, right, bottom = GEAR_VISIBLE_KEEP_ENVELOPE
+        kept = np.zeros_like(np.asarray(visible_alpha))
+        kept[top:bottom, left:right] = np.asarray(visible_alpha)[top:bottom, left:right]
+        visible_alpha = Image.fromarray(kept.astype(np.uint8), "L")
+    # Residual assignment can extend a limb layer beyond its canonical mask.
+    # Rebuild the lower limb from the original painted anatomy over the
+    # canonical layer: the painted contour stays continuous while canonical
+    # pixels fill any clipped hoof edges.
+    for name in BASE_PARTS_BELOW_Y:
+        painted = np.asarray(parts[name]).copy()
+        restored = Image.alpha_composite(base_parts[name], anatomy_parts[name])
+        canonical_backed = np.asarray(restored)
+        painted[BASE_PARTS_CUT_Y:, :, :] = canonical_backed[BASE_PARTS_CUT_Y:, :, :]
+        parts[name] = Image.fromarray(painted.astype(np.uint8), "RGBA")
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
+    for name, envelope in DETACHED_PART_ENVELOPES:
+        left, top, right, bottom = envelope
+        detached = np.zeros_like(np.asarray(registered_detached))
+        detached[top:bottom, left:right] = np.asarray(registered_detached)[top:bottom, left:right]
+        parts[name] = masked_portrait(
+            registered_source, Image.fromarray(detached.astype(np.uint8), "L")
+        )
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)
     review_board(assembled)
