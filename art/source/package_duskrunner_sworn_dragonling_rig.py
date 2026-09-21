@@ -28,6 +28,17 @@ REVIEW_NOTE = (
 BASE_PARTS = ("wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane")
 EDGE_ALPHA_CLIP_TOP = 0
 EDGE_ALPHA_CLIP_PARTS: tuple[str, ...] = ()
+DETACHED_PART_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
+COLOR_TRIM_DETACHED_PARTS: tuple[str, ...] = ()
+KEEP_BODY_RESIDUAL = True
+SOURCE_ALPHA_EXTEND_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
+RESTORE_NAVY_ANATOMY = False
+SUBJECT_CLIP_ENVELOPES: tuple[tuple[int, int, int, int], ...] = ()
+CANONICAL_COLOR_RESTORE_ENVELOPES: tuple[tuple[int, int, int, int], ...] = ()
+CANONICAL_PARTS: tuple[str, ...] = ()
+EXTRACT_TEAL_GEAR = False
+GEAR_OVERLAY_POLYGON: tuple[tuple[int, int], ...] = ()
+GEAR_OVERLAY_ERASE_ENVELOPES: tuple[tuple[int, int, int, int], ...] = ()
 
 # Registered against the canonical Sworn rest pose using unchanged landmarks
 # on the face, wings, feet, and tail. The approved portrait needs only a small
@@ -53,8 +64,8 @@ def approved_portrait() -> Image.Image:
     return Image.open(SOURCE).convert("RGB").resize(CANVAS, Image.Resampling.LANCZOS)
 
 
-def subject_alpha(portrait: Image.Image) -> Image.Image:
-    """Remove the smooth navy portrait backdrop and keep the connected figure."""
+def foreground_candidates(portrait: Image.Image) -> Image.Image:
+    """Remove the smooth navy backdrop, retaining detached props."""
     rgb = np.asarray(portrait).astype(np.float64)
     yy, xx = np.indices((CANVAS[1], CANVAS[0]))
     x = (xx - CANVAS[0] / 2) / (CANVAS[0] / 2)
@@ -75,6 +86,12 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
     # the mane and floor shadow while preserving the soft creature outline.
     connected = Image.fromarray(np.where(residual > 11, 255, 0).astype(np.uint8), "L")
     connected = connected.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
+    return connected
+
+
+def subject_alpha(portrait: Image.Image) -> Image.Image:
+    """Keep the connected creature, excluding detached props."""
+    connected = foreground_candidates(portrait)
     ImageDraw.floodfill(connected, (500, 500), 128, thresh=0)
     return Image.fromarray(np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L")
 
@@ -150,7 +167,9 @@ def main() -> None:
     PARTS.mkdir(parents=True, exist_ok=True)
     for stale in PARTS.glob("*.png"):
         stale.unlink()
-    portrait = approved_portrait()
+    source_portrait = approved_portrait()
+    detached_candidates = foreground_candidates(source_portrait)
+    portrait = source_portrait
     registered_gear = None
     registered_gear_alpha = None
     if GEAR_OVERLAY_SOURCE is not None:
@@ -163,6 +182,10 @@ def main() -> None:
             gear.getchannel("A"),
         )
     portrait, subject = register_subject(portrait, subject_alpha(portrait))
+    registered_source, _ = register_subject(
+        source_portrait, Image.new("L", CANVAS, 255)
+    )
+    _, registered_detached = register_subject(source_portrait, detached_candidates)
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
@@ -196,6 +219,17 @@ def main() -> None:
     base_array = np.asarray(base_assembled)[..., :3]
     clipped_anatomy = (subject_array == 0) & (base_union > 0)
     portrait_array[clipped_anatomy] = base_array[clipped_anatomy]
+    if RESTORE_NAVY_ANATOMY:
+        red = portrait_array[..., 0].astype(np.int16)
+        green = portrait_array[..., 1].astype(np.int16)
+        blue = portrait_array[..., 2].astype(np.int16)
+        navy = (blue > red + 8) & (blue > green + 4)
+        portrait_array[navy & (base_union > 0)] = base_array[navy & (base_union > 0)]
+    for left, top, right, bottom in CANONICAL_COLOR_RESTORE_ENVELOPES:
+        region = base_union[top:bottom, left:right] > 0
+        target = portrait_array[top:bottom, left:right]
+        fallback = base_array[top:bottom, left:right]
+        target[region] = fallback[region]
     portrait = Image.fromarray(portrait_array.astype(np.uint8), "RGB")
 
     anatomy_alpha = Image.new("L", CANVAS, 0)
@@ -204,11 +238,25 @@ def main() -> None:
         base_alpha = base_parts[name].getchannel("A")
         # Keep the canonical part alpha whole. The subject matte is deliberately
         # not allowed to erase anatomy pixels after chroma extraction.
-        part_alpha = base_alpha
+        part_alpha_array = np.asarray(base_alpha).copy()
+        for left, top, right, bottom in SUBJECT_CLIP_ENVELOPES:
+            part_alpha_array[top:bottom, left:right] = np.minimum(
+                part_alpha_array[top:bottom, left:right],
+                subject_array[top:bottom, left:right],
+            )
+        for extend_name, (left, top, right, bottom) in SOURCE_ALPHA_EXTEND_ENVELOPES:
+            if name == extend_name:
+                part_alpha_array[top:bottom, left:right] = np.maximum(
+                    part_alpha_array[top:bottom, left:right],
+                    subject_array[top:bottom, left:right],
+                )
+        part_alpha = Image.fromarray(part_alpha_array.astype(np.uint8), "L")
         anatomy_alpha = Image.fromarray(
             np.maximum(np.asarray(anatomy_alpha), np.asarray(part_alpha)).astype(np.uint8), "L"
         )
         if GEAR_OVERLAY_SOURCE is not None:
+            parts[name] = base_parts[name].copy()
+        elif name in CANONICAL_PARTS:
             parts[name] = base_parts[name].copy()
         else:
             parts[name] = masked_portrait(portrait, part_alpha)
@@ -218,7 +266,45 @@ def main() -> None:
         gear_portrait = registered_gear
     else:
         visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
-        visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+        if EXTRACT_TEAL_GEAR:
+            # A pose-painted mantle cannot be safely pushed through the broad,
+            # overlapping anatomy mattes.  Select its teal and brass pigment
+            # directly, leaving the creature on its canonical rig layers.
+            if GEAR_OVERLAY_POLYGON:
+                overlay_mask = Image.new("L", CANVAS, 0)
+                ImageDraw.Draw(overlay_mask).polygon(GEAR_OVERLAY_POLYGON, fill=255)
+                rgb = np.asarray(portrait).astype(np.int16)
+                difference = np.max(np.abs(rgb - base_array.astype(np.int16)), axis=2)
+                selected = Image.fromarray(
+                    ((difference > 32).astype(np.uint8) * 255), "L"
+                ).filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(3))
+                visible_alpha = Image.fromarray(
+                    np.minimum(np.asarray(selected), np.asarray(overlay_mask)).astype(np.uint8),
+                    "L",
+                )
+            else:
+                rgb = np.asarray(portrait).astype(np.int16)
+                difference = np.max(np.abs(rgb - base_array.astype(np.int16)), axis=2)
+                selected = (difference > 35).astype(np.uint8) * 255
+                selected = np.minimum(selected, np.asarray(subject))
+                left, top, right, bottom = GEAR_ENVELOPE
+                kept = np.zeros_like(selected)
+                kept[top:bottom, left:right] = selected[top:bottom, left:right]
+                visible_alpha = Image.fromarray(kept, "L").filter(
+                    ImageFilter.MaxFilter(11)
+                ).filter(ImageFilter.MinFilter(11))
+            if GEAR_OVERLAY_ERASE_ENVELOPES:
+                alpha = np.asarray(visible_alpha).copy()
+                for left, top, right, bottom in GEAR_OVERLAY_ERASE_ENVELOPES:
+                    alpha[top:bottom, left:right] = 0
+                visible_alpha = Image.fromarray(alpha.astype(np.uint8), "L")
+        elif KEEP_BODY_RESIDUAL:
+            visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+        else:
+            left, top, right, bottom = GEAR_ENVELOPE
+            kept = np.zeros_like(visible)
+            kept[top:bottom, left:right] = visible[top:bottom, left:right]
+            visible_alpha = Image.fromarray(kept.astype(np.uint8), "L")
         gear_portrait = portrait
     if EDGE_ALPHA_CLIP_TOP > 0:
         for name in EDGE_ALPHA_CLIP_PARTS:
@@ -229,6 +315,22 @@ def main() -> None:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(gear_portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
+    for name, envelope in DETACHED_PART_ENVELOPES:
+        left, top, right, bottom = envelope
+        detached = np.zeros_like(np.asarray(registered_detached))
+        detached[top:bottom, left:right] = np.asarray(registered_detached)[top:bottom, left:right]
+        if name in COLOR_TRIM_DETACHED_PARTS:
+            rgb = np.asarray(registered_source).astype(np.int16)
+            red, green, blue = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+            crystal = (green > 60) & (blue > 90) & (blue > red + 25) & (green > red + 10)
+            brass = (red > 65) & (green > 25) & (red > green + 12) & (red > blue + 15)
+            pigment = Image.fromarray(((crystal | brass).astype(np.uint8) * 255), "L")
+            pigment = pigment.filter(ImageFilter.MaxFilter(5))
+            detached = np.minimum(detached, np.asarray(pigment))
+        parts[name] = masked_portrait(
+            registered_source, Image.fromarray(detached.astype(np.uint8), "L")
+        )
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)
     review_board(assembled)

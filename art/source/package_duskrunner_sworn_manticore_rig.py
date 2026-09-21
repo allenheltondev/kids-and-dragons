@@ -49,9 +49,9 @@ GEAR_ENVELOPE = (90, 70, 720, 770)
 SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
 SUBJECT_HOLE_FILL_ENVELOPE: tuple[int, int, int, int] | None = None
 GEAR_VISIBLE_ERASE_ENVELOPES: tuple[tuple[int, int, int, int], ...] = ()
-PORTRAIT_GREEN_RESTORE_ENVELOPES: tuple[
-    tuple[str, tuple[int, int, int, int], int, int], ...
-] = ()
+PORTRAIT_GREEN_RESTORE_ENVELOPES: tuple[tuple, ...] = ()
+PORTRAIT_GREEN_RESTORE_SOLID_ALPHA = False
+PORTRAIT_GREEN_RESTORE_REQUIRE_SUBJECT = True
 CLIP_LOWER_BODY_TO_BASE = True
 Z_ORDER = (
     "tail",
@@ -257,7 +257,13 @@ def main() -> None:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
-    for name, envelope, minimum_green, dominance in PORTRAIT_GREEN_RESTORE_ENVELOPES:
+    for restore_spec in PORTRAIT_GREEN_RESTORE_ENVELOPES:
+        name, envelope, minimum_green, dominance = restore_spec[:4]
+        offset_x, offset_y = restore_spec[4:] if len(restore_spec) == 6 else (0, 0)
+        backing_name = None
+        polygon = None
+        if len(restore_spec) == 8:
+            offset_x, offset_y, backing_name, polygon = restore_spec[4:]
         left, top, right, bottom = envelope
         restored = np.asarray(parts[name]).copy()
         rgb = np.asarray(portrait)
@@ -265,12 +271,41 @@ def main() -> None:
             (rgb[..., 1] >= minimum_green)
             & (rgb[..., 1].astype(np.int16) - rgb[..., 0].astype(np.int16) >= dominance)
             & (rgb[..., 1].astype(np.int16) - rgb[..., 2].astype(np.int16) >= dominance)
-            & (np.asarray(subject) > 0)
         )
+        if PORTRAIT_GREEN_RESTORE_REQUIRE_SUBJECT:
+            green &= np.asarray(subject) > 0
         restore = np.zeros_like(green)
         restore[top:bottom, left:right] = green[top:bottom, left:right]
-        restored[restore, :3] = rgb[restore]
-        restored[restore, 3] = np.asarray(subject)[restore]
+        if polygon is not None:
+            polygon_mask = Image.new("L", CANVAS)
+            ImageDraw.Draw(polygon_mask).polygon(polygon, fill=255)
+            restore &= np.asarray(polygon_mask) > 0
+        if backing_name is not None:
+            for part_name, part in tuple(parts.items()):
+                cleared = np.asarray(part).copy()
+                cleared[restore] = 0
+                parts[part_name] = Image.fromarray(cleared.astype(np.uint8), "RGBA")
+            backing = np.asarray(parts[backing_name]).copy()
+            canonical_backing = np.asarray(base_parts[backing_name])
+            backing[restore] = canonical_backing[restore]
+            parts[backing_name] = Image.fromarray(backing.astype(np.uint8), "RGBA")
+            restored = np.asarray(parts[name]).copy()
+        source_y, source_x = np.where(restore)
+        target_x = source_x + offset_x
+        target_y = source_y + offset_y
+        in_bounds = (
+            (target_x >= 0) & (target_x < CANVAS[0])
+            & (target_y >= 0) & (target_y < CANVAS[1])
+        )
+        source_x = source_x[in_bounds]
+        source_y = source_y[in_bounds]
+        target_x = target_x[in_bounds]
+        target_y = target_y[in_bounds]
+        restored[target_y, target_x, :3] = rgb[source_y, source_x]
+        if PORTRAIT_GREEN_RESTORE_SOLID_ALPHA:
+            restored[target_y, target_x, 3] = 255
+        else:
+            restored[target_y, target_x, 3] = np.asarray(subject)[source_y, source_x]
         parts[name] = Image.fromarray(restored.astype(np.uint8), "RGBA")
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     assembled = compose(parts)

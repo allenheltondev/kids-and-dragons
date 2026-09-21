@@ -40,6 +40,7 @@ FILL_SUBJECT_HOLES = False
 SUBJECT_CLOSE_SIZE = 1
 SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
 PART_ALPHA_ERASE_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
+DETACHED_GOLD_PARTS: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
 Z_ORDER = (
     "wings",
     "tail",
@@ -172,6 +173,7 @@ def main() -> None:
     for stale in PARTS.glob("*.png"):
         stale.unlink()
     portrait = approved_portrait()
+    source_portrait = portrait.copy()
     registered_gear = None
     registered_gear_alpha = None
     registered_gear_erase_alpha = None
@@ -205,6 +207,7 @@ def main() -> None:
             gear_behind.getchannel("A"),
         )
     portrait, subject = register_subject(portrait, subject_alpha(portrait))
+    registered_source, _ = register_subject(source_portrait, Image.new("L", CANVAS, 255))
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
@@ -330,6 +333,16 @@ def main() -> None:
         parts["head_foreground"].save(PARTS / "head_foreground.png", optimize=True)
     parts["gear_visible"] = masked_portrait(gear_portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
+    for name, envelope in DETACHED_GOLD_PARTS:
+        left, top, right, bottom = envelope
+        rgb = np.asarray(registered_source).astype(np.int16)
+        red, green, blue = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+        gold = (red > 100) & (green > 55) & (red > green + 15) & (green > blue + 15)
+        alpha = np.zeros((CANVAS[1], CANVAS[0]), dtype=np.uint8)
+        alpha[top:bottom, left:right] = gold[top:bottom, left:right] * 255
+        matte = Image.fromarray(alpha, "L").filter(ImageFilter.MaxFilter(5))
+        parts[name] = masked_portrait(registered_source, matte)
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)
     review_board(assembled)

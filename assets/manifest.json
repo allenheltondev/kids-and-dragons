@@ -173,7 +173,7 @@
     { "class": "songkeeper", "tiers": ["sworn", "radiant", "mythic"], "species": ["unicorn", "dragonling", "griffin", "bigfoot", "kitsune", "manticore"], "canvas": { "width": 1254, "height": 1254 } }
   ],
 
-  "$rigVariantsComment": "Purpose-drawn class armor that has been split onto a species rig. Each entry lives at assets/character-rigs/<class>/<tier>/<species>/ with assembled.png, rig.riv, and the exact registered PNG part inventory below. The order of parts is draw order. These variants reuse the hero rig contract and species skeleton; undeclared combinations continue to use assets/characters/<species>/<tier>/rig.riv. Thornguard and Duskrunner are complete across all three geared tiers and all six species.",
+  "$rigVariantsComment": "Purpose-drawn class armor that has been split onto a species rig. Each entry lives at assets/character-rigs/<class>/<tier>/<species>/ with assembled.png, rig.riv, and the exact registered PNG part inventory below. The order of parts is draw order. These variants reuse the hero rig contract and species skeleton; undeclared combinations continue to use assets/characters/<species>/<tier>/rig.riv. Thornguard and Duskrunner are complete across all three geared tiers and all six species; Starweaver Sworn is also complete.",
   "rigVariants": [
     {
       "class": "duskrunner",
@@ -207,6 +207,42 @@
     },
     {
       "class": "duskrunner",
+      "tier": "sworn",
+      "species": "manticore",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "unicorn",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "horn", "focus_stone"]
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "dragonling",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "focus_stone"]
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "griffin",
+      "parts": ["wings", "tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "focus_stone"]
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "bigfoot",
+      "parts": ["leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "focus_stone"]
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "kitsune",
+      "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "gear_visible", "mane_foreground", "gear_front", "mane_top_foreground", "gear_back_collar", "neck_foreground", "gear_clasp", "focus_stone"]
+    },
+    {
+      "class": "starweaver",
       "tier": "sworn",
       "species": "manticore",
       "parts": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane"]
