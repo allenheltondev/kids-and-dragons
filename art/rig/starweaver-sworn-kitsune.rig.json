@@ -1,0 +1,9 @@
+{
+  "$comment": "Starweaver Sworn Kitsune variant rig. The approved exact-pose mantle is divided into registered foreground and collar layers so orange mane stays visible around the fitted collar; focus_stone floats independently.",
+  "root": "body",
+  "adjacency": [["body", "head"], ["head", "mane"], ["body", "arm_l"], ["body", "arm_r"], ["body", "leg_l"], ["body", "leg_r"], ["body", "tail"], ["body", "gear_visible"], ["head", "mane_foreground"], ["body", "gear_front"], ["head", "mane_top_foreground"], ["head", "gear_back_collar"], ["head", "neck_foreground"], ["body", "gear_clasp"], ["body", "focus_stone"]],
+  "zOrder": ["tail", "leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "mane", "gear_visible", "mane_foreground", "gear_front", "mane_top_foreground", "gear_back_collar", "neck_foreground", "gear_clasp", "focus_stone"],
+  "origin": { "x": 512, "y": 900 }, "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400, "artboardHeight": 1400, "scale": 1,
+  "wiring": { "triggers": { "move": "walk", "helpUp": "lift" }, "when": { "down": { "input": "knockedDown", "equals": true, "from": ["idle", "hurt", "walk", "guard"] }, "revive": { "input": "knockedDown", "equals": false, "from": "down_loop" } } }
+}

@@ -34,6 +34,9 @@ SUBJECT_CLOSE_SIZE = 1
 SUBJECT_CLIP_ENVELOPE: tuple[int, int, int, int] | None = None
 MANE_GEAR_REVEAL_REGIONS: tuple[tuple[int, int, int, int], ...] = ()
 GEAR_VISIBLE_POLYGON: tuple[tuple[int, int], ...] = ()
+DETACHED_PART_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
+DETACHED_PART_OFFSETS: dict[str, tuple[int, int]] = {}
+KEEP_BODY_RESIDUAL = True
 Z_ORDER = (
     "leg_l",
     "leg_r",
@@ -50,8 +53,8 @@ def approved_portrait() -> Image.Image:
     return Image.open(SOURCE).convert("RGB").resize(CANVAS, Image.Resampling.LANCZOS)
 
 
-def subject_alpha(portrait: Image.Image) -> Image.Image:
-    """Remove the smooth navy portrait backdrop and keep the connected figure."""
+def foreground_candidates(portrait: Image.Image) -> Image.Image:
+    """Remove the smooth navy portrait backdrop, retaining detached props."""
     rgb = np.asarray(portrait).astype(np.float64)
     yy, xx = np.indices((CANVAS[1], CANVAS[0]))
     x = (xx - CANVAS[0] / 2) / (CANVAS[0] / 2)
@@ -69,6 +72,12 @@ def subject_alpha(portrait: Image.Image) -> Image.Image:
     residual = np.sqrt(np.mean((rgb - predicted) ** 2, axis=2))
     connected = Image.fromarray(np.where(residual > 7, 255, 0).astype(np.uint8), "L")
     connected = connected.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))
+    return connected
+
+
+def subject_alpha(portrait: Image.Image) -> Image.Image:
+    """Keep the connected creature, excluding detached props."""
+    connected = foreground_candidates(portrait)
     ImageDraw.floodfill(connected, (500, 500), 128, thresh=0)
     subject = Image.fromarray(
         np.where(np.asarray(connected) == 128, 255, 0).astype(np.uint8), "L"
@@ -151,7 +160,9 @@ def main() -> None:
     PARTS.mkdir(parents=True, exist_ok=True)
     for stale in PARTS.glob("*.png"):
         stale.unlink()
-    portrait = approved_portrait()
+    source_portrait = approved_portrait()
+    detached_candidates = foreground_candidates(source_portrait)
+    portrait = source_portrait
     registered_gear = None
     registered_gear_alpha = None
     if GEAR_OVERLAY_SOURCE is not None:
@@ -164,6 +175,10 @@ def main() -> None:
             gear.getchannel("A"),
         )
     portrait, subject = register_subject(portrait, subject_alpha(portrait))
+    registered_source, _ = register_subject(
+        source_portrait, Image.new("L", CANVAS, 255)
+    )
+    _, registered_detached = register_subject(source_portrait, detached_candidates)
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
         name: Image.open(BASE / "parts" / f"{name}.png").convert("RGBA")
@@ -211,7 +226,13 @@ def main() -> None:
         gear_portrait = registered_gear
     else:
         visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
-        visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+        if KEEP_BODY_RESIDUAL:
+            visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+        else:
+            left, top, right, bottom = GEAR_ENVELOPE
+            kept = np.zeros_like(visible)
+            kept[top:bottom, left:right] = visible[top:bottom, left:right]
+            visible_alpha = Image.fromarray(kept.astype(np.uint8), "L")
         gear_portrait = portrait
     if GEAR_VISIBLE_POLYGON:
         visible_mask = Image.new("L", CANVAS, 0)
@@ -233,6 +254,35 @@ def main() -> None:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     parts["gear_visible"] = masked_portrait(gear_portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
+    for name, envelope in DETACHED_PART_ENVELOPES:
+        left, top, right, bottom = envelope
+        detached = np.zeros_like(np.asarray(registered_detached))
+        detached[top:bottom, left:right] = np.asarray(registered_detached)[top:bottom, left:right]
+        offset_x, offset_y = DETACHED_PART_OFFSETS.get(name, (0, 0))
+        detached_source = registered_source
+        if offset_x or offset_y:
+            moved = np.zeros_like(detached)
+            source_y, source_x = np.where(detached > 0)
+            target_x = source_x + offset_x
+            target_y = source_y + offset_y
+            in_bounds = (
+                (target_x >= 0) & (target_x < CANVAS[0])
+                & (target_y >= 0) & (target_y < CANVAS[1])
+            )
+            moved[target_y[in_bounds], target_x[in_bounds]] = detached[
+                source_y[in_bounds], source_x[in_bounds]
+            ]
+            detached = moved
+            moved_rgb = np.zeros((CANVAS[1], CANVAS[0], 3), dtype=np.uint8)
+            registered_rgb = np.asarray(registered_source)
+            moved_rgb[target_y[in_bounds], target_x[in_bounds]] = registered_rgb[
+                source_y[in_bounds], source_x[in_bounds]
+            ]
+            detached_source = Image.fromarray(moved_rgb, "RGB")
+        parts[name] = masked_portrait(
+            detached_source, Image.fromarray(detached.astype(np.uint8), "L")
+        )
+        parts[name].save(PARTS / f"{name}.png", optimize=True)
     assembled = compose(parts)
     assembled.save(OUT / "assembled.png", optimize=True)
     review_board(assembled)
