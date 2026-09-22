@@ -15,6 +15,20 @@ ROOT = Path(__file__).resolve().parents[2]
 CANVAS = (1024, 1024)
 SOURCE = ROOT / "assets/gear-portraits/duskrunner/sworn/kitsune.png"
 SOURCE_MATTE: Path | None = None
+GEAR_OVERLAY_SOURCE: Path | None = None
+GEAR_OVERLAY_REGISTERED_SIZE: tuple[int, int] | None = None
+GEAR_OVERLAY_REGISTERED_OFFSET: tuple[int, int] | None = None
+GEAR_OVERLAY_GEM_OFFSET: tuple[int, int] = (0, 0)
+GEAR_OVERLAY_SPLIT_Y: int | None = None
+GEAR_FRONT_POLYGONS: tuple[tuple[tuple[int, int], ...], ...] = ()
+GEAR_FRONT_FEATHER = 0.0
+GEAR_CLASP_POLYGON: tuple[tuple[int, int], ...] | None = None
+GEAR_BACK_COLLAR_POLYGON: tuple[tuple[int, int], ...] | None = None
+GEAR_COLLAR_RIM_ENVELOPE: tuple[int, int, int, int] | None = None
+GEAR_COLLAR_OUTER_POLYGON: tuple[tuple[int, int], ...] | None = None
+GEAR_COLLAR_INNER_POLYGON: tuple[tuple[int, int], ...] | None = None
+MANE_FOREGROUND_ENVELOPE: tuple[int, int, int, int] | None = None
+MANE_TOP_POLYGON: tuple[tuple[int, int], ...] | None = None
 BASE = ROOT / "assets/characters/kitsune/sworn"
 OUT = ROOT / "assets/character-rigs/duskrunner/sworn/kitsune"
 PARTS = OUT / "parts"
@@ -63,6 +77,9 @@ BASE_EXACT_RESTORE_POLYGONS: tuple[tuple[tuple[int, int], ...], ...] = ()
 BASE_EXACT_RESTORE_FEATHER = 0
 HEAD_GEAR_ENVELOPE: tuple[int, int, int, int] | None = None
 GEAR_VISIBLE_BODY_OVERLAP_ENVELOPE: tuple[int, int, int, int] | None = None
+KEEP_BODY_RESIDUAL = True
+CANONICAL_PARTS: tuple[str, ...] = ()
+STARWEAVER_MASK_ENVELOPES: tuple[tuple[int, int, int, int], ...] = ()
 GEAR_BEHIND_BODY_OVERLAP_ENVELOPE: tuple[int, int, int, int] | None = None
 PART_ALPHA_ERASE_ENVELOPES: tuple[tuple[str, tuple[int, int, int, int]], ...] = ()
 PART_ALPHA_ERASE_POLYGONS: tuple[
@@ -236,6 +253,41 @@ def main() -> None:
     else:
         source_alpha = subject_alpha(portrait)
     portrait, subject = register_subject(portrait, source_alpha)
+    registered_overlay = None
+    registered_overlay_alpha = None
+    registered_overlay_gem = None
+    registered_overlay_gem_alpha = None
+    if GEAR_OVERLAY_SOURCE is not None:
+        overlay = Image.open(GEAR_OVERLAY_SOURCE).convert("RGBA").resize(
+            CANVAS, Image.Resampling.LANCZOS
+        )
+        overlay_alpha = np.asarray(overlay.getchannel("A")).copy()
+        garment_alpha = overlay_alpha.copy()
+        garment_alpha[:400, :] = 0
+        gem_alpha = overlay_alpha.copy()
+        gem_alpha[400:, :] = 0
+        if GEAR_OVERLAY_REGISTERED_SIZE is not None:
+            garment = overlay.copy()
+            garment.putalpha(Image.fromarray(garment_alpha, "L"))
+            garment = garment.resize(GEAR_OVERLAY_REGISTERED_SIZE, Image.Resampling.LANCZOS)
+            placed = Image.new("RGBA", CANVAS)
+            placed.alpha_composite(garment, dest=GEAR_OVERLAY_REGISTERED_OFFSET or (0, 0))
+            registered_overlay = placed.convert("RGB")
+            registered_overlay_alpha = placed.getchannel("A")
+        else:
+            registered_overlay, registered_overlay_alpha = register_subject(
+                overlay.convert("RGB"), Image.fromarray(garment_alpha, "L")
+            )
+        registered_overlay_gem, registered_overlay_gem_alpha = register_subject(
+            overlay.convert("RGB"), Image.fromarray(gem_alpha, "L")
+        )
+        if GEAR_OVERLAY_GEM_OFFSET != (0, 0):
+            moved_gem = Image.new("RGB", CANVAS)
+            moved_gem_alpha = Image.new("L", CANVAS)
+            moved_gem.paste(registered_overlay_gem, GEAR_OVERLAY_GEM_OFFSET)
+            moved_gem_alpha.paste(registered_overlay_gem_alpha, GEAR_OVERLAY_GEM_OFFSET)
+            registered_overlay_gem = moved_gem
+            registered_overlay_gem_alpha = moved_gem_alpha
     registered_portrait_array = np.asarray(portrait).copy()
     base_assembled = Image.open(BASE / "assembled.png").convert("RGBA")
     base_parts = {
@@ -415,7 +467,11 @@ def main() -> None:
         anatomy_alpha = Image.fromarray(
             np.maximum(np.asarray(anatomy_alpha), np.asarray(part_alpha)).astype(np.uint8), "L"
         )
-        parts[name] = masked_portrait(portrait, part_alpha)
+        if name in CANONICAL_PARTS:
+            parts[name] = base_parts[name].copy()
+            parts[name].putalpha(part_alpha)
+        else:
+            parts[name] = masked_portrait(portrait, part_alpha)
         parts[name].save(PARTS / f"{name}.png", optimize=True)
     visible = np.minimum(np.asarray(subject), 255 - np.asarray(anatomy_alpha)).astype(np.uint8)
     behind_alpha: Image.Image | None = None
@@ -450,7 +506,23 @@ def main() -> None:
         behind_array = np.where(behind_mask, behind_source, 0).astype(np.uint8)
         visible = np.where(behind_mask, 0, visible).astype(np.uint8)
         behind_alpha = Image.fromarray(behind_array, "L")
-    visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    if KEEP_BODY_RESIDUAL:
+        visible_alpha = keep_body_residual(parts, visible, GEAR_ENVELOPE)
+    else:
+        left, top, right, bottom = GEAR_ENVELOPE
+        kept = np.zeros_like(visible)
+        kept[top:bottom, left:right] = visible[top:bottom, left:right]
+        visible_alpha = Image.fromarray(kept.astype(np.uint8), "L")
+    if STARWEAVER_MASK_ENVELOPES:
+        rgb = np.asarray(portrait).astype(np.int16)
+        red, green, blue = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+        teal = (green > 40) & (blue > 50) & (green > red + 12) & (blue > red + 15)
+        brass = (red > 90) & (green > 40) & (red > green + 12) & (red > blue + 15)
+        cyan = (green > 110) & (blue > 130) & (green > red + 45) & (blue > red + 55)
+        mask = np.zeros_like(subject_array)
+        for left, top, right, bottom in STARWEAVER_MASK_ENVELOPES:
+            mask[top:bottom, left:right] = (teal | brass | cyan)[top:bottom, left:right] * 255
+        visible_alpha = Image.fromarray(mask, "L").filter(ImageFilter.MaxFilter(5))
     if GEAR_VISIBLE_BODY_OVERLAP_ENVELOPE is not None:
         left, top, right, bottom = GEAR_VISIBLE_BODY_OVERLAP_ENVELOPE
         overlap = np.zeros_like(subject_array, dtype=np.uint8)
@@ -461,8 +533,182 @@ def main() -> None:
         )
     for name in BASE_PARTS:
         parts[name].save(PARTS / f"{name}.png", optimize=True)
-    parts["gear_visible"] = masked_portrait(portrait, visible_alpha)
+    gear_portrait = portrait
+    if registered_overlay is not None:
+        gear_portrait = registered_overlay
+        visible_alpha = registered_overlay_alpha
+        if GEAR_OVERLAY_SPLIT_Y is not None:
+            overlay_alpha = np.asarray(registered_overlay_alpha).copy()
+            behind = overlay_alpha.copy()
+            behind[GEAR_OVERLAY_SPLIT_Y:, :] = 0
+            front = overlay_alpha.copy()
+            front[:GEAR_OVERLAY_SPLIT_Y, :] = 0
+            parts["gear_behind"] = masked_portrait(
+                registered_overlay, Image.fromarray(behind, "L")
+            )
+            parts["gear_behind"].save(PARTS / "gear_behind.png", optimize=True)
+            visible_alpha = Image.fromarray(front, "L")
+    parts["gear_visible"] = masked_portrait(gear_portrait, visible_alpha)
     parts["gear_visible"].save(PARTS / "gear_visible.png", optimize=True)
+    if registered_overlay_gem is not None:
+        parts["focus_stone"] = masked_portrait(
+            registered_overlay_gem, registered_overlay_gem_alpha
+        )
+        parts["focus_stone"].save(PARTS / "focus_stone.png", optimize=True)
+    if MANE_FOREGROUND_ENVELOPE is not None:
+        left, top, right, bottom = MANE_FOREGROUND_ENVELOPE
+        base_rgb = np.asarray(base_assembled)[..., :3].astype(np.int16)
+        red, green, blue = base_rgb[..., 0], base_rgb[..., 1], base_rgb[..., 2]
+        warm_mane_core = (
+            (red >= 120)
+            & (green <= 160)
+            & ((red - green) >= 50)
+            & ((green - blue) >= 14)
+        )
+        near_warm_mane = np.asarray(
+            Image.fromarray((warm_mane_core * 255).astype(np.uint8), "L").filter(
+                ImageFilter.MaxFilter(3)
+            )
+        ) > 0
+        dark_edge = ((red + green + blue) // 3) <= 145
+        yy, xx = np.indices(warm_mane_core.shape)
+        pale_neck = (
+            (xx < 350)
+            & (yy < 540)
+            & (red >= 175)
+            & (green >= 135)
+            & (blue >= 105)
+        )
+        warm_mane = warm_mane_core | (near_warm_mane & dark_edge) | pale_neck
+        tapered_chest = (yy <= 520) | (xx <= (500 - (yy - 520) * 0.8))
+        warm_mane &= tapered_chest
+        mane_alpha = np.zeros_like(subject_array)
+        base_alpha = np.asarray(base_assembled.getchannel("A"))
+        mane_alpha[top:bottom, left:right] = np.minimum(
+            (warm_mane[top:bottom, left:right] * 255).astype(np.uint8),
+            base_alpha[top:bottom, left:right],
+        )
+        parts["mane_foreground"] = base_assembled.copy()
+        parts["mane_foreground"].putalpha(Image.fromarray(mane_alpha, "L"))
+        parts["mane_foreground"].save(PARTS / "mane_foreground.png", optimize=True)
+        neck_alpha = np.zeros_like(subject_array)
+        neck_alpha[top:bottom, left:right] = np.minimum(
+            (pale_neck[top:bottom, left:right] * 255).astype(np.uint8),
+            base_alpha[top:bottom, left:right],
+        )
+        parts["neck_foreground"] = base_assembled.copy()
+        parts["neck_foreground"].putalpha(Image.fromarray(neck_alpha, "L"))
+        parts["neck_foreground"].save(PARTS / "neck_foreground.png", optimize=True)
+        if MANE_TOP_POLYGON is not None:
+            mane_top_mask = Image.new("L", CANVAS, 0)
+            ImageDraw.Draw(mane_top_mask).polygon(MANE_TOP_POLYGON, fill=255)
+            mane_top_mask = mane_top_mask.filter(ImageFilter.GaussianBlur(0.8))
+            mane_top_alpha = Image.fromarray(
+                np.minimum(
+                    np.asarray(mane_top_mask),
+                    mane_alpha,
+                ).astype(np.uint8),
+                "L",
+            )
+            parts["mane_top_foreground"] = base_assembled.copy()
+            parts["mane_top_foreground"].putalpha(mane_top_alpha)
+            parts["mane_top_foreground"].save(
+                PARTS / "mane_top_foreground.png", optimize=True
+            )
+    if GEAR_FRONT_POLYGONS and registered_overlay is not None:
+        front_mask = Image.new("L", CANVAS, 0)
+        front_draw = ImageDraw.Draw(front_mask)
+        for polygon in GEAR_FRONT_POLYGONS:
+            front_draw.polygon(polygon, fill=255)
+        if GEAR_FRONT_FEATHER > 0:
+            front_mask = front_mask.filter(ImageFilter.GaussianBlur(GEAR_FRONT_FEATHER))
+        front_alpha = Image.fromarray(
+            np.minimum(
+                np.asarray(front_mask),
+                np.asarray(registered_overlay_alpha),
+            ).astype(np.uint8),
+            "L",
+        )
+        parts["gear_front"] = masked_portrait(registered_overlay, front_alpha)
+        parts["gear_front"].save(PARTS / "gear_front.png", optimize=True)
+    if GEAR_BACK_COLLAR_POLYGON is not None and registered_overlay is not None:
+        collar_mask = Image.new("L", CANVAS, 0)
+        ImageDraw.Draw(collar_mask).polygon(GEAR_BACK_COLLAR_POLYGON, fill=255)
+        collar_mask = collar_mask.filter(ImageFilter.GaussianBlur(0.7))
+        collar_alpha = Image.fromarray(
+            np.minimum(
+                np.asarray(collar_mask),
+                np.asarray(registered_overlay_alpha),
+            ).astype(np.uint8),
+            "L",
+        )
+        parts["gear_back_collar"] = masked_portrait(registered_overlay, collar_alpha)
+        parts["gear_back_collar"].save(
+            PARTS / "gear_back_collar.png", optimize=True
+        )
+    if GEAR_COLLAR_RIM_ENVELOPE is not None and registered_overlay is not None:
+        left, top, right, bottom = GEAR_COLLAR_RIM_ENVELOPE
+        overlay_rgb = np.asarray(registered_overlay).astype(np.int16)
+        red = overlay_rgb[..., 0]
+        green = overlay_rgb[..., 1]
+        blue = overlay_rgb[..., 2]
+        brass = (
+            (red >= 115)
+            & ((red - green) >= 18)
+            & ((green - blue) >= 18)
+        )
+        rim = np.zeros_like(brass)
+        rim[top:bottom, left:right] = brass[top:bottom, left:right]
+        rim_mask = Image.fromarray((rim * 255).astype(np.uint8), "L").filter(
+            ImageFilter.MaxFilter(5)
+        )
+        rim_alpha = Image.fromarray(
+            np.minimum(
+                np.asarray(rim_mask),
+                np.asarray(registered_overlay_alpha),
+            ).astype(np.uint8),
+            "L",
+        )
+        parts["gear_collar_rim"] = masked_portrait(registered_overlay, rim_alpha)
+        parts["gear_collar_rim"].save(
+            PARTS / "gear_collar_rim.png", optimize=True
+        )
+    if (
+        GEAR_COLLAR_OUTER_POLYGON is not None
+        and GEAR_COLLAR_INNER_POLYGON is not None
+        and registered_overlay is not None
+    ):
+        collar_band_mask = Image.new("L", CANVAS, 0)
+        collar_band_draw = ImageDraw.Draw(collar_band_mask)
+        collar_band_draw.polygon(GEAR_COLLAR_OUTER_POLYGON, fill=255)
+        collar_band_draw.polygon(GEAR_COLLAR_INNER_POLYGON, fill=0)
+        collar_band_mask = collar_band_mask.filter(ImageFilter.GaussianBlur(0.8))
+        collar_band_alpha = Image.fromarray(
+            np.minimum(
+                np.asarray(collar_band_mask),
+                np.asarray(registered_overlay_alpha),
+            ).astype(np.uint8),
+            "L",
+        )
+        parts["gear_collar_band"] = masked_portrait(
+            registered_overlay, collar_band_alpha
+        )
+        parts["gear_collar_band"].save(
+            PARTS / "gear_collar_band.png", optimize=True
+        )
+    if GEAR_CLASP_POLYGON is not None and registered_overlay is not None:
+        clasp_mask = Image.new("L", CANVAS, 0)
+        ImageDraw.Draw(clasp_mask).polygon(GEAR_CLASP_POLYGON, fill=255)
+        clasp_mask = clasp_mask.filter(ImageFilter.GaussianBlur(0.6))
+        clasp_alpha = Image.fromarray(
+            np.minimum(
+                np.asarray(clasp_mask),
+                np.asarray(registered_overlay_alpha),
+            ).astype(np.uint8),
+            "L",
+        )
+        parts["gear_clasp"] = masked_portrait(registered_overlay, clasp_alpha)
+        parts["gear_clasp"].save(PARTS / "gear_clasp.png", optimize=True)
     if behind_alpha is not None:
         if GEAR_BEHIND_BODY_OVERLAP_ENVELOPE is not None:
             left, top, right, bottom = GEAR_BEHIND_BODY_OVERLAP_ENVELOPE

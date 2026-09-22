@@ -1,0 +1,9 @@
+{
+  "$comment": "Starweaver Sworn Bigfoot variant rig. The approved astral mantle follows the existing body bones, the mane stays in front, and focus_stone floats independently.",
+  "root": "body",
+  "adjacency": [["body", "head"], ["head", "mane"], ["body", "arm_l"], ["body", "arm_r"], ["body", "leg_l"], ["body", "leg_r"], ["body", "gear_visible"], ["body", "focus_stone"]],
+  "zOrder": ["leg_l", "leg_r", "body", "arm_l", "arm_r", "head", "gear_visible", "mane", "focus_stone"],
+  "origin": { "x": 512, "y": 900 }, "ground": { "x": 700, "y": 1088 },
+  "artboardWidth": 1400, "artboardHeight": 1400, "scale": 1,
+  "wiring": { "triggers": { "move": "walk", "helpUp": "lift" }, "when": { "down": { "input": "knockedDown", "equals": true, "from": ["idle", "hurt", "walk", "guard"] }, "revive": { "input": "knockedDown", "equals": false, "from": "down_loop" } } }
+}
