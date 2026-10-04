@@ -1,0 +1,40 @@
+{
+  "$comment": "The authored main arc. Story: docs/campaigns/gemfall.md. Wiring — which flags each chapter must set, which survive between evenings, the facets — docs/campaigns/gemfall-authoring.md. Every flag a later chapter reads is a member of a route set below, because only those cross the chapter boundary; most sets select no chapter and exist purely as the campaign's memory.",
+  "id": "gemfall",
+  "title": "Gemfall",
+  "blurb": "Mount Red Sky has erupted, and gemstones are raining across the realm. Everybody is racing north to grab them. Your party is racing too. Nobody has asked yet why the stones hum.",
+  "chapters": [
+    "gemfall-01",
+    "gemfall-02",
+    "gemfall-03a",
+    "gemfall-03b",
+    "gemfall-03c",
+    "gemfall-04a",
+    "gemfall-04b",
+    "gemfall-04c",
+    "gemfall-05a",
+    "gemfall-05b",
+    "gemfall-05c",
+    "gemfall-06",
+    "gemfall-07r",
+    "gemfall-07h",
+    "gemfall-07l",
+    "gemfall-08w",
+    "gemfall-08"
+  ],
+  "routeSets": {
+    "road": ["route_river", "route_rush", "route_wild"],
+    "pursuit": ["pursuit_restore", "pursuit_hoard", "pursuit_leash"],
+    "summit": ["climbed_the_mountain", "walked_away"],
+    "motive": ["motive_wealth", "motive_curiosity", "motive_prestige", "motive_duty", "motive_fresh_start", "motive_proving"],
+    "ember": ["ember_sold", "ember_kept"],
+    "sprites": ["sprites_friends", "sprites_wronged"],
+    "crossing": ["crossed_dry", "river_took_us"],
+    "west_branch": ["forded_clean", "marsh_kept_us", "walked_over"],
+    "glade": ["glade_mended", "glade_finished"],
+    "allies": ["told_wardens", "told_gatherers", "kept_close"],
+    "seal_clock": ["clock_steady", "clock_stirring", "clock_late"],
+    "cult": ["refused_the_cult", "funded_the_break"]
+  },
+  "setbackLimit": 4
+}
