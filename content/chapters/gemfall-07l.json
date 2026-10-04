@@ -37,19 +37,19 @@
       "kind": "quest",
       "icon": "scroll",
       "name": "The Cage-Doctrine Ledger",
-      "text": "The Skywardens' plan for holding what is under the mountain, written in a ledger as thick as a doorstep. The wardens do not lend it. They lent it to you."
+      "text": "The wardens' plan for holding what is under the mountain. They do not lend it."
     },
     "tether_chord": {
       "kind": "quest",
       "icon": "note",
       "name": "The Resonance Chord",
-      "text": "Three notes the Deep Hollow choir hums to make the stones hum back. It is not written down anywhere. It is in your head, and it will not leave."
+      "text": "Three notes the choir hums to make the stones hum back. Written down nowhere."
     },
     "tether_question": {
       "kind": "quest",
       "icon": "charm",
       "name": "The Witch's Question",
-      "text": "What do you actually want? A witch lent it to you, which means you are allowed to ask it of anything. Even a mountain."
+      "text": "What do you actually want? A witch lent it to you. You may ask it of anything."
     }
   },
   "scenes": {
@@ -362,7 +362,7 @@
         },
         {
           "id": "choir_said",
-          "label": "Tell it what the choir hums when they think nobody is listening",
+          "label": "Tell it what the choir hums when nobody is listening",
           "icon": "note",
           "goto": "scene_stall_witch",
           "effects": [
@@ -471,7 +471,7 @@
         },
         {
           "id": "exchange",
-          "label": "An Exchange caravan is rolling in, and someone on top is waving",
+          "label": "An Exchange caravan rolls in, and someone is waving",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_ember"
@@ -614,7 +614,8 @@
         {
           "id": "echo",
           "name": "Echo Hunter",
-          "creature": "echo_hunter"
+          "creature": "echo_hunter",
+          "hp": 13
         },
         {
           "id": "wolf",
@@ -659,7 +660,7 @@
         },
         {
           "id": "buyers",
-          "label": "You know from the catalogue whose stone it is. Ask them first.",
+          "label": "The catalogue says whose stone it is. Ask them first.",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "check_hold"

@@ -7,7 +7,10 @@
   "biome": "red_sky_foothills",
   "estimatedMinutes": 28,
   "xpAward": 90,
-  "route": { "set": "pursuit", "flag": "pursuit_hoard" },
+  "route": {
+    "set": "pursuit",
+    "flag": "pursuit_hoard"
+  },
   "entry": "scene_like_weather",
   "objectives": [
     {
@@ -34,7 +37,7 @@
       "kind": "quest",
       "icon": "gem",
       "name": "The Caravan Stone",
-      "text": "The masterpiece stone from the middle of the fattest caravan in the funnel. It is the size of a loaf of bread and hums so loudly the mules wore cotton in their ears."
+      "text": "The masterpiece stone of the fattest caravan. It hums so loud the mules wear earmuffs."
     }
   },
   "scenes": {
@@ -54,7 +57,13 @@
           "icon": "bigfoot",
           "requiresSpecies": "bigfoot",
           "goto": "choice_the_race",
-          "effects": [{ "type": "setFlag", "flag": "read_the_silence", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_the_silence",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -82,7 +91,13 @@
           "icon": "moon",
           "requiresFlag": "kept_close",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "nobody_knows", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nobody_knows",
+              "value": true
+            }
+          ]
         },
         {
           "id": "camps",
@@ -101,14 +116,26 @@
           "label": "Go through",
           "icon": "forward",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "warden_pass", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "warden_pass",
+              "value": true
+            }
+          ]
         }
       ]
     },
     "scene_grandmother_look": {
       "type": "story",
       "narration": "A grandmother looks at your bulging packs over her knitting for a long, long time. She does not say \"No, dear.\" She does not say anything at all. Then she hands you a warm bead, because it is cold up there.",
-      "onEnter": [{ "type": "grantItem", "itemId": "hearthstone_bead", "to": "party" }],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "hearthstone_bead",
+          "to": "party"
+        }
+      ],
       "choices": [
         {
           "id": "thank",
@@ -121,7 +148,13 @@
           "label": "Put one stone in her knitting basket",
           "icon": "heart",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "gave_stone_back", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gave_stone_back",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -193,7 +226,13 @@
           "label": "Choose a stone and put it in his boat",
           "icon": "heart",
           "goto": "scene_evening",
-          "effects": [{ "type": "setFlag", "flag": "gave_stone_back", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gave_stone_back",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -206,14 +245,26 @@
           "label": "Claim everything the cord is owed",
           "icon": "gem",
           "goto": "scene_evening",
-          "effects": [{ "type": "setFlag", "flag": "claimed_the_pile", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "claimed_the_pile",
+              "value": true
+            }
+          ]
         },
         {
           "id": "send_home",
           "label": "Tell her to take the stones back to the Woods",
           "icon": "leaf",
           "goto": "scene_evening",
-          "effects": [{ "type": "setFlag", "flag": "gave_stone_back", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gave_stone_back",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -226,14 +277,26 @@
           "label": "Tell it what a warden said about acceptable losses",
           "icon": "ear",
           "goto": "scene_evening",
-          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
         },
         {
           "id": "grandma_said",
           "label": "Tell it what a grandmother said about cake",
           "icon": "cake",
           "goto": "scene_evening",
-          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -246,14 +309,25 @@
           "label": "\"All of them.\"",
           "icon": "gem",
           "goto": "scene_evening",
-          "effects": [{ "type": "grantQuestItem", "itemId": "facet_ford" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ford"
+            }
+          ]
         },
         {
           "id": "dont_know",
           "label": "\"I don't know any more.\"",
           "icon": "feather",
           "goto": "scene_evening",
-          "effects": [{ "type": "grantItem", "itemId": "songbird_ribbon", "to": "party" }]
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "songbird_ribbon",
+              "to": "party"
+            }
+          ]
         }
       ]
     },
@@ -277,7 +351,7 @@
         },
         {
           "id": "exchange",
-          "label": "An Exchange caravan is rolling in, and someone on top is waving",
+          "label": "An Exchange caravan rolls in, and someone is waving",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_ember"
@@ -300,7 +374,13 @@
           "icon": "manticore",
           "requiresSpecies": "manticore",
           "goto": "rest_lonely_camp",
-          "effects": [{ "type": "setFlag", "flag": "relay_owes", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "relay_owes",
+              "value": true
+            }
+          ]
         },
         {
           "id": "fair",
@@ -313,7 +393,13 @@
     "scene_relay_sing": {
       "type": "story",
       "narration": "The relay singers have new verses about wagons that have not arrived yet, so you can hear tomorrow's traffic tonight. Then a grandmother's runner hands you a list of caves nobody may ever dig. For a collector, it looks a lot like a treasure map.",
-      "onEnter": [{ "type": "setFlag", "flag": "heard_tomorrow", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_tomorrow",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "fold",
@@ -332,7 +418,12 @@
           "label": "Buy it back. It belongs in the collection.",
           "icon": "gem",
           "goto": "rest_lonely_camp",
-          "effects": [{ "type": "grantQuestItem", "itemId": "facet_ember" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ember"
+            }
+          ]
         },
         {
           "id": "too_much",
@@ -389,7 +480,13 @@
       "onSuccess": {
         "goto": "choice_the_bend",
         "narration": "They are glassback crabs, and they are waving their claws in the most polite warning in the realm: this is our warm spot. You walk the long way round, and they wave you off like aunties.",
-        "effects": [{ "type": "setFlag", "flag": "crabs_read", "value": true }]
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crabs_read",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "encounter_crabs",
@@ -401,7 +498,12 @@
       "map": "roadside",
       "narration": "The gem deposits stand up. They are glassback crabs, and this is their warm spot, and they would like you off it.",
       "enemies": [
-        { "id": "crabs", "name": "Glassback Crab", "creature": "glassback_crab" }
+        {
+          "id": "crabs",
+          "name": "Glassback Crab",
+          "creature": "glassback_crab",
+          "hp": 10
+        }
       ],
       "onVictory": {
         "goto": "choice_the_bend",
@@ -432,7 +534,7 @@
         },
         {
           "id": "buyers",
-          "label": "You know from the catalogue who it was sold to, and for how much",
+          "label": "You know from the catalogue who bought it, and for how much",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "scene_caravan_won"
@@ -492,8 +594,15 @@
       "type": "story",
       "narration": "The Caravan Stone is the size of a loaf of bread and hums like a whole choir. You put it in the pack with the others, and every stone you own hums louder, all together, as if they recognise each other. The ground shakes, just once, in reply.",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "facet_caravan" },
-        { "type": "setFlag", "flag": "caravan_cornered", "value": true }
+        {
+          "type": "grantQuestItem",
+          "itemId": "facet_caravan"
+        },
+        {
+          "type": "setFlag",
+          "flag": "caravan_cornered",
+          "value": true
+        }
       ],
       "choices": [
         {
@@ -514,8 +623,16 @@
           "icon": "gem",
           "goto": "scene_sold",
           "effects": [
-            { "type": "setFlag", "flag": "funded_the_break", "value": true },
-            { "type": "setFlag", "flag": "clock_late", "value": true }
+            {
+              "type": "setFlag",
+              "flag": "funded_the_break",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "clock_late",
+              "value": true
+            }
           ]
         },
         {
@@ -523,7 +640,13 @@
           "label": "\"No, thank you. They're ours.\"",
           "icon": "hand",
           "goto": "choice_tree_line",
-          "effects": [{ "type": "setFlag", "flag": "refused_the_cult", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "refused_the_cult",
+              "value": true
+            }
+          ]
         },
         {
           "id": "hand_back",
@@ -531,9 +654,21 @@
           "icon": "heart",
           "goto": "scene_handed_back",
           "effects": [
-            { "type": "setFlag", "flag": "refused_the_cult", "value": true },
-            { "type": "setFlag", "flag": "clock_steady", "value": true },
-            { "type": "setFlag", "flag": "gave_stone_back", "value": true }
+            {
+              "type": "setFlag",
+              "flag": "refused_the_cult",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "clock_steady",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "gave_stone_back",
+              "value": true
+            }
           ]
         }
       ]
@@ -571,14 +706,26 @@
           "label": "Climb for the Keystone",
           "icon": "crown",
           "goto": "rest_the_climb",
-          "effects": [{ "type": "setFlag", "flag": "climbed_the_mountain", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "climbed_the_mountain",
+              "value": true
+            }
+          ]
         },
         {
           "id": "walk",
           "label": "Turn south, and walk away",
           "icon": "back",
           "goto": "rest_the_walk",
-          "effects": [{ "type": "setFlag", "flag": "walked_away", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "walked_away",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -598,8 +745,16 @@
       "type": "rest",
       "narration": "The masks are gone, and so is the fattest caravan, and so is half your collection. The ground is shaking in a slow, patient rhythm now. You gather what is left and climb, because the only stone left worth having is at the top, and you are a long way behind.",
       "onEnter": [
-        { "type": "setFlag", "flag": "climbed_the_mountain", "value": true },
-        { "type": "setFlag", "flag": "clock_late", "value": true }
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
       ],
       "heal": 3,
       "outcome": "setback",

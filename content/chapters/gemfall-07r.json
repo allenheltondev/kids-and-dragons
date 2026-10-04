@@ -7,7 +7,10 @@
   "biome": "red_sky_foothills",
   "estimatedMinutes": 28,
   "xpAward": 90,
-  "route": { "set": "pursuit", "flag": "pursuit_restore" },
+  "route": {
+    "set": "pursuit",
+    "flag": "pursuit_restore"
+  },
   "entry": "scene_the_pinch",
   "objectives": [
     {
@@ -34,7 +37,7 @@
       "kind": "quest",
       "icon": "drop",
       "name": "Ossley's Wet Stone",
-      "text": "A plain river stone that is always a little bit wet. Old Ossley's price: carry it up, put it down, and say thank you to the river."
+      "text": "A plain river stone, always a little wet. Carry it up, and thank the river."
     }
   },
   "scenes": {
@@ -81,7 +84,13 @@
           "icon": "moon",
           "requiresFlag": "kept_close",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "quiet_hands", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "quiet_hands",
+              "value": true
+            }
+          ]
         },
         {
           "id": "handcart",
@@ -97,12 +106,20 @@
       "choices": [
         {
           "id": "pebble",
-          "label": "Ask the sergeant to give back the pebble that is only a pebble",
+          "label": "Ask for the pebble back. It is only a pebble.",
           "icon": "heart",
           "goto": "scene_road_gifts",
           "effects": [
-            { "type": "setFlag", "flag": "wardens_helping", "value": true },
-            { "type": "grantItem", "itemId": "honeycake", "to": "party" }
+            {
+              "type": "setFlag",
+              "flag": "wardens_helping",
+              "value": true
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
           ]
         },
         {
@@ -110,7 +127,13 @@
           "label": "Let the wardens work",
           "icon": "check",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "wardens_helping", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "wardens_helping",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -123,14 +146,26 @@
           "label": "Help with the knitting",
           "icon": "ribbon",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "gatherers_helping", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gatherers_helping",
+              "value": true
+            }
+          ]
         },
         {
           "id": "queue",
           "label": "Keep the queue of sorry buyers moving",
           "icon": "forward",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "setFlag", "flag": "gatherers_helping", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gatherers_helping",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -143,7 +178,13 @@
       "onSuccess": {
         "goto": "scene_road_gifts",
         "narration": "A handcart, a sign that says STONES GOING HOME, and a lot of honest talking. By lunchtime the cart is half full, and somebody has drawn a smiley face on the sign.",
-        "effects": [{ "type": "setFlag", "flag": "cart_full", "value": true }]
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "cart_full",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_road_gifts",
@@ -206,7 +247,13 @@
           "label": "Load his stones onto your cart",
           "icon": "hand",
           "goto": "scene_masks",
-          "effects": [{ "type": "setFlag", "flag": "cart_full", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "cart_full",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -214,8 +261,15 @@
       "type": "story",
       "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. He presses one plain, wet stone into your hand: \"Carry this one up yourselves. When you put it down, say thank you to the river.\"",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "ossley_debt_stone" },
-        { "type": "setFlag", "flag": "cart_full", "value": true }
+        {
+          "type": "grantQuestItem",
+          "itemId": "ossley_debt_stone"
+        },
+        {
+          "type": "setFlag",
+          "flag": "cart_full",
+          "value": true
+        }
       ],
       "choices": [
         {
@@ -235,7 +289,13 @@
           "label": "Thank her, and the Woods",
           "icon": "leaf",
           "goto": "scene_masks",
-          "effects": [{ "type": "setFlag", "flag": "cart_full", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "cart_full",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -248,14 +308,26 @@
           "label": "Tell it what a warden said about acceptable losses",
           "icon": "ear",
           "goto": "scene_masks",
-          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
         },
         {
           "id": "grandma_said",
           "label": "Tell it what a grandmother said about cake",
           "icon": "cake",
           "goto": "scene_masks",
-          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -269,8 +341,15 @@
           "icon": "heart",
           "goto": "scene_masks",
           "effects": [
-            { "type": "grantQuestItem", "itemId": "facet_ford" },
-            { "type": "setFlag", "flag": "cart_full", "value": true }
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ford"
+            },
+            {
+              "type": "setFlag",
+              "flag": "cart_full",
+              "value": true
+            }
           ]
         },
         {
@@ -278,7 +357,13 @@
           "label": "\"Honestly? We are still working it out.\"",
           "icon": "feather",
           "goto": "scene_masks",
-          "effects": [{ "type": "grantItem", "itemId": "songbird_ribbon", "to": "party" }]
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "songbird_ribbon",
+              "to": "party"
+            }
+          ]
         }
       ]
     },
@@ -298,7 +383,13 @@
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
           "goto": "scene_evening",
-          "effects": [{ "type": "setFlag", "flag": "cart_full", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "cart_full",
+              "value": true
+            }
+          ]
         },
         {
           "id": "let_be",
@@ -318,8 +409,16 @@
         "goto": "scene_evening",
         "narration": "Tamsin takes off her mask. \"I only wanted somebody to fix things,\" she says quietly. She hands you her whole sack of stones, and then her ladle, and asks you to fix things.",
         "effects": [
-          { "type": "setFlag", "flag": "mask_off", "value": true },
-          { "type": "setFlag", "flag": "cart_full", "value": true }
+          {
+            "type": "setFlag",
+            "flag": "mask_off",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "cart_full",
+            "value": true
+          }
         ]
       },
       "onFailure": {
@@ -340,7 +439,7 @@
         },
         {
           "id": "exchange",
-          "label": "An Exchange caravan is rolling in, and someone on top is waving",
+          "label": "An Exchange caravan rolls in, and someone is waving",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_ember"
@@ -356,7 +455,13 @@
     "scene_relay_sing": {
       "type": "story",
       "narration": "The relay singers have new verses, and the verses are about wagons that have not arrived yet. You can hear tomorrow's traffic tonight. Then a grandmother's runner hands you a list of caves nobody may ever dig, and it is exactly where you would put a seal.",
-      "onEnter": [{ "type": "setFlag", "flag": "heard_tomorrow", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_tomorrow",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "sleep",
@@ -375,7 +480,12 @@
           "label": "Buy it back, whatever it costs",
           "icon": "gem",
           "goto": "rest_way_shelter",
-          "effects": [{ "type": "grantQuestItem", "itemId": "facet_ember" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ember"
+            }
+          ]
         },
         {
           "id": "wave",
@@ -439,7 +549,13 @@
       "onSuccess": {
         "goto": "choice_the_bend",
         "narration": "The sausage bounces down the side trail, and the whole pack follows it with enormous dignity, as if that was where they were going all along.",
-        "effects": [{ "type": "setFlag", "flag": "wolves_turned", "value": true }]
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "wolves_turned",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "encounter_wolves",
@@ -451,7 +567,11 @@
       "map": "switchback",
       "narration": "The pack spreads out across the zigzags, ears flat, too frightened of the mountain to think straight.",
       "enemies": [
-        { "id": "wolves", "name": "Cinder Wolf", "creature": "cinder_wolf" }
+        {
+          "id": "wolves",
+          "name": "Cinder Wolf",
+          "creature": "cinder_wolf"
+        }
       ],
       "onVictory": {
         "goto": "choice_the_bend",
@@ -564,9 +684,20 @@
       "type": "story",
       "narration": "The Caravan Stone is the size of a loaf of bread and hums like a whole choir. The moment it is pointed back up the mountain, the humming changes key, and sounds, very faintly, relieved. The next tremor is a little softer than the last.",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "facet_caravan" },
-        { "type": "setFlag", "flag": "caravan_stone_home", "value": true },
-        { "type": "setFlag", "flag": "clock_steady", "value": true }
+        {
+          "type": "grantQuestItem",
+          "itemId": "facet_caravan"
+        },
+        {
+          "type": "setFlag",
+          "flag": "caravan_stone_home",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_steady",
+          "value": true
+        }
       ],
       "choices": [
         {
@@ -580,7 +711,13 @@
     "scene_caravan_lost": {
       "type": "story",
       "narration": "The masks have the Caravan Stone. Tamsin's cell drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
-      "onEnter": [{ "type": "setFlag", "flag": "clock_late", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "climb",
@@ -593,7 +730,13 @@
     "rest_tree_line": {
       "type": "rest",
       "narration": "At the tree line you stop and look back. Everyone else on the road is running downhill: wagons, wardens, masks, a man with an empty wheelbarrow. There is not a single embermoth left in the foothills. You turn around, and walk up the mountain everyone else is running away from, with your arms full of stones that want to go home.",
-      "onEnter": [{ "type": "setFlag", "flag": "climbed_the_mountain", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        }
+      ],
       "heal": 4,
       "choices": []
     },
@@ -601,8 +744,16 @@
       "type": "rest",
       "narration": "By the time you have found half the stones, the fattest caravan has gone past the bend without you. The ground is shaking in a slow, patient rhythm now, like a heartbeat. Everyone else is running down the mountain. You pick up what you can carry and go up it anyway, a long way behind.",
       "onEnter": [
-        { "type": "setFlag", "flag": "climbed_the_mountain", "value": true },
-        { "type": "setFlag", "flag": "clock_late", "value": true }
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
       ],
       "heal": 3,
       "outcome": "setback",
