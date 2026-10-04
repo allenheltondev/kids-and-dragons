@@ -1,0 +1,887 @@
+{
+  "id": "gemfall-06",
+  "campaignId": "gemfall",
+  "index": 6,
+  "title": "Ashfall",
+  "biome": "red_sky_foothills",
+  "estimatedMinutes": 30,
+  "xpAward": 90,
+  "entry": "scene_arrival",
+  "objectives": [
+    {
+      "id": "read_the_crab",
+      "label": "Read the glassback crab's warning before anybody got pinched",
+      "flag": "read_the_crab",
+      "xp": 10
+    },
+    {
+      "id": "fed_the_wolves",
+      "label": "Found the cold cinder wolves something to eat",
+      "flag": "wolves_fed",
+      "xp": 6
+    },
+    {
+      "id": "heard_hessa",
+      "label": "Listened to the soup-tent woman all the way through",
+      "flag": "heard_hessa",
+      "xp": 6
+    }
+  ],
+  "props": {
+    "facet_table": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Table Stone",
+      "text": "The evidence stone from the Redspire truth-table. Logged twice by the wardens, three times if you count the time you took it. It hums along whenever anyone tells the truth nearby."
+    }
+  },
+  "scenes": {
+    "scene_arrival": {
+      "type": "story",
+      "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep.",
+      "choices": [
+        {
+          "id": "walk_up",
+          "label": "Walk up into the foothills",
+          "icon": "travel",
+          "goto": "scene_moths"
+        },
+        {
+          "id": "door_river",
+          "label": "Come down from the broken bridge, in the northeast",
+          "icon": "map",
+          "requiresFlag": "route_river",
+          "goto": "scene_door_river"
+        },
+        {
+          "id": "door_wild",
+          "label": "Step off the bigfoot high paths, in the west",
+          "icon": "leaf",
+          "requiresFlag": "route_wild",
+          "goto": "scene_door_wild"
+        },
+        {
+          "id": "door_rush",
+          "label": "Walk up through the boundary stones, in the south",
+          "icon": "boot",
+          "requiresFlag": "route_rush",
+          "goto": "scene_door_rush"
+        }
+      ]
+    },
+    "scene_door_river": {
+      "type": "story",
+      "narration": "You come down off the cracked bridge with the wardens' engineers, who are still arguing about one crack in particular. From up here you can see it all at once: the bent pride roads, the troll's question, the crack in the bridge. Every one of them points at the mountain.",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Down into the camps",
+          "icon": "arrow",
+          "goto": "scene_moths"
+        }
+      ]
+    },
+    "scene_door_wild": {
+      "type": "story",
+      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. Your MossHome runner waves goodbye and does not take one step farther. The moss stops exactly where the ash starts, as if somebody drew a line with a ruler.",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Step down into the ash",
+          "icon": "arrow",
+          "goto": "scene_moths"
+        }
+      ]
+    },
+    "scene_door_rush": {
+      "type": "story",
+      "narration": "You walk up the caravan road through the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
+      "choices": [
+        {
+          "id": "up",
+          "label": "Up into the camps",
+          "icon": "arrow",
+          "goto": "scene_moths"
+        }
+      ]
+    },
+    "scene_moths": {
+      "type": "story",
+      "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts.",
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Follow the moths' line down the slope",
+          "icon": "eye",
+          "goto": "scene_wolves"
+        },
+        {
+          "id": "say_it",
+          "label": "Say what every dragonling child knows: moths leaving the warm means the mountain is planning something",
+          "icon": "spark",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_wolves"
+        },
+        {
+          "id": "count",
+          "label": "Count the moths. All of them.",
+          "icon": "eye",
+          "requiresSpecies": "bigfoot",
+          "goto": "scene_wolves"
+        }
+      ]
+    },
+    "scene_wolves": {
+      "type": "story",
+      "narration": "Down on the caravan road, a pack of cinder wolves is lying in one big heap in the ruts, glowing faintly, like a pile of coals with ears. They are not hunting. They are cold and hungry, and forty wagons are stuck behind them, with forty drovers yelling.",
+      "choices": [
+        {
+          "id": "easier_prey",
+          "label": "Find them something easier to eat than a traffic jam",
+          "icon": "clever",
+          "goto": "check_wolves"
+        },
+        {
+          "id": "fly_look",
+          "label": "Fly up and look for what they could eat instead",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_soup_tent",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "wolves_fed",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "wait",
+          "label": "Wait for them to move on",
+          "icon": "rest",
+          "goto": "scene_soup_tent"
+        }
+      ]
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find the hungry wolves something better than the road",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_soup_tent",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "wolves_fed",
+            "value": true
+          }
+        ],
+        "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorising your face."
+      },
+      "onFailure": {
+        "goto": "scene_soup_tent",
+        "narration": "Your plan involves a sausage on a string, and the wolves are not impressed. In the end they wander off on their own, howling long complaints at the mountain."
+      }
+    },
+    "scene_soup_tent": {
+      "type": "story",
+      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles you each a bowl, asks your names, and remembers them. \"The world's laws are broken,\" she says kindly. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
+      "choices": [
+        {
+          "id": "ask_cure",
+          "label": "Ask her what the cure would fix",
+          "icon": "ear",
+          "goto": "rest_warm_stones",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "heard_hessa",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "no_thanks",
+          "label": "Say no thank you, kindly but clearly",
+          "icon": "hand",
+          "goto": "rest_warm_stones",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "refused_the_cult",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "just_soup",
+          "label": "Just eat the soup",
+          "icon": "cake",
+          "goto": "rest_warm_stones"
+        },
+        {
+          "id": "mask",
+          "label": "Notice the mask folded in her apron pocket, and ask about it",
+          "icon": "spark",
+          "requiresSpecies": "kitsune",
+          "goto": "rest_warm_stones",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "heard_hessa",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "ford_soup",
+          "label": "Tell her you remember the soup line at the ford",
+          "icon": "note",
+          "requiresFlag": "route_rush",
+          "goto": "rest_warm_stones",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "heard_hessa",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "rest_warm_stones": {
+      "type": "rest",
+      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cosy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Sleep, share out your things, and get a little better at something.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "morning",
+          "label": "In the morning, climb the ridge toward Redspire",
+          "icon": "forward",
+          "goto": "scene_crab"
+        }
+      ]
+    },
+    "scene_crab": {
+      "type": "story",
+      "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. A prospector called Dunmore is raising a pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
+      "choices": [
+        {
+          "id": "read_it",
+          "label": "Read what the crab is trying to say",
+          "icon": "eye",
+          "goto": "check_crab"
+        },
+        {
+          "id": "knock",
+          "label": "Knock on its burrow stone, and wait",
+          "icon": "hand",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_crab_thanks",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_the_crab",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "fight",
+          "label": "Pull Dunmore back and face the crab",
+          "icon": "swords",
+          "goto": "encounter_crab"
+        },
+        {
+          "id": "back_off",
+          "label": "Back everybody off its warm ground and take the long way round",
+          "icon": "back",
+          "goto": "scene_citadel_gate",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "clock_stirring",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_crab": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Read the glassback crab's threat display",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crab_thanks",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_crab",
+            "value": true
+          }
+        ],
+        "narration": "Two claws up and a rock to the left means: this is my warm ground, and you are standing in my garden. You tell everybody to take three big steps back. The crab lowers its claws and goes back to tidying its pebbles, very pleased."
+      },
+      "onFailure": {
+        "goto": "encounter_crab",
+        "narration": "Two claws up and a rock to the left means... you guess \"hello.\" It does not mean hello. The crab charges, and its neighbour from the next burrow scuttles over to see what all the fuss is."
+      }
+    },
+    "encounter_crab": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "Two glassback crabs clatter down the switchbacks, their shells flashing every colour of the gems around them.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Glassback Crab",
+          "creature": "glassback_crab"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_citadel_gate",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "clock_stirring",
+            "value": true
+          }
+        ],
+        "narration": "Both crabs back off onto their own warm ground, and the moment they get there, they forget you ever existed. It took all morning, though. The sun is high by the time you reach the citadel road."
+      },
+      "onDefeat": {
+        "goto": "check_late_gate",
+        "narration": "The crabs nudge you, very firmly, all the way down the ridge and off their warm ground, then go back to their gardening. You are fine. You are also at the bottom of the ridge again, and the afternoon is nearly gone."
+      }
+    },
+    "check_late_gate": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Race the sunset up the ridge before the citadel gate closes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_citadel_gate",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "clock_stirring",
+            "value": true
+          }
+        ],
+        "narration": "You run the switchbacks two at a time and slide in under the gate as it comes down, with one finger's width to spare."
+      },
+      "onFailure": {
+        "goto": "scene_shut_out",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "clock_late",
+            "value": true
+          }
+        ],
+        "narration": "The gate comes down with a BOOM just as you get there. A warden on the wall gives you a sad little shrug. Rules are rules, even for heroes."
+      }
+    },
+    "scene_crab_thanks": {
+      "type": "story",
+      "narration": "Dunmore lowers his pick and goes rather pink. The crab moves three pebbles in a way that looks a lot like a thank-you note. And at the top of the ridge, the black tower of Redspire Citadel catches the morning sun.",
+      "choices": [
+        {
+          "id": "straight_up",
+          "label": "Straight up the ridge road, right now",
+          "icon": "forward",
+          "goto": "scene_citadel_gate",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "clock_steady",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "fly_ahead",
+          "label": "Fly ahead and tell the gate you're coming",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_citadel_gate",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "clock_steady",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "help_dunmore",
+          "label": "Help Dunmore and the crowd find a better spot first",
+          "icon": "hand",
+          "goto": "scene_citadel_gate",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "clock_stirring",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_citadel_gate": {
+      "type": "story",
+      "narration": "Redspire Citadel is a black tower where every single window faces up. Inside, a clerk named Pellam writes your names in a big ledger, then writes them again in a second ledger, just to be sure. \"This way,\" he says. \"The captain has a table.\"",
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Follow Pellam to the table",
+          "icon": "forward",
+          "goto": "scene_truth_table"
+        }
+      ]
+    },
+    "scene_truth_table": {
+      "type": "story",
+      "narration": "On a long stone table, the wardens have laid out four hundred years of watch-logs, and in the middle of them a gemstone sits humming to itself. Captain Orla Voss folds her arms. \"Show us what you found on the road,\" she says. \"Our logs will fill in the rest.\"",
+      "choices": [
+        {
+          "id": "logs_first",
+          "label": "Let the wardens read their logs out first",
+          "icon": "scroll",
+          "goto": "scene_whole_truth"
+        },
+        {
+          "id": "river_clues",
+          "label": "Lay down the troll's question, the sash-maps and the bridge survey",
+          "icon": "map",
+          "requiresFlag": "route_river",
+          "goto": "scene_whole_truth"
+        },
+        {
+          "id": "wild_clues",
+          "label": "Lay down the boggart's hum, the wounded glades and the path archive",
+          "icon": "leaf",
+          "requiresFlag": "route_wild",
+          "goto": "scene_whole_truth"
+        },
+        {
+          "id": "rush_clues",
+          "label": "Lay down the witch's charm, the route-songs and the boundary tallies",
+          "icon": "note",
+          "requiresFlag": "route_rush",
+          "goto": "scene_whole_truth"
+        },
+        {
+          "id": "odd_ledger",
+          "label": "Point at the one ledger bound in a different colour",
+          "icon": "eye",
+          "requiresSpecies": "bigfoot",
+          "goto": "scene_whole_truth"
+        }
+      ]
+    },
+    "scene_whole_truth": {
+      "type": "story",
+      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all the Table Stone hums, logged twice. One very old line just says: the marsh gate hums the same note. Next to it, in three different handwritings: nobody knows why.",
+      "choices": [
+        {
+          "id": "take_stone",
+          "label": "Ask to carry the Table Stone yourselves (Pellam logs it a third time)",
+          "icon": "gem",
+          "goto": "scene_acceptable_losses",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_table"
+            },
+            {
+              "type": "setFlag",
+              "flag": "took_the_table_stone",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "leave_stone",
+          "label": "Leave the Table Stone where it is, in warden custody",
+          "icon": "hand",
+          "goto": "scene_acceptable_losses"
+        }
+      ]
+    },
+    "scene_acceptable_losses": {
+      "type": "story",
+      "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast.",
+      "choices": [
+        {
+          "id": "not_a_number",
+          "label": "Tell her a town is not a number",
+          "icon": "heart",
+          "goto": "scene_ledger"
+        },
+        {
+          "id": "hear_plan",
+          "label": "Hear the whole plan before you say anything",
+          "icon": "ear",
+          "goto": "scene_ledger"
+        },
+        {
+          "id": "polite_roar",
+          "label": "Roar, very politely, at the map",
+          "icon": "fist",
+          "requiresSpecies": "manticore",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "scene_ledger": {
+      "type": "story",
+      "narration": "Pellam opens a fresh page and dips his pen. \"Before anybody decides anything,\" he says, \"the record. What have you been doing, all this way?\" The whole room waits. Even the Table Stone seems to hum more quietly.",
+      "choices": [
+        {
+          "id": "plainly",
+          "label": "Tell it plainly, in your own words",
+          "icon": "scroll",
+          "goto": "scene_who_to_tell"
+        },
+        {
+          "id": "medal",
+          "label": "Show the harvest sprites' woven medal",
+          "icon": "star",
+          "requiresFlag": "sprites_friends",
+          "goto": "scene_reading_restore"
+        },
+        {
+          "id": "glade_mended",
+          "label": "Tell how the wounded glade closed up",
+          "icon": "leaf",
+          "requiresFlag": "glade_mended",
+          "goto": "scene_reading_restore"
+        },
+        {
+          "id": "duty",
+          "label": "Say why you really came: somebody had to",
+          "icon": "shield",
+          "requiresFlag": "motive_duty",
+          "goto": "scene_reading_restore"
+        },
+        {
+          "id": "sprites_wronged",
+          "label": "Admit the sprites are still talking about you",
+          "icon": "thorn",
+          "requiresFlag": "sprites_wronged",
+          "goto": "scene_reading_hoard"
+        },
+        {
+          "id": "glade_finished",
+          "label": "Set the Glade Stone on the table",
+          "icon": "gem",
+          "requiresFlag": "glade_finished",
+          "goto": "scene_reading_hoard"
+        },
+        {
+          "id": "ember",
+          "label": "Tip out your pockets, Ember Facet first",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "scene_reading_hoard"
+        },
+        {
+          "id": "wealth",
+          "label": "Say why you really came: to get rich",
+          "icon": "crown",
+          "requiresFlag": "motive_wealth",
+          "goto": "scene_reading_hoard"
+        },
+        {
+          "id": "curious",
+          "label": "Ask what the power under the mountain could actually do",
+          "icon": "eye",
+          "requiresFlag": "motive_curiosity",
+          "goto": "scene_reading_leash"
+        },
+        {
+          "id": "prestige",
+          "label": "Ask who gets to hold that power",
+          "icon": "crown",
+          "requiresFlag": "motive_prestige",
+          "goto": "scene_reading_leash"
+        },
+        {
+          "id": "hessa",
+          "label": "Repeat what Hessa said about the cure",
+          "icon": "note",
+          "requiresFlag": "heard_hessa",
+          "goto": "scene_reading_leash"
+        }
+      ]
+    },
+    "scene_reading_restore": {
+      "type": "story",
+      "narration": "Pellam reads it all back and taps the page. \"Medals. Mending. Putting things back,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "forward",
+          "goto": "scene_who_to_tell"
+        }
+      ]
+    },
+    "scene_reading_hoard": {
+      "type": "story",
+      "narration": "Pellam reads it back, and the stones in your packs hum along with every line. \"Pockets,\" he says. \"A great many pockets. That adds up to a collection.\" Nobody in the room says he is wrong. A moth lands on your bag, thinks about it, and leaves.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "forward",
+          "goto": "scene_who_to_tell"
+        }
+      ]
+    },
+    "scene_reading_leash": {
+      "type": "story",
+      "narration": "Pellam reads it back slowly. \"Questions about what the power could do. Who holds it. What it's for.\" He writes one word and underlines it twice: leash. Somewhere below, Hessa's soup tent is still serving.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "forward",
+          "goto": "scene_who_to_tell"
+        }
+      ]
+    },
+    "scene_who_to_tell": {
+      "type": "story",
+      "narration": "\"Now,\" says Captain Voss. \"Who else gets to know? Choose carefully. Nobody is going to ask you again.\"",
+      "choices": [
+        {
+          "id": "wardens",
+          "label": "Stand with the wardens' plan",
+          "icon": "shield",
+          "goto": "scene_what_for",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_wardens",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "gatherers",
+          "label": "Take it to the grandmothers and the gathering-law towns",
+          "icon": "whistle",
+          "goto": "scene_what_for",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_gatherers",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "close",
+          "label": "Keep it close and tell nobody else",
+          "icon": "lantern",
+          "goto": "scene_what_for",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "kept_close",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "stay_wardens",
+          "label": "Keep the promise you already made to the wardens",
+          "icon": "check",
+          "requiresFlag": "told_wardens",
+          "goto": "scene_what_for"
+        },
+        {
+          "id": "stay_gatherers",
+          "label": "Keep faith with the gatherers you already told",
+          "icon": "check",
+          "requiresFlag": "told_gatherers",
+          "goto": "scene_what_for"
+        },
+        {
+          "id": "stay_close",
+          "label": "Keep the secret you were already keeping",
+          "icon": "check",
+          "requiresFlag": "kept_close",
+          "goto": "scene_what_for"
+        }
+      ]
+    },
+    "scene_what_for": {
+      "type": "story",
+      "narration": "Then the captain asks the real question. \"And you? What is it all for?\" Somewhere a stone hums. Everybody in the room is looking at you.",
+      "choices": [
+        {
+          "id": "restore",
+          "label": "Put it back. Every stone.",
+          "icon": "heart",
+          "goto": "rest_end_ashfall",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_restore",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "hoard",
+          "label": "Finish the collection",
+          "icon": "gem",
+          "goto": "rest_end_ashfall",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_hoard",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "leash",
+          "label": "Take the leash on what's under the mountain",
+          "icon": "key",
+          "goto": "rest_end_ashfall",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_leash",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "refuse",
+          "label": "Refuse to say",
+          "icon": "moon",
+          "goto": "scene_undeclared",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_restore",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_undeclared": {
+      "type": "story",
+      "narration": "Nobody says anything. Pellam waits, then writes it down anyway: no answer means the Reckoning, putting it all back the hard way, with nobody promised to help. \"Hardest road there is,\" says Captain Voss. \"Freest, too.\" She very nearly smiles.",
+      "choices": [
+        {
+          "id": "bed",
+          "label": "Go and find your bunks",
+          "icon": "rest",
+          "goto": "rest_end_ashfall"
+        }
+      ]
+    },
+    "rest_end_ashfall": {
+      "type": "rest",
+      "narration": "The wardens give you bunks in a room where every window faces up. Far below, the mountain turns over in its sleep, and every embermoth in the foothills shuffles one step farther away from it. You know what the stones are now, and you know what you want. Rest. Tomorrow, everything you passed on the road comes back up to meet you.",
+      "heal": 4,
+      "choices": []
+    },
+    "scene_shut_out": {
+      "type": "story",
+      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
+      "choices": [
+        {
+          "id": "restore",
+          "label": "Put it back. Every stone.",
+          "icon": "heart",
+          "goto": "rest_end_shut_out",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_restore",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "hoard",
+          "label": "Finish the collection",
+          "icon": "gem",
+          "goto": "rest_end_shut_out",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_hoard",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "leash",
+          "label": "Take the leash on what's under the mountain",
+          "icon": "key",
+          "goto": "rest_end_shut_out",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_leash",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "refuse",
+          "label": "Say nothing (Pellam writes down: the Reckoning)",
+          "icon": "moon",
+          "goto": "rest_end_shut_out",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "pursuit_restore",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "rest_end_shut_out": {
+      "type": "rest",
+      "narration": "You sleep against the cold side of the citadel wall, like the embermoths. The crabs, the sunset and the gate all beat you today, and the mountain noticed: the tremors have settled into a slow, patient rhythm. But the whole truth is in your heads now, and Pellam has left his lantern hanging on the wall for you. It burns all night.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "warm, a little spooky, the big reveal told plainly and kindly; grown-ups being rigid or certain, never cruel",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "hessa": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
+      "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
+      "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
+      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cosy, says 'nothing to worry about' one time too many",
+      "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well"
+    }
+  }
+}
