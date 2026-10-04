@@ -140,7 +140,7 @@
     "kind": "quest",
     "icon": "gem",
     "name": "The Caravan Stone",
-    "text": "The masterpiece stone from the middle of the fattest caravan in the funnel. It is the size of a loaf of bread and hums so loudly the mules wore cotton in their ears."
+    "text": "The masterpiece stone of the fattest caravan. It hums so loud the mules wear earmuffs."
   },
   "facet_clerks": {
     "kind": "quest",
@@ -224,7 +224,7 @@
     "kind": "quest",
     "icon": "drop",
     "name": "Ossley's Wet Stone",
-    "text": "A plain river stone that is always a little bit wet. Old Ossley's price: carry it up, put it down, and say thank you to the river."
+    "text": "A plain river stone, always a little wet. Carry it up, and thank the river."
   },
   "ossley_reed_knot": {
     "kind": "quest",
@@ -242,19 +242,19 @@
     "kind": "quest",
     "icon": "note",
     "name": "The Resonance Chord",
-    "text": "Three notes the Deep Hollow choir hums to make the stones hum back. It is not written down anywhere. It is in your head, and it will not leave."
+    "text": "Three notes the choir hums to make the stones hum back. Written down nowhere."
   },
   "tether_ledger": {
     "kind": "quest",
     "icon": "scroll",
     "name": "The Cage-Doctrine Ledger",
-    "text": "The Skywardens' plan for holding what is under the mountain, written in a ledger as thick as a doorstep. The wardens do not lend it. They lent it to you."
+    "text": "The wardens' plan for holding what is under the mountain. They do not lend it."
   },
   "tether_question": {
     "kind": "quest",
     "icon": "charm",
     "name": "The Witch's Question",
-    "text": "What do you actually want? A witch lent it to you, which means you are allowed to ask it of anything. Even a mountain."
+    "text": "What do you actually want? A witch lent it to you. You may ask it of anything."
   },
   "torn_map_east": {
     "kind": "quest",
