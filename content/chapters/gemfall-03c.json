@@ -36,13 +36,13 @@
       "kind": "quest",
       "icon": "gem",
       "name": "The Ford Stone",
-      "text": "A fist-sized gem wrapped in a witch's wool sock. It rings every bell charm it passes, and it will not stop."
+      "text": "Wrapped in a witch's wool sock. It rings every bell charm it passes, and won't stop."
     },
     "charm_ford_witch": {
       "kind": "quest",
       "icon": "charm",
       "name": "Mother Thrum's Tuned Charm",
-      "text": "A little bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
+      "text": "A bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
     }
   },
   "scenes": {
@@ -651,8 +651,9 @@
       "enemies": [
         {
           "id": "drake",
-          "name": "River Drake",
-          "creature": "river_drake"
+          "name": "Young River Drake",
+          "creature": "river_drake",
+          "hp": 10
         }
       ],
       "onVictory": {
