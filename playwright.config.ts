@@ -33,6 +33,9 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run dev",
+    // The suite walks the reference chapter scene by scene, so it pins the
+    // reference campaign rather than following whatever the lobby launches.
+    env: { VITE_LAUNCH_CAMPAIGN: "the-hollow-crown" },
     // Wait for the API through Vite, so a fast client boot cannot race the server.
     url: "http://localhost:5173/api/health",
     // Locally, reuse the dev server you already have running. On CI there

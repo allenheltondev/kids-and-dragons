@@ -1,0 +1,640 @@
+{
+  "id": "gemfall-03b",
+  "campaignId": "gemfall",
+  "index": 3,
+  "title": "What the Marsh Remembers",
+  "biome": "whispering_marsh",
+  "route": {
+    "set": "road",
+    "flag": "route_wild"
+  },
+  "estimatedMinutes": 27,
+  "xpAward": 90,
+  "entry": "scene_poling_in",
+  "objectives": [
+    {
+      "id": "named_mimic",
+      "label": "Saw through the mire mimic's act",
+      "flag": "named_the_mimic",
+      "xp": 10
+    },
+    {
+      "id": "wisp_sight",
+      "label": "Let a wisp show you what it remembers",
+      "flag": "wisp_showed_us",
+      "xp": 12
+    }
+  ],
+  "props": {
+    "facet_barge": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Barge Stone",
+      "text": "The one real thing in a mire mimic's best performance. It hums a long, low note, the same as the Hollow Gate's runes."
+    }
+  },
+  "scenes": {
+    "scene_poling_in": {
+      "type": "story",
+      "narration": "A frogfolk ferrywoman called Gullet poles you into the Whispering Marsh. She carves a notch in her pole for every new wisp she sees, and this week she ran out of pole and started on her hat. Whole channels are roped off with ribbon and tiny bells, and behind them brand-new wisps bob about like they can't find their slippers. \"Too many new ones,\" says Gullet, and very carefully does not say why.",
+      "choices": [
+        {
+          "id": "say_it",
+          "label": "Say it out loud: something is leaking",
+          "icon": "note",
+          "goto": "scene_boggart_isle",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "said_it_aloud",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "feel_wisps",
+          "label": "Feel what the new wisps remember",
+          "icon": "unicorn",
+          "goto": "scene_unicorn_feels",
+          "requiresSpecies": "unicorn"
+        },
+        {
+          "id": "pole_on",
+          "label": "Ask Gullet to take you to whoever knows about gems",
+          "icon": "travel",
+          "goto": "scene_boggart_isle"
+        }
+      ]
+    },
+    "scene_unicorn_feels": {
+      "type": "story",
+      "narration": "You lower your horn toward the ribbon, and the wisps go still. Each one is a memory that got tangled in the marsh. And every single one of them is remembering the same thing: a night when red light fell out of the sky — and for one moment, fell upward.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "felt_the_wisps",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tell the others, and pole on",
+          "icon": "travel",
+          "goto": "scene_boggart_isle"
+        }
+      ]
+    },
+    "scene_boggart_isle": {
+      "type": "story",
+      "narration": "On a mud island stacked with lost things — odd mittens, a teapot lid, nine umbrellas — sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
+      "choices": [
+        {
+          "id": "offer",
+          "label": "Work out what she wants, and offer it",
+          "icon": "clever",
+          "goto": "check_trade"
+        },
+        {
+          "id": "hear_unsaid",
+          "label": "Hear what she isn't saying",
+          "icon": "kitsune",
+          "goto": "scene_boggart_clue",
+          "requiresSpecies": "kitsune",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar",
+              "to": "party"
+            }
+          ]
+        }
+      ]
+    },
+    "check_trade": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out, from her hints, what Nan Rummage actually wants",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_boggart_clue",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "roller"
+          }
+        ],
+        "narration": "It's the squeak your left boot makes. She wants the squeak. You give her a good long one, and she writes it down, delighted, and throws in a jar of mosslight she found last spring."
+      },
+      "onFailure": {
+        "goto": "scene_boggart_clue",
+        "narration": "You offer a button, a pebble and half a sandwich. Wrong, wrong, and she eats the sandwich anyway. In the end she takes your best whistle-tune by humming it back at you until you give up, and calls it even."
+      }
+    },
+    "scene_boggart_clue": {
+      "type": "story",
+      "narration": "Nan Rummage opens the bag a crack. Inside is a chip of fallen gem, no bigger than a tooth, humming one long, low note. \"Lost things all hum,\" she tells the teapot lid. \"This one hums like the Gate. Same note. Exactly.\" Then, to an umbrella: \"Not that I said.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_the_hum",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "thanks",
+          "label": "Thank her, sideways, and pole on",
+          "icon": "travel",
+          "goto": "scene_barge"
+        }
+      ]
+    },
+    "scene_barge": {
+      "type": "story",
+      "narration": "Round the next bend, half-sunk in the reeds, sits a gem barge with ABANDONED painted on the side in big, helpful letters. One gem sits on its deck, humming the boggart's note. There are prospector footprints in the mud going toward it, and, oddly, none coming back.",
+      "choices": [
+        {
+          "id": "grab",
+          "label": "Climb aboard and grab the gem",
+          "icon": "hand",
+          "goto": "encounter_mimic"
+        },
+        {
+          "id": "look",
+          "label": "Look very, very carefully at this barge",
+          "icon": "eye",
+          "goto": "check_name"
+        },
+        {
+          "id": "stamp",
+          "label": "Stamp on the bank until it gives itself away",
+          "icon": "boot",
+          "goto": "check_stamp"
+        },
+        {
+          "id": "critique",
+          "label": "Critique the performance",
+          "icon": "kitsune",
+          "goto": "scene_kitsune_review",
+          "requiresSpecies": "kitsune"
+        }
+      ]
+    },
+    "check_name": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Spot what's wrong with this barge, and say what it really is",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_act_closed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "named_the_mimic",
+            "value": true
+          }
+        ],
+        "narration": "The barge has eyelashes. Barges do not have eyelashes. \"You're a mire mimic,\" you say, and the whole barge sighs, unfolds into something long and muddy and embarrassed, and slides off into the reeds."
+      },
+      "onFailure": {
+        "goto": "encounter_mimic",
+        "narration": "You lean in for a closer look, and the closer look opens its mouth."
+      }
+    },
+    "check_stamp": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Stamp the bank hard enough to shake a mimic off its patch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_act_closed",
+        "narration": "You stamp, and stamp, and do a sort of stamping dance, and the barge starts to wobble. Then it stands up — on legs — and stalks off into the reeds, muttering."
+      },
+      "onFailure": {
+        "goto": "encounter_mimic",
+        "narration": "The bank shakes. So does the barge. Then the barge turns round and looks at you, and it is not pleased."
+      }
+    },
+    "scene_kitsune_review": {
+      "type": "story",
+      "narration": "Your kitsune walks once round the barge with their nose in the air. \"The barnacles are on the wrong side. That rope is a tail. And nobody abandons a barge with the lantern still polished.\" A long, wounded silence. Then the barge unfolds into a mire mimic and slinks off into the reeds, mortified.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "named_the_mimic",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "bow",
+          "label": "Take a small bow",
+          "icon": "star",
+          "goto": "scene_act_closed"
+        }
+      ]
+    },
+    "encounter_mimic": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The barge heaves up out of the mud on long grey legs. Two wisps who have been leading prospectors this way drift in to watch the show.",
+      "enemies": [
+        {
+          "id": "mimic",
+          "name": "Mire Mimic (as a Barge)",
+          "creature": "mire_mimic",
+          "count": 1
+        },
+        {
+          "id": "wisp",
+          "name": "Usher Wisp",
+          "creature": "will_o_wisp",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_act_closed",
+        "narration": "The mimic decides this audience is far too much trouble and slithers off into the deep reeds, taking its legs with it."
+      },
+      "onDefeat": {
+        "goto": "check_find_way",
+        "narration": "The mimic gulps the gem, spits you out onto a mudbank, and sinks out of sight, prop and all. The wisps drift off giggling. It's getting dark, and every channel looks exactly the same."
+      }
+    },
+    "check_find_way": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find your way back to the main channel in the dark",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_reed_raft",
+        "narration": "You follow the sound of humming and a bobbing, notched hat. Gullet hauls you onto her raft and says nothing at all about the mud."
+      },
+      "onFailure": {
+        "goto": "ending_marsh_kept_secrets"
+      }
+    },
+    "scene_act_closed": {
+      "type": "story",
+      "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem — the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
+      "choices": [
+        {
+          "id": "take",
+          "label": "Pick up the Barge Stone",
+          "icon": "gem",
+          "goto": "rest_reed_raft",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_barge"
+            }
+          ]
+        },
+        {
+          "id": "leave",
+          "label": "Leave it for the marsh",
+          "icon": "leaf",
+          "goto": "rest_reed_raft",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "left_the_barge_stone",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "rest_reed_raft": {
+      "type": "rest",
+      "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a flat hot stone. They taste like crunchy pond, which is better than it sounds. Rest a while. The fog is coming in, and something small and bright is waiting in it.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pole on into the fog",
+          "icon": "travel",
+          "goto": "scene_wisp_lead"
+        }
+      ]
+    },
+    "scene_wisp_lead": {
+      "type": "story",
+      "narration": "A single wisp drifts out of the fog and hangs in front of you, blinking hopefully, like a dog holding a ball. Then it bobs away between the reeds and stops, to see if you'll follow.",
+      "choices": [
+        {
+          "id": "please",
+          "label": "Say please",
+          "icon": "heart",
+          "goto": "scene_wisp_sight",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "wisp_showed_us",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "slow",
+          "label": "Follow it slowly, at its pace",
+          "icon": "boot",
+          "goto": "check_patience"
+        },
+        {
+          "id": "hurry",
+          "label": "Hurry after it before it gets away",
+          "icon": "quick",
+          "goto": "scene_wisp_trap"
+        },
+        {
+          "id": "feel",
+          "label": "Feel what it's trying to remember",
+          "icon": "unicorn",
+          "goto": "scene_wisp_sight",
+          "requiresSpecies": "unicorn",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "wisp_showed_us",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_patience": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Walk with the wisp, not after it, however slowly it goes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_wisp_sight",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "wisp_showed_us",
+            "value": true
+          }
+        ],
+        "narration": "It is slow. It is very, very slow. But it keeps looking back to check you're still there, and every time you are, it glows a little brighter."
+      },
+      "onFailure": {
+        "goto": "scene_wisp_trap",
+        "narration": "Somebody sighs. The wisp hears it, takes offence, and takes a shortcut."
+      }
+    },
+    "scene_wisp_trap": {
+      "type": "story",
+      "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug, beside something huge and grey.",
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squelch over to it",
+          "icon": "boot",
+          "goto": "scene_hollow_gate"
+        }
+      ]
+    },
+    "scene_wisp_sight": {
+      "type": "story",
+      "narration": "The wisp brightens, and for a moment you see what it remembers: a night sky full of falling red sparks, and one moment when every spark fell upward. Then it leads you, gently, out of the reeds to the foot of something enormous.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step out of the reeds",
+          "icon": "forward",
+          "goto": "scene_hollow_gate"
+        }
+      ]
+    },
+    "scene_hollow_gate": {
+      "type": "story",
+      "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to — older than the marsh, older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in knots. It does not open. It does not look like it has ever opened.",
+      "choices": [
+        {
+          "id": "listen",
+          "label": "Listen to the runes",
+          "icon": "ear",
+          "goto": "scene_gate_hum"
+        },
+        {
+          "id": "search",
+          "label": "Search the mud at the foot of the steps",
+          "icon": "eye",
+          "goto": "scene_gate_shard"
+        },
+        {
+          "id": "step_back",
+          "label": "Step back and leave it be",
+          "icon": "back",
+          "goto": "choice_exit"
+        }
+      ]
+    },
+    "scene_gate_hum": {
+      "type": "story",
+      "narration": "You stand very still. The runes are humming one long, low note — the boggart's note, the barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_the_gate",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "search",
+          "label": "Search the mud at its foot",
+          "icon": "eye",
+          "goto": "scene_gate_shard"
+        },
+        {
+          "id": "step_back",
+          "label": "Step back and leave it be",
+          "icon": "back",
+          "goto": "choice_exit"
+        }
+      ]
+    },
+    "scene_gate_shard": {
+      "type": "story",
+      "narration": "Half in the mud by the bottom step lies a curl of cold silver. When your gem-dusty boots come near, it hums once — the same note — and then goes completely quiet, as if it has said what it came to say.",
+      "choices": [
+        {
+          "id": "pick_up",
+          "label": "Pick it up, carefully",
+          "icon": "hand",
+          "goto": "choice_exit",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "hollow_crown_shard"
+            }
+          ]
+        },
+        {
+          "id": "leave",
+          "label": "Leave it where it lies",
+          "icon": "leaf",
+          "goto": "choice_exit"
+        }
+      ]
+    },
+    "choice_exit": {
+      "type": "choice_point",
+      "narration": "Past the Gate the marsh splits two ways. North, the reeds thin toward the west branch of the river and a dark line of trees. Northeast, you can hear wagon wheels, shouting, and somebody selling sausages: the rush roads, where all the stones are going. Everybody vote.",
+      "choices": [
+        {
+          "id": "north",
+          "label": "North, over the river to the trees",
+          "icon": "leaf",
+          "goto": "scene_west_branch"
+        },
+        {
+          "id": "northeast",
+          "label": "Northeast, into the rush traffic",
+          "icon": "travel",
+          "goto": "ending_walked_over"
+        }
+      ]
+    },
+    "scene_west_branch": {
+      "type": "story",
+      "narration": "The west branch runs along the marsh's northern edge, wide and brown and in a hurry. Gullet's cousins have built a weir-ford of poles and stepping stones, and they are standing on it in their best hats, waiting to pole you over with ceremony.",
+      "choices": [
+        {
+          "id": "ceremony",
+          "label": "Cross with the frogfolk, with all the ceremony",
+          "icon": "note",
+          "goto": "check_ford_song"
+        },
+        {
+          "id": "hop",
+          "label": "Hop the weir stones yourselves",
+          "icon": "quick",
+          "goto": "check_ford_hop"
+        }
+      ]
+    },
+    "check_ford_song": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Keep time with the frogfolk's crossing song",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_forded_clean",
+        "narration": "You sing badly but exactly in time, which is the part that counts."
+      },
+      "onFailure": {
+        "goto": "ending_swept_west",
+        "narration": "Somebody sneezes on the wrong beat. The raft wobbles, and the river takes its chance."
+      }
+    },
+    "check_ford_hop": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Hop the weir stones across the west branch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_forded_clean",
+        "narration": "Stone, stone, pole, stone, and a big jump at the end. Nobody even gets a sock wet."
+      },
+      "onFailure": {
+        "goto": "ending_swept_west",
+        "narration": "The fourth stone turns out to be a frog. It moves."
+      }
+    },
+    "ending_forded_clean": {
+      "type": "rest",
+      "narration": "The frogfolk set you down dry-footed on the north bank, and Gullet waves her notched hat until the fog swallows her. Ahead, the Enchanted Woods stand very still, like they've been expecting you. Camp at the tree line and listen to the river go by. You heard the note today. You won't forget it.",
+      "heal": 4,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "forded_clean",
+          "value": true
+        }
+      ],
+      "choices": []
+    },
+    "ending_swept_west": {
+      "type": "rest",
+      "narration": "The branch grabs you and carries you west — through the marsh's outermost tangles, past floating logs (real ones, you check) — until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
+      "heal": 4,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marsh_kept_us",
+          "value": true
+        }
+      ],
+      "choices": []
+    },
+    "ending_walked_over": {
+      "type": "rest",
+      "narration": "You squelch out of the reeds onto a road full of wagons and fall in behind a cart of turnips. Nobody asks where you came from — everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret in your pocket.",
+      "heal": 3,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "walked_over",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "route_rush",
+          "value": true
+        }
+      ],
+      "choices": []
+    },
+    "ending_marsh_kept_secrets": {
+      "type": "rest",
+      "narration": "The channels all look the same in the dark, and the wisps think it's a game. You never find the Gate. At dawn the current gets bored of you and carries you west through the outer tangles, and drops you, soggy and sorry, on the flooded paths at the edge of the Enchanted Woods. The marsh kept its secrets tonight. Sleep it off.",
+      "heal": 3,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marsh_kept_us",
+          "value": true
+        }
+      ],
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "warm, foggy, a little spooky but never scary; the marsh knows something and won't say it",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "gullet": "frogfolk ferrywoman; unhurried, hums between sentences, never says the worrying thing out loud, very proud of her notched hat",
+      "nan_rummage": "a boggart; talks sideways to the lost things she is sorting, never answers the question you asked, adores a really good sound",
+      "wisp": "cannot speak; blinks, bobs, sulks and brightens, and is completely undone by the word please",
+      "mire_mimic": "never speaks; sighs like an actor who just read a bad review"
+    }
+  }
+}

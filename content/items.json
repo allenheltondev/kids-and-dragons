@@ -124,11 +124,59 @@
       "amount": 1
     }
   },
+  "charm_ford_witch": {
+    "kind": "quest",
+    "icon": "charm",
+    "name": "Mother Thrum's Tuned Charm",
+    "text": "A little bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
+  },
+  "facet_drakes_rate": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Drake's Rate",
+    "text": "The newest piece on a river drake's hoard shelf. Marked PAID, underlined twice."
+  },
+  "facet_ember": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Ember Facet",
+    "text": "A red stone, warm as toast, that fell from the sky into an Exchange gutter by your boot."
+  },
+  "facet_ford": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Ford Stone",
+    "text": "A fist-sized gem wrapped in a witch's wool sock. It rings every bell charm it passes, and it will not stop."
+  },
+  "facet_harvest": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Harvest Stone",
+    "text": "A green-gold stone from a sprites' corner row. It still wears a tiny medal: BEST."
+  },
   "hollow_crown_shard": {
     "kind": "quest",
     "icon": "crown",
     "name": "Shard of the Hollow Crown",
     "text": "A curl of cold silver. It hums when you are close to the rest of it."
+  },
+  "medal_not": {
+    "kind": "quest",
+    "icon": "trophy",
+    "name": "A Very Small Woven Medal",
+    "text": "Woven by harvest sprites for leaving their stone alone. It says NOT."
+  },
+  "ossley_debt_stone": {
+    "kind": "quest",
+    "icon": "drop",
+    "name": "Ossley's Wet Stone",
+    "text": "A plain river stone that is always a little bit wet. Old Ossley's price: carry it up, put it down, and say thank you to the river."
+  },
+  "ossley_reed_knot": {
+    "kind": "quest",
+    "icon": "charm",
+    "name": "Ossley's Reed Knot",
+    "text": "A reed knot from Old Ossley. \"Later. When I'm going your way.\" It never dries."
   },
   "rusted_key": {
     "kind": "quest",
