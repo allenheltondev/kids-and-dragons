@@ -296,7 +296,9 @@ export function PlayerPanel(): ReactElement {
   // otherwise let one person start the chapter alone.
   const everyoneReady = party.length > 0 && party.every((member) => member.ready);
   const inLobby = state?.phase === "lobby" || state?.phase === "creation";
-  const firstChapterId = campaign?.chapters[0] ?? null;
+  // Which chapter comes next is the server's answer, not ours: where the party
+  // got to and which road it took live on the household's campaign attempt.
+  const campaignId = campaign?.id ?? null;
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -979,15 +981,15 @@ export function PlayerPanel(): ReactElement {
 
             {/* Somebody has to say go. It appears only once the whole party is
                 ready, so it can't be tapped out from under anyone, and the
-                chapter it names comes from the campaign file — content is data
-                (roadmap, "Content as data"). */}
-            {inLobby && everyoneReady && firstChapterId !== null ? (
+                chapter it starts is the campaign's next one, which the server
+                works out from where this household got to. */}
+            {inLobby && everyoneReady && campaignId !== null ? (
               <Button
                 variant="primary"
                 size="lg"
                 icon={<Icon name="forward" />}
                 disabled={busy}
-                onClick={() => void dispatch({ type: "START_CHAPTER", chapterId: firstChapterId })}
+                onClick={() => void dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
               >
                 Begin the adventure
               </Button>

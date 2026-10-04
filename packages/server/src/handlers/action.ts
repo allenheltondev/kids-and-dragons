@@ -34,6 +34,7 @@ import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
+  finalIndex,
   newCharacterWrite,
   prepareStatPointSpend,
   settleChapterCompletion,
@@ -58,9 +59,10 @@ export interface ActionInput extends ActionRequest {
 }
 
 export async function applyAction(
-  input: ActionInput,
+  received: ActionInput,
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
+  let input = received;
   const state = await deps.repo.getState(input.runId);
   if (!state) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
@@ -86,6 +88,16 @@ export async function applyAction(
   }
 
   // --- 2. apply ------------------------------------------------------------
+  if (input.intent.type === "CONTINUE_CAMPAIGN") {
+    const next = await nextChapter(input.intent.campaignId, auth.run.householdId, deps);
+    if ("refusal" in next) {
+      return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
+    }
+    // From here on it is an ordinary chapter start — including `roadTo`'s
+    // check below, which re-derives the same answer from the same record.
+    input = { ...input, intent: { type: "START_CHAPTER", chapterId: next.chapterId } };
+  }
+
   const chapter = resolveChapter(input, state, deps);
   if (chapter === undefined) {
     const wanted = input.intent.type === "START_CHAPTER" ? input.intent.chapterId : state.chapterId;
@@ -640,6 +652,40 @@ async function roadTo(
     };
   }
   return { flags };
+}
+
+/**
+ * The chapter a party continuing this campaign plays next.
+ *
+ * The beat after the last one this attempt finished, on the road the attempt
+ * carries. A finished attempt (`complete` or `failed`) or no attempt at all
+ * starts again at beat one with no roads — the same rule `roadTo` applies to
+ * seeding, so a replayed campaign chooses its roads again.
+ */
+async function nextChapter(
+  campaignId: string,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<{ chapterId: string } | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }> {
+  const campaign = deps.content.campaign(campaignId);
+  if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
+
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
+  const active = attempt && attempt.status === "active";
+  const flags = active ? { ...(attempt.routeFlags ?? {}) } : {};
+  let index = active ? (attempt.lastIndex ?? 0) + 1 : 1;
+  // Past the end can only be an attempt whose final chapter did not settle it
+  // — start over rather than strand the party at a beat that does not exist.
+  if (index > finalIndex(campaign, deps)) index = 1;
+
+  const chapter = deps.content.chapterAt(campaignId, index, flags);
+  if (!chapter) {
+    return {
+      refusal: `beat ${index} of "${campaignId}" is several roads, and this party has not taken one`,
+      code: "ILLEGAL",
+    };
+  }
+  return { chapterId: chapter.id };
 }
 
 /**

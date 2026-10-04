@@ -479,12 +479,12 @@ describe("readying up", () => {
 
     serverSends({ party: half.map((m) => ({ ...m, ready: true })) });
     await user.click(screen.getByRole("button", { name: /Begin the adventure/ }));
-    expect(sent).toEqual([{ type: "START_CHAPTER", chapterId: "ch_1" }]);
+    expect(sent).toEqual([{ type: "CONTINUE_CAMPAIGN", campaignId: "c" }]);
   });
 
-  it("does not offer to begin when the campaign names no chapter", () => {
-    // Content is data: an empty campaign is a content bug, and the panel's job
-    // is to not invent a chapter id to send.
+  it("does not offer to begin before the campaign has loaded", () => {
+    // Content is data: without a campaign there is nothing to continue, and
+    // the panel's job is to not invent one.
     mount({ phase: "lobby", party: [member({ ready: true })], campaign: null });
     expect(screen.queryByRole("button", { name: /Begin the adventure/ })).toBeNull();
   });
