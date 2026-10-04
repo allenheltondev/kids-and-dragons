@@ -1,0 +1,335 @@
+{
+  "id": "gemfall-08w",
+  "campaignId": "gemfall",
+  "index": 8,
+  "title": "The Tree Line",
+  "biome": "red_sky_foothills",
+  "estimatedMinutes": 15,
+  "xpAward": 120,
+  "route": {
+    "set": "summit",
+    "flag": "walked_away"
+  },
+  "entry": "scene_tree_line",
+  "objectives": [
+    {
+      "id": "left_a_stone",
+      "label": "Left a stone with the grandmother at the boundary",
+      "flag": "left_a_stone",
+      "xp": 15
+    },
+    {
+      "id": "someone_holding",
+      "label": "Found out the people you told were holding the line",
+      "flag": "someone_holding",
+      "xp": 10
+    }
+  ],
+  "scenes": {
+    "scene_tree_line": {
+      "type": "story",
+      "narration": "At the tree line the path splits: up into the smoke, or down into the green. You turn south. Your packs are so full of humming stones that the three of you sound like a walking beehive.",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Start down the mountain road",
+          "icon": "travel",
+          "goto": "scene_realm_reads"
+        },
+        {
+          "id": "caravan_hum",
+          "label": "Let the Caravan Stone hum the loudest, all the way down",
+          "icon": "gem",
+          "requiresItem": "facet_caravan",
+          "goto": "scene_realm_reads"
+        }
+      ]
+    },
+    "scene_realm_reads": {
+      "type": "story",
+      "narration": "The realm reads you as you go. Jackalopes go silent a mile ahead of you. A pride of manticores walks a wide, polite circle around your camp. Even the moss leans away from the path. Everything that can hear the stones steps aside, like you are weather.",
+      "choices": [
+        {
+          "id": "keep_walking",
+          "label": "Keep walking",
+          "icon": "arrow",
+          "goto": "rest_switchback"
+        },
+        {
+          "id": "ask_trees",
+          "label": "Ask the trees, kindly, why they are leaning away",
+          "icon": "heart",
+          "requiresSpecies": "unicorn",
+          "goto": "rest_switchback"
+        },
+        {
+          "id": "glade_hum",
+          "label": "Hold up the Glade Stone and let the forest hear it",
+          "icon": "leaf",
+          "requiresItem": "facet_glade",
+          "goto": "rest_switchback"
+        }
+      ]
+    },
+    "rest_switchback": {
+      "type": "rest",
+      "narration": "You camp on a switchback where the rocks are still warm from the day. Nobody says much. Share out the last of the snacks, patch each other up, and listen to the mountain grumbling behind you, far away and getting farther.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "down",
+          "label": "Down to the caravan road",
+          "icon": "forward",
+          "goto": "scene_factions"
+        }
+      ]
+    },
+    "scene_factions": {
+      "type": "story",
+      "narration": "On the caravan road, a centaur relay runner called Brisk is coming up as you go down. She slows to a trot. \"News,\" she says, \"if you want it. Everybody up there is doing something.\" She looks at your packs. \"Without you.\"",
+      "choices": [
+        {
+          "id": "news",
+          "label": "Ask for the news",
+          "icon": "ear",
+          "goto": "scene_news"
+        },
+        {
+          "id": "wardens",
+          "label": "Ask how the wardens are doing",
+          "icon": "shield",
+          "requiresFlag": "told_wardens",
+          "goto": "scene_wardens_hold"
+        },
+        {
+          "id": "gatherers",
+          "label": "Ask how the grandmothers are doing",
+          "icon": "whistle",
+          "requiresFlag": "told_gatherers",
+          "goto": "scene_gatherers_hold"
+        },
+        {
+          "id": "close",
+          "label": "Ask whether anybody knows what you know",
+          "icon": "lantern",
+          "requiresFlag": "kept_close",
+          "goto": "scene_news"
+        }
+      ]
+    },
+    "scene_wardens_hold": {
+      "type": "story",
+      "narration": "\"The wardens did what you told them,\" says Brisk. \"Checkpoints on every road. Every stone confiscated and logged twice. It's working. It's ugly to watch. But they're holding.\" A warden wagon rolls past, uphill, full of stones going home.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Thank Brisk and walk on",
+          "icon": "hand",
+          "goto": "scene_boundary",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "someone_holding",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_gatherers_hold": {
+      "type": "story",
+      "narration": "\"The grandmothers turned gathering law inside out,\" says Brisk. \"Every stone that came down is going back up, carried by dragonlings with bells on their tails. It's slow. It's holding.\" Somewhere above you, a very small bell jingles past.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Thank Brisk and walk on",
+          "icon": "hand",
+          "goto": "scene_boundary",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "someone_holding",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_news": {
+      "type": "story",
+      "narration": "\"Nobody knows much,\" says Brisk. \"The wardens are guessing. The cult is singing. The dragon is being a dragon. Everybody's waiting for somebody to do something.\" She looks at your packs, then at you, and does not say anything else, which for a centaur is very loud.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on",
+          "icon": "arrow",
+          "goto": "scene_boundary"
+        }
+      ]
+    },
+    "scene_boundary": {
+      "type": "story",
+      "narration": "At the boundary stones, a dragonling grandmother sits on the oldest stone, knitting something long and red. She looks at your humming packs. \"Take what the mountain drops,\" she says. \"Never pry at what it holds.\" Then she holds out one hand, palm up, and waits.",
+      "choices": [
+        {
+          "id": "give",
+          "label": "Put a stone in her hand",
+          "icon": "gem",
+          "goto": "scene_look_back",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "left_a_stone",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "thank",
+          "label": "Thank her, and keep walking",
+          "icon": "hand",
+          "goto": "scene_look_back"
+        },
+        {
+          "id": "confess",
+          "label": "Tell her who you sold stones to",
+          "icon": "moon",
+          "requiresFlag": "funded_the_break",
+          "goto": "scene_the_fuse"
+        },
+        {
+          "id": "bells",
+          "label": "Ask her why the bells keep ringing",
+          "icon": "ear",
+          "requiresFlag": "clock_late",
+          "goto": "scene_the_fuse"
+        },
+        {
+          "id": "stirring",
+          "label": "Ask her why her knitting needles are shaking",
+          "icon": "eye",
+          "requiresFlag": "clock_stirring",
+          "goto": "scene_the_fuse"
+        }
+      ]
+    },
+    "scene_the_fuse": {
+      "type": "story",
+      "narration": "The grandmother puts her knitting down. Up on the mountain the bells are counting, every town at once. \"Everybody knows what the last ring means,\" she says. \"Nobody says it.\" She does not say it either. She just looks at you for a long time, and then knits faster.",
+      "choices": [
+        {
+          "id": "give",
+          "label": "Put a stone in her hand after all",
+          "icon": "gem",
+          "goto": "scene_look_back",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "left_a_stone",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "walk",
+          "label": "Walk on",
+          "icon": "arrow",
+          "goto": "scene_look_back"
+        }
+      ]
+    },
+    "scene_look_back": {
+      "type": "story",
+      "narration": "At the bottom of the foothills you turn round, one last time. Mount Red Sky glows against the evening sky. Somebody up there is doing the thing you decided not to do.",
+      "choices": [
+        {
+          "id": "send_word",
+          "label": "Send word back up the mountain, everything you know",
+          "icon": "scroll",
+          "goto": "check_send_word"
+        },
+        {
+          "id": "trust",
+          "label": "Trust the people you told",
+          "icon": "check",
+          "requiresFlag": "someone_holding",
+          "goto": "ending_collectors"
+        },
+        {
+          "id": "moths",
+          "label": "Watch the embermoths settle back on the warm rocks",
+          "icon": "feather",
+          "requiresFlag": "clock_steady",
+          "goto": "ending_collectors"
+        },
+        {
+          "id": "happy_ring",
+          "label": "Listen: the grandmother's bell, ringing the happy ring",
+          "icon": "note",
+          "requiresFlag": "left_a_stone",
+          "goto": "ending_collectors"
+        }
+      ]
+    },
+    "check_send_word": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Get a message about the seal back up the mountain in time",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_collectors",
+        "narration": "A griffin courier takes your letter straight up into the smoke. By morning, the warden checkpoints are reading it aloud."
+      },
+      "onFailure": {
+        "goto": "check_last_chance",
+        "narration": "Your letter goes up with a caravan that turns round halfway, because caravans do that now."
+      }
+    },
+    "check_last_chance": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Give your best stone to a dragonling runner heading uphill, and ask them to hurry",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_collectors",
+        "narration": "The runner takes your stone and your message, and runs. You never learn their name. They get there."
+      },
+      "onFailure": {
+        "goto": "ending_not_there",
+        "narration": "The runner is kind, and quick, and just too late."
+      }
+    },
+    "ending_collectors": {
+      "type": "rest",
+      "narration": "You walk out of the foothills rich, and the realm holds. Not because of you, but it holds. The last bell never rings. Back home, people ask where you got all those stones, and some of them ask the troll's old question: and where is it going? You are still thinking about the answer. History files you as The Collectors.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_not_there": {
+      "type": "rest",
+      "narration": "Behind you, the last bell rings. You are a long way down the road when the mountain shrugs, and you watch the red sky grow redder from somewhere safe. The realm goes on, rearranged, and history files you as The Ones Who Weren't There. But in your pack, one stone has stopped humming. It is pointing north, like a compass, as if it is asking whether you would like to try again.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "quiet, bittersweet, honest; the realm is never cruel to the walkers, it just tells the truth; always a spark at the end",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "climbing the mountain",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "brisk": "Brisk, a centaur relay runner; fast-talking, fair, says a lot by saying nothing",
+      "grandmother": "a dragonling grandmother at the boundary stones; knits, quotes the one rule, never says the thing everyone knows"
+    }
+  }
+}

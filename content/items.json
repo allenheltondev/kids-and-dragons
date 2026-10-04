@@ -190,11 +190,23 @@
     "name": "The Harvest Stone",
     "text": "A green-gold stone from a sprites' corner row. It still wears a tiny medal: BEST."
   },
+  "facet_keystone": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Keystone",
+    "text": "The crown of the seal under Mount Red Sky. Bigger than your head, warm as a sleeping cat."
+  },
   "facet_pride": {
     "kind": "quest",
     "icon": "gem",
     "name": "The Pride Stone",
     "text": "From the fall no pride will den within a day of. Heavy, warm, and humming."
+  },
+  "facet_table": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Table Stone",
+    "text": "From the Redspire truth-table. Logged twice. Hums whenever someone tells the truth."
   },
   "facet_unassigned": {
     "kind": "quest",
