@@ -58,9 +58,12 @@ describe("the shipped chapters", () => {
       for (const [sceneId, scene] of Object.entries(content.chapter(id)!.scenes)) {
         if (scene.type !== "encounter") continue;
         for (const enemy of scene.enemies) {
-          for (const stat of ["hp", "guard", "quick", "steps", "attack", "count"] as const) {
+          for (const stat of ["hp", "guard", "steps", "attack", "count"] as const) {
             expect(enemy[stat], `${id}/${sceneId}/${enemy.id}/${stat}`).toBeGreaterThan(0);
           }
+          // Quick is initiative, and the sentinel band's is 0 on purpose: the
+          // slowest thing on the board. Present, never negative.
+          expect(enemy.quick, `${id}/${sceneId}/${enemy.id}/quick`).toBeGreaterThanOrEqual(0);
         }
       }
     }

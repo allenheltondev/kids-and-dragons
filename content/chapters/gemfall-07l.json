@@ -228,7 +228,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_road_gifts",
-        "narration": "The choir argues in whispers. Then Tamsin, the soup-line lady, steps forward and hums three notes, slowly, until you have them. \"Don't make me sorry,\" she says.",
+        "narration": "The choir argues in whispers. Then Hessa, the soup-line lady, steps forward and hums three notes, slowly, until you have them. \"Don't make me sorry,\" she says.",
         "effects": [
           {
             "type": "grantQuestItem",
@@ -834,7 +834,7 @@
     ],
     "npcVoices": {
       "brisk": "warden ledger clerk; never smiles on duty; says no politely and means it; secretly fair",
-      "tamsin": "Deep Hollow choir member who ran the soup line; gentle, wary, wants to trust you",
+      "hessa": "Deep Hollow choir member who ran the soup tent; gentle, wary, wants to trust you",
       "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
       "mosshome_runner": "breathless, cheerful, counts knots out loud",
       "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",

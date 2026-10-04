@@ -32,7 +32,7 @@
       "kind": "quest",
       "icon": "gem",
       "name": "The Table Stone",
-      "text": "The evidence stone from the Redspire truth-table. Logged twice by the wardens, three times if you count the time you took it. It hums along whenever anyone tells the truth nearby."
+      "text": "From the Redspire truth-table. Logged twice. Hums whenever someone tells the truth."
     }
   },
   "scenes": {
@@ -117,7 +117,7 @@
         },
         {
           "id": "say_it",
-          "label": "Say what every dragonling child knows: moths leaving the warm means the mountain is planning something",
+          "label": "Say it out loud: moths leaving the warm is a warning",
           "icon": "spark",
           "requiresSpecies": "dragonling",
           "goto": "scene_wolves"
@@ -296,7 +296,7 @@
         },
         {
           "id": "back_off",
-          "label": "Back everybody off its warm ground and take the long way round",
+          "label": "Back everyone off its warm ground, go the long way",
           "icon": "back",
           "goto": "scene_citadel_gate",
           "effects": [
@@ -339,7 +339,8 @@
         {
           "id": "crab",
           "name": "Glassback Crab",
-          "creature": "glassback_crab"
+          "creature": "glassback_crab",
+          "hp": 10
         }
       ],
       "onVictory": {
@@ -457,21 +458,21 @@
         },
         {
           "id": "river_clues",
-          "label": "Lay down the troll's question, the sash-maps and the bridge survey",
+          "label": "Show the troll's question, sash-maps and bridge survey",
           "icon": "map",
           "requiresFlag": "route_river",
           "goto": "scene_whole_truth"
         },
         {
           "id": "wild_clues",
-          "label": "Lay down the boggart's hum, the wounded glades and the path archive",
+          "label": "Show the boggart's hum, the glades and the path archive",
           "icon": "leaf",
           "requiresFlag": "route_wild",
           "goto": "scene_whole_truth"
         },
         {
           "id": "rush_clues",
-          "label": "Lay down the witch's charm, the route-songs and the boundary tallies",
+          "label": "Show the witch's charm, route-songs and boundary tallies",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "scene_whole_truth"
@@ -491,7 +492,7 @@
       "choices": [
         {
           "id": "take_stone",
-          "label": "Ask to carry the Table Stone yourselves (Pellam logs it a third time)",
+          "label": "Ask to carry the Table Stone (Pellam logs it a third time)",
           "icon": "gem",
           "goto": "scene_acceptable_losses",
           "effects": [
