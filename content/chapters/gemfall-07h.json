@@ -1,0 +1,634 @@
+{
+  "$comment": "Gemfall beat 7, the Collection's chapter 7 (docs/campaigns/gemfall.md, 7H). Defines facet_caravan, which 07r and 07l also grant. Summit: scene_tree_line's two choices set climbed_the_mountain or walked_away; the lost-fight setback sets climbed_the_mountain. Cult and clock are both decided once, at scene_tamsins_offer: sell (funded_the_break + clock_late), refuse (refused_the_cult), or hand the stones back (refused_the_cult + clock_steady). The setback path never reaches that scene and sets clock_late itself.",
+  "id": "gemfall-07h",
+  "campaignId": "gemfall",
+  "index": 7,
+  "title": "The Collection",
+  "biome": "red_sky_foothills",
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "route": { "set": "pursuit", "flag": "pursuit_hoard" },
+  "entry": "scene_like_weather",
+  "objectives": [
+    {
+      "id": "cornered",
+      "label": "Won the Caravan Stone at the worst bend",
+      "flag": "caravan_cornered",
+      "xp": 10
+    },
+    {
+      "id": "gave_back",
+      "label": "Gave a stone back, even though nobody made you",
+      "flag": "gave_stone_back",
+      "xp": 6
+    },
+    {
+      "id": "read_crabs",
+      "label": "Saw that the gem deposit was really a crab",
+      "flag": "crabs_read",
+      "xp": 6
+    }
+  ],
+  "props": {
+    "facet_caravan": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Caravan Stone",
+      "text": "The masterpiece stone from the middle of the fattest caravan in the funnel. It is the size of a loaf of bread and hums so loudly the mules wore cotton in their ears."
+    }
+  },
+  "scenes": {
+    "scene_like_weather": {
+      "type": "story",
+      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog. Up ahead, every road funnels into the Pinch, and somewhere in it is the last stone on your list.",
+      "choices": [
+        {
+          "id": "walk_on",
+          "label": "Walk on into the Pinch",
+          "icon": "forward",
+          "goto": "choice_the_race"
+        },
+        {
+          "id": "listen_silence",
+          "label": "Listen to what the silence is saying",
+          "icon": "bigfoot",
+          "requiresSpecies": "bigfoot",
+          "goto": "choice_the_race",
+          "effects": [{ "type": "setFlag", "flag": "read_the_silence", "value": true }]
+        }
+      ]
+    },
+    "choice_the_race": {
+      "type": "choice_point",
+      "narration": "Three other crowds want the same stones you do: wardens with numbered boxes, grandmothers with knitting, and people in bark masks with sacks. You need to get ahead of all of them. How?",
+      "choices": [
+        {
+          "id": "warden_pass",
+          "label": "Show the wardens your citadel pass",
+          "icon": "shield",
+          "requiresFlag": "told_wardens",
+          "goto": "scene_warden_pass"
+        },
+        {
+          "id": "grandmothers",
+          "label": "Walk past the grandmothers' tents",
+          "icon": "dragonling",
+          "requiresFlag": "told_gatherers",
+          "goto": "scene_grandmother_look"
+        },
+        {
+          "id": "nobody_knows",
+          "label": "Nobody knows what you are for. Use that.",
+          "icon": "moon",
+          "requiresFlag": "kept_close",
+          "goto": "scene_road_gifts",
+          "effects": [{ "type": "setFlag", "flag": "nobody_knows", "value": true }]
+        },
+        {
+          "id": "camps",
+          "label": "Push into the camps and start trading",
+          "icon": "gem",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "scene_warden_pass": {
+      "type": "story",
+      "narration": "You told the wardens the truth at the citadel, and they still trust you. A clerk stamps your pass and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
+      "choices": [
+        {
+          "id": "through",
+          "label": "Go through",
+          "icon": "forward",
+          "goto": "scene_road_gifts",
+          "effects": [{ "type": "setFlag", "flag": "warden_pass", "value": true }]
+        }
+      ]
+    },
+    "scene_grandmother_look": {
+      "type": "story",
+      "narration": "A grandmother looks at your bulging packs over her knitting for a long, long time. She does not say \"No, dear.\" She does not say anything at all. Then she hands you a warm bead, because it is cold up there.",
+      "onEnter": [{ "type": "grantItem", "itemId": "hearthstone_bead", "to": "party" }],
+      "choices": [
+        {
+          "id": "thank",
+          "label": "Thank her and keep walking",
+          "icon": "forward",
+          "goto": "scene_road_gifts"
+        },
+        {
+          "id": "give_one",
+          "label": "Put one stone in her knitting basket",
+          "icon": "heart",
+          "goto": "scene_road_gifts",
+          "effects": [{ "type": "setFlag", "flag": "gave_stone_back", "value": true }]
+        }
+      ]
+    },
+    "scene_road_gifts": {
+      "type": "story",
+      "narration": "The trading is fast and loud and everybody is shouting prices. And in the middle of it, the road starts bringing things back to you: things you did on the way here, walking up the hill on their own legs.",
+      "choices": [
+        {
+          "id": "ossley",
+          "label": "A flat boat is coming up the dry creek",
+          "icon": "drop",
+          "requiresFlag": "route_river",
+          "goto": "scene_ossley"
+        },
+        {
+          "id": "runner",
+          "label": "A MossHome runner is waving a knotted cord",
+          "icon": "bigfoot",
+          "requiresItem": "knot_cord",
+          "goto": "scene_mosshome_runner"
+        },
+        {
+          "id": "boggart",
+          "label": "A boggart is sidling up with a satchel",
+          "icon": "scroll",
+          "requiresFlag": "route_wild",
+          "goto": "scene_boggart"
+        },
+        {
+          "id": "witch",
+          "label": "Someone in a pointed hat is pushing to the front",
+          "icon": "charm",
+          "requiresFlag": "route_rush",
+          "goto": "scene_ford_witch"
+        },
+        {
+          "id": "trade_on",
+          "label": "Keep trading until dark",
+          "icon": "gem",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_ossley": {
+      "type": "story",
+      "narration": "Old Ossley is poling his flat boat up a creek with no water in it, piled with every toll the trolls took this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
+      "choices": [
+        {
+          "id": "debt",
+          "label": "Ask what you still owe him from the river",
+          "icon": "drop",
+          "requiresFlag": "river_took_us",
+          "goto": "scene_ossley_debt"
+        },
+        {
+          "id": "let_go",
+          "label": "Let him pole on up the mountain",
+          "icon": "hand",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_ossley_debt": {
+      "type": "story",
+      "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. \"One stone you didn't find,\" he says. \"Give it to the boat. That's all.\"",
+      "choices": [
+        {
+          "id": "pay",
+          "label": "Choose a stone and put it in his boat",
+          "icon": "heart",
+          "goto": "scene_evening",
+          "effects": [{ "type": "setFlag", "flag": "gave_stone_back", "value": true }]
+        }
+      ]
+    },
+    "scene_mosshome_runner": {
+      "type": "story",
+      "narration": "A MossHome runner jogs up with a string of grumbling mules, loaded with everything the Woods confiscated from careless hunters. She counts the knots on your cord. Then she looks at your packs, and counts them again, slower.",
+      "choices": [
+        {
+          "id": "claim",
+          "label": "Claim everything the cord is owed",
+          "icon": "gem",
+          "goto": "scene_evening",
+          "effects": [{ "type": "setFlag", "flag": "claimed_the_pile", "value": true }]
+        },
+        {
+          "id": "send_home",
+          "label": "Tell her to take the stones back to the Woods",
+          "icon": "leaf",
+          "goto": "scene_evening",
+          "effects": [{ "type": "setFlag", "flag": "gave_stone_back", "value": true }]
+        }
+      ]
+    },
+    "scene_boggart": {
+      "type": "story",
+      "narration": "A boggart with a satchel full of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what in the marsh. Very useful, for a collector. Costs one really good sentence you overheard.\"",
+      "choices": [
+        {
+          "id": "wardens_said",
+          "label": "Tell it what a warden said about acceptable losses",
+          "icon": "ear",
+          "goto": "scene_evening",
+          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+        },
+        {
+          "id": "grandma_said",
+          "label": "Tell it what a grandmother said about cake",
+          "icon": "cake",
+          "goto": "scene_evening",
+          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+        }
+      ]
+    },
+    "scene_ford_witch": {
+      "type": "story",
+      "narration": "It is the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "choices": [
+        {
+          "id": "all_of_them",
+          "label": "\"All of them.\"",
+          "icon": "gem",
+          "goto": "scene_evening",
+          "effects": [{ "type": "grantQuestItem", "itemId": "facet_ford" }]
+        },
+        {
+          "id": "dont_know",
+          "label": "\"I don't know any more.\"",
+          "icon": "feather",
+          "goto": "scene_evening",
+          "effects": [{ "type": "grantItem", "itemId": "songbird_ribbon", "to": "party" }]
+        }
+      ]
+    },
+    "scene_evening": {
+      "type": "story",
+      "narration": "Evening. Campfires pop up all along the road, and the ground keeps shrugging, a little more often than this morning. Nobody pitches a tent within a stone's throw of yours.",
+      "choices": [
+        {
+          "id": "relay",
+          "label": "A centaur relay is cantering past your camp",
+          "icon": "travel",
+          "requiresFlag": "route_river",
+          "goto": "scene_centaur_relay"
+        },
+        {
+          "id": "relay_sing",
+          "label": "Listen to the singers at the campfires",
+          "icon": "note",
+          "requiresFlag": "route_rush",
+          "goto": "scene_relay_sing"
+        },
+        {
+          "id": "exchange",
+          "label": "An Exchange caravan is rolling in, and someone on top is waving",
+          "icon": "gem",
+          "requiresFlag": "ember_sold",
+          "goto": "scene_ember"
+        },
+        {
+          "id": "camp",
+          "label": "Make camp",
+          "icon": "rest",
+          "goto": "rest_lonely_camp"
+        }
+      ]
+    },
+    "scene_centaur_relay": {
+      "type": "story",
+      "narration": "The centaur relay canters past your fire and does not stop. They have heard what you are for now. \"Fat caravan tomorrow,\" one calls over her shoulder. \"We're sending it the long way. Round you.\"",
+      "choices": [
+        {
+          "id": "old_way",
+          "label": "Call after her, the old road-people way",
+          "icon": "manticore",
+          "requiresSpecies": "manticore",
+          "goto": "rest_lonely_camp",
+          "effects": [{ "type": "setFlag", "flag": "relay_owes", "value": true }]
+        },
+        {
+          "id": "fair",
+          "label": "\"Fair enough.\"",
+          "icon": "hand",
+          "goto": "rest_lonely_camp"
+        }
+      ]
+    },
+    "scene_relay_sing": {
+      "type": "story",
+      "narration": "The relay singers have new verses about wagons that have not arrived yet, so you can hear tomorrow's traffic tonight. Then a grandmother's runner hands you a list of caves nobody may ever dig. For a collector, it looks a lot like a treasure map.",
+      "onEnter": [{ "type": "setFlag", "flag": "heard_tomorrow", "value": true }],
+      "choices": [
+        {
+          "id": "fold",
+          "label": "Fold the list away",
+          "icon": "scroll",
+          "goto": "rest_lonely_camp"
+        }
+      ]
+    },
+    "scene_ember": {
+      "type": "story",
+      "narration": "\"It's you! From the docks!\" The merchant on top of the caravan remembers you fondly. She also has the Ember Facet you sold her, in a velvet box, at a price that has gone up a very great deal.",
+      "choices": [
+        {
+          "id": "buy_back",
+          "label": "Buy it back. It belongs in the collection.",
+          "icon": "gem",
+          "goto": "rest_lonely_camp",
+          "effects": [{ "type": "grantQuestItem", "itemId": "facet_ember" }]
+        },
+        {
+          "id": "too_much",
+          "label": "Too much. Wave goodbye.",
+          "icon": "hand",
+          "goto": "rest_lonely_camp"
+        }
+      ]
+    },
+    "rest_lonely_camp": {
+      "type": "rest",
+      "narration": "Your camp is very quiet. The stones in your packs hum all together, low and sleepy, like a cat that is far too big. Patch each other up. Tomorrow is the worst bend in the north road.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "to_bend",
+          "label": "Set off for the bend",
+          "icon": "boot",
+          "goto": "scene_roadside_glitter"
+        }
+      ]
+    },
+    "scene_roadside_glitter": {
+      "type": "story",
+      "narration": "Just before the bend, two big glittering lumps sit on a warm patch of road. Prospectors keep trying to pick them up, and keep coming back very quickly without them. The lumps look exactly like gem deposits. They also have legs, if you look.",
+      "choices": [
+        {
+          "id": "read",
+          "label": "Watch them carefully before doing anything",
+          "icon": "eye",
+          "goto": "check_crabs"
+        },
+        {
+          "id": "grab",
+          "label": "That is a gem deposit. Grab it!",
+          "icon": "gem",
+          "goto": "encounter_crabs"
+        },
+        {
+          "id": "sprite_knots",
+          "label": "Follow the trail of tiny tied grass knots around them",
+          "icon": "leaf",
+          "requiresFlag": "sprites_friends",
+          "goto": "choice_the_bend"
+        }
+      ]
+    },
+    "check_crabs": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Read what the glittering lumps are trying to tell you",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_bend",
+        "narration": "They are glassback crabs, and they are waving their claws in the most polite warning in the realm: this is our warm spot. You walk the long way round, and they wave you off like aunties.",
+        "effects": [{ "type": "setFlag", "flag": "crabs_read", "value": true }]
+      },
+      "onFailure": {
+        "goto": "encounter_crabs",
+        "narration": "You step a little closer to get a better look, which turns out to be exactly the wrong thing to do."
+      }
+    },
+    "encounter_crabs": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The gem deposits stand up. They are glassback crabs, and this is their warm spot, and they would like you off it.",
+      "enemies": [
+        { "id": "crabs", "name": "Glassback Crab", "creature": "glassback_crab" }
+      ],
+      "onVictory": {
+        "goto": "choice_the_bend",
+        "narration": "The crabs decide the warm spot was overrated anyway, and clatter off sideways into the rocks, grumbling."
+      },
+      "onDefeat": {
+        "goto": "ending_robbed",
+        "narration": "The crabs shove you clean off the road and into a ditch. By the time you climb out, half your packs have burst open, and the masks are already scooping up what rolled out."
+      }
+    },
+    "choice_the_bend": {
+      "type": "choice_point",
+      "narration": "The worst bend in the north road: a hairpin over a long drop. Here comes the fattest caravan in the funnel. Wardens are waiting with boxes, grandmothers with knitting, masks with sacks, and you. Four crowds, one wagon, and in the middle of it the Caravan Stone, humming.",
+      "choices": [
+        {
+          "id": "early",
+          "label": "You heard this caravan in last night's song. Be there first.",
+          "icon": "note",
+          "requiresFlag": "heard_tomorrow",
+          "goto": "scene_caravan_won"
+        },
+        {
+          "id": "relay_owes",
+          "label": "The relay owes you one. Ask them to bring it your way.",
+          "icon": "travel",
+          "requiresFlag": "relay_owes",
+          "goto": "scene_caravan_won"
+        },
+        {
+          "id": "buyers",
+          "label": "You know from the catalogue who it was sold to, and for how much",
+          "icon": "scroll",
+          "requiresFlag": "knows_buyers",
+          "goto": "scene_caravan_won"
+        },
+        {
+          "id": "crowd",
+          "label": "Get the other three crowds arguing with each other",
+          "icon": "kitsune",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_caravan_won"
+        },
+        {
+          "id": "axle",
+          "label": "Notice the middle wagon's wheel is about to come off",
+          "icon": "bigfoot",
+          "requiresFlag": "read_the_silence",
+          "goto": "scene_caravan_won"
+        },
+        {
+          "id": "pass",
+          "label": "Flash your warden pass and walk right up to the wagon",
+          "icon": "shield",
+          "requiresFlag": "warden_pass",
+          "goto": "check_bend"
+        },
+        {
+          "id": "quiet",
+          "label": "Slip in while everyone else is shouting",
+          "icon": "moon",
+          "requiresFlag": "nobody_knows",
+          "goto": "check_bend"
+        },
+        {
+          "id": "outbid",
+          "label": "Make the caravan master an offer",
+          "icon": "gem",
+          "goto": "check_bend"
+        }
+      ]
+    },
+    "check_bend": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Outbid three other crowds for one humming wagon",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_caravan_won",
+        "narration": "Your offer is so good, and so fast, that the caravan master shakes your hand before anybody else has finished shouting."
+      },
+      "onFailure": {
+        "goto": "scene_tamsins_offer",
+        "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The Caravan Stone is gone, and the masks have it."
+      }
+    },
+    "scene_caravan_won": {
+      "type": "story",
+      "narration": "The Caravan Stone is the size of a loaf of bread and hums like a whole choir. You put it in the pack with the others, and every stone you own hums louder, all together, as if they recognise each other. The ground shakes, just once, in reply.",
+      "onEnter": [
+        { "type": "grantQuestItem", "itemId": "facet_caravan" },
+        { "type": "setFlag", "flag": "caravan_cornered", "value": true }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Make camp below the tree line",
+          "icon": "forward",
+          "goto": "scene_tamsins_offer"
+        }
+      ]
+    },
+    "scene_tamsins_offer": {
+      "type": "story",
+      "narration": "That night a woman in a bark mask sits down at your fire and takes it off. It is Tamsin, from the soup line. \"We'll buy the lot,\" she says sweetly. \"Every stone. You'd be rich, and we'd break the seal properly, all at once, so it can be fixed properly.\" She sets out the money in little piles, and it is a lot of little piles.",
+      "choices": [
+        {
+          "id": "sell",
+          "label": "Sell",
+          "icon": "gem",
+          "goto": "scene_sold",
+          "effects": [
+            { "type": "setFlag", "flag": "funded_the_break", "value": true },
+            { "type": "setFlag", "flag": "clock_late", "value": true }
+          ]
+        },
+        {
+          "id": "refuse",
+          "label": "\"No, thank you. They're ours.\"",
+          "icon": "hand",
+          "goto": "choice_tree_line",
+          "effects": [{ "type": "setFlag", "flag": "refused_the_cult", "value": true }]
+        },
+        {
+          "id": "hand_back",
+          "label": "\"No. We're giving them back instead.\"",
+          "icon": "heart",
+          "goto": "scene_handed_back",
+          "effects": [
+            { "type": "setFlag", "flag": "refused_the_cult", "value": true },
+            { "type": "setFlag", "flag": "clock_steady", "value": true },
+            { "type": "setFlag", "flag": "gave_stone_back", "value": true }
+          ]
+        }
+      ]
+    },
+    "scene_sold": {
+      "type": "story",
+      "narration": "Tamsin counts out every coin with great care, and thanks you, and means it. As she carries the stones away into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the tree line",
+          "icon": "forward",
+          "goto": "choice_tree_line"
+        }
+      ]
+    },
+    "scene_handed_back": {
+      "type": "story",
+      "narration": "Tamsin puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the tree line",
+          "icon": "forward",
+          "goto": "choice_tree_line"
+        }
+      ]
+    },
+    "choice_tree_line": {
+      "type": "choice_point",
+      "narration": "The tree line. Above it, the mountain, shaking in a slow, patient rhythm. Below it, the road south, and everybody else on it, running. There is not one embermoth left in the foothills. Up, or down?",
+      "choices": [
+        {
+          "id": "climb",
+          "label": "Climb for the Keystone",
+          "icon": "crown",
+          "goto": "rest_the_climb",
+          "effects": [{ "type": "setFlag", "flag": "climbed_the_mountain", "value": true }]
+        },
+        {
+          "id": "walk",
+          "label": "Turn south, and walk away",
+          "icon": "back",
+          "goto": "rest_the_walk",
+          "effects": [{ "type": "setFlag", "flag": "walked_away", "value": true }]
+        }
+      ]
+    },
+    "rest_the_climb": {
+      "type": "rest",
+      "narration": "You walk up the mountain everyone else is running away from. Somewhere at the top is the eighth stone, the one that is not for sale. The ground shakes under every step, and your packs hum louder the higher you go, as if the stones know exactly where they are.",
+      "heal": 4,
+      "choices": []
+    },
+    "rest_the_walk": {
+      "type": "rest",
+      "narration": "You turn south with full packs, and the mountain gets smaller behind you. Nobody stops you. Nobody can say you weren't warned. Somewhere far behind, maybe, a bell is ringing, or maybe it is only the wind in the stones.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_robbed": {
+      "type": "rest",
+      "narration": "The masks are gone, and so is the fattest caravan, and so is half your collection. The ground is shaking in a slow, patient rhythm now. You gather what is left and climb, because the only stone left worth having is at the top, and you are a long way behind.",
+      "onEnter": [
+        { "type": "setFlag", "flag": "climbed_the_mountain", "value": true },
+        { "type": "setFlag", "flag": "clock_late", "value": true }
+      ],
+      "heal": 3,
+      "outcome": "setback",
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "warm, glittering, a little lonely; the land treating the party like weather, never scolding",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "the cult as villains",
+      "calling the party greedy or bad"
+    ],
+    "npcVoices": {
+      "tamsin": "Deep Hollow cell member who ran the soup line; sweet, sincere, makes the arithmetic sound kind; says 'properly' a lot",
+      "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
+      "grandmother": "dragonling gatherer; knits while she looks at you; silence is her loudest sentence",
+      "warden_clerk": "rigid, honest, stamps things",
+      "mosshome_runner": "breathless, cheerful, counts knots out loud, then counts packs",
+      "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
+      "ford_witch": "pointed hat, dry, kind underneath; only asks one question and means it",
+      "centaur_relay": "brisk, proud of the roads, speaks over her shoulder at a canter",
+      "exchange_merchant": "delighted to see you, genuinely fond, and still a merchant",
+      "caravan_master": "exhausted, practical, will sell to whoever stops shouting first"
+    }
+  }
+}

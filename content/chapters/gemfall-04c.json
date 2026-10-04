@@ -36,13 +36,13 @@
       "kind": "quest",
       "icon": "gem",
       "name": "The Depot Stone",
-      "text": "A gem with a depot tag still tied on: 'Strongbox 9. SOLD.' It rings like a dinner bell."
+      "text": "Its depot tag still says 'Strongbox 9. SOLD.' It rings like a dinner bell."
     },
     "verses_relay_spiral": {
       "kind": "quest",
       "icon": "note",
       "name": "The Spiral Verses",
-      "text": "This season's new route-song verses, scratched on bark. Sung in order, the roads curl around the gemfalls like a snail shell."
+      "text": "New route-song verses on bark. Sung in order, the roads curl around the gemfalls."
     }
   },
   "scenes": {

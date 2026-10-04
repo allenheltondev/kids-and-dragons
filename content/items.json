@@ -128,7 +128,31 @@
     "kind": "quest",
     "icon": "charm",
     "name": "Mother Thrum's Tuned Charm",
-    "text": "A little bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
+    "text": "A bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
+  },
+  "facet_barge": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Barge Stone",
+    "text": "The one real thing in a mire mimic's best performance. It hums a long, low note, the same as the Hollow Gate's runes."
+  },
+  "facet_caravan": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Caravan Stone",
+    "text": "The masterpiece stone from the middle of the fattest caravan in the funnel. It is the size of a loaf of bread and hums so loudly the mules wore cotton in their ears."
+  },
+  "facet_clerks": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Clerk's Stone",
+    "text": "Logged, tagged 4117, and crossing westbound. Then, very irregularly, not."
+  },
+  "facet_depot": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Depot Stone",
+    "text": "Its depot tag still says 'Strongbox 9. SOLD.' It rings like a dinner bell."
   },
   "facet_drakes_rate": {
     "kind": "quest",
@@ -146,13 +170,25 @@
     "kind": "quest",
     "icon": "gem",
     "name": "The Ford Stone",
-    "text": "A fist-sized gem wrapped in a witch's wool sock. It rings every bell charm it passes, and it will not stop."
+    "text": "Wrapped in a witch's wool sock. It rings every bell charm it passes, and won't stop."
   },
   "facet_harvest": {
     "kind": "quest",
     "icon": "gem",
     "name": "The Harvest Stone",
     "text": "A green-gold stone from a sprites' corner row. It still wears a tiny medal: BEST."
+  },
+  "facet_pride": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Pride Stone",
+    "text": "From the fall no pride will den within a day of. Heavy, warm, and humming."
+  },
+  "facet_unassigned": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Unassigned Stone",
+    "text": "Kept by the grandmothers with the list of caves never assigned. Don't you dare sell it."
   },
   "hollow_crown_shard": {
     "kind": "quest",
@@ -189,5 +225,11 @@
     "icon": "map",
     "name": "Torn Map (East Half)",
     "text": "Half a map, drawn in berry juice. Somebody has the other half."
+  },
+  "verses_relay_spiral": {
+    "kind": "quest",
+    "icon": "note",
+    "name": "The Spiral Verses",
+    "text": "New route-song verses on bark. Sung in order, the roads curl around the gemfalls."
   }
 }

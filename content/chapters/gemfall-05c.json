@@ -1,0 +1,569 @@
+{
+  "id": "gemfall-05c",
+  "campaignId": "gemfall",
+  "index": 5,
+  "title": "The Boundary Stones",
+  "biome": "red_sky_foothills",
+  "route": {
+    "set": "road",
+    "flag": "route_rush"
+  },
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "entry": "scene_stones_line",
+  "objectives": [
+    {
+      "id": "rule",
+      "label": "Got a prospector to listen to the one rule",
+      "flag": "taught_the_rule",
+      "xp": 7
+    },
+    {
+      "id": "crab",
+      "label": "Read the glassback crab's warning",
+      "flag": "read_the_crab",
+      "xp": 7
+    },
+    {
+      "id": "outline",
+      "label": "Laid out the whole outline of the truth",
+      "flag": "drew_the_outline",
+      "xp": 8
+    }
+  ],
+  "props": {
+    "facet_unassigned": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Unassigned Stone",
+      "text": "Kept by the grandmothers with the list of caves never assigned. Don't you dare sell it."
+    }
+  },
+  "scenes": {
+    "scene_stones_line": {
+      "type": "story",
+      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd.",
+      "choices": [
+        {
+          "id": "join_queue",
+          "label": "Join the inspection queue",
+          "icon": "travel",
+          "goto": "scene_gate_town"
+        },
+        {
+          "id": "home",
+          "label": "Walk straight to the front. You're home.",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_dragonling_home"
+        }
+      ]
+    },
+    "scene_dragonling_home": {
+      "type": "story",
+      "narration": "A grandmother with spectacles on a chain looks up from her tally book, looks at you, and drops the pencil. \"Well! Look who came home the FRONT way.\" Within a minute you have been hugged by four aunts and handed a warm rock to hold. Then her face goes serious. \"Worst season in the tallies, love. Come and help.\"",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Help at the gate",
+          "icon": "hand",
+          "goto": "scene_gate_town",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "welcomed_home",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_gate_town": {
+      "type": "story",
+      "narration": "The gate town is all bells: big bells, little bells, bells on poles and bells on goats. Dragonling grandmothers inspect every pick that comes through and recite the one rule to every prospector: \"Take what the mountain drops. Never pry at what it holds.\" A man with an enormous pry bar is saying he didn't hear that.",
+      "choices": [
+        {
+          "id": "explain",
+          "label": "Help the grandmothers explain the rule",
+          "icon": "heart",
+          "goto": "check_one_rule"
+        },
+        {
+          "id": "bells",
+          "label": "Ask what all the bells are for",
+          "icon": "ear",
+          "goto": "scene_bell_code"
+        },
+        {
+          "id": "explain_home",
+          "label": "Say the rule the way your grandmother says it",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_rule_heard"
+        }
+      ]
+    },
+    "scene_bell_code": {
+      "type": "story",
+      "narration": "A small dragonling explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
+      "choices": [
+        {
+          "id": "back",
+          "label": "Go back and help with the man and his pry bar",
+          "icon": "hand",
+          "goto": "check_one_rule"
+        }
+      ]
+    },
+    "check_one_rule": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Help a stubborn prospector actually hear the one rule",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_rule_heard"
+      },
+      "onFailure": {
+        "goto": "scene_crab_warning",
+        "narration": "He nods along, says \"Right, right,\" and marches off up the hill with his pry bar anyway. You follow him, because somebody should."
+      }
+    },
+    "scene_rule_heard": {
+      "type": "story",
+      "narration": "The man looks at his pry bar for a long moment. Then he hands it to the grandmother, who hangs it on a wall already covered in pry bars. There are hundreds of them. \"Every one of those listened, in the end,\" she says.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "taught_the_rule",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Follow the grandmother up to the tally house",
+          "icon": "arrow",
+          "goto": "scene_tallies"
+        }
+      ]
+    },
+    "scene_crab_warning": {
+      "type": "story",
+      "narration": "Up the hill, the prospector is about to pry at a sparkling heap on a patch of warm ground. The heap stands up. It is a glassback crab, and it is doing a slow, clacking dance with its claws raised. Its friend is standing up too.",
+      "choices": [
+        {
+          "id": "read",
+          "label": "Read the crab's warning dance",
+          "icon": "eye",
+          "goto": "check_read_crab"
+        },
+        {
+          "id": "explain_dance",
+          "label": "Tell everyone exactly what that dance means",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_crab_settles"
+        },
+        {
+          "id": "fight",
+          "label": "Get between the crabs and the prospector",
+          "icon": "swords",
+          "goto": "encounter_crabs"
+        }
+      ]
+    },
+    "check_read_crab": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Read what the glassback crab's dance means",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crab_settles"
+      },
+      "onFailure": {
+        "goto": "encounter_crabs",
+        "narration": "You decide the dance means hello. It does not mean hello."
+      }
+    },
+    "scene_crab_settles": {
+      "type": "story",
+      "narration": "Claws up and a sideways shuffle means: this warm ground is my house. Everybody takes three slow steps back off the warm patch. The crabs stop dancing, settle down, and go back to looking like a very expensive pile of gems. The prospector gives you his pry bar without being asked.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_the_crab",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Take the pry bar down to the tally house",
+          "icon": "arrow",
+          "goto": "scene_tallies"
+        }
+      ]
+    },
+    "encounter_crabs": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "The glassback crabs charge, slow and clacking and absolutely sure of themselves.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Young Glassback Crab",
+          "creature": "glassback_crab",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_tallies",
+        "narration": "The crabs decide you are more trouble than you are worth and back into their warm burrow, still clacking. The prospector drops his pry bar and runs all the way down to the gate."
+      },
+      "onDefeat": {
+        "goto": "end_rolled_down",
+        "narration": "The crabs chase you off their warm patch, down the hill, past the bells, and right back out through the boundary stones."
+      }
+    },
+    "scene_tallies": {
+      "type": "story",
+      "narration": "The tally house is full of books: every eruption the dragonlings ever counted, in neat rows of marks. Great-Gran Ashby, the oldest grandmother, opens the newest book. Since the big eruption, the Gemfall rhythm has broken completely. \"Show me what you've brought,\" she says. \"Everything.\"",
+      "choices": [
+        {
+          "id": "charm",
+          "label": "Hold up Mother Thrum's tuned charm",
+          "icon": "charm",
+          "requiresItem": "charm_ford_witch",
+          "goto": "scene_charm_rings"
+        },
+        {
+          "id": "verses",
+          "label": "Sing the spiral verses from the relay",
+          "icon": "note",
+          "requiresItem": "verses_relay_spiral",
+          "goto": "scene_verses_sung"
+        },
+        {
+          "id": "lay_out",
+          "label": "Lay out everything you've seen on the floor",
+          "icon": "map",
+          "goto": "check_outline"
+        }
+      ]
+    },
+    "scene_charm_rings": {
+      "type": "story",
+      "narration": "The witch's charm rings the moment you hold it up, and Great-Gran Ashby goes very still. She opens the oldest book on the shelf, the one with the cracked spine, and points to a mark drawn like a little bell. \"Same note,\" she says. \"My great-great-gran heard it too.\"",
+      "choices": [
+        {
+          "id": "more",
+          "label": "Lay out the rest of it",
+          "icon": "map",
+          "goto": "check_outline"
+        }
+      ]
+    },
+    "scene_verses_sung": {
+      "type": "story",
+      "narration": "You sing the spiral verses, and the grandmothers lay a string on the floor map, landmark by landmark. The roads curl around the gemfalls exactly the way their tally marks do. One grandmother says a word that is not allowed in the tally house.",
+      "choices": [
+        {
+          "id": "more",
+          "label": "Lay out the rest of it",
+          "icon": "map",
+          "goto": "check_outline"
+        }
+      ]
+    },
+    "check_outline": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put every clue in the right place on the floor map",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_here_first",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "drew_the_outline",
+            "value": true
+          }
+        ],
+        "narration": "The witch's note, the songs that curl, the jackalopes going quiet, the tallies breaking: you put them all down in the right order, and the shape they make is plain."
+      },
+      "onFailure": {
+        "goto": "scene_here_first",
+        "narration": "You get the pieces muddled, so Great-Gran Ashby moves them around with her walking stick, one by one, humming, until the shape is plain."
+      }
+    },
+    "scene_here_first": {
+      "type": "story",
+      "narration": "\"One more thing,\" says Great-Gran Ashby. \"The boundary stones were here first. Before the first families. Already marking the line we mark now.\" She taps the floor map. Everything since Bramblewood points one way: the stones are older than the mountain's name, and the land has always known.",
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Ask what's on the shelf behind her",
+          "icon": "eye",
+          "goto": "scene_unassigned"
+        }
+      ]
+    },
+    "scene_unassigned": {
+      "type": "story",
+      "narration": "On the shelf sits a fresh-fallen gem on top of a very old list: the caves that are never assigned to anyone. The list is older than every grandmother on record. \"We're not hiding it,\" says Great-Gran Ashby. \"We're keeping it. There's a difference.\"",
+      "choices": [
+        {
+          "id": "ask_carry",
+          "label": "Ask to carry it, as proof for whoever needs to hear",
+          "icon": "heart",
+          "goto": "check_carry"
+        },
+        {
+          "id": "ask_proper",
+          "label": "Ask for it the proper way, with a warm rock in both hands",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "rest_bell_house",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_unassigned"
+            },
+            {
+              "type": "setFlag",
+              "flag": "got_the_unassigned_stone",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "leave_kept",
+          "label": "Leave it kept, where it is",
+          "icon": "moon",
+          "goto": "rest_bell_house",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "left_it_kept",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_carry": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Show Great-Gran Ashby you know the difference between keeping and taking",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_bell_house",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_unassigned"
+          },
+          {
+            "type": "setFlag",
+            "flag": "got_the_unassigned_stone",
+            "value": true
+          }
+        ],
+        "narration": "Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
+      },
+      "onFailure": {
+        "goto": "rest_bell_house",
+        "narration": "Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+      }
+    },
+    "rest_bell_house": {
+      "type": "rest",
+      "narration": "That night you sleep in the bell house, on warm stone, with the bells hanging silent over your heads. A grandmother tucks a hot rock into everybody's blanket, whether they want one or not. Outside, the rush is still queuing at the stones by lantern light.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "morning",
+          "label": "Go out into the morning",
+          "icon": "arrow",
+          "goto": "scene_centaur_whisper"
+        }
+      ]
+    },
+    "scene_centaur_whisper": {
+      "type": "story",
+      "narration": "In the morning, a centaur guide named Fennimore Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
+      "choices": [
+        {
+          "id": "take_shortcut",
+          "label": "Walk the Shortcut with him",
+          "icon": "map",
+          "goto": "scene_shortcut"
+        },
+        {
+          "id": "caravan_road",
+          "label": "Thank him and take the caravan road",
+          "icon": "travel",
+          "goto": "scene_who_to_tell"
+        }
+      ]
+    },
+    "scene_shortcut": {
+      "type": "story",
+      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Fennimore stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
+      "choices": [
+        {
+          "id": "promise",
+          "label": "Promise never, ever to say so",
+          "icon": "hand",
+          "goto": "scene_who_to_tell",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "took_the_shortcut",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_who_to_tell": {
+      "type": "choice_point",
+      "narration": "The grandmothers walk you to the last boundary stone. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks at each of you in turn. \"Make somebody finally listen.\" Who will you tell?",
+      "choices": [
+        {
+          "id": "wardens",
+          "label": "The Skywardens at the citadel. They keep logs.",
+          "icon": "shield",
+          "goto": "scene_tell_wardens",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_wardens",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "gatherers",
+          "label": "The gatherers: the grandmothers and the bell towns",
+          "icon": "note",
+          "goto": "scene_tell_gatherers",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_gatherers",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "ring_home",
+          "label": "Ring your own family's bell, and start the word going",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_tell_gatherers",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_gatherers",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "keep_close",
+          "label": "Nobody yet. Keep it close until you're sure.",
+          "icon": "moon",
+          "goto": "scene_keep_close",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "kept_close",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_tell_wardens": {
+      "type": "story",
+      "narration": "You write it all down for the Skywardens, neatly, the way Sergeant Holloway would like it, and a relay-runner takes it north at a gallop. Great-Gran Ashby sniffs. \"Wardens,\" she says. \"Well. They do write things down.\"",
+      "choices": [
+        {
+          "id": "north",
+          "label": "Walk north through the stones",
+          "icon": "arrow",
+          "goto": "end_through_the_stones"
+        }
+      ]
+    },
+    "scene_tell_gatherers": {
+      "type": "story",
+      "narration": "The grandmothers ring a pattern on the bells that runs from town to town up the hills, faster than any rider. Every grandmother in the foothills knows now. Great-Gran Ashby blows her nose very loudly and pretends she has a cold.",
+      "choices": [
+        {
+          "id": "north",
+          "label": "Walk north through the stones",
+          "icon": "arrow",
+          "goto": "end_through_the_stones"
+        }
+      ]
+    },
+    "scene_keep_close": {
+      "type": "story",
+      "narration": "You keep the outline folded up small, in the safest pocket. Great-Gran Ashby nods slowly. \"Careful is not the same as quiet,\" she says. \"But careful is a start.\"",
+      "choices": [
+        {
+          "id": "north",
+          "label": "Walk north through the stones",
+          "icon": "arrow",
+          "goto": "end_through_the_stones"
+        }
+      ]
+    },
+    "end_through_the_stones": {
+      "type": "rest",
+      "narration": "You walk north through the boundary stones into the foothills, with the rush all around you and the bells ringing ordinary rings behind you. Ahead, on a red ridge, stands the dark outline of the Skywardens' citadel. Tonight you camp under the stones that were here first, and they feel, for the first time, like they are on your side.",
+      "heal": 4,
+      "choices": []
+    },
+    "end_rolled_down": {
+      "type": "rest",
+      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you each a warm rock and a stern look. You have lost a whole day, and the tally house is full of other people's arguments by the time you get there. You keep what you know close, because there is no time today to make anyone listen.",
+      "heal": 3,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "kept_close",
+          "value": true
+        }
+      ],
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "warm, loud dragonling home country under a worried sky; grandmothers in charge, bells everywhere, a little spooky about the unrung bell, never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "what the unrung bell means",
+      "what lies under the mountain"
+    ],
+    "npcVoices": {
+      "great_gran_ashby": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
+      "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
+      "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
+      "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
+      "fennimore": "Fennimore Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument"
+    }
+  }
+}
