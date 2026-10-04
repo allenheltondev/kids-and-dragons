@@ -680,7 +680,7 @@
     },
     "end_marsh_west": {
       "type": "rest",
-      "narration": "The west branch does what rivers do. It carries you west, past the last campfire, into the green tangles of the Whispering Marsh, where a boggart in a reed hat applauds as you whoosh by. At last the channels let you go, on a muddy bank near the flooded western paths of the Enchanted Woods, close to MossHome. The trees look completely unimpressed. You never chose this road, but here you are on it. The road people will hear about it. The road people hear about everything.",
+      "narration": "The west branch does what rivers do: it whooshes you west into the green tangles of the Whispering Marsh, past a boggart in a reed hat who applauds. At last the channels let you go on a muddy bank near MossHome, at the flooded edge of the Enchanted Woods. You never chose this road, but here you are, and the tuned charm is still humming. The road people will hear about it. The road people hear about everything.",
       "heal": 3,
       "onEnter": [
         {

@@ -134,7 +134,7 @@
     "kind": "quest",
     "icon": "gem",
     "name": "The Barge Stone",
-    "text": "The one real thing in a mire mimic's best performance. It hums a long, low note, the same as the Hollow Gate's runes."
+    "text": "The one real prop in a mire mimic's act. It hums the same note as the Hollow Gate."
   },
   "facet_caravan": {
     "kind": "quest",
@@ -147,6 +147,12 @@
     "icon": "gem",
     "name": "The Clerk's Stone",
     "text": "Logged, tagged 4117, and crossing westbound. Then, very irregularly, not."
+  },
+  "facet_confiscated": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Confiscated Stone",
+    "text": "The loudest stone in the forest's pile. MossHome's record knows who is carrying it."
   },
   "facet_depot": {
     "kind": "quest",
@@ -172,6 +178,12 @@
     "name": "The Ford Stone",
     "text": "Wrapped in a witch's wool sock. It rings every bell charm it passes, and won't stop."
   },
+  "facet_glade": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Glade Stone",
+    "text": "From the heart of the Woods' worst glade. Warm, loud, and no mosshorn will come near it."
+  },
   "facet_harvest": {
     "kind": "quest",
     "icon": "gem",
@@ -196,6 +208,12 @@
     "name": "Shard of the Hollow Crown",
     "text": "A curl of cold silver. It hums when you are close to the rest of it."
   },
+  "knot_cord": {
+    "kind": "quest",
+    "icon": "ribbon",
+    "name": "MossHome Knot-Cord",
+    "text": "Old bigfoot knots that say the record knows you. Show it when the forest pays back."
+  },
   "medal_not": {
     "kind": "quest",
     "icon": "trophy",
@@ -219,6 +237,24 @@
     "icon": "key",
     "name": "Rusted Key",
     "text": "It opens something, somewhere."
+  },
+  "tether_chord": {
+    "kind": "quest",
+    "icon": "note",
+    "name": "The Resonance Chord",
+    "text": "Three notes the Deep Hollow choir hums to make the stones hum back. It is not written down anywhere. It is in your head, and it will not leave."
+  },
+  "tether_ledger": {
+    "kind": "quest",
+    "icon": "scroll",
+    "name": "The Cage-Doctrine Ledger",
+    "text": "The Skywardens' plan for holding what is under the mountain, written in a ledger as thick as a doorstep. The wardens do not lend it. They lent it to you."
+  },
+  "tether_question": {
+    "kind": "quest",
+    "icon": "charm",
+    "name": "The Witch's Question",
+    "text": "What do you actually want? A witch lent it to you, which means you are allowed to ask it of anything. Even a mountain."
   },
   "torn_map_east": {
     "kind": "quest",
