@@ -266,7 +266,7 @@
     },
     "scene_wend_pitch": {
       "type": "story",
-      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently, stirring. \"Wrong-colored sky. Stones that hum. We think it could be fixed, properly, at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
+      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-colored sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
       "choices": [
         {
           "id": "say_no",

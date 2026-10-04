@@ -30,7 +30,7 @@
       "kind": "quest",
       "icon": "gem",
       "name": "The Barge Stone",
-      "text": "The one real thing in a mire mimic's best performance. It hums a long, low note, the same as the Hollow Gate's runes."
+      "text": "The one real prop in a mire mimic's act. It hums the same note as the Hollow Gate."
     }
   },
   "scenes": {
@@ -242,7 +242,7 @@
     "encounter_mimic": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The barge heaves up out of the mud on long grey legs. Two wisps who have been leading prospectors this way drift in to watch the show.",
+      "narration": "The barge heaves up out of the mud on long grey legs. A wisp that has been leading prospectors this way drifts in to watch the show.",
       "enemies": [
         {
           "id": "mimic",
@@ -254,7 +254,7 @@
           "id": "wisp",
           "name": "Usher Wisp",
           "creature": "will_o_wisp",
-          "count": 2
+          "count": 1
         }
       ],
       "onVictory": {
@@ -263,7 +263,7 @@
       },
       "onDefeat": {
         "goto": "check_find_way",
-        "narration": "The mimic gulps the gem, spits you out onto a mudbank, and sinks out of sight, prop and all. The wisps drift off giggling. It's getting dark, and every channel looks exactly the same."
+        "narration": "The mimic gulps the gem, spits you out onto a mudbank, and sinks out of sight, prop and all. The wisp drifts off, giggling. It's getting dark, and every channel looks exactly the same."
       }
     },
     "check_find_way": {
