@@ -1,0 +1,50 @@
+{
+  "$comment": "Marsh: pools and reed clumps scattered everywhere, no straight line anywhere. Short sightlines, lots of corners for a lurker. Gemfall's Whispering Marsh.",
+  "id": "reedbank",
+  "rows": [
+    "..........",
+    ".##....#..",
+    ".#...#....",
+    "....##..#.",
+    "..#.....#.",
+    "..#..##...",
+    "......#...",
+    ".........."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

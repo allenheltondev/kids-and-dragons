@@ -1,0 +1,50 @@
+{
+  "$comment": "A forest glade ringed by trees, open in the middle. Whoever controls the middle controls the fight. Gemfall's Enchanted Woods.",
+  "id": "glade",
+  "rows": [
+    "..#....#..",
+    ".#......#.",
+    "..........",
+    "...#..#...",
+    "...#..#...",
+    "..........",
+    ".#......#.",
+    "..#....#.."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

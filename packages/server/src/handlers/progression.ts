@@ -177,6 +177,16 @@ export async function startPartyCampaign(
   return transformParty(state, deps, householdId, [], (character) => character);
 }
 
+/** The highest beat a campaign's chapters reach. */
+export function finalIndex(campaign: Campaign, deps: HandlerDeps): number {
+  let last = 0;
+  for (const id of campaign.chapters) {
+    const chapter = deps.content.chapter(id);
+    if (chapter && chapter.index > last) last = chapter.index;
+  }
+  return last;
+}
+
 /** Spec §8.3's default. A campaign may tune it (`Campaign.setbackLimit`). */
 const DEFAULT_SETBACK_LIMIT = 3;
 
@@ -261,9 +271,13 @@ export async function settleChapterCompletion(
   if (outcome === "setback") attempt.setbacks += 1;
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
+  attempt.lastIndex = chapter.index;
 
   const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;
-  const finalChapter = campaign.chapters[campaign.chapters.length - 1] === chapter.id;
+  // The final *beat*, not the last-listed file: a routed last beat has several
+  // files at the same index (Gemfall's climb and its Walk), and finishing any
+  // one of them finishes the campaign.
+  const finalChapter = chapter.index === finalIndex(campaign, deps);
 
   if (attempt.setbacks >= limit) {
     attempt.status = "failed";
