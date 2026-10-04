@@ -7,7 +7,10 @@
   "biome": "red_sky_foothills",
   "estimatedMinutes": 28,
   "xpAward": 90,
-  "route": { "set": "pursuit", "flag": "pursuit_leash" },
+  "route": {
+    "set": "pursuit",
+    "flag": "pursuit_leash"
+  },
   "entry": "scene_the_table",
   "objectives": [
     {
@@ -66,7 +69,13 @@
           "icon": "dragonling",
           "requiresFlag": "told_gatherers",
           "goto": "scene_ledger",
-          "effects": [{ "type": "setFlag", "flag": "grandmothers_chair", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "grandmothers_chair",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -81,8 +90,15 @@
           "requiresFlag": "told_wardens",
           "goto": "scene_choir",
           "effects": [
-            { "type": "grantQuestItem", "itemId": "tether_ledger" },
-            { "type": "setFlag", "flag": "wardens_trust", "value": true }
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_ledger"
+            },
+            {
+              "type": "setFlag",
+              "flag": "wardens_trust",
+              "value": true
+            }
           ]
         },
         {
@@ -96,7 +112,12 @@
           "label": "Promise them the cult's secret chord in trade (you won't)",
           "icon": "moon",
           "goto": "scene_choir",
-          "effects": [{ "type": "grantQuestItem", "itemId": "tether_ledger" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_ledger"
+            }
+          ]
         }
       ]
     },
@@ -110,8 +131,15 @@
         "goto": "scene_choir",
         "narration": "Brisk reads your argument twice, frowns at it, and unlocks the chain. Nobody has ever seen Brisk do that. Nobody has ever seen Brisk almost smile, either, and he nearly does.",
         "effects": [
-          { "type": "grantQuestItem", "itemId": "tether_ledger" },
-          { "type": "setFlag", "flag": "wardens_trust", "value": true }
+          {
+            "type": "grantQuestItem",
+            "itemId": "tether_ledger"
+          },
+          {
+            "type": "setFlag",
+            "flag": "wardens_trust",
+            "value": true
+          }
         ]
       },
       "onFailure": {
@@ -136,8 +164,15 @@
           "requiresFlag": "grandmothers_chair",
           "goto": "scene_road_gifts",
           "effects": [
-            { "type": "grantQuestItem", "itemId": "tether_chord" },
-            { "type": "setFlag", "flag": "choir_trust", "value": true }
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            },
+            {
+              "type": "setFlag",
+              "flag": "choir_trust",
+              "value": true
+            }
           ]
         },
         {
@@ -147,8 +182,15 @@
           "requiresItem": "tether_ledger",
           "goto": "scene_road_gifts",
           "effects": [
-            { "type": "grantQuestItem", "itemId": "tether_chord" },
-            { "type": "setFlag", "flag": "wardens_trust", "value": false }
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            },
+            {
+              "type": "setFlag",
+              "flag": "wardens_trust",
+              "value": false
+            }
           ]
         },
         {
@@ -156,7 +198,12 @@
           "label": "Pay them with a stone from your pack",
           "icon": "gem",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "grantQuestItem", "itemId": "tether_chord" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            }
+          ]
         },
         {
           "id": "hum_along",
@@ -164,7 +211,12 @@
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
           "goto": "scene_road_gifts",
-          "effects": [{ "type": "grantQuestItem", "itemId": "tether_chord" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            }
+          ]
         }
       ]
     },
@@ -178,8 +230,15 @@
         "goto": "scene_road_gifts",
         "narration": "The choir argues in whispers. Then Tamsin, the soup-line lady, steps forward and hums three notes, slowly, until you have them. \"Don't make me sorry,\" she says.",
         "effects": [
-          { "type": "grantQuestItem", "itemId": "tether_chord" },
-          { "type": "setFlag", "flag": "choir_trust", "value": true }
+          {
+            "type": "grantQuestItem",
+            "itemId": "tether_chord"
+          },
+          {
+            "type": "setFlag",
+            "flag": "choir_trust",
+            "value": true
+          }
         ]
       },
       "onFailure": {
@@ -255,7 +314,13 @@
           "label": "Promise",
           "icon": "heart",
           "goto": "scene_stall_witch",
-          "effects": [{ "type": "setFlag", "flag": "loose_knot", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "loose_knot",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -268,7 +333,13 @@
           "label": "Thank her, and the Woods",
           "icon": "leaf",
           "goto": "scene_stall_witch",
-          "effects": [{ "type": "setFlag", "flag": "loose_knot", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "loose_knot",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -281,14 +352,26 @@
           "label": "Tell it what Brisk the clerk mutters to his ledger",
           "icon": "ear",
           "goto": "scene_stall_witch",
-          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
         },
         {
           "id": "choir_said",
           "label": "Tell it what the choir hums when they think nobody is listening",
           "icon": "note",
           "goto": "scene_stall_witch",
-          "effects": [{ "type": "setFlag", "flag": "knows_buyers", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -302,8 +385,14 @@
           "icon": "heart",
           "goto": "scene_evening",
           "effects": [
-            { "type": "grantQuestItem", "itemId": "tether_question" },
-            { "type": "grantQuestItem", "itemId": "facet_ford" }
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            },
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ford"
+            }
           ]
         },
         {
@@ -311,7 +400,12 @@
           "label": "\"To hold it, because we can.\"",
           "icon": "crown",
           "goto": "scene_evening",
-          "effects": [{ "type": "grantQuestItem", "itemId": "tether_question" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            }
+          ]
         },
         {
           "id": "flatter",
@@ -330,14 +424,24 @@
           "label": "\"To hold it still, so nobody gets hurt.\"",
           "icon": "heart",
           "goto": "scene_evening",
-          "effects": [{ "type": "grantQuestItem", "itemId": "tether_question" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            }
+          ]
         },
         {
           "id": "hold_power",
           "label": "\"To hold it, because we can.\"",
           "icon": "crown",
           "goto": "scene_evening",
-          "effects": [{ "type": "grantQuestItem", "itemId": "tether_question" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            }
+          ]
         },
         {
           "id": "flatter",
@@ -383,7 +487,13 @@
     "scene_centaur_relay": {
       "type": "story",
       "narration": "The centaur relay pulls up at your table and unrolls a sash-map. \"Fat caravan tomorrow, biggest stone in the funnel,\" says the lead runner. \"Where do you want it?\" You point at the worst bend, and she nods as if that is the most sensible thing anyone has said all day.",
-      "onEnter": [{ "type": "setFlag", "flag": "caravan_rerouted", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "caravan_rerouted",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "sleep",
@@ -396,7 +506,13 @@
     "scene_relay_sing": {
       "type": "story",
       "narration": "The relay singers have new verses about wagons that have not arrived yet, so you hear tomorrow's traffic tonight. Then a grandmother's runner brings you a list of caves nobody may ever dig. It is exactly the list a seal's keeper would keep.",
-      "onEnter": [{ "type": "setFlag", "flag": "heard_tomorrow", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_tomorrow",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "sleep",
@@ -415,7 +531,12 @@
           "label": "Buy it back. A tether needs an anchor.",
           "icon": "gem",
           "goto": "rest_under_the_table",
-          "effects": [{ "type": "grantQuestItem", "itemId": "facet_ember" }]
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ember"
+            }
+          ]
         },
         {
           "id": "wave",
@@ -490,8 +611,17 @@
       "map": "switchback",
       "narration": "The echo hunter unfolds out of the rock wall, and the wolf, frightened half silly, sticks close beside it.",
       "enemies": [
-        { "id": "echo", "name": "Echo Hunter", "creature": "echo_hunter" },
-        { "id": "wolf", "name": "Cinder Wolf", "creature": "cinder_wolf", "count": 1 }
+        {
+          "id": "echo",
+          "name": "Echo Hunter",
+          "creature": "echo_hunter"
+        },
+        {
+          "id": "wolf",
+          "name": "Cinder Wolf",
+          "creature": "cinder_wolf",
+          "count": 1
+        }
       ],
       "onVictory": {
         "goto": "choice_the_test",
@@ -511,7 +641,7 @@
           "label": "Ask the stone the witch's question",
           "icon": "charm",
           "requiresItem": "tether_question",
-          "goto": "scene_tether_holds"
+          "goto": "check_hold_easy"
         },
         {
           "id": "rerouted",
@@ -563,6 +693,21 @@
         }
       ]
     },
+    "check_hold_easy": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Ask the Caravan Stone what it actually wants, and listen for the answer",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "You ask the witch's question out loud. The stone goes quiet, the way a person goes quiet when somebody finally asks the right thing. For one long breath, nothing on the whole hillside hums at all."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "You ask the question, but the ground lurches halfway through and the stone never hears the end of it. The hum leaps free, and the whole hillside answers it."
+      }
+    },
     "check_hold": {
       "type": "check",
       "stat": "heart",
@@ -597,9 +742,20 @@
       "type": "story",
       "narration": "The caravan master climbs down, hands you the Caravan Stone in both arms, and says, \"Please keep it. It's been humming at me for a month.\" A warden writes something in a notebook. A mask takes off her mask. For a moment, everyone is looking at the same thing: you.",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "facet_caravan" },
-        { "type": "setFlag", "flag": "tether_tested", "value": true },
-        { "type": "setFlag", "flag": "clock_steady", "value": true }
+        {
+          "type": "grantQuestItem",
+          "itemId": "facet_caravan"
+        },
+        {
+          "type": "setFlag",
+          "flag": "tether_tested",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_steady",
+          "value": true
+        }
       ],
       "choices": [
         {
@@ -613,7 +769,13 @@
     "scene_tether_slips": {
       "type": "story",
       "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologising as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
-      "onEnter": [{ "type": "setFlag", "flag": "clock_late", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "climb",
@@ -626,7 +788,13 @@
     "rest_up_the_mountain": {
       "type": "rest",
       "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying a ledger, a chord, a question, and a great deal of nerve.",
-      "onEnter": [{ "type": "setFlag", "flag": "climbed_the_mountain", "value": true }],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        }
+      ],
       "heal": 4,
       "choices": []
     },
@@ -634,8 +802,16 @@
       "type": "rest",
       "narration": "By the time the echoes let you go and you find the road again, the fattest caravan has long gone by, and the ground is shaking in a slow, patient rhythm. Nobody is at the table any more. You climb anyway, a long way behind, humming to yourselves to keep your courage up.",
       "onEnter": [
-        { "type": "setFlag", "flag": "climbed_the_mountain", "value": true },
-        { "type": "setFlag", "flag": "clock_late", "value": true }
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
       ],
       "heal": 3,
       "outcome": "setback",
