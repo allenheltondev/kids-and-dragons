@@ -21,7 +21,7 @@
     },
     {
       "id": "mask_off",
-      "label": "Talked Tamsin out of her mask",
+      "label": "Talked Hessa out of her mask",
       "flag": "mask_off",
       "xp": 6
     },
@@ -369,11 +369,11 @@
     },
     "scene_masks": {
       "type": "story",
-      "narration": "Further down the road, people in painted bark masks are running the same funnel backwards, collecting stones gently from anyone who will hand them over. \"We'll break it properly, all at once, so it can be fixed properly,\" one of them says. You know that voice. It is Tamsin from the soup line, with her ladle still on her belt.",
+      "narration": "Further down the road, people in painted bark masks are running the same funnel backwards, collecting stones gently from anyone who will hand them over. \"We'll break it properly, all at once, so it can be fixed properly,\" one of them says. You know that voice. It is Hessa from the soup tent, with her ladle still on her belt.",
       "choices": [
         {
           "id": "talk",
-          "label": "Talk to Tamsin",
+          "label": "Talk to Hessa",
           "icon": "heart",
           "goto": "check_tamsin"
         },
@@ -403,11 +403,11 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Convince Tamsin the seal is not a cage",
+      "prompt": "Convince Hessa the seal is not a cage",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_evening",
-        "narration": "Tamsin takes off her mask. \"I only wanted somebody to fix things,\" she says quietly. She hands you her whole sack of stones, and then her ladle, and asks you to fix things.",
+        "narration": "Hessa takes off her mask. \"I only wanted somebody to fix things,\" she says quietly. She hands you her whole sack of stones, and then her ladle, and asks you to fix things.",
         "effects": [
           {
             "type": "setFlag",
@@ -710,7 +710,7 @@
     },
     "scene_caravan_lost": {
       "type": "story",
-      "narration": "The masks have the Caravan Stone. Tamsin's cell drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
+      "narration": "The masks have the Caravan Stone. Hessa's cell drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -773,7 +773,7 @@
       "explaining the Hollow Gate"
     ],
     "npcVoices": {
-      "tamsin": "Deep Hollow cell member who ran the soup line; gentle, sad, sure she is helping; says 'properly' a lot",
+      "hessa": "Deep Hollow cell member who ran the soup tent; gentle, sad, sure she is helping; says 'properly' a lot",
       "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
       "warden_sergeant": "rigid, honest, tired; counts everything; secretly hates making children cry",
       "grandmother": "dragonling gatherer; knits while she talks; 'No, dear' is a complete sentence",

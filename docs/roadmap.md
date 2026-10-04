@@ -369,7 +369,12 @@ she picked up two sessions ago is still in her bag.
   unless the server opted in, and `lambda/runtime.ts` opts out with a literal.
 
 **Allen**
-- Generate and hand-edit a full 6-chapter campaign
+- ~~Generate and hand-edit a full 6-chapter campaign~~ — **Gemfall is authored and playable**:
+  eight beats across seventeen chapter files (three roads, three pursuits, the Walk), launched by
+  the lobby, continued across evenings by the server (`CONTINUE_CAMPAIGN`), and played start to
+  finish under 24 seeds by `gemfall-playthrough.test.ts`. Written by Claude from
+  [docs/campaigns/gemfall.md](./campaigns/gemfall.md), so the hand-edit is still yours — and so is
+  the voice: read it aloud at the table and rewrite whatever does not sound like you
 - Refine generation prompts against what the tool actually produces
 
 **Done when:** you can go from an idea to a validated, playable chapter in under an hour.

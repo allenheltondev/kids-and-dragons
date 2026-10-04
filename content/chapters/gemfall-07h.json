@@ -615,7 +615,7 @@
     },
     "scene_tamsins_offer": {
       "type": "story",
-      "narration": "That night a woman in a bark mask sits down at your fire and takes it off. It is Tamsin, from the soup line. \"We'll buy the lot,\" she says sweetly. \"Every stone. You'd be rich, and we'd break the seal properly, all at once, so it can be fixed properly.\" She sets out the money in little piles, and it is a lot of little piles.",
+      "narration": "That night a woman in a bark mask sits down at your fire and takes it off. It is Hessa, from the soup tent. \"We'll buy the lot,\" she says sweetly. \"Every stone. You'd be rich, and we'd break the seal properly, all at once, so it can be fixed properly.\" She sets out the money in little piles, and it is a lot of little piles.",
       "choices": [
         {
           "id": "sell",
@@ -675,7 +675,7 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Tamsin counts out every coin with great care, and thanks you, and means it. As she carries the stones away into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
+      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. As she carries the stones away into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
       "choices": [
         {
           "id": "on",
@@ -687,7 +687,7 @@
     },
     "scene_handed_back": {
       "type": "story",
-      "narration": "Tamsin puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
+      "narration": "Hessa puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
       "choices": [
         {
           "id": "on",
@@ -774,7 +774,7 @@
       "calling the party greedy or bad"
     ],
     "npcVoices": {
-      "tamsin": "Deep Hollow cell member who ran the soup line; sweet, sincere, makes the arithmetic sound kind; says 'properly' a lot",
+      "hessa": "Deep Hollow cell member who ran the soup tent; sweet, sincere, makes the arithmetic sound kind; says 'properly' a lot",
       "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
       "grandmother": "dragonling gatherer; knits while she looks at you; silence is her loudest sentence",
       "warden_clerk": "rigid, honest, stamps things",
