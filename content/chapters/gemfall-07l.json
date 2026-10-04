@@ -615,7 +615,7 @@
           "id": "echo",
           "name": "Echo Hunter",
           "creature": "echo_hunter",
-          "hp": 13
+          "hp": 11
         },
         {
           "id": "wolf",
