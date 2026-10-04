@@ -1,0 +1,568 @@
+{
+  "id": "gemfall-04c",
+  "campaignId": "gemfall",
+  "index": 4,
+  "title": "The Road That Remembers",
+  "biome": "plains",
+  "route": {
+    "set": "road",
+    "flag": "route_rush"
+  },
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "entry": "scene_north_roads",
+  "objectives": [
+    {
+      "id": "tib",
+      "label": "Found Ma Ruddle's nephew Tib",
+      "flag": "found_tib",
+      "xp": 8
+    },
+    {
+      "id": "silence",
+      "label": "Noticed the silence follows the stones",
+      "flag": "noticed_the_silence",
+      "xp": 7
+    },
+    {
+      "id": "verse",
+      "label": "Sang a route-song verse at the relay",
+      "flag": "sang_a_verse",
+      "xp": 7
+    }
+  ],
+  "props": {
+    "facet_depot": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Depot Stone",
+      "text": "A gem with a depot tag still tied on: 'Strongbox 9. SOLD.' It rings like a dinner bell."
+    },
+    "verses_relay_spiral": {
+      "kind": "quest",
+      "icon": "note",
+      "name": "The Spiral Verses",
+      "text": "This season's new route-song verses, scratched on bark. Sung in order, the roads curl around the gemfalls like a snail shell."
+    }
+  },
+  "scenes": {
+    "scene_north_roads": {
+      "type": "story",
+      "narration": "North of the west branch, the road splits into two lanes. The upbound lane is the rush going up: wagons, picks, and people singing. The downbound lane is the rush coming back: slower, quieter, carrying a lot less than it set out with. Everybody is talking at once.",
+      "choices": [
+        {
+          "id": "fall_in",
+          "label": "Fall in with the northbound traffic",
+          "icon": "arrow",
+          "goto": "scene_empty_stretch"
+        },
+        {
+          "id": "ride_queue",
+          "label": "Ride north with the drovers from the ford",
+          "icon": "party",
+          "requiresFlag": "forded_clean",
+          "goto": "scene_drovers_wagon"
+        },
+        {
+          "id": "out_of_marsh",
+          "label": "Climb up out of the marsh, muddy and wagonless",
+          "icon": "boot",
+          "requiresFlag": "walked_over",
+          "goto": "scene_out_of_marsh"
+        }
+      ]
+    },
+    "scene_drovers_wagon": {
+      "type": "story",
+      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Roll on north",
+          "icon": "arrow",
+          "goto": "scene_empty_stretch"
+        }
+      ]
+    },
+    "scene_out_of_marsh": {
+      "type": "story",
+      "narration": "You come up out of the marsh reeds onto the road with mud to your knees and the boggarts' hum still in your ears. Nobody on the road has a seat for you, so you work your passage: carrying water buckets for a wagon that smells strongly of turnips. The boggarts, somewhere behind you, are laughing.",
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Carry your buckets north",
+          "icon": "drop",
+          "goto": "scene_empty_stretch"
+        }
+      ]
+    },
+    "scene_empty_stretch": {
+      "type": "story",
+      "narration": "Plains folk say an empty stretch of good road is a message, and jackalopes are the punctuation. Normally they are everywhere, racing wagons and winning. But for a whole mile around the big gem depot up ahead, the warrens have gone completely silent.",
+      "choices": [
+        {
+          "id": "count",
+          "label": "Count the jackalopes, and where they stop",
+          "icon": "eye",
+          "goto": "check_jackalopes"
+        },
+        {
+          "id": "silence_follows",
+          "label": "Notice the silence moving with your own pack",
+          "icon": "gem",
+          "requiresItem": "facet_ford",
+          "goto": "scene_silence_follows"
+        },
+        {
+          "id": "keep_walking",
+          "label": "Keep walking toward the depot",
+          "icon": "arrow",
+          "goto": "scene_downbound"
+        }
+      ]
+    },
+    "check_jackalopes": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Count the jackalopes and find where they stop",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_silence_follows"
+      },
+      "onFailure": {
+        "goto": "scene_downbound",
+        "narration": "You get to forty-one jackalopes, and then one of them sits up and stares at you until you lose count. It has won. You do not know what, but it has definitely won."
+      }
+    },
+    "scene_silence_follows": {
+      "type": "story",
+      "narration": "You notice it all at once: the warrens go quiet around the depot, and around the gem wagons, and around YOU. Every jackalope within shouting distance of a stone has gone underground. It is not the eruption the land is flinching from. It is the stones.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "noticed_the_silence",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Walk on, a little quieter",
+          "icon": "arrow",
+          "goto": "scene_downbound"
+        }
+      ]
+    },
+    "scene_downbound": {
+      "type": "story",
+      "narration": "On the downbound lane, a sold-out prospector called Ma Ruddle is watching her own wagon being auctioned. \"I don't care about the wagon,\" she says. \"I've lost my nephew Tib in this crowd. Small. Orange hat. Talks to horses.\"",
+      "choices": [
+        {
+          "id": "work_crowd",
+          "label": "Work the crowd like a stage",
+          "icon": "spark",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_tib_found"
+        },
+        {
+          "id": "fly_look",
+          "label": "Fly up and look for an orange hat",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_tib_found"
+        },
+        {
+          "id": "ask_relay",
+          "label": "Ask the centaur relay to pass the word",
+          "icon": "ear",
+          "goto": "check_relay"
+        },
+        {
+          "id": "search",
+          "label": "Search the crowd yourselves",
+          "icon": "eye",
+          "goto": "check_search"
+        }
+      ]
+    },
+    "check_relay": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Explain Tib to a centaur at a full gallop",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tib_found",
+        "narration": "The runner nods, sings \"small, orange hat, talks to horses\" to the next runner, and in less time than it takes to eat a honeycake the word comes back down the line: found."
+      },
+      "onFailure": {
+        "goto": "rest_soup_tents",
+        "narration": "The runner hears \"small orange horse\" and gallops off. Much later, word comes back that Tib turned up by himself, talking to a centaur. Ma Ruddle's thanks are tired, and her papers went in the auction pile."
+      }
+    },
+    "check_search": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Dodge through a very busy crowd after a small orange hat",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tib_found",
+        "narration": "You spot the hat, lose it behind a wagon, spot it again, and finally find Tib explaining something very seriously to a pony."
+      },
+      "onFailure": {
+        "goto": "rest_soup_tents",
+        "narration": "Every time you get close, the orange hat turns out to be a pumpkin. Much later the relay finds Tib on its own, and Ma Ruddle's papers have gone in the auction pile."
+      }
+    },
+    "scene_tib_found": {
+      "type": "story",
+      "narration": "Tib is found, still holding a long conversation with a pony. Ma Ruddle hugs him so hard his hat falls off. Then she pulls a folded paper from her boot. \"Bill of sale for the stone I left at the depot. I'm going home. You have it.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_tib",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "have_bill_of_sale",
+          "value": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Thank her and walk on",
+          "icon": "scroll",
+          "goto": "rest_soup_tents"
+        }
+      ]
+    },
+    "rest_soup_tents": {
+      "type": "rest",
+      "narration": "Beside the downbound lane, the Deep Hollow soup line has grown into rest tents. Three of them, with cots and blankets and hot bowls for anyone the rush has dropped. A ladler named Wend learns all your names by the second bowl, and somehow remembers them perfectly.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "hear_wend",
+          "label": "Listen to what Wend wants to say",
+          "icon": "ear",
+          "goto": "scene_wend_pitch"
+        },
+        {
+          "id": "rest_go",
+          "label": "Thank everyone and get back on the road",
+          "icon": "arrow",
+          "goto": "scene_warden_patrol"
+        }
+      ]
+    },
+    "scene_wend_pitch": {
+      "type": "story",
+      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently, stirring. \"Wrong-colored sky. Stones that hum. We think it could be fixed, properly, at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
+      "choices": [
+        {
+          "id": "say_no",
+          "label": "Say no thank you, kindly but clearly",
+          "icon": "hand",
+          "goto": "scene_warden_patrol",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "refused_the_cult",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "say_later",
+          "label": "Say maybe, and leave it there",
+          "icon": "moon",
+          "goto": "scene_warden_patrol"
+        }
+      ]
+    },
+    "scene_warden_patrol": {
+      "type": "story",
+      "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food for the citadel at fixed rates. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
+      "choices": [
+        {
+          "id": "pay",
+          "label": "Pay the fixed rate and wish them well",
+          "icon": "check",
+          "goto": "scene_depot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_wardens",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "argue",
+          "label": "Argue that the rate is unfair",
+          "icon": "clever",
+          "goto": "check_argue"
+        },
+        {
+          "id": "griffin_logs",
+          "label": "Swap sky news, griffin to warden",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_depot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_wardens",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_argue": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Out-arithmetic a Skywarden",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_depot",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          }
+        ],
+        "narration": "You find a mistake in the sergeant's sums. Sergeant Holloway checks it twice, corrects it, and pays you back two coppers with deep respect."
+      },
+      "onFailure": {
+        "goto": "scene_depot",
+        "narration": "Sergeant Holloway listens to your whole argument, writes it down in the ledger under 'Complaints, Polite', and charges you the fixed rate anyway."
+      }
+    },
+    "scene_depot": {
+      "type": "story",
+      "narration": "The biggest rush depot on the north roads is a barn full of strongboxes, and one of them is ringing like a bell. Behind the counter sits Clerk Pennywhistle, who has a queue, a stamp, and a form for absolutely everything. The ringing stone is in strongbox number nine.",
+      "choices": [
+        {
+          "id": "bill",
+          "label": "Hand over Ma Ruddle's bill of sale",
+          "icon": "scroll",
+          "requiresFlag": "have_bill_of_sale",
+          "goto": "scene_strongbox"
+        },
+        {
+          "id": "forms",
+          "label": "Queue up and fill in the forms properly",
+          "icon": "scroll",
+          "goto": "check_forms"
+        },
+        {
+          "id": "leave",
+          "label": "Leave it in the strongbox and head on",
+          "icon": "arrow",
+          "goto": "scene_relay_sing"
+        }
+      ]
+    },
+    "check_forms": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Fill in Form 9 with no smudges, in the right order",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_strongbox",
+        "narration": "Clerk Pennywhistle holds your form up to the lamp, finds no smudges, and looks as if he might cry with happiness. He stamps it four times."
+      },
+      "onFailure": {
+        "goto": "scene_relay_sing",
+        "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
+      }
+    },
+    "scene_strongbox": {
+      "type": "story",
+      "narration": "Clerk Pennywhistle unlocks strongbox number nine, lifts out a gem that rings like a dinner bell, and writes your names in the depot ledger in lovely handwriting. \"The Depot Stone,\" he reads off the tag. \"Sold. Please keep it away from my pens.\"",
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "facet_depot"
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_the_depot_stone",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Follow the singing to the campfires",
+          "icon": "note",
+          "goto": "scene_relay_sing"
+        }
+      ]
+    },
+    "scene_relay_sing": {
+      "type": "story",
+      "narration": "At night the centaur relay gathers at the biggest campfire to sing the route-songs: one verse for every landmark, the dangers in the chorus. This season the songs have new verses every night, faster than anyone can learn them. A centaur called Old Corran passes you the next line.",
+      "choices": [
+        {
+          "id": "sing",
+          "label": "Sing your verse",
+          "icon": "note",
+          "goto": "check_sing"
+        },
+        {
+          "id": "listen",
+          "label": "Just listen, very closely",
+          "icon": "ear",
+          "goto": "scene_spiral"
+        }
+      ]
+    },
+    "check_sing": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Sing a route-song verse in front of everybody",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_spiral",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sang_a_verse",
+            "value": true
+          }
+        ],
+        "narration": "Your voice wobbles once and then holds. The whole campfire sings the chorus back at you, and Old Corran thumps the ground with a hoof."
+      },
+      "onFailure": {
+        "goto": "scene_spiral",
+        "narration": "You sing the wrong verse, the one about a bridge three hundred miles away. Old Corran gently sings the right one over the top, and nobody minds at all."
+      }
+    },
+    "scene_spiral": {
+      "type": "story",
+      "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark and gives it to you.",
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "verses_relay_spiral"
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Walk north under the stars",
+          "icon": "travel",
+          "goto": "scene_road_bend"
+        }
+      ]
+    },
+    "scene_road_bend": {
+      "type": "story",
+      "narration": "Plains folk say never camp where the road bends, because the road knows something. At the bend, a pack of cinder wolves is pacing back and forth across the road, glowing faintly, between you and tonight's camp.",
+      "choices": [
+        {
+          "id": "wait",
+          "label": "Wait quietly until they pass",
+          "icon": "moon",
+          "goto": "end_foothills_in_sight"
+        },
+        {
+          "id": "sneak",
+          "label": "Sneak around them through the long grass",
+          "icon": "quick",
+          "goto": "check_sneak"
+        },
+        {
+          "id": "drive",
+          "label": "Drive them off the road",
+          "icon": "swords",
+          "goto": "encounter_wolves"
+        }
+      ]
+    },
+    "check_sneak": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Creep through the long grass without a rustle",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_foothills_in_sight",
+        "narration": "Not one blade of grass rustles. One wolf lifts its nose, sniffs, and goes back to pacing."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "A jackalope pops out of the grass right in front of you, shouts its little jackalope shout, and every wolf turns your way."
+      }
+    },
+    "encounter_wolves": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The wolves are cold and hungry and a long way from home, and they would like this bit of road, please.",
+      "enemies": [
+        {
+          "id": "wolf",
+          "name": "Cinder Wolf",
+          "creature": "cinder_wolf"
+        }
+      ],
+      "onVictory": {
+        "goto": "end_foothills_in_sight",
+        "narration": "The pack backs off into the grass and trots away north, toward the hills, glowing like a string of lanterns."
+      },
+      "onDefeat": {
+        "goto": "end_scattered",
+        "narration": "The pack bowls through your camp, and everyone scatters in the dark."
+      }
+    },
+    "end_foothills_in_sight": {
+      "type": "rest",
+      "narration": "You make camp past the bend, where it is safe. To the north, in the morning light, you can see the red foothills, and the line where the rush is heading. The bark strip of verses is in your pack, and you know now what the whole road is quietly saying: it is not the eruption the land is flinching from. It is the stones.",
+      "heal": 4,
+      "choices": []
+    },
+    "end_scattered": {
+      "type": "rest",
+      "narration": "By the time you find each other again, it is almost morning. The wolves have eaten the supplies and run off north, and Sergeant Holloway's patrol finds you and writes you down in the ledger as 'Stragglers, Muddy'. You have lost a day, but the bark strip of verses is safe, and you are all together.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "road country in full flood; noisy, kind, a little melancholy on the downbound lane, a little spooky at night, never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "the cult as villains"
+    ],
+    "npcVoices": {
+      "drover": "the lead drover from the ford; huge booming voice, calls the party 'mudlarks'",
+      "ma_ruddle": "a sold-out prospector; tired, blunt, cares about Tib and nothing else",
+      "tib": "a small boy in an orange hat; talks to horses, ponies and centaurs as equals",
+      "wend": "a Deep Hollow ladler; gentle, generous, remembers every name, certain the world can be fixed at the root",
+      "sergeant_holloway": "a Skywarden supply sergeant; rigid, honest, calls everything 'arithmetic', writes everything down",
+      "clerk_pennywhistle": "a depot clerk; loves forms, horrified by smudges, very sorry about Form 7B",
+      "old_corran": "an old centaur relay singer; slow, warm, sings more than he speaks"
+    }
+  }
+}

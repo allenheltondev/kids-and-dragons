@@ -1,0 +1,296 @@
+{
+  "$comment": "Gemfall beat 4 on the River Road (docs/campaigns/gemfall.md, 4A). The opening reads the `crossing` set from 03a through requiresFlag on two extra choices beside an ungated road: crossed_dry parties ride in with the caravans, river_took_us parties walk up from the mouth-lands and see the bent routes first (saw_the_bend, the wet door's witness dividend). Sets no carried flag. The setback needs a party that took the Pride Stone to camp alone, then fail the wolf check or pick the fight, and lose it.",
+  "id": "gemfall-04a",
+  "campaignId": "gemfall",
+  "index": 4,
+  "title": "The Pride Roads",
+  "biome": "eastern_plains",
+  "route": { "set": "road", "flag": "route_river" },
+  "estimatedMinutes": 27,
+  "xpAward": 90,
+  "entry": "scene_east_bank",
+  "objectives": [
+    { "id": "bend", "label": "Saw how the pride routes bend", "flag": "saw_the_bend", "xp": 7 },
+    { "id": "question", "label": "Carried the troll's question east", "flag": "traded_the_question", "xp": 7 },
+    { "id": "sashes", "label": "Read the centaurs' sash-maps yourselves", "flag": "read_the_sashes", "xp": 8 }
+  ],
+  "props": {
+    "facet_pride": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Pride Stone",
+      "text": "From the fall no pride will den within a day of. Heavy, warm, and humming."
+    }
+  },
+  "scenes": {
+    "scene_east_bank": {
+      "type": "story",
+      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay. Far north there is a broken bridge and a red sky. Between here and there is pride country.",
+      "choices": [
+        { "id": "ride_caravans", "label": "Ride north with the crossing caravans", "icon": "travel", "requiresFlag": "crossed_dry", "goto": "scene_caravan_dry" },
+        { "id": "walk_mouthlands", "label": "Squelch north out of the mouth-lands", "icon": "boot", "requiresFlag": "river_took_us", "goto": "scene_mouthlands_walk" },
+        { "id": "pride_road", "label": "Take the pride road north", "icon": "arrow", "goto": "scene_pride_road" }
+      ]
+    },
+    "scene_caravan_dry": {
+      "type": "story",
+      "narration": "You fall in with the caravans coming off Stone Crossing. A cart driver is furious. \"The pride escort wouldn't camp at the usual rest stop! Wouldn't go within a day of it! We booked them three seasons ahead!\" His donkey seems to agree with the prides.",
+      "choices": [
+        { "id": "leave_caravan", "label": "Turn off onto the pride road", "icon": "arrow", "goto": "scene_pride_road" }
+      ]
+    },
+    "scene_mouthlands_walk": {
+      "type": "story",
+      "narration": "Walking up from the south, where nobody on the main road ever comes, you see it first: a long line of pride markers, every one pulled up and planted again in a curve. A whole road bent wide, the way you'd walk around a hot pan.",
+      "onEnter": [{ "type": "setFlag", "flag": "saw_the_bend", "value": true }],
+      "choices": [
+        { "id": "follow_curve", "label": "Follow the bent road north", "icon": "arrow", "goto": "scene_pride_road" }
+      ]
+    },
+    "scene_pride_road": {
+      "type": "choice_point",
+      "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over; the detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain. Embermoths never do that.",
+      "choices": [
+        { "id": "follow_moths", "label": "Follow the embermoths", "icon": "feather", "goto": "scene_embermoths" },
+        { "id": "to_pride", "label": "Head for the pride on the ridge", "icon": "crown", "goto": "scene_pride_greeting" },
+        { "id": "fly_up", "label": "Fly up and look at the pride routes", "icon": "wing", "requiresSpecies": "griffin", "goto": "scene_bend_from_above" }
+      ]
+    },
+    "scene_embermoths": {
+      "type": "story",
+      "narration": "The moths lead you along the edge of the grass, glowing like slow sparks, and the pride markers curve the same way, bending wide around something you can't see yet. Forty jackalopes have squashed themselves together along the pride edge, for safety. It is mostly ears.",
+      "onEnter": [{ "type": "setFlag", "flag": "saw_the_bend", "value": true }],
+      "choices": [
+        { "id": "moths_to_pride", "label": "Go up to the pride", "icon": "crown", "goto": "scene_pride_greeting" }
+      ]
+    },
+    "scene_bend_from_above": {
+      "type": "story",
+      "narration": "From up high the plains are a map. The pride routes used to run straight as string. Now every single one bends, wide and careful, around the same patch of grass in the middle, the way you'd tiptoe round a sleeping dog.",
+      "onEnter": [{ "type": "setFlag", "flag": "saw_the_bend", "value": true }],
+      "choices": [
+        { "id": "land_pride", "label": "Land near the pride", "icon": "wing", "goto": "scene_pride_greeting" }
+      ]
+    },
+    "scene_pride_greeting": {
+      "type": "story",
+      "narration": "On the ridge, a manticore pride watches you come. Their elder stands, tail curled carefully away, and gives the formal greeting from a polite distance. Somebody in a passing caravan faints anyway.",
+      "choices": [
+        { "id": "greet_back", "label": "Greet them back properly", "icon": "hand", "goto": "check_greeting" },
+        { "id": "home_front_way", "label": "Come home the front way", "icon": "heart", "requiresSpecies": "manticore", "goto": "scene_hospitality" }
+      ]
+    },
+    "check_greeting": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Wave first, slowly and kindly, the way the road peoples do",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_pride_camp",
+        "narration": "Palm open, slow, from far off. The elder looks delighted, and waves you all the way up to the fire.",
+        "effects": [{ "type": "setFlag", "flag": "pride_friends", "value": true }]
+      },
+      "onFailure": {
+        "goto": "scene_pride_camp",
+        "narration": "Everybody waves at once with both arms, like people drowning in grass. The elder blinks, decides you meant well, and lets you sit at the edge of camp."
+      }
+    },
+    "scene_hospitality": {
+      "type": "story",
+      "narration": "The elder sees your silhouette and drops the formal greeting completely. \"Look who's come home the front way!\" Cubs pile on you. Somebody's grandmother insists you eat. You are given a honeycake whether you want one or not.",
+      "onEnter": [
+        { "type": "setFlag", "flag": "pride_friends", "value": true },
+        { "type": "grantItem", "itemId": "honeycake", "to": "party" }
+      ],
+      "choices": [
+        { "id": "to_fire", "label": "Sit at the fire", "icon": "rest", "goto": "scene_pride_camp" }
+      ]
+    },
+    "scene_pride_camp": {
+      "type": "story",
+      "narration": "Elder Sefa Tallgrass has a voice like warm gravel. \"We won't den within a day's walk of a gem caravan's rest stop. The cubs sleep badly near the stones. They dream about humming.\" She can't say why. Nobody can. The prides have simply stopped arguing about it.",
+      "choices": [
+        { "id": "ask_account", "label": "Ask about the riddle account", "icon": "scroll", "goto": "scene_riddle_account" },
+        { "id": "to_waystation", "label": "Go on to the centaur waystation", "icon": "arrow", "goto": "scene_waystation" }
+      ]
+    },
+    "scene_riddle_account": {
+      "type": "story",
+      "narration": "The prides have kept a riddle score with the Stone Crossing trolls for generations, and the two totals have never once matched. Sefa unrolls the ledger. The newest line isn't a riddle at all. It's the trolls' new toll, carried east: WHERE DID YOU GET THAT, AND WHERE IS IT GOING? The prides have started asking it too.",
+      "choices": [
+        {
+          "id": "write_question",
+          "label": "Write the question in the ledger yourselves",
+          "icon": "scroll",
+          "goto": "scene_waystation",
+          "effects": [{ "type": "setFlag", "flag": "traded_the_question", "value": true }]
+        },
+        { "id": "old_riddle", "label": "Try the sixty-year riddle", "icon": "clever", "goto": "check_old_riddle" }
+      ]
+    },
+    "check_old_riddle": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Answer the riddle nobody has solved in sixty years",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_waystation",
+        "narration": "You say your answer. The whole pride goes silent. Then Sefa writes it down very carefully, and two cubs sprint off to tell everybody. You will be famous at both ends of the bridge, and argued about forever.",
+        "effects": [{ "type": "grantItem", "itemId": "owlfeather_clasp", "to": "roller" }]
+      },
+      "onFailure": {
+        "goto": "scene_waystation",
+        "narration": "You guess \"a teapot.\" It is not a teapot. Several famous careers have ended on that riddle, so you are in very good company."
+      }
+    },
+    "scene_waystation": {
+      "type": "story",
+      "narration": "The centaur waystation is a long barn full of sashes. Every road-warden's sash is a stitched map of the roads, and this season every single one is being unpicked and sewn again. There are needles everywhere. A centaur with three spools in her mouth waves you to the big table.",
+      "choices": [
+        { "id": "lay_out", "label": "Lay the sashes side by side", "icon": "map", "goto": "check_sashes" }
+      ]
+    },
+    "check_sashes": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Line up the new stitched detours, thread by thread",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_spiral",
+        "narration": "Sash by sash, thread by thread, you line the new detours up. The centaur takes the spools out of her mouth to say \"oh.\"",
+        "effects": [{ "type": "setFlag", "flag": "read_the_sashes", "value": true }]
+      },
+      "onFailure": {
+        "goto": "scene_spiral",
+        "narration": "The sashes tangle into one enormous woolly knot. The oldest centaur sighs, untangles it in about a minute, and lays them out for you, tutting."
+      }
+    },
+    "scene_spiral": {
+      "type": "story",
+      "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centred on a patch of grass a short walk from here.",
+      "choices": [
+        { "id": "to_rest", "label": "Stay for supper first", "icon": "rest", "goto": "rest_waystation" }
+      ]
+    },
+    "rest_waystation": {
+      "type": "rest",
+      "narration": "The centaurs feed you oat-cakes and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "heal": 2,
+      "choices": [
+        { "id": "walk_out", "label": "Walk out to the widest bend", "icon": "boot", "goto": "scene_widest_bend" },
+        {
+          "id": "with_escort",
+          "label": "Ask the pride escort to walk with you",
+          "icon": "crown",
+          "requiresFlag": "pride_friends",
+          "goto": "scene_widest_bend",
+          "effects": [{ "type": "setFlag", "flag": "escorted", "value": true }]
+        }
+      ]
+    },
+    "scene_widest_bend": {
+      "type": "story",
+      "narration": "At the middle of the widest bend is a crater no bigger than a bathtub. All the grass around it leans outward, as if everybody stepped back. In the bottom sits a gem, humming. Nobody has taken it, and in pride country that is a message. Beside it, pressed in the ash: paw prints. Cinder wolf. East of the river, where nobody alive has seen one.",
+      "choices": [
+        { "id": "take_stone", "label": "Take the Pride Stone", "icon": "gem", "goto": "scene_take_stone" },
+        { "id": "leave_stone", "label": "Leave it where it fell", "icon": "leaf", "goto": "scene_leave_stone" }
+      ]
+    },
+    "scene_take_stone": {
+      "type": "story",
+      "narration": "The Pride Stone is heavy and warm and hums right through your fingers. When you walk back, the pride walks too, but further off. Tonight they will not camp near you. They are very sorry. They just can't.",
+      "onEnter": [
+        { "type": "grantQuestItem", "itemId": "facet_pride" },
+        { "type": "setFlag", "flag": "took_pride_stone", "value": true }
+      ],
+      "choices": [
+        { "id": "camp_alone", "label": "Make camp on your own", "icon": "flame", "goto": "scene_wolves" }
+      ]
+    },
+    "scene_leave_stone": {
+      "type": "story",
+      "narration": "You leave it humming in its crater. When you turn round, Elder Sefa is standing on the ridge. She bows, tail curled away, slow and deep. \"Come to the fire,\" she says.",
+      "onEnter": [{ "type": "setFlag", "flag": "left_pride_stone", "value": true }],
+      "choices": [
+        { "id": "to_pride_fire", "label": "Go to the pride fire", "icon": "flame", "goto": "rest_pride_fire" }
+      ]
+    },
+    "scene_wolves": {
+      "type": "story",
+      "narration": "Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
+      "choices": [
+        { "id": "share_supper", "label": "Toss them your supper", "icon": "cake", "goto": "check_wolves" },
+        { "id": "call_escort", "label": "Call for the pride escort", "icon": "crown", "requiresFlag": "escorted", "goto": "rest_wolf_fire" },
+        { "id": "chase_off", "label": "Chase them away from the fire", "icon": "swords", "goto": "encounter_wolves" }
+      ]
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Throw supper far enough that the pack takes the easy meal",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_wolf_fire",
+        "narration": "The supper lands in the grass and the pack pours after it. When they come back they are full, and they lie down on the far side of the fire like big glowing dogs."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "They take the supper. Then they come back for the fire."
+      }
+    },
+    "encounter_wolves": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The wolves circle the old caravan carts at the rest stop, trying to get between you and the warm.",
+      "enemies": [{ "id": "wolf", "name": "Cinder Wolf", "creature": "cinder_wolf" }],
+      "onVictory": {
+        "goto": "rest_wolf_fire",
+        "narration": "The pack backs off to a polite distance and piles up into one warm glowing heap. They are not beaten, exactly. They have just decided you are too much bother."
+      },
+      "onDefeat": {
+        "goto": "rest_scattered",
+        "narration": "The wolves want the fire more than you do, and in the end they simply have it."
+      }
+    },
+    "rest_pride_fire": {
+      "type": "rest",
+      "narration": "Pride fire is the best fire. The cubs fall asleep on your boots, and the elders tell the story of the riddle nobody can answer. Out in the dark the Pride Stone hums in its crater, alone. North, tomorrow, the broken bridge.",
+      "heal": 4,
+      "choices": []
+    },
+    "rest_wolf_fire": {
+      "type": "rest",
+      "narration": "By midnight the cinder wolves are stacked in a glowing pile on the far side of your fire, taking turns at the bottom by some rule nobody understands. It is the warmest camp you have ever had. North, tomorrow, the broken bridge.",
+      "heal": 3,
+      "choices": []
+    },
+    "rest_scattered": {
+      "type": "rest",
+      "narration": "Nobody is hurt; the wolves just wanted the warm more than you did. You spend the night squashed under a cart cover, and the morning finds your camp spread across a mile of grass. It takes all day to find everything. The Pride Stone hums the whole time, as if it is not sorry at all.",
+      "heal": 3,
+      "outcome": "setback",
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "wide-open, warm and a little uneasy; a homeland that is quietly rearranging itself around the stones",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "manticores as villains or monsters"
+    ],
+    "npcVoices": {
+      "sefa_tallgrass": "pride elder; voice like warm gravel; formal and kind; says 'east of the river, wave first'; quietly worried about the cubs",
+      "cart_driver": "a caravan driver from Stone Crossing; indignant about pride escort bookings; very fond of his donkey",
+      "waystation_centaur": "a road-warden centaur re-embroidering sashes; talks around spools of thread; tuts a great deal; precise about roads"
+    }
+  }
+}

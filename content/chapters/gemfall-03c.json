@@ -1,0 +1,739 @@
+{
+  "id": "gemfall-03c",
+  "campaignId": "gemfall",
+  "index": 3,
+  "title": "The Ford That Decides",
+  "biome": "plains",
+  "route": {
+    "set": "road",
+    "flag": "route_rush"
+  },
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "entry": "scene_parade",
+  "objectives": [
+    {
+      "id": "markers",
+      "label": "Put the centaur markers back up",
+      "flag": "restored_markers",
+      "xp": 8
+    },
+    {
+      "id": "fennicks",
+      "label": "Helped the Fennick family get home",
+      "flag": "helped_family",
+      "xp": 7
+    },
+    {
+      "id": "wolves",
+      "label": "Shared supper with the cinder wolves",
+      "flag": "fed_the_wolves",
+      "xp": 7
+    }
+  ],
+  "props": {
+    "facet_ford": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Ford Stone",
+      "text": "A fist-sized gem wrapped in a witch's wool sock. It rings every bell charm it passes, and it will not stop."
+    },
+    "charm_ford_witch": {
+      "kind": "quest",
+      "icon": "charm",
+      "name": "Mother Thrum's Tuned Charm",
+      "text": "A little bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
+    }
+  },
+  "scenes": {
+    "scene_parade": {
+      "type": "story",
+      "narration": "The shortest road north is a parade: gem wagons up to their axles in ruts, a campfire on every rise, and centaur relay-runners weaving through it all at a canter. Then the whole parade stops. Somebody up ahead is shouting \"NUMBERS! GET YOUR NUMBERS!\"",
+      "choices": [
+        {
+          "id": "walk_front",
+          "label": "Walk up to the front and see why",
+          "icon": "arrow",
+          "goto": "scene_number_pebble"
+        },
+        {
+          "id": "read_crowd",
+          "label": "Read the crowd like a book",
+          "icon": "eye",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_number_pebble",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_the_queue",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "sniff_wagons",
+          "label": "Sniff the gem wagons",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_number_pebble",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_the_queue",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_number_pebble": {
+      "type": "story",
+      "narration": "The road ends at the west branch of the river, and the queue to cross it is two days long. A faun provisioner named Burdock is selling numbered pebbles out of a bucket, and honeycakes at bridge-queue prices, which means three times what they are worth. Your pebble says 412. The ford is on number 9.",
+      "choices": [
+        {
+          "id": "buy_cake",
+          "label": "Buy a very expensive honeycake",
+          "icon": "cake",
+          "goto": "scene_three_cards",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "pocket_pebble",
+          "label": "Pocket your pebble and look around",
+          "icon": "travel",
+          "goto": "scene_three_cards"
+        }
+      ]
+    },
+    "scene_three_cards": {
+      "type": "story",
+      "narration": "Behind Burdock's stall, a kitsune in a tall hat is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
+      "choices": [
+        {
+          "id": "expose",
+          "label": "Watch her tails and catch the trick",
+          "icon": "eye",
+          "goto": "check_expose"
+        },
+        {
+          "id": "fox_to_fox",
+          "label": "Wink at her, one fox to another",
+          "icon": "spark",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_exposed"
+        },
+        {
+          "id": "join",
+          "label": "Offer to help her draw a crowd",
+          "icon": "hand",
+          "goto": "scene_join_con"
+        },
+        {
+          "id": "walk_by",
+          "label": "Keep your coins and walk on by",
+          "icon": "arrow",
+          "goto": "scene_soup_line"
+        }
+      ]
+    },
+    "check_expose": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Spot where the Sun Card really goes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_exposed",
+        "narration": "Every time she shuffles, the third tail flicks the Sun Card up her sleeve. You say so, loudly and politely."
+      },
+      "onFailure": {
+        "goto": "scene_soup_line",
+        "narration": "You pick the middle card with total confidence. It is a picture of a very smug fox. The crowd laughs, and so, to be fair, does she."
+      }
+    },
+    "scene_exposed": {
+      "type": "story",
+      "narration": "The kitsune, whose name turns out to be Tamsin Three-Cards, sighs and shakes the Sun Card out of her sleeve. The whole crowd gets their pebbles back. The drovers at the front of the queue have noticed you, and drovers remember faces.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "exposed_the_con",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Head for the smell of soup",
+          "icon": "arrow",
+          "goto": "scene_soup_line"
+        }
+      ]
+    },
+    "scene_join_con": {
+      "type": "story",
+      "narration": "You stand in the crowd and gasp very loudly every time somebody almost wins. Tamsin pays you with a front-of-the-queue pebble and a wink. It is shiny and it says number 1, and it is absolutely not fair.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "joined_the_con",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Head for the smell of soup",
+          "icon": "arrow",
+          "goto": "scene_soup_line"
+        }
+      ]
+    },
+    "scene_soup_line": {
+      "type": "story",
+      "narration": "At the edge of camp, people in dark robes with little crystals on strings are giving away soup to anyone whose season has gone wrong. A cheerful ladler named Wend fills your bowls without asking a single question. \"Kindness first,\" says Wend. \"Always.\" The crystal on Wend's string is humming, very faintly.",
+      "choices": [
+        {
+          "id": "thank_wend",
+          "label": "Say thank you and eat up",
+          "icon": "heart",
+          "goto": "choice_tolls",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "id": "ask_crystal",
+          "label": "Ask why the crystal is humming",
+          "icon": "ear",
+          "goto": "choice_tolls"
+        }
+      ]
+    },
+    "choice_tolls": {
+      "type": "choice_point",
+      "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by queue-jumpers. And a faun family called the Fennicks is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
+      "choices": [
+        {
+          "id": "wagon",
+          "label": "Un-mire the stuck wagon",
+          "icon": "might",
+          "goto": "check_unmire"
+        },
+        {
+          "id": "markers",
+          "label": "Put the centaur markers back up",
+          "icon": "map",
+          "goto": "check_markers"
+        },
+        {
+          "id": "markers_air",
+          "label": "Fly the marker line and spot every post",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_markers_restored"
+        },
+        {
+          "id": "family",
+          "label": "Sit down with the Fennicks",
+          "icon": "heart",
+          "goto": "scene_family"
+        }
+      ]
+    },
+    "check_unmire": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Heave a gem wagon out of the mud",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_dusk_wolves",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "unmired_wagon",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "roller"
+          }
+        ],
+        "narration": "One, two, THREE, and the wagon comes out with a noise like a giant boot leaving a puddle. The drover gives you a brave whistle and calls you all \"mudlarks\", which is a compliment."
+      },
+      "onFailure": {
+        "goto": "scene_dusk_wolves",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ],
+        "narration": "The wagon comes out in the end, but only after everyone has sat down in the mud at least once. You will be finding mud in your ears until next week."
+      }
+    },
+    "check_markers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put the markers back in the right order",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_markers_restored"
+      },
+      "onFailure": {
+        "goto": "scene_dusk_wolves",
+        "narration": "You put them all back up, beautifully, in the wrong order. A centaur runner gallops past, stops, laughs, and fixes them in about four seconds."
+      }
+    },
+    "scene_markers_restored": {
+      "type": "story",
+      "narration": "The marker line stands straight again, every post pointing the safe way to the ford. A centaur relay-runner slows down just long enough to say \"The relay remembers,\" and then she is gone, already singing it to the next runner up the road.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "restored_markers",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Back to camp before dusk",
+          "icon": "arrow",
+          "goto": "scene_dusk_wolves"
+        }
+      ]
+    },
+    "scene_family": {
+      "type": "story",
+      "narration": "The Fennicks' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Fennick is holding a queue pebble with a big number on it and trying very hard not to cry about it.",
+      "choices": [
+        {
+          "id": "give_pebble",
+          "label": "Swap pebbles, so they cross before you",
+          "icon": "hand",
+          "goto": "scene_dusk_wolves",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_family",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "share_cake",
+          "label": "Share your honeycake",
+          "icon": "cake",
+          "requiresItem": "honeycake",
+          "goto": "scene_dusk_wolves",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_family",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "fix_wheel",
+          "label": "Lash the wheel together with rope",
+          "icon": "might",
+          "goto": "scene_dusk_wolves",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_family",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_dusk_wolves": {
+      "type": "story",
+      "narration": "At dusk, cinder wolves come and sit just past the firelight, cold and thin, with a faint warm glow under their fur. They are not hunting. They are pointedly not sitting anywhere near the gem wagons. Every campfire in the queue is arguing about whether to feed them.",
+      "choices": [
+        {
+          "id": "feed",
+          "label": "Share your supper with them",
+          "icon": "heart",
+          "goto": "scene_wolves_fed"
+        },
+        {
+          "id": "leave_be",
+          "label": "Leave them be and keep your fire small",
+          "icon": "moon",
+          "goto": "scene_witch_stall"
+        },
+        {
+          "id": "shoo",
+          "label": "Shoo them away from the camp",
+          "icon": "swords",
+          "goto": "encounter_wolves"
+        }
+      ]
+    },
+    "scene_wolves_fed": {
+      "type": "story",
+      "narration": "You put your supper down on a flat stone and step back. The wolves eat politely, and then the whole pack lies down in a heap by your fire, glowing like a pile of coals. It is the warmest night anybody in the queue has had all week. The road will remember this.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "fed_the_wolves",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Visit the witch's stall",
+          "icon": "lantern",
+          "goto": "scene_witch_stall"
+        }
+      ]
+    },
+    "encounter_wolves": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The wolves do not want to leave. They are cold, and your fire is right there.",
+      "enemies": [
+        {
+          "id": "wolf",
+          "name": "Cinder Wolf",
+          "creature": "cinder_wolf"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_witch_stall",
+        "narration": "The pack slinks off down the queue to the next fire, where somebody feeds them. The whole campsite hears about who shooed and who shared."
+      },
+      "onDefeat": {
+        "goto": "scene_witch_stall",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ],
+        "narration": "The wolves win the argument, eat everybody's supper, and curl up on your bedrolls. You spend a long, cold night sitting up, and nobody gets much sleep."
+      }
+    },
+    "scene_witch_stall": {
+      "type": "story",
+      "narration": "Down the queue there is a remedy stall with a pointed hat hanging off the corner. Every time a gem wagon rolls past, all the little bell charms on the stall ring by themselves. The witch behind the counter, Mother Thrum, looks at you over her spectacles. \"What do you actually want?\"",
+      "choices": [
+        {
+          "id": "real_question",
+          "label": "Ask her a real question: why are the charms ringing?",
+          "icon": "ear",
+          "goto": "scene_tuned_charm"
+        },
+        {
+          "id": "sore_feet",
+          "label": "Ask for something for sore feet",
+          "icon": "potion",
+          "goto": "scene_tuned_charm",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "sunbloom_draught",
+              "to": "party"
+            }
+          ]
+        }
+      ]
+    },
+    "scene_tuned_charm": {
+      "type": "story",
+      "narration": "\"Better question than most,\" says Mother Thrum, and she hands you one bell charm she has tuned to the note the stones are humming. Hold it near a gem and it sings. The note is older than the road, she says, and the centaurs will tell you the road was here before everything. On her shelf, wrapped in a thick wool sock, is a stone that will not stop ringing.",
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "charm_ford_witch"
+        }
+      ],
+      "choices": [
+        {
+          "id": "answer",
+          "label": "Answer her question, truly",
+          "icon": "heart",
+          "goto": "check_answer"
+        },
+        {
+          "id": "take_it_home",
+          "label": "Tell her where it fell from, and promise to take it home",
+          "icon": "flame",
+          "requiresSpecies": "dragonling",
+          "goto": "rest_witch_fire",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ford"
+            },
+            {
+              "type": "setFlag",
+              "flag": "got_the_ford_stone",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "leave_it",
+          "label": "Leave the stone in its sock",
+          "icon": "moon",
+          "goto": "rest_witch_fire"
+        }
+      ]
+    },
+    "check_answer": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell Mother Thrum what you actually want, and mean it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_witch_fire",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_ford"
+          },
+          {
+            "type": "setFlag",
+            "flag": "got_the_ford_stone",
+            "value": true
+          }
+        ],
+        "narration": "Mother Thrum listens all the way to the end, then hands you the sock with the stone in it. \"That's the Ford Stone. Take it somewhere it stops ringing,\" she says. \"I'd like some sleep.\""
+      },
+      "onFailure": {
+        "goto": "rest_witch_fire",
+        "narration": "You say something about gems and glory, and Mother Thrum's charms all go quiet at once, which feels like an answer. \"Not yet,\" she says kindly. \"Ask yourself again at the mountain.\""
+      }
+    },
+    "rest_witch_fire": {
+      "type": "rest",
+      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. In the morning, a drover is shouting your number.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "to_ford",
+          "label": "Go down to the ford",
+          "icon": "drop",
+          "goto": "choice_ford"
+        }
+      ]
+    },
+    "choice_ford": {
+      "type": "choice_point",
+      "narration": "The ford is wide and brown and fast. The drovers cross with ceremony: one wagon at a time, slow and steady, while the lead drover sings the crossing verse. Behind you, the whole queue is watching.",
+      "choices": [
+        {
+          "id": "drovers_pace",
+          "label": "Cross with the caravans, at the drovers' pace",
+          "icon": "drop",
+          "goto": "check_ford"
+        },
+        {
+          "id": "drovers_wave",
+          "label": "The drovers you helped wave you in beside the lead wagon",
+          "icon": "party",
+          "requiresFlag": "exposed_the_con",
+          "goto": "check_ford_easy"
+        },
+        {
+          "id": "follow_markers",
+          "label": "Follow the marker line you put back up",
+          "icon": "map",
+          "requiresFlag": "restored_markers",
+          "goto": "check_ford_easy"
+        },
+        {
+          "id": "fennick_cart",
+          "label": "Ride across on the Fennicks' cart",
+          "icon": "heart",
+          "requiresFlag": "helped_family",
+          "goto": "check_ford_easy"
+        },
+        {
+          "id": "tamsin_pebble",
+          "label": "Use Tamsin's front-of-the-queue pebble",
+          "icon": "bead",
+          "requiresFlag": "joined_the_con",
+          "goto": "scene_surge"
+        }
+      ]
+    },
+    "check_ford": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep your footing in the ford",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_forded",
+        "narration": "Step, wait, step. The water pushes and pulls and you do not let it. The lead drover sings the last line of the verse just as your boots hit the north bank."
+      },
+      "onFailure": {
+        "goto": "scene_surge"
+      }
+    },
+    "check_ford_easy": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Stay calm and cross together",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_forded",
+        "narration": "With friends on every side, the ford is just very wet walking. Somebody up on a wagon starts clapping as you reach the north bank."
+      },
+      "onFailure": {
+        "goto": "scene_surge"
+      }
+    },
+    "scene_surge": {
+      "type": "story",
+      "narration": "Halfway across, a gang of queue-jumpers charges into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
+      "choices": [
+        {
+          "id": "toss_bread",
+          "label": "Toss the drakes their toll: the floating bread",
+          "icon": "hand",
+          "goto": "check_drake_toll"
+        },
+        {
+          "id": "hold_wagon",
+          "label": "Hold the wagon up, whatever the drakes think",
+          "icon": "swords",
+          "goto": "encounter_drakes"
+        },
+        {
+          "id": "let_go",
+          "label": "Let go and ride the current",
+          "icon": "drop",
+          "goto": "end_marsh_west"
+        }
+      ]
+    },
+    "check_drake_toll": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Pay the river drakes politely in bread",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_forded",
+        "narration": "The drakes take the bread like a toll collector takes coins, and one of them even nudges the wagon back onto its wheels with its nose. Drovers haul you up the north bank by your collars."
+      },
+      "onFailure": {
+        "goto": "end_marsh_west",
+        "narration": "One drake takes the bread. The other one wanted the bread you were holding, and it bumps you, very gently, into the deep part."
+      }
+    },
+    "encounter_drakes": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The drakes do not see why a wagon full of bread should stay upright when it could be lunch.",
+      "enemies": [
+        {
+          "id": "drake",
+          "name": "River Drake",
+          "creature": "river_drake"
+        }
+      ],
+      "onVictory": {
+        "goto": "end_forded",
+        "narration": "The drakes sulk off downstream with one loaf each, and the drovers cheer as you all shove the wagon up onto the north bank."
+      },
+      "onDefeat": {
+        "goto": "end_swept_setback",
+        "narration": "A drake flicks its tail, the wagon goes over, and the whole lot of you go with it, bread and bags and all, off into the current."
+      }
+    },
+    "end_forded": {
+      "type": "rest",
+      "narration": "You stand dripping on the north bank of the west branch, with the whole rush pouring past you toward the mountain. The tuned charm in your pocket is still chiming at every wagon. Behind you, the crossing verse starts again for the next wagon in line. Tonight you camp on the north side, warm and loud and very much in the thick of it.",
+      "heal": 4,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "forded_clean",
+          "value": true
+        }
+      ],
+      "choices": []
+    },
+    "end_marsh_west": {
+      "type": "rest",
+      "narration": "The west branch does what rivers do. It carries you west, past the last campfire, into the green tangles of the Whispering Marsh, where a boggart in a reed hat applauds as you whoosh by. At last the channels let you go, on a muddy bank near the flooded western paths of the Enchanted Woods, close to MossHome. The trees look completely unimpressed. You never chose this road, but here you are on it. The road people will hear about it. The road people hear about everything.",
+      "heal": 3,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marsh_kept_us",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "route_wild",
+          "value": true
+        }
+      ],
+      "choices": []
+    },
+    "end_swept_setback": {
+      "type": "rest",
+      "narration": "The current takes you a long, long way west, through the marsh's tangles and out the far side, three days later than you meant to arrive anywhere. You wash up on the flooded paths of the Enchanted Woods with wet bags, a cold supper, and a drake-shaped grudge. It is not the road you chose, and it cost you time, but you are all together and the charm is still humming.",
+      "heal": 3,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marsh_kept_us",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "route_wild",
+          "value": true
+        }
+      ],
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "busy, loud, funny road-camp country; warm underneath, a little spooky at dusk, never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "drowning"
+    ],
+    "npcVoices": {
+      "burdock": "a faun provisioner; cheerful, shameless about his prices, calls everyone 'my lucky number'",
+      "tamsin": "Tamsin Three-Cards, a kitsune card-sharp; quick, delighted to be caught, never sore about losing",
+      "wend": "a Deep Hollow soup ladler; gentle, generous, asks nothing, says 'kindness first' and means it a little too much",
+      "mother_thrum": "a ford witch; careful and instructive, peers over spectacles, always asks 'what do you actually want?'",
+      "drover": "the lead drover; slow, booming voice, sings the crossing verse and will not be hurried",
+      "relay_runner": "a centaur relay-runner; talks while galloping, never finishes a sentence in the same place she started it",
+      "fennicks": "a faun family whose season is over; tired, polite, the littlest one very brave about it"
+    }
+  }
+}
