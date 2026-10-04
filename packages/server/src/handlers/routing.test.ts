@@ -369,3 +369,114 @@ describe("what a completed chapter writes down", () => {
     });
   });
 });
+
+describe("continuing a campaign across evenings", () => {
+  /*
+   * The lobby used to send the campaign's first chapter id every time, so a
+   * multi-chapter campaign could never get past chapter one. The client cannot
+   * know where the party got to — that lives on the household's attempt — so
+   * it asks the server to continue, and the server picks the chapter.
+   */
+  async function attemptAt(
+    harness: TestHarness,
+    householdId: string,
+    fields: { lastIndex?: number; routeFlags?: Record<string, boolean>; status?: "active" | "complete" },
+  ) {
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: fields.status ?? "active",
+      setbacks: 0,
+      ...(fields.lastIndex !== undefined ? { lastIndex: fields.lastIndex } : {}),
+      ...(fields.routeFlags ? { routeFlags: fields.routeFlags } : {}),
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
+  }
+
+  it("starts a brand-new campaign at its first chapter", async () => {
+    const harness = makeHarness({ engine: realEngine, content: routedContent() });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+
+    const response = await send({ type: "CONTINUE_CAMPAIGN", campaignId: CAMPAIGN.id });
+    expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
+    expect((await harness.repo.getState(runId))?.chapterId).toBe("bramblewood-01");
+  });
+
+  it("picks up at the next beat, on the road the attempt carries", async () => {
+    const harness = makeHarness({ engine: realEngine, content: routedContent() });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    await attemptAt(harness, householdId, { lastIndex: 1, routeFlags: { [WILD]: true } });
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+
+    const response = await send({ type: "CONTINUE_CAMPAIGN", campaignId: CAMPAIGN.id });
+    expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
+    const state = await harness.repo.getState(runId);
+    expect(state?.chapterId).toBe("wild-02");
+    expect(state?.flags[WILD]).toBe(true);
+  });
+
+  it("stops at a fork the party never chose, rather than guessing a road", async () => {
+    const harness = makeHarness({ engine: realEngine, content: routedContent() });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    await attemptAt(harness, householdId, { lastIndex: 1 });
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+
+    const response = await send({ type: "CONTINUE_CAMPAIGN", campaignId: CAMPAIGN.id });
+    expect(response.ok).toBe(false);
+    expect(response.ok ? null : response.error?.code).toBe("ILLEGAL");
+    expect((await harness.repo.getState(runId))?.chapterId).toBeNull();
+  });
+
+  it("starts over after a finished attempt", async () => {
+    const harness = makeHarness({ engine: realEngine, content: routedContent() });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    await attemptAt(harness, householdId, { lastIndex: 2, status: "complete", routeFlags: { [RIVER]: true } });
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+
+    const response = await send({ type: "CONTINUE_CAMPAIGN", campaignId: CAMPAIGN.id });
+    expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
+    expect((await harness.repo.getState(runId))?.chapterId).toBe("bramblewood-01");
+  });
+
+  it("refuses a campaign the content set does not have", async () => {
+    const harness = makeHarness({ engine: realEngine, content: routedContent() });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { send } = await readyParty(harness, householdId, players[0]!.principal);
+
+    const response = await send({ type: "CONTINUE_CAMPAIGN", campaignId: "no-such-campaign" });
+    expect(response.ok ? null : response.error?.code).toBe("NOT_FOUND");
+  });
+});
+
+describe("where a finished chapter leaves the attempt", () => {
+  function finished(chapterId: string, flags: Record<string, boolean> = {}) {
+    return {
+      runId: "r_1",
+      campaignId: CAMPAIGN.id,
+      chapterId,
+      chapterOutcome: "success",
+      bonuses: [],
+      xpEarned: 0,
+      flags,
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+  }
+
+  it("records the beat it finished, so the next evening knows where to start", async () => {
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    const settlement = await settleChapterCompletion(finished("bramblewood-01", { [RIVER]: true }), harness.deps, householdId);
+    expect(settlement.campaignProgress?.lastIndex).toBe(1);
+    expect(settlement.campaignProgress?.status).toBe("active");
+  });
+
+  it("finishes the campaign at any member of a routed final beat, not only the last-listed file", async () => {
+    // river-02 is listed before wild-02; both are beat 2, the campaign's last.
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    const settlement = await settleChapterCompletion(finished("river-02"), harness.deps, householdId);
+    expect(settlement.campaignProgress?.status).toBe("complete");
+  });
+});

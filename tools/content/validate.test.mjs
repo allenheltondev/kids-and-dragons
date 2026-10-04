@@ -367,6 +367,35 @@ describe("routed beats", () => {
     expect(out).toMatch(/more than one route set/);
   });
 
+  /** Give beat2-river's entry scene one extra choice gated on `flag`. */
+  function readsFlag(flag) {
+    return ({ dir }) => {
+      const file = ["content", "chapters", "beat2-river.json"];
+      const chapter = readJson(dir, ...file);
+      chapter.scenes[chapter.entry].choices.push({
+        id: "remember",
+        label: "Remember the road",
+        icon: "map",
+        goto: chapter.entry,
+        requiresFlag: flag,
+      });
+      writeJson(dir, file, chapter);
+    };
+  }
+
+  it("lets a chapter read a flag its campaign carries in from an earlier chapter", () => {
+    // Route-set flags arrive seeded from the campaign attempt, so a later
+    // chapter gating on one that it never sets itself is the design, not a typo.
+    const { code, out } = routedTree(readsFlag("route_wild"));
+    expect(code, out).toBe(0);
+  });
+
+  it("still refuses a flag that nothing sets and the campaign does not carry", () => {
+    const { code, out } = routedTree(readsFlag("route_nowhere"));
+    expect(code).toBe(1);
+    expect(out).toMatch(/flag "route_nowhere" is never set/);
+  });
+
   it("still refuses a gap in the beats themselves", () => {
     // Routing loosened index *uniqueness*, not contiguity: the player still
     // sees "Chapter 3 of 6".

@@ -42,6 +42,13 @@ export type ClientIntent =
       startingLevel?: number;
     }
   | { type: "START_CHAPTER"; chapterId: string }
+  /**
+   * "Play the next chapter of this campaign." The client cannot know which
+   * chapter that is — where the party got to and which road it took live on
+   * the household's campaign attempt, across evenings and rooms — so the server
+   * answers it and turns this into a START_CHAPTER before the engine sees it.
+   */
+  | { type: "CONTINUE_CAMPAIGN"; campaignId: string }
   | { type: "CHOOSE"; choiceId: string }
   | { type: "ROLL" }
   | { type: "ADVANCE" }

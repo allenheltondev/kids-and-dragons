@@ -75,6 +75,13 @@ export interface CampaignProgressRecord {
    * without a routed beat.
    */
   routeFlags?: Record<string, boolean>;
+  /**
+   * The beat (chapter `index`) this attempt most recently finished — what
+   * "continue the campaign" counts from. A campaign spans evenings and every
+   * evening is a new run, so where the party got to has to live on the
+   * attempt, beside the road it took. Absent means nothing finished yet.
+   */
+  lastIndex?: number;
   /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
   version?: number;
   updatedAt: string;
