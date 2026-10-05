@@ -12,6 +12,7 @@ import { makeContent, makeHarness, seedHousehold, T0, type TestHarness } from ".
 import { applyAction } from "./action.ts";
 import {
   foldChapterXp,
+  joinOrStartAttempt,
   newCharacterWrite,
   settleChapterCompletion,
   startPartyCampaign,
@@ -627,13 +628,18 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     const { householdId, players } = await seedHousehold(harness, 1);
     const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
     await harness.repo.putCharacter(character);
-    await harness.repo.putCampaignProgress({
+    const failed = {
       householdId,
       campaignId: "the-hollow-crown",
-      status: "failed",
+      status: "failed" as const,
       setbacks: 3,
       updatedAt: new Date(T0).toISOString(),
-    });
+    };
+    await harness.repo.putCampaignProgress(failed);
+    // The replay's chapter start creates the new attempt, as action.ts does.
+    const replay = joinOrStartAttempt(failed, householdId, "the-hollow-crown", state.runId, failed.updatedAt);
+    await harness.repo.putCampaignProgress(replay.startedAttempt!.attempt);
+    state.campaignAttemptId = replay.attemptId;
     completing(state, { chapterOutcome: "setback" });
     state.xpEarned = 150;
 

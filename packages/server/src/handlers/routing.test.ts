@@ -667,6 +667,7 @@ describe("two rooms, one household, one beat", () => {
     const settledVersion = (await attempt()).version;
 
     const before = await xpOf(b.runId);
+    const partyBefore = structuredClone((await harness.repo.getState(b.runId))!.party);
     await finish(b);
     // The room still sees its chapter end…
     const roomB = (await harness.repo.getState(b.runId))!;
@@ -674,6 +675,9 @@ describe("two rooms, one household, one beat", () => {
     // …but is not told, or given, XP for a beat the household already finished.
     expect(roomB.xpEarned).toBe(0);
     expect(await xpOf(b.runId)).toBe(before);
+    // Nor does the room's own party change — no phantom level, no folded bag
+    // or quest item waiting to open a door at the start of the next chapter.
+    expect(roomB.party).toEqual(partyBefore);
     expect((await attempt()).lastIndex).toBe(2);
     expect((await attempt()).version).toBe(settledVersion);
   });
@@ -696,6 +700,81 @@ describe("two rooms, one household, one beat", () => {
     await finish(b);
     expect((await attempt()).lastIndex).toBe(3);
     expect((await attempt()).status).toBe("complete");
+  });
+
+  it("every room that starts a beat carries the attempt it started under", async () => {
+    // A fresh household: the first start creates the attempt, the second joins it.
+    const harness = makeHarness({
+      engine: realEngine,
+      content: makeContent({
+        chapters: [makeChapter(), { ...makeChapter(), id: "beat-02", index: 2 }, { ...makeChapter(), id: "beat-03", index: 3 }],
+        campaigns: [LONG],
+      }),
+    });
+    const { householdId, players } = await seedHousehold(harness, 2);
+    const a = await readyParty(harness, householdId, players[0]!.principal);
+    const b = await readyParty(harness, householdId, players[1]!.principal);
+    await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+    await b.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+
+    const attempt = (await harness.repo.getCampaignProgress(householdId, LONG.id))!;
+    expect(attempt).toMatchObject({ status: "active", lastIndex: 0 });
+    expect(attempt.attemptId).toBeTruthy();
+    expect((await harness.repo.getState(a.runId))?.campaignAttemptId).toBe(attempt.attemptId);
+    expect((await harness.repo.getState(b.runId))?.campaignAttemptId).toBe(attempt.attemptId);
+  });
+
+  it("a stale beat-1 room from a finished attempt cannot start the replay", async () => {
+    /*
+     * Two rooms start beat 1 of a fresh campaign; one carries the attempt to
+     * the end while the other sits on beat 1. Finishing that old room later
+     * used to look exactly like a replay starting — no active attempt, beat
+     * 1 — and it would award the beat and open a new attempt. Its attempt id
+     * says otherwise.
+     */
+    const harness = makeHarness({
+      engine: realEngine,
+      playtest: true,
+      content: makeContent({
+        chapters: [makeChapter(), { ...makeChapter(), id: "beat-02", index: 2 }, { ...makeChapter(), id: "beat-03", index: 3 }],
+        campaigns: [LONG],
+      }),
+    });
+    const { householdId, players } = await seedHousehold(harness, 2);
+    const a = await readyParty(harness, householdId, players[0]!.principal);
+    const b = await readyParty(harness, householdId, players[1]!.principal);
+    const finish = async (room: typeof a) =>
+      expect((await room.send({ type: "PLAYTEST_GOTO", sceneId: "scene_ending" })).ok).toBe(true);
+    const attempt = async () => (await harness.repo.getCampaignProgress(householdId, LONG.id))!;
+
+    await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+    await b.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+    const first = (await attempt()).attemptId;
+    for (let beat = 1; beat <= 3; beat++) {
+      if (beat > 1) {
+        await a.send({ type: "ADVANCE" });
+        await a.send({ type: "READY", ready: true });
+        await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+      }
+      await finish(a);
+    }
+    expect(await attempt()).toMatchObject({ status: "complete", lastIndex: 3, attemptId: first });
+    const settled = await attempt();
+
+    const partyBefore = structuredClone((await harness.repo.getState(b.runId))!.party);
+    await finish(b);
+    expect((await harness.repo.getState(b.runId))!.xpEarned).toBe(0);
+    expect((await harness.repo.getState(b.runId))!.party).toEqual(partyBefore);
+    // No replay was opened, and the finished attempt is untouched.
+    expect(await attempt()).toEqual(settled);
+
+    // A real replay still starts — with an attempt of its own.
+    await a.send({ type: "ADVANCE" });
+    await a.send({ type: "READY", ready: true });
+    expect((await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id })).ok).toBe(true);
+    const replay = await attempt();
+    expect(replay).toMatchObject({ status: "active", lastIndex: 0 });
+    expect(replay.attemptId).not.toBe(first);
   });
 
   it("a room from a finished attempt cannot count toward the attempt that replaced it", async () => {

@@ -35,13 +35,14 @@ import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
-  attemptKey,
   expectedIndex,
+  joinOrStartAttempt,
   newCharacterWrite,
   prepareStatPointSpend,
   settleChapterCompletion,
   startPartyCampaign,
   type ChapterSettlement,
+  type StartedAttempt,
 } from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
@@ -127,13 +128,26 @@ export async function applyAction(
    */
   let campaignFlags: Record<string, boolean> = {};
   let campaignAttemptId: string | null = null;
+  let startedAttempt: StartedAttempt | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
     const road = await roadTo(chapter, auth.run.householdId, deps);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
     campaignFlags = road.flags;
-    campaignAttemptId = road.attemptId;
+    if (road.campaign) {
+      // Join the household's active attempt, or start one — so this room
+      // carries the id of the attempt it began under (progression.ts).
+      const joined = joinOrStartAttempt(
+        road.attempt,
+        auth.run.householdId,
+        chapter.campaignId,
+        input.runId,
+        iso(deps.now()),
+      );
+      campaignAttemptId = joined.attemptId;
+      startedAttempt = joined.startedAttempt;
+    }
   }
 
   const nowMs = deps.now();
@@ -255,7 +269,12 @@ export async function applyAction(
     // XP, the chapter's record, the setback counter, and — when this
     // completion decides it — the campaign's fate (progression.ts). All of it
     // rides the same conditional commit below.
-    settlement = await settleChapterCompletion(result.state, deps, auth.run.householdId);
+    settlement = await settleChapterCompletion(
+      result.state,
+      deps,
+      auth.run.householdId,
+      startedAttempt ?? undefined,
+    );
     characters.push(...settlement.characters);
     if (settlement.stale) {
       // Another room already finished this beat for the household. The table
@@ -335,7 +354,14 @@ export async function applyAction(
           campaignProgress: settlement.campaignProgress,
           campaignProgressExpectedVersion: settlement.campaignProgressExpectedVersion ?? null,
         }
-      : {}),
+      : startedAttempt
+        ? {
+            // A fresh start creates the attempt, conditionally: two rooms
+            // starting at once cannot both create one.
+            campaignProgress: startedAttempt.attempt,
+            campaignProgressExpectedVersion: startedAttempt.expectedVersion,
+          }
+        : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the
@@ -643,9 +669,14 @@ async function roadTo(
   chapter: Chapter,
   householdId: string,
   deps: HandlerDeps,
-): Promise<{ flags: Record<string, boolean>; attemptId: string | null } | { refusal: string }> {
+): Promise<
+  | { flags: Record<string, boolean>; campaign: boolean; attempt: CampaignProgressRecord | null }
+  | { refusal: string }
+> {
   const campaign = deps.content.campaign(chapter.campaignId);
-  if (!campaign || !campaign.chapters.includes(chapter.id)) return { flags: {}, attemptId: null };
+  if (!campaign || !campaign.chapters.includes(chapter.id)) {
+    return { flags: {}, campaign: false, attempt: null };
+  }
 
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
   const flags =
@@ -676,7 +707,7 @@ async function roadTo(
       refusal: `this party's road through beat ${chapter.index} is "${road.id}", not "${chapter.id}"`,
     };
   }
-  return { flags, attemptId: attemptKey(attempt) };
+  return { flags, campaign: true, attempt };
 }
 
 /**
