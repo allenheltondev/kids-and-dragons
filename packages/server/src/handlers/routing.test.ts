@@ -283,7 +283,6 @@ describe("what a completed chapter writes down", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
-      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -314,7 +313,6 @@ describe("what a completed chapter writes down", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
-      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -337,7 +335,6 @@ describe("what a completed chapter writes down", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
-      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -494,6 +491,16 @@ describe("where a finished chapter leaves the attempt", () => {
     // river-02 is listed before wild-02; both are beat 2, the campaign's last.
     const harness = makeHarness({ content: routedContent() });
     const { householdId } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      routeFlags: { [RIVER]: true },
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
     const settlement = await settleChapterCompletion(finished("river-02"), harness.deps, householdId);
     expect(settlement.campaignProgress?.status).toBe("complete");
   });
@@ -592,5 +599,141 @@ describe("an ending that finishes the campaign early", () => {
     } as unknown as Parameters<typeof settleChapterCompletion>[0];
     const settlement = await settleChapterCompletion(run, harness.deps, householdId);
     expect(settlement.campaignProgress?.status).toBe("complete");
+  });
+});
+
+describe("two rooms, one household, one beat", () => {
+  /*
+   * `createRoom` allows a household several rooms at once, and `lastIndex` is
+   * what makes continuation authoritative — so a completion has to be checked
+   * against the durable attempt when it settles, not only when the chapter
+   * started. Otherwise the slower room re-awards a beat the household already
+   * finished, and can drag `lastIndex` back to it after a faster room moved on.
+   */
+  const LONG: Campaign = {
+    id: "the-hollow-crown",
+    title: "The Hollow Crown",
+    blurb: "Three beats, one road.",
+    chapters: ["bramblewood-01", "beat-02", "beat-03"],
+  };
+
+  async function twoRooms() {
+    const harness = makeHarness({
+      engine: realEngine,
+      playtest: true,
+      content: makeContent({
+        chapters: [
+          makeChapter(),
+          { ...makeChapter(), id: "beat-02", index: 2 },
+          { ...makeChapter(), id: "beat-03", index: 3 },
+        ],
+        campaigns: [LONG],
+      }),
+    });
+    const { householdId, players } = await seedHousehold(harness, 2);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: LONG.id,
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      attemptId: "attempt-1",
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
+    const a = await readyParty(harness, householdId, players[0]!.principal);
+    const b = await readyParty(harness, householdId, players[1]!.principal);
+    const attempt = async () => (await harness.repo.getCampaignProgress(householdId, LONG.id))!;
+    const xpOf = async (runId: string) => {
+      const id = (await harness.repo.getState(runId))!.party[0]!.character.id;
+      const stored = (await harness.repo.getCharacter(householdId, id))!;
+      return (stored.provisional ?? stored.committed).xp;
+    };
+    const finish = async (room: typeof a) => {
+      const response = await room.send({ type: "PLAYTEST_GOTO", sceneId: "scene_ending" });
+      expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
+    };
+    return { harness, a, b, attempt, xpOf, finish };
+  }
+
+  it("the slower room's completion awards nothing and does not move the attempt", async () => {
+    const { harness, a, b, attempt, xpOf, finish } = await twoRooms();
+    expect((await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id })).ok).toBe(true);
+    expect((await b.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id })).ok).toBe(true);
+    expect((await harness.repo.getState(b.runId))?.chapterId).toBe("beat-02");
+
+    await finish(a);
+    expect((await attempt()).lastIndex).toBe(2);
+    const settledVersion = (await attempt()).version;
+
+    const before = await xpOf(b.runId);
+    await finish(b);
+    // The room still sees its chapter end…
+    const roomB = (await harness.repo.getState(b.runId))!;
+    expect(roomB.phase).toBe("chapter_complete");
+    // …but is not told, or given, XP for a beat the household already finished.
+    expect(roomB.xpEarned).toBe(0);
+    expect(await xpOf(b.runId)).toBe(before);
+    expect((await attempt()).lastIndex).toBe(2);
+    expect((await attempt()).version).toBe(settledVersion);
+  });
+
+  it("a stale beat cannot drag the attempt back after another room moved on", async () => {
+    const { a, b, attempt, finish } = await twoRooms();
+    await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+    await b.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id });
+    await finish(a);
+
+    // Room A plays on to beat 3 and finishes it too.
+    await a.send({ type: "ADVANCE" });
+    await a.send({ type: "READY", ready: true });
+    expect((await a.send({ type: "CONTINUE_CAMPAIGN", campaignId: LONG.id })).ok).toBe(true);
+    await finish(a);
+    expect((await attempt()).status).toBe("complete");
+    expect((await attempt()).lastIndex).toBe(3);
+
+    // Room B's beat 2, finished now, belongs to an attempt that is over.
+    await finish(b);
+    expect((await attempt()).lastIndex).toBe(3);
+    expect((await attempt()).status).toBe("complete");
+  });
+
+  it("a room from a finished attempt cannot count toward the attempt that replaced it", async () => {
+    /*
+     * The case an index alone cannot see: the old attempt ended, a new one has
+     * reached exactly the beat the stale room is on. Same index, different
+     * attempt — and different roads, possibly. The attempt id tells them apart.
+     */
+    const harness = makeHarness({ content: makeContent({
+      chapters: [makeChapter(), { ...makeChapter(), id: "beat-02", index: 2 }, { ...makeChapter(), id: "beat-03", index: 3 }],
+      campaigns: [LONG],
+    }) });
+    const { householdId } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: LONG.id,
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      attemptId: "attempt-2",
+      version: 4,
+      updatedAt: new Date(T0).toISOString(),
+    });
+    const stale = {
+      runId: "r_old",
+      campaignId: LONG.id,
+      campaignAttemptId: "attempt-1",
+      chapterId: "beat-02",
+      sceneId: "scene_ending",
+      chapterOutcome: "success",
+      bonuses: [],
+      xpEarned: 300,
+      flags: {},
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(stale, harness.deps, householdId);
+    expect(settlement.stale).toBe(true);
+    expect(settlement.campaignProgress).toBeUndefined();
+    expect(settlement.characters).toEqual([]);
   });
 });

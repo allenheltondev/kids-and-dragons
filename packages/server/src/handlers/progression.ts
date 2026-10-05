@@ -177,6 +177,33 @@ export async function startPartyCampaign(
   return transformParty(state, deps, householdId, [], (character) => character);
 }
 
+/**
+ * The beat a party may play next in this campaign — the one rule chapter
+ * start (both CONTINUE_CAMPAIGN and a direct START_CHAPTER) and settlement
+ * answer to.
+ *
+ * The beat after the last one an active attempt finished; beat one for a fresh
+ * or finished attempt. Past the end can only be an attempt whose final chapter
+ * did not settle it, so that starts over rather than stranding the party at a
+ * beat that does not exist.
+ */
+export function expectedIndex(
+  campaign: Campaign,
+  attempt: CampaignProgressRecord | null,
+  deps: HandlerDeps,
+): number {
+  const index = attempt && attempt.status === "active" ? (attempt.lastIndex ?? 0) + 1 : 1;
+  return index > finalIndex(campaign, deps) ? 1 : index;
+}
+
+/**
+ * The attempt a run belongs to, as chapter start stamps it on the run: the
+ * active attempt's id, or null for a run that will start a fresh one.
+ */
+export function attemptKey(attempt: CampaignProgressRecord | null): string | null {
+  return attempt && attempt.status === "active" ? (attempt.attemptId ?? null) : null;
+}
+
 /** The highest beat a campaign's chapters reach. */
 export function finalIndex(campaign: Campaign, deps: HandlerDeps): number {
   let last = 0;
@@ -198,6 +225,11 @@ export interface ChapterSettlement {
   chapterProgress?: ChapterProgressRecord;
   campaignProgress?: CampaignProgressRecord;
   campaignProgressExpectedVersion?: number | null;
+  /**
+   * The completion belonged to a beat its attempt has already moved past (see
+   * `settleChapterCompletion`). Nothing was awarded or recorded.
+   */
+  stale?: boolean;
 }
 
 /**
@@ -260,6 +292,23 @@ export async function settleChapterCompletion(
    * inherit its own history and insta-fail (see CampaignProgressRecord).
    */
   const existing = await deps.repo.getCampaignProgress(householdId, campaignId);
+
+  /*
+   * Is this completion still the attempt's next beat? A household can play its
+   * campaign in two rooms at once. If another room finished this beat first —
+   * or the attempt has since ended and a new one begun — this completion is
+   * stale: awarding it would hand out the beat's XP twice, and recording it
+   * would move `lastIndex` to a beat the attempt has already passed. The room
+   * still finishes its chapter; nothing durable changes. A valid completion
+   * always writes the attempt row under its version, so two rooms racing for
+   * the same beat serialize there, and the loser is judged stale on retry.
+   */
+  if (
+    chapter.index !== expectedIndex(campaign, existing, deps) ||
+    (state.campaignAttemptId ?? null) !== attemptKey(existing)
+  ) {
+    return { characters: [], awards: [], stale: true };
+  }
   // The run seq serializes one room. This version serializes the household row
   // across rooms, so two campaign evenings cannot overwrite each other's count.
   const campaignProgressExpectedVersion = existing ? (existing.version ?? 0) : null;
@@ -267,7 +316,15 @@ export async function settleChapterCompletion(
   const attempt: CampaignProgressRecord =
     existing && existing.status === "active"
       ? { ...existing, version, updatedAt: now }
-      : { householdId, campaignId, status: "active", setbacks: 0, version, updatedAt: now };
+      : {
+          householdId,
+          campaignId,
+          status: "active",
+          setbacks: 0,
+          attemptId: `${campaignId}:${state.runId}:${now}`,
+          version,
+          updatedAt: now,
+        };
   if (outcome === "setback") attempt.setbacks += 1;
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
