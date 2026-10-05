@@ -124,11 +124,125 @@
       "amount": 1
     }
   },
+  "charm_ford_witch": {
+    "kind": "quest",
+    "icon": "charm",
+    "name": "Mother Thrum's Tuned Charm",
+    "text": "A bell charm tuned to the note the stones hum. Hold it near a gem and it sings."
+  },
+  "facet_barge": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Barge Stone",
+    "text": "The one real prop in a mire mimic's act. It hums the same note as the Hollow Gate."
+  },
+  "facet_caravan": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Caravan Stone",
+    "text": "The masterpiece stone of the fattest caravan. It hums so loud the mules wear earmuffs."
+  },
+  "facet_clerks": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Clerk's Stone",
+    "text": "Logged, tagged 4117, and crossing westbound. Then, very irregularly, not."
+  },
+  "facet_confiscated": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Confiscated Stone",
+    "text": "The loudest stone in the forest's pile. MossHome's record knows who is carrying it."
+  },
+  "facet_depot": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Depot Stone",
+    "text": "Its depot tag still says 'Strongbox 9. SOLD.' It rings like a dinner bell."
+  },
+  "facet_drakes_rate": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Drake's Rate",
+    "text": "The newest piece on a river drake's hoard shelf. Marked PAID, underlined twice."
+  },
+  "facet_ember": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Ember Facet",
+    "text": "A red stone, warm as toast, that fell from the sky into an Exchange gutter by your boot."
+  },
+  "facet_ford": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Ford Stone",
+    "text": "Wrapped in a witch's wool sock. It rings every bell charm it passes, and won't stop."
+  },
+  "facet_glade": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Glade Stone",
+    "text": "From the heart of the Woods' worst glade. Warm, loud, and no mosshorn will come near it."
+  },
+  "facet_harvest": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Harvest Stone",
+    "text": "A green-gold stone from a sprites' corner row. It still wears a tiny medal: BEST."
+  },
+  "facet_keystone": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Keystone",
+    "text": "The crown of the seal under Mount Red Sky. Bigger than your head, warm as a sleeping cat."
+  },
+  "facet_pride": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Pride Stone",
+    "text": "From the fall no pride will den within a day of. Heavy, warm, and humming."
+  },
+  "facet_table": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Table Stone",
+    "text": "From the Redspire truth-table. Logged twice. Hums whenever someone tells the truth."
+  },
+  "facet_unassigned": {
+    "kind": "quest",
+    "icon": "gem",
+    "name": "The Unassigned Stone",
+    "text": "Kept by the grandmothers with the list of caves never assigned. Don't you dare sell it."
+  },
   "hollow_crown_shard": {
     "kind": "quest",
     "icon": "crown",
     "name": "Shard of the Hollow Crown",
     "text": "A curl of cold silver. It hums when you are close to the rest of it."
+  },
+  "knot_cord": {
+    "kind": "quest",
+    "icon": "ribbon",
+    "name": "MossHome Knot-Cord",
+    "text": "Old bigfoot knots that say the record knows you. Show it when the forest pays back."
+  },
+  "medal_not": {
+    "kind": "quest",
+    "icon": "trophy",
+    "name": "A Very Small Woven Medal",
+    "text": "Woven by harvest sprites for leaving their stone alone. It says NOT."
+  },
+  "ossley_debt_stone": {
+    "kind": "quest",
+    "icon": "drop",
+    "name": "Ossley's Wet Stone",
+    "text": "A plain river stone, always a little wet. Carry it up, and thank the river."
+  },
+  "ossley_reed_knot": {
+    "kind": "quest",
+    "icon": "charm",
+    "name": "Ossley's Reed Knot",
+    "text": "A reed knot from Old Ossley. \"Later. When I'm going your way.\" It never dries."
   },
   "rusted_key": {
     "kind": "quest",
@@ -136,10 +250,34 @@
     "name": "Rusted Key",
     "text": "It opens something, somewhere."
   },
+  "tether_chord": {
+    "kind": "quest",
+    "icon": "note",
+    "name": "The Resonance Chord",
+    "text": "Three notes the choir hums to make the stones hum back. Written down nowhere."
+  },
+  "tether_ledger": {
+    "kind": "quest",
+    "icon": "scroll",
+    "name": "The Cage-Doctrine Ledger",
+    "text": "The wardens' plan for holding what is under the mountain. They do not lend it."
+  },
+  "tether_question": {
+    "kind": "quest",
+    "icon": "charm",
+    "name": "The Witch's Question",
+    "text": "What do you actually want? A witch lent it to you. You may ask it of anything."
+  },
   "torn_map_east": {
     "kind": "quest",
     "icon": "map",
     "name": "Torn Map (East Half)",
     "text": "Half a map, drawn in berry juice. Somebody has the other half."
+  },
+  "verses_relay_spiral": {
+    "kind": "quest",
+    "icon": "note",
+    "name": "The Spiral Verses",
+    "text": "New route-song verses on bark. Sung in order, the roads curl around the gemfalls."
   }
 }

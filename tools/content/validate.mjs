@@ -26,6 +26,8 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
+import { routeSetConflicts } from "./route-paths.mjs";
+
 /**
  * Which tree to validate. Defaults to this repo; `KAD_CONTENT_ROOT` points it
  * somewhere else.
@@ -536,7 +538,7 @@ function checkMap(rep, file, map) {
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary) {
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set()) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -649,6 +651,14 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
         `/scenes/${id}/outcome`,
         `outcome "${scene.outcome}" on a scene that is not an ending - the chapter does not stop here, so nothing reads it`,
         "Only a scene with an empty `choices` array ends the chapter (spec §8.2).",
+      );
+    }
+    // Same reason: only an ending can finish the campaign early.
+    if (scene.endsCampaign !== undefined && !isEnding.has(id)) {
+      fail(
+        `/scenes/${id}/endsCampaign`,
+        "endsCampaign on a scene that is not an ending - the chapter does not stop here, so the campaign cannot either",
+        "Only a scene with an empty `choices` array ends the chapter.",
       );
     }
   }
@@ -796,8 +806,11 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   }
 
   // A choice gated on a flag nothing ever sets is invisible forever. Almost always a typo.
+  // The exception is a flag the chapter's campaign carries across the chapter
+  // boundary (`routeSets`): those arrive seeded from the campaign attempt, so a
+  // later chapter reading what an earlier one decided is the whole point.
   for (const [flag, at] of flagsRequired) {
-    if (!flagsSet.has(flag)) {
+    if (!flagsSet.has(flag) && !carried.has(flag)) {
       fail(at, `flag "${flag}" is never set to true by any effect in this chapter`, flagsSet.size ? `flags set here: ${[...flagsSet].join(", ")}` : "no setFlag effects in this chapter at all");
     }
   }
@@ -885,6 +898,25 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     const members = beats.get(chapter.index) ?? [];
     members.push(chapter);
     beats.set(chapter.index, members);
+
+    // A path that sets two members of one fork is ignored by the engine — it
+    // keeps the old value rather than guess — so the party plays on holding a
+    // road or a memory they did not choose. Only a path walk can see it.
+    if (campaign.routeSets) {
+      const { conflicts, truncated } = routeSetConflicts(chapter, campaign.routeSets);
+      for (const { ending, set, flags } of conflicts) {
+        rep.fail(
+          `content/chapters/${id}.json`,
+          `/scenes/${ending}`,
+          `a path to this ending sets ${flags.join(" and ")}, two members of route set "${set}"`,
+          "The engine keeps neither. Set a route set once per path, on the edge that decides it.",
+        );
+        ok = false;
+      }
+      if (truncated) {
+        rep.warn(`content/chapters/${id}.json has too many paths to check its route sets fully`, "Simplify the graph or raise the budget in route-paths.mjs.");
+      }
+    }
   });
 
   /*
@@ -1059,6 +1091,22 @@ function main() {
   const chaptersById = new Map();
   const brokenChapterIds = new Set();
 
+  // Flags each campaign carries between chapters — every member of every
+  // declared route set. Read before the chapters so a chapter may gate on a
+  // flag an earlier chapter of its campaign set. Malformed campaigns are
+  // reported below, in their own section; here they simply carry nothing.
+  const carriedByCampaign = new Map();
+  for (const file of listJson(join(CONTENT, "campaigns"))) {
+    let campaign;
+    try {
+      campaign = JSON.parse(readFileSync(file, "utf8"));
+    } catch {
+      continue;
+    }
+    const sets = campaign && typeof campaign.routeSets === "object" ? Object.values(campaign.routeSets ?? {}) : [];
+    carriedByCampaign.set(campaign?.id, new Set(sets.filter(Array.isArray).flat()));
+  }
+
   for (const file of chapterFiles) {
     const chapter = readJson(rep, file);
     if (!chapter) {
@@ -1069,7 +1117,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary);
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId));
     chaptersById.set(chapter.id, chapter);
   }
 

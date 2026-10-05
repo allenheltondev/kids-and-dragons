@@ -1,0 +1,50 @@
+{
+  "$comment": "A river ford: the water runs down the middle of the board and there are only two shallow crossings, so the fight is about who holds the crossings. Gemfall's west-branch and Stone Crossing fights.",
+  "id": "ford",
+  "rows": [
+    "....##....",
+    "....##....",
+    "..........",
+    "....##....",
+    "....##....",
+    "..........",
+    "....##....",
+    "....##...."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

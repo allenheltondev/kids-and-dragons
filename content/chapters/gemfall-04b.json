@@ -1,0 +1,526 @@
+{
+  "id": "gemfall-04b",
+  "campaignId": "gemfall",
+  "index": 4,
+  "title": "The Forest Takes Attendance",
+  "biome": "enchanted_woods",
+  "route": {
+    "set": "road",
+    "flag": "route_wild"
+  },
+  "estimatedMinutes": 26,
+  "xpAward": 90,
+  "entry": "scene_tree_line",
+  "objectives": [
+    {
+      "id": "objection",
+      "label": "Found out what the forest was objecting to",
+      "flag": "understood_forest",
+      "xp": 10
+    },
+    {
+      "id": "mended",
+      "label": "Helped the unicorns mend a hurt glade",
+      "flag": "helped_mend",
+      "xp": 12
+    }
+  ],
+  "props": {
+    "facet_glade": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Glade Stone",
+      "text": "From the heart of the Woods' worst glade. Warm, loud, and no mosshorn will come near it."
+    }
+  },
+  "scenes": {
+    "scene_tree_line": {
+      "type": "story",
+      "narration": "The Enchanted Woods begin all at once, like a wall somebody painted green. As you step under the first branches, a fern unrolls, looks you up and down, and rolls itself back up. Somewhere in here, something is counting.",
+      "choices": [
+        {
+          "id": "walk_in",
+          "label": "Walk in under the trees",
+          "icon": "leaf",
+          "goto": "scene_attendance"
+        },
+        {
+          "id": "se_glades",
+          "label": "Come in through the southeastern glades, boots still dry",
+          "icon": "boot",
+          "goto": "scene_se_glades",
+          "requiresFlag": "forded_clean"
+        },
+        {
+          "id": "flooded",
+          "label": "Squelch in along the flooded western paths",
+          "icon": "drop",
+          "goto": "scene_flooded_paths",
+          "requiresFlag": "marsh_kept_us"
+        }
+      ]
+    },
+    "scene_se_glades": {
+      "type": "story",
+      "narration": "The southeastern glades are carpeted in bluebells that really do ring, very quietly, when a boot brushes them. You're early, you're dry, and the frogfolk crossing song is still stuck in everybody's head. In a pocket you find a honeycake that Gullet must have slipped in when nobody was looking.",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the ringing deeper in",
+          "icon": "forward",
+          "goto": "scene_attendance"
+        }
+      ]
+    },
+    "scene_flooded_paths": {
+      "type": "story",
+      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome. Some of you never chose this forest at all — the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "mosslight_jar",
+          "to": "party"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wring out and walk on",
+          "icon": "forward",
+          "goto": "scene_attendance"
+        }
+      ]
+    },
+    "scene_attendance": {
+      "type": "story",
+      "narration": "Deeper in, the paths start doing something strange. One opens in front of you like a door. Another closes behind a gang of prospectors with bulging pockets, and they walk straight into a hedge that wasn't there a second ago. The forest isn't checking who you are. It's checking what you carry.",
+      "choices": [
+        {
+          "id": "open_path",
+          "label": "Take the path that opens for you",
+          "icon": "forward",
+          "goto": "scene_mosshorns"
+        },
+        {
+          "id": "ask_trees",
+          "label": "Ask the trees, politely, what they're counting",
+          "icon": "ear",
+          "goto": "check_ask_trees"
+        },
+        {
+          "id": "barge_hums",
+          "label": "The Barge Stone hums — and a path slams shut. Ask why.",
+          "icon": "gem",
+          "goto": "scene_forest_objects",
+          "requiresItem": "facet_barge"
+        }
+      ]
+    },
+    "check_ask_trees": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Ask the forest, politely, what it is objecting to",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_forest_objects",
+        "narration": "A beech tree creaks, and leans, and leans some more, until it's close enough to whisper."
+      },
+      "onFailure": {
+        "goto": "scene_mosshorns",
+        "narration": "The trees rustle something long and complicated. It might be an answer. It might be a soup recipe. You walk past the same embarrassed toadstool three times before a path finally lets you through."
+      }
+    },
+    "scene_forest_objects": {
+      "type": "story",
+      "narration": "The beech smells of rain when it whispers. It isn't you the forest minds, it says. It's the stones, and what they did to the places where they fell. Where a stone landed, the glade around it is hurting. Pocket one, and the forest shuts its doors on you — just in case.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "understood_forest",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "thanks",
+          "label": "Thank the beech and walk on",
+          "icon": "leaf",
+          "goto": "scene_mosshorns"
+        }
+      ]
+    },
+    "scene_mosshorns": {
+      "type": "story",
+      "narration": "A herd of mosshorns grazes ahead, their antlers sprouting little gardens. One has a whole strawberry patch on its head and is clearly very proud of it. A prospector's cart rattles by with a sack of gems, and the entire herd steps away from it at once, like one long breath out.",
+      "choices": [
+        {
+          "id": "read_herd",
+          "label": "Read the herd",
+          "icon": "eye",
+          "goto": "scene_read_herd",
+          "requiresSpecies": [
+            "unicorn",
+            "bigfoot"
+          ]
+        },
+        {
+          "id": "watch",
+          "label": "Sit very still and watch them",
+          "icon": "leaf",
+          "goto": "check_watch_herd"
+        },
+        {
+          "id": "walk_on",
+          "label": "Walk on toward the hurt part of the forest",
+          "icon": "forward",
+          "goto": "scene_unicorns"
+        }
+      ]
+    },
+    "check_watch_herd": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Watch the herd long enough to see the pattern",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_read_herd",
+        "narration": "You sit so still a beetle walks across your boot. And then you see it."
+      },
+      "onFailure": {
+        "goto": "scene_unicorns",
+        "narration": "A mosshorn wanders over, inspects you thoroughly, sneezes on you, and leaves. That, apparently, was the whole conversation."
+      }
+    },
+    "scene_read_herd": {
+      "type": "story",
+      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen — you can see the bald grey patches in the forest where they've stopped going. The herd is a map of where it hurts.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_the_herd",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Follow the grey patches",
+          "icon": "map",
+          "goto": "scene_unicorns"
+        }
+      ]
+    },
+    "scene_unicorns": {
+      "type": "story",
+      "narration": "In a small glade the moss has gone the colour of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Help them mend the glade",
+          "icon": "heart",
+          "goto": "check_mend"
+        },
+        {
+          "id": "horn",
+          "label": "Lay your horn on the bruise",
+          "icon": "unicorn",
+          "goto": "scene_finding",
+          "requiresSpecies": "unicorn",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_mend",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_mend": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Hum with the unicorns while the moss remembers its colour",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_finding",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_mend",
+            "value": true
+          }
+        ],
+        "narration": "Green creeps back from the middle, like a spill going backwards. The flowers turn round one by one to face the sun."
+      },
+      "onFailure": {
+        "goto": "scene_finding",
+        "narration": "You hum, and the moss goes green — then grey — then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
+      }
+    },
+    "scene_finding": {
+      "type": "story",
+      "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else, and somehow that makes it louder.",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Sit down at the glade's edge",
+          "icon": "rest",
+          "goto": "rest_glade_edge"
+        }
+      ]
+    },
+    "rest_glade_edge": {
+      "type": "rest",
+      "narration": "You rest where the moss is soft again. A mosshorn calf wanders over and falls asleep across everybody's feet, and nobody is allowed to move until it wakes up. Those are the rules. Everyone knows the rules.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on to the worst glade",
+          "icon": "forward",
+          "goto": "scene_crater"
+        }
+      ]
+    },
+    "scene_crater": {
+      "type": "story",
+      "narration": "The worst glade is a hollow torn into the forest floor where a big stone landed, and the crash cracked the ground open into the dark. Something pale and frilled has climbed up out of the crack. It has no eyes at all, and it is listening very hard to the humming in the middle of the glade. Now it is listening to you.",
+      "choices": [
+        {
+          "id": "noisy",
+          "label": "Make the dark noisy — clap, stamp, shout",
+          "icon": "note",
+          "goto": "check_noisy"
+        },
+        {
+          "id": "tiptoe",
+          "label": "Tiptoe past without a sound",
+          "icon": "boot",
+          "goto": "check_silent"
+        },
+        {
+          "id": "steady",
+          "label": "Knock on a tree and walk in slow and steady",
+          "icon": "bigfoot",
+          "goto": "scene_glade_heart",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "stand",
+          "label": "Stand your ground",
+          "icon": "swords",
+          "goto": "encounter_echo"
+        }
+      ]
+    },
+    "check_noisy": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Make so many sounds at once that the echo hunter can't follow any of them",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "Clapping, stamping, a pot lid, somebody yodelling — the echo hunter's frills flatten in dismay, and it backs down its crack to wait for some peace and quiet."
+      },
+      "onFailure": {
+        "goto": "encounter_echo",
+        "narration": "You manage one sound, very loudly, over and over. That is exactly the kind it likes."
+      }
+    },
+    "check_silent": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Cross the glade without making a single sound",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "Not a twig. Not a breath. The hunter tilts its head, puzzled, and hears nothing at all."
+      },
+      "onFailure": {
+        "goto": "encounter_echo",
+        "narration": "A twig. A snap. A pale head turns."
+      }
+    },
+    "encounter_echo": {
+      "type": "encounter",
+      "map": "glade",
+      "narration": "The echo hunter comes up out of its crack, frills spread wide — a young one, not much bigger than a pony — and a wisp drawn by the stone's hum drifts down to join in.",
+      "enemies": [
+        {
+          "id": "hunter",
+          "name": "Young Echo Hunter",
+          "creature": "echo_hunter",
+          "hp": 12
+        },
+        {
+          "id": "wisp",
+          "name": "Glade Wisp",
+          "creature": "will_o_wisp",
+          "count": 1
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_glade_heart",
+        "narration": "The hunter decides you are far too loud to be worth it and slides back down into the dark. The wisp loses interest and drifts off to bother a mosshorn."
+      },
+      "onDefeat": {
+        "goto": "check_way_back",
+        "narration": "The echo hunter herds you out of the glade, nudge by patient nudge, all the way to a path that closes neatly behind you. When you turn round, the glade is gone."
+      }
+    },
+    "check_way_back": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find the hidden way back to the worst glade",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "You follow the grey patches the mosshorns won't graze, and they lead you straight back — late and scuffed, but there."
+      },
+      "onFailure": {
+        "goto": "ending_shown_the_door"
+      }
+    },
+    "scene_glade_heart": {
+      "type": "choice_point",
+      "narration": "In the very middle of the worst glade, in a bruise of grey moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
+      "choices": [
+        {
+          "id": "mend",
+          "label": "Mend the glade and let the stone go",
+          "icon": "heart",
+          "goto": "scene_mend_glade",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "glade_mended",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "pocket",
+          "label": "Pocket the stone",
+          "icon": "gem",
+          "goto": "scene_pocket_stone",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_glade"
+            },
+            {
+              "type": "setFlag",
+              "flag": "glade_finished",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_mend_glade": {
+      "type": "story",
+      "narration": "You kneel round the stone and press it, gently, down into the moss. It sinks like a pebble into honey. Green spreads out from the middle in a ring, and every flower in the glade turns round at once to look at you. The unicorns bow, ears and all.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on, lighter",
+          "icon": "forward",
+          "goto": "scene_pile_shown"
+        }
+      ]
+    },
+    "scene_pocket_stone": {
+      "type": "story",
+      "narration": "The stone is warm in your hand and loud in your pocket. Behind you, the glade goes quiet, the way a room goes quiet when somebody says the wrong thing. The unicorns don't say a word. One of them writes something down.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on, quickly",
+          "icon": "forward",
+          "goto": "scene_pile_glimpsed"
+        }
+      ]
+    },
+    "scene_pile_shown": {
+      "type": "story",
+      "narration": "On the way out, a path opens that wasn't there before and leads you past an enormous hollow oak. Inside, piled to the roof: pickaxes, panniers, a prospector's hat with a feather in it — and gems, dozens of them, humming together like a choir. The forest has been confiscating. It shows you, the way a friend shows you a secret drawer, and then the bark closes over it like a lid.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Keep the secret, and head north",
+          "icon": "forward",
+          "goto": "ending_marked_present"
+        }
+      ]
+    },
+    "scene_pile_glimpsed": {
+      "type": "story",
+      "narration": "The paths close round you one by one, until the only way left squeezes past an enormous hollow oak. For just a moment you see inside: pickaxes, panniers, a feathered hat, and gems, dozens of them, humming. The forest has been confiscating. A root slides across the hole like a lid, and a branch gives your pocket a long, meaningful look.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hurry north",
+          "icon": "forward",
+          "goto": "ending_marked_something"
+        }
+      ]
+    },
+    "ending_marked_present": {
+      "type": "rest",
+      "narration": "You camp at the northern edge of the Woods on moss as soft as a pillow. All night, a mosshorn stands at the edge of your firelight like a guard, its antler flowers open. The forest has taken attendance, and it has marked you present.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_marked_something": {
+      "type": "rest",
+      "narration": "You camp at the northern edge of the Woods, where the paths finally let you out. The Glade Stone hums in your pack all night. No mosshorns come anywhere near. The forest has taken attendance, and next to your name it has written something you can't quite read.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_shown_the_door": {
+      "type": "rest",
+      "narration": "By the time you find your way back, the worst glade is already green. The unicorns mended it without you, and the stone has sunk back into the ground where nobody will ever pocket it. The forest walks you to its northern edge, politely, the way you walk a guest to the door. Camp there, scuffed and a little sorry.",
+      "heal": 3,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "glade_mended",
+          "value": true
+        }
+      ],
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "green, hushed and watchful; the forest is a polite host keeping a ledger, a little spooky but never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "beech_tree": "old, slow, smells of rain; whispers in long sentences and never raises its voice",
+      "elder_unicorn": "calm, few words, frowns with her ears; says the important thing once and stops",
+      "flood_warden": "MossHome bigfoot in very tall boots; brisk, practical, has seen every kind of soggy",
+      "echo_hunter": "never speaks; tilts its frilled head, listening, filing every sound"
+    }
+  }
+}

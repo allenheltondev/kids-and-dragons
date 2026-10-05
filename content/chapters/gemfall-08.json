@@ -1,0 +1,816 @@
+{
+  "id": "gemfall-08",
+  "campaignId": "gemfall",
+  "index": 8,
+  "title": "Gemfall",
+  "biome": "mount_red_sky",
+  "estimatedMinutes": 30,
+  "xpAward": 120,
+  "entry": "scene_mouth",
+  "objectives": [
+    {
+      "id": "settled_bones",
+      "label": "Got the restless bones to lie back down",
+      "flag": "remains_settled",
+      "xp": 12
+    },
+    {
+      "id": "surprised_dragon",
+      "label": "Surprised the Seal-Keeper, which almost never happens",
+      "flag": "dragon_surprised",
+      "xp": 12
+    }
+  ],
+  "props": {
+    "facet_keystone": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Keystone",
+      "text": "The crown of the seal under Mount Red Sky. Bigger than your head, warm as a sleeping cat."
+    }
+  },
+  "scenes": {
+    "scene_mouth": {
+      "type": "story",
+      "narration": "The lava tube opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
+      "choices": [
+        {
+          "id": "speak_gently",
+          "label": "Speak to the bones, gently",
+          "icon": "heart",
+          "goto": "check_remains"
+        },
+        {
+          "id": "stand_ground",
+          "label": "Stand your ground",
+          "icon": "swords",
+          "goto": "encounter_gallery"
+        },
+        {
+          "id": "table_back",
+          "label": "Set the Table Stone back into the vein",
+          "icon": "gem",
+          "requiresItem": "facet_table",
+          "goto": "rest_cool_gallery",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "remains_settled",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "ember_back",
+          "label": "Set the Ember Facet back into the wall",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "rest_cool_gallery",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "remains_settled",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "moth_road",
+          "label": "Follow the embermoths down a cool side tunnel",
+          "icon": "feather",
+          "requiresFlag": "clock_steady",
+          "goto": "scene_moth_road"
+        },
+        {
+          "id": "listen_bells",
+          "label": "Stop. Listen. Is that... bells?",
+          "icon": "ear",
+          "requiresFlag": "clock_late",
+          "goto": "scene_bells_first"
+        }
+      ]
+    },
+    "scene_moth_road": {
+      "type": "story",
+      "narration": "The embermoths still trust you. They lead you down a side tunnel where the rock is cool enough to touch, and one of them rides on your nose the whole way, like a tiny glowing hat. Behind you, the bones sit back down. Nobody was in a hurry, so nobody had to be.",
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Follow the moths all the way",
+          "icon": "forward",
+          "goto": "rest_cool_gallery",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "remains_settled",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_bells_first": {
+      "type": "story",
+      "narration": "Far behind you, down in the foothills, the bells are ringing. Ordinary rings, every town at once, one after another. Nobody has rung the last one yet. But everybody is standing right next to it.",
+      "choices": [
+        {
+          "id": "face",
+          "label": "Face the bones, gently",
+          "icon": "heart",
+          "goto": "check_remains"
+        },
+        {
+          "id": "stand_ground",
+          "label": "Stand your ground",
+          "icon": "swords",
+          "goto": "encounter_gallery"
+        }
+      ]
+    },
+    "check_remains": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the bones, gently, that you came to set things right",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_cool_gallery",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "remains_settled",
+            "value": true
+          }
+        ],
+        "narration": "The bones listen. One of them nods, which is a lot of nodding for a bone, and they all lie back down in a slightly different arrangement."
+      },
+      "onFailure": {
+        "goto": "encounter_gallery",
+        "narration": "The stones in your pockets hum louder than your voice. The bones keep walking toward the hum."
+      }
+    },
+    "encounter_gallery": {
+      "type": "encounter",
+      "map": "gallery",
+      "narration": "The restless remains clatter across the glittering floor, walking toward whatever is wrong. Right now, what is wrong is you.",
+      "enemies": [
+        {
+          "id": "bones",
+          "name": "Restless Remains",
+          "creature": "restless_remains",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "rest_cool_gallery",
+        "narration": "The bones sink back into the rock, tired and a bit relieved, as if they never wanted to do that either."
+      },
+      "onDefeat": {
+        "goto": "scene_bells_ringing",
+        "narration": "The bones do not hurt you. They just carry you, gently and very slowly, all the way back up the tube to where you started. By the time you climb back down, the bells have started."
+      }
+    },
+    "rest_cool_gallery": {
+      "type": "rest",
+      "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. Eat what you have left, patch each other up, and listen to the mountain breathing below you. It is breathing faster.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "down",
+          "label": "Down toward the heat",
+          "icon": "forward",
+          "goto": "check_race_1"
+        },
+        {
+          "id": "slow_road",
+          "label": "Take the moths' slow, cool road all the way down",
+          "icon": "feather",
+          "requiresFlag": "clock_steady",
+          "goto": "scene_keeper"
+        }
+      ]
+    },
+    "check_race_1": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Race the shaking floor down the last long tube",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_keeper",
+        "narration": "You run, jump, slide, and arrive at the bottom in a heap. But it is an on-time heap."
+      },
+      "onFailure": {
+        "goto": "scene_bells_ringing",
+        "narration": "A tremor knocks you flat, and the tube fills with ash-dust. When it clears, you can hear the bells, all the way from the foothills."
+      }
+    },
+    "scene_bells_ringing": {
+      "type": "story",
+      "narration": "Every bell in the foothills is ringing now, one ring after another, counting down toward the ring nobody uses. The floor jumps with every one. Five rings left. Maybe four.",
+      "choices": [
+        {
+          "id": "run",
+          "label": "Run for the seal!",
+          "icon": "boot",
+          "goto": "check_race_2"
+        },
+        {
+          "id": "table_wedge",
+          "label": "Wedge the Table Stone into the crack and buy one more ring",
+          "icon": "gem",
+          "requiresItem": "facet_table",
+          "goto": "scene_keeper"
+        },
+        {
+          "id": "harvest_wedge",
+          "label": "Set the Harvest Stone back and buy one more ring",
+          "icon": "gem",
+          "requiresItem": "facet_harvest",
+          "goto": "scene_keeper"
+        },
+        {
+          "id": "unassigned_wedge",
+          "label": "Put the Unassigned Stone back where nobody should dig",
+          "icon": "gem",
+          "requiresItem": "facet_unassigned",
+          "goto": "scene_keeper"
+        }
+      ]
+    },
+    "check_race_2": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Shove through the last stone door before the last ring",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_keeper",
+        "narration": "You put your shoulders to the stone door and push, and push, and it grinds open just as the bells go quiet to catch their breath."
+      },
+      "onFailure": {
+        "goto": "ending_last_ring",
+        "narration": "The door holds. Far above you, very far away, the last bell rings."
+      }
+    },
+    "scene_keeper": {
+      "type": "story",
+      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
+      "choices": [
+        {
+          "id": "truth",
+          "label": "Tell it the truth: every stone, every pocket",
+          "icon": "heart",
+          "goto": "scene_q2"
+        },
+        {
+          "id": "medal",
+          "label": "Show it the sprites' woven medal",
+          "icon": "star",
+          "requiresFlag": "sprites_friends",
+          "goto": "scene_q2",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "sorry_sprites",
+          "label": "Say sorry about the sprites' stone, before it asks",
+          "icon": "thorn",
+          "requiresFlag": "sprites_wronged",
+          "goto": "scene_q2",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "ember",
+          "label": "Hold up the Ember Facet, back from the Exchange",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "scene_q2"
+        },
+        {
+          "id": "ember_sold",
+          "label": "Admit you sold the very first stone you found",
+          "icon": "hand",
+          "requiresFlag": "ember_sold",
+          "goto": "scene_q2"
+        },
+        {
+          "id": "table",
+          "label": "Set down the Table Stone the wardens logged twice",
+          "icon": "gem",
+          "requiresItem": "facet_table",
+          "goto": "scene_q2"
+        },
+        {
+          "id": "caravan",
+          "label": "Show it the Caravan Stone from the fattest wagon on the road",
+          "icon": "gem",
+          "requiresItem": "facet_caravan",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_q2": {
+      "type": "story",
+      "narration": "The dragon nods, slowly, the way a mountain would nod if it could. \"And on the road,\" it says, \"what did the land ask of you? And what did you answer?\" An embermoth lands on its eyebrow, waiting too.",
+      "choices": [
+        {
+          "id": "road",
+          "label": "Tell it what happened, the good bits and the soggy bits",
+          "icon": "heart",
+          "goto": "scene_verdict"
+        },
+        {
+          "id": "glade_mended",
+          "label": "\"We mended a wounded glade.\"",
+          "icon": "leaf",
+          "requiresFlag": "glade_mended",
+          "goto": "scene_verdict",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "glade_finished",
+          "label": "\"We took the Glade Stone. The glade is healing slowly.\"",
+          "icon": "leaf",
+          "requiresFlag": "glade_finished",
+          "goto": "scene_verdict"
+        },
+        {
+          "id": "crossed_dry",
+          "label": "\"The trolls heard our toll stories, all the way through.\"",
+          "icon": "note",
+          "requiresFlag": "crossed_dry",
+          "goto": "scene_verdict"
+        },
+        {
+          "id": "river_took",
+          "label": "\"The river took us, and Old Ossley fished us out.\"",
+          "icon": "drop",
+          "requiresFlag": "river_took_us",
+          "goto": "scene_verdict",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "forded",
+          "label": "\"We crossed the ford at the drovers' pace, with ceremony.\"",
+          "icon": "boot",
+          "requiresFlag": "forded_clean",
+          "goto": "scene_verdict"
+        },
+        {
+          "id": "marsh",
+          "label": "\"The marsh kept us for a while, and the forest let us go.\"",
+          "icon": "leaf",
+          "requiresFlag": "marsh_kept_us",
+          "goto": "scene_verdict"
+        },
+        {
+          "id": "refused",
+          "label": "\"We said no to the soup line's cure.\"",
+          "icon": "hand",
+          "requiresFlag": "refused_the_cult",
+          "goto": "scene_verdict",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "funded",
+          "label": "Tell it about the stones you sold the cult. It knows.",
+          "icon": "moon",
+          "requiresFlag": "funded_the_break",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_verdict": {
+      "type": "story",
+      "narration": "\"Last question,\" says the Seal-Keeper. \"Who did you tell? And what do you want?\" Behind it, the seal glows like a round stained-glass window with pieces missing, and something under it is turning over in its sleep.",
+      "choices": [
+        {
+          "id": "honest",
+          "label": "Tell it what you want, honestly",
+          "icon": "heart",
+          "goto": "check_verdict"
+        },
+        {
+          "id": "silent",
+          "label": "Say nothing, and stand your ground",
+          "icon": "swords",
+          "goto": "encounter_dragon"
+        },
+        {
+          "id": "surprised",
+          "label": "Wait. Something in its eyes has changed.",
+          "icon": "eye",
+          "requiresFlag": "dragon_surprised",
+          "goto": "scene_seal_chamber"
+        },
+        {
+          "id": "gatherers",
+          "label": "\"We told the grandmothers, and they told everyone.\"",
+          "icon": "whistle",
+          "requiresFlag": "told_gatherers",
+          "goto": "scene_seal_chamber"
+        },
+        {
+          "id": "wardens",
+          "label": "\"We told the wardens. They wrote it down twice.\"",
+          "icon": "shield",
+          "requiresFlag": "told_wardens",
+          "goto": "check_verdict"
+        },
+        {
+          "id": "close",
+          "label": "\"We told nobody. We came ourselves.\"",
+          "icon": "lantern",
+          "requiresFlag": "kept_close",
+          "goto": "check_verdict"
+        },
+        {
+          "id": "rich",
+          "label": "\"Honestly? We came to get rich.\"",
+          "icon": "crown",
+          "requiresFlag": "motive_wealth",
+          "goto": "check_verdict"
+        },
+        {
+          "id": "duty",
+          "label": "\"Somebody had to come. So we came.\"",
+          "icon": "shield",
+          "requiresFlag": "motive_duty",
+          "goto": "check_verdict"
+        },
+        {
+          "id": "proving",
+          "label": "\"We came to find out if we could.\"",
+          "icon": "star",
+          "requiresFlag": "motive_proving",
+          "goto": "check_verdict"
+        }
+      ]
+    },
+    "check_verdict": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Answer the Seal-Keeper with your whole heart",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_seal_chamber",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
+        ],
+        "narration": "The dragon is quiet for a long, long time. Then it moves aside. \"Hm,\" it says. From a dragon, that is a standing ovation."
+      },
+      "onFailure": {
+        "goto": "encounter_dragon",
+        "narration": "The dragon sighs. The sigh is warm, and not the good kind of warm. \"Then show me,\" it says."
+      }
+    },
+    "encounter_dragon": {
+      "type": "encounter",
+      "map": "gallery",
+      "narration": "The Seal-Keeper uncurls until it fills the cave, and an old guardian of bones steps out of the wall to stand beside it.",
+      "enemies": [
+        {
+          "id": "keeper",
+          "name": "The Seal-Keeper",
+          "creature": "legend_dragon",
+          "hp": 20,
+          "guard": 14,
+          "steps": 3
+        },
+        {
+          "id": "seal_bones",
+          "name": "Seal-Bones",
+          "creature": "restless_remains",
+          "count": 1,
+          "hp": 6
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_seal_chamber",
+        "narration": "The dragon lowers its head and laughs, a sound like an avalanche having a nice day. \"You fight like people who mean it,\" it says, and steps aside."
+      },
+      "onDefeat": {
+        "goto": "ending_turned_back",
+        "narration": "The Seal-Keeper scoops all three of you up in one enormous claw, very carefully, the way you would carry a bird's nest."
+      }
+    },
+    "scene_seal_chamber": {
+      "type": "story",
+      "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head, the Keystone. Underneath, something vast is waking up. The Seal-Keeper waits. \"Well,\" it says. \"Choose.\"",
+      "choices": [
+        {
+          "id": "restore",
+          "label": "Restore the seal: give back every stone you have",
+          "icon": "heart",
+          "goto": "ending_heroes"
+        },
+        {
+          "id": "quiet_restore",
+          "label": "Restore it quietly, and never tell a soul",
+          "icon": "lantern",
+          "requiresFlag": "kept_close",
+          "goto": "ending_quiet_fixers"
+        },
+        {
+          "id": "destroy",
+          "label": "End the titan's sleep forever, so it never wakes again",
+          "icon": "flame",
+          "goto": "ending_heroes_destroy"
+        },
+        {
+          "id": "leash",
+          "label": "Take the leash on the power underneath",
+          "icon": "key",
+          "goto": "scene_tether"
+        },
+        {
+          "id": "keystone",
+          "label": "Reach for the Keystone",
+          "icon": "gem",
+          "goto": "scene_keystone"
+        }
+      ]
+    },
+    "scene_tether": {
+      "type": "story",
+      "narration": "The power under the mountain rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. The Seal-Keeper watches you with one eye the size of a door. \"Whose hand?\" it asks. \"And did you bring a leash, or only hands?\"",
+      "choices": [
+        {
+          "id": "ours_tether",
+          "label": "Ours, with the tether we spent the road making",
+          "icon": "hand",
+          "requiresFlag": "pursuit_leash",
+          "goto": "check_tether_self"
+        },
+        {
+          "id": "ours",
+          "label": "Ours. We'll hold it with our bare hands.",
+          "icon": "hand",
+          "goto": "check_tether_self_bare"
+        },
+        {
+          "id": "wardens",
+          "label": "Hand it to the wardens' cage",
+          "icon": "shield",
+          "goto": "ending_wardens_regret"
+        },
+        {
+          "id": "cult_tether",
+          "label": "Hand it to the cult, held by the chord and the ledger",
+          "icon": "note",
+          "requiresFlag": "pursuit_leash",
+          "goto": "check_tether_cult"
+        },
+        {
+          "id": "cult",
+          "label": "Hand it to the cult's cure, and hope they keep the bargain",
+          "icon": "note",
+          "goto": "check_tether_cult_bare"
+        },
+        {
+          "id": "call_voss",
+          "label": "Call Captain Voss down, as you promised",
+          "icon": "whistle",
+          "requiresFlag": "told_wardens",
+          "goto": "ending_wardens_regret"
+        },
+        {
+          "id": "back",
+          "label": "Let go of it, and choose again",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "check_tether_self": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Hold the leash steady with all three of your hands",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_new_weather",
+        "narration": "It pulls, and pulls, and then settles in your hands like a sleepy dog on a lead."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "It pulls once, hard, and the leash slips through all three pairs of hands."
+      }
+    },
+    "check_tether_cult": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Hold the Deep Hollow choir to every word of the bargain",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_cure",
+        "narration": "You read the bargain back to them line by line, twice, like a warden clerk. They keep every word."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "The choir sings one note more than the bargain said. Just one. It is enough."
+      }
+    },
+    "ending_heroes": {
+      "type": "rest",
+      "narration": "You give the stones back, every one: the ones you found, the ones you bought, the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_heroes_destroy": {
+      "type": "rest",
+      "narration": "You turn the seal all the way round, and the titan does not go back to sleep. It goes away, gently, like the last note of a long song. Whatever it was, nobody will ever know now. The realm keeps its gemstones, the mountain goes quiet, and history files you as the Heroes of Red Sky. And the Seal-Keeper, with nothing left to keep, flies out of the mountain for the first time in forever, with every embermoth in the foothills riding on its back.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_quiet_fixers": {
+      "type": "rest",
+      "narration": "You put every stone back, then slip out of the mountain by a side tunnel and never tell a soul. The foothills only know that the tremors stopped and the moths came home. History files it as a lucky year. But four hundred years from now, a warden clerk will find one line in a ledger bound in a different colour, and smile, and wonder who. The Quiet Fixers.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_collectors": {
+      "type": "rest",
+      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and does not move again. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_wardens_regret": {
+      "type": "rest",
+      "narration": "You hand the leash to the Skywardens. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, Captain Voss writes one line in a ledger of a different colour: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_cure": {
+      "type": "rest",
+      "narration": "The Deep Hollow choir sings its crystal chord into the seal, and you hold them to every word. Something under the mountain hums back. The cult swears the world's broken laws are mending, and maybe they are: the sky is a little less red, and Hessa cries into a pot of soup. History calls it The Cure, with a question mark that nobody has ever quite been able to rub out.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_new_weather": {
+      "type": "rest",
+      "narration": "You hold the leash yourselves, and the power under the mountain lies still in your three pairs of hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Prides set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_turned_back": {
+      "type": "rest",
+      "narration": "The Seal-Keeper does not hurt children who came up the mountain the wrong way. It removes them, and sets you down in the foothills next to everybody else. Then it goes back down to hold the seal alone, for as long as it can. You watch the summit glow all night with the rest of the realm. At dawn an embermoth lands on your hand and stays, which it only does for someone it expects to see again.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    },
+    "ending_last_ring": {
+      "type": "rest",
+      "narration": "The ring nobody had ever used rings out across the whole realm. The mountain shrugs, and something enormous stretches underneath it, and there is nobody at the seal to answer. The realm does not end. It rearranges: rivers wander, roads bend, the red sky becomes ordinary weather. History files you as the almost-heroes. But down in the foothills, a dragonling child is already learning the bell code backwards, in case there is a ring that puts it all to sleep again.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    },
+    "ending_broken_tether": {
+      "type": "rest",
+      "narration": "The leash snaps. The cure cracks the seal instead of holding it, and the titan rolls over, half awake, and the mountain throws gemstones across the whole sky. The Seal-Keeper throws itself across the crack and holds it, and keeps on holding. The cult grieves loudest of anyone, which is the worst part. But the seal is cracked, not broken, and the Keeper is still holding. Holding is something somebody can help with, someday.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    },
+    "check_tether_self_bare": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 16,
+      "prompt": "Hold the leash with nothing but your own three pairs of hands",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_new_weather",
+        "narration": "Nobody built you a tether, so you become one. It pulls, and pulls, and then settles in your hands. The Seal-Keeper blinks, which it has not done in a very long time."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "You did not spend the road making a leash, and bare hands are not enough. It pulls once, hard, and slips through all three pairs."
+      }
+    },
+    "check_tether_cult_bare": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Hold the Deep Hollow choir to a bargain you made up just now",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_cure",
+        "narration": "You make the bargain up as you go, and you make it very carefully. Hessa reads it twice and nods. They keep every word."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "Nobody wrote the bargain down, so the choir sings it the way they remember it. One note more than you meant. It is enough."
+      }
+    },
+    "scene_keystone": {
+      "type": "story",
+      "narration": "The Keystone is bigger than your head and warm as bread. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
+      "choices": [
+        {
+          "id": "collectors",
+          "label": "Lift it: seven of its brothers rode up here in your packs",
+          "icon": "gem",
+          "requiresFlag": "pursuit_hoard",
+          "goto": "ending_collectors",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_keystone"
+            }
+          ]
+        },
+        {
+          "id": "take",
+          "label": "Take it anyway",
+          "icon": "gem",
+          "goto": "check_keystone"
+        },
+        {
+          "id": "back",
+          "label": "Put your hands down, and choose again",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "check_keystone": {
+      "type": "check",
+      "stat": "might",
+      "tn": 16,
+      "prompt": "Pry the Keystone out of a seal that does not want to let it go",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_collectors",
+        "narration": "It comes loose with a sound like a cork from the biggest bottle in the world. You did not come up here for this. You are holding it anyway.",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_keystone"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ending_turned_back",
+        "narration": "The Keystone does not budge. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
+      }
+    }
+  },
+  "llmHints": {
+    "tone": "the campaign's finale: awe, warmth, and consequence; the dragon is ancient, dry and fair; losses are grief and consequence, never gore, and always end on a spark",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "gore",
+      "explaining what the Hollow Gate is",
+      "describing what the titan is"
+    ],
+    "npcVoices": {
+      "seal_keeper": "the Seal-Keeper, the legend dragon under Mount Red Sky; ancient, unhurried, dry as ash, asks questions it already knows the answers to, grades generously when surprised and is very rarely surprised",
+      "bones": "the restless remains; do not speak, but nod, sigh and settle",
+      "captain": "Captain Orla Voss of the Skywardens, only in epilogues; rigid, honest, quietly sorry",
+      "hessa": "Hessa Wren of the Deep Hollow Cult, only in epilogues; warm, certain, cries easily"
+    }
+  }
+}

@@ -1,0 +1,848 @@
+{
+  "$comment": "Gemfall beat 7, the Tether's chapter 7 (docs/campaigns/gemfall.md, 7L). Three instruments are chapter props (tether_ledger, tether_chord, tether_question); honest ways to them are checks, double games are certain but cost a friend's trust (wardens_trust is set false when the party sells the wardens' secrets to the choir) or a stone. Every ending sets climbed_the_mountain. The seal clock is set once per path: scene_tether_holds (clock_steady), scene_tether_slips (clock_late), or ending_lost_in_echoes (clock_late, the lost-fight setback). facet_caravan is defined in gemfall-07h.",
+  "id": "gemfall-07l",
+  "campaignId": "gemfall",
+  "index": 7,
+  "title": "The Tether",
+  "biome": "red_sky_foothills",
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "route": {
+    "set": "pursuit",
+    "flag": "pursuit_leash"
+  },
+  "entry": "scene_the_table",
+  "objectives": [
+    {
+      "id": "tested",
+      "label": "Held the Caravan Stone's hum still for one whole breath",
+      "flag": "tether_tested",
+      "xp": 10
+    },
+    {
+      "id": "wardens_trust",
+      "label": "Kept the wardens' trust to the very end",
+      "flag": "wardens_trust",
+      "xp": 6
+    },
+    {
+      "id": "choir_trust",
+      "label": "Learned the choir's chord honestly",
+      "flag": "choir_trust",
+      "xp": 6
+    }
+  ],
+  "props": {
+    "tether_ledger": {
+      "kind": "quest",
+      "icon": "scroll",
+      "name": "The Cage-Doctrine Ledger",
+      "text": "The wardens' plan for holding what is under the mountain. They do not lend it."
+    },
+    "tether_chord": {
+      "kind": "quest",
+      "icon": "note",
+      "name": "The Resonance Chord",
+      "text": "Three notes the choir hums to make the stones hum back. Written down nowhere."
+    },
+    "tether_question": {
+      "kind": "quest",
+      "icon": "charm",
+      "name": "The Witch's Question",
+      "text": "What do you actually want? A witch lent it to you. You may ask it of anything."
+    }
+  },
+  "scenes": {
+    "scene_the_table": {
+      "type": "story",
+      "narration": "The wardens will not sit with the cult. The cult will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
+      "choices": [
+        {
+          "id": "wardens_first",
+          "label": "Go to the wardens first",
+          "icon": "shield",
+          "goto": "scene_ledger"
+        },
+        {
+          "id": "grandmothers_chair",
+          "label": "Ask the grandmothers to chair the table",
+          "icon": "dragonling",
+          "requiresFlag": "told_gatherers",
+          "goto": "scene_ledger",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "grandmothers_chair",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_ledger": {
+      "type": "story",
+      "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, guarded by a clerk named Brisk who has never once smiled on duty. \"Not for lending,\" says Brisk, before you have said anything at all.",
+      "choices": [
+        {
+          "id": "friend",
+          "label": "You told them first, at the citadel. Ask as a friend.",
+          "icon": "heart",
+          "requiresFlag": "told_wardens",
+          "goto": "scene_choir",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_ledger"
+            },
+            {
+              "type": "setFlag",
+              "flag": "wardens_trust",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "honest",
+          "label": "Make the honest case",
+          "icon": "clever",
+          "goto": "check_ledger"
+        },
+        {
+          "id": "false_promise",
+          "label": "Promise them the cult's secret chord in trade (you won't)",
+          "icon": "moon",
+          "goto": "scene_choir",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_ledger"
+            }
+          ]
+        }
+      ]
+    },
+    "check_ledger": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Show Brisk why a cage needs a key-holder",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_choir",
+        "narration": "Brisk reads your argument twice, frowns at it, and unlocks the chain. Nobody has ever seen Brisk do that. Nobody has ever seen Brisk almost smile, either, and he nearly does.",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "tether_ledger"
+          },
+          {
+            "type": "setFlag",
+            "flag": "wardens_trust",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_choir",
+        "narration": "Brisk listens politely and says no politely. The ledger stays chained to its desk. You leave with nothing but a very clear picture of the cover."
+      }
+    },
+    "scene_choir": {
+      "type": "story",
+      "narration": "Up a side valley the Deep Hollow choir is humming with their bark masks pushed up on their heads. They are singing the stones' own note, and the stones in your packs hum along, as if they know the words.",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask to learn it, and tell them why",
+          "icon": "heart",
+          "goto": "check_chord"
+        },
+        {
+          "id": "vouch",
+          "label": "Ask the grandmothers to vouch for you",
+          "icon": "dragonling",
+          "requiresFlag": "grandmothers_chair",
+          "goto": "scene_road_gifts",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            },
+            {
+              "type": "setFlag",
+              "flag": "choir_trust",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "sell_secrets",
+          "label": "Trade them the wardens' cage plans, page by page",
+          "icon": "scroll",
+          "requiresItem": "tether_ledger",
+          "goto": "scene_road_gifts",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            },
+            {
+              "type": "setFlag",
+              "flag": "wardens_trust",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "pay_stone",
+          "label": "Pay them with a stone from your pack",
+          "icon": "gem",
+          "goto": "scene_road_gifts",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            }
+          ]
+        },
+        {
+          "id": "hum_along",
+          "label": "Hum along until they forget you are not one of them",
+          "icon": "kitsune",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_road_gifts",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_chord"
+            }
+          ]
+        }
+      ]
+    },
+    "check_chord": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Convince a choir of masks to teach their chord to people who want to hold the seal, not break it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "The choir argues in whispers. Then Hessa, the soup-line lady, steps forward and hums three notes, slowly, until you have them. \"Don't make me sorry,\" she says.",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "tether_chord"
+          },
+          {
+            "type": "setFlag",
+            "flag": "choir_trust",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "They sing it for you once, very fast, and then pull their masks down. You remember the first note. Only the first."
+      }
+    },
+    "scene_road_gifts": {
+      "type": "story",
+      "narration": "Back at your wobbly table, something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs.",
+      "choices": [
+        {
+          "id": "ossley",
+          "label": "A flat boat is coming up the dry creek",
+          "icon": "drop",
+          "requiresFlag": "route_river",
+          "goto": "scene_ossley"
+        },
+        {
+          "id": "runner",
+          "label": "A MossHome runner is waving a knotted cord",
+          "icon": "bigfoot",
+          "requiresItem": "knot_cord",
+          "goto": "scene_mosshome_runner"
+        },
+        {
+          "id": "boggart",
+          "label": "A boggart is sidling up with a satchel",
+          "icon": "scroll",
+          "requiresFlag": "route_wild",
+          "goto": "scene_boggart"
+        },
+        {
+          "id": "ford_witch",
+          "label": "The ford witch is here, with her ringing stone",
+          "icon": "charm",
+          "requiresFlag": "route_rush",
+          "goto": "scene_ford_witch"
+        },
+        {
+          "id": "stall",
+          "label": "Visit the witch's stall at the end of the road",
+          "icon": "charm",
+          "goto": "scene_stall_witch"
+        }
+      ]
+    },
+    "scene_ossley": {
+      "type": "story",
+      "narration": "Old Ossley is poling his flat boat up a creek with no water in it, loaded with every toll the trolls took this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
+      "choices": [
+        {
+          "id": "debt",
+          "label": "Ask what you still owe him from the river",
+          "icon": "drop",
+          "requiresFlag": "river_took_us",
+          "goto": "scene_ossley_debt"
+        },
+        {
+          "id": "on",
+          "label": "Thank him, and go and find the witch",
+          "icon": "forward",
+          "goto": "scene_stall_witch"
+        }
+      ]
+    },
+    "scene_ossley_debt": {
+      "type": "story",
+      "narration": "Ossley's price is not coin. It never was. \"Whatever you tie,\" he says, \"tie it with a knot you can undo.\" He makes you show him the knot, there and then, on his boat rope. It takes three tries.",
+      "choices": [
+        {
+          "id": "promise",
+          "label": "Promise",
+          "icon": "heart",
+          "goto": "scene_stall_witch",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "loose_knot",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_mosshome_runner": {
+      "type": "story",
+      "narration": "A MossHome runner jogs up with a string of grumbling mules carrying everything the Woods confiscated from careless hunters. She counts the knots on your cord, unloads it all, and passes on one message from the elders: \"Whatever you are tying, tie it loose.\"",
+      "choices": [
+        {
+          "id": "thank",
+          "label": "Thank her, and the Woods",
+          "icon": "leaf",
+          "goto": "scene_stall_witch",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "loose_knot",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_boggart": {
+      "type": "story",
+      "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
+      "choices": [
+        {
+          "id": "brisk_said",
+          "label": "Tell it what Brisk the clerk mutters to his ledger",
+          "icon": "ear",
+          "goto": "scene_stall_witch",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "choir_said",
+          "label": "Tell it what the choir hums when nobody is listening",
+          "icon": "note",
+          "goto": "scene_stall_witch",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_buyers",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_ford_witch": {
+      "type": "story",
+      "narration": "The ford witch has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "choices": [
+        {
+          "id": "hold_safe",
+          "label": "\"To hold it still, so nobody gets hurt.\"",
+          "icon": "heart",
+          "goto": "scene_evening",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            },
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ford"
+            }
+          ]
+        },
+        {
+          "id": "hold_power",
+          "label": "\"To hold it, because we can.\"",
+          "icon": "crown",
+          "goto": "scene_evening",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            }
+          ]
+        },
+        {
+          "id": "flatter",
+          "label": "Say whatever will get you the question",
+          "icon": "moon",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_stall_witch": {
+      "type": "story",
+      "narration": "At the end of the road a witch in a patched hat runs a remedy stall, and every charm on it is ringing by itself. \"I'll lend you my question,\" she says, \"if you answer it first. What do you actually want?\"",
+      "choices": [
+        {
+          "id": "hold_safe",
+          "label": "\"To hold it still, so nobody gets hurt.\"",
+          "icon": "heart",
+          "goto": "scene_evening",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            }
+          ]
+        },
+        {
+          "id": "hold_power",
+          "label": "\"To hold it, because we can.\"",
+          "icon": "crown",
+          "goto": "scene_evening",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "tether_question"
+            }
+          ]
+        },
+        {
+          "id": "flatter",
+          "label": "Say whatever will get you the question",
+          "icon": "moon",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_evening": {
+      "type": "story",
+      "narration": "Evening. Campfires pop up all along the road, and the wardens' fires and the masks' fires are as far apart as they can possibly get. Your table is exactly in the middle. Somebody has left a cup of tea on it, and nobody will say who.",
+      "choices": [
+        {
+          "id": "relay",
+          "label": "A centaur relay is cantering in with news",
+          "icon": "travel",
+          "requiresFlag": "route_river",
+          "goto": "scene_centaur_relay"
+        },
+        {
+          "id": "relay_sing",
+          "label": "Listen to the singers at the campfires",
+          "icon": "note",
+          "requiresFlag": "route_rush",
+          "goto": "scene_relay_sing"
+        },
+        {
+          "id": "exchange",
+          "label": "An Exchange caravan rolls in, and someone is waving",
+          "icon": "gem",
+          "requiresFlag": "ember_sold",
+          "goto": "scene_ember"
+        },
+        {
+          "id": "camp",
+          "label": "Sleep under the table",
+          "icon": "rest",
+          "goto": "rest_under_the_table"
+        }
+      ]
+    },
+    "scene_centaur_relay": {
+      "type": "story",
+      "narration": "The centaur relay pulls up at your table and unrolls a sash-map. \"Fat caravan tomorrow, biggest stone in the funnel,\" says the lead runner. \"Where do you want it?\" You point at the worst bend, and she nods as if that is the most sensible thing anyone has said all day.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "caravan_rerouted",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "sleep",
+          "label": "Thank the relay and get some sleep",
+          "icon": "rest",
+          "goto": "rest_under_the_table"
+        }
+      ]
+    },
+    "scene_relay_sing": {
+      "type": "story",
+      "narration": "The relay singers have new verses about wagons that have not arrived yet, so you hear tomorrow's traffic tonight. Then a grandmother's runner brings you a list of caves nobody may ever dig. It is exactly the list a seal's keeper would keep.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_tomorrow",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "sleep",
+          "label": "Fold the list away and get some sleep",
+          "icon": "scroll",
+          "goto": "rest_under_the_table"
+        }
+      ]
+    },
+    "scene_ember": {
+      "type": "story",
+      "narration": "\"It's you! From the docks!\" The merchant on top of the caravan remembers you fondly. She also has the Ember Facet you sold her, in a velvet box, at a price that has gone up a very great deal.",
+      "choices": [
+        {
+          "id": "buy_back",
+          "label": "Buy it back. A tether needs an anchor.",
+          "icon": "gem",
+          "goto": "rest_under_the_table",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_ember"
+            }
+          ]
+        },
+        {
+          "id": "wave",
+          "label": "Wave, and let it go on its way",
+          "icon": "hand",
+          "goto": "rest_under_the_table"
+        }
+      ]
+    },
+    "rest_under_the_table": {
+      "type": "rest",
+      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot, at the same moment, and stand there not looking at each other until somebody says please. Patch each other up.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "up",
+          "label": "Up the switchback to the bend",
+          "icon": "boot",
+          "goto": "scene_switchback"
+        }
+      ]
+    },
+    "scene_switchback": {
+      "type": "story",
+      "narration": "Halfway up the switchback the road runs through a narrow cutting, and something in the cutting is repeating every sound you make, half a breath late. Your footsteps. Your whispers. Your humming stones. With it, a lone cinder wolf, coming down off the mountain with its ears flat.",
+      "choices": [
+        {
+          "id": "racket",
+          "label": "Make a racket, all of you at once",
+          "icon": "clever",
+          "goto": "check_echoes"
+        },
+        {
+          "id": "face",
+          "label": "Face whatever it is",
+          "icon": "swords",
+          "goto": "encounter_echoes"
+        },
+        {
+          "id": "sprite_knots",
+          "label": "Follow the trail of tiny tied grass knots around the cutting",
+          "icon": "leaf",
+          "requiresFlag": "sprites_friends",
+          "goto": "choice_the_test"
+        },
+        {
+          "id": "fly_over",
+          "label": "Fly up and over the cutting",
+          "icon": "griffin",
+          "requiresSpecies": "griffin",
+          "goto": "choice_the_test"
+        }
+      ]
+    },
+    "check_echoes": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Make the cutting so noisy the echo cannot pick one sound to follow",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_test",
+        "narration": "Clapping, stamping, humming, one terrible whistle. The echo hunter cannot choose, gets a headache, and backs off into the rocks. The wolf, who hates the noise even more, runs straight past you."
+      },
+      "onFailure": {
+        "goto": "encounter_echoes",
+        "narration": "Somebody stops a moment too early, and in the silence the echo hunter hears exactly one heartbeat. Yours."
+      }
+    },
+    "encounter_echoes": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "The echo hunter unfolds out of the rock wall, and the wolf, frightened half silly, sticks close beside it.",
+      "enemies": [
+        {
+          "id": "echo",
+          "name": "Echo Hunter",
+          "creature": "echo_hunter",
+          "hp": 11
+        },
+        {
+          "id": "wolf",
+          "name": "Cinder Wolf",
+          "creature": "cinder_wolf",
+          "count": 1
+        }
+      ],
+      "onVictory": {
+        "goto": "choice_the_test",
+        "narration": "The echo hunter folds itself back into the rock, sulking, and the wolf bolts down the hill. The cutting is just a cutting again."
+      },
+      "onDefeat": {
+        "goto": "ending_lost_in_echoes",
+        "narration": "The echoes get louder and louder until you cannot hear yourselves think. You stumble back down the switchback the way you came, and the instruments rattle loose in your packs."
+      }
+    },
+    "choice_the_test": {
+      "type": "choice_point",
+      "narration": "At the worst bend, the fattest caravan in the funnel is coming, and the stone in its middle wagon hums so loudly the mules wear earmuffs. If you can hold that one stone's hum still for one breath, you can hold anything. Wardens on one side, masks on the other, both watching you.",
+      "choices": [
+        {
+          "id": "question",
+          "label": "Ask the stone the witch's question",
+          "icon": "charm",
+          "requiresItem": "tether_question",
+          "goto": "check_hold_easy"
+        },
+        {
+          "id": "rerouted",
+          "label": "The relay sent the caravan right to you. Be ready.",
+          "icon": "travel",
+          "requiresFlag": "caravan_rerouted",
+          "goto": "check_hold"
+        },
+        {
+          "id": "heard_it",
+          "label": "You heard this caravan in last night's song. Be ready.",
+          "icon": "note",
+          "requiresFlag": "heard_tomorrow",
+          "goto": "check_hold"
+        },
+        {
+          "id": "buyers",
+          "label": "The catalogue says whose stone it is. Ask them first.",
+          "icon": "scroll",
+          "requiresFlag": "knows_buyers",
+          "goto": "check_hold"
+        },
+        {
+          "id": "loose_knot",
+          "label": "Tie it with a knot you can undo",
+          "icon": "ribbon",
+          "requiresFlag": "loose_knot",
+          "goto": "check_hold"
+        },
+        {
+          "id": "ledger",
+          "label": "Follow the cage doctrine, page by page",
+          "icon": "scroll",
+          "requiresItem": "tether_ledger",
+          "goto": "check_hold"
+        },
+        {
+          "id": "chord",
+          "label": "Hum the choir's chord",
+          "icon": "note",
+          "requiresItem": "tether_chord",
+          "goto": "check_hold"
+        },
+        {
+          "id": "bare_hands",
+          "label": "Hold it with nothing but nerve",
+          "icon": "heart",
+          "goto": "check_hold_hard"
+        }
+      ]
+    },
+    "check_hold_easy": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Ask the Caravan Stone what it actually wants, and listen for the answer",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "You ask the witch's question out loud. The stone goes quiet, the way a person goes quiet when somebody finally asks the right thing. For one long breath, nothing on the whole hillside hums at all."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "You ask the question, but the ground lurches halfway through and the stone never hears the end of it. The hum leaps free, and the whole hillside answers it."
+      }
+    },
+    "check_hold": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Hold the Caravan Stone's hum still for one whole breath",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "For one long breath the humming stops. The mules take their earmuffs off. The wardens stop writing. The masks stop humming. Then it starts again, softer, as if it is listening to you."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "You almost have it. Then the hum slides through your fingers like a fish, and the whole hillside answers it."
+      }
+    },
+    "check_hold_hard": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 16,
+      "prompt": "Hold the Caravan Stone's hum still with no instruments at all",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "No ledger, no chord, no question. Just three of you, holding on. And for one long breath, astonishingly, it is enough."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "It is like trying to hold a thunderstorm in a teacup. The hum leaps free, and the whole hillside answers it."
+      }
+    },
+    "scene_tether_holds": {
+      "type": "story",
+      "narration": "The caravan master climbs down, hands you the Caravan Stone in both arms, and says, \"Please keep it. It's been humming at me for a month.\" A warden writes something in a notebook. A mask takes off her mask. For a moment, everyone is looking at the same thing: you.",
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "facet_caravan"
+        },
+        {
+          "type": "setFlag",
+          "flag": "tether_tested",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_steady",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "climb",
+          "label": "Carry it up the mountain",
+          "icon": "forward",
+          "goto": "rest_up_the_mountain"
+        }
+      ]
+    },
+    "scene_tether_slips": {
+      "type": "story",
+      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologising as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "climb",
+          "label": "Climb anyway, and try again where it matters",
+          "icon": "forward",
+          "goto": "rest_up_the_mountain"
+        }
+      ]
+    },
+    "rest_up_the_mountain": {
+      "type": "rest",
+      "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying a ledger, a chord, a question, and a great deal of nerve.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        }
+      ],
+      "heal": 4,
+      "choices": []
+    },
+    "ending_lost_in_echoes": {
+      "type": "rest",
+      "narration": "By the time the echoes let you go and you find the road again, the fattest caravan has long gone by, and the ground is shaking in a slow, patient rhythm. Nobody is at the table any more. You climb anyway, a long way behind, humming to yourselves to keep your courage up.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_mountain",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "clock_late",
+          "value": true
+        }
+      ],
+      "heal": 3,
+      "outcome": "setback",
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "warm, clever, a little spooky but never scary; two rival groups and the party as the table between them",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "the cult as villains",
+      "explaining the Hollow Gate",
+      "saying what is under the mountain"
+    ],
+    "npcVoices": {
+      "brisk": "warden ledger clerk; never smiles on duty; says no politely and means it; secretly fair",
+      "hessa": "Deep Hollow choir member who ran the soup tent; gentle, wary, wants to trust you",
+      "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
+      "mosshome_runner": "breathless, cheerful, counts knots out loud",
+      "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
+      "ford_witch": "pointed hat, dry, kind underneath; has waited the whole road for one honest answer",
+      "stall_witch": "patched hat, brisk, charms ringing around her; lends questions, never sells them",
+      "centaur_relay": "brisk, proud of the roads, delighted to be asked where something should go",
+      "exchange_merchant": "delighted to see you, genuinely fond, and still a merchant",
+      "caravan_master": "exhausted, practical, has had a headache since the stone came aboard"
+    }
+  }
+}

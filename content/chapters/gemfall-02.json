@@ -1,0 +1,577 @@
+{
+  "$comment": "Gemfall beat 2, The Fork. Story: docs/campaigns/gemfall.md §2. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one of sprites_friends / sprites_wronged (decided on the branch that resolves the Harvest Stone, below choice_harvest_stone, which every path passes through) and exactly one of route_river / route_rush / route_wild (on the three choices out of choice_rumour_board into the three endings).",
+  "id": "gemfall-02",
+  "campaignId": "gemfall",
+  "index": 2,
+  "title": "Green Roads North",
+  "biome": "sunward_fields",
+  "estimatedMinutes": 25,
+  "xpAward": 90,
+  "entry": "scene_song_stops",
+  "objectives": [
+    {
+      "id": "rows",
+      "label": "Walked the rows instead of through them",
+      "flag": "walked_the_rows",
+      "xp": 8
+    },
+    {
+      "id": "wolves",
+      "label": "Fed the cold wolves instead of fighting them",
+      "flag": "fed_the_wolves",
+      "xp": 7
+    },
+    {
+      "id": "hedges",
+      "label": "Were let into Bramblewood properly",
+      "flag": "let_in_properly",
+      "xp": 7
+    }
+  ],
+  "props": {
+    "facet_harvest": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Harvest Stone",
+      "text": "A green-gold stone from a sprites' corner row. It still wears a tiny medal: BEST."
+    },
+    "medal_not": {
+      "kind": "quest",
+      "icon": "trophy",
+      "name": "A Very Small Woven Medal",
+      "text": "Woven by harvest sprites for leaving their stone alone. It says NOT."
+    }
+  },
+  "scenes": {
+    "scene_song_stops": {
+      "type": "story",
+      "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops. A faun with an irrigation flute freezes so suddenly the flute keeps watering her hoof. Every Sunward child knows what that means: somebody has seen something worth stopping for.",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look where the fauns are looking",
+          "icon": "eye",
+          "goto": "scene_trampled_field"
+        }
+      ]
+    },
+    "scene_trampled_field": {
+      "type": "story",
+      "narration": "The road ahead is jammed with gem wagons, so a rush caravan has decided to drive straight through a field of pumpkins that nobody has harvested yet. A faun foreman called Hob Thistledown waves his hat at you. \"Help us turn them,\" he says, \"before they make soup of the whole season!\"",
+      "choices": [
+        {
+          "id": "argue",
+          "label": "Talk the drovers round",
+          "icon": "heart",
+          "goto": "check_reroute"
+        },
+        {
+          "id": "walk_rows",
+          "label": "Walk the rows to find a way around",
+          "icon": "leaf",
+          "goto": "scene_walk_rows"
+        },
+        {
+          "id": "roar",
+          "label": "Stand in the road and roar, politely",
+          "icon": "manticore",
+          "requiresSpecies": "manticore",
+          "goto": "scene_caravan_turned"
+        },
+        {
+          "id": "duty",
+          "label": "Stand in front of the wagons — somebody has to",
+          "icon": "shield",
+          "requiresFlag": "motive_duty",
+          "goto": "scene_caravan_turned"
+        }
+      ]
+    },
+    "check_reroute": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk a grumpy drover out of a shortcut",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_caravan_turned",
+        "narration": "You ask the drover how she would feel about a wagon parked on her dinner. She thinks about it, then turns her oxen."
+      },
+      "onFailure": {
+        "goto": "scene_caravan_turned",
+        "narration": "The drovers don't listen. Three wagons cut a muddy stripe right through the squash before the rest swing round. A faun starts singing a very sad verse about it.",
+        "effects": [{ "type": "damage", "amount": 1 }]
+      }
+    },
+    "scene_walk_rows": {
+      "type": "story",
+      "narration": "You walk the rows instead of through them, hopping between pumpkins like stepping stones, and find a cart track around the edge of the field. Something tiny pats your boot, very approvingly, and is gone before you can look.",
+      "onEnter": [
+        { "type": "setFlag", "flag": "walked_the_rows", "value": true }
+      ],
+      "choices": [
+        {
+          "id": "lead_wagons",
+          "label": "Lead the wagons round the edge",
+          "icon": "arrow",
+          "goto": "scene_caravan_turned"
+        }
+      ]
+    },
+    "scene_caravan_turned": {
+      "type": "story",
+      "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there.\"",
+      "onEnter": [
+        { "type": "grantItem", "itemId": "honeycake", "to": "party" }
+      ],
+      "choices": [
+        {
+          "id": "onward",
+          "label": "Back to the road north",
+          "icon": "travel",
+          "goto": "scene_jackalope_road"
+        }
+      ]
+    },
+    "scene_jackalope_road": {
+      "type": "story",
+      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons, but today they are just sitting, packed in tight on the open road, all staring the same way — inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
+      "choices": [
+        {
+          "id": "look_inland",
+          "label": "Look where the jackalopes are looking",
+          "icon": "eye",
+          "goto": "scene_wolf_sign"
+        },
+        {
+          "id": "fly_look",
+          "label": "Fly up and look over the long grass",
+          "icon": "wing",
+          "requiresSpecies": ["griffin", "dragonling"],
+          "goto": "scene_wolf_sign"
+        }
+      ]
+    },
+    "scene_wolf_sign": {
+      "type": "story",
+      "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves — mountain wolves — all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon.",
+      "choices": [
+        {
+          "id": "feed",
+          "label": "Leave the sausages out and back away slowly",
+          "icon": "heart",
+          "goto": "check_wolf_kind"
+        },
+        {
+          "id": "shoo",
+          "label": "Shoo them away from the wagons",
+          "icon": "swords",
+          "goto": "encounter_wolves"
+        },
+        {
+          "id": "hurry",
+          "label": "Hurry the caravan on, very quietly",
+          "icon": "boot",
+          "goto": "scene_embermoths"
+        }
+      ]
+    },
+    "check_wolf_kind": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Put down a string of sausages without looking like a snack",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_embermoths",
+        "narration": "The wolves eat every sausage, curl up into one warm grey heap with eight legs, and watch you go. They are not tame. But they will remember you.",
+        "effects": [{ "type": "setFlag", "flag": "fed_the_wolves", "value": true }]
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "You trip on the sausages. The wolves decide you are part of the offer."
+      }
+    },
+    "encounter_wolves": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "Two cold cinder wolves slink out onto the road, glowing faintly, more hungry than angry.",
+      "enemies": [
+        {
+          "id": "wolf",
+          "name": "Cold Cinder Wolf",
+          "creature": "cinder_wolf",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_embermoths",
+        "narration": "The wolves back off into the long grass, ears down, looking more embarrassed than anything. They are a very long way from home."
+      },
+      "onDefeat": {
+        "goto": "scene_embermoths",
+        "narration": "The wolves knock you flat, grab the whole sausage wagon's worth of sausages, and trot off, warmer and happier. It takes you the rest of the day to re-pack the wagons, and supper is very short on sausages."
+      }
+    },
+    "scene_embermoths": {
+      "type": "story",
+      "narration": "At sunset a cloud of embermoths drifts overhead — thousands of them, glowing like slow sparks. One lands on your soup. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
+      "choices": [
+        {
+          "id": "impossible",
+          "label": "Say out loud that this is impossible",
+          "icon": "dragonling",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_impossible"
+        },
+        {
+          "id": "watch",
+          "label": "Watch them go, and then get some sleep",
+          "icon": "moon",
+          "goto": "scene_corner_row"
+        }
+      ]
+    },
+    "scene_impossible": {
+      "type": "story",
+      "narration": "\"That's impossible,\" says the dragonling. \"Embermoths go toward warm. Always. The mountain is the warmest thing there is. Back home the grandmothers would be ringing the bells.\" Nobody laughs. A little embermoth settles on the dragonling's horn, as if it agrees.",
+      "choices": [
+        {
+          "id": "sleep",
+          "label": "Get some sleep",
+          "icon": "moon",
+          "goto": "scene_corner_row"
+        }
+      ]
+    },
+    "scene_corner_row": {
+      "type": "story",
+      "narration": "In the morning, near the last farm before Bramblewood, there is one corner row nobody has picked. Every farmer knows to leave the corner rows, and nobody says why. Today the row is guarded. Four harvest sprites in acorn-cup helmets stand to attention, and every time a pea-pod trumpet toots, four new ones march in to take their places.",
+      "choices": [
+        {
+          "id": "closer",
+          "label": "Creep closer and see what they're guarding",
+          "icon": "eye",
+          "goto": "choice_harvest_stone"
+        }
+      ]
+    },
+    "choice_harvest_stone": {
+      "type": "choice_point",
+      "narration": "In the middle of the row sits a green-gold stone the size of a hen's egg. Somebody has pinned a tiny woven medal on it that says BEST. It fell from the sky into the sprites' row, and they have decided that makes it theirs, very seriously. What do we do?",
+      "choices": [
+        {
+          "id": "trade",
+          "label": "Offer them a trade",
+          "icon": "hand",
+          "goto": "check_trade"
+        },
+        {
+          "id": "earn",
+          "label": "Offer to help tidy their row",
+          "icon": "leaf",
+          "goto": "check_earn"
+        },
+        {
+          "id": "steal",
+          "label": "Grab it while the guard changes",
+          "icon": "quick",
+          "goto": "check_steal"
+        },
+        {
+          "id": "leave",
+          "label": "Leave it where it fell",
+          "icon": "check",
+          "goto": "scene_leave_it",
+          "effects": [{ "type": "setFlag", "flag": "sprites_friends", "value": true }]
+        },
+        {
+          "id": "known",
+          "label": "Wait quietly — the sprites already know us",
+          "icon": "heart",
+          "requiresFlag": "walked_the_rows",
+          "goto": "scene_medal_ceremony",
+          "effects": [
+            { "type": "setFlag", "flag": "sprites_friends", "value": true },
+            { "type": "grantQuestItem", "itemId": "facet_harvest" }
+          ]
+        }
+      ]
+    },
+    "check_trade": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Offer the sprites the best thing in your pockets",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_medal_ceremony",
+        "narration": "You offer a shiny button, a song, and the last crumb of honeycake. The sprites go into a huddle. They come out of the huddle. It's a deal.",
+        "effects": [
+          { "type": "setFlag", "flag": "sprites_friends", "value": true },
+          { "type": "grantQuestItem", "itemId": "facet_harvest" }
+        ]
+      },
+      "onFailure": {
+        "goto": "check_earn",
+        "narration": "The sprites look at your offer for a long four seconds. Then they point, all together, at the weeds in the row. They don't want things. They want help."
+      }
+    },
+    "check_earn": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Pick up every dropped seed before the sprites do",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_medal_ceremony",
+        "narration": "It's a race, and it was always a race. You win by one seed. The sprites are thrilled, and tuck a honeycake into your pocket for later.",
+        "effects": [
+          { "type": "setFlag", "flag": "sprites_friends", "value": true },
+          { "type": "grantQuestItem", "itemId": "facet_harvest" },
+          { "type": "grantItem", "itemId": "honeycake", "to": "roller" }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_medal_ceremony",
+        "narration": "The sprites beat you to every seed, and you get stung by a nettle on the last one. But you worked till lunchtime without complaining, and the sprites decide that counts.",
+        "effects": [
+          { "type": "setFlag", "flag": "sprites_friends", "value": true },
+          { "type": "grantQuestItem", "itemId": "facet_harvest" },
+          { "type": "damage", "amount": 1 }
+        ]
+      }
+    },
+    "check_steal": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Snatch the stone between one trumpet toot and the next",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_stolen",
+        "narration": "Toot — swap — snatch. You're gone before the new guards reach their spots. Nobody saw. Probably.",
+        "effects": [
+          { "type": "setFlag", "flag": "sprites_wronged", "value": true },
+          { "type": "grantQuestItem", "itemId": "facet_harvest" }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_stolen",
+        "narration": "You grab it, and the trumpet toots the alarm. Forty sprites riding jackalopes chase you down three rows and through a nettle patch before you get away.",
+        "effects": [
+          { "type": "setFlag", "flag": "sprites_wronged", "value": true },
+          { "type": "grantQuestItem", "itemId": "facet_harvest" },
+          { "type": "damage", "amount": 1 }
+        ]
+      }
+    },
+    "scene_medal_ceremony": {
+      "type": "story",
+      "narration": "There is an award ceremony. Attendance is mandatory. The best beetroot gets a medal, the best bean gets a medal, and then the sprites hand you the Harvest Stone, medal and all. They make you promise to keep it somewhere with a nice view.",
+      "choices": [
+        {
+          "id": "to_bramblewood",
+          "label": "On to Bramblewood",
+          "icon": "travel",
+          "goto": "scene_hedge_mob"
+        }
+      ]
+    },
+    "scene_stolen": {
+      "type": "story",
+      "narration": "The stone is in your pack. Behind you the corner row has gone very, very quiet. Every sprite in the field has stopped tidying to look at you. Nobody says anything. Harvest sprites do not need to say anything. Harvest sprites remember.",
+      "choices": [
+        {
+          "id": "to_bramblewood_quickly",
+          "label": "On to Bramblewood, quickly",
+          "icon": "travel",
+          "goto": "scene_hedge_mob"
+        }
+      ]
+    },
+    "scene_leave_it": {
+      "type": "story",
+      "narration": "You leave the stone exactly where it fell. The sprites look at each other. Then they hold a second, smaller ceremony and pin a very small woven medal on you. It says NOT. Nobody explains.",
+      "onEnter": [
+        { "type": "grantQuestItem", "itemId": "medal_not" }
+      ],
+      "choices": [
+        {
+          "id": "to_bramblewood_medal",
+          "label": "On to Bramblewood",
+          "icon": "travel",
+          "goto": "scene_hedge_mob"
+        }
+      ]
+    },
+    "scene_hedge_mob": {
+      "type": "story",
+      "narration": "Outside Bramblewood's tall hedges, a mob of treasure hunters is camped and shouting, \"Open up! Let us through!\" The hedges are not listening. Along the wall, a small thorny sprite with a satchel too big for them is trimming one leaf at a time and narrating it. \"I'm Pib,\" they say. \"I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?\"",
+      "choices": [
+        {
+          "id": "honest",
+          "label": "Tell Pib honestly why we've come",
+          "icon": "heart",
+          "goto": "check_hedge"
+        },
+        {
+          "id": "help_pib",
+          "label": "Help Pib trim the hedge first",
+          "icon": "hand",
+          "goto": "rest_marda_inn",
+          "effects": [
+            { "type": "setFlag", "flag": "let_in_properly", "value": true },
+            { "type": "damage", "amount": 1 }
+          ]
+        },
+        {
+          "id": "shout",
+          "label": "Shout with the crowd — louder!",
+          "icon": "whistle",
+          "goto": "scene_long_path"
+        },
+        {
+          "id": "cousins",
+          "label": "Show Pib the sprites' medal",
+          "icon": "trophy",
+          "requiresFlag": "sprites_friends",
+          "goto": "rest_marda_inn",
+          "effects": [{ "type": "setFlag", "flag": "let_in_properly", "value": true }]
+        }
+      ]
+    },
+    "check_hedge": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Say why you came, plainly enough for a hedge to hear",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_marda_inn",
+        "narration": "The hedge rustles, thinks about it, and quietly opens a path just wide enough for you and nobody else. The mob doesn't even notice. Pib looks very proud of the hedge.",
+        "effects": [{ "type": "setFlag", "flag": "let_in_properly", "value": true }]
+      },
+      "onFailure": {
+        "goto": "scene_long_path",
+        "narration": "You mean it, but it comes out sounding like a speech. The hedge has heard a lot of speeches this week."
+      }
+    },
+    "scene_long_path": {
+      "type": "story",
+      "narration": "Pib sighs and offers you a thorn-cleaning brush you didn't ask for. \"Let's try again, properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the end the mob has gone hoarse.",
+      "choices": [
+        {
+          "id": "finally_in",
+          "label": "Finally, into town",
+          "icon": "arrow",
+          "goto": "rest_marda_inn"
+        }
+      ]
+    },
+    "rest_marda_inn": {
+      "type": "rest",
+      "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumour board is where you decide.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "to_board",
+          "label": "Go and read the rumour board",
+          "icon": "scroll",
+          "goto": "choice_rumour_board"
+        },
+        {
+          "id": "show_ember",
+          "label": "Show Marda the warm red stone from the Exchange",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "scene_marda_question"
+        },
+        {
+          "id": "ask_believe",
+          "label": "Ask Marda which rumour she believes",
+          "icon": "eye",
+          "requiresFlag": "motive_curiosity",
+          "goto": "scene_marda_question"
+        }
+      ]
+    },
+    "scene_marda_question": {
+      "type": "story",
+      "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumours,\" she adds. \"That's the trouble with this season.\"",
+      "choices": [
+        {
+          "id": "to_board_after",
+          "label": "Go and read the rumour board",
+          "icon": "scroll",
+          "goto": "choice_rumour_board"
+        }
+      ]
+    },
+    "choice_rumour_board": {
+      "type": "choice_point",
+      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING — fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "choices": [
+        {
+          "id": "east",
+          "label": "East to Stone Crossing — the River Road",
+          "icon": "drop",
+          "goto": "end_river",
+          "effects": [{ "type": "setFlag", "flag": "route_river", "value": true }]
+        },
+        {
+          "id": "north",
+          "label": "North with the rush — the Rush Road",
+          "icon": "travel",
+          "goto": "end_rush",
+          "effects": [{ "type": "setFlag", "flag": "route_rush", "value": true }]
+        },
+        {
+          "id": "west",
+          "label": "West into the marsh — the Wild Road",
+          "icon": "leaf",
+          "goto": "end_wild",
+          "effects": [{ "type": "setFlag", "flag": "route_wild", "value": true }]
+        }
+      ]
+    },
+    "end_river": {
+      "type": "rest",
+      "narration": "East, then. Marda chalks your names under EAST, and in the morning you'll take the Sunward road to the Great River, where the trolls want stories instead of coins. Tonight you sleep in a real bed for the first time since the Exchange. Somewhere far off, you can almost hear the river.",
+      "heal": 4,
+      "choices": []
+    },
+    "end_rush": {
+      "type": "rest",
+      "narration": "North, then, straight up the middle with everybody else. Marda chalks your names under NORTH, right at the bottom of a very long list. Tonight you sleep in a real bed while the wagons creak past the hedges all night long, and every one of them is going your way.",
+      "heal": 4,
+      "choices": []
+    },
+    "end_wild": {
+      "type": "rest",
+      "narration": "West, then, into the reeds where hardly anybody else is going. Marda chalks your names under WEST, where there is lots of room. Tonight you sleep in a real bed. Out past the hedges, the marsh frogs sing very loudly, as if they have heard you're coming.",
+      "heal": 4,
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "warm green farm country with something wrong at the edges; funny, kind, a little uneasy, never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "wolves hurting anyone badly",
+      "explaining why the embermoths are flying the wrong way"
+    ],
+    "npcVoices": {
+      "hob": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
+      "sprites": "harvest sprites; tiny, earnest, over-explaining, very serious about guard duty and award ceremonies, heartbroken by a refusal for about four seconds",
+      "pib": "a bramble sprite the size of a teapot who keeps the hedges; earnest, narrates their own maintenance, offers you things you did not ask for, cannot open the hedges for anyone who has not asked properly",
+      "marda": "Marda Thorn, a grey-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
+      "drover": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner"
+    }
+  }
+}
