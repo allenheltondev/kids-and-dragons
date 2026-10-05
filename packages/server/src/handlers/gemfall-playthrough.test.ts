@@ -224,10 +224,13 @@ describe("Gemfall can be played from the Exchange to the mountain", () => {
       runs.push(run);
       expect(["complete", "failed"]).toContain(run.status);
       if (run.status === "complete") {
-        // A finished campaign toured one chapter per beat, in order.
-        expect(run.chapters).toHaveLength(8);
+        // A finished campaign toured one chapter per beat, in order — all
+        // eight, or seven when the Collection took the Walk at the tree line.
         expect(run.chapters[0]).toBe("gemfall-01");
-        expect(run.chapters[7]).toMatch(/^gemfall-08w?$/);
+        const last = run.chapters[run.chapters.length - 1];
+        if (run.chapters.length === 7) expect(last).toBe("gemfall-07h");
+        else expect(run.chapters, "a campaign of eight beats").toHaveLength(8);
+        if (run.chapters.length === 8) expect(last).toBe("gemfall-08");
       }
     });
   }
@@ -237,5 +240,7 @@ describe("Gemfall can be played from the Exchange to the mountain", () => {
     for (const id of ["gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-07r", "gemfall-07h", "gemfall-07l"]) {
       expect(visited, `no run entered ${id}`).toContain(id);
     }
+    // And at least one Collection party took the Walk and finished there.
+    expect(runs.some((r) => r.status === "complete" && r.chapters.length === 7)).toBe(true);
   });
 });

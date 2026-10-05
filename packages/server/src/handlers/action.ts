@@ -23,12 +23,13 @@ import type {
   Character,
   ActionRequest,
   ActionResponse,
+  Campaign,
   Chapter,
   RunState,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
-import type { EventRecord, RunRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
@@ -637,6 +638,17 @@ async function roadTo(
   const flags =
     attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
 
+  // The beat, before the road. A chapter id names its index, and a client that
+  // could start any index it liked could skip a beat or walk an attempt
+  // backwards — and settlement would then record that index as where the
+  // party got to. The answer is the one CONTINUE_CAMPAIGN computes.
+  const expected = expectedIndex(campaign, attempt, deps);
+  if (chapter.index !== expected) {
+    return {
+      refusal: `this party's next chapter of "${campaign.id}" is beat ${expected}, not beat ${chapter.index}`,
+    };
+  }
+
   const road = deps.content.chapterAt(chapter.campaignId, chapter.index, flags);
   if (!road) {
     // Only reachable at a routed beat the party has no flag for — they are
@@ -652,6 +664,24 @@ async function roadTo(
     };
   }
   return { flags };
+}
+
+/**
+ * The beat a party may start next in this campaign — the one rule both
+ * CONTINUE_CAMPAIGN and a direct START_CHAPTER answer to.
+ *
+ * The beat after the last one an active attempt finished; beat one for a fresh
+ * or finished attempt. Past the end can only be an attempt whose final chapter
+ * did not settle it, so that starts over rather than stranding the party at a
+ * beat that does not exist.
+ */
+function expectedIndex(
+  campaign: Campaign,
+  attempt: CampaignProgressRecord | null,
+  deps: HandlerDeps,
+): number {
+  const index = attempt && attempt.status === "active" ? (attempt.lastIndex ?? 0) + 1 : 1;
+  return index > finalIndex(campaign, deps) ? 1 : index;
 }
 
 /**
@@ -671,12 +701,8 @@ async function nextChapter(
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
-  const active = attempt && attempt.status === "active";
-  const flags = active ? { ...(attempt.routeFlags ?? {}) } : {};
-  let index = active ? (attempt.lastIndex ?? 0) + 1 : 1;
-  // Past the end can only be an attempt whose final chapter did not settle it
-  // — start over rather than strand the party at a beat that does not exist.
-  if (index > finalIndex(campaign, deps)) index = 1;
+  const flags = attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
+  const index = expectedIndex(campaign, attempt, deps);
 
   const chapter = deps.content.chapterAt(campaignId, index, flags);
   if (!chapter) {

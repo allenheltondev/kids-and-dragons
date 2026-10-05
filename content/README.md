@@ -47,7 +47,7 @@ needs fixing.
 
 ## Gemfall is the campaign; Bramblewood is the fixture
 
-`campaigns/gemfall.json` is the authored main arc — eight beats, seventeen files, routed by road
+`campaigns/gemfall.json` is the authored main arc — eight beats, sixteen files, routed by road
 and by pursuit — and it is what the lobby launches. Its wiring is
 [docs/campaigns/gemfall-authoring.md](../docs/campaigns/gemfall-authoring.md). Two things it uses
 that the reference chapter below does not:

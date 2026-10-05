@@ -20,12 +20,14 @@ If the two documents disagree about *story*, gemfall.md wins. If they disagree a
 | 5 The Outline of the Truth | 5 | `gemfall-05a` / `-05b` / `-05c` | `road` (same) | `eastern_plains` / `mosshome` / `red_sky_foothills` |
 | 6 The Whole Truth | 6 | `gemfall-06` | — | `red_sky_foothills` |
 | 7 The Gathering | 7 | `gemfall-07r` / `-07h` / `-07l` | `pursuit`: `pursuit_restore` / `pursuit_hoard` / `pursuit_leash` | `red_sky_foothills` |
-| 8 Gemfall | 8 | `gemfall-08` / `-08w` | `summit`: `climbed_the_mountain` / `walked_away` | `mount_red_sky` / `red_sky_foothills` |
+| 8 Gemfall | 8 | `gemfall-08` | — | `mount_red_sky` |
 
-**One correction to gemfall.md:** the Walk does not end the campaign "at the tree line with no
-chapter 8". A campaign completes — and commits everybody's levels — only when a party finishes
-a chapter at its **last beat**. So the Walk is its own short beat-8 file, `gemfall-08w`
-("The Tree Line"), an epilogue chapter with no climb in it. Walkers still never enter the mountain.
+**The Walk ends the campaign inside 07h.** gemfall.md's Collection can turn south at the tree
+line and never climb; a walking party never enters chapter 8. 07h's Walk branch (the `walk_`
+scenes) plays the epilogue in place, and its two endings carry `"endsCampaign": true`, which
+completes the attempt and commits everybody's levels exactly as finishing chapter 8 does. Only an
+ending may carry it (`content:validate`), and only 07h's Walk does (`gemfall-wiring.test.mjs`).
+The Walk's opening grants 60 XP, so a party that finishes a chapter early still reaches Sworn.
 
 ## 2. What survives between evenings
 
@@ -51,7 +53,6 @@ replaces the old one. That is what lets a chapter *re-route* a party (3C's faile
 | `pursuit` | `pursuit_restore`, `pursuit_hoard`, `pursuit_leash` | **every ending of 06** | picks 07; 08 final choices |
 | `seal_clock` | `clock_steady`, `clock_stirring`, `clock_late` | **every ending of 06**; 07 may change it | 07, 08 |
 | `cult` | `refused_the_cult`, `funded_the_break` | optional, 04c/05x/06/07 | 07, 08 |
-| `summit` | `climbed_the_mountain`, `walked_away` | **every ending of 07r/07h/07l** | picks 08 / 08w |
 
 ### The two rules that keep this from stranding a party
 
@@ -62,6 +63,14 @@ replaces the old one. That is what lets a chapter *re-route* a party (3C's faile
 2. **A "must be set" set has to be set on every path to every ending.** Put the `setFlag`
    on the choice or branch that *leads to* each ending, or in the ending scene's `onEnter`.
    02 that ends without a road strands the party at beat 3 with nothing to start.
+
+### The finale is never gated by pursuit
+
+gemfall.md: pursuits are not walls. All four of chapter 8's philosophies — Restore, Destroy,
+Control, Exploit — are ungated in the seal chamber. The pursuit a party declared changes how hard
+each one is, never whether it is there: a Tether party holds the leash on a TN 12 roll and
+anybody else on TN 16; a Collection party lifts the Keystone, and anybody else has to pry it out
+(TN 16, and a fail is Turned Back). Either way the party can step back and choose again.
 
 ### Reading a carried flag
 
@@ -107,7 +116,7 @@ stone stays in the bag as a memory until the campaign ends and quest items are c
 Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
 
 - **18–28 scenes, about 25 minutes.** `estimatedMinutes` 25–30.
-- **`xpAward`**: 01 = 100; 02–07 = 90; 08 and 08w = 120. Objectives total ≤ 25% of it
+- **`xpAward`**: 01 = 100; 02–07 = 90; 08 = 120. Objectives total ≤ 25% of it
   (≤ 22 for a 90 chapter), pointed at flags the chapter already sets.
 - **At least one rest waypoint** (a `rest` scene *with* choices) before the end, and an
   ending (a scene with `"choices": []`). Several endings is normal.

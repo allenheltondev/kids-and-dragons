@@ -6,10 +6,6 @@
   "biome": "mount_red_sky",
   "estimatedMinutes": 30,
   "xpAward": 120,
-  "route": {
-    "set": "summit",
-    "flag": "climbed_the_mountain"
-  },
   "entry": "scene_mouth",
   "objectives": [
     {
@@ -560,33 +556,32 @@
           "id": "leash",
           "label": "Take the leash on the power underneath",
           "icon": "key",
-          "requiresFlag": "pursuit_leash",
           "goto": "scene_tether"
         },
         {
           "id": "keystone",
-          "label": "Take the Keystone and finish the collection",
+          "label": "Reach for the Keystone",
           "icon": "gem",
-          "requiresFlag": "pursuit_hoard",
-          "goto": "ending_collectors",
-          "effects": [
-            {
-              "type": "grantQuestItem",
-              "itemId": "facet_keystone"
-            }
-          ]
+          "goto": "scene_keystone"
         }
       ]
     },
     "scene_tether": {
       "type": "story",
-      "narration": "The power under the mountain rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. The Seal-Keeper watches you with one eye the size of a door. \"Whose hand?\" it asks.",
+      "narration": "The power under the mountain rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. The Seal-Keeper watches you with one eye the size of a door. \"Whose hand?\" it asks. \"And did you bring a leash, or only hands?\"",
       "choices": [
         {
-          "id": "ours",
-          "label": "Ours. We'll hold it ourselves.",
+          "id": "ours_tether",
+          "label": "Ours, with the tether we spent the road making",
           "icon": "hand",
+          "requiresFlag": "pursuit_leash",
           "goto": "check_tether_self"
+        },
+        {
+          "id": "ours",
+          "label": "Ours. We'll hold it with our bare hands.",
+          "icon": "hand",
+          "goto": "check_tether_self_bare"
         },
         {
           "id": "wardens",
@@ -595,10 +590,17 @@
           "goto": "ending_wardens_regret"
         },
         {
-          "id": "cult",
-          "label": "Hand it to the cult's cure, and hold them to the bargain",
+          "id": "cult_tether",
+          "label": "Hand it to the cult, held by the chord and the ledger",
           "icon": "note",
+          "requiresFlag": "pursuit_leash",
           "goto": "check_tether_cult"
+        },
+        {
+          "id": "cult",
+          "label": "Hand it to the cult's cure, and hope they keep the bargain",
+          "icon": "note",
+          "goto": "check_tether_cult_bare"
         },
         {
           "id": "call_voss",
@@ -606,6 +608,12 @@
           "icon": "whistle",
           "requiresFlag": "told_wardens",
           "goto": "ending_wardens_regret"
+        },
+        {
+          "id": "back",
+          "label": "Let go of it, and choose again",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
         }
       ]
     },
@@ -659,7 +667,7 @@
     },
     "ending_collectors": {
       "type": "rest",
-      "narration": "You lift the Keystone. It is warm, and it is yours, and the collection is complete. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and does not move again. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
+      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and does not move again. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
       "heal": 4,
       "choices": []
     },
@@ -701,6 +709,88 @@
       "heal": 3,
       "choices": [],
       "outcome": "setback"
+    },
+    "check_tether_self_bare": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 16,
+      "prompt": "Hold the leash with nothing but your own three pairs of hands",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_new_weather",
+        "narration": "Nobody built you a tether, so you become one. It pulls, and pulls, and then settles in your hands. The Seal-Keeper blinks, which it has not done in a very long time."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "You did not spend the road making a leash, and bare hands are not enough. It pulls once, hard, and slips through all three pairs."
+      }
+    },
+    "check_tether_cult_bare": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Hold the Deep Hollow choir to a bargain you made up just now",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_cure",
+        "narration": "You make the bargain up as you go, and you make it very carefully. Hessa reads it twice and nods. They keep every word."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "Nobody wrote the bargain down, so the choir sings it the way they remember it. One note more than you meant. It is enough."
+      }
+    },
+    "scene_keystone": {
+      "type": "story",
+      "narration": "The Keystone is bigger than your head and warm as bread. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
+      "choices": [
+        {
+          "id": "collectors",
+          "label": "Lift it: seven of its brothers rode up here in your packs",
+          "icon": "gem",
+          "requiresFlag": "pursuit_hoard",
+          "goto": "ending_collectors",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_keystone"
+            }
+          ]
+        },
+        {
+          "id": "take",
+          "label": "Take it anyway",
+          "icon": "gem",
+          "goto": "check_keystone"
+        },
+        {
+          "id": "back",
+          "label": "Put your hands down, and choose again",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "check_keystone": {
+      "type": "check",
+      "stat": "might",
+      "tn": 16,
+      "prompt": "Pry the Keystone out of a seal that does not want to let it go",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_collectors",
+        "narration": "It comes loose with a sound like a cork from the biggest bottle in the world. You did not come up here for this. You are holding it anyway.",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_keystone"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ending_turned_back",
+        "narration": "The Keystone does not budge. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
+      }
     }
   },
   "llmHints": {
