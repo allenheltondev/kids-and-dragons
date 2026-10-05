@@ -23,22 +23,26 @@ import type {
   Character,
   ActionRequest,
   ActionResponse,
+  Campaign,
   Chapter,
   RunState,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
-import type { EventRecord, RunRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
+  expectedIndex,
+  joinOrStartAttempt,
   newCharacterWrite,
   prepareStatPointSpend,
   settleChapterCompletion,
   startPartyCampaign,
   type ChapterSettlement,
+  type StartedAttempt,
 } from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
@@ -58,9 +62,10 @@ export interface ActionInput extends ActionRequest {
 }
 
 export async function applyAction(
-  input: ActionInput,
+  received: ActionInput,
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
+  let input = received;
   const state = await deps.repo.getState(input.runId);
   if (!state) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
@@ -86,6 +91,16 @@ export async function applyAction(
   }
 
   // --- 2. apply ------------------------------------------------------------
+  if (input.intent.type === "CONTINUE_CAMPAIGN") {
+    const next = await nextChapter(input.intent.campaignId, auth.run.householdId, deps);
+    if ("refusal" in next) {
+      return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
+    }
+    // From here on it is an ordinary chapter start — including `roadTo`'s
+    // check below, which re-derives the same answer from the same record.
+    input = { ...input, intent: { type: "START_CHAPTER", chapterId: next.chapterId } };
+  }
+
   const chapter = resolveChapter(input, state, deps);
   if (chapter === undefined) {
     const wanted = input.intent.type === "START_CHAPTER" ? input.intent.chapterId : state.chapterId;
@@ -112,12 +127,27 @@ export async function applyAction(
    * road are they on" is one fact, not two.
    */
   let campaignFlags: Record<string, boolean> = {};
+  let campaignAttemptId: string | null = null;
+  let startedAttempt: StartedAttempt | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
     const road = await roadTo(chapter, auth.run.householdId, deps);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
     campaignFlags = road.flags;
+    if (road.campaign) {
+      // Join the household's active attempt, or start one — so this room
+      // carries the id of the attempt it began under (progression.ts).
+      const joined = joinOrStartAttempt(
+        road.attempt,
+        auth.run.householdId,
+        chapter.campaignId,
+        input.runId,
+        iso(deps.now()),
+      );
+      campaignAttemptId = joined.attemptId;
+      startedAttempt = joined.startedAttempt;
+    }
   }
 
   const nowMs = deps.now();
@@ -221,6 +251,11 @@ export async function applyAction(
   const finishedChapter =
     state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
   const startedCampaign = input.intent.type === "START_CHAPTER" && Boolean(result.state.campaignId);
+  // Which attempt this chapter belongs to, so its completion can be checked
+  // against the attempt it was started under (settleChapterCompletion).
+  if (input.intent.type === "START_CHAPTER") {
+    result = { ...result, state: { ...result.state, campaignAttemptId } };
+  }
   if (startedCampaign && !finishedChapter) {
     // Campaign entry is a progression transition too. Seed/re-seed every
     // stored character and re-resolve the party before diffing so the same
@@ -234,8 +269,18 @@ export async function applyAction(
     // XP, the chapter's record, the setback counter, and — when this
     // completion decides it — the campaign's fate (progression.ts). All of it
     // rides the same conditional commit below.
-    settlement = await settleChapterCompletion(result.state, deps, auth.run.householdId);
+    settlement = await settleChapterCompletion(
+      result.state,
+      deps,
+      auth.run.householdId,
+      startedAttempt ?? undefined,
+    );
     characters.push(...settlement.characters);
+    if (settlement.stale) {
+      // Another room already finished this beat for the household. The table
+      // still sees its chapter end; it is not told it earned XP it did not get.
+      result = { ...result, state: { ...result.state, xpEarned: 0, bonuses: [] } };
+    }
   }
   const progression =
     startedCampaign || finishedChapter || spentCharacter
@@ -309,7 +354,14 @@ export async function applyAction(
           campaignProgress: settlement.campaignProgress,
           campaignProgressExpectedVersion: settlement.campaignProgressExpectedVersion ?? null,
         }
-      : {}),
+      : startedAttempt
+        ? {
+            // A fresh start creates the attempt, conditionally: two rooms
+            // starting at once cannot both create one.
+            campaignProgress: startedAttempt.attempt,
+            campaignProgressExpectedVersion: startedAttempt.expectedVersion,
+          }
+        : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the
@@ -617,13 +669,29 @@ async function roadTo(
   chapter: Chapter,
   householdId: string,
   deps: HandlerDeps,
-): Promise<{ flags: Record<string, boolean> } | { refusal: string }> {
+): Promise<
+  | { flags: Record<string, boolean>; campaign: boolean; attempt: CampaignProgressRecord | null }
+  | { refusal: string }
+> {
   const campaign = deps.content.campaign(chapter.campaignId);
-  if (!campaign || !campaign.chapters.includes(chapter.id)) return { flags: {} };
+  if (!campaign || !campaign.chapters.includes(chapter.id)) {
+    return { flags: {}, campaign: false, attempt: null };
+  }
 
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
   const flags =
     attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
+
+  // The beat, before the road. A chapter id names its index, and a client that
+  // could start any index it liked could skip a beat or walk an attempt
+  // backwards — and settlement would then record that index as where the
+  // party got to. The answer is the one CONTINUE_CAMPAIGN computes.
+  const expected = expectedIndex(campaign, attempt, deps);
+  if (chapter.index !== expected) {
+    return {
+      refusal: `this party's next chapter of "${campaign.id}" is beat ${expected}, not beat ${chapter.index}`,
+    };
+  }
 
   const road = deps.content.chapterAt(chapter.campaignId, chapter.index, flags);
   if (!road) {
@@ -639,7 +707,37 @@ async function roadTo(
       refusal: `this party's road through beat ${chapter.index} is "${road.id}", not "${chapter.id}"`,
     };
   }
-  return { flags };
+  return { flags, campaign: true, attempt };
+}
+
+/**
+ * The chapter a party continuing this campaign plays next.
+ *
+ * The beat after the last one this attempt finished, on the road the attempt
+ * carries. A finished attempt (`complete` or `failed`) or no attempt at all
+ * starts again at beat one with no roads — the same rule `roadTo` applies to
+ * seeding, so a replayed campaign chooses its roads again.
+ */
+async function nextChapter(
+  campaignId: string,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<{ chapterId: string } | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }> {
+  const campaign = deps.content.campaign(campaignId);
+  if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
+
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
+  const flags = attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
+  const index = expectedIndex(campaign, attempt, deps);
+
+  const chapter = deps.content.chapterAt(campaignId, index, flags);
+  if (!chapter) {
+    return {
+      refusal: `beat ${index} of "${campaignId}" is several roads, and this party has not taken one`,
+      code: "ILLEGAL",
+    };
+  }
+  return { chapterId: chapter.id };
 }
 
 /**

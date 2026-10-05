@@ -177,6 +177,121 @@ export async function startPartyCampaign(
   return transformParty(state, deps, householdId, [], (character) => character);
 }
 
+/**
+ * The beat a party may play next in this campaign — the one rule chapter
+ * start (both CONTINUE_CAMPAIGN and a direct START_CHAPTER) and settlement
+ * answer to.
+ *
+ * The beat after the last one an active attempt finished; beat one for a fresh
+ * or finished attempt. Past the end can only be an attempt whose final chapter
+ * did not settle it, so that starts over rather than stranding the party at a
+ * beat that does not exist.
+ */
+export function expectedIndex(
+  campaign: Campaign,
+  attempt: CampaignProgressRecord | null,
+  deps: HandlerDeps,
+): number {
+  const index = attempt && attempt.status === "active" ? (attempt.lastIndex ?? 0) + 1 : 1;
+  return index > finalIndex(campaign, deps) ? 1 : index;
+}
+
+/** An attempt a chapter start is creating, and the version its write expects. */
+export interface StartedAttempt {
+  attempt: CampaignProgressRecord;
+  expectedVersion: number | null;
+}
+
+function newAttempt(
+  householdId: string,
+  campaignId: string,
+  runId: string,
+  now: string,
+  version: number,
+): CampaignProgressRecord {
+  return {
+    householdId,
+    campaignId,
+    status: "active",
+    setbacks: 0,
+    lastIndex: 0,
+    // The row version is unique per household campaign row, so the id is too.
+    attemptId: `${campaignId}:${version}:${runId}:${now}`,
+    version,
+    updatedAt: now,
+  };
+}
+
+/**
+ * The attempt a chapter start belongs to. An active attempt is joined; with
+ * none — a household's first time, or a replay after one finished — the start
+ * *creates* it, so every room that begins a beat carries the id of the attempt
+ * it began under. Minting it here rather than at the first completion is what
+ * lets a stale beat-1 room from a finished attempt be told apart from the
+ * replay that followed it: they carry different ids.
+ *
+ * `startedAttempt` is null when the start joins an existing attempt (nothing
+ * to write); otherwise it is the row the start's own commit writes, under the
+ * version it read, so two rooms starting fresh at once cannot both create one.
+ */
+export function joinOrStartAttempt(
+  existing: CampaignProgressRecord | null,
+  householdId: string,
+  campaignId: string,
+  runId: string,
+  now: string,
+): { attemptId: string | null; startedAttempt: StartedAttempt | null } {
+  if (existing && existing.status === "active") {
+    return { attemptId: existing.attemptId ?? null, startedAttempt: null };
+  }
+  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1);
+  return {
+    attemptId: attempt.attemptId ?? null,
+    startedAttempt: { attempt, expectedVersion: existing ? (existing.version ?? 0) : null },
+  };
+}
+
+/**
+ * Is this completion no longer its attempt's next beat?
+ *
+ * A household can play its campaign in two rooms at once. If another room
+ * finished this beat first, or the attempt the room began under has since
+ * ended, the completion is stale: awarding it would hand out the beat twice,
+ * and recording it would move `lastIndex` somewhere the attempt has passed.
+ *
+ * Against an active attempt: the run must carry that attempt's id, and its
+ * chapter must be the attempt's next beat. With no active attempt there is
+ * nothing a current run can belong to — chapter start creates one — so the
+ * only admissible completion is a run from before chapter start stamped
+ * anything (`campaignAttemptId` absent) at beat one of a household that has
+ * never had an attempt at all, which settles the way it always did.
+ */
+function isStale(
+  state: RunState,
+  chapter: Chapter,
+  campaign: Campaign,
+  existing: CampaignProgressRecord | null,
+  deps: HandlerDeps,
+): boolean {
+  if (existing && existing.status === "active") {
+    return (
+      chapter.index !== expectedIndex(campaign, existing, deps) ||
+      (state.campaignAttemptId ?? null) !== (existing.attemptId ?? null)
+    );
+  }
+  return !(existing === null && state.campaignAttemptId === undefined && chapter.index === 1);
+}
+
+/** The highest beat a campaign's chapters reach. */
+export function finalIndex(campaign: Campaign, deps: HandlerDeps): number {
+  let last = 0;
+  for (const id of campaign.chapters) {
+    const chapter = deps.content.chapter(id);
+    if (chapter && chapter.index > last) last = chapter.index;
+  }
+  return last;
+}
+
 /** Spec §8.3's default. A campaign may tune it (`Campaign.setbackLimit`). */
 const DEFAULT_SETBACK_LIMIT = 3;
 
@@ -188,6 +303,11 @@ export interface ChapterSettlement {
   chapterProgress?: ChapterProgressRecord;
   campaignProgress?: CampaignProgressRecord;
   campaignProgressExpectedVersion?: number | null;
+  /**
+   * The completion belonged to a beat its attempt has already moved past (see
+   * `settleChapterCompletion`). Nothing was awarded or recorded.
+   */
+  stale?: boolean;
 }
 
 /**
@@ -218,10 +338,37 @@ export async function settleChapterCompletion(
   state: RunState,
   deps: HandlerDeps,
   householdId: string,
+  /**
+   * An attempt this same action is creating (a chapter start whose entry scene
+   * is already an ending), not yet committed: settle against it rather than
+   * the stored row, and keep its write's version condition.
+   */
+  pending?: StartedAttempt,
 ): Promise<ChapterSettlement> {
   const now = iso(deps.now());
   const outcome = state.chapterOutcome ?? "success";
   const chapter = state.chapterId ? deps.content.chapter(state.chapterId) : null;
+  const campaignId = state.campaignId;
+  const campaign = campaignId ? deps.content.campaign(campaignId) : null;
+
+  /*
+   * The attempt — read, and judged, before anything is folded. Folding XP and
+   * the bag re-resolves the run's party in place, so a check after it would
+   * keep the durable rows clean and still hand the room a phantom level or a
+   * quest item that opens a door next chapter.
+   *
+   * A record whose status is `complete` or `failed` is a finished attempt —
+   * starting to count from it again would make a replayed campaign inherit its
+   * own history and insta-fail (see CampaignProgressRecord).
+   */
+  const existing =
+    campaignId && campaign && chapter
+      ? (pending?.attempt ?? (await deps.repo.getCampaignProgress(householdId, campaignId)))
+      : null;
+  if (campaign && chapter && isStale(state, chapter, campaign, existing, deps)) {
+    return { characters: [], awards: [], stale: true };
+  }
+
   const award = await foldChapterXpDetails(state, deps, householdId, chapter);
   const characters = award.characters;
   const xpEarned = chapter ? computeChapterXp(state, chapter) : 0;
@@ -238,32 +385,38 @@ export async function settleChapterCompletion(
       }
     : undefined;
 
-  const campaignId = state.campaignId;
-  const campaign = campaignId ? deps.content.campaign(campaignId) : null;
   if (!campaignId || !campaign || !chapter) {
     return { characters, awards: award.awards, ...(chapterProgress ? { chapterProgress } : {}) };
   }
 
-  /*
-   * The attempt. A record whose status is `complete` or `failed` is a finished
-   * attempt — starting to count from it again would make a replayed campaign
-   * inherit its own history and insta-fail (see CampaignProgressRecord).
-   */
-  const existing = await deps.repo.getCampaignProgress(householdId, campaignId);
   // The run seq serializes one room. This version serializes the household row
-  // across rooms, so two campaign evenings cannot overwrite each other's count.
-  const campaignProgressExpectedVersion = existing ? (existing.version ?? 0) : null;
-  const version = (existing?.version ?? 0) + 1;
+  // across rooms, so two campaign evenings cannot overwrite each other's count
+  // — and two rooms racing to finish the same beat cannot both count it.
+  const campaignProgressExpectedVersion = pending
+    ? pending.expectedVersion
+    : existing
+      ? (existing.version ?? 0)
+      : null;
+  const version = pending ? (pending.attempt.version ?? 1) : (existing?.version ?? 0) + 1;
   const attempt: CampaignProgressRecord =
     existing && existing.status === "active"
       ? { ...existing, version, updatedAt: now }
-      : { householdId, campaignId, status: "active", setbacks: 0, version, updatedAt: now };
+      : // Only reachable for a run started before chapter start began creating
+        // the attempt (isStale admits exactly that case).
+        newAttempt(householdId, campaignId, state.runId, now, version);
   if (outcome === "setback") attempt.setbacks += 1;
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
+  attempt.lastIndex = chapter.index;
 
   const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;
-  const finalChapter = campaign.chapters[campaign.chapters.length - 1] === chapter.id;
+  // The final *beat*, not the last-listed file: a routed last beat has several
+  // files at the same index (Gemfall's climb and its Walk), and finishing any
+  // one of them finishes the campaign.
+  // Or an ending authored to finish the campaign early (`endsCampaign`).
+  const ending = state.sceneId ? chapter.scenes[state.sceneId] : undefined;
+  const endsCampaign = ending !== undefined && "endsCampaign" in ending && ending.endsCampaign === true;
+  const finalChapter = endsCampaign || chapter.index === finalIndex(campaign, deps);
 
   if (attempt.setbacks >= limit) {
     attempt.status = "failed";

@@ -1,0 +1,300 @@
+{
+  "$comment": "Gemfall beat 5 on the River Road (docs/campaigns/gemfall.md, 5A). `allies` is set exactly once, by the three choices of scene_who_to_tell, which every path to every ending passes through once (it sits before the crossing and nothing loops back). `cult` is optional and only ever set by scene_cult_pitch, on one of two choices, so no path sets both. The setback needs a failed span crossing, then a failed wolf check or the fight picked, and the fight lost.",
+  "id": "gemfall-05a",
+  "campaignId": "gemfall",
+  "index": 5,
+  "title": "The Broken Bridge",
+  "biome": "eastern_plains",
+  "route": { "set": "road", "flag": "route_river" },
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "entry": "scene_bridge",
+  "objectives": [
+    { "id": "prospector", "label": "Helped somebody whose rush was over", "flag": "helped_a_prospector", "xp": 7 },
+    { "id": "ledger", "label": "Kept the clerk's ledger honest", "flag": "kept_the_ledger", "xp": 7 },
+    { "id": "outline", "label": "Plotted the outline of the truth yourselves", "flag": "plotted_it_yourself", "xp": 8 }
+  ],
+  "props": {
+    "facet_clerks": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Clerk's Stone",
+      "text": "Logged, tagged 4117, and crossing westbound. Then, very irregularly, not."
+    }
+  },
+  "scenes": {
+    "scene_bridge": {
+      "type": "story",
+      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over.",
+      "choices": [
+        { "id": "join_line", "label": "Join the ration line", "icon": "arrow", "goto": "scene_soup_line" },
+        { "id": "circle_spans", "label": "Circle the cracked spans first", "icon": "wing", "requiresSpecies": "griffin", "goto": "scene_spans_from_above" }
+      ]
+    },
+    "scene_spans_from_above": {
+      "type": "story",
+      "narration": "From the air the crack is not one crack. It is dozens, and they all lean the same way, like grass in a wind. The wind is coming from the mountain. A warden engineer on the bridge looks up, sees you, and writes something down.",
+      "onEnter": [{ "type": "setFlag", "flag": "read_the_cracks", "value": true }],
+      "choices": [
+        { "id": "land_line", "label": "Land and join the line", "icon": "wing", "goto": "scene_soup_line" }
+      ]
+    },
+    "scene_soup_line": {
+      "type": "story",
+      "narration": "Halfway along the line is a pot of soup the size of a bathtub. The woman stirring it hands a bowl to a muddy prospector before she says a single word to anyone. Her name is Hollis. Her apron says DEEP HOLLOW in small, tidy stitches. Behind her, the prospector's wheelbarrow has lost a wheel.",
+      "choices": [
+        { "id": "take_bowl", "label": "Take a bowl and listen", "icon": "ear", "goto": "scene_cult_pitch" },
+        {
+          "id": "fix_barrow",
+          "label": "Fix the prospector's wheelbarrow",
+          "icon": "hand",
+          "goto": "scene_cult_pitch",
+          "effects": [{ "type": "setFlag", "flag": "helped_a_prospector", "value": true }]
+        },
+        { "id": "stay_in_line", "label": "Thank her and keep your place", "icon": "arrow", "goto": "scene_clerk" }
+      ]
+    },
+    "scene_cult_pitch": {
+      "type": "story",
+      "narration": "Hollis talks while she ladles, gently, like she's telling you the weather. \"The world's rules are broken, love. Look at this line. The power under the mountain could write new ones. The seal on it isn't a lock. It's a lid on the cure.\" She nods at a jar labelled THE BREAK. It is half full of humming stones.",
+      "choices": [
+        { "id": "say_no_kindly", "label": "Say no, kindly", "icon": "heart", "goto": "scene_clerk", "effects": [{ "type": "setFlag", "flag": "refused_the_cult", "value": true }] },
+        { "id": "drop_stone", "label": "Drop a humming stone in the jar", "icon": "gem", "goto": "scene_clerk", "effects": [{ "type": "setFlag", "flag": "funded_the_break", "value": true }] },
+        { "id": "finish_soup", "label": "Finish your soup and say nothing", "icon": "cake", "goto": "scene_clerk" }
+      ]
+    },
+    "scene_clerk": {
+      "type": "story",
+      "narration": "At the bridge foot, a warden clerk named Pellam writes down every gem that crosses westbound, and keeps none of them. \"Logged is not owned,\" he says. \"Owned is not my department.\" A tagged caravan rolls up: gem 4117. As it passes, it hums, and his pen skips right off the page.",
+      "choices": [
+        { "id": "ask_carter", "label": "Ask the carter what she'd take for it", "icon": "heart", "goto": "check_carter" },
+        { "id": "find_rule", "label": "Find a rule in Pellam's big book", "icon": "scroll", "goto": "check_ledger" },
+        {
+          "id": "let_it_cross",
+          "label": "Let it cross, and write down where it's going",
+          "icon": "eye",
+          "goto": "scene_engineers",
+          "effects": [{ "type": "setFlag", "flag": "kept_the_ledger", "value": true }]
+        }
+      ]
+    },
+    "check_carter": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk a tired carter into trading gem 4117",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_clerk_stone",
+        "narration": "She has been listening to that gem hum for nine days. \"Take it,\" she says. \"Give me a song I can sing over it instead.\" You give her the best one you know."
+      },
+      "onFailure": {
+        "goto": "scene_engineers",
+        "narration": "\"Promised to a buyer in the foothills,\" she says, and clicks to her mule. Gem 4117 hums away west across the bridge."
+      }
+    },
+    "check_ledger": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find the rule that lets a logged gem change hands",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_clerk_stone",
+        "narration": "Page four hundred and twelve: a logged gem may be transferred at the crossing if both parties sign and the clerk is not on his lunch. Pellam checks his watch. He is not on his lunch."
+      },
+      "onFailure": {
+        "goto": "scene_engineers",
+        "narration": "You find a rule about goats, a rule about very large goats, and a rule about goats that are actually two children in a coat. By the time you look up, gem 4117 is across."
+      }
+    },
+    "scene_clerk_stone": {
+      "type": "story",
+      "narration": "Pellam crosses out WESTBOUND, writes EASTBOUND, crosses that out, and writes WITH THEM, pointing at you. \"Very irregular,\" he says. \"Entirely legal.\" The stone is cool and heavy, and its hum makes your teeth feel fizzy.",
+      "onEnter": [
+        { "type": "grantQuestItem", "itemId": "facet_clerks" },
+        { "type": "setFlag", "flag": "kept_the_ledger", "value": true }
+      ],
+      "choices": [
+        { "id": "to_engineers", "label": "Go and see the engineers", "icon": "arrow", "goto": "scene_engineers" }
+      ]
+    },
+    "scene_engineers": {
+      "type": "story",
+      "narration": "In the engineers' tent, a big chalk survey of the bridge is pinned up, every crack drawn in red. Engineer Brask, who has a pencil behind each ear and a third one she has forgotten about, says the cracks came with the tremors. Then she frowns at the drawing, as if it has just said something rude.",
+      "choices": [
+        { "id": "lay_evidence", "label": "Lay your evidence beside the survey", "icon": "map", "goto": "check_outline" },
+        { "id": "cracks_lean", "label": "Tell her the cracks all lean one way", "icon": "wing", "requiresFlag": "read_the_cracks", "goto": "scene_outline", "effects": [{ "type": "setFlag", "flag": "plotted_it_yourself", "value": true }] }
+      ]
+    },
+    "check_outline": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Plot everything you've seen since Bramblewood against the cracks",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_outline",
+        "narration": "You draw it in chalk yourselves: the troll's humming bridge, the bent pride roads, the spiralling sashes. Then you draw the cracks over the top.",
+        "effects": [{ "type": "setFlag", "flag": "plotted_it_yourself", "value": true }]
+      },
+      "onFailure": {
+        "goto": "scene_outline",
+        "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
+      }
+    },
+    "scene_outline": {
+      "type": "story",
+      "narration": "Everything points the same way. The troll's old note, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down.",
+      "choices": [
+        { "id": "to_tent_rest", "label": "Sit down too", "icon": "rest", "goto": "rest_tent" }
+      ]
+    },
+    "rest_tent": {
+      "type": "rest",
+      "narration": "The engineers share their tea, which is very strong and has a tremor ripple in every cup. Outside, the bridge creaks like an old ship. Rest a while. You have the outline of the truth, and now you have to decide what to do with it.",
+      "heal": 2,
+      "choices": [
+        { "id": "decide", "label": "Talk it over", "icon": "party", "goto": "scene_who_to_tell" }
+      ]
+    },
+    "scene_who_to_tell": {
+      "type": "choice_point",
+      "narration": "The wardens are right here: honest, careful, and already talking about acceptable losses. Out on the road, a dragonling bell-rider is heading home to the gathering towns, who have kept the mountain's rules for a thousand years. Or you could fold the map up small and keep it. Who do you tell? Everybody vote.",
+      "choices": [
+        { "id": "tell_wardens", "label": "Tell the wardens, right now", "icon": "shield", "goto": "scene_told_wardens", "effects": [{ "type": "setFlag", "flag": "told_wardens", "value": true }] },
+        { "id": "tell_gatherers", "label": "Send it with the dragonling bell-rider", "icon": "whistle", "goto": "scene_told_gatherers", "effects": [{ "type": "setFlag", "flag": "told_gatherers", "value": true }] },
+        { "id": "keep_close", "label": "Keep it close, for now", "icon": "key", "goto": "scene_kept_close", "effects": [{ "type": "setFlag", "flag": "kept_close", "value": true }] }
+      ]
+    },
+    "scene_told_wardens": {
+      "type": "story",
+      "narration": "Brask listens to all of it, writes all of it down, and underlines the bit about the mountain three times. \"Thank you,\" she says, completely serious. \"This changes the arithmetic.\" She tears a crossing pass out of her book. It is the first thing all day anybody has given away for free.",
+      "choices": [
+        { "id": "to_crossing_w", "label": "Out to the bridge", "icon": "arrow", "goto": "scene_crossing" }
+      ]
+    },
+    "scene_told_gatherers": {
+      "type": "story",
+      "narration": "The bell-rider, Nim, is a dragonling about your size on a very small, very fast pony. She listens, rings her bell once, high and clear, and says, \"Grandmother is going to say she told everyone.\" Then she gallops north with your news.",
+      "choices": [
+        { "id": "to_crossing_g", "label": "Out to the bridge", "icon": "arrow", "goto": "scene_crossing" }
+      ]
+    },
+    "scene_kept_close": {
+      "type": "story",
+      "narration": "You fold the chalk map small, smaller, smallest, until it fits inside a boot. Nobody else knows. That is either very wise or very lonely, and you'll find out which. Somewhere in your packs, the stones keep humming, as if they know too.",
+      "choices": [
+        { "id": "to_crossing_k", "label": "Out to the bridge", "icon": "arrow", "goto": "scene_crossing" }
+      ]
+    },
+    "scene_crossing": {
+      "type": "choice_point",
+      "narration": "Your turn on the bridge. The cracked span sways a little under each cart, and a warden at the end waves you on, two at a time, with a flag. Below, the river is cold and loud. On the far side the land climbs toward a red sky.",
+      "choices": [
+        { "id": "ration", "label": "Take your ration turn on the span", "icon": "boot", "goto": "check_span" },
+        { "id": "brask_pass", "label": "Show Brask's crossing pass", "icon": "scroll", "requiresFlag": "told_wardens", "goto": "scene_far_rim" },
+        { "id": "griffin_shortcut", "label": "Carry everyone over the gap, unofficially", "icon": "wing", "requiresSpecies": "griffin", "goto": "scene_griffin_shortcut" }
+      ]
+    },
+    "check_span": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Cross the swaying span before the warden's flag drops",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "Step, sway, step, sway, and you're over. The warden at the far end gives you a very small nod, which from a Skywarden is practically a hug."
+      },
+      "onFailure": {
+        "goto": "scene_under_bridge",
+        "narration": "Halfway across, the bridge gives a long groan and the flag slams down. \"Span closed! Everybody back!\" The only other way over is the old pride ford, underneath."
+      }
+    },
+    "scene_under_bridge": {
+      "type": "story",
+      "narration": "Under the bridge the stone is warm from the sun, and somebody else has noticed. A pack of cinder wolves lies heaped against the pillars, ember-eyed and cold, a long way from home. They lift their heads at the hum in your packs and do not like it at all.",
+      "choices": [
+        { "id": "offer_food", "label": "Leave them your supper and tiptoe past", "icon": "cake", "goto": "check_wolves" },
+        { "id": "push_through", "label": "Push through to the ford", "icon": "swords", "goto": "encounter_wolves" }
+      ]
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Get the pack interested in supper instead of you",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "Every nose turns toward the supper. You wade the ford with your boots in your hands while a dozen ember eyes ignore you completely."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "The supper is gone in four seconds. The pack looks at you as if to say: is that all?"
+      }
+    },
+    "encounter_wolves": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The pack spreads along both shallow crossings, guarding the warm side of the river.",
+      "enemies": [{ "id": "wolf", "name": "Cinder Wolf", "creature": "cinder_wolf" }],
+      "onVictory": {
+        "goto": "scene_far_rim",
+        "narration": "The wolves give way, grumbling, and pile back up against their warm pillar. You wade across while they pretend they meant to move anyway."
+      },
+      "onDefeat": {
+        "goto": "rest_setback",
+        "narration": "The pack holds the ford, and you end up back on the south bank, soggy and outnumbered."
+      }
+    },
+    "scene_griffin_shortcut": {
+      "type": "story",
+      "narration": "One at a time, you carry everybody over the broken gap, wings beating hard over the cold water. Behind you, clerk Pellam watches the whole thing, sighs, and writes UNRATIFIED in his ledger in very large letters.",
+      "choices": [
+        { "id": "on_to_rim", "label": "On to the far rim", "icon": "arrow", "goto": "scene_far_rim" }
+      ]
+    },
+    "scene_far_rim": {
+      "type": "story",
+      "narration": "The far side climbs, and keeps climbing. The grass gets shorter, the stones get redder, and the sky ahead glows like the inside of a lantern. These are the foothills of Mount Red Sky, and you are coming down into them from the north-east, with the truth folded up in your packs.",
+      "choices": [
+        { "id": "make_camp", "label": "Make camp on the rim", "icon": "flame", "goto": "rest_end" }
+      ]
+    },
+    "rest_end": {
+      "type": "rest",
+      "narration": "You camp on the rim and look down. The foothills are full of tiny campfires, thousands of them, all the rush in the world. Above it all, the mountain glows. The stones hum. Somebody has to put this all together on one table, and tomorrow, at the citadel, somebody will.",
+      "heal": 4,
+      "choices": []
+    },
+    "rest_setback": {
+      "type": "rest",
+      "narration": "Nobody is hurt; the wolves just wanted the warm side more. You wait two whole days on the south bank for the span to open again, while the rush gets further ahead and the mountain glows a little brighter every night. In the end Pellam waves you across himself. \"Logged,\" he says. \"Late. But logged.\"",
+      "heal": 3,
+      "outcome": "setback",
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "busy, grey-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "the cult as villains; they are kind first, always",
+      "naming what the titan or the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "hollis": "a Deep Hollow Cult recruiter with a giant soup pot; gentle, patient, calls everyone 'love'; feeds people before she says anything; sincerely believes the seal is a lid on a cure",
+      "pellam": "a Skywarden clerk; dry, precise, logs everything and keeps nothing; 'logged is not owned'; secretly enjoys irregular-but-legal",
+      "brask": "Skywarden engineer; pencils behind both ears; blunt and honest; talks about arithmetic and acceptable losses but is not unkind",
+      "carter": "a tired caravan driver; has heard gem 4117 hum for nine days; trades for a song",
+      "nim": "a dragonling bell-rider on a tiny fast pony; quick, proud, a little cheeky about her grandmother"
+    }
+  }
+}

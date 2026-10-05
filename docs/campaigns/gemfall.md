@@ -2,7 +2,7 @@
 
 **Canon id:** `campaign.gemfall` · **Chapters:** 8 story beats (16 authored
 chapter files — see [Routes](#routes-fixed-beats-branching-country)) ·
-**Status:** `newly_defined`
+**Status:** `newly_defined` · **Content:** authored and playable (see [Build order](#build-order))
 
 A violent eruption from Mount Red Sky scatters powerful gemstones across the
 realm, launching the largest treasure rush in living memory. The player runs a
@@ -983,7 +983,28 @@ and its keeper.
 
 ## Build order
 
-The whole thing does not need building now. The intended sequence:
+> **Built.** All sixteen story files are authored. The Walk ends the
+> campaign at 7H's tree line, as above: its endings are marked
+> `endsCampaign`, which completes the attempt without a chapter 8. How the
+> files are wired (which flags each sets, which survive between evenings, the
+> facets as quest items) is
+> [gemfall-authoring.md](./gemfall-authoring.md), and three tests hold it:
+> `content:validate`, `tools/content/gemfall-wiring.test.mjs` (every chapter
+> sets the forks it owes, on every path), and
+> `packages/server/src/handlers/gemfall-playthrough.test.ts`, which plays the
+> whole campaign through the real server under 24 seeds — every one reaches
+> an ending, and between them they walk every road and every pursuit.
+>
+> What the engine cannot yet express from the design above, and how the
+> content approximates it: the **Seal Clock** is a three-stage fork
+> (`clock_steady` / `clock_stirring` / `clock_late`) set in 6 and 7 rather
+> than a running count, and it *gives or withholds* easier ways through
+> chapter 8 rather than forcing a loss — there is no "requires NOT flag", so a
+> carried flag can only ever add a choice. The losses are setback endings
+> reached through failed races and lost fights. Facets cannot be removed from
+> the bag, so giving one back is narration plus a flag.
+
+The sequence it was built in:
 
 1. `content/campaigns/gemfall.json` + `gemfall-01` (Exchange chapter) as the
    first authored chapter, following the `bramblewood-01` scene-graph shape.

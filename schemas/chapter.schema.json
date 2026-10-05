@@ -388,6 +388,10 @@
         "setback"
       ]
     },
+    "endsCampaign": {
+      "description": "This ending finishes the whole campaign, not just the chapter: the attempt completes and the party's gains commit, exactly as finishing the campaign's last beat does. For an authored exit before the last beat, such as Gemfall's Walk. Only read on a scene with an empty `choices` array \u2014 the validator rejects it anywhere else.",
+      "const": true
+    },
     "objective": {
       "description": "ChapterObjective in chapter.ts. `flag` is watched, not set \u2014 author a setFlag effect wherever the thing happens and point at it. There is no second mechanism.",
       "type": "object",
@@ -703,6 +707,9 @@
         },
         "outcome": {
           "$ref": "#/$defs/outcome"
+        },
+        "endsCampaign": {
+          "$ref": "#/$defs/endsCampaign"
         }
       }
     },
@@ -798,6 +805,9 @@
         },
         "outcome": {
           "$ref": "#/$defs/outcome"
+        },
+        "endsCampaign": {
+          "$ref": "#/$defs/endsCampaign"
         }
       }
     },
@@ -834,6 +844,9 @@
         },
         "outcome": {
           "$ref": "#/$defs/outcome"
+        },
+        "endsCampaign": {
+          "$ref": "#/$defs/endsCampaign"
         }
       }
     },

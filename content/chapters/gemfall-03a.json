@@ -1,0 +1,353 @@
+{
+  "$comment": "Gemfall beat 3 on the River Road (docs/campaigns/gemfall.md, 3A). Every ending sets exactly one member of `crossing`: rest_dry_end sets crossed_dry on entry; scene_swept sets river_took_us on entry and is the only door to rest_wet_end and rest_setback. The two never share a path - scene_swept is reached only from a failed crossing check or a lost drake fight, and rest_dry_end only from a passed crossing check. The setback needs a swept party to fail a crawler check AND lose the crawler fight.",
+  "id": "gemfall-03a",
+  "campaignId": "gemfall",
+  "index": 3,
+  "title": "The Long Mile",
+  "biome": "stone_crossing",
+  "route": { "set": "road", "flag": "route_river" },
+  "estimatedMinutes": 28,
+  "xpAward": 90,
+  "entry": "scene_east_road",
+  "objectives": [
+    { "id": "markers", "label": "Put the centaurs' road markers back", "flag": "restored_markers", "xp": 8 },
+    { "id": "queue", "label": "Kept the crossing queue fair", "flag": "kept_queue_honest", "xp": 7 },
+    { "id": "drake_rate", "label": "Got a fair rate from the river drake", "flag": "drake_traded", "xp": 7 }
+  ],
+  "props": {
+    "facet_drakes_rate": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Drake's Rate",
+      "text": "The newest piece on a river drake's hoard shelf. Marked PAID, underlined twice."
+    },
+    "ossley_reed_knot": {
+      "kind": "quest",
+      "icon": "charm",
+      "name": "Ossley's Reed Knot",
+      "text": "A reed knot from Old Ossley. \"Later. When I'm going your way.\" It never dries."
+    }
+  },
+  "scenes": {
+    "scene_east_road": {
+      "type": "story",
+      "narration": "The east road runs at the river like it is late for something. Every mile marker along it is missing. Where MILE 3 used to stand, somebody is cooking porridge on the stump.",
+      "choices": [
+        { "id": "restore", "label": "Help put the markers back", "icon": "map", "goto": "check_markers" },
+        { "id": "wave_first", "label": "Wave first, the old road way", "icon": "hand", "requiresSpecies": "manticore", "goto": "scene_courtesy" },
+        { "id": "walk_on", "label": "Keep walking to the crossing", "icon": "arrow", "goto": "scene_queue" }
+      ]
+    },
+    "check_markers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put the centaurs' marker line back in the right order",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_fennick",
+        "narration": "Mile one, mile two, mile three, all the way to the river. A centaur gallops up, counts them twice, and looks like she might cry with relief.",
+        "effects": [{ "type": "setFlag", "flag": "restored_markers", "value": true }]
+      },
+      "onFailure": {
+        "goto": "scene_queue",
+        "narration": "Every marker goes back in. MILE 7 goes back in between MILE 2 and MILE 3, so the road now runs backwards for a bit. A centaur thunders past, groans, and fixes it without stopping. No guide for you today."
+      }
+    },
+    "scene_courtesy": {
+      "type": "story",
+      "narration": "You wave first, from far off, tail curled politely away, the way road peoples have done for longer than anybody remembers. A centaur on the ridge stops dead, puts a hand on her heart, and waves back so hard her sash ribbons tangle.",
+      "choices": [
+        { "id": "accept_escort", "label": "Go and say hello properly", "icon": "hand", "goto": "scene_fennick" }
+      ]
+    },
+    "scene_fennick": {
+      "type": "story",
+      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor.\"",
+      "onEnter": [{ "type": "setFlag", "flag": "had_a_guide", "value": true }],
+      "choices": [
+        { "id": "follow_fennick", "label": "Follow Fennick to the river", "icon": "arrow", "goto": "scene_queue" }
+      ]
+    },
+    "scene_queue": {
+      "type": "story",
+      "narration": "Stone Crossing: giant flat stones laid across the narrowest bit of the Great River, and in front of them the longest queue in the world. Someone near the back is selling queue soup. Up near the front, six people in matching brass hats are very quietly moving the queue rope.",
+      "choices": [
+        { "id": "call_out", "label": "Call the brass hats out", "icon": "eye", "goto": "check_rivals" },
+        { "id": "spot_from_above", "label": "Fly up and catch them at it", "icon": "wing", "requiresSpecies": "griffin", "goto": "scene_rivals_caught" },
+        { "id": "let_it_go", "label": "Let it go and wait your turn", "icon": "rest", "goto": "scene_troll" }
+      ]
+    },
+    "check_rivals": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Prove the Brassbuckle Expedition moved the queue rope",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_rivals_caught",
+        "narration": "You point out that the rope has fresh knots, the knots are brass-hat knots, and one of them still has a brass hat caught in it."
+      },
+      "onFailure": {
+        "goto": "scene_troll",
+        "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
+      }
+    },
+    "scene_rivals_caught": {
+      "type": "story",
+      "narration": "A troll who does not hurry walks the whole Brassbuckle Expedition to the back of the queue. In their rush they leave behind a coil of good rope, tied across the shallows. It was their secret shortcut. Now it is yours.",
+      "onEnter": [{ "type": "setFlag", "flag": "kept_queue_honest", "value": true }],
+      "choices": [
+        { "id": "to_troll", "label": "Step up to the toll", "icon": "arrow", "goto": "scene_troll" }
+      ]
+    },
+    "scene_troll": {
+      "type": "story",
+      "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you'd rest a hand on a sleeping dog. The toll is a story or a riddle from each of you, and he hears every single one in full. Slowly.",
+      "choices": [
+        { "id": "tell_story", "label": "Tell him a story", "icon": "scroll", "goto": "scene_troll_hum" },
+        { "id": "ask_riddle", "label": "Ask him a riddle", "icon": "clever", "goto": "scene_troll_hum" },
+        {
+          "id": "riddle_account",
+          "label": "Bring him the prides' riddle score",
+          "icon": "crown",
+          "requiresSpecies": "manticore",
+          "goto": "scene_troll_hum",
+          "effects": [{ "type": "grantItem", "itemId": "luckstone", "to": "roller" }]
+        }
+      ]
+    },
+    "scene_troll_hum": {
+      "type": "story",
+      "narration": "Halfway through, Old Lintel stops listening to you and starts listening to the bridge. \"The stones in your packs are humming,\" he rumbles. \"Everybody's are. A note older than this bridge, and this bridge is not young.\" He has stopped asking riddles this season. Now there is only one toll: \"Where did you get that? And where is it going?\"",
+      "onEnter": [{ "type": "setFlag", "flag": "heard_the_hum", "value": true }],
+      "choices": [
+        { "id": "answer_honest", "label": "Answer him honestly", "icon": "heart", "goto": "rest_queue_camp" },
+        { "id": "dont_know", "label": "Admit you don't know yet", "icon": "ear", "goto": "rest_queue_camp" },
+        { "id": "show_ember", "label": "Show him the Ember Facet", "icon": "gem", "requiresItem": "facet_ember", "goto": "rest_queue_camp" }
+      ]
+    },
+    "rest_queue_camp": {
+      "type": "rest",
+      "narration": "The queue moves about one troll-story an hour, so everybody camps right where they stand. Someone shares toffee. Somebody else's goat eats the toffee. Sit a while and listen to the river argue with the stones.",
+      "heal": 2,
+      "choices": [
+        { "id": "see_shelf", "label": "Look under the bridge", "icon": "eye", "goto": "scene_drake_shelf" },
+        { "id": "to_bank", "label": "Wait for your turn at the water", "icon": "arrow", "goto": "scene_crossing_bank" }
+      ]
+    },
+    "scene_drake_shelf": {
+      "type": "story",
+      "narration": "In the bridge's shadow, a river drake lies along a rock shelf like a cat on a windowsill. The shelf holds fish bones, three boat hinges, one otter-polished pebble, and right in the middle a new gem that hums. Beside it, a slate says RATES, and the drake keeps rubbing the numbers out with its tail and writing bigger ones.",
+      "choices": [
+        { "id": "haggle", "label": "Offer the drake a fair trade", "icon": "heart", "goto": "check_drake" },
+        { "id": "honeycake", "label": "Offer it a honeycake, like Ossley does", "icon": "cake", "requiresItem": "honeycake", "goto": "scene_drake_deal" },
+        { "id": "grab", "label": "Grab the gem while it blinks", "icon": "swords", "goto": "encounter_drake" },
+        { "id": "leave_shelf", "label": "Leave it. Rates are rates.", "icon": "back", "goto": "scene_crossing_bank" }
+      ]
+    },
+    "check_drake": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Haggle with a river drake who has done this before",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_drake_deal",
+        "narration": "You offer a song, a shiny button, and a really excellent fish story. The drake weighs all three, decides it has been treated like a professional, and nudges the humming gem across the shelf."
+      },
+      "onFailure": {
+        "goto": "scene_crossing_bank",
+        "narration": "The drake listens to your offer, then raises its rates. Then it raises them again, just to watch your face. The humming gem stays exactly where it is."
+      }
+    },
+    "scene_drake_deal": {
+      "type": "story",
+      "narration": "The new gem is warm, and it hums against your palm like a cat purring under a blanket. The drake writes PAID on its slate, underlines it twice, and goes back to timing the queue.",
+      "onEnter": [
+        { "type": "grantQuestItem", "itemId": "facet_drakes_rate" },
+        { "type": "setFlag", "flag": "drake_traded", "value": true }
+      ],
+      "choices": [
+        { "id": "back_to_bank", "label": "Back to the water", "icon": "arrow", "goto": "scene_crossing_bank" }
+      ]
+    },
+    "encounter_drake": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The drake does not blink after all. Its sister surfaces beside it. She handles complaints.",
+      "enemies": [{ "id": "drake", "name": "River Drake", "creature": "river_drake", "hp": 10 }],
+      "onVictory": {
+        "goto": "scene_drake_deal",
+        "narration": "Splashed, soaked, and outplayed, the two drakes huddle and mutter. \"Fair,\" huffs the big one at last. \"You won the rate.\""
+      },
+      "onDefeat": {
+        "goto": "scene_swept",
+        "narration": "A tail as long as a canoe sweeps you all, quite politely, off the shelf and into the current. Rates are rates."
+      }
+    },
+    "scene_crossing_bank": {
+      "type": "choice_point",
+      "narration": "At last, your turn. The flat stones march out across the river, and then the last stretch is simply under: brown water hurrying over where the stones should be. In the reeds, a flat boat bumps the bank. A frog in a very old hat sits in it, saying nothing.",
+      "choices": [
+        { "id": "wade", "label": "Wade the drowned stones", "icon": "boot", "goto": "check_crossing" },
+        { "id": "fennick_line", "label": "Take Fennick's shallow line", "icon": "map", "requiresFlag": "had_a_guide", "goto": "check_crossing_easy" },
+        { "id": "brass_rope", "label": "Use the Brassbuckles' rope", "icon": "hand", "requiresFlag": "kept_queue_honest", "goto": "check_crossing_easy" },
+        { "id": "fly_rope", "label": "Fly a rope across first", "icon": "wing", "requiresSpecies": "griffin", "goto": "check_crossing_easy" },
+        { "id": "ask_frog", "label": "Ask the frog in the boat", "icon": "ear", "goto": "scene_ossley_price" }
+      ]
+    },
+    "scene_ossley_price": {
+      "type": "story",
+      "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks at each of you in turn and asks for one thing each: the song you hum when nobody's listening, the last thing you were proud of, and a promise to carry something for somebody, someday.",
+      "choices": [
+        {
+          "id": "pay_ossley",
+          "label": "Pay his price and climb aboard",
+          "icon": "heart",
+          "goto": "check_crossing_easy",
+          "effects": [{ "type": "grantItem", "itemId": "river_charm", "to": "roller" }]
+        },
+        { "id": "wade_instead", "label": "Thank him and wade instead", "icon": "boot", "goto": "check_crossing" }
+      ]
+    },
+    "check_crossing": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Step from drowned stone to drowned stone across the last stretch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_dry_end",
+        "narration": "Slip, wobble, step, step, step. The river grabs at your ankles, grumbles, and lets go. You stand on the east bank with boots that are, astonishingly, dry."
+      },
+      "onFailure": {
+        "goto": "scene_swept",
+        "narration": "One stone is not where it was yesterday. The river decides it wants you more than the bank does, and everybody goes in together with a splash that startles a heron into next week."
+      }
+    },
+    "check_crossing_easy": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Hold on tight through the last fast stretch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_dry_end",
+        "narration": "The current tugs, and sulks, and lets you go. Your boots touch the east bank and they are, astonishingly, dry."
+      },
+      "onFailure": {
+        "goto": "scene_swept",
+        "narration": "Right at the fastest bit, a drake's wake rolls by, and the river decides it wants you more than the bank does. Everybody goes in together with a splash that startles a heron into next week."
+      }
+    },
+    "rest_dry_end": {
+      "type": "rest",
+      "narration": "The east bank. The Eastern Plains roll away ahead, gold and green, and behind you a caravan is still telling the troll its story. On the far ridge a manticore silhouette waves first. Wave back. Camp here tonight, dry, with the river in your ears and that older note humming in your packs.",
+      "onEnter": [{ "type": "setFlag", "flag": "crossed_dry", "value": true }],
+      "heal": 4,
+      "choices": []
+    },
+    "scene_swept": {
+      "type": "story",
+      "narration": "The river carries you south like a parcel nobody signed for. Past the queue, past the Sunward banks, past a heron who watches the whole thing with deep disapproval. It goes on for a long, long time.",
+      "onEnter": [{ "type": "setFlag", "flag": "river_took_us", "value": true }],
+      "choices": [
+        { "id": "hold_on", "label": "Hold on to each other", "icon": "hand", "goto": "scene_mouth" }
+      ]
+    },
+    "scene_mouth": {
+      "type": "story",
+      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is Old Ossley. He fishes you out one at a time and says nothing. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand.",
+      "onEnter": [{ "type": "grantQuestItem", "itemId": "ossley_reed_knot" }],
+      "choices": [
+        { "id": "squelch", "label": "Squelch up the beach", "icon": "boot", "goto": "scene_crawlers" }
+      ]
+    },
+    "scene_crawlers": {
+      "type": "story",
+      "narration": "The beach is covered in old bone chips laid out in neat spirals. Then a spiral stands up. Bone crawlers: little scuttlers wearing shells of borrowed fossil, sleeves too long, dignity enormous. They are clattering straight for your humming packs.",
+      "choices": [
+        { "id": "throw_shiny", "label": "Throw something shiny the other way", "icon": "spark", "goto": "check_crawlers" },
+        { "id": "stand_tall", "label": "Stand tall and leave loudly", "icon": "boot", "goto": "check_crawlers_leave" },
+        { "id": "shoo", "label": "Shoo them off", "icon": "swords", "goto": "encounter_crawlers" }
+      ]
+    },
+    "check_crawlers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Fool a bone crawler swarm with something that glitters",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_wet_end",
+        "narration": "You fling a wet, glinting spoon down the beach. Every crawler turns at once and pours after it like a rattling carpet. Somewhere behind you, you hear them start arranging it in a spiral."
+      },
+      "onFailure": {
+        "goto": "encounter_crawlers",
+        "narration": "The spoon glitters. Your packs hum. The crawlers are not stupid. They clatter round the spoon and keep coming."
+      }
+    },
+    "check_crawlers_leave": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Stomp off the beach looking as big as you possibly can",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_wet_end",
+        "narration": "Arms up, elbows out, stomping like giants. The crawlers decide you are far too large to bother with and scuttle back to their spirals, muttering."
+      },
+      "onFailure": {
+        "goto": "encounter_crawlers",
+        "narration": "Somebody stomps into a rock pool, sits down very suddenly, and is no longer the biggest thing on the beach. The crawlers notice."
+      }
+    },
+    "encounter_crawlers": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The crawlers spread through the reeds in a clatter, all aiming for whatever hums.",
+      "enemies": [{ "id": "crawler", "name": "Bone Crawler", "creature": "bone_crawler" }],
+      "onVictory": {
+        "goto": "rest_wet_end",
+        "narration": "Bopped, flipped, and outrun, the crawlers clatter off in a huff to rearrange their spirals and pretend this never happened."
+      },
+      "onDefeat": {
+        "goto": "rest_setback",
+        "narration": "There are a lot more of them than there looked. The crawlers swarm over the packs like a rattling blanket."
+      }
+    },
+    "rest_wet_end": {
+      "type": "rest",
+      "narration": "You build a driftwood fire on the eastern shore and steam gently, like puddings. North of here the Eastern Plains are waiting, and you'll walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp.",
+      "heal": 4,
+      "choices": []
+    },
+    "rest_setback": {
+      "type": "rest",
+      "narration": "The crawlers carry off the snacks, two bootlaces and the map, none of which hum but all of which they apparently wanted. By the time you've chased your boots down, the whole day is gone. Old Ossley poles past without stopping and nods once, as if to say: you'll still get there. Just later.",
+      "heal": 3,
+      "outcome": "setback",
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "warm, playful, a little spooky but never scary; a river crossing that is a real hazard and a busy, funny queue",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "drowning"
+    ],
+    "npcVoices": {
+      "fennick": "Fennick Longstride, a road-warden centaur; brisk, proud of her stitched route-sash, deeply offended that people burn road markers for firewood",
+      "old_lintel": "a stone troll toll-taker, mostly moss; speaks very slowly, hears everything in full, palm always on the bridge; asks only 'where did you get that, and where is it going?'",
+      "drake": "a river drake; semi-sapient, transactional, writes its rates on a slate; communicates in huffs, tail-taps and underlinings",
+      "brassbuckles": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the queue",
+      "old_ossley": "frogfolk ferryman; very few words, long pauses that are not hesitation; answers the question you meant; never asks for coin"
+    }
+  }
+}

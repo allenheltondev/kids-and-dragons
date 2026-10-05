@@ -163,6 +163,15 @@ describe("the scene graph — the rules a schema cannot express", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("catches endsCampaign on a scene that is not an ending", () => {
+    // The campaign can only finish where the chapter does.
+    const { code, out } = withChapter((chapter) => {
+      chapter.scenes[chapter.entry].endsCampaign = true;
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/endsCampaign on a scene that is not an ending/);
+  });
+
   it("catches a chapter whose id disagrees with its filename", () => {
     // The loader resolves chapters by filename, so this is a chapter that
     // cannot be started by the id the campaign uses to name it.
@@ -365,6 +374,35 @@ describe("routed beats", () => {
     });
     expect(code).toBe(1);
     expect(out).toMatch(/more than one route set/);
+  });
+
+  /** Give beat2-river's entry scene one extra choice gated on `flag`. */
+  function readsFlag(flag) {
+    return ({ dir }) => {
+      const file = ["content", "chapters", "beat2-river.json"];
+      const chapter = readJson(dir, ...file);
+      chapter.scenes[chapter.entry].choices.push({
+        id: "remember",
+        label: "Remember the road",
+        icon: "map",
+        goto: chapter.entry,
+        requiresFlag: flag,
+      });
+      writeJson(dir, file, chapter);
+    };
+  }
+
+  it("lets a chapter read a flag its campaign carries in from an earlier chapter", () => {
+    // Route-set flags arrive seeded from the campaign attempt, so a later
+    // chapter gating on one that it never sets itself is the design, not a typo.
+    const { code, out } = routedTree(readsFlag("route_wild"));
+    expect(code, out).toBe(0);
+  });
+
+  it("still refuses a flag that nothing sets and the campaign does not carry", () => {
+    const { code, out } = routedTree(readsFlag("route_nowhere"));
+    expect(code).toBe(1);
+    expect(out).toMatch(/flag "route_nowhere" is never set/);
   });
 
   it("still refuses a gap in the beats themselves", () => {
