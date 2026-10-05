@@ -35,7 +35,8 @@ import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
-  finalIndex,
+  attemptKey,
+  expectedIndex,
   newCharacterWrite,
   prepareStatPointSpend,
   settleChapterCompletion,
@@ -125,12 +126,14 @@ export async function applyAction(
    * road are they on" is one fact, not two.
    */
   let campaignFlags: Record<string, boolean> = {};
+  let campaignAttemptId: string | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
     const road = await roadTo(chapter, auth.run.householdId, deps);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
     campaignFlags = road.flags;
+    campaignAttemptId = road.attemptId;
   }
 
   const nowMs = deps.now();
@@ -234,6 +237,11 @@ export async function applyAction(
   const finishedChapter =
     state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
   const startedCampaign = input.intent.type === "START_CHAPTER" && Boolean(result.state.campaignId);
+  // Which attempt this chapter belongs to, so its completion can be checked
+  // against the attempt it was started under (settleChapterCompletion).
+  if (input.intent.type === "START_CHAPTER") {
+    result = { ...result, state: { ...result.state, campaignAttemptId } };
+  }
   if (startedCampaign && !finishedChapter) {
     // Campaign entry is a progression transition too. Seed/re-seed every
     // stored character and re-resolve the party before diffing so the same
@@ -249,6 +257,11 @@ export async function applyAction(
     // rides the same conditional commit below.
     settlement = await settleChapterCompletion(result.state, deps, auth.run.householdId);
     characters.push(...settlement.characters);
+    if (settlement.stale) {
+      // Another room already finished this beat for the household. The table
+      // still sees its chapter end; it is not told it earned XP it did not get.
+      result = { ...result, state: { ...result.state, xpEarned: 0, bonuses: [] } };
+    }
   }
   const progression =
     startedCampaign || finishedChapter || spentCharacter
@@ -630,9 +643,9 @@ async function roadTo(
   chapter: Chapter,
   householdId: string,
   deps: HandlerDeps,
-): Promise<{ flags: Record<string, boolean> } | { refusal: string }> {
+): Promise<{ flags: Record<string, boolean>; attemptId: string | null } | { refusal: string }> {
   const campaign = deps.content.campaign(chapter.campaignId);
-  if (!campaign || !campaign.chapters.includes(chapter.id)) return { flags: {} };
+  if (!campaign || !campaign.chapters.includes(chapter.id)) return { flags: {}, attemptId: null };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
   const flags =
@@ -663,25 +676,7 @@ async function roadTo(
       refusal: `this party's road through beat ${chapter.index} is "${road.id}", not "${chapter.id}"`,
     };
   }
-  return { flags };
-}
-
-/**
- * The beat a party may start next in this campaign — the one rule both
- * CONTINUE_CAMPAIGN and a direct START_CHAPTER answer to.
- *
- * The beat after the last one an active attempt finished; beat one for a fresh
- * or finished attempt. Past the end can only be an attempt whose final chapter
- * did not settle it, so that starts over rather than stranding the party at a
- * beat that does not exist.
- */
-function expectedIndex(
-  campaign: Campaign,
-  attempt: CampaignProgressRecord | null,
-  deps: HandlerDeps,
-): number {
-  const index = attempt && attempt.status === "active" ? (attempt.lastIndex ?? 0) + 1 : 1;
-  return index > finalIndex(campaign, deps) ? 1 : index;
+  return { flags, attemptId: attemptKey(attempt) };
 }
 
 /**

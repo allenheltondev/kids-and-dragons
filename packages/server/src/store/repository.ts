@@ -82,6 +82,13 @@ export interface CampaignProgressRecord {
    * attempt, beside the road it took. Absent means nothing finished yet.
    */
   lastIndex?: number;
+  /**
+   * Which attempt this is. A fresh one is minted whenever an attempt starts,
+   * so a room still playing a chapter of an attempt that has since finished
+   * (and been replaced) can be told apart from one playing the current attempt
+   * at the same beat. Absent on rows written before it existed.
+   */
+  attemptId?: string;
   /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
   version?: number;
   updatedAt: string;

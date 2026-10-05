@@ -76,6 +76,16 @@ export interface RunState {
   seq: number;
   phase: PhaseKind;
   campaignId: string | null;
+  /**
+   * The household's campaign attempt this chapter was started under
+   * (`CampaignProgressRecord.attemptId`), or null when it started a fresh one.
+   * Stamped by the server at chapter start, and checked when the chapter
+   * settles: two rooms can play the same household's campaign at once, and a
+   * completion from a room whose attempt has moved on — or ended and been
+   * replaced — must not award the beat again or move the attempt backwards.
+   * Optional because runs persisted before it existed carry none.
+   */
+  campaignAttemptId?: string | null;
   chapterId: string | null;
   sceneId: SceneId | null;
   sceneType: SceneType | null;
