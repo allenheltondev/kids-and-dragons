@@ -370,7 +370,7 @@ she picked up two sessions ago is still in her bag.
 
 **Allen**
 - ~~Generate and hand-edit a full 6-chapter campaign~~ — **Gemfall is authored and playable**:
-  eight beats across seventeen chapter files (three roads, three pursuits, the Walk), launched by
+  eight beats across sixteen chapter files (three roads, three pursuits, and the Walk out of 7H), launched by
   the lobby, continued across evenings by the server (`CONTINUE_CAMPAIGN`), and played start to
   finish under 24 seeds by `gemfall-playthrough.test.ts`. Written by Claude from
   [docs/campaigns/gemfall.md](./campaigns/gemfall.md), so the hand-edit is still yours — and so is

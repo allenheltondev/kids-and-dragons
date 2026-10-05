@@ -34,9 +34,6 @@ const MUST_SET = {
   "gemfall-05b": ["allies"],
   "gemfall-05c": ["allies"],
   "gemfall-06": ["pursuit", "seal_clock"],
-  "gemfall-07r": ["summit"],
-  "gemfall-07h": ["summit"],
-  "gemfall-07l": ["summit"],
 };
 
 function endingsOf(id) {
@@ -86,16 +83,30 @@ describe("the weave re-routes exactly where the story says", () => {
     }
   });
 
-  it("only the Collection may turn south; every other chapter 7 climbs", () => {
-    for (const id of ["gemfall-07r", "gemfall-07l"]) {
-      for (const { ending, flags } of endingsOf(id)) {
-        expect(flags, `${id} → ${ending}`).toContain("climbed_the_mountain");
+  it("only the Collection may turn south, and turning south ends the campaign there", () => {
+    // gemfall.md: the Walk is 7H's exit, and a walking party never enters
+    // chapter 8. The engine's word for that is an ending with endsCampaign.
+    for (const id of campaign.chapters) {
+      const early = Object.entries(chapter(id).scenes).filter(([, scene]) => scene.endsCampaign);
+      if (id === "gemfall-07h") {
+        expect(early.length, "07h has no ending that finishes the campaign").toBeGreaterThan(0);
+        for (const [sceneId] of early) expect(sceneId, "only the Walk ends the campaign early").toMatch(/^walk_/);
+      } else {
+        expect(early.map(([sceneId]) => sceneId), `${id} ends the campaign early`).toEqual([]);
       }
     }
-    const summits = new Set(
-      endingsOf("gemfall-07h").flatMap(({ flags }) => flags.filter((f) => campaign.routeSets.summit.includes(f))),
-    );
-    expect([...summits].sort()).toEqual(["climbed_the_mountain", "walked_away"]);
+  });
+
+  it("the finale offers all four philosophies to every party", () => {
+    // Pursuits are not walls (gemfall.md): the seal-chamber decision stays the
+    // player's. Restore, Destroy, Control and Exploit are all ungated; what a
+    // party's pursuit changes is how hard the road to each one is.
+    const choices = chapter("gemfall-08").scenes.scene_seal_chamber.choices;
+    for (const id of ["restore", "destroy", "leash", "keystone"]) {
+      const choice = choices.find((c) => c.id === id);
+      expect(choice, `no ${id} choice in the seal chamber`).toBeDefined();
+      expect(choice.requiresFlag ?? choice.requiresItem ?? choice.requiresSpecies, `${id} is gated`).toBeUndefined();
+    }
   });
 
   it("chapter 2 can send a party down every road", () => {

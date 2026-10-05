@@ -105,6 +105,7 @@ describe("the server owns the road", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
+      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -128,6 +129,7 @@ describe("the server owns the road", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
+      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -141,11 +143,19 @@ describe("the server owns the road", () => {
   });
 
   it("stops a party at a fork they have never chosen at", async () => {
-    // No attempt row at all: nobody has finished a chapter of this campaign,
-    // so there is no road. Better a message than a country picked by sort
-    // order (shared/routes.ts).
+    // Beat one finished, and no road taken out of it. Better a message than a
+    // country picked by sort order (shared/routes.ts).
     const harness = makeHarness({ engine: realEngine, content: routedContent() });
     const { householdId, players } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
 
     const { send } = await readyParty(harness, householdId, players[0]!.principal);
     const response = await send({ type: "START_CHAPTER", chapterId: "wild-02" });
@@ -183,6 +193,7 @@ describe("the road survives the drive home", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
+      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -203,16 +214,20 @@ describe("the road survives the drive home", () => {
       campaignId: CAMPAIGN.id,
       status: "complete",
       setbacks: 0,
+      lastIndex: 2,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
     });
 
-    const { send } = await readyParty(harness, householdId, players[0]!.principal);
-    const response = await send({ type: "START_CHAPTER", chapterId: "wild-02" });
-
-    expect(response.ok).toBe(false);
-    expect(response.ok ? "" : response.error?.message).toContain("has not taken one");
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+    // A finished attempt starts over at beat one…
+    const late = await send({ type: "START_CHAPTER", chapterId: "wild-02" });
+    expect(late.ok).toBe(false);
+    const response = await send({ type: "START_CHAPTER", chapterId: "bramblewood-01" });
+    expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
+    // …with none of the last attempt's roads.
+    expect((await harness.repo.getState(runId))?.flags[WILD]).toBeUndefined();
   });
 });
 
@@ -268,6 +283,7 @@ describe("what a completed chapter writes down", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
+      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -298,6 +314,7 @@ describe("what a completed chapter writes down", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
+      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -320,6 +337,7 @@ describe("what a completed chapter writes down", () => {
       campaignId: CAMPAIGN.id,
       status: "active",
       setbacks: 0,
+      lastIndex: 1,
       routeFlags: { [WILD]: true },
       version: 1,
       updatedAt: new Date(T0).toISOString(),
@@ -477,6 +495,102 @@ describe("where a finished chapter leaves the attempt", () => {
     const harness = makeHarness({ content: routedContent() });
     const { householdId } = await seedHousehold(harness, 1);
     const settlement = await settleChapterCompletion(finished("river-02"), harness.deps, householdId);
+    expect(settlement.campaignProgress?.status).toBe("complete");
+  });
+});
+
+describe("the server owns the beat, too", () => {
+  /*
+   * A chapter id names its index. Before this, a direct START_CHAPTER only
+   * checked the road at that index, so an old or crafted client could skip a
+   * beat or walk an attempt backwards — and settlement would then record the
+   * skipped-to index as where the party got to.
+   */
+  const LONG: Campaign = {
+    id: "the-hollow-crown",
+    title: "The Hollow Crown",
+    blurb: "Three beats, one road.",
+    chapters: ["bramblewood-01", "beat-02", "beat-03"],
+  };
+
+  async function after(lastIndex: number | null) {
+    const harness = makeHarness({
+      engine: realEngine,
+      content: makeContent({
+        chapters: [
+          makeChapter(),
+          { ...makeChapter(), id: "beat-02", index: 2 },
+          { ...makeChapter(), id: "beat-03", index: 3 },
+        ],
+        campaigns: [LONG],
+      }),
+    });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    if (lastIndex !== null) {
+      await harness.repo.putCampaignProgress({
+        householdId,
+        campaignId: LONG.id,
+        status: "active",
+        setbacks: 0,
+        lastIndex,
+        version: 1,
+        updatedAt: new Date(T0).toISOString(),
+      });
+    }
+    return { harness, ...(await readyParty(harness, householdId, players[0]!.principal)) };
+  }
+
+  it("refuses to skip a beat", async () => {
+    const { harness, runId, send } = await after(1);
+    const response = await send({ type: "START_CHAPTER", chapterId: "beat-03" });
+    expect(response.ok).toBe(false);
+    expect(response.ok ? null : response.error?.code).toBe("ILLEGAL");
+    expect(response.ok ? "" : response.error?.message).toContain("beat 2");
+    expect((await harness.repo.getState(runId))?.chapterId).toBeNull();
+  });
+
+  it("refuses to walk an attempt backwards", async () => {
+    const { send } = await after(2);
+    const response = await send({ type: "START_CHAPTER", chapterId: "bramblewood-01" });
+    expect(response.ok).toBe(false);
+    expect(response.ok ? "" : response.error?.message).toContain("beat 3");
+  });
+
+  it("refuses to start mid-campaign with no attempt at all", async () => {
+    const { send } = await after(null);
+    const response = await send({ type: "START_CHAPTER", chapterId: "beat-02" });
+    expect(response.ok).toBe(false);
+  });
+
+  it("starts the beat that is actually next", async () => {
+    const { send } = await after(2);
+    const response = await send({ type: "START_CHAPTER", chapterId: "beat-03" });
+    expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
+  });
+});
+
+describe("an ending that finishes the campaign early", () => {
+  // Gemfall's Walk: the Collection turns south in chapter 7 and never climbs.
+  it("completes the attempt before the campaign's last beat", async () => {
+    const early = makeChapter();
+    const endingId = Object.entries(early.scenes).find(([, scene]) => "choices" in scene && scene.choices.length === 0)![0];
+    (early.scenes[endingId] as { endsCampaign?: true }).endsCampaign = true;
+    const harness = makeHarness({
+      content: makeContent({ chapters: [early, variant("river-02", RIVER), variant("wild-02", WILD)], campaigns: [CAMPAIGN] }),
+    });
+    const { householdId } = await seedHousehold(harness, 1);
+    const run = {
+      runId: "r_1",
+      campaignId: CAMPAIGN.id,
+      chapterId: "bramblewood-01",
+      sceneId: endingId,
+      chapterOutcome: "success",
+      bonuses: [],
+      xpEarned: 0,
+      flags: {},
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(run, harness.deps, householdId);
     expect(settlement.campaignProgress?.status).toBe("complete");
   });
 });

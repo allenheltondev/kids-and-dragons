@@ -163,6 +163,15 @@ describe("the scene graph — the rules a schema cannot express", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("catches endsCampaign on a scene that is not an ending", () => {
+    // The campaign can only finish where the chapter does.
+    const { code, out } = withChapter((chapter) => {
+      chapter.scenes[chapter.entry].endsCampaign = true;
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/endsCampaign on a scene that is not an ending/);
+  });
+
   it("catches a chapter whose id disagrees with its filename", () => {
     // The loader resolves chapters by filename, so this is a chapter that
     // cannot be started by the id the campaign uses to name it.

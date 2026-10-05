@@ -653,6 +653,14 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
         "Only a scene with an empty `choices` array ends the chapter (spec §8.2).",
       );
     }
+    // Same reason: only an ending can finish the campaign early.
+    if (scene.endsCampaign !== undefined && !isEnding.has(id)) {
+      fail(
+        `/scenes/${id}/endsCampaign`,
+        "endsCampaign on a scene that is not an ending - the chapter does not stop here, so the campaign cannot either",
+        "Only a scene with an empty `choices` array ends the chapter.",
+      );
+    }
   }
 
   // --- every itemId exists in the catalog, and is used as the right kind

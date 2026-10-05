@@ -9,8 +9,9 @@
  * choose. Per-scene checks cannot see it, because the two `setFlag`s are
  * usually scenes apart. Walking the paths can.
  *
- * Walks every path from the entry to every ending, carrying the set of
- * route-set flags it has set to `true` so far. Memoised on (scene, flags), and
+ * Walks every path from the entry to every ending, carrying the value each
+ * route-set flag holds so far — `true`, or cleared to `false` — because the
+ * engine judges a chapter by its final flags. Memoised on (scene, flags), and
  * a path never revisits a scene it is already on, so a loop in the graph is
  * one lap rather than forever.
  */
@@ -38,10 +39,23 @@ function exits(scene) {
   }
 }
 
-function flagsSetTrue(effects, tracked) {
-  return effects
-    .filter((e) => e.type === "setFlag" && e.value !== false && tracked.has(e.flag))
-    .map((e) => e.flag);
+/**
+ * Applies a list of effects to the route-set flags a path holds, in order. A
+ * `false` clears — the runtime reads the chapter's *final* flags
+ * (`routesTaken`), so a path that sets one road, clears it and sets another
+ * has taken one road, not two.
+ */
+function applyFlags(held, effects, tracked) {
+  const next = new Map(held);
+  for (const effect of effects) {
+    if (effect.type !== "setFlag" || !tracked.has(effect.flag)) continue;
+    next.set(effect.flag, effect.value !== false);
+  }
+  return next;
+}
+
+function keyOf(id, held) {
+  return `${id}|${[...held].sort(([a], [b]) => a.localeCompare(b)).map(([f, v]) => `${v ? "" : "!"}${f}`).join(",")}`;
 }
 
 /**
@@ -49,8 +63,10 @@ function flagsSetTrue(effects, tracked) {
  * one entry per reachable (ending, flags) pair.
  *
  * `routeSets` is the campaign's map of set name → members. Returns
- * `{ endings: [{ ending, flags }], truncated }` — `truncated` when the walk hit
- * its budget, so a caller can say so rather than pass a check it did not finish.
+ * `{ endings: [{ ending, flags, cleared }], truncated }`: `flags` are the
+ * members standing `true` at the ending, `cleared` the ones the path set
+ * `false`. `truncated` when the walk hit its budget, so a caller can say so
+ * rather than pass a check it did not finish.
  */
 export function routeOutcomes(chapter, routeSets, budget = 200_000) {
   const tracked = new Set(Object.values(routeSets ?? {}).flat());
@@ -64,9 +80,8 @@ export function routeOutcomes(chapter, routeSets, budget = 200_000) {
     if (truncated) return;
     const scene = scenes[id];
     if (!scene || onPath.has(id)) return;
-    const flags = new Set(held);
-    for (const flag of flagsSetTrue(onEnter(scene), tracked)) flags.add(flag);
-    const key = `${id}|${[...flags].sort().join(",")}`;
+    const flags = applyFlags(held, onEnter(scene), tracked);
+    const key = keyOf(id, flags);
     if (seen.has(key)) return;
     seen.add(key);
     if (++steps > budget) {
@@ -76,19 +91,17 @@ export function routeOutcomes(chapter, routeSets, budget = 200_000) {
 
     const out = exits(scene);
     if (out.length === 0) {
-      endings.set(key, { ending: id, flags: [...flags].sort() });
+      const standing = [...flags].filter(([, v]) => v).map(([f]) => f).sort();
+      const cleared = [...flags].filter(([, v]) => !v).map(([f]) => f).sort();
+      endings.set(key, { ending: id, flags: standing, cleared });
       return;
     }
     onPath.add(id);
-    for (const [to, effects] of out) {
-      const next = new Set(flags);
-      for (const flag of flagsSetTrue(effects, tracked)) next.add(flag);
-      visit(to, next, onPath);
-    }
+    for (const [to, effects] of out) visit(to, applyFlags(flags, effects, tracked), onPath);
     onPath.delete(id);
   };
 
-  visit(chapter.entry, new Set(), new Set());
+  visit(chapter.entry, new Map(), new Set());
   return { endings: [...endings.values()], truncated };
 }
 
