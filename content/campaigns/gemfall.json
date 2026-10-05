@@ -19,13 +19,11 @@
     "gemfall-07r",
     "gemfall-07h",
     "gemfall-07l",
-    "gemfall-08w",
     "gemfall-08"
   ],
   "routeSets": {
     "road": ["route_river", "route_rush", "route_wild"],
     "pursuit": ["pursuit_restore", "pursuit_hoard", "pursuit_leash"],
-    "summit": ["climbed_the_mountain", "walked_away"],
     "motive": ["motive_wealth", "motive_curiosity", "motive_prestige", "motive_duty", "motive_fresh_start", "motive_proving"],
     "ember": ["ember_sold", "ember_kept"],
     "sprites": ["sprites_friends", "sprites_wronged"],

@@ -277,7 +277,10 @@ export async function settleChapterCompletion(
   // The final *beat*, not the last-listed file: a routed last beat has several
   // files at the same index (Gemfall's climb and its Walk), and finishing any
   // one of them finishes the campaign.
-  const finalChapter = chapter.index === finalIndex(campaign, deps);
+  // Or an ending authored to finish the campaign early (`endsCampaign`).
+  const ending = state.sceneId ? chapter.scenes[state.sceneId] : undefined;
+  const endsCampaign = ending !== undefined && "endsCampaign" in ending && ending.endsCampaign === true;
+  const finalChapter = endsCampaign || chapter.index === finalIndex(campaign, deps);
 
   if (attempt.setbacks >= limit) {
     attempt.status = "failed";

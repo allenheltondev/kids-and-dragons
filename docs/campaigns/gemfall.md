@@ -983,12 +983,11 @@ and its keeper.
 
 ## Build order
 
-> **Built.** All sixteen story files are authored, plus `gemfall-08w` ("The
-> Tree Line"), the Walk's own short beat-8 epilogue: a campaign only completes
-> — and only commits the party's levels — when a chapter at its last beat
-> finishes, so the Walk could not simply end at the tree line with no chapter
-> to finish. How the files are wired (which flags each sets, which survive
-> between evenings, the facets as quest items) is
+> **Built.** All sixteen story files are authored. The Walk ends the
+> campaign at 7H's tree line, as above: its endings are marked
+> `endsCampaign`, which completes the attempt without a chapter 8. How the
+> files are wired (which flags each sets, which survive between evenings, the
+> facets as quest items) is
 > [gemfall-authoring.md](./gemfall-authoring.md), and three tests hold it:
 > `content:validate`, `tools/content/gemfall-wiring.test.mjs` (every chapter
 > sets the forks it owes, on every path), and
