@@ -45,6 +45,21 @@ The TypeScript types in `packages/shared/src/types/` are the contract. The schem
 lockstep with them; **where the two disagree, the TS types win** and the schema is the thing that
 needs fixing.
 
+## Gemfall is the campaign; Bramblewood is the fixture
+
+`campaigns/gemfall.json` is the authored main arc — eight beats, sixteen files, routed by road
+and by pursuit — and it is what the lobby launches. Its wiring is
+[docs/campaigns/gemfall-authoring.md](../docs/campaigns/gemfall-authoring.md). Two things it uses
+that the reference chapter below does not:
+
+- **Flags that outlive a chapter.** Only members of a campaign's `routeSets` cross the chapter
+  boundary, so every fork a later chapter reads — the road, the pursuit, what the party did with
+  the Harvest Stone — is declared there, even the ones that select no chapter. `content:validate`
+  lets a chapter gate on those without setting them itself, and refuses any path that sets two
+  members of one set (the engine would quietly keep neither).
+- **Facets as quest items.** Quest items outlive the chapter that grants them, which is what makes
+  a collection collectable.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference

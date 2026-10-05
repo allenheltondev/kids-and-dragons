@@ -1,0 +1,525 @@
+{
+  "id": "gemfall-05b",
+  "campaignId": "gemfall",
+  "index": 5,
+  "title": "MossHome and the High Paths",
+  "biome": "mosshome",
+  "route": {
+    "set": "road",
+    "flag": "route_wild"
+  },
+  "estimatedMinutes": 26,
+  "xpAward": 90,
+  "entry": "scene_mosshome",
+  "objectives": [
+    {
+      "id": "archive",
+      "label": "Read the spiral in the path archive",
+      "flag": "read_archive",
+      "xp": 10
+    },
+    {
+      "id": "trusted",
+      "label": "Earned the trust of MossHome's record",
+      "flag": "trusted_by_record",
+      "xp": 12
+    }
+  ],
+  "props": {
+    "facet_confiscated": {
+      "kind": "quest",
+      "icon": "gem",
+      "name": "The Confiscated Stone",
+      "text": "The loudest stone in the forest's pile. MossHome's record knows who is carrying it."
+    },
+    "knot_cord": {
+      "kind": "quest",
+      "icon": "ribbon",
+      "name": "MossHome Knot-Cord",
+      "text": "Old bigfoot knots that say the record knows you. Show it when the forest pays back."
+    }
+  },
+  "scenes": {
+    "scene_mosshome": {
+      "type": "story",
+      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong — it leans — and a little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder.",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask to see the path archive",
+          "icon": "scroll",
+          "goto": "check_archive_door"
+        },
+        {
+          "id": "ask_door",
+          "label": "Ask the archive door first, the MossHome way",
+          "icon": "bigfoot",
+          "goto": "scene_archive_table",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "glade_word",
+          "label": "Mention the glade you mended",
+          "icon": "heart",
+          "goto": "scene_archive_table",
+          "requiresFlag": "glade_mended"
+        }
+      ]
+    },
+    "check_archive_door": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Convince the archivist at the door you've seen something worth writing down",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_archive_table",
+        "narration": "The archivist's eyebrows go up, and then up again. \"Oh,\" she says. \"Oh, come in. Wipe your feet. Wipe them twice.\""
+      },
+      "onFailure": {
+        "goto": "scene_archive_table",
+        "narration": "\"Wait on the bench,\" says the archivist. The bench is still growing. Very slowly, over the next hour, it lifts you up to the window, and you see the table anyway."
+      }
+    },
+    "scene_archive_table": {
+      "type": "story",
+      "narration": "The archive table is one slice of an enormous tree, with every path in the Woods drawn on it in moss-ink. All season the archivists have been marking every path the Woods has moved since the mountain went off. Each change is pinned with a little thorn, and there are a great many thorns.",
+      "choices": [
+        {
+          "id": "read",
+          "label": "Read the path records yourself",
+          "icon": "bigfoot",
+          "goto": "scene_spiral",
+          "requiresSpecies": "bigfoot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_archive",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "plot",
+          "label": "Help plot the moved paths with pins and yarn",
+          "icon": "hand",
+          "goto": "check_plot"
+        }
+      ]
+    },
+    "check_plot": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Plot every moved path, thorn by thorn, without tangling the yarn",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_spiral",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_archive",
+            "value": true
+          }
+        ],
+        "narration": "Thorn, yarn, thorn, yarn — and slowly, a shape comes out of it."
+      },
+      "onFailure": {
+        "goto": "scene_spiral",
+        "narration": "You tangle the yarn so thoroughly a cat would be embarrassed. An archivist untangles it with one finger and shows you the shape anyway."
+      }
+    },
+    "scene_spiral": {
+      "type": "story",
+      "narration": "Plotted on the table, the moved paths aren't random at all. They spiral — round and round every place a stone fell, like water round a plughole, every path bending away. It's what the land has been saying all the way north. The Woods isn't flinching from the mountain. It's flinching from the stones.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Ask if this has ever happened before",
+          "icon": "ear",
+          "goto": "scene_knot_cords"
+        }
+      ]
+    },
+    "scene_knot_cords": {
+      "type": "story",
+      "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots — records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
+      "choices": [
+        {
+          "id": "pile",
+          "label": "Ask what the forest does with the stones it takes",
+          "icon": "gem",
+          "goto": "scene_pile_question"
+        },
+        {
+          "id": "rest",
+          "label": "Thank him, and go and rest",
+          "icon": "rest",
+          "goto": "rest_guest_tree"
+        }
+      ]
+    },
+    "scene_pile_question": {
+      "type": "story",
+      "narration": "The archivists look at each other. Yes, they know about the forest's pile — everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
+      "choices": [
+        {
+          "id": "trust",
+          "label": "Ask the record to trust you",
+          "icon": "heart",
+          "goto": "check_trust"
+        },
+        {
+          "id": "glade",
+          "label": "Tell them about the glade you mended",
+          "icon": "leaf",
+          "goto": "scene_pile_visit",
+          "requiresFlag": "glade_mended",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "trusted_by_record",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "follow",
+          "label": "Follow the archivist who keeps glancing at the back door",
+          "icon": "kitsune",
+          "goto": "scene_pile_sneak",
+          "requiresSpecies": "kitsune"
+        },
+        {
+          "id": "let_be",
+          "label": "Let it be. It's the forest's pile.",
+          "icon": "leaf",
+          "goto": "rest_guest_tree"
+        }
+      ]
+    },
+    "check_trust": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the archivists, honestly, what you want the stones for",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_pile_visit",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "trusted_by_record",
+            "value": true
+          }
+        ],
+        "narration": "They listen to the whole thing. Then they all write something down at once, and the oldest one nods."
+      },
+      "onFailure": {
+        "goto": "rest_guest_tree",
+        "narration": "\"The record doesn't know you yet,\" says the archivist, kindly, and closes the box. Maybe it will, by the time you're further north."
+      }
+    },
+    "scene_pile_visit": {
+      "type": "story",
+      "narration": "Behind MossHome, in a hollow under the roots, is the pile: pickaxes, sieves, three hats and a heap of humming gems. One stone hums louder than all the rest. \"That one wants to go north,\" says the archivist. \"You're going north. Carry it, if you like. The record will know who has it.\"",
+      "choices": [
+        {
+          "id": "carry",
+          "label": "Carry the stone north",
+          "icon": "gem",
+          "goto": "rest_guest_tree",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_confiscated"
+            }
+          ]
+        },
+        {
+          "id": "leave",
+          "label": "Leave it with the forest",
+          "icon": "leaf",
+          "goto": "rest_guest_tree"
+        }
+      ]
+    },
+    "scene_pile_sneak": {
+      "type": "story",
+      "narration": "Your kitsune slips after the archivist like a shadow with a tail: through a back door, down a root-stair, into a hollow full of pickaxes, hats and humming gems. One stone sings louder than the rest. Nobody is watching. Nobody except, possibly, the entire forest.",
+      "choices": [
+        {
+          "id": "pocket",
+          "label": "Pocket the loud stone",
+          "icon": "gem",
+          "goto": "rest_guest_tree",
+          "effects": [
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_confiscated"
+            }
+          ]
+        },
+        {
+          "id": "leave",
+          "label": "Remember where it is, and leave it",
+          "icon": "eye",
+          "goto": "rest_guest_tree"
+        }
+      ]
+    },
+    "rest_guest_tree": {
+      "type": "rest",
+      "narration": "MossHome puts you up in a guest tree. The hammocks hum lullabies if you rock them, and the moss tea tastes like a rainy afternoon, in a good way. Rest, and think about what you know now.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "elders",
+          "label": "Go and see the elders",
+          "icon": "forward",
+          "goto": "choice_elders"
+        }
+      ]
+    },
+    "choice_elders": {
+      "type": "choice_point",
+      "narration": "The MossHome elders sit in a ring of tree stumps, sipping tea. \"You have the outline of it now,\" says the eldest. \"The stones are older than the mountain, and the land has been keeping records. Somebody must be told. Tell whoever you like first.\" She sips. \"Only tell us second.\" Who will you tell? Everybody vote.",
+      "choices": [
+        {
+          "id": "wardens",
+          "label": "The Skywardens at Redspire Citadel",
+          "icon": "shield",
+          "goto": "scene_runner",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_wardens",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "gatherers",
+          "label": "The dragonling gatherers in the foothills",
+          "icon": "flame",
+          "goto": "scene_runner",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_gatherers",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "close",
+          "label": "Nobody yet. Keep it close.",
+          "icon": "lantern",
+          "goto": "scene_runner",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "kept_close",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_runner": {
+      "type": "story",
+      "narration": "As you pack, the runner from the square jogs up and presses a knotted cord into your hands, still warm from carrying. \"For later,\" she says. \"When the forest pays back what it took, it'll want to see this. It means the record knows you.\" Then she's off again, at a jog, because MossHome runners never walk anywhere.",
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "knot_cord"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tie it somewhere safe, and set off",
+          "icon": "ribbon",
+          "goto": "scene_soup_tent"
+        }
+      ]
+    },
+    "scene_soup_tent": {
+      "type": "story",
+      "narration": "Where the high paths begin, there's a little tent selling nothing and giving away soup. The woman ladling it is very kind, with a mask pushed up on her head. \"The world's rules are broken,\" she says gently. \"Whatever sleeps under that mountain could fix them. We're collecting, to help it wake.\" She rattles a little box.",
+      "choices": [
+        {
+          "id": "soup",
+          "label": "Have some soup, and say nothing",
+          "icon": "potion",
+          "goto": "scene_high_paths"
+        },
+        {
+          "id": "refuse",
+          "label": "Say no, kindly but firmly",
+          "icon": "hand",
+          "goto": "scene_high_paths",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "refused_the_cult",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "coins",
+          "label": "Drop some coins in her box to help it wake",
+          "icon": "bead",
+          "goto": "scene_high_paths",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "funded_the_break",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_high_paths": {
+      "type": "story",
+      "narration": "The bigfoot high paths climb along the cliffs above the falls, all rope bridges and stone steps worn into bowls. Halfway up, three cinder wolves are lying across the path, glowing faintly, as if the mountain kicked them out. They aren't hunting. They're cross. And they're in the way.",
+      "choices": [
+        {
+          "id": "distract",
+          "label": "Throw them something easier to chase",
+          "icon": "acorn",
+          "goto": "check_distract"
+        },
+        {
+          "id": "dash",
+          "label": "Slip past them quickly",
+          "icon": "boot",
+          "goto": "check_dash"
+        },
+        {
+          "id": "hidden",
+          "label": "Take the hidden high path the wolves don't know",
+          "icon": "bigfoot",
+          "goto": "scene_foothills_view",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "stand",
+          "label": "Stand tall and make them go round",
+          "icon": "swords",
+          "goto": "encounter_wolves"
+        }
+      ]
+    },
+    "check_distract": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Give three cross wolves something more interesting than you",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "You lob the last of the MossHome biscuits down the slope. Three wolves look at each other, then at the biscuits, and decide biscuits win."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "The biscuit bounces off a wolf's nose. The wolf does not find this funny."
+      }
+    },
+    "check_dash": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Dash past three cinder wolves on a narrow cliff path",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "Over a rope bridge, under a ledge, and gone before a single wolf has finished yawning."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "The rope bridge squeaks. Six glowing ears turn round."
+      }
+    },
+    "encounter_wolves": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "The wolves get up, shake off a shower of sparks, and come down the switchback at you.",
+      "enemies": [
+        {
+          "id": "wolf",
+          "name": "Cinder Wolf",
+          "creature": "cinder_wolf"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_foothills_view",
+        "narration": "The wolves decide this path isn't worth it and lope off downhill, still grumbling, trailing sparks like a sneeze."
+      },
+      "onDefeat": {
+        "goto": "check_regroup",
+        "narration": "The wolves chase you off the path and down into a gully, and by the time they lose interest, your packs are scattered across half the hillside."
+      }
+    },
+    "check_regroup": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Gather up your scattered packs before it gets dark",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "You find everything — even the sock nobody wanted back — and climb on, late but whole."
+      },
+      "onFailure": {
+        "goto": "ending_long_way_round"
+      }
+    },
+    "scene_foothills_view": {
+      "type": "story",
+      "narration": "At the top of the high paths the forest stops and the foothills begin, red and rumbling, falling away to the east. Far off, on top of everything, sits Mount Red Sky with smoke curling off it like a question mark. Somewhere down there are the citadel, the truth, and whatever comes next.",
+      "choices": [
+        {
+          "id": "camp",
+          "label": "Make camp on the flat rock",
+          "icon": "rest",
+          "goto": "ending_foothills_rim"
+        }
+      ]
+    },
+    "ending_foothills_rim": {
+      "type": "rest",
+      "narration": "You camp on a flat rock at the edge of the foothills, with the forest behind you and the knot-cord safe in somebody's pocket. The mountain grumbles in its sleep all night, like a giant with indigestion. Tomorrow you go down to meet it.",
+      "heal": 4,
+      "choices": []
+    },
+    "ending_long_way_round": {
+      "type": "rest",
+      "narration": "By the time you've found most of your things it's dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round — a day late and one sock short. The mountain didn't wait for you.",
+      "heal": 3,
+      "choices": [],
+      "outcome": "setback"
+    }
+  },
+  "llmHints": {
+    "tone": "cosy, wise and quietly amazed; a town of librarians who are also a forest, with the mountain grumbling at the edge",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "door_archivist": "brisk bigfoot archivist; fussy about feet, warm once she decides you matter",
+      "oldest_archivist": "very old, very slow, a bird lives in his beard; talks to the knot-cords as much as to you",
+      "eldest": "MossHome elder; mild, sips tea between every sentence, asks to be told second and means it",
+      "runner": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking",
+      "soup_woman": "a Deep Hollow Cult member; genuinely kind, soft-spoken, believes every word; kindness first, always, and never menacing"
+    }
+  }
+}

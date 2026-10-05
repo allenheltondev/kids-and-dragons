@@ -1,0 +1,50 @@
+{
+  "$comment": "Foothill switchbacks: rock shelves step diagonally across the board, so every path forward zigzags. Gemfall's Red Sky Foothills.",
+  "id": "switchback",
+  "rows": [
+    "..........",
+    "......##..",
+    "....##....",
+    "..##......",
+    "......##..",
+    "....##....",
+    "..##......",
+    ".........."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

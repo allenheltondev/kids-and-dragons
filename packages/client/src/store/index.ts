@@ -64,11 +64,14 @@ import { appSyncEventSource } from "../sync/appsync-socket";
 import { navigate } from "../router";
 
 /**
- * The campaign the lobby starts. One campaign exists today; choosing between
- * several is roadmap Chapter 5's problem, and the id lives here rather than in
- * a component so there is exactly one place to change when it is.
+ * The campaign the lobby plays. Gemfall is the authored arc; the Hollow Crown
+ * is the engine's reference chapter, which the browser suite pins with
+ * `VITE_LAUNCH_CAMPAIGN` so its scripted walk does not move when the story
+ * does. Choosing between campaigns in the UI is still a later problem, and the
+ * id lives here rather than in a component so there is one place to change.
  */
-const LAUNCH_CAMPAIGN = "the-hollow-crown";
+const LAUNCH_CAMPAIGN: string =
+  (import.meta.env.VITE_LAUNCH_CAMPAIGN as string | undefined) || "gemfall";
 
 // ---------------------------------------------------------------------------
 // Store surface

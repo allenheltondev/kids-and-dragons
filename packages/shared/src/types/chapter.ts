@@ -87,6 +87,8 @@ export interface StoryScene {
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   outcome?: ChapterOutcome;
+  /** Only read when this scene ends the chapter — see `EndingScene`. */
+  endsCampaign?: true;
 }
 
 export interface CheckScene {
@@ -112,6 +114,8 @@ export interface ChoicePointScene {
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   outcome?: ChapterOutcome;
+  /** Only read when this scene ends the chapter — see `EndingScene`. */
+  endsCampaign?: true;
 }
 
 export interface RestScene {
@@ -124,6 +128,8 @@ export interface RestScene {
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   outcome?: ChapterOutcome;
+  /** Only read when this scene ends the chapter — see `EndingScene`. */
+  endsCampaign?: true;
 }
 
 export interface EnemySpec {
@@ -241,6 +247,15 @@ export type SceneType = Scene["type"];
  * endings are setbacks" to be authored, not inferred.
  */
 export type EndingScene = StoryScene | ChoicePointScene | RestScene;
+
+/*
+ * `endsCampaign` on an ending: the campaign finishes here, before its last
+ * beat. A campaign's shape is the story's, and a story may have an exit that
+ * is not at the end of the road — Gemfall's Walk turns south at the tree line
+ * in chapter 7 and never enters the mountain. Without this, the only way to
+ * finish a campaign was to finish a chapter at its highest index, and an early
+ * exit had to be faked as a chapter of its own.
+ */
 
 export interface LlmHints {
   tone: string;

@@ -1,0 +1,50 @@
+{
+  "$comment": "A gem-veined gallery inside Mount Red Sky: four great pillars hold the roof up and break every charge. Gemfall's chapter 8.",
+  "id": "gallery",
+  "rows": [
+    "..........",
+    "..........",
+    "..##..##..",
+    "..##..##..",
+    "..........",
+    "..##..##..",
+    "..##..##..",
+    ".........."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

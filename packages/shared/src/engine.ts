@@ -800,6 +800,12 @@ function dispatch(
     case "START_CHAPTER":
       return doStartChapter(draft, intent.chapterId, ctx);
 
+    case "CONTINUE_CAMPAIGN":
+      // Resolved by the server into a START_CHAPTER (handlers/action.ts):
+      // which chapter comes next is a fact about the household's campaign
+      // attempt, which the engine never sees.
+      throw new Illegal("ILLEGAL", "continuing a campaign is resolved by the server");
+
     case "CHOOSE":
       return doChoose(draft, playerId, intent.choiceId, ctx);
 
@@ -1506,12 +1512,10 @@ function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefine
   }
   if (draft.phase === "chapter_complete") {
     /*
-     * Back to the lobby. Picking the *next* chapter is roadmap Chapter 5 (it
-     * rides on the same commitment machinery as levelling), so there is
-     * nowhere else to advance to yet — but the completion screen offers a
-     * button, and a button that does nothing is worse than no button. The
-     * lobby is somewhere real: the party is intact, everyone re-readies, and
-     * the run can start a chapter again.
+     * Back to the lobby. The party is intact, everyone re-readies, and the
+     * lobby's button continues the campaign — the server picks the next
+     * chapter from the household's attempt (CONTINUE_CAMPAIGN), so playing
+     * on tonight and playing on next week are the same tap.
      */
     draft.phase = "lobby";
     draft.chapterId = null;
