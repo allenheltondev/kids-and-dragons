@@ -202,6 +202,21 @@ export interface GameRepository {
    * sign in on that phone — or if the sweeper has already begun deleting it.
    */
   claimHousehold(householdId: string, cognitoSub: string): Promise<boolean>;
+  /**
+   * Push a guest household's expiry out to `expiresAt` because somebody is
+   * playing in it (§4.5): the 7-day window runs from the last time the family
+   * played, not from the first, so an eight-evening campaign is never swept
+   * out from under them mid-way.
+   *
+   * Forward only, guests only, and refused once a sweep has begun — the same
+   * `sweeping` interlock `claimHousehold` honours, so it can never resurrect a
+   * household whose characters are already being deleted. A household that
+   * has expired but not yet been swept *is* rescued: the family came back,
+   * and the sweep's own condition (`expiresAt <= now`) then leaves it alone.
+   *
+   * Returns `true` if the expiry moved.
+   */
+  extendGuestHousehold(householdId: string, expiresAt: string): Promise<boolean>;
 
   /**
    * Guest households whose `expiresAt` has passed. One GSI1 query against the

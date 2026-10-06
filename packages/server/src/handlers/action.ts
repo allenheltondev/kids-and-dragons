@@ -33,6 +33,7 @@ import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/re
 import { diff } from "../json-patch.ts";
 import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
+import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
   expectedIndex,
@@ -373,6 +374,10 @@ export async function applyAction(
       error: { code: "STALE_SEQ", message: "another action landed first; resync" },
     };
   }
+
+  // A finished chapter is play: a guest household's week starts again. After
+  // the commit, so only a chapter that really landed counts.
+  if (finishedChapter) await keepGuestHousehold(auth.run.householdId, deps);
 
   const message = {
     kind: "patch" as const,

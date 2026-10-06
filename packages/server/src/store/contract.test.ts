@@ -265,6 +265,52 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect((await repo.getHousehold("h_1"))?.ownerSub).toBe("sub_a");
       });
 
+      it("slides a guest's expiry forward, and moves its sweep entry with it", async () => {
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now + DAY).toISOString()));
+        const later = new Date(now + 7 * DAY).toISOString();
+
+        expect(await repo.extendGuestHousehold("h_1", later)).toBe(true);
+        expect((await repo.getHousehold("h_1"))?.expiresAt).toBe(later);
+        // Not swept at the old time…
+        expect(await repo.listExpiredGuestHouseholds(new Date(now + 2 * DAY).toISOString())).toEqual([]);
+        expect(await repo.deleteGuestHousehold("h_1", new Date(now + 2 * DAY).toISOString())).toBe(false);
+        // …and still swept at the new one.
+        const after = new Date(now + 8 * DAY).toISOString();
+        expect((await repo.listExpiredGuestHouseholds(after)).map((h) => h.id)).toEqual(["h_1"]);
+      });
+
+      it("only ever moves an expiry forward", async () => {
+        const now = Date.now();
+        const far = new Date(now + 7 * DAY).toISOString();
+        await repo.putHousehold(guest("h_1", far));
+        expect(await repo.extendGuestHousehold("h_1", new Date(now + DAY).toISOString())).toBe(false);
+        expect((await repo.getHousehold("h_1"))?.expiresAt).toBe(far);
+      });
+
+      it("rescues a guest that expired but was not swept yet", async () => {
+        // The family came back on day eight, before the sweeper got there.
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+        expect(await repo.extendGuestHousehold("h_1", new Date(now + 7 * DAY).toISOString())).toBe(true);
+        expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
+        expect(await repo.getHousehold("h_1")).not.toBeNull();
+      });
+
+      it("will not extend a household the sweeper has already started on", async () => {
+        // Same interlock as claiming: never resurrect a household mid-delete.
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+        await repo.deleteGuestHousehold("h_1", new Date(now).toISOString());
+        expect(await repo.extendGuestHousehold("h_1", new Date(now + 7 * DAY).toISOString())).toBe(false);
+      });
+
+      it("will not give a claimed household an expiry", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        expect(await repo.extendGuestHousehold("h_1", new Date(Date.now() + DAY).toISOString())).toBe(false);
+        expect(await repo.getHousehold("h_1")).not.toHaveProperty("expiresAt");
+      });
+
       it("will not claim a household that does not exist", async () => {
         expect(await repo.claimHousehold("h_nope", "sub_a")).toBe(false);
       });
