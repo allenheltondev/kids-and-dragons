@@ -40,6 +40,27 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
  */
 export const GUEST_HOUSEHOLD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
+/**
+ * Somebody is playing in this household: if it is a guest, its 7 days start
+ * again from now. The window is meant as "a week since you last played", not
+ * "a week since you first did" — a campaign is eight evenings over weeks, and
+ * one fixed from creation would sweep a family's party out from under them
+ * halfway through it.
+ *
+ * Best-effort: it runs beside the play, never in front of it. A failure is
+ * logged and the evening carries on; the next room or chapter tries again.
+ */
+export async function keepGuestHousehold(
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo" | "now">,
+): Promise<void> {
+  try {
+    await deps.repo.extendGuestHousehold(householdId, iso(deps.now() + GUEST_HOUSEHOLD_TTL_MS));
+  } catch (err) {
+    console.error(`keepGuestHousehold: could not extend ${householdId}:`, err);
+  }
+}
+
 /** Assigned round-robin so three characters are never the same colour. */
 export const PLAYER_COLORS = [
   "#7FD4C1",

@@ -289,6 +289,39 @@ export class DynamoRepository implements GameRepository {
     return true;
   }
 
+  async extendGuestHousehold(householdId: string, expiresAt: string): Promise<boolean> {
+    try {
+      /*
+       * One conditional write, so it cannot race the sweeper: the sweep's own
+       * first write sets `sweeping` only while `expiresAt <= now`, and this one
+       * moves `expiresAt` only while `sweeping` is absent. Whichever lands
+       * first, the other's condition fails. GSI1SK moves with the expiry, or
+       * the sweep index would still list the household at its old time.
+       */
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET #d.#expires = :exp, GSI1SK = :sk",
+          ConditionExpression:
+            "attribute_exists(PK) AND attribute_not_exists(sweeping) " +
+            "AND #d.#guest = :true AND #d.#expires < :exp",
+          ExpressionAttributeNames: { "#d": "data", "#guest": "guest", "#expires": "expiresAt" },
+          ExpressionAttributeValues: {
+            ":exp": expiresAt,
+            ":sk": GSI1_GUEST_SK(expiresAt, householdId),
+            ":true": true,
+          },
+        }),
+      );
+      return true;
+    } catch (err) {
+      // Claimed, being swept, already later, or gone — all mean "leave it".
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
   async listExpiredGuestHouseholds(nowIso: string, limit = 25): Promise<Household[]> {
     const items = await this.query(
       {

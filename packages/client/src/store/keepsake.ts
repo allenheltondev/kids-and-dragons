@@ -12,7 +12,8 @@
  * a gate: the flow opens from a button, closes on a tap, and the game keeps
  * running underneath at every step. The worst outcome of ignoring it entirely
  * is the thing anonymous play already promised — the characters are forgotten
- * in seven days.
+ * seven days after the household last played (the window slides on play:
+ * server `keepGuestHousehold`).
  */
 
 import { create } from "zustand";
