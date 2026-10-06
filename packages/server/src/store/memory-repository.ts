@@ -252,6 +252,17 @@ export class MemoryRepository implements GameRepository {
     return true;
   }
 
+  async extendGuestHousehold(householdId: string, expiresAt: string): Promise<boolean> {
+    // The same condition the real store writes under.
+    const item = this.get(HH(householdId), META);
+    if (!item || item.sweeping) return false;
+    const household = item.data as Household;
+    if (!household.guest || !household.expiresAt || household.expiresAt >= expiresAt) return false;
+    // Through putHousehold, so the sweep index entry moves with the expiry.
+    await this.putHousehold({ ...household, expiresAt });
+    return true;
+  }
+
   async listExpiredGuestHouseholds(nowIso: string, limit = 25): Promise<Household[]> {
     return this.queryIndex(GSI1_GUEST, GSI1_GUEST_SK(nowIso, ""))
       .slice(0, limit)

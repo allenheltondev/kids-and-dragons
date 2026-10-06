@@ -121,8 +121,9 @@ export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
          * one character and for three — the party is 1–3 people and a sentence
          * that needs a plural branch will eventually get the branch wrong.
          */}
-        Right now they only live on this phone, for <b>seven days</b>. Add an
-        email and they stay for good — levels, items and all.
+        Right now they only live on this phone, and only while you keep
+        playing: <b>seven days</b> after your last adventure, they&rsquo;re
+        forgotten. Add an email and they stay for good — levels, items and all.
       </p>
       <ul className="keepsake__party">
         {motes.map((mote) => (
@@ -480,7 +481,7 @@ export function KeepsakeOffer(): ReactElement | null {
       <span className="keepsake-offer__text">
         <span className="keepsake-offer__lead">Keep {namesOf(motes)}?</span>
         <span className="keepsake-offer__sub">
-          They&rsquo;re only on this phone for seven days.
+          They&rsquo;re forgotten seven days after you stop playing.
         </span>
       </span>
       <Icon name="forward" />

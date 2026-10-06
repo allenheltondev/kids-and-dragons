@@ -20,6 +20,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId } from "../ids.ts";
+import { keepGuestHousehold } from "./account.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -95,6 +96,9 @@ export async function createRoom(
     now: iso(nowMs),
   });
   await deps.repo.putState(state);
+
+  // An evening of play starts here, so a guest household's week starts again.
+  if (household.guest) await keepGuestHousehold(input.householdId, deps);
 
   return ok({
     code: reserved.code,
