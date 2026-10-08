@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import type { PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
+import { nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -125,6 +126,12 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
+      {nextChapterLine(state?.campaign) !== null ? (
+        <p className="lobby__next-chapter">
+          <Icon name="map" />
+          <span>{nextChapterLine(state?.campaign)}</span>
+        </p>
+      ) : null}
 
       {/* The code is the biggest thing on an idle screen (spec §2.1), but the
           moment somebody is actually in the room the party matters more — and

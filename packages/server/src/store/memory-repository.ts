@@ -30,6 +30,7 @@ import type {
   CommitInput,
   EventRecord,
   GameRepository,
+  GuestRenewal,
   RoomRecord,
   RunRecord,
 } from "./repository.ts";
@@ -250,6 +251,17 @@ export class MemoryRepository implements GameRepository {
     await this.putHousehold({ ...rest, ownerSub: cognitoSub, guest: false });
     await this.putAccountPointer(cognitoSub, householdId);
     return true;
+  }
+
+  async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
+    // The same condition the real store writes under.
+    const item = this.get(HH(householdId), META);
+    if (!item || item.sweeping) return "swept";
+    const household = item.data as Household;
+    if (!household.guest || !household.expiresAt || household.expiresAt >= expiresAt) return "kept";
+    // Through putHousehold, so the sweep index entry moves with the expiry.
+    await this.putHousehold({ ...household, expiresAt });
+    return "extended";
   }
 
   async listExpiredGuestHouseholds(nowIso: string, limit = 25): Promise<Household[]> {

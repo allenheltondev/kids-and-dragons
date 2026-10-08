@@ -52,6 +52,7 @@
  * warning one: spec §8.2 says this is a different path, not a loss, and the
  * screen an eight-year-old reads should not be the one place that disagrees.
  */
+.complete__campaign-end,
 .complete__setback {
   display: flex;
   align-items: center;

@@ -238,7 +238,7 @@ Not every record needs a migration path, because most of them expire on their ow
 | Record | Lives for | Needs migration? |
 |---|---|---|
 | Room | 6 hours (TTL) | **No** — wait a day and every row is new |
-| Guest household and its contents | 7 days | **No** — the sweeper handles it |
+| Guest household and its contents | 7 days since last played, sliding | **No** — the sweeper handles it |
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
 | Character, household, player profile | forever | **Yes**, permanently |
@@ -387,7 +387,7 @@ Four layers of identity, deliberately separated:
 
 | Layer | Lifetime | Auth |
 |---|---|---|
-| **Household** | 7 days anonymous → permanent when claimed | None, then a Cognito sub. |
+| **Household** | 7 days after last play while anonymous → permanent when claimed | None, then a Cognito sub. |
 | **Account** *(optional)* | Permanent | Cognito user pool — emailed code, then a passkey. Adults only. |
 | **Player profile** | As long as its household | A device-bound long-lived token. **No password, ever.** |
 | **Room session** | ≤ 6 hours | Short-lived token scoped to one run. |
@@ -439,6 +439,16 @@ The scheduled sweeper deletes the household and everything under it once
 7-day TTL is what makes the promise true, and the schedule only decides how long
 a household sits deleted-in-principle before it is deleted in fact. Nobody is
 watching for their characters to vanish on the seventh evening.
+
+The seven days run from the last time the household **played**, not from when it
+was created: creating a room and finishing a chapter both push `expiresAt` out
+again (`keepGuestHousehold`, `repo.extendGuestHousehold`). A campaign is eight
+evenings over several weeks, and a window fixed at creation would sweep a
+family's party out from under them halfway through it. The extension is one
+conditional write that moves the expiry forward only, and refuses once the
+sweeper has marked the household — the same `sweeping` interlock a claim
+honours — so it can rescue a household that has expired but not yet been swept,
+and can never resurrect one that is being deleted.
 
 The delete is gated on a **conditional write**, not on a re-read. An earlier
 version read each household back immediately before deleting and skipped the

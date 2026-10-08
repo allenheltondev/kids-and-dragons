@@ -482,6 +482,15 @@ describe("readying up", () => {
     expect(sent).toEqual([{ type: "CONTINUE_CAMPAIGN", campaignId: "c" }]);
   });
 
+  it("says which chapter is next, and the button names it", async () => {
+    mount({ phase: "lobby", party: [member({ ready: true })] });
+    serverSends({
+      campaign: { id: "c", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } },
+    });
+    expect(screen.getByText("Chapter 4 of 8: The Pride Roads")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Play chapter 4/ })).toBeTruthy();
+  });
+
   it("does not offer to begin before the campaign has loaded", () => {
     // Content is data: without a campaign there is nothing to continue, and
     // the panel's job is to not invent one.
