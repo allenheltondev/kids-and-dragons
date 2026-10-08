@@ -272,3 +272,27 @@ describe("the session recap (roadmap chapter 7)", () => {
     }
   });
 });
+
+describe("the chapter that ends the whole campaign", () => {
+  const VIEW = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 1, title: "The City" } };
+
+  it("says the campaign is complete, not just the chapter", () => {
+    mount({ campaign: { ...VIEW, ended: "complete" } });
+    expect(screen.getByRole("heading", { name: /Gemfall is complete!/ })).toBeTruthy();
+    expect(screen.getByText(/keep everything they earned, for good/)).toBeTruthy();
+    expect(screen.queryByText(/Chapter finished!/)).toBeNull();
+  });
+
+  it("gives a failed campaign its own ending, with the souvenir, never a loss screen", () => {
+    mount({ chapterOutcome: "setback", campaign: { ...VIEW, ended: "failed" } });
+    expect(screen.getByRole("heading", { name: /The end of Gemfall/ })).toBeTruthy();
+    expect(screen.getByText(/keeps a souvenir/)).toBeTruthy();
+    // The campaign's ending replaces the ordinary setback line, not adds to it.
+    expect(screen.queryByText(/the adventure carries on from here/)).toBeNull();
+  });
+
+  it("leaves an ordinary chapter's ending alone", () => {
+    mount({ campaign: VIEW });
+    expect(screen.getByRole("heading", { name: /Chapter finished!/ })).toBeTruthy();
+  });
+});

@@ -29,6 +29,7 @@ import {
   spendStatPoint as applyStatPointSpend,
   startCampaign,
   type Campaign,
+  type CampaignView,
   type Character,
   type Chapter,
   type ProgressionAward,
@@ -282,6 +283,32 @@ function isStale(
   return !(existing === null && state.campaignAttemptId === undefined && chapter.index === 1);
 }
 
+/**
+ * Where a household stands in a campaign, for the screens (`RunState.campaign`).
+ *
+ * `next` is exactly the chapter CONTINUE_CAMPAIGN would start from this
+ * attempt — the same `expectedIndex` and the same road — so the lobby never
+ * promises a chapter the button will not open. `ended` is passed only by the
+ * completion that finished or failed the attempt.
+ */
+export function campaignView(
+  campaign: Campaign,
+  attempt: CampaignProgressRecord | null,
+  deps: HandlerDeps,
+  ended?: "complete" | "failed",
+): CampaignView {
+  const index = expectedIndex(campaign, attempt, deps);
+  const flags = attempt && attempt.status === "active" ? (attempt.routeFlags ?? {}) : {};
+  const chapter = deps.content.chapterAt(campaign.id, index, flags);
+  return {
+    id: campaign.id,
+    title: campaign.title,
+    chapters: finalIndex(campaign, deps),
+    next: chapter ? { index: chapter.index, title: chapter.title } : null,
+    ...(ended ? { ended } : {}),
+  };
+}
+
 /** The highest beat a campaign's chapters reach. */
 export function finalIndex(campaign: Campaign, deps: HandlerDeps): number {
   let last = 0;
@@ -308,6 +335,8 @@ export interface ChapterSettlement {
    * `settleChapterCompletion`). Nothing was awarded or recorded.
    */
   stale?: boolean;
+  /** The household's standing after this completion, for `RunState.campaign`. */
+  campaignView?: CampaignView;
 }
 
 /**
@@ -434,6 +463,7 @@ export async function settleChapterCompletion(
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
       campaignProgressExpectedVersion,
+      campaignView: campaignView(campaign, attempt, deps, "failed"),
     };
   }
 
@@ -445,6 +475,7 @@ export async function settleChapterCompletion(
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
       campaignProgressExpectedVersion,
+      campaignView: campaignView(campaign, attempt, deps, "complete"),
     };
   }
 
@@ -454,6 +485,7 @@ export async function settleChapterCompletion(
     ...(chapterProgress ? { chapterProgress } : {}),
     campaignProgress: attempt,
     campaignProgressExpectedVersion,
+    campaignView: campaignView(campaign, attempt, deps),
   };
 }
 

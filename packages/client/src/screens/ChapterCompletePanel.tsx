@@ -37,6 +37,7 @@ import type { TierId } from "@kad/shared";
 import { useItems, useParty, useProgression, useRunState } from "../store";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
+import { campaignEndHeading, campaignEndLine } from "./campaign-copy";
 import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
@@ -70,7 +71,11 @@ export function ChapterCompletePanel(): ReactElement {
    */
   const setback = state?.chapterOutcome === "setback";
   const bonuses = state?.bonuses ?? [];
-  const heading = setback ? "The story took a turn" : "Chapter finished!";
+  // The chapter that ended the whole campaign gets the campaign's ending.
+  const ended = state?.campaign?.ended;
+  const heading =
+    campaignEndHeading(state?.campaign) ?? (setback ? "The story took a turn" : "Chapter finished!");
+  const endLine = campaignEndLine(state?.campaign);
   const recap = state?.recap ?? null;
 
   // Spoken once — the summary is narration like any other (spec §11).
@@ -80,9 +85,11 @@ export function ChapterCompletePanel(): ReactElement {
     spoken.current = true;
     speak(
       [
-        setback
-          ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
-          : `Chapter finished! The party earned ${String(xp)} experience.`,
+        endLine !== null
+          ? `${heading} ${endLine}`
+          : setback
+            ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
+            : `Chapter finished! The party earned ${String(xp)} experience.`,
         // Read aloud too, because a recap that only exists on the television is
         // a recap nobody hears — the §11 seam is where every line of narration
         // goes and this is narration. Appended to the same utterance rather
@@ -90,7 +97,7 @@ export function ChapterCompletePanel(): ReactElement {
         ...(recap === null ? [] : [recap]),
       ].join(" "),
     );
-  }, [xp, setback, recap]);
+  }, [xp, setback, recap, heading, endLine]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -101,9 +108,15 @@ export function ChapterCompletePanel(): ReactElement {
       <header className="complete__head">
         <h2 className="complete__heading" id="complete-heading">
           {/* Icon and words carry the difference — never colour (spec §11). */}
-          <Icon name={setback ? "scroll" : "trophy"} />
+          <Icon name={ended === "complete" ? "crown" : setback || ended === "failed" ? "scroll" : "trophy"} />
           <span>{heading}</span>
         </h2>
+        {endLine !== null ? (
+          <p className="complete__campaign-end">
+            <Icon name={ended === "complete" ? "star" : "charm"} />
+            <span>{endLine}</span>
+          </p>
+        ) : null}
         <p className="complete__xp">
           <Icon name="star" />
           <span>
@@ -113,7 +126,7 @@ export function ChapterCompletePanel(): ReactElement {
             <b>{xp}</b> XP for everyone
           </span>
         </p>
-        {setback ? (
+        {setback && ended === undefined ? (
           <p className="complete__setback">
             <Icon name="forward" />
             <span>Not how you hoped — and the adventure carries on from here.</span>

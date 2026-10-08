@@ -41,6 +41,22 @@ export type PhaseKind =
   | "encounter"
   | "chapter_complete";
 
+/** The household's progress through a campaign, as the screens need it. */
+export interface CampaignView {
+  id: string;
+  title: string;
+  /** How many chapters a playthrough visits — beats, not files. */
+  chapters: number;
+  /** The chapter "Begin" would start; null only at a fork nobody has chosen. */
+  next: { index: number; title: string } | null;
+  /**
+   * Set by the chapter completion that ended the attempt — the campaign was
+   * finished (the gains are kept for good) or failed at its setback limit (the
+   * gains are taken back, a souvenir is kept). Cleared when a chapter starts.
+   */
+  ended?: "complete" | "failed";
+}
+
 /** A decision the game is waiting on. Only one is ever open at a time. */
 export type Prompt =
   | {
@@ -86,6 +102,14 @@ export interface RunState {
    * Optional because runs persisted before it existed carry none.
    */
   campaignAttemptId?: string | null;
+  /**
+   * Where the household stands in the campaign this room plays, for the
+   * screens: the lobby says which chapter is next, and the completion screen
+   * says when the whole campaign has just ended. Computed by the server from
+   * the household's attempt — the client cannot know either. Optional: absent
+   * on runs persisted before it existed and on rooms with no campaign.
+   */
+  campaign?: CampaignView | null;
   chapterId: string | null;
   sceneId: SceneId | null;
   sceneType: SceneType | null;
