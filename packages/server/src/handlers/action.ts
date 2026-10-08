@@ -255,7 +255,10 @@ export async function applyAction(
   // Which attempt this chapter belongs to, so its completion can be checked
   // against the attempt it was started under (settleChapterCompletion).
   if (input.intent.type === "START_CHAPTER") {
-    result = { ...result, state: { ...result.state, campaignAttemptId } };
+    // A new chapter: whatever the last one ended, that moment has passed.
+    const campaign = result.state.campaign ? { ...result.state.campaign } : result.state.campaign;
+    if (campaign) delete campaign.ended;
+    result = { ...result, state: { ...result.state, campaignAttemptId, campaign } };
   }
   if (startedCampaign && !finishedChapter) {
     // Campaign entry is a progression transition too. Seed/re-seed every
@@ -277,6 +280,11 @@ export async function applyAction(
       startedAttempt ?? undefined,
     );
     characters.push(...settlement.characters);
+    if (settlement.campaignView) {
+      // What the lobby offers next, and whether this chapter just ended the
+      // whole campaign — the completion screen reads it (RunState.campaign).
+      result = { ...result, state: { ...result.state, campaign: settlement.campaignView } };
+    }
     if (settlement.stale) {
       // Another room already finished this beat for the household. The table
       // still sees its chapter end; it is not told it earned XP it did not get.

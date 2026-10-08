@@ -21,6 +21,7 @@ import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId } from "../ids.ts";
 import { keepGuestHousehold } from "./account.ts";
+import { campaignView } from "./progression.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -95,6 +96,13 @@ export async function createRoom(
     campaignId,
     now: iso(nowMs),
   });
+  // Where the household stands in this room's campaign, so the lobby can say
+  // which chapter is next before anybody taps anything.
+  const campaign = campaignId ? deps.content.campaign(campaignId) : null;
+  if (campaign) {
+    const attempt = await deps.repo.getCampaignProgress(input.householdId, campaign.id);
+    state.campaign = campaignView(campaign, attempt, deps);
+  }
   await deps.repo.putState(state);
 
   // An evening of play starts here, so a guest household's week starts again.

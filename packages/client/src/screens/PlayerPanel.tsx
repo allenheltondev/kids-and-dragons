@@ -44,6 +44,7 @@ import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
+import { beginLabel, campaignEndHeading, campaignEndLine, nextChapterLine } from "./campaign-copy";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
 import { useEnsureContent } from "./content";
@@ -983,6 +984,12 @@ export function PlayerPanel(): ReactElement {
                 ready, so it can't be tapped out from under anyone, and the
                 chapter it starts is the campaign's next one, which the server
                 works out from where this household got to. */}
+            {inLobby && nextChapterLine(state.campaign) !== null ? (
+              <p className="player__next-chapter">
+                <Icon name="map" />
+                <span>{nextChapterLine(state.campaign)}</span>
+              </p>
+            ) : null}
             {inLobby && everyoneReady && campaignId !== null ? (
               <Button
                 variant="primary"
@@ -991,7 +998,7 @@ export function PlayerPanel(): ReactElement {
                 disabled={busy}
                 onClick={() => void dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
               >
-                Begin the adventure
+                {beginLabel(state.campaign)}
               </Button>
             ) : null}
           </div>
@@ -1005,11 +1012,23 @@ export function PlayerPanel(): ReactElement {
                 persisted before the field existed must not read as a setback
                 on the strength of a missing key. */}
             <h3 className="prompt__title">
-              <Icon name={state.chapterOutcome === "setback" ? "scroll" : "trophy"} />
+              <Icon
+                name={
+                  state.campaign?.ended === "complete"
+                    ? "crown"
+                    : state.chapterOutcome === "setback" || state.campaign?.ended === "failed"
+                      ? "scroll"
+                      : "trophy"
+                }
+              />
               <span>
-                {state.chapterOutcome === "setback" ? "The story took a turn" : "Chapter finished!"}
+                {campaignEndHeading(state.campaign) ??
+                  (state.chapterOutcome === "setback" ? "The story took a turn" : "Chapter finished!")}
               </span>
             </h3>
+            {campaignEndLine(state.campaign) !== null ? (
+              <p className="player__campaign-end">{campaignEndLine(state.campaign)}</p>
+            ) : null}
             {/*
              * The one moment the keepsake offer earns its place (roadmap open
              * item 5): the characters they just played are on screen, the
