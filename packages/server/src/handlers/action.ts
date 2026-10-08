@@ -383,9 +383,11 @@ export async function applyAction(
     };
   }
 
-  // A finished chapter is play: a guest household's week starts again. After
-  // the commit, so only a chapter that really landed counts.
-  if (finishedChapter) await keepGuestHousehold(auth.run.householdId, deps);
+  // A finished chapter is play: a guest household's week starts again. Started
+  // after the commit, so only a chapter that really landed counts — and
+  // awaited only after the broadcast below, so a slow store call can never
+  // hold the completion back from the table.
+  const renewal = finishedChapter ? keepGuestHousehold(auth.run.householdId, deps) : null;
 
   const message = {
     kind: "patch" as const,
@@ -435,6 +437,8 @@ export async function applyAction(
    * never do is make that screen late. Like `warm` below, awaiting it here only
    * holds this request's `{ ok, seq }`, which nothing renders.
    */
+  if (renewal) await renewal;
+
   await deliverRecap(next, chapter, deps, finishedChapter);
 
   /*
