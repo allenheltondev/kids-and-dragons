@@ -237,3 +237,13 @@
   justify-content: center;
   color: var(--color-text-muted, #b9b0d8);
 }
+
+/* Which chapter "Begin" starts — the table's answer to "where were we?". */
+.lobby__next-chapter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  color: var(--color-text-muted, #b7b0d8);
+}

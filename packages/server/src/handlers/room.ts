@@ -20,6 +20,8 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId } from "../ids.ts";
+import { keepGuestHousehold } from "./account.ts";
+import { campaignView } from "./progression.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -69,6 +71,29 @@ export async function createRoom(
   }
 
   const nowMs = deps.now();
+
+  /*
+   * A guest's week starts again — and it has to start *before* anything is
+   * created under the household, not after. On day eight the household can
+   * read as an expired guest here while the sweeper is starting on it; renewing
+   * first either wins (the sweep's own condition, `expiresAt <= now`, then
+   * fails) or reports the sweep, and then nothing is created: a room returned
+   * for a household being deleted would be a lie, and a run written after the
+   * sweeper listed the runs would be orphaned.
+   */
+  if (household.guest) {
+    const renewal = await keepGuestHousehold(input.householdId, deps);
+    if (renewal === "swept") {
+      return fail("NOT_FOUND", `household ${input.householdId} has expired`);
+    }
+    // The store could not say. Harmless while the household has days left —
+    // the sweeper cannot touch it — but past its expiry we cannot rule the
+    // sweep out, so ask for a retry rather than guess.
+    if (renewal === "error" && household.expiresAt !== undefined && household.expiresAt <= iso(nowMs)) {
+      return fail("ILLEGAL", "could not open a room just now; try again");
+    }
+  }
+
   const runId = newId("r");
   const campaignId = input.campaignId ?? null;
 
@@ -94,6 +119,13 @@ export async function createRoom(
     campaignId,
     now: iso(nowMs),
   });
+  // Where the household stands in this room's campaign, so the lobby can say
+  // which chapter is next before anybody taps anything.
+  const campaign = campaignId ? deps.content.campaign(campaignId) : null;
+  if (campaign) {
+    const attempt = await deps.repo.getCampaignProgress(input.householdId, campaign.id);
+    state.campaign = campaignView(campaign, attempt, deps);
+  }
   await deps.repo.putState(state);
 
   return ok({
