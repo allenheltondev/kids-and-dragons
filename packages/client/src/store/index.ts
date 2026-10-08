@@ -623,6 +623,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           const room = await deps.api.createRoom({
             householdId: identity.householdId,
             mode,
+            // So the server can tell the lobby which chapter is next.
+            campaignId: LAUNCH_CAMPAIGN,
             displayName,
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });

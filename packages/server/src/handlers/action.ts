@@ -33,6 +33,7 @@ import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/re
 import { diff } from "../json-patch.ts";
 import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
+import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import {
   expectedIndex,
@@ -254,7 +255,10 @@ export async function applyAction(
   // Which attempt this chapter belongs to, so its completion can be checked
   // against the attempt it was started under (settleChapterCompletion).
   if (input.intent.type === "START_CHAPTER") {
-    result = { ...result, state: { ...result.state, campaignAttemptId } };
+    // A new chapter: whatever the last one ended, that moment has passed.
+    const campaign = result.state.campaign ? { ...result.state.campaign } : result.state.campaign;
+    if (campaign) delete campaign.ended;
+    result = { ...result, state: { ...result.state, campaignAttemptId, campaign } };
   }
   if (startedCampaign && !finishedChapter) {
     // Campaign entry is a progression transition too. Seed/re-seed every
@@ -276,6 +280,11 @@ export async function applyAction(
       startedAttempt ?? undefined,
     );
     characters.push(...settlement.characters);
+    if (settlement.campaignView) {
+      // What the lobby offers next, and whether this chapter just ended the
+      // whole campaign — the completion screen reads it (RunState.campaign).
+      result = { ...result, state: { ...result.state, campaign: settlement.campaignView } };
+    }
     if (settlement.stale) {
       // Another room already finished this beat for the household. The table
       // still sees its chapter end; it is not told it earned XP it did not get.
@@ -374,6 +383,12 @@ export async function applyAction(
     };
   }
 
+  // A finished chapter is play: a guest household's week starts again. Started
+  // after the commit, so only a chapter that really landed counts — and
+  // awaited only after the broadcast below, so a slow store call can never
+  // hold the completion back from the table.
+  const renewal = finishedChapter ? keepGuestHousehold(auth.run.householdId, deps) : null;
+
   const message = {
     kind: "patch" as const,
     seq: event.seq,
@@ -422,6 +437,8 @@ export async function applyAction(
    * never do is make that screen late. Like `warm` below, awaiting it here only
    * holds this request's `{ ok, seq }`, which nothing renders.
    */
+  if (renewal) await renewal;
+
   await deliverRecap(next, chapter, deps, finishedChapter);
 
   /*

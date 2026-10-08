@@ -21,6 +21,9 @@ import type {
   ServerMessage,
 } from "@kad/shared";
 
+/** What `extendGuestHousehold` did, and why. */
+export type GuestRenewal = "extended" | "kept" | "swept";
+
 /** `RUN#<runId>` / `RUN#<runId>` under the owning household. */
 export interface RunRecord {
   id: string;
@@ -202,6 +205,24 @@ export interface GameRepository {
    * sign in on that phone — or if the sweeper has already begun deleting it.
    */
   claimHousehold(householdId: string, cognitoSub: string): Promise<boolean>;
+  /**
+   * Push a guest household's expiry out to `expiresAt` because somebody is
+   * playing in it (§4.5): the 7-day window runs from the last time the family
+   * played, not from the first, so an eight-evening campaign is never swept
+   * out from under them mid-way.
+   *
+   * Forward only, guests only, and refused once a sweep has begun — the same
+   * `sweeping` interlock `claimHousehold` honours, so it can never resurrect a
+   * household whose characters are already being deleted. A household that
+   * has expired but not yet been swept *is* rescued: the family came back,
+   * and the sweep's own condition (`expiresAt <= now`) then leaves it alone.
+   *
+   * Says why, because a caller about to create something under the household
+   * has to tell the cases apart: `extended` (the expiry moved), `kept` (benign
+   * — already that late, or claimed and never swept), or `swept` (the sweeper
+   * has begun, or the household is gone: nothing should be created under it).
+   */
+  extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal>;
 
   /**
    * Guest households whose `expiresAt` has passed. One GSI1 query against the

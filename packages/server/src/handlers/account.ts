@@ -25,6 +25,7 @@
 
 import type { Character, Household, PlayerProfile, Role } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
+import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
@@ -39,6 +40,29 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
  * those characters on Saturday.
  */
 export const GUEST_HOUSEHOLD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Somebody is playing in this household: if it is a guest, its 7 days start
+ * again from now. The window is meant as "a week since you last played", not
+ * "a week since you first did" — a campaign is eight evenings over weeks, and
+ * one fixed from creation would sweep a family's party out from under them
+ * halfway through it.
+ *
+ * Never throws: a store failure comes back as `"error"` (and is logged), so a
+ * caller that only wants the week renewed can ignore the result, and a caller
+ * about to create something under the household can refuse on `"swept"`.
+ */
+export async function keepGuestHousehold(
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo" | "now">,
+): Promise<GuestRenewal | "error"> {
+  try {
+    return await deps.repo.extendGuestHousehold(householdId, iso(deps.now() + GUEST_HOUSEHOLD_TTL_MS));
+  } catch (err) {
+    console.error(`keepGuestHousehold: could not extend ${householdId}:`, err);
+    return "error";
+  }
+}
 
 /** Assigned round-robin so three characters are never the same colour. */
 export const PLAYER_COLORS = [
