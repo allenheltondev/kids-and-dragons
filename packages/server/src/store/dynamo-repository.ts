@@ -46,6 +46,7 @@ import type {
   CommitInput,
   EventRecord,
   GameRepository,
+  GuestRenewal,
   RoomRecord,
   RunRecord,
 } from "./repository.ts";
@@ -289,7 +290,7 @@ export class DynamoRepository implements GameRepository {
     return true;
   }
 
-  async extendGuestHousehold(householdId: string, expiresAt: string): Promise<boolean> {
+  async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
     try {
       /*
        * One conditional write, so it cannot race the sweeper: the sweep's own
@@ -314,12 +315,20 @@ export class DynamoRepository implements GameRepository {
           },
         }),
       );
-      return true;
+      return "extended";
     } catch (err) {
-      // Claimed, being swept, already later, or gone — all mean "leave it".
-      if (isConditionalFailure(err)) return false;
-      throw err;
+      if (!isConditionalFailure(err)) throw err;
     }
+    /*
+     * Refused — and the caller needs to know whether that was benign (already
+     * later, or claimed) or the sweep. A read after the failed write is sound
+     * because `sweeping` is never unset: if this read sees it absent, the
+     * household was not being swept when the write was refused either, and a
+     * household whose expiry is already later than ours cannot be swept now.
+     */
+    const item = await this.get(HH(householdId), META);
+    if (!item || (item as { sweeping?: boolean }).sweeping) return "swept";
+    return "kept";
   }
 
   async listExpiredGuestHouseholds(nowIso: string, limit = 25): Promise<Household[]> {
