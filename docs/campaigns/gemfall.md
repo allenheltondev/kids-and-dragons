@@ -289,7 +289,7 @@ changed; and every loss epilogue ends on a spark someone else might pick up.
 | `facet_*` (eight) | any chapter | collection count; NPC reactions; ch. 7H; the Exploit choice |
 | `told_wardens` / `told_gatherers` / `kept_close` | ch. 5–6 exit | ch. 7 allies and depots; hoard-line epilogues |
 | `pursuit_restore` / `pursuit_hoard` / `pursuit_leash` | ch. 6 exit | selects ch. 7 variant (7R / 7H / 7L); frames ch. 8 |
-| `funded_the_break` | ch. 7H (selling to the cult) | hard clock acceleration; recolors every downstream epilogue |
+| `funded_the_break` | ch. 7H (selling to the cult); also earlier, by choice — a party may drop coins in a soup-tent box as soon as 4C/5A–5C/6 (deliberately allowed: a small kindness to the wrong cause is the cult's whole pitch) | hard clock acceleration; recolors every downstream epilogue; the Seal-Keeper names it in ch. 8 |
 | `walked_away` | ch. 7H exit | ends the campaign at the tree line; epilogue by clock + ally flags |
 | `seal_clock` (staged) | seeded chs. 1–5, runs from ch. 6 | loss checks; ch. 7–8 staging; every epilogue |
 
