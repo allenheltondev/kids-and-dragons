@@ -25,6 +25,7 @@
 
 import type { Character, Household, PlayerProfile, Role } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
+import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
@@ -47,17 +48,19 @@ export const GUEST_HOUSEHOLD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
  * one fixed from creation would sweep a family's party out from under them
  * halfway through it.
  *
- * Best-effort: it runs beside the play, never in front of it. A failure is
- * logged and the evening carries on; the next room or chapter tries again.
+ * Never throws: a store failure comes back as `"error"` (and is logged), so a
+ * caller that only wants the week renewed can ignore the result, and a caller
+ * about to create something under the household can refuse on `"swept"`.
  */
 export async function keepGuestHousehold(
   householdId: string,
   deps: Pick<HandlerDeps, "repo" | "now">,
-): Promise<void> {
+): Promise<GuestRenewal | "error"> {
   try {
-    await deps.repo.extendGuestHousehold(householdId, iso(deps.now() + GUEST_HOUSEHOLD_TTL_MS));
+    return await deps.repo.extendGuestHousehold(householdId, iso(deps.now() + GUEST_HOUSEHOLD_TTL_MS));
   } catch (err) {
     console.error(`keepGuestHousehold: could not extend ${householdId}:`, err);
+    return "error";
   }
 }
 

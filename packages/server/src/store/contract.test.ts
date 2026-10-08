@@ -270,7 +270,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         await repo.putHousehold(guest("h_1", new Date(now + DAY).toISOString()));
         const later = new Date(now + 7 * DAY).toISOString();
 
-        expect(await repo.extendGuestHousehold("h_1", later)).toBe(true);
+        expect(await repo.extendGuestHousehold("h_1", later)).toBe("extended");
         expect((await repo.getHousehold("h_1"))?.expiresAt).toBe(later);
         // Not swept at the old time…
         expect(await repo.listExpiredGuestHouseholds(new Date(now + 2 * DAY).toISOString())).toEqual([]);
@@ -284,7 +284,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         const now = Date.now();
         const far = new Date(now + 7 * DAY).toISOString();
         await repo.putHousehold(guest("h_1", far));
-        expect(await repo.extendGuestHousehold("h_1", new Date(now + DAY).toISOString())).toBe(false);
+        expect(await repo.extendGuestHousehold("h_1", new Date(now + DAY).toISOString())).toBe("kept");
         expect((await repo.getHousehold("h_1"))?.expiresAt).toBe(far);
       });
 
@@ -292,7 +292,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         // The family came back on day eight, before the sweeper got there.
         const now = Date.now();
         await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
-        expect(await repo.extendGuestHousehold("h_1", new Date(now + 7 * DAY).toISOString())).toBe(true);
+        expect(await repo.extendGuestHousehold("h_1", new Date(now + 7 * DAY).toISOString())).toBe("extended");
         expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
         expect(await repo.getHousehold("h_1")).not.toBeNull();
       });
@@ -302,13 +302,17 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         const now = Date.now();
         await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
         await repo.deleteGuestHousehold("h_1", new Date(now).toISOString());
-        expect(await repo.extendGuestHousehold("h_1", new Date(now + 7 * DAY).toISOString())).toBe(false);
+        expect(await repo.extendGuestHousehold("h_1", new Date(now + 7 * DAY).toISOString())).toBe("swept");
       });
 
       it("will not give a claimed household an expiry", async () => {
         await repo.putHousehold(household({ ownerSub: "sub_a" }));
-        expect(await repo.extendGuestHousehold("h_1", new Date(Date.now() + DAY).toISOString())).toBe(false);
+        expect(await repo.extendGuestHousehold("h_1", new Date(Date.now() + DAY).toISOString())).toBe("kept");
         expect(await repo.getHousehold("h_1")).not.toHaveProperty("expiresAt");
+      });
+
+      it("reports a household that is gone as swept", async () => {
+        expect(await repo.extendGuestHousehold("h_nope", new Date(Date.now() + DAY).toISOString())).toBe("swept");
       });
 
       it("will not claim a household that does not exist", async () => {
