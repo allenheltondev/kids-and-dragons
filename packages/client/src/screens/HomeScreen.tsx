@@ -16,6 +16,7 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
+import { defaultStorage, loadIdentity } from "../store/persistence";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { ROOM_CODE_LENGTH as CODE_LENGTH, normalizeCodeInput as normalizeCode } from "../router";
@@ -61,6 +62,7 @@ export function HomeScreen(): ReactElement {
   const checkKeepsake = useKeepsakeStore((s) => s.check);
   const openKeepsake = useKeepsakeStore((s) => s.open);
   const signInAvailable = useKeepsakeStore((s) => s.available) === true;
+  const account = useKeepsakeStore((s) => s.account);
   useEffect(() => {
     void checkKeepsake();
   }, [checkKeepsake]);
@@ -247,24 +249,34 @@ export function HomeScreen(): ReactElement {
         ) : null}
 
         {/*
-         * The new-phone path (§4.5). Deliberately last, small, and phrased for
-         * the person it is for: an adult setting up a replacement phone, not a
-         * child opening the app. Everyone else never needs it — a bound device
-         * already knows who it is, and an unbound one just plays.
+         * Sign in or create an account (§4.5). Always reachable where sign-in
+         * works, because an adult who wants their characters to outlive a
+         * week should not have to finish a chapter to find the door. Last and
+         * quiet, since nobody needs it to play.
          *
-         * Renders nothing where sign-in cannot work, which includes local dev.
+         * One button, two endings: a phone already playing in a household
+         * claims it ("keep"); a phone that has never played looks for the
+         * family's household instead, and a brand-new address simply gets one
+         * ("restore"). Both run the same email-and-code middle.
          */}
         {signInAvailable ? (
-          <button
-            className="home__restore"
-            type="button"
-            onClick={() => {
-              openKeepsake("restore");
-            }}
-          >
-            <Icon name="lantern" />
-            <span>I&rsquo;ve played before on another phone</span>
-          </button>
+          account !== null ? (
+            <p className="home__restore home__restore--signed-in" role="status">
+              <Icon name="lantern" />
+              <span>Signed in as {account.email}</span>
+            </p>
+          ) : (
+            <button
+              className="home__restore"
+              type="button"
+              onClick={() => {
+                openKeepsake(loadIdentity(defaultStorage()).deviceToken ? "keep" : "restore");
+              }}
+            >
+              <Icon name="lantern" />
+              <span>Sign in or create an account</span>
+            </button>
+          )
         ) : null}
       </div>
 

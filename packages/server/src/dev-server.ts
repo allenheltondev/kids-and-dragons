@@ -28,7 +28,7 @@ import type { ChannelMessage, RoomMode } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { ContentError, loadContent, type ContentStore } from "./content/loader.ts";
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
-import { addPlayer, createGuestHousehold } from "./handlers/account.ts";
+import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
@@ -39,6 +39,7 @@ import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
 import { installNarrator } from "./llm/install.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
+import { verifyDevToken } from "./dev-auth.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
@@ -374,6 +375,51 @@ async function main(): Promise<void> {
   });
 
   // -------------------------------------------------------------------------
+  // Optional sign-in, local edition
+  //
+  // Same routes and response shapes as `lambda/http.ts`, verified by an unsigned
+  // dev token instead of Cognito. `GET /api/auth/dev` is how the client learns
+  // it may offer sign-in here; `/api/config` stays a 404 so realtime keeps
+  // choosing SSE.
+  // -------------------------------------------------------------------------
+
+  app.get("/api/auth/dev", (_req: Request, res: Response) => {
+    res.json({ dev: true });
+  });
+
+  const bearerToken = (req: Request): string =>
+    /^Bearer\s+(.+)$/i.exec((req.get("authorization") ?? "").trim())?.[1] ?? "";
+
+  app.post("/api/auth/link", async (req: Request, res: Response) => {
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+
+    const existing = await resolvePrincipal(req, base);
+    const result = await linkAccount(
+      { cognitoSub: account.cognitoSub, email: account.email, principal: existing?.principal ?? null },
+      base,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  app.post("/api/auth/device", async (req: Request, res: Response) => {
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+
+    const { householdId, playerId } = (req.body ?? {}) as { householdId?: unknown; playerId?: unknown };
+    if (typeof householdId !== "string" || typeof playerId !== "string") {
+      return sendError(res, 400, "ILLEGAL", "expected { householdId, playerId }");
+    }
+    const result = await adoptDevice(
+      { cognitoSub: account.cognitoSub, householdId, playerId, userAgent: req.get("user-agent") },
+      base,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // -------------------------------------------------------------------------
   // Static + health
   // -------------------------------------------------------------------------
 
@@ -530,7 +576,7 @@ function requestLog(req: Request, res: Response, next: NextFunction): void {
  */
 function devCors(req: Request, res: Response, next: NextFunction): void {
   res.setHeader("Access-Control-Allow-Origin", req.get("origin") ?? "*");
-  res.setHeader("Access-Control-Allow-Headers", "content-type, x-kad-device-token");
+  res.setHeader("Access-Control-Allow-Headers", "content-type, authorization, x-kad-device-token");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   if (req.method === "OPTIONS") {
     res.status(204).end();

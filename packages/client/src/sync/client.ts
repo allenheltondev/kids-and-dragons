@@ -137,6 +137,8 @@ export interface Api {
 
   /** `null` when the deployment has no user pool, i.e. local dev. */
   fetchConfig(): Promise<ClientConfig | null>;
+  /** True only on the local dev server, which signs people in without a user pool. */
+  probeDevAuth(): Promise<boolean>;
   /** Claims the household this device is playing in for a signed-in account. */
   linkAccount(idToken: string, deviceToken?: string): Promise<LinkAccountResponse>;
   /** Binds this device to an existing player — the new-phone path (§4.5). */
@@ -314,6 +316,15 @@ export const api: Api = {
       // server errors and malformed responses must be retried as failures.
       if (error instanceof ApiError && error.status === 404) return null;
       throw error;
+    }
+  },
+
+  async probeDevAuth() {
+    try {
+      const result = await request<{ dev?: boolean }>("/api/auth/dev");
+      return result?.dev === true;
+    } catch {
+      return false;
     }
   },
 
