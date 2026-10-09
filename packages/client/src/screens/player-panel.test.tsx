@@ -1151,6 +1151,23 @@ describe("the party strip", () => {
     expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
   });
 
+  it("puts the sheet away when a fight starts on somebody else's turn", async () => {
+    // Thistle's phone: she is not in the fight, so it is never her combat
+    // turn and no prompt is hers — only the table moving on can close it.
+    const user = userEvent.setup();
+    mount({
+      playerId: "p_2",
+      party: [member(), member({ character: THISTLE, playerId: "p_2" })],
+      prompt: choicePrompt(),
+    });
+    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
+    expect(screen.getByRole("button", { name: /Back to the game/ })).toBeTruthy();
+
+    serverSends({ phase: "encounter", prompt: null, encounter: realEncounter() });
+    expect(screen.queryByRole("button", { name: /Back to the game/ })).toBeNull();
+    expect(screen.getByRole("button", { name: /Open your stats/ })).toBeTruthy();
+  });
+
   it("gives the controller back when the sheet is closed", async () => {
     // With a question open, the party waits behind the dock and covers the
     // prompt rather than sitting under it, so the way back has to put the

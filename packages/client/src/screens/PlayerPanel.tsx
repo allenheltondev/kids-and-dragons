@@ -405,6 +405,14 @@ export function PlayerPanel(): ReactElement {
     if (myPrompt !== null || isMyCombatTurn) setSheetOpen(false);
   }, [key, myPrompt, isMyCombatTurn]);
 
+  // So does the table moving on — a fight starting on somebody else's turn,
+  // a new scene, the lobby, the chapter's end. Whatever the pane now shows is
+  // news, and a sheet opened for the last screen must not sit on top of it.
+  const where = `${state?.phase}|${state?.sceneId}|${state?.encounter != null}`;
+  useEffect(() => {
+    setSheetOpen(false);
+  }, [where]);
+
   /*
    * Nothing is spoken from here on purpose. Narration, choice labels and roll
    * prompts all go through `speak()` in NarrationPanel — the shared surface,
