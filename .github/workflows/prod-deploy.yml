@@ -211,6 +211,15 @@ jobs:
       - name: Strict art gate
         run: npm run art:verify:strict
 
+      - name: Require the hosted zone
+        env:
+          APP_HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
+        run: |
+          if [ -z "${APP_HOSTED_ZONE_ID}" ]; then
+            echo "::error title=No hosted zone::Set the Production environment's HOSTED_ZONE_ID variable to the readysetcloud.io hosted zone id; production serves on kd.readysetcloud.io."
+            exit 1
+          fi
+
       - name: Deploy
         # `scripts/deploy.sh` is the same command that runs from a laptop: it
         # runs the checks, bundles the Lambdas, deploys the stack, uploads the
@@ -240,6 +249,13 @@ jobs:
           # variable as "false". Needs anthropic.claude-haiku-4-5 enabled
           # under Bedrock > Model access in this account and region.
           LIVE_LLM_ENABLED: "true"
+          # Production alone serves on the custom domain (staging stays on its
+          # CloudFront domain). The hosted zone id is the Production
+          # environment's HOSTED_ZONE_ID variable -- the readysetcloud.io zone.
+          # deploy.sh passes both on every deploy, so an empty zone id would
+          # quietly take the domain away; the step above the deploy refuses.
+          APP_DOMAIN_NAME: kd.readysetcloud.io
+          APP_HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
 
       - name: Diagnose failed deploy
         if: ${{ failure() }}

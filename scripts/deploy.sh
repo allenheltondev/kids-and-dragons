@@ -125,6 +125,11 @@ fi
 # after the workflow line was deleted — the documented off switch would not
 # switch anything off. `${VAR:-false}` makes absence genuinely mean off.
 PARAMS+=("LiveLlmEnabled=${LIVE_LLM_ENABLED:-false}")
+# The custom domain. Same rule: passed every deploy, empty meaning none, so a
+# stack that once had a domain loses it only when a deploy says so on purpose
+# rather than because a variable went missing. Unset is the cloudfront.net
+# domain, which is what staging and dev want.
+PARAMS+=("AppDomainName=${APP_DOMAIN_NAME:-}" "AppHostedZoneId=${APP_HOSTED_ZONE_ID:-}")
 
 sam deploy \
   --template-file infra/template.yaml \
