@@ -605,6 +605,8 @@ describe("the bag", () => {
     mountBag([POTION], { hp: 4 });
     serverSends({ encounter: realEncounter() });
 
+    // In a fight the bag waits behind the dock, so the board gets the room.
+    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
     await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
     expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
     expect(document.querySelector(".item-detail__passive")?.textContent).toContain(
@@ -1131,17 +1133,56 @@ describe("the party strip", () => {
     expect(screen.getByText(/How far they have come/)).toBeTruthy();
   });
 
+  it("keeps the sheet behind a dock while you decide, and puts it away when a question arrives", async () => {
+    // A phone pane has room for the question or the sheet, not both — and a
+    // new question must never land behind the bag.
+    const user = userEvent.setup();
+    mount({ party: [member(), member({ character: THISTLE })] });
+    expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Open your stats/ })).toBeNull();
+
+    serverSends({ prompt: choicePrompt() });
+    expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
+    expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
+
+    serverSends({ prompt: choicePrompt({ sceneId: "s_2" }) });
+    expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
+  });
+
+  it("puts the sheet away when a fight starts on somebody else's turn", async () => {
+    // Thistle's phone: she is not in the fight, so it is never her combat
+    // turn and no prompt is hers — only the table moving on can close it.
+    const user = userEvent.setup();
+    mount({
+      playerId: "p_2",
+      party: [member(), member({ character: THISTLE, playerId: "p_2" })],
+      prompt: choicePrompt(),
+    });
+    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
+    expect(screen.getByRole("button", { name: /Back to the game/ })).toBeTruthy();
+
+    serverSends({ phase: "encounter", prompt: null, encounter: realEncounter() });
+    expect(screen.queryByRole("button", { name: /Back to the game/ })).toBeNull();
+    expect(screen.getByRole("button", { name: /Open your stats/ })).toBeTruthy();
+  });
+
   it("gives the controller back when the sheet is closed", async () => {
-    // The sheet covers the prompt rather than sitting under it, so closing it
-    // has to put the question back exactly as it was.
+    // With a question open, the party waits behind the dock and covers the
+    // prompt rather than sitting under it, so the way back has to put the
+    // question back exactly as it was.
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })], prompt: choicePrompt() });
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
 
+    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
 
     await user.click(screen.getByRole("button", { name: /Done looking at Thistle/ }));
+    await user.click(screen.getByRole("button", { name: /Back to the game/ }));
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
   });
 
