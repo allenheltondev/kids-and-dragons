@@ -111,3 +111,58 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 }
+
+/*
+ * Fitting a fight on a phone without scrolling (PlayerPanel "deciding"): the
+ * party's HP in one row, the action cards two to a row — their names are a
+ * word or two — and the board keeping the width it needs.
+ */
+.combat.prompt {
+  gap: var(--space-2, 0.5em);
+}
+
+/* Names stay — three of one species are told apart by them — but tight. */
+.combat .combat__party {
+  gap: var(--space-1, 0.25em);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.combat .combat__party > .kad-chip {
+  gap: 0.25em;
+  padding: 0.15em 0.45em;
+}
+
+.combat .combat__party .combat__face {
+  inline-size: 1.3em;
+  block-size: 1.3em;
+}
+
+.combat .prompt__options:not(.combat__targets) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.combat .prompt__options:not(.combat__targets) .choice {
+  grid-template-columns: auto minmax(0, 1fr);
+  block-size: 100%;
+  padding: var(--space-2, 0.5em);
+}
+
+.combat .prompt__options:not(.combat__targets) .choice__icon {
+  width: 2em;
+  height: 2em;
+}
+
+.combat .prompt__options:not(.combat__targets) .choice__label {
+  font-size: var(--font-size-md, 1em);
+}
+
+/*
+ * The board gives up width before anything scrolls: on a short pane it is
+ * sized by the pane's height (10 × 8 cells, so width is 1.25 × height),
+ * centred, and never wider than the pane.
+ */
+.combat .combat__grid {
+  inline-size: min(100%, 46cqh * 1.25);
+  margin-inline: auto;
+}

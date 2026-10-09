@@ -151,3 +151,13 @@
   border-color: var(--color-accent, #f5c86c);
   color: var(--color-accent, #f5c86c);
 }
+
+/*
+ * A phone-width world pane (Travel Mode): the TV's narration size leaves the
+ * scene's choices below the fold. One step down still reads at arm's length.
+ */
+@container world (max-width: 32em) {
+  .narration__body {
+    font-size: var(--font-size-xl, 1.5em);
+  }
+}
