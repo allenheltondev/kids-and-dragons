@@ -360,7 +360,7 @@ export function CombatControls(): ReactElement | null {
           </div>
 
           {/* ------------- what to do: cards, or the aim step ------------- */}
-          {selection.step === "idle" || selection.step === "move" ? (
+          {selection.step === "idle" ? (
             <ul className="prompt__options">
               {actions.map((action) => (
                 <li key={action.abilityId}>
