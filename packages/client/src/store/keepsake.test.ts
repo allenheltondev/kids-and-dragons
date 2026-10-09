@@ -50,6 +50,7 @@ function setup(
       realtime: { httpDomain: "h", realtimeDomain: "r", namespace: "room" },
       auth: { userPoolId: "us-east-1_abc", clientId: "client123" },
     })),
+    probeDevAuth: vi.fn(async () => false),
     linkAccount: vi.fn(async () => LINKED),
     adoptDevice: vi.fn(async () => ({ deviceToken: "dev_new", playerId: "p_2" })),
     ...overrides.api,
@@ -315,5 +316,24 @@ describe("restoring on a new phone", () => {
     expect(store.getState().error).toMatch(/different account/);
     // Critically, the device is not half-bound.
     expect(loadIdentity(storage).deviceToken).toBeUndefined();
+  });
+});
+
+describe("local dev sign-in", () => {
+  it("is offered when the dev server answers the probe, without a user pool", async () => {
+    const { store } = setup({
+      api: { fetchConfig: vi.fn(async () => null), probeDevAuth: vi.fn(async () => true) },
+    });
+    await store.getState().check();
+    expect(store.getState().available).toBe(true);
+    expect(store.getState().passkeyPossible).toBe(false);
+  });
+
+  it("stays hidden when there is neither a pool nor a dev server", async () => {
+    const { store } = setup({
+      api: { fetchConfig: vi.fn(async () => null), probeDevAuth: vi.fn(async () => false) },
+    });
+    await store.getState().check();
+    expect(store.getState().available).toBe(false);
   });
 });

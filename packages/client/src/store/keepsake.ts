@@ -20,6 +20,7 @@ import { create } from "zustand";
 import {
   AuthError,
   createCognitoClient,
+  createDevAuthClient,
   type AuthTokens,
   type CognitoClient,
   type PendingChallenge,
@@ -142,7 +143,14 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       checking ??= (async () => {
         const config = await deps.api.fetchConfig();
         if (!config?.auth.userPoolId) {
-          set({ available: false });
+          // No user pool: either a deployment without sign-in, or the local dev
+          // server, which offers its own pool-free one.
+          if (await deps.api.probeDevAuth()) {
+            cognito = createDevAuthClient();
+            set({ available: true, passkeyPossible: false });
+          } else {
+            set({ available: false });
+          }
           return;
         }
         cognito = deps.makeCognito({
