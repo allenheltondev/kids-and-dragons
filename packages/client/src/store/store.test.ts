@@ -87,6 +87,7 @@ function harness(state: RunState = makeState()): Harness {
     // The optional sign-in (§4.5). `null` is the local-dev answer — there is no
     // user pool, so no offer is made, and the game store never touches these.
     fetchConfig: vi.fn(async () => null),
+    probeDevAuth: vi.fn(async () => false),
     linkAccount: vi.fn(),
     adoptDevice: vi.fn(),
   };

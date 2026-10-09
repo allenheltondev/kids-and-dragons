@@ -200,3 +200,17 @@ describe("passkeys", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("createDevAuthClient", () => {
+  it("issues a dev token carrying the normalised email, with no passkey step", async () => {
+    const { createDevAuthClient } = await import("./auth");
+    const client = createDevAuthClient();
+    const challenge = await client.requestCode(" Ada@Example.com ");
+    expect(challenge.email).toBe("ada@example.com");
+    const tokens = await client.submitCode(challenge, "anything");
+    expect(tokens.idToken.startsWith("dev.")).toBe(true);
+    const claims = JSON.parse(atob(tokens.idToken.slice(4).replace(/-/g, "+").replace(/_/g, "/")));
+    expect(claims).toEqual({ email: "ada@example.com" });
+    expect(client.canUsePasskey()).toBe(false);
+  });
+});

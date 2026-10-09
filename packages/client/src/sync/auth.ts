@@ -309,3 +309,33 @@ function fromB64url(value: string): ArrayBuffer {
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
   return bytes.buffer;
 }
+
+/**
+ * The local-dev sign-in: same `CognitoClient` surface, no pool behind it.
+ *
+ * Only ever built when the dev server answers `GET /api/auth/dev` (the Lambda
+ * API has no such route), so it cannot be reached in a deployed stack. No email
+ * is sent and any code is accepted; the "token" is the unsigned envelope
+ * `server/src/dev-auth.ts` reads. Signing in with the same address returns to
+ * the same household, which is what makes the dev table's persistence usable.
+ */
+export function createDevAuthClient(): CognitoClient {
+  return {
+    async requestCode(email: string): Promise<PendingChallenge> {
+      const normalised = email.trim().toLowerCase();
+      return { email: normalised, session: "dev", destination: `${normalised} (dev: any code works)` };
+    },
+    async submitCode(challenge: PendingChallenge): Promise<AuthTokens> {
+      const payload = btoa(JSON.stringify({ email: challenge.email }))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+      const idToken = `dev.${payload}`;
+      return { idToken, accessToken: idToken };
+    },
+    canUsePasskey: () => false,
+    async registerPasskey() {
+      return false;
+    },
+  };
+}
