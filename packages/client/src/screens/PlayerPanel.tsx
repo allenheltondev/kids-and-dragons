@@ -31,6 +31,7 @@ import type {
 } from "@kad/shared";
 import {
   useCampaign,
+  useIsMyCombatTurn,
   useIsMyPrompt,
   useItems,
   useMe,
@@ -280,6 +281,51 @@ function InventoryGrid({
   );
 }
 
+/**
+ * The sheet, folded to one line while a decision has the pane.
+ *
+ * Your four stats at a glance, how many are in the party, and what is in your
+ * bag — the three things a question can make you want to check — and one tap
+ * opens the whole sheet in the question's place, with a way straight back.
+ */
+function SheetDock({
+  me,
+  partySize,
+  onOpen,
+}: {
+  me: PartyMember;
+  partySize: number;
+  onOpen: () => void;
+}): ReactElement {
+  const stats = me.character.stats;
+  const carried = me.character.inventory.length + me.character.questItems.length;
+  return (
+    <button
+      type="button"
+      className="player__dock kad-tap kad-focusable"
+      aria-label="Open your stats, the party and your bag"
+      onClick={onOpen}
+    >
+      <span className="player__dock-stats">
+        {STAT_IDS.map((stat) => (
+          <span className="player__dock-stat" key={stat}>
+            <Icon name={stat} />
+            <b>{stats[stat]}</b>
+          </span>
+        ))}
+      </span>
+      <span className="player__dock-stat">
+        <Icon name="party" />
+        <b>{partySize}</b>
+      </span>
+      <span className="player__dock-stat">
+        <Icon name="bag" />
+        <b>{carried}</b>
+      </span>
+    </button>
+  );
+}
+
 // ---------------------------------------------------------------------------
 
 export function PlayerPanel(): ReactElement {
@@ -331,7 +377,14 @@ export function PlayerPanel(): ReactElement {
    * so it is legal to read one whenever there is a phone to read it on.
    */
   const [sheetFor, setSheetFor] = useState<string | null>(null);
+  /**
+   * While a decision has the pane, the sheet (stats, everyone, the bag) folds
+   * into a one-line dock; this is that dock opened back up, in the prompt's
+   * place. See `deciding` below.
+   */
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const isMyCombatTurn = useIsMyCombatTurn();
 
   const globalPrompt = state?.prompt ?? null;
   const key = promptKey(myPrompt ?? globalPrompt);
@@ -345,6 +398,20 @@ export function PlayerPanel(): ReactElement {
     setTradeDrop(null);
     setBusy(false);
   }, [key]);
+
+  // A new question, or the combat clock reaching you, puts the question back in
+  // front of you — somebody browsing their bag must not miss their turn.
+  useEffect(() => {
+    if (myPrompt !== null || isMyCombatTurn) setSheetOpen(false);
+  }, [key, myPrompt, isMyCombatTurn]);
+
+  // So does the table moving on — a fight starting on somebody else's turn,
+  // a new scene, the lobby, the chapter's end. Whatever the pane now shows is
+  // news, and a sheet opened for the last screen must not sit on top of it.
+  const where = `${state?.phase}|${state?.sceneId}|${state?.encounter != null}`;
+  useEffect(() => {
+    setSheetOpen(false);
+  }, [where]);
 
   /*
    * Nothing is spoken from here on purpose. Narration, choice labels and roll
@@ -403,6 +470,23 @@ export function PlayerPanel(): ReactElement {
    * spending mid-story would put a stat sheet in front of a question.
    */
   const atRest = state.phase === "scene" && state.sceneType === "rest";
+  /*
+   * "Deciding": the game is asking this table something — a choice, a roll, a
+   * fight, the lobby's ready-up, the end of a chapter. The question then gets
+   * the whole pane and the sheet folds into a one-line dock, because on a
+   * phone the two side by side meant neither fit: the answers scrolled inside
+   * one box and the stats inside another, and the button that mattered was
+   * the one cut off. A Rest scene is the exception — healing, spending a
+   * point, trading and reading each other's sheets *are* the decision there
+   * (spec §6.1), so the sheet stays open beside it.
+   */
+  const deciding =
+    !atRest &&
+    (myPrompt !== null ||
+      inEncounter ||
+      inLobby ||
+      state.phase === "chapter_complete");
+  const showSheet = !deciding || sheetOpen;
   const banked = me.character.unspentPoints;
   /*
    * A party snapshot persisted before `spendableStats` existed has no list at
@@ -502,7 +586,7 @@ export function PlayerPanel(): ReactElement {
   }
 
   return (
-    <section className="player">
+    <section className={`player${deciding ? " player--deciding" : ""}`}>
       <IdentityStrip me={me} />
 
       {me.down ? (
@@ -525,13 +609,15 @@ export function PlayerPanel(): ReactElement {
         scene either way, and the shell decides whether that is a duplicate or
         the only copy on screen.
       */}
-      {state.narration && myPrompt !== null ? (
+      {state.narration && myPrompt !== null && !(deciding && sheetOpen) ? (
         <p className="player__echo" aria-hidden="true">
           {state.narration}
         </p>
       ) : null}
 
-      <div className="player__prompt">
+      {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
+          at the bag. */}
+      <div className="player__prompt" hidden={deciding && sheetOpen}>
         {/* ---------------- combat (spec §7.2) ----------------
             Renders itself only while `state.encounter` exists, and owns the
             slot when it does: there is never an open Prompt during a fight
@@ -1067,7 +1153,22 @@ export function PlayerPanel(): ReactElement {
         ) : null}
       </div>
 
-      <div className="player__scroll kad-scroll">
+      {showSheet ? null : (
+        <SheetDock me={me} partySize={party.length} onOpen={() => setSheetOpen(true)} />
+      )}
+
+      <div className="player__scroll kad-scroll" hidden={!showSheet}>
+        {deciding ? (
+          <Button
+            variant="secondary"
+            size="md"
+            block
+            icon={<Icon name="back" />}
+            onClick={() => setSheetOpen(false)}
+          >
+            Back to the game
+          </Button>
+        ) : null}
         <StatRow me={me} />
 
         {/*
