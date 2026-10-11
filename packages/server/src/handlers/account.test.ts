@@ -199,6 +199,63 @@ describe("linkAccount", () => {
   });
 });
 
+describe("linkAccount from the home screen (preferExisting)", () => {
+  it("returns an existing account to its household instead of claiming the guest game this phone started", async () => {
+    const harness = makeHarness();
+    // The family's saved household, from an earlier phone.
+    const saved = await guestParty(harness);
+    const kept = await linkAccount({ cognitoSub: "sub_a", principal: saved.principal }, harness.deps);
+    expect(kept.ok && kept.value.claimed).toBe(true);
+
+    // A replacement phone plays one anonymous game first, then signs in.
+    const replacement = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
+    const result = await linkAccount(
+      { cognitoSub: "sub_a", principal: replacement.principal, preferExisting: true },
+      harness.deps,
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.householdId).toBe(saved.household.id);
+    expect(result.value.claimed).toBe(false);
+    expect(result.value.characters.map((c) => c.name)).toEqual(["Sparklehoof"]);
+    // Not yet anybody there, so the client shows the player picker.
+    expect(result.value.deviceBound).toBe(false);
+    expect(result.value.deviceToken).toBeUndefined();
+
+    // And the stray guest game is left alone, not quietly adopted.
+    expect(await harness.repo.listHouseholdsForAccount("sub_a")).toEqual([saved.household.id]);
+    expect(await harness.repo.getHousehold(replacement.household.id)).toMatchObject({ guest: true });
+  });
+
+  it("still keeps the guest game for an account that has nothing yet", async () => {
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    const result = await linkAccount(
+      { cognitoSub: "sub_new", principal: host.principal, preferExisting: true },
+      harness.deps,
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.claimed).toBe(true);
+    expect(result.value.householdId).toBe(host.household.id);
+    expect(result.value.deviceBound).toBe(true);
+  });
+
+  it("reports a phone already in one of the account's households as bound", async () => {
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    await linkAccount({ cognitoSub: "sub_a", principal: host.principal }, harness.deps);
+
+    const again = await linkAccount(
+      { cognitoSub: "sub_a", principal: host.principal, preferExisting: true },
+      harness.deps,
+    );
+    expect(again.ok && again.value.deviceBound).toBe(true);
+  });
+});
+
 describe("adoptDevice", () => {
   it("binds a signed-in device to a player of their own household", async () => {
     const harness = makeHarness();

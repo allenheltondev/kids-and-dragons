@@ -16,7 +16,6 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
-import { defaultStorage, loadIdentity } from "../store/persistence";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { ROOM_CODE_LENGTH as CODE_LENGTH, normalizeCodeInput as normalizeCode } from "../router";
@@ -254,10 +253,12 @@ export function HomeScreen(): ReactElement {
          * week should not have to finish a chapter to find the door. Last and
          * quiet, since nobody needs it to play.
          *
-         * One button, two endings: a phone already playing in a household
-         * claims it ("keep"); a phone that has never played looks for the
-         * family's household instead, and a brand-new address simply gets one
-         * ("restore"). Both run the same email-and-code middle.
+         * Signing in, not "keep these": an account that already has a
+         * household goes back to it and picks who this phone is, even if the
+         * phone has started a guest game since. Only a brand-new account keeps
+         * the guest household this phone is playing in (or gets a fresh one).
+         * The server makes that call (`linkAccount` `preferExisting`), because
+         * only it knows whether the account owns anything yet.
          */}
         {signInAvailable ? (
           <section className="home__card home__account" aria-labelledby="home-account">
@@ -279,7 +280,7 @@ export function HomeScreen(): ReactElement {
                   block
                   icon={<Icon name="envelope" />}
                   onClick={() => {
-                    openKeepsake(loadIdentity(defaultStorage()).deviceToken ? "keep" : "restore", "home");
+                    openKeepsake("restore", "home");
                   }}
                 >
                   Sign in or create an account

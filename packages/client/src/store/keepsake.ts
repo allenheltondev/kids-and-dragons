@@ -225,7 +225,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
          * losing the characters this whole flow is about.
          */
         const identity = loadIdentity(deps.storage);
-        const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken);
+        const fromHome = get().entry === "home";
+        const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken, fromHome);
 
         // A device token comes back only when the server bound this browser
         // during the link; keeping the existing one otherwise.
@@ -247,7 +248,10 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
          * device its first adult, so there is nothing to choose between.
          */
         const needsPlayer =
-          get().purpose === "restore" && !result.deviceToken && result.players.length > 0;
+          get().purpose === "restore" &&
+          !result.deviceToken &&
+          result.deviceBound !== true &&
+          result.players.length > 0;
         if (needsPlayer) {
           const byOwner = new Map<string, string[]>();
           for (const character of result.characters) {

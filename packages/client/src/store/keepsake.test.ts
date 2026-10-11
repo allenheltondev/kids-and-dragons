@@ -131,7 +131,7 @@ describe("keeping the characters", () => {
      * mints an empty one instead, quietly losing the characters this whole flow
      * is about.
      */
-    expect(api.linkAccount).toHaveBeenCalledWith("id_tok", "dev_old");
+    expect(api.linkAccount).toHaveBeenCalledWith("id_tok", "dev_old", false);
   });
 
   it("offers the passkey step only where the browser has one", async () => {
@@ -335,5 +335,42 @@ describe("local dev sign-in", () => {
     });
     await store.getState().check();
     expect(store.getState().available).toBe(false);
+  });
+});
+
+describe("signing in from the home screen", () => {
+  const existing = {
+    householdId: "h_saved",
+    claimed: false,
+    deviceBound: false,
+    players: [{ id: "p_1", displayName: "Allen", color: "#7FD4C1", role: "adult" }],
+    characters: [{ id: "c_1", name: "Sparklehoof", species: "unicorn", ownerPlayerId: "p_1" }],
+  };
+
+  it("asks the server to prefer an existing household, and picks a player even on a phone that has played", async () => {
+    const { store, api, storage } = setup({ api: { linkAccount: vi.fn(async () => existing) } });
+    storage.setItem(
+      "kad.device",
+      JSON.stringify({ householdId: "h_guest", playerId: "p_guest", displayName: "", deviceToken: "tok_guest" }),
+    );
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+
+    expect(api.linkAccount).toHaveBeenCalledWith("id_tok", "tok_guest", true);
+    expect(store.getState().step).toBe("choose");
+    expect(store.getState().players.map((p) => p.characters)).toEqual([["Sparklehoof"]]);
+  });
+
+  it("skips the picker when this phone already plays in the household that came back", async () => {
+    const { store } = setup({
+      api: { linkAccount: vi.fn(async () => ({ ...existing, claimed: true, deviceBound: true })) },
+    });
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+    expect(store.getState().step).toBe("kept");
   });
 });
