@@ -32,9 +32,11 @@ function setup(
     api?: Partial<Api>;
     cognito?: Partial<CognitoClient>;
     passkey?: boolean;
+    /** Reuse storage across stores to simulate a reload. */
+    storage?: KeyValueStorage;
   } = {},
 ) {
-  const storage = memoryStorage();
+  const storage = overrides.storage ?? memoryStorage();
 
   const cognito: CognitoClient = {
     requestCode: vi.fn(async (email: string) => ({ email, session: "sess_1" })),
@@ -316,6 +318,41 @@ describe("restoring on a new phone", () => {
     expect(store.getState().error).toMatch(/different account/);
     // Critically, the device is not half-bound.
     expect(loadIdentity(storage).deviceToken).toBeUndefined();
+    // Nor half-signed-in: no account is recorded for a phone that is nobody.
+    expect(store.getState().account).toBeNull();
+    expect(loadAccount(storage)).toBeNull();
+  });
+
+  it("can be retried after the picker is closed, even across a reload", async () => {
+    // Existing account → picker → close: the phone was never adopted, so it must
+    // not read as signed in (the home card would hide the only way back).
+    const first = setup();
+    await first.store.getState().check();
+    first.store.getState().open("restore", "home");
+    await first.store.getState().sendCode("allen@example.com");
+    await first.store.getState().submitCode("123456");
+    expect(first.store.getState().step).toBe("choose");
+
+    first.store.getState().close();
+    expect(first.store.getState().account).toBeNull();
+    expect(loadAccount(first.storage)).toBeNull();
+
+    // Reload: a fresh store over the same storage still has nothing recorded.
+    const { store, api, storage } = setup({ storage: first.storage });
+    expect(store.getState().account).toBeNull();
+
+    // Retry from home → picker → adopt, and only now is the account kept.
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+    expect(store.getState().step).toBe("choose");
+    await store.getState().choosePlayer("p_2");
+
+    expect(api.adoptDevice).toHaveBeenCalledWith("id_tok", "h_1", "p_2");
+    expect(loadIdentity(storage).deviceToken).toBe("dev_new");
+    expect(store.getState().account?.householdId).toBe("h_1");
+    expect(loadAccount(storage)?.householdId).toBe("h_1");
   });
 });
 
