@@ -96,7 +96,13 @@ export interface KeepsakeStore {
 
   /** Reads `/api/config` once. Safe to call from a render effect. */
   check(): Promise<void>;
-  open(purpose?: KeepsakePurpose): void;
+  /**
+   * Where the flow was opened from. `home` is the always-there "Sign in or
+   * create an account" button: it skips the offer (there is no party on screen
+   * to offer to keep) and the copy talks about the account, not the characters.
+   */
+  entry: "offer" | "home";
+  open(purpose?: KeepsakePurpose, entry?: "offer" | "home"): void;
   close(): void;
   /** Back one step, from the code screen to the email one. */
   back(): void;
@@ -128,6 +134,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
   return create<KeepsakeStore>()((set, get) => ({
     step: "closed",
     purpose: "keep",
+    entry: "offer",
     players: [],
     available: null,
     busy: false,
@@ -166,10 +173,11 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       await checking;
     },
 
-    open(purpose: KeepsakePurpose = "keep") {
-      // `restore` skips the offer: somebody tapping "I've played before" has
-      // already decided, and there are no characters on this phone to show them.
-      set({ purpose, step: purpose === "keep" ? "offer" : "email", error: null, players: [] });
+    open(purpose: KeepsakePurpose = "keep", entry: "offer" | "home" = "offer") {
+      // `restore` and the home button skip the offer: somebody who tapped to
+      // sign in has already decided, and there is no party on screen to show.
+      const step = purpose === "keep" && entry === "offer" ? "offer" : "email";
+      set({ purpose, entry, step, error: null, players: [] });
     },
 
     close() {
