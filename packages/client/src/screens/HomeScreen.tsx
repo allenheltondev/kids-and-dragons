@@ -260,23 +260,33 @@ export function HomeScreen(): ReactElement {
          * ("restore"). Both run the same email-and-code middle.
          */}
         {signInAvailable ? (
-          account !== null ? (
-            <p className="home__restore home__restore--signed-in" role="status">
+          <section className="home__card home__account" aria-labelledby="home-account">
+            <h2 className="home__card-title" id="home-account">
               <Icon name="lantern" />
-              <span>Signed in as {account.email}</span>
-            </p>
-          ) : (
-            <button
-              className="home__restore"
-              type="button"
-              onClick={() => {
-                openKeepsake(loadIdentity(defaultStorage()).deviceToken ? "keep" : "restore");
-              }}
-            >
-              <Icon name="lantern" />
-              <span>Sign in or create an account</span>
-            </button>
-          )
+              {account !== null ? "Your adventurers are saved" : "Save your adventurers"}
+            </h2>
+            {account !== null ? (
+              <p className="home__hint kad-muted" role="status">
+                Signed in as <b className="home__account-email">{account.email}</b>
+              </p>
+            ) : (
+              <>
+                <p className="home__hint kad-muted">
+                  For grown-ups. Without an account, characters fade after a week away.
+                </p>
+                <Button
+                  variant="secondary"
+                  block
+                  icon={<Icon name="envelope" />}
+                  onClick={() => {
+                    openKeepsake(loadIdentity(defaultStorage()).deviceToken ? "keep" : "restore", "home");
+                  }}
+                >
+                  Sign in or create an account
+                </Button>
+              </>
+            )}
+          </section>
         ) : null}
       </div>
 
