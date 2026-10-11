@@ -1127,41 +1127,28 @@ const SHARED = [
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
   { path: "/api/state", method: "GET", probe: "/api/state" },
   { path: "/api/health", method: "GET", probe: "/api/health" },
+  // Prod verifies a Cognito id token; dev verifies the unsigned stand-in from
+  // `dev-auth.ts`. Same handlers, same shapes.
+  { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },
+  { path: "/api/auth/device", method: "POST", probe: "/api/auth/device" },
 ] as const;
 
 /**
  * Routes that exist in prod and have no local twin — **by design, not by
- * drift**, which is the distinction this comment exists to make.
+ * drift**.
  *
- * All three are downstream of one fact: a laptop has no Cognito user pool. The
- * client reads `region`/`userPoolId`/`clientId` from `/api/config` and talks to
- * Cognito *directly* (`sync/auth.ts`); with no pool there is no id token, so
- * there is nothing to present to the two auth routes. `sync/client.ts`
- * `fetchConfig()` says it outright — the 404 on a laptop "is the correct
- * answer, not a failure" — and `shouldOfferKeepsake` returns false for a null
- * config, so the offer never renders locally either. Anonymous play is the
- * whole local experience on purpose.
+ * `/api/config` describes the stack's user pool and AppSync channel. A laptop
+ * has neither, and the client reads the 404 as "use SSE" (`sync/client.ts`
+ * `fetchConfig()`), so a local twin would switch realtime to a channel that
+ * does not exist.
  *
- * So adding dev-server twins for the auth pair would not make sign-in testable
- * on a laptop; it would add two endpoints nothing can call, and this list would
- * then report parity the system does not have. The absence that blocks local
- * sign-in is the *pool*, not the routes.
- *
- * What was genuinely missing — and is what this file fixes — is that the code
- * in front of those handlers (bearer extraction, `verifyAccount`, the 401s, the
- * child-device and unowned-household refusals) had no test at any level, which
- * for prod-only routes meant no coverage anywhere at all. `handlers/account.ts`
- * was well tested; its transport was not.
- *
- * The list may shrink if a dev stand-in for the pool ever exists. Growing it
- * should be a deliberate act with a reason written down, not a Tuesday.
+ * The auth pair used to be here too, for want of a pool to mint id tokens. The
+ * dev stand-in in `dev-auth.ts` is that pool, so they moved to `SHARED`.
+ * Growing this list should be a deliberate act with a reason written down.
  */
 const PROD_ONLY = [
   // Served from the stack's environment; the dev client has no pool to describe.
   { path: "/api/config", method: "GET" },
-  // Reachable only with a Cognito id token, which a laptop cannot mint.
-  { path: "/api/auth/link", method: "POST" },
-  { path: "/api/auth/device", method: "POST" },
 ] as const;
 
 /** The reverse: local-only, and deliberately so. */
@@ -1169,6 +1156,9 @@ const DEV_ONLY = [
   // The SSE stand-in for the AppSync Events channel. In prod the client
   // subscribes to AppSync directly and never asks the API for a stream.
   { path: "/events/:code", method: "GET" },
+  // How the client learns it may offer the pool-free dev sign-in. Prod must
+  // never answer it: the dev token it unlocks is unsigned.
+  { path: "/api/auth/dev", method: "GET" },
 ] as const;
 
 function routed(result: APIGatewayProxyStructuredResultV2): boolean {

@@ -396,7 +396,12 @@ async function main(): Promise<void> {
 
     const existing = await resolvePrincipal(req, base);
     const result = await linkAccount(
-      { cognitoSub: account.cognitoSub, email: account.email, principal: existing?.principal ?? null },
+      {
+        cognitoSub: account.cognitoSub,
+        email: account.email,
+        principal: existing?.principal ?? null,
+        preferExisting: req.body?.preferExisting === true,
+      },
       base,
     );
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);

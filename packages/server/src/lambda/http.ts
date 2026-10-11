@@ -320,6 +320,7 @@ async function postLink(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
       cognitoSub: account.cognitoSub,
       email: account.email,
       principal: existing?.principal ?? null,
+      preferExisting: req.body.preferExisting === true,
     },
     deps,
   );
