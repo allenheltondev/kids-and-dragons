@@ -129,6 +129,13 @@ export function defaultKeepsakeDeps(): KeepsakeDeps {
 export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) {
   let cognito: CognitoClient | null = null;
   let tokens: AuthTokens | null = null;
+  /**
+   * The account a `restore` sign-in found, held here — not saved — until a
+   * player is picked. Saving it before adoption would mark this phone as
+   * signed in while it is still nobody, and the home card would then hide the
+   * only way to finish (closing the picker, a failed adopt, a reload).
+   */
+  let pendingAccount: AccountRecord | null = null;
   let checking: Promise<void> | null = null;
 
   return create<KeepsakeStore>()((set, get) => ({
@@ -239,7 +246,6 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
           email: challenge.email,
           claimedAt: new Date().toISOString(),
         };
-        saveAccount(account, deps.storage);
 
         /*
          * The `restore` ending needs a player picked before this phone is
@@ -259,8 +265,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
             owned.push(character.name);
             byOwner.set(character.ownerPlayerId, owned);
           }
+          pendingAccount = account;
           set({
-            account,
             step: "choose",
             busy: false,
             challenge: null,
@@ -274,6 +280,9 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
           return;
         }
 
+        // This phone is bound to the household now, so the account is real.
+        saveAccount(account, deps.storage);
+        pendingAccount = null;
         // Offer the passkey only where it can work — otherwise this is done.
         const next = get().passkeyPossible ? "passkey" : "kept";
         set({ account, step: next, busy: false, challenge: null });
@@ -283,7 +292,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     },
 
     async choosePlayer(playerId: string) {
-      const account = get().account;
+      const account = pendingAccount;
       if (!tokens || !account) return;
 
       set({ busy: true, error: null });
@@ -292,9 +301,12 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         // This is the write that makes the phone *be* that player from now on.
         const identity = loadIdentity(deps.storage);
         saveIdentity({ ...identity, deviceToken: result.deviceToken }, deps.storage);
+        // Only now is this phone somebody in the household — record the account.
+        saveAccount(account, deps.storage);
+        pendingAccount = null;
 
         const next = get().passkeyPossible ? "passkey" : "kept";
-        set({ step: next, busy: false });
+        set({ account, step: next, busy: false });
       } catch (err) {
         set({ busy: false, error: messageFor(err) });
       }
