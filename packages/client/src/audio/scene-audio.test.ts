@@ -1,11 +1,28 @@
 import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
 import { makeState, makeMember, makeCharacter } from "../testing/fixtures";
-import { sceneCuesFor, musicForScene } from "./scene-audio";
+import { ambienceForScene, sceneCuesFor, musicForScene } from "./scene-audio";
+import gallery from "../../../../content/chapters/gemfall-08.json";
+import gate from "../../../../content/chapters/gemfall-03b.json";
 import { musicUrl } from "./paths";
 
 const state = (sceneId: string) => makeState({ phase: "scene", campaignId: "gemfall", chapterId: "gemfall-08", sceneId });
 describe("Gemfall scene sound", () => {
+  it("keeps gallery air through checks and rests, and leaves it for combat or the seal", () => {
+    const chapter = gallery as unknown as Chapter;
+    for (const sceneId of ["scene_mouth", "scene_bells_first", "check_remains", "rest_cool_gallery", "check_race_1", "check_race_2"]) {
+      expect(ambienceForScene(chapter, { ...state(sceneId), phase: sceneId.startsWith("check_") ? "check" : "scene" })).toBe("cavern-air");
+    }
+    expect(ambienceForScene(chapter, { ...state("encounter_gallery"), phase: "encounter" })).toBeNull();
+    expect(ambienceForScene(chapter, state("scene_seal_chamber"))).toBeNull();
+    expect(sceneCuesFor(state("scene_mouth"), state("check_remains"))).toEqual([]);
+  });
+  it("keeps the Gate hum through its shard and exit vote, then stops at the river", () => {
+    const chapter = gate as unknown as Chapter;
+    const at = (sceneId: string) => ({ ...state(sceneId), chapterId: chapter.id });
+    for (const sceneId of ["scene_hollow_gate", "scene_gate_hum", "scene_gate_shard", "choice_exit"]) expect(ambienceForScene(chapter, at(sceneId))).toBe("gate-hum");
+    expect(ambienceForScene(chapter, at("scene_west_branch"))).toBeNull();
+  });
   it("plays the seal cue on entry, not on votes or health updates", () => {
     const next = state("scene_seal_chamber");
     expect(sceneCuesFor(state("scene_verdict"), next)).toEqual(["seal-awakening"]);
