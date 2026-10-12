@@ -53,6 +53,7 @@ interface Manifest {
   }[];
   effects: { id: string; frames: number }[];
   biomes: string[];
+  sceneIllustrations?: string[];
   entities: { id: string; classification: string }[];
 }
 
@@ -269,6 +270,17 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     need: manifest.biomes.length * 3,
     missing,
     note: `${manifest.biomes.length} destinations; ${propTotal} prop files across them`,
+  });
+}
+
+// --- Scene illustrations -----------------------------------------------------
+{
+  const illustrations = manifest.sceneIllustrations ?? [];
+  lines.push({
+    category: "Scene illustrations",
+    need: illustrations.length,
+    missing: illustrations.filter((id) => !has("assets", `${id}.webp`)),
+    note: "optional story backdrops; biome art remains the fallback",
   });
 }
 

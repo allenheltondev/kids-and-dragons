@@ -523,6 +523,14 @@
     "bone_yard": ["bone_yard"]
   },
 
+  "sceneIllustrations": [
+    "scenes/gemfall/hollow-gate",
+    "scenes/gemfall/redspire-citadel",
+    "scenes/gemfall/facet-table",
+    "scenes/gemfall/gem-gallery",
+    "scenes/gemfall/seal-chamber"
+  ],
+
   "globalPalette": {
     "outline": "#3A2A1E",
     "darkest": "#2B2118",

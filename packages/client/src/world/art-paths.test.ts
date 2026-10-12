@@ -6,8 +6,10 @@
  */
 
 import { describe, expect, it } from "vitest";
-import type { ClassId, SpeciesId, TierId } from "@kad/shared";
+import type { Chapter, ClassId, SpeciesId, TierId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
+import gemfall from "../../../../content/chapters/gemfall-08.json";
+import { makeState } from "../testing/fixtures";
 import {
   ANCHOR_X,
   ANCHOR_Y,
@@ -18,6 +20,8 @@ import {
   RIG_STAGE,
   STARTING_TIER,
   biomeBackdropUrl,
+  sceneBackdropUrl,
+  sceneArtFor,
   biomeTilesUrl,
   characterArtUrl,
   characterPortraitArtUrl,
@@ -28,6 +32,21 @@ import {
 } from "./art-paths";
 
 describe("art paths", () => {
+  it("follows scene art and returns to biome art for combat or stale chapter content", () => {
+    const chapter = gemfall as unknown as Chapter;
+    const state = makeState({ chapterId: chapter.id, sceneId: "scene_mouth" });
+    expect(sceneArtFor(chapter, state)).toBe("scenes/gemfall/gem-gallery");
+    expect(sceneArtFor(chapter, { ...state, sceneId: "scene_seal_chamber" })).toBe("scenes/gemfall/seal-chamber");
+    expect(sceneArtFor(chapter, { ...state, sceneId: "encounter_dragon" })).toBeNull();
+    expect(sceneArtFor(chapter, { ...state, sceneId: "ending_heroes" })).toBeNull();
+    expect(sceneArtFor(chapter, { ...state, chapterId: "gemfall-06" })).toBeNull();
+    expect(sceneArtFor(null, state)).toBeNull();
+  });
+  it("resolves scene illustrations without treating legacy art ids as backdrops", () => {
+    expect(sceneBackdropUrl("scenes/gemfall/hollow-gate")).toBe("/assets/scenes/gemfall/hollow-gate.webp");
+    expect(sceneBackdropUrl("enemies/will_o_wisp")).toBeNull();
+    expect(sceneBackdropUrl("scenes/gemfall/../../other")).toBeNull();
+  });
   it("addresses a character by species and tier", () => {
     expect(characterArtUrl("unicorn", "mythic")).toBe(
       "/assets/characters/unicorn/mythic/assembled.png",
