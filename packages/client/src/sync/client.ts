@@ -60,6 +60,14 @@ export interface LocalCreateRoomResponse extends CreateRoomResponse, JoinRoomRes
   deviceToken?: string;
 }
 
+/**
+ * The TV opening a room (`display: true`): the room and the device binding,
+ * and no join — the TV is the lobby, not a seat (spec §2.1).
+ */
+export interface LocalOpenDisplayResponse extends CreateRoomResponse {
+  deviceToken?: string;
+}
+
 export interface StateQuery {
   /** Preferred. A display client that only knows the room code sends `code`. */
   runId?: string;
@@ -109,6 +117,8 @@ export interface WatchRoomResponse {
 
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
+  /** Party Mode, opened from the TV itself: nobody is seated. */
+  openDisplayRoom(body: Omit<CreateRoomInput, "mode" | "display">): Promise<LocalOpenDisplayResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
   watchRoom(code: string, timeoutMs?: number): Promise<WatchRoomResponse>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
@@ -240,6 +250,14 @@ export const api: Api = {
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify(body),
+    });
+  },
+
+  openDisplayRoom(body) {
+    return request<LocalOpenDisplayResponse>("/api/room", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      body: JSON.stringify({ ...body, mode: "party", display: true }),
     });
   },
 

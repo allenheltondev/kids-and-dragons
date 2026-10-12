@@ -56,6 +56,14 @@ function harness(state: RunState = makeState()): Harness {
       state,
       deviceToken: "dev_host",
     })),
+    // The TV opening a Party Mode room: the room and a binding, no seat.
+    openDisplayRoom: vi.fn(async () => ({
+      code: state.roomCode,
+      runId: state.runId,
+      mode: "party" as const,
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      deviceToken: "dev_tv",
+    })),
     joinRoom: vi.fn(async () => ({
       runId: state.runId,
       playerId: "p_1",
@@ -188,6 +196,22 @@ describe("joining", () => {
       "ABCD",
       expect.objectContaining({ deviceToken: "dev_host" }),
     );
+  });
+
+  it("opens a room from the TV without seating it, and goes to the TV route", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen();
+
+    expect(h.api.openDisplayRoom).toHaveBeenCalledWith(
+      expect.objectContaining({ householdId: expect.stringMatching(/^hh_/) }),
+    );
+    // The TV is the lobby, not a player (spec §2.1).
+    expect(h.api.createRoom).not.toHaveBeenCalled();
+    expect(h.api.joinRoom).not.toHaveBeenCalled();
+    expect(h.store.getState().session).toBeNull();
+    expect(h.navigate).toHaveBeenCalledWith({ name: "tv", code: "ABCD" }, { replace: true });
+    // The binding is kept, so tomorrow's room lands in the same household.
+    expect(h.storage.getItem("kad.device")).toContain("dev_tv");
   });
 
   it("surfaces a failure and does not leave a half-built session", async () => {

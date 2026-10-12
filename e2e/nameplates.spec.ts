@@ -165,21 +165,18 @@ test.describe("nameplates", () => {
     ];
     const host = phones[0]!;
 
-    await host.goto("/");
-    await host.fill('input[placeholder="Type your name"]', "Allen");
-    await host.getByText("Party Mode").click();
-    await host.getByRole("button", { name: /start a game/i }).click();
-    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
-    const code = new URL(host.url()).pathname.split("/").pop()!;
-
-    // The TV — a pure display client, which is the surface the nameplates are
-    // for. It attaches on the room code alone (spec §2.1).
+    // The TV opens the room — a pure display client, which is the surface the
+    // nameplates are for. It is the lobby, not a seat (spec §2.1).
     const tv = await client(browser, 1280, 720);
-    await tv.goto(`/tv/${code}`);
+    await tv.goto("/");
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
 
-    for (const [i, page] of phones.slice(1).entries()) {
+    for (const [i, page] of phones.entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', ["Sam", "Rosie"][i]!);
+      await page.fill('input[placeholder="Type your name"]', ["Allen", "Sam", "Rosie"][i]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`));

@@ -83,6 +83,11 @@ export interface GameStore {
   /** Loads the named chapter's content. Idempotent per id; failures are quiet. */
   loadChapter(chapterId: string): Promise<void>;
   createRoom(mode: RoomMode, displayName: string): Promise<ClientSession>;
+  /**
+   * Party Mode from the TV: open a room with this device as its screen, seat
+   * nobody, and land on `/tv/:code` — the lobby the phones join (spec §2.1).
+   */
+  openOnThisScreen(): Promise<void>;
   joinRoom(code: string, displayName: string): Promise<ClientSession>;
   /**
    * Fire an intent at the server. Resolves `true` when the server accepted it
