@@ -51,6 +51,7 @@ import { CombatControls } from "./CombatPanel";
 import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
+import { EntryScene, lobbySceneFor } from "./EntryScene";
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -586,7 +587,8 @@ export function PlayerPanel(): ReactElement {
   }
 
   return (
-    <section className={`player${deciding ? " player--deciding" : ""}`}>
+    <section className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}`}>
+      {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       <IdentityStrip me={me} />
 
       {me.down ? (

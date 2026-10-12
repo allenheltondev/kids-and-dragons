@@ -246,7 +246,7 @@ describe("creation art", () => {
   });
 
   it("stands the drafted hero in the preview as soon as a species is picked", () => {
-    expect(renderToStaticMarkup(<CreationPreview />)).not.toContain("<img");
+    expect(renderToStaticMarkup(<CreationPreview />)).not.toContain("/assets/characters/");
     patchCreationDraft({ species: "dragonling" });
     const html = renderToStaticMarkup(<CreationPreview />);
     expect(html).toContain('src="/assets/characters/dragonling/fledgling/assembled.png"');

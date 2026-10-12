@@ -8,7 +8,7 @@
  *
  * Two consequences of the shape are the point:
  *
- * - **Silence is structural, not configured.** Phones in Party Mode never
+ * - **Silence is structural, not configured.** Joined controllers in Party Mode never
  *   install a sink, so the living room has one speaker — the television —
  *   without a single call site asking "am I the TV?". CI and jsdom run the
  *   uninstalled path for free, the same way `silentNarrator` runs the
@@ -30,6 +30,7 @@
  * anything to complain.
  */
 export type CueId =
+  | "party-ready"
   | "gem-pickup"
   | "gate-hum"
   | "citadel-bell"
@@ -65,7 +66,7 @@ export interface AudioSink {
   cue(id: CueId): void;
   /**
    * The music for where the party is standing, by biome id — or null for
-   * silence (the lobby, or no chapter loaded). Idempotent: the same biome
+   * silence. The shell also supplies home and lobby track ids. Idempotent: the same biome
    * twice must not restart the track.
    */
   music(biome: string | null): void;

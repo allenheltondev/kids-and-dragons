@@ -23,6 +23,7 @@
 
 import { useCallback, useId, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
+import { cue } from "../audio";
 import { STAT_IDS } from "@kad/shared";
 import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
 import { useRules, useSend } from "../store";
@@ -53,6 +54,7 @@ import {
 import type { CosmeticOption } from "./creationContent";
 import "./shared.css";
 import "./CreationFlow.css";
+import { EntryScene } from "./EntryScene";
 
 const STEP_TITLE: Record<CreationStep, string> = {
   species: "Who are you?",
@@ -93,7 +95,7 @@ function OptionCard({
       type="button"
       className={`creation-card kad-tap kad-focusable${selected ? " creation-card--on" : ""}`}
       aria-pressed={selected}
-      onClick={onSelect}
+      onClick={() => { cue("tap"); onSelect(); }}
     >
       <span className="creation-card__icon">{icon}</span>
       <span className="creation-card__text">
@@ -137,7 +139,7 @@ export function SpeciesStep({
             type="button"
             className={`creation-species kad-tap kad-focusable${selected ? " creation-species--on" : ""}`}
             aria-pressed={selected}
-            onClick={() => onChoose(def.id)}
+            onClick={() => { cue("tap"); onChoose(def.id); }}
           >
             <CharacterPortrait
               species={def.id}
@@ -438,7 +440,7 @@ function OptionButton({
       type="button"
       className={classes.filter(Boolean).join(" ")}
       aria-pressed={selected}
-      onClick={onSelect}
+      onClick={() => { cue("tap"); onSelect(); }}
     >
       <span className="creation-option__media">{media}</span>
       <span className="creation-option__label">{label}</span>
@@ -598,6 +600,7 @@ export function CreationFlow(): ReactElement {
         setError("That didn't send. Try again?");
         return;
       }
+      cue("choice");
       resetCreationDraft();
     } catch (err) {
       patchCreationDraft({ submitting: false });
@@ -617,7 +620,8 @@ export function CreationFlow(): ReactElement {
   }
 
   return (
-    <section className="creation" aria-labelledby="creation-title">
+    <section className="creation entry-scene-host" aria-labelledby="creation-title">
+      <EntryScene scene={`creation-${draft.step}`} />
       <header className="creation__head">
         <p className="creation__progress" aria-label={`Step ${String(stepIndex + 1)} of ${String(CREATION_STEPS.length)}`}>
           {CREATION_STEPS.map((step, i) => (
