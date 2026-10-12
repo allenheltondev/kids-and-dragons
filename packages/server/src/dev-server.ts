@@ -111,6 +111,8 @@ async function main(): Promise<void> {
 
     const mode = readMode(req.body?.mode);
     if (!mode) return sendError(res, 400, "ILLEGAL", "mode must be \"party\" or \"travel\"");
+    const display = req.body?.display === true;
+    if (display && mode !== "party") return sendError(res, 400, "ILLEGAL", "only a Party Mode room has a TV");
 
     // Anonymous play (§4.5): a device nobody has seen before gets a household on
     // the spot. It is a real household — the only thing it lacks is an owner,
@@ -135,6 +137,15 @@ async function main(): Promise<void> {
       deps,
     );
     if (!created.ok) return sendError(res, statusFor(created.error), created.error.code, created.error.message);
+
+    // The TV opened the room: it is the lobby, not a seat (see lambda/http.ts).
+    if (display) {
+      return res.json({
+        ...created.value,
+        roomCode: created.value.code,
+        ...(host.deviceToken ? { deviceToken: host.deviceToken } : {}),
+      });
+    }
 
     const joined = await joinRoom({ code: created.value.code, principal: host.principal }, deps);
     if (!joined.ok) return sendError(res, statusFor(joined.error), joined.error.code, joined.error.message);

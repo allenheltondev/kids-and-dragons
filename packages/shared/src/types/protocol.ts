@@ -258,6 +258,12 @@ export interface CreateRoomRequest {
   householdId: string;
   mode: RoomMode;
   campaignId?: string;
+  /**
+   * The device opening the room is the TV, not a player (spec §2.1): open the
+   * room and seat nobody. The TV then attaches with `/watch` like any screen.
+   * Party Mode only — Travel Mode has no screen that is not also a seat.
+   */
+  display?: boolean;
 }
 
 export interface CreateRoomResponse {
