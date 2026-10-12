@@ -229,3 +229,36 @@ describe("announcing several hand-offs", () => {
     expect(spoken).toHaveLength(saidWhileNameless);
   });
 });
+
+describe("the story turn (spec §6.1)", () => {
+  const storyChoice = (forPlayerIds: string[]) => ({
+    sceneId: "story_gate",
+    sceneType: "story" as const,
+    prompt: {
+      kind: "choice" as const,
+      sceneId: "story_gate",
+      options: [{ id: "push", label: "Push the gate", icon: "hand" }],
+      forPlayerIds,
+      vote: false,
+    },
+  });
+
+  it("tells the room whose turn it is, on screen and out loud", () => {
+    mount(storyChoice(["p_2"]));
+    expect(screen.getByText(/Thistle.s turn to choose/)).toBeTruthy();
+    expect(spoken.some((line) => line.startsWith("Thistle's turn."))).toBe(true);
+  });
+
+  it("names nobody when the choice is open to anyone", () => {
+    mount(storyChoice([]));
+    expect(screen.queryByText(/turn to choose/)).toBeNull();
+  });
+
+  it("names nobody once the turn holder's phone has dropped", () => {
+    mount({
+      ...storyChoice(["p_2"]),
+      party: [PARTY[0]!, { ...PARTY[1]!, connected: false }],
+    });
+    expect(screen.queryByText(/turn to choose/)).toBeNull();
+  });
+});
