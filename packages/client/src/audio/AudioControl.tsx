@@ -1,34 +1,6 @@
-/**
- * The speaker button — and, invisibly, the audio system's lifecycle.
- *
- * This component owns the engine because their lives are identical: audio
- * exists exactly where a world surface is mounted (a TV in Party Mode, the top
- * pane in Travel Mode), and the mute control has to live on that surface
- * anyway. Phones that never mount a WorldView therefore never install a sink,
- * which is what keeps the living room down to one speaker without anybody
- * asking what device they are (architecture §4.6 rule 2 — the surface still
- * has no idea; it just *is* the one that makes sound).
- *
- * The window listeners are the browser autoplay gate: a context is only
- * allowed to start inside a user gesture, so the first tap or keypress
- * anywhere unlocks the engine. They stay registered for the surface's whole
- * life because `unlock()` is idempotent and a first *successful* unlock can
- * happen on any gesture after a failed one.
- *
- * ---------------------------------------------------------------------------
- * AND SOMETHING HAS TO *ASK* FOR THAT GESTURE
- *
- * On a phone the gesture is free: you cannot play without tapping. The screen
- * everybody is actually looking at is the one where it is not — a display
- * client (`/tv/:code`) is opened on a laptop wired to the television and then
- * left alone all evening. Nothing about the game asks it for a click, so the
- * context never opens, every cue is dropped, and the sound nobody hears looks
- * exactly like sound that was never built.
- *
- * So while the engine is still locked and unmuted, the surface says so, once,
- * quietly. It costs a click on the machine driving the TV and disappears for
- * good — including if somebody simply presses a key, which is what a remote's
- * D-pad sends if the television is running the page itself.
+/** The shell keeps one engine through home, creation and play. Party controllers
+ * disable it after joining, leaving the display as the room's only speaker.
+ * Pointer and keyboard gestures unlock (or resume) audio; mute survives sessions.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -39,12 +11,15 @@ import { createAudioEngine, type AudioEngine } from "./engine";
 
 import "./AudioControl.css";
 
-export function AudioControl(): React.JSX.Element {
+export function AudioControl({ enabled = true, soundtrack = null, ready = false, readinessKey = "" }: { enabled?: boolean; soundtrack?: string | null; ready?: boolean; readinessKey?: string }): React.JSX.Element | null {
+  const wasReady = useRef(ready);
+  const previousKey = useRef(readinessKey);
   const engineRef = useRef<AudioEngine | null>(null);
   const [muted, setMuted] = useState(false);
   const [locked, setLocked] = useState(true);
 
   useEffect(() => {
+    if (!enabled) return;
     const engine = createAudioEngine();
     engineRef.current = engine;
     setMuted(engine.muted());
@@ -67,7 +42,17 @@ export function AudioControl(): React.JSX.Element {
       engine.dispose();
       engineRef.current = null;
     };
-  }, []);
+  }, [enabled]);
+
+  useEffect(() => {
+    engineRef.current?.sink.music(soundtrack);
+  }, [enabled, soundtrack]);
+
+  useEffect(() => {
+    if (enabled && readinessKey === previousKey.current && ready && !wasReady.current) engineRef.current?.sink.cue("party-ready");
+    wasReady.current = ready;
+    previousKey.current = readinessKey;
+  }, [enabled, ready, readinessKey]);
 
   const toggle = (): void => {
     const engine = engineRef.current;
@@ -76,6 +61,8 @@ export function AudioControl(): React.JSX.Element {
     engine.setMuted(next);
     setMuted(next);
   };
+
+  if (!enabled) return null;
 
   return (
     <div className="kad-audio-control">

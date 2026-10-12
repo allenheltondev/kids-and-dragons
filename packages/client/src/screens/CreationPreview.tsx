@@ -44,6 +44,7 @@ import type { CreationStep } from "./creationDraft";
 import { PALETTES } from "./creationContent";
 import "./shared.css";
 import "./CreationPreview.css";
+import { EntryScene } from "./EntryScene";
 
 const STEP_HINT: Record<CreationStep, string> = {
   species: "Choosing who they are…",
@@ -84,7 +85,8 @@ export function CreationPreview(): ReactElement {
   };
 
   return (
-    <section className="preview" aria-labelledby="preview-heading">
+    <section className="preview entry-scene-host" aria-labelledby="preview-heading">
+      <EntryScene scene={`creation-${draft.step}`} />
       <header className="preview__head">
         <h2 className="preview__heading" id="preview-heading">
           <Icon name="party" />
