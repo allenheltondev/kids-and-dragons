@@ -192,6 +192,16 @@ export interface RunState {
    */
   trades?: TradeOffer[];
   /**
+   * The story turn marker (spec §6.1): the party index whose turn it is to
+   * pick the next Story choice, and whose vote breaks a tie at a Choice point.
+   * Moves on to the next seat each time a choice resolves, so the story is
+   * taken in turns rather than by whoever taps fastest.
+   *
+   * Optional, and read as 0 when absent, for the same reason as the fields
+   * above: runs persisted before it existed come back without it.
+   */
+  storyTurn?: number;
+  /**
    * A d20 face the next roll will come up (roadmap chapter 6's playtest mode).
    *
    * On the run rather than in the request that sets it, because loading the die

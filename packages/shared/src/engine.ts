@@ -554,13 +554,20 @@ function openScenePrompt(
       // empty is an authoring bug that validateChapter reports as a DEAD_END.
       const options = visibleChoices(scene.choices, party(draft));
       const isVote = scene.type === "choice_point";
+      // choice_point puts it to the party (spec §6.1). A story beat is one
+      // player's call, taken in turns, so it is not a race to the first tap.
+      // Rest stays open to anyone: its way out is "move on", which is the
+      // table's call, and nobody should wait on one phone to leave camp.
+      const turn = scene.type === "story" ? storyTurnHolder(draft) : null;
       draft.prompt = {
         kind: "choice",
         sceneId,
         options: options.map((c) => ({ id: c.id, label: c.label, icon: c.icon })),
-        // choice_point puts it to the party (spec §6.1); story and rest take
-        // the first answer, so anyone may tap.
-        forPlayerIds: isVote ? draft.party.map((m) => m.playerId) : [],
+        forPlayerIds: isVote
+          ? draft.party.map((m) => m.playerId)
+          : turn
+            ? [turn.playerId]
+            : [],
         vote: isVote,
         ...(isVote ? { votes: {} } : {}),
       };
@@ -1101,7 +1108,11 @@ function doChoose(
   if (!prompt || prompt.kind !== "choice") {
     throw new Illegal("ILLEGAL", "nothing is waiting on a choice");
   }
-  if (prompt.forPlayerIds.length > 0 && !prompt.forPlayerIds.includes(playerId)) {
+  if (
+    prompt.forPlayerIds.length > 0 &&
+    !prompt.forPlayerIds.includes(playerId) &&
+    !turnHolderAway(draft.party, prompt)
+  ) {
     throw new Illegal("FORBIDDEN", `this choice is not player "${playerId}" to make`);
   }
   if (!prompt.options.some((o) => o.id === choiceId)) {
@@ -1140,6 +1151,13 @@ function doChoose(
   const choice = sceneChoices(scene).find((c) => c.id === winning);
   if (!choice) throw new Illegal("NOT_FOUND", `scene "${sceneId}" has no choice "${winning}"`);
 
+  // The marker moves on from whoever just had it — the chooser on a Story
+  // beat (who may have stood in for an absent turn holder), the holder on a
+  // vote — before the next scene opens its prompt against it. A Rest's way
+  // out is open to anyone and is nobody's turn, so it leaves the marker be.
+  if (prompt.vote) passStoryTurn(draft, storyTurnHolder(draft)?.playerId ?? playerId);
+  else if (prompt.forPlayerIds.length > 0) passStoryTurn(draft, playerId);
+
   applyEffectsDraft(draft, choice.effects, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
   // Only one presentation rides on a transition. Finishing the chapter is a
@@ -1149,9 +1167,48 @@ function doChoose(
 }
 
 /**
- * Most votes wins. Ties break toward the active turn marker (spec §6.1); with
- * no combat turn order outside an encounter, the first player in party order
- * stands in for it — deterministic, and it stops one player steamrolling.
+ * Whose turn it is to pick a Story choice (spec §6.1): the seat the marker
+ * points at, or the next connected seat after it. A phone that has dropped
+ * keeps its place in the rotation but is never handed a turn it cannot take.
+ * Null only for an empty party, which leaves the choice open to anyone.
+ */
+export function storyTurnHolder(state: RunState): PartyMember | null {
+  const n = state.party.length;
+  if (n === 0) return null;
+  const start = (((state.storyTurn ?? 0) % n) + n) % n;
+  for (let i = 0; i < n; i++) {
+    const member = state.party[(start + i) % n] as PartyMember;
+    if (member.connected) return member;
+  }
+  return state.party[start] ?? null;
+}
+
+/**
+ * A turn-held Story choice whose holder has since dropped is open to anyone.
+ * The prompt names the holder when it opens; if their phone dies before they
+ * tap, the chapter must not wait forever on them — the same reasoning that
+ * lets a vote close without a disconnected voter.
+ */
+export function turnHolderAway(
+  party: readonly PartyMember[],
+  prompt: Prompt & { kind: "choice" },
+): boolean {
+  if (prompt.vote || prompt.forPlayerIds.length === 0) return false;
+  return prompt.forPlayerIds.every((id) => {
+    const member = party.find((m) => m.playerId === id);
+    return !member || !member.connected;
+  });
+}
+
+function passStoryTurn(draft: RunState, fromPlayerId: string): void {
+  const at = draft.party.findIndex((m) => m.playerId === fromPlayerId);
+  draft.storyTurn = (at === -1 ? (draft.storyTurn ?? 0) : at) + 1;
+}
+
+/**
+ * Most votes wins. Ties break toward the story turn marker (spec §6.1): the
+ * player whose turn it is gets their way if their vote is among the tied, and
+ * otherwise the first tied vote after them in turn order does.
  */
 function tallyVotes(draft: RunState, votes: Record<string, string>): string {
   const counts = new Map<string, number>();
@@ -1162,7 +1219,11 @@ function tallyVotes(draft: RunState, votes: Record<string, string>): string {
   for (const n of counts.values()) best = Math.max(best, n);
   const tied = [...counts.entries()].filter(([, n]) => n === best).map(([id]) => id);
   if (tied.length === 1) return tied[0] as string;
-  for (const member of draft.party) {
+  const n = draft.party.length;
+  const holder = storyTurnHolder(draft);
+  const from = holder ? draft.party.indexOf(holder) : 0;
+  for (let i = 0; i < n; i++) {
+    const member = draft.party[(from + i) % n] as PartyMember;
     const vote = votes[member.playerId];
     if (vote !== undefined && tied.includes(vote)) return vote;
   }

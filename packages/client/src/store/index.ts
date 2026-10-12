@@ -27,6 +27,7 @@ import type {
   RulesContent,
   RunState,
 } from "@kad/shared";
+import { turnHolderAway } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
   ClientSession,
@@ -139,7 +140,13 @@ export function isPromptForPlayer(
 
   switch (prompt.kind) {
     case "choice":
-      return prompt.forPlayerIds.length === 0 || prompt.forPlayerIds.includes(playerId);
+      // A turn holder whose phone dropped leaves the story beat to anyone
+      // (spec §6.1) — the engine takes the answer, so the button has to show.
+      return (
+        prompt.forPlayerIds.length === 0 ||
+        prompt.forPlayerIds.includes(playerId) ||
+        turnHolderAway(party, prompt)
+      );
     case "ready":
       return prompt.forPlayerIds.length === 0 || prompt.forPlayerIds.includes(playerId);
     case "roll":

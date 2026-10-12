@@ -96,20 +96,26 @@ async function serverState(code: string): Promise<{ sceneId: string | null; enco
     .state;
 }
 
-async function chooseUntil(page: Page, label: RegExp, done: () => Promise<boolean>): Promise<void> {
+async function chooseUntil(
+  table: Page | readonly Page[],
+  label: RegExp,
+  done: () => Promise<boolean>,
+): Promise<void> {
+  // A story choice is one player's turn (spec §6.1), so given the whole table
+  // it taps on whichever phone is showing the button — the turn holder's.
+  const pages = Array.isArray(table) ? table : [table as Page];
   for (let attempt = 0; attempt < 8; attempt++) {
     if (await done()) return;
-    await page
-      .locator(".prompt button")
-      .filter({ hasText: label })
-      .first()
-      .click({ timeout: 5_000 })
-      .catch(() => {});
-    await page
-      .getByRole("button", { name: /do it!/i })
-      .click({ timeout: 5_000 })
-      .catch(() => {});
-    await page.waitForTimeout(700);
+    for (const page of pages) {
+      const option = page.locator(".prompt button").filter({ hasText: label }).first();
+      if (pages.length > 1 && !(await option.isVisible().catch(() => false))) continue;
+      await option.click({ timeout: 5_000 }).catch(() => {});
+      await page
+        .getByRole("button", { name: /do it!/i })
+        .click({ timeout: 5_000 })
+        .catch(() => {});
+    }
+    await pages[0]!.waitForTimeout(700);
   }
   expect(await done(), `the tap on ${String(label)} never took`).toBe(true);
 }
@@ -217,8 +223,8 @@ test.describe("nameplates", () => {
     const at = (sceneId: string) => async () => (await serverState(code)).sceneId === sceneId;
     const heroOf = (page: Page): string => HEROES[phones.indexOf(page)]!;
 
-    await chooseUntil(host, /walk right through the thorns/i, at("scene_first_clearing"));
-    await chooseUntil(host, /head deeper into the wood/i, at("choice_point_path"));
+    await chooseUntil(phones, /walk right through the thorns/i, at("scene_first_clearing"));
+    await chooseUntil(phones, /head deeper into the wood/i, at("choice_point_path"));
     for (const page of phones) {
       await chooseUntil(page, /follow the singing stream/i, async () => {
         const state = await serverState(code);
@@ -234,7 +240,7 @@ test.describe("nameplates", () => {
     await expect
       .poll(async () => (await serverState(code)).sceneId, { timeout: 30_000 })
       .toBe("scene_singing_stream");
-    await chooseUntil(host, /chase them off/i, at("encounter_bramblewisps"));
+    await chooseUntil(phones, /chase them off/i, at("encounter_bramblewisps"));
 
     const encounterUp = async () => Boolean((await serverState(code)).encounter);
     for (const page of phones) {
