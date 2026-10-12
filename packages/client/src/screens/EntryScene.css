@@ -1,0 +1,60 @@
+.entry-scene-host { isolation: isolate; }
+.home.entry-scene-host, .creation.entry-scene-host, .player.entry-scene-host { position: relative; }
+.entry-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #0d0b1a;
+}
+.entry-scene__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+  animation: entry-scene-arrive 420ms ease-out;
+}
+.entry-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(13 11 26 / 18%), rgb(13 11 26 / 75%) 32%, rgb(13 11 26 / 75%) 68%, rgb(13 11 26 / 18%)), linear-gradient(0deg, rgb(13 11 26 / 75%), transparent 65%);
+}
+.home__masthead, .home__field { text-shadow: 0 2px 8px #0d0b1a; }
+.home .entry-scene__image {
+  object-fit: cover;
+  object-position: center;
+}
+.home .entry-scene { position: fixed; }
+.entry-scene picture { display: block; inline-size: 100%; block-size: 100%; }
+.entry-scene-host .creation__head, .entry-scene-host .preview__head {
+  padding: 0.75em 1em;
+  border-radius: 0.75em;
+  background: rgb(13 11 26 / 88%);
+}
+.entry-scene-host .lobby__heading, .entry-scene-host .lobby__next-chapter {
+  inline-size: fit-content;
+  padding: 0.3em 0.55em;
+  border-radius: 0.5em;
+  background: rgb(13 11 26 / 88%);
+}
+.entry-scene-host .lobby__join, .entry-scene-host .lobby__party {
+  inline-size: min(100%, 36em);
+  align-self: center;
+}
+.entry-scene-host .lobby__party-heading {
+  inline-size: fit-content;
+  padding: 0.3em 0.55em;
+  border-radius: 0.5em;
+  background: rgb(13 11 26 / 88%);
+}
+@container (max-width: 38em) {
+  .entry-scene__image { object-position: center; }
+  .entry-scene::after { background: linear-gradient(0deg, rgb(13 11 26 / 90%), rgb(13 11 26 / 50%) 60%, rgb(13 11 26 / 25%)); }
+}
+@media (max-width: 640px) {
+  .home .entry-scene::after { background: linear-gradient(0deg, rgb(13 11 26 / 65%), rgb(13 11 26 / 30%)); }
+}
+@keyframes entry-scene-arrive { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .entry-scene__image { animation: none; } }

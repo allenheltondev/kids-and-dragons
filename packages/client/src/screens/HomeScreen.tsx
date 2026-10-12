@@ -23,6 +23,7 @@ import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
+import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
 
@@ -107,7 +108,8 @@ export function HomeScreen(): ReactElement {
   }, [joinRoom, code, trimmedName]);
 
   return (
-    <main className="home">
+    <main className="home entry-scene-host">
+      <EntryScene scene="home-market" />
       <div className="home__inner kad-stack">
         <header className="home__masthead">
           <h1 className="home__title">Kids &amp; Dragons</h1>

@@ -54,6 +54,10 @@ splitting those approved exact poses into transparent registered parts and build
 
 ## 3. What is done
 
+**Home and lobby illustrations — 16 files.** Landscape and portrait versions of the home market, five hero-creation steps,
+waiting camp, and ready departure are declared in `manifest.sceneIllustrations`.
+Coverage and prompts: [entry-scenes.md](./entry-scenes.md).
+
 **Gemfall scene illustrations — 5 files.** Hollow Gate, Redspire Citadel, the facet table,
 gem gallery, and seal chamber are declared in `manifest.sceneIllustrations` and used across
 34 story scenes. They supplement the existing biome backdrops. Prompts and coverage:

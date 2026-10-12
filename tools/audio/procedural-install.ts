@@ -8,7 +8,9 @@ import { wav } from "./procedural-preview";
 const encoder = process.env.KAD_FFMPEG ?? "ffmpeg";
 execFileSync(encoder, ["-version"], { stdio: "ignore" });
 let total = 0;
-for (const sound of proceduralSounds()) {
+const only = process.argv.find((arg) => arg.startsWith("--only="))?.slice(7).split(",");
+if (only?.some((id) => !proceduralSounds().some((sound) => sound.id === id))) throw new Error("Unknown sound in --only");
+for (const sound of proceduralSounds().filter((sound) => !only || only.includes(sound.id))) {
   const file = path.resolve("assets/audio", sound.loop ? "music" : "cues", `${sound.id}.webm`);
   if (fs.existsSync(file) && !process.argv.includes("--force")) throw new Error(`${file} exists; use --force to replace it`);
   const raw = wav(renderProcedural(sound), 24000);
