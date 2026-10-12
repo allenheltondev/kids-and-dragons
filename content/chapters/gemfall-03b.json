@@ -423,6 +423,7 @@
     },
     "scene_hollow_gate": {
       "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
       "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to — older than the marsh, older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in knots. It does not open. It does not look like it has ever opened.",
       "choices": [
         {
@@ -447,6 +448,7 @@
     },
     "scene_gate_hum": {
       "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
       "narration": "You stand very still. The runes are humming one long, low note — the boggart's note, the barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
       "onEnter": [
         {
@@ -472,6 +474,7 @@
     },
     "scene_gate_shard": {
       "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
       "narration": "Half in the mud by the bottom step lies a curl of cold silver. When your gem-dusty boots come near, it hums once — the same note — and then goes completely quiet, as if it has said what it came to say.",
       "choices": [
         {
@@ -496,6 +499,7 @@
     },
     "choice_exit": {
       "type": "choice_point",
+      "art": "scenes/gemfall/hollow-gate",
       "narration": "Past the Gate the marsh splits two ways. North, the reeds thin toward the west branch of the river and a dark line of trees. Northeast, you can hear wagon wheels, shouting, and somebody selling sausages: the rush roads, where all the stones are going. Everybody vote.",
       "choices": [
         {
