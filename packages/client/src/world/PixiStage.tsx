@@ -13,6 +13,7 @@ import { cue } from "../audio/cue";
 import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSession } from "../store";
 import { useEnsureChapter } from "../screens/content";
 import { RendererFallback } from "./RendererFallback";
+import { sceneArtFor } from "./art-paths";
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -176,7 +177,7 @@ export function PixiStage(): React.JSX.Element {
       // name for one frame before the effect below caught up.
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
-      scene.setBiome(live.chapter?.biome ?? null);
+      scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter));
 
       /** Run the ticker only when a frame could actually be seen. */
@@ -234,11 +235,10 @@ export function PixiStage(): React.JSX.Element {
     sceneRef.current?.setParty(party);
   }, [party]);
 
-  // The chapter's biome is what the party is standing in (spec §6.2). The board
-  // reads it off the same chapter for its tiles; this is the story half.
+  // Selected story scenes override the backdrop without changing combat tiles.
   useEffect(() => {
-    sceneRef.current?.setBiome(chapter?.biome ?? null);
-  }, [chapter]);
+    sceneRef.current?.setBiome(chapter?.biome ?? null, sceneArtFor(chapter, state));
+  }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

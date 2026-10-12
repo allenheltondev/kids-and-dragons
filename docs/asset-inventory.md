@@ -54,6 +54,11 @@ splitting those approved exact poses into transparent registered parts and build
 
 ## 3. What is done
 
+**Gemfall scene illustrations — 5 files.** Hollow Gate, Redspire Citadel, the facet table,
+gem gallery, and seal chamber are declared in `manifest.sceneIllustrations` and used across
+34 story scenes. They supplement the existing biome backdrops. Prompts and coverage:
+[gemfall-illustrations.md](./campaigns/gemfall-illustrations.md).
+
 Recorded because "is that finished?" is the question this document exists to stop you asking.
 
 **Character part-sets — 224 files.** Six species × four tiers, each a full-canvas registered part
