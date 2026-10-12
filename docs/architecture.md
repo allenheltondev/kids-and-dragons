@@ -509,7 +509,7 @@ no avatar picker with a password behind it — her phone knows it's her phone. T
 
 #### Joining a session
 
-1. Host device calls `POST /room` with `{ mode: "party" | "travel" }` → 4-letter code (unambiguous alphabet: no I/O/0/1).
+1. Host device calls `POST /room` with `{ mode: "party" | "travel" }` → 4-letter code (unambiguous alphabet: no I/O/0/1). In **Party Mode** the host device *is* the TV: it sends `display: true`, the room opens with nobody seated, and it lands on `/tv/ABCD`. It keeps its device binding — that is the household the phones join.
 2. In **Party Mode** the TV renders the code + QR; in **Travel Mode** the host's phone does.
 3. Other devices scan → `POST /room/ABCD/join`, presenting their **device token**. The server resolves device → player → household, verifies the household owns the run, and issues a room-scoped session token.
 4. Because identity is resolved from the device, **there is no "who are you?" step.** You scan, and your character is already on the board.

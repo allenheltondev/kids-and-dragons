@@ -661,24 +661,27 @@ test.describe("first playable", () => {
     await expect(scanned.getByLabel(/room code/i)).toHaveValue(code);
   });
 
-  test("party mode: the TV attaches with no identity at all", async ({ browser }) => {
-    const controller = await phone(browser);
-    await controller.goto("/");
-    await controller.fill('input[placeholder="Type your name"]', "Allen");
-    await controller.getByText("Party Mode").click();
-    await controller.getByRole("button", { name: /start a game/i }).click();
-    await expect(controller).toHaveURL(/\/p\/[A-Z]{4}$/);
-    const code = new URL(controller.url()).pathname.split("/").pop()!;
-
-    // A fresh context — no localStorage, no device token, no player. The TV is
-    // a pure display client and must attach on the room code alone (spec §2.1).
+  test("party mode: the TV opens the lobby and is nobody", async ({ browser }) => {
+    // The TV starts the game. It is the lobby, not a player (spec §2.1): no
+    // name, no seat, straight to the room code the phones join with.
     const tv = await phone(browser, 1280, 720);
     const tvErrors: string[] = [];
     tv.on("pageerror", (e) => tvErrors.push(e.message));
-    await tv.goto(`/tv/${code}`);
+    await tv.goto("/");
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
     // The code is rendered one letter per element so it reads across a
     // room, so assert on the letters rather than the string.
     await expect(tv.getByText(/room code/i).first()).toBeVisible({ timeout: 10_000 });
+
+    const controller = await phone(browser);
+    await controller.goto("/");
+    await controller.fill('input[placeholder="Type your name"]', "Allen");
+    await controller.getByLabel(/room code/i).fill(code);
+    await controller.getByRole("button", { name: /join a game/i }).click();
+    await expect(controller).toHaveURL(new RegExp(`/p/${code}$`));
 
     await createCharacter(controller, "unicorn", "Sparklehoof");
     // The TV never asked for this and has no session — it arrived over the

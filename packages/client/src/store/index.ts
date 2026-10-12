@@ -635,6 +635,28 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      /**
+       * The TV opening the room. Nothing is seated, so there is no session to
+       * adopt: keep the device binding (it names the household the phones
+       * join, tonight and next time), then go to `/tv/:code` and let `attach`
+       * watch the room exactly as it would after a refresh.
+       */
+      async openOnThisScreen() {
+        set({ connection: "connecting", error: null });
+        const identity = loadIdentity(deps.storage);
+        try {
+          const room = await deps.api.openDisplayRoom({
+            householdId: identity.householdId,
+            campaignId: LAUNCH_CAMPAIGN,
+            ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
+          });
+          if (room.deviceToken) saveIdentity({ ...identity, deviceToken: room.deviceToken }, deps.storage);
+          deps.navigate({ name: "tv", code: room.code }, { replace: true });
+        } catch (error) {
+          failWith(error);
+        }
+      },
+
       async joinRoom(code: string, displayName: string) {
         const roomCode = code.trim().toUpperCase();
         set({ connection: "connecting", error: null });
