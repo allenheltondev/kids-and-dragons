@@ -30,6 +30,11 @@
  * anything to complain.
  */
 export type CueId =
+  | "gem-pickup"
+  | "gate-hum"
+  | "citadel-bell"
+  | "seal-awakening"
+  | "cavern-air"
   // The table's centrepiece (spec §2.2's ~1.5s roll).
   | "dice"
   // Combat beats, one per presentation kind that lands a hit or a rescue.
@@ -49,7 +54,13 @@ export type CueId =
   | "tap"
   | "error";
 
+export type AmbienceId = "gate-hum" | "cavern-air";
+
 export interface AudioSink {
+  /** Sustained location sound; changing scenes inside the location does not restart it. */
+  ambience?(id: AmbienceId | null): void;
+  /** Stop location effects when the story leaves their scene. */
+  stopSceneCues?(): void;
   /** Play one cue, now. Fire and forget. */
   cue(id: CueId): void;
   /**
@@ -97,4 +108,12 @@ export function music(biome: string | null): void {
   } catch {
     // Flavor, never load-bearing.
   }
+}
+
+export function stopSceneCues(): void {
+  try { current?.stopSceneCues?.(); } catch { /* Decoration must never interrupt play. */ }
+}
+
+export function ambience(id: AmbienceId | null): void {
+  try { current?.ambience?.(id); } catch { /* Decoration must never interrupt play. */ }
 }

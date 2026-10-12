@@ -27,6 +27,22 @@ composes for it.
 
 ## Making sounds
 
+### Procedural listening drafts
+
+`npm run audio:preview` creates a standalone listening page and 22 stereo WAV drafts under
+`art/review/gemfall-audio/`. It needs no provider key or external encoder. The approved source
+bank in `packages/client/src/audio/procedural.ts` covers 18 cue briefs and four music beds.
+The live engine loads its exported files, keeping the renderer out of the game bundle.
+See [Gemfall audio](./campaigns/gemfall-audio.md).
+
+`npm run audio:install` renders the approved revision to Opus/WebM in `assets/audio/`.
+Requires FFmpeg (`KAD_FFMPEG` can point to its executable); `--force` permits replacement.
+The install path preserves reviewed RMS levels and stereo placement rather than running
+provider audio's mono/LUFS normalization. When local revision-2 WAVs are available, it checks
+that the rendered source bytes match approval before encoding.
+
+### Provider generation
+
 ```
 npm run audio:generate                 # everything still synthesized
 npm run audio:generate -- dice         # one cue
