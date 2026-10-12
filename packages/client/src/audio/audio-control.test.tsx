@@ -6,7 +6,7 @@
  * that a soundless environment mounts the control without a murmur.
  */
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { AudioControl } from "./AudioControl";
 import { getAudioSink } from "./cue";
@@ -81,4 +81,42 @@ describe("asking for the gesture", () => {
     fireEvent.click(screen.getByRole("button", { name: "Turn sound off" }));
     expect(screen.queryByText(HINT)).toBeNull();
   });
+});
+
+
+describe("entry screen continuity", () => {
+  it("keeps the same sink while moving from home through creation and lobby to a quest", () => {
+    const view = render(<AudioControl soundtrack="entry-home" />);
+    const sink = getAudioSink()!;
+    const music = vi.spyOn(sink, "music");
+    view.rerender(<AudioControl soundtrack="entry-home" />);
+    expect(music).not.toHaveBeenCalled();
+    view.rerender(<AudioControl soundtrack="entry-lobby" />);
+    view.rerender(<AudioControl soundtrack="forest" />);
+    expect(getAudioSink()).toBe(sink);
+    expect(music.mock.calls).toEqual([["entry-lobby"], ["forest"]]);
+  });
+  it("sounds readiness once on transition, without replaying on joining a ready room", () => {
+    const view = render(<AudioControl ready />);
+    const cue = vi.spyOn(getAudioSink()!, "cue");
+    view.rerender(<AudioControl ready />);
+    expect(cue).not.toHaveBeenCalled();
+    view.rerender(<AudioControl ready={false} />);
+    view.rerender(<AudioControl ready />);
+    view.rerender(<AudioControl ready />);
+    expect(cue.mock.calls).toEqual([["party-ready"]]);
+  });
+  it("releases the home speaker on joining as a party controller", () => {
+    const view = render(<AudioControl soundtrack="entry-home" />);
+    view.rerender(<AudioControl enabled={false} soundtrack="entry-lobby" />);
+    expect(getAudioSink()).toBeNull();
+    expect(screen.queryByRole("button", { name: "Turn sound off" })).toBeNull();
+  });
+});
+
+it("does not announce an already-ready party when attaching from home", () => {
+  const view = render(<AudioControl ready={false} readinessKey="" />);
+  const cue = vi.spyOn(getAudioSink()!, "cue");
+  view.rerender(<AudioControl ready readinessKey="new-room" />);
+  expect(cue).not.toHaveBeenCalled();
 });
