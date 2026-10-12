@@ -32,9 +32,11 @@ function setup(
     api?: Partial<Api>;
     cognito?: Partial<CognitoClient>;
     passkey?: boolean;
+    /** Reuse storage across stores to simulate a reload. */
+    storage?: KeyValueStorage;
   } = {},
 ) {
-  const storage = memoryStorage();
+  const storage = overrides.storage ?? memoryStorage();
 
   const cognito: CognitoClient = {
     requestCode: vi.fn(async (email: string) => ({ email, session: "sess_1" })),
@@ -50,6 +52,7 @@ function setup(
       realtime: { httpDomain: "h", realtimeDomain: "r", namespace: "room" },
       auth: { userPoolId: "us-east-1_abc", clientId: "client123" },
     })),
+    probeDevAuth: vi.fn(async () => false),
     linkAccount: vi.fn(async () => LINKED),
     adoptDevice: vi.fn(async () => ({ deviceToken: "dev_new", playerId: "p_2" })),
     ...overrides.api,
@@ -130,7 +133,7 @@ describe("keeping the characters", () => {
      * mints an empty one instead, quietly losing the characters this whole flow
      * is about.
      */
-    expect(api.linkAccount).toHaveBeenCalledWith("id_tok", "dev_old");
+    expect(api.linkAccount).toHaveBeenCalledWith("id_tok", "dev_old", false);
   });
 
   it("offers the passkey step only where the browser has one", async () => {
@@ -315,5 +318,96 @@ describe("restoring on a new phone", () => {
     expect(store.getState().error).toMatch(/different account/);
     // Critically, the device is not half-bound.
     expect(loadIdentity(storage).deviceToken).toBeUndefined();
+    // Nor half-signed-in: no account is recorded for a phone that is nobody.
+    expect(store.getState().account).toBeNull();
+    expect(loadAccount(storage)).toBeNull();
+  });
+
+  it("can be retried after the picker is closed, even across a reload", async () => {
+    // Existing account → picker → close: the phone was never adopted, so it must
+    // not read as signed in (the home card would hide the only way back).
+    const first = setup();
+    await first.store.getState().check();
+    first.store.getState().open("restore", "home");
+    await first.store.getState().sendCode("allen@example.com");
+    await first.store.getState().submitCode("123456");
+    expect(first.store.getState().step).toBe("choose");
+
+    first.store.getState().close();
+    expect(first.store.getState().account).toBeNull();
+    expect(loadAccount(first.storage)).toBeNull();
+
+    // Reload: a fresh store over the same storage still has nothing recorded.
+    const { store, api, storage } = setup({ storage: first.storage });
+    expect(store.getState().account).toBeNull();
+
+    // Retry from home → picker → adopt, and only now is the account kept.
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+    expect(store.getState().step).toBe("choose");
+    await store.getState().choosePlayer("p_2");
+
+    expect(api.adoptDevice).toHaveBeenCalledWith("id_tok", "h_1", "p_2");
+    expect(loadIdentity(storage).deviceToken).toBe("dev_new");
+    expect(store.getState().account?.householdId).toBe("h_1");
+    expect(loadAccount(storage)?.householdId).toBe("h_1");
+  });
+});
+
+describe("local dev sign-in", () => {
+  it("is offered when the dev server answers the probe, without a user pool", async () => {
+    const { store } = setup({
+      api: { fetchConfig: vi.fn(async () => null), probeDevAuth: vi.fn(async () => true) },
+    });
+    await store.getState().check();
+    expect(store.getState().available).toBe(true);
+    expect(store.getState().passkeyPossible).toBe(false);
+  });
+
+  it("stays hidden when there is neither a pool nor a dev server", async () => {
+    const { store } = setup({
+      api: { fetchConfig: vi.fn(async () => null), probeDevAuth: vi.fn(async () => false) },
+    });
+    await store.getState().check();
+    expect(store.getState().available).toBe(false);
+  });
+});
+
+describe("signing in from the home screen", () => {
+  const existing = {
+    householdId: "h_saved",
+    claimed: false,
+    deviceBound: false,
+    players: [{ id: "p_1", displayName: "Allen", color: "#7FD4C1", role: "adult" }],
+    characters: [{ id: "c_1", name: "Sparklehoof", species: "unicorn", ownerPlayerId: "p_1" }],
+  };
+
+  it("asks the server to prefer an existing household, and picks a player even on a phone that has played", async () => {
+    const { store, api, storage } = setup({ api: { linkAccount: vi.fn(async () => existing) } });
+    storage.setItem(
+      "kad.device",
+      JSON.stringify({ householdId: "h_guest", playerId: "p_guest", displayName: "", deviceToken: "tok_guest" }),
+    );
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+
+    expect(api.linkAccount).toHaveBeenCalledWith("id_tok", "tok_guest", true);
+    expect(store.getState().step).toBe("choose");
+    expect(store.getState().players.map((p) => p.characters)).toEqual([["Sparklehoof"]]);
+  });
+
+  it("skips the picker when this phone already plays in the household that came back", async () => {
+    const { store } = setup({
+      api: { linkAccount: vi.fn(async () => ({ ...existing, claimed: true, deviceBound: true })) },
+    });
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+    expect(store.getState().step).toBe("kept");
   });
 });

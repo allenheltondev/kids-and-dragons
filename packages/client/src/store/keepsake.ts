@@ -20,6 +20,7 @@ import { create } from "zustand";
 import {
   AuthError,
   createCognitoClient,
+  createDevAuthClient,
   type AuthTokens,
   type CognitoClient,
   type PendingChallenge,
@@ -95,7 +96,13 @@ export interface KeepsakeStore {
 
   /** Reads `/api/config` once. Safe to call from a render effect. */
   check(): Promise<void>;
-  open(purpose?: KeepsakePurpose): void;
+  /**
+   * Where the flow was opened from. `home` is the always-there "Sign in or
+   * create an account" button: it skips the offer (there is no party on screen
+   * to offer to keep) and the copy talks about the account, not the characters.
+   */
+  entry: "offer" | "home";
+  open(purpose?: KeepsakePurpose, entry?: "offer" | "home"): void;
   close(): void;
   /** Back one step, from the code screen to the email one. */
   back(): void;
@@ -122,11 +129,19 @@ export function defaultKeepsakeDeps(): KeepsakeDeps {
 export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) {
   let cognito: CognitoClient | null = null;
   let tokens: AuthTokens | null = null;
+  /**
+   * The account a `restore` sign-in found, held here — not saved — until a
+   * player is picked. Saving it before adoption would mark this phone as
+   * signed in while it is still nobody, and the home card would then hide the
+   * only way to finish (closing the picker, a failed adopt, a reload).
+   */
+  let pendingAccount: AccountRecord | null = null;
   let checking: Promise<void> | null = null;
 
   return create<KeepsakeStore>()((set, get) => ({
     step: "closed",
     purpose: "keep",
+    entry: "offer",
     players: [],
     available: null,
     busy: false,
@@ -142,7 +157,14 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       checking ??= (async () => {
         const config = await deps.api.fetchConfig();
         if (!config?.auth.userPoolId) {
-          set({ available: false });
+          // No user pool: either a deployment without sign-in, or the local dev
+          // server, which offers its own pool-free one.
+          if (await deps.api.probeDevAuth()) {
+            cognito = createDevAuthClient();
+            set({ available: true, passkeyPossible: false });
+          } else {
+            set({ available: false });
+          }
           return;
         }
         cognito = deps.makeCognito({
@@ -158,10 +180,11 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       await checking;
     },
 
-    open(purpose: KeepsakePurpose = "keep") {
-      // `restore` skips the offer: somebody tapping "I've played before" has
-      // already decided, and there are no characters on this phone to show them.
-      set({ purpose, step: purpose === "keep" ? "offer" : "email", error: null, players: [] });
+    open(purpose: KeepsakePurpose = "keep", entry: "offer" | "home" = "offer") {
+      // `restore` and the home button skip the offer: somebody who tapped to
+      // sign in has already decided, and there is no party on screen to show.
+      const step = purpose === "keep" && entry === "offer" ? "offer" : "email";
+      set({ purpose, entry, step, error: null, players: [] });
     },
 
     close() {
@@ -209,7 +232,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
          * losing the characters this whole flow is about.
          */
         const identity = loadIdentity(deps.storage);
-        const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken);
+        const fromHome = get().entry === "home";
+        const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken, fromHome);
 
         // A device token comes back only when the server bound this browser
         // during the link; keeping the existing one otherwise.
@@ -222,7 +246,6 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
           email: challenge.email,
           claimedAt: new Date().toISOString(),
         };
-        saveAccount(account, deps.storage);
 
         /*
          * The `restore` ending needs a player picked before this phone is
@@ -231,7 +254,10 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
          * device its first adult, so there is nothing to choose between.
          */
         const needsPlayer =
-          get().purpose === "restore" && !result.deviceToken && result.players.length > 0;
+          get().purpose === "restore" &&
+          !result.deviceToken &&
+          result.deviceBound !== true &&
+          result.players.length > 0;
         if (needsPlayer) {
           const byOwner = new Map<string, string[]>();
           for (const character of result.characters) {
@@ -239,8 +265,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
             owned.push(character.name);
             byOwner.set(character.ownerPlayerId, owned);
           }
+          pendingAccount = account;
           set({
-            account,
             step: "choose",
             busy: false,
             challenge: null,
@@ -254,6 +280,9 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
           return;
         }
 
+        // This phone is bound to the household now, so the account is real.
+        saveAccount(account, deps.storage);
+        pendingAccount = null;
         // Offer the passkey only where it can work — otherwise this is done.
         const next = get().passkeyPossible ? "passkey" : "kept";
         set({ account, step: next, busy: false, challenge: null });
@@ -263,7 +292,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     },
 
     async choosePlayer(playerId: string) {
-      const account = get().account;
+      const account = pendingAccount;
       if (!tokens || !account) return;
 
       set({ busy: true, error: null });
@@ -272,9 +301,12 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         // This is the write that makes the phone *be* that player from now on.
         const identity = loadIdentity(deps.storage);
         saveIdentity({ ...identity, deviceToken: result.deviceToken }, deps.storage);
+        // Only now is this phone somebody in the household — record the account.
+        saveAccount(account, deps.storage);
+        pendingAccount = null;
 
         const next = get().passkeyPossible ? "passkey" : "kept";
-        set({ step: next, busy: false });
+        set({ account, step: next, busy: false });
       } catch (err) {
         set({ busy: false, error: messageFor(err) });
       }

@@ -88,6 +88,8 @@ export interface LinkAccountResponse {
   characters: { id: string; name: string; species: string; ownerPlayerId: string }[];
   deviceToken?: string;
   playerId?: string;
+  /** This phone already plays in `householdId`; no player to pick. Absent from older servers. */
+  deviceBound?: boolean;
 }
 
 /**
@@ -137,8 +139,14 @@ export interface Api {
 
   /** `null` when the deployment has no user pool, i.e. local dev. */
   fetchConfig(): Promise<ClientConfig | null>;
+  /** True only on the local dev server, which signs people in without a user pool. */
+  probeDevAuth(): Promise<boolean>;
   /** Claims the household this device is playing in for a signed-in account. */
-  linkAccount(idToken: string, deviceToken?: string): Promise<LinkAccountResponse>;
+  /**
+   * `preferExisting` is the home-screen sign-in: an account that already has a
+   * household returns to it rather than claiming this phone's guest game.
+   */
+  linkAccount(idToken: string, deviceToken?: string, preferExisting?: boolean): Promise<LinkAccountResponse>;
   /** Binds this device to an existing player — the new-phone path (§4.5). */
   adoptDevice(
     idToken: string,
@@ -317,7 +325,16 @@ export const api: Api = {
     }
   },
 
-  linkAccount(idToken, deviceToken) {
+  async probeDevAuth() {
+    try {
+      const result = await request<{ dev?: boolean }>("/api/auth/dev");
+      return result?.dev === true;
+    } catch {
+      return false;
+    }
+  },
+
+  linkAccount(idToken, deviceToken, preferExisting = false) {
     return request<LinkAccountResponse>("/api/auth/link", {
       method: "POST",
       headers: {
@@ -327,7 +344,7 @@ export const api: Api = {
       // The *Cognito* id token, not a room session token — this is the one
       // request in the client that carries an account credential.
       token: idToken,
-      body: JSON.stringify({}),
+      body: JSON.stringify(preferExisting ? { preferExisting: true } : {}),
     });
   },
 
