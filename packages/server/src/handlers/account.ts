@@ -173,6 +173,15 @@ export interface LinkAccountInput {
   email?: string | undefined;
   /** The device currently playing, if there is one. Its household is claimed. */
   principal?: DeviceIdentity | null;
+  /**
+   * The home-screen "Sign in or create an account" button. An account that
+   * already owns a household is *signing in*, so it goes back to that household
+   * (and the player picker) instead of claiming whatever guest game this phone
+   * happened to start first. Only an account with nothing yet keeps the guest
+   * household. Off for the end-of-chapter offer, which is explicitly "keep
+   * these".
+   */
+  preferExisting?: boolean;
 }
 
 export interface LinkAccountResult {
@@ -184,6 +193,12 @@ export interface LinkAccountResult {
   /** Present only when this call created a household and bound this device to it. */
   deviceToken?: string;
   playerId?: string;
+  /**
+   * True when the device that asked already plays in `householdId` (it was
+   * claimed, or it was already the account's), so there is no player to pick.
+   * False means the phone is not yet anybody in this household.
+   */
+  deviceBound: boolean;
 }
 
 /**
@@ -207,13 +222,16 @@ export async function linkAccount(
   deps: AccountDeps,
 ): Promise<HandlerResult<LinkAccountResult>> {
   const owned = await deps.repo.listHouseholdsForAccount(input.cognitoSub);
+  const playsIn = (householdId: string) => input.principal?.householdId === householdId;
 
-  // Case 1 — a device is already playing. Try to claim what it is playing in.
+  // Case 1 — a device is already playing. Try to claim what it is playing in,
+  // unless this is a sign-in to an account that already has a household.
+  const claimGuest = !(input.preferExisting && owned.length > 0);
   if (input.principal) {
     const current = await deps.repo.getHousehold(input.principal.householdId);
     if (!current) return fail("NOT_FOUND", `no household ${input.principal.householdId}`);
 
-    if (current.guest) {
+    if (current.guest && claimGuest) {
       /*
        * Adults only. A child's device claiming a household would put the
        * household's ownership — and therefore its revocation rights — behind a
@@ -223,18 +241,18 @@ export async function linkAccount(
         return fail("FORBIDDEN", "only an adult device can claim a household");
       }
       const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub);
-      if (claimed) return ok(await describe(current.id, true, deps));
+      if (claimed) return ok(await describe(current.id, true, true, deps));
       // Someone else's already. Fall through to this account's own household.
     } else if (current.ownerSub === input.cognitoSub) {
       // Already theirs — signing in again is not an event.
-      return ok(await describe(current.id, false, deps));
+      return ok(await describe(current.id, false, true, deps));
     }
   }
 
   // Case 2 — an existing account, on a device that is not (or no longer) bound
   // to a household of theirs.
   const first = owned[0];
-  if (first) return ok(await describe(first, false, deps));
+  if (first) return ok(await describe(first, false, playsIn(first), deps));
 
   // Case 3 — a brand new account with nothing to claim.
   const nowMs = deps.now();
@@ -253,7 +271,7 @@ export async function linkAccount(
     deps,
   );
   return ok({
-    ...(await describe(householdId, false, deps)),
+    ...(await describe(householdId, false, true, deps)),
     deviceToken: bound.deviceToken,
     playerId: bound.player.id,
   });
@@ -299,11 +317,12 @@ export async function adoptDevice(
 async function describe(
   householdId: string,
   claimed: boolean,
+  deviceBound: boolean,
   deps: AccountDeps,
 ): Promise<LinkAccountResult> {
   const [players, characters] = await Promise.all([
     deps.repo.listPlayers(householdId),
     deps.repo.listCharacters(householdId),
   ]);
-  return { householdId, claimed, players, characters };
+  return { householdId, claimed, deviceBound, players, characters };
 }

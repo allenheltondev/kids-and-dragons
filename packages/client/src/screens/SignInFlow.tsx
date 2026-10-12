@@ -160,6 +160,7 @@ export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
 function EmailStep({ busy }: { busy: boolean }): ReactElement {
   const sendCode = useKeepsakeStore((s) => s.sendCode);
   const close = useKeepsakeStore((s) => s.close);
+  const fromHome = useKeepsakeStore((s) => s.entry) === "home";
   const [email, setEmail] = useState("");
   const fieldId = useId();
 
@@ -174,9 +175,18 @@ function EmailStep({ busy }: { busy: boolean }): ReactElement {
   return (
     <form className="keepsake__form" onSubmit={onSubmit}>
       <h2 className="keepsake__title" id="keepsake-title">
-        What&rsquo;s your email?
+        {fromHome ? "Sign in or create an account" : "What\u2019s your email?"}
       </h2>
-      <p className="keepsake__body">We&rsquo;ll send a six-digit code. That&rsquo;s the whole thing.</p>
+      {fromHome ? (
+        /* One flow for both, so say so: there is no "sign up" screen to hunt
+           for, and no password to forget. */
+        <p className="keepsake__body">
+          We&rsquo;ll email you a six-digit code. New here? That makes your account. Played
+          before? It signs you back in.
+        </p>
+      ) : (
+        <p className="keepsake__body">We&rsquo;ll send a six-digit code. That&rsquo;s the whole thing.</p>
+      )}
 
       <label className="keepsake__label" htmlFor={fieldId}>
         <Icon name="envelope" />
@@ -225,6 +235,7 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
   const submitCode = useKeepsakeStore((s) => s.submitCode);
   const back = useKeepsakeStore((s) => s.back);
   const challenge = useKeepsakeStore((s) => s.challenge);
+  const fromHome = useKeepsakeStore((s) => s.entry) === "home";
   const [code, setCode] = useState("");
   const fieldId = useId();
   const submitted = useRef("");
@@ -293,7 +304,7 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
           disabled={busy || !ready}
           icon={busy ? <Spinner /> : <Icon name="check" />}
         >
-          {busy ? "Keeping…" : "Keep them"}
+          {fromHome ? (busy ? "Signing in…" : "Sign in") : busy ? "Keeping…" : "Keep them"}
         </Button>
         <Button variant="ghost" icon={<Icon name="back" />} onClick={back} disabled={busy}>
           Different email
