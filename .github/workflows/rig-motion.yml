@@ -71,7 +71,7 @@ jobs:
   motion:
     # Dependabot PRs cannot access RIVE_MCP_TOKEN for the private renderer.
     # Normal PRs, pushes to main, and manual runs keep the motion gate.
-    if: github.actor != 'dependabot[bot]'
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     name: every clip of every rig
     runs-on: ubuntu-latest
     # 54 rigs (24 base + 30 class) x 13 clips. Measured on a local 4-core box:
