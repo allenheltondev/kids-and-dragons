@@ -22,7 +22,7 @@
  * what keeps rule 1 enforceable: there is no prop to smuggle the mode through.
  */
 
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import {
   ChapterCompletePanel,
   CreationPreview,
@@ -38,7 +38,8 @@ import type { PresentationEvent } from "../store/contract";
 import { presentationDuration } from "../world/presentation";
 // Sound rides the same two facts the renderer already consumes: presentations
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
-import { AudioControl, cue, cueForPresentation, music } from "../audio";
+import { AudioControl, ambience, cue, cueForPresentation, music, stopSceneCues } from "../audio";
+import { ambienceForScene, musicForScene, sceneCuesFor } from "../audio/scene-audio";
 import { perfRequested } from "../world/FrameMeter";
 import { RendererBoundary } from "../world/RendererFallback";
 
@@ -99,13 +100,26 @@ export function WorldView(): React.JSX.Element {
    * biome while a story is running, silence in the lobby and during creation.
    * State, not an event — the seam is idempotent, so re-renders cost nothing.
    */
-  const biome = useChapter()?.biome ?? null;
-  const storyRunning = phase !== "lobby" && phase !== "creation";
+  const chapter = useChapter();
+  const state = useRunState();
+  const soundtrack = musicForScene(chapter, state);
+  const locationAmbience = ambienceForScene(chapter, state);
+  useEffect(() => { ambience(locationAmbience); }, [locationAmbience]);
+  useEffect(() => () => { ambience(null); }, []);
   useEffect(() => {
-    music(storyRunning ? biome : null);
+    music(soundtrack);
     // The surface unmounting is the story leaving this screen.
     return () => { music(null); };
-  }, [biome, storyRunning]);
+  }, [soundtrack]);
+
+  const previousAudioState = useRef<ReturnType<typeof useRunState>>(null);
+  useEffect(() => {
+    const previous = previousAudioState.current;
+    if (previous?.sceneId !== state?.sceneId || previous?.chapterId !== state?.chapterId || previous?.phase !== state?.phase) stopSceneCues();
+    for (const id of sceneCuesFor(previousAudioState.current, state)) cue(id);
+    previousAudioState.current = state;
+  }, [state]);
+  useEffect(() => () => { stopSceneCues(); }, []);
 
   return (
     <div className="kad-surface kad-surface--world" data-surface="world">

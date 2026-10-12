@@ -33,6 +33,8 @@ import type { CueId } from "./cue";
 import { CUE_SPECS, cueUrl, musicUrl } from "./paths";
 
 export interface SampleLibrary {
+  /** Notify a sustained cue once its sample is decoded. */
+  wantCue?(id: CueId, ready: () => void): void;
   /** Start fetching everything. Idempotent; never rejects. */
   preload(): void;
   /** The decoded cue, or null to use the recipe. */
@@ -40,7 +42,7 @@ export interface SampleLibrary {
   /** The decoded loop for a biome, or null to use the synth pad. */
   music(biome: string): AudioBuffer | null;
   /** Ask for a biome's loop. Safe to call for a biome with no file. */
-  wantMusic(biome: string): void;
+  wantMusic(biome: string, ready?: () => void): void;
 }
 
 /** Injected in tests; the browser's `fetch` + `decodeAudioData` in the game. */
@@ -60,6 +62,8 @@ export function createSampleLibrary(
   /** Urls already attempted, so a missing file is fetched once per session
       rather than once per cue. */
   const attempted = new Set<string>();
+  const settled = new Set<string>();
+  const waiting = new Map<string, Set<() => void>>();
 
   function load(url: string): void {
     if (!fetchImpl || attempted.has(url)) return;
@@ -73,14 +77,33 @@ export function createSampleLibrary(
       })
       .then((bytes) => (bytes ? ctx.decodeAudioData(bytes) : null))
       .then((buffer) => {
-        if (buffer) buffers.set(url, buffer);
+        if (buffer) {
+          buffers.set(url, buffer);
+          for (const ready of waiting.get(url) ?? []) ready();
+        }
+        waiting.delete(url);
+        settled.add(url);
       })
       .catch((error: unknown) => {
+        waiting.delete(url);
+        settled.add(url);
         log(`audio: ${url} unavailable — ${error instanceof Error ? error.message : String(error)}`);
       });
   }
 
+  function want(url: string, ready?: () => void): void {
+    if (ready) {
+      if (buffers.has(url)) { ready(); return; }
+      if (settled.has(url)) return;
+      const callbacks = waiting.get(url) ?? new Set<() => void>();
+      callbacks.add(ready);
+      waiting.set(url, callbacks);
+    }
+    load(url);
+  }
+
   return {
+    wantCue(id, ready) { want(cueUrl(id), ready); },
     preload() {
       for (const id of Object.keys(CUE_SPECS) as CueId[]) load(cueUrl(id));
     },
@@ -90,8 +113,8 @@ export function createSampleLibrary(
     music(biome) {
       return buffers.get(musicUrl(biome)) ?? null;
     },
-    wantMusic(biome) {
-      load(musicUrl(biome));
+    wantMusic(biome, ready) {
+      want(musicUrl(biome), ready);
     },
   };
 }

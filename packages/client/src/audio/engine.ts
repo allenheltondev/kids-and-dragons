@@ -31,7 +31,7 @@
  * keeping it running means unmute is instant instead of a rebuild.
  */
 
-import type { AudioSink, CueId } from "./cue";
+import type { AmbienceId, AudioSink, CueId } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_TONES, padFor, renderTones } from "./synth";
 
@@ -45,7 +45,7 @@ const STORAGE_KEY = "kad-audio";
 const DEFAULT_PREFS: AudioPrefs = { muted: false, volume: 0.8 };
 
 /** How far under the effects the music sits. */
-const MUSIC_LEVEL = 0.12;
+const MUSIC_LEVEL = 0.45;
 const SFX_LEVEL = 1;
 /** Seconds to walk one pad out and the next in. */
 const MUSIC_FADE_S = 1.5;
@@ -154,6 +154,15 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   let musicBiome: string | null = null;
   let stopPad: (() => void) | null = null;
   let library: SampleLibrary | null = null;
+  let ambienceId: AmbienceId | null = null;
+  let stopAmbience: (() => void) | null = null;
+  let ambienceRecorded = false;
+  const sceneStops = new Set<() => void>();
+  const locationCueIds = new Set<CueId>(["gem-pickup", "gate-hum", "citadel-bell", "seal-awakening", "cavern-air"]);
+  function stopSceneCues(): void {
+    for (const stop of sceneStops) stop();
+    sceneStops.clear();
+  }
 
   function masterLevel(): number {
     return prefs.muted ? 0 : prefs.volume;
@@ -206,11 +215,83 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       ((context: BaseAudioContext) => createSampleLibrary(context, options.sampleOptions ?? {}));
     library = build(ctx);
     library.preload();
-    if (musicBiome !== null) library.wantMusic(musicBiome);
 
     // A biome asked for before the gesture starts its pad now — music is a
     // *state*, unlike a cue, so honouring it late is honouring it.
-    if (musicBiome !== null) startPad(musicBiome);
+    if (musicBiome !== null) {
+      startPad(musicBiome);
+      requestMusic(musicBiome);
+    }
+    if (ambienceId !== null && !prefs.muted) {
+      startAmbience(ambienceId);
+      requestAmbience(ambienceId);
+    }
+  }
+
+  function requestAmbience(id: AmbienceId): void {
+    library?.wantCue?.(id, () => {
+      if (!ctx || prefs.muted || ambienceId !== id || ambienceRecorded || !library?.cue(id)) return;
+      stopAmbience?.();
+      startAmbience(id);
+    });
+  }
+
+  function startAmbience(id: AmbienceId): void {
+    if (!ctx || !sfx) return;
+    const context = ctx;
+    const now = context.currentTime;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.45, now + 0.25);
+    gain.connect(sfx);
+    const sample = library?.cue(id) ?? null;
+    ambienceRecorded = sample !== null;
+    const sources: AudioScheduledSourceNode[] = [];
+    if (sample) {
+      const source = context.createBufferSource();
+      source.buffer = sample;
+      source.loop = true;
+      source.connect(gain);
+      source.start(now);
+      sources.push(source);
+    } else if (id === "gate-hum") {
+      for (const freq of [110, 110.7, 165]) {
+        const osc = context.createOscillator();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now);
+        const voice = context.createGain();
+        voice.gain.setValueAtTime(0.06, now);
+        osc.connect(voice); voice.connect(gain); osc.start(now); sources.push(osc);
+      }
+    } else {
+      // A quiet, filtered and tapered air buffer can loop indefinitely offline.
+      const buffer = context.createBuffer(1, context.sampleRate * 2, context.sampleRate);
+      const data = buffer.getChannelData(0);
+      let filtered = 0;
+      for (let i = 0; i < data.length; i++) {
+        filtered += 0.025 * (Math.random() * 2 - 1 - filtered);
+        data[i] = filtered * 0.2 * Math.min(1, i / 1000, (data.length - 1 - i) / 1000);
+      }
+      const source = context.createBufferSource();
+      source.buffer = buffer; source.loop = true; source.connect(gain); source.start(now); sources.push(source);
+    }
+    stopAmbience = () => {
+      const at = context.currentTime;
+      gain.gain.cancelScheduledValues(at);
+      gain.gain.setValueAtTime(gain.gain.value, at);
+      gain.gain.linearRampToValueAtTime(0, at + 0.15);
+      for (const source of sources) { try { source.stop(at + 0.15); } catch { /* Already stopped. */ } }
+    };
+  }
+
+  let musicRecorded = false;
+  function requestMusic(biome: string): void {
+    library?.wantMusic(biome, () => {
+      if (!ctx || musicBiome !== biome || musicRecorded || !library?.music(biome)) return;
+      stopPad?.();
+      stopPad = null;
+      startPad(biome);
+    });
   }
 
   /**
@@ -227,6 +308,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
      * composed changes what plays and nothing about how it arrives.
      */
     const recorded = library?.music(biome) ?? null;
+    musicRecorded = recorded !== null;
     if (recorded) {
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0, now);
@@ -293,31 +375,50 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   }
 
   const sink: AudioSink = {
+    ambience(id) {
+      if (id === ambienceId) return;
+      ambienceId = id;
+      stopAmbience?.(); stopAmbience = null;
+      if (id !== null && !prefs.muted) { startAmbience(id); requestAmbience(id); }
+    },
+    stopSceneCues,
     cue(id: CueId): void {
       if (!ctx || !sfx || prefs.muted) return;
       const sample = library?.cue(id) ?? null;
       if (sample) {
         const source = ctx.createBufferSource();
         source.buffer = sample;
-        source.connect(sfx);
+        if (locationCueIds.has(id)) {
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(1, ctx.currentTime);
+          source.connect(gain);
+          gain.connect(sfx);
+          const stop = () => {
+            const now = ctx?.currentTime ?? 0;
+            gain.gain.cancelScheduledValues(now);
+            gain.gain.setValueAtTime(gain.gain.value, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.04);
+            try { source.stop(now + 0.04); } catch { /* Already ended. */ }
+          };
+          sceneStops.add(stop);
+          source.onended = () => { sceneStops.delete(stop); gain.disconnect(); source.disconnect(); };
+        } else source.connect(sfx);
         source.start(ctx.currentTime);
         return;
       }
       // No file for this cue yet, or it did not decode: the recipe stands in
       // (samples.ts — real audio is an upgrade, never a requirement).
-      renderTones(ctx, sfx, CUE_TONES[id], ctx.currentTime);
+      const stop = renderTones(ctx, sfx, CUE_TONES[id], ctx.currentTime);
+      if (locationCueIds.has(id)) sceneStops.add(stop);
     },
     music(biome: string | null): void {
       if (biome === musicBiome) return;
       musicBiome = biome;
-      // Ask for the file. It may arrive after the pad has started, in which
-      // case this biome plays synthesized tonight and recorded next time —
-      // swapping mid-scene would be a jump-cut in the one sound that is
-      // supposed to be continuous.
-      if (biome !== null) library?.wantMusic(biome);
+      // Play a fallback immediately; a ready callback crossfades in the file.
       stopPad?.();
       stopPad = null;
       if (biome !== null) startPad(biome);
+      if (biome !== null) requestMusic(biome);
     },
   };
 
@@ -333,6 +434,9 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     muted: () => prefs.muted,
     setMuted(next: boolean): void {
       prefs.muted = next;
+      if (next) stopSceneCues();
+      if (next) { stopAmbience?.(); stopAmbience = null; }
+      else if (ambienceId !== null && !stopAmbience) { startAmbience(ambienceId); requestAmbience(ambienceId); }
       applyMaster();
       writePrefs(storage, prefs);
     },
@@ -343,6 +447,8 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       writePrefs(storage, prefs);
     },
     dispose(): void {
+      stopAmbience?.(); stopAmbience = null; ambienceId = null;
+      stopSceneCues();
       stopPad?.();
       stopPad = null;
       musicBiome = null;

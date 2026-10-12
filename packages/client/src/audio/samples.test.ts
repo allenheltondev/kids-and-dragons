@@ -21,6 +21,18 @@ const BUFFER = { duration: 1 } as AudioBuffer;
 const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe("loading real audio", () => {
+  it("notifies music listeners after decode and serves biome aliases from one fetch", async () => {
+    const fetchImpl = vi.fn(async () => new Response(new ArrayBuffer(8), { status: 200 }));
+    const library = createSampleLibrary(fakeCtx(async () => BUFFER), { fetch: fetchImpl as unknown as typeof fetch });
+    const ready = vi.fn();
+    library.wantMusic("enchanted_woods", ready);
+    library.wantMusic("mosshome");
+    expect(ready).not.toHaveBeenCalled();
+    await settle();
+    expect(ready).toHaveBeenCalledOnce();
+    expect(library.music("mosshome")).toBe(BUFFER);
+    expect(fetchImpl).toHaveBeenCalledOnce();
+  });
   it("serves a decoded file once it has arrived", async () => {
     const fetchImpl = vi.fn(async () => new Response(new ArrayBuffer(8), { status: 200 }));
     const library = createSampleLibrary(fakeCtx(async () => BUFFER), {
