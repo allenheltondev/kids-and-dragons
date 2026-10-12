@@ -639,7 +639,20 @@ describe("waiting", () => {
       prompt: choicePrompt({ forPlayerIds: ["p_2"] }),
       playerId: "p_1",
     });
-    expect(someStatusSays("Waiting for Thistle")).toBe(true);
+    expect(someStatusSays("It's Thistle's turn to choose")).toBe(true);
+  });
+
+  it("names everyone a vote is still waiting on", () => {
+    mount({
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+        member({ character: character({ id: "c_3", ownerPlayerId: "p_3", name: "Bramble" }) }),
+      ],
+      prompt: choicePrompt({ forPlayerIds: ["p_2", "p_3"], vote: true }),
+      playerId: "p_1",
+    });
+    expect(someStatusSays("Waiting for Thistle and Bramble")).toBe(true);
   });
 
   it("falls back to listening when there is no question at all", () => {

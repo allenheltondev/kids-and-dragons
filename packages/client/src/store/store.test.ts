@@ -746,8 +746,22 @@ describe("isPromptForPlayer", () => {
       forPlayerIds: ["p_2"],
       vote: false,
     };
-    expect(isPromptForPlayer(prompt, "p_2", party)).toBe(true);
-    expect(isPromptForPlayer(prompt, "p_1", party)).toBe(false);
+    const table = [...party, makeMember({ playerId: "p_2" })];
+    expect(isPromptForPlayer(prompt, "p_2", table)).toBe(true);
+    expect(isPromptForPlayer(prompt, "p_1", table)).toBe(false);
+  });
+
+  it("opens a story turn to anyone once the turn holder has dropped (spec §6.1)", () => {
+    const prompt = {
+      kind: "choice" as const,
+      sceneId: "s",
+      options: [],
+      forPlayerIds: ["p_2"],
+      vote: false,
+    };
+    // The engine takes a stand-in's answer, so the stand-in needs the buttons.
+    const table = [...party, makeMember({ playerId: "p_2", connected: false })];
+    expect(isPromptForPlayer(prompt, "p_1", table)).toBe(true);
   });
 
   it("resolves a character-scoped prompt through the party", () => {

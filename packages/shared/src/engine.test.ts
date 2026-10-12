@@ -7,6 +7,7 @@ import {
   currentChoices,
   enterScene,
   isPartyDown,
+  storyTurnHolder,
 } from "./engine.js";
 import type { EngineContext, EngineResult } from "./engine.js";
 import {
@@ -177,7 +178,18 @@ function walk(
   context: EngineContext,
 ): EngineResult {
   let result: EngineResult = { state };
-  for (const step of steps) {
+  for (const raw of steps) {
+    /*
+     * A Story choice belongs to whoever holds the story turn (spec §6.1), and
+     * these walks are about what lies past the choice, not who makes it — so
+     * a scripted CHOOSE on a turn-held prompt is made by the holder. The turn
+     * rule itself is "story turns" below, which never goes through here.
+     */
+    const prompt = result.state.prompt;
+    const step =
+      raw.intent.type === "CHOOSE" && prompt?.kind === "choice" && !prompt.vote && prompt.forPlayerIds.length === 1
+        ? { ...raw, playerId: prompt.forPlayerIds[0] as string }
+        : raw;
     result = applyIntent(result.state, step, context);
     if (result.error) {
       throw new Error(`${step.intent.type} rejected: ${result.error.code} ${result.error.message}`);
@@ -639,6 +651,85 @@ describe("species gating at the prompt (architecture §5)", () => {
   });
 });
 
+describe("story turns (spec §6.1)", () => {
+  function atFirstStory(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+  }
+
+  function withConnected(state: RunState, playerId: string, connected: boolean): RunState {
+    return {
+      ...state,
+      party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected } : m)),
+    };
+  }
+
+  it("puts a story choice to one player, and nobody else may take it", () => {
+    const context = ctx();
+    const state = atFirstStory(context);
+    expect(state.prompt).toMatchObject({ kind: "choice", vote: false, forPlayerIds: ["p_1"] });
+
+    const jumped = applyIntent(state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    expect(jumped.error?.code).toBe("FORBIDDEN");
+  });
+
+  it("passes the turn to the next seat once the choice is made, and wraps around", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = atFirstStory(context);
+    const taken = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    expect(taken.error).toBeUndefined();
+    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_2");
+
+    // Past the check, the next story beat is p_2's — and then p_1's again.
+    const rolled = applyIntent(taken.state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_2"] });
+    const second = applyIntent(rolled, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "east" } }, context);
+    expect(second.error).toBeUndefined();
+    expect(storyTurnHolder(second.state)?.playerId).toBe("p_1");
+  });
+
+  it("skips a seat whose phone has dropped when the turn comes round", () => {
+    const context = ctx();
+    const state = withConnected(atFirstStory(context), "p_1", false);
+    // Re-open the same scene with p_1 away: the turn goes to the next seat.
+    const reopened = enterScene(state, state.sceneId!, context).state;
+    expect(reopened.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_2"] });
+  });
+
+  it("lets anyone stand in when the turn holder drops mid-choice", () => {
+    const context = ctx();
+    // The prompt named p_1, then p_1's phone died before they tapped.
+    const state = withConnected(atFirstStory(context), "p_1", false);
+    expect(state.prompt).toMatchObject({ forPlayerIds: ["p_1"] });
+
+    const stoodIn = applyIntent(state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    expect(stoodIn.error).toBeUndefined();
+    // The marker moves on from the stand-in, so p_1 is next when they are back.
+    expect(stoodIn.state.storyTurn).toBe(2);
+  });
+
+  it("leaves a rest scene's way out open to anyone", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const atCamp = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    expect(atCamp.sceneType).toBe("rest");
+    expect(atCamp.prompt).toMatchObject({ kind: "choice", forPlayerIds: [] });
+  });
+});
+
 describe("checks", () => {
   function atCheck(context: EngineContext): RunState {
     return walk(
@@ -815,7 +906,7 @@ describe("a full walk of a chapter", () => {
     expect(secondVote.state.chapterOutcome).toBe("success");
   });
 
-  it("breaks a tied vote toward the first player in party order", () => {
+  it("breaks a tied vote toward whoever holds the story turn (spec §6.1)", () => {
     const context = ctx({ rng: fixedRng(20) });
     const atRidge = walk(
       seatedParty(context),
@@ -832,10 +923,24 @@ describe("a full walk of a chapter", () => {
       context,
     ).state;
 
-    // One vote each, so it is tied — p_1 votes first in party order and wins.
+    // Two story beats taken in turn (p_1, then p_2) hand the marker back to
+    // p_1; the rest scene's open choice does not move it.
+    expect(storyTurnHolder(atRidge)?.playerId).toBe("p_1");
+
+    // One vote each, so it is tied — the turn holder's vote wins.
     const settled = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context);
     expect(settled.state.flags["took_high"]).toBe(true);
     expect(settled.state.flags["took_low"]).toBeUndefined();
+
+    // The same tie with the marker on p_2 goes p_2's way: it is the turn, not
+    // party order, that breaks it.
+    const theirTurn = applyIntent(
+      { ...atRidge, storyTurn: 1 },
+      { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } },
+      context,
+    );
+    expect(theirTurn.state.flags["took_low"]).toBe(true);
+    expect(theirTurn.state.flags["took_high"]).toBeUndefined();
   });
 
   it("waits for the whole party before putting the board up", () => {
