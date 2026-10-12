@@ -13,7 +13,7 @@
  * docs/art-pipeline.md own. Nothing derives a filename anywhere else.
  */
 
-import type { ClassId, SpeciesId, TierId } from "@kad/shared";
+import type { Chapter, ClassId, RunState, SpeciesId, TierId } from "@kad/shared";
 
 /** assets/manifest.json → canvas. */
 export const CANVAS = { width: 1024, height: 1024, originX: 512, originY: 900 } as const;
@@ -185,6 +185,18 @@ export function enemyArtUrl(artId: string): string {
 /** The 1920×1080 backdrop for a biome (asset-brief §4.5). */
 export function biomeBackdropUrl(biome: string): string {
   return `/assets/biomes/${biome}/bg.webp`;
+}
+
+/** Scene illustrations use asset-relative ids, e.g. scenes/gemfall/hollow-gate. */
+export function sceneBackdropUrl(art: string): string | null {
+  return /^scenes\/[a-z0-9_-]+\/[a-z0-9_-]+$/.test(art) ? `/assets/${art}.webp` : null;
+}
+
+/** Story art follows the scene; combat always uses the chapter's terrain. */
+export function sceneArtFor(chapter: Chapter | null, state: RunState | null): string | null {
+  if (!chapter || chapter.id !== state?.chapterId || !state.sceneId || state.encounter) return null;
+  const scene = chapter.scenes[state.sceneId];
+  return scene && scene.type !== "encounter" ? scene.art ?? null : null;
 }
 
 /** The 4×4 combat tile sheet for a biome — floor row, then blocked row. */

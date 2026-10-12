@@ -9,7 +9,7 @@
  * live here, walked path by path over the shipped files.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -21,6 +21,20 @@ const read = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8")
 
 const campaign = read("content", "campaigns", "gemfall.json");
 const chapter = (id) => read("content", "chapters", `${id}.json`);
+
+it("every authored Gemfall illustration exists and encounters keep biome art", () => {
+  const illustrations = new Set();
+  for (const id of campaign.chapters) {
+    for (const scene of Object.values(chapter(id).scenes)) {
+      if (!scene.art) continue;
+      expect(scene.type).not.toBe("encounter");
+      expect(scene.art).toMatch(/^scenes\/gemfall\/[a-z-]+$/);
+      expect(existsSync(join(REPO, "assets", `${scene.art}.webp`))).toBe(true);
+      illustrations.add(scene.art);
+    }
+  }
+  expect([...illustrations].sort()).toEqual(read("assets", "manifest.json").sceneIllustrations.filter((id) => id.startsWith("scenes/gemfall/")).sort());
+});
 
 /** Which route sets each chapter must set on every path to every ending. */
 const MUST_SET = {
