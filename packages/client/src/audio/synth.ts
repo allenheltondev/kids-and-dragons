@@ -35,6 +35,7 @@ export interface Tone {
 const C4 = 262, E4 = 330, G4 = 392, C5 = 523, E5 = 659, G5 = 784, A5 = 880;
 
 export const CUE_TONES: Record<CueId, Tone[]> = {
+  "party-ready": [196, 262, 330].map((freq, i) => ({ type: "triangle", freq: [freq, freq], at: i * 0.15, duration: 0.3, gain: 0.08 })),
   "gem-pickup": [659, 784, 1047].map((freq, i) => ({ type: "sine", freq: [freq, freq], at: i * 0.13, duration: 0.6, gain: 0.1 })),
   "gate-hum": [110, 110.7, 165].map((freq) => ({ type: "sine", freq: [freq, freq], at: 0, duration: 8, gain: 0.05 })),
   "citadel-bell": [{ type: "sine", freq: [294, 294], at: 0, duration: 4, gain: 0.12 }],

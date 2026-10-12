@@ -20,6 +20,7 @@ import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./LobbyContent.css";
+import { EntryScene, lobbySceneFor } from "./EntryScene";
 
 /** Where a scanning phone lands (architecture §4.6 routes). */
 function joinUrl(code: string): string {
@@ -121,7 +122,8 @@ export function LobbyContent(): ReactElement {
   const readyCount = party.filter((m) => m.ready).length;
 
   return (
-    <section className="lobby" aria-labelledby="lobby-heading">
+    <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
+      <EntryScene scene={lobbySceneFor(party)} />
       <h2 className="lobby__heading" id="lobby-heading">
         <Icon name="party" />
         <span>Everyone in?</span>

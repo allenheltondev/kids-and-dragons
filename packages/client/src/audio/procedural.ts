@@ -43,6 +43,7 @@ const notes = (frequencies: number[], spacing: number, duration: number): Voice[
   frequencies.map((freq, i) => bell(freq, i * spacing, duration, 0.22, (i % 2 ? 1 : -1) * 0.2));
 
 const cueVoices: Partial<Record<CueId, Voice[]>> = {
+  "party-ready": [...wood(0, 0.1, 180), ...wood(0.18, 0.08, 220), ...[196, 261.63, 329.63].map((freq, i) => ({ at: 0.25 + i * 0.12, duration: 0.6, freq, gain: 0.1, attack: 0.012, partials: [[1, 1], [2, 0.15]] as [number, number][] }))],
   // Irregular short contacts, rather than a descending pitched percussion scale.
   dice: [0.015, 0.047, 0.105, 0.14, 0.218, 0.256, 0.345, 0.403, 0.515, 0.64, 0.81, 1.04, 1.23].flatMap((at, i) => [
     { at, duration: 0.025 + (i % 3) * 0.006, freq: 0, noise: true, cutoff: 3200 + (i % 4) * 360, highpass: 650, gain: 0.24 - i * 0.008, attack: 0.0008, decay: 8, pan: (i % 3 - 1) * 0.25 },
@@ -135,6 +136,30 @@ function music(id: string, label: string, brief: string, seconds: number, base: 
   return { id, label, group: "Music", brief, seconds, loop: true, voices, echo: colour === "citadel" ? 0.09 : colour === "mountain" ? 0.36 : 0.22 };
 }
 
+/** Entry arrangements: different meters and instrumentation from the quest beds. */
+function entryMusic(): ProceduralSound[] {
+  const home: Voice[] = [], lobby: Voice[] = [];
+  const chords = [[0, 4, 7], [-5, 0, 4], [-3, 0, 5], [-7, -3, 2]];
+  for (let bar = 0; bar < 12; bar++) {
+    const chord = chords[Math.floor(bar / 3)]!;
+    for (let beat = 0; beat < 6; beat++) {
+      const at = bar * 3 + beat * 0.5;
+      home.push({ at, duration: 0.85, freq: 196 * 2 ** (chord[beat % 3]! / 12), gain: beat % 3 === 0 ? 0.045 : 0.026, attack: 0.008, decay: 4, pan: beat % 2 ? 0.25 : -0.25, partials: [[1, 1], [2, 0.18], [3, 0.05]] });
+      if (beat === 0 || beat === 3) home.push({ at, duration: 0.15, freq: 110, endFreq: 65, gain: 0.022, attack: 0.005 });
+    }
+    if (bar % 3 === 1) for (const [i, step] of [7, 9, 7, 4].entries()) home.push({ at: bar * 3 + i * 0.5, duration: 0.8, freq: 392 * 2 ** (step / 12), gain: 0.025, swell: true, vibrato: [4, 3] });
+  }
+  for (let phrase = 0; phrase < 4; phrase++) {
+    for (const [i, step] of chords[phrase]!.entries()) lobby.push({ at: phrase * 10, duration: 16, freq: 146.83 * 2 ** (step / 12), gain: 0.034, swell: true, pan: (i - 1) * 0.35, vibrato: [0.2, 3], partials: [[1, 1], [2, 0.08]] });
+    lobby.push({ at: phrase * 10 + 4, duration: 3.5, freq: 293.66 * 2 ** (chords[phrase]![1]! / 12), gain: 0.025, swell: true, vibrato: [3.8, 4] });
+    lobby.push({ at: phrase * 10, duration: 15, freq: 0, noise: true, cutoff: 350, gain: 0.012, swell: true });
+  }
+  return [
+    { id: "entry-home", label: "Welcome to the realm", group: "Music", ...MUSIC_SPECS["entry-home"]!, loop: true, voices: home, echo: 0.12 },
+    { id: "entry-lobby", label: "Around the campfire", group: "Music", ...MUSIC_SPECS["entry-lobby"]!, loop: true, voices: lobby, echo: 0.2 },
+  ];
+}
+
 export function proceduralSounds(): ProceduralSound[] {
   const game: ProceduralSound[] = (Object.entries(CUE_SPECS) as [CueId, (typeof CUE_SPECS)[CueId]][]).filter(([id]) => cueVoices[id]).map(([id, spec]) => ({
     id, label: id.replaceAll("-", " "), group: "Game effects", ...spec,
@@ -147,7 +172,7 @@ export function proceduralSounds(): ProceduralSound[] {
     { id: "seal-awakening", label: "Seal awakening", brief: "A gentle deep mineral rumble beneath crystal chimes. Awe rather than alarm.", seconds: 6, voices: [{ at: 0, duration: 6, freq: 0, noise: true, cutoff: 160, gain: 0.2, attack: 1.3 }, { at: 0, duration: 6, freq: 65.41, endFreq: 73.42, gain: 0.18, attack: 1.5 }, ...[523.25, 659.25, 783.99].map((freq, i) => bell(freq, 1.2 + i * 0.8, 2.4, 0.08, i % 2 ? 0.4 : -0.4))], echo: 0.2 },
     { id: "cavern-air", label: "Cavern ambience", brief: "Soft filtered cavern air and occasional resonant mineral droplets.", seconds: 12, voices: [{ at: 0, duration: 12, freq: 0, noise: true, cutoff: 450, gain: 0.09, attack: 1.2 }, ...[0.6, 3.7, 7.3, 10.1].map((at, i) => bell([523.25, 392, 659.25, 440][i]!, at, 1.7, 0.075, i % 2 ? 0.5 : -0.5))], echo: 0.32 },
   ].map((spec) => ({ ...spec, group: "Gemfall effects", loop: false } as ProceduralSound));
-  return [...game, ...extras,
+  return [...game, ...extras, ...entryMusic(),
     music("forest", "Enchanted forest", MUSIC_SPECS.forest!.brief, MUSIC_SPECS.forest!.seconds, 130.81, "forest"),
     music("gemfall-marsh", "Marsh mysteries", "Breathy reed phrases over suspended drones and soft marsh air. Curious and unhurried.", 32, 110, "marsh"),
     music("gemfall-citadel", "Citadel discovery", "Light plucked strings, alternating bass, and a gentle travelling pulse. Warm and purposeful.", 32, 146.83, "citadel"),
@@ -206,7 +231,7 @@ export function renderProcedural(sound: ProceduralSound, sampleRate = 24000): [F
   let peak = 0, squares = 0;
   for (const channel of channels) for (const value of channel) { peak = Math.max(peak, Math.abs(value)); squares += value * value; }
   const rms = Math.sqrt(squares / (frames * 2));
-  const target = sound.group === "Music" ? 0.055 : sound.id === "tap" ? 0.04 : 0.12;
+  const target = sound.id === "entry-lobby" ? 0.035 : sound.id === "party-ready" ? 0.075 : sound.group === "Music" ? 0.055 : sound.id === "tap" ? 0.04 : 0.12;
   const scale = Math.min(target / Math.max(rms, 0.00001), 0.6 / Math.max(peak, 0.00001));
   for (const channel of channels) for (let i = 0; i < frames; i++) {
     const edge = sound.loop ? 1 : Math.min(1, i / (sampleRate * 0.004), (frames - 1 - i) / (sampleRate * 0.012));
