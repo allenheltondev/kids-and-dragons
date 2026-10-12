@@ -56,6 +56,7 @@ export interface CueSpec {
 }
 
 export const CUE_SPECS: Record<CueId, CueSpec> = {
+  "party-ready": { brief: "Two soft hand drum taps and a warm rising wooden-string response. Ready to travel, no chimes.", seconds: 1.2 },
   "gem-pickup": { brief: "Three small rising crystal notes with a shimmering tail.", seconds: 1.1 },
   "gate-hum": { brief: "A low warm pulsing hum shared by the Gate and gemstones. Mysterious, not threatening.", seconds: 8 },
   "citadel-bell": { brief: "One warm bronze watch bell with slowly fading overtones.", seconds: 4 },
@@ -129,6 +130,8 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
  * arrive playable before anybody composes for them.
  */
 export const MUSIC_SPECS: Record<string, CueSpec> = {
+  "entry-home": { brief: "Welcoming acoustic plucks, soft hand percussion and a sparse flute phrase in a lilting six-beat rhythm.", seconds: 36 },
+  "entry-lobby": { brief: "Quiet fireside strings and occasional mellow reed answers, with soft outdoor air. Unhurried, no percussion or creature calls.", seconds: 40 },
   "gemfall-marsh": { brief: "Breathy reed phrases over suspended drones and soft marsh air. Curious and unhurried.", seconds: 32 },
   "gemfall-citadel": { brief: "Light plucked strings, alternating bass, and a gentle travelling pulse. Warm and purposeful.", seconds: 32 },
   "gemfall-mountain": { brief: "Deep open fifths, slow mineral breaths, and distant sustained tones. Spacious and still.", seconds: 32 },

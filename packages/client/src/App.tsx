@@ -16,8 +16,11 @@ import { HomeScreen } from "./screens";
 import { PartyLayout } from "./layout/PartyLayout";
 import { TravelLayout } from "./layout/TravelLayout";
 import { routeCode, useRoute } from "./router";
-import { useGameStore, useLayoutMode } from "./store";
+import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { ConnectionBanner, ErrorToast, Spinner } from "./ui";
+
+import { AudioControl } from "./audio";
+import { musicForScene } from "./audio/scene-audio";
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -26,6 +29,15 @@ export function App(): React.JSX.Element {
   const attach = useGameStore((store) => store.attach);
   const loadContent = useGameStore((store) => store.loadContent);
   const mode = useLayoutMode();
+  const state = useRunState();
+  const chapter = useChapter();
+  const me = useMe();
+  const home = !routeCode(route) || !session;
+  const enabled = home || route.name === "tv" || mode === "travel";
+  const inEntry = state?.phase === "lobby" || state?.phase === "creation";
+  const creating = inEntry && me === null && route.name !== "tv";
+  const ready = !!state?.party.length && state.party.every((member) => member.ready);
+  const soundtrack = home || creating ? "entry-home" : inEntry ? "entry-lobby" : musicForScene(chapter, state);
 
   // Rules and items are static content, not game state (roadmap, "Content as
   // data"). Idempotent, so strict mode's double-invoke costs nothing.
@@ -47,6 +59,7 @@ export function App(): React.JSX.Element {
 
   return (
     <>
+      <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped
