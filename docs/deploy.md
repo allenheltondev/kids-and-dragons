@@ -306,6 +306,24 @@ tap. Put a custom domain in front before you do this if you ever intend to have
 one — moving the relying-party ID invalidates every passkey registered against
 the old one.
 
+### Production's custom domain: `kd.readysetcloud.io`
+
+Production serves on `kd.readysetcloud.io` (the same pattern as the fantasy
+repo's `fantasy.readysetcloud.io`). The stack issues an ACM certificate for it,
+validated by a DNS record CloudFormation writes into the Route 53 zone, adds it
+to the distribution, and points A/AAAA aliases at the distribution. Staging and
+dev stay on `*.cloudfront.net`.
+
+The only manual step is the Production environment's **`HOSTED_ZONE_ID`**
+variable: the id of the `readysetcloud.io` hosted zone. `prod-deploy.yml` stops
+before deploying if it is missing, because `deploy.sh` passes `AppDomainName` and
+`AppHostedZoneId` on every deploy and an empty zone id would remove the domain.
+From a laptop: `APP_DOMAIN_NAME=kd.readysetcloud.io APP_HOSTED_ZONE_ID=Z... ./scripts/deploy.sh prod`.
+
+Passkeys follow the domain. If any were registered against the CloudFront domain,
+changing `WEBAUTHN_RP_ID` to `kd.readysetcloud.io` invalidates them (see above);
+leave it alone until you have decided that is acceptable.
+
 ### Why it is a variable and not a one-off flag
 
 `sam deploy` does **not** carry previous parameter values forward: anything left

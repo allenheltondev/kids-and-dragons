@@ -82,9 +82,30 @@ Parameters:
       domain for the life of the credential, so this is worth getting right once
       rather than automatically.
 
+  AppDomainName:
+    Type: String
+    Default: ""
+    Description: >-
+      Optional hostname for the game, e.g. kd.readysetcloud.io. With
+      AppHostedZoneId, the stack issues an ACM certificate for it (DNS
+      validated in that zone), adds it to the CloudFront distribution and
+      points A/AAAA alias records at the distribution. Empty (the default, and
+      every non-production deploy) serves on the *.cloudfront.net domain only.
+      CloudFront certificates must be in us-east-1, as this stack is.
+
+  AppHostedZoneId:
+    Type: String
+    Default: ""
+    Description: Route 53 hosted zone that holds AppDomainName's parent domain.
+
 Conditions:
   # Passkeys need a relying-party domain. Without one, email OTP alone.
   Passkeys: !Not [!Equals [!Ref WebAuthnRelyingPartyId, ""]]
+  # Both halves are needed: the certificate validates, and the alias records
+  # live, in the hosted zone.
+  CustomDomain: !And
+    - !Not [!Equals [!Ref AppDomainName, ""]]
+    - !Not [!Equals [!Ref AppHostedZoneId, ""]]
 
 Globals:
   Function:
@@ -613,6 +634,44 @@ Resources:
           return event.request;
         }
 
+  # The custom domain (prod). CloudFormation writes the DNS validation record
+  # itself and waits for the certificate before the distribution uses it.
+  SiteCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: CustomDomain
+    Properties:
+      DomainName: !Ref AppDomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref AppDomainName
+          HostedZoneId: !Ref AppHostedZoneId
+
+  # A and AAAA: the distribution serves IPv6. Z2FDTNDATAQYW2 is CloudFront's
+  # fixed hosted zone id for alias targets.
+  SiteDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Condition: CustomDomain
+    Properties:
+      HostedZoneId: !Ref AppHostedZoneId
+      Name: !Ref AppDomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
+
+  SiteDnsRecordIpv6:
+    Type: AWS::Route53::RecordSet
+    Condition: CustomDomain
+    Properties:
+      HostedZoneId: !Ref AppHostedZoneId
+      Name: !Ref AppDomainName
+      Type: AAAA
+      AliasTarget:
+        DNSName: !GetAtt Distribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
+
   Distribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -620,6 +679,13 @@ Resources:
         Enabled: true
         Comment: !Sub "Kids & Dragons (${StageName})"
         HttpVersion: http2and3
+        Aliases: !If [CustomDomain, [!Ref AppDomainName], !Ref AWS::NoValue]
+        ViewerCertificate: !If
+          - CustomDomain
+          - AcmCertificateArn: !Ref SiteCertificate
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
         IPV6Enabled: true
         DefaultRootObject: index.html
         PriceClass: PriceClass_100
@@ -689,8 +755,13 @@ Resources:
 
 Outputs:
   SiteUrl:
-    Description: Open this on the TV and on every phone
-    Value: !Sub "https://${Distribution.DomainName}"
+    Description: >-
+      Open this on the TV and on every phone. The custom domain when one is
+      configured, the CloudFront domain otherwise.
+    Value: !If
+      - CustomDomain
+      - !Sub "https://${AppDomainName}"
+      - !Sub "https://${Distribution.DomainName}"
 
   SiteBucketName:
     Description: Sync the client bundle, assets, and content here
