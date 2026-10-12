@@ -195,7 +195,7 @@ jobs:
       # of them. Skipped on workflow_dispatch — there is no PR to comment on.
       - name: Post the serving SHA on the pull request
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           SITE_URL: ${{ steps.outputs.outputs.site-url }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
