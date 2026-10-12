@@ -390,6 +390,7 @@
     },
     "scene_crab_thanks": {
       "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
       "narration": "Dunmore lowers his pick and goes rather pink. The crab moves three pebbles in a way that looks a lot like a thank-you note. And at the top of the ridge, the black tower of Redspire Citadel catches the morning sun.",
       "choices": [
         {
@@ -436,6 +437,7 @@
     },
     "scene_citadel_gate": {
       "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
       "narration": "Redspire Citadel is a black tower where every single window faces up. Inside, a clerk named Pellam writes your names in a big ledger, then writes them again in a second ledger, just to be sure. \"This way,\" he says. \"The captain has a table.\"",
       "choices": [
         {
@@ -448,6 +450,7 @@
     },
     "scene_truth_table": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "On a long stone table, the wardens have laid out four hundred years of watch-logs, and in the middle of them a gemstone sits humming to itself. Captain Orla Voss folds her arms. \"Show us what you found on the road,\" she says. \"Our logs will fill in the rest.\"",
       "choices": [
         {
@@ -488,6 +491,7 @@
     },
     "scene_whole_truth": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all the Table Stone hums, logged twice. One very old line just says: the marsh gate hums the same note. Next to it, in three different handwritings: nobody knows why.",
       "choices": [
         {
@@ -624,6 +628,7 @@
     },
     "scene_reading_restore": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "Pellam reads it all back and taps the page. \"Medals. Mending. Putting things back,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
       "choices": [
         {
@@ -636,6 +641,7 @@
     },
     "scene_reading_hoard": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "Pellam reads it back, and the stones in your packs hum along with every line. \"Pockets,\" he says. \"A great many pockets. That adds up to a collection.\" Nobody in the room says he is wrong. A moth lands on your bag, thinks about it, and leaves.",
       "choices": [
         {
@@ -648,6 +654,7 @@
     },
     "scene_reading_leash": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "Pellam reads it back slowly. \"Questions about what the power could do. Who holds it. What it's for.\" He writes one word and underlines it twice: leash. Somewhere below, Hessa's soup tent is still serving.",
       "choices": [
         {
@@ -660,6 +667,7 @@
     },
     "scene_who_to_tell": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "\"Now,\" says Captain Voss. \"Who else gets to know? Choose carefully. Nobody is going to ask you again.\"",
       "choices": [
         {
@@ -726,6 +734,7 @@
     },
     "scene_what_for": {
       "type": "story",
+      "art": "scenes/gemfall/facet-table",
       "narration": "Then the captain asks the real question. \"And you? What is it all for?\" Somewhere a stone hums. Everybody in the room is looking at you.",
       "choices": [
         {
@@ -860,6 +869,7 @@
     },
     "rest_end_shut_out": {
       "type": "rest",
+      "art": "scenes/gemfall/redspire-citadel",
       "narration": "You sleep against the cold side of the citadel wall, like the embermoths. The crabs, the sunset and the gate all beat you today, and the mountain noticed: the tremors have settled into a slow, patient rhythm. But the whole truth is in your heads now, and Pellam has left his lantern hanging on the wall for you. It burns all night.",
       "heal": 3,
       "choices": [],
