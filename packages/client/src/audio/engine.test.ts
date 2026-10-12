@@ -53,6 +53,7 @@ class FakeOscillator extends FakeNode {
 }
 
 class FakeBufferSource extends FakeNode {
+  loop = false;
   buffer: unknown = null;
   start(): void {}
   stopped = false;
@@ -237,6 +238,46 @@ describe("cues", () => {
 
 describe("real audio, when there is any", () => {
   const BUFFER = { duration: 1 } as AudioBuffer;
+
+  it("loops location ambience past its clip duration without restarting inside the location", () => {
+    const ctx = new FakeContext();
+    const engine = createAudioEngine({ createContext: () => ctx as unknown as BaseAudioContext, storage: memoryStore(),
+      samples: () => ({ preload() {}, cue: () => ({ duration: 12 } as AudioBuffer), music: () => null, wantMusic() {} }),
+    });
+    engine.sink.ambience?.("cavern-air");
+    expect(ctx.sources).toHaveLength(0); // A requested location waits for the gesture.
+    engine.unlock();
+    const air = ctx.sources[0]!;
+    expect(air.loop).toBe(true);
+    ctx.currentTime = 30;
+    engine.sink.stopSceneCues?.(); // WorldView changes mouth -> check_remains.
+    engine.sink.ambience?.("cavern-air");
+    expect(ctx.sources).toHaveLength(1);
+    expect(air.stopped).toBe(false);
+    engine.sink.ambience?.(null); // Combat or a different illustration.
+    expect(air.stopped).toBe(true);
+    engine.dispose();
+  });
+
+  it("upgrades late ambience only while its location is still current", () => {
+    const ctx = new FakeContext();
+    let available = false;
+    let ready = () => {};
+    const engine = createAudioEngine({ createContext: () => ctx as unknown as BaseAudioContext, storage: memoryStore(),
+      samples: () => ({ preload() {}, cue: () => available ? BUFFER : null, music: () => null, wantMusic() {}, wantCue(_id, callback) { ready = callback; } }),
+    });
+    engine.unlock();
+    engine.sink.ambience?.("gate-hum");
+    const fallback = [...ctx.oscillators];
+    available = true; ready();
+    expect(ctx.sources).toHaveLength(1);
+    expect(ctx.sources[0]!.loop).toBe(true);
+    expect(fallback.every((o) => o.stoppedAt !== null)).toBe(true);
+    engine.sink.ambience?.(null);
+    ready();
+    expect(ctx.sources).toHaveLength(1);
+    engine.dispose();
+  });
 
   it("fades in late music and ignores downloads for a scene already left", () => {
     const ctx = new FakeContext();

@@ -38,8 +38,8 @@ import type { PresentationEvent } from "../store/contract";
 import { presentationDuration } from "../world/presentation";
 // Sound rides the same two facts the renderer already consumes: presentations
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
-import { AudioControl, cue, cueForPresentation, music, stopSceneCues } from "../audio";
-import { musicForScene, sceneCuesFor } from "../audio/scene-audio";
+import { AudioControl, ambience, cue, cueForPresentation, music, stopSceneCues } from "../audio";
+import { ambienceForScene, musicForScene, sceneCuesFor } from "../audio/scene-audio";
 import { perfRequested } from "../world/FrameMeter";
 import { RendererBoundary } from "../world/RendererFallback";
 
@@ -103,6 +103,9 @@ export function WorldView(): React.JSX.Element {
   const chapter = useChapter();
   const state = useRunState();
   const soundtrack = musicForScene(chapter, state);
+  const locationAmbience = ambienceForScene(chapter, state);
+  useEffect(() => { ambience(locationAmbience); }, [locationAmbience]);
+  useEffect(() => () => { ambience(null); }, []);
   useEffect(() => {
     music(soundtrack);
     // The surface unmounting is the story leaving this screen.

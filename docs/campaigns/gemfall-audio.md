@@ -51,7 +51,11 @@ Existing presentation and UI events automatically use the 13 replacement effect 
 It establishes a baseline when joining a run, so existing inventory never triggers pickups.
 The Hollow Gate has a hum, the citadel gate and mountain countdown have bells, mountain
 gallery scenes have cavern air, and entering the seal chamber or tether scene has the
-awakening rumble. Scene effects do not repeat on health/vote patches and fade out on leaving.
+awakening rumble. The Gate hum and cavern air are sustained, looping location ambience:
+their illustrated backdrop selects the loop across story, check, rest, and voting scenes.
+They stop on leaving that location or entering combat, rather than on every scene change.
+Ambience requested before the unlock gesture starts at unlock; a late sample replaces its
+continuous fallback. One-shot effects do not repeat on health/vote patches and fade out on leaving.
 
 `MUSIC_BY_BIOME` maps woods/MossHome to forest, marsh to reeds, Exchange/fields/plains/crossings
 to the travelling strings, and foothills/mountain to deep ambience. The citadel's interior

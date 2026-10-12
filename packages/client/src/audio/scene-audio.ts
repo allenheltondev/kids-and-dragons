@@ -1,15 +1,24 @@
 import type { Chapter, RunState } from "@kad/shared";
-import type { CueId } from "./cue";
+import type { AmbienceId, CueId } from "./cue";
 
 const SCENE_CUES: Record<string, Record<string, CueId>> = {
-  "gemfall-03b": { scene_hollow_gate: "gate-hum", scene_gate_hum: "gate-hum" },
   "gemfall-06": { scene_citadel_gate: "citadel-bell" },
   "gemfall-08": {
-    scene_mouth: "cavern-air", scene_moth_road: "cavern-air", rest_cool_gallery: "cavern-air",
     scene_bells_first: "citadel-bell", scene_bells_ringing: "citadel-bell",
     scene_seal_chamber: "seal-awakening", scene_tether: "seal-awakening",
   },
 };
+
+/** The illustration identifies the location across story, vote, rest, and check scenes. */
+export function ambienceForScene(chapter: Chapter | null, state: RunState | null): AmbienceId | null {
+  if (!chapter || chapter.id !== state?.chapterId || state.campaignId !== "gemfall" ||
+    !state.sceneId || !["scene", "check"].includes(state.phase) || state.encounter) return null;
+  const scene = chapter.scenes[state.sceneId];
+  if (!scene || scene.type === "encounter") return null;
+  if (scene.art === "scenes/gemfall/gem-gallery") return "cavern-air";
+  if (scene.art === "scenes/gemfall/hollow-gate") return "gate-hum";
+  return null;
+}
 
 /** A snapshot comparison prevents repeats on HP patches, votes, and reconnect snapshots. */
 export function sceneCuesFor(previous: RunState | null, next: RunState | null): CueId[] {
