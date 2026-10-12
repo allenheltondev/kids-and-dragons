@@ -73,6 +73,7 @@ import {
   characterWorldArtUrl,
   drawPlaceholder,
 } from "./actor-art";
+import { sceneBackdropUrl } from "./art-paths";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
 import { focusHolds, type FocusHold } from "./attention";
 import {
@@ -165,11 +166,11 @@ export interface PartyScene {
   playVictory(): void;
   /**
    * Where the story is happening (spec §6.2). The chapter's biome art replaces
-   * the drawn stand-in behind the lineup; null, an unknown biome, or a missing
-   * file all leave the stand-in in place. Idempotent — the same biome twice
-   * costs one texture lookup, not a reload.
+   * the drawn stand-in behind the lineup. Optional scene art overrides it;
+   * a missing illustration falls back to the biome. Null or a missing biome
+   * leaves the stand-in in place. Repeating the same selection does not reload.
    */
-  setBiome(biome: string | null): void;
+  setBiome(biome: string | null, art?: string | null): void;
   /**
    * Whether the figures carry their names (world/nameplate.ts).
    *
@@ -296,7 +297,7 @@ export function createScene(app: Application): PartyScene {
   const backdropArt = drawBackdrop();
   backdrop.addChild(backdropArt);
 
-  /** The biome whose art is on the backdrop, and the sprite drawing it. */
+  /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
   let biomeSprite: Sprite | null = null;
 
@@ -911,18 +912,26 @@ export function createScene(app: Application): PartyScene {
       return { space: "story" as const, boxes };
     },
 
-    setBiome(next) {
-      if (destroyed || next === biomeId) return;
-      biomeId = next;
+    setBiome(next, art) {
+      const fallback = next === null ? null : biomeBackdropUrl(next);
+      const wanted = (art ? sceneBackdropUrl(art) : null) ?? fallback;
+      if (destroyed || wanted === biomeId) return;
+      biomeId = wanted;
       // A new place: take the old art down immediately. The drawn stand-in is
       // underneath it, so the gap while the next one loads is never a blank
       // screen — and staying in the last chapter's woods would be worse.
       biomeSprite?.destroy();
       biomeSprite = null;
-      if (next === null) return;
+      if (wanted === null) return;
 
-      const wanted = next;
-      void Assets.load<Texture>(biomeBackdropUrl(wanted))
+      void Assets.load<Texture>(wanted)
+        .catch((error: unknown) => {
+          // A missing illustration returns to the chapter's environment.
+          if (destroyed || biomeId !== wanted || fallback === null || wanted === fallback) {
+            throw error;
+          }
+          return Assets.load<Texture>(fallback);
+        })
         .then((texture) => {
           // The chapter may have moved on (or the stage gone) while it loaded.
           if (destroyed || biomeId !== wanted) return;

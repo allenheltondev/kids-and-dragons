@@ -32,6 +32,7 @@
   "scenes": {
     "scene_mouth": {
       "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
       "narration": "The lava tube opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
       "choices": [
         {
@@ -92,6 +93,7 @@
     },
     "scene_moth_road": {
       "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
       "narration": "The embermoths still trust you. They lead you down a side tunnel where the rock is cool enough to touch, and one of them rides on your nose the whole way, like a tiny glowing hat. Behind you, the bones sit back down. Nobody was in a hurry, so nobody had to be.",
       "choices": [
         {
@@ -111,6 +113,7 @@
     },
     "scene_bells_first": {
       "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
       "narration": "Far behind you, down in the foothills, the bells are ringing. Ordinary rings, every town at once, one after another. Nobody has rung the last one yet. But everybody is standing right next to it.",
       "choices": [
         {
@@ -129,6 +132,7 @@
     },
     "check_remains": {
       "type": "check",
+      "art": "scenes/gemfall/gem-gallery",
       "stat": "heart",
       "tn": 12,
       "prompt": "Tell the bones, gently, that you came to set things right",
@@ -172,6 +176,7 @@
     },
     "rest_cool_gallery": {
       "type": "rest",
+      "art": "scenes/gemfall/gem-gallery",
       "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. Eat what you have left, patch each other up, and listen to the mountain breathing below you. It is breathing faster.",
       "heal": 3,
       "choices": [
@@ -192,6 +197,7 @@
     },
     "check_race_1": {
       "type": "check",
+      "art": "scenes/gemfall/gem-gallery",
       "stat": "quick",
       "tn": 12,
       "prompt": "Race the shaking floor down the last long tube",
@@ -207,6 +213,7 @@
     },
     "scene_bells_ringing": {
       "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
       "narration": "Every bell in the foothills is ringing now, one ring after another, counting down toward the ring nobody uses. The floor jumps with every one. Five rings left. Maybe four.",
       "choices": [
         {
@@ -240,6 +247,7 @@
     },
     "check_race_2": {
       "type": "check",
+      "art": "scenes/gemfall/gem-gallery",
       "stat": "might",
       "tn": 12,
       "prompt": "Shove through the last stone door before the last ring",
@@ -255,6 +263,7 @@
     },
     "scene_keeper": {
       "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
       "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
       "choices": [
         {
@@ -323,6 +332,7 @@
     },
     "scene_q2": {
       "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
       "narration": "The dragon nods, slowly, the way a mountain would nod if it could. \"And on the road,\" it says, \"what did the land ask of you? And what did you answer?\" An embermoth lands on its eyebrow, waiting too.",
       "choices": [
         {
@@ -412,6 +422,7 @@
     },
     "scene_verdict": {
       "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
       "narration": "\"Last question,\" says the Seal-Keeper. \"Who did you tell? And what do you want?\" Behind it, the seal glows like a round stained-glass window with pieces missing, and something under it is turning over in its sleep.",
       "choices": [
         {
@@ -479,6 +490,7 @@
     },
     "check_verdict": {
       "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
       "stat": "heart",
       "tn": 12,
       "prompt": "Answer the Seal-Keeper with your whole heart",
@@ -531,6 +543,7 @@
     },
     "scene_seal_chamber": {
       "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
       "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head, the Keystone. Underneath, something vast is waking up. The Seal-Keeper waits. \"Well,\" it says. \"Choose.\"",
       "choices": [
         {
@@ -568,6 +581,7 @@
     },
     "scene_tether": {
       "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
       "narration": "The power under the mountain rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. The Seal-Keeper watches you with one eye the size of a door. \"Whose hand?\" it asks. \"And did you bring a leash, or only hands?\"",
       "choices": [
         {
@@ -619,6 +633,7 @@
     },
     "check_tether_self": {
       "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
       "stat": "heart",
       "tn": 12,
       "prompt": "Hold the leash steady with all three of your hands",
@@ -634,6 +649,7 @@
     },
     "check_tether_cult": {
       "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
       "stat": "clever",
       "tn": 12,
       "prompt": "Hold the Deep Hollow choir to every word of the bargain",
@@ -712,6 +728,7 @@
     },
     "check_tether_self_bare": {
       "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
       "stat": "heart",
       "tn": 16,
       "prompt": "Hold the leash with nothing but your own three pairs of hands",
@@ -727,6 +744,7 @@
     },
     "check_tether_cult_bare": {
       "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
       "stat": "clever",
       "tn": 16,
       "prompt": "Hold the Deep Hollow choir to a bargain you made up just now",
@@ -742,6 +760,7 @@
     },
     "scene_keystone": {
       "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
       "narration": "The Keystone is bigger than your head and warm as bread. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
       "choices": [
         {
@@ -773,6 +792,7 @@
     },
     "check_keystone": {
       "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
       "stat": "might",
       "tn": 16,
       "prompt": "Pry the Keystone out of a seal that does not want to let it go",

@@ -21,8 +21,8 @@
  * running app. The behaviour here is tree structure, lifecycle and geometry.
  */
 
-import { beforeAll, describe, expect, it } from "vitest";
-import { Container, Text } from "pixi.js";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+import { Assets, Container, Text, Texture } from "pixi.js";
 import type { Application } from "pixi.js";
 import { beginEncounter, parseBoard } from "@kad/shared";
 import type { PartyMember, ResolvedCharacter } from "@kad/shared";
@@ -32,6 +32,44 @@ import { createScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
 
 beforeAll(installFakeCanvas2D);
+
+describe("illustrated backdrops", () => {
+  it("falls back to the biome when an illustration fails to load", async () => {
+    // Assets.load's final overload is the multi-asset Record; this test supplies a single texture.
+    const texture = Texture.WHITE as unknown as Record<string, unknown>;
+    const load = vi.spyOn(Assets, "load").mockRejectedValueOnce(new Error("404")).mockResolvedValue(texture);
+    const app = fakeApp();
+    const scene = createScene(app as unknown as Application);
+    try {
+      scene.setBiome("whispering_marsh", "scenes/gemfall/hollow-gate");
+      await vi.waitFor(() => expect(load).toHaveBeenCalledWith("/assets/biomes/whispering_marsh/bg.webp"));
+      expect(load).toHaveBeenNthCalledWith(1, "/assets/scenes/gemfall/hollow-gate.webp");
+      scene.setBiome("whispering_marsh");
+      await vi.waitFor(() => expect(load).toHaveBeenCalledTimes(3));
+    } finally { scene.destroy(); load.mockRestore(); }
+  });
+
+  it("ignores an illustration arriving after the party has changed scenes", async () => {
+    let finish!: (texture: Texture) => void;
+    const load = vi.spyOn(Assets, "load")
+      .mockImplementationOnce(() => new Promise<Texture>((resolve) => { finish = resolve; }) as unknown as Promise<Record<string, unknown>>)
+      .mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const app = fakeApp();
+    const scene = createScene(app as unknown as Application);
+    try {
+      scene.setBiome("whispering_marsh", "scenes/gemfall/hollow-gate");
+      scene.setBiome("plains");
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const backdrop = app.stage.children[0] as Container;
+      const art = backdrop.children[0] as Container;
+      const count = art.children.length;
+      finish(Texture.WHITE);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(art.children.length).toBe(count);
+      expect(load).toHaveBeenCalledTimes(2);
+    } finally { scene.destroy(); load.mockRestore(); }
+  });
+});
 
 // ---------------------------------------------------------------------------
 // Fixtures
