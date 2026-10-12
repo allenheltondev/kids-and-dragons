@@ -54,7 +54,11 @@ export type CueId =
   | "tap"
   | "error";
 
+export type AmbienceId = "gate-hum" | "cavern-air";
+
 export interface AudioSink {
+  /** Sustained location sound; changing scenes inside the location does not restart it. */
+  ambience?(id: AmbienceId | null): void;
   /** Stop location effects when the story leaves their scene. */
   stopSceneCues?(): void;
   /** Play one cue, now. Fire and forget. */
@@ -108,4 +112,8 @@ export function music(biome: string | null): void {
 
 export function stopSceneCues(): void {
   try { current?.stopSceneCues?.(); } catch { /* Decoration must never interrupt play. */ }
+}
+
+export function ambience(id: AmbienceId | null): void {
+  try { current?.ambience?.(id); } catch { /* Decoration must never interrupt play. */ }
 }

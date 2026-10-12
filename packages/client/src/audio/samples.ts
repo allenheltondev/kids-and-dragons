@@ -33,6 +33,8 @@ import type { CueId } from "./cue";
 import { CUE_SPECS, cueUrl, musicUrl } from "./paths";
 
 export interface SampleLibrary {
+  /** Notify a sustained cue once its sample is decoded. */
+  wantCue?(id: CueId, ready: () => void): void;
   /** Start fetching everything. Idempotent; never rejects. */
   preload(): void;
   /** The decoded cue, or null to use the recipe. */
@@ -89,7 +91,19 @@ export function createSampleLibrary(
       });
   }
 
+  function want(url: string, ready?: () => void): void {
+    if (ready) {
+      if (buffers.has(url)) { ready(); return; }
+      if (settled.has(url)) return;
+      const callbacks = waiting.get(url) ?? new Set<() => void>();
+      callbacks.add(ready);
+      waiting.set(url, callbacks);
+    }
+    load(url);
+  }
+
   return {
+    wantCue(id, ready) { want(cueUrl(id), ready); },
     preload() {
       for (const id of Object.keys(CUE_SPECS) as CueId[]) load(cueUrl(id));
     },
@@ -100,15 +114,7 @@ export function createSampleLibrary(
       return buffers.get(musicUrl(biome)) ?? null;
     },
     wantMusic(biome, ready) {
-      const url = musicUrl(biome);
-      if (ready) {
-        if (buffers.has(url)) { ready(); return; }
-        if (settled.has(url)) return;
-        const callbacks = waiting.get(url) ?? new Set<() => void>();
-        callbacks.add(ready);
-        waiting.set(url, callbacks);
-      }
-      load(url);
+      want(musicUrl(biome), ready);
     },
   };
 }
