@@ -28,8 +28,17 @@ export function cueUrl(id: CueId): string {
 }
 
 export function musicUrl(biome: string): string {
-  return `/assets/audio/music/${biome}.${AUDIO_EXTENSION}`;
+  return `/assets/audio/music/${MUSIC_BY_BIOME[biome] ?? biome}.${AUDIO_EXTENSION}`;
 }
+
+/** Reuse approved arrangements across related places without duplicating files. */
+export const MUSIC_BY_BIOME: Record<string, string> = {
+  enchanted_woods: "forest", mosshome: "forest", bramblewood: "forest", sky_islands: "forest",
+  whispering_marsh: "gemfall-marsh", mermaid_cove: "gemfall-marsh",
+  exchange: "gemfall-citadel", sunward_fields: "gemfall-citadel", plains: "gemfall-citadel",
+  eastern_plains: "gemfall-citadel", stone_crossing: "gemfall-citadel",
+  red_sky_foothills: "gemfall-mountain", mount_red_sky: "gemfall-mountain",
+};
 
 /**
  * What each cue is *for*, in the words somebody sourcing audio needs.
@@ -47,9 +56,14 @@ export interface CueSpec {
 }
 
 export const CUE_SPECS: Record<CueId, CueSpec> = {
+  "gem-pickup": { brief: "Three small rising crystal notes with a shimmering tail.", seconds: 1.1 },
+  "gate-hum": { brief: "A low warm pulsing hum shared by the Gate and gemstones. Mysterious, not threatening.", seconds: 8 },
+  "citadel-bell": { brief: "One warm bronze watch bell with slowly fading overtones.", seconds: 4 },
+  "seal-awakening": { brief: "A gentle deep mineral rumble beneath crystal chimes. Awe rather than alarm.", seconds: 6 },
+  "cavern-air": { brief: "Soft filtered cavern air and occasional resonant mineral droplets.", seconds: 12 },
   dice: {
     brief:
-      "Wooden dice tumbling in a cupped hand and settling on a table, ending with one clear landing tick. Warm, toy-like, not casino.",
+      "Irregular dry wooden dice contacts, tumbling and settling to a final tick. No pitched descent.",
     seconds: 1.4,
   },
   attack: {
@@ -58,7 +72,7 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
     seconds: 0.4,
   },
   heal: {
-    brief: "Three rising bell tones, gentle and clean, like a small glass chime.",
+    brief: "A warm breath-like chord swelling gently into relief; distinct from crystal pickups.",
     seconds: 0.6,
   },
   down: {
@@ -67,16 +81,16 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
     seconds: 0.7,
   },
   revive: {
-    brief: "A short rising flutter, like a bird taking off. Relief, not fanfare.",
+    brief: "A short rising airy flutter, like a bird taking off. Relief, with no final bell note.",
     seconds: 0.5,
   },
   "level-up": {
-    brief: "A four-note major arpeggio on a bright toy xylophone. Proud, quick, unmistakably good news.",
+    brief: "A high-register four-note major arpeggio on a bright toy xylophone. Proud, quick, unmistakably good news.",
     seconds: 0.8,
   },
   transform: {
     brief:
-      "A rising magical shimmer that blooms into a warm chord — the biggest moment in the game, a child becoming something new. Wondrous, never spooky.",
+      "A broad rising rush of air blooming into a soft luminous chord, without chimes. Wondrous, never spooky.",
     seconds: 1.8,
   },
   "scene-enter": {
@@ -94,7 +108,7 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
   },
   victory: {
     brief:
-      "A short warm major chord with a rising sparkle over it. A cheer, not a fanfare — the party won and walks on.",
+      "Two soft drum pulses and a warm breathy chord resolving home. No bell fanfare.",
     seconds: 1.4,
   },
   tap: {
@@ -115,6 +129,9 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
  * arrive playable before anybody composes for them.
  */
 export const MUSIC_SPECS: Record<string, CueSpec> = {
+  "gemfall-marsh": { brief: "Breathy reed phrases over suspended drones and soft marsh air. Curious and unhurried.", seconds: 32 },
+  "gemfall-citadel": { brief: "Light plucked strings, alternating bass, and a gentle travelling pulse. Warm and purposeful.", seconds: 32 },
+  "gemfall-mountain": { brief: "Deep open fifths, slow mineral breaths, and distant sustained tones. Spacious and still.", seconds: 32 },
   forest: {
     brief:
       "A slow, quiet loop for a friendly enchanted wood at dusk: soft strings or warm pad, a little mysterious, gentle enough to talk over. No drums, no melody that pulls focus — this plays under a family reading aloud.",
