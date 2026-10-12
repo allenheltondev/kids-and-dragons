@@ -227,6 +227,9 @@ jobs:
           retention-days: 14
 
   rigs:
+    # Dependabot PRs cannot read repository Actions secrets (including the PAT
+    # for the private rive-mcp renderer). Keep the gate for normal PRs/main.
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     # Where a rig stands, checked on every pull request.
     #
     # A rig is a binary somebody else's tool produced, and until this job existed
