@@ -55,7 +55,8 @@ class FakeOscillator extends FakeNode {
 class FakeBufferSource extends FakeNode {
   buffer: unknown = null;
   start(): void {}
-  stop(): void {}
+  stopped = false;
+  stop(): void { this.stopped = true; }
 }
 
 class FakeContext {
@@ -236,6 +237,31 @@ describe("cues", () => {
 
 describe("real audio, when there is any", () => {
   const BUFFER = { duration: 1 } as AudioBuffer;
+
+  it("fades in late music and ignores downloads for a scene already left", () => {
+    const ctx = new FakeContext();
+    let available: string | null = null;
+    const listeners = new Map<string, () => void>();
+    const engine = createAudioEngine({ createContext: () => ctx as unknown as BaseAudioContext, storage: memoryStore(),
+      samples: () => ({ preload() {}, cue: () => BUFFER, music: (id) => id === available ? BUFFER : null,
+        wantMusic(id, ready) { if (ready) listeners.set(id, ready); } }),
+    });
+    engine.unlock();
+    engine.sink.music("forest");
+    const originalPad = [...ctx.oscillators];
+    available = "forest";
+    listeners.get("forest")!();
+    expect(ctx.sources).toHaveLength(1);
+    expect(originalPad.every((osc) => osc.stoppedAt !== null)).toBe(true);
+    engine.sink.music("gemfall-marsh");
+    listeners.get("forest")!();
+    expect(ctx.sources).toHaveLength(1);
+    engine.sink.cue("gate-hum");
+    const hum = ctx.sources.at(-1)!;
+    engine.sink.stopSceneCues?.();
+    expect(hum.stopped).toBe(true);
+    engine.dispose();
+  });
 
   function withLibrary(cue: (id: string) => AudioBuffer | null) {
     const contexts: FakeContext[] = [];

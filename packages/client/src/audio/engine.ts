@@ -45,7 +45,7 @@ const STORAGE_KEY = "kad-audio";
 const DEFAULT_PREFS: AudioPrefs = { muted: false, volume: 0.8 };
 
 /** How far under the effects the music sits. */
-const MUSIC_LEVEL = 0.12;
+const MUSIC_LEVEL = 0.45;
 const SFX_LEVEL = 1;
 /** Seconds to walk one pad out and the next in. */
 const MUSIC_FADE_S = 1.5;
@@ -154,6 +154,12 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   let musicBiome: string | null = null;
   let stopPad: (() => void) | null = null;
   let library: SampleLibrary | null = null;
+  const sceneStops = new Set<() => void>();
+  const locationCueIds = new Set<CueId>(["gem-pickup", "gate-hum", "citadel-bell", "seal-awakening", "cavern-air"]);
+  function stopSceneCues(): void {
+    for (const stop of sceneStops) stop();
+    sceneStops.clear();
+  }
 
   function masterLevel(): number {
     return prefs.muted ? 0 : prefs.volume;
@@ -206,11 +212,23 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       ((context: BaseAudioContext) => createSampleLibrary(context, options.sampleOptions ?? {}));
     library = build(ctx);
     library.preload();
-    if (musicBiome !== null) library.wantMusic(musicBiome);
 
     // A biome asked for before the gesture starts its pad now — music is a
     // *state*, unlike a cue, so honouring it late is honouring it.
-    if (musicBiome !== null) startPad(musicBiome);
+    if (musicBiome !== null) {
+      startPad(musicBiome);
+      requestMusic(musicBiome);
+    }
+  }
+
+  let musicRecorded = false;
+  function requestMusic(biome: string): void {
+    library?.wantMusic(biome, () => {
+      if (!ctx || musicBiome !== biome || musicRecorded || !library?.music(biome)) return;
+      stopPad?.();
+      stopPad = null;
+      startPad(biome);
+    });
   }
 
   /**
@@ -227,6 +245,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
      * composed changes what plays and nothing about how it arrives.
      */
     const recorded = library?.music(biome) ?? null;
+    musicRecorded = recorded !== null;
     if (recorded) {
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0, now);
@@ -293,31 +312,44 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   }
 
   const sink: AudioSink = {
+    stopSceneCues,
     cue(id: CueId): void {
       if (!ctx || !sfx || prefs.muted) return;
       const sample = library?.cue(id) ?? null;
       if (sample) {
         const source = ctx.createBufferSource();
         source.buffer = sample;
-        source.connect(sfx);
+        if (locationCueIds.has(id)) {
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(1, ctx.currentTime);
+          source.connect(gain);
+          gain.connect(sfx);
+          const stop = () => {
+            const now = ctx?.currentTime ?? 0;
+            gain.gain.cancelScheduledValues(now);
+            gain.gain.setValueAtTime(gain.gain.value, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.04);
+            try { source.stop(now + 0.04); } catch { /* Already ended. */ }
+          };
+          sceneStops.add(stop);
+          source.onended = () => { sceneStops.delete(stop); gain.disconnect(); source.disconnect(); };
+        } else source.connect(sfx);
         source.start(ctx.currentTime);
         return;
       }
       // No file for this cue yet, or it did not decode: the recipe stands in
       // (samples.ts — real audio is an upgrade, never a requirement).
-      renderTones(ctx, sfx, CUE_TONES[id], ctx.currentTime);
+      const stop = renderTones(ctx, sfx, CUE_TONES[id], ctx.currentTime);
+      if (locationCueIds.has(id)) sceneStops.add(stop);
     },
     music(biome: string | null): void {
       if (biome === musicBiome) return;
       musicBiome = biome;
-      // Ask for the file. It may arrive after the pad has started, in which
-      // case this biome plays synthesized tonight and recorded next time —
-      // swapping mid-scene would be a jump-cut in the one sound that is
-      // supposed to be continuous.
-      if (biome !== null) library?.wantMusic(biome);
+      // Play a fallback immediately; a ready callback crossfades in the file.
       stopPad?.();
       stopPad = null;
       if (biome !== null) startPad(biome);
+      if (biome !== null) requestMusic(biome);
     },
   };
 
@@ -333,6 +365,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     muted: () => prefs.muted,
     setMuted(next: boolean): void {
       prefs.muted = next;
+      if (next) stopSceneCues();
       applyMaster();
       writePrefs(storage, prefs);
     },
@@ -343,6 +376,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       writePrefs(storage, prefs);
     },
     dispose(): void {
+      stopSceneCues();
       stopPad?.();
       stopPad = null;
       musicBiome = null;

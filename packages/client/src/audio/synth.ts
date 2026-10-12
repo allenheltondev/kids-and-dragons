@@ -35,6 +35,11 @@ export interface Tone {
 const C4 = 262, E4 = 330, G4 = 392, C5 = 523, E5 = 659, G5 = 784, A5 = 880;
 
 export const CUE_TONES: Record<CueId, Tone[]> = {
+  "gem-pickup": [659, 784, 1047].map((freq, i) => ({ type: "sine", freq: [freq, freq], at: i * 0.13, duration: 0.6, gain: 0.1 })),
+  "gate-hum": [110, 110.7, 165].map((freq) => ({ type: "sine", freq: [freq, freq], at: 0, duration: 8, gain: 0.05 })),
+  "citadel-bell": [{ type: "sine", freq: [294, 294], at: 0, duration: 4, gain: 0.12 }],
+  "seal-awakening": [{ type: "noise", freq: [0, 0], at: 0, duration: 6, gain: 0.03 }, { type: "sine", freq: [65, 73], at: 0, duration: 6, gain: 0.08 }],
+  "cavern-air": [{ type: "noise", freq: [0, 0], at: 0, duration: 12, gain: 0.02 }],
   /*
    * The roll is the one sound allowed to be busy: it underscores a ~1.5s
    * animation that the whole table watches (spec §2.2). A rattle of noise
@@ -122,7 +127,8 @@ export function renderTones(
   out: AudioNode,
   tones: Tone[],
   when: number,
-): void {
+): () => void {
+  const stops: (() => void)[] = [];
   for (const tone of tones) {
     const start = when + tone.at;
     const end = start + tone.duration;
@@ -145,6 +151,7 @@ export function renderTones(
       source.connect(envelope);
       source.start(start);
       source.stop(end);
+      stops.push(() => { try { source.stop(ctx.currentTime); } catch { /* Already ended. */ } });
     } else {
       const osc = ctx.createOscillator();
       osc.type = tone.type;
@@ -153,6 +160,8 @@ export function renderTones(
       osc.connect(envelope);
       osc.start(start);
       osc.stop(end);
+      stops.push(() => { try { osc.stop(ctx.currentTime); } catch { /* Already ended. */ } });
     }
   }
+  return () => { for (const stop of stops) stop(); };
 }
