@@ -171,6 +171,9 @@
     },
     "scene_first_clearing": {
       "type": "story",
+      "discovers": [
+        "npc.harvest_sprite"
+      ],
       "art": "bg/bramblewood/clearing",
       "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot.",
       "choices": [
@@ -190,6 +193,9 @@
     },
     "scene_pib": {
       "type": "story",
+      "discovers": [
+        "individual.pib"
+      ],
       "art": "bg/bramblewood/clearing",
       "narration": "\"I'm Pib,\" says the sprite, \"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\" Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous.",
       "onEnter": [

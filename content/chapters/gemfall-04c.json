@@ -123,6 +123,9 @@
     },
     "check_jackalopes": {
       "type": "check",
+      "discovers": [
+        "creature.jackalope"
+      ],
       "stat": "clever",
       "tn": 8,
       "prompt": "Count the jackalopes and find where they stop",
@@ -213,6 +216,9 @@
     },
     "check_relay": {
       "type": "check",
+      "discovers": [
+        "npc.centaur"
+      ],
       "stat": "heart",
       "tn": 12,
       "prompt": "Explain Tib to a centaur at a full gallop",
@@ -291,6 +297,9 @@
     },
     "scene_wend_pitch": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-coloured sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
       "choices": [
         {
@@ -340,6 +349,9 @@
     },
     "scene_warden_patrol": {
       "type": "story",
+      "discovers": [
+        "faction.skywardens"
+      ],
       "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food for the citadel at fixed rates. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
       "choices": [
         {
@@ -488,6 +500,9 @@
     },
     "scene_relay_sing": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "At night the centaur relay gathers at the biggest campfire to sing the route-songs: one verse for every landmark, the dangers in the chorus. This season the songs have new verses every night, faster than anyone can learn them. A centaur called Old Corran passes you the next line.",
       "choices": [
         {
@@ -546,6 +561,9 @@
     },
     "scene_road_bend": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "Plains folk say never camp where the road bends, because the road knows something. At the bend, a pack of cinder wolves is pacing back and forth across the road, glowing faintly, between you and tonight's camp.",
       "choices": [
         {
