@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createStore, type StoreApi } from "zustand/vanilla";
-import type { ActionResponse, ChannelMessage, JsonPatchOp, RunState, ServerMessage } from "@kad/shared";
+import type { ActionResponse, ChannelMessage, JsonPatchOp, ResolvedCharacter, RunState, ServerMessage } from "@kad/shared";
 import {
   gameStoreCreator,
   isPromptForPlayer,
@@ -64,6 +64,8 @@ function harness(state: RunState = makeState()): Harness {
       expiresAt: "2026-07-28T06:00:00.000Z",
       deviceToken: "dev_tv",
     })),
+    // This player's saved heroes (spec §5). Empty unless a test says otherwise.
+    listHeroes: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[] })),
     joinRoom: vi.fn(async () => ({
       runId: state.runId,
       playerId: "p_1",
@@ -212,6 +214,16 @@ describe("joining", () => {
     expect(h.navigate).toHaveBeenCalledWith({ name: "tv", code: "ABCD" }, { replace: true });
     // The binding is kept, so tomorrow's room lands in the same household.
     expect(h.storage.getItem("kad.device")).toContain("dev_tv");
+  });
+
+  it("lists heroes with the room session, and none for a screen with no seat", async () => {
+    const h = harness();
+    expect(await h.store.getState().listHeroes()).toEqual([]);
+    expect(h.api.listHeroes).not.toHaveBeenCalled();
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    await h.store.getState().listHeroes();
+    expect(h.api.listHeroes).toHaveBeenCalledWith("tok_1");
   });
 
   it("surfaces a failure and does not leave a half-built session", async () => {

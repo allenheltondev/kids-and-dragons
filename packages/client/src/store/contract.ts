@@ -8,6 +8,7 @@
  */
 
 import type {
+  ResolvedCharacter,
   AbilityCatalog,
   Campaign,
   Chapter,
@@ -89,6 +90,11 @@ export interface GameStore {
    */
   openOnThisScreen(): Promise<void>;
   joinRoom(code: string, displayName: string): Promise<ClientSession>;
+  /**
+   * This player's saved characters, for bringing one back instead of making a
+   * new one. Seating one is `send({ type: "SEAT_CHARACTER", characterId })`.
+   */
+  listHeroes(): Promise<ResolvedCharacter[]>;
   /**
    * Fire an intent at the server. Resolves `true` when the server accepted it
    * and `false` when it did not — a rejection is a normal part of the protocol

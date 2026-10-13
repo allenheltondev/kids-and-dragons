@@ -26,6 +26,7 @@ import {
   seedHousehold,
   type TestHarness,
 } from "../test-support.ts";
+import { applyIntent, createRunState } from "@kad/shared";
 import { createRoom } from "../handlers/room.ts";
 import { respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
@@ -1158,6 +1159,8 @@ const SHARED = [
   { path: "/api/health", method: "GET", probe: "/api/health" },
   // Prod verifies a Cognito id token; dev verifies the unsigned stand-in from
   // `dev-auth.ts`. Same handlers, same shapes.
+  // A player's saved heroes, to bring one back (handlers/heroes.ts).
+  { path: "/api/heroes", method: "GET", probe: "/api/heroes" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },
   { path: "/api/auth/device", method: "POST", probe: "/api/auth/device" },
 ] as const;
@@ -1264,5 +1267,82 @@ describe("route parity with dev-server.ts", () => {
       const result = await respond(event(method, probe), rt);
       expect(routed(result), `${method} ${path} is dev-only but http.ts routes it`).toBe(false);
     }
+  });
+});
+
+describe("bringing a hero back (spec §5)", () => {
+  it("lists a player's saved hero in a later room, and seats it there", async () => {
+    // The real engine: this is about a character surviving from one run to the
+    // next, which the stub engine cannot build in the first place.
+    const harness = makeHarness({ engine: { applyIntent, createRunState } });
+    const rt = runtimeFor(harness);
+
+    // Night one: a room, and a hero made in it.
+    const first = bodyOf(
+      await respond(event("POST", "/api/room", { body: { mode: "travel", displayName: "Ada" } }), rt),
+    ) as Record<string, string>;
+    const made = bodyOf(
+      await respond(
+        event("POST", "/api/action", {
+          body: {
+            runId: first.runId,
+            playerId: first.playerId,
+            seq: 0,
+            intent: {
+              type: "CREATE_CHARACTER",
+              name: "Sparklehoof",
+              species: "unicorn",
+              class: "songkeeper",
+              stats: { might: 0, quick: 0, clever: 0, heart: 3 },
+              appearance: { palette: "meadow", accent: "#7FD4C1" },
+            },
+          },
+          headers: { authorization: `Bearer ${String(first.sessionToken)}` },
+        }),
+        rt,
+      ),
+    );
+    expect(made, JSON.stringify(made)).toMatchObject({ ok: true });
+
+    // Night two: the same phone opens a new room in the same household.
+    const second = bodyOf(
+      await respond(
+        event("POST", "/api/room", {
+          body: { mode: "travel" },
+          headers: { "x-kad-device-token": String(first.deviceToken) },
+        }),
+        rt,
+      ),
+    ) as Record<string, string>;
+    expect(second.runId).not.toBe(first.runId);
+    const bearer = { authorization: `Bearer ${String(second.sessionToken)}` };
+
+    const listed = await respond(event("GET", "/api/heroes", { headers: bearer }), rt);
+    expect(listed.statusCode).toBe(200);
+    const heroes = (bodyOf(listed) as unknown as { heroes: { id: string; name: string; level: number }[] }).heroes;
+    expect(heroes).toEqual([expect.objectContaining({ name: "Sparklehoof", level: 1 })]);
+
+    const seated = bodyOf(
+      await respond(
+        event("POST", "/api/action", {
+          body: {
+            runId: second.runId,
+            playerId: second.playerId,
+            seq: 0,
+            intent: { type: "SEAT_CHARACTER", characterId: heroes[0]!.id },
+          },
+          headers: bearer,
+        }),
+        rt,
+      ),
+    );
+    expect(seated, JSON.stringify(seated)).toMatchObject({ ok: true });
+    const state = await harness.repo.getState(String(second.runId));
+    expect(state?.party.map((m) => m.character.id)).toEqual([heroes[0]!.id]);
+  });
+
+  it("needs a room session to list heroes", async () => {
+    const result = await respond(event("GET", "/api/heroes"), runtimeFor(makeHarness()));
+    expect(result.statusCode).toBe(401);
   });
 });

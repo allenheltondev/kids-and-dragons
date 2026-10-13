@@ -15,7 +15,8 @@
  * | `TransformCutscene`    | WorldView  | a progression award crosses a tier   |
  * | `ChapterCompletePanel` | WorldView  | phase === "chapter_complete"         |
  * | `CreationPreview`      | WorldView  | phase === "creation"                 |
- * | `CreationFlow`         | PlayerView | phase === "creation" and I have none |
+ * | `WelcomeBack`          | PlayerView | I have no character here             |
+ * | `CreationFlow`         | PlayerView | ...and none saved, or "someone new"  |
  * | `PlayerPanel`          | PlayerView | otherwise                            |
  * | `CombatControls`       | PlayerView | inside PlayerPanel while a fight is on |
  * | `SignInFlow`           | PlayerView | somebody opened the keepsake offer   |
@@ -33,6 +34,7 @@ export { TransformCutscene, previousTier } from "./TransformCutscene";
 export { ChapterCompletePanel } from "./ChapterCompletePanel";
 export { CreationPreview } from "./CreationPreview";
 export { CreationFlow } from "./CreationFlow";
+export { WelcomeBack } from "./WelcomeBack";
 export { PlayerPanel } from "./PlayerPanel";
 export { CombatControls } from "./CombatPanel";
 export { SignInFlow, KeepsakeOffer } from "./SignInFlow";
