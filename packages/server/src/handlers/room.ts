@@ -121,6 +121,7 @@ export async function createRoom(
     campaignId,
     status: "active",
     createdAt: iso(nowMs),
+    lobbyFor: input.householdId,
   });
 
   // The engine owns the initial state's shape; the room owns its identity.
@@ -159,7 +160,6 @@ async function offerCampaigns(
 ): Promise<void> {
   const options = await lobbyCampaigns(householdId, featuredId, deps);
   state.campaignOptions = options;
-  state.campaignOptionsFor = householdId;
   state.campaignVotes = {};
   if (options[0]) state.campaign = options[0];
 }
@@ -247,40 +247,40 @@ export async function settleRoom(
  * The run's state, with its lobby speaking for the household the room now
  * belongs to.
  *
- * A claim moves the room and refreshes the lobby as two writes, and only the
- * first is guarded by the room being claimable. So the refresh does not hang
- * off the claim: every join compares `campaignOptionsFor` with the room's
- * household and redoes it on a mismatch — a failed lookup, a lost seq race,
- * or a server that died between the two writes is repaired by whoever joins
- * next. A run persisted before the stamp existed is left alone; it was never
- * claimed.
+ * A claim moves the room and refreshes the lobby as separate writes, and only
+ * the first is guarded by the room being claimable. So the refresh does not
+ * hang off the claim: every join compares the run's `lobbyFor` with the room's
+ * household and redoes it on a mismatch. A failed lookup, a lost seq race, or
+ * a server that died between the writes is repaired by whoever joins next.
  */
 async function refreshLobby(room: RoomRecord, deps: HandlerDeps): Promise<RunState | null> {
-  let state = await deps.repo.getState(room.runId);
-  if (!state || state.campaignOptionsFor === undefined) return state;
-  if (state.campaignOptionsFor === room.householdId) return state;
-
+  const state = await deps.repo.getState(room.runId);
+  if (!state) return null;
   const run = await deps.repo.getRun(room.runId);
-  const changed = structuredClone(state);
-  await offerCampaigns(changed, room.householdId, run?.campaignId ?? null, deps);
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const next = await advanceRoom(state, { ...state, ...lobbyOf(changed) }, "", deps);
-    if (next.campaignOptionsFor === room.householdId) return next;
-    state = next;
-  }
-  // Still behind after three races: this join goes ahead on what the run
-  // says now, and the next one tries again.
-  return state;
-}
+  if (!run || run.lobbyFor === undefined || run.lobbyFor === room.householdId) return state;
 
-/** The lobby fields `offerCampaigns` writes, to lay over a newer state. */
-function lobbyOf(state: RunState): Partial<RunState> {
-  return {
-    campaignOptions: state.campaignOptions ?? [],
+  const rebuilt = structuredClone(state);
+  await offerCampaigns(rebuilt, room.householdId, run.campaignId, deps);
+  const lobby: Partial<RunState> = {
+    campaignOptions: rebuilt.campaignOptions ?? [],
     campaignVotes: {},
-    ...(state.campaignOptionsFor === undefined ? {} : { campaignOptionsFor: state.campaignOptionsFor }),
-    ...(state.campaign ? { campaign: state.campaign } : {}),
+    ...(rebuilt.campaign ? { campaign: rebuilt.campaign } : {}),
   };
+  let current = state;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const next = await advanceRoom(current, { ...current, ...lobby }, "", deps);
+    if (next.campaignOptions === lobby.campaignOptions) {
+      // Stamped only once the state has landed. If this write is what fails,
+      // the next join rebuilds the same lobby again — a wasted patch, not a
+      // wrong one.
+      await deps.repo.putRun({ ...run, lobbyFor: room.householdId });
+      return next;
+    }
+    current = next;
+  }
+  // Still behind after three races: this join goes ahead on what the run says
+  // now, and the next one tries again.
+  return current;
 }
 
 export async function joinRoom(
@@ -291,6 +291,16 @@ export async function joinRoom(
   // Expired rooms read as absent, so a stale code and an unknown code are the
   // same answer — there is nothing useful to tell a phone about either.
   if (!found) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
+
+  // On a claimable room the player is checked before anything is claimed: a
+  // device whose player is gone must not take a TV's room into its household
+  // on the way to being refused. Every other room keeps the household check
+  // first, as it always had.
+  const claiming = found.claimable === true;
+  const early = claiming
+    ? await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId)
+    : null;
+  if (claiming && !early) return fail("NOT_FOUND", `no player ${input.principal.playerId}`);
 
   // The TV opened this room and nobody has joined yet: this phone's household
   // is the one whose evening it is (`RoomRecord.claimable`).
@@ -304,7 +314,8 @@ export async function joinRoom(
     return fail("FORBIDDEN", "this device belongs to a different household");
   }
 
-  const player = await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId);
+  const player =
+    early ?? (await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId));
   if (!player) return fail("NOT_FOUND", `no player ${input.principal.playerId}`);
 
   const state = await refreshLobby(room, deps);

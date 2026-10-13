@@ -14,7 +14,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { applyIntent, createRunState } from "@kad/shared";
+import { applyIntent, createRunState, lobbyCampaign } from "@kad/shared";
 import type { Campaign, Chapter, ClientIntent } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
@@ -149,6 +149,19 @@ describe("the lobby's campaigns", () => {
     expect((await state()).chapterId).toBe("gems-01");
   });
 
+  it("leads, before anybody votes, with the campaign the screens already show", () => {
+    // Back in the lobby after a chapter of Crown, `campaign` names Crown. The
+    // phones and the TV say Crown, so the decision must not quietly read Gems.
+    const view = (id: string) => ({ id, title: id, chapters: 2, next: { index: 2, title: "x" } });
+    const state = {
+      ...createRunState({ runId: "r", roomCode: "ABCD", mode: "party", now: "2026-10-13T00:00:00.000Z" }),
+      campaignOptions: [view("gems"), view("crown")],
+      campaign: view("crown"),
+    };
+    expect(lobbyCampaign(state).leader?.id).toBe("crown");
+    expect(lobbyCampaign({ ...state, campaign: null }).leader?.id).toBe("gems");
+  });
+
   it("refuses a vote for a campaign the room does not offer", async () => {
     const h = harness();
     const { send } = await lobby(h, "gems", 1);
@@ -234,12 +247,25 @@ describe("a TV's room belongs to the first phone that joins", () => {
       ["gems", 1],
       ["crown", 2],
     ]);
-    expect(state?.campaignOptionsFor).toBe(householdId);
+    expect((await h.repo.getRun(runId))?.lobbyFor).toBe(householdId);
+    // The household id stays off the wire: every screen, the TV included, reads this.
+    expect(JSON.stringify(state)).not.toContain(householdId);
 
     // And once it is right, a join changes nothing.
     const seq = state?.seq;
     await joinRoom({ code, principal: players[0]!.principal }, h.deps);
     expect((await h.repo.getState(runId))?.seq).toBe(seq);
+  });
+
+  it("is not claimed by a device whose player is gone", async () => {
+    const h = harness();
+    const { players } = await seedHousehold(h, 1);
+    const { code } = await tvRoom(h);
+    const ghost = { ...players[0]!.principal, playerId: "p_gone" };
+
+    const refused = await joinRoom({ code, principal: ghost }, h.deps);
+    expect(refused.ok ? null : refused.error.code).toBe("NOT_FOUND");
+    expect((await h.repo.getRoom(code))?.claimable).toBe(true);
   });
 
   it("is settled by the first join, so a second household is still turned away", async () => {
