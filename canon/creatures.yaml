@@ -101,7 +101,7 @@ creatures:
     standard_behavior: >-
       Gathers near warm cracks before noticeable volcanic changes, avoids loud movement.
     lore:
-      hook: "The mountain's mood, printed on ten thousand small grey wings."
+      hook: "The mountain's mood, printed on ten thousand small gray wings."
       story: >-
         Embermoths hatch in the warm cracks of the foothills and spend their
         whole lives migrating from one warmth to the next. Nobody taught them
@@ -219,7 +219,7 @@ creatures:
         - "Assembling in perfect silence to watch travelers do absolutely anything at all."
       social: >-
         Bold at a distance, gone up close. A warren that lets you get near is
-        telling you the neighbourhood is safe; an empty stretch of good road is
+        telling you the neighborhood is safe; an empty stretch of good road is
         telling you something else.
       likes:
         - of: npc.centaur
@@ -480,7 +480,7 @@ creatures:
         - "Following embermoth swarms to freshly warmed ground, like a prospector who reads the news."
         - "Holding threat displays at boulders that turned out not to be rival crabs. It takes a while to be sure."
       social: >-
-        Solitary and formal. Neighbouring crabs maintain exact, invisible
+        Solitary and formal. Neighboring crabs maintain exact, invisible
         borders that are renegotiated once a year in a ceremony that looks
         exactly like two rocks facing each other for a day.
       likes:

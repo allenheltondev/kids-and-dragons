@@ -380,7 +380,7 @@
       ],
       "onVictory": {
         "goto": "scene_wisp_friends",
-        "narration": "Tagged, all three, fair and square. The wisps sulk for about four seconds and then decide you are their favourite people."
+        "narration": "Tagged, all three, fair and square. The wisps sulk for about four seconds and then decide you are their favorite people."
       },
       "onDefeat": {
         "goto": "scene_bundled",
@@ -523,7 +523,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_lanternfall",
-        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand \u2014 a smooth grey stone that feels lucky.",
+        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand \u2014 a smooth gray stone that feels lucky.",
         "effects": [
           {
             "type": "grantItem",

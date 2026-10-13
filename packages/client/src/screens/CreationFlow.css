@@ -122,6 +122,25 @@
   block-size: 3.6em;
 }
 
+/*
+ * The rig stands on a stage wider than its figure (art-pipeline §6.3), so it
+ * gets a little more box than the portrait to look the same size.
+ */
+.creation-hero__rig {
+  inline-size: 4.4em;
+  block-size: 4.4em;
+}
+
+/*
+ * On the appearance step the hero is the answer to every tap on the screen,
+ * so it is big enough to see a stripe or a wing color from arm's length.
+ */
+.creation-hero--large .creation-hero__art {
+  inline-size: 8.5em;
+  block-size: 8.5em;
+  flex: none;
+}
+
 .creation-hero__text {
   display: flex;
   flex-direction: column;
@@ -550,7 +569,7 @@
  * keeps its `--touch-min` block size and only stops shouting.
  */
 .creation-fieldset--quiet .creation-legend {
-  opacity: 0.85;
+  opacity: 1;
 }
 
 .creation-legend__optional {
@@ -638,3 +657,19 @@
   font-size: var(--font-size-lg, 1.25em);
 }
 
+
+/*
+ * Text that sits straight on the scene art. The art is bright in places (a
+ * sunlit market, a glade), and a scrim alone left legends and hints gray on
+ * cream. A tight dark halo keeps every line readable wherever it lands.
+ */
+.creation .creation-legend,
+.creation .creation-hint,
+.creation .creation-stats__budget {
+  color: var(--color-text, #f4f1ff);
+  text-shadow: 0 1px 2px #0d0b1a, 0 0 6px #0d0b1a, 0 0 12px rgb(13 11 26 / 80%);
+}
+
+.creation .creation-hint {
+  opacity: 1;
+}

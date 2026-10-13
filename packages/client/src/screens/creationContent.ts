@@ -14,11 +14,12 @@
  */
 
 import type { Appearance, SpeciesId } from "@kad/shared";
+import type { RigLook } from "../world/rig-look";
 
 export interface PaletteOption {
   id: string;
   name: string;
-  /** Both swatch-only: nothing recolours a figure. See PALETTES below. */
+  /** The swatch ring. `mane` is the color the creature's main mass turns. */
   coat: string;
   mane: string;
 }
@@ -32,30 +33,23 @@ export interface AccentOption {
 export interface CosmeticOption {
   id: string;
   name: string;
-  /** Icon id, so the option is never colour- or text-only (spec §1.5, §11). */
+  /** Icon id, so the option is never color- or text-only (spec §1.5, §11). */
   icon: string;
 }
 
 /**
- * Named palettes. Hues are spread so three party members stay distinguishable.
+ * Named palettes — the player's main color. Hues are spread so three party
+ * members stay distinguishable.
  *
- * **This is the player's colour, not the creature's.** The figure is drawn in
- * the colours it was painted in, on every surface — the runtime recolour that
- * used to push a chosen hue onto the rig's mane is gone, because it flattened
- * the art it was painted over and was never going to read as commissioned
- * (world/nameplate.ts). What the choice still dresses is this player's chrome:
- * their flame in the sign-in lineup and the keepsake lantern, the light their
+ * They are the six species' own mane colors (assets/manifest.json → species
+ * → palette.mane), so every creature starts in the one it was painted in
+ * (`defaultAppearance`) and any other is a color some creature really wears.
+ * Picking one repaints the creature's main mass (world/rig-look.ts) and still
+ * dresses this player's chrome: their flame in the lantern, the light their
  * portrait stands in, the trim on their panel.
  *
- * So the two hexes are both swatch-only now, and the pair is kept because it
- * is what makes a swatch look like a colour rather than a dot. `mane` leads it
- * — it is the dominant mass of the species art `paletteRule` derives every
- * other region from, so a Meadow chip looks like a creature in a way an
- * arbitrary green does not.
- *
- * The one thing not to do here is imply a body colour change: a swatch that
- * led with `coat` promised exactly that, and it is the kind of lie a
- * five-year-old checks immediately.
+ * The swatch leads with `mane` because that is what changes; `coat` is the
+ * ring, so a chip reads as a creature rather than a dot.
  */
 export const PALETTES: readonly PaletteOption[] = [
   { id: "orchid", name: "Orchid", coat: "#F2E1F2", mane: "#853A85" },
@@ -66,7 +60,10 @@ export const PALETTES: readonly PaletteOption[] = [
   { id: "rose", name: "Rose", coat: "#F2E1E4", mane: "#662E37" },
 ];
 
-/** Accents sit on the signature part only, and are the brighter colour. */
+/**
+ * The second color — the six species' own accents. It lands on the signature
+ * part only (horn, wings, tail, or a bigfoot's mane), and is the brighter one.
+ */
 export const ACCENTS: readonly AccentOption[] = [
   { id: "sky", name: "Sky", hex: "#709FE0" },
   { id: "mint", name: "Mint", hex: "#70E09F" },
@@ -95,6 +92,28 @@ export const WING_STYLES: readonly CosmeticOption[] = [
   { id: "starlit", name: "Starlit", icon: "wing_starlit" },
 ];
 
+/** The wings each winged species was painted with — its default, drawn as is. */
+const PAINTED_WINGS: Partial<Record<SpeciesId, string>> = {
+  dragonling: "leathery",
+  griffin: "feathered",
+};
+
+/** The horn the unicorn was painted with. */
+const PAINTED_HORN = "spiral";
+
+/**
+ * Each species' own palette (assets/manifest.json → species → palette): what
+ * the art was painted in, and so what a repaint is measured from.
+ */
+const SPECIES_PALETTE: Record<SpeciesId, { palette: string; mane: string; accent: string }> = {
+  unicorn: { palette: "orchid", mane: "#853A85", accent: "#709FE0" },
+  dragonling: { palette: "meadow", mane: "#2B6B46", accent: "#E09F70" },
+  griffin: { palette: "tide", mane: "#4D728C", accent: "#E0C470" },
+  bigfoot: { palette: "bark", mane: "#4C3F32", accent: "#70E09F" },
+  kitsune: { palette: "ember", mane: "#9E512F", accent: "#70CEE0" },
+  manticore: { palette: "rose", mane: "#662E37", accent: "#96E070" },
+};
+
 export const MARKINGS: readonly CosmeticOption[] = [
   { id: "plain", name: "Plain", icon: "marking_plain" },
   { id: "dapple", name: "Dapple", icon: "marking_dapple" },
@@ -116,24 +135,59 @@ const SIGNATURE_PART: Record<SpeciesId, "horn" | "wings" | "mane" | "tail"> = {
   manticore: "tail",
 };
 
+/** Which part a species' second color lands on. */
+export function signatureOf(species: SpeciesId): "horn" | "wings" | "mane" | "tail" {
+  return SIGNATURE_PART[species];
+}
+
 export function hornStylesFor(species: SpeciesId): readonly CosmeticOption[] {
   return SIGNATURE_PART[species] === "horn" ? HORN_STYLES : [];
 }
 
+/** Painted wings first, so the default is the creature as drawn. */
 export function wingStylesFor(species: SpeciesId): readonly CosmeticOption[] {
-  return SIGNATURE_PART[species] === "wings" ? WING_STYLES : [];
+  if (SIGNATURE_PART[species] !== "wings") return [];
+  const painted = PAINTED_WINGS[species];
+  return [...WING_STYLES].sort((a, b) => Number(b.id === painted) - Number(a.id === painted));
 }
 
-/** A complete, valid appearance, so the preview is never half-drawn. */
+/**
+ * A complete, valid appearance, so the preview is never half-drawn — and the
+ * creature exactly as painted, so nothing changes until the player changes it.
+ */
 export function defaultAppearance(species: SpeciesId): Appearance {
-  const palette = PALETTES[0]?.id ?? "orchid";
-  const accent = ACCENTS[0]?.hex ?? "#709FE0";
+  const own = SPECIES_PALETTE[species];
+  const palette = own.palette;
+  const accent = ACCENTS.find((a) => a.hex.toLowerCase() === own.accent.toLowerCase())?.hex ?? own.accent;
   const base: Appearance = { palette, accent, markings: MARKINGS[0]?.id ?? "plain" };
   const horn = hornStylesFor(species)[0];
   if (horn) base.hornStyle = horn.id;
   const wing = wingStylesFor(species)[0];
   if (wing) base.wingStyle = wing.id;
   return base;
+}
+
+/**
+ * What the rig should wear for an appearance (world/rig-look.ts). Anything
+ * that matches the painted art is left undefined, so "as painted" stays the
+ * exact art rather than a repaint of it.
+ */
+export function rigLookFor(species: SpeciesId, appearance: Appearance): RigLook {
+  const own = SPECIES_PALETTE[species];
+  const main = PALETTES.find((p) => p.id === appearance.palette)?.mane ?? own.mane;
+  const second = appearance.accent !== "" ? appearance.accent : own.accent;
+  const markings = appearance.markings;
+  const wing = appearance.wingStyle;
+  const horn = appearance.hornStyle;
+  const look: RigLook = {
+    from: { mane: own.mane, accent: own.accent },
+    to: { mane: main, accent: second },
+    signature: SIGNATURE_PART[species],
+  };
+  if (markings !== undefined && markings !== "plain") look.markings = markings;
+  if (wing !== undefined && SIGNATURE_PART[species] === "wings" && wing !== PAINTED_WINGS[species]) look.wingStyle = wing;
+  if (horn !== undefined && SIGNATURE_PART[species] === "horn" && horn !== PAINTED_HORN) look.hornStyle = horn;
+  return look;
 }
 
 // ---------------------------------------------------------------------------

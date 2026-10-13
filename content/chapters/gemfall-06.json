@@ -361,7 +361,7 @@
     },
     "scene_soup_tent_ask_cure": {
       "type": "story",
-      "narration": "\"What would it fix?\" Hessa thinks about it properly, which not everyone does. \"Who gets to be hungry,\" she says at last. \"Who gets to be cold. Why the sky is the wrong colour and nobody with a ledger can say why.\" She refills your bowl. \"Little things,\" she says. \"Everything.\"",
+      "narration": "\"What would it fix?\" Hessa thinks about it properly, which not everyone does. \"Who gets to be hungry,\" she says at last. \"Who gets to be cold. Why the sky is the wrong color and nobody with a ledger can say why.\" She refills your bowl. \"Little things,\" she says. \"Everything.\"",
       "choices": [
         {
           "id": "on",
@@ -373,7 +373,7 @@
     },
     "rest_warm_stones": {
       "type": "rest",
-      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cosy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
+      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cozy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
       "heal": 2,
       "choices": [
         {
@@ -451,13 +451,13 @@
       },
       "onFailure": {
         "goto": "encounter_crab",
-        "narration": "Two claws up and a rock to the left means... you guess \"hello.\" It does not mean hello. The crab charges, and its neighbour from the next burrow scuttles over to see what all the fuss is."
+        "narration": "Two claws up and a rock to the left means... you guess \"hello.\" It does not mean hello. The crab charges, and its neighbor from the next burrow scuttles over to see what all the fuss is."
       }
     },
     "encounter_crab": {
       "type": "encounter",
       "map": "switchback",
-      "narration": "Two glassback crabs clatter down the switchbacks, their shells flashing every colour of the gems around them.",
+      "narration": "Two glassback crabs clatter down the switchbacks, their shells flashing every color of the gems around them.",
       "enemies": [
         {
           "id": "crab",
@@ -655,7 +655,7 @@
         },
         {
           "id": "odd_ledger",
-          "label": "Point at the one ledger bound in a different colour",
+          "label": "Point at the one ledger bound in a different color",
           "icon": "eye",
           "requiresSpecies": "bigfoot",
           "goto": "scene_truth_table_odd_ledger"
@@ -665,7 +665,7 @@
     "scene_truth_table_odd_ledger": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Your bigfoot points at the one ledger bound in a different colour, half under the others. Pellam looks as if he has been caught stealing biscuits. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
+      "narration": "Your bigfoot points at the one ledger bound in a different color, half under the others. Pellam looks as if he has been caught stealing biscuits. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
       "choices": [
         {
           "id": "on",
@@ -1368,7 +1368,7 @@
       "hessa": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
       "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
       "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
-      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cosy, says 'nothing to worry about' one time too many",
+      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
       "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well"
     }
   }

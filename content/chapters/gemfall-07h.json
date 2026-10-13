@@ -211,7 +211,7 @@
     },
     "scene_grandmother_look_thank": {
       "type": "story",
-      "narration": "You thank her and walk on. She says nothing. Her needles click a little faster. Twenty paces on, you realise she has not stopped looking at your packs, and that she has not blinked.",
+      "narration": "You thank her and walk on. She says nothing. Her needles click a little faster. Twenty paces on, you realize she has not stopped looking at your packs, and that she has not blinked.",
       "choices": [
         {
           "id": "on",
@@ -364,7 +364,7 @@
       "discovers": [
         "npc.boggart"
       ],
-      "narration": "A boggart with a satchel full of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what in the marsh. Very useful, for a collector. Costs one really good sentence you overheard.\"",
+      "narration": "A boggart with a satchel full of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalog. Who bought what in the marsh. Very useful, for a collector. Costs one really good sentence you overheard.\"",
       "choices": [
         {
           "id": "wardens_said",
@@ -396,7 +396,7 @@
     },
     "scene_boggart_grandma_said": {
       "type": "story",
-      "narration": "You tell it what a grandmother said about cake, word for word, including the pause. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalogue is in your hands before you notice it has let go.",
+      "narration": "You tell it what a grandmother said about cake, word for word, including the pause. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalog is in your hands before you notice it has let go.",
       "choices": [
         {
           "id": "on",
@@ -408,7 +408,7 @@
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalogue without ever once looking at you.",
+      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "choices": [
         {
           "id": "on",
@@ -736,7 +736,7 @@
         },
         {
           "id": "buyers",
-          "label": "You know from the catalogue who bought it, and for how much",
+          "label": "You know from the catalog who bought it, and for how much",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "choice_the_bend_buyers"
@@ -803,7 +803,7 @@
     },
     "choice_the_bend_buyers": {
       "type": "story",
-      "narration": "You know from the boggart's catalogue exactly who bought this stone and for how much, and you say both numbers out loud before the caravan master has finished climbing down. She goes pale. Then she laughs. \"Well,\" she says. \"No point haggling with somebody who's read my post.\"",
+      "narration": "You know from the boggart's catalog exactly who bought this stone and for how much, and you say both numbers out loud before the caravan master has finished climbing down. She goes pale. Then she laughs. \"Well,\" she says. \"No point haggling with somebody who's read my post.\"",
       "choices": [
         {
           "id": "on",
@@ -854,7 +854,7 @@
     },
     "scene_caravan_won": {
       "type": "story",
-      "narration": "The Caravan Stone is the size of a loaf of bread and hums like a whole choir. You put it in the pack with the others, and every stone you own hums louder, all together, as if they recognise each other. The ground shakes, just once, in reply.",
+      "narration": "The Caravan Stone is the size of a loaf of bread and hums like a whole choir. You put it in the pack with the others, and every stone you own hums louder, all together, as if they recognize each other. The ground shakes, just once, in reply.",
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -1088,7 +1088,7 @@
     },
     "walk_scene_realm_reads_glade_hum": {
       "type": "story",
-      "narration": "You hold up the Glade Stone and let the forest hear it. Every leaf within a hundred paces goes still at once. Not a rustle. Not a bird. The forest has recognised the sound of its own bruise, and it holds its breath until you put the stone away.",
+      "narration": "You hold up the Glade Stone and let the forest hear it. Every leaf within a hundred paces goes still at once. Not a rustle. Not a bird. The forest has recognized the sound of its own bruise, and it holds its breath until you put the stone away.",
       "choices": [
         {
           "id": "on",
