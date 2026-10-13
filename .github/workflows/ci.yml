@@ -29,7 +29,43 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    # Which of the jobs below can say anything about this change
+    # (tools/ci/changes.mjs, where the rules and their reasons live). A few
+    # seconds here saves minutes on every pull request: a docs PR used to run
+    # the whole pipeline, and any manifest edit ran the rig gates.
+    #
+    # The jobs below skip with `if:` rather than the workflow using `on.paths`,
+    # because a job skipped by `if:` reports as passed and so satisfies a
+    # required check, where a workflow that never starts leaves one waiting
+    # forever. Pushes to main and manual runs skip nothing.
+    name: which jobs this change needs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      build: ${{ steps.classify.outputs.build }}
+      e2e: ${{ steps.classify.outputs.e2e }}
+      rigs: ${{ steps.classify.outputs.rigs }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # The PR's own changes: the base tip fetched shallow, and a tree diff
+      # from it to the merge commit checkout@v7 gives us.
+      - name: Classify the change
+        id: classify
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE"
+            node tools/ci/changes.mjs "$BASE" HEAD
+          else
+            node tools/ci/changes.mjs --all
+          fi
+
   build:
+    needs: changes
+    if: needs.changes.outputs.build == 'true'
     name: typecheck, test, content, art, build
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -251,8 +287,12 @@ jobs:
   rigs:
     # Dependabot PRs cannot read repository Actions secrets (including the PAT
     # for the private rive-mcp renderer). Keep the gate for normal PRs/main.
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
-    # Where a rig stands, checked on every pull request.
+    # And only when a rig input changed (the `changes` job).
+    needs: changes
+    if: >-
+      needs.changes.outputs.rigs == 'true' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]')
+    # Where a rig stands, checked on every pull request that touches a rig.
     #
     # A rig is a binary somebody else's tool produced, and until this job existed
     # nothing in CI could see inside one. That is not a hypothetical gap: all 24
@@ -405,53 +445,31 @@ jobs:
     # generator other than the pinned one. The `rigs` job above measures a rig
     # against its art; this one measures it against its recipe.
     #
-    # Only on a pull request that touches a rig input, because it is ~3 minutes
-    # of building the CLI in front of ~2 minutes of building rigs, and rigs
-    # change rarely and in bulk. ci.yml has no path filters (one workflow, run
-    # on everything), so the filter is a diff against the PR base and an `if:`
-    # on every step after it. On a push to main and on dispatch it runs
-    # unconditionally — the rigs on main should always be reproducible.
+    # Only on a pull request that touches a rig input (the `changes` job),
+    # because it is ~3 minutes of building the CLI in front of ~2 minutes of
+    # building rigs, and rigs change rarely and in bulk. On a push to main and
+    # on dispatch it runs unconditionally — the rigs on main should always be
+    # reproducible.
     name: rigs are what their configs build
+    needs: changes
+    if: needs.changes.outputs.rigs == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v7
 
-      # The PR's own changes: the base tip fetched shallow, and a tree diff
-      # from it to the merge commit checkout@v7 gives us. The list is the set
-      # of inputs a rig is built from, plus the tooling that builds it — a
-      # broken builder should fail here, not on the next rig change.
-      - name: Did this change touch a rig input?
-        id: touched
-        if: github.event_name == 'pull_request'
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-        run: |
-          git fetch --no-tags --depth=1 origin "$BASE"
-          changed=$(git diff --name-only "$BASE" HEAD)
-          if printf '%s\n' "$changed" | grep -Eq '^(art/rig/|assets/manifest\.json$|assets/.*/parts/|assets/.*/rig\.riv$|tools/art/build-rigs\.mjs$|tools/art/rive-cli\.mjs$|\.github/actions/rive-cli/)'; then
-            echo "hit=true" >> "$GITHUB_OUTPUT"
-            echo "A rig input changed; checking the committed rigs still match their configs."
-          else
-            echo "hit=false" >> "$GITHUB_OUTPUT"
-            echo "No rig input changed; nothing to check."
-          fi
-
       - uses: actions/setup-node@v7
-        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
         with:
           node-version: 22
           cache: npm
 
       - name: Install Node dependencies
-        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
         run: npm ci
 
       # The same checkout, build and browser install as the `rigs` job above,
       # as a composite action; the reasoning behind each step is written there.
       - name: Build the Rive CLI at the pin
-        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
         uses: ./.github/actions/rive-cli
         with:
           token: ${{ secrets.RIVE_MCP_TOKEN }}
@@ -460,7 +478,6 @@ jobs:
       # rigs and says which of the two fixes applies: rebuild and commit, or the
       # pin moved and the committed rigs came from a different generator.
       - name: Rebuild every rig and compare bytes
-        if: github.event_name != 'pull_request' || steps.touched.outputs.hit == 'true'
         run: npm run art:rig:build -- --check --jobs 2
 
   e2e:
@@ -471,6 +488,8 @@ jobs:
     # is minutes rather than seconds, and because a red e2e means something
     # quite different from a red unit test.
     name: end to end
+    needs: changes
+    if: needs.changes.outputs.e2e == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
