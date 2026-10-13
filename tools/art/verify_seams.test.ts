@@ -25,7 +25,10 @@ const ART = fileURLToPath(new URL(".", import.meta.url));
 const work = mkdtempSync(join(tmpdir(), "kad-seams-test-"));
 afterAll(() => rmSync(work, { recursive: true, force: true }));
 
-function run(kind: "flat" | "gap" | "copied" | "rider"): { problems: string[]; warnings: string[] } {
+function run(
+  kind: "flat" | "gap" | "copied" | "rider" | "taper",
+  exceptions?: Record<string, unknown>,
+): { problems: string[]; warnings: string[]; notes: string[] } {
   const py = `
 import json, os, sys
 import numpy as np
@@ -33,7 +36,7 @@ from PIL import Image
 sys.path.insert(0, ${JSON.stringify(ART)})
 import verify_seams as vs
 
-base = os.path.join(${JSON.stringify(work)}, ${JSON.stringify(kind)})
+base = os.path.join(${JSON.stringify(work)}, ${JSON.stringify(kind)} + "-" + str(abs(hash(${JSON.stringify(JSON.stringify(exceptions ?? null))}))))
 os.makedirs(os.path.join(base, "parts"), exist_ok=True)
 W = 1024
 yy, xx = np.mgrid[0:W, 0:W]
@@ -54,6 +57,12 @@ arm = (xx >= 560) & (xx < 640) & (yy >= 320) & (yy < 700)
 # The honest cut paints the body on under the whole arm down to just past the
 # torso; the defective one stops the body exactly where the arm begins.
 body_mask = (torso & ~arm) if ${JSON.stringify(kind)} == "gap" else (torso | (arm & (yy < 630)))
+if ${JSON.stringify(kind)} == "taper":
+    # The torso's own contour narrows behind the lower arm: under the arm the
+    # body paints the shoulder (and its 64px joint zone) fully, then only the
+    # first 10px lower down, where the waist turns in. The band near the seam's
+    # lower end reaches past that, and the check cannot know it should not.
+    body_mask = torso | (arm & (yy < 420)) | (arm & (xx < 570) & (yy < 630))
 body = paint(body_mask, textured)
 armp = paint(arm, textured)
 assembled = body.copy(); assembled[arm] = armp[arm]
@@ -80,15 +89,19 @@ if ${JSON.stringify(kind)} == "rider":
     json.dump(j, open(os.path.join(base, "joints.json"), "w"))
     adjacency, z = [["body", "arm_l"], ["body", "leg_l"]], ["leg_l", "body", "arm_l"]
 json.dump({"root": "body", "adjacency": adjacency, "zOrder": z}, open(cfg, "w"))
+exc = json.loads(${JSON.stringify(JSON.stringify(exceptions ?? null))})
+if exc is not None:
+    json.dump(exc, open(os.path.join(base, "seam-exceptions.json"), "w"))
 problems, warnings, notes = vs.check_set(${JSON.stringify(kind)}, base, cfg)
-print(json.dumps({"problems": problems, "warnings": warnings}))
+print(json.dumps({"problems": problems, "warnings": warnings, "notes": notes}))
 `;
   return JSON.parse(execFileSync("python3", ["-c", py], { encoding: "utf8" }));
 }
 
 describe("verify_seams", () => {
   it("passes an honest recut in one flat colour: equality with assembled.png is not copying", () => {
-    expect(run("flat")).toEqual({ problems: [], warnings: [] });
+    const { problems, warnings } = run("flat");
+    expect({ problems, warnings }).toEqual({ problems: [], warnings: [] });
   });
 
   it("fails parts cut edge to edge, with nothing under the seam", () => {
@@ -106,5 +119,42 @@ describe("verify_seams", () => {
     const { problems, warnings } = run("copied");
     expect(problems).toEqual([]);
     expect(warnings.some((w) => /^body\/arm_l: copy\?/.test(w))).toBe(true);
+  });
+
+  describe("reviewed seam exceptions", () => {
+    it("a torso that tapers behind the arm fails the band without one", () => {
+      const { problems } = run("taper");
+      expect(problems.some((p) => /^body\/arm_l: band .* \(need 98%\)/.test(p))).toBe(true);
+      expect(problems.some((p) => /joint/.test(p))).toBe(false);
+    });
+
+    it("passes at its reviewed floor, and prints the reason", () => {
+      const { problems, notes } = run("taper", { "body/arm_l": { band: 0.5, reason: "waist turns in behind the arm" } });
+      expect(problems).toEqual([]);
+      expect(notes.some((n) => /reviewed floor 50\.0%: waist turns in behind the arm/.test(n))).toBe(true);
+    });
+
+    it("still fails below the reviewed floor", () => {
+      const { problems } = run("taper", { "body/arm_l": { band: 0.97, reason: "too generous" } });
+      expect(problems.some((p) => /below its reviewed floor 97\.0%/.test(p))).toBe(true);
+    });
+
+    it("refuses a floor too low, a missing reason, an unknown pair, and the joint zone", () => {
+      const r = run("taper", {
+        "body/arm_l": { band: 0.3, reason: "x" },
+        "body/arm_r": { band: 0.8, reason: "no such seam" },
+      });
+      expect(r.problems.some((p) => /'body\/arm_l' band must be a number from 0\.5/.test(p))).toBe(true);
+      expect(r.problems.some((p) => /'body\/arm_r' is not a seam this set has/.test(p))).toBe(true);
+      expect(run("taper", { "body/arm_l": { band: 0.8 } }).problems.some((p) => /needs a reason/.test(p))).toBe(true);
+      expect(run("taper", { "body/arm_l": { band: 0.8, joint: 0.5, reason: "x" } }).problems
+        .some((p) => /joint zone is never excepted/.test(p))).toBe(true);
+    });
+
+    it("reports an exception the art no longer needs", () => {
+      const { problems, notes } = run("flat", { "body/arm_l": { band: 0.8, reason: "stale" } });
+      expect(problems).toEqual([]);
+      expect(notes.some((n) => /no longer needed, delete it/.test(n))).toBe(true);
+    });
   });
 });

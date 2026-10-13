@@ -38,6 +38,22 @@ And per part set:
   joints    joints.json is present, names every child in the hierarchy, and
             each acting child's pivot is painted by both it and its parent.
 
+Reviewed exceptions (seam-exceptions.json beside parts/). The band is drawn as
+a square around every seam pixel, so at the ENDS of a seam, where B's own true
+silhouette comes out from under F, it reaches past where B ends: a torso that
+tapers to the waist behind a hanging arm cannot fill it without growing a slab
+that swings into view. No check can know where a part "really" ends, so a
+person decides, per pair, in a file reviewed with the art:
+
+    { "body/arm_r": { "band": 0.80,
+                      "reason": "torso tapers to the waist behind the arm" } }
+
+The pair is then held to that floor instead of BAND_MIN, and the reason is
+printed. Only the band can be excepted — never the joint zone, ground, pivots
+or islands — and a floor below EXCEPTION_FLOOR_MIN, a missing reason, a pair
+the set does not have, or an unknown key is a problem. An exception the art no
+longer needs (coverage back above BAND_MIN) is reported, so it gets deleted.
+
 Moving pairs are the hierarchy's parent/child pairs whose child acts (head,
 arms, legs, tail, wings), plus body/mane (the mane rides the head, so it moves
 against the body). Gear and other riders move with their parent and are not
@@ -70,6 +86,7 @@ MANIFEST = json.load(open(os.path.join(ROOT, "assets", "manifest.json")))
 BAND_PX = 24
 JOINT_PX = 64
 BAND_MIN = 0.98
+EXCEPTION_FLOOR_MIN = 0.5
 COPY_MAX = 0.5
 TEXTURE_DELTA = 8
 TEXTURE_MIN_PX = 200
@@ -166,6 +183,27 @@ def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str
     pairs = [(par, ch) for ch, par in parent.items() if ch in ACTS]
     if "mane" in z and "body" in z:
         pairs.append(("body", "mane"))
+
+    exceptions: dict[str, dict] = {}
+    exc_path = os.path.join(base, "seam-exceptions.json")
+    if os.path.exists(exc_path):
+        raw = {k: v for k, v in json.load(open(exc_path)).items() if not k.startswith("$")}
+        names = {(f"{b}/{f}") for b, f in ((p, c) if zi[p] < zi[c] else (c, p) for p, c in pairs)}
+        for key, e in raw.items():
+            if key not in names:
+                problems.append(f"seam-exceptions: '{key}' is not a seam this set has ({', '.join(sorted(names))})")
+                continue
+            if not isinstance(e, dict) or set(e) - {"band", "reason"}:
+                problems.append(f"seam-exceptions: '{key}' takes only 'band' and 'reason' (the joint zone is never excepted)")
+                continue
+            floor, reason = e.get("band"), str(e.get("reason", "")).strip()
+            if not isinstance(floor, (int, float)) or not EXCEPTION_FLOOR_MIN <= floor < BAND_MIN:
+                problems.append(f"seam-exceptions: '{key}' band must be a number from {EXCEPTION_FLOOR_MIN} to below {BAND_MIN}")
+                continue
+            if not reason:
+                problems.append(f"seam-exceptions: '{key}' needs a reason")
+                continue
+            exceptions[key] = {"band": float(floor), "reason": reason}
     for par, ch in pairs:
         b, f = (par, ch) if zi[par] < zi[ch] else (ch, par)
         fi, bi = zi[f], zi[b]
@@ -194,7 +232,15 @@ def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str
             continue
         band = f_solid & grow(seam, BAND_PX)
         cover = (b_solid & band).sum() / band.sum()
-        if cover < BAND_MIN:
+        exc = exceptions.get(f"{b}/{f}")
+        if exc and cover >= BAND_MIN:
+            notes.append(f"{b}/{f}: band {cover:.1%} meets {BAND_MIN:.0%}; its seam exception is no longer needed, delete it")
+        elif exc:
+            if cover < exc["band"]:
+                problems.append(f"{b}/{f}: band {cover:.1%} is below its reviewed floor {exc['band']:.1%} (seam-exceptions.json)")
+            else:
+                notes.append(f"{b}/{f}: band {cover:.1%}, reviewed floor {exc['band']:.1%}: {exc['reason']}")
+        elif cover < BAND_MIN:
             problems.append(f"{b}/{f}: band {cover:.1%} of the {BAND_PX}px band under {f} is painted by {b} (need {BAND_MIN:.0%})")
         if par == b and parent.get(ch) == par and ch in joints:
             yy, xx = np.ogrid[: asm.shape[0], : asm.shape[1]]

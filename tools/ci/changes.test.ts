@@ -41,6 +41,12 @@ describe("CI change classification", () => {
     }
   });
 
+  it("a reviewed seam exception is review data: it runs build (where the seam check lives) and nothing else", () => {
+    expect(classify(["assets/characters/bigfoot/fledgling/seam-exceptions.json"])).toEqual({
+      build: true, e2e: false, rigs: false, motion: false, deploy: false,
+    });
+  });
+
   it("a rebuilt rig.riv is game content: it ships and the game loads it", () => {
     expect(classify(["assets/characters/bigfoot/fledgling/rig.riv"])).toEqual(all);
   });
