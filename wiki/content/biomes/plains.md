@@ -3,7 +3,7 @@ title: The Plains
 id: biome.plains
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-13"
 canon_status: confirmed
 tags: ["central_plains", "roads", "caravans", "grassland", "crossroads"]
 danger_level: low
@@ -43,6 +43,9 @@ related:
     type: biome
     relationship: borders
   - id: npc.centaur
+    type: npc
+    relationship: supporting_peoples
+  - id: npc.sheeple
     type: npc
     relationship: supporting_peoples
   - id: creature.jackalope
@@ -87,6 +90,9 @@ related:
   - id: npc.harvest_sprite
     type: npc
     relationship: secondary_locations
+  - id: npc.sheeple
+    type: npc
+    relationship: primary_locations
 assets:
   primary: assets/biomes/plains/portrait.webp
   primaryFull: assets/biomes/plains/bg.webp
@@ -99,7 +105,7 @@ ai_context:
   visual_style: "Rolling green-gold grass, broad roads, scattered trees and stones, caravan camps, low ridges, distant settlements, and long views beneath an open sky."
   common_encounters: "Travel chapters, caravan stories, races, missing travelers, route disputes, encounters visible from far away, and journeys that connect otherwise separate regions."
   lore_highlights: "Road country."
-  related_entities: "feature.great_river, biome.eastern_plains, feature.great_river, biome.red_sky_foothills, biome.enchanted_woods, biome.whispering_marsh, biome.sunward_fields, npc.centaur, creature.jackalope, creature.cinder_wolf, campaign.gemfall, character.dragonling, character.manticore, creature.jackalope, creature.cinder_wolf, feature.great_river, feature.great_river_west_branch, individual.old_ossley, item.brave_whistle, npc.centaur, npc.faun, npc.harvest_sprite"
+  related_entities: "feature.great_river, biome.eastern_plains, feature.great_river, biome.red_sky_foothills, biome.enchanted_woods, biome.whispering_marsh, biome.sunward_fields, npc.centaur, npc.sheeple, creature.jackalope, creature.cinder_wolf, campaign.gemfall, character.dragonling, character.manticore, creature.jackalope, creature.cinder_wolf, feature.great_river, feature.great_river_west_branch, individual.old_ossley, item.brave_whistle, npc.centaur, npc.faun, npc.harvest_sprite, npc.sheeple"
   writing_guidance: "Do not merge the Plains with Eastern Plains or Sunward Fields. The central Plains are road country, not the manticore homeland and not primarily farmland."
   generation_hints: "Caravans, messengers, herds, and travelers move along old routes while weather and river conditions periodically change the safest path."
 layout: biomes
@@ -188,6 +194,7 @@ Neutral ground. Every people crosses the Plains, so the Plains belong to the cro
 - [Centaur](/npcs/centaur/) `Supporting Peoples` `Primary Locations`
 - [Faun](/npcs/faun/) `Secondary Locations`
 - [Harvest Sprite](/npcs/harvest_sprite/) `Secondary Locations`
+- [Sheeple](/npcs/sheeple/) `Supporting Peoples` `Primary Locations`
 <!-- END GENERATED: relationships -->
 
 
