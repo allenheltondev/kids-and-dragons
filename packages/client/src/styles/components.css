@@ -320,13 +320,25 @@
     box-shadow var(--kad-dur-fast) var(--kad-ease);
 }
 
+/*
+ * Raised, like a thing on the tray: a lit top edge, a darker foot, and a
+ * solid "edge" under it that the press pushes into. Pressing moves the
+ * button down onto its edge rather than shrinking it — the tactile cue a
+ * child reads as "that went in".
+ */
+.kad-button {
+  position: relative;
+  border: 0;
+}
+
 .kad-button:active:not(:disabled) {
-  transform: scale(0.96);
+  transform: translateY(0.14em);
 }
 
 .kad-button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  filter: saturate(0.4);
 }
 
 .kad-button--block {
@@ -340,15 +352,45 @@
 }
 
 .kad-button--primary {
-  background: var(--kad-accent);
+  background: linear-gradient(
+    to bottom,
+    var(--kad-accent-hi) 0%,
+    var(--kad-accent) 42%,
+    var(--kad-accent-lo) 100%
+  );
   color: var(--kad-accent-ink);
-  box-shadow: var(--kad-shadow-sm);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12),
+    0 0.22em 0 var(--kad-accent-edge),
+    0 0.5em 1em rgba(0, 0, 0, 0.45);
+}
+
+.kad-button--primary:active:not(:disabled) {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 0.08em 0 var(--kad-accent-edge),
+    0 0.2em 0.5em rgba(0, 0, 0, 0.4);
 }
 
 .kad-button--secondary {
-  background: var(--kad-bg-raised);
+  background: linear-gradient(to bottom, var(--kad-raised-hi) 0%, var(--kad-raised-lo) 100%);
   color: var(--kad-ink);
-  box-shadow: inset 0 0 0 1px var(--kad-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px var(--kad-raised-rim),
+    0 0.18em 0 var(--kad-raised-edge),
+    0 0.4em 0.8em rgba(0, 0, 0, 0.4);
+}
+
+.kad-button--secondary:active:not(:disabled) {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0 1px var(--kad-raised-rim),
+    0 0.06em 0 var(--kad-raised-edge),
+    0 0.15em 0.4em rgba(0, 0, 0, 0.35);
 }
 
 .kad-button--ghost {
@@ -356,13 +398,33 @@
   color: var(--kad-ink-dim);
 }
 
-.kad-button--danger {
-  background: var(--kad-danger);
-  color: var(--kad-accent-ink);
+.kad-button--ghost:active:not(:disabled) {
+  background: rgba(190, 178, 255, 0.1);
+  transform: none;
 }
 
+.kad-button--danger {
+  background: linear-gradient(to bottom, #ff93a6 0%, var(--kad-danger) 45%, #d8435f 100%);
+  color: var(--kad-accent-ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0.22em 0 #8f2439,
+    0 0.5em 1em rgba(0, 0, 0, 0.45);
+}
+
+/* Chosen is a gold rim and a glow, the same signal the tray uses. */
 .kad-button[aria-pressed="true"] {
-  box-shadow: 0 0 0 0.15em var(--kad-border-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0.18em 0 var(--kad-raised-edge),
+    var(--kad-chosen-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kad-button {
+    transition: none;
+  }
 }
 
 .kad-button__icon {

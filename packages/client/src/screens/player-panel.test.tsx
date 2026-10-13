@@ -813,11 +813,11 @@ describe("spending a banked stat point", () => {
 
   it("keeps the reminder on the pinned strip, where a whole sitting can pass without scrolling to it", () => {
     mount({ party: [withPoints(1)], sceneType: "story" });
-    expect(screen.getByText("1 point to spend when you rest")).toBeTruthy();
+    expect(screen.getByText("Spend 1 point at rest")).toBeTruthy();
 
     cleanup();
     mount({ party: [withPoints(2)], sceneType: "story" });
-    expect(screen.getByText("2 points to spend when you rest")).toBeTruthy();
+    expect(screen.getByText("Spend 2 points at rest")).toBeTruthy();
   });
 });
 
