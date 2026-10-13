@@ -5,7 +5,7 @@
   "index": 1,
   "title": "The City That Smelled Opportunity",
   "biome": "exchange",
-  "estimatedMinutes": 28,
+  "estimatedMinutes": 30,
   "xpAward": 100,
   "entry": "scene_prologue_realm",
   "objectives": [
@@ -530,7 +530,7 @@
           "label": "Haggle her up even higher, then sell",
           "icon": "crown",
           "requiresFlag": "motive_wealth",
-          "goto": "scene_sold",
+          "goto": "choice_ember_sell_high",
           "effects": [
             {
               "type": "setFlag",
@@ -560,6 +560,18 @@
               "itemId": "facet_ember"
             }
           ]
+        }
+      ]
+    },
+    "choice_ember_sell_high": {
+      "type": "story",
+      "narration": "You name a bigger number. Madame Fenn names a smaller one. You name a bigger one again, and a second pigeon faints. In the end she pays twice what she offered, laughs so hard her barrel rolls into a bollard, and throws in a brave whistle \"for cheek, darlings.\" Then she writes your names in her little green book, twice.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Take the clanking purse",
+          "icon": "gem",
+          "goto": "scene_sold"
         }
       ]
     },
@@ -609,7 +621,7 @@
           "label": "Buy the best laces outright. We're rich now!",
           "icon": "gem",
           "requiresFlag": "ember_sold",
-          "goto": "scene_laced",
+          "goto": "scene_market_buy_outright",
           "effects": [
             {
               "type": "grantItem",
@@ -623,7 +635,7 @@
           "label": "Tell Tobble we're after a fresh start",
           "icon": "leaf",
           "requiresFlag": "motive_fresh_start",
-          "goto": "scene_laced",
+          "goto": "scene_market_fresh_start",
           "effects": [
             {
               "type": "grantItem",
@@ -637,7 +649,7 @@
           "label": "Point out the fake laces on the next stall",
           "icon": "eye",
           "requiresSpecies": "kitsune",
-          "goto": "scene_laced",
+          "goto": "scene_market_spot_fakes",
           "effects": [
             {
               "type": "grantItem",
@@ -645,6 +657,42 @@
               "to": "party"
             }
           ]
+        }
+      ]
+    },
+    "scene_market_spot_fakes": {
+      "type": "story",
+      "narration": "Your kitsune sniffs once and points. \"Those are bootlaces painted yellow.\" The stall-keeper next door goes very red, packs up in about four seconds, and is never seen on the Outfitters' Steps again. Tobble is so grateful he presses real quickfoot laces on you and sings your names up the whole scale.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lace up",
+          "icon": "eye",
+          "goto": "scene_laced"
+        }
+      ]
+    },
+    "scene_market_fresh_start": {
+      "type": "story",
+      "narration": "Tobble stops singing. \"A fresh start,\" he says, and for once he just speaks. He has one too, he says. He used to make boots for a duke, and then he decided he liked laces better. He sells you the laces at last year's price and sings a small verse about beginnings that nearly rhymes.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lace up",
+          "icon": "leaf",
+          "goto": "scene_laced"
+        }
+      ]
+    },
+    "scene_market_buy_outright": {
+      "type": "story",
+      "narration": "You point at the best laces on the rack and pay without asking the price. Tobble is so startled he sings the price anyway, out of habit, a whole key too high. Three prospectors turn round to see who is rich. You try to look like you have always been rich.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lace up",
+          "icon": "boot",
+          "goto": "scene_laced"
         }
       ]
     },
@@ -666,7 +714,8 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_lace_tangle"
+        "goto": "scene_lace_tangle",
+        "narration": "You haggle so hard that Tobble loses his place in the song and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper."
       }
     },
     "scene_laced": {
@@ -728,7 +777,7 @@
           "label": "Lift the stuck wagon out of the mud",
           "icon": "fist",
           "requiresSpecies": "bigfoot",
-          "goto": "scene_hired",
+          "goto": "scene_caravan_yard_lift_wagon",
           "effects": [
             {
               "type": "setFlag",
@@ -742,7 +791,7 @@
           "label": "Offer to guard the lantern wagon",
           "icon": "shield",
           "requiresFlag": "motive_duty",
-          "goto": "scene_hired",
+          "goto": "scene_caravan_yard_guard",
           "effects": [
             {
               "type": "setFlag",
@@ -756,7 +805,7 @@
           "label": "Bet we can load a wagon faster than anyone",
           "icon": "star",
           "requiresFlag": "motive_proving",
-          "goto": "scene_hired",
+          "goto": "scene_caravan_yard_race",
           "effects": [
             {
               "type": "setFlag",
@@ -770,7 +819,7 @@
           "label": "Offer to carry the banner at the front",
           "icon": "crown",
           "requiresFlag": "motive_prestige",
-          "goto": "scene_hired",
+          "goto": "scene_caravan_yard_banner",
           "effects": [
             {
               "type": "setFlag",
@@ -778,6 +827,54 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_caravan_yard_banner": {
+      "type": "story",
+      "narration": "The banner is taller than any of you and heavier than it looks, and the wind off the harbour wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Take your place at the front",
+          "icon": "crown",
+          "goto": "scene_hired"
+        }
+      ]
+    },
+    "scene_caravan_yard_race": {
+      "type": "story",
+      "narration": "A yeti crew bets you cannot load a wagon faster than they can. You load it in the time it takes them to argue about who goes first. Half of it is loaded upside down, but it is loaded. The yetis pay up in dried apples, and Hesper, very slightly, smiles.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Collect your winnings",
+          "icon": "star",
+          "goto": "scene_hired"
+        }
+      ]
+    },
+    "scene_caravan_yard_guard": {
+      "type": "story",
+      "narration": "\"The lantern wagon,\" says Hesper, \"has been robbed twice this week and set on fire once.\" You say you will guard it anyway. She looks at you the way she looks at weather that has decided to be useful, and hands you a long pole with a hook on the end.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Take up your post",
+          "icon": "shield",
+          "goto": "scene_hired"
+        }
+      ]
+    },
+    "scene_caravan_yard_lift_wagon": {
+      "type": "story",
+      "narration": "You walk over to the wagon stuck in the mud, take hold of the back axle, and lift. The wagon comes up. So does the mud. So does a small faun who was sitting in the wagon eating breakfast, and who keeps eating it. Hesper watches the whole thing without a word, then nods once.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Report for duty",
+          "icon": "fist",
+          "goto": "scene_hired"
         }
       ]
     },
