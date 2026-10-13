@@ -36,7 +36,7 @@
   "scenes": {
     "scene_tree_line": {
       "type": "story",
-      "narration": "The Enchanted Woods begin all at once, like a wall somebody painted green. As you step under the first branches, a fern unrolls, looks you up and down, and rolls itself back up. Somewhere in here, something is counting.",
+      "narration": "The Enchanted Woods begin all at once, like a wall somebody painted green. As you step under the first branches, a fern unrolls, looks you up and down, and rolls itself back up. Somewhere in here, something is counting, and it has just reached you.",
       "choices": [
         {
           "id": "walk_in",
@@ -81,7 +81,7 @@
     },
     "scene_flooded_paths": {
       "type": "story",
-      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome. Some of you never chose this forest at all — the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
+      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
       "onEnter": [
         {
           "type": "grantItem",
@@ -116,7 +116,7 @@
         },
         {
           "id": "barge_hums",
-          "label": "The Barge Stone hums — and a path slams shut. Ask why.",
+          "label": "The Barge Stone hums, and a path slams shut. Ask why.",
           "icon": "gem",
           "goto": "scene_forest_objects",
           "requiresItem": "facet_barge"
@@ -140,7 +140,7 @@
     },
     "scene_forest_objects": {
       "type": "story",
-      "narration": "The beech smells of rain when it whispers. It isn't you the forest minds, it says. It's the stones, and what they did to the places where they fell. Where a stone landed, the glade around it is hurting. Pocket one, and the forest shuts its doors on you — just in case.",
+      "narration": "The beech smells of rain when it whispers. It is not you the forest minds, it says. It is the stones, and what they did to the places where they fell. Where a stone landed, the glade around it is hurting. Pocket one, and the forest shuts its doors on you, just in case.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -202,7 +202,7 @@
     },
     "scene_read_herd": {
       "type": "story",
-      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen — you can see the bald grey patches in the forest where they've stopped going. The herd is a map of where it hurts.",
+      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen. You can see the bald grey patches in the forest where they have stopped going. The herd is a map of where it hurts.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -264,7 +264,7 @@
       },
       "onFailure": {
         "goto": "scene_finding",
-        "narration": "You hum, and the moss goes green — then grey — then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
+        "narration": "You hum, and the moss goes green, then grey, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
       }
     },
     "scene_finding": {
@@ -298,7 +298,7 @@
       "choices": [
         {
           "id": "noisy",
-          "label": "Make the dark noisy — clap, stamp, shout",
+          "label": "Make the dark noisy: clap, stamp, shout",
           "icon": "note",
           "goto": "check_noisy"
         },
@@ -331,7 +331,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
-        "narration": "Clapping, stamping, a pot lid, somebody yodelling — the echo hunter's frills flatten in dismay, and it backs down its crack to wait for some peace and quiet."
+        "narration": "Clapping, stamping, a pot lid, somebody yodelling. The echo hunter's frills flatten in dismay, and it backs down its crack to wait for some peace and quiet."
       },
       "onFailure": {
         "goto": "encounter_echo",
@@ -356,7 +356,7 @@
     "encounter_echo": {
       "type": "encounter",
       "map": "glade",
-      "narration": "The echo hunter comes up out of its crack, frills spread wide — a young one, not much bigger than a pony — and a wisp drawn by the stone's hum drifts down to join in.",
+      "narration": "The echo hunter comes up out of its crack, frills spread wide. It is a young one, not much bigger than a pony. A wisp drawn by the stone's hum drifts down to join in.",
       "enemies": [
         {
           "id": "hunter",
@@ -388,7 +388,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
-        "narration": "You follow the grey patches the mosshorns won't graze, and they lead you straight back — late and scuffed, but there."
+        "narration": "You follow the grey patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
       },
       "onFailure": {
         "goto": "ending_shown_the_door"
@@ -456,7 +456,7 @@
     },
     "scene_pile_shown": {
       "type": "story",
-      "narration": "On the way out, a path opens that wasn't there before and leads you past an enormous hollow oak. Inside, piled to the roof: pickaxes, panniers, a prospector's hat with a feather in it — and gems, dozens of them, humming together like a choir. The forest has been confiscating. It shows you, the way a friend shows you a secret drawer, and then the bark closes over it like a lid.",
+      "narration": "On the way out, a path opens that was not there before and leads you past an enormous hollow oak. Inside, piled to the roof: pickaxes, panniers, a prospector's hat with a feather in it, and gems, dozens of them, humming together like a choir. The forest has been confiscating. It shows you, the way a friend shows you a secret drawer, and then the bark closes over it like a lid.",
       "choices": [
         {
           "id": "on",

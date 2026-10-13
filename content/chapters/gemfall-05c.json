@@ -42,7 +42,7 @@
   "scenes": {
     "scene_stones_line": {
       "type": "story",
-      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd.",
+      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
       "choices": [
         {
           "id": "join_queue",
@@ -395,7 +395,7 @@
     },
     "scene_centaur_whisper": {
       "type": "story",
-      "narration": "In the morning, a centaur guide named Fennimore Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
+      "narration": "In the morning, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
       "choices": [
         {
           "id": "take_shortcut",
@@ -413,7 +413,7 @@
     },
     "scene_shortcut": {
       "type": "story",
-      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Fennimore stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
+      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Perrin stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
       "choices": [
         {
           "id": "promise",
@@ -563,7 +563,7 @@
       "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
       "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
       "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
-      "fennimore": "Fennimore Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument"
+      "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument"
     }
   }
 }

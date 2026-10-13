@@ -25,7 +25,7 @@
   "scenes": {
     "scene_east_bank": {
       "type": "story",
-      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay. Far north there is a broken bridge and a red sky. Between here and there is pride country.",
+      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay and, very faintly, of lion. Far north there is a broken bridge and a red sky. Between here and there is pride country.",
       "choices": [
         { "id": "ride_caravans", "label": "Ride north with the crossing caravans", "icon": "travel", "requiresFlag": "crossed_dry", "goto": "scene_caravan_dry" },
         { "id": "walk_mouthlands", "label": "Squelch north out of the mouth-lands", "icon": "boot", "requiresFlag": "river_took_us", "goto": "scene_mouthlands_walk" },
@@ -34,7 +34,7 @@
     },
     "scene_caravan_dry": {
       "type": "story",
-      "narration": "You fall in with the caravans coming off Stone Crossing. A cart driver is furious. \"The pride escort wouldn't camp at the usual rest stop! Wouldn't go within a day of it! We booked them three seasons ahead!\" His donkey seems to agree with the prides.",
+      "narration": "You fall in with the caravans coming off Stone Crossing. A cart driver is furious. \"The pride escort wouldn't camp at the usual rest stop! Wouldn't go within a day of it! We booked them three seasons ahead!\" His donkey, who has to sleep near the gem crates, seems to agree with the prides.",
       "choices": [
         { "id": "leave_caravan", "label": "Turn off onto the pride road", "icon": "arrow", "goto": "scene_pride_road" }
       ]
@@ -49,7 +49,7 @@
     },
     "scene_pride_road": {
       "type": "choice_point",
-      "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over; the detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain. Embermoths never do that.",
+      "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over. The detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain, which is a thing embermoths never do.",
       "choices": [
         { "id": "follow_moths", "label": "Follow the embermoths", "icon": "feather", "goto": "scene_embermoths" },
         { "id": "to_pride", "label": "Head for the pride on the ridge", "icon": "crown", "goto": "scene_pride_greeting" },
@@ -74,7 +74,7 @@
     },
     "scene_pride_greeting": {
       "type": "story",
-      "narration": "On the ridge, a manticore pride watches you come. Their elder stands, tail curled carefully away, and gives the formal greeting from a polite distance. Somebody in a passing caravan faints anyway.",
+      "narration": "On the ridge, a manticore pride watches you come. Their elder stands, tail curled carefully away, and gives the formal greeting from a polite distance. Somebody in a passing caravan faints anyway, and the elder sighs the sigh of someone this happens to a lot.",
       "choices": [
         { "id": "greet_back", "label": "Greet them back properly", "icon": "hand", "goto": "check_greeting" },
         { "id": "home_front_way", "label": "Come home the front way", "icon": "heart", "requiresSpecies": "manticore", "goto": "scene_hospitality" }
@@ -109,7 +109,7 @@
     },
     "scene_pride_camp": {
       "type": "story",
-      "narration": "Elder Sefa Tallgrass has a voice like warm gravel. \"We won't den within a day's walk of a gem caravan's rest stop. The cubs sleep badly near the stones. They dream about humming.\" She can't say why. Nobody can. The prides have simply stopped arguing about it.",
+      "narration": "Elder Sefa Tallgrass has a voice like warm gravel. \"We won't den within a day's walk of a gem caravan's rest stop. The cubs sleep badly near the stones. They dream about humming.\" She cannot say why. Nobody can. The prides have simply stopped arguing about it, which for a pride is a very loud thing to do.",
       "choices": [
         { "id": "ask_account", "label": "Ask about the riddle account", "icon": "scroll", "goto": "scene_riddle_account" },
         { "id": "to_waystation", "label": "Go on to the centaur waystation", "icon": "arrow", "goto": "scene_waystation" }
@@ -193,7 +193,7 @@
     },
     "scene_widest_bend": {
       "type": "story",
-      "narration": "At the middle of the widest bend is a crater no bigger than a bathtub. All the grass around it leans outward, as if everybody stepped back. In the bottom sits a gem, humming. Nobody has taken it, and in pride country that is a message. Beside it, pressed in the ash: paw prints. Cinder wolf. East of the river, where nobody alive has seen one.",
+      "narration": "At the middle of the widest bend is a crater no bigger than a bathtub. All the grass around it leans outward, as if everybody stepped back at once. In the bottom sits a gem, humming. Nobody has taken it, and in pride country that is a message. Beside it, pressed in the ash: paw prints. Cinder wolf. East of the river, where nobody alive has seen one.",
       "choices": [
         { "id": "take_stone", "label": "Take the Pride Stone", "icon": "gem", "goto": "scene_take_stone" },
         { "id": "leave_stone", "label": "Leave it where it fell", "icon": "leaf", "goto": "scene_leave_stone" }
@@ -270,7 +270,7 @@
     },
     "rest_scattered": {
       "type": "rest",
-      "narration": "Nobody is hurt; the wolves just wanted the warm more than you did. You spend the night squashed under a cart cover, and the morning finds your camp spread across a mile of grass. It takes all day to find everything. The Pride Stone hums the whole time, as if it is not sorry at all.",
+      "narration": "Nobody is hurt. The wolves just wanted the warm more than you did. You spend the night squashed under a cart cover, and the morning finds your camp spread across a mile of grass. It takes all day to find everything. The Pride Stone hums the whole time, as if it is not sorry at all.",
       "heal": 3,
       "outcome": "setback",
       "choices": []
