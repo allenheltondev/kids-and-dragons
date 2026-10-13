@@ -419,7 +419,7 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$BASE"
           changed=$(git diff --name-only "$BASE" HEAD)
-          if printf '%s\n' "$changed" | grep -Eq '^(art/rig/|assets/manifest\.json$|assets/.*/parts/|assets/.*/rig\.riv$|tools/art/build-rigs\.mjs$|tools/art/rive-cli\.mjs$|\.github/actions/rive-cli/)'; then
+          if printf '%s\n' "$changed" | grep -Eq '^(art/rig/|assets/manifest\.json$|assets/.*/parts/|assets/.*/joints\.json$|assets/.*/rig\.riv$|tools/art/build-rigs\.mjs$|tools/art/rive-cli\.mjs$|\.github/actions/rive-cli/)'; then
             echo "hit=true" >> "$GITHUB_OUTPUT"
             echo "A rig input changed; checking the committed rigs still match their configs."
           else
