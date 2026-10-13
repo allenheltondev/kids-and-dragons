@@ -22,6 +22,17 @@ export function useEnsureContent(): void {
  * tiles and enemy art). Keyed on the run's `chapterId` so a mid-session
  * chapter change refetches by itself; `loadChapter` is idempotent per id.
  */
+/**
+ * The world map's key, for the map and nothing else: a phone that never opens
+ * the map never fetches the painting's coordinates. `loadWorld` is idempotent.
+ */
+export function useEnsureWorld(): void {
+  const loadWorld = useGameStore((s) => s.loadWorld);
+  useEffect(() => {
+    void loadWorld();
+  }, [loadWorld]);
+}
+
 export function useEnsureChapter(): void {
   const chapterId = useGameStore((s) => s.state?.chapterId ?? null);
   const loadChapter = useGameStore((s) => s.loadChapter);

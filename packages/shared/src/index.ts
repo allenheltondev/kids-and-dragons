@@ -12,6 +12,7 @@ export * from "./types/domain.js";
 export * from "./types/chapter.js";
 export * from "./types/state.js";
 export * from "./types/protocol.js";
+export * from "./types/world.js";
 
 export * from "./rules.js";
 export * from "./character.js";

@@ -1007,6 +1007,28 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
 
 // ----------------------------------------------------------------------------- driver
 
+/**
+ * The world map's places point at each other (a settlement names its biome)
+ * and the painting it keys must exist, or the phone draws the party on a
+ * missing image.
+ */
+function checkWorld(rep, file, world) {
+  const f = rel(file);
+  let ok = true;
+  for (const [slug, place] of Object.entries(world.places)) {
+    if (place.parent !== null && !world.places[place.parent]) {
+      rep.fail(f, `/places/${slug}/parent`, `"${place.parent}" is not a place on the map`);
+      ok = false;
+    }
+  }
+  const image = join(ROOT, world.image.src.replace(/^\//, ""));
+  if (!existsSync(image)) {
+    rep.fail(f, "/image/src", `${world.image.src} is not in the repo`, "The map is the painting; ship it under assets/world/.");
+    ok = false;
+  }
+  if (ok) rep.ok(`${f}  world map  (${Object.keys(world.places).length} places, painting present)`);
+}
+
 function main() {
   const rep = new Report();
 
@@ -1016,7 +1038,7 @@ function main() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
 
-  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities"]) {
+  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world"]) {
     const path = join(SCHEMAS, `${name}.schema.json`);
     if (!existsSync(path)) {
       rep.fail(rel(path), "", "schema is missing");
@@ -1052,6 +1074,15 @@ function main() {
     );
   } else if (validateAgainstSchema(rep, ajv, "abilities", abilitiesPath, abilities) && rules) {
     checkAbilities(rep, abilitiesPath, abilities, rules, rulesPath);
+  }
+
+  // --- the world map: generated from canon, read by the phone's map
+  const worldPath = join(CONTENT, "world.json");
+  const world = existsSync(worldPath) ? readJson(rep, worldPath) : null;
+  if (!world) {
+    rep.fail(rel(worldPath), "", "content/world.json is missing", "Run `npm run canon:world`.");
+  } else if (validateAgainstSchema(rep, ajv, "world", worldPath, world)) {
+    checkWorld(rep, worldPath, world);
   }
 
   // Biome list lives in the art contract; content and art must not drift apart.

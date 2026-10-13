@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/world.schema.json",
+  "title": "WorldMap",
+  "description": "content/world.json, generated from canon by `npm run canon:world`. Mirrors packages/shared/src/types/world.ts WorldMap; where the two disagree the TypeScript type wins. Anchors are canon's normalized 1000×1000 label anchors (canon/geography.yaml, world_metadata).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "image", "places"],
+  "properties": {
+    "$comment": { "type": "string" },
+    "title": { "type": "string", "minLength": 1 },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["src", "width", "height"],
+      "properties": {
+        "src": { "type": "string", "pattern": "^/assets/" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "places": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "kind", "anchor", "parent"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^(biome|location)\\.[a-z][a-z0-9_]*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["biome", "location"] },
+          "anchor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["x", "y"],
+            "properties": {
+              "x": { "type": "number", "minimum": 0, "maximum": 1000 },
+              "y": { "type": "number", "minimum": 0, "maximum": 1000 }
+            }
+          },
+          "parent": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$" }
+        }
+      }
+    }
+  }
+}
