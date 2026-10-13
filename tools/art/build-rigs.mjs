@@ -152,6 +152,10 @@ for (const t of selected) {
   const gone = [];
   if (!existsSync(t.config)) gone.push(`config ${relative(ROOT, t.config)}`);
   if (!existsSync(t.parts)) gone.push(`parts ${relative(ROOT, t.parts)}/`);
+  // Pinned joints are a rig input like the parts: without them the builder
+  // measures pivots from the overlaps, which on art with real seam bands puts
+  // every joint mid-limb, and the build would still succeed.
+  if (!existsSync(t.joints)) gone.push(`joints ${relative(ROOT, t.joints)}`);
   if (gone.length > 0) {
     missing.push(`${t.label}: ${gone.join(", ")}`);
     continue;
@@ -198,7 +202,7 @@ const jobs = targets.map((t) => ({
   // A part set's joints, pinned rather than measured from its overlaps
   // (docs/briefs/part-recut.md). Parts that overlap along the whole seam put
   // the overlap's centroid mid-limb, so the joint is given, not derived.
-  ...(existsSync(t.joints) ? { pivots: t.joints } : {}),
+  pivots: t.joints,
 }));
 
 const started = performance.now();
@@ -220,7 +224,7 @@ try {
   results = jobs.map((job) => {
     const r = runCli(
       ["rig", "--parts", job.parts, "--config", job.config, "-o", job.out, "--contract", job.contract, "--set", job.set,
-        ...(job.pivots ? ["--pivots", job.pivots] : [])],
+        "--pivots", job.pivots],
       { json: true, cli },
     );
     if (r.error) {
