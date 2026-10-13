@@ -17,6 +17,7 @@ export * from "./types/world.js";
 export * from "./rules.js";
 export * from "./character.js";
 export * from "./migrate.js";
+export * from "./field-guide-record.js";
 export * from "./dice.js";
 export * from "./inventory.js";
 export * from "./bestiary.js";
