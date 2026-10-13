@@ -15,7 +15,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { PartyMember } from "@kad/shared";
 import { hasIcon } from "./icons";
-import { KeepsakeLantern, motePositions } from "./KeepsakeLantern";
+import { KeepsakeLantern } from "./KeepsakeLantern";
 import {
   KeepsakeOffer,
   OfferStep,
@@ -168,53 +168,15 @@ describe("KeepsakeLantern", () => {
     }
   });
 
-  it("places each light somewhere different", () => {
-    // Three flames stacked at one point is the bug that a CSS transform
-    // overriding the SVG positioning attribute produces, and it is invisible
-    // in a diff.
-    const positions = motePositions(3);
-    const seen = new Set(positions.map((p) => `${String(p.x)},${String(p.y)}`));
-    expect(seen.size).toBe(3);
-    for (const position of positions) {
-      // Inside the glass, which spans roughly x 36-84, y 43-127.
-      expect(position.x).toBeGreaterThan(36);
-      expect(position.x).toBeLessThan(84);
-      expect(position.y).toBeGreaterThan(43);
-      expect(position.y).toBeLessThan(127);
-    }
-  });
-
-  it("keeps every light inside the glass however big the party gets", () => {
-    for (let n = 1; n <= 6; n++) {
-      for (const position of motePositions(n)) {
-        expect(position.x).toBeGreaterThan(36);
-        expect(position.x).toBeLessThan(84);
-      }
-    }
-  });
-
   it("lights up rather than erroring when nobody is being kept", () => {
     const html = renderToStaticMarkup(<KeepsakeLantern motes={[]} />);
-    expect(html).toContain("<svg");
+    expect(html).toContain("<img");
     expect(html).toContain("A lantern waiting to be lit");
   });
 
   it("describes who it holds, for a screen reader", () => {
     const html = renderToStaticMarkup(<KeepsakeLantern motes={motes} />);
     expect(html).toContain("a light for Sparklehoof, Ember and Rue");
-  });
-
-  it("gives two lanterns on one page their own gradients", () => {
-    // Shared ids would make the second lantern steal the first one's glow.
-    const html = renderToStaticMarkup(
-      <>
-        <KeepsakeLantern motes={motes} />
-        <KeepsakeLantern motes={motes} />
-      </>,
-    );
-    const ids = [...html.matchAll(/id="(kad-lantern-glow-[^"]+)"/g)].map((m) => m[1]);
-    expect(ids).toHaveLength(2);
-    expect(new Set(ids).size).toBe(2);
   });
 });
 
