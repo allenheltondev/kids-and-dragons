@@ -15,8 +15,10 @@
   align-items: center;
   justify-content: center;
   padding: var(--kad-space-4);
-  background: var(--kad-bg-overlay);
-  backdrop-filter: blur(0.2em);
+  /* A light wash, not a blackout: the painted scene behind (the market, the
+     lobby) stays the picture, and the card sits in it like the Home screen's
+     cards do. */
+  background: linear-gradient(0deg, rgb(13 11 26 / 62%), rgb(13 11 26 / 38%));
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -30,16 +32,20 @@
   inline-size: 100%;
   max-inline-size: 24em;
   padding: var(--kad-space-5) var(--kad-space-4) var(--kad-space-4);
-  border: 0.08em solid var(--kad-border);
+  /* The Home screen's join card: gold rim, violet glow, a lifted dark pane. */
+  border: 0.08em solid rgba(255, 201, 92, 0.55);
   border-radius: var(--kad-radius-xl);
-  background: var(--kad-bg-raised);
-  box-shadow: var(--kad-shadow-lg);
+  background: rgba(25, 21, 52, 0.98);
+  box-shadow:
+    0 0 0 0.12em rgba(255, 201, 92, 0.12),
+    0 0 2.2em rgba(124, 92, 255, 0.35),
+    var(--kad-shadow-lg);
   text-align: center;
   /* Push the panel down from the close button rather than clipping it. */
   margin-block: auto;
 }
 
-.keepsake__close {
+.keepsake .keepsake__close {
   position: absolute;
   inset-block-start: var(--kad-space-2);
   inset-inline-end: var(--kad-space-2);
@@ -50,6 +56,7 @@
 
 .keepsake__title {
   margin: 0;
+  text-shadow: 0 2px 8px #0d0b1a;
   font-size: var(--kad-text-xl);
   font-weight: var(--kad-weight-black);
   line-height: 1.2;
@@ -166,22 +173,82 @@
 }
 
 .keepsake__input:focus-visible {
-  border-color: var(--kad-border-strong);
+  border-color: #ffc95c;
+  outline: none;
+  box-shadow: 0 0 0.6em rgba(255, 201, 92, 0.45);
 }
 
 .keepsake__input::placeholder {
   color: var(--kad-ink-faint);
 }
 
-.keepsake__input--code {
-  font-size: var(--kad-text-2xl);
+/* --- eight-box code entry (mirrors .home__code-*) ------------------------ */
+
+.keepsake__code {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+}
+
+.keepsake__code-input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font-size: 16px; /* no iOS zoom-on-focus */
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.keepsake__code-input:focus-visible {
+  outline: none;
+}
+
+.keepsake__code-boxes {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: var(--kad-space-1);
+}
+
+.keepsake__code-box {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 4;
+  border: 0.12em solid var(--kad-border-strong, #3a3468);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-sunken);
+  color: var(--kad-ink);
+  font-size: var(--kad-text-xl);
   font-weight: var(--kad-weight-black);
-  /* Eight digits read as eight digits, not as a word. */
-  letter-spacing: 0.25em;
-  /* letter-spacing adds a trailing gap after the last glyph, which visually
-     shifts centred text left. Give it back. */
-  text-indent: 0.25em;
   font-variant-numeric: tabular-nums;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.keepsake__code-box--filled {
+  border-color: #ffc95c;
+  background: linear-gradient(to bottom, #2a2254, #17122f);
+  color: #ffe9a8;
+  text-shadow: 0 0 0.5em rgba(255, 201, 92, 0.6);
+}
+
+.keepsake__code-input:focus + .keepsake__code-boxes .keepsake__code-box--next {
+  border-color: #ffc95c;
+  animation: keepsake-glow 1.1s ease-in-out infinite;
+}
+
+@keyframes keepsake-glow {
+  50% { box-shadow: 0 0 0.6em rgba(255, 201, 92, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keepsake__code-input:focus + .keepsake__code-boxes .keepsake__code-box--next { animation: none; }
 }
 
 /* --- actions ------------------------------------------------------------- */
