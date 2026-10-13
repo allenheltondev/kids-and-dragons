@@ -144,7 +144,7 @@ export function TravelLayout(): React.JSX.Element {
   return (
     <div className="kad-travel">
       {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
-          row of tabs — the realm globe, your satchel, the Field Guide's scroll,
+          row of tabs — the realm globe, your satchel, the Field Guide's journal,
           the map. */}
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
