@@ -130,6 +130,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
 async function postRoom(req: Req, deps: HandlerDeps) {
   const mode = readMode(req.body.mode);
   if (!mode) return error(400, "ILLEGAL", 'mode must be "party" or "travel"');
+  const display = req.body.display === true;
+  if (display && mode !== "party") return error(400, "ILLEGAL", "only a Party Mode room has a TV");
 
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
@@ -150,6 +152,21 @@ async function postRoom(req: Req, deps: HandlerDeps) {
     deps,
   );
   if (!created.ok) return fromError(created.error);
+
+  // The TV opened the room: it is the lobby, not a seat. It keeps the device
+  // binding anyway — that is the household the phones join, and the same TV
+  // opening tomorrow's room has to land in the same one.
+  if (display) {
+    return json(
+      200,
+      {
+        ...created.value,
+        roomCode: created.value.code,
+        ...(host.deviceToken ? { deviceToken: host.deviceToken } : {}),
+      },
+      host.principal,
+    );
+  }
 
   const joined = await joinRoom({ code: created.value.code, principal: host.principal }, deps);
   if (!joined.ok) return fromError(joined.error);

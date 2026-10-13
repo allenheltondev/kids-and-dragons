@@ -30,7 +30,7 @@ import "./HomeScreen.css";
 const CODE_SLOTS = [0, 1, 2, 3];
 
 const MODE_BLURB: Record<RoomMode, string> = {
-  party: "On the TV — the big screen shows the world, phones are controllers.",
+  party: "This screen becomes the TV — everyone joins from their phones.",
   travel: "Phones only — everyone sees the world and their own controls.",
 };
 
@@ -38,6 +38,7 @@ const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" }
 
 export function HomeScreen(): ReactElement {
   const createRoom = useGameStore((s) => s.createRoom);
+  const openOnThisScreen = useGameStore((s) => s.openOnThisScreen);
   const joinRoom = useGameStore((s) => s.joinRoom);
 
   /**
@@ -70,6 +71,9 @@ export function HomeScreen(): ReactElement {
   const trimmedName = displayName.trim();
   const nameReady = trimmedName.length > 0;
   const codeReady = code.length === CODE_LENGTH;
+  // Party Mode is started from the TV, and the TV is nobody (spec §2.1): it
+  // needs no name, and the phones bring their own when they join.
+  const startReady = mode === "party" || nameReady;
 
   const onCodeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setCode(normalizeCode(e.target.value));
@@ -87,13 +91,14 @@ export function HomeScreen(): ReactElement {
     setError(null);
     setBusy("create");
     try {
-      await createRoom(mode, trimmedName);
+      if (mode === "party") await openOnThisScreen();
+      else await createRoom(mode, trimmedName);
     } catch (err) {
       setError(err instanceof Error ? err.message : "We could not start the game.");
     } finally {
       setBusy(null);
     }
-  }, [createRoom, mode, trimmedName]);
+  }, [createRoom, openOnThisScreen, mode, trimmedName]);
 
   const join = useCallback(async () => {
     setError(null);
@@ -177,10 +182,10 @@ export function HomeScreen(): ReactElement {
             variant="primary"
             size="lg"
             icon={<Icon name="play" />}
-            disabled={!nameReady || busy !== null}
+            disabled={!startReady || busy !== null}
             onClick={() => void start()}
           >
-            {busy === "create" ? "Starting…" : "Start a game"}
+            {busy === "create" ? "Starting…" : mode === "party" ? "Open the lobby here" : "Start a game"}
           </Button>
         </section>
 
