@@ -19,17 +19,20 @@
 #                        apart at a joint, paint colours that are in no part PNG,
 #                        and do the state machine's events actually fire.
 #
-# On pull requests it runs only when something that could change a rendered frame
-# changed — the rigs themselves, the contract they derive from, or the gate. Rigs
-# are regenerated rarely and in bulk, so this is nearly always "not this PR", and
-# when it is this PR it is exactly the PR you want it on. "The rigs themselves"
-# is two trees: the 24 base rigs under assets/characters/ and the 30 class
-# variants under assets/character-rigs/, which the gate has measured since class
-# rigs became motion jobs — for a while the filter listed only the first, so a PR
-# that regenerated every class rig ran no motion gate at all. ci.yml has no path
-# filter, so its `rigs` job (the rest gate) already covers both.
+# It runs only when something that could change a rendered frame changed: a
+# rig's inputs (parts, pinned joints, configs, the manifest's rig sections), a
+# rig itself, the builder or the gate. That decision is tools/ci/changes.mjs
+# (MOTION_INPUTS) and nothing else. There is deliberately no `on.paths` list
+# here any more: it was a second copy of the same rules that had drifted from
+# them (it listed rig.riv but not parts/ or joints.json, so a PR that recut
+# only parts never started this workflow, and no job-level check can start a
+# workflow that did not run). The cost is one ~20s `changes` job per PR.
 #
-# `gap-calibration.mjs` is in the list for a different reason: it changes no
+# A push to main is classified against the commit it replaced, so merging a
+# docs change does not start forty minutes of rendering. A push whose `before`
+# is unknown (a new branch, a force-push past it) runs everything.
+#
+# `gap-calibration.mjs` is a motion input for a different reason: it changes no
 # frame, but this is the only place it is ever run against a real report, so a
 # calibration-only PR would otherwise merge a broken formatter or a mis-bucketed
 # histogram and surface it on some later, unrelated rig change.
@@ -39,25 +42,7 @@ name: Rig motion
 on:
   push:
     branches: [main]
-    paths:
-      - "assets/characters/**/rig.riv"
-      - "assets/character-rigs/**/rig.riv"
-      - "assets/manifest.json"
-      - "art/rig/**"
-      - "tools/art/verify-rig-motion.mjs"
-      - "tools/art/rig_motion.py"
-      - "tools/art/gap-calibration.mjs"
-      - ".github/workflows/rig-motion.yml"
   pull_request:
-    paths:
-      - "assets/characters/**/rig.riv"
-      - "assets/character-rigs/**/rig.riv"
-      - "assets/manifest.json"
-      - "art/rig/**"
-      - "tools/art/verify-rig-motion.mjs"
-      - "tools/art/rig_motion.py"
-      - "tools/art/gap-calibration.mjs"
-      - ".github/workflows/rig-motion.yml"
   workflow_dispatch:
 
 concurrency:
@@ -68,10 +53,43 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    # The only place this workflow decides whether to render (see the header).
+    # The rules are in tools/ci/changes.mjs. A skip here is a job-level `if:`
+    # (reports as passed), never `on.paths` (reports nothing). Manual runs
+    # skip nothing.
+    name: does this change need it
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      motion: ${{ steps.classify.outputs.motion }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Classify the change
+        id: classify
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE"
+            node tools/ci/changes.mjs "$BASE" HEAD
+          elif [ "${{ github.event_name }}" = "push" ] && [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
+               && git fetch --no-tags --depth=1 origin "$BEFORE"; then
+            node tools/ci/changes.mjs "$BEFORE" HEAD
+          else
+            node tools/ci/changes.mjs --all
+          fi
+
   motion:
+    needs: changes
     # Dependabot PRs cannot access RIVE_MCP_TOKEN for the private renderer.
     # Normal PRs, pushes to main, and manual runs keep the motion gate.
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    if: >-
+      needs.changes.outputs.motion == 'true' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]')
     name: every clip of every rig
     runs-on: ubuntu-latest
     # 54 rigs (24 base + 30 class) x 13 clips. Measured on a local 4-core box:
