@@ -28,7 +28,7 @@ import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
-import { useIsMyCombatTurn, useIsMyPrompt, useMe } from "../store";
+import { useMyTurnKey } from "../store";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -51,21 +51,17 @@ function PhoneLayout(): React.JSX.Element {
   // The same three facts TravelLayout reads, for the same reason: being asked
   // something — or having no character yet — is the game waiting on you, and
   // nothing you brought up on purpose outranks that.
-  const isMyPrompt = useIsMyPrompt();
-  const isMyCombatTurn = useIsMyCombatTurn();
-  const me = useMe();
-  const myTurn = isMyPrompt || isMyCombatTurn || me === null;
   const [showing, setShowing] = useState<Showing>("player");
 
-  // Keyed on the turn, not set once: a map opened during somebody else's
-  // turn must not stop the next question from reaching you. On the transition
-  // only, for the reason TravelLayout gives — a Suspense reveal re-runs
-  // effects, and that must not read as a new turn.
-  const wasMyTurn = useRef(false);
+  // Each new question takes focus, including two consecutive questions for
+  // the same player. An update to the current question (such as another vote)
+  // does not: the player can keep looking at the map while thinking.
+  const turnKey = useMyTurnKey();
+  const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (myTurn && !wasMyTurn.current) setShowing("player");
-    wasMyTurn.current = myTurn;
-  }, [myTurn]);
+    if (turnKey !== null && turnKey !== previousTurnKey.current) setShowing("player");
+    previousTurnKey.current = turnKey;
+  }, [turnKey]);
 
   const onMap = showing === "map";
 
