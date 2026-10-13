@@ -16,6 +16,7 @@ import { speak, turnHolderAway } from "@kad/shared";
 import type { SceneType } from "@kad/shared";
 import { useItems, useParty, useRunState } from "../store";
 import { Icon } from "./icons";
+import { chapterHeading } from "./campaign-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
 
@@ -35,8 +36,8 @@ const SCENE_ICON: Record<SceneType, string> = {
   encounter: "swords",
 };
 
-/** "bramblewood-01" → "Bramblewood 01". Chapter titles live in chapter JSON,
- *  which the client does not load; the id is the honest fallback. */
+/** "bramblewood-01" → "Bramblewood 01". The fallback for a run persisted
+ *  before `chapterInfo` carried the real title. */
 function prettyChapter(chapterId: string): string {
   return chapterId
     .split(/[-_]/)
@@ -183,7 +184,7 @@ export function NarrationPanel(): ReactElement | null {
         {state.chapterId === null ? null : (
           <p className="narration__chapter kad-label">
             <Icon name="chapter" />
-            <span>{prettyChapter(state.chapterId)}</span>
+            <span>{chapterHeading(state) ?? prettyChapter(state.chapterId)}</span>
           </p>
         )}
         {sceneType === null ? null : (

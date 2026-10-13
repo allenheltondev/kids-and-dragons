@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import type { PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
-import { nextChapterLine } from "./campaign-copy";
+import { campaignPremise, nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -128,6 +128,20 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
+      {/* Before chapter 1 the table needs to know what it is setting out on —
+          otherwise the first scene is the first anyone hears of the story.
+          Told while the room is filling, and gone once the lineup starts:
+          from then on the party is what the screen is for, and a full
+          three-person lineup has to fit a 720p TV without scrolling. */}
+      {party.length === 0 && campaignPremise(state?.campaign) !== null ? (
+        <div className="lobby__premise">
+          <p className="lobby__premise-title">
+            <Icon name="scroll" />
+            <span>{state?.campaign?.title}</span>
+          </p>
+          <p className="lobby__premise-text">{campaignPremise(state?.campaign)}</p>
+        </div>
+      ) : null}
       {nextChapterLine(state?.campaign) !== null ? (
         <p className="lobby__next-chapter">
           <Icon name="map" />
