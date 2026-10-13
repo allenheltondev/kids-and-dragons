@@ -1,0 +1,6 @@
+.field-guide { display: flex; flex-direction: column; min-block-size: 0; flex: 1 1 auto; }
+.field-guide__title { margin: 0.75em 0.75em 0.25em; font-size: 1.2em; }
+.field-guide__body { flex: 1 1 auto; min-block-size: 0; padding: 0.5em 0.75em; }
+.field-guide__summary { margin: 0; color: var(--kad-ink-dim); }
+.field-guide .field-guide__back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
+.player__guide-entry { margin-block-start: 0.5em; }
