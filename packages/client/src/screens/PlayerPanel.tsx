@@ -168,8 +168,8 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
             <Icon name="levelup" />
             <span>
               {character.unspentPoints === 1
-                ? "1 point to spend when you rest"
-                : `${String(character.unspentPoints)} points to spend when you rest`}
+                ? "Spend 1 point at rest"
+                : `Spend ${String(character.unspentPoints)} points at rest`}
             </span>
           </span>
         ) : null}
