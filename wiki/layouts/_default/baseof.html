@@ -59,7 +59,7 @@
   {{/* Pagefind navbar search — uses ES module export, loaded as module */}}
   {{ $searchJS := resources.Get "js/search.js" }}
   {{ if $searchJS }}
-  <script type="module" src="{{ $searchJS.RelPermalink }}"></script>
+  <script type="module" data-wiki-base="{{ site.Home.RelPermalink }}" src="{{ $searchJS.RelPermalink }}"></script>
   {{ end }}
 
   {{/* Mobile sidebar overlay toggle */}}

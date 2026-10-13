@@ -56,13 +56,25 @@ if (typeof window !== 'undefined') {
 
 var pagefind = null;
 
+// The site's base path ("/kids-and-dragons/" on Pages, "/" locally), handed
+// over by baseof.html. The Pagefind bundle and every result URL live under
+// it, and a root-absolute path would miss it.
+var BASE = (typeof document !== 'undefined' &&
+  document.querySelector('script[data-wiki-base]') &&
+  document.querySelector('script[data-wiki-base]').getAttribute('data-wiki-base')) || '/';
+
 function loadPagefind() {
   if (pagefind) return Promise.resolve(pagefind);
   if (typeof window === 'undefined') return Promise.reject(new Error('No window'));
 
-  return import('/pagefind/pagefind.js')
+  return import(BASE + 'pagefind/pagefind.js')
     .then(function (pf) {
       pagefind = pf;
+      if (pagefind.options) {
+        return Promise.resolve(pagefind.options({ baseUrl: BASE })).then(function () {
+          return pagefind.init ? pagefind.init() : pagefind;
+        });
+      }
       if (pagefind.init) {
         return pagefind.init();
       }
@@ -355,7 +367,8 @@ function getEntityType(item) {
   }
   // Infer from URL path segments
   if (item.url) {
-    var segments = item.url.replace(/^\//, '').split('/');
+    var path = item.url.indexOf(BASE) === 0 ? item.url.slice(BASE.length) : item.url.replace(/^\//, '');
+    var segments = path.split('/');
     if (segments.length >= 2) {
       var section = segments[0];
       // Singularize common section names for badge display
