@@ -166,7 +166,9 @@ export interface RoomRecord {
  * makes the log replayable (§4.1): which player's intent produced this seq.
  * `listEvents()` returns these directly as `ServerMessage`s for reconnect.
  */
-export interface EventRecord extends ServerMessage {
+export interface EventRecord extends Omit<ServerMessage, "discovered"> {
+  // `discovered` is excluded on purpose: it is the live-only "new entry"
+  // signal, and anything in the log is replayed by a reconnect (§4.3).
   at: string;
   playerId?: string;
   intent?: ClientIntent;
