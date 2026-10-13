@@ -140,6 +140,10 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
   enemy entry or a `count` to reach two figures). Maps: `ford`, `reedbank`, `roadside`,
   `glade`, `switchback`, `gallery`, `thicket`. `onDefeat` always branches somewhere real —
   robbed, rescued, rerouted — and costs stones or time.
+- **Field Guide tags.** A fight's creatures and the chapter's biome fill in the Field Guide on
+  their own; tag a scene with `discovers` only when the party meets someone or somewhere else
+  there (an NPC, a named individual, a location). See
+  [`discovers` in content/README.md](../../content/README.md#field-guide-tags-discovers).
 - **Choice icons** from the client's set: `might quick clever heart eye ear arrow hand flame
   map scroll rest star crown drop feather lantern leaf note thorn whistle acorn bead boot
   cake charm ribbon swords trophy party travel forward back check` plus aliases `fist wing
