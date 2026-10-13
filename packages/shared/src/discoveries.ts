@@ -13,7 +13,7 @@
  *
  * The server calls `chapterStartDiscoveries` when a chapter begins and
  * `sceneDiscoveries` on every scene entry (an encounter's start is its scene's
- * entry), and merges into the player's guide idempotently. Ids that are not in
+ * entry), and merges into the household's guide idempotently (server handlers/field-guide.ts). Ids that are not in
  * the field guide are the validator's concern, not filtered here.
  *
  * Only type imports: this file is also loaded directly by tools/content/validate.mjs.

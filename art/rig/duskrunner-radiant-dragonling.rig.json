@@ -43,5 +43,7 @@
         "from": "down_loop"
       }
     }
-  }
+  },
+  "underpaint": 48,
+  "$underpaintComment": "UNDERPAINT: the parts are cut along their outlines and overlap their neighbours only in a ~2,100px disc at each joint, so nothing lies behind the rest of a seam and every idle breath opened a dark sliver at the shoulders, mane and hips. rive-mcp grows each part up to 48 canvas px under the parts of its own line drawn over it, in its own edge colours — hidden at rest, revealed as more of the part in motion. Pivots are measured before the fill and do not move. 48, not more: measured across six species and five clips, 48 removed slits on every clip; 96 began adding them back on bigfoot (art-pipeline.md section 6.4)."
 }
