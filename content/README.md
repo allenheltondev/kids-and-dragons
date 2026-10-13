@@ -11,6 +11,7 @@ content/
   abilities.json                 what abilities do on the board           → AbilityCatalog
   items.json                     the item catalog, keyed by itemId        → ItemCatalog   (generated)
   bestiary.json                  canon's creatures, ready for a board     → Bestiary       (generated)
+  world.json                     where every place is on the realm map    → WorldMap       (generated)
   campaigns/<id>.json            a story arc, listing its chapters        → Campaign
   chapters/<id>.json             one ~30-minute sitting                   → Chapter
   maps/<id>.json                 encounter boards — rows + spawn points   → EncounterMap

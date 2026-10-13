@@ -1,0 +1,188 @@
+/*
+ * The world map — the realm painting with the party on it (WorldMapPanel.tsx).
+ *
+ * `em`, `%` and tokens against `.kad-surface` only; no viewport units
+ * (architecture §4.6 rule 2). The painting is sized as a multiple of the
+ * pane's width and the pane scrolls natively to pan.
+ */
+
+.atlas {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  color: var(--kad-ink);
+}
+
+.atlas--empty {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--kad-space-4);
+}
+
+.atlas__note {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  margin: 0;
+  font-size: var(--kad-text-lg);
+}
+
+/* --- Head --------------------------------------------------------------------- */
+
+.atlas__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kad-space-3);
+  flex: 0 0 auto;
+  padding: var(--kad-space-3) var(--kad-space-4);
+  border-block-end: 1px solid var(--kad-border);
+  background: var(--kad-bg);
+}
+
+.atlas__words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-1);
+  min-inline-size: 0;
+}
+
+.atlas__realm {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  margin: 0;
+  font-size: var(--kad-text-sm);
+}
+
+.atlas__where {
+  margin: 0;
+  font-size: var(--kad-text-md);
+  font-weight: var(--kad-weight-bold);
+  text-wrap: balance;
+}
+
+.atlas__zoom {
+  display: flex;
+  gap: var(--kad-space-2);
+  flex: 0 0 auto;
+}
+
+/* --- The painting ---------------------------------------------------------------- */
+
+.atlas__viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: auto;
+  /* Deep water, so the painting's own sea runs off the edge rather than
+     ending on a black border. */
+  background: #0b2a4a;
+  /* Panning is the pane's gesture; the browser handles it. */
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y;
+}
+
+.atlas__sheet {
+  position: relative;
+  /* Width and aspect are inline: both come from the data. */
+  min-inline-size: 100%;
+}
+
+.atlas__painting {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: fill;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* --- The party, standing on the realm ----------------------------------------------- */
+
+.atlas__pin {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kad-space-1);
+  /* `left`/`top` land on the anchor; the faces sit on it and the label hangs
+     below, so the pin does not scale with the painting — it is UI, not map. */
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.atlas__party {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 0.25em;
+  border-radius: var(--kad-radius-pill);
+  background: var(--kad-accent-soft);
+  outline: 0.2em solid var(--kad-accent);
+  box-shadow: var(--kad-shadow-md);
+  animation: atlas-here 2.4s var(--kad-ease) infinite;
+}
+
+.atlas__face {
+  display: block;
+  inline-size: 2em;
+  block-size: 2em;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--kad-bg);
+  border: 0.12em solid var(--kad-ink);
+}
+
+.atlas__face + .atlas__face {
+  margin-inline-start: -0.6em;
+}
+
+.atlas__face-art {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.atlas__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.15em 0.5em;
+  border-radius: var(--kad-radius-sm);
+  background: color-mix(in srgb, var(--kad-bg) 82%, transparent);
+  box-shadow: var(--kad-shadow-sm);
+  white-space: nowrap;
+  line-height: 1.15;
+}
+
+.atlas__place {
+  font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-bold);
+}
+
+.atlas__here {
+  font-size: var(--kad-text-xs);
+  color: var(--kad-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@keyframes atlas-here {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 108, 245, 0.55), var(--kad-shadow-md);
+  }
+  60% {
+    box-shadow: 0 0 0 0.8em rgba(139, 108, 245, 0), var(--kad-shadow-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas__party {
+    animation: none;
+  }
+}

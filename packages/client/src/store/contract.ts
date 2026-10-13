@@ -20,6 +20,7 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  WorldMap,
 } from "@kad/shared";
 
 export type ConnectionStatus =
@@ -78,11 +79,20 @@ export interface GameStore {
    * rules — the server runs the chapter; this is what it looks like.
    */
   chapter: Chapter | null;
+  /**
+   * The world map's key (content/world.json): where every place is on the
+   * realm painting, so the phone can stand the party on the chapter's biome.
+   * Loaded on demand by the map alone — nothing else needs it, so it is not
+   * part of `loadContent`'s batch.
+   */
+  world: WorldMap | null;
 
   /** Loads rules, items, the campaign and the ability catalog. Idempotent. */
   loadContent(): Promise<void>;
   /** Loads the named chapter's content. Idempotent per id; failures are quiet. */
   loadChapter(chapterId: string): Promise<void>;
+  /** Loads the world map's key. Idempotent; failures are quiet. */
+  loadWorld(): Promise<void>;
   createRoom(mode: RoomMode, displayName: string): Promise<ClientSession>;
   /**
    * Party Mode from the TV: open a room with this device as its screen, seat
