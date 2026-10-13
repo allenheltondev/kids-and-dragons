@@ -35,6 +35,7 @@ import {
   NarrationPanel,
   PlayerPanel,
   SignInFlow,
+  WelcomeBack,
   hasIcon,
 } from "./index";
 
@@ -45,6 +46,7 @@ const SCREENS = {
   ChapterCompletePanel,
   CreationPreview,
   CreationFlow,
+  WelcomeBack,
   PlayerPanel,
   CombatControls,
   DiceOverlay,

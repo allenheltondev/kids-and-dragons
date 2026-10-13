@@ -174,6 +174,13 @@ export async function applyAction(
     spentCharacter = spend.value.character;
     result = { state: spend.value.state };
   } else {
+    // A returning hero is a household row the engine cannot reach, so it is
+    // loaded here and handed in; whether this player may bring it is the
+    // engine's call (doSeatCharacter).
+    const savedCharacter =
+      input.intent.type === "SEAT_CHARACTER"
+        ? await deps.repo.getCharacter(auth.run.householdId, input.intent.characterId)
+        : undefined;
     result = deps.engine.applyIntent(
       state,
       // The engine re-checks seq itself; passing it keeps that guard armed even
@@ -194,6 +201,7 @@ export async function applyAction(
         // Characters belong to the household, not the run (architecture §3), so
         // CREATE_CHARACTER needs to know which household it is building into.
         householdId: auth.run.householdId,
+        ...(savedCharacter === undefined ? {} : { savedCharacter }),
         // The roads this campaign attempt has already taken, which a chapter
         // start seeds its flags from rather than starting empty. Empty for
         // every other intent — nothing else touches the chapter boundary.

@@ -125,6 +125,12 @@ export interface EngineContext {
   /** Used when a CREATE_CHARACTER intent builds a character. */
   householdId?: string;
   /**
+   * The saved character a SEAT_CHARACTER names, loaded from the household by
+   * the server — the engine cannot reach the store. Null when there is no
+   * such row; absent for every other intent.
+   */
+  savedCharacter?: Character | null;
+  /**
    * Whether this server is allowed to cheat on the author's behalf — roadmap
    * chapter 6's playtest mode, and the lock everything else about it hangs off.
    *
@@ -797,6 +803,9 @@ function dispatch(
     case "CREATE_CHARACTER":
       return doCreateCharacter(draft, playerId, intent, ctx, effects);
 
+    case "SEAT_CHARACTER":
+      return doSeatCharacter(draft, playerId, intent.characterId, ctx);
+
     case "START_CHAPTER":
       return doStartChapter(draft, intent.chapterId, ctx);
 
@@ -917,6 +926,8 @@ function doCreateCharacter(
   ctx: EngineContext,
   effects: EngineEffects,
 ): Presentation | undefined {
+  assertSeatOpen(draft, playerId);
+
   /*
    * Deliberately allowed at any phase. Refusing once the chapter has started
    * strands anyone who joins late — their phone has no character, so it offers
@@ -924,20 +935,6 @@ function doCreateCharacter(
    * Someone arriving mid-chapter walking on as a new party member is a much
    * better answer than a phone that says "finding your character" forever.
    */
-  if (memberByPlayer(draft, playerId)) {
-    throw new Illegal("ILLEGAL", `player "${playerId}" already has a character in this run`);
-  }
-
-  /*
-   * A ceiling, because nothing else is one. Every map budgets `partySpawns`
-   * against this number (the content validator holds them to it), so a party
-   * that outgrows it reaches an encounter it cannot start. The table this game
-   * is built for seats three; six is "the cousins are visiting", not a raid.
-   */
-  if (draft.party.length >= MAX_PARTY) {
-    throw new Illegal("ILLEGAL", `the party is full (${MAX_PARTY})`);
-  }
-
   /*
    * `startingLevel` arrives from a phone and buys levels, actions and stat
    * points outright (spec §8.4), so it is checked against *this party* and not
@@ -1004,6 +1001,63 @@ function doCreateCharacter(
    * in place, so the party would be answering a question nothing is showing.
    * Their arrival is their business; the run keeps doing what it was doing.
    */
+  if (draft.phase === "lobby") draft.phase = "creation";
+  return undefined;
+}
+
+/** The two rules every way of sitting down shares: one seat each, and a ceiling. */
+function assertSeatOpen(draft: RunState, playerId: string): void {
+  if (memberByPlayer(draft, playerId)) {
+    throw new Illegal("ILLEGAL", `player "${playerId}" already has a character in this run`);
+  }
+  /*
+   * A ceiling, because nothing else is one. Every map budgets `partySpawns`
+   * against this number (the content validator holds them to it), so a party
+   * that outgrows it reaches an encounter it cannot start. The table this game
+   * is built for seats three; six is "the cousins are visiting", not a raid.
+   */
+  if (draft.party.length >= MAX_PARTY) {
+    throw new Illegal("ILLEGAL", `the party is full (${MAX_PARTY})`);
+  }
+}
+
+/**
+ * A returning hero sits down as they are: their level, their bag, their
+ * souvenirs — the household row, resolved, exactly as CREATE_CHARACTER would
+ * have left a new one. Nothing is written: the row already exists, and the
+ * chapter-end fold reads it back by id like any other member's.
+ *
+ * Only your own. A character belongs to the player who made it, and a phone
+ * that could seat a sibling's hero could also walk off with their level.
+ */
+function doSeatCharacter(
+  draft: RunState,
+  playerId: string,
+  characterId: string,
+  ctx: EngineContext,
+): Presentation | undefined {
+  assertSeatOpen(draft, playerId);
+
+  const saved = ctx.savedCharacter ?? null;
+  if (!saved || saved.id !== characterId || saved.householdId !== (ctx.householdId ?? "")) {
+    throw new Illegal("NOT_FOUND", `no saved character "${characterId}" in this household`);
+  }
+  if (saved.ownerPlayerId !== playerId) {
+    throw new Illegal("FORBIDDEN", `character "${characterId}" belongs to another player`);
+  }
+  if (memberByCharacter(draft, characterId)) {
+    throw new Illegal("ILLEGAL", `character "${characterId}" is already at this table`);
+  }
+
+  const resolved = resolveCharacter(saved, ctx.rules, ctx.items);
+  draft.party.push({
+    character: resolved,
+    playerId,
+    hp: resolved.maxHp,
+    down: false,
+    connected: true,
+    ready: false,
+  });
   if (draft.phase === "lobby") draft.phase = "creation";
   return undefined;
 }
