@@ -12,7 +12,7 @@
 
 import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
-import { speak } from "@kad/shared";
+import { speak, turnHolderAway } from "@kad/shared";
 import type { SceneType } from "@kad/shared";
 import { useItems, useParty, useRunState } from "../store";
 import { Icon } from "./icons";
@@ -70,6 +70,16 @@ export function NarrationPanel(): ReactElement | null {
   const sceneId = state?.sceneId ?? null;
   const prompt = state?.prompt ?? null;
   const choices = prompt !== null && prompt.kind === "choice" ? prompt.options : null;
+  /*
+   * Whose story turn it is (spec §6.1), said on the shared screen because
+   * that is where the table looks to find out. Named only while the holder is
+   * at the table — once their phone drops, anyone may answer for them, and
+   * the screen should not tell the room to wait on somebody who cannot tap.
+   */
+  const turnName =
+    prompt !== null && prompt.kind === "choice" && !prompt.vote && prompt.forPlayerIds.length === 1 && !turnHolderAway(party, prompt)
+      ? party.find((m) => m.playerId === prompt.forPlayerIds[0])?.character.name ?? null
+      : null;
 
   /*
    * Everything read aloud is read here, and only here.
@@ -92,7 +102,10 @@ export function NarrationPanel(): ReactElement | null {
     speak(narration, { source: "narration", interrupt: true });
   }, [sceneId, narration]);
 
-  const choiceText = choices === null ? "" : choices.map((c) => c.label).join(". ");
+  const choiceText =
+    choices === null ? "" : [turnName === null ? null : `${turnName}'s turn.`, ...choices.map((c) => c.label)]
+      .filter((line): line is string => line !== null)
+      .join(". ");
   const spokenChoices = useRef<string | null>(null);
   useEffect(() => {
     if (choiceText === "" || spokenChoices.current === choiceText) return;
@@ -195,6 +208,12 @@ export function NarrationPanel(): ReactElement | null {
         The shared screen shows *what* the choices are; the buttons live on the
         phones (spec §2). Read-only here — nothing on WorldView is tappable.
       */}
+      {choices !== null && choices.length > 0 && turnName !== null ? (
+        <p className="narration__prompt narration__turn">
+          <Icon name="hand" />
+          <span>{turnName}&rsquo;s turn to choose</span>
+        </p>
+      ) : null}
       {choices !== null && choices.length > 0 ? (
         <ul className="narration__choices">
           {choices.map((choice) => (
