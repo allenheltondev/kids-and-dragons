@@ -11,12 +11,20 @@
  *     member, in that character's own colour, positioned distinctly.
  */
 
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { PartyMember } from "@kad/shared";
 import { hasIcon } from "./icons";
 import { KeepsakeLantern, motePositions } from "./KeepsakeLantern";
-import { KeepsakeOffer, OfferStep, SignInFlow, namesOf, shouldOfferKeepsake } from "./SignInFlow";
+import { setFieldGuideOverride } from "../feature-flags";
+import {
+  KeepsakeOffer,
+  OfferStep,
+  SignInFlow,
+  guideAtStake,
+  namesOf,
+  shouldOfferKeepsake,
+} from "./SignInFlow";
 
 function member(playerId: string, name: string, accent: string): PartyMember {
   return {
@@ -48,7 +56,7 @@ function member(playerId: string, name: string, accent: string): PartyMember {
       questItems: [],
       souvenirs: [],
       isProvisional: false,
-    committedLevel: 1,
+      committedLevel: 1,
     },
   };
 }
@@ -230,8 +238,47 @@ describe("the flow's icons", () => {
      * That safety net also means a typo here would ship as a silent grey circle
      * on the one screen an adult ever reads, so the names are asserted.
      */
-    for (const name of ["keepsake", "lantern", "envelope", "passkey", "check", "back", "forward", "close"]) {
+    for (const name of [
+      "keepsake",
+      "lantern",
+      "envelope",
+      "passkey",
+      "check",
+      "back",
+      "forward",
+      "close",
+    ]) {
       expect({ name, known: hasIcon(name) }).toEqual({ name, known: true });
     }
+  });
+});
+
+describe("the Field Guide in the offer", () => {
+  const FIND = { firstFoundBy: "p_1", foundAt: "2026-01-01T00:00:00.000Z" };
+
+  afterEach(() => {
+    setFieldGuideOverride(null);
+  });
+
+  it("says nothing about the guide by default", () => {
+    const html = renderToStaticMarkup(<OfferStep motes={MOTES} />);
+    expect(html).not.toContain("Field Guide");
+  });
+
+  it("names the guide among what is kept, and stays free of account words", () => {
+    const html = renderToStaticMarkup(<OfferStep motes={MOTES} fieldGuide />);
+    expect(html).toContain("Field Guide");
+    expect(html).toContain("seven days");
+    for (const banned of ["sign up", "sign in", "account", "register", "log in"]) {
+      expect(html.toLowerCase()).not.toContain(banned);
+    }
+  });
+
+  it("is at stake only when the feature is on and the guide has an entry", () => {
+    setFieldGuideOverride(true);
+    expect(guideAtStake({})).toBe(false);
+    expect(guideAtStake({ "creature.pip": FIND })).toBe(true);
+    setFieldGuideOverride(false);
+    expect(guideAtStake({ "creature.pip": FIND })).toBe(false);
   });
 });
