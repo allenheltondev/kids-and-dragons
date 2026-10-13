@@ -84,11 +84,13 @@
   background: var(--color-surface, #191534);
 }
 
-/* The primary action always takes the room that is left, and never breaks its
-   own label over two lines to do it — "That's me!" wrapped at 390px, which is
-   the width the whole step was designed for. */
-.creation__foot > :last-child {
-  flex: 1 1 auto;
+/* Two actions, two equal halves: a narrow "Back" beside a wide "Next" reads
+   as one button and a stray, and the pair share the row evenly on every
+   width. Neither breaks its label over two lines — "That's me!" wrapped at
+   390px, which is the width the whole step was designed for. */
+.creation__foot > * {
+  flex: 1 1 0;
+  min-inline-size: 0;
 }
 
 .creation__foot .kad-button__label {

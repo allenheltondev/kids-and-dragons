@@ -128,6 +128,25 @@
 }
 
 /*
+ * On a phone-wide world pane the pills stop being a ragged cloud and become
+ * a column of equal, full-width rows: a list of three things that are the
+ * same kind of thing should look like one. The TV keeps the wrap, which
+ * reads across a room. A container query against the surface, so neither
+ * side has to know the mode (architecture §4.6).
+ */
+@container world (max-width: 40em) {
+  .narration__choices {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .narration__choice,
+  .narration__prompt {
+    inline-size: 100%;
+  }
+}
+
+/*
  * Hand-offs (spec §9.4). Sized a step under the choices: what the party is
  * being *asked* outranks what two of them are passing to each other, and the
  * table should be able to take it in without losing the question.

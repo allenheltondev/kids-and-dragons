@@ -27,7 +27,9 @@
 
 .complete__heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2, 0.5em);
   margin: 0;
   font-size: var(--font-size-2xl, 2em);
@@ -52,14 +54,21 @@
  * warning one: spec §8.2 says this is a different path, not a loss, and the
  * screen an eight-year-old reads should not be the one place that disagrees.
  */
+/* Inline, so the star stays on the sentence when it wraps on a phone rather
+   than floating alone above it. */
 .complete__campaign-end,
 .complete__setback {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
+  display: block;
+  text-align: center;
   margin: 0;
   font-size: var(--font-size-md, 1em);
   color: var(--color-text-muted, #b7b0d8);
+}
+
+.complete__campaign-end > .kad-icon,
+.complete__setback > .kad-icon {
+  vertical-align: -0.15em;
+  margin-inline-end: var(--space-2, 0.5em);
 }
 
 /*
