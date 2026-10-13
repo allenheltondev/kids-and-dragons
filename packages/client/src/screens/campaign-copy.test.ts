@@ -41,8 +41,11 @@ describe("setting the scene for a new table", () => {
   it("tells the premise before chapter 1, and not to a party halfway through", () => {
     expect(campaignPremise({ ...VIEW, blurb: PREMISE, next: { index: 1, title: "The City" } })).toBe(PREMISE);
     expect(campaignPremise({ ...VIEW, blurb: PREMISE })).toBeNull();
-    // Starting again after an ending is starting from the top.
-    expect(campaignPremise({ ...VIEW, blurb: PREMISE, ended: "complete" })).toBe(PREMISE);
+    // The table that just finished it has just lived it; a new room starting
+    // over carries no `ended` and is told like any first evening.
+    expect(
+      campaignPremise({ ...VIEW, blurb: PREMISE, next: { index: 1, title: "The City" }, ended: "complete" }),
+    ).toBeNull();
     expect(campaignPremise({ ...VIEW, next: { index: 1, title: "The City" } })).toBeNull();
   });
 });
