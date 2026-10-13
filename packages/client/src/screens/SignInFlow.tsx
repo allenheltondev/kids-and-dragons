@@ -297,28 +297,42 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
         <Icon name="envelope" />
         <span>The code</span>
       </label>
-      <input
-        className="keepsake__input keepsake__input--code"
-        id={fieldId}
-        type="text"
-        inputMode="numeric"
-        // Lets both iOS and Android offer the code straight from the SMS/email
-        // notification, which removes the app-switch entirely.
-        autoComplete="one-time-code"
-        pattern="[0-9]*"
-        maxLength={CODE_LENGTH}
-        autoFocus
-        placeholder="00000000"
-        value={code}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          const next = e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH);
-          // Clear the guard when the code changes, so a corrected digit can
-          // resubmit after a CodeMismatch.
-          if (next !== submitted.current) submitted.current = "";
-          setCode(next);
-        }}
-        disabled={busy}
-      />
+      {/* The same eight-box entry as the room code on the home screen: the real
+          input sits on top, transparent, so paste, autofill and the native
+          keyboard all behave, and the boxes underneath do the drawing. */}
+      <div className="keepsake__code">
+        <input
+          className="keepsake__code-input"
+          id={fieldId}
+          type="text"
+          inputMode="numeric"
+          // Lets both iOS and Android offer the code straight from the SMS/email
+          // notification, which removes the app-switch entirely.
+          autoComplete="one-time-code"
+          pattern="[0-9]*"
+          maxLength={CODE_LENGTH}
+          autoFocus
+          value={code}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const next = e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH);
+            // Clear the guard when the code changes, so a corrected digit can
+            // resubmit after a CodeMismatch.
+            if (next !== submitted.current) submitted.current = "";
+            setCode(next);
+          }}
+          disabled={busy}
+        />
+        <div className="keepsake__code-boxes" aria-hidden="true">
+          {Array.from({ length: CODE_LENGTH }, (_, i) => (
+            <span
+              key={i}
+              className={`keepsake__code-box${code.length === i ? " keepsake__code-box--next" : ""}${code[i] ? " keepsake__code-box--filled" : ""}`}
+            >
+              {code[i] ?? ""}
+            </span>
+          ))}
+        </div>
+      </div>
 
       <div className="keepsake__actions">
         <Button
