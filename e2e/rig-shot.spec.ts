@@ -50,7 +50,7 @@ test("photograph the party on a TV", async ({ browser }) => {
   const host = await phone();
   await host.goto("/");
   await host.getByRole("button", { name: /want to host/i }).click();
-  await host.getByText("Travel Mode").click();
+  await host.getByText("Phone Mode").click();
   await host.fill('input[placeholder="Type your name"]', "Allen");
   await host.getByRole("button", { name: /start a game/i }).click();
   await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);

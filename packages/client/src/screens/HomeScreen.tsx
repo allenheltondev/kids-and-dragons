@@ -3,14 +3,14 @@
  *
  * Two jobs, very unequal: join a game with a room code (architecture §4.5) —
  * what nearly every visitor, and every child, is here to do — or start one
- * (choosing Party or Travel mode, spec §2). Joining leads and stands alone;
+ * (choosing Party or Phone mode, spec §2). Joining leads and stands alone;
  * starting is a grown-up's job and sits behind a quiet "Want to host?" link, so
  * a child sees one thing to do. Everything else in the app assumes a session
  * exists.
  *
  * Joining asks for no name: the character-creation flow asks "What's your
  * name?" where it means something. The only name field left is under the host
- * link, for Travel mode, where the host is seated as a player straight away.
+ * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
 import { useCallback, useEffect, useId, useState } from "react";
@@ -75,7 +75,7 @@ export function HomeScreen(): ReactElement {
   const trimmedName = displayName.trim();
   const codeReady = code.length === CODE_LENGTH;
   // Party Mode is started from the TV, and the TV is nobody (spec §2.1): it
-  // needs no name. Travel Mode seats the host as a player, so it does.
+  // needs no name. Phone Mode seats the host as a player, so it does.
   const startReady = mode === "party" || trimmedName.length > 0;
 
   const onCodeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -215,7 +215,7 @@ export function HomeScreen(): ReactElement {
                 </span>
                 <span className="home__mode-text">
                   <span className="home__mode-name">
-                    {m === "party" ? "Party Mode" : "Travel Mode"}
+                    {m === "party" ? "Party Mode" : "Phone Mode"}
                     {/* spec §11 — selection is shown by a check glyph, not colour. */}
                     {mode === m ? <Icon name="check" label="Selected" /> : null}
                   </span>

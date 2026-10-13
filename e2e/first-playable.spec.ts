@@ -279,7 +279,7 @@ test.describe("first playable", () => {
 
     await host.goto("/");
     await host.getByRole("button", { name: /want to host/i }).click();
-    await host.getByText("Travel Mode").click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', NAMES[0]);
     await host.getByRole("button", { name: /start a game/i }).click();
 
@@ -322,7 +322,7 @@ test.describe("first playable", () => {
     const solo = await phone(browser);
     await solo.goto("/");
     await solo.getByRole("button", { name: /want to host/i }).click();
-    await solo.getByText("Travel Mode").click();
+    await solo.getByText("Phone Mode").click();
     await solo.fill('input[placeholder="Type your name"]', NAMES[0]);
     await solo.getByRole("button", { name: /start a game/i }).click();
     await expect(solo).toHaveURL(/\/p\/[A-Z]{4}$/);
@@ -366,7 +366,7 @@ test.describe("first playable", () => {
 
     await host.goto("/");
     await host.getByRole("button", { name: /want to host/i }).click();
-    await host.getByText("Travel Mode").click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', NAMES[0]);
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
@@ -483,7 +483,7 @@ test.describe("first playable", () => {
 
     await host.goto("/");
     await host.getByRole("button", { name: /want to host/i }).click();
-    await host.getByText("Travel Mode").click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', NAMES[0]);
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
@@ -677,7 +677,7 @@ test.describe("first playable", () => {
     const host = await phone(browser);
     await host.goto("/");
     await host.getByRole("button", { name: /want to host/i }).click();
-    await host.getByText("Travel Mode").click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', "Allen");
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
@@ -696,7 +696,7 @@ test.describe("first playable", () => {
     const startTravel = async () => {
       await host.goto("/");
       await host.getByRole("button", { name: /want to host/i }).click();
-      await host.getByText("Travel Mode").click();
+      await host.getByText("Phone Mode").click();
       await host.fill('input[placeholder="Type your name"]', "Allen");
       await host.getByRole("button", { name: /start a game/i }).click();
       await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
