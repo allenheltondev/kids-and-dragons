@@ -69,6 +69,12 @@ async function playCampaign(seed: number): Promise<Playthrough> {
   const pick = <T>(items: readonly T[]): T => items[Math.floor(random() * items.length)]!;
 
   const harness = makeHarness({ engine: realEngine, content });
+  // The server seeds each step's dice from `runId:seq`, and a run id is a
+  // random UUID. Left alone, "seeded" here would only cover the party's
+  // choices, and the dice would differ on every run — so whether any of the
+  // 24 parties happens to finish the whole campaign became a coin toss in CI.
+  // Key the dice to this seed instead, keeping the per-step `seq`.
+  harness.deps.rng = (key) => makeRng(`gemfall-playthrough-${seed}:${String(key).split(":").pop()}`);
   const { householdId, players } = await seedHousehold(harness, 3);
   const created = await createRoom({ householdId, mode: "travel" }, harness.deps);
   if (!created.ok) throw new Error("room");
