@@ -38,6 +38,9 @@
   "scenes": {
     "scene_arrival": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing.",
       "choices": [
         {
@@ -107,6 +110,9 @@
     },
     "scene_moths": {
       "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
       "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts, and the prospector has given up and is eating around it.",
       "choices": [
         {
@@ -157,6 +163,9 @@
     },
     "scene_wolves": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "Down on the caravan road, a pack of cinder wolves is lying in one big heap in the ruts, glowing faintly, like a pile of coals with ears. They are not hunting. They are cold and hungry, and forty wagons are stuck behind them, with forty drovers yelling.",
       "choices": [
         {
@@ -235,6 +244,9 @@
     },
     "scene_soup_tent": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles you each a bowl, asks your names, and remembers them. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
       "choices": [
         {
@@ -374,6 +386,9 @@
     },
     "scene_crab": {
       "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
       "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. A prospector called Dunmore is raising a pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
       "choices": [
         {
@@ -571,6 +586,10 @@
     },
     "scene_citadel_gate": {
       "type": "story",
+      "discovers": [
+        "location.redspire_citadel",
+        "faction.skywardens"
+      ],
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "Redspire Citadel is a black tower where every single window faces up. Inside, a clerk named Pellam writes your names in a big ledger, then writes them again in a second ledger, just to be sure. \"This way,\" he says. \"The captain has a table.\"",
       "choices": [
@@ -1217,6 +1236,10 @@
     },
     "scene_shut_out": {
       "type": "story",
+      "discovers": [
+        "location.redspire_citadel",
+        "faction.skywardens"
+      ],
       "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
       "choices": [
         {

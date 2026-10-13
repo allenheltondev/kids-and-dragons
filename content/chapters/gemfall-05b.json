@@ -42,6 +42,9 @@
   "scenes": {
     "scene_mosshome": {
       "type": "story",
+      "discovers": [
+        "character.bigfoot"
+      ],
       "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder, and does not stop jogging to say hello.",
       "choices": [
         {
@@ -454,6 +457,9 @@
     },
     "scene_soup_tent": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "Where the high paths begin, there's a little tent selling nothing and giving away soup. The woman ladling it is very kind, with a mask pushed up on her head. \"The world's rules are broken,\" she says gently. \"Whatever sleeps under that mountain could fix them. We're collecting, to help it wake.\" She rattles a little box.",
       "choices": [
         {
@@ -528,6 +534,9 @@
     },
     "scene_high_paths": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "The bigfoot high paths climb along the cliffs above the falls, all rope bridges and stone steps worn into bowls. Halfway up, three cinder wolves are lying across the path, glowing faintly, as if the mountain kicked them out. They aren't hunting. They're cross. And they're in the way.",
       "choices": [
         {
@@ -624,6 +633,9 @@
     },
     "scene_foothills_view": {
       "type": "story",
+      "discovers": [
+        "biome.red_sky_foothills"
+      ],
       "narration": "At the top of the high paths the forest stops and the foothills begin, red and rumbling, falling away to the east. Far off, on top of everything, sits Mount Red Sky with smoke curling off it like a question mark. Somewhere down there are the citadel, the truth, and whatever comes next.",
       "choices": [
         {
@@ -642,6 +654,9 @@
     },
     "ending_long_way_round": {
       "type": "rest",
+      "discovers": [
+        "biome.red_sky_foothills"
+      ],
       "narration": "By the time you have found most of your things it is dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round, a day late and one sock short. The mountain did not wait for you.",
       "heal": 3,
       "choices": [],
