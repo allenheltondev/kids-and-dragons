@@ -183,13 +183,13 @@ describe("CharacterPortrait", () => {
    * *picture* centres it. The species cards are the second kind — a portrait
    * beside a paragraph, with no floor in it to stand on.
    */
-  it("stands on the floor by default and centres where asked", () => {
+  it("centres portraits by default and grounds stage art when asked", () => {
     expect(renderToStaticMarkup(<CharacterPortrait species="unicorn" />)).toContain(
-      "portrait--floor",
+      "portrait--centre",
     );
     expect(
-      renderToStaticMarkup(<CharacterPortrait species="unicorn" stand="centre" />),
-    ).toContain("portrait--centre");
+      renderToStaticMarkup(<CharacterPortrait species="unicorn" stand="floor" />),
+    ).toContain("portrait--floor");
   });
 
   it("re-asks for a new URL after a different one failed", () => {
@@ -347,6 +347,19 @@ describe("dice scramble", () => {
 });
 
 describe("Icon", () => {
+  it("uses painted artwork for every committed inventory icon", () => {
+    const missing = [...iconNames(items)].filter(
+      (name) => !renderToStaticMarkup(<Icon name={name} />).includes("<img"),
+    );
+    expect(missing).toEqual([]);
+  });
+
+  it("keeps painted icons decorative unless they have an accessible label", () => {
+    expect(renderToStaticMarkup(<Icon name="potion" />)).toContain('alt=""');
+    const labelled = renderToStaticMarkup(<Icon name="potion" label="Healing potion" />);
+    expect(labelled).toContain('alt="Healing potion"');
+    expect(labelled).not.toContain('aria-hidden="true"');
+  });
   it("falls back to a neutral glyph for an unknown name", () => {
     const html = renderToStaticMarkup(<Icon name="no-such-icon" />);
     expect(html).toContain("<svg");

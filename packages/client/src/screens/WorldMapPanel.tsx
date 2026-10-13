@@ -118,10 +118,6 @@ export function WorldMapPanel(): ReactElement {
     <section className="atlas" aria-label="World map">
       <header className="atlas__head">
         <div className="atlas__words">
-          <p className="atlas__realm kad-muted">
-            <Icon name="map" />
-            <span>{world.title}</span>
-          </p>
           <p className="atlas__where" role="status">
             {place
               ? `The party is in ${whereLine(world, place)}.`
@@ -185,7 +181,9 @@ export function WorldMapPanel(): ReactElement {
                 {party.slice(0, 4).map((member) => (
                   <span className="atlas__face" key={member.playerId}>
                     <CharacterPortrait
+                      backdrop
                       species={member.character.species}
+                      accent={member.character.appearance.accent}
                       characterClass={member.character.class}
                       tier={member.character.tier}
                       lit={false}

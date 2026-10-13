@@ -1,3 +1,4 @@
+import { openPlayerTask } from "./player-navigation";
 /**
  * The names under the figures — the thing that tells two players apart when
  * they picked the same species (`packages/client/src/world/nameplate.ts`).
@@ -107,6 +108,7 @@ async function chooseUntil(
   for (let attempt = 0; attempt < 8; attempt++) {
     if (await done()) return;
     for (const page of pages) {
+      await openPlayerTask(page);
       const option = page.locator(".prompt button").filter({ hasText: label }).first();
       if (pages.length > 1 && !(await option.isVisible().catch(() => false))) continue;
       await option.click({ timeout: 5_000 }).catch(() => {});
@@ -144,6 +146,7 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
+  await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 }
 
 test.describe("nameplates", () => {
@@ -199,6 +202,7 @@ test.describe("nameplates", () => {
       .toBe(0);
 
     for (const page of phones) {
+      await openPlayerTask(page);
       await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
@@ -251,6 +255,7 @@ test.describe("nameplates", () => {
           .isVisible()
           .catch(() => false);
         if (flipped) break;
+        await openPlayerTask(page);
         await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 8_000 }).catch(() => {});
         await page.waitForTimeout(500);
       }

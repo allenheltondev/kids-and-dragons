@@ -1,3 +1,4 @@
+import { dismissPlayerSheet, setPlayerSection } from "../store/player-navigation";
 // @vitest-environment jsdom
 /**
  * PlayerPanel — the four prompts, the bag, and the rule they all share.
@@ -121,6 +122,7 @@ function baseState(options: MountOptions): RunState {
 }
 
 function mount(options: MountOptions = {}) {
+  setPlayerSection("turn");
   const sent: ClientIntent[] = [];
   const send = vi.fn(async (intent: ClientIntent) => {
     sent.push(intent);
@@ -487,7 +489,7 @@ describe("readying up", () => {
     serverSends({
       campaign: { id: "c", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } },
     });
-    expect(screen.getByText("Chapter 4 of 8: The Pride Roads")).toBeTruthy();
+    expect(screen.getByText("Chapter 4: The Pride Roads")).toBeTruthy();
     expect(screen.getByRole("button", { name: /Play chapter 4/ })).toBeTruthy();
   });
 
@@ -641,7 +643,7 @@ describe("the bag", () => {
     serverSends({ encounter: realEncounter() });
 
     // In a fight the bag waits behind the dock, so the board gets the room.
-    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
+    act(() => dismissPlayerSheet());
     await user.click(screen.getByRole("button", { name: new RegExp(POTION_NAME) }));
     expect(screen.queryByRole("button", { name: /Use it/ })).toBeNull();
     expect(document.querySelector(".item-detail__passive")?.textContent).toContain(
@@ -979,6 +981,7 @@ describe("being offered an item", () => {
       trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: POTION.itemId }],
       ...overrides,
     });
+    act(() => setPlayerSection("turn"));
     return view;
   }
 
@@ -1058,6 +1061,7 @@ describe("being offered an item with a full bag", () => {
     serverSends({
       trades: [{ id: "t1", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: TRINKET.itemId }],
     });
+    act(() => setPlayerSection("turn"));
     return view;
   }
 
@@ -1159,6 +1163,26 @@ describe("being offered an item with a full bag", () => {
  * "what is her Guard?" is a question a fight raises more often than a camp.
  */
 describe("the party strip", () => {
+  it.each([1, 2])("names a Rest task for %i unspent stat points", (points) => {
+    mount({ sceneType: "rest", prompt: null, party: [member({ character: character({ unspentPoints: points }) })] });
+    act(() => dismissPlayerSheet());
+    expect(screen.getByRole("button", { name: points === 1 ? "Spend your stat point" : "Spend your stat points" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "View the fight" })).toBeNull();
+  });
+  it("opens the bag from You, offers the turn, and returns without losing a selection", async () => {
+    const user = userEvent.setup();
+    mount({ prompt: choicePrompt() });
+    act(() => dismissPlayerSheet());
+    expect(screen.queryByRole("button", { name: /Open your stats/ })).toBeNull();
+    expect(screen.getByText("Your things")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /^Your turn$/ }));
+    await user.click(screen.getByRole("button", { name: /Take the east path/ }));
+    await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+    expect(screen.getByText("Your things")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /^Your turn$/ }));
+    expect(screen.getByRole("button", { name: /Do it/ })).toBeTruthy();
+  });
+
   const THISTLE = character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" });
 
   function twoPlayers() {
@@ -1181,42 +1205,38 @@ describe("the party strip", () => {
     expect(screen.getByText(/How far they have come/)).toBeTruthy();
   });
 
-  it("keeps the sheet behind a dock while you decide, and puts it away when a question arrives", async () => {
-    // A phone pane has room for the question or the sheet, not both — and a
-    // new question must never land behind the bag.
+  it("keeps an overview open when a new question arrives", async () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })] });
-    expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /Open your stats/ })).toBeNull();
-
+    act(() => dismissPlayerSheet());
     serverSends({ prompt: choicePrompt() });
-    expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
-    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
-
+    await user.click(screen.getByRole("button", { name: /^Your turn$/ }));
+    expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
     serverSends({ prompt: choicePrompt({ sceneId: "s_2" }) });
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+    expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
   });
 
-  it("puts the sheet away when a fight starts on somebody else's turn", async () => {
-    // Thistle's phone: she is not in the fight, so it is never her combat
-    // turn and no prompt is hers — only the table moving on can close it.
-    const user = userEvent.setup();
-    mount({
-      playerId: "p_2",
-      party: [member(), member({ character: THISTLE, playerId: "p_2" })],
-      prompt: choicePrompt(),
-    });
-    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
-    expect(screen.getByRole("button", { name: /Back to the game/ })).toBeTruthy();
+  it("returns to the overview after a turn finishes and keeps the next turn behind its entry button", () => {
+    mount({ prompt: choicePrompt() });
+    serverSends({ prompt: null });
+    expect(screen.getByText("Your things")).toBeTruthy();
+    serverSends({ prompt: choicePrompt({ sceneId: "s_next" }) });
+    expect(screen.getByRole("button", { name: /^Your turn$/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
+  });
 
+  it("keeps the bag available while somebody else starts a fight", async () => {
+    mount({ playerId: "p_2", party: [member(), member({ character: THISTLE, playerId: "p_2" })], prompt: choicePrompt() });
+    act(() => dismissPlayerSheet());
     serverSends({ phase: "encounter", prompt: null, encounter: realEncounter() });
-    expect(screen.queryByRole("button", { name: /Back to the game/ })).toBeNull();
-    expect(screen.getByRole("button", { name: /Open your stats/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^View the fight$/ })).toBeTruthy();
+    expect(screen.getByText("Your things")).toBeTruthy();
   });
 
-  it("gives the controller back when the sheet is closed", async () => {
+  it("gives the controller back when the tray dismisses a character sheet", async () => {
     // With a question open, the party waits behind the dock and covers the
     // prompt rather than sitting under it, so the way back has to put the
     // question back exactly as it was.
@@ -1225,13 +1245,13 @@ describe("the party strip", () => {
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
 
-    await user.click(screen.getByRole("button", { name: /Open your stats/ }));
+    act(() => dismissPlayerSheet());
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
 
-    await user.click(screen.getByRole("button", { name: /Done looking at Thistle/ }));
-    await user.click(screen.getByRole("button", { name: /Back to the game/ }));
-    expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Done looking at Thistle|^Close$/ })).toBeNull();
+    act(() => dismissPlayerSheet());
+    expect(screen.getByRole("button", { name: /^Your turn$/ })).toBeTruthy();
   });
 
   it("advertises a souvenir, which is the hook that gets a sheet opened at all", () => {

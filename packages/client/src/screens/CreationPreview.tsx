@@ -117,6 +117,7 @@ export function CreationPreview(): ReactElement {
               className="preview__hero"
               fallback={
                 <CharacterPortrait
+                  stand="floor"
                   species={draft.species}
                   accent={draft.appearance.accent}
                   lit

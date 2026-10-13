@@ -60,7 +60,7 @@ const FrameMeter = lazy(() =>
   import("../world/FrameMeter").then((module) => ({ default: module.FrameMeter })),
 );
 
-export function WorldView(): React.JSX.Element {
+export function WorldView({ gatesPresentations = true }: { gatesPresentations?: boolean } = {}): React.JSX.Element {
   const phase = useRunState()?.phase ?? "lobby";
   // Read once at mount: the meter is asked for when the page is opened, and a
   // URL that changes mid-session is a route change, not a settings panel.
@@ -76,24 +76,23 @@ export function WorldView(): React.JSX.Element {
   const creating = (phase === "lobby" || phase === "creation") && me === null && !isDisplay;
 
   /**
-   * Registering here — rather than in a shell — is what keeps rule 1 intact.
-   * "I am the surface that draws the world" is a fact about this component; "I
-   * am a TV" would be a fact about the mode. A Party Mode phone never mounts a
-   * WorldView, so it never registers, so its patches apply the instant they
-   * arrive and presentation is ignored. That falls out; nobody branches on it.
+   * The shell supplies the timing capability independently of rendering.
+   * Party phones keep this subtree alive for reference, but their controls
+   * must receive authoritative patches immediately. TV and Travel surfaces
+   * hold patches until their presentations finish.
    */
   useEffect(() => {
+    if (!gatesPresentations) return;
     const play = (event: PresentationEvent): Promise<void> => {
       // The cue fires at the beat's head, alongside the visuals it underscores.
-      // A no-op wherever no sink is installed — which is every phone that
-      // never mounts a WorldView, and every test.
+      // A no-op on any device without an installed audio sink.
       cue(cueForPresentation(event.presentation));
       return new Promise((resolve) => {
         setTimeout(resolve, presentationDuration(event.presentation));
       });
     };
     return useGameStore.getState().registerPresentationPlayer(play);
-  }, []);
+  }, [gatesPresentations]);
 
   const chapter = useChapter();
   const state = useRunState();

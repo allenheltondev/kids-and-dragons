@@ -25,10 +25,9 @@
  * Rest scene is for.
  */
 
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, TIER_IDS } from "@kad/shared";
 import type { ItemCatalog, PartyMember, TierId } from "@kad/shared";
-import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import "./shared.css";
@@ -121,27 +120,27 @@ export interface CharacterSheetProps {
   /** Whose sheet this is, which changes the words rather than the facts. */
   isMe: boolean;
   items: ItemCatalog | null;
-  onClose: () => void;
 }
 
-export function CharacterSheet({ member, isMe, items, onClose }: CharacterSheetProps): ReactElement {
+export function CharacterSheet({ member, isMe, items }: CharacterSheetProps): ReactElement {
   const { character } = member;
-  const they = isMe ? "You" : character.name;
   const ladder = tierHistory(member);
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => character.inventory[i] ?? null);
 
   return (
-    <section className="sheetview" aria-label={`${character.name}'s character sheet`}>
+    <section className="sheetview" aria-label={`${character.name}'s character sheet`}
+      style={{ "--sheet-accent": character.appearance.accent } as CSSProperties}>
       <header className="sheetview__head">
         <span className="sheetview__portrait" aria-hidden="true">
           <CharacterPortrait
+            backdrop
             species={character.species}
             characterClass={character.class}
             tier={character.tier}
             accent={character.appearance.accent}
             size="100%"
             lit
-            stand="floor"
+            stand="centre"
           />
         </span>
         <span className="sheetview__id">
@@ -175,32 +174,38 @@ export function CharacterSheet({ member, isMe, items, onClose }: CharacterSheetP
         </span>
       </header>
 
+      <div className="sheetview__block sheetview__talents">
+        <h4 className="sheetview__heading"><Icon name="clever" /> What makes {isMe ? "you" : "them"} mighty</h4>
       <ul className="sheetview__stats">
         {STAT_IDS.map((stat) => (
-          <li className="sheetview__stat" key={stat}>
-            <Icon name={stat} />
-            <span className="sheetview__word">{stat}</span>
+          <li className={`sheetview__stat sheetview__stat--${stat}`} key={stat}>
+            <span className="sheetview__stat-glyph"><Icon name={stat} /></span>
             <b>{character.stats[stat]}</b>
+            <span className="sheetview__word">{stat}</span>
           </li>
         ))}
-        <li className="sheetview__stat">
+      </ul>
+      <ul className="sheetview__vitals" aria-label="Adventure essentials">
+        <li className="sheetview__vital">
           <Icon name="heart" />
           <span>health</span>
           <b>
             {member.hp}/{character.maxHp}
           </b>
         </li>
-        <li className="sheetview__stat">
+        <li className="sheetview__vital">
           <Icon name="guard" />
           <span>guard</span>
           <b>{character.guard}</b>
         </li>
-        <li className="sheetview__stat">
+        <li className="sheetview__vital">
           <Icon name="steps" />
           <span>steps</span>
           <b>{character.steps}</b>
         </li>
       </ul>
+
+      </div>
 
       {/* The tier ladder — where they have got to, and where they are going. */}
       <div className="sheetview__block">
@@ -267,6 +272,7 @@ export function CharacterSheet({ member, isMe, items, onClose }: CharacterSheetP
           {slots.map((entry, index) =>
             entry === null ? (
               <li className="sheetview__slot sheetview__slot--empty" key={`empty-${String(index)}`}>
+                <Icon name="bag" />
                 <span className="kad-muted">Empty</span>
               </li>
             ) : (
@@ -289,9 +295,7 @@ export function CharacterSheet({ member, isMe, items, onClose }: CharacterSheetP
         )}
       </div>
 
-      <Button variant="primary" size="lg" icon={<Icon name="back" />} onClick={onClose}>
-        {they === "You" ? "Close" : `Done looking at ${character.name}`}
-      </Button>
+
     </section>
   );
 }

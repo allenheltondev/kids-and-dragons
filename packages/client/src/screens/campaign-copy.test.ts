@@ -5,7 +5,7 @@ const VIEW = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 4, t
 
 describe("what the screens say about the campaign", () => {
   it("names the next chapter and where it sits", () => {
-    expect(nextChapterLine(VIEW)).toBe("Chapter 4 of 8: The Pride Roads");
+    expect(nextChapterLine(VIEW)).toBe("Chapter 4: The Pride Roads");
     expect(nextChapterLine(null)).toBeNull();
     expect(nextChapterLine({ ...VIEW, next: null })).toBeNull();
   });
@@ -28,7 +28,7 @@ describe("setting the scene for a new table", () => {
 
   it("heads a scene with the chapter's number and real title", () => {
     expect(chapterHeading({ chapterInfo: { index: 1, title: "The City" }, campaign: VIEW })).toBe(
-      "Chapter 1 of 8 · The City",
+      "Chapter 1 · The City",
     );
     // A one-off chapter has no campaign to count against.
     expect(chapterHeading({ chapterInfo: { index: 1, title: "The City" }, campaign: null })).toBe(
