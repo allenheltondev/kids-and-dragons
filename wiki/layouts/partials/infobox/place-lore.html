@@ -17,7 +17,7 @@
     <ul class="wiki-opinion-list">
       {{ range . }}
       <li>
-        <a class="wiki-opinion wiki-opinion--like" href="{{ .url | relURL }}" title="{{ .relationship }}">{{ .title }}</a>
+        <a class="wiki-opinion wiki-opinion--like" href="{{ strings.TrimPrefix "/" .url | relURL }}" title="{{ .relationship }}">{{ .title }}</a>
       </li>
       {{ end }}
     </ul>

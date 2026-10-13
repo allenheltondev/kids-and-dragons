@@ -1,0 +1,16 @@
+{{- /*
+  Hextra's link hook, plus the site's base path.
+
+  The generator writes site-root links like /creatures/loftmire/, and the
+  wiki is served from a subpath (/kids-and-dragons/ on Pages). Goldmark
+  leaves those untouched, so they 404. relURL only prefixes a path that
+  does not start with "/", hence the trim; "//host" is protocol-relative
+  and left alone.
+*/ -}}
+{{- with . -}}
+  {{- $dest := .Destination -}}
+  {{- if and (strings.HasPrefix $dest "/") (not (strings.HasPrefix $dest "//")) -}}
+    {{- $dest = strings.TrimPrefix "/" $dest | relURL -}}
+  {{- end -}}
+  <a href="{{ $dest | safeURL }}" {{ with .Title }}title="{{ . }}"{{ end }}{{ if strings.HasPrefix $dest "http" }}target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>
+{{- end -}}
