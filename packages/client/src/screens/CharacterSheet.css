@@ -78,9 +78,19 @@
   color: var(--color-text-muted, #b7b0d8);
 }
 
+.sheetview__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 /* Seven tiles in three columns is 3 + 3 + 1 on a phone; the one on its own
-   takes the whole last row rather than sitting in a corner. The span rule is
-   scoped to the width where three columns is what auto-fit produces. */
+   takes the whole last row rather than sitting in a corner. After the base
+   rule on purpose: same specificity, so source order is what lets the narrow
+   override win. */
 @container (max-width: 30em) {
   .sheetview__stats {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -89,15 +99,6 @@
   .sheetview__stats > :last-child:nth-child(3n + 1) {
     grid-column: 1 / -1;
   }
-}
-
-.sheetview__stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .sheetview__stat {
