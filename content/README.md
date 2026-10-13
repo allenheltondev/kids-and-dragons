@@ -130,3 +130,23 @@ Whoever writes the first authored chapter should give it an ending that declares
 - **XP is a chapter award.** `xpAward` is the payout; the single `grantXp` in the reference chapter
   is a small exploration bonus, kept small so that exploring and talking stay worth about as much as
   fighting (spec §8.1).
+
+## Field Guide tags: `discovers`
+
+Any scene (story, check, choice point, rest, encounter) may carry `"discovers": ["creature.embermoth", "npc.pib"]` —
+canon ids that the Field Guide fills in when the party enters that scene. Valid ids are exactly the keys of
+`entries` in `content/field-guide.json` (`creature.*`, `biome.*`, `location.*`, `character.*`, `npc.*`,
+`individual.*`, `faction.*`; features and routes are not in the guide). `npm run content:validate` fails with the
+chapter and scene named if an id is unknown or repeated within a scene.
+
+Two things are discovered **without** a tag, by `packages/shared/src/discoveries.ts`: the chapter's `biome`
+(when the chapter starts) and every `creature` in an encounter's `enemies` (when the fight's scene is entered).
+Tag only what those rules miss.
+
+Guidance:
+
+- Tag a thing when the scene lets the kids actually **meet** it (see it, talk to it, stand in it), not when it is
+  merely mentioned in passing narration.
+- Do not tag protected mysteries: if the story withholds what something is, leave it out until the scene that
+  reveals it.
+- Tag the scene where the meeting happens, not an earlier one that only foreshadows it.
