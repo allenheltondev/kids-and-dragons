@@ -5,7 +5,6 @@ import userEvent from "@testing-library/user-event";
 import type { FieldGuide as FieldGuideData, Prompt, RunState } from "@kad/shared";
 import { FieldGuideBanner, FieldGuideToast, NEWS_SHOW_MS, describeNews } from "./FieldGuideNews";
 import { resetFieldGuideCache } from "./content";
-import { setFieldGuideOverride } from "../feature-flags";
 import { useGameStore } from "../store";
 import { announceFieldGuideNews, clearFieldGuideNews, getFieldGuideNews } from "../store/field-guide-news";
 import { FIELD_GUIDE_SEEN_KEY, resetFieldGuideSeen } from "../store/field-guide-seen";
@@ -50,7 +49,6 @@ beforeEach(() => {
   resetFieldGuideCache();
   resetFieldGuideSeen();
   clearFieldGuideNews();
-  setFieldGuideOverride(true);
   setRun(null);
   usePlayerNavigation.setState({ section: "bag", guideEntry: null });
 });
@@ -58,7 +56,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
-  setFieldGuideOverride(null);
   clearFieldGuideNews();
   useGameStore.setState({ state: null, session: null, presentation: null, progression: null });
 });
@@ -86,15 +83,6 @@ describe("phone toast", () => {
 
   it("shows nothing, and fetches nothing, when there is no news (reload / resync)", async () => {
     render(<FieldGuideToast />);
-    await act(async () => { await Promise.resolve(); });
-    expect(screen.queryByRole("status")).toBeNull();
-    expect(fetchSpy).not.toHaveBeenCalled();
-  });
-
-  it("is suppressed entirely with the flag off, and does not fetch", async () => {
-    setFieldGuideOverride(false);
-    render(<FieldGuideToast />);
-    news("creature.moth");
     await act(async () => { await Promise.resolve(); });
     expect(screen.queryByRole("status")).toBeNull();
     expect(fetchSpy).not.toHaveBeenCalled();
@@ -175,14 +163,8 @@ describe("TV banner", () => {
     expect((await screen.findByRole("status", {}, { timeout: 3000 })).textContent).toContain("Embermoth");
   });
 
-  it("shows nothing with the flag off or with no news", async () => {
+  it("shows nothing, and fetches nothing, with no news", async () => {
     render(<FieldGuideBanner />);
-    await act(async () => { await Promise.resolve(); });
-    expect(screen.queryByRole("status")).toBeNull();
-    cleanup();
-    setFieldGuideOverride(false);
-    render(<FieldGuideBanner />);
-    news("creature.moth");
     await act(async () => { await Promise.resolve(); });
     expect(screen.queryByRole("status")).toBeNull();
     expect(fetchSpy).not.toHaveBeenCalled();
