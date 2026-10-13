@@ -509,10 +509,11 @@ no avatar picker with a password behind it — her phone knows it's her phone. T
 
 #### Joining a session
 
-1. Host device calls `POST /room` with `{ mode: "party" | "travel" }` → 4-letter code (unambiguous alphabet: no I/O/0/1). In **Party Mode** the host device *is* the TV: it sends `display: true`, the room opens with nobody seated, and it lands on `/tv/ABCD`. It keeps its device binding — that is the household the phones join.
+1. Host device calls `POST /room` with `{ mode: "party" | "travel" }` → 4-letter code (unambiguous alphabet: no I/O/0/1). In **Party Mode** the host device *is* the TV: it sends `display: true`, the room opens with nobody seated, and it lands on `/tv/ABCD`. The room opens **claimable**, under the TV's own household as a placeholder.
 2. In **Party Mode** the TV renders the code + QR; in **Travel Mode** the host's phone does.
 3. Other devices scan → `POST /room/ABCD/join`, presenting their **device token**. The server resolves device → player → household, verifies the household owns the run, and issues a room-scoped session token.
 4. Because identity is resolved from the device, **there is no "who are you?" step.** You scan, and your character is already on the board.
+5. **The first phone to join a claimable room decides whose room it is.** A phone that already belongs to a household takes the room into that household. The `ROOM#` item and the run's `HH#…/RUN#` row move together in one conditional transaction (`claimRoom`), and the lobby is re-read for that household's campaigns. A phone with no binding settles the room on the TV's household first, and is then created in it. Either way the room stops being claimable, and from then on a phone from another household is refused as before. This is what lets any screen host the evening. A new TV, or one whose storage was cleared, no longer starts a fresh guest household that locks the family's phones out of their own campaigns and heroes. Visiting phones from a second household are still refused (deferred).
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.

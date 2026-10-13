@@ -452,6 +452,24 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.getCampaignProgress("h_other", "hollow-crown")).toBeNull();
       });
 
+      it("lists a household's campaign attempts, and only its own", async () => {
+        for (const [householdId, campaignId] of [
+          ["h_1", "gemfall"],
+          ["h_1", "hollow-crown"],
+          ["h_other", "gemfall"],
+        ] as const) {
+          await repo.putCampaignProgress({
+            householdId,
+            campaignId,
+            status: "active",
+            setbacks: 0,
+            updatedAt: "2026-07-04T18:00:00.000Z",
+          });
+        }
+        const listed = await repo.listCampaignProgress("h_1");
+        expect(listed.map((p) => p.campaignId).sort()).toEqual(["gemfall", "hollow-crown"]);
+      });
+
       it("progress rows ride the commit, and lose with it", async () => {
         /*
          * The setback counter is a read-modify-write: read it, decide the
@@ -692,6 +710,49 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         await repo.putRoomIfAbsent(room());
         await repo.deleteRoom("ABCD");
         expect(await repo.getRoom("ABCD")).toBeNull();
+      });
+
+      const run = {
+        id: "r_1",
+        householdId: "h_tv",
+        roomCode: "ABCD",
+        campaignId: null,
+        status: "active" as const,
+        createdAt: "2026-07-04T18:00:00.000Z",
+      };
+
+      it("moves a claimed room, and its run, to the claiming household", async () => {
+        await repo.putRun(run);
+        await repo.putRoomIfAbsent(room({ householdId: "h_tv", claimable: true }));
+
+        expect(await repo.claimRoom({ code: "ABCD", run, householdId: "h_1" })).toBe(true);
+        const claimed = await repo.getRoom("ABCD");
+        expect(claimed?.householdId).toBe("h_1");
+        expect(claimed?.claimable).toBeUndefined();
+        expect(await repo.getRun("r_1")).toMatchObject({ householdId: "h_1" });
+        expect((await repo.listRuns("h_1")).map((r) => r.id)).toEqual(["r_1"]);
+        expect(await repo.listRuns("h_tv")).toEqual([]);
+      });
+
+      it("settles a claimable room exactly once", async () => {
+        await repo.putRun(run);
+        await repo.putRoomIfAbsent(room({ householdId: "h_tv", claimable: true }));
+
+        expect(await repo.claimRoom({ code: "ABCD", run, householdId: "h_tv" })).toBe(true);
+        // Settled on the TV's own household: the run stays where it was.
+        expect((await repo.listRuns("h_tv")).map((r) => r.id)).toEqual(["r_1"]);
+        // And nobody can take it after that.
+        expect(await repo.claimRoom({ code: "ABCD", run, householdId: "h_1" })).toBe(false);
+        expect((await repo.getRoom("ABCD"))?.householdId).toBe("h_tv");
+      });
+
+      it("never claims a room that was not opened claimable", async () => {
+        await repo.putRun({ ...run, householdId: "h_1" });
+        await repo.putRoomIfAbsent(room());
+        expect(
+          await repo.claimRoom({ code: "ABCD", run: { ...run, householdId: "h_1" }, householdId: "h_2" }),
+        ).toBe(false);
+        expect((await repo.getRoom("ABCD"))?.householdId).toBe("h_1");
       });
     });
   });
