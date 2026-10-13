@@ -598,6 +598,15 @@ describe("parseChannelMessage", () => {
     expect(parsed).toMatchObject({ progression });
   });
 
+  it("keeps the Field Guide's new finds, and drops a malformed list", () => {
+    const parsed = parseChannelMessage(
+      JSON.stringify({ seq: 2, runId: "r_1", patch: [], discovered: ["creature.moth"] }),
+    );
+    expect(parsed).toMatchObject({ discovered: ["creature.moth"] });
+    const bad = parseChannelMessage(JSON.stringify({ seq: 2, runId: "r_1", patch: [], discovered: [3] }));
+    expect(bad).not.toHaveProperty("discovered");
+  });
+
   it("infers a snapshot from its payload when kind is missing", () => {
     const state = makeState({ seq: 4 });
     const parsed = parseChannelMessage(JSON.stringify({ seq: 4, runId: "r_1", state }));
