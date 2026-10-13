@@ -9,8 +9,7 @@
  * "Your turn" entry on it. That is why it never blocks a turn — the You tab
  * keeps its ★ badge while the guide is open, and nothing here sends an intent.
  *
- * The painted scroll is a stand-in until a dedicated Field Guide book is
- * commissioned through the art pipeline.
+ * The painted journal gives the guide its own recognizable tray object.
  */
 
 import { openGuide } from "../store/player-navigation";
@@ -35,7 +34,7 @@ export function GuideTab({ on, onShowPlayer, className = "", onClassName = "" }:
       onClick={() => { openGuide(); onShowPlayer(); }}
     >
       <span className="kad-tray__object">
-        <TrayObject name="scroll" />
+        <TrayObject name="fieldGuide" />
       </span>
       <span className="kad-tray__label">Guide</span>
     </button>
