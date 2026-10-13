@@ -13,7 +13,7 @@
  *    is picked without a vote.
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { applyIntent, createRunState } from "@kad/shared";
 import type { Campaign, Chapter, ClientIntent } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
@@ -195,6 +195,51 @@ describe("a TV's room belongs to the first phone that joins", () => {
     expect(await h.repo.listRuns(tvHousehold)).toEqual([]);
     // The lobby now speaks for the family: chapter 2 is next.
     expect((await h.repo.getState(runId))?.campaign?.next?.index).toBe(2);
+  });
+
+  it("repairs the lobby on the next join when the refresh after a claim fails", async () => {
+    // The claim and the lobby refresh are two writes, and only the first is
+    // guarded by the room being claimable. A refresh that fails after the
+    // claim has landed must not leave the family looking at the TV's lobby
+    // for the rest of the evening.
+    const h = harness();
+    const { householdId, players } = await seedHousehold(h, 2);
+    await h.repo.putCampaignProgress({
+      householdId,
+      campaignId: "crown",
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      attemptId: "a_1",
+      version: 1,
+      updatedAt: new Date(h.clock.now()).toISOString(),
+    });
+    const { code, runId } = await tvRoom(h);
+
+    const lookup = vi
+      .spyOn(h.repo, "listCampaignProgress")
+      .mockRejectedValueOnce(new Error("store hiccup"));
+    await expect(joinRoom({ code, principal: players[0]!.principal }, h.deps)).rejects.toThrow(
+      "store hiccup",
+    );
+    // The claim landed; the lobby did not.
+    expect((await h.repo.getRoom(code))?.claimable).toBeUndefined();
+    expect((await h.repo.getState(runId))?.campaignOptions?.map((o) => o.id)).toEqual(["gems"]);
+
+    // A retry — or the next phone — puts it right.
+    lookup.mockRestore();
+    expect((await joinRoom({ code, principal: players[1]!.principal }, h.deps)).ok).toBe(true);
+    const state = await h.repo.getState(runId);
+    expect(state?.campaignOptions?.map((o) => [o.id, o.next?.index])).toEqual([
+      ["gems", 1],
+      ["crown", 2],
+    ]);
+    expect(state?.campaignOptionsFor).toBe(householdId);
+
+    // And once it is right, a join changes nothing.
+    const seq = state?.seq;
+    await joinRoom({ code, principal: players[0]!.principal }, h.deps);
+    expect((await h.repo.getState(runId))?.seq).toBe(seq);
   });
 
   it("is settled by the first join, so a second household is still turned away", async () => {
