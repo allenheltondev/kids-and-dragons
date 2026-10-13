@@ -92,6 +92,7 @@ test.describe("the Field Guide", () => {
     // --- A TV opens the room; one phone joins and makes a hero ---
     const tv = await client(browser, 1280, 720);
     await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
@@ -102,9 +103,8 @@ test.describe("the Field Guide", () => {
     // ordinary rhythm. `phone` is the reader; `friend` just plays.
     const phone = await client(browser, 390, 844);
     const friend = await client(browser, 390, 844);
-    for (const [page, name] of [[phone, "Rosie"], [friend, "Sam"]] as const) {
+    for (const page of [phone, friend]) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', name);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
