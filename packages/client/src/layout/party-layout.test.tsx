@@ -96,6 +96,56 @@ describe("Party Mode and the map", () => {
     expect(showing(container)).toEqual(["player"]);
   });
 
+  it("returns to controls for a new prompt even when it is still my turn", () => {
+    const { container } = mount({
+      kind: "choice",
+      sceneId: "scene_hedge_wall",
+      options: [{ id: "first", label: "First", icon: "eye" }],
+      forPlayerIds: ["p_1"],
+      vote: true,
+    });
+    act(() => {
+      screen.getByRole("button", { name: /^map$/i }).click();
+    });
+    expect(showing(container)).toEqual(["map"]);
+
+    // Another vote updates the same question; it should not steal focus.
+    act(() => {
+      const state = useGameStore.getState().state;
+      if (!state || state.prompt?.kind !== "choice") throw new Error("no choice");
+      useGameStore.setState({
+        state: {
+          ...state,
+          seq: state.seq + 1,
+          prompt: { ...state.prompt, votes: { p_1: "first" } },
+        },
+      });
+    });
+    expect(showing(container)).toEqual(["map"]);
+
+    // Answering A moves directly into another question for p_1: the "my
+    // turn" boolean never becomes false between the two state snapshots.
+    act(() => {
+      const state = useGameStore.getState().state;
+      if (!state) throw new Error("no state");
+      useGameStore.setState({
+        state: {
+          ...state,
+          seq: state.seq + 1,
+          sceneId: "scene_next",
+          prompt: {
+            kind: "choice",
+            sceneId: "scene_next",
+            options: [{ id: "second", label: "Second", icon: "eye" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(showing(container)).toEqual(["player"]);
+  });
+
   it("never offers the map on the TV", () => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "", mode: "party", sessionToken: "" },
