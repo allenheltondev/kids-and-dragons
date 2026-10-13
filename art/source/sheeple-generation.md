@@ -1,0 +1,17 @@
+# Sheeple artwork
+
+Generated with the built-in image_gen tool using assets/entities/faun/assembled.png as a style reference. Canon: canon/npcs.yaml, npc.sheeple.
+
+Final assets: assets/entities/sheeple/assembled.png and its derived portrait.webp. The full trio remains together in both images. Source was normalized to the project's 1024px RGBA canvas with the lowest feet at y=900; portrait derived using tools/art/portraits.py.
+
+## Generation prompt
+
+## Revision
+
+User requested less human faces and clothing that does not resemble a pumpkin. Edited with the built-in image_gen tool using the initial assembled.png as the edit target; updated both assembled.png and the derived portrait.webp.
+
+Edit the supplied Sheeple trio illustration. Keep exactly three full-body upright bipedal sheep-folk, same arrangement, poses, cream/grey/dark brown fleece, horns on same two figures, horn tassels, hoof hands and feet, gentle friendly expressions, warm detailed storybook painting and transparent background. Make faces slightly less human and more recognizably sheep: short projecting wool-framed sheep muzzles, broad soft sheep noses with divided nostrils, subtle cleft upper lips, animal mouth lines, no human nose bridges or human lips, no human skin-faced appearance. Retain expressive intelligent friendly eyes and soft round faces; no caricature. Redesign ALL THREE matching outfits so they do not resemble pumpkins: remove orange color and all ribbed bulging segmented torso bands. Use identical smooth flat-surfaced slate-blue felt barrel-wrap tunics, straight sided with only a gently rounded hem, a single overlapping diagonal closure and small cream felt toggle. Identical smooth cream ring collars like flotation rings (not scalloped green lobes), matching slate-blue stacked multi-brim felt hats, cream cone leg cozies. Clothing must look hand-felted and delightfully unconventional, not conventional tailored clothing, not vegetables. Same outfit design on all three. Preserve full figures, hats and feet with comfortable transparent edge margins on a square canvas. No background, no text, no added characters or objects. Genuine RGBA transparency.
+
+## Initial prompt
+
+Use case: illustration-story. Asset: canonical Sheeple NPC group cutout for Kids & Dragons. Reference image is STYLE ONLY, not subject. Create three complete upright bipedal sheep-folk together, full bodies including two hoof feet each, friendly warm and slightly skittish, dignified sapient people, about four feet tall. Soft round sheep faces, woolly fleece: one cream, one grey, one dark brown; curled ram horns on two and none on the third. ALL THREE wear exactly the same whimsical self-felted wool outfit: ochre stacked hats with three brims, moss-green thick ring collars like floats, ochre barrel-shaped wraps, cream cone-shaped leg cozies. Small tassels on horns. They glance toward each other as though checking before greeting a visitor, modest welcoming gestures, no leader. Warm crafted storybook illustration matching reference painterly detail, warm brown hand-drawn outlines, soft cel shading, upper-left light, earthy Plains palette. Not chibi, not 3D, not photorealistic. Square 1024x1024 RGBA genuinely transparent canvas, compact triangular group arrangement, unobscured faces, all hats and feet visible, at least 24px clear edge margin, lowest feet around y900. No background, no scenery, no text, no names, no weapons, no sound symbols. Always three sheep people together.
