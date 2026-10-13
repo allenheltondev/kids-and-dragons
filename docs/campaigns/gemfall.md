@@ -378,6 +378,12 @@ Sunward child knows means *someone has seen something worth stopping for*.
   first cinder wolf sign this far south), and an embermoth cloud drifting
   the *wrong way*, away from the mountain. A dragonling party member can say
   out loud that this is impossible.
+- **The flock on the ridge** (`npc.sheeple`): a tight knot of thirty sheeple
+  above the jackalope road saw the wolves, all of them, because one of them
+  did. If the flock decides the party's cleverest member is worth copying, three
+  sheeple trail the party north at a polite distance, and at Bramblewood's
+  hedges they call the Gather: thirty sheeple bowing to the hedge at once is
+  the most proper asking it has ever had (`flock_followed`, in-chapter only).
 - **Bramblewood:** `individual.pib` will not open the hedges for the
   treasure-hunter mob camped outside (the hedges genuinely do not listen to
   them otherwise), so getting in is a character test, not a fight.
