@@ -625,6 +625,11 @@ export class DynamoRepository implements GameRepository {
     return (item?.data as CampaignProgressRecord | undefined) ?? null;
   }
 
+  async listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]> {
+    const items = await this.partition(HH(householdId), PREFIX.campaign);
+    return items.map((i) => i.data as CampaignProgressRecord);
+  }
+
   async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {
     await this.put(campaignProgressItem(progress));
   }
@@ -811,6 +816,73 @@ export class DynamoRepository implements GameRepository {
     await this.doc.send(
       new DeleteCommand({ TableName: this.table, Key: { PK: ROOM(code), SK: META } }),
     );
+  }
+
+  async claimRoom(input: { code: string; run: RunRecord; householdId: string }): Promise<boolean> {
+    const { code, run, householdId } = input;
+    const moving = householdId !== run.householdId;
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              // Whoever settles the room first owns it — the same rule as the
+              // code reservation, and for the same reason: two phones from two
+              // households must not both walk away believing it is theirs.
+              Update: {
+                TableName: this.table,
+                Key: { PK: ROOM(code), SK: META },
+                UpdateExpression: "SET #d.#hh = :to REMOVE #d.#claimable",
+                ConditionExpression:
+                  "#d.#claimable = :true AND #d.#hh = :from AND #d.#run = :runId",
+                ExpressionAttributeNames: {
+                  "#d": "data",
+                  "#hh": "householdId",
+                  "#claimable": "claimable",
+                  "#run": "runId",
+                },
+                ExpressionAttributeValues: {
+                  ":to": householdId,
+                  ":from": run.householdId,
+                  ":runId": run.id,
+                  ":true": true,
+                },
+              },
+            },
+            // The run row follows the room. Only its household partition moves:
+            // state, events and progress live under `RUN#<id>`, which is
+            // keyed by the run alone.
+            ...(moving
+              ? [
+                  {
+                    Delete: {
+                      TableName: this.table,
+                      Key: { PK: HH(run.householdId), SK: RUN_SK(run.id) },
+                    },
+                  },
+                  {
+                    Put: {
+                      TableName: this.table,
+                      Item: {
+                        PK: HH(householdId),
+                        SK: RUN_SK(run.id),
+                        GSI1PK: GSI1_RUN(run.id),
+                        GSI1SK: HH(householdId),
+                        entity: "run",
+                        data: { ...run, householdId },
+                      } satisfies TableItem,
+                    },
+                  },
+                ]
+              : []),
+          ],
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isTransactionCancelled(err)) return false;
+      throw err;
+    }
   }
 }
 

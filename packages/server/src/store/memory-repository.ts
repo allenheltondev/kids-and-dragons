@@ -454,6 +454,12 @@ export class MemoryRepository implements GameRepository {
     return (item?.data as CampaignProgressRecord | undefined) ?? null;
   }
 
+  async listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]> {
+    return this.query(HH(householdId), PREFIX.campaign).map(
+      (i) => i.data as CampaignProgressRecord,
+    );
+  }
+
   async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {
     this.put({
       PK: HH(progress.householdId),
@@ -569,6 +575,31 @@ export class MemoryRepository implements GameRepository {
   async deleteRoom(code: string): Promise<void> {
     this.items.delete(rowKey(ROOM(code), META));
     this.persist();
+  }
+
+  async claimRoom(input: { code: string; run: RunRecord; householdId: string }): Promise<boolean> {
+    const { code, run, householdId } = input;
+    const item = this.get(ROOM(code), META);
+    const room = item?.data as RoomRecord | undefined;
+    // The same three conditions as the DynamoDB transaction.
+    if (!item || !room || room.claimable !== true) return false;
+    if (room.runId !== run.id || room.householdId !== run.householdId) return false;
+
+    // No await from here on: one transaction, as in the real store.
+    const { claimable: _claimable, ...settled } = room;
+    this.put({ ...item, data: { ...settled, householdId } });
+    if (householdId !== run.householdId) {
+      this.items.delete(rowKey(HH(run.householdId), RUN_SK(run.id)));
+      this.put({
+        PK: HH(householdId),
+        SK: RUN_SK(run.id),
+        GSI1PK: GSI1_RUN(run.id),
+        GSI1SK: HH(householdId),
+        entity: "run",
+        data: { ...run, householdId },
+      });
+    }
+    return true;
   }
 }
 

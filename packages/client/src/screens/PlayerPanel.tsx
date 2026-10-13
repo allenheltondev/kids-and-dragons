@@ -19,7 +19,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactElement } from "react";
-import { INVENTORY_SLOTS, STAT_IDS } from "@kad/shared";
+import { INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
 import type {
   ClientIntent,
   InventoryEntry,
@@ -45,7 +45,13 @@ import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
-import { beginLabel, campaignEndHeading, campaignEndLine, nextChapterLine } from "./campaign-copy";
+import {
+  beginLabel,
+  campaignEndHeading,
+  campaignEndLine,
+  campaignOptionLine,
+  nextChapterLine,
+} from "./campaign-copy";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
 import { useEnsureContent } from "./content";
@@ -349,7 +355,11 @@ export function PlayerPanel(): ReactElement {
   const inLobby = state?.phase === "lobby" || state?.phase === "creation";
   // Which chapter comes next is the server's answer, not ours: where the party
   // got to and which road it took live on the household's campaign attempt.
-  const campaignId = campaign?.id ?? null;
+  // Which *campaign* is the lobby's: the only one on offer, or the vote's pick
+  // (lobbyCampaign — the same function the server holds the Begin tap to).
+  const campaignChoice = state ? lobbyCampaign(state) : null;
+  const campaignId = campaignChoice?.leader?.id ?? campaign?.id ?? null;
+  const waitingOnVotes = campaignChoice?.contested ? campaignChoice.waitingOn : [];
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -1081,13 +1091,76 @@ export function PlayerPanel(): ReactElement {
                 ready, so it can't be tapped out from under anyone, and the
                 chapter it starts is the campaign's next one, which the server
                 works out from where this household got to. */}
+            {/* Which adventure — only when there is more than one to pick
+                from. A household with one campaign on the go never sees
+                this: the only option is picked for it. */}
+            {inLobby && campaignChoice?.contested ? (
+              <div className="player__campaigns">
+                <h4 className="prompt__title">
+                  <Icon name="vote" />
+                  <span>Which adventure?</span>
+                </h4>
+                <ul className="prompt__options">
+                  {(state.campaignOptions ?? []).map((option) => {
+                    const myCampaignVote = state.campaignVotes?.[me.playerId];
+                    const voters = party
+                      .filter((member) => state.campaignVotes?.[member.playerId] === option.id)
+                      .map((member) => member.character.name);
+                    const selected = myCampaignVote === option.id;
+                    return (
+                      <li key={option.id}>
+                        <button
+                          type="button"
+                          className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                          aria-pressed={selected}
+                          disabled={busy}
+                          onClick={() => void dispatch({ type: "VOTE_CAMPAIGN", campaignId: option.id })}
+                        >
+                          <span className="choice__icon">
+                            <Icon name="map" size="1.8em" />
+                          </span>
+                          <span className="choice__label">
+                            <b>{option.title}</b>
+                            <br />
+                            <small>{campaignOptionLine(option)}</small>
+                          </span>
+                          <span className="choice__trail">
+                            <span className="choice__mark">
+                              {selected ? <Icon name="check" label="Your vote" /> : null}
+                            </span>
+                            {voters.length === 0 ? null : (
+                              <span className="choice__votes">
+                                <Icon name="vote" />
+                                <span>{voters.join(", ")}</span>
+                              </span>
+                            )}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ) : null}
             {inLobby && nextChapterLine(state.campaign) !== null ? (
               <p className="player__next-chapter">
                 <Icon name="map" />
-                <span>{nextChapterLine(state.campaign)}</span>
+                <span>
+                  {campaignChoice?.contested ? `${state.campaign?.title ?? ""}: ` : ""}
+                  {nextChapterLine(state.campaign)}
+                </span>
               </p>
             ) : null}
-            {inLobby && everyoneReady && campaignId !== null ? (
+            {inLobby && everyoneReady && waitingOnVotes.length > 0 ? (
+              <p className="player__next-chapter">
+                <Icon name="waiting" />
+                <span>
+                  Waiting for {waitingOnVotes.map((member) => member.character.name).join(", ")} to
+                  pick an adventure
+                </span>
+              </p>
+            ) : null}
+            {inLobby && everyoneReady && waitingOnVotes.length === 0 && campaignId !== null ? (
               <Button
                 variant="primary"
                 size="lg"

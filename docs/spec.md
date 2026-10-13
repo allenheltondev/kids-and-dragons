@@ -177,6 +177,10 @@ World  →  Campaign  →  Chapter  →  Scene
 | **Choice point** | Party votes; ties broken by whoever's turn marker is active. Prevents one player steamrolling. |
 | **Rest** | Heal, spend a level-up, trade items, look at each other's characters. The natural end-of-session beat. |
 
+### 6.1.1 Picking the adventure
+
+The lobby offers the campaign the room was opened for, then every other campaign the household has part-way through, each at the chapter it would pick up from. With **one** option there is nothing to decide: it is picked automatically once everyone is ready. With **two or more**, each player taps one on the ready screen while waiting for the party. Begin appears once everyone is ready *and* every connected player has voted, and it plays the vote's pick (most votes; a tie goes to the turn marker, as at a Choice point). The TV shows the options and their votes. Finished or failed campaigns are not offered beyond the room's own. Starting a campaign that is under way over from scratch is not offered here.
+
 ### 6.2 Biomes
 
 Each chapter declares a biome, which selects backdrop art, ambient palette, tile set, and music. The launch set is the **Realm of Red Sky** roster — seventeen named destinations across twelve shared terrain families, authoritative in [asset-brief §4.5](./asset-brief.md#45-biomes-effects-tiles). (An earlier five-biome roster is retired.) The reference chapter plays in `enchanted_woods`.

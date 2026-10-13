@@ -53,8 +53,18 @@ export type ClientIntent =
    * chapter that is — where the party got to and which road it took live on
    * the household's campaign attempt, across evenings and rooms — so the server
    * answers it and turns this into a START_CHAPTER before the engine sees it.
+   *
+   * Which campaign is the lobby's call, not the tapper's: when the room offers
+   * more than one (`RunState.campaignOptions`), the server plays the one the
+   * vote picked and `campaignId` is ignored. It is only read on a run that
+   * predates the options.
    */
-  | { type: "CONTINUE_CAMPAIGN"; campaignId: string }
+  | { type: "CONTINUE_CAMPAIGN"; campaignId?: string }
+  /**
+   * A lobby vote for which campaign to play (`RunState.campaignVotes`). Tapped
+   * on the ready screen; changing your mind is another vote.
+   */
+  | { type: "VOTE_CAMPAIGN"; campaignId: string }
   | { type: "CHOOSE"; choiceId: string }
   | { type: "ROLL" }
   | { type: "ADVANCE" }
