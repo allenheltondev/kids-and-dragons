@@ -260,6 +260,61 @@ describe("Travel Mode and the map", () => {
     expect(showing(container)).toBe("player");
   });
 
+  it("shows consecutive questions for the same player without interrupting the current one", () => {
+    const { container } = mount();
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          seq: 10,
+          phase: "scene",
+          sceneId: "scene_first",
+          prompt: {
+            kind: "choice",
+            sceneId: "scene_first",
+            options: [{ id: "a", label: "First question", icon: "eye" }],
+            forPlayerIds: ["p_1"],
+            vote: true,
+          },
+        },
+      });
+    });
+    expect(showing(container)).toBe("player");
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(showing(container)).toBe("map");
+
+    act(() => {
+      const current = useGameStore.getState().state;
+      if (!current || current.prompt?.kind !== "choice") throw new Error("no choice");
+      useGameStore.setState({
+        state: { ...current, seq: current.seq + 1, prompt: { ...current.prompt, votes: { p_1: "a" } } },
+      });
+    });
+    expect(showing(container)).toBe("map");
+
+    act(() => {
+      const current = useGameStore.getState().state;
+      if (!current) throw new Error("no state");
+      useGameStore.setState({
+        state: {
+          ...current,
+          seq: current.seq + 1,
+          sceneId: "scene_second",
+          prompt: {
+            kind: "choice",
+            sceneId: "scene_second",
+            options: [{ id: "b", label: "Second question", icon: "eye" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(showing(container)).toBe("player");
+  });
+
   it("still gives the die the screen while the map is up", () => {
     const { container } = mount();
     act(() => {
