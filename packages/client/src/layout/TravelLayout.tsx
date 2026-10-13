@@ -47,7 +47,7 @@ import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
-import { Icon } from "../screens/icons";
+import { TrayObject } from "../screens/TrayObjects";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 
@@ -144,40 +144,48 @@ export function TravelLayout(): React.JSX.Element {
 
   return (
     <div className="kad-travel">
-      <nav className="kad-travel__bar" aria-label="What to look at">
+      {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
+          row of tabs — the lantern for the world, the map, your satchel. */}
+      <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
-          className={`kad-travel__tab kad-tap kad-focusable${showing === "world" ? " kad-travel__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "world" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={showing === "world"}
           onClick={() => setFocus("world")}
         >
-          <Icon name="eye" />
-          <span>World</span>
+          <span className="kad-tray__object">
+            <TrayObject name="lantern" />
+          </span>
+          <span className="kad-tray__label">World</span>
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={showing === "map"}
           onClick={() => setFocus("map")}
         >
-          <Icon name="map" />
-          <span>Map</span>
+          <span className="kad-tray__object">
+            <TrayObject name="map" />
+          </span>
+          <span className="kad-tray__label">Map</span>
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tap kad-focusable${showing === "player" ? " kad-travel__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "player" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={showing === "player"}
           onClick={() => setFocus("player")}
         >
-          <Icon name="bag" />
-          {/* A dot, not a colour: "you are needed" must not be colour alone
-              (spec §11). */}
-          <span>You</span>
-          {myTurn && showing !== "player" ? (
-            <span className="kad-travel__nudge" aria-label="Your turn">
-              ●
-            </span>
-          ) : null}
+          <span className="kad-tray__object">
+            <TrayObject name="satchel" />
+            {/* A badge with a shape, not a colour: "you are needed" must not
+                be colour alone (spec §11). */}
+            {myTurn && showing !== "player" ? (
+              <span className="kad-travel__nudge kad-tray__badge" aria-label="Your turn">
+                ★
+              </span>
+            ) : null}
+          </span>
+          <span className="kad-tray__label">You</span>
         </button>
         <ModeSwitch />
       </nav>

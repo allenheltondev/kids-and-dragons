@@ -27,8 +27,7 @@ import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
-import { Button } from "../ui/Button";
-import { Icon } from "../screens/icons";
+import { TrayObject } from "../screens/TrayObjects";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe } from "../store";
 
 export interface PartyLayoutProps {
@@ -72,25 +71,37 @@ function PhoneLayout(): React.JSX.Element {
 
   return (
     <div className="kad-party kad-party--player">
-      {/* The laptop dying is exactly when you need the mode switch, and the TV
-          cannot offer it — a display client has no input at all (spec §2.1), so
-          it rides on the phone. In flow rather than floating: a floating
-          control overlapped whatever was beneath it, and what is beneath it on
-          a phone is the primary action of every screen. */}
-      <div className="kad-party__bar">
-        <Button
-          variant="ghost"
-          size="md"
-          className="kad-party__map"
-          icon={<Icon name={onMap ? "back" : "map"} />}
-          aria-pressed={onMap}
-          onClick={() => setShowing(onMap ? "player" : "map")}
-          title={onMap ? "Back to your controls" : "See where the party is"}
+      {/* The tray (screens/TrayObjects.tsx): your satchel and the map, and the
+          mode switch beside them — the laptop dying is exactly when you need
+          that, and the TV cannot offer it (a display client has no input at
+          all, spec §2.1). In flow rather than floating: a floating control
+          overlapped whatever was beneath it, and what is beneath it on a phone
+          is the primary action of every screen. */}
+      <nav className="kad-party__bar kad-tray" aria-label="What to look at">
+        <button
+          type="button"
+          className={`kad-tray__tab kad-tap kad-focusable${onMap ? "" : " kad-tray__tab--on"}`}
+          aria-pressed={!onMap}
+          onClick={() => setShowing("player")}
         >
-          {onMap ? "Back" : "Map"}
-        </Button>
+          <span className="kad-tray__object">
+            <TrayObject name="satchel" />
+          </span>
+          <span className="kad-tray__label">You</span>
+        </button>
+        <button
+          type="button"
+          className={`kad-tray__tab kad-tap kad-focusable${onMap ? " kad-tray__tab--on" : ""}`}
+          aria-pressed={onMap}
+          onClick={() => setShowing("map")}
+        >
+          <span className="kad-tray__object">
+            <TrayObject name="map" />
+          </span>
+          <span className="kad-tray__label">Map</span>
+        </button>
         <ModeSwitch />
-      </div>
+      </nav>
 
       {/* `hidden` rather than unmounted, like the Travel panes: a selection
           half-made in the bag survives a look at the map. */}

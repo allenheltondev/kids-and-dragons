@@ -74,6 +74,8 @@
 
 .atlas__viewport {
   position: relative;
+  display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
   min-block-size: 0;
   overflow: auto;
@@ -89,6 +91,11 @@
   position: relative;
   /* Width and aspect are inline: both come from the data. */
   min-inline-size: 100%;
+  flex: 0 0 auto;
+  /* Centred in the pane while it fits (the whole realm, at the first zoom);
+     auto margins fall to zero the moment it is taller than the pane, so the
+     top is never scrolled out of reach. */
+  margin-block: auto;
 }
 
 .atlas__painting {
