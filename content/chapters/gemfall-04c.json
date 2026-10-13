@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 28,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_north_roads",
   "objectives": [
@@ -74,7 +74,7 @@
     },
     "scene_drovers_wagon": {
       "type": "story",
-      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
+      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" It is what he calls everybody he likes. You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
       "choices": [
         {
           "id": "onward",
@@ -98,7 +98,7 @@
     },
     "scene_empty_stretch": {
       "type": "story",
-      "narration": "Plains folk say an empty stretch of good road is a message, and jackalopes are the punctuation. Normally they are everywhere, racing wagons and winning. But for a whole mile around the big gem depot up ahead, the warrens have gone completely silent.",
+      "narration": "Plains folk say an empty stretch of good road is a message, and jackalopes are the punctuation. Normally they are everywhere, racing wagons and winning. But for a whole mile around the big gem depot up ahead, the warrens have gone completely silent, and the road feels like a sentence with the end missing.",
       "choices": [
         {
           "id": "count",
@@ -128,7 +128,8 @@
       "prompt": "Count the jackalopes and find where they stop",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_silence_follows"
+        "goto": "scene_silence_follows",
+        "narration": "You count forty-one, forty-two, forty-three, and then none. Not one. The last jackalope sits exactly at the edge of the silence like a full stop, and you can draw the line from where you stand."
       },
       "onFailure": {
         "goto": "scene_downbound",
@@ -163,14 +164,14 @@
           "label": "Work the crowd like a stage",
           "icon": "spark",
           "requiresSpecies": "kitsune",
-          "goto": "scene_tib_found"
+          "goto": "scene_downbound_work_crowd"
         },
         {
           "id": "fly_look",
           "label": "Fly up and look for an orange hat",
           "icon": "wing",
           "requiresSpecies": "griffin",
-          "goto": "scene_tib_found"
+          "goto": "scene_downbound_fly_look"
         },
         {
           "id": "ask_relay",
@@ -183,6 +184,30 @@
           "label": "Search the crowd yourselves",
           "icon": "eye",
           "goto": "check_search"
+        }
+      ]
+    },
+    "scene_downbound_fly_look": {
+      "type": "story",
+      "narration": "You go up. From above, the crowd is a river of hats, all of them brown or grey or straw, except one. One orange dot, standing perfectly still beside a pony, talking.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Land next to the orange dot",
+          "icon": "wing",
+          "goto": "scene_tib_found"
+        }
+      ]
+    },
+    "scene_downbound_work_crowd": {
+      "type": "story",
+      "narration": "Your kitsune climbs onto an upturned crate and announces, in a voice like a town crier, \"LOST! ONE SMALL BOY! ORANGE HAT! TALKS TO HORSES!\" The whole downbound lane stops to listen. Then forty people point in the same direction at once.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the pointing",
+          "icon": "spark",
+          "goto": "scene_tib_found"
         }
       ]
     },
@@ -266,13 +291,13 @@
     },
     "scene_wend_pitch": {
       "type": "story",
-      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-colored sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
+      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-coloured sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
       "choices": [
         {
           "id": "say_no",
           "label": "Say no thank you, kindly but clearly",
           "icon": "hand",
-          "goto": "scene_warden_patrol",
+          "goto": "scene_wend_pitch_say_no",
           "effects": [
             {
               "type": "setFlag",
@@ -285,6 +310,30 @@
           "id": "say_later",
           "label": "Say maybe, and leave it there",
           "icon": "moon",
+          "goto": "scene_wend_pitch_say_later"
+        }
+      ]
+    },
+    "scene_wend_pitch_say_later": {
+      "type": "story",
+      "narration": "\"Maybe,\" you say. Wend nods as if maybe is a kind of yes, and slides a folded letter into the top of your pack \"in case you change your minds.\" It is sealed with a drop of something that glitters. You can feel it in there for the rest of the day, like a stone in a boot.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back on the road",
+          "icon": "moon",
+          "goto": "scene_warden_patrol"
+        }
+      ]
+    },
+    "scene_wend_pitch_say_no": {
+      "type": "story",
+      "narration": "\"No, thank you,\" you say, kindly and clearly. Wend smiles exactly as warmly as before, which is somehow the strangest part. \"Kindness first anyway,\" says Wend, and tucks a warm bread roll into the nearest pack \"for the road.\" The crystal keeps humming.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back on the road",
+          "icon": "hand",
           "goto": "scene_warden_patrol"
         }
       ]
@@ -297,7 +346,7 @@
           "id": "pay",
           "label": "Pay the fixed rate and wish them well",
           "icon": "check",
-          "goto": "scene_depot",
+          "goto": "scene_warden_patrol_pay",
           "effects": [
             {
               "type": "setFlag",
@@ -317,7 +366,7 @@
           "label": "Swap sky news, griffin to warden",
           "icon": "wing",
           "requiresSpecies": "griffin",
-          "goto": "scene_depot",
+          "goto": "scene_warden_patrol_griffin_logs",
           "effects": [
             {
               "type": "setFlag",
@@ -325,6 +374,30 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_warden_patrol_griffin_logs": {
+      "type": "story",
+      "narration": "Your griffin and the sergeant swap sky news the way old flyers do: wind at the bridge, ash over the mountain, a storm sitting on the sea that will not come in. Holloway writes all of it down and reads it back twice. \"Useful,\" the sergeant says, and waves the patrol aside to let you through.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the depot",
+          "icon": "wing",
+          "goto": "scene_depot"
+        }
+      ]
+    },
+    "scene_warden_patrol_pay": {
+      "type": "story",
+      "narration": "You pay the fixed rate. Sergeant Holloway writes PAID, POLITE in the ledger and hands you a receipt, then a copy of the receipt, then a receipt for the copy. \"Arithmetic,\" the sergeant says, almost kindly. \"It's the only thing up here that isn't shouting.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the depot",
+          "icon": "check",
+          "goto": "scene_depot"
         }
       ]
     },
@@ -352,7 +425,7 @@
     },
     "scene_depot": {
       "type": "story",
-      "narration": "The biggest rush depot on the north roads is a barn full of strongboxes, and one of them is ringing like a bell. Behind the counter sits Clerk Pennywhistle, who has a queue, a stamp, and a form for absolutely everything. The ringing stone is in strongbox number nine.",
+      "narration": "The biggest rush depot on the north roads is a barn full of strongboxes, and one of them is ringing like a bell. Behind the counter sits Clerk Pennywhistle, who has a queue, a stamp, and a form for absolutely everything, including a form for asking about forms. The ringing stone is in strongbox number nine.",
       "choices": [
         {
           "id": "bill",
@@ -455,7 +528,7 @@
     },
     "scene_spiral": {
       "type": "story",
-      "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark and gives it to you.",
+      "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark with a hoof-pick and gives it to you.",
       "onEnter": [
         {
           "type": "grantQuestItem",
