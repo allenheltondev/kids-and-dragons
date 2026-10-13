@@ -44,8 +44,8 @@ export function guideAtStake(discoveries: FieldGuideDiscoveries): boolean {
   return Object.keys(discoveries).length > 0;
 }
 
-/** Cognito's email OTP. */
-const CODE_LENGTH = 6;
+/** Cognito's email OTP is eight digits (its SMS codes are six). */
+const CODE_LENGTH = 8;
 
 export function SignInFlow(): ReactElement | null {
   const step = useKeepsakeStore((s) => s.step);
@@ -203,12 +203,12 @@ function EmailStep({ busy }: { busy: boolean }): ReactElement {
         /* One flow for both, so say so: there is no "sign up" screen to hunt
            for, and no password to forget. */
         <p className="keepsake__body">
-          We&rsquo;ll email you a six-digit code. New here? That makes your account. Played before?
+          We&rsquo;ll email you an eight-digit code. New here? That makes your account. Played before?
           It signs you back in.
         </p>
       ) : (
         <p className="keepsake__body">
-          We&rsquo;ll send a six-digit code. That&rsquo;s the whole thing.
+          We&rsquo;ll send an eight-digit code. That&rsquo;s the whole thing.
         </p>
       )}
 
@@ -267,7 +267,7 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
   const ready = code.length === CODE_LENGTH;
 
   /*
-   * Submit as soon as the sixth digit lands. Typing six digits and then hunting
+   * Submit as soon as the last digit lands. Typing the digits and then hunting
    * for a button is the step people abandon, and a phone keyboard covers the
    * button anyway. The guard stops a re-render (or a paste) firing it twice.
    */
@@ -289,35 +289,49 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
         Check your email
       </h2>
       <p className="keepsake__body">
-        We sent six digits to <b>{challenge?.destination ?? challenge?.email ?? "your inbox"}</b>.
+        We sent eight digits to <b>{challenge?.destination ?? challenge?.email ?? "your inbox"}</b>.
       </p>
 
       <label className="keepsake__label" htmlFor={fieldId}>
         <Icon name="envelope" />
         <span>The code</span>
       </label>
-      <input
-        className="keepsake__input keepsake__input--code"
-        id={fieldId}
-        type="text"
-        inputMode="numeric"
-        // Lets both iOS and Android offer the code straight from the SMS/email
-        // notification, which removes the app-switch entirely.
-        autoComplete="one-time-code"
-        pattern="[0-9]*"
-        maxLength={CODE_LENGTH}
-        autoFocus
-        placeholder="000000"
-        value={code}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          const next = e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH);
-          // Clear the guard when the code changes, so a corrected digit can
-          // resubmit after a CodeMismatch.
-          if (next !== submitted.current) submitted.current = "";
-          setCode(next);
-        }}
-        disabled={busy}
-      />
+      {/* The same eight-box entry as the room code on the home screen: the real
+          input sits on top, transparent, so paste, autofill and the native
+          keyboard all behave, and the boxes underneath do the drawing. */}
+      <div className="keepsake__code">
+        <input
+          className="keepsake__code-input"
+          id={fieldId}
+          type="text"
+          inputMode="numeric"
+          // Lets both iOS and Android offer the code straight from the SMS/email
+          // notification, which removes the app-switch entirely.
+          autoComplete="one-time-code"
+          pattern="[0-9]*"
+          maxLength={CODE_LENGTH}
+          autoFocus
+          value={code}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const next = e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH);
+            // Clear the guard when the code changes, so a corrected digit can
+            // resubmit after a CodeMismatch.
+            if (next !== submitted.current) submitted.current = "";
+            setCode(next);
+          }}
+          disabled={busy}
+        />
+        <div className="keepsake__code-boxes" aria-hidden="true">
+          {Array.from({ length: CODE_LENGTH }, (_, i) => (
+            <span
+              key={i}
+              className={`keepsake__code-box${code.length === i ? " keepsake__code-box--next" : ""}${code[i] ? " keepsake__code-box--filled" : ""}`}
+            >
+              {code[i] ?? ""}
+            </span>
+          ))}
+        </div>
+      </div>
 
       <div className="keepsake__actions">
         <Button
