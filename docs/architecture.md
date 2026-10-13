@@ -339,6 +339,15 @@ Splitting **state patch** from **presentation** is the key move. Phones apply th
 presentation. The TV applies the patch *after* playing the animation. State and spectacle stay
 decoupled, so animation timing never blocks game logic.
 
+**Previews** (`POST /api/preview`, `{ "preview": IntentPreview | null }`) are the one thing on the
+channel that is not state. A phone sends one whenever its player taps a choice, a tile, an ability
+or a target but has not hit "Do it!" yet, and `null` when they back out; the server checks the shape
+and the seat and publishes `{ "kind": "preview", playerId, preview }` straight to the room. Nothing is
+committed and the seq does not move — a preview that went through `applyAction` would make every
+exploratory tap a STALE_SEQ for whoever confirms next. They are live-only (never logged, never
+replayed, sent over SSE with no `id:`), and the TV draws one only while it still fits the state it
+shows (`client/src/world/previews.ts`), so a lost or stale preview costs a highlight, never a turn.
+
 ### 4.3 Reconnect
 
 Every client tracks the last `seq` it applied. On reconnect it calls `GET /state?runId&sinceSeq=N`,

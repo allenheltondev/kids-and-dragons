@@ -22,6 +22,7 @@ import type {
 } from "aws-lambda";
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
+import { relayPreview } from "../handlers/preview.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
@@ -105,6 +106,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "POST") {
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
+    if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
@@ -276,6 +278,22 @@ async function postAction(req: Req, deps: HandlerDeps) {
   // `error.code` and resyncs. 200 keeps that path free of fetch() error
   // handling on a phone with a flaky connection.
   return json(200, response, resolved?.principal);
+}
+
+/**
+ * A tap that has not been confirmed yet (handlers/preview.ts). Session token
+ * only: the seat comes from the token, so the body cannot light up somebody
+ * else's choice on the TV.
+ */
+async function postPreview(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "a preview needs a room session token");
+  const result = await relayPreview(
+    { runId: session.runId, playerId: session.playerId, preview: req.body.preview },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true });
 }
 
 async function postProgressionSpend(req: Req, deps: HandlerDeps) {
