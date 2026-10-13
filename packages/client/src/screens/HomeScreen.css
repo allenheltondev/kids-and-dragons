@@ -84,22 +84,6 @@
   display: none;
 }
 
-.home__host-toggle {
-  text-align: center;
-}
-
-.home__link {
-  min-height: var(--touch-min, 3em);
-  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
-  border: 0;
-  background: none;
-  color: var(--color-text-muted, #b7b0d8);
-  font: inherit;
-  font-size: var(--font-size-sm, 0.875em);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 /* --- Mode choice ------------------------------------------------------- */
 
 .home__modes {
@@ -318,13 +302,6 @@
   animation: home-ready 1.6s ease-in-out infinite;
 }
 
-/* Quiet, but findable on a busy picture. */
-.home__link {
-  border-radius: 999px;
-  background: rgba(13, 11, 26, 0.72);
-  color: var(--color-text, #f4f1ff);
-}
-
 @keyframes home-float {
   50% { transform: translateY(-0.12em); }
 }
@@ -349,4 +326,26 @@
   .home__join--ready {
     animation: none;
   }
+}
+
+/* Under the Join button, bottom right: plain text, in the secondary colour. */
+.home__host-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(var(--space-2, 0.5em) * -1);
+}
+
+.home__link {
+  padding: var(--space-2, 0.5em) 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted, #b7b0d8);
+  font: inherit;
+  font-size: var(--font-size-sm, 0.875em);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.home__link:hover {
+  color: var(--color-text, #f4f1ff);
 }

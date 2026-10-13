@@ -171,19 +171,19 @@ export function HomeScreen(): ReactElement {
           >
             {busy === "join" ? "Joining…" : "Join a game"}
           </Button>
-        </section>
 
-        <div className="home__host-toggle">
-          <button
-            type="button"
-            className="home__link kad-focusable"
-            aria-expanded={hosting}
-            aria-controls={hostPanelId}
-            onClick={() => setHosting((on) => !on)}
-          >
-            {hosting ? "Back to joining" : "Want to host? Set up a game"}
-          </button>
-        </div>
+          <div className="home__host-toggle">
+            <button
+              type="button"
+              className="home__link kad-focusable"
+              aria-expanded={hosting}
+              aria-controls={hostPanelId}
+              onClick={() => setHosting((on) => !on)}
+            >
+              {hosting ? "Back to joining" : "Want to host? Set up a game"}
+            </button>
+          </div>
+        </section>
 
         <section
           className="home__card home__host"
