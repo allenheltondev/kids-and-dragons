@@ -171,16 +171,19 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
          * at the *next* Rest scene, which can be a whole sitting later — so the
          * reminder has to live on the one strip that is never scrolled away.
          * It says where to spend it, because "1 point" alone tells an
-         * eight-year-old nothing about what to do next.
+         * eight-year-old nothing about what to do next — and "rest stop" with
+         * the moon, because a bare "at rest" read as a state rather than a
+         * place. The moon is the same one the chapter map draws on a Rest.
          */}
         {character.unspentPoints > 0 ? (
           <span className="sheet__points">
             <Icon name="levelup" />
             <span>
               {character.unspentPoints === 1
-                ? "Spend 1 point at rest"
-                : `Spend ${String(character.unspentPoints)} points at rest`}
+                ? "1 point to spend at the next rest stop"
+                : `${String(character.unspentPoints)} points to spend at the next rest stop`}
             </span>
+            <Icon name="rest" />
           </span>
         ) : null}
       </span>
