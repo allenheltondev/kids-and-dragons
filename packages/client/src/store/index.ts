@@ -1012,6 +1012,38 @@ export function useWorld(): WorldMap | null {
  * `useIsMyPrompt`: a combat turn is a question without a Prompt object, and
  * §2.2's "your turn comes to you" applies to it just the same.
  */
+/**
+ * Identity of the decision currently requiring this player's attention.
+ *
+ * A boolean `isMyTurn` misses back-to-back prompts assigned to the same
+ * player: the boolean stays true even though the question changed. Use a
+ * stable key so a new question brings the controls forward without yanking
+ * the map away when only a vote count or other state update changes.
+ */
+export function useMyTurnKey(): string | null {
+  return useGameStore((store) => {
+    const state = store.state;
+    if (!state) return null;
+    const playerId = store.session?.playerId ?? "";
+    if (!selectMe(state, playerId)) return "creation";
+
+    const prompt = state.prompt;
+    if (isPromptForPlayer(prompt, playerId, state.party) && prompt) {
+      // Votes mutate the current question, not its identity. Ignore them.
+      const stablePrompt = prompt.kind === "choice" ? { ...prompt, votes: undefined } : prompt;
+      // Revisiting the same authored scene is a *new* question, even when
+      // it uses the same choice ids and narration.
+      return `prompt:${state.chapterId ?? ""}:${state.visited?.length ?? 0}:${JSON.stringify(stablePrompt)}`;
+    }
+
+    if (isMyCombatTurn(state, playerId) && state.encounter) {
+      const { round, turnIndex, encoreActor } = state.encounter;
+      return `combat:${state.chapterId ?? ""}:${state.sceneId ?? ""}:${round}:${turnIndex}:${encoreActor ?? ""}`;
+    }
+    return null;
+  });
+}
+
 export function useIsMyCombatTurn(): boolean {
   return useGameStore((store) => isMyCombatTurn(store.state, store.session?.playerId ?? ""));
 }
