@@ -345,6 +345,32 @@ Every client tracks the last `seq` it applied. On reconnect it calls `GET /state
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
 
+#### The Field Guide: the book on the state, the news on the wire
+
+The household's Field Guide (`HH#…/FIELDGUIDE`, §3) is household data, not run data, but every
+screen in the room shows it. It travels the way `campaignOptions` already does — **as a mirror on
+`RunState`** (`fieldGuide`: canon id → `{ firstFoundBy, foundAt, runId }`) — so the join, the TV's
+`/watch`, a snapshot and a replayed gap all deliver the same book through the one sync path, with
+no second fetch and no second sequencer.
+
+- **Filled** when a room opens for a settled household, or at the first join of a TV's claimable
+  room (whose household is only a placeholder until a phone settles it, §4.5 — such a room carries
+  no book and records nothing until then). **Re-read** from the store at every chapter start, which
+  heals the copy when a second room of the same household has found things in the meantime.
+- **Grown** by `applyAction`: the handler compares the state before and after the step (the
+  engine stays pure), asks shared `discoveries.ts` what the chapter start and every scene entered
+  reveal (a chapter's biome; an encounter's creatures; a scene's `discovers` tags), credits the
+  player whose tap caused it (else the story-turn holder, else the first seat), and folds what is
+  not already in the book into this step's patch. After the commit — the book is not part of the
+  run's transaction — `recordDiscoveries` writes them, first finder wins.
+- **New** is a separate, live-only signal: the store's answer ("these ids were added just now")
+  rides the broadcast as `ServerMessage.discovered` and is **never written to the event log**.
+  Replaying patches on a reconnect rebuilds the book without re-announcing anything, which a
+  signal derived from the patch could not promise. A client that misses the live message keeps
+  the page, and loses only the fanfare. In the client, the book is projected into
+  `store/field-guide-discoveries.ts` and the news queued in `store/field-guide-news.ts`, both
+  outside the game store's mirror.
+
 ### 4.4 Transport seam
 
 ```ts

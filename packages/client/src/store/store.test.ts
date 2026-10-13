@@ -12,6 +12,13 @@ import type { ChannelOptions } from "../sync/channel";
 import { ApiError, type Api } from "../sync/client";
 import type { KeyValueStorage } from "./persistence";
 import { makeMember, makeState } from "../testing/fixtures";
+import { getFieldGuideDiscoveries, setFieldGuideDiscoveries } from "./field-guide-discoveries";
+import {
+  ackFieldGuideNews,
+  clearFieldGuideNews,
+  getFieldGuideNews,
+  subscribeFieldGuideNews,
+} from "./field-guide-news";
 
 // ---------------------------------------------------------------------------
 // Harness — no network, no DOM, no timers.
@@ -1167,5 +1174,91 @@ describe("the recovery deadline", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The Field Guide (#106): the book rides the mirror, the news rides the wire.
+// ---------------------------------------------------------------------------
+
+describe("the Field Guide sync", () => {
+  const MOTH = { firstFoundBy: "p_1", foundAt: "2026-07-04T18:00:00.000Z", runId: "r_1" };
+  const NEWT = { firstFoundBy: "p_2", foundAt: "2026-07-04T18:05:00.000Z", runId: "r_1" };
+
+  beforeEach(() => {
+    setFieldGuideDiscoveries(null);
+    clearFieldGuideNews();
+  });
+
+  it("fills the guide from the joined state and every patch after it", async () => {
+    const h = harness(makeState({ fieldGuide: { "creature.moth": MOTH } }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    expect(getFieldGuideDiscoveries()).toEqual({ "creature.moth": MOTH });
+
+    h.publish(patch(2, [{ op: "add", path: "/fieldGuide/creature.newt", value: NEWT }]));
+    expect(getFieldGuideDiscoveries()).toEqual({ "creature.moth": MOTH, "creature.newt": NEWT });
+
+    // A patch that does not touch the book leaves the same object in place.
+    const book = getFieldGuideDiscoveries();
+    h.publish(patch(3, [{ op: "replace", path: "/narration", value: "on" }]));
+    expect(getFieldGuideDiscoveries()).toBe(book);
+  });
+
+  it("announces a new find once, after its patch, and acking consumes it", async () => {
+    const h = harness(makeState({ fieldGuide: {} }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    const seen: string[][] = [];
+    const off = subscribeFieldGuideNews((pending) => {
+      seen.push(pending.map((n) => n.canonId));
+      // The book already holds whatever is announced.
+      for (const n of pending) expect(getFieldGuideDiscoveries()).toHaveProperty([n.canonId]);
+    });
+
+    const message = {
+      ...patch(2, [{ op: "add", path: "/fieldGuide/creature.newt", value: NEWT }]),
+      discovered: ["creature.newt"],
+    };
+    h.publish(message);
+    h.publish(message); // a duplicate delivery
+    off();
+
+    expect(getFieldGuideNews()).toEqual([{ canonId: "creature.newt", seq: 2 }]);
+    expect(seen).toEqual([["creature.newt"]]);
+    ackFieldGuideNews(["creature.newt"]);
+    expect(getFieldGuideNews()).toEqual([]);
+  });
+
+  it("a resync rebuilds the book without replaying the news", async () => {
+    const h = harness(makeState({ fieldGuide: {} }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    // The server's log never carries `discovered`; a replay is patches alone.
+    h.api.fetchState.mockResolvedValueOnce({
+      seq: 2,
+      events: [patch(2, [{ op: "add", path: "/fieldGuide/creature.moth", value: MOTH }])],
+    });
+    await h.channelOptions().resync(1);
+    expect(getFieldGuideDiscoveries()).toEqual({ "creature.moth": MOTH });
+
+    // And a cold snapshot, the same.
+    h.api.fetchState.mockResolvedValueOnce({
+      seq: 3,
+      state: makeState({ seq: 3, fieldGuide: { "creature.moth": MOTH, "creature.newt": NEWT } }),
+    });
+    await h.channelOptions().resync(2);
+    expect(Object.keys(getFieldGuideDiscoveries())).toEqual(["creature.moth", "creature.newt"]);
+    expect(getFieldGuideNews()).toEqual([]);
+  });
+
+  it("leaving the room clears the book and anything not yet celebrated", async () => {
+    const h = harness(makeState({ fieldGuide: { "creature.moth": MOTH } }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({
+      ...patch(2, [{ op: "add", path: "/fieldGuide/creature.newt", value: NEWT }]),
+      discovered: ["creature.newt"],
+    });
+    h.store.getState().leave();
+    expect(getFieldGuideDiscoveries()).toEqual({});
+    expect(getFieldGuideNews()).toEqual([]);
   });
 });

@@ -92,7 +92,16 @@ export class LocalSseChannel implements RoomChannel {
     const first = room.buffer[0];
     if (!first) return [];
     if (first.seq > sinceSeq + 1) return null; // buffer already rolled past the gap
-    return room.buffer.filter((m) => m.seq > sinceSeq);
+    // A replay is a reconnect's catch-up, so it carries what the event log
+    // would (§4.3) and not the live-only Field Guide fanfare (`discovered`):
+    // a reconnect rebuilds the book, it never re-announces a find.
+    return room.buffer
+      .filter((m) => m.seq > sinceSeq)
+      .map((m) => {
+        if (m.kind !== "patch" || !("discovered" in m)) return m;
+        const { discovered: _live, ...rest } = m;
+        return rest;
+      });
   }
 
   /**
