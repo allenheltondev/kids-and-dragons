@@ -21,6 +21,7 @@
  */
 
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
@@ -30,7 +31,7 @@ import { useMe, useSession } from "../store";
 import { dismissPlayerSheet } from "../store/player-navigation";
 import { useKeepsakeStore } from "../store/keepsake";
 
-export function PlayerView(): React.JSX.Element {
+export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
   const runId = useSession()?.runId;
   useEffect(() => { dismissPlayerSheet(); }, [runId]);
@@ -63,7 +64,7 @@ export function PlayerView(): React.JSX.Element {
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
-      {creating ? <WelcomeBack /> : <PlayerPanel />}
+      {creating ? <WelcomeBack /> : <PlayerPanel roomControls={roomControls} />}
       {/* A panel over the surface, not a route: the game keeps running behind
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
