@@ -109,6 +109,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
+| Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
@@ -242,8 +243,9 @@ Not every record needs a migration path, because most of them expire on their ow
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
 | Character, household, player profile | forever | **Yes**, permanently |
+| Field Guide | forever (deleted only with a guest household) | **Yes**, permanently — `migrateFieldGuide()` |
 
-So the permanent burden is three record types, and only one of them — the character — is under
+So the permanent burden is four record types, and only one of them — the character — is under
 active development. That is a small enough surface to do this by hand and keep it readable.
 
 #### The shape of it
