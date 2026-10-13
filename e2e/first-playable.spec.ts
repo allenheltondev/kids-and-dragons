@@ -332,8 +332,8 @@ test.describe("first playable", () => {
     await expect(solo.getByRole("button", { name: /unicorn/i }).first()).toBeVisible();
     await createCharacter(solo, "unicorn", "Sparklehoof");
 
-    await openPlayerTask(solo);
-    await solo.getByRole("button", { name: /i'm ready/i }).click();
+    // "Ready to play" at the end of creation already said ready.
+    await expect(solo.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     await solo.getByRole("button", { name: /begin the adventure/i }).click();
 
     // The scene opens a choice, so the controls come forward on their own...
@@ -383,9 +383,8 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       // Assert the tap actually took. A ready that silently fails to register
       // is the exact failure worth catching here, and without this the test
       // just hangs later with nothing to say about why.
@@ -501,9 +500,8 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
@@ -715,8 +713,9 @@ test.describe("first playable", () => {
     await host.getByRole("button", { name: /play as sparklehoof/i }).click(TAP);
     await host.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 
-    // Seated: the lobby's ready button is theirs, with no creation flow between.
-    await expect(host.getByRole("button", { name: /i'm ready/i })).toBeVisible({ timeout: 15_000 });
+    // Seated and ready — "Ready to play" is the one tap, with no creation
+    // flow between.
+    await expect(host.getByRole("button", { name: /wait, not yet/i })).toBeVisible({ timeout: 15_000 });
     const response = await fetch(`http://localhost:8787/api/state?code=${second}`);
     const { state } = (await response.json()) as { state: { party: { character: { name: string } }[] } };
     expect(state.party.map((m) => m.character.name)).toEqual(["Sparklehoof"]);

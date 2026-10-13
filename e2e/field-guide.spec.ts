@@ -116,9 +116,8 @@ test.describe("the Field Guide", () => {
 
     await createCharacter(phone, "unicorn", HERO);
     await createCharacter(friend, "griffin", FRIEND);
+    // "Ready to play" at the end of creation already said ready.
     for (const page of [phone, friend]) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);

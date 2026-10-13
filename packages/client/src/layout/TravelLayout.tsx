@@ -144,8 +144,8 @@ export function TravelLayout(): React.JSX.Element {
   return (
     <div className="kad-travel">
       {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
-          row of tabs — the realm globe, your satchel, the Field Guide's journal,
-          the map. */}
+          row of tabs — the realm globe, your satchel, the map, the Field Guide's
+          journal. */}
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
@@ -177,8 +177,6 @@ export function TravelLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">You</span>
         </button>
-        <GuideTab on={inGuide} onShowPlayer={() => setFocus("player")}
-          className="kad-travel__tab" onClassName="kad-travel__tab--on" />
         <button
           type="button"
           className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
@@ -190,6 +188,8 @@ export function TravelLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
+        <GuideTab on={inGuide} onShowPlayer={() => setFocus("player")}
+          className="kad-travel__tab" onClassName="kad-travel__tab--on" />
       </nav>
 
       {/* `hidden` rather than unmounted — see the header. */}

@@ -13,7 +13,7 @@
  * party (world/scene.ts), and a draft is deliberately not on the wire
  * (creationDraft.ts header), so nothing was ever drawn into it. It then drew a
  * tier PNG itself, which was honest about being a stand-in and dishonest about
- * colour — a PNG cannot show the palette the player just picked, so this
+ * color — a PNG cannot show the palette the player just picked, so this
  * screen promised choices it could not display.
  *
  * It now draws the *rig* (RigFigure), which is the seam that note was waiting
@@ -29,6 +29,7 @@
  * would have put the hero behind the fact cards.
  */
 
+import { useMemo } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { STAT_IDS } from "@kad/shared";
 import type { Stats } from "@kad/shared";
@@ -41,7 +42,7 @@ import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import { useCreationDraft } from "./creationDraft";
 import type { CreationStep } from "./creationDraft";
-import { PALETTES } from "./creationContent";
+import { PALETTES, rigLookFor } from "./creationContent";
 import "./shared.css";
 import "./CreationPreview.css";
 import { EntryScene } from "./EntryScene";
@@ -50,7 +51,7 @@ const STEP_HINT: Record<CreationStep, string> = {
   species: "Choosing who they are…",
   class: "Choosing how they fight…",
   stats: "Deciding what they're best at…",
-  appearance: "Picking colours…",
+  appearance: "Picking colors…",
   name: "Thinking of a name…",
 };
 
@@ -73,6 +74,10 @@ export function CreationPreview(): ReactElement {
   })();
 
   const palette = PALETTES.find((p) => p.id === draft.appearance.palette) ?? null;
+  const look = useMemo(
+    () => (draft.species === null ? undefined : rigLookFor(draft.species, draft.appearance)),
+    [draft.species, draft.appearance],
+  );
 
   /*
    * Somewhere to stand. The run's own biome once a chapter is loaded, and the
@@ -115,6 +120,7 @@ export function CreationPreview(): ReactElement {
               species={draft.species}
               tier={STARTING_TIER}
               className="preview__hero"
+              look={look}
               fallback={
                 <CharacterPortrait
                   stand="floor"
@@ -173,10 +179,8 @@ export function CreationPreview(): ReactElement {
 
           {palette === null ? null : (
             <p className="preview__palette kad-muted">
-              {/* Mane inside, accent as the ring. The figure itself is drawn
-                  in its authored colours — these dress this player's UI
-                  chrome, which is what the pair is for now (world/nameplate.ts
-                  on why the rig stopped wearing them). */}
+              {/* Mane inside, accent as the ring — the two colors the figure
+                  beside it is wearing. */}
               <span
                 className="preview__palette-chip"
                 style={{ background: palette.mane, borderColor: draft.appearance.accent }}

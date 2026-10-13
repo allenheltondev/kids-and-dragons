@@ -1053,3 +1053,14 @@
 .player__room-settings[open] > summary::before { content: "▾"; }
 .kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
+
+/* The lobby's "Ready to play" sits at the foot of the sheet (after Room
+   settings, which already pushes itself down with `margin-block-start: auto`)
+   and stays in reach there while a long bag scrolls past above it. */
+.player__task-entry--foot {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 1;
+  flex: none;
+  box-shadow: 0 -0.75em 1em rgb(13 11 26 / 70%);
+}

@@ -272,7 +272,7 @@
             "because": "A light with no heat in it. The moths regard this as a broken promise."
           }
         ],
-        "hook": "The mountain's mood, printed on ten thousand small grey wings.",
+        "hook": "The mountain's mood, printed on ten thousand small gray wings.",
         "social": "An embermoth fears nothing that does not stamp. They land on children, tools, dragons, and soup, and regard all four as equally good perches. A swarm that leaves in a hurry is not being rude; it is being a warning."
       },
       "likedBy": [
@@ -399,13 +399,13 @@
           }
         ],
         "hook": "The most patient misunderstanding in the foothills.",
-        "social": "Solitary and formal. Neighbouring crabs maintain exact, invisible borders that are renegotiated once a year in a ceremony that looks exactly like two rocks facing each other for a day."
+        "social": "Solitary and formal. Neighboring crabs maintain exact, invisible borders that are renegotiated once a year in a ceremony that looks exactly like two rocks facing each other for a day."
       },
       "likedBy": [
         {
           "of": "character.dragonling",
           "title": "Dragonling",
-          "because": "Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
+          "because": "Good neighbors. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
         }
       ],
       "tips": [
@@ -462,7 +462,7 @@
           }
         ],
         "hook": "The fastest thing on the plains, and it needs you to know it.",
-        "social": "Bold at a distance, gone up close. A warren that lets you get near is telling you the neighbourhood is safe; an empty stretch of good road is telling you something else."
+        "social": "Bold at a distance, gone up close. A warren that lets you get near is telling you the neighborhood is safe; an empty stretch of good road is telling you something else."
       },
       "likedBy": [
         {
@@ -1231,7 +1231,7 @@
           {
             "of": "npc.boggart",
             "title": "Boggart",
-            "because": "Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained."
+            "because": "Infuriating and indispensable: the finest catalog of lost things in the realm, filed by a system that has never once been explained."
           }
         ],
         "dislikes": [
@@ -1287,7 +1287,7 @@
           {
             "of": "creature.glassback_crab",
             "title": "Glassback Crab",
-            "because": "Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
+            "because": "Good neighbors. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
           },
           {
             "of": "npc.centaur",
@@ -1625,7 +1625,7 @@
         {
           "of": "character.bigfoot",
           "title": "Bigfoot",
-          "because": "Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained."
+          "because": "Infuriating and indispensable: the finest catalog of lost things in the realm, filed by a system that has never once been explained."
         },
         {
           "of": "character.kitsune",
@@ -1650,7 +1650,7 @@
         {
           "of": "npc.frogfolk",
           "title": "Frogfolk",
-          "because": "Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
+          "because": "Neighbors. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
         },
         {
           "of": "npc.witch_order",
@@ -1852,7 +1852,7 @@
           {
             "of": "npc.boggart",
             "title": "Boggart",
-            "because": "Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
+            "because": "Neighbors. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
           }
         ],
         "dislikes": [
@@ -2517,7 +2517,7 @@
             "relationship": "The peaks handle the fast half of the north - watch, rescue, wind - and the glacier handles the slow half - memory, melt, tea. Each considers the division generous to the other."
           }
         ],
-        "recorded_history": "History here is not written but excavated: the yetis read events out of the ice, name meltwater years the way other peoples name children, and serve the important ones as tea. The reading rooms' catalogue runs back further than every archive in the realm combined, and the yetis will show you, slowly.",
+        "recorded_history": "History here is not written but excavated: the yetis read events out of the ice, name meltwater years the way other peoples name children, and serve the important ones as tea. The reading rooms' catalog runs back further than every archive in the realm combined, and the yetis will show you, slowly.",
         "cultural_significance": "The realm's source and its attic. Scholars, witches, and the occasionally desperate come north to consult memories the world has otherwise lost, and everything downstream - water, weather, history - starts on this ice."
       }
     },

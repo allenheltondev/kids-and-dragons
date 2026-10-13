@@ -46,7 +46,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
+      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in gray coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
       "choices": [
         {
           "id": "join_line",
@@ -582,7 +582,7 @@
     }
   },
   "llmHints": {
-    "tone": "busy, grey-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
+    "tone": "busy, gray-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
     "vocabulary": "age-8",
     "forbidden": [
       "death",

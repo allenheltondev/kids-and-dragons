@@ -282,7 +282,7 @@ npcs:
         - of: npc.stone_troll
           because: "Water people who keep their crossings. A kinship of maintenance."
         - of: npc.boggart
-          because: "Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
+          because: "Neighbors. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
       dislikes:
         - of: creature.mire_mimic
           because: "Every marked channel it imitates is a review of frogfolk work, and the review is a trap."
