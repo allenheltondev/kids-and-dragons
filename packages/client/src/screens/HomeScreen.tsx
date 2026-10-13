@@ -123,7 +123,7 @@ export function HomeScreen(): ReactElement {
           <h1 className="home__title">Kids &amp; Dragons</h1>
         </header>
 
-        <section className="home__card home__card--join" aria-labelledby="home-join">
+        <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting}>
           <h2 className="home__card-title" id="home-join">
             <Icon name="qr" />
             <span>Join a game</span>
@@ -176,11 +176,10 @@ export function HomeScreen(): ReactElement {
             <button
               type="button"
               className="home__link kad-focusable"
-              aria-expanded={hosting}
               aria-controls={hostPanelId}
-              onClick={() => setHosting((on) => !on)}
+              onClick={() => setHosting(true)}
             >
-              {hosting ? "Back to joining" : "Want to host? Set up a game"}
+              Want to host? Set up a game
             </button>
           </div>
         </section>
@@ -258,6 +257,16 @@ export function HomeScreen(): ReactElement {
           >
             {busy === "create" ? "Starting…" : mode === "party" ? "Open the lobby here" : "Start a game"}
           </Button>
+
+          <div className="home__host-toggle">
+            <button
+              type="button"
+              className="home__link kad-focusable"
+              onClick={() => setHosting(false)}
+            >
+              Back to joining
+            </button>
+          </div>
         </section>
 
         {busy !== null ? (

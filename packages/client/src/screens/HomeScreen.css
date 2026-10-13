@@ -80,7 +80,8 @@
 
 /* --- Hosting (a grown-up's job, behind a link) ------------------------- */
 
-.home__host[hidden] {
+.home__host[hidden],
+.home__card--join[hidden] {
   display: none;
 }
 
@@ -332,11 +333,11 @@
 .home__host-toggle {
   display: flex;
   justify-content: flex-end;
-  margin-top: calc(var(--space-2, 0.5em) * -1);
+  margin: calc(var(--space-2, 0.5em) * -1) 0 calc(var(--space-2, 0.5em) * -1);
 }
 
 .home__link {
-  padding: var(--space-2, 0.5em) 0;
+  padding: var(--space-1, 0.25em) 0;
   border: 0;
   background: none;
   color: var(--color-text-muted, #b7b0d8);
