@@ -281,7 +281,9 @@ export function CombatControls(): ReactElement | null {
               <Icon name={combatantIcon(c, party)} />
             ) : (
               <CharacterPortrait
+                backdrop
                 species={member.character.species}
+                accent={member.character.appearance.accent}
                 tier={member.character.tier}
                 characterClass={member.character.class}
                 className="combat__face"

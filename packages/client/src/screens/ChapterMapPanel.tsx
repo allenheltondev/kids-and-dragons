@@ -264,14 +264,6 @@ export function ChapterMapPanel(): ReactElement {
   return (
     <section className="trail kad-scroll" aria-label="Map">
       <header className="trail__head">
-        <p className="trail__campaign kad-muted">
-          <Icon name="map" />
-          <span>
-            {state.campaign
-              ? `${state.campaign.title} · Chapter ${String(chapter.index)}`
-              : `Chapter ${String(chapter.index)}`}
-          </span>
-        </p>
         <h2 className="trail__title">{chapter.title}</h2>
         <p className="trail__progress" role="status">
           {finished
@@ -349,7 +341,9 @@ export function ChapterMapPanel(): ReactElement {
                   {party.slice(0, 4).map((member) => (
                     <span className="trail__face" key={member.playerId}>
                       <CharacterPortrait
+                        backdrop
                         species={member.character.species}
+                        accent={member.character.appearance.accent}
                         characterClass={member.character.class}
                         tier={member.character.tier}
                         lit={false}

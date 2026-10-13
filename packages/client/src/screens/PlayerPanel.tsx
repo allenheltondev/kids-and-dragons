@@ -1,3 +1,4 @@
+import { setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 /**
  * PlayerPanel — PlayerView for everything that is not character creation.
  *
@@ -147,7 +148,9 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
           screen for the whole session. */}
       <span className="sheet__portrait" aria-hidden="true">
         <CharacterPortrait
+          backdrop
           species={character.species}
+          accent={character.appearance.accent}
           tier={character.tier}
           characterClass={character.class}
           className="sheet__art"
@@ -298,51 +301,6 @@ function InventoryGrid({
 }
 
 /**
- * The sheet, folded to one line while a decision has the pane.
- *
- * Your four stats at a glance, how many are in the party, and what is in your
- * bag — the three things a question can make you want to check — and one tap
- * opens the whole sheet in the question's place, with a way straight back.
- */
-function SheetDock({
-  me,
-  partySize,
-  onOpen,
-}: {
-  me: PartyMember;
-  partySize: number;
-  onOpen: () => void;
-}): ReactElement {
-  const stats = me.character.stats;
-  const carried = me.character.inventory.length + me.character.questItems.length;
-  return (
-    <button
-      type="button"
-      className="player__dock kad-tap kad-focusable"
-      aria-label="Open your stats, the party and your bag"
-      onClick={onOpen}
-    >
-      <span className="player__dock-stats">
-        {STAT_IDS.map((stat) => (
-          <span className="player__dock-stat" key={stat}>
-            <Icon name={stat} />
-            <b>{stats[stat]}</b>
-          </span>
-        ))}
-      </span>
-      <span className="player__dock-stat">
-        <Icon name="party" />
-        <b>{partySize}</b>
-      </span>
-      <span className="player__dock-stat">
-        <Icon name="bag" />
-        <b>{carried}</b>
-      </span>
-    </button>
-  );
-}
-
-/**
  * The scene, behind your controls.
  *
  * Travel Mode shows one surface at a time, so without this the picture of the
@@ -431,14 +389,17 @@ export function PlayerPanel(): ReactElement {
    * so it is legal to read one whenever there is a phone to read it on.
    */
   const [sheetFor, setSheetFor] = useState<string | null>(null);
-  /**
-   * While a decision has the pane, the sheet (stats, everyone, the bag) folds
-   * into a one-line dock; this is that dock opened back up, in the prompt's
-   * place. See `deciding` below.
-   */
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const navigationRevision = usePlayerNavigation((navigation) => navigation.revision);
+  const section = usePlayerNavigation((navigation) => navigation.section);
+  useEffect(() => { setSheetFor(null); }, [navigationRevision]);
   const [busy, setBusy] = useState(false);
   const isMyCombatTurn = useIsMyCombatTurn();
+  const hasTask = myPrompt !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+    (state?.phase === "scene" && state.sceneType === "rest" && (me?.character.unspentPoints ?? 0) > 0) ||
+    (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
+  useEffect(() => {
+    if (!hasTask && section === "turn") setPlayerSection("bag");
+  }, [hasTask, section]);
 
   const globalPrompt = state?.prompt ?? null;
   const key = promptKey(myPrompt ?? globalPrompt);
@@ -452,20 +413,6 @@ export function PlayerPanel(): ReactElement {
     setTradeDrop(null);
     setBusy(false);
   }, [key]);
-
-  // A new question, or the combat clock reaching you, puts the question back in
-  // front of you — somebody browsing their bag must not miss their turn.
-  useEffect(() => {
-    if (myPrompt !== null || isMyCombatTurn) setSheetOpen(false);
-  }, [key, myPrompt, isMyCombatTurn]);
-
-  // So does the table moving on — a fight starting on somebody else's turn,
-  // a new scene, the lobby, the chapter's end. Whatever the pane now shows is
-  // news, and a sheet opened for the last screen must not sit on top of it.
-  const where = `${state?.phase}|${state?.sceneId}|${state?.encounter != null}`;
-  useEffect(() => {
-    setSheetOpen(false);
-  }, [where]);
 
   /*
    * Nothing is spoken from here on purpose. Narration, choice labels and roll
@@ -524,23 +471,14 @@ export function PlayerPanel(): ReactElement {
    * spending mid-story would put a stat sheet in front of a question.
    */
   const atRest = state.phase === "scene" && state.sceneType === "rest";
-  /*
-   * "Deciding": the game is asking this table something — a choice, a roll, a
-   * fight, the lobby's ready-up, the end of a chapter. The question then gets
-   * the whole pane and the sheet folds into a one-line dock, because on a
-   * phone the two side by side meant neither fit: the answers scrolled inside
-   * one box and the stats inside another, and the button that mattered was
-   * the one cut off. A Rest scene is the exception — healing, spending a
-   * point, trading and reading each other's sheets *are* the decision there
-   * (spec §6.1), so the sheet stays open beside it.
-   */
+  // The turn subpage gets the decision layout; the bag remains the You home.
   const deciding =
     !atRest &&
     (myPrompt !== null ||
       inEncounter ||
       inLobby ||
       state.phase === "chapter_complete");
-  const showSheet = !deciding || sheetOpen;
+  const showSheet = section === "bag" || !hasTask;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
    * it has one, else the chapter's biome — the same choice the stage makes.
@@ -646,7 +584,6 @@ export function PlayerPanel(): ReactElement {
           member={openSheetFor}
           isMe={openSheetFor.playerId === me.playerId}
           items={items}
-          onClose={() => setSheetFor(null)}
         />
       </section>
     );
@@ -682,7 +619,7 @@ export function PlayerPanel(): ReactElement {
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className="player__prompt" hidden={deciding && sheetOpen}>
+      <div className="player__prompt" hidden={showSheet}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing
@@ -1301,21 +1238,17 @@ export function PlayerPanel(): ReactElement {
         ) : null}
       </div>
 
-      {showSheet ? null : (
-        <SheetDock me={me} partySize={party.length} onOpen={() => setSheetOpen(true)} />
-      )}
-
       <div className="player__scroll kad-scroll" hidden={!showSheet}>
-        {deciding ? (
-          <Button
-            variant="secondary"
-            size="md"
-            block
-            icon={<Icon name="back" />}
-            onClick={() => setSheetOpen(false)}
-          >
-            Back to the game
+        {hasTask ? (
+          <Button variant="primary" size="lg" block className="player__task-entry"
+            icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
+            {offersToMe.length > 0 ? "A gift for you" : inLobby ? "Ready to play" : state.phase === "chapter_complete" ? "Chapter rewards" : myPrompt !== null || isMyCombatTurn ? "Your turn" : "View the fight"}
           </Button>
+        ) : null}
+        {!hasTask ? (
+          <p className="player__waiting" role="status"><Icon name="waiting" />
+            <span>{globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…"}</span>
+          </p>
         ) : null}
         <StatRow me={me} />
 
@@ -1343,7 +1276,9 @@ export function PlayerPanel(): ReactElement {
                 >
                   <span className="party-strip__portrait" aria-hidden="true">
                     <CharacterPortrait
+                      backdrop
                       species={member.character.species}
+                      accent={member.character.appearance.accent}
                       characterClass={member.character.class}
                       tier={member.character.tier}
                       className="party-strip__art"
@@ -1530,6 +1465,18 @@ export function PlayerPanel(): ReactElement {
         ) : null}
 
       </div>
+        {!showSheet ? (
+          <Button
+            className="player__inventory-back"
+            variant="secondary"
+            size="md"
+            block
+            icon={<Icon name="back" />}
+            onClick={() => setPlayerSection("bag")}
+          >
+            Back to your bag
+          </Button>
+        ) : null}
     </section>
   );
 }
