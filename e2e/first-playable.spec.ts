@@ -278,8 +278,9 @@ test.describe("first playable", () => {
     const [host, ...others] = phones as [Page, Page, Page];
 
     await host.goto("/");
-    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await host.getByRole("button", { name: /want to host/i }).click();
     await host.getByText("Travel Mode").click();
+    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
     await host.getByRole("button", { name: /start a game/i }).click();
 
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
@@ -287,7 +288,6 @@ test.describe("first playable", () => {
 
     for (const [i, page] of others.entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
@@ -321,8 +321,9 @@ test.describe("first playable", () => {
   test("travel mode: your turn comes to you, and the world is one tap back", async ({ browser }) => {
     const solo = await phone(browser);
     await solo.goto("/");
-    await solo.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await solo.getByRole("button", { name: /want to host/i }).click();
     await solo.getByText("Travel Mode").click();
+    await solo.fill('input[placeholder="Type your name"]', NAMES[0]);
     await solo.getByRole("button", { name: /start a game/i }).click();
     await expect(solo).toHaveURL(/\/p\/[A-Z]{4}$/);
 
@@ -364,15 +365,15 @@ test.describe("first playable", () => {
     const [host] = phones as [Page, ...Page[]];
 
     await host.goto("/");
-    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await host.getByRole("button", { name: /want to host/i }).click();
     await host.getByText("Travel Mode").click();
+    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
     const code = new URL(host.url()).pathname.split("/").pop()!;
 
     for (const [i, page] of phones.slice(1).entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
     }
@@ -481,15 +482,15 @@ test.describe("first playable", () => {
     const [host] = phones as [Page, ...Page[]];
 
     await host.goto("/");
-    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
+    await host.getByRole("button", { name: /want to host/i }).click();
     await host.getByText("Travel Mode").click();
+    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
     const code = new URL(host.url()).pathname.split("/").pop()!;
 
     for (const [i, page] of phones.slice(1).entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
     }
@@ -675,8 +676,9 @@ test.describe("first playable", () => {
   test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {
     const host = await phone(browser);
     await host.goto("/");
-    await host.fill('input[placeholder="Type your name"]', "Allen");
+    await host.getByRole("button", { name: /want to host/i }).click();
     await host.getByText("Travel Mode").click();
+    await host.fill('input[placeholder="Type your name"]', "Allen");
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
     const code = new URL(host.url()).pathname.split("/").pop()!;
@@ -693,8 +695,9 @@ test.describe("first playable", () => {
     const host = await phone(browser);
     const startTravel = async () => {
       await host.goto("/");
-      await host.fill('input[placeholder="Type your name"]', "Allen");
+      await host.getByRole("button", { name: /want to host/i }).click();
       await host.getByText("Travel Mode").click();
+      await host.fill('input[placeholder="Type your name"]', "Allen");
       await host.getByRole("button", { name: /start a game/i }).click();
       await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
       return new URL(host.url()).pathname.split("/").pop()!;
@@ -726,6 +729,7 @@ test.describe("first playable", () => {
     const tvErrors: string[] = [];
     tv.on("pageerror", (e) => tvErrors.push(e.message));
     await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
@@ -736,7 +740,6 @@ test.describe("first playable", () => {
 
     const controller = await phone(browser);
     await controller.goto("/");
-    await controller.fill('input[placeholder="Type your name"]', "Allen");
     await controller.getByLabel(/room code/i).fill(code);
     await controller.getByRole("button", { name: /join a game/i }).click();
     await expect(controller).toHaveURL(new RegExp(`/p/${code}$`));

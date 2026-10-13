@@ -83,6 +83,28 @@
   box-shadow: var(--shadow-lg, 0 1em 3em rgba(0, 0, 0, 0.45));
 }
 
+/* --- Hosting (a grown-up's job, behind a link) ------------------------- */
+
+.home__host[hidden] {
+  display: none;
+}
+
+.home__host-toggle {
+  text-align: center;
+}
+
+.home__link {
+  min-height: var(--touch-min, 3em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border: 0;
+  background: none;
+  color: var(--color-text-muted, #b7b0d8);
+  font: inherit;
+  font-size: var(--font-size-sm, 0.875em);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* --- Mode choice ------------------------------------------------------- */
 
 .home__modes {
@@ -233,7 +255,7 @@
  *
  * A card like the two above it, so it reads as part of the screen rather than
  * small print, but last, with a secondary button and copy addressed to the
- * grown-up. A child opening the app sees "Start a game" first. The account is
+ * grown-up. A child opening the app sees "Join a game" first. The account is
  * never a gate in front of it.
  */
 .home__account {
