@@ -68,7 +68,7 @@
     },
     "scene_unicorn_feels": {
       "type": "story",
-      "narration": "You lower your horn toward the ribbon, and the wisps go still. Each one is a memory that got tangled in the marsh. And every single one of them is remembering the same thing: a night when red light fell out of the sky — and for one moment, fell upward.",
+      "narration": "You lower your horn toward the ribbon, and the wisps go still. Each one is a memory that got tangled in the marsh. And every single one of them is remembering the same thing: a night when red light fell out of the sky, and, for one moment, fell upward.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -87,7 +87,7 @@
     },
     "scene_boggart_isle": {
       "type": "story",
-      "narration": "On a mud island stacked with lost things — odd mittens, a teapot lid, nine umbrellas — sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
+      "narration": "On a mud island stacked with lost things (odd mittens, a teapot lid, nine umbrellas) sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
       "choices": [
         {
           "id": "offer",
@@ -213,7 +213,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_act_closed",
-        "narration": "You stamp, and stamp, and do a sort of stamping dance, and the barge starts to wobble. Then it stands up — on legs — and stalks off into the reeds, muttering."
+        "narration": "You stamp, and stamp, and do a sort of stamping dance, and the barge starts to wobble. Then it stands up, on legs, and stalks off into the reeds, muttering about the state of modern audiences."
       },
       "onFailure": {
         "goto": "encounter_mimic",
@@ -282,7 +282,7 @@
     },
     "scene_act_closed": {
       "type": "story",
-      "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem — the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
+      "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem, the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
       "choices": [
         {
           "id": "take",
@@ -424,7 +424,7 @@
     "scene_hollow_gate": {
       "type": "story",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to — older than the marsh, older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in knots. It does not open. It does not look like it has ever opened.",
+      "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to. Older than the marsh. Older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in a knot. It does not open. It does not look like it has ever opened.",
       "choices": [
         {
           "id": "listen",
@@ -449,7 +449,7 @@
     "scene_gate_hum": {
       "type": "story",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "You stand very still. The runes are humming one long, low note — the boggart's note, the barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
+      "narration": "You stand very still. The runes are humming one long, low note. The boggart's note. The barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -475,7 +475,7 @@
     "scene_gate_shard": {
       "type": "story",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "Half in the mud by the bottom step lies a curl of cold silver. When your gem-dusty boots come near, it hums once — the same note — and then goes completely quiet, as if it has said what it came to say.",
+      "narration": "Half in the mud by the bottom step lies a curl of cold silver. When your gem-dusty boots come near, it hums once, the same note, and then goes completely quiet, as if it has said what it came to say.",
       "choices": [
         {
           "id": "pick_up",
@@ -579,7 +579,7 @@
     },
     "ending_swept_west": {
       "type": "rest",
-      "narration": "The branch grabs you and carries you west — through the marsh's outermost tangles, past floating logs (real ones, you check) — until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
+      "narration": "The branch grabs you and carries you west, through the marsh's outermost tangles, past floating logs (real ones, you check), until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
       "heal": 4,
       "onEnter": [
         {
