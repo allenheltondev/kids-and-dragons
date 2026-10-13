@@ -106,6 +106,9 @@ function waitingLine(prompt: Prompt, party: PartyMember[]): string {
       return `${nameOfCharacter(party, prompt.characterId)} is rolling.`;
     case "choice": {
       if (prompt.forPlayerIds.length === 0) return "The party is deciding.";
+      if (!prompt.vote && prompt.forPlayerIds.length === 1) {
+        return `It's ${nameOfPlayer(party, prompt.forPlayerIds[0] as string)}'s turn to choose.`;
+      }
       const names = prompt.forPlayerIds.map((id) => nameOfPlayer(party, id));
       return `Waiting for ${names.join(" and ")}.`;
     }
@@ -857,7 +860,13 @@ export function PlayerPanel(): ReactElement {
           <div className="prompt">
             <h3 className="prompt__title">
               <Icon name={myPrompt.vote ? "vote" : "hand"} />
-              <span>{myPrompt.vote ? "Everyone votes" : "What do you do?"}</span>
+              <span>
+                {myPrompt.vote
+                  ? "Everyone votes"
+                  : myPrompt.forPlayerIds.includes(me.playerId)
+                    ? "Your turn! What do you do?"
+                    : "What do you do?"}
+              </span>
             </h3>
 
             <ul className="prompt__options">

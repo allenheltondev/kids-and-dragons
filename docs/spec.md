@@ -171,7 +171,7 @@ World  →  Campaign  →  Chapter  →  Scene
 
 | Type | What happens |
 |---|---|
-| **Story** | Art + narration + 2–4 tappable choices. May branch. |
+| **Story** | Art + narration + 2–4 tappable choices. May branch. Players **take turns** choosing: a story turn marker passes round the party after each choice, and the TV says whose turn it is. A turn holder whose phone drops is skipped, and anyone may answer a choice they were holding. |
 | **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. |
 | **Encounter** | Tactical grid combat. See §7. |
 | **Choice point** | Party votes; ties broken by whoever's turn marker is active. Prevents one player steamrolling. |
