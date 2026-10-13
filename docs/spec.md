@@ -405,3 +405,23 @@ This is a hard architectural rule, tested in CI with the live layer stubbed out.
 - **Colorblind-safe status indicators** — status effects and item rarity use shape + icon, never color alone.
 - **Undo on non-committal taps.** Selecting a target is confirmable; only the confirm is final.
 - **Big touch targets.** Phone UI assumes a small hand and imprecise taps — and stays that way in Travel Mode's compressed layout.
+
+---
+
+## 12. The Field Guide
+
+A picture book of the world that the family fills in by playing — creatures, peoples, folk, places and factions, each with its painting, a story, what it does for fun, and who it likes and dislikes. It is the realm's canon told for an 8-year-old: entries are generated from the canon (`npm run canon:field-guide` writes `content/field-guide.json`, the same source the wiki is built from), never written by hand in the client.
+
+**One book per household.** The guide belongs to the household (§3), not to a character or a run: every campaign, every evening and every player adds to the same book, and every phone and the TV read the same one. A guest household keeps its book for as long as it keeps its heroes, and the keepsake offer names the guide among what is kept once there is something in it.
+
+**What fills a page.** Entries start undiscovered — a "?" card that gives nothing away. A page is filled the moment the party *meets* the thing at the table, never by reading ahead:
+
+- a chapter starting discovers its **biome**;
+- entering an encounter discovers every **creature it fights**;
+- entering any scene discovers what that scene lists in **`discovers`** — the author's tag for meeting someone or somewhere the two rules above miss ([how to tag](../content/README.md#field-guide-tags-discovers)).
+
+**First finder.** Each page remembers who found it first — the player whose action got there (or the player leading the story) — and that never changes. A later visit is not a new find.
+
+**"New!" moments.** A find is celebrated once, live: a toast on the phones ("New in your Field Guide") and a banner on the TV, each waiting for a quiet moment rather than covering a question or a dice roll — a phone holds its toast while it is that player's turn. Tapping the toast opens the entry. Celebrations are never replayed by a reload or reconnect; the book keeps a "New" badge on each page until it is opened on that device.
+
+**Open any time.** The guide is a permanent destination in the phone tray, beside World, You and Map — in the lobby, the story, at rest and in the middle of a fight. It is reading, not playing: opening it sends nothing and decides nothing, a half-made choice underneath survives, and the "Your turn" badge stays on You so the turn is always one tap away.

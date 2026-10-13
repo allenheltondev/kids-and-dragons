@@ -2,7 +2,7 @@
  * edges echo the shared glyphs; the button owns selection and labels. */
 import type { ReactElement } from "react";
 import { PAINTED_ART } from "../assets/artwork";
-export type TrayObjectName = "lantern" | "globe" | "map" | "satchel" | "tv" | "phone";
+export type TrayObjectName = "lantern" | "globe" | "map" | "satchel" | "scroll" | "tv" | "phone";
 export interface TrayObjectProps { name: TrayObjectName; className?: string; }
 const EDGE = { stroke: "#ffe4a1", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 const OBJECTS: Partial<Record<TrayObjectName, ReactElement>> = {

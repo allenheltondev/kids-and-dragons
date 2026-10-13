@@ -1,4 +1,4 @@
-import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
+import { setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 /**
  * PlayerPanel — PlayerView for everything that is not character creation.
  *
@@ -66,7 +66,6 @@ import "./shared.css";
 import "./PlayerPanel.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
 import { FieldGuide } from "./FieldGuide";
-import { fieldGuideEnabled } from "../feature-flags";
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -591,7 +590,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     );
   }
 
-  const guideOpen = section === "guide" && fieldGuideEnabled();
+  // Opened from the tray's Guide tab (layout/GuideTab.tsx) or the toast.
+  const guideOpen = section === "guide";
 
   return (
     <>
@@ -1471,14 +1471,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               ))}
             </ul>
           </div>
-        ) : null}
-
-        {/* TODO(#112): replaced by the permanent menu option. */}
-        {fieldGuideEnabled() ? (
-          <Button className="player__guide-entry" variant="secondary" size="md" block
-            icon={<Icon name="book" />} onClick={() => openGuide()}>
-            Field Guide
-          </Button>
         ) : null}
 
         {roomControls ? (

@@ -4,8 +4,8 @@
  * Two surfaces, one queue each: a toast on a phone (`FieldGuideToast`) and a
  * banner on the shared screen (`FieldGuideBanner`). Each is its own client with
  * its own copy of the news store, so each acknowledges only what *it* showed.
- * Both render nothing with the flag off, and neither fetches field-guide.json
- * until there is something to name — a quiet session never requests it.
+ * Neither fetches field-guide.json until there is something to name — a quiet
+ * session never requests it.
  *
  * News is live-only (field-guide-news.ts), so a reload or resync has nothing to
  * celebrate; the book keeps its "New" badges for that.
@@ -17,7 +17,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type { FieldGuide } from "@kad/shared";
-import { fieldGuideEnabled } from "../feature-flags";
 import { useGameStore, useMyTurnKey, useRunState, useSession } from "../store";
 import type { PresentationEvent, ProgressionEvent } from "../store/contract";
 import { ackFieldGuideNews, useFieldGuideNews } from "../store/field-guide-news";
@@ -103,12 +102,11 @@ function useHasPendingTurn(): boolean {
 }
 
 export function FieldGuideToast(): ReactElement | null {
-  const enabled = fieldGuideEnabled();
   const busy = useHasPendingTurn();
   const news = useFieldGuideNews();
-  const { guide, settled } = useGuideFor(enabled && news.length > 0);
-  const ids = useNewsBatch(enabled && !busy && settled);
-  if (!enabled || !ids) return null;
+  const { guide, settled } = useGuideFor(news.length > 0);
+  const ids = useNewsBatch(!busy && settled);
+  if (!ids) return null;
   const titles = titlesOf(guide, ids);
   const first = ids[0]!;
   const art = ids.length === 1 ? guide?.entries[first]?.art : undefined;
@@ -179,12 +177,11 @@ function useStageQuiet(): boolean {
 }
 
 export function FieldGuideBanner(): ReactElement | null {
-  const enabled = fieldGuideEnabled();
   const quiet = useStageQuiet();
   const news = useFieldGuideNews();
-  const { guide, settled } = useGuideFor(enabled && news.length > 0);
-  const ids = useNewsBatch(enabled && quiet && settled);
-  if (!enabled || !ids) return null;
+  const { guide, settled } = useGuideFor(news.length > 0);
+  const ids = useNewsBatch(quiet && settled);
+  if (!ids) return null;
   const titles = titlesOf(guide, ids);
   const arts = ids.slice(0, 3).map((id) => guide?.entries[id]?.art).filter((a): a is string => !!a);
   return (
