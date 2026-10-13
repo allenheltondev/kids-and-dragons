@@ -22,7 +22,6 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
-import { fieldGuideEnabled } from "../feature-flags";
 import {
   useFieldGuideDiscoveries,
   type FieldGuideDiscoveries,
@@ -38,11 +37,11 @@ import "./SignInFlow.css";
 
 /**
  * Whether the keepsake copy should mention the Field Guide: only when the
- * feature is on and the household has actually found something, so a family
- * with an empty guide is never told about losing nothing.
+ * household has actually found something, so a family with an empty guide is
+ * never told about losing nothing.
  */
 export function guideAtStake(discoveries: FieldGuideDiscoveries): boolean {
-  return fieldGuideEnabled() && Object.keys(discoveries).length > 0;
+  return Object.keys(discoveries).length > 0;
 }
 
 /** Cognito's email OTP is eight digits (its SMS codes are six). */

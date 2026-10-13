@@ -16,7 +16,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { PartyMember } from "@kad/shared";
 import { hasIcon } from "./icons";
 import { KeepsakeLantern } from "./KeepsakeLantern";
-import { setFieldGuideOverride } from "../feature-flags";
 import {
   KeepsakeOffer,
   OfferStep,
@@ -218,10 +217,6 @@ describe("the flow's icons", () => {
 describe("the Field Guide in the offer", () => {
   const FIND = { firstFoundBy: "p_1", foundAt: "2026-01-01T00:00:00.000Z" };
 
-  afterEach(() => {
-    setFieldGuideOverride(null);
-  });
-
   it("says nothing about the guide by default", () => {
     const html = renderToStaticMarkup(<OfferStep motes={MOTES} />);
     expect(html).not.toContain("Field Guide");
@@ -236,11 +231,8 @@ describe("the Field Guide in the offer", () => {
     }
   });
 
-  it("is at stake only when the feature is on and the guide has an entry", () => {
-    setFieldGuideOverride(true);
+  it("is at stake only when the guide has an entry", () => {
     expect(guideAtStake({})).toBe(false);
     expect(guideAtStake({ "creature.pip": FIND })).toBe(true);
-    setFieldGuideOverride(false);
-    expect(guideAtStake({ "creature.pip": FIND })).toBe(false);
   });
 });
