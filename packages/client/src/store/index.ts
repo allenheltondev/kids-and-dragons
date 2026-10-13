@@ -65,11 +65,12 @@ import { appSyncEventSource } from "../sync/appsync-socket";
 import { navigate } from "../router";
 
 /**
- * The campaign the lobby plays. Gemfall is the authored arc; the Hollow Crown
- * is the engine's reference chapter, which the browser suite pins with
- * `VITE_LAUNCH_CAMPAIGN` so its scripted walk does not move when the story
- * does. Choosing between campaigns in the UI is still a later problem, and the
- * id lives here rather than in a component so there is one place to change.
+ * The campaign a new room is opened for. Gemfall is the authored arc; the
+ * Hollow Crown is the engine's reference chapter, which the browser suite pins
+ * with `VITE_LAUNCH_CAMPAIGN` so its scripted walk does not move when the story
+ * does. It is the lobby's first option, not its only one: the server adds every
+ * campaign the household has under way, and the party votes between them
+ * (`RunState.campaignOptions`, shared `lobbyCampaign`).
  */
 const LAUNCH_CAMPAIGN: string =
   (import.meta.env.VITE_LAUNCH_CAMPAIGN as string | undefined) || "gemfall";
@@ -644,8 +645,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       /**
        * The TV opening the room. Nothing is seated, so there is no session to
-       * adopt: keep the device binding (it names the household the phones
-       * join, tonight and next time), then go to `/tv/:code` and let `attach`
+       * adopt: keep the device binding (the room's placeholder household
+       * until the first phone joins and claims it), then go to `/tv/:code` and let `attach`
        * watch the room exactly as it would after a refresh.
        */
       async openOnThisScreen() {

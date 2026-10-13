@@ -347,6 +347,36 @@ describe("POST /api/room", () => {
     expect(bodyOf(watched)).toMatchObject({ state: { party: [] } });
   });
 
+  it("hands the TV's room to the family whose phone joins first", async () => {
+    // A new TV, or one whose storage was cleared, opens under a household of
+    // its own. A phone that already belongs to a family takes the room into
+    // that family rather than being turned away from it.
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const opened = bodyOf(
+      await respond(event("POST", "/api/room", { body: { mode: "party", display: true } }), rt),
+    ) as unknown as { code: string; runId: string };
+    const { householdId, players } = await seedHousehold(harness, 1);
+
+    const joined = await respond(
+      event("POST", `/api/room/${opened.code}/join`, {
+        headers: { "x-kad-device-token": players[0]!.deviceToken },
+      }),
+      rt,
+    );
+    expect(joined.statusCode).toBe(200);
+    expect((await harness.repo.getRoom(opened.code))?.householdId).toBe(householdId);
+
+    // And a new phone after it joins the family, not the TV.
+    const fresh = await respond(
+      event("POST", `/api/room/${opened.code}/join`, { body: { displayName: "Sam" } }),
+      rt,
+    );
+    expect(fresh.statusCode).toBe(200);
+    const freshId = (bodyOf(fresh) as unknown as { playerId: string }).playerId;
+    expect(await harness.repo.getPlayer(householdId, freshId)).not.toBeNull();
+  });
+
   it("refuses a TV for a Travel Mode room", async () => {
     const result = await respond(
       event("POST", "/api/room", { body: { mode: "travel", display: true } }),

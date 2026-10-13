@@ -47,6 +47,7 @@ export const PREFIX = {
   device: "DEVICE#",
   character: "CHAR#",
   run: "RUN#",
+  campaign: "CAMPAIGN#",
   chapter: "CHAPTER#",
   event: "EVT#",
 } as const;
