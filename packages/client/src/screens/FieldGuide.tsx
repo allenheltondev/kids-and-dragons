@@ -5,6 +5,7 @@ import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen, useFieldGuideSeen } from "../store/field-guide-seen";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
+import { FieldGuideDetail } from "./FieldGuideDetail";
 import { loadFieldGuide } from "./content";
 import "./FieldGuide.css";
 
@@ -32,13 +33,15 @@ export function FieldGuide() {
     return () => { live = false; };
   }, []);
 
-  const open = guideEntry !== null && guide !== null ? guide.entries[guideEntry] : undefined;
+  // A deep link to something undiscovered (or unknown) falls back to the index.
+  const discoveries = useFieldGuideDiscoveries();
+  const open = guideEntry !== null && guide !== null && discoveries[guideEntry] ? guide.entries[guideEntry] : undefined;
 
   return (
-    <section className="field-guide" aria-label="Field Guide" data-entry={guideEntry ?? undefined}>
+    <section className="field-guide" aria-label="Field Guide" data-entry={open?.id}>
       <h2 className="field-guide__title">Field Guide</h2>
       {open ? (
-        <FieldGuideDetailPlaceholder entry={open} />
+        <FieldGuideDetail guide={guide as FieldGuideData} entryId={open.id} />
       ) : (
         <>
           <FieldGuideIndex guide={guide} />
@@ -119,21 +122,5 @@ function FoundCard({ entry, icon, isNew }: { entry: FieldGuideEntry; icon: strin
       <span className="field-guide__name">{entry.title}</span>
       {isNew && <span className="field-guide__new" data-testid="guide-new">New</span>}
     </button>
-  );
-}
-
-/** Stand-in until #109 ships the detail screen. */
-function FieldGuideDetailPlaceholder({ entry }: { entry: FieldGuideEntry }) {
-  return (
-    <>
-      <div className="field-guide__body kad-scroll">
-        <h3 className="field-guide__detail-title">{entry.title}</h3>
-        {entry.short_description && <p>{entry.short_description}</p>}
-      </div>
-      <Button className="field-guide__back" variant="secondary" size="md" block
-        icon={<Icon name="back" />} onClick={() => selectGuideEntry(null)}>
-        Back to the guide
-      </Button>
-    </>
   );
 }

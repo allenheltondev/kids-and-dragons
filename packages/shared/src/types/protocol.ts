@@ -242,6 +242,19 @@ export interface ServerMessage {
   presentation?: Presentation;
   /** Additive progression data; older clients safely ignore this field. */
   progression?: ProgressionUpdate;
+  /**
+   * Field Guide ids this step added to the household's book for the first
+   * time — the "new entry!" signal (#106; #110 celebrates it). The entries
+   * themselves arrive in this message's `patch`, under `/fieldGuide`.
+   *
+   * **Live only.** Set on the broadcast and never written to the event log,
+   * so `GET /state` — a snapshot or a replay of missed events (§4.3) — can
+   * never announce a discovery a second time. A client that misses the live
+   * message still gets the book, just not the fanfare. Taken from what the
+   * store reported as newly added, so two rooms of one household cannot both
+   * announce the same find.
+   */
+  discovered?: string[];
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */

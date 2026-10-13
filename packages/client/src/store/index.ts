@@ -63,6 +63,8 @@ import {
   type PresentationGate,
 } from "../sync/channel";
 import { appSyncEventSource } from "../sync/appsync-socket";
+import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
+import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
 import { navigate } from "../router";
 
 /**
@@ -268,9 +270,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       const sequencer = new MessageSequencer({
         gate: runtime.gate,
         handlers: {
-          onState: (state) => set({ state }),
+          onState: (state) => {
+            set({ state });
+            // The household's Field Guide rides the mirror (`RunState.fieldGuide`);
+            // its own store is a projection of it, never written any other way.
+            setFieldGuideDiscoveries(state.fieldGuide);
+          },
           onPresentation: (presentation) => set({ presentation }),
           onProgression: (progression) => set({ progression }),
+          // Live-only "new page!" ids (#106) — queued for #110 to celebrate.
+          onDiscovered: ({ runId, seq, canonIds }) => announceFieldGuideNews(runId, seq, canonIds),
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
@@ -701,10 +710,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return heroes;
       },
 
-      async joinRoom(code: string, displayName: string) {
+      async joinRoom(code: string, name: string) {
         const roomCode = code.trim().toUpperCase();
         set({ connection: "connecting", error: null });
         const identity = loadIdentity(deps.storage);
+        // The home screen no longer asks for a name when joining; the character
+        // flow does. Keep whatever this phone used last, else a placeholder.
+        const displayName = name.trim() || identity.displayName || "Player";
         saveIdentity({ ...identity, displayName }, deps.storage);
 
         try {
@@ -899,6 +911,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         runtime.attaching = null;
         disconnect();
         if (session) clearSession(session.roomCode, deps.storage);
+        // The book and its news belong to the room's household; out of the
+        // room there is neither.
+        setFieldGuideDiscoveries(null);
+        clearFieldGuideNews();
         set({
           connection: "idle",
           session: null,

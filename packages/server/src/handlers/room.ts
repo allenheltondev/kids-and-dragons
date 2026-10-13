@@ -22,6 +22,7 @@ import { diff } from "../json-patch.ts";
 import { newId } from "../ids.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
+import { loadBook } from "./field-guide.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -136,6 +137,14 @@ export async function createRoom(
   // has part-way through — so the lobby can say which chapter is next, and
   // offer the choice, before anybody taps anything.
   await offerCampaigns(state, input.householdId, campaignId, deps);
+  // The household's Field Guide, for every screen in the room (#106) — but
+  // not on a TV's claimable room, whose household is only a placeholder until
+  // a phone joins (§4.5). That room gets its book at the first join instead
+  // (`withFieldGuide`).
+  if (input.claimable !== true) {
+    const book = await readBook(input.householdId, deps);
+    if (book) state.fieldGuide = book;
+  }
   await deps.repo.putState(state);
 
   return ok({
@@ -283,6 +292,39 @@ async function refreshLobby(room: RoomRecord, deps: HandlerDeps): Promise<RunSta
   return current;
 }
 
+/**
+ * The household's Field Guide, onto a run that has none yet (#106).
+ *
+ * A run's book is loaded when the room opens — except on a TV's claimable
+ * room, whose household is not known until a phone joins, and on runs
+ * persisted before the book existed. Either way the first join of a settled
+ * room is where it arrives, as an ordinary logged patch, so the TV that has
+ * been showing the lobby gets the family's book on the same broadcast every
+ * phone does. Every later join finds it there and costs nothing.
+ *
+ * After that the run keeps its own copy current (action.ts) and a chapter
+ * start re-reads the store, so this is a one-time fill, not a refresh.
+ */
+async function withFieldGuide(state: RunState, room: RoomRecord, deps: HandlerDeps): Promise<RunState> {
+  if (room.claimable === true || state.fieldGuide !== undefined) return state;
+  const book = await readBook(room.householdId, deps);
+  if (!book) return state;
+  return advanceRoom(state, { ...state, fieldGuide: book }, "", deps);
+}
+
+/**
+ * The household's book, or null when the store cannot say — a join or a room
+ * must never fail over a page of the Field Guide. The next join tries again.
+ */
+async function readBook(householdId: string, deps: HandlerDeps): Promise<RunState["fieldGuide"] | null> {
+  try {
+    return await loadBook(householdId, deps);
+  } catch (err) {
+    console.error(`field guide: could not read ${householdId}'s book:`, err);
+    return null;
+  }
+}
+
 export async function joinRoom(
   input: JoinRoomInput,
   deps: HandlerDeps,
@@ -318,8 +360,9 @@ export async function joinRoom(
     early ?? (await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId));
   if (!player) return fail("NOT_FOUND", `no player ${input.principal.playerId}`);
 
-  const state = await refreshLobby(room, deps);
-  if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+  const lobby = await refreshLobby(room, deps);
+  if (!lobby) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+  const state = await withFieldGuide(lobby, room, deps);
 
   const joined = await markConnected(state, input.principal.playerId, deps);
 

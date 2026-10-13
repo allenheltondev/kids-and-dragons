@@ -45,6 +45,13 @@ export interface SequencerHandlers {
   onProgression(event: ProgressionEvent): void;
   /** A hole that did not fill in time. Resync from `sinceSeq`. */
   onGap(sinceSeq: number): void;
+  /**
+   * Field Guide ids a step found for the first time (`ServerMessage.discovered`,
+   * #106), emitted once, right after that step's patch is applied. Only live
+   * messages carry them — the server keeps them out of the event log — so a
+   * snapshot or a replayed gap never emits this.
+   */
+  onDiscovered?(event: { runId: string; seq: number; canonIds: string[] }): void;
 }
 
 export type TimerHandle = ReturnType<typeof setTimeout> | number;
@@ -193,6 +200,9 @@ export class MessageSequencer {
     if (message.progression) {
       this.handlers.onProgression({ seq: message.seq, progression: message.progression });
     }
+    if (message.discovered && message.discovered.length > 0) {
+      this.handlers.onDiscovered?.({ runId: message.runId, seq: message.seq, canonIds: message.discovered });
+    }
   }
 
   private emitPresentation(
@@ -294,10 +304,16 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
   };
   const presentation = (candidate as ServerMessage).presentation;
   const progression = (candidate as ServerMessage).progression;
+  const discovered: unknown = (candidate as ServerMessage).discovered;
+  const finds =
+    Array.isArray(discovered) && discovered.every((id): id is string => typeof id === "string")
+      ? discovered
+      : null;
   return {
     ...message,
     ...(presentation ? { presentation } : {}),
     ...(progression ? { progression } : {}),
+    ...(finds ? { discovered: finds } : {}),
   };
 }
 

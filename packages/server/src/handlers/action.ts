@@ -36,6 +36,7 @@ import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
   expectedIndex,
   joinOrStartAttempt,
@@ -352,6 +353,30 @@ export async function applyAction(
     seq: nextSeq,
     updatedAt: iso(nowMs),
   };
+
+  /*
+   * The Field Guide (#106, field-guide.ts) — what this step revealed.
+   *
+   * Worked out before `diff()` so the household's book, with this step's finds
+   * in it, rides the same patch as the scene that revealed them; *recorded*
+   * after the commit (below), because the book is the household's and is not
+   * part of this run's transaction. Read off before/after, like
+   * `finishedChapter` above, so no path into a scene can skip it.
+   */
+  const finds = await prepareStepFinds(
+    {
+      before: state,
+      after: next,
+      chapter,
+      chapterStarted: input.intent.type === "START_CHAPTER",
+      actorId: input.playerId,
+      run: auth.run,
+      now: iso(nowMs),
+    },
+    deps,
+  );
+  if (finds) next.fieldGuide = finds.book;
+
   const patch = diff(state, next);
 
   /*
@@ -419,6 +444,19 @@ export async function applyAction(
   // hold the completion back from the table.
   const renewal = finishedChapter ? keepGuestHousehold(auth.run.householdId, deps) : null;
 
+  /*
+   * The finds land in the household's book now that the step has, and what the
+   * store says was *new* rides this broadcast as `discovered` — the "new page!"
+   * signal (#110). On the message and not on `event`: the log is what a
+   * reconnect replays (§4.3), and a replay must never announce a find twice.
+   *
+   * This is the one store write that sits in front of the broadcast, and only
+   * on a step that found something not already in the book — a handful of
+   * times a chapter. It is there so the signal can ride the patch that shows
+   * the scene; publishing first would mean a second, out-of-band message.
+   */
+  const discovered = await recordStepFinds(finds, deps);
+
   const message = {
     kind: "patch" as const,
     seq: event.seq,
@@ -426,6 +464,7 @@ export async function applyAction(
     patch: event.patch,
     ...(event.presentation ? { presentation: event.presentation } : {}),
     ...(event.progression ? { progression: event.progression } : {}),
+    ...(discovered.length > 0 ? { discovered } : {}),
   };
   try {
     await deps.channel.publish(next.roomCode, message);

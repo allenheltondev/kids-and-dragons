@@ -159,6 +159,9 @@
     },
     "scene_mosshorns": {
       "type": "story",
+      "discovers": [
+        "creature.mosshorn"
+      ],
       "narration": "A herd of mosshorns grazes ahead, their antlers sprouting little gardens. One has a whole strawberry patch on its head and is clearly very proud of it. A prospector's cart rattles by with a sack of gems, and the entire herd steps away from it at once, like one long breath out.",
       "choices": [
         {
@@ -221,6 +224,9 @@
     },
     "scene_unicorns": {
       "type": "story",
+      "discovers": [
+        "character.unicorn"
+      ],
       "narration": "In a small glade the moss has gone the colour of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
       "choices": [
         {
@@ -294,6 +300,9 @@
     },
     "scene_crater": {
       "type": "story",
+      "discovers": [
+        "creature.echo_hunter"
+      ],
       "narration": "The worst glade is a hollow torn into the forest floor where a big stone landed, and the crash cracked the ground open into the dark. Something pale and frilled has climbed up out of the crack. It has no eyes at all, and it is listening very hard to the humming in the middle of the glade. Now it is listening to you.",
       "choices": [
         {
