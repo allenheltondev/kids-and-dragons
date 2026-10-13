@@ -21,7 +21,7 @@
  */
 
 import { useEffect } from "react";
-import { CreationFlow, PlayerPanel, SignInFlow } from "../screens";
+import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
@@ -52,11 +52,15 @@ export function PlayerView(): React.JSX.Element {
   // Gating on the lobby phases at all would strand someone who joins after the
   // chapter has started — the engine seats a late character at any phase, so
   // this offers the flow at any phase too.
+  //
+  // WelcomeBack comes first: a player who has saved heroes is asked whether to
+  // bring one before being asked to make anybody (spec §5), and one who has
+  // none goes straight through to the creation flow.
   const creating = me === null;
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
-      {creating ? <CreationFlow /> : <PlayerPanel />}
+      {creating ? <WelcomeBack /> : <PlayerPanel />}
       {/* A panel over the surface, not a route: the game keeps running behind
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}

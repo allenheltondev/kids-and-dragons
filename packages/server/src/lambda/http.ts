@@ -25,6 +25,7 @@ import { applyAction } from "../handlers/action.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
 import { iso } from "../handlers/deps.ts";
 import { createRoom, joinRoom, watchRoom } from "../handlers/room.ts";
+import { listHeroes } from "../handlers/heroes.ts";
 import { getState } from "../handlers/state.ts";
 import type { DeviceIdentity, SessionIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
@@ -120,6 +121,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     }
   }
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
+  if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   return null;
 }
 
@@ -292,6 +294,14 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
     deps,
   );
   return json(200, response);
+}
+
+/** This player's saved characters, to bring one back instead of making one. */
+async function getHeroes(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "listing heroes needs a room session token");
+  const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {
