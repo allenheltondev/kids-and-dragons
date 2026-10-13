@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 27,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_poling_in",
   "objectives": [
@@ -42,7 +42,7 @@
           "id": "say_it",
           "label": "Say it out loud: something is leaking",
           "icon": "note",
-          "goto": "scene_boggart_isle",
+          "goto": "scene_poling_in_say_it",
           "effects": [
             {
               "type": "setFlag",
@@ -62,6 +62,18 @@
           "id": "pole_on",
           "label": "Ask Gullet to take you to whoever knows about gems",
           "icon": "travel",
+          "goto": "scene_boggart_isle"
+        }
+      ]
+    },
+    "scene_poling_in_say_it": {
+      "type": "story",
+      "narration": "\"Something's leaking,\" you say. Gullet stops poling. The new wisps behind the ribbon all turn toward you at once, like a room full of candles noticing a draught. Gullet carves one more notch in her hat, very carefully, and starts poling again. \"Not near the wisps,\" she says. \"They remember things.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pole on to the boggarts",
+          "icon": "note",
           "goto": "scene_boggart_isle"
         }
       ]
@@ -277,7 +289,8 @@
         "narration": "You follow the sound of humming and a bobbing, notched hat. Gullet hauls you onto her raft and says nothing at all about the mud."
       },
       "onFailure": {
-        "goto": "ending_marsh_kept_secrets"
+        "goto": "ending_marsh_kept_secrets",
+        "narration": "Every channel looks like every other channel, and the wisps keep swapping them round when you blink. By the time you give up and sit down on a tussock, the moon has set and the marsh has decided to keep you a little longer."
       }
     },
     "scene_act_closed": {
@@ -288,7 +301,7 @@
           "id": "take",
           "label": "Pick up the Barge Stone",
           "icon": "gem",
-          "goto": "rest_reed_raft",
+          "goto": "scene_act_closed_take",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -300,7 +313,7 @@
           "id": "leave",
           "label": "Leave it for the marsh",
           "icon": "leaf",
-          "goto": "rest_reed_raft",
+          "goto": "scene_act_closed_leave",
           "effects": [
             {
               "type": "setFlag",
@@ -308,6 +321,30 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_act_closed_leave": {
+      "type": "story",
+      "narration": "You leave the stone where the barge was. For a moment nothing happens. Then the mud takes it, slowly, like a hand closing, until only the hum is left, and then not even that. Gullet, watching from the raft, nods once, the way frogfolk nod at a thing done properly.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the raft",
+          "icon": "leaf",
+          "goto": "rest_reed_raft"
+        }
+      ]
+    },
+    "scene_act_closed_take": {
+      "type": "story",
+      "narration": "You lift the Barge Stone out of the mud. It hums louder in your hand, as if it is pleased to be held, and every reed along the bank leans toward it and then away again. Somewhere behind you, a long muddy shape sighs.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the raft",
+          "icon": "gem",
+          "goto": "rest_reed_raft"
         }
       ]
     },
@@ -332,7 +369,7 @@
           "id": "please",
           "label": "Say please",
           "icon": "heart",
-          "goto": "scene_wisp_sight",
+          "goto": "scene_wisp_lead_please",
           "effects": [
             {
               "type": "setFlag",
@@ -366,6 +403,18 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_wisp_lead_please": {
+      "type": "story",
+      "narration": "\"Please,\" you say. The wisp stops dead. Nobody has ever said please to a wisp. It goes pink, then gold, then a flustered sort of white, and bobs in a little circle as if it does not know where to put itself. Then it comes back and hangs right in front of you, glowing, waiting to show you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow it",
+          "icon": "heart",
+          "goto": "scene_wisp_sight"
         }
       ]
     },
@@ -481,7 +530,7 @@
           "id": "pick_up",
           "label": "Pick it up, carefully",
           "icon": "hand",
-          "goto": "choice_exit",
+          "goto": "scene_gate_shard_pick_up",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -493,6 +542,32 @@
           "id": "leave",
           "label": "Leave it where it lies",
           "icon": "leaf",
+          "goto": "scene_gate_shard_leave"
+        }
+      ]
+    },
+    "scene_gate_shard_leave": {
+      "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
+      "narration": "You leave it in the mud. It sinks a little deeper, as if it is comfortable there, and the water closes over it without a ripple. The Gate hums on. You have the odd feeling that something has been noted.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step back from the Gate",
+          "icon": "leaf",
+          "goto": "choice_exit"
+        }
+      ]
+    },
+    "scene_gate_shard_pick_up": {
+      "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
+      "narration": "You pick it up. It is cold and lighter than it looks, and it hums once more in your pocket and then goes still, like a bird settling. Behind you, one of the knotted reeds around the Gate unties itself. Nobody saw it do that. Everybody saw it do that.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step back from the Gate",
+          "icon": "hand",
           "goto": "choice_exit"
         }
       ]

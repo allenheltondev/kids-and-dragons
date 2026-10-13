@@ -5,7 +5,7 @@
   "index": 7,
   "title": "The Tether",
   "biome": "red_sky_foothills",
-  "estimatedMinutes": 28,
+  "estimatedMinutes": 40,
   "xpAward": 90,
   "route": {
     "set": "pursuit",
@@ -68,7 +68,7 @@
           "label": "Ask the grandmothers to chair the table",
           "icon": "dragonling",
           "requiresFlag": "told_gatherers",
-          "goto": "scene_ledger",
+          "goto": "scene_the_table_grandmothers_chair",
           "effects": [
             {
               "type": "setFlag",
@@ -76,6 +76,18 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_the_table_grandmothers_chair": {
+      "type": "story",
+      "narration": "You ask a grandmother to chair the table. She brings her knitting, sits down at the head of your old door, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Sit.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go to the wardens first",
+          "icon": "dragonling",
+          "goto": "scene_ledger"
         }
       ]
     },
@@ -88,7 +100,7 @@
           "label": "You told them first, at the citadel. Ask as a friend.",
           "icon": "heart",
           "requiresFlag": "told_wardens",
-          "goto": "scene_choir",
+          "goto": "scene_ledger_friend",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -111,13 +123,37 @@
           "id": "false_promise",
           "label": "Promise them the cult's secret chord in trade (you won't)",
           "icon": "moon",
-          "goto": "scene_choir",
+          "goto": "scene_ledger_false_promise",
           "effects": [
             {
               "type": "grantQuestItem",
               "itemId": "tether_ledger"
             }
           ]
+        }
+      ]
+    },
+    "scene_ledger_false_promise": {
+      "type": "story",
+      "narration": "You promise him the choir's chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the valley to the choir",
+          "icon": "moon",
+          "goto": "scene_choir"
+        }
+      ]
+    },
+    "scene_ledger_friend": {
+      "type": "story",
+      "narration": "\"You told us first,\" you say. \"At the citadel. We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the valley to the choir",
+          "icon": "heart",
+          "goto": "scene_choir"
         }
       ]
     },
@@ -162,7 +198,7 @@
           "label": "Ask the grandmothers to vouch for you",
           "icon": "dragonling",
           "requiresFlag": "grandmothers_chair",
-          "goto": "scene_road_gifts",
+          "goto": "scene_choir_vouch",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -180,7 +216,7 @@
           "label": "Trade them the wardens' cage plans, page by page",
           "icon": "scroll",
           "requiresItem": "tether_ledger",
-          "goto": "scene_road_gifts",
+          "goto": "scene_choir_sell_secrets",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -197,7 +233,7 @@
           "id": "pay_stone",
           "label": "Pay them with a stone from your pack",
           "icon": "gem",
-          "goto": "scene_road_gifts",
+          "goto": "scene_choir_pay_stone",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -210,13 +246,61 @@
           "label": "Hum along until they forget you are not one of them",
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
-          "goto": "scene_road_gifts",
+          "goto": "scene_choir_hum_along",
           "effects": [
             {
               "type": "grantQuestItem",
               "itemId": "tether_chord"
             }
           ]
+        }
+      ]
+    },
+    "scene_choir_hum_along": {
+      "type": "story",
+      "narration": "Your kitsune hums along, badly at first and then not badly at all, until the choir forgets your kitsune is not one of them and sings the whole chord out plain. Three notes. Your kitsune hums them all the way back down the valley, very quietly, and nobody comes after you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "kitsune",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "scene_choir_pay_stone": {
+      "type": "story",
+      "narration": "You pay with a stone from your pack. The choir passes it from hand to hand, humming, and the stone hums back, and then it is in a sack and gone. They teach you the chord. The pack is one stone lighter and you can feel exactly where it used to sit.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "gem",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "scene_choir_sell_secrets": {
+      "type": "story",
+      "narration": "You trade them the wardens' cage plans, page by page, and Hessa reads each one with her lips moving. \"Pellam will know,\" she says, not unkindly, and teaches you the chord in return, three notes that stay in your head like a tune you did not choose. The ledger feels lighter now, and that is not a good feeling.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "scroll",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "scene_choir_vouch": {
+      "type": "story",
+      "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's nan comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "dragonling",
+          "goto": "scene_road_gifts"
         }
       ]
     },
@@ -351,7 +435,7 @@
           "id": "brisk_said",
           "label": "Tell it what Pellam mutters to his ledger",
           "icon": "ear",
-          "goto": "scene_stall_witch",
+          "goto": "scene_boggart_brisk_said",
           "effects": [
             {
               "type": "setFlag",
@@ -364,7 +448,7 @@
           "id": "choir_said",
           "label": "Tell it what the choir hums when nobody is listening",
           "icon": "note",
-          "goto": "scene_stall_witch",
+          "goto": "scene_boggart_choir_said",
           "effects": [
             {
               "type": "setFlag",
@@ -372,6 +456,30 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_boggart_choir_said": {
+      "type": "story",
+      "narration": "You hum what the choir hums when nobody is listening, which is the same three notes, only sadder. The boggart goes completely still and listens with its whole body. \"Sidelong,\" it says at last, approvingly, and hands over the catalogue without ever once looking at you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and find the witch's stall",
+          "icon": "note",
+          "goto": "scene_stall_witch"
+        }
+      ]
+    },
+    "scene_boggart_brisk_said": {
+      "type": "story",
+      "narration": "You tell it what Pellam mutters to his ledger when he thinks nobody is listening, which is mostly numbers and once, very quietly, \"oh dear.\" The boggart hugs itself. \"A clerk's oh dear,\" it tells nobody. \"Rarer than rubies.\" The catalogue is in your hands before you notice it has let go.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and find the witch's stall",
+          "icon": "ear",
+          "goto": "scene_stall_witch"
         }
       ]
     },
@@ -383,7 +491,7 @@
           "id": "hold_safe",
           "label": "\"To hold it still, so nobody gets hurt.\"",
           "icon": "heart",
-          "goto": "scene_evening",
+          "goto": "scene_ford_witch_hold_safe",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -399,7 +507,7 @@
           "id": "hold_power",
           "label": "\"To hold it, because we can.\"",
           "icon": "crown",
-          "goto": "scene_evening",
+          "goto": "scene_ford_witch_hold_power",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -411,6 +519,42 @@
           "id": "flatter",
           "label": "Say whatever will get you the question",
           "icon": "moon",
+          "goto": "scene_ford_witch_flatter"
+        }
+      ]
+    },
+    "scene_ford_witch_flatter": {
+      "type": "story",
+      "narration": "You say whatever you think will get you the question. Mother Thrum listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Evening at the table",
+          "icon": "moon",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_ford_witch_hold_power": {
+      "type": "story",
+      "narration": "\"To hold it, because we can.\" Mother Thrum does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Evening at the table",
+          "icon": "crown",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_ford_witch_hold_safe": {
+      "type": "story",
+      "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Evening at the table",
+          "icon": "heart",
           "goto": "scene_evening"
         }
       ]
@@ -423,7 +567,7 @@
           "id": "hold_safe",
           "label": "\"To hold it still, so nobody gets hurt.\"",
           "icon": "heart",
-          "goto": "scene_evening",
+          "goto": "scene_stall_witch_hold_safe",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -435,7 +579,7 @@
           "id": "hold_power",
           "label": "\"To hold it, because we can.\"",
           "icon": "crown",
-          "goto": "scene_evening",
+          "goto": "scene_stall_witch_hold_power",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -447,6 +591,42 @@
           "id": "flatter",
           "label": "Say whatever will get you the question",
           "icon": "moon",
+          "goto": "scene_stall_witch_flatter"
+        }
+      ]
+    },
+    "scene_stall_witch_flatter": {
+      "type": "story",
+      "narration": "You say whatever you think will get you the question. The stall witch listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Evening at the table",
+          "icon": "moon",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_stall_witch_hold_power": {
+      "type": "story",
+      "narration": "\"To hold it, because we can.\" The stall witch does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Evening at the table",
+          "icon": "crown",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_stall_witch_hold_safe": {
+      "type": "story",
+      "narration": "\"To hold it still, so nobody gets hurt.\" The stall witch looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Evening at the table",
+          "icon": "heart",
           "goto": "scene_evening"
         }
       ]
@@ -530,7 +710,7 @@
           "id": "buy_back",
           "label": "Buy it back. A tether needs an anchor.",
           "icon": "gem",
-          "goto": "rest_under_the_table",
+          "goto": "scene_ember_buy_back",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -542,6 +722,30 @@
           "id": "wave",
           "label": "Wave, and let it go on its way",
           "icon": "hand",
+          "goto": "scene_ember_wave"
+        }
+      ]
+    },
+    "scene_ember_wave": {
+      "type": "story",
+      "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find somewhere to sleep",
+          "icon": "hand",
+          "goto": "rest_under_the_table"
+        }
+      ]
+    },
+    "scene_ember_buy_back": {
+      "type": "story",
+      "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find somewhere to sleep",
+          "icon": "gem",
           "goto": "rest_under_the_table"
         }
       ]
@@ -580,13 +784,37 @@
           "label": "Follow the trail of tiny tied grass knots around the cutting",
           "icon": "leaf",
           "requiresFlag": "sprites_friends",
-          "goto": "choice_the_test"
+          "goto": "scene_switchback_sprite_knots"
         },
         {
           "id": "fly_over",
           "label": "Fly up and over the cutting",
           "icon": "griffin",
           "requiresSpecies": "griffin",
+          "goto": "scene_switchback_fly_over"
+        }
+      ]
+    },
+    "scene_switchback_fly_over": {
+      "type": "story",
+      "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with the instruments still rattling in your packs.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the worst bend",
+          "icon": "griffin",
+          "goto": "choice_the_test"
+        }
+      ]
+    },
+    "scene_switchback_sprite_knots": {
+      "type": "story",
+      "narration": "Tiny knots of grass, tied at ankle height, lead off the road and over the top of the cutting. Harvest sprites, this far north, still keeping their promise. You follow the knots, and the echo below you repeats your footsteps to an empty road.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the worst bend",
+          "icon": "leaf",
           "goto": "choice_the_test"
         }
       ]

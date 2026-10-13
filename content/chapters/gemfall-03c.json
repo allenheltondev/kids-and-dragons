@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 28,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_parade",
   "objectives": [
@@ -61,7 +61,7 @@
           "label": "Read the crowd like a book",
           "icon": "eye",
           "requiresSpecies": "kitsune",
-          "goto": "scene_number_pebble",
+          "goto": "scene_parade_read_crowd",
           "effects": [
             {
               "type": "setFlag",
@@ -75,7 +75,7 @@
           "label": "Sniff the gem wagons",
           "icon": "flame",
           "requiresSpecies": "dragonling",
-          "goto": "scene_number_pebble",
+          "goto": "scene_parade_sniff_wagons",
           "effects": [
             {
               "type": "setFlag",
@@ -83,6 +83,30 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_parade_sniff_wagons": {
+      "type": "story",
+      "narration": "Your dragonling sniffs the nearest gem wagon and goes very still. It smells of home: warm rock, ash, the inside of a cave. And underneath that, a hum you can feel in your teeth. Every wagon in the parade smells the same, all the way to the front.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk up to the front",
+          "icon": "flame",
+          "goto": "scene_number_pebble"
+        }
+      ]
+    },
+    "scene_parade_read_crowd": {
+      "type": "story",
+      "narration": "Your kitsune reads the queue the way other people read a menu. That wagon is two places ahead of where it should be. That man is selling the same pebble twice. Those three are a family and that one only says she is. By the time you reach the front, you know the whole queue's business, and the queue does not know you know.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk up to the front",
+          "icon": "eye",
+          "goto": "scene_number_pebble"
         }
       ]
     },
@@ -94,7 +118,7 @@
           "id": "buy_cake",
           "label": "Buy a very expensive honeycake",
           "icon": "cake",
-          "goto": "scene_three_cards",
+          "goto": "scene_number_pebble_buy_cake",
           "effects": [
             {
               "type": "grantItem",
@@ -107,6 +131,18 @@
           "id": "pocket_pebble",
           "label": "Pocket your pebble and look around",
           "icon": "travel",
+          "goto": "scene_three_cards"
+        }
+      ]
+    },
+    "scene_number_pebble_buy_cake": {
+      "type": "story",
+      "narration": "Burdock sells you a honeycake the size of a coin for the price of a honeycake the size of a hat. \"My lucky number,\" he says fondly, and means your money. It is, to be fair, a very good honeycake. You make it last three bites.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look around the camp",
+          "icon": "cake",
           "goto": "scene_three_cards"
         }
       ]
@@ -203,7 +239,7 @@
           "id": "thank_wend",
           "label": "Say thank you and eat up",
           "icon": "heart",
-          "goto": "choice_tolls",
+          "goto": "scene_soup_line_thank_wend",
           "effects": [
             {
               "type": "heal",
@@ -215,6 +251,30 @@
           "id": "ask_crystal",
           "label": "Ask why the crystal is humming",
           "icon": "ear",
+          "goto": "scene_soup_line_ask_crystal"
+        }
+      ]
+    },
+    "scene_soup_line_ask_crystal": {
+      "type": "story",
+      "narration": "Wend lifts the crystal and looks at it as if it has only just started. \"It's done that since the red night,\" Wend says. \"Whenever a gem wagon passes. We think it's trying to say something.\" Wend tucks it back inside the robe, where it goes on humming against Wend's heart.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "See what the queue needs",
+          "icon": "ear",
+          "goto": "choice_tolls"
+        }
+      ]
+    },
+    "scene_soup_line_thank_wend": {
+      "type": "story",
+      "narration": "\"Thank you,\" you say. Wend beams and fills your bowls a second time, without asking, and remembers all your names after hearing them once. \"Kindness first,\" says Wend again, as if it is a rule the whole world ought to have. The crystal on the string hums, very faintly, the whole time.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "See what the queue needs",
+          "icon": "heart",
           "goto": "choice_tolls"
         }
       ]
@@ -290,7 +350,8 @@
       "prompt": "Put the markers back in the right order",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_markers_restored"
+        "goto": "scene_markers_restored",
+        "narration": "Post by post, you walk the line back into order, reading the worn numbers with your thumbs where the paint has gone. The last marker goes in with a thump, and the whole line points, straight and plain, at the one safe way down to the ford."
       },
       "onFailure": {
         "goto": "scene_dusk_wolves",
@@ -324,7 +385,7 @@
           "id": "give_pebble",
           "label": "Swap pebbles, so they cross before you",
           "icon": "hand",
-          "goto": "scene_dusk_wolves",
+          "goto": "scene_family_give_pebble",
           "effects": [
             {
               "type": "setFlag",
@@ -338,7 +399,7 @@
           "label": "Share your honeycake",
           "icon": "cake",
           "requiresItem": "honeycake",
-          "goto": "scene_dusk_wolves",
+          "goto": "scene_family_share_cake",
           "effects": [
             {
               "type": "setFlag",
@@ -351,7 +412,7 @@
           "id": "fix_wheel",
           "label": "Lash the wheel together with rope",
           "icon": "might",
-          "goto": "scene_dusk_wolves",
+          "goto": "scene_family_fix_wheel",
           "effects": [
             {
               "type": "setFlag",
@@ -359,6 +420,42 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_family_fix_wheel": {
+      "type": "story",
+      "narration": "You lash the cracked wheel together with rope, round and round, until it looks like a wheel wearing a jumper. It turns. It wobbles, but it turns. The littlest Bracken rides on top of the cart to test it and declares it the best wheel ever made, which is not true, but it will get them home.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to camp before dark",
+          "icon": "might",
+          "goto": "scene_dusk_wolves"
+        }
+      ]
+    },
+    "scene_family_share_cake": {
+      "type": "story",
+      "narration": "You break the honeycake into four, then five, so the littlest Bracken gets a bit from everyone. For a while nobody says anything, because honeycake. Then the mother says their season was not all bad, really, and the littlest one falls asleep against a cart wheel with crumbs on both cheeks.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to camp before dark",
+          "icon": "cake",
+          "goto": "scene_dusk_wolves"
+        }
+      ]
+    },
+    "scene_family_give_pebble": {
+      "type": "story",
+      "narration": "You hand the littlest Bracken your pebble, and take theirs. Their number is enormous. Yours was not. The littlest Bracken looks at the small number for a long time and then stops trying not to cry and just cries, happily, all over it. The Brackens will cross at dawn, and they do not stop thanking you until dusk.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to camp before dark",
+          "icon": "hand",
+          "goto": "scene_dusk_wolves"
         }
       ]
     },
@@ -445,7 +542,7 @@
           "id": "sore_feet",
           "label": "Ask for something for sore feet",
           "icon": "potion",
-          "goto": "scene_tuned_charm",
+          "goto": "scene_witch_stall_sore_feet",
           "effects": [
             {
               "type": "grantItem",
@@ -453,6 +550,18 @@
               "to": "party"
             }
           ]
+        }
+      ]
+    },
+    "scene_witch_stall_sore_feet": {
+      "type": "story",
+      "narration": "Mother Thrum hands you a sunbloom draught without looking, because sore feet are the one thing everybody in a queue wants. Then she looks. \"That's a want,\" she says. \"It isn't the want.\" She raises one eyebrow and waits to see if you have a better question.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Ask a better question",
+          "icon": "potion",
+          "goto": "scene_tuned_charm"
         }
       ]
     },
@@ -477,7 +586,7 @@
           "label": "Tell her where it fell from, and promise to take it home",
           "icon": "flame",
           "requiresSpecies": "dragonling",
-          "goto": "rest_witch_fire",
+          "goto": "scene_tuned_charm_take_it_home",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -494,6 +603,30 @@
           "id": "leave_it",
           "label": "Leave the stone in its sock",
           "icon": "moon",
+          "goto": "scene_tuned_charm_leave_it"
+        }
+      ]
+    },
+    "scene_tuned_charm_leave_it": {
+      "type": "story",
+      "narration": "You leave the stone in its sock on her shelf. Mother Thrum nods, not surprised, and tucks the wool tighter round it. \"Then it rings another night,\" she says. \"And so do I.\" The charms on the stall all chime once, softly, as a wagon rolls past in the dark.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Settle in for the night",
+          "icon": "moon",
+          "goto": "rest_witch_fire"
+        }
+      ]
+    },
+    "scene_tuned_charm_take_it_home": {
+      "type": "story",
+      "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognised the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Settle in for the night",
+          "icon": "flame",
           "goto": "rest_witch_fire"
         }
       ]
@@ -588,7 +721,8 @@
         "narration": "Step, wait, step. The water pushes and pulls and you do not let it. The lead drover sings the last line of the verse just as your boots hit the north bank."
       },
       "onFailure": {
-        "goto": "scene_surge"
+        "goto": "scene_surge",
+        "narration": "Halfway across, somebody behind you shouts, and then everybody behind you shouts, and the water that was pushing at your knees is suddenly pushing at your waist."
       }
     },
     "check_ford_easy": {
@@ -602,7 +736,8 @@
         "narration": "With friends on every side, the ford is just very wet walking. Somebody up on a wagon starts clapping as you reach the north bank."
       },
       "onFailure": {
-        "goto": "scene_surge"
+        "goto": "scene_surge",
+        "narration": "You are nearly across, with friends on every side, when a yell goes up behind you and the whole river seems to lurch at once."
       }
     },
     "scene_surge": {

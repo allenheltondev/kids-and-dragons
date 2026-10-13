@@ -391,7 +391,8 @@
         "narration": "You follow the grey patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
       },
       "onFailure": {
-        "goto": "ending_shown_the_door"
+        "goto": "ending_shown_the_door",
+        "narration": "The grey patches lead you in a circle, and then into a hedge, and then back to the same embarrassed toadstool. The forest has decided where you are going, and it is not the glade."
       }
     },
     "scene_glade_heart": {
