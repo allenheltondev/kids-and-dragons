@@ -1125,31 +1125,17 @@
       "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, Hessa's choir is humming the same three notes.",
       "choices": [
         {
-          "id": "bunks",
-          "label": "Go and find your bunks",
-          "icon": "rest",
-          "goto": "rest_end_ashfall"
-        },
-        {
-          "id": "record_a",
-          "label": "Pellam is flipping back through the record...",
+          "id": "record",
+          "label": "Hear Pellam read back the record",
           "icon": "scroll",
-          "requiresFlag": "read_restore",
-          "goto": "scene_against_leash"
-        },
-        {
-          "id": "record_b",
-          "label": "Pellam clears his throat and turns a page back",
-          "icon": "scroll",
-          "requiresFlag": "read_hoard",
-          "goto": "scene_against_leash"
+          "goto": "scene_record_leash"
         }
       ]
     },
-    "scene_against_leash": {
+    "scene_record_leash": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam flips back a page. \"Nothing in here asked what the power could do,\" he says. \"It asked what people needed.\" Captain Voss studies you as if you have just changed colour. \"Holding it will cost you friends you have not made yet,\" she says. \"Be sure.\" The humming from below gets a little louder.",
+      "narration": "Pellam turns back to the first page. \"Maybe you spent the road helping people. Maybe you filled your bags. Maybe you asked who gets to decide,\" he says. \"None of those is the same as holding the leash.\" He looks up to make sure you hear him. \"If the record points another way, you can still choose this one. But you have to know you are choosing.\" Captain Voss closes the book.",
       "choices": [
         {
           "id": "bunks",
@@ -1165,31 +1151,17 @@
       "narration": "\"Finish the collection,\" you say. The room goes very quiet. Captain Voss does not look angry. She looks like somebody doing arithmetic. \"Seven on the table and one in the mountain,\" she says. \"I'll write you down as weather.\" Pellam writes WEATHER and then, after a moment, puts a question mark after it.",
       "choices": [
         {
-          "id": "bunks",
-          "label": "Go and find your bunks",
-          "icon": "rest",
-          "goto": "rest_end_ashfall"
-        },
-        {
-          "id": "record_a",
-          "label": "Pellam is flipping back through the record...",
+          "id": "record",
+          "label": "Hear Pellam read back the record",
           "icon": "scroll",
-          "requiresFlag": "read_restore",
-          "goto": "scene_against_hoard"
-        },
-        {
-          "id": "record_b",
-          "label": "Pellam clears his throat and turns a page back",
-          "icon": "scroll",
-          "requiresFlag": "read_leash",
-          "goto": "scene_against_hoard"
+          "goto": "scene_record_hoard"
         }
       ]
     },
-    "scene_against_hoard": {
+    "scene_record_hoard": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam flips back a page. \"The record says medals,\" he says. \"Mending. Things put back.\" He frowns at the word COLLECTION as if it has been spelt wrong. \"You are better than your plan,\" says Captain Voss flatly. \"History won't know what to do with you.\" Nobody in the room looks at you quite the same way afterwards.",
+      "narration": "Pellam opens the ledger again. \"The record may tell a different story,\" he says. \"A kindness done on the road, a question asked, a thing returned. But you have just said collection.\" He writes COLLECT in his neatest hand, then draws a small question mark beside it. Captain Voss watches the ink dry. \"You will have to live up to that word,\" she says.",
       "choices": [
         {
           "id": "bunks",
@@ -1205,31 +1177,17 @@
       "narration": "\"Put it back,\" you say. \"Every stone.\" The Table Stone hums one clear note, as if it heard. Captain Voss does something nobody in the citadel has seen: she unfolds her arms. \"Then we'll need every stone that came down,\" she says. \"Tomorrow they start coming back up. Rest.\"",
       "choices": [
         {
-          "id": "bunks",
-          "label": "Go and find your bunks",
-          "icon": "rest",
-          "goto": "rest_end_ashfall"
-        },
-        {
-          "id": "record_a",
-          "label": "Pellam is flipping back through the record...",
+          "id": "record",
+          "label": "Hear Pellam read back the record",
           "icon": "scroll",
-          "requiresFlag": "read_hoard",
-          "goto": "scene_against_restore"
-        },
-        {
-          "id": "record_b",
-          "label": "Pellam clears his throat and turns a page back",
-          "icon": "scroll",
-          "requiresFlag": "read_leash",
-          "goto": "scene_against_restore"
+          "goto": "scene_record_restore"
         }
       ]
     },
-    "scene_against_restore": {
+    "scene_record_restore": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam flips back a page. \"The record says pockets,\" he says gently. \"Pockets, and the glade, and the sprites.\" He looks at you, not unkindly. \"Putting it back is the harder road for you than for most. The room will remember you chose it anyway.\" Captain Voss writes something in the margin, and for once it is not a number.",
+      "narration": "Pellam flips back through the record. He reads a line, turns a page, and looks up. \"The pages may have pointed somewhere else,\" he says. \"But you are asking to put the stones back. That is what I am writing down.\" He sets RETURN beside your names and leaves a little space after it, in case the road teaches you something else. Captain Voss watches him write, then nods.",
       "choices": [
         {
           "id": "bunks",
