@@ -9,7 +9,7 @@ vi.mock("../store", () => ({
   useRunState: () => ({ phase: "scene" }),
   useMe: () => null,
   useSession: () => null,
-  useGameStore: { getState: () => ({ registerPresentationPlayer: () => () => undefined }) },
+  useGameStore: { getState: () => ({ registerPresentationPlayer: () => () => undefined }), subscribe: () => () => undefined },
 }));
 vi.mock("../screens", () => ({
   ChapterCompletePanel: () => null,
