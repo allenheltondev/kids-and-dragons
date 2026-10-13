@@ -701,10 +701,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return heroes;
       },
 
-      async joinRoom(code: string, displayName: string) {
+      async joinRoom(code: string, name: string) {
         const roomCode = code.trim().toUpperCase();
         set({ connection: "connecting", error: null });
         const identity = loadIdentity(deps.storage);
+        // The home screen no longer asks for a name when joining; the character
+        // flow does. Keep whatever this phone used last, else a placeholder.
+        const displayName = name.trim() || identity.displayName || "Player";
         saveIdentity({ ...identity, displayName }, deps.storage);
 
         try {
