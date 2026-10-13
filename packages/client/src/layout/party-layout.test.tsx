@@ -50,7 +50,8 @@ describe("Party Mode and the map", () => {
   it("shows the controls, with the map a tap away", () => {
     const { container } = mount();
     expect(showing(container)).toEqual(["player"]);
-    expect(screen.getByRole("button", { name: /map/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^map$/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^you$/i }).getAttribute("aria-pressed")).toBe("true");
   });
 
   it("swaps the controls for the map on request, and back", () => {
@@ -63,7 +64,7 @@ describe("Party Mode and the map", () => {
     expect(container.querySelector('[data-pane="player"]')).not.toBeNull();
 
     act(() => {
-      screen.getByRole("button", { name: /^back$/i }).click();
+      screen.getByRole("button", { name: /^you$/i }).click();
     });
     expect(showing(container)).toEqual(["player"]);
   });

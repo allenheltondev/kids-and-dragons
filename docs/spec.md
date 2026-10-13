@@ -51,7 +51,7 @@ No shared screen. Every phone renders **both** surfaces, one at a time, with a t
 │  whole screen         │  Map   — the realm, or the chapter as a trail, the party on it
 │                       │  You   — the scene behind your sheet and your actions
 ├───────────────────────┤
-│ [World] [Map] [You] ● │  the toggle, always there, under the thumb
+│ 🏮 World 🗺 Map 🎒 You │  the tray: objects on a shelf, always there, under the thumb
 └───────────────────────┘
 ```
 
