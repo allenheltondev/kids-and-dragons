@@ -10,12 +10,39 @@
  * a souvenir, never a loss screen.
  */
 
-import type { CampaignView } from "@kad/shared";
+import type { CampaignView, RunState } from "@kad/shared";
 
 /** "Chapter 4 of 8: The Pride Roads", or null when there is nothing to name. */
 export function nextChapterLine(view: CampaignView | null | undefined): string | null {
   if (!view?.next) return null;
   return `Chapter ${String(view.next.index)} of ${String(view.chapters)}: ${view.next.title}`;
+}
+
+/**
+ * "Chapter 1 of 8 · The City That Smelled Opportunity" — what heads every
+ * scene on the shared screen. Null for a run persisted before chapter titles
+ * rode on the state; the caller falls back to the file id.
+ */
+export function chapterHeading(
+  state: Pick<RunState, "chapterInfo" | "campaign"> | null | undefined,
+): string | null {
+  const info = state?.chapterInfo;
+  if (!info) return null;
+  const total = state?.campaign?.chapters;
+  const number = total ? `Chapter ${String(info.index)} of ${String(total)}` : `Chapter ${String(info.index)}`;
+  return `${number} · ${info.title}`;
+}
+
+/**
+ * The campaign's premise, for a table about to start it from the beginning —
+ * and only then. A party coming back for chapter 4 knows what Gemfall is; a
+ * party that has never played needs telling before the first scene drops them
+ * into the middle of it.
+ */
+export function campaignPremise(view: CampaignView | null | undefined): string | null {
+  if (!view?.blurb) return null;
+  const fresh = view.ended !== undefined || view.next === null || view.next.index === 1;
+  return fresh ? view.blurb : null;
 }
 
 /** The lobby's go button. Beginning, continuing, or beginning again. */

@@ -7,7 +7,7 @@
   "biome": "exchange",
   "estimatedMinutes": 25,
   "xpAward": 100,
-  "entry": "scene_red_sky",
+  "entry": "scene_prologue_realm",
   "objectives": [
     {
       "id": "scholar",
@@ -37,6 +37,42 @@
     }
   },
   "scenes": {
+    "scene_prologue_realm": {
+      "type": "story",
+      "narration": "This is the Realm of Red Sky. Far in the north stands Mount Red Sky, the biggest mountain anybody knows. Old maps call it the Source of the Gemfalls, and say it is only sleeping.",
+      "choices": [
+        {
+          "id": "prologue_to_city",
+          "label": "Go on",
+          "icon": "map",
+          "goto": "scene_prologue_city"
+        }
+      ]
+    },
+    "scene_prologue_city": {
+      "type": "story",
+      "narration": "Far in the south, where every road and river runs down to the sea, is the Exchange: a busy city of towers, bridges and docks, where travellers from all over the realm come to trade, swap news, and find adventure.",
+      "choices": [
+        {
+          "id": "prologue_to_party",
+          "label": "Go on",
+          "icon": "map",
+          "goto": "scene_prologue_party"
+        }
+      ]
+    },
+    "scene_prologue_party": {
+      "type": "story",
+      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own. Tonight is a quiet night, and the harbour lamps are just coming on.",
+      "choices": [
+        {
+          "id": "prologue_begin",
+          "label": "Let's begin!",
+          "icon": "party",
+          "goto": "scene_red_sky"
+        }
+      ]
+    },
     "scene_red_sky": {
       "type": "story",
       "narration": "It is a quiet night at the Exchange, and then it isn't. Far to the north, the sky over Mount Red Sky turns red as a cherry, and a glittering rain of gem-light falls over the foothills. For one blink, some of it seems to fall up. A seagull drops its fish in surprise.",
