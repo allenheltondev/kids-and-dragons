@@ -636,7 +636,7 @@
     },
     "scene_tuned_charm_take_it_home": {
       "type": "story",
-      "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognised the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
+      "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognized the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
       "choices": [
         {
           "id": "on",

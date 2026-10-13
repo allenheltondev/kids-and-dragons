@@ -30,6 +30,9 @@ import { useRules, useSend } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
+import { RigFigure } from "./RigFigure";
+import { STARTING_TIER } from "../world/art-paths";
+import type { RigLook } from "../world/rig-look";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import {
@@ -48,7 +51,9 @@ import {
   defaultAppearance,
   hornStylesFor,
   randomNames,
+  rigLookFor,
   sanitizeName,
+  signatureOf,
   wingStylesFor,
 } from "./creationContent";
 import type { CosmeticOption } from "./creationContent";
@@ -64,6 +69,14 @@ const STEP_TITLE: Record<CreationStep, string> = {
   name: "What's your name?",
 };
 
+/** Where the second color lands, in the player's words. */
+const SECOND_COLOR_HINT: Record<ReturnType<typeof signatureOf>, string> = {
+  horn: "Colors your horn.",
+  wings: "Colors your wings.",
+  tail: "Colors your tail.",
+  mane: "Colors your mane.",
+};
+
 const STEP_ICON: Record<CreationStep, string> = {
   species: "unicorn",
   class: "swords",
@@ -76,7 +89,7 @@ function sumStats(stats: Stats): number {
   return STAT_IDS.reduce((total, stat) => total + stats[stat], 0);
 }
 
-/** A big tappable card. Selection shows as a check glyph, never colour alone. */
+/** A big tappable card. Selection shows as a check glyph, never color alone. */
 function OptionCard({
   selected,
   onSelect,
@@ -179,32 +192,52 @@ export function SpeciesStep({
  * The hero so far, pinned above every screen after the species is chosen.
  *
  * It is the only thing on the phone that answers "who am I making?" without
- * going back a step, and it is where the appearance choices land: the accent
- * colour is the light the figure is standing in, so tapping a swatch changes
- * something visible about *the character* rather than only a swatch border.
+ * going back a step, and it is where the appearance choices land: the figure
+ * is the rig itself, wearing the draft's look (world/rig-look.ts), so tapping
+ * a color, a marking or a wing style changes the creature right there. On the
+ * appearance step it grows (`large`) — that is the screen it is the answer on.
  */
 export function HeroStrip({
   species,
   klass,
   name,
   accent,
+  look,
+  large = false,
 }: {
   species: SpeciesDef;
   klass: ClassDef | null;
   name: string;
   accent: string;
+  look?: RigLook;
+  large?: boolean;
 }): ReactElement {
   const trimmed = name.trim();
+  const portrait = (
+    <CharacterPortrait species={species.id} accent={accent} backdrop lit float />
+  );
   return (
-    <p className="creation-hero">
-      <CharacterPortrait
-        species={species.id}
-        className="creation-hero__art"
-        accent={accent}
-        backdrop
-        lit
-        float
-      />
+    // A div, not a p — the rig figure renders block elements.
+    <div className={`creation-hero${large ? " creation-hero--large" : ""}`}>
+      {look === undefined ? (
+        <CharacterPortrait
+          species={species.id}
+          className="creation-hero__art"
+          accent={accent}
+          backdrop
+          lit
+          float
+        />
+      ) : (
+        <RigFigure
+          key={species.id}
+          species={species.id}
+          tier={STARTING_TIER}
+          className="creation-hero__art creation-hero__rig"
+          look={look}
+          fallback={portrait}
+        />
+      )}
       <span className="creation-hero__text">
         {/* Before there is a name the species *is* the name, so the second line
             drops it rather than saying "Unicorn / Unicorn Thornguard". */}
@@ -220,7 +253,7 @@ export function HeroStrip({
           )}
         </span>
       </span>
-    </p>
+    </div>
   );
 }
 
@@ -361,7 +394,7 @@ function StatsStep({
 }
 
 // ---------------------------------------------------------------------------
-// Small choices — colours, cosmetics, name suggestions (spec §5.4, §5.5)
+// Small choices — colors, cosmetics, name suggestions (spec §5.4, §5.5)
 //
 // One shape for all of them, because they are all the same question: pick one
 // of a handful of equal things. Two rules do most of the work:
@@ -371,7 +404,7 @@ function StatsStep({
 //     scattered rather than as a set of choices.
 //   - **The check has a seat whether or not anybody is sitting in it.** The
 //     mark used to be added to the chosen chip, which made it wider and
-//     reflowed the row — tapping a colour moved the other colours. The slot is
+//     reflowed the row — tapping a color moved the other colors. The slot is
 //     always there; only the glyph inside it comes and goes.
 // ---------------------------------------------------------------------------
 
@@ -384,10 +417,8 @@ function OptionRow({
   legend: string;
   /**
    * What this choice actually does, in the player's words. Only worth showing
-   * where the answer is not obvious from the picture — a colour swatch that
-   * dresses your chrome rather than your creature is exactly that case, and
-   * without a line saying so the tap looks like it should have repainted the
-   * animal standing next to it.
+   * where the answer is not obvious from the picture — such as which part of
+   * the creature a second color lands on.
    */
   hint?: string;
   /**
@@ -402,7 +433,7 @@ function OptionRow({
   if (quiet) classes.push("creation-fieldset--quiet");
   // Tied to the group with `aria-describedby`, not merely placed inside it: a
   // screen reader lands on a swatch button, and "Orchid, pressed" without the
-  // sentence explaining what a colour does here is exactly the confusion the
+  // sentence explaining what a color does here is exactly the confusion the
   // sentence was added to remove.
   const hintId = useId();
   return (
@@ -513,6 +544,12 @@ export function CreationFlow(): ReactElement {
     return bonus;
   }, [speciesDef]);
 
+  // Memoized on the appearance, so the rig only repaints when a tap changed it.
+  const look = useMemo(
+    () => (draft.species === null ? undefined : rigLookFor(draft.species, draft.appearance)),
+    [draft.species, draft.appearance],
+  );
+
   const spent = sumStats(draft.assigned);
   const remaining = (rules?.creationPoints ?? 0) - spent;
 
@@ -549,11 +586,11 @@ export function CreationFlow(): ReactElement {
         return remaining === 0;
       case "appearance":
         /*
-         * The one step nothing is required on. Colour and accent dress this
-         * player's chrome rather than their creature (creationContent
-         * PALETTES), so there is no answer only they can give and no reason to
-         * hold the flow for one — spec §1.1's "typing must never be required"
-         * reasoning, applied to a tap.
+         * The one step nothing is required on. Every species starts dressed
+         * as it was painted (creationContent `defaultAppearance`), so there is
+         * no answer only they can give and no reason to hold the flow for one
+         * — spec §1.1's "typing must never be required" reasoning, applied to
+         * a tap.
          *
          * It was written as `palette !== "" && accent !== ""`, which looked
          * like a gate and never was one: `chooseSpecies` applies
@@ -648,6 +685,8 @@ export function CreationFlow(): ReactElement {
             klass={classDef}
             name={draft.name}
             accent={draft.appearance.accent}
+            look={look}
+            large={draft.step === "appearance"}
           />
         )}
       </header>
@@ -680,13 +719,9 @@ export function CreationFlow(): ReactElement {
         {draft.step === "appearance" && draft.species !== null ? (
           <div className="creation-appearance">
             {/* `creation-swatch` carries no styling of its own — it names the
-                kind of option this is, for the e2e that picks a colour and an
+                kind of option this is, for the e2e that picks a color and an
                 accent by role rather than by position. */}
-            <OptionRow
-              legend="Your colour"
-              hint="Marks your things — your flame in the lantern, the glow behind your picture. Your creature keeps the colours it was painted in."
-              quiet
-            >
+            <OptionRow legend="Main color" quiet>
               {PALETTES.map((palette) => (
                 <OptionButton
                   key={palette.id}
@@ -699,9 +734,7 @@ export function CreationFlow(): ReactElement {
                   }}
                   media={
                     /* Mane in the middle, coat as the ring — the pair reads as
-                       a creature rather than a dot. Neither touches the
-                       figure, which is drawn as painted; this is the player's
-                       colour (creationContent PALETTES). */
+                       a creature rather than a dot (creationContent PALETTES). */
                     <span
                       className="creation-swatch__chip"
                       style={{ background: palette.mane, borderColor: palette.coat }}
@@ -712,7 +745,7 @@ export function CreationFlow(): ReactElement {
               ))}
             </OptionRow>
 
-            <OptionRow legend="A second colour" quiet>
+            <OptionRow legend="Second color" hint={SECOND_COLOR_HINT[signatureOf(draft.species)]} quiet>
               {ACCENTS.map((accent) => (
                 <OptionButton
                   key={accent.id}
@@ -826,7 +859,7 @@ export function CreationFlow(): ReactElement {
 
       <footer className="creation__foot">
         {stepIndex > 0 ? (
-          <Button variant="ghost" size="lg" icon={<Icon name="back" />} onClick={goBack}>
+          <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={goBack}>
             Back
           </Button>
         ) : null}
@@ -834,7 +867,7 @@ export function CreationFlow(): ReactElement {
         {draft.step === "name" ? (
           <Button
             variant="primary"
-            size="lg"
+            size="md"
             icon={<Icon name="check" />}
             disabled={!stepDone || submitting}
             onClick={() => void submit()}
@@ -844,7 +877,7 @@ export function CreationFlow(): ReactElement {
         ) : (
           <Button
             variant="primary"
-            size="lg"
+            size="md"
             icon={<Icon name="forward" />}
             disabled={!stepDone}
             onClick={goNext}

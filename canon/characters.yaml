@@ -146,7 +146,7 @@ characters:
         - of: creature.embermoth
           because: "The foothills' weather service, paid in warm rocks."
         - of: creature.glassback_crab
-          because: "Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
+          because: "Good neighbors. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
         - of: npc.centaur
           because: "They bring the whole world to the foothills twice a season and take gemstones politely away."
       dislikes:
@@ -263,7 +263,7 @@ characters:
         - of: character.unicorn
           because: "They feel what the record cannot show. Between the two of them the Woods is fully witnessed."
         - of: npc.boggart
-          because: "Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained."
+          because: "Infuriating and indispensable: the finest catalog of lost things in the realm, filed by a system that has never once been explained."
       dislikes:
         - of: creature.jackalope
           because: "One ate three years of the eastern calendar garden. The garden is fenced now. It was never about the lettuce; it was about the data."
