@@ -422,3 +422,37 @@ describe("routed beats", () => {
     expect(out).toMatch(/out of sequence/);
   });
 });
+
+describe("Field Guide tags (`discovers`)", () => {
+  const sceneOf = (chapter) => chapter.scenes[chapter.entry];
+
+  it("accepts a real canon id on a scene", () => {
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).discovers = ["creature.embermoth"];
+    });
+    expect(result.out).toContain("PASS");
+    expect(result.code).toBe(0);
+  });
+
+  it("names chapter and scene when an id is not in the field guide", () => {
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).discovers = ["creature.not_a_thing"];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("bramblewood-01");
+    expect(result.out).toContain("scene \"");
+    expect(result.out).toContain("creature.not_a_thing");
+    expect(result.out).toContain("not an entry of content/field-guide.json");
+  });
+
+  it("rejects a duplicate within one scene", () => {
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).discovers = ["creature.embermoth", "creature.embermoth"];
+    });
+    expect(result.code).not.toBe(0);
+    // The schema (uniqueItems) catches it first, naming the file and /scenes/<id>/discovers.
+    expect(result.out).toContain("bramblewood-01");
+    expect(result.out).toContain("/discovers");
+    expect(result.out).toContain("duplicate items");
+  });
+});

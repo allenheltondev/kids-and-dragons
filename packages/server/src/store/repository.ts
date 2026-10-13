@@ -14,6 +14,8 @@ import type {
   Character,
   ClientIntent,
   DeviceBinding,
+  FieldGuideDiscovery,
+  FieldGuideRecord,
   Household,
   PlayerProfile,
   RoomMode,
@@ -164,7 +166,9 @@ export interface RoomRecord {
  * makes the log replayable (§4.1): which player's intent produced this seq.
  * `listEvents()` returns these directly as `ServerMessage`s for reconnect.
  */
-export interface EventRecord extends ServerMessage {
+export interface EventRecord extends Omit<ServerMessage, "discovered"> {
+  // `discovered` is excluded on purpose: it is the live-only "new entry"
+  // signal, and anything in the log is replayed by a reconnect (§4.3).
   at: string;
   playerId?: string;
   intent?: ClientIntent;
@@ -329,6 +333,21 @@ export interface GameRepository {
   /** Every attempt the household has, whatever its status — the lobby's list. */
   listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]>;
   putCampaignProgress(progress: CampaignProgressRecord): Promise<void>;
+
+  // --- field guide (household-scoped, permanent) -----------------------------
+  /** `HH#<id>` / `FIELDGUIDE`. An empty book (never `null`) when nothing is found yet. */
+  getFieldGuide(householdId: string): Promise<FieldGuideRecord>;
+  /**
+   * Record discoveries, first finder wins. Idempotent and safe under
+   * concurrent writers: an id already in the book is never touched, so
+   * `firstFoundBy`/`foundAt`/`runId` are never overwritten. Within one call,
+   * the first occurrence of a repeated `canonId` wins.
+   *
+   * Returns the canon ids this call *actually added* (input order, no
+   * duplicates) - exactly the "NEW!" moments to celebrate; a re-report returns
+   * `[]`. `foundAt` defaults to the repository clock.
+   */
+  recordDiscoveries(householdId: string, discoveries: FieldGuideDiscovery[]): Promise<string[]>;
 
   getState(runId: string): Promise<RunState | null>;
   /** Unconditional write. Only for run creation; advancing goes through commit. */

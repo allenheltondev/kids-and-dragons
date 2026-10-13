@@ -84,6 +84,11 @@ export interface StoryScene {
   art?: string;
   narration: string;
   onEnter?: Effect[];
+  /**
+   * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
+   * this scene. See `discoveries.ts` and content/README.md.
+   */
+  discovers?: string[];
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   outcome?: ChapterOutcome;
@@ -99,6 +104,11 @@ export interface CheckScene {
   prompt: string;
   narration?: string;
   onEnter?: Effect[];
+  /**
+   * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
+   * this scene. See `discoveries.ts` and content/README.md.
+   */
+  discovers?: string[];
   /** Which player rolls. Default: the party picks. */
   roller?: "party" | "active" | "best";
   onSuccess: Branch;
@@ -110,6 +120,11 @@ export interface ChoicePointScene {
   art?: string;
   narration: string;
   onEnter?: Effect[];
+  /**
+   * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
+   * this scene. See `discoveries.ts` and content/README.md.
+   */
+  discovers?: string[];
   /** Party votes; ties broken by the active turn marker. spec §6.1. */
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
@@ -123,6 +138,11 @@ export interface RestScene {
   art?: string;
   narration: string;
   onEnter?: Effect[];
+  /**
+   * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
+   * this scene. See `discoveries.ts` and content/README.md.
+   */
+  discovers?: string[];
   /** Heals the party by this much on entry. */
   heal?: number;
   choices: Choice[];
@@ -209,6 +229,11 @@ export interface EncounterScene {
   art?: string;
   narration?: string;
   onEnter?: Effect[];
+  /**
+   * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
+   * this scene. See `discoveries.ts` and content/README.md.
+   */
+  discovers?: string[];
   enemies: EnemySpec[];
   onVictory: Branch;
   /** Never a game over — the story branches. spec §7.3. */

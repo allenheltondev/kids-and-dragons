@@ -31,6 +31,7 @@ import {
   NarrationPanel,
   TransformCutscene,
 } from "../screens";
+import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -145,6 +146,10 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
           the single most important moment in the game. It draws nothing until
           somebody crosses a tier. */}
       <TransformCutscene />
+
+      {/* The shared screen's own copy of the Field Guide news. A phone's world
+          pane has a player, and that phone's toast speaks for it instead. */}
+      {isDisplay ? <FieldGuideBanner /> : null}
 
       {measuring ? (
         <Suspense fallback={null}>
