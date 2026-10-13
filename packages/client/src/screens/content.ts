@@ -12,8 +12,8 @@ import type { FieldGuide } from "@kad/shared";
 import { useGameStore } from "../store";
 
 /**
- * `content/field-guide.json`, fetched on first ask and kept. Call sites sit
- * behind `fieldGuideEnabled()`, so a build with the flag off never requests
+ * `content/field-guide.json`, fetched on first ask and kept — only once the
+ * guide is opened or there is news to name, so a quiet session never requests
  * it. A failed fetch clears the cache so the next ask retries.
  */
 let fieldGuide: Promise<FieldGuide> | null = null;

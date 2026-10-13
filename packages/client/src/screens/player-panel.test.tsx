@@ -1,5 +1,4 @@
-import { dismissPlayerSheet, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
-import { setFieldGuideOverride } from "../feature-flags";
+import { dismissPlayerSheet, openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 import { resetFieldGuideCache } from "./content";
 // @vitest-environment jsdom
 /**
@@ -1334,7 +1333,7 @@ describe("the scene behind the controls", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Field Guide (#107): local navigation behind VITE_FIELD_GUIDE
+// Field Guide (#107, #112): opened from the tray's Guide tab (layout/GuideTab)
 // ---------------------------------------------------------------------------
 
 describe("the Field Guide section", () => {
@@ -1348,20 +1347,15 @@ describe("the Field Guide section", () => {
   }
 
   afterEach(() => {
-    setFieldGuideOverride(null);
     vi.unstubAllGlobals();
     resetFieldGuideCache();
   });
 
-  const entry = () => screen.queryByRole("button", { name: "Field Guide" });
-
-  it("is invisible and never fetched with the flag off", () => {
+  it("has no entry of its own in the panel and fetches nothing until opened", () => {
     stubFetch();
-    setFieldGuideOverride(false);
     mount({ phase: "lobby" });
     act(() => { setPlayerSection("bag"); });
-    expect(entry()).toBeNull();
-    act(() => { setPlayerSection("guide"); });
+    expect(screen.queryByRole("button", { name: "Field Guide" })).toBeNull();
     expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
@@ -1369,6 +1363,7 @@ describe("the Field Guide section", () => {
   const states: Array<[string, () => ReturnType<typeof mount>]> = [
     ["the lobby", () => mount({ phase: "lobby" })],
     ["a story scene", () => mount({ prompt: choicePrompt() })],
+    ["a rest", () => mount({ sceneType: "rest" })],
     ["combat", () => {
       const view = mount({ phase: "encounter" });
       serverSends({ encounter: realEncounter() });
@@ -1379,25 +1374,35 @@ describe("the Field Guide section", () => {
   for (const [name, start] of states) {
     it(`opens in ${name}, returns to the bag, and sends nothing`, async () => {
       stubFetch();
-      setFieldGuideOverride(true);
       const user = userEvent.setup();
       const { sent } = start();
       act(() => { setPlayerSection("bag"); });
 
-      await user.click(entry()!);
-      expect(usePlayerNavigation.getState().section).toBe("guide");
+      act(() => { openGuide(); });
+      expect(screen.getByRole("region", { name: "Field Guide" })).toBeTruthy();
       expect(await screen.findByText("0 of 1 found")).toBeTruthy();
       expect(fetchSpy).toHaveBeenCalledTimes(1);
 
       await user.click(screen.getByRole("button", { name: "Back to your bag" }));
       expect(usePlayerNavigation.getState().section).toBe("bag");
-      expect(entry()).toBeTruthy();
+      expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
       expect(sent).toEqual([]);
     });
   }
 
+  it("leaves the turn entry one tap away in a fight", async () => {
+    stubFetch();
+    mount({ phase: "encounter" });
+    serverSends({ encounter: realEncounter() });
+    act(() => { openGuide(); });
+    await screen.findByText("0 of 1 found");
+    // Hidden, not unmounted, while the guide is open — then straight back.
+    act(() => { dismissPlayerSheet(); });
+    expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
+    expect(screen.getByRole("button", { name: /your turn|view the fight/i })).toBeTruthy();
+  });
+
   it("a tray tap leaves the guide for the bag", () => {
-    setFieldGuideOverride(true);
     mount({ phase: "lobby" });
     act(() => { setPlayerSection("guide"); });
     act(() => { dismissPlayerSheet(); });
