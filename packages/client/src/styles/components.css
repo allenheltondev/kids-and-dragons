@@ -39,70 +39,192 @@
    without touching the DOM order, which the tests and the screen reader
    read first-to-last: the toggle is still announced before the panes. */
 .kad-travel__bar {
-  display: flex;
-  align-items: stretch;
-  gap: var(--kad-space-2);
-  flex: 0 0 auto;
   order: 1;
-  /* Chrome, not content: it sits outside `.kad-surface` and so does not scale
-     with the pane. Fixed and modest, so the surfaces get the screen. */
-  font-size: 0.95rem;
-  padding: var(--kad-space-2);
-  /* The sound button is fixed in the bottom-right corner of every page
-     (audio/AudioControl.css); the bar leaves it that corner rather than
-     putting the mode switch under it. */
-  padding-inline-end: calc(var(--kad-touch-min) + var(--kad-space-3));
-  border-block-start: 1px solid var(--kad-border);
-  background: var(--kad-bg-sunken);
 }
 
-.kad-travel__tab {
+/* ==========================================================================
+   The tray — the phone's bottom bar as a shelf of objects
+   (screens/TrayObjects.tsx). Shared by the Travel bar and the Party bar.
+
+   A row of tabs with line icons is an app; a row of things on a shelf is the
+   game. The shelf is dark leather with a worn gold rim, the objects sit on
+   it with a word underneath, and the one you are looking through is lifted
+   and lit. Chrome, not content: it sits outside `.kad-surface`, so it is
+   sized in rem and may use a media query (architecture §4.6 rule 2).
+   ======================================================================== */
+
+.kad-tray {
   display: flex;
+  align-items: stretch;
+  gap: var(--kad-space-1);
+  flex: 0 0 auto;
+  position: relative;
+  font-size: 0.95rem;
+  padding: 0.35rem var(--kad-space-2) 0.25rem;
+  /* The sound button is fixed in the bottom-right corner of every page
+     (audio/AudioControl.css); the shelf leaves it that corner rather than
+     putting the mode switch under it. */
+  padding-inline-end: calc(var(--kad-touch-min) + var(--kad-space-3));
+  background:
+    linear-gradient(to bottom, rgba(255, 220, 150, 0.08), transparent 35%),
+    linear-gradient(to bottom, #2a1f45 0%, #1a1330 55%, #110c22 100%);
+  border-block-start: 0.2rem solid #6b5430;
+  box-shadow:
+    inset 0 0.15rem 0 rgba(245, 200, 108, 0.35),
+    inset 0 -0.5rem 1rem rgba(0, 0, 0, 0.45),
+    0 -0.25rem 0.75rem rgba(0, 0, 0, 0.35);
+}
+
+/* The worn gold rim along the top edge. */
+.kad-tray::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -0.2rem;
+  block-size: 0.2rem;
+  background: linear-gradient(
+    to right,
+    #6b5430 0%,
+    #f5c86c 18%,
+    #b08a3e 50%,
+    #f5c86c 82%,
+    #6b5430 100%
+  );
+  opacity: 0.9;
+}
+
+.kad-tray__tab {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--kad-space-2);
+  justify-content: flex-end;
+  gap: 0.1rem;
   flex: 1 1 0;
+  min-inline-size: var(--kad-touch-min);
   min-block-size: var(--kad-touch-min);
-  padding: var(--kad-space-2) var(--kad-space-2);
-  border: 1px solid transparent;
-  white-space: nowrap;
+  padding: 0.15rem 0.25rem 0.1rem;
+  border: 0;
   border-radius: var(--kad-radius-md);
   background: transparent;
   color: var(--kad-ink-dim);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Selected is a fill *and* a border, never colour alone (spec §11). */
-.kad-travel__tab--on {
-  border-color: var(--kad-accent);
-  background: var(--kad-bg-raised);
-  color: var(--kad-ink);
+/* The object sits on the shelf: a picture, a shadow under it, a halo behind
+   it that only shows when chosen. */
+.kad-tray__object {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 2.9rem;
+  block-size: 2.9rem;
+  transition:
+    transform var(--kad-dur-base) var(--kad-ease-out),
+    filter var(--kad-dur-base) var(--kad-ease-out);
+  filter: saturate(0.7) brightness(0.8) drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.6));
 }
 
-/* "You are needed over here" while you are looking at the world. */
-.kad-travel__nudge {
-  color: var(--kad-accent);
-  font-size: 0.8em;
+.kad-tray__object::before {
+  content: "";
+  position: absolute;
+  inset: -0.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 200, 108, 0.55), rgba(139, 108, 245, 0.25) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--kad-dur-base) var(--kad-ease-out);
+  z-index: -1;
+}
+
+.kad-tray-object {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.kad-tray__label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   line-height: 1;
+  white-space: nowrap;
 }
 
-.kad-mode-switch {
+/* Chosen: lifted, lit, and named in gold — three signals, never a colour
+   alone (spec §11). */
+.kad-tray__tab--on .kad-tray__object {
+  transform: translateY(-0.3rem) scale(1.12);
+  filter: saturate(1) brightness(1.05) drop-shadow(0 0.35rem 0.4rem rgba(0, 0, 0, 0.6));
+}
+
+.kad-tray__tab--on .kad-tray__object::before {
+  opacity: 1;
+}
+
+.kad-tray__tab--on .kad-tray__label {
+  color: var(--kad-gold);
+  text-shadow: 0 0 0.6rem rgba(245, 200, 108, 0.45);
+}
+
+.kad-tray__tab:active .kad-tray__object {
+  transform: translateY(0.05rem) scale(0.96);
+}
+
+/* "You are needed over here" while you are looking at the world: a gold
+   star pinned to the satchel, pulsing. */
+.kad-tray__badge {
+  position: absolute;
+  inset-block-start: -0.15rem;
+  inset-inline-end: -0.25rem;
+  display: grid;
+  place-items: center;
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
+  border-radius: 50%;
+  background: var(--kad-gold);
+  color: var(--kad-accent-ink);
+  font-size: 0.8rem;
+  line-height: 1;
+  box-shadow: 0 0 0.6rem rgba(245, 200, 108, 0.7);
+  animation: kad-tray-nudge 1.6s var(--kad-ease) infinite;
+}
+
+@keyframes kad-tray-nudge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+/* The mode switch rides the same shelf as a smaller, quieter object. */
+.kad-tray .kad-mode-switch {
   flex: 0 0 auto;
-  font-size: 0.85em;
-  opacity: 0.65;
+  opacity: 0.75;
 }
 
-/* Three tabs, the mode switch and the sound button do not all fit a narrow
-   phone with words on everything. The mode switch is the one used least —
-   once an evening, if the laptop dies — so it is the one that drops to its
-   icon; it keeps its name for the screen reader (ModeSwitch.tsx). A shell
-   rule, so a media query is allowed here (architecture §4.6 rule 2). */
-@media (max-width: 480px) {
-  .kad-travel__bar .kad-mode-switch .kad-button__label,
-  .kad-party__bar .kad-mode-switch .kad-button__label {
-    display: none;
+.kad-tray .kad-mode-switch .kad-tray__object {
+  inline-size: 2.2rem;
+  block-size: 2.2rem;
+}
+
+.kad-tray .kad-mode-switch .kad-tray__label {
+  font-size: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kad-tray__object,
+  .kad-tray__object::before {
+    transition: none;
+  }
+
+  .kad-tray__badge {
+    animation: none;
   }
 }
 
@@ -404,20 +526,9 @@
   flex-direction: column;
 }
 
+/* Under the thumb, like the Travel bar; the look is `.kad-tray`'s. */
 .kad-party__bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--kad-space-2);
-  flex: 0 0 auto;
-  /* Under the thumb, like the Travel bar. */
   order: 1;
-  padding: var(--kad-space-1) var(--kad-space-2);
-  /* Same corner reserved for the sound button as the Travel bar. */
-  padding-inline-end: calc(var(--kad-touch-min) + var(--kad-space-3));
-  border-block-start: 1px solid var(--kad-border);
-  background: var(--kad-bg-sunken);
-  font-size: 0.95rem;
 }
 
 .kad-party--player > .kad-surface,
