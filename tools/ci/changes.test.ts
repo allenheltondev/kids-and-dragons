@@ -34,6 +34,13 @@ describe("CI change classification", () => {
     });
   });
 
+  it("a parts-only or joints-only change runs the motion gate on its own", () => {
+    for (const f of ["assets/characters/griffin/sworn/parts/body.png", "assets/character-rigs/thornguard/sworn/griffin/joints.json"]) {
+      expect(classify([f]).motion, f).toBe(true);
+      expect(classify([f]).rigs, f).toBe(true);
+    }
+  });
+
   it("a rebuilt rig.riv is game content: it ships and the game loads it", () => {
     expect(classify(["assets/characters/bigfoot/fledgling/rig.riv"])).toEqual(all);
   });
