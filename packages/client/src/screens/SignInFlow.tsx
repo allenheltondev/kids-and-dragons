@@ -22,6 +22,11 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
+import { fieldGuideEnabled } from "../feature-flags";
+import {
+  useFieldGuideDiscoveries,
+  type FieldGuideDiscoveries,
+} from "../store/field-guide-discoveries";
 import { useKeepsakeStore } from "../store/keepsake";
 import { useParty } from "../store";
 import { Button } from "../ui/Button";
@@ -30,6 +35,15 @@ import { Icon } from "./icons";
 import { KeepsakeLantern } from "./KeepsakeLantern";
 import "./shared.css";
 import "./SignInFlow.css";
+
+/**
+ * Whether the keepsake copy should mention the Field Guide: only when the
+ * feature is on and the household has actually found something, so a family
+ * with an empty guide is never told about losing nothing.
+ */
+export function guideAtStake(discoveries: FieldGuideDiscoveries): boolean {
+  return fieldGuideEnabled() && Object.keys(discoveries).length > 0;
+}
 
 /** Cognito's email OTP. */
 const CODE_LENGTH = 6;
@@ -40,6 +54,7 @@ export function SignInFlow(): ReactElement | null {
   const error = useKeepsakeStore((s) => s.error);
   const close = useKeepsakeStore((s) => s.close);
   const party = useParty();
+  const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 
   /*
    * The flame is the *character's* accent colour, not the player's UI colour.
@@ -74,12 +89,12 @@ export function SignInFlow(): ReactElement | null {
           </p>
         )}
 
-        {step === "offer" ? <OfferStep motes={motes} /> : null}
+        {step === "offer" ? <OfferStep motes={motes} fieldGuide={fieldGuide} /> : null}
         {step === "email" ? <EmailStep busy={busy} /> : null}
         {step === "code" ? <CodeStep busy={busy} /> : null}
         {step === "choose" ? <ChooseStep busy={busy} /> : null}
         {step === "passkey" ? <PasskeyStep busy={busy} /> : null}
-        {step === "kept" ? <KeptStep motes={motes} /> : null}
+        {step === "kept" ? <KeptStep motes={motes} fieldGuide={fieldGuide} /> : null}
       </div>
     </div>
   );
@@ -101,7 +116,14 @@ interface Mote {
  * can be asserted without a DOM: zustand serves `getInitialState()` as the SSR
  * snapshot, so a store-driven render cannot be steered by `setState`.
  */
-export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
+export function OfferStep({
+  motes,
+  fieldGuide = false,
+}: {
+  motes: Mote[];
+  /** The household has a Field Guide worth keeping — see `guideAtStake`. */
+  fieldGuide?: boolean;
+}): ReactElement {
   // A selector, not the whole store: subscribing to everything re-renders the
   // offer on every keystroke of the email step behind it.
   const close = useKeepsakeStore((s) => s.close);
@@ -121,9 +143,10 @@ export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
          * one character and for three — the party is 1–3 people and a sentence
          * that needs a plural branch will eventually get the branch wrong.
          */}
-        Right now they only live on this phone, and only while you keep
-        playing: <b>seven days</b> after your last adventure, they&rsquo;re
-        forgotten. Add an email and they stay for good — levels, items and all.
+        Right now they only live on this phone, and only while you keep playing: <b>seven days</b>{" "}
+        after your last adventure, they&rsquo;re forgotten
+        {fieldGuide ? <>, along with your Field Guide</> : null}. Add an email and they stay for
+        good — levels, items and all.
       </p>
       <ul className="keepsake__party">
         {motes.map((mote) => (
@@ -181,11 +204,13 @@ function EmailStep({ busy }: { busy: boolean }): ReactElement {
         /* One flow for both, so say so: there is no "sign up" screen to hunt
            for, and no password to forget. */
         <p className="keepsake__body">
-          We&rsquo;ll email you a six-digit code. New here? That makes your account. Played
-          before? It signs you back in.
+          We&rsquo;ll email you a six-digit code. New here? That makes your account. Played before?
+          It signs you back in.
         </p>
       ) : (
-        <p className="keepsake__body">We&rsquo;ll send a six-digit code. That&rsquo;s the whole thing.</p>
+        <p className="keepsake__body">
+          We&rsquo;ll send a six-digit code. That&rsquo;s the whole thing.
+        </p>
       )}
 
       <label className="keepsake__label" htmlFor={fieldId}>
@@ -373,8 +398,7 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
         {purpose === "keep" ? "They’re kept." : "Found them."}
       </h2>
       <p className="keepsake__body">
-        Want to skip the email next time? This phone can remember you with a
-        fingerprint or face.
+        Want to skip the email next time? This phone can remember you with a fingerprint or face.
       </p>
       <div className="keepsake__actions">
         <Button
@@ -387,7 +411,12 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
         >
           {busy ? "Asking…" : "Remember this phone"}
         </Button>
-        <Button variant="ghost" icon={<Icon name="forward" />} onClick={skipPasskey} disabled={busy}>
+        <Button
+          variant="ghost"
+          icon={<Icon name="forward" />}
+          onClick={skipPasskey}
+          disabled={busy}
+        >
           Skip
         </Button>
       </div>
@@ -395,7 +424,7 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
   );
 }
 
-function KeptStep({ motes }: { motes: Mote[] }): ReactElement {
+function KeptStep({ motes, fieldGuide }: { motes: Mote[]; fieldGuide: boolean }): ReactElement {
   const close = useKeepsakeStore((s) => s.close);
   const passkeyAdded = useKeepsakeStore((s) => s.passkeyAdded);
   const account = useKeepsakeStore((s) => s.account);
@@ -408,18 +437,21 @@ function KeptStep({ motes }: { motes: Mote[] }): ReactElement {
   return (
     <>
       <h2 className="keepsake__title" id="keepsake-title">
-        {restored ? "This phone is set up." : `${namesOf(motes)} ${motes.length === 1 ? "is" : "are"} safe.`}
+        {restored
+          ? "This phone is set up."
+          : `${namesOf(motes)} ${motes.length === 1 ? "is" : "are"} safe.`}
       </h2>
       <p className="keepsake__body">
         {restored ? (
           <>
-            Signed in as <b>{account?.email ?? "you"}</b>. Start or join a game and your
-            character will be there.
+            Signed in as <b>{account?.email ?? "you"}</b>. Start or join a game and your character
+            will be there.
           </>
         ) : (
           <>
-            Kept under <b>{account?.email ?? "your email"}</b>. They&rsquo;ll be here next
-            time, with everything they&rsquo;re carrying.
+            Kept under <b>{account?.email ?? "your email"}</b>. They&rsquo;ll be here next time,
+            with everything they&rsquo;re carrying
+            {fieldGuide ? <> and your Field Guide</> : null}.
           </>
         )}
       </p>
@@ -469,6 +501,7 @@ export function KeepsakeOffer(): ReactElement | null {
   const account = useKeepsakeStore((s) => s.account);
   const open = useKeepsakeStore((s) => s.open);
   const party = useParty();
+  const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 
   if (!shouldOfferKeepsake(available, account !== null, party.length)) return null;
 
@@ -492,7 +525,9 @@ export function KeepsakeOffer(): ReactElement | null {
       <span className="keepsake-offer__text">
         <span className="keepsake-offer__lead">Keep {namesOf(motes)}?</span>
         <span className="keepsake-offer__sub">
-          They&rsquo;re forgotten seven days after you stop playing.
+          {fieldGuide
+            ? "They and your Field Guide are forgotten seven days after you stop playing."
+            : "They\u2019re forgotten seven days after you stop playing."}
         </span>
       </span>
       <Icon name="forward" />
