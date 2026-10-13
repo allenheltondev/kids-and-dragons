@@ -502,9 +502,9 @@ the reasoning for pinning a *renderer* lives. Which job, and why they are split:
 
 | Gate | Where | When | Cost |
 |---|---|---|---|
-| `art:verify:rig` | `ci.yml`, `build` job | every PR | seconds |
-| `art:verify:rig:rest` | `ci.yml`, `rigs` job | every PR | ~30s for all 54 as one batch (~100s on the pinned, pre-`batch` CLI) behind ~90s of setup |
-| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig (base **or** class — both `assets/characters/**/rig.riv` and `assets/character-rigs/**/rig.riv` are in the path filter; for a while only the first was, so a class-rig regeneration ran no motion gate), the contract or the gate; every main push likewise | ~45 min on the pinned CLI, ~24 with `batch` — see the batch note above |
+| `art:verify:rig` | `ci.yml`, `build` job | every PR that changes more than prose | seconds |
+| `art:verify:rig:rest` | `ci.yml`, `rigs` job | PRs that touch a rig input or the manifest's rig sections (`tools/ci/changes.mjs`); every main push | ~30s for all 54 as one batch (~100s on the pinned, pre-`batch` CLI) behind ~90s of setup |
+| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig (base **or** class — both `assets/characters/**/rig.riv` and `assets/character-rigs/**/rig.riv` are in the path filter; for a while only the first was, so a class-rig regeneration ran no motion gate), the contract or the gate — narrowed by `tools/ci/changes.mjs` to the manifest's rig sections, so a new entity no longer runs it; every main push likewise | ~45 min on the pinned CLI, ~24 with `batch` — see the batch note above |
 
 Motion is a separate *workflow* rather than a third job, and the reason is `prod-deploy.yml`: it
 triggers on the CI workflow **completing**, so twenty minutes inside CI would be twenty minutes
@@ -1018,6 +1018,75 @@ Three consequences to carry into that regeneration, the first of which is load-b
   intend to ship, so extend it (`--update-baseline`, optionally filtered to one species or tier)
   only after a human has looked at that rig's contact sheet — not before. A baseline blessed over a
   rig that topples off-stage pins the bug.
+
+### 6.4 Joint seams: underpaint
+
+**The defect.** In play, every rig opened dark slivers at its joints while idling: down the inside
+of bigfoot's arms, along the edge of the mane where it lies on the chest, hairlines across the hips.
+Frame 0 was clean (the rest gate was right to pass it), and the slivers appeared within the first
+breath. Nothing in the rig was wrong. The pivots sat where the art put them and the amplitudes were
+small. The cause was in the parts. They are cut along the outlines with no overlap, except a single
+~50px disc (2,100 shared pixels) stamped at each joint. That disc is exactly what asset-brief §3.3's
+"≥ 2,000 shared opaque px" check counts, so every pair passes `art:verify` while nothing lies behind
+the rest of the seam. Across all 66 part sets, the joint overlaps are either that 2,100px disc or
+close to nothing. §3.3 asked for a 12–16px band along the whole seam, and the gate cannot tell a band
+from a disc.
+
+**The fix is in the generator, not the art.** rive-mcp's rig builder takes an `underpaint` option
+(rive-mcp `docs/rigging-playbook.md`, step 2⅘), and every config in `art/rig/` sets it to 48. Each
+part is grown, ring by ring out from its own paint, underneath the parts drawn over it, in its own
+edge colours. At rest that fill is hidden; in motion it shows as more of the part instead of
+background. The committed PNGs are untouched. Only the images embedded in `rig.riv` change. The rules
+that make it safe, each found by a gate or a render going wrong first:
+
+- **Joints are measured before the fill.** Filling the PNGs and rebuilding moved bigfoot's shoulder
+  ~80px, because a pivot is the centroid of the overlap. The builder measures from the art as
+  supplied and fills afterwards, so no pivot moved.
+- **Only along the part's own line.** A part fills under its ancestors and descendants (body under
+  arm, leg under body, body under the mane that hangs from the head), never under a sibling. Filling
+  the far leg under the near one drew a dark phantom wedge of the far leg whenever the legs parted
+  (unicorn `attack`).
+- **Only beneath opaque pixels.** Fill written beneath an antialiased edge showed through it at rest.
+  That dropped 15 soft-edged rigs (unicorn, and the duskrunner/starweaver variants) below the rest
+  floor. The fill now still grows *through* a soft band but is written only where the part above is
+  fully opaque. **Every one of the 66 rest percentages is identical to before**, not merely above
+  99.80%.
+- **Only from visible paint, only near the joint.** griffin's body part owns the tips of the front
+  talons. Grown from there, talon-coloured streaks spread under the foreleg, and `attack` carried
+  them 14px below the standing line on every griffin tier. Islands hidden at rest (the stamped discs,
+  copies of a neighbour's art) no longer seed the fill, and the fill stays within 8 × reach (384px) of
+  the joint where the two chains meet.
+- **Reproducible bytes.** Filled PNGs are encoded with a fixed filter choice and zlib's RLE strategy,
+  so `art:rig:build --check` stays byte-exact on any machine.
+
+**How much, measured.** A "slit" is a see-through pixel that a 13px morphological closing would
+fill: a narrow opening inside the figure. The enclosed-hole metric in §3.1 misses these whenever the
+opening reaches the outline. Mean slit pixels per frame, every tick of five clips, rendered at 700px,
+fledgling tier, without underpaint → with it. Each count includes the figure's own concavities
+(between the legs, under the chin), so only the change means anything. No cell got worse:
+
+| species | idle | walk | attack | cast | celebrate |
+|---|---|---|---|---|---|
+| unicorn | 2,741 → 2,704 | 2,312 → 2,282 | 2,372 → 2,164 | 2,263 → 2,263 | 2,175 → 2,166 |
+| dragonling | 3,047 → 2,901 | 3,411 → 2,802 | 4,131 → 3,521 | 3,582 → 3,331 | 3,633 → 3,402 |
+| griffin | 2,826 → 2,716 | 3,214 → 2,504 | 3,378 → 2,902 | 3,566 → 3,399 | 3,384 → 3,295 |
+| bigfoot | 1,967 → 1,796 | 2,121 → 1,700 | 2,663 → 1,850 | 1,963 → 1,699 | 1,811 → 1,550 |
+| kitsune | 3,340 → 2,291 | 2,532 → 2,213 | 2,910 → 2,189 | 2,893 → 2,593 | 2,977 → 2,642 |
+| manticore | 1,798 → 1,552 | 1,821 → 1,752 | 2,831 → 2,101 | 1,459 → 1,447 | 1,756 → 1,737 |
+
+Reach 96 was measured too. It helps the long-seamed species a little more (kitsune `cast`
+2,593 → 2,203) but gives most of the gain back on bigfoot (`attack` 2,160, `celebrate` 1,801), whose
+broad slab cuts show a fill that wide. So the configs use 48.
+
+**What underpaint cannot fix: the cuts.** The parts are cut as straight-edged slabs. bigfoot's body
+is nearly a rectangle, the legs are vertical strips, and the "arm" parts carry thigh pixels below
+row 650. Some parts have holes where a part *behind* them shows at rest (unicorn's chest, where the
+foreleg tucks behind the body). Filling those would change the rest pose, so they stay. In `walk` and
+`attack` a swinging slab still shows its straight edge and corner. The parts-flying-off warnings
+("comes apart", §3.1) come from the same cuts, and underpaint neither causes nor cures them. Fixing
+it needs re-cut parts: anatomical seams through the joints, and an overlap band along each seam
+rather than a disc. A seam check that measures the band (overlap along the shared boundary, not total
+shared pixels) is what would stop the next cut from regressing to a disc.
 
 ---
 

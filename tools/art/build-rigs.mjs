@@ -97,6 +97,7 @@ export function rigTargets(manifest = MANIFEST) {
         dir,
         config: join(ROOT, "art", "rig", `${sp.id}.rig.json`),
         parts: join(dir, "parts"),
+        joints: join(dir, "joints.json"),
         out: join(dir, "rig.riv"),
       });
     }
@@ -111,6 +112,7 @@ export function rigTargets(manifest = MANIFEST) {
       dir,
       config: join(ROOT, "art", "rig", `${v.class}-${v.tier}-${v.species}.rig.json`),
       parts: join(dir, "parts"),
+      joints: join(dir, "joints.json"),
       out: join(dir, "rig.riv"),
     });
   }
@@ -150,6 +152,10 @@ for (const t of selected) {
   const gone = [];
   if (!existsSync(t.config)) gone.push(`config ${relative(ROOT, t.config)}`);
   if (!existsSync(t.parts)) gone.push(`parts ${relative(ROOT, t.parts)}/`);
+  // Pinned joints are a rig input like the parts: without them the builder
+  // measures pivots from the overlaps, which on art with real seam bands puts
+  // every joint mid-limb, and the build would still succeed.
+  if (!existsSync(t.joints)) gone.push(`joints ${relative(ROOT, t.joints)}`);
   if (gone.length > 0) {
     missing.push(`${t.label}: ${gone.join(", ")}`);
     continue;
@@ -193,6 +199,10 @@ const jobs = targets.map((t) => ({
   out: outFor(t),
   contract: MANIFEST_PATH,
   set: "hero",
+  // A part set's joints, pinned rather than measured from its overlaps
+  // (docs/briefs/part-recut.md). Parts that overlap along the whole seam put
+  // the overlap's centroid mid-limb, so the joint is given, not derived.
+  pivots: t.joints,
 }));
 
 const started = performance.now();
@@ -213,7 +223,8 @@ try {
   batched = false;
   results = jobs.map((job) => {
     const r = runCli(
-      ["rig", "--parts", job.parts, "--config", job.config, "-o", job.out, "--contract", job.contract, "--set", job.set],
+      ["rig", "--parts", job.parts, "--config", job.config, "-o", job.out, "--contract", job.contract, "--set", job.set,
+        "--pivots", job.pivots],
       { json: true, cli },
     );
     if (r.error) {
@@ -250,7 +261,8 @@ for (const t of targets) {
 
   const pivots = r.pivots ?? [];
   const guessed = pivots.filter((p) => p.source === "guess");
-  const measured = pivots.length - guessed.length;
+  const pinned = pivots.filter((p) => p.source === "pinned").length;
+  const measured = pivots.length - guessed.length - pinned;
   const contract = r.contract;
   const warnings = r.warnings ?? [];
   const contractOk = contract ? contract.ok : true;
@@ -272,7 +284,7 @@ for (const t of targets) {
   }
   built += 1;
 
-  const pivotText = `${measured} measured${guessed.length ? `, ${YELLOW}${guessed.length} guessed${RESET} (${guessed.map((p) => `${p.parent}-${p.part}`).join(", ")})` : ""}`;
+  const pivotText = `${pinned ? `${pinned} pinned, ` : ""}${measured} measured${guessed.length ? `, ${YELLOW}${guessed.length} guessed${RESET} (${guessed.map((p) => `${p.parent}-${p.part}`).join(", ")})` : ""}`;
   const contractText = contract ? (contract.ok ? "contract ok" : `contract ${RED}${contract.findings.length} finding(s)${RESET}`) : "no contract";
   console.log(`  ${verdict}  ${t.label.padEnd(30)} ${String(r.parts ?? "?").padStart(2)} parts  pivots ${pivotText}  ${contractText}${note}`);
   for (const f of contract && !contract.ok ? contract.findings : []) {
