@@ -341,7 +341,6 @@ test.describe("first playable", () => {
     await expect(solo.locator(".player__echo")).toBeVisible();
 
     // ...and the world is one tap away for the art and the detail.
-    await solo.getByRole("button", { name: /^world$/i }).click();
     await waitForAdventurePrompt(solo);
     await solo.getByRole("button", { name: /^World$/i }).click();
     await expect(solo.locator(".narration__body")).toBeVisible();
