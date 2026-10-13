@@ -45,7 +45,7 @@
   "scenes": {
     "scene_song_stops": {
       "type": "story",
-      "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops. A faun with an irrigation flute freezes so suddenly the flute keeps watering her hoof. Every Sunward child knows what that means: somebody has seen something worth stopping for.",
+      "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. Every Sunward child knows what a stopped song means: somebody has seen something worth stopping for.",
       "choices": [
         {
           "id": "look",
@@ -80,7 +80,7 @@
         },
         {
           "id": "duty",
-          "label": "Stand in front of the wagons — somebody has to",
+          "label": "Stand in front of the wagons. Somebody has to",
           "icon": "shield",
           "requiresFlag": "motive_duty",
           "goto": "scene_caravan_turned"
@@ -135,7 +135,7 @@
     },
     "scene_jackalope_road": {
       "type": "story",
-      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons, but today they are just sitting, packed in tight on the open road, all staring the same way — inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
+      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
       "choices": [
         {
           "id": "look_inland",
@@ -154,7 +154,7 @@
     },
     "scene_wolf_sign": {
       "type": "story",
-      "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves — mountain wolves — all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon.",
+      "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves, mountain wolves, all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon the way you might watch a birthday cake.",
       "choices": [
         {
           "id": "feed",
@@ -215,7 +215,7 @@
     },
     "scene_embermoths": {
       "type": "story",
-      "narration": "At sunset a cloud of embermoths drifts overhead — thousands of them, glowing like slow sparks. One lands on your soup. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
+      "narration": "At sunset a cloud of embermoths drifts overhead, thousands of them, glowing like slow sparks. One lands on your soup and will not get out. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
       "choices": [
         {
           "id": "impossible",
@@ -234,7 +234,7 @@
     },
     "scene_impossible": {
       "type": "story",
-      "narration": "\"That's impossible,\" says the dragonling. \"Embermoths go toward warm. Always. The mountain is the warmest thing there is. Back home the grandmothers would be ringing the bells.\" Nobody laughs. A little embermoth settles on the dragonling's horn, as if it agrees.",
+      "narration": "\"That's impossible,\" says the dragonling. \"Embermoths go toward warm. Always. The mountain is the warmest thing there is. Back home the grandmothers would be ringing the bells.\" Nobody laughs. A little embermoth settles on the dragonling's horn, as if to say: tell them again.",
       "choices": [
         {
           "id": "sleep",
@@ -287,7 +287,7 @@
         },
         {
           "id": "known",
-          "label": "Wait quietly — the sprites already know us",
+          "label": "Wait quietly. The sprites already know us",
           "icon": "heart",
           "requiresFlag": "walked_the_rows",
           "goto": "scene_medal_ceremony",
@@ -350,7 +350,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_stolen",
-        "narration": "Toot — swap — snatch. You're gone before the new guards reach their spots. Nobody saw. Probably.",
+        "narration": "Toot. Swap. Snatch. You are gone before the new guards reach their spots. Nobody saw. Probably.",
         "effects": [
           { "type": "setFlag", "flag": "sprites_wronged", "value": true },
           { "type": "grantQuestItem", "itemId": "facet_harvest" }
@@ -427,7 +427,7 @@
         },
         {
           "id": "shout",
-          "label": "Shout with the crowd — louder!",
+          "label": "Shout with the crowd, louder!",
           "icon": "whistle",
           "goto": "scene_long_path"
         },
@@ -459,7 +459,7 @@
     },
     "scene_long_path": {
       "type": "story",
-      "narration": "Pib sighs and offers you a thorn-cleaning brush you didn't ask for. \"Let's try again, properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the end the mob has gone hoarse.",
+      "narration": "Pib sighs and offers you a thorn-cleaning brush you did not ask for. \"Let's try again. Properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the time you reach the other end the mob outside has shouted itself hoarse.",
       "choices": [
         {
           "id": "finally_in",
@@ -510,25 +510,25 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING — fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "choices": [
         {
           "id": "east",
-          "label": "East to Stone Crossing — the River Road",
+          "label": "East to Stone Crossing: the River Road",
           "icon": "drop",
           "goto": "end_river",
           "effects": [{ "type": "setFlag", "flag": "route_river", "value": true }]
         },
         {
           "id": "north",
-          "label": "North with the rush — the Rush Road",
+          "label": "North with the rush: the Rush Road",
           "icon": "travel",
           "goto": "end_rush",
           "effects": [{ "type": "setFlag", "flag": "route_rush", "value": true }]
         },
         {
           "id": "west",
-          "label": "West into the marsh — the Wild Road",
+          "label": "West into the marsh: the Wild Road",
           "icon": "leaf",
           "goto": "end_wild",
           "effects": [{ "type": "setFlag", "flag": "route_wild", "value": true }]
@@ -549,7 +549,7 @@
     },
     "end_wild": {
       "type": "rest",
-      "narration": "West, then, into the reeds where hardly anybody else is going. Marda chalks your names under WEST, where there is lots of room. Tonight you sleep in a real bed. Out past the hedges, the marsh frogs sing very loudly, as if they have heard you're coming.",
+      "narration": "West, then, into the reeds where hardly anybody else is going. Marda chalks your names under WEST, where there is lots of room. Tonight you sleep in a real bed. Out past the hedges, the marsh frogs sing very loudly, as if somebody has already told them you are coming.",
       "heal": 4,
       "choices": []
     }

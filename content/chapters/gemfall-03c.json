@@ -20,7 +20,7 @@
     },
     {
       "id": "fennicks",
-      "label": "Helped the Fennick family get home",
+      "label": "Helped the Bracken family get home",
       "flag": "helped_family",
       "xp": 7
     },
@@ -221,7 +221,7 @@
     },
     "choice_tolls": {
       "type": "choice_point",
-      "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by queue-jumpers. And a faun family called the Fennicks is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
+      "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by queue-jumpers. And a faun family called the Brackens is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
       "choices": [
         {
           "id": "wagon",
@@ -244,7 +244,7 @@
         },
         {
           "id": "family",
-          "label": "Sit down with the Fennicks",
+          "label": "Sit down with the Brackens",
           "icon": "heart",
           "goto": "scene_family"
         }
@@ -318,7 +318,7 @@
     },
     "scene_family": {
       "type": "story",
-      "narration": "The Fennicks' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Fennick is holding a queue pebble with a big number on it and trying very hard not to cry about it.",
+      "narration": "The Brackens' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Bracken is holding a queue pebble with a big number on it and trying very hard not to cry about it.",
       "choices": [
         {
           "id": "give_pebble",
@@ -433,7 +433,7 @@
     },
     "scene_witch_stall": {
       "type": "story",
-      "narration": "Down the queue there is a remedy stall with a pointed hat hanging off the corner. Every time a gem wagon rolls past, all the little bell charms on the stall ring by themselves. The witch behind the counter, Mother Thrum, looks at you over her spectacles. \"What do you actually want?\"",
+      "narration": "Down the queue there is a remedy stall with a pointed hat hanging off the corner. Every time a gem wagon rolls past, all the little bell charms on the stall ring by themselves, and the witch behind the counter winces. Her name is Mother Thrum. She looks at you over her spectacles. \"What do you actually want?\"",
       "choices": [
         {
           "id": "real_question",
@@ -526,7 +526,7 @@
     },
     "rest_witch_fire": {
       "type": "rest",
-      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. In the morning, a drover is shouting your number.",
+      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, one of them is shouting your number.",
       "heal": 2,
       "choices": [
         {
@@ -563,7 +563,7 @@
         },
         {
           "id": "fennick_cart",
-          "label": "Ride across on the Fennicks' cart",
+          "label": "Ride across on the Brackens' cart",
           "icon": "heart",
           "requiresFlag": "helped_family",
           "goto": "check_ford_easy"
@@ -734,7 +734,7 @@
       "mother_thrum": "a ford witch; careful and instructive, peers over spectacles, always asks 'what do you actually want?'",
       "drover": "the lead drover; slow, booming voice, sings the crossing verse and will not be hurried",
       "relay_runner": "a centaur relay-runner; talks while galloping, never finishes a sentence in the same place she started it",
-      "fennicks": "a faun family whose season is over; tired, polite, the littlest one very brave about it"
+      "brackens": "the Brackens, a faun family whose season is over; tired, polite, the littlest one very brave about it"
     }
   }
 }

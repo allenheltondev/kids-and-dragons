@@ -31,7 +31,7 @@
   "scenes": {
     "scene_east_road": {
       "type": "story",
-      "narration": "The east road runs at the river like it is late for something. Every mile marker along it is missing. Where MILE 3 used to stand, somebody is cooking porridge on the stump.",
+      "narration": "The east road runs at the river like it is late for something. Every mile marker along it is missing. Where MILE 3 used to stand, somebody is cooking porridge on the stump, and the porridge is not even very good.",
       "choices": [
         { "id": "restore", "label": "Help put the markers back", "icon": "map", "goto": "check_markers" },
         { "id": "wave_first", "label": "Wave first, the old road way", "icon": "hand", "requiresSpecies": "manticore", "goto": "scene_courtesy" },
@@ -63,7 +63,7 @@
     },
     "scene_fennick": {
       "type": "story",
-      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor.\"",
+      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor.\" She says it once. Centaurs do not say a warning twice.",
       "onEnter": [{ "type": "setFlag", "flag": "had_a_guide", "value": true }],
       "choices": [
         { "id": "follow_fennick", "label": "Follow Fennick to the river", "icon": "arrow", "goto": "scene_queue" }
@@ -71,7 +71,7 @@
     },
     "scene_queue": {
       "type": "story",
-      "narration": "Stone Crossing: giant flat stones laid across the narrowest bit of the Great River, and in front of them the longest queue in the world. Someone near the back is selling queue soup. Up near the front, six people in matching brass hats are very quietly moving the queue rope.",
+      "narration": "Stone Crossing: giant flat stones laid across the narrowest bit of the Great River, and in front of them the longest queue in the world. Someone near the back is selling queue soup. Someone else is selling a map of the queue. Up near the front, six people in matching brass hats are very quietly moving the queue rope.",
       "choices": [
         { "id": "call_out", "label": "Call the brass hats out", "icon": "eye", "goto": "check_rivals" },
         { "id": "spot_from_above", "label": "Fly up and catch them at it", "icon": "wing", "requiresSpecies": "griffin", "goto": "scene_rivals_caught" },
@@ -103,7 +103,7 @@
     },
     "scene_troll": {
       "type": "story",
-      "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you'd rest a hand on a sleeping dog. The toll is a story or a riddle from each of you, and he hears every single one in full. Slowly.",
+      "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you would rest a hand on a sleeping dog. The toll is a story or a riddle from each of you, and he hears every single one in full. Slowly. A bird builds half a nest on his shoulder while he listens.",
       "choices": [
         { "id": "tell_story", "label": "Tell him a story", "icon": "scroll", "goto": "scene_troll_hum" },
         { "id": "ask_riddle", "label": "Ask him a riddle", "icon": "clever", "goto": "scene_troll_hum" },
@@ -119,7 +119,7 @@
     },
     "scene_troll_hum": {
       "type": "story",
-      "narration": "Halfway through, Old Lintel stops listening to you and starts listening to the bridge. \"The stones in your packs are humming,\" he rumbles. \"Everybody's are. A note older than this bridge, and this bridge is not young.\" He has stopped asking riddles this season. Now there is only one toll: \"Where did you get that? And where is it going?\"",
+      "narration": "Halfway through, Old Lintel stops listening to you and starts listening to the bridge. \"The stones in your packs are humming,\" he rumbles. \"Everybody's are. A note older than this bridge, and this bridge is not young.\" He has stopped asking riddles this season. Now there is only one toll, and it is a question: \"Where did you get that? And where is it going?\"",
       "onEnter": [{ "type": "setFlag", "flag": "heard_the_hum", "value": true }],
       "choices": [
         { "id": "answer_honest", "label": "Answer him honestly", "icon": "heart", "goto": "rest_queue_camp" },
@@ -141,7 +141,7 @@
       "narration": "In the bridge's shadow, a river drake lies along a rock shelf like a cat on a windowsill. The shelf holds fish bones, three boat hinges, one otter-polished pebble, and right in the middle a new gem that hums. Beside it, a slate says RATES, and the drake keeps rubbing the numbers out with its tail and writing bigger ones.",
       "choices": [
         { "id": "haggle", "label": "Offer the drake a fair trade", "icon": "heart", "goto": "check_drake" },
-        { "id": "honeycake", "label": "Offer it a honeycake, like Ossley does", "icon": "cake", "requiresItem": "honeycake", "goto": "scene_drake_deal" },
+        { "id": "honeycake", "label": "Offer it a honeycake, the way the ferrymen do", "icon": "cake", "requiresItem": "honeycake", "goto": "scene_drake_deal" },
         { "id": "grab", "label": "Grab the gem while it blinks", "icon": "swords", "goto": "encounter_drake" },
         { "id": "leave_shelf", "label": "Leave it. Rates are rates.", "icon": "back", "goto": "scene_crossing_bank" }
       ]
@@ -188,7 +188,7 @@
     },
     "scene_crossing_bank": {
       "type": "choice_point",
-      "narration": "At last, your turn. The flat stones march out across the river, and then the last stretch is simply under: brown water hurrying over where the stones should be. In the reeds, a flat boat bumps the bank. A frog in a very old hat sits in it, saying nothing.",
+      "narration": "At last, your turn. The flat stones march out across the river, and then the last stretch is simply under: brown water hurrying over where the stones should be. In the reeds, a flat boat bumps the bank. A frog in a very old hat sits in it, saying nothing, in a way that sounds like he has been saying nothing for years.",
       "choices": [
         { "id": "wade", "label": "Wade the drowned stones", "icon": "boot", "goto": "check_crossing" },
         { "id": "fennick_line", "label": "Take Fennick's shallow line", "icon": "map", "requiresFlag": "had_a_guide", "goto": "check_crossing_easy" },
@@ -199,7 +199,7 @@
     },
     "scene_ossley_price": {
       "type": "story",
-      "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks at each of you in turn and asks for one thing each: the song you hum when nobody's listening, the last thing you were proud of, and a promise to carry something for somebody, someday.",
+      "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks at each of you in turn and asks for one thing each: the song you hum when nobody is listening, the last thing you were proud of, and a promise to carry something for somebody, someday. He does not say what. He does not say who.",
       "choices": [
         {
           "id": "pay_ossley",
@@ -250,7 +250,7 @@
     },
     "scene_swept": {
       "type": "story",
-      "narration": "The river carries you south like a parcel nobody signed for. Past the queue, past the Sunward banks, past a heron who watches the whole thing with deep disapproval. It goes on for a long, long time.",
+      "narration": "The river carries you south like a parcel nobody signed for. Past the queue, past the Sunward banks, past a heron who watches the whole thing with deep disapproval. It goes on for a long, long time, and the heron follows, just to keep disapproving.",
       "onEnter": [{ "type": "setFlag", "flag": "river_took_us", "value": true }],
       "choices": [
         { "id": "hold_on", "label": "Hold on to each other", "icon": "hand", "goto": "scene_mouth" }
@@ -258,7 +258,7 @@
     },
     "scene_mouth": {
       "type": "story",
-      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is Old Ossley. He fishes you out one at a time and says nothing. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand.",
+      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is Old Ossley. He fishes you out one at a time and says nothing. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
       "onEnter": [{ "type": "grantQuestItem", "itemId": "ossley_reed_knot" }],
       "choices": [
         { "id": "squelch", "label": "Squelch up the beach", "icon": "boot", "goto": "scene_crawlers" }
@@ -319,7 +319,7 @@
     },
     "rest_wet_end": {
       "type": "rest",
-      "narration": "You build a driftwood fire on the eastern shore and steam gently, like puddings. North of here the Eastern Plains are waiting, and you'll walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp.",
+      "narration": "You build a driftwood fire on the eastern shore and steam gently, like puddings. North of here the Eastern Plains are waiting, and you will walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp, and you suspect it always will be.",
       "heal": 4,
       "choices": []
     },
