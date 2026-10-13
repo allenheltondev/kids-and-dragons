@@ -48,7 +48,7 @@ import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
-import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation, useProgression } from "../store";
+import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 
 type Focus = "world" | "map" | "player";
@@ -84,20 +84,15 @@ export function TravelLayout(): React.JSX.Element {
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const transformTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Needing you pushes your controls in front of you. Deliberately keyed on
-  // the turn rather than set once: going back to the world to re-read a scene
-  // must not stop the *next* question from reaching you.
-  //
-  // On the *transition* into your turn, tracked by hand, rather than on every
-  // run of the effect: React re-runs effects when a subtree is hidden and
-  // revealed by a Suspense boundary above it, and a re-run that read "it is
-  // still your turn" as "it has just become your turn" would yank the map or
-  // the world away from somebody who opened it mid-turn to think.
-  const wasMyTurn = useRef(false);
+  // Track the question, not merely the boolean "my turn": successive
+  // prompts for the same player can arrive without an intervening false.
+  // The key stays put when the same prompt's votes or other state updates.
+  const turnKey = useMyTurnKey();
+  const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (myTurn && !wasMyTurn.current) setFocus("player");
-    wasMyTurn.current = myTurn;
-  }, [myTurn]);
+    if (turnKey !== null && turnKey !== previousTurnKey.current) setFocus("player");
+    previousTurnKey.current = turnKey;
+  }, [turnKey]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
   usePresentation("ROLL", () => {
