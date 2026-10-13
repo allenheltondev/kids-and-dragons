@@ -34,3 +34,26 @@
 }
 .field-guide__detail-title { margin: 0 0 0.5em; }
 @media (prefers-reduced-motion: reduce) { .field-guide__card { transition: none; } }
+
+.fgd__header { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5em; margin-block-end: 1em; }
+.fgd__art { display: grid; place-items: center; inline-size: 7em; block-size: 7em; overflow: hidden; font-size: 3em; align-self: center; }
+.fgd__art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
+.fgd__header .field-guide__detail-title { margin: 0; font-size: 1.4em; overflow-wrap: anywhere; }
+.fgd__hook { margin: 0; font-size: 1.1em; font-style: italic; }
+.fgd__short { margin: 0; }
+.fgd__badges { display: flex; flex-wrap: wrap; gap: 0.4em; list-style: none; margin: 0; padding: 0; }
+.fgd__badge {
+  padding: 0.25em 0.8em; border-radius: 999px; font-weight: 600;
+  background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border-strong);
+}
+.fgd__section { margin-block-end: 1em; }
+.fgd__section h4 { margin: 0 0 0.3em; font-size: 1.1em; }
+.fgd__section p { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
+.fgd__list { margin: 0; padding-inline-start: 1.2em; line-height: 1.5; }
+.fgd__list li { margin-block-end: 0.4em; overflow-wrap: anywhere; }
+.fgd__link {
+  font: inherit; font-weight: 700; color: var(--kad-gold); background: none; border: 0; padding: 0.35em 0;
+  min-block-size: 2.75em; text-decoration: underline; cursor: pointer;
+}
+.fgd__unknown { font-weight: 700; color: var(--kad-ink-faint); }
+.fgd__found { margin: 1em 0 0; color: var(--kad-ink-dim); }
