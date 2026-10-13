@@ -710,7 +710,7 @@ test.describe("first playable", () => {
     await expect(host.getByText(/welcome back/i)).toBeVisible({ timeout: 10_000 });
     await host.getByRole("button", { name: /Sparklehoof/ }).click(TAP);
     await host.getByRole("button", { name: /play as sparklehoof/i }).click(TAP);
-    await openPlayerTask(host);
+    await host.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 
     // Seated: the lobby's ready button is theirs, with no creation flow between.
     await expect(host.getByRole("button", { name: /i'm ready/i })).toBeVisible({ timeout: 15_000 });
