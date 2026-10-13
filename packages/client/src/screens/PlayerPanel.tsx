@@ -1,4 +1,4 @@
-import { setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
+import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 /**
  * PlayerPanel — PlayerView for everything that is not character creation.
  *
@@ -65,6 +65,8 @@ import { useEnsureChapter, useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
+import { FieldGuide } from "./FieldGuide";
+import { fieldGuideEnabled } from "../feature-flags";
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -589,8 +591,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     );
   }
 
+  const guideOpen = section === "guide" && fieldGuideEnabled();
+
   return (
+    <>
+    {guideOpen ? <FieldGuide /> : null}
+    {/* `hidden`, not unmounted, while the guide is open: a half-made aim in a
+        fight survives a look at the guide, like the bag. */}
     <section
+      hidden={guideOpen}
       className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
@@ -1464,6 +1473,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
+        {/* TODO(#112): replaced by the permanent menu option. */}
+        {fieldGuideEnabled() ? (
+          <Button className="player__guide-entry" variant="secondary" size="md" block
+            icon={<Icon name="book" />} onClick={() => openGuide()}>
+            Field Guide
+          </Button>
+        ) : null}
+
         {roomControls ? (
           <details className="player__room-settings">
             <summary className="kad-focusable">Room settings</summary>
@@ -1484,5 +1501,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </Button>
         ) : null}
     </section>
+    </>
   );
 }
