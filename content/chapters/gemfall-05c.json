@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 28,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_stones_line",
   "objectives": [
@@ -42,7 +42,7 @@
   "scenes": {
     "scene_stones_line": {
       "type": "story",
-      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd.",
+      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
       "choices": [
         {
           "id": "join_queue",
@@ -122,7 +122,8 @@
       "prompt": "Help a stubborn prospector actually hear the one rule",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_rule_heard"
+        "goto": "scene_rule_heard",
+        "narration": "You do not shout the rule at him. You tell him about the crabs, and the bells, and the wall of pry bars, and you tell it like a story, because it is one. Somewhere in the middle he stops saying \"right, right\" and starts actually listening."
       },
       "onFailure": {
         "goto": "scene_crab_warning",
@@ -180,7 +181,8 @@
       "prompt": "Read what the glassback crab's dance means",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_crab_settles"
+        "goto": "scene_crab_settles",
+        "narration": "Claws up. Sideways shuffle. Rock to the left. You have seen a cat do something very like it on a warm wall, and you know exactly what the cat meant."
       },
       "onFailure": {
         "goto": "encounter_crabs",
@@ -326,7 +328,7 @@
           "label": "Ask for it the proper way, with a warm rock in both hands",
           "icon": "flame",
           "requiresSpecies": "dragonling",
-          "goto": "rest_bell_house",
+          "goto": "scene_unassigned_ask_proper",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -343,7 +345,7 @@
           "id": "leave_kept",
           "label": "Leave it kept, where it is",
           "icon": "moon",
-          "goto": "rest_bell_house",
+          "goto": "scene_unassigned_leave_kept",
           "effects": [
             {
               "type": "setFlag",
@@ -351,6 +353,30 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_unassigned_leave_kept": {
+      "type": "story",
+      "narration": "You leave it on its list. Great-Gran Ashby looks at the gem, and at you, and nods one slow nod. \"Kept,\" she says, and squares the list underneath it with the end of her walking stick, so the two of them line up exactly. \"Some things want keeping more than they want carrying.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find somewhere to sleep",
+          "icon": "moon",
+          "goto": "rest_bell_house"
+        }
+      ]
+    },
+    "scene_unassigned_ask_proper": {
+      "type": "story",
+      "narration": "You hold the warm rock in both hands and ask, the proper way, the way every dragonling child learns before they learn to fly. Great-Gran Ashby watches you do it with her mouth pressed tight, and then she lifts the gem off its list and sets it in your hands on top of the rock. \"Keeping,\" she says. \"Not taking. You know the difference. Don't you dare sell it.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find somewhere to sleep",
+          "icon": "flame",
+          "goto": "rest_bell_house"
         }
       ]
     },
@@ -395,7 +421,7 @@
     },
     "scene_centaur_whisper": {
       "type": "story",
-      "narration": "In the morning, a centaur guide named Fennimore Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
+      "narration": "In the morning, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
       "choices": [
         {
           "id": "take_shortcut",
@@ -413,7 +439,7 @@
     },
     "scene_shortcut": {
       "type": "story",
-      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Fennimore stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
+      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Perrin stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
       "choices": [
         {
           "id": "promise",
@@ -465,7 +491,7 @@
           "label": "Ring your own family's bell, and start the word going",
           "icon": "flame",
           "requiresSpecies": "dragonling",
-          "goto": "scene_tell_gatherers",
+          "goto": "scene_who_to_tell_ring_home",
           "effects": [
             {
               "type": "setFlag",
@@ -486,6 +512,18 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_who_to_tell_ring_home": {
+      "type": "story",
+      "narration": "You ring your own family's bell, the pattern you learned before you could talk. For a moment nothing. Then, from three towns up the hills, faint and clear, a bell rings the pattern back, and then adds the one that means hurry home for supper. Great-Gran Ashby pretends very hard not to have heard.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk north through the stones",
+          "icon": "flame",
+          "goto": "scene_tell_gatherers"
         }
       ]
     },
@@ -563,7 +601,7 @@
       "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
       "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
       "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
-      "fennimore": "Fennimore Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument"
+      "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument"
     }
   }
 }

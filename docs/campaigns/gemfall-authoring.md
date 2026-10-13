@@ -115,7 +115,15 @@ stone stays in the bag as a memory until the campaign ends and quest items are c
 
 Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
 
-- **18–28 scenes, about 25 minutes.** `estimatedMinutes` 25–30.
+- **25–70 scenes, 25–45 minutes.** `estimatedMinutes` 25–45. Most of the count is result
+  scenes (below), which take a few seconds each at the table.
+- **Every choice lands somewhere that shows its result.** Two choices may reach the same
+  place, but never without a scene in between that tells the party what their pick did: a
+  troll answers the story you told, the room reacts to the pursuit you declared, the dragon
+  answers the thing you held up. A gated shortcut may share an easy check with its siblings,
+  because the check's own narration is the result. A `check` branch always carries a
+  `narration`. Transitions are caused, not cut to: if a mail sack is going to burst over the
+  market, somebody mentioned the overloaded griffins first.
 - **`xpAward`**: 01 = 100; 02–07 = 90; 08 = 120. Objectives total ≤ 25% of it
   (≤ 22 for a 90 chapter), pointed at flags the chapter already sets.
 - **At least one rest waypoint** (a `rest` scene *with* choices) before the end, and an

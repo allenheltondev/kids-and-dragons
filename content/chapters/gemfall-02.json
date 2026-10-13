@@ -5,7 +5,7 @@
   "index": 2,
   "title": "Green Roads North",
   "biome": "sunward_fields",
-  "estimatedMinutes": 25,
+  "estimatedMinutes": 28,
   "xpAward": 90,
   "entry": "scene_song_stops",
   "objectives": [
@@ -45,7 +45,7 @@
   "scenes": {
     "scene_song_stops": {
       "type": "story",
-      "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops. A faun with an irrigation flute freezes so suddenly the flute keeps watering her hoof. Every Sunward child knows what that means: somebody has seen something worth stopping for.",
+      "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. Every Sunward child knows what a stopped song means: somebody has seen something worth stopping for.",
       "choices": [
         {
           "id": "look",
@@ -76,13 +76,37 @@
           "label": "Stand in the road and roar, politely",
           "icon": "manticore",
           "requiresSpecies": "manticore",
-          "goto": "scene_caravan_turned"
+          "goto": "scene_trampled_field_roar"
         },
         {
           "id": "duty",
-          "label": "Stand in front of the wagons — somebody has to",
+          "label": "Stand in front of the wagons. Somebody has to",
           "icon": "shield",
           "requiresFlag": "motive_duty",
+          "goto": "scene_trampled_field_duty"
+        }
+      ]
+    },
+    "scene_trampled_field_duty": {
+      "type": "story",
+      "narration": "You plant your feet in the road in front of the lead wagon and do not move. The oxen stop with their noses touching your coat. The drover shouts. You stay. A pumpkin rolls out of the field, bumps your boot, and stays too, as if it has joined you. The drover throws up her hands and turns the oxen.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lead the wagons round the edge",
+          "icon": "shield",
+          "goto": "scene_caravan_turned"
+        }
+      ]
+    },
+    "scene_trampled_field_roar": {
+      "type": "story",
+      "narration": "You step into the road, clear your throat, and roar. It is a polite roar, the kind with a please in it, and it still rattles the pumpkins. Every ox in the caravan sits down at once. The drover looks at her oxen, looks at you, and decides the field can keep its pumpkins.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lead the wagons round the edge",
+          "icon": "manticore",
           "goto": "scene_caravan_turned"
         }
       ]
@@ -100,14 +124,23 @@
       "onFailure": {
         "goto": "scene_caravan_turned",
         "narration": "The drovers don't listen. Three wagons cut a muddy stripe right through the squash before the rest swing round. A faun starts singing a very sad verse about it.",
-        "effects": [{ "type": "damage", "amount": 1 }]
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ]
       }
     },
     "scene_walk_rows": {
       "type": "story",
       "narration": "You walk the rows instead of through them, hopping between pumpkins like stepping stones, and find a cart track around the edge of the field. Something tiny pats your boot, very approvingly, and is gone before you can look.",
       "onEnter": [
-        { "type": "setFlag", "flag": "walked_the_rows", "value": true }
+        {
+          "type": "setFlag",
+          "flag": "walked_the_rows",
+          "value": true
+        }
       ],
       "choices": [
         {
@@ -122,7 +155,11 @@
       "type": "story",
       "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there.\"",
       "onEnter": [
-        { "type": "grantItem", "itemId": "honeycake", "to": "party" }
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
       ],
       "choices": [
         {
@@ -135,7 +172,7 @@
     },
     "scene_jackalope_road": {
       "type": "story",
-      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons, but today they are just sitting, packed in tight on the open road, all staring the same way — inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
+      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
       "choices": [
         {
           "id": "look_inland",
@@ -147,14 +184,29 @@
           "id": "fly_look",
           "label": "Fly up and look over the long grass",
           "icon": "wing",
-          "requiresSpecies": ["griffin", "dragonling"],
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ],
+          "goto": "scene_jackalope_road_fly_look"
+        }
+      ]
+    },
+    "scene_jackalope_road_fly_look": {
+      "type": "story",
+      "narration": "From above, the long grass is a green sea, and two grey shapes are lying in it like boats, perfectly still, each with a faint orange glow under the fur. Mountain wolves. In farm country. One of them looks straight up at you and does not even pretend it isn't there.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Land and tell the others",
+          "icon": "wing",
           "goto": "scene_wolf_sign"
         }
       ]
     },
     "scene_wolf_sign": {
       "type": "story",
-      "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves — mountain wolves — all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon.",
+      "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves, mountain wolves, all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon the way you might watch a birthday cake.",
       "choices": [
         {
           "id": "feed",
@@ -185,7 +237,13 @@
       "onSuccess": {
         "goto": "scene_embermoths",
         "narration": "The wolves eat every sausage, curl up into one warm grey heap with eight legs, and watch you go. They are not tame. But they will remember you.",
-        "effects": [{ "type": "setFlag", "flag": "fed_the_wolves", "value": true }]
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "fed_the_wolves",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "encounter_wolves",
@@ -215,7 +273,7 @@
     },
     "scene_embermoths": {
       "type": "story",
-      "narration": "At sunset a cloud of embermoths drifts overhead — thousands of them, glowing like slow sparks. One lands on your soup. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
+      "narration": "At sunset a cloud of embermoths drifts overhead, thousands of them, glowing like slow sparks. One lands on your soup and will not get out. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
       "choices": [
         {
           "id": "impossible",
@@ -234,7 +292,7 @@
     },
     "scene_impossible": {
       "type": "story",
-      "narration": "\"That's impossible,\" says the dragonling. \"Embermoths go toward warm. Always. The mountain is the warmest thing there is. Back home the grandmothers would be ringing the bells.\" Nobody laughs. A little embermoth settles on the dragonling's horn, as if it agrees.",
+      "narration": "\"That's impossible,\" says the dragonling. \"Embermoths go toward warm. Always. The mountain is the warmest thing there is. Back home the grandmothers would be ringing the bells.\" Nobody laughs. A little embermoth settles on the dragonling's horn, as if to say: tell them again.",
       "choices": [
         {
           "id": "sleep",
@@ -283,17 +341,30 @@
           "label": "Leave it where it fell",
           "icon": "check",
           "goto": "scene_leave_it",
-          "effects": [{ "type": "setFlag", "flag": "sprites_friends", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "sprites_friends",
+              "value": true
+            }
+          ]
         },
         {
           "id": "known",
-          "label": "Wait quietly — the sprites already know us",
+          "label": "Wait quietly. The sprites already know us",
           "icon": "heart",
           "requiresFlag": "walked_the_rows",
           "goto": "scene_medal_ceremony",
           "effects": [
-            { "type": "setFlag", "flag": "sprites_friends", "value": true },
-            { "type": "grantQuestItem", "itemId": "facet_harvest" }
+            {
+              "type": "setFlag",
+              "flag": "sprites_friends",
+              "value": true
+            },
+            {
+              "type": "grantQuestItem",
+              "itemId": "facet_harvest"
+            }
           ]
         }
       ]
@@ -308,8 +379,15 @@
         "goto": "scene_medal_ceremony",
         "narration": "You offer a shiny button, a song, and the last crumb of honeycake. The sprites go into a huddle. They come out of the huddle. It's a deal.",
         "effects": [
-          { "type": "setFlag", "flag": "sprites_friends", "value": true },
-          { "type": "grantQuestItem", "itemId": "facet_harvest" }
+          {
+            "type": "setFlag",
+            "flag": "sprites_friends",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          }
         ]
       },
       "onFailure": {
@@ -327,18 +405,39 @@
         "goto": "scene_medal_ceremony",
         "narration": "It's a race, and it was always a race. You win by one seed. The sprites are thrilled, and tuck a honeycake into your pocket for later.",
         "effects": [
-          { "type": "setFlag", "flag": "sprites_friends", "value": true },
-          { "type": "grantQuestItem", "itemId": "facet_harvest" },
-          { "type": "grantItem", "itemId": "honeycake", "to": "roller" }
+          {
+            "type": "setFlag",
+            "flag": "sprites_friends",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "roller"
+          }
         ]
       },
       "onFailure": {
         "goto": "scene_medal_ceremony",
         "narration": "The sprites beat you to every seed, and you get stung by a nettle on the last one. But you worked till lunchtime without complaining, and the sprites decide that counts.",
         "effects": [
-          { "type": "setFlag", "flag": "sprites_friends", "value": true },
-          { "type": "grantQuestItem", "itemId": "facet_harvest" },
-          { "type": "damage", "amount": 1 }
+          {
+            "type": "setFlag",
+            "flag": "sprites_friends",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          },
+          {
+            "type": "damage",
+            "amount": 1
+          }
         ]
       }
     },
@@ -350,19 +449,36 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_stolen",
-        "narration": "Toot — swap — snatch. You're gone before the new guards reach their spots. Nobody saw. Probably.",
+        "narration": "Toot. Swap. Snatch. You are gone before the new guards reach their spots. Nobody saw. Probably.",
         "effects": [
-          { "type": "setFlag", "flag": "sprites_wronged", "value": true },
-          { "type": "grantQuestItem", "itemId": "facet_harvest" }
+          {
+            "type": "setFlag",
+            "flag": "sprites_wronged",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          }
         ]
       },
       "onFailure": {
         "goto": "scene_stolen",
         "narration": "You grab it, and the trumpet toots the alarm. Forty sprites riding jackalopes chase you down three rows and through a nettle patch before you get away.",
         "effects": [
-          { "type": "setFlag", "flag": "sprites_wronged", "value": true },
-          { "type": "grantQuestItem", "itemId": "facet_harvest" },
-          { "type": "damage", "amount": 1 }
+          {
+            "type": "setFlag",
+            "flag": "sprites_wronged",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          },
+          {
+            "type": "damage",
+            "amount": 1
+          }
         ]
       }
     },
@@ -394,7 +510,10 @@
       "type": "story",
       "narration": "You leave the stone exactly where it fell. The sprites look at each other. Then they hold a second, smaller ceremony and pin a very small woven medal on you. It says NOT. Nobody explains.",
       "onEnter": [
-        { "type": "grantQuestItem", "itemId": "medal_not" }
+        {
+          "type": "grantQuestItem",
+          "itemId": "medal_not"
+        }
       ],
       "choices": [
         {
@@ -419,15 +538,22 @@
           "id": "help_pib",
           "label": "Help Pib trim the hedge first",
           "icon": "hand",
-          "goto": "rest_marda_inn",
+          "goto": "scene_hedge_mob_help_pib",
           "effects": [
-            { "type": "setFlag", "flag": "let_in_properly", "value": true },
-            { "type": "damage", "amount": 1 }
+            {
+              "type": "setFlag",
+              "flag": "let_in_properly",
+              "value": true
+            },
+            {
+              "type": "damage",
+              "amount": 1
+            }
           ]
         },
         {
           "id": "shout",
-          "label": "Shout with the crowd — louder!",
+          "label": "Shout with the crowd, louder!",
           "icon": "whistle",
           "goto": "scene_long_path"
         },
@@ -436,8 +562,38 @@
           "label": "Show Pib the sprites' medal",
           "icon": "trophy",
           "requiresFlag": "sprites_friends",
-          "goto": "rest_marda_inn",
-          "effects": [{ "type": "setFlag", "flag": "let_in_properly", "value": true }]
+          "goto": "scene_hedge_mob_cousins",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "let_in_properly",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_hedge_mob_cousins": {
+      "type": "story",
+      "narration": "Pib sees the sprites' medal and gasps. \"Cousins! You've met my cousins!\" The hedge opens before Pib has even finished the sentence, wide enough for a cart, and a thorn reaches out and very gently straightens the medal on your coat.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk in like you were expected",
+          "icon": "trophy",
+          "goto": "rest_marda_inn"
+        }
+      ]
+    },
+    "scene_hedge_mob_help_pib": {
+      "type": "story",
+      "narration": "You take a brush each and trim with Pib, one leaf at a time, for a very long time. Pib narrates all of it. Somewhere around the four hundredth leaf, the hedge gives a long rustle, like a cat deciding to like you, and a small gap opens at exactly your height. The mob does not notice. Pib is beside themself with pride.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Slip through the gap",
+          "icon": "leaf",
+          "goto": "rest_marda_inn"
         }
       ]
     },
@@ -450,7 +606,13 @@
       "onSuccess": {
         "goto": "rest_marda_inn",
         "narration": "The hedge rustles, thinks about it, and quietly opens a path just wide enough for you and nobody else. The mob doesn't even notice. Pib looks very proud of the hedge.",
-        "effects": [{ "type": "setFlag", "flag": "let_in_properly", "value": true }]
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "let_in_properly",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_long_path",
@@ -459,7 +621,7 @@
     },
     "scene_long_path": {
       "type": "story",
-      "narration": "Pib sighs and offers you a thorn-cleaning brush you didn't ask for. \"Let's try again, properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the end the mob has gone hoarse.",
+      "narration": "Pib sighs and offers you a thorn-cleaning brush you did not ask for. \"Let's try again. Properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the time you reach the other end the mob outside has shouted itself hoarse.",
       "choices": [
         {
           "id": "finally_in",
@@ -485,13 +647,25 @@
           "label": "Show Marda the warm red stone from the Exchange",
           "icon": "gem",
           "requiresItem": "facet_ember",
-          "goto": "scene_marda_question"
+          "goto": "rest_marda_inn_show_ember"
         },
         {
           "id": "ask_believe",
           "label": "Ask Marda which rumour she believes",
           "icon": "eye",
           "requiresFlag": "motive_curiosity",
+          "goto": "scene_marda_question"
+        }
+      ]
+    },
+    "rest_marda_inn_show_ember": {
+      "type": "story",
+      "narration": "Marda takes the warm red stone in one big hand and holds it to her ear. The common room goes quiet. The stone hums. \"Mm,\" says Marda, and gives it back, and wipes her hand on her apron as if the hum might come off. Then she asks the one question she asks everybody this season.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear her question",
+          "icon": "gem",
           "goto": "scene_marda_question"
         }
       ]
@@ -510,28 +684,46 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING — fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "choices": [
         {
           "id": "east",
-          "label": "East to Stone Crossing — the River Road",
+          "label": "East to Stone Crossing: the River Road",
           "icon": "drop",
           "goto": "end_river",
-          "effects": [{ "type": "setFlag", "flag": "route_river", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "route_river",
+              "value": true
+            }
+          ]
         },
         {
           "id": "north",
-          "label": "North with the rush — the Rush Road",
+          "label": "North with the rush: the Rush Road",
           "icon": "travel",
           "goto": "end_rush",
-          "effects": [{ "type": "setFlag", "flag": "route_rush", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "route_rush",
+              "value": true
+            }
+          ]
         },
         {
           "id": "west",
-          "label": "West into the marsh — the Wild Road",
+          "label": "West into the marsh: the Wild Road",
           "icon": "leaf",
           "goto": "end_wild",
-          "effects": [{ "type": "setFlag", "flag": "route_wild", "value": true }]
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "route_wild",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -549,7 +741,7 @@
     },
     "end_wild": {
       "type": "rest",
-      "narration": "West, then, into the reeds where hardly anybody else is going. Marda chalks your names under WEST, where there is lots of room. Tonight you sleep in a real bed. Out past the hedges, the marsh frogs sing very loudly, as if they have heard you're coming.",
+      "narration": "West, then, into the reeds where hardly anybody else is going. Marda chalks your names under WEST, where there is lots of room. Tonight you sleep in a real bed. Out past the hedges, the marsh frogs sing very loudly, as if somebody has already told them you are coming.",
       "heal": 4,
       "choices": []
     }

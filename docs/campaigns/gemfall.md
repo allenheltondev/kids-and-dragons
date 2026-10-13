@@ -988,9 +988,12 @@ and its keeper.
 > `endsCampaign`, which completes the attempt without a chapter 8. How the
 > files are wired (which flags each sets, which survive between evenings, the
 > facets as quest items) is
-> [gemfall-authoring.md](./gemfall-authoring.md), and three tests hold it:
+> [gemfall-authoring.md](./gemfall-authoring.md), and four tests hold it:
 > `content:validate`, `tools/content/gemfall-wiring.test.mjs` (every chapter
-> sets the forks it owes, on every path), and
+> sets the forks it owes, on every path),
+> `tools/content/gemfall-flow.test.mjs` (no em dashes, every check branch
+> narrates, and no two choices funnel into the same next scene without a
+> result scene between), and
 > `packages/server/src/handlers/gemfall-playthrough.test.ts`, which plays the
 > whole campaign through the real server under 24 seeds — every one reaches
 > an ending, and between them they walk every road and every pursuit.

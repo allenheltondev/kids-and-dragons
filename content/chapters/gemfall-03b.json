@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 27,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_poling_in",
   "objectives": [
@@ -42,7 +42,7 @@
           "id": "say_it",
           "label": "Say it out loud: something is leaking",
           "icon": "note",
-          "goto": "scene_boggart_isle",
+          "goto": "scene_poling_in_say_it",
           "effects": [
             {
               "type": "setFlag",
@@ -66,9 +66,21 @@
         }
       ]
     },
+    "scene_poling_in_say_it": {
+      "type": "story",
+      "narration": "\"Something's leaking,\" you say. Gullet stops poling. The new wisps behind the ribbon all turn toward you at once, like a room full of candles noticing a draught. Gullet carves one more notch in her hat, very carefully, and starts poling again. \"Not near the wisps,\" she says. \"They remember things.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pole on to the boggarts",
+          "icon": "note",
+          "goto": "scene_boggart_isle"
+        }
+      ]
+    },
     "scene_unicorn_feels": {
       "type": "story",
-      "narration": "You lower your horn toward the ribbon, and the wisps go still. Each one is a memory that got tangled in the marsh. And every single one of them is remembering the same thing: a night when red light fell out of the sky — and for one moment, fell upward.",
+      "narration": "You lower your horn toward the ribbon, and the wisps go still. Each one is a memory that got tangled in the marsh. And every single one of them is remembering the same thing: a night when red light fell out of the sky, and, for one moment, fell upward.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -87,7 +99,7 @@
     },
     "scene_boggart_isle": {
       "type": "story",
-      "narration": "On a mud island stacked with lost things — odd mittens, a teapot lid, nine umbrellas — sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
+      "narration": "On a mud island stacked with lost things (odd mittens, a teapot lid, nine umbrellas) sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
       "choices": [
         {
           "id": "offer",
@@ -213,7 +225,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_act_closed",
-        "narration": "You stamp, and stamp, and do a sort of stamping dance, and the barge starts to wobble. Then it stands up — on legs — and stalks off into the reeds, muttering."
+        "narration": "You stamp, and stamp, and do a sort of stamping dance, and the barge starts to wobble. Then it stands up, on legs, and stalks off into the reeds, muttering about the state of modern audiences."
       },
       "onFailure": {
         "goto": "encounter_mimic",
@@ -277,18 +289,19 @@
         "narration": "You follow the sound of humming and a bobbing, notched hat. Gullet hauls you onto her raft and says nothing at all about the mud."
       },
       "onFailure": {
-        "goto": "ending_marsh_kept_secrets"
+        "goto": "ending_marsh_kept_secrets",
+        "narration": "Every channel looks like every other channel, and the wisps keep swapping them round when you blink. By the time you give up and sit down on a tussock, the moon has set and the marsh has decided to keep you a little longer."
       }
     },
     "scene_act_closed": {
       "type": "story",
-      "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem — the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
+      "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem, the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
       "choices": [
         {
           "id": "take",
           "label": "Pick up the Barge Stone",
           "icon": "gem",
-          "goto": "rest_reed_raft",
+          "goto": "scene_act_closed_take",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -300,7 +313,7 @@
           "id": "leave",
           "label": "Leave it for the marsh",
           "icon": "leaf",
-          "goto": "rest_reed_raft",
+          "goto": "scene_act_closed_leave",
           "effects": [
             {
               "type": "setFlag",
@@ -308,6 +321,30 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_act_closed_leave": {
+      "type": "story",
+      "narration": "You leave the stone where the barge was. For a moment nothing happens. Then the mud takes it, slowly, like a hand closing, until only the hum is left, and then not even that. Gullet, watching from the raft, nods once, the way frogfolk nod at a thing done properly.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the raft",
+          "icon": "leaf",
+          "goto": "rest_reed_raft"
+        }
+      ]
+    },
+    "scene_act_closed_take": {
+      "type": "story",
+      "narration": "You lift the Barge Stone out of the mud. It hums louder in your hand, as if it is pleased to be held, and every reed along the bank leans toward it and then away again. Somewhere behind you, a long muddy shape sighs.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the raft",
+          "icon": "gem",
+          "goto": "rest_reed_raft"
         }
       ]
     },
@@ -332,7 +369,7 @@
           "id": "please",
           "label": "Say please",
           "icon": "heart",
-          "goto": "scene_wisp_sight",
+          "goto": "scene_wisp_lead_please",
           "effects": [
             {
               "type": "setFlag",
@@ -366,6 +403,18 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_wisp_lead_please": {
+      "type": "story",
+      "narration": "\"Please,\" you say. The wisp stops dead. Nobody has ever said please to a wisp. It goes pink, then gold, then a flustered sort of white, and bobs in a little circle as if it does not know where to put itself. Then it comes back and hangs right in front of you, glowing, waiting to show you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow it",
+          "icon": "heart",
+          "goto": "scene_wisp_sight"
         }
       ]
     },
@@ -424,7 +473,7 @@
     "scene_hollow_gate": {
       "type": "story",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to — older than the marsh, older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in knots. It does not open. It does not look like it has ever opened.",
+      "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to. Older than the marsh. Older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in a knot. It does not open. It does not look like it has ever opened.",
       "choices": [
         {
           "id": "listen",
@@ -449,7 +498,7 @@
     "scene_gate_hum": {
       "type": "story",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "You stand very still. The runes are humming one long, low note — the boggart's note, the barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
+      "narration": "You stand very still. The runes are humming one long, low note. The boggart's note. The barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -475,13 +524,13 @@
     "scene_gate_shard": {
       "type": "story",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "Half in the mud by the bottom step lies a curl of cold silver. When your gem-dusty boots come near, it hums once — the same note — and then goes completely quiet, as if it has said what it came to say.",
+      "narration": "Half in the mud by the bottom step lies a curl of cold silver. When your gem-dusty boots come near, it hums once, the same note, and then goes completely quiet, as if it has said what it came to say.",
       "choices": [
         {
           "id": "pick_up",
           "label": "Pick it up, carefully",
           "icon": "hand",
-          "goto": "choice_exit",
+          "goto": "scene_gate_shard_pick_up",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -493,6 +542,32 @@
           "id": "leave",
           "label": "Leave it where it lies",
           "icon": "leaf",
+          "goto": "scene_gate_shard_leave"
+        }
+      ]
+    },
+    "scene_gate_shard_leave": {
+      "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
+      "narration": "You leave it in the mud. It sinks a little deeper, as if it is comfortable there, and the water closes over it without a ripple. The Gate hums on. You have the odd feeling that something has been noted.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step back from the Gate",
+          "icon": "leaf",
+          "goto": "choice_exit"
+        }
+      ]
+    },
+    "scene_gate_shard_pick_up": {
+      "type": "story",
+      "art": "scenes/gemfall/hollow-gate",
+      "narration": "You pick it up. It is cold and lighter than it looks, and it hums once more in your pocket and then goes still, like a bird settling. Behind you, one of the knotted reeds around the Gate unties itself. Nobody saw it do that. Everybody saw it do that.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step back from the Gate",
+          "icon": "hand",
           "goto": "choice_exit"
         }
       ]
@@ -579,7 +654,7 @@
     },
     "ending_swept_west": {
       "type": "rest",
-      "narration": "The branch grabs you and carries you west — through the marsh's outermost tangles, past floating logs (real ones, you check) — until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
+      "narration": "The branch grabs you and carries you west, through the marsh's outermost tangles, past floating logs (real ones, you check), until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
       "heal": 4,
       "onEnter": [
         {
@@ -592,7 +667,7 @@
     },
     "ending_walked_over": {
       "type": "rest",
-      "narration": "You squelch out of the reeds onto a road full of wagons and fall in behind a cart of turnips. Nobody asks where you came from — everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret in your pocket.",
+      "narration": "You squelch out of the reeds onto a road full of wagons and fall in behind a cart of turnips. Nobody asks where you came from. Everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret in your pocket.",
       "heal": 3,
       "onEnter": [
         {
