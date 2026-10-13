@@ -43,6 +43,9 @@
   "scenes": {
     "scene_bridge": {
       "type": "story",
+      "discovers": [
+        "faction.skywardens"
+      ],
       "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
       "choices": [
         {
@@ -124,6 +127,9 @@
     },
     "scene_cult_pitch": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "Hollis talks while she ladles, gently, like she's telling you the weather. \"The world's rules are broken, love. Look at this line. The power under the mountain could write new ones. The seal on it isn't a lock. It's a lid on the cure.\" She nods at a jar labelled THE BREAK. It is half full of humming stones.",
       "choices": [
         {
@@ -412,6 +418,9 @@
     },
     "scene_told_gatherers": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "The bell-rider, Nim, is a dragonling about your size on a very small, very fast pony. She listens, rings her bell once, high and clear, and says, \"Grandmother is going to say she told everyone.\" Then she gallops north with your news.",
       "choices": [
         {
@@ -477,6 +486,9 @@
     },
     "scene_under_bridge": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "Under the bridge the stone is warm from the sun, and somebody else has noticed. A pack of cinder wolves lies heaped against the pillars, ember-eyed and cold, a long way from home. They lift their heads at the hum in your packs and do not like it at all.",
       "choices": [
         {
@@ -542,6 +554,9 @@
     },
     "scene_far_rim": {
       "type": "story",
+      "discovers": [
+        "biome.red_sky_foothills"
+      ],
       "narration": "The far side climbs, and keeps climbing. The grass gets shorter, the stones get redder, and the sky ahead glows like the inside of a lantern. These are the foothills of Mount Red Sky, and you are coming down into them from the north-east, with the truth folded up in your packs.",
       "choices": [
         {
