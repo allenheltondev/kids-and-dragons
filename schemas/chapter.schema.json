@@ -388,6 +388,15 @@
         "setback"
       ]
     },
+    "discovers": {
+      "description": "Canon ids (keys of content/field-guide.json entries) the kids actually meet in this scene, so the Field Guide fills in. Tag a thing only when the scene lets them meet it, never for a mere mention. The validator rejects unknown ids and duplicates. A fight's creatures and the chapter's biome are discovered implicitly and need no tag.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]+\\.[a-z0-9_]+$"
+      }
+    },
     "endsCampaign": {
       "description": "This ending finishes the whole campaign, not just the chapter: the attempt completes and the party's gains commit, exactly as finishing the campaign's last beat does. For an authored exit before the last beat, such as Gemfall's Walk. Only read on a scene with an empty `choices` array \u2014 the validator rejects it anywhere else.",
       "const": true
@@ -702,6 +711,9 @@
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
+        "discovers": {
+          "$ref": "#/$defs/discovers"
+        },
         "choices": {
           "$ref": "#/$defs/choices"
         },
@@ -753,6 +765,9 @@
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
+        "discovers": {
+          "$ref": "#/$defs/discovers"
+        },
         "roller": {
           "enum": [
             "party",
@@ -791,6 +806,9 @@
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
+        },
+        "discovers": {
+          "$ref": "#/$defs/discovers"
         },
         "choices": {
           "allOf": [
@@ -833,6 +851,9 @@
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
+        },
+        "discovers": {
+          "$ref": "#/$defs/discovers"
         },
         "heal": {
           "type": "integer",
@@ -881,6 +902,9 @@
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
+        },
+        "discovers": {
+          "$ref": "#/$defs/discovers"
         },
         "enemies": {
           "type": "array",
