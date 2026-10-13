@@ -13,28 +13,11 @@
 import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
 import { speak, turnHolderAway } from "@kad/shared";
-import type { SceneType } from "@kad/shared";
 import { useItems, useParty, useRunState } from "../store";
 import { Icon } from "./icons";
 import { chapterHeading } from "./campaign-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
-
-const SCENE_LABEL: Record<SceneType, string> = {
-  story: "The story",
-  check: "A test",
-  choice_point: "Everyone decides",
-  rest: "A rest",
-  encounter: "A fight",
-};
-
-const SCENE_ICON: Record<SceneType, string> = {
-  story: "scroll",
-  check: "d20",
-  choice_point: "vote",
-  rest: "rest",
-  encounter: "swords",
-};
 
 /** "bramblewood-01" → "Bramblewood 01". The fallback for a run persisted
  *  before `chapterInfo` carried the real title. */
@@ -176,7 +159,6 @@ export function NarrationPanel(): ReactElement | null {
 
   if (state === null) return null;
 
-  const sceneType = state.sceneType;
   // In a fight the board is the thing to look at and the words are its
   // caption: the panel folds to a strip (NarrationPanel.css) so a phone's
   // world pane shows tiles, not a paragraph over them.
@@ -186,15 +168,8 @@ export function NarrationPanel(): ReactElement | null {
     <section className={`narration${fighting ? " narration--fight" : ""}`} aria-live="polite">
       <header className="narration__head">
         {state.chapterId === null ? null : (
-          <p className="narration__chapter kad-label">
-            <Icon name="chapter" />
+          <h2 className="narration__chapter">
             <span>{chapterHeading(state) ?? prettyChapter(state.chapterId)}</span>
-          </p>
-        )}
-        {sceneType === null ? null : (
-          <h2 className="narration__title">
-            <Icon name={SCENE_ICON[sceneType]} />
-            <span>{SCENE_LABEL[sceneType]}</span>
           </h2>
         )}
       </header>
@@ -205,20 +180,19 @@ export function NarrationPanel(): ReactElement | null {
         roadmap chapter 8's transitions, DOM half. The key is the content
         itself: same words, same node, no re-animation on unrelated patches.
       */}
-      <p className="narration__body" key={narration}>
-        {narration}
-      </p>
+      <div className="narration__story">
+        {choices !== null && choices.length > 0 && turnName !== null ? (
+          <p className="narration__turn">{turnName}&rsquo;s turn to choose</p>
+        ) : null}
+        <p className="narration__body" key={narration}>
+          {narration}
+        </p>
+      </div>
 
       {/*
         The shared screen shows *what* the choices are; the buttons live on the
         phones (spec §2). Read-only here — nothing on WorldView is tappable.
       */}
-      {choices !== null && choices.length > 0 && turnName !== null ? (
-        <p className="narration__prompt narration__turn">
-          <Icon name="hand" />
-          <span>{turnName}&rsquo;s turn to choose</span>
-        </p>
-      ) : null}
       {choices !== null && choices.length > 0 ? (
         <ul className="narration__choices">
           {choices.map((choice) => (

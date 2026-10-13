@@ -1,3 +1,4 @@
+import { openPlayerTask } from "./player-navigation";
 /**
  * The end-to-end check the roadmap's cross-cutting table is really asking for:
  * "a change hasn't been seen on a TV *and* in three-phone Travel Mode, it isn't
@@ -59,9 +60,18 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await expect(page.getByRole("button", { name: /surprise me/i })).toBeVisible();
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
+  await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 }
 
 /** The server's view, so the test asserts on authority rather than on pixels. */
+/** A fresh story prompt must replace ready-up before a manual World tap.
+ * Otherwise its arriving turn key legitimately returns focus to You. */
+async function waitForAdventurePrompt(page: Page): Promise<void> {
+  await expect(page.locator(".player__scroll:visible .player__task-entry, .player__prompt:visible .prompt__title")
+    .filter({ hasText: /Your turn|What do you do/i }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /^You$/i })).toHaveAttribute("aria-pressed", "true");
+}
+
 async function serverState(
   code: string,
 ): Promise<{ phase: string; xpEarned: number; sceneId: string | null; encounter?: unknown }> {
@@ -95,6 +105,7 @@ async function chooseUntil(
   for (let attempt = 0; attempt < 8; attempt++) {
     if (await done()) return;
     for (const page of pages) {
+      await openPlayerTask(page);
       const option = page.locator(".prompt button").filter({ hasText: label }).first();
       if (pages.length > 1 && !(await option.isVisible().catch(() => false))) continue;
       await option.click({ timeout: 5_000 }).catch(() => {});
@@ -155,6 +166,7 @@ function labelNamesAHero(label: string, heroes: readonly string[]): boolean {
  * turn rather than leaving three phones staring at each other.
  */
 async function takeCombatTurn(page: Page): Promise<boolean> {
+  await openPlayerTask(page);
   const panel = page.locator(".prompt.combat");
   if ((await panel.count()) === 0) return false;
   // Only the phone actually on the clock has anything to do.
@@ -216,6 +228,7 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
  * just re-cast it.
  */
 async function answerPrompt(page: Page, heroes: readonly string[]): Promise<boolean> {
+  await openPlayerTask(page);
   const options = await page.locator(".prompt button").all();
   const fresh: typeof options = [];
   for (const option of options) {
@@ -318,6 +331,7 @@ test.describe("first playable", () => {
     await expect(solo.getByRole("button", { name: /unicorn/i }).first()).toBeVisible();
     await createCharacter(solo, "unicorn", "Sparklehoof");
 
+    await openPlayerTask(solo);
     await solo.getByRole("button", { name: /i'm ready/i }).click();
     await solo.getByRole("button", { name: /begin the adventure/i }).click();
 
@@ -327,8 +341,9 @@ test.describe("first playable", () => {
     await expect(solo.locator(".player__echo")).toBeVisible();
 
     // ...and the world is one tap away for the art and the detail.
-    await solo.getByRole("button", { name: /^world$/i }).click();
-    await expect(solo.getByText(/the story/i).first()).toBeVisible();
+    await waitForAdventurePrompt(solo);
+    await solo.getByRole("button", { name: /^World$/i }).click();
+    await expect(solo.locator(".narration__body")).toBeVisible();
     // Still your turn, and the tab says so without relying on colour.
     await expect(solo.locator(".kad-travel__nudge")).toBeVisible();
   });
@@ -368,6 +383,7 @@ test.describe("first playable", () => {
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
     for (const page of phones) {
+      await openPlayerTask(page);
       await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       // Assert the tap actually took. A ready that silently fails to register
       // is the exact failure worth catching here, and without this the test
@@ -375,7 +391,10 @@ test.describe("first playable", () => {
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
-    await expect(host.getByText(/the story|what do you do/i).first()).toBeVisible();
+    await waitForAdventurePrompt(host);
+    await host.getByRole("button", { name: /^World$/i }).click();
+    await expect(host.locator(".narration__body")).toBeVisible();
+    await host.getByRole("button", { name: /^You$/i }).click();
 
     /*
      * Play it the way a table does: whoever the game is asking, answers. The
@@ -402,6 +421,7 @@ test.describe("first playable", () => {
       let acted = false;
 
       for (const page of phones) {
+        await openPlayerTask(page);
         const roll = page.getByRole("button", { name: /^roll/i });
         if ((await roll.count()) > 0 && (await roll.first().isVisible().catch(() => false))) {
           /*
@@ -481,6 +501,7 @@ test.describe("first playable", () => {
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
     for (const page of phones) {
+      await openPlayerTask(page);
       await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
@@ -536,6 +557,7 @@ test.describe("first playable", () => {
           .isVisible()
           .catch(() => false);
         if (flipped) break;
+        await openPlayerTask(page);
         await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 8_000 }).catch(() => {});
         await page.waitForTimeout(500);
       }
@@ -688,6 +710,7 @@ test.describe("first playable", () => {
     await expect(host.getByText(/welcome back/i)).toBeVisible({ timeout: 10_000 });
     await host.getByRole("button", { name: /Sparklehoof/ }).click(TAP);
     await host.getByRole("button", { name: /play as sparklehoof/i }).click(TAP);
+    await host.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 
     // Seated: the lobby's ready button is theirs, with no creation flow between.
     await expect(host.getByRole("button", { name: /i'm ready/i })).toBeVisible({ timeout: 15_000 });

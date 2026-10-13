@@ -1,3 +1,4 @@
+import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 /**
  * Party Mode — at home (spec §2.1).
  *
@@ -7,19 +8,14 @@
  *                no session token, refreshable at any moment. A tablet propped
  *                on the table is just a small TV, and that falls out for free
  *                because "TV" is a route, not a device class.
- *   /p/:code   → PlayerView, full screen — and, on request, the map.
+ *   /p/:code   → PlayerView, with World and Map a tap away.
  *
  * Trivial compared to TravelLayout, which is the point of having built that
  * one first. Like TravelLayout, this shell owns the only viewport unit in the
  * subtree.
  *
- * The map rides on the phone, not the TV. The TV is the world, and a room
- * watching a scene does not want the scene replaced by a diagram of the
- * chapter — but the person holding a phone does, when the question is "how
- * far along are we?" rather than "what is happening?". So a Party Mode phone
- * can swap its controller for the map and back, under the same rule Travel
- * Mode uses for every surface that is not your controls: the moment the game
- * needs you, your controls come back in front of you.
+ * The TV remains the world display. Phones can inspect World or Map without
+ * changing the room mode; each new question brings their controls back.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -45,7 +41,7 @@ export function PartyLayout({ surface }: PartyLayoutProps): React.JSX.Element {
   return <PhoneLayout />;
 }
 
-type Showing = "player" | "map";
+type Showing = "world" | "player" | "map";
 
 function PhoneLayout(): React.JSX.Element {
   // The same three facts TravelLayout reads, for the same reason: being asked
@@ -63,25 +59,34 @@ function PhoneLayout(): React.JSX.Element {
     previousTurnKey.current = turnKey;
   }, [turnKey]);
 
+  const section = usePlayerNavigation((navigation) => navigation.section);
   const onMap = showing === "map";
 
   return (
     <div className="kad-party kad-party--player">
-      {/* The tray (screens/TrayObjects.tsx): your satchel and the map, and the
-          mode switch beside them — the laptop dying is exactly when you need
-          that, and the TV cannot offer it (a display client has no input at
-          all, spec §2.1). In flow rather than floating: a floating control
-          overlapped whatever was beneath it, and what is beneath it on a phone
-          is the primary action of every screen. */}
+      {/* Three destinations on every phone; the TV stays a pure display. */}
       <nav className="kad-party__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
-          className={`kad-tray__tab kad-tap kad-focusable${onMap ? "" : " kad-tray__tab--on"}`}
-          aria-pressed={!onMap}
-          onClick={() => setShowing("player")}
+          className={`kad-tray__tab kad-tap kad-focusable${showing === "world" ? " kad-tray__tab--on" : ""}`}
+          aria-pressed={showing === "world"}
+          onClick={() => { dismissPlayerSheet(); setShowing("world"); }}
+        >
+          <span className="kad-tray__object"><TrayObject name="globe" /></span>
+          <span className="kad-tray__label">World</span>
+        </button>
+        <button
+          type="button"
+          className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" ? " kad-tray__tab--on" : ""}`}
+          aria-label="You"
+          aria-pressed={showing === "player"}
+          onClick={() => { dismissPlayerSheet(); setShowing("player"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />
+            {turnKey !== null && (showing !== "player" || section === "bag") ? (
+              <span className="kad-tray__badge" aria-label="Your turn">★</span>
+            ) : null}
           </span>
           <span className="kad-tray__label">You</span>
         </button>
@@ -89,20 +94,22 @@ function PhoneLayout(): React.JSX.Element {
           type="button"
           className={`kad-tray__tab kad-tap kad-focusable${onMap ? " kad-tray__tab--on" : ""}`}
           aria-pressed={onMap}
-          onClick={() => setShowing("map")}
+          onClick={() => { dismissPlayerSheet(); setShowing("map"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="map" />
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
-        <ModeSwitch />
       </nav>
 
       {/* `hidden` rather than unmounted, like the Travel panes: a selection
           half-made in the bag survives a look at the map. */}
-      <div className="kad-party__pane" data-pane="player" data-showing={!onMap}>
-        <PlayerView />
+      <div className="kad-party__pane" data-pane="player" data-showing={showing === "player"}>
+        <PlayerView roomControls={<ModeSwitch />} />
+      </div>
+      <div className="kad-party__pane" data-pane="world" data-showing={showing === "world"}>
+        <WorldView gatesPresentations={false} />
       </div>
       {onMap ? (
         <div className="kad-party__pane" data-pane="map" data-showing>

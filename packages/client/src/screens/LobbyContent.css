@@ -187,7 +187,7 @@
    griffin at 2.6em is mostly wings. */
 .lobby-member__portrait {
   display: grid;
-  place-items: end center;
+  place-items: center;
   inline-size: 2.8em;
   block-size: 3.4em;
   flex: 0 0 auto;

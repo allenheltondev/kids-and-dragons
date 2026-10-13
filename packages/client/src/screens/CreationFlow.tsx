@@ -201,6 +201,7 @@ export function HeroStrip({
         species={species.id}
         className="creation-hero__art"
         accent={accent}
+        backdrop
         lit
         float
       />

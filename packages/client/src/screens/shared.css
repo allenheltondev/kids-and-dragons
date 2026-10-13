@@ -16,6 +16,11 @@
   block-size: 1em;
 }
 
+.kad-icon--painted {
+  object-fit: contain;
+  user-select: none;
+}
+
 /* A vertical rhythm helper. Gap only — no margins to collapse. */
 .kad-stack {
   display: flex;

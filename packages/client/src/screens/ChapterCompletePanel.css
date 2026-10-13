@@ -172,7 +172,7 @@
    is wide, because the art is a standing figure and not a headshot. */
 .complete-card__portrait {
   display: grid;
-  place-items: end center;
+  place-items: center;
   inline-size: 2.8em;
   block-size: 3.4em;
   flex: 0 0 auto;
