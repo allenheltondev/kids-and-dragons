@@ -350,6 +350,14 @@ ol {
   font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
 }
 
+.kad-surface--map {
+  container-name: map;
+  background: var(--kad-bg);
+  /* Text and a drawing, like the player pane: scale off the smaller axis so a
+     landscape tablet does not inflate the stop names. */
+  font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
+}
+
 /* Full-bleed layer inside a surface (dice, cutscenes, lobby). Percentages, not
    viewport units — see the comments in layout/WorldView.tsx. */
 .kad-layer {

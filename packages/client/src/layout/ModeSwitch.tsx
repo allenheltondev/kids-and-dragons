@@ -31,6 +31,9 @@ export function ModeSwitch(): React.JSX.Element | null {
       className="kad-mode-switch"
       icon={<Icon name={next === "travel" ? "phone" : "party"} />}
       onClick={() => void send({ type: "SET_MODE", mode: next })}
+      // Named in full, because a narrow phone shows only the icon (the bar
+      // rules in components.css) and an icon alone is not a name.
+      aria-label={mode === "party" ? "No TV? Show the world on the phones" : "Use a TV for the world"}
       title={
         mode === "party"
           ? "Show the world on the phones instead of the TV"

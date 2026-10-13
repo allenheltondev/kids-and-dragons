@@ -41,6 +41,10 @@
      with the pane. Fixed and modest, so the surfaces get the screen. */
   font-size: 0.95rem;
   padding: var(--kad-space-2);
+  /* The sound button is fixed in the top-right corner of every page
+     (audio/AudioControl.css); the bar leaves it that corner rather than
+     putting the mode switch under it. */
+  padding-inline-end: calc(var(--kad-touch-min) + var(--kad-space-3));
   border-block-end: 1px solid var(--kad-border);
   background: var(--kad-bg-sunken);
 }
@@ -81,6 +85,18 @@
   flex: 0 0 auto;
   font-size: 0.85em;
   opacity: 0.65;
+}
+
+/* Three tabs, the mode switch and the sound button do not all fit a narrow
+   phone with words on everything. The mode switch is the one used least —
+   once an evening, if the laptop dies — so it is the one that drops to its
+   icon; it keeps its name for the screen reader (ModeSwitch.tsx). A shell
+   rule, so a media query is allowed here (architecture §4.6 rule 2). */
+@media (max-width: 480px) {
+  .kad-travel__bar .kad-mode-switch .kad-button__label,
+  .kad-party__bar .kad-mode-switch .kad-button__label {
+    display: none;
+  }
 }
 
 /* One surface at a time. Hidden, not unmounted: the world holds the Pixi
@@ -383,15 +399,31 @@
 
 .kad-party__bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--kad-space-2);
   flex: 0 0 auto;
   padding: var(--kad-space-1) var(--kad-space-2);
+  /* Same corner reserved for the sound button as the Travel bar. */
+  padding-inline-end: calc(var(--kad-touch-min) + var(--kad-space-3));
   border-block-end: 1px solid var(--kad-border);
   background: var(--kad-bg-sunken);
   font-size: 0.95rem;
 }
 
-.kad-party--player > .kad-surface {
+.kad-party--player > .kad-surface,
+.kad-party--player > .kad-party__pane {
   flex: 1 1 auto;
   min-block-size: 0;
+}
+
+/* The phone's controller and the map swap places on request; the controller
+   stays mounted underneath (an aim half-made in a fight survives a look at
+   the map), so this is `display: none`, exactly like the Travel panes. */
+.kad-party__pane {
+  position: relative;
+}
+
+.kad-party__pane[data-showing="false"] {
+  display: none;
 }

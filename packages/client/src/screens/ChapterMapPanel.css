@@ -1,0 +1,282 @@
+/*
+ * The chapter map — the trail (ChapterMapPanel.tsx).
+ *
+ * Everything is `em`, `%` or a token against `.kad-surface`: the pane is a
+ * whole phone in Travel Mode and whatever a tablet gives it in Party Mode, and
+ * the same rules have to read on both (architecture §4.6 rule 2). No viewport
+ * units in here.
+ */
+
+.trail {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-4);
+  /* No top padding: the pinned head carries its own, so nothing of the trail
+     can show in a strip above it while it is stuck. */
+  padding: 0 var(--kad-space-4) var(--kad-space-4);
+  overflow-y: auto;
+  color: var(--kad-ink);
+}
+
+.trail--empty {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.trail__note {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  margin: 0;
+  font-size: var(--kad-text-lg);
+}
+
+/* --- Head ------------------------------------------------------------------- */
+
+/* Pinned while the trail scrolls under it: the map opens scrolled to the
+   party, which on a long chapter is a screen below the title — and "the party
+   is at Shrine Hollow" is the one line that should never scroll away. */
+.trail__head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-1);
+  flex: 0 0 auto;
+  margin: 0 calc(-1 * var(--kad-space-4));
+  padding: var(--kad-space-4) var(--kad-space-4) var(--kad-space-3);
+  background: linear-gradient(to bottom, var(--kad-bg) 80%, transparent);
+}
+
+.trail__campaign {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  margin: 0;
+  font-size: var(--kad-text-sm);
+}
+
+.trail__title {
+  margin: 0;
+  font-family: var(--kad-font-display);
+  font-size: var(--kad-text-xl);
+  font-weight: var(--kad-weight-black);
+  line-height: 1.15;
+}
+
+.trail__progress {
+  margin: 0;
+  font-size: var(--kad-text-md);
+}
+
+/* --- The picture -------------------------------------------------------------- */
+
+/*
+ * Width is the pane; height comes from the inline `aspect-ratio` computed from
+ * the chapter's own rows and columns. Padding on the sides keeps the outermost
+ * labels from being clipped by the pane edge, and the rows are tall enough
+ * (`min-block-size`) for a name to sit under its stop without colliding with
+ * the next row on a short chapter.
+ */
+.trail__picture {
+  position: relative;
+  flex: 0 0 auto;
+  inline-size: 100%;
+  /* Room for a name and a "you are here" under the lowest stop. */
+  margin-block-end: 3.5em;
+  border-radius: var(--kad-radius-lg);
+  background:
+    radial-gradient(80% 60% at 50% 30%, rgba(139, 108, 245, 0.08), transparent 70%),
+    var(--kad-bg-raised);
+  border: 1px solid var(--kad-border);
+}
+
+.trail__roads {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+.trail__road {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 0.25em;
+}
+
+.trail__road--walked {
+  stroke: var(--kad-gold);
+}
+
+.trail__road--ahead {
+  stroke: var(--kad-ink-dim);
+  stroke-dasharray: 0.4em 0.5em;
+}
+
+.trail__road--fog {
+  stroke: var(--kad-border);
+  stroke-dasharray: 0.2em 0.6em;
+}
+
+.trail__road--back {
+  opacity: 0.75;
+}
+
+/* --- Stops ---------------------------------------------------------------------- */
+
+.trail__stops {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail__stop {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kad-space-1);
+  /* `left`/`top` land on the stop's centre; this moves the dot onto it and
+     lets the name hang beneath. */
+  transform: translate(-50%, -50%);
+  /* One column's worth of the picture, so neighbouring names never collide
+     however wide the chapter forks; capped so a one-road chapter does not
+     spread a short name across the whole pane. */
+  inline-size: min(6.5em, calc(100% / var(--trail-columns, 3)));
+  padding-inline: 0.2em;
+  text-align: center;
+}
+
+.trail__dot {
+  display: grid;
+  place-items: center;
+  inline-size: 1.9em;
+  block-size: 1.9em;
+  border-radius: 50%;
+  background: var(--kad-gold);
+  color: var(--kad-accent-ink);
+  box-shadow: var(--kad-shadow-sm);
+  font-size: 1em;
+}
+
+.trail__stop--fog .trail__dot,
+.trail__dot--fog {
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  background: var(--kad-bg);
+  border: 0.15em solid var(--kad-ink-faint);
+  box-shadow: none;
+}
+
+.trail__stop--start.trail__stop--seen .trail__dot {
+  outline: 0.2em solid var(--kad-accent-soft);
+}
+
+.trail__stop--end.trail__stop--seen .trail__dot {
+  background: var(--kad-success);
+}
+
+.trail__name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.1em 0.4em;
+  border-radius: var(--kad-radius-sm);
+  /* A name sits on top of the road that runs on under it; a soft backdrop
+     keeps the letters readable where a dashed line crosses them. */
+  background: color-mix(in srgb, var(--kad-bg-raised) 85%, transparent);
+  font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-bold);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.trail__here {
+  font-size: var(--kad-text-xs);
+  font-weight: var(--kad-weight-normal);
+  color: var(--kad-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --- The party, standing on its stop ---------------------------------------------- */
+
+.trail__stop--here {
+  z-index: 1;
+}
+
+.trail__party {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 0.3em;
+  border-radius: var(--kad-radius-pill);
+  background: var(--kad-accent-soft);
+  outline: 0.2em solid var(--kad-accent);
+  animation: trail-here 2.4s var(--kad-ease) infinite;
+}
+
+.trail__face {
+  display: block;
+  inline-size: 2.2em;
+  block-size: 2.2em;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--kad-bg);
+  border: 0.12em solid var(--kad-ink);
+}
+
+/* Overlap the faces into a cluster: three people on one spot, not a lineup. */
+.trail__face + .trail__face {
+  margin-inline-start: -0.7em;
+}
+
+.trail__face-art {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+@keyframes trail-here {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 108, 245, 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 0.8em rgba(139, 108, 245, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail__party {
+    animation: none;
+  }
+}
+
+/* --- Legend -------------------------------------------------------------------------- */
+
+.trail__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kad-space-4);
+  margin: 0;
+  font-size: var(--kad-text-sm);
+}
+
+.trail__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+}
+
+.trail__dot--legend {
+  inline-size: 1em;
+  block-size: 1em;
+}
