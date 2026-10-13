@@ -41,6 +41,12 @@ export type ClientIntent =
        */
       startingLevel?: number;
     }
+  /**
+   * Bring a saved character to this table instead of making a new one (spec
+   * §5: a character "can be reused across campaigns"). The server loads the
+   * household's row and the engine checks it is this player's to bring.
+   */
+  | { type: "SEAT_CHARACTER"; characterId: string }
   | { type: "START_CHAPTER"; chapterId: string }
   /**
    * "Play the next chapter of this campaign." The client cannot know which

@@ -1,0 +1,24 @@
+/* The returning-hero picker borrows the creation flow's cards; only the
+   portrait slot is its own, since a hero is recognised by their picture. */
+
+.welcome-back__heroes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.welcome-back__hero {
+  width: 100%;
+  align-items: center;
+}
+
+.welcome-back__art {
+  display: grid;
+  place-items: center;
+  width: 5em;
+  height: 5em;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #120f26);
+  overflow: hidden;
+}
