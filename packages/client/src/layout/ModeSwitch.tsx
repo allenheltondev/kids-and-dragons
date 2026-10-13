@@ -12,8 +12,8 @@
  * §2.1); the phones are where every control lives.
  */
 
-import { Button } from "../ui/Button";
-import { Icon } from "../screens/icons";
+import { TrayObject } from "../screens/TrayObjects";
+import { cue } from "../audio/cue";
 import { useLayoutMode, useSend, useSession } from "../store";
 
 export function ModeSwitch(): React.JSX.Element | null {
@@ -24,20 +24,29 @@ export function ModeSwitch(): React.JSX.Element | null {
   if (isDisplay) return null;
   const next = mode === "party" ? "travel" : "party";
 
+  // An object on the tray like the others (screens/TrayObjects.tsx): the
+  // phone you would switch to, or the television you would hand back to.
+  // Smaller and quieter, because it is used once an evening at most.
   return (
-    <Button
-      variant="ghost"
-      size="md"
-      className="kad-mode-switch"
-      icon={<Icon name={next === "travel" ? "phone" : "party"} />}
-      onClick={() => void send({ type: "SET_MODE", mode: next })}
+    <button
+      type="button"
+      className="kad-mode-switch kad-tray__tab kad-tap kad-focusable"
+      onClick={() => {
+        cue("tap");
+        void send({ type: "SET_MODE", mode: next });
+      }}
+      // Named in full: the word under the object is two letters wide.
+      aria-label={mode === "party" ? "No TV? Show the world on the phones" : "Use a TV for the world"}
       title={
         mode === "party"
           ? "Show the world on the phones instead of the TV"
           : "Hand the world back to the TV"
       }
     >
-      {mode === "party" ? "No TV?" : "Use a TV"}
-    </Button>
+      <span className="kad-tray__object">
+        <TrayObject name={next === "travel" ? "phone" : "tv"} />
+      </span>
+      <span className="kad-tray__label">{mode === "party" ? "No TV?" : "Use TV"}</span>
+    </button>
   );
 }

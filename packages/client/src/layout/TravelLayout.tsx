@@ -4,14 +4,14 @@
  * Built first, on purpose. This is the constrained case: anything that fits a
  * phone fits a TV, and the reverse is not true (roadmap, "Travel layout first").
  *
- *   ┌─────────────────┐
- *   │ [ world ] [ me ]│  ← the toggle, always there
- *   ├─────────────────┤
- *   │                 │
- *   │  one surface,   │
- *   │  whole screen   │
- *   │                 │
- *   └─────────────────┘
+ *   ┌─────────────────────────┐
+ *   │                         │
+ *   │  one surface,           │
+ *   │  whole screen           │
+ *   │                         │
+ *   ├─────────────────────────┤
+ *   │ [ world ] [ map ] [ me ]│  ← the toggle, always there, under the thumb
+ *   └─────────────────────────┘
  *
  * A stacked 60/40 split was the first shape this took, and it was wrong on a
  * phone: neither half had enough room, the party lineup fell off the bottom of
@@ -23,6 +23,9 @@
  *   • Your turn pushes your controls in front of you, automatically.
  *   • The toggle takes you back to the world for the art, the party, the detail
  *     — and back again. Never sticky past the turn it was used in.
+ *   • The map is the one surface nothing ever pushes in front of you. It is
+ *     brought up on request — "how far have we got?" — and left the moment the
+ *     game needs you, like the world.
  *   • A roll takes the world for its ~1.5s wherever you were, then returns you.
  *   • A transformation takes it for as long as the cutscene runs. Same rule,
  *     bigger stakes: without it, spec §8.1's "single most important moment in
@@ -42,12 +45,13 @@
 import { useEffect, useRef, useState } from "react";
 import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
+import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
-import { Icon } from "../screens/icons";
-import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation, useProgression } from "../store";
+import { TrayObject } from "../screens/TrayObjects";
+import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 
-type Focus = "world" | "player";
+type Focus = "world" | "map" | "player";
 
 /** Long enough for the die to land and be read (spec §2.2). */
 const ROLL_HOLD_MS = 2000;
@@ -80,12 +84,15 @@ export function TravelLayout(): React.JSX.Element {
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const transformTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Needing you pushes your controls in front of you. Deliberately keyed on
-  // the turn rather than set once: going back to the world to re-read a scene
-  // must not stop the *next* question from reaching you.
+  // Track the question, not merely the boolean "my turn": successive
+  // prompts for the same player can arrive without an intervening false.
+  // The key stays put when the same prompt's votes or other state updates.
+  const turnKey = useMyTurnKey();
+  const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (myTurn) setFocus("player");
-  }, [myTurn]);
+    if (turnKey !== null && turnKey !== previousTurnKey.current) setFocus("player");
+    previousTurnKey.current = turnKey;
+  }, [turnKey]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
   usePresentation("ROLL", () => {
@@ -132,42 +139,68 @@ export function TravelLayout(): React.JSX.Element {
 
   return (
     <div className="kad-travel">
-      <nav className="kad-travel__bar" aria-label="What to look at">
+      {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
+          row of tabs — the lantern for the world, the map, your satchel. */}
+      <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
-          className={`kad-travel__tab kad-tap kad-focusable${showing === "world" ? " kad-travel__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "world" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={showing === "world"}
           onClick={() => setFocus("world")}
         >
-          <Icon name="map" />
-          <span>World</span>
+          <span className="kad-tray__object">
+            <TrayObject name="lantern" />
+          </span>
+          <span className="kad-tray__label">World</span>
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tap kad-focusable${showing === "player" ? " kad-travel__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
+          aria-pressed={showing === "map"}
+          onClick={() => setFocus("map")}
+        >
+          <span className="kad-tray__object">
+            <TrayObject name="map" />
+          </span>
+          <span className="kad-tray__label">Map</span>
+        </button>
+        <button
+          type="button"
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "player" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={showing === "player"}
           onClick={() => setFocus("player")}
         >
-          <Icon name="bag" />
-          {/* A dot, not a colour: "you are needed" must not be colour alone
-              (spec §11). */}
-          <span>You</span>
-          {myTurn && showing !== "player" ? (
-            <span className="kad-travel__nudge" aria-label="Your turn">
-              ●
-            </span>
-          ) : null}
+          <span className="kad-tray__object">
+            <TrayObject name="satchel" />
+            {/* A badge with a shape, not a colour: "you are needed" must not
+                be colour alone (spec §11). */}
+            {myTurn && showing !== "player" ? (
+              <span className="kad-travel__nudge kad-tray__badge" aria-label="Your turn">
+                ★
+              </span>
+            ) : null}
+          </span>
+          <span className="kad-tray__label">You</span>
         </button>
         <ModeSwitch />
       </nav>
 
       {/* `hidden` rather than unmounted — see the header. */}
-      <div className="kad-travel__pane" data-showing={showing === "world"}>
+      <div className="kad-travel__pane" data-pane="world" data-showing={showing === "world"}>
         <WorldView />
       </div>
-      <div className="kad-travel__pane" data-showing={showing === "player"}>
+      <div className="kad-travel__pane" data-pane="player" data-showing={showing === "player"}>
         <PlayerView />
       </div>
+      {/* The map is cheap to draw and holds no state worth keeping, so it is
+          mounted only while it is looked at — and it is the one pane whose
+          chapter fetch (`useEnsureChapter`) should not run on a phone that
+          never asked for it. */}
+      {showing === "map" ? (
+        <div className="kad-travel__pane" data-pane="map" data-showing>
+          <MapView />
+        </div>
+      ) : null}
     </div>
   );
 }

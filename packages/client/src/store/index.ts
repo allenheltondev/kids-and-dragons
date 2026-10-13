@@ -26,6 +26,7 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  WorldMap,
 } from "@kad/shared";
 import { turnHolderAway } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
@@ -197,6 +198,8 @@ interface Runtime {
   realtime: Promise<ClientConfig["realtime"] | null> | null;
   /** In-flight chapter fetch, keyed by id — same shape as `attaching`. */
   chapter: { id: string; task: Promise<void> } | null;
+  /** In-flight world map fetch. */
+  world: Promise<void> | null;
 }
 
 /**
@@ -224,6 +227,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       realtime: null,
       broadcastWatchdog: null,
       chapter: null,
+      world: null,
     };
 
     /** Cache successful discovery, including the explicit local 404 answer. */
@@ -551,6 +555,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       campaign: null,
       abilities: null,
       chapter: null,
+      world: null,
       pendingCode: null,
 
       async loadContent() {
@@ -613,6 +618,30 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           });
 
         runtime.chapter = { id: chapterId, task };
+        return task;
+      },
+
+      /**
+       * The world map's key, for the phone's map and nothing else. Fetched
+       * once, on the first look at the map, and kept: the realm does not
+       * change between chapters. A failed fetch stays quiet, like the
+       * chapter's — the map says it is still unrolling and the game goes on.
+       */
+      async loadWorld() {
+        if (get().world) return;
+        if (runtime.world) return runtime.world;
+        const task = deps.api
+          .loadWorld()
+          .then((world) => {
+            set({ world });
+          })
+          .catch(() => {
+            /* dressing only — see above */
+          })
+          .finally(() => {
+            runtime.world = null;
+          });
+        runtime.world = task;
         return task;
       },
 
@@ -975,11 +1004,47 @@ export function useChapter(): Chapter | null {
   return useGameStore((store) => store.chapter);
 }
 
+export function useWorld(): WorldMap | null {
+  return useGameStore((store) => store.world);
+}
+
 /**
  * "Is the combat clock on me?" The layout shells use it the way they use
  * `useIsMyPrompt`: a combat turn is a question without a Prompt object, and
  * §2.2's "your turn comes to you" applies to it just the same.
  */
+/**
+ * Identity of the decision currently requiring this player's attention.
+ *
+ * A boolean `isMyTurn` misses back-to-back prompts assigned to the same
+ * player: the boolean stays true even though the question changed. Use a
+ * stable key so a new question brings the controls forward without yanking
+ * the map away when only a vote count or other state update changes.
+ */
+export function useMyTurnKey(): string | null {
+  return useGameStore((store) => {
+    const state = store.state;
+    if (!state) return null;
+    const playerId = store.session?.playerId ?? "";
+    if (!selectMe(state, playerId)) return "creation";
+
+    const prompt = state.prompt;
+    if (isPromptForPlayer(prompt, playerId, state.party) && prompt) {
+      // Votes mutate the current question, not its identity. Ignore them.
+      const stablePrompt = prompt.kind === "choice" ? { ...prompt, votes: undefined } : prompt;
+      // Revisiting the same authored scene is a *new* question, even when
+      // it uses the same choice ids and narration.
+      return `prompt:${state.chapterId ?? ""}:${state.visited?.length ?? 0}:${JSON.stringify(stablePrompt)}`;
+    }
+
+    if (isMyCombatTurn(state, playerId) && state.encounter) {
+      const { round, turnIndex, encoreActor } = state.encounter;
+      return `combat:${state.chapterId ?? ""}:${state.sceneId ?? ""}:${round}:${turnIndex}:${encoreActor ?? ""}`;
+    }
+    return null;
+  });
+}
+
 export function useIsMyCombatTurn(): boolean {
   return useGameStore((store) => isMyCombatTurn(store.state, store.session?.playerId ?? ""));
 }

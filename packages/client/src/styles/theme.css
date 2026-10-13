@@ -78,6 +78,20 @@
   --kad-accent: #8b6cf5;
   --kad-accent-ink: #0d0b1a;
   --kad-accent-soft: rgba(139, 108, 245, 0.18);
+  /* The raised-button recipe: a lit top, a darker foot, and the "edge" the
+     button stands on — see `.kad-button` in components.css. Buttons were
+     flat fills beside painted scenes and a carved tray; these give them the
+     same depth as everything they sit next to. */
+  --kad-accent-hi: #b7a1ff;
+  --kad-accent-lo: #6a4ee0;
+  --kad-accent-edge: #3c2a9c;
+  --kad-raised-hi: #352c5c;
+  --kad-raised-lo: #1b1631;
+  --kad-raised-edge: #0a0814;
+  --kad-raised-rim: rgba(190, 178, 255, 0.22);
+  --kad-gold-hi: #ffe6a8;
+  --kad-gold-lo: #c9962f;
+  --kad-chosen-glow: 0 0 0 0.15em var(--kad-gold), 0 0 1em rgba(245, 200, 108, 0.35);
   --kad-gold: #f5c86c;
   --kad-danger: #ff6b81;
   --kad-success: #5fd6a0;
@@ -347,6 +361,14 @@ ol {
   background: var(--kad-bg);
   /* The player pane is text and buttons, so it scales off the smaller axis to
      avoid enormous type on a landscape tablet. */
+  font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
+}
+
+.kad-surface--map {
+  container-name: map;
+  background: var(--kad-bg);
+  /* Text and a drawing, like the player pane: scale off the smaller axis so a
+     landscape tablet does not inflate the stop names. */
   font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
 }
 
