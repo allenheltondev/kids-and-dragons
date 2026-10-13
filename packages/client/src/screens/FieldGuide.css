@@ -1,4 +1,8 @@
-.field-guide { display: flex; flex-direction: column; min-block-size: 0; flex: 1 1 auto; }
+/* The pane's height, not the content's: `.kad-surface` is a block, not a flex
+   column, so `flex` alone left the guide as tall as everything in it and the
+   surface's `overflow: hidden` clipped the rest. With a height of its own the
+   body below is what scrolls. */
+.field-guide { display: flex; flex-direction: column; block-size: 100%; min-block-size: 0; flex: 1 1 auto; }
 .field-guide__title { margin: 0.75em 0.75em 0.25em; font-size: 1.2em; }
 .field-guide__body { flex: 1 1 auto; min-block-size: 0; padding: 0.5em 0.75em; }
 .field-guide__summary { margin: 0 0.75em; color: var(--kad-ink-dim); }
