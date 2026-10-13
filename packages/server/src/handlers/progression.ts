@@ -303,6 +303,7 @@ export function campaignView(
   return {
     id: campaign.id,
     title: campaign.title,
+    blurb: campaign.blurb,
     chapters: finalIndex(campaign, deps),
     next: chapter ? { index: chapter.index, title: chapter.title } : null,
     ...(ended ? { ended } : {}),

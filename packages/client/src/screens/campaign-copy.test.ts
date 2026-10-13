@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { beginLabel, campaignEndHeading, nextChapterLine } from "./campaign-copy";
+import { beginLabel, campaignEndHeading, campaignPremise, chapterHeading, nextChapterLine } from "./campaign-copy";
 
 const VIEW = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } };
 
@@ -20,5 +20,29 @@ describe("what the screens say about the campaign", () => {
   it("only names a campaign ending when there was one", () => {
     expect(campaignEndHeading(VIEW)).toBeNull();
     expect(campaignEndHeading({ ...VIEW, ended: "complete" })).toBe("Gemfall is complete!");
+  });
+});
+
+describe("setting the scene for a new table", () => {
+  const PREMISE = "Mount Red Sky has erupted.";
+
+  it("heads a scene with the chapter's number and real title", () => {
+    expect(chapterHeading({ chapterInfo: { index: 1, title: "The City" }, campaign: VIEW })).toBe(
+      "Chapter 1 of 8 · The City",
+    );
+    // A one-off chapter has no campaign to count against.
+    expect(chapterHeading({ chapterInfo: { index: 1, title: "The City" }, campaign: null })).toBe(
+      "Chapter 1 · The City",
+    );
+    // A run persisted before titles rode on the state: the caller falls back.
+    expect(chapterHeading({ campaign: VIEW })).toBeNull();
+  });
+
+  it("tells the premise before chapter 1, and not to a party halfway through", () => {
+    expect(campaignPremise({ ...VIEW, blurb: PREMISE, next: { index: 1, title: "The City" } })).toBe(PREMISE);
+    expect(campaignPremise({ ...VIEW, blurb: PREMISE })).toBeNull();
+    // Starting again after an ending is starting from the top.
+    expect(campaignPremise({ ...VIEW, blurb: PREMISE, ended: "complete" })).toBe(PREMISE);
+    expect(campaignPremise({ ...VIEW, next: { index: 1, title: "The City" } })).toBeNull();
   });
 });
