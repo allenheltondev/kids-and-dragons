@@ -310,6 +310,40 @@ export function campaignView(
   };
 }
 
+/**
+ * The campaigns a lobby can play (`RunState.campaignOptions`): the one the room
+ * was opened for, then every other campaign this household has part-way
+ * through, most recently played first — so a party that started something on
+ * another evening can pick it back up rather than only ever being offered the
+ * launch campaign.
+ *
+ * Only *active* attempts are offered beyond the featured one. A finished or
+ * failed campaign is history; starting it again is the featured campaign's
+ * "again", not a resume. And a campaign the content no longer ships is
+ * skipped rather than offered as a button that cannot start anything.
+ */
+export async function lobbyCampaigns(
+  householdId: string,
+  featuredId: string | null,
+  deps: HandlerDeps,
+): Promise<CampaignView[]> {
+  const attempts = await deps.repo.listCampaignProgress(householdId);
+  const options: CampaignView[] = [];
+  const featured = featuredId ? deps.content.campaign(featuredId) : null;
+  if (featured) {
+    const attempt = attempts.find((a) => a.campaignId === featured.id) ?? null;
+    options.push(campaignView(featured, attempt, deps));
+  }
+  const resumable = attempts
+    .filter((a) => a.status === "active" && a.campaignId !== featured?.id)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  for (const attempt of resumable) {
+    const campaign = deps.content.campaign(attempt.campaignId);
+    if (campaign) options.push(campaignView(campaign, attempt, deps));
+  }
+  return options;
+}
+
 /** The highest beat a campaign's chapters reach. */
 export function finalIndex(campaign: Campaign, deps: HandlerDeps): number {
   let last = 0;

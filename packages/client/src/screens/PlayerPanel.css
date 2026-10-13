@@ -866,3 +866,10 @@
 .player:not(.player--deciding) .choice__label {
   font-size: var(--font-size-md, 1em);
 }
+
+/* "Which adventure?" — the lobby's campaign vote, above the Begin button. */
+.player__campaigns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
