@@ -152,7 +152,7 @@ A guided flow, one decision per screen, with the character rendering live on Wor
 4. **Customize appearance** — color palette (mane/scale/fur, accent), plus a small set of tier-1 cosmetic options (horn shape, wing style, marking pattern).
 5. **Name and confirm** — name entry with an on-screen keyboard *and* a "surprise me" generator so typing is optional.
 
-The character persists to the player's profile within the household and can be reused across campaigns, subject to §8.2.
+The character persists to the player's profile within the household and can be reused across campaigns, subject to §8.2. A player joining a new game with saved heroes is asked **who they are bringing** before creation starts: their heroes at the level and tier they reached, or "make someone new".
 
 ---
 

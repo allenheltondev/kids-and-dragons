@@ -7,6 +7,7 @@
 
 import { itemCatalog } from "@kad/shared";
 import type {
+  ResolvedCharacter,
   ActionRequest,
   ActionResponse,
   Campaign,
@@ -129,6 +130,8 @@ export interface Api {
    * spending the full default (store `withRetry`).
    */
   fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
+  /** This player's saved characters, to bring one back (spec §5). */
+  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[] }>;
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
   loadCampaign(id: string): Promise<Campaign>;
@@ -290,6 +293,10 @@ export const api: Api = {
       token,
       body: JSON.stringify(body),
     });
+  },
+
+  listHeroes(token) {
+    return request<{ heroes: ResolvedCharacter[] }>("/api/heroes", { token });
   },
 
   fetchState(query, token, timeoutMs) {

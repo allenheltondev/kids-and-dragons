@@ -667,6 +667,35 @@ test.describe("first playable", () => {
     await expect(scanned.getByLabel(/room code/i)).toHaveValue(code);
   });
 
+  test("a saved hero comes back to the next game (spec §5)", async ({ browser }) => {
+    const host = await phone(browser);
+    const startTravel = async () => {
+      await host.goto("/");
+      await host.fill('input[placeholder="Type your name"]', "Allen");
+      await host.getByText("Travel Mode").click();
+      await host.getByRole("button", { name: /start a game/i }).click();
+      await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
+      return new URL(host.url()).pathname.split("/").pop()!;
+    };
+
+    // Night one: make a hero.
+    const first = await startTravel();
+    await createCharacter(host, "unicorn", "Sparklehoof");
+
+    // Night two, same phone, a new room: asked who to bring, not to start over.
+    const second = await startTravel();
+    expect(second).not.toBe(first);
+    await expect(host.getByText(/welcome back/i)).toBeVisible({ timeout: 10_000 });
+    await host.getByRole("button", { name: /Sparklehoof/ }).click(TAP);
+    await host.getByRole("button", { name: /play as sparklehoof/i }).click(TAP);
+
+    // Seated: the lobby's ready button is theirs, with no creation flow between.
+    await expect(host.getByRole("button", { name: /i'm ready/i })).toBeVisible({ timeout: 15_000 });
+    const response = await fetch(`http://localhost:8787/api/state?code=${second}`);
+    const { state } = (await response.json()) as { state: { party: { character: { name: string } }[] } };
+    expect(state.party.map((m) => m.character.name)).toEqual(["Sparklehoof"]);
+  });
+
   test("party mode: the TV opens the lobby and is nobody", async ({ browser }) => {
     // The TV starts the game. It is the lobby, not a player (spec §2.1): no
     // name, no seat, straight to the room code the phones join with.
