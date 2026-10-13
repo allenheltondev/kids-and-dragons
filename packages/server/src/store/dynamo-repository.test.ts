@@ -4,6 +4,7 @@ import {
   GetCommand,
   PutCommand,
   TransactWriteCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { CHARACTER_VERSION, type Character, type RunState } from "@kad/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -142,5 +143,69 @@ describe("DynamoRepository character persistence", () => {
       v: CHARACTER_VERSION,
       data: hero,
     });
+  });
+});
+
+describe("DynamoRepository field guide writes", () => {
+  const client = new DynamoDBClient({
+    region: "us-east-1",
+    credentials: { accessKeyId: "test", secretAccessKey: "test" },
+  });
+  const send = vi.fn();
+
+  beforeEach(() => {
+    send.mockReset();
+    vi.spyOn(DynamoDBDocumentClient, "from").mockReturnValue({ send } as unknown as DynamoDBDocumentClient);
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const found = (canonId: string, playerId = "p_1") => ({ canonId, playerId, foundAt: "2026-07-04T18:00:00.000Z" });
+
+  it("writes each key with if_not_exists in a single update when the map exists", async () => {
+    send.mockResolvedValueOnce({ Attributes: { data: { entries: { moth: {} } } } });
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+
+    const added = await repo.recordDiscoveries("h_1", [found("moth"), found("newt"), found("newt", "p_2")]);
+
+    expect(added).toEqual(["newt"]);
+    expect(send).toHaveBeenCalledTimes(1);
+    const command = send.mock.calls[0]?.[0];
+    expect(command).toBeInstanceOf(UpdateCommand);
+    expect(command.input.Key).toEqual({ PK: "HH#h_1", SK: "FIELDGUIDE" });
+    expect(command.input.ReturnValues).toBe("ALL_OLD");
+    expect(command.input.UpdateExpression).toBe(
+      "SET #d.#e.#k0 = if_not_exists(#d.#e.#k0, :e0), #d.#e.#k1 = if_not_exists(#d.#e.#k1, :e1)",
+    );
+    expect(command.input.ExpressionAttributeValues[":e1"]).toMatchObject({ firstFoundBy: "p_1" });
+  });
+
+  it("creates the empty map once, then retries, when the record does not exist yet", async () => {
+    send
+      .mockRejectedValueOnce(Object.assign(new Error("invalid document path"), { name: "ValidationException" }))
+      .mockResolvedValueOnce({})
+      .mockResolvedValueOnce({});
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+
+    const added = await repo.recordDiscoveries("h_1", [found("moth")]);
+
+    expect(added).toEqual(["moth"]);
+    expect(send).toHaveBeenCalledTimes(3);
+    const bootstrap = send.mock.calls[1]?.[0];
+    expect(bootstrap.input.UpdateExpression).toContain("if_not_exists(#d, :empty)");
+    expect(bootstrap.input.ExpressionAttributeValues[":empty"]).toEqual({ entries: {} });
+  });
+
+  it("does not swallow other failures", async () => {
+    send.mockRejectedValueOnce(Object.assign(new Error("throttled"), { name: "ProvisionedThroughputExceededException" }));
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    await expect(repo.recordDiscoveries("h_1", [found("moth")])).rejects.toThrow("throttled");
+  });
+
+  it("makes no call for an empty batch", async () => {
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    expect(await repo.recordDiscoveries("h_1", [])).toEqual([]);
+    expect(send).not.toHaveBeenCalled();
   });
 });
