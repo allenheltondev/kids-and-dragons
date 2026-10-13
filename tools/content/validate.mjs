@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
+import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -538,7 +539,7 @@ function checkMap(rep, file, map) {
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set()) {
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set(), fieldGuide = null, world = null) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -860,6 +861,35 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     fail("/biome", `biome "${chapter.biome}" is not in assets/manifest.json`, `known biomes: ${biomes.join(", ")}`);
   }
 
+  // Field Guide tags (#103): `discovers` must name real entries, once each; and
+  // so must everything the shared rules would reveal implicitly, so the
+  // validator and the server cannot disagree about what a scene discovers.
+  if (fieldGuide?.entries) {
+    const known = fieldGuide.entries;
+    for (const id of chapterStartDiscoveries(chapter, world)) {
+      if (!known[id]) {
+        fail("/biome", `chapter "${chapter.id}": biome "${chapter.biome}" resolves to "${id}", which is not in content/field-guide.json`, "Run `npm run canon:field-guide` after `npm run canon:world`.");
+      }
+    }
+    for (const [sceneId, scene] of Object.entries(scenes)) {
+      const seen = new Set();
+      for (const [i, id] of (scene.discovers ?? []).entries()) {
+        const at = `/scenes/${sceneId}/discovers/${i}`;
+        if (!known[id]) {
+          fail(at, `chapter "${chapter.id}", scene "${sceneId}": discovers "${id}", which is not an entry of content/field-guide.json`, "Use a canon id such as creature.embermoth; the valid ids are the keys of `entries`.");
+        } else if (seen.has(id)) {
+          fail(at, `chapter "${chapter.id}", scene "${sceneId}": discovers "${id}" more than once`, "Each id may appear once per scene.");
+        }
+        seen.add(id);
+      }
+      for (const id of sceneDiscoveries(scene, bestiary)) {
+        if (!known[id]) {
+          fail(`/scenes/${sceneId}`, `chapter "${chapter.id}", scene "${sceneId}": reveals "${id}", which is not in content/field-guide.json`, "Run `npm run canon:field-guide`.");
+        }
+      }
+    }
+  }
+
   if (ok) {
     const bonusNote = objectives.length ? `, ${objectives.length} objective(s) within the ${bonusCap} XP cap` : "";
     rep.ok(`${f}  graph  (${ids.size} scenes, ${endings.length} ending${endings.length === 1 ? "" : "s"}${bonusNote}, all reachable, all goto/itemId resolve)`);
@@ -1085,6 +1115,13 @@ function main() {
     checkWorld(rep, worldPath, world);
   }
 
+  // --- the field guide: which canon ids a scene may say it discovers
+  const fieldGuidePath = join(CONTENT, "field-guide.json");
+  const fieldGuide = existsSync(fieldGuidePath) ? readJson(rep, fieldGuidePath) : null;
+  if (!fieldGuide) {
+    rep.warn("content/field-guide.json is missing", "Run `npm run canon:field-guide` — `discovers` tags cannot be checked without it.");
+  }
+
   // Biome list lives in the art contract; content and art must not drift apart.
   let biomes = null;
   if (existsSync(MANIFEST)) {
@@ -1148,7 +1185,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId));
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId), fieldGuide, world);
     chaptersById.set(chapter.id, chapter);
   }
 
