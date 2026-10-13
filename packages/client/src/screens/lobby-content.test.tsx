@@ -51,7 +51,7 @@ describe("the lobby's campaign premise", () => {
     mount({ campaign: { ...FIRST, ended: "complete" }, party: [makeMember()] });
     expect(screen.queryByText(PREMISE)).toBeNull();
     // What that table does see is the way to go again.
-    expect(screen.getByText(/Chapter 1 of 8/)).toBeTruthy();
+    expect(screen.getByText(/Chapter 1:/)).toBeTruthy();
   });
 
   it("is not told before a later chapter", () => {

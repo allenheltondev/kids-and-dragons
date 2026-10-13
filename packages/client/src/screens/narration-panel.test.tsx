@@ -112,6 +112,11 @@ afterEach(() => {
 });
 
 describe("announcing a hand-off (spec §9.4)", () => {
+  it("heads World with only the current chapter", () => {
+    mount({ chapterInfo: { index: 1, title: "The City That Smelled Opportunity" }, sceneType: "story" });
+    expect(screen.getByRole("heading", { name: "Chapter 1 · The City That Smelled Opportunity" })).toBeTruthy();
+    expect(screen.queryByText("The story")).toBeNull();
+  });
   it("says who is giving what to whom, out loud", () => {
     mount({ trades: [OFFER] });
     expect(spoken).toContain("Sparklehoof wants to give Thistle a Sunbloom Draught.");
