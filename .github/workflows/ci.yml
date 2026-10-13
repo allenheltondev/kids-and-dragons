@@ -158,6 +158,17 @@ jobs:
             exit 1
           }
 
+      # And once more for the world map: content/world.json is the client's
+      # copy of canon's map anchors, and a stale one puts the party on the
+      # wrong country.
+      - name: Check the world map is up to date
+        run: |
+          npm run canon:world
+          git diff --exit-code -- content/world.json || {
+            echo "::error::content/world.json is stale — run \`npm run canon:world\` and commit the result."
+            exit 1
+          }
+
       # Content is data (roadmap, "Content as data"), so it gets checked like code:
       # schemas first, then the cross-file rules a schema cannot express.
       - name: Validate content

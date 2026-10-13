@@ -417,6 +417,52 @@
   min-block-size: 0;
 }
 
+/* The map surface: a flip between the realm and tonight's route, then the
+   chosen map filling the rest. Inside `.kad-surface`, so `em` only. */
+.kad-surface--map {
+  display: flex;
+  flex-direction: column;
+}
+
+.kad-map__flip {
+  display: flex;
+  gap: var(--kad-space-2);
+  flex: 0 0 auto;
+  padding: var(--kad-space-2) var(--kad-space-3);
+  border-block-end: 1px solid var(--kad-border);
+  background: var(--kad-bg-sunken);
+}
+
+.kad-map__flip-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-2);
+  flex: 1 1 0;
+  min-block-size: var(--kad-touch-min);
+  padding: var(--kad-space-1) var(--kad-space-3);
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-pill);
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font: inherit;
+  font-weight: var(--kad-weight-bold);
+  cursor: pointer;
+}
+
+/* Selected is a fill *and* a border, never colour alone (spec §11). */
+.kad-map__flip-tab--on {
+  border-color: var(--kad-accent);
+  background: var(--kad-accent-soft);
+  color: var(--kad-ink);
+}
+
+.kad-map__host {
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
 /* The phone's controller and the map swap places on request; the controller
    stays mounted underneath (an aim half-made in a fight survives a look at
    the map), so this is `display: none`, exactly like the Travel panes. */

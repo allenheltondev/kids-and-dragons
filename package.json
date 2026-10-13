@@ -23,6 +23,7 @@
     "canon:check": "tsx tools/canon/check.ts",
     "canon:bestiary": "tsx tools/canon/bestiary.ts",
     "canon:items": "tsx tools/canon/items.ts",
+    "canon:world": "tsx tools/canon/world.ts",
     "art:verify": "python3 tools/art/verify.py",
     "art:verify:strict": "python3 tools/art/verify.py --strict",
     "art:verify:rig": "node tools/art/verify-rig.ts",

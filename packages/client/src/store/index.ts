@@ -26,6 +26,7 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  WorldMap,
 } from "@kad/shared";
 import { turnHolderAway } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
@@ -196,6 +197,8 @@ interface Runtime {
   realtime: Promise<ClientConfig["realtime"] | null> | null;
   /** In-flight chapter fetch, keyed by id — same shape as `attaching`. */
   chapter: { id: string; task: Promise<void> } | null;
+  /** In-flight world map fetch. */
+  world: Promise<void> | null;
 }
 
 /**
@@ -223,6 +226,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       realtime: null,
       broadcastWatchdog: null,
       chapter: null,
+      world: null,
     };
 
     /** Cache successful discovery, including the explicit local 404 answer. */
@@ -550,6 +554,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       campaign: null,
       abilities: null,
       chapter: null,
+      world: null,
       pendingCode: null,
 
       async loadContent() {
@@ -612,6 +617,30 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           });
 
         runtime.chapter = { id: chapterId, task };
+        return task;
+      },
+
+      /**
+       * The world map's key, for the phone's map and nothing else. Fetched
+       * once, on the first look at the map, and kept: the realm does not
+       * change between chapters. A failed fetch stays quiet, like the
+       * chapter's — the map says it is still unrolling and the game goes on.
+       */
+      async loadWorld() {
+        if (get().world) return;
+        if (runtime.world) return runtime.world;
+        const task = deps.api
+          .loadWorld()
+          .then((world) => {
+            set({ world });
+          })
+          .catch(() => {
+            /* dressing only — see above */
+          })
+          .finally(() => {
+            runtime.world = null;
+          });
+        runtime.world = task;
         return task;
       },
 
@@ -972,6 +1001,10 @@ export function useAbilities(): AbilityCatalog | null {
 
 export function useChapter(): Chapter | null {
   return useGameStore((store) => store.chapter);
+}
+
+export function useWorld(): WorldMap | null {
+  return useGameStore((store) => store.world);
 }
 
 /**
