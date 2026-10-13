@@ -636,7 +636,7 @@ biomes:
         by: feature.great_river
     inhabitants:
       primary_peoples: []
-      supporting_peoples: [npc.centaur]
+      supporting_peoples: [npc.centaur, npc.sheeple]
       cultural_orders: []
       ambient_creatures: [creature.jackalope]
       dangerous_creatures: [creature.cinder_wolf]
