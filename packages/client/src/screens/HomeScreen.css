@@ -3,7 +3,9 @@
 .home {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  /* Centred: on a tall phone the content sits in the middle of the picture
+     instead of leaving the bottom third bare. Taller content just scrolls. */
+  align-items: center;
   width: 100%;
   min-height: 100%;
   padding: var(--space-5, 1.5em) var(--space-4, 1em) var(--space-7, 3em);
@@ -15,7 +17,7 @@
 .home__inner {
   width: 100%;
   max-width: 34em;
-  gap: var(--space-5, 1.5em);
+  gap: var(--space-6, 2em);
 }
 
 .home__masthead {
