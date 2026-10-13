@@ -29,11 +29,6 @@
   letter-spacing: 0.01em;
 }
 
-.home__tagline {
-  margin: var(--space-2, 0.5em) 0 0;
-  font-size: var(--font-size-md, 1em);
-}
-
 .home__field {
   display: flex;
   flex-direction: column;
@@ -280,15 +275,6 @@
     0 0.08em 0 #2a1458, 0 0.16em 0.4em rgba(0, 0, 0, 0.7),
     0 0 0.7em rgba(255, 201, 92, 0.35);
   animation: home-float 5s ease-in-out infinite;
-}
-
-.home__tagline {
-  display: inline-block;
-  padding: 0.3em 0.9em;
-  border-radius: 999px;
-  background: rgba(13, 11, 26, 0.72);
-  color: var(--color-text, #f4f1ff);
-  font-weight: 600;
 }
 
 /* The one thing to do: lit from within, so it reads first. */
