@@ -502,9 +502,9 @@ the reasoning for pinning a *renderer* lives. Which job, and why they are split:
 
 | Gate | Where | When | Cost |
 |---|---|---|---|
-| `art:verify:rig` | `ci.yml`, `build` job | every PR | seconds |
-| `art:verify:rig:rest` | `ci.yml`, `rigs` job | every PR | ~30s for all 54 as one batch (~100s on the pinned, pre-`batch` CLI) behind ~90s of setup |
-| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig (base **or** class — both `assets/characters/**/rig.riv` and `assets/character-rigs/**/rig.riv` are in the path filter; for a while only the first was, so a class-rig regeneration ran no motion gate), the contract or the gate; every main push likewise | ~45 min on the pinned CLI, ~24 with `batch` — see the batch note above |
+| `art:verify:rig` | `ci.yml`, `build` job | every PR that changes more than prose | seconds |
+| `art:verify:rig:rest` | `ci.yml`, `rigs` job | PRs that touch a rig input or the manifest's rig sections (`tools/ci/changes.mjs`); every main push | ~30s for all 54 as one batch (~100s on the pinned, pre-`batch` CLI) behind ~90s of setup |
+| `art:verify:rig:motion` | `rig-motion.yml` | PRs that touch a rig (base **or** class — both `assets/characters/**/rig.riv` and `assets/character-rigs/**/rig.riv` are in the path filter; for a while only the first was, so a class-rig regeneration ran no motion gate), the contract or the gate — narrowed by `tools/ci/changes.mjs` to the manifest's rig sections, so a new entity no longer runs it; every main push likewise | ~45 min on the pinned CLI, ~24 with `batch` — see the batch note above |
 
 Motion is a separate *workflow* rather than a third job, and the reason is `prod-deploy.yml`: it
 triggers on the CI workflow **completing**, so twenty minutes inside CI would be twenty minutes
