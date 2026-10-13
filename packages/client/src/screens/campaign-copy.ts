@@ -46,8 +46,10 @@ export function chapterHeading(
  */
 export function campaignPremise(view: CampaignView | null | undefined): string | null {
   if (!view?.blurb || view.ended !== undefined) return null;
-  const fresh = view.next === null || view.next.index === 1;
-  return fresh ? view.blurb : null;
+  // Chapter 1 and nothing else. `next: null` is a routed fork nobody has
+  // chosen yet, which only happens past the first beat; a fresh attempt
+  // always resolves chapter 1.
+  return view.next?.index === 1 ? view.blurb : null;
 }
 
 /** The lobby's go button. Beginning, continuing, or beginning again. */

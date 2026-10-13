@@ -41,6 +41,8 @@ describe("setting the scene for a new table", () => {
   it("tells the premise before chapter 1, and not to a party halfway through", () => {
     expect(campaignPremise({ ...VIEW, blurb: PREMISE, next: { index: 1, title: "The City" } })).toBe(PREMISE);
     expect(campaignPremise({ ...VIEW, blurb: PREMISE })).toBeNull();
+    // An unchosen fork is a later beat, not the beginning.
+    expect(campaignPremise({ ...VIEW, blurb: PREMISE, next: null })).toBeNull();
     // The table that just finished it has just lived it; a new room starting
     // over carries no `ended` and is told like any first evening.
     expect(
