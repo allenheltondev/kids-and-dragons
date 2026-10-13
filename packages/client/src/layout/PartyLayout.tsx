@@ -108,9 +108,9 @@ function PhoneLayout(): React.JSX.Element {
       <div className="kad-party__pane" data-pane="player" data-showing={showing === "player"}>
         <PlayerView roomControls={<ModeSwitch />} />
       </div>
-        <div className="kad-party__pane" data-pane="world" data-showing={showing === "world"}>
-          <WorldView />
-        </div>
+      <div className="kad-party__pane" data-pane="world" data-showing={showing === "world"}>
+        <WorldView gatesPresentations={false} />
+      </div>
       {onMap ? (
         <div className="kad-party__pane" data-pane="map" data-showing>
           <MapView />
