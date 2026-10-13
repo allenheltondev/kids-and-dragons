@@ -45,6 +45,9 @@ related:
   - id: biome.plains
     type: biome
     relationship: supporting_peoples
+assets:
+  primary: assets/entities/sheeple/portrait.webp
+  primaryFull: assets/entities/sheeple/assembled.png
 ai_context:
   mood: "Friendly, skittish sheep-folk of the Plains who live, think, and do everything as a flock, are never fewer than three, and never have names."
   themes: "Supporting_people, Plains, Flock, Skittish"
