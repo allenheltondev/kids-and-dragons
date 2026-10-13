@@ -1295,9 +1295,10 @@ function doVoteCampaign(draft: RunState, playerId: string, campaignId: string): 
 /** Where the lobby's campaign decision stands. */
 export interface LobbyCampaignChoice {
   /**
-   * The campaign a Begin tap would play right now: the only option, the vote's
-   * leader, or — before anybody has voted — the first option (the one the room
-   * was opened for). Null only on a run with neither options nor a campaign.
+   * The campaign a Begin tap would play right now: the only option, or the
+   * vote's leader. Before anybody has voted, it is the campaign the screens
+   * already show (`RunState.campaign`), else the first option. Null only on a
+   * run with neither options nor a campaign.
    */
   leader: CampaignView | null;
   /** Seated, connected players who have not voted yet. Empty with one option. */
@@ -1329,7 +1330,14 @@ export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
   }
   const waitingOn = state.party.filter((m) => m.connected && votes[m.playerId] === undefined);
   const leaderId = Object.keys(votes).length > 0 ? tallyVotes(state, votes) : null;
-  const leader = options.find((option) => option.id === leaderId) ?? options[0] ?? null;
+  // Before anybody votes, the leader is whatever the screens already show
+  // (the room's campaign, or the one this room just played), else the first.
+  const shownId = state.campaign?.id;
+  const leader =
+    options.find((option) => option.id === leaderId) ??
+    options.find((option) => option.id === shownId) ??
+    options[0] ??
+    null;
   return { leader, waitingOn, contested: true };
 }
 

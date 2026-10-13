@@ -128,14 +128,6 @@ export interface RunState {
    */
   campaignOptions?: CampaignView[];
   /**
-   * The household `campaignOptions` were computed for. A phone claiming a
-   * TV's room moves the room first and refreshes the lobby second, as two
-   * writes; if the second never lands, this still names the TV's household,
-   * and the next join into the room sees the mismatch and refreshes again
-   * (server `refreshLobby`). Server bookkeeping — no screen reads it.
-   */
-  campaignOptionsFor?: string;
-  /**
    * The lobby's vote on which campaign to play, playerId → campaign id. Only
    * cast while there is more than one option; cleared when a chapter starts,
    * so the next time the party is back in the lobby it decides again.
