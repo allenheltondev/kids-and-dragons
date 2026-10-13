@@ -98,6 +98,26 @@
   }
 }
 
+/*
+ * A fight: the board is the picture and the words are a caption. The panel
+ * drops its chapter label and clamps the body to two lines at reading size,
+ * so on a phone's world pane the tiles — and the unicorn on them — stay in
+ * view under a strip rather than behind a paragraph. The TV has room either
+ * way and gets the same strip, because rule 1 forbids knowing the difference.
+ */
+.narration--fight .narration__chapter {
+  display: none;
+}
+
+.narration--fight .narration__body {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-size-lg, 1.25em);
+}
+
 .narration__choices {
   display: flex;
   flex-wrap: wrap;

@@ -4,14 +4,14 @@
  * Built first, on purpose. This is the constrained case: anything that fits a
  * phone fits a TV, and the reverse is not true (roadmap, "Travel layout first").
  *
- *   ┌───────────────────────┐
- *   │ [ world ] [ map ] [ me ]│  ← the toggle, always there
- *   ├───────────────────────┤
- *   │                 │
- *   │  one surface,   │
- *   │  whole screen   │
- *   │                 │
- *   └─────────────────┘
+ *   ┌─────────────────────────┐
+ *   │                         │
+ *   │  one surface,           │
+ *   │  whole screen           │
+ *   │                         │
+ *   ├─────────────────────────┤
+ *   │ [ world ] [ map ] [ me ]│  ← the toggle, always there, under the thumb
+ *   └─────────────────────────┘
  *
  * A stacked 60/40 split was the first shape this took, and it was wrong on a
  * phone: neither half had enough room, the party lineup fell off the bottom of

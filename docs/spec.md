@@ -46,12 +46,12 @@ No shared screen. Every phone renders **both** surfaces, one at a time, with a t
 
 ```
 ┌───────────────────────┐
-│ [World] [Map] [You] ● │  the toggle, always there
-├───────────────────────┤
 │                       │
 │  one surface,         │  World — shared, identical on every phone
-│  whole screen         │  Map   — the chapter as a trail, the party standing on its scene
-│                       │  You   — your sheet, your actions
+│  whole screen         │  Map   — the realm, or the chapter as a trail, the party on it
+│                       │  You   — the scene behind your sheet and your actions
+├───────────────────────┤
+│ [World] [Map] [You] ● │  the toggle, always there, under the thumb
 └───────────────────────┘
 ```
 
@@ -66,6 +66,7 @@ Design consequences, all of which we accept:
 - **The grid needs a focus camera.** A 10×8 board on a phone has unreadable tiles at full extent. Combat gets an auto-framing camera that follows the active actor, with pinch-zoom and pan to override. This is good for the TV too — Party Mode gets it for free.
 - **The dice take over.** On the TV the roll is the centerpiece; on a phone it takes the world for its ~1.5s wherever you were, then returns you.
 - **The map is on request.** "Where are we?" is the question a phone in the back of a car gets asked every three minutes, and the world pane answers only "what is happening now". The Map tab answers it twice, with a flip at the top. **World** is the realm painting with the party's own faces standing on the chapter's country, fitted to the phone and zoomable in steps, so "we are *here*" lands against the whole shape of the realm. **Route** draws tonight's chapter as a trail — the scenes the party has played, named; the party on the one it is in; everything ahead as fog, dots without names, so the shape of the road shows and nothing is spoiled. In Party Mode the map rides on the phone, never the TV: a Map button swaps your controls for it and back.
+- **The scene comes with the question.** The You surface stands your controls in the scene's own picture, with the whole narration at the top and the answers at the bottom where a thumb is — a visual novel, not a form — so an eight-year-old is never flipping to the world to find out what she is choosing between. In a fight the board needs the contrast, so the picture steps back and the world pane's narration folds to a two-line strip.
 - **Your turn comes to you.** Being asked something pushes your controls in front of you automatically — and so does having no character yet, because creation is the first turn anyone takes. The toggle keeps a marker on "You" while you are looking at the world, so a turn can never sit unnoticed behind it.
 - **The question travels with the answers.** The scene's narration is echoed above your choices, because the question and its answers would otherwise sit on opposite sides of a toggle and an 8-year-old would flip back and forth to work out what she is choosing between. The world view remains where you go to read it properly.
 
