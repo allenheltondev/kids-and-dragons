@@ -15,7 +15,9 @@ the part drawn behind and F the part drawn in front:
 
   band      Within BAND_PX of the visible seam between them, every pixel F
             paints opaquely must also be painted opaquely by B, so a rotation
-            of up to that far shows B, never background.        >= BAND_MIN
+            of up to that far shows B, never background — except where a part
+            riding F (its descendant, drawn over it) covers F at rest, which
+            moves with F and so is never uncovered by F turning. >= BAND_MIN
   joint     When B is the parent (body under an arm), every pixel F paints
             opaquely within JOINT_PX of the pinned pivot must be painted by B
             too: the shoulder is where the most is revealed.     >= BAND_MIN
@@ -167,8 +169,21 @@ def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str
     for par, ch in pairs:
         b, f = (par, ch) if zi[par] < zi[ch] else (ch, par)
         fi, bi = zi[f], zi[b]
-        f_solid = alpha[f] == 255
         b_solid = alpha[b] == 255
+        # F's paint that a part riding F covers at rest is not F's edge: the
+        # rider (F's own descendant, drawn over F) moves with F, so however
+        # F turns against B those pixels stay covered and B is never seen
+        # there. Asking B to paint under them would make B paint beneath a
+        # part it has nothing to do with (brief section 6.6) — an arm hanging
+        # off the body, over the hip seam, is exactly that.
+        riders = np.zeros_like(b_solid)
+        for n in z:
+            m = n
+            while m in parent and parent[m] != f:
+                m = parent[m]
+            if n != f and parent.get(m) == f and zi[n] > zi[f]:
+                riders |= alpha[n] == 255
+        f_solid = (alpha[f] == 255) & ~riders
         # The visible seam: F's visible pixels that touch B's visible pixels.
         b_seen = owner == bi
         seam = (owner == fi) & grow(b_seen, 1)
