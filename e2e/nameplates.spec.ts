@@ -178,6 +178,7 @@ test.describe("nameplates", () => {
     // nameplates are for. It is the lobby, not a seat (spec §2.1).
     const tv = await client(browser, 1280, 720);
     await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
@@ -185,7 +186,6 @@ test.describe("nameplates", () => {
 
     for (const [i, page] of phones.entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', ["Allen", "Sam", "Rosie"][i]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
