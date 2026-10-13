@@ -325,6 +325,35 @@ describe("POST /api/room", () => {
     expect(payload.expiresAt).toBeTypeOf("string");
   });
 
+  it("lets the TV open a Party Mode room without taking a seat (spec §2.1)", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const result = await respond(
+      event("POST", "/api/room", { body: { mode: "party", display: true } }),
+      rt,
+    );
+
+    expect(result.statusCode).toBe(200);
+    const payload = bodyOf(result) as Record<string, unknown>;
+    expect(payload.code).toMatch(/^[A-Z]{4}$/);
+    expect(payload.roomCode).toBe(payload.code);
+    // Kept, so the phones and tomorrow's room share the TV's household.
+    expect(payload.deviceToken).toBeTypeOf("string");
+    // Nobody was seated: no player, no session, and the lobby is empty.
+    expect(payload.playerId).toBeUndefined();
+    expect(payload.sessionToken).toBeUndefined();
+    const watched = await respond(event("POST", `/api/room/${String(payload.code)}/watch`, { body: {} }), rt);
+    expect(bodyOf(watched)).toMatchObject({ state: { party: [] } });
+  });
+
+  it("refuses a TV for a Travel Mode room", async () => {
+    const result = await respond(
+      event("POST", "/api/room", { body: { mode: "travel", display: true } }),
+      runtimeFor(makeHarness()),
+    );
+    expect(result.statusCode).toBe(400);
+  });
+
   it("maps a room-code exhaustion onto 409, not 500", async () => {
     /*
      * The only route to `ILLEGAL` in this file that is not a 400, and the one
