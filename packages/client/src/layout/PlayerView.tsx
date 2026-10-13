@@ -23,6 +23,7 @@
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
+import { FieldGuideToast } from "../screens/FieldGuideNews";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
@@ -69,6 +70,8 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
       <SignInFlow />
+      {/* Field Guide finds; waits while a turn prompt is open. Flag-gated inside. */}
+      <FieldGuideToast />
       {/*
        * Roadmap chapter 6's playtest drawer — warp to a scene, load the next
        * d20. `import.meta.env.DEV` is replaced with a literal `false` in the
