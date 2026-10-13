@@ -163,6 +163,11 @@
  * centred, and never wider than the pane.
  */
 .combat .combat__grid {
-  inline-size: min(100%, 46cqh * 1.25);
+  /* As big as the pane's height allows once the turn header, the chips and
+     the cards have their rows (about 12.5em between them, with gaps), and
+     never wider than the pane. On a tall phone that is width-bound and the
+     board floats in the middle; on a short one it is height-bound and just
+     fits. The pane scrolls only if a phone is shorter than any we know. */
+  inline-size: min(100%, (100cqh - 12.5em) * 1.25);
   margin-inline: auto;
 }

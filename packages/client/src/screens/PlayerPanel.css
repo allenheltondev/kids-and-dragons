@@ -869,6 +869,22 @@
   );
 }
 
+/*
+ * A fight is composed differently from a question. Nothing sinks: the turn
+ * header stays at the top where the eye starts, the cards sit at the bottom
+ * under the thumb, and the board floats centred in whatever is left — on a
+ * tall phone that is a lot, and a board in the middle of it reads as the
+ * table it is, where a board jammed against the cards read as "floating".
+ */
+.player--fighting .player__prompt > :first-child {
+  margin-block-start: 0;
+  flex: 1 0 auto;
+}
+
+.player--fighting .combat__grid {
+  margin-block: auto;
+}
+
 /* A fight: the art steps well back so the board's tiles are the brightest
    thing on the pane, but the pane is still a place and not a void. */
 .player--fighting .player__scene::after {
