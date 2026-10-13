@@ -2,13 +2,25 @@
 
 .kad-audio-control {
   position: fixed;
-  top: 0.5em;
+  /* Bottom-right: the phones keep their tab bar at the bottom now and leave
+     this corner of it free (components.css). On a TV the bottom-right corner
+     sits beside the narration's ragged right edge, which is the emptiest
+     corner there is. The safe-area inset keeps it off the home indicator. */
+  bottom: calc(0.5em + env(safe-area-inset-bottom, 0px));
   right: 0.5em;
   /* Over the panels, under nothing that matters: the dice and the
      transformation draw full-screen and simply cover it for their moment. */
   z-index: 5;
   opacity: 0.55;
   transition: opacity 120ms ease;
+}
+
+/* The home page has no bar to leave it a corner and its join code sits at
+   the bottom, so there it keeps the old top-right seat. `:has()` because the
+   control is rendered beside the page, not inside it (App.tsx). */
+body:has(.home) .kad-audio-control {
+  top: 0.5em;
+  bottom: auto;
 }
 
 .kad-audio-control:hover,

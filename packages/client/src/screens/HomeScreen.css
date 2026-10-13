@@ -97,16 +97,24 @@
   align-items: center;
   gap: var(--space-3, 0.75em);
   padding: var(--space-3, 0.75em);
-  border: 0.08em solid var(--color-border, #3a3468);
+  border: 0;
   border-radius: var(--radius-md, 0.75em);
-  background: var(--color-surface-raised, #221d44);
+  /* Raised like every other tappable thing (components.css `.kad-button`). */
+  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)),
+    0 0.18em 0 var(--kad-raised-edge, #0a0814),
+    0 0.4em 0.8em rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
 
-/* Selection is border weight + a check glyph, never colour alone (spec §11). */
+/* Selection is a gold rim and glow + a check glyph, never colour alone (spec §11). */
 .home__mode--on {
-  border-color: var(--color-primary, #7c5cff);
-  box-shadow: inset 0 0 0 0.08em var(--color-primary, #7c5cff);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0.18em 0 var(--kad-raised-edge, #0a0814),
+    var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c);
 }
 
 .home__mode-radio {

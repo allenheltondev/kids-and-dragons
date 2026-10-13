@@ -20,6 +20,8 @@
  * | `PlayerPanel`          | PlayerView | otherwise                            |
  * | `CombatControls`       | PlayerView | inside PlayerPanel while a fight is on |
  * | `SignInFlow`           | PlayerView | somebody opened the keepsake offer   |
+ * | `WorldMapPanel`        | MapView    | the map, flipped to the realm        |
+ * | `ChapterMapPanel`      | MapView    | the map, flipped to tonight's route  |
  *
  * `KeepsakeOffer` is the one exception to the no-props rule being *interesting*:
  * it also takes none, and renders nothing at all unless the deployment can
@@ -38,6 +40,8 @@ export { WelcomeBack } from "./WelcomeBack";
 export { PlayerPanel } from "./PlayerPanel";
 export { CombatControls } from "./CombatPanel";
 export { SignInFlow, KeepsakeOffer } from "./SignInFlow";
+export { ChapterMapPanel } from "./ChapterMapPanel";
+export { WorldMapPanel } from "./WorldMapPanel";
 export { KeepsakeLantern, type KeepsakeLanternProps, type LanternMote } from "./KeepsakeLantern";
 
 /** Shared by every screen, and by anything else that renders game content. */

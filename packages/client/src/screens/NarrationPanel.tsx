@@ -177,9 +177,13 @@ export function NarrationPanel(): ReactElement | null {
   if (state === null) return null;
 
   const sceneType = state.sceneType;
+  // In a fight the board is the thing to look at and the words are its
+  // caption: the panel folds to a strip (NarrationPanel.css) so a phone's
+  // world pane shows tiles, not a paragraph over them.
+  const fighting = state.encounter != null;
 
   return (
-    <section className="narration" aria-live="polite">
+    <section className={`narration${fighting ? " narration--fight" : ""}`} aria-live="polite">
       <header className="narration__head">
         {state.chapterId === null ? null : (
           <p className="narration__chapter kad-label">

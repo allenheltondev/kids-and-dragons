@@ -44,6 +44,8 @@ function copyTree() {
   temps.push(dir);
   cpSync(join(REPO, "content"), join(dir, "content"), { recursive: true });
   cpSync(join(REPO, "schemas"), join(dir, "schemas"), { recursive: true });
+  // The world map's painting is checked for presence, like the manifest.
+  cpSync(join(REPO, "assets", "world"), join(dir, "assets", "world"), { recursive: true });
   cpSync(join(REPO, "assets", "manifest.json"), join(dir, "assets", "manifest.json"), {
     recursive: true,
   });
