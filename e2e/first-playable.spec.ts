@@ -84,20 +84,26 @@ async function serverState(
  * that fire-and-forgets a single click asserts something the app never
  * promised.
  */
-async function chooseUntil(page: Page, label: RegExp, done: () => Promise<boolean>): Promise<void> {
+async function chooseUntil(
+  table: Page | readonly Page[],
+  label: RegExp,
+  done: () => Promise<boolean>,
+): Promise<void> {
+  // A story choice is one player's turn (spec §6.1), so given the whole table
+  // it taps on whichever phone is showing the button — the turn holder's.
+  const pages = Array.isArray(table) ? table : [table as Page];
   for (let attempt = 0; attempt < 8; attempt++) {
     if (await done()) return;
-    await page
-      .locator(".prompt button")
-      .filter({ hasText: label })
-      .first()
-      .click({ timeout: 5_000 })
-      .catch(() => {});
-    await page
-      .getByRole("button", { name: /do it!/i })
-      .click({ timeout: 5_000 })
-      .catch(() => {});
-    await page.waitForTimeout(700);
+    for (const page of pages) {
+      const option = page.locator(".prompt button").filter({ hasText: label }).first();
+      if (pages.length > 1 && !(await option.isVisible().catch(() => false))) continue;
+      await option.click({ timeout: 5_000 }).catch(() => {});
+      await page
+        .getByRole("button", { name: /do it!/i })
+        .click({ timeout: 5_000 })
+        .catch(() => {});
+    }
+    await pages[0]!.waitForTimeout(700);
   }
   expect(await done(), `the tap on ${String(label)} never took`).toBe(true);
 }
@@ -489,8 +495,8 @@ test.describe("first playable", () => {
      * the singing stream → "Chase them off", which goes straight to
      * encounter_bramblewisps.
      */
-    await chooseUntil(host, /push the thorns aside/i, at("scene_first_clearing"));
-    await chooseUntil(host, /head deeper into the wood/i, at("choice_point_path"));
+    await chooseUntil(phones, /push the thorns aside/i, at("scene_first_clearing"));
+    await chooseUntil(phones, /head deeper into the wood/i, at("choice_point_path"));
     // The vote: each phone keeps confirming "stream" until either its vote is
     // what resolves the prompt or the party has already moved on.
     for (const page of phones) {
@@ -506,7 +512,7 @@ test.describe("first playable", () => {
       });
     }
     await expect.poll(async () => (await serverState(code)).sceneId).toBe("scene_singing_stream");
-    await chooseUntil(host, /chase them off/i, at("encounter_bramblewisps"));
+    await chooseUntil(phones, /chase them off/i, at("encounter_bramblewisps"));
 
     const encounterOf = async () =>
       ((await serverState(code)).encounter ?? null) as {
@@ -641,7 +647,7 @@ test.describe("first playable", () => {
 
     // And play keeps playing: both branch scenes end on a single choice that
     // walks to the shrine, which is the chapter's spine.
-    await chooseUntil(host, /go where they are pointing|untie your laces/i, at("scene_shrine_hollow"));
+    await chooseUntil(phones, /go where they are pointing|untie your laces/i, at("scene_shrine_hollow"));
   });
 
   test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {
