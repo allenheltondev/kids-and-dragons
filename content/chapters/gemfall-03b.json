@@ -592,7 +592,7 @@
     },
     "ending_walked_over": {
       "type": "rest",
-      "narration": "You squelch out of the reeds onto a road full of wagons and fall in behind a cart of turnips. Nobody asks where you came from — everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret in your pocket.",
+      "narration": "You squelch out of the reeds onto a road full of wagons and fall in behind a cart of turnips. Nobody asks where you came from. Everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret in your pocket.",
       "heal": 3,
       "onEnter": [
         {

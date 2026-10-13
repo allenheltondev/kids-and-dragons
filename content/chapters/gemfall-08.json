@@ -264,7 +264,7 @@
     "scene_keeper": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
+      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. It has looked at a great many people for a long time, and it is very good at it. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
       "choices": [
         {
           "id": "truth",
@@ -413,7 +413,7 @@
         },
         {
           "id": "funded",
-          "label": "Tell it about the stones you sold the cult. It knows.",
+          "label": "Tell it what you gave the soup tents. It already knows.",
           "icon": "moon",
           "requiresFlag": "funded_the_break",
           "goto": "scene_verdict"
@@ -665,7 +665,7 @@
     },
     "ending_heroes": {
       "type": "rest",
-      "narration": "You give the stones back, every one: the ones you found, the ones you bought, the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
+      "narration": "You give the stones back, every one: the ones you found, the ones you bought, the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once, and the embermoths come home in one enormous glowing cloud. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
       "heal": 4,
       "choices": []
     },
@@ -683,7 +683,7 @@
     },
     "ending_collectors": {
       "type": "rest",
-      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and does not move again. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
+      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and stays there, and means to stay. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
       "heal": 4,
       "choices": []
     },

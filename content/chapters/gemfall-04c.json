@@ -74,7 +74,7 @@
     },
     "scene_drovers_wagon": {
       "type": "story",
-      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
+      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" It is what he calls everybody he likes. You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
       "choices": [
         {
           "id": "onward",
@@ -98,7 +98,7 @@
     },
     "scene_empty_stretch": {
       "type": "story",
-      "narration": "Plains folk say an empty stretch of good road is a message, and jackalopes are the punctuation. Normally they are everywhere, racing wagons and winning. But for a whole mile around the big gem depot up ahead, the warrens have gone completely silent.",
+      "narration": "Plains folk say an empty stretch of good road is a message, and jackalopes are the punctuation. Normally they are everywhere, racing wagons and winning. But for a whole mile around the big gem depot up ahead, the warrens have gone completely silent, and the road feels like a sentence with the end missing.",
       "choices": [
         {
           "id": "count",
@@ -266,7 +266,7 @@
     },
     "scene_wend_pitch": {
       "type": "story",
-      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-colored sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
+      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-coloured sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
       "choices": [
         {
           "id": "say_no",
@@ -352,7 +352,7 @@
     },
     "scene_depot": {
       "type": "story",
-      "narration": "The biggest rush depot on the north roads is a barn full of strongboxes, and one of them is ringing like a bell. Behind the counter sits Clerk Pennywhistle, who has a queue, a stamp, and a form for absolutely everything. The ringing stone is in strongbox number nine.",
+      "narration": "The biggest rush depot on the north roads is a barn full of strongboxes, and one of them is ringing like a bell. Behind the counter sits Clerk Pennywhistle, who has a queue, a stamp, and a form for absolutely everything, including a form for asking about forms. The ringing stone is in strongbox number nine.",
       "choices": [
         {
           "id": "bill",
@@ -455,7 +455,7 @@
     },
     "scene_spiral": {
       "type": "story",
-      "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark and gives it to you.",
+      "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark with a hoof-pick and gives it to you.",
       "onEnter": [
         {
           "type": "grantQuestItem",

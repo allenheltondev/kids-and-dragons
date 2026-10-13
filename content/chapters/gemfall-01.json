@@ -1,5 +1,5 @@
 {
-  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). No combat — the Exchange is people, prices and promises.",
+  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). No combat: the Exchange is people, prices and promises.",
   "id": "gemfall-01",
   "campaignId": "gemfall",
   "index": 1,

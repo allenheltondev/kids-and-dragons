@@ -43,7 +43,7 @@
   "scenes": {
     "scene_like_weather": {
       "type": "story",
-      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog. Up ahead, every road funnels into the Pinch, and somewhere in it is the last stone on your list.",
+      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, and somewhere in it is the next stone on your list.",
       "choices": [
         {
           "id": "walk_on",
@@ -160,7 +160,7 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "The trading is fast and loud and everybody is shouting prices. And in the middle of it, the road starts bringing things back to you: things you did on the way here, walking up the hill on their own legs.",
+      "narration": "The trading is fast and loud and everybody is shouting prices. And in the middle of it, the road starts bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
       "choices": [
         {
           "id": "ossley",
@@ -302,7 +302,7 @@
     },
     "scene_ford_witch": {
       "type": "story",
-      "narration": "It is the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you, and then at your packs again. \"I am still asking,\" she says. \"What do you actually want?\"",
       "choices": [
         {
           "id": "all_of_them",
@@ -411,7 +411,7 @@
     },
     "scene_ember": {
       "type": "story",
-      "narration": "\"It's you! From the docks!\" The merchant on top of the caravan remembers you fondly. She also has the Ember Facet you sold her, in a velvet box, at a price that has gone up a very great deal.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "choices": [
         {
           "id": "buy_back",
@@ -435,7 +435,7 @@
     },
     "rest_lonely_camp": {
       "type": "rest",
-      "narration": "Your camp is very quiet. The stones in your packs hum all together, low and sleepy, like a cat that is far too big. Patch each other up. Tomorrow is the worst bend in the north road.",
+      "narration": "Your camp is very quiet. Nobody else's is. The stones in your packs hum all together, low and sleepy, like a cat that is far too big. Patch each other up. Tomorrow is the worst bend in the north road.",
       "heal": 2,
       "choices": [
         {
@@ -756,7 +756,7 @@
     },
     "walk_scene_tree_line": {
       "type": "story",
-      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm; below you is the green, and everybody else running into it. Your packs are so full of humming stones that the three of you sound like a walking beehive.",
+      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that the three of you sound like a walking beehive, and a passing drover gives you a very wide berth.",
       "choices": [
         {
           "id": "down",
@@ -1037,7 +1037,7 @@
     },
     "walk_ending_collectors": {
       "type": "rest",
-      "narration": "You walk out of the foothills rich, and the realm holds. Not because of you, but it holds. The last bell never rings. Back home, people ask where you got all those stones, and some of them ask the troll's old question: and where is it going? You are still thinking about the answer. History files you as The Collectors.",
+      "narration": "You walk out of the foothills rich, and the realm holds. Not because of you, but it holds. The last bell never rings. Back home, people ask where you got all those stones, and some of them ask the troll's old question: and where is it going? You are still thinking about the answer. History files you as The Collectors, and leaves the page after it blank, in case.",
       "heal": 4,
       "choices": [],
       "endsCampaign": true
@@ -1070,9 +1070,9 @@
       "warden_clerk": "rigid, honest, stamps things",
       "mosshome_runner": "breathless, cheerful, counts knots out loud, then counts packs",
       "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
-      "ford_witch": "pointed hat, dry, kind underneath; only asks one question and means it",
+      "ford_witch": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
       "centaur_relay": "brisk, proud of the roads, speaks over her shoulder at a canter",
-      "exchange_merchant": "delighted to see you, genuinely fond, and still a merchant",
+      "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
       "caravan_master": "exhausted, practical, will sell to whoever stops shouting first",
       "brisk": "Brisk, a centaur relay runner; fast-talking, fair, says a lot by saying nothing"
     }

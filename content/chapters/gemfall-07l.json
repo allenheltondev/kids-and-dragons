@@ -81,7 +81,7 @@
     },
     "scene_ledger": {
       "type": "story",
-      "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, guarded by a clerk named Brisk who has never once smiled on duty. \"Not for lending,\" says Brisk, before you have said anything at all.",
+      "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, and the desk is guarded by Pellam, who has never once smiled on duty and has logged that fact twice. \"Not for lending,\" says Pellam, before you have said anything at all.",
       "choices": [
         {
           "id": "friend",
@@ -125,11 +125,11 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Show Brisk why a cage needs a key-holder",
+      "prompt": "Show Pellam why a cage needs a key-holder",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_choir",
-        "narration": "Brisk reads your argument twice, frowns at it, and unlocks the chain. Nobody has ever seen Brisk do that. Nobody has ever seen Brisk almost smile, either, and he nearly does.",
+        "narration": "Pellam reads your argument twice, frowns at it twice, and unlocks the chain. Nobody has ever seen Pellam do that. Nobody has ever seen Pellam almost smile, either, and he very nearly does.",
         "effects": [
           {
             "type": "grantQuestItem",
@@ -144,7 +144,7 @@
       },
       "onFailure": {
         "goto": "scene_choir",
-        "narration": "Brisk listens politely and says no politely. The ledger stays chained to its desk. You leave with nothing but a very clear picture of the cover."
+        "narration": "Pellam listens politely and says no politely. The ledger stays chained to its desk. You leave with nothing but a very clear picture of the cover."
       }
     },
     "scene_choir": {
@@ -248,7 +248,7 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "Back at your wobbly table, something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs.",
+      "narration": "Back at your wobbly table, something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
       "choices": [
         {
           "id": "ossley",
@@ -349,7 +349,7 @@
       "choices": [
         {
           "id": "brisk_said",
-          "label": "Tell it what Brisk the clerk mutters to his ledger",
+          "label": "Tell it what Pellam mutters to his ledger",
           "icon": "ear",
           "goto": "scene_stall_witch",
           "effects": [
@@ -377,7 +377,7 @@
     },
     "scene_ford_witch": {
       "type": "story",
-      "narration": "The ford witch has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "Mother Thrum, the ford witch, has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
       "choices": [
         {
           "id": "hold_safe",
@@ -524,7 +524,7 @@
     },
     "scene_ember": {
       "type": "story",
-      "narration": "\"It's you! From the docks!\" The merchant on top of the caravan remembers you fondly. She also has the Ember Facet you sold her, in a velvet box, at a price that has gone up a very great deal.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "choices": [
         {
           "id": "buy_back",
@@ -548,7 +548,7 @@
     },
     "rest_under_the_table": {
       "type": "rest",
-      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot, at the same moment, and stand there not looking at each other until somebody says please. Patch each other up.",
+      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot at the same moment, and stand there not looking at each other until somebody says please. Patch each other up. The teapot survives.",
       "heal": 3,
       "choices": [
         {
@@ -833,16 +833,16 @@
       "saying what is under the mountain"
     ],
     "npcVoices": {
-      "brisk": "warden ledger clerk; never smiles on duty; says no politely and means it; secretly fair",
       "hessa": "Deep Hollow choir member who ran the soup tent; gentle, wary, wants to trust you",
       "old_ossley": "very few words, long pauses that are not hesitation, answers the question you meant",
       "mosshome_runner": "breathless, cheerful, counts knots out loud",
       "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
-      "ford_witch": "pointed hat, dry, kind underneath; has waited the whole road for one honest answer",
+      "ford_witch": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
       "stall_witch": "patched hat, brisk, charms ringing around her; lends questions, never sells them",
       "centaur_relay": "brisk, proud of the roads, delighted to be asked where something should go",
-      "exchange_merchant": "delighted to see you, genuinely fond, and still a merchant",
-      "caravan_master": "exhausted, practical, has had a headache since the stone came aboard"
+      "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
+      "caravan_master": "exhausted, practical, has had a headache since the stone came aboard",
+      "pellam": "Pellam, warden ledger clerk; writes everything down twice, never smiles on duty, says no politely and means it; secretly fair"
     }
   }
 }

@@ -25,7 +25,7 @@
   "scenes": {
     "scene_bridge": {
       "type": "story",
-      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over.",
+      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
       "choices": [
         { "id": "join_line", "label": "Join the ration line", "icon": "arrow", "goto": "scene_soup_line" },
         { "id": "circle_spans", "label": "Circle the cracked spans first", "icon": "wing", "requiresSpecies": "griffin", "goto": "scene_spans_from_above" }
@@ -145,7 +145,7 @@
     },
     "scene_outline": {
       "type": "story",
-      "narration": "Everything points the same way. The troll's old note, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down.",
+      "narration": "Everything points the same way. The troll's old note, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down on a bucket.",
       "choices": [
         { "id": "to_tent_rest", "label": "Sit down too", "icon": "rest", "goto": "rest_tent" }
       ]
@@ -183,7 +183,7 @@
     },
     "scene_kept_close": {
       "type": "story",
-      "narration": "You fold the chalk map small, smaller, smallest, until it fits inside a boot. Nobody else knows. That is either very wise or very lonely, and you'll find out which. Somewhere in your packs, the stones keep humming, as if they know too.",
+      "narration": "You fold the chalk map small, smaller, smallest, until it fits inside a boot. Nobody else knows. That is either very wise or very lonely, and you will find out which. Somewhere in your packs, the stones keep humming, as if they know too.",
       "choices": [
         { "id": "to_crossing_k", "label": "Out to the bridge", "icon": "arrow", "goto": "scene_crossing" }
       ]
@@ -271,7 +271,7 @@
     },
     "rest_setback": {
       "type": "rest",
-      "narration": "Nobody is hurt; the wolves just wanted the warm side more. You wait two whole days on the south bank for the span to open again, while the rush gets further ahead and the mountain glows a little brighter every night. In the end Pellam waves you across himself. \"Logged,\" he says. \"Late. But logged.\"",
+      "narration": "Nobody is hurt. The wolves just wanted the warm side more. You wait two whole days on the south bank for the span to open again, while the rush gets further ahead and the mountain glows a little brighter every night. In the end Pellam waves you across himself. \"Logged,\" he says. \"Late. But logged.\"",
       "heal": 3,
       "outcome": "setback",
       "choices": []
