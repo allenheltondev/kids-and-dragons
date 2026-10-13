@@ -437,7 +437,7 @@ Saturday that they want to keep the unicorn.
 #### Signing in, which is optional
 
 The browser talks to Cognito directly — no hosted UI, no credential through our
-Lambda. First time: a six-digit code by email, so there is no password to invent
+Lambda. First time: an eight-digit code by email, so there is no password to invent
 and none to forget between Tuesday nights. Then the browser may register a
 **passkey** on that device for one tap after.
 
