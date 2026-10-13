@@ -34,6 +34,14 @@
   text-align: center;
 }
 
+.home__crest {
+  display: block;
+  width: min(100%, 28rem);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 0.24rem 0.6rem rgba(8, 7, 17, 0.55));
+}
+
 .home__title {
   margin: 0;
   font-size: var(--font-size-2xl, 2em);
