@@ -3,9 +3,7 @@
 .home {
   display: flex;
   justify-content: center;
-  /* Centred: on a tall phone the content sits in the middle of the picture
-     instead of leaving the bottom third bare. Taller content just scrolls. */
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   min-height: 100%;
   padding: var(--space-5, 1.5em) var(--space-4, 1em) var(--space-7, 3em);
@@ -17,7 +15,19 @@
 .home__inner {
   width: 100%;
   max-width: 34em;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-6, 2em);
+}
+
+/* The title stays at the top; everything else is centred in the space below it
+   (auto margins), so a tall phone does not end in bare cobblestone. Taller
+   content just scrolls. */
+.home__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 2em);
+  margin-block: auto;
 }
 
 .home__masthead {
