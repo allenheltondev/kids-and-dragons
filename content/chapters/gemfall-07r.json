@@ -193,7 +193,7 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "By afternoon something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs.",
+      "narration": "By afternoon something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
       "choices": [
         {
           "id": "ossley",
@@ -333,7 +333,7 @@
     },
     "scene_ford_witch": {
       "type": "story",
-      "narration": "It is the ford witch from the caravan queue, with her wool-wrapped stone under one arm. It is still ringing. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone under one arm. It is still ringing. She has walked the whole road north for this. \"I am still asking,\" she says. \"What do you actually want?\"",
       "choices": [
         {
           "id": "put_back",
@@ -473,7 +473,7 @@
     },
     "scene_ember": {
       "type": "story",
-      "narration": "\"It's you! From the docks!\" The merchant on top of the caravan remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "choices": [
         {
           "id": "buy_back",
@@ -729,7 +729,7 @@
     },
     "rest_tree_line": {
       "type": "rest",
-      "narration": "At the tree line you stop and look back. Everyone else on the road is running downhill: wagons, wardens, masks, a man with an empty wheelbarrow. There is not a single embermoth left in the foothills. You turn around, and walk up the mountain everyone else is running away from, with your arms full of stones that want to go home.",
+      "narration": "At the tree line you stop and look back. Everyone else on the road is running downhill: wagons, wardens, masks, a man with an empty wheelbarrow. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, with your arms full of stones that want to go home.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -779,8 +779,8 @@
       "grandmother": "dragonling gatherer; knits while she talks; 'No, dear' is a complete sentence",
       "mosshome_runner": "breathless, cheerful, counts knots out loud",
       "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
-      "ford_witch": "pointed hat, dry, kind underneath; only asks one question and means it",
-      "exchange_merchant": "delighted to see you, genuinely fond, and still a merchant",
+      "ford_witch": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
+      "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
       "caravan_master": "exhausted, practical, has had a headache since the stone came aboard"
     }
   }

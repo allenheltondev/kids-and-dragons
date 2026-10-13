@@ -42,7 +42,7 @@
   "scenes": {
     "scene_mosshome": {
       "type": "story",
-      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong — it leans — and a little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder.",
+      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder, and does not stop jogging to say hello.",
       "choices": [
         {
           "id": "ask",
@@ -122,7 +122,7 @@
             "value": true
           }
         ],
-        "narration": "Thorn, yarn, thorn, yarn — and slowly, a shape comes out of it."
+        "narration": "Thorn, yarn, thorn, yarn, and slowly a shape comes out of it."
       },
       "onFailure": {
         "goto": "scene_spiral",
@@ -131,7 +131,7 @@
     },
     "scene_spiral": {
       "type": "story",
-      "narration": "Plotted on the table, the moved paths aren't random at all. They spiral — round and round every place a stone fell, like water round a plughole, every path bending away. It's what the land has been saying all the way north. The Woods isn't flinching from the mountain. It's flinching from the stones.",
+      "narration": "Plotted on the table, the moved paths are not random at all. They spiral, round and round every place a stone fell, like water round a plughole, every path bending away. It is what the land has been saying all the way north. The Woods is not flinching from the mountain. It is flinching from the stones.",
       "choices": [
         {
           "id": "on",
@@ -143,7 +143,7 @@
     },
     "scene_knot_cords": {
       "type": "story",
-      "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots — records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
+      "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots: records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
       "choices": [
         {
           "id": "pile",
@@ -161,7 +161,7 @@
     },
     "scene_pile_question": {
       "type": "story",
-      "narration": "The archivists look at each other. Yes, they know about the forest's pile — everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
+      "narration": "The archivists look at each other. Yes, they know about the forest's pile, everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
       "choices": [
         {
           "id": "trust",
@@ -471,7 +471,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_foothills_view",
-        "narration": "You find everything — even the sock nobody wanted back — and climb on, late but whole."
+        "narration": "You find everything, even the sock nobody wanted back, and climb on, late but whole."
       },
       "onFailure": {
         "goto": "ending_long_way_round"
@@ -497,7 +497,7 @@
     },
     "ending_long_way_round": {
       "type": "rest",
-      "narration": "By the time you've found most of your things it's dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round — a day late and one sock short. The mountain didn't wait for you.",
+      "narration": "By the time you have found most of your things it is dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round, a day late and one sock short. The mountain did not wait for you.",
       "heal": 3,
       "choices": [],
       "outcome": "setback"

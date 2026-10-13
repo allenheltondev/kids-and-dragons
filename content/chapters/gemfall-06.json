@@ -38,7 +38,7 @@
   "scenes": {
     "scene_arrival": {
       "type": "story",
-      "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep.",
+      "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing.",
       "choices": [
         {
           "id": "walk_up",
@@ -71,7 +71,7 @@
     },
     "scene_door_river": {
       "type": "story",
-      "narration": "You come down off the cracked bridge with the wardens' engineers, who are still arguing about one crack in particular. From up here you can see it all at once: the bent pride roads, the troll's question, the crack in the bridge. Every one of them points at the mountain.",
+      "narration": "You come down off the cracked bridge with the wardens' engineers, who are still arguing about one crack in particular. From up here the whole road home is laid out behind you: the bridge, the bent pride roads, the river where the trolls still ask their question. All of it leans toward the mountain, the way grass leans in a wind.",
       "choices": [
         {
           "id": "down",
@@ -83,7 +83,7 @@
     },
     "scene_door_wild": {
       "type": "story",
-      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. Your MossHome runner waves goodbye and does not take one step farther. The moss stops exactly where the ash starts, as if somebody drew a line with a ruler.",
+      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. Your MossHome runner waves goodbye and does not take one step farther. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
       "choices": [
         {
           "id": "down",
@@ -107,7 +107,7 @@
     },
     "scene_moths": {
       "type": "story",
-      "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts.",
+      "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts, and the prospector has given up and is eating around it.",
       "choices": [
         {
           "id": "follow",
@@ -187,7 +187,7 @@
     },
     "scene_soup_tent": {
       "type": "story",
-      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles you each a bowl, asks your names, and remembers them. \"The world's laws are broken,\" she says kindly. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
+      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles you each a bowl, asks your names, and remembers them. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
       "choices": [
         {
           "id": "ask_cure",
@@ -237,7 +237,7 @@
         },
         {
           "id": "ford_soup",
-          "label": "Tell her you remember the soup line at the ford",
+          "label": "Tell her you remember Wend's soup line at the ford",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "rest_warm_stones",
@@ -253,7 +253,7 @@
     },
     "rest_warm_stones": {
       "type": "rest",
-      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cosy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Sleep, share out your things, and get a little better at something.",
+      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cosy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
       "heal": 2,
       "choices": [
         {
@@ -441,6 +441,26 @@
       "narration": "Redspire Citadel is a black tower where every single window faces up. Inside, a clerk named Pellam writes your names in a big ledger, then writes them again in a second ledger, just to be sure. \"This way,\" he says. \"The captain has a table.\"",
       "choices": [
         {
+          "id": "pellam_again",
+          "label": "Pellam! From the bridge! How are you here first?",
+          "icon": "scroll",
+          "requiresFlag": "route_river",
+          "goto": "scene_pellam_again"
+        },
+        {
+          "id": "follow",
+          "label": "Follow Pellam to the table",
+          "icon": "forward",
+          "goto": "scene_truth_table"
+        }
+      ]
+    },
+    "scene_pellam_again": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "narration": "Pellam does not look up from the second ledger. \"The bridge is logged,\" he says. \"The citadel needed logging. I go where the ledgers are.\" He writes your names a third time, in a very small notebook he keeps for people he has met twice. \"Irregular,\" he says. \"Entirely legal. This way. The captain has a table.\"",
+      "choices": [
+        {
           "id": "follow",
           "label": "Follow Pellam to the table",
           "icon": "forward",
@@ -521,7 +541,7 @@
     },
     "scene_acceptable_losses": {
       "type": "story",
-      "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast.",
+      "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast. The Table Stone hums a little louder, as if it disagrees.",
       "choices": [
         {
           "id": "not_a_number",
@@ -735,7 +755,7 @@
     "scene_what_for": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Then the captain asks the real question. \"And you? What is it all for?\" Somewhere a stone hums. Everybody in the room is looking at you.",
+      "narration": "Then the captain asks the real question. \"And you? What is it all for?\" Somewhere a stone hums. Everybody in the room is looking at you, and nobody is going to look away first.",
       "choices": [
         {
           "id": "restore",
@@ -805,7 +825,7 @@
     },
     "rest_end_ashfall": {
       "type": "rest",
-      "narration": "The wardens give you bunks in a room where every window faces up. Far below, the mountain turns over in its sleep, and every embermoth in the foothills shuffles one step farther away from it. You know what the stones are now, and you know what you want. Rest. Tomorrow, everything you passed on the road comes back up to meet you.",
+      "narration": "The wardens give you bunks in a room where every window faces up. Far below, the mountain turns over in its sleep, and every embermoth in the foothills shuffles one step farther away from it. You know what the stones are now, and you know what you want. Rest. Tomorrow, everything you passed on the road comes back up the mountain to meet you.",
       "heal": 4,
       "choices": []
     },
