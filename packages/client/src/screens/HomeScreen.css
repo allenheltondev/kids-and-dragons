@@ -312,7 +312,9 @@
 }
 
 .home__join--ready {
-  animation: home-ready 1.6s ease-in-out infinite;
+  /* Once, when the code becomes complete: the class is added on that
+     transition, so it replays each time the code is completed again. */
+  animation: home-ready 450ms ease-out 1;
 }
 
 @keyframes home-float {
@@ -329,7 +331,7 @@
 }
 
 @keyframes home-ready {
-  50% { transform: scale(1.025); }
+  40% { transform: scale(1.04); }
 }
 
 @media (prefers-reduced-motion: reduce) {
