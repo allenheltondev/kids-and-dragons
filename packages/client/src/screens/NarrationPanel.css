@@ -108,13 +108,54 @@
  * way and gets the same strip, because rule 1 forbids knowing the difference.
  */
 
+/*
+ * In a fight the panel stops being a layer over the whole pane. It used to keep
+ * `inset: 0` and the story gradient, which darkened the bottom ~40% of the
+ * board — exactly where the enemies tend to stand — for the whole fight, and
+ * held the opening line up the entire time. Now it is a strip along the bottom
+ * with no backdrop of its own; each line gets a small plate, arrives, stays
+ * long enough to read aloud, and gets out of the way. The board is the picture.
+ */
+.narration--fight {
+  inset: auto 0 0 0;
+  background: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.narration--fight .narration__head {
+  display: none;
+}
+
 .narration--fight .narration__body {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  inline-size: fit-content;
+  max-inline-size: min(var(--kad-measure, 34em), 100%);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-md, 0.75em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
   font-size: var(--font-size-lg, 1.25em);
+  animation:
+    narration-arrive 320ms ease-out,
+    narration-leave 600ms ease-in 7s forwards;
+}
+
+@keyframes narration-leave {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* No travel, but the line still has to leave the board. */
+@media (prefers-reduced-motion: reduce) {
+  .narration--fight .narration__body {
+    animation: narration-leave 1ms linear 7s forwards;
+  }
 }
 
 .narration__choices {

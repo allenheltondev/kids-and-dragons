@@ -772,6 +772,13 @@
   display: none;
 }
 
+/* The panel stays mounted under an open Field Guide (PlayerPanel), and
+   `.player`'s own `display: flex` would otherwise beat the `hidden` attribute
+   and leave a second full-height pane laid out beneath the guide. */
+.player[hidden] {
+  display: none;
+}
+
 .player--deciding .player__prompt {
   flex: 1 1 auto;
   min-block-size: 0;
