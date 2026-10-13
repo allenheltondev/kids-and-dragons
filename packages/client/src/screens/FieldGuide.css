@@ -1,6 +1,36 @@
 .field-guide { display: flex; flex-direction: column; min-block-size: 0; flex: 1 1 auto; }
 .field-guide__title { margin: 0.75em 0.75em 0.25em; font-size: 1.2em; }
 .field-guide__body { flex: 1 1 auto; min-block-size: 0; padding: 0.5em 0.75em; }
-.field-guide__summary { margin: 0; color: var(--kad-ink-dim); }
+.field-guide__summary { margin: 0 0.75em; color: var(--kad-ink-dim); }
 .field-guide .field-guide__back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
 .player__guide-entry { margin-block-start: 0.5em; }
+
+.field-guide__tabs { display: flex; gap: 0.4em; padding: 0.5em 0.75em 0; overflow-x: auto; flex: 0 0 auto; }
+.field-guide__tab {
+  flex: 0 0 auto; min-block-size: 2.75em; padding: 0 1em; border-radius: 999px; font: inherit;
+  color: var(--kad-ink-dim); background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border);
+}
+.field-guide__tab[aria-selected="true"] { color: var(--kad-accent-ink); background: var(--kad-gold); border-color: var(--kad-gold); font-weight: 700; }
+.field-guide__progress { margin: 0 0 0.6em; color: var(--kad-ink-dim); }
+.field-guide__grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(7em, 100%), 1fr)); gap: 0.6em;
+}
+.field-guide__card {
+  position: relative; inline-size: 100%; min-block-size: 8em; padding: 0.5em; font: inherit; color: var(--kad-ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4em;
+  background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border-strong); border-radius: var(--kad-radius-md);
+  transition: transform 0.12s ease;
+}
+.field-guide__card:not(:disabled):active { transform: scale(0.97); }
+.field-guide__card--hidden { background: var(--kad-bg-sunken); border-color: var(--kad-border); color: var(--kad-ink-faint); }
+.field-guide__art { display: grid; place-items: center; inline-size: 3em; block-size: 3em; overflow: hidden; font-size: 1.6em; }
+.field-guide__card--hidden .field-guide__art { opacity: 0.6; }
+.field-guide__art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
+.field-guide__name { font-size: 0.95em; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+.field-guide__new {
+  position: absolute; inset-block-start: 0.3em; inset-inline-end: 0.3em; padding: 0.1em 0.5em; border-radius: 999px;
+  font-size: 0.75em; font-weight: 700; color: var(--kad-accent-ink); background: var(--kad-gold);
+}
+.field-guide__detail-title { margin: 0 0 0.5em; }
+@media (prefers-reduced-motion: reduce) { .field-guide__card { transition: none; } }
