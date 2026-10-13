@@ -47,9 +47,6 @@ const INTENDED = {
     ["gatherers", "stay_gatherers"],
     ["close", "stay_close"],
   ],
-  "gemfall-06/scene_declared_restore": ["record_a", "record_b"], // two flags, one page turned back
-  "gemfall-06/scene_declared_hoard": ["record_a", "record_b"],
-  "gemfall-06/scene_declared_leash": ["record_a", "record_b"],
   "gemfall-07h/walk_scene_boundary": ["confess", "bells", "stirring"], // three ways to ask about the fuse
   "gemfall-07h/walk_scene_look_back": ["trust", "moths", "happy_ring"], // the ending is the answer
 };
@@ -111,6 +108,40 @@ describe("every Gemfall choice lands on a scene that shows its result", () => {
       expect(busy).toEqual([]);
     });
   }
+});
+
+/*
+ * The ledger's reaction must never be a side quest. Requiring only a positive
+ * flag on one of several choices let the player go directly to bed even when
+ * their declared pursuit contradicted the evidence they had just presented.
+ * The story format has positive-only gates, so use one mandatory response
+ * that speaks truthfully whether the party's record aligns or not.
+ */
+describe("Gemfall's ledger responds to every declared pursuit", () => {
+  const scenes = JSON.parse(read("content", "chapters", "gemfall-06.json")).scenes;
+
+  for (const pursuit of ["restore", "hoard", "leash"]) {
+    it(`always passes ${pursuit} through the record before the chapter ends`, () => {
+      const declared = scenes[`scene_declared_${pursuit}`];
+      const reaction = scenes[`scene_record_${pursuit}`];
+      expect(declared?.choices).toHaveLength(1);
+      expect(declared.choices[0].goto).toBe(`scene_record_${pursuit}`);
+      expect(reaction?.type).toBe("story");
+      expect(reaction?.choices).toHaveLength(1);
+      expect(reaction.choices[0].goto).toBe("rest_end_ashfall");
+    });
+  }
+});
+
+describe("Gemfall's relay callback does not invent an earlier encounter", () => {
+  it("does not assume the River Road party met Fennick", () => {
+    const scenes = JSON.parse(read("content", "chapters", "gemfall-07r.json")).scenes;
+    const relay = scenes.choice_the_bend_relay;
+    expect(relay?.type).toBe("story");
+    expect(relay.narration).not.toMatch(/Fennick|taught you|taught us/i);
+    expect(relay.choices).toHaveLength(1);
+    expect(relay.choices[0].goto).toBe("scene_caravan_won");
+  });
 });
 
 describe("the INTENDED list stays honest", () => {
