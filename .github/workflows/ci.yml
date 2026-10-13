@@ -169,6 +169,17 @@ jobs:
             exit 1
           }
 
+      # content/field-guide.json is what a player reads about the world, cut
+      # from canon through an allow-list. A stale copy would show lore that
+      # canon has since changed, or miss an entry, so regenerate and compare.
+      - name: Check the field guide is up to date
+        run: |
+          npm run canon:field-guide
+          git diff --exit-code -- content/field-guide.json || {
+            echo "::error::content/field-guide.json is stale — run \`npm run canon:field-guide\` and commit the result."
+            exit 1
+          }
+
       # Content is data (roadmap, "Content as data"), so it gets checked like code:
       # schemas first, then the cross-file rules a schema cannot express.
       - name: Validate content
