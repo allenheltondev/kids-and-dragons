@@ -23,8 +23,8 @@ import type {
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
-import { iso } from "../handlers/deps.ts";
-import { createRoom, joinRoom, watchRoom } from "../handlers/room.ts";
+import { iso, ok } from "../handlers/deps.ts";
+import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getState } from "../handlers/state.ts";
 import type { DeviceIdentity, SessionIdentity } from "../identity.ts";
@@ -150,14 +150,16 @@ async function postRoom(req: Req, deps: HandlerDeps) {
       householdId: host.principal.householdId,
       mode,
       campaignId: (req.body.campaignId as string | null | undefined) ?? null,
+      // The TV's household is a placeholder until a phone joins (RoomRecord.claimable).
+      claimable: display,
     },
     deps,
   );
   if (!created.ok) return fromError(created.error);
 
   // The TV opened the room: it is the lobby, not a seat. It keeps the device
-  // binding anyway — that is the household the phones join, and the same TV
-  // opening tomorrow's room has to land in the same one.
+  // binding anyway, but only as a placeholder household — the first phone to
+  // join decides whose room this is (RoomRecord.claimable).
   if (display) {
     return json(
       200,
@@ -187,10 +189,17 @@ async function postRoom(req: Req, deps: HandlerDeps) {
 }
 
 async function postJoin(req: Req, deps: HandlerDeps, code: string) {
-  const room = await deps.repo.getRoom(code);
-  if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
+  const found = await deps.repo.getRoom(code);
+  if (!found) return error(404, "NOT_FOUND", `no open room ${code}`);
 
   const existing = await resolvePrincipal(req, deps);
+  // A new phone joins whichever household the room settles on — and settling
+  // comes first, so a TV room another phone claimed a moment ago is joined in
+  // the claimer's household rather than stranding this one in the TV's.
+  const settled = existing ? ok(found) : await settleRoom(found, found.householdId, deps);
+  if (!settled.ok) return fromError(settled.error);
+  const room = settled.value;
+  if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
   // so a phone that has never seen this game joins in one tap.
   const joiner =

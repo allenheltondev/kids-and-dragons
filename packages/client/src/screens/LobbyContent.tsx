@@ -12,9 +12,9 @@
 
 import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
-import type { PartyMember } from "@kad/shared";
+import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
-import { campaignPremise, nextChapterLine } from "./campaign-copy";
+import { campaignOptionLine, campaignPremise, nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -142,7 +142,27 @@ export function LobbyContent(): ReactElement {
           <p className="lobby__premise-text">{campaignPremise(state?.campaign)}</p>
         </div>
       ) : null}
-      {nextChapterLine(state?.campaign) !== null ? (
+      {/* More than one adventure on offer: the phones vote, and the screen
+          shows the race — one line each, so it still fits beside a full
+          party. One adventure is no question, so it is just "what's next". */}
+      {state && lobbyCampaign(state).contested ? (
+        <ul className="lobby__campaigns" aria-label="Which adventure?">
+          {(state.campaignOptions ?? []).map((option) => {
+            const votes = party.filter(
+              (member) => state.campaignVotes?.[member.playerId] === option.id,
+            ).length;
+            return (
+              <li className="lobby__next-chapter" key={option.id}>
+                <Icon name={option.id === state.campaign?.id ? "vote" : "map"} />
+                <span>
+                  {option.title}: {campaignOptionLine(option)}
+                  {votes > 0 ? ` · ${String(votes)} ${votes === 1 ? "vote" : "votes"}` : ""}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : nextChapterLine(state?.campaign) !== null ? (
         <p className="lobby__next-chapter">
           <Icon name="map" />
           <span>{nextChapterLine(state?.campaign)}</span>

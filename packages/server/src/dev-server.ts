@@ -34,7 +34,7 @@ import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
-import { createRoom, joinRoom, watchRoom } from "./handlers/room.ts";
+import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
@@ -134,6 +134,7 @@ async function main(): Promise<void> {
         householdId: host.principal.householdId,
         mode,
         campaignId: req.body?.campaignId ?? null,
+        claimable: display,
       },
       deps,
     );
@@ -167,10 +168,17 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
-    const room = await base.repo.getRoom(code);
-    if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    const found = await base.repo.getRoom(code);
+    if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
 
     const existing = await resolvePrincipal(req, base);
+    // Settled first for a new phone — see lambda/http.ts.
+    const settled = existing ? null : await settleRoom(found, found.householdId, deps);
+    if (settled && !settled.ok) {
+      return sendError(res, statusFor(settled.error), settled.error.code, settled.error.message);
+    }
+    const room = settled ? settled.value : found;
+    if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
     // An unbound device joining a room gets a player created for it on the spot,
     // so a phone that has never seen this game can still join in one tap.
     const joiner =

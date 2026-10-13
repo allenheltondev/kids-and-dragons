@@ -491,6 +491,41 @@ describe("readying up", () => {
     expect(screen.getByRole("button", { name: /Play chapter 4/ })).toBeTruthy();
   });
 
+  it("puts more than one adventure to a vote, and waits for every vote", async () => {
+    const user = userEvent.setup();
+    const gems = { id: "gems", title: "Gemfall", chapters: 8, next: { index: 1, title: "Stones" } };
+    const crown = { id: "crown", title: "The Hollow Crown", chapters: 2, next: { index: 2, title: "The Wood" } };
+    const both = [
+      member({ ready: true }),
+      member({ playerId: "p_2", character: character({ id: "c_2", name: "Bo", ownerPlayerId: "p_2" }), ready: true }),
+    ];
+    const { sent } = mount({ phase: "lobby", party: both });
+    serverSends({ campaign: gems, campaignOptions: [gems, crown], campaignVotes: {} });
+
+    expect(screen.getByText("Which adventure?")).toBeTruthy();
+    expect(screen.getByText("Pick up at chapter 2 of 2")).toBeTruthy();
+    // Everyone is ready, but nobody has picked: no Begin yet.
+    expect(screen.queryByRole("button", { name: /Begin the adventure|Play chapter/ })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /The Hollow Crown/ }));
+    expect(sent).toEqual([{ type: "VOTE_CAMPAIGN", campaignId: "crown" }]);
+
+    serverSends({ campaign: crown, campaignVotes: { p_1: "crown" } });
+    expect(screen.getByText(/Waiting for Bo to pick an adventure/)).toBeTruthy();
+
+    serverSends({ campaignVotes: { p_1: "crown", p_2: "crown" } });
+    await user.click(screen.getByRole("button", { name: /Play chapter 2/ }));
+    expect(sent[1]).toEqual({ type: "CONTINUE_CAMPAIGN", campaignId: "crown" });
+  });
+
+  it("asks nothing when there is only one adventure", () => {
+    const gems = { id: "gems", title: "Gemfall", chapters: 8, next: { index: 3, title: "Roads" } };
+    mount({ phase: "lobby", party: [member({ ready: true })] });
+    serverSends({ campaign: gems, campaignOptions: [gems] });
+    expect(screen.queryByText("Which adventure?")).toBeNull();
+    expect(screen.getByRole("button", { name: /Play chapter 3/ })).toBeTruthy();
+  });
+
   it("does not offer to begin before the campaign has loaded", () => {
     // Content is data: without a campaign there is nothing to continue, and
     // the panel's job is to not invent one.

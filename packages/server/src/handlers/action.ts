@@ -27,6 +27,7 @@ import type {
   Chapter,
   RunState,
 } from "@kad/shared";
+import { lobbyCampaign } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
@@ -93,7 +94,21 @@ export async function applyAction(
 
   // --- 2. apply ------------------------------------------------------------
   if (input.intent.type === "CONTINUE_CAMPAIGN") {
-    const next = await nextChapter(input.intent.campaignId, auth.run.householdId, deps);
+    // Which campaign is the lobby's decision, not the tapper's (lobbyCampaign).
+    const choice = lobbyCampaign(state);
+    if (choice.contested && choice.waitingOn.length > 0) {
+      const names = choice.waitingOn.map((m) => m.character.name).join(", ");
+      return {
+        ok: false,
+        seq: state.seq,
+        error: { code: "ILLEGAL", message: `still waiting for ${names} to pick an adventure` },
+      };
+    }
+    const campaignId = state.campaignOptions?.length ? choice.leader?.id : input.intent.campaignId;
+    if (!campaignId) {
+      return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
+    }
+    const next = await nextChapter(campaignId, auth.run.householdId, deps);
     if ("refusal" in next) {
       return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
     }
@@ -291,7 +306,14 @@ export async function applyAction(
     if (settlement.campaignView) {
       // What the lobby offers next, and whether this chapter just ended the
       // whole campaign — the completion screen reads it (RunState.campaign).
-      result = { ...result, state: { ...result.state, campaign: settlement.campaignView } };
+      // The lobby's list follows: the campaign just played is one of its
+      // options, and a phone back in the lobby must see where it now stands.
+      const view = settlement.campaignView;
+      const options = result.state.campaignOptions?.map((o) => (o.id === view.id ? view : o));
+      result = {
+        ...result,
+        state: { ...result.state, campaign: view, ...(options ? { campaignOptions: options } : {}) },
+      };
     }
     if (settlement.stale) {
       // Another room already finished this beat for the household. The table

@@ -136,6 +136,16 @@ export interface RoomRecord {
   expiresAt: string;
   /** Epoch **seconds** — DynamoDB TTL attribute. */
   ttl: number;
+  /**
+   * A room the TV opened, whose household is not settled yet (architecture
+   * §4.5, "The TV, which is nobody"). The TV's own household is only a
+   * placeholder: the first phone to join decides whose evening this is, and a
+   * phone that already belongs to a household takes the room *into* it — run
+   * and all — so its campaigns and heroes come with it whichever screen
+   * opened the lobby. Cleared by that first join (`claimRoom`); absent on
+   * every other room.
+   */
+  claimable?: boolean;
 }
 
 /**
@@ -305,6 +315,8 @@ export interface GameRepository {
 
   /** The setback counter (see `CampaignProgressRecord`). `null` = no attempt yet. */
   getCampaignProgress(householdId: string, campaignId: string): Promise<CampaignProgressRecord | null>;
+  /** Every attempt the household has, whatever its status — the lobby's list. */
+  listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]>;
   putCampaignProgress(progress: CampaignProgressRecord): Promise<void>;
 
   getState(runId: string): Promise<RunState | null>;
@@ -336,4 +348,16 @@ export interface GameRepository {
   /** Expired rooms read as `null` — TTL sweeps are eventual, reads are not. */
   getRoom(code: string): Promise<RoomRecord | null>;
   deleteRoom(code: string): Promise<void>;
+  /**
+   * Settle a claimable room on a household (`RoomRecord.claimable`): the room
+   * now names `householdId` and is no longer claimable, and when that is a
+   * different household from the one it was opened under, the run row moves
+   * with it — the run belongs to whoever plays it, and the sweeper reaches a
+   * run only through its household.
+   *
+   * Conditional on the room still being claimable and still pointing at `run`
+   * under `run.householdId`. `false` means another phone settled it first; the
+   * caller re-reads the room and goes by what it says now.
+   */
+  claimRoom(input: { code: string; run: RunRecord; householdId: string }): Promise<boolean>;
 }
