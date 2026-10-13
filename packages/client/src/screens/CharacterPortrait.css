@@ -20,6 +20,16 @@
   --portrait-accent: var(--kad-accent, #8b6cf5);
 }
 
+.portrait--backdrop {
+  border-radius: inherit;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--portrait-accent) 45%, #191534) 0%,
+    color-mix(in srgb, var(--portrait-accent) 20%, #191534) 55%,
+    #120f26 100%
+  );
+}
+
 /*
  * The glow. A radial wash pooled under the figure's feet rather than a ring
  * around the box: it reads as "standing in a light" instead of "selected", and

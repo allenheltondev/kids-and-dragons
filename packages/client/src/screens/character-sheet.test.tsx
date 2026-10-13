@@ -64,7 +64,6 @@ function show(overrides: Partial<ResolvedCharacter> = {}, isMe = true) {
       member={member(overrides)}
       isMe={isMe}
       items={ITEMS}
-      onClose={() => undefined}
     />,
   );
 }

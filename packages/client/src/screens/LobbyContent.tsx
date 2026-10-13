@@ -74,7 +74,9 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
           fledglings and a returning Radiant should look like that. */}
       <span className="lobby-member__portrait" aria-hidden="true">
         <CharacterPortrait
+          backdrop
           species={character.species}
+          accent={character.appearance.accent}
           tier={character.tier}
           characterClass={character.class}
           className="lobby-member__art"

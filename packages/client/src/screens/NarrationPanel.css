@@ -33,17 +33,15 @@
   overflow-y: auto;
 }
 
-/*
- * Bottom-aligned by an auto margin, not `justify-content: flex-end`. With
- * flex-end an overflowing column is clipped at its *start* and the top cannot
- * be scrolled to — in a 60%-height Travel Mode pane that silently ate the
- * first line of every long scene.
- */
-.narration > :first-child {
-  margin-block-start: auto;
-}
-
+/* The chapter stays at the top; spare space belongs before the story. */
 .narration__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  flex: 0 0 auto;
+  padding-inline-end: 2.5em;
+  padding-block-end: 0.6em;
+  text-shadow: 0 0.1em 0.5em #0d0b1a;
   display: flex;
   flex-direction: column;
   gap: var(--space-1, 0.25em);
@@ -54,16 +52,20 @@
   align-items: center;
   gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: var(--font-size-sm, 0.875em);
+  font-size: var(--font-size-md, 1em);
+  text-transform: none;
 }
 
-.narration__title {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  font-size: var(--font-size-lg, 1.25em);
-  font-weight: 700;
+.narration__story {
+  margin-block-start: auto;
+  flex: 0 0 auto;
+}
+
+.narration__turn {
+  margin: 0 0 0.5em;
+  color: var(--kad-ink-dim);
+  font-size: 0.85em;
+  font-weight: 500;
 }
 
 .narration__body {
@@ -105,9 +107,6 @@
  * view under a strip rather than behind a paragraph. The TV has room either
  * way and gets the same strip, because rule 1 forbids knowing the difference.
  */
-.narration--fight .narration__chapter {
-  display: none;
-}
 
 .narration--fight .narration__body {
   display: -webkit-box;

@@ -70,6 +70,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
         <p className="kad-audio-control__hint">Click or press a key for sound</p>
       ) : null}
       <Button
+        className="kad-audio-control__button"
         variant="ghost"
         size="md"
         aria-label={muted ? "Turn sound on" : "Turn sound off"}
