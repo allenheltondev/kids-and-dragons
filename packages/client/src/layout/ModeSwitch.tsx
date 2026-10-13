@@ -24,7 +24,7 @@ export function ModeSwitch(): React.JSX.Element | null {
   if (isDisplay) return null;
   const next = mode === "party" ? "travel" : "party";
 
-  // Room settings owns this control; the bottom tray keeps three destinations.
+  // Room settings owns this control; the bottom tray keeps its four destinations.
   return (
     <button
       type="button"

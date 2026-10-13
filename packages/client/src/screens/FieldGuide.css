@@ -3,7 +3,8 @@
 .field-guide__body { flex: 1 1 auto; min-block-size: 0; padding: 0.5em 0.75em; }
 .field-guide__summary { margin: 0 0.75em; color: var(--kad-ink-dim); }
 .field-guide .field-guide__back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
-.player__guide-entry { margin-block-start: 0.5em; }
+/* PlayerView keeps the creation flow mounted (not unmounted) under the guide. */
+.player-view__creation:not([hidden]) { display: contents; }
 
 .field-guide__tabs { display: flex; gap: 0.4em; padding: 0.5em 0.75em 0; overflow-x: auto; flex: 0 0 auto; }
 .field-guide__tab {
