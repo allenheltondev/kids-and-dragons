@@ -47,6 +47,32 @@ afterEach(() => {
 });
 
 describe("Party Mode and the map", () => {
+  it("dismisses a character sheet when the already-selected You destination is tapped", () => {
+    mount();
+    act(() => screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).click());
+    expect(screen.getByRole("region", { name: "Sparklehoof's character sheet" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^close$/i })).toBeNull();
+    act(() => screen.getByRole("button", { name: /^you$/i }).click());
+    expect(screen.queryByRole("region", { name: "Sparklehoof's character sheet" })).toBeNull();
+    expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ })).toBeTruthy();
+  });
+  it("offers only three destinations and returns from World to a new turn", () => {
+    const { container } = mount();
+    const nav = screen.getByRole("navigation", { name: "What to look at" });
+    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map"]);
+    act(() => screen.getByRole("button", { name: /^world$/i }).click());
+    expect(showing(container)).toEqual(["world"]);
+    act(() => {
+      const state = useGameStore.getState().state;
+      if (!state) throw new Error("no state");
+      useGameStore.setState({ state: { ...state, prompt: {
+        kind: "choice", sceneId: "scene_hedge_wall", vote: false,
+        options: [{ id: "gap", label: "Find a gap", icon: "eye" }],
+        forPlayerIds: ["p_1"],
+      } } });
+    });
+    expect(showing(container)).toEqual(["player"]);
+  });
   it("shows the controls, with the map a tap away", () => {
     const { container } = mount();
     expect(showing(container)).toEqual(["player"]);

@@ -193,7 +193,9 @@ export function ChapterCompletePanel(): ReactElement {
                */}
               <span className="complete-card__portrait" aria-hidden="true">
                 <CharacterPortrait
+                  backdrop
                   species={member.character.species}
+                  accent={member.character.appearance.accent}
                   tier={(newTier as TierId | undefined) ?? member.character.tier}
                   characterClass={member.character.class}
                   className="complete-card__art"

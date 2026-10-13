@@ -60,11 +60,8 @@
   flex: 0 0 auto;
   position: relative;
   font-size: 0.95rem;
-  padding: 0.35rem var(--kad-space-2) 0.25rem;
-  /* The sound button is fixed in the bottom-right corner of every page
-     (audio/AudioControl.css); the shelf leaves it that corner rather than
-     putting the mode switch under it. */
-  padding-inline-end: calc(var(--kad-touch-min) + var(--kad-space-3));
+  padding: 0.55rem var(--kad-space-2) 0.25rem;
+  margin-block-start: 0.45rem;
   background:
     linear-gradient(to bottom, rgba(255, 220, 150, 0.08), transparent 35%),
     linear-gradient(to bottom, #2a1f45 0%, #1a1330 55%, #110c22 100%);
@@ -139,6 +136,8 @@
 }
 
 .kad-tray-object {
+  object-fit: contain;
+  user-select: none;
   inline-size: 100%;
   block-size: 100%;
   display: block;
@@ -171,6 +170,34 @@
 
 .kad-tray__tab:active .kad-tray__object {
   transform: translateY(0.05rem) scale(0.96);
+}
+
+/* Your controls are always the focal point. The medallion is permanent;
+   selection still uses the lift, glow and gold label shared by every tab. */
+.kad-tray__tab--primary {
+  flex-grow: 1.15;
+  margin-block-start: -0.65rem;
+}
+
+.kad-tray__tab--primary .kad-tray__object {
+  inline-size: 4rem;
+  block-size: 4rem;
+  border: 0.2rem solid #edc27a;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 25%, #76558f, #35234f 75%);
+  box-shadow: inset 0 0 0 0.16rem #8a603a, inset 0 0.2rem 0.35rem rgba(255, 228, 161, 0.25), 0 0.2rem 0 #76502f, 0 0.4rem 0.5rem rgba(0, 0, 0, 0.5);
+  filter: saturate(0.9) brightness(0.95);
+}
+
+.kad-tray__tab--primary .kad-tray-object {
+  inline-size: 3.3rem;
+  block-size: 3.3rem;
+}
+
+.kad-tray__tab--primary.kad-tray__tab--on .kad-tray__object {
+  transform: translateY(-0.3rem) scale(1.04);
+  border-color: var(--kad-gold);
+  filter: saturate(1) brightness(1.05);
 }
 
 /* "You are needed over here" while you are looking at the world: a gold

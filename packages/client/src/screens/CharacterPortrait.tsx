@@ -77,18 +77,16 @@ export interface CharacterPortraitProps {
    * (creationContent.ts header on what the choice does colour).
    */
   accent?: string;
+  /** Soft portrait-well gradient tinted with the player's secondary colour. */
+  backdrop?: boolean;
   /** A slow float, for the places where the hero is the subject of the screen. */
   float?: boolean;
   /**
    * Where the figure sits in its box.
    *
-   *   - `"floor"` (the default) stands it on the bottom edge, on its
-   *     ground-contact line. Right wherever the box is a *place*: the creation
-   *     preview's lit stage, the wells in the lobby lineup and on your sheet.
-   *   - `"centre"` centres the drawn figure instead. Right wherever the box is
-   *     a *picture* — a portrait beside a paragraph, like the species cards.
-   *     There is no floor in a card, so standing on one just reads as sitting
-   *     too low.
+   *   - `"centre"` (the default) centres the figure in avatar wells and cards.
+   *   - `"floor"` grounds it on a stage, such as the creation preview or
+   *     transformation cutscene.
    */
   stand?: "floor" | "centre";
   className?: string;
@@ -101,8 +99,9 @@ export function CharacterPortrait({
   size,
   lit = false,
   accent,
+  backdrop = false,
   float = false,
-  stand = "floor",
+  stand = "centre",
   className = "",
 }: CharacterPortraitProps): ReactElement {
   const [failedGearSrc, setFailedGearSrc] = useState<string | null>(null);
@@ -129,7 +128,7 @@ export function CharacterPortrait({
 
   return (
     <span
-      className={`portrait portrait--${stand}${showingGear ? " portrait--gear" : ""}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
+      className={`portrait portrait--${stand}${backdrop ? " portrait--backdrop" : ""}${showingGear ? " portrait--gear" : ""}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
       style={style}
       data-species={species}
       data-character-class={characterClass}

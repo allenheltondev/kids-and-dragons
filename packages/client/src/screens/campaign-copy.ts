@@ -12,14 +12,14 @@
 
 import type { CampaignView, RunState } from "@kad/shared";
 
-/** "Chapter 4 of 8: The Pride Roads", or null when there is nothing to name. */
+/** "Chapter 4: The Pride Roads", or null when there is nothing to name. */
 export function nextChapterLine(view: CampaignView | null | undefined): string | null {
   if (!view?.next) return null;
-  return `Chapter ${String(view.next.index)} of ${String(view.chapters)}: ${view.next.title}`;
+  return `Chapter ${String(view.next.index)}: ${view.next.title}`;
 }
 
 /**
- * "Chapter 1 of 8 · The City That Smelled Opportunity" — what heads every
+ * "Chapter 1 · The City That Smelled Opportunity" — what heads every
  * scene on the shared screen. Null for a run persisted before chapter titles
  * rode on the state; the caller falls back to the file id.
  */
@@ -28,8 +28,7 @@ export function chapterHeading(
 ): string | null {
   const info = state?.chapterInfo;
   if (!info) return null;
-  const total = state?.campaign?.chapters;
-  const number = total ? `Chapter ${String(info.index)} of ${String(total)}` : `Chapter ${String(info.index)}`;
+  const number = `Chapter ${String(info.index)}`;
   return `${number} · ${info.title}`;
 }
 

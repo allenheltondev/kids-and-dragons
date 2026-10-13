@@ -26,11 +26,14 @@ import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
 import { PlaytestPanel } from "../screens/PlaytestPanel";
-import { useMe } from "../store";
+import { useMe, useSession } from "../store";
+import { dismissPlayerSheet } from "../store/player-navigation";
 import { useKeepsakeStore } from "../store/keepsake";
 
 export function PlayerView(): React.JSX.Element {
   const me = useMe();
+  const runId = useSession()?.runId;
+  useEffect(() => { dismissPlayerSheet(); }, [runId]);
 
   /*
    * Ask once whether this deployment can offer sign-in at all (§4.5). It is a
