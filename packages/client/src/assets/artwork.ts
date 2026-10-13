@@ -23,6 +23,7 @@ import crownArt from "./painted/crown.webp";
 import dropArt from "./painted/drop.webp";
 import noteArt from "./painted/note.webp";
 import scrollArt from "./painted/scroll.webp";
+import fieldGuideArt from "./painted/field-guide.webp";
 import globeArt from "./painted/globe.webp";
 import mapArt from "./painted/map.webp";
 import satchelArt from "./painted/satchel.webp";
@@ -66,6 +67,7 @@ export const PAINTED_ART: Record<string, string> = {
   drop: dropArt,
   note: noteArt,
   scroll: scrollArt,
+  fieldGuide: fieldGuideArt,
   globe: globeArt,
   map: mapArt,
   satchel: satchelArt,

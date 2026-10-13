@@ -43,6 +43,9 @@
   "scenes": {
     "scene_like_weather": {
       "type": "story",
+      "discovers": [
+        "creature.mosshorn"
+      ],
       "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, and somewhere in it is the next stone on your list.",
       "choices": [
         {
@@ -260,6 +263,10 @@
     },
     "scene_ossley": {
       "type": "story",
+      "discovers": [
+        "individual.old_ossley",
+        "npc.frogfolk"
+      ],
       "narration": "Old Ossley is poling his flat boat up a creek with no water in it, piled with every toll the trolls took this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
       "choices": [
         {
@@ -354,6 +361,9 @@
     },
     "scene_boggart": {
       "type": "story",
+      "discovers": [
+        "npc.boggart"
+      ],
       "narration": "A boggart with a satchel full of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what in the marsh. Very useful, for a collector. Costs one really good sentence you overheard.\"",
       "choices": [
         {
@@ -410,6 +420,9 @@
     },
     "scene_ford_witch": {
       "type": "story",
+      "discovers": [
+        "npc.witch_order"
+      ],
       "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you, and then at your packs again. \"I am still asking,\" she says. \"What do you actually want?\"",
       "choices": [
         {
@@ -498,6 +511,9 @@
     },
     "scene_centaur_relay": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "The centaur relay canters past your fire and does not stop. They have heard what you are for now. \"Fat caravan tomorrow,\" one calls over her shoulder. \"We're sending it the long way. Round you.\"",
       "choices": [
         {
@@ -567,6 +583,9 @@
     },
     "scene_ember": {
       "type": "story",
+      "discovers": [
+        "npc.merfolk"
+      ],
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "choices": [
         {
@@ -653,6 +672,9 @@
     },
     "check_crabs": {
       "type": "check",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
       "stat": "clever",
       "tn": 8,
       "prompt": "Read what the glittering lumps are trying to tell you",
@@ -855,6 +877,9 @@
     },
     "scene_tamsins_offer": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "That night a woman in a bark mask sits down at your fire and takes it off. It is Hessa, from the soup tent. \"We'll buy the lot,\" she says sweetly. \"Every stone. You'd be rich, and we'd break the seal properly, all at once, so it can be fixed properly.\" She sets out the money in little piles, and it is a lot of little piles.",
       "choices": [
         {
@@ -1033,6 +1058,10 @@
     },
     "walk_scene_realm_reads": {
       "type": "story",
+      "discovers": [
+        "creature.jackalope",
+        "character.manticore"
+      ],
       "narration": "The realm reads you as you go. Jackalopes go silent a mile ahead of you. A pride of manticores walks a wide, polite circle around your camp. Even the moss leans away from the path. Everything that can hear the stones steps aside, like you are weather.",
       "choices": [
         {
@@ -1096,6 +1125,9 @@
     },
     "walk_scene_factions": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "On the caravan road, a centaur relay runner called Brisk is coming up as you go down. She slows to a trot. \"News,\" she says, \"if you want it. Everybody up there is doing something.\" She looks at your packs. \"Without you.\"",
       "choices": [
         {
@@ -1191,6 +1223,9 @@
     },
     "walk_scene_boundary": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "At the boundary stones, a dragonling grandmother sits on the oldest stone, knitting something long and red. She looks at your humming packs. \"Take what the mountain drops,\" she says. \"Never pry at what it holds.\" Then she holds out one hand, palm up, and waits.",
       "choices": [
         {

@@ -18,6 +18,7 @@
 
 import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
+import { FIELD_GUIDE_VERSION } from "@kad/shared";
 import type { Character, Household, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
@@ -670,6 +671,106 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect((await repo.listEvents("r_1", 8)).map((e) => e.seq)).toEqual([9, 10, 11, 12]);
         expect((await repo.listEvents("r_1", 0, 3)).map((e) => e.seq)).toEqual([1, 2, 3]);
         expect(await repo.listEvents("r_1", 12)).toEqual([]);
+      });
+    });
+
+    describe("field guide", () => {
+      const T1 = "2026-07-04T18:00:00.000Z";
+      const T2 = "2026-07-05T18:00:00.000Z";
+
+      it("reads as an empty book before anything is found", async () => {
+        expect(await repo.getFieldGuide("h_1")).toEqual({ v: FIELD_GUIDE_VERSION, entries: {} });
+      });
+
+      it("creates the record on first discovery and reports what was added", async () => {
+        const added = await repo.recordDiscoveries("h_1", [
+          { canonId: "moth", playerId: "p_1", runId: "r_1", foundAt: T1 },
+        ]);
+        expect(added).toEqual(["moth"]);
+        expect(await repo.getFieldGuide("h_1")).toEqual({
+          v: FIELD_GUIDE_VERSION,
+          entries: { moth: { firstFoundBy: "p_1", foundAt: T1, runId: "r_1" } },
+        });
+      });
+
+      it("adds more later without disturbing what is there", async () => {
+        await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", foundAt: T1 }]);
+        const added = await repo.recordDiscoveries("h_1", [
+          { canonId: "newt", playerId: "p_2", foundAt: T2 },
+          { canonId: "owl", playerId: "p_2", runId: "r_2", foundAt: T2 },
+        ]);
+        expect(added).toEqual(["newt", "owl"]);
+        const book = await repo.getFieldGuide("h_1");
+        expect(Object.keys(book.entries).sort()).toEqual(["moth", "newt", "owl"]);
+        expect(book.entries["moth"]).toEqual({ firstFoundBy: "p_1", foundAt: T1 });
+        expect(book.entries["owl"]).toEqual({ firstFoundBy: "p_2", foundAt: T2, runId: "r_2" });
+      });
+
+      it("is idempotent and keeps the first finder", async () => {
+        await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", runId: "r_1", foundAt: T1 }]);
+        const again = await repo.recordDiscoveries("h_1", [
+          { canonId: "moth", playerId: "p_2", runId: "r_2", foundAt: T2 },
+        ]);
+        expect(again).toEqual([]);
+        expect((await repo.getFieldGuide("h_1")).entries["moth"]).toEqual({
+          firstFoundBy: "p_1",
+          foundAt: T1,
+          runId: "r_1",
+        });
+      });
+
+      it("reports only the genuinely new ids from a mixed batch", async () => {
+        await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", foundAt: T1 }]);
+        const added = await repo.recordDiscoveries("h_1", [
+          { canonId: "moth", playerId: "p_2", foundAt: T2 },
+          { canonId: "newt", playerId: "p_2", foundAt: T2 },
+          // A repeat inside one call: first occurrence wins, reported once.
+          { canonId: "newt", playerId: "p_3", foundAt: T2 },
+        ]);
+        expect(added).toEqual(["newt"]);
+        expect((await repo.getFieldGuide("h_1")).entries["newt"]?.firstFoundBy).toBe("p_2");
+      });
+
+      it("survives concurrent writers: every id lands once, first finder wins", async () => {
+        const results = await Promise.all([
+          repo.recordDiscoveries("h_1", [
+            { canonId: "a", playerId: "p_1", foundAt: T1 },
+            { canonId: "b", playerId: "p_1", foundAt: T1 },
+          ]),
+          repo.recordDiscoveries("h_1", [
+            { canonId: "b", playerId: "p_2", foundAt: T2 },
+            { canonId: "c", playerId: "p_2", foundAt: T2 },
+          ]),
+        ]);
+        // "b" is reported by exactly one writer.
+        expect(results.flat().sort()).toEqual(["a", "b", "c"]);
+        const book = await repo.getFieldGuide("h_1");
+        expect(Object.keys(book.entries).sort()).toEqual(["a", "b", "c"]);
+        const bWinner = results[0]?.includes("b") ? "p_1" : "p_2";
+        expect(book.entries["b"]?.firstFoundBy).toBe(bWinner);
+      });
+
+      it("is scoped to the household", async () => {
+        await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", foundAt: T1 }]);
+        expect((await repo.getFieldGuide("h_other")).entries).toEqual({});
+      });
+
+      it("goes with a swept guest household", async () => {
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+        await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", foundAt: T1 }]);
+
+        expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(true);
+        expect((await repo.getFieldGuide("h_1")).entries).toEqual({});
+      });
+
+      it("is kept when a guest household is claimed instead", async () => {
+        const now = Date.now();
+        await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
+        await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", foundAt: T1 }]);
+        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+        expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
+        expect(Object.keys((await repo.getFieldGuide("h_1")).entries)).toEqual(["moth"]);
       });
     });
 

@@ -65,6 +65,7 @@ import { useEnsureChapter, useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
+import { FieldGuide } from "./FieldGuide";
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -589,8 +590,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     );
   }
 
+  // Opened from the tray's Guide tab (layout/GuideTab.tsx) or the toast.
+  const guideOpen = section === "guide";
+
   return (
+    <>
+    {guideOpen ? <FieldGuide /> : null}
+    {/* `hidden`, not unmounted, while the guide is open: a half-made aim in a
+        fight survives a look at the guide, like the bag. */}
     <section
+      hidden={guideOpen}
       className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
@@ -1484,5 +1493,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </Button>
         ) : null}
     </section>
+    </>
   );
 }

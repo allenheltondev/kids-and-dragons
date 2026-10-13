@@ -71,6 +71,22 @@ describe("LocalSseChannel", () => {
     expect(channel.replay("NOPE", 0)).toBeNull();
   });
 
+  it("delivers the Field Guide's new finds live, but never in a replay", async () => {
+    const channel = new LocalSseChannel();
+    const live: ChannelMessage[] = [];
+    channel.subscribe("ABCD", (m) => live.push(m));
+    await channel.publish("ABCD", {
+      kind: "patch",
+      seq: 1,
+      runId: "r_1",
+      patch: [],
+      discovered: ["creature.moth"],
+    });
+
+    expect(live[0]).toMatchObject({ discovered: ["creature.moth"] });
+    expect(channel.replay("ABCD", 0)?.[0]).not.toHaveProperty("discovered");
+  });
+
   it("writes SSE frames with the seq as the event id", async () => {
     const channel = new LocalSseChannel();
     const sink = fakeSink();

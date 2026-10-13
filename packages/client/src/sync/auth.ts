@@ -66,7 +66,7 @@ const FRIENDLY: Record<string, string> = {
 };
 
 export interface CognitoClient {
-  /** Sends a 6-digit code to `email`, creating the account if it is new. */
+  /** Sends an 8-digit code to `email`, creating the account if it is new. */
   requestCode(email: string): Promise<PendingChallenge>;
   /** Exchanges the code for tokens. */
   submitCode(challenge: PendingChallenge, code: string): Promise<AuthTokens>;
