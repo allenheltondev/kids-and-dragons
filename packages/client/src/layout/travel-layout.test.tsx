@@ -335,3 +335,23 @@ describe("Travel Mode and the map", () => {
     expect(showing(container)).toBe("map");
   });
 });
+
+describe("Travel Mode and the Field Guide (#112)", () => {
+  it("opens the guide in the player pane from the tray, and You leaves it", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+    const { container } = mount();
+    expect(showing(container)).toBe("world");
+    act(() => {
+      tab(container, "Guide").click();
+    });
+    expect(showing(container)).toBe("player");
+    expect(tab(container, "Guide").getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelector('[data-pane="player"] .field-guide')).not.toBeNull();
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(container.querySelector('[data-pane="player"] .field-guide')).toBeNull();
+    expect(tab(container, "Guide").getAttribute("aria-pressed")).toBe("false");
+    vi.unstubAllGlobals();
+  });
+});
