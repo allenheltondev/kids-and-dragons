@@ -223,6 +223,9 @@ interface PendingBeat {
   event: EncounterEvent;
 }
 
+/** How long a figure's art may take before its stand-in is drawn instead. */
+const PLACEHOLDER_GRACE_MS = 700;
+
 /** The picked-not-confirmed mark — a cool cyan against the reach's gold. */
 const AIM_COLOR = 0x6fe6ff;
 
@@ -363,8 +366,15 @@ export function createBoardLayer(): BoardLayer {
     actorContainer.addChild(art);
     actorsLayer.addChild(actorContainer);
 
+    // The stand-in only shows if the art is genuinely late or missing. Drawn
+    // at once, it flashed up as a row of dark blocks at the start of every
+    // fight on the TV for the beat it took the cutouts to load.
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
+    placeholder.visible = false;
     art.addChild(placeholder);
+    const reveal = setTimeout(() => {
+      if (!placeholder.destroyed) placeholder.visible = true;
+    }, PLACEHOLDER_GRACE_MS);
 
     const feet = feetOf(at);
     const named =
@@ -414,12 +424,19 @@ export function createBoardLayer(): BoardLayer {
           const sprite = new Sprite(texture);
           sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
           sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
+          clearTimeout(reveal);
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
+          // Fades up through the same easing that stands a fallen figure back
+          // up (tick), so a figure arrives rather than appearing.
+          if (!actor.down) art.alpha = 0;
         })
         .catch(() => {
-          /* keep the placeholder: a missing enemy must never blank the board */
+          // Keep the placeholder, and show it now: a missing enemy must never
+          // blank the board.
+          clearTimeout(reveal);
+          if (!placeholder.destroyed) placeholder.visible = true;
         });
     };
 
@@ -446,6 +463,7 @@ export function createBoardLayer(): BoardLayer {
           loadCutout();
           return;
         }
+        clearTimeout(reveal);
         art.removeChildren();
         placeholder.destroy();
         // The rig plays its own fall, so hand it the state it joined in and
