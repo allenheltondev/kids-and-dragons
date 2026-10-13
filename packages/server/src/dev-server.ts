@@ -35,6 +35,7 @@ import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom, watchRoom } from "./handlers/room.ts";
+import { listHeroes } from "./handlers/heroes.ts";
 import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
 import { installNarrator } from "./llm/install.ts";
@@ -292,6 +293,18 @@ async function main(): Promise<void> {
       deps,
     );
     res.json(response);
+  });
+
+  // This player's saved characters, to bring one back (see handlers/heroes.ts).
+  app.get("/api/heroes", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "listing heroes needs a room session token");
+    const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
   });
 
   app.get("/api/state", async (req: Request, res: Response) => {

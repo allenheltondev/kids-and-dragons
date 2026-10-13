@@ -23,6 +23,8 @@ import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import type { RunState } from "./types/state.js";
+import type { Character } from "./types/domain.js";
+import { newCharacter } from "./character.js";
 import type { Chapter, ChapterObjective, ChapterOutcome, Scene, StoryScene } from "./types/chapter.js";
 import { APPEARANCE, makeChapter,
   makeMap, makeItems, makeRules } from "./test-fixtures.js";
@@ -524,6 +526,88 @@ describe("CREATE_CHARACTER", () => {
   it("refuses a second character for the same player", () => {
     const state = seatedParty();
     const result = applyIntent(state, { playerId: "p_1", intent: CREATE_GRIFFIN }, ctx());
+    expect(result.error?.code).toBe("ILLEGAL");
+  });
+});
+
+describe("SEAT_CHARACTER (spec §5: a character is reused across campaigns)", () => {
+  /** A hero this player made in an earlier run, as the household stores it. */
+  function savedHero(overrides: Partial<Character> = {}): Character {
+    return {
+      ...newCharacter({
+        id: "c_r_old_p_1",
+        householdId: "h_1",
+        ownerPlayerId: "p_1",
+        name: "Sparklehoof",
+        species: "unicorn",
+        class: "songkeeper",
+        stats: { might: 0, quick: 0, clever: 0, heart: 3 },
+        appearance: APPEARANCE,
+        startingLevel: 4,
+        rules,
+        now: "2026-07-01T12:00:00.000Z",
+      }),
+      ...overrides,
+    };
+  }
+
+  const seat = (characterId = "c_r_old_p_1"): ClientIntent => ({ type: "SEAT_CHARACTER", characterId });
+
+  it("seats the saved hero as they are, at full HP, and writes nothing", () => {
+    const hero = savedHero();
+    const result = applyIntent(newRun(), { playerId: "p_1", intent: seat() }, ctx({ savedCharacter: hero }));
+
+    expect(result.error).toBeUndefined();
+    expect(result.state.phase).toBe("creation");
+    const member = result.state.party[0]!;
+    expect(member.playerId).toBe("p_1");
+    expect(member.character.id).toBe(hero.id);
+    // Their level came with them — the whole point of bringing them.
+    expect(member.character.level).toBe(4);
+    expect(member.hp).toBe(member.character.maxHp);
+    // The row already exists; a create here would be a second copy.
+    expect(result.created).toBeUndefined();
+  });
+
+  it("refuses a hero that is not in this household", () => {
+    const result = applyIntent(newRun(), { playerId: "p_1", intent: seat() }, ctx({ savedCharacter: null }));
+    expect(result.error?.code).toBe("NOT_FOUND");
+
+    const elsewhere = applyIntent(
+      newRun(),
+      { playerId: "p_1", intent: seat() },
+      ctx({ savedCharacter: savedHero({ householdId: "h_other" }) }),
+    );
+    expect(elsewhere.error?.code).toBe("NOT_FOUND");
+  });
+
+  it("refuses somebody else's hero", () => {
+    const result = applyIntent(newRun(), { playerId: "p_2", intent: seat() }, ctx({ savedCharacter: savedHero() }));
+    expect(result.error?.code).toBe("FORBIDDEN");
+  });
+
+  it("refuses a second seat, and a hero who is already at the table", () => {
+    const context = ctx({ savedCharacter: savedHero() });
+    const seated = applyIntent(newRun(), { playerId: "p_1", intent: seat() }, context).state;
+
+    const again = applyIntent(seated, { playerId: "p_1", intent: seat() }, context);
+    expect(again.error?.code).toBe("ILLEGAL");
+
+    // Same row, a different seat: one hero cannot be at the table twice.
+    const twice = applyIntent(
+      seated,
+      { playerId: "p_2", intent: seat() },
+      ctx({ savedCharacter: savedHero({ ownerPlayerId: "p_2" }) }),
+    );
+    expect(twice.error?.code).toBe("ILLEGAL");
+  });
+
+  it("refuses a seat at a full table", () => {
+    let state = newRun();
+    for (let i = 0; i < MAX_PARTY; i++) {
+      state = applyIntent(state, { playerId: `p_x${i}`, intent: CREATE_UNICORN }, ctx()).state;
+    }
+    const result = applyIntent(state, { playerId: "p_1", intent: seat() }, ctx({ savedCharacter: savedHero() }));
     expect(result.error?.code).toBe("ILLEGAL");
   });
 });

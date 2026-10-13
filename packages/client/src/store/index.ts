@@ -664,6 +664,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      async listHeroes() {
+        const session = get().session;
+        if (!session?.playerId) return [];
+        const { heroes } = await deps.api.listHeroes(session.sessionToken);
+        return heroes;
+      },
+
       async joinRoom(code: string, displayName: string) {
         const roomCode = code.trim().toUpperCase();
         set({ connection: "connecting", error: null });
