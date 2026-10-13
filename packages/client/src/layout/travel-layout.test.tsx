@@ -94,13 +94,20 @@ function mount() {
 }
 
 /** Which pane the shell is actually showing, read the way the CSS reads it. */
-function showing(container: HTMLElement): "world" | "player" | "neither" {
-  const panes = [...container.querySelectorAll(".kad-travel__pane")];
-  const world = panes[0]?.getAttribute("data-showing") === "true";
-  const player = panes[1]?.getAttribute("data-showing") === "true";
-  if (world) return "world";
-  if (player) return "player";
-  return "neither";
+function showing(container: HTMLElement): "world" | "map" | "player" | "neither" {
+  const on = [...container.querySelectorAll('.kad-travel__pane[data-showing="true"]')];
+  if (on.length !== 1) return "neither";
+  const pane = on[0]?.getAttribute("data-pane");
+  return pane === "world" || pane === "map" || pane === "player" ? pane : "neither";
+}
+
+/** The tab with this label, the way a thumb finds it. */
+function tab(container: HTMLElement, label: string): HTMLElement {
+  const found = [...container.querySelectorAll(".kad-travel__tab")].find(
+    (el) => el.textContent?.includes(label) ?? false,
+  );
+  if (!found) throw new Error(`no ${label} tab`);
+  return found as HTMLElement;
 }
 
 function crossTiers(seq: number, count: number) {
@@ -136,7 +143,7 @@ describe("Travel Mode and the transformation", () => {
 
     // Put the player on their own controls, the way tapping anything does.
     act(() => {
-      (container.querySelectorAll(".kad-travel__tab")[1] as HTMLElement).click();
+      tab(container, "You").click();
     });
     expect(showing(container)).toBe("player");
 
@@ -152,7 +159,7 @@ describe("Travel Mode and the transformation", () => {
      */
     const { container } = mount();
     act(() => {
-      (container.querySelectorAll(".kad-travel__tab")[1] as HTMLElement).click();
+      tab(container, "You").click();
     });
 
     crossTiers(10, 3);
@@ -174,7 +181,7 @@ describe("Travel Mode and the transformation", () => {
   it("gives the phone back when the last beat is done", () => {
     const { container } = mount();
     act(() => {
-      (container.querySelectorAll(".kad-travel__tab")[1] as HTMLElement).click();
+      tab(container, "You").click();
     });
 
     crossTiers(10, 1);
@@ -189,7 +196,7 @@ describe("Travel Mode and the transformation", () => {
     // of them would make the toggle feel broken.
     const { container } = mount();
     act(() => {
-      (container.querySelectorAll(".kad-travel__tab")[1] as HTMLElement).click();
+      tab(container, "You").click();
     });
 
     act(() => {
@@ -205,5 +212,126 @@ describe("Travel Mode and the transformation", () => {
     });
 
     expect(showing(container)).toBe("player");
+  });
+});
+
+describe("Travel Mode and the map", () => {
+  it("brings the map up on request, and the toggle takes you back", () => {
+    const { container } = mount();
+    expect(showing(container)).toBe("world");
+
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(showing(container)).toBe("map");
+    expect(container.querySelector('[data-surface="map"]')).not.toBeNull();
+
+    act(() => {
+      tab(container, "World").click();
+    });
+    expect(showing(container)).toBe("world");
+  });
+
+  it("takes the map away the moment the game asks you something", () => {
+    // Nobody is being asked anything in `state()`, so the map sticks until the
+    // next question — and the next question must reach you through it.
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(showing(container)).toBe("map");
+
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          seq: 10,
+          phase: "scene",
+          prompt: {
+            kind: "choice",
+            sceneId: "rest_lanternfall",
+            options: [{ id: "on", label: "Onward", icon: "arrow" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(showing(container)).toBe("player");
+  });
+
+  it("shows consecutive questions for the same player without interrupting the current one", () => {
+    const { container } = mount();
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          seq: 10,
+          phase: "scene",
+          sceneId: "scene_first",
+          prompt: {
+            kind: "choice",
+            sceneId: "scene_first",
+            options: [{ id: "a", label: "First question", icon: "eye" }],
+            forPlayerIds: ["p_1"],
+            vote: true,
+          },
+        },
+      });
+    });
+    expect(showing(container)).toBe("player");
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(showing(container)).toBe("map");
+
+    act(() => {
+      const current = useGameStore.getState().state;
+      if (!current || current.prompt?.kind !== "choice") throw new Error("no choice");
+      useGameStore.setState({
+        state: { ...current, seq: current.seq + 1, prompt: { ...current.prompt, votes: { p_1: "a" } } },
+      });
+    });
+    expect(showing(container)).toBe("map");
+
+    act(() => {
+      const current = useGameStore.getState().state;
+      if (!current) throw new Error("no state");
+      useGameStore.setState({
+        state: {
+          ...current,
+          seq: current.seq + 1,
+          sceneId: "scene_second",
+          prompt: {
+            kind: "choice",
+            sceneId: "scene_second",
+            options: [{ id: "b", label: "Second question", icon: "eye" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(showing(container)).toBe("player");
+  });
+
+  it("still gives the die the screen while the map is up", () => {
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    act(() => {
+      useGameStore.setState({
+        presentation: {
+          seq: 10,
+          presentation: { kind: "ROLL", roll: { d20: 14, modifier: 0, total: 14, tn: 10, success: true } },
+        } as never,
+      });
+    });
+    expect(showing(container)).toBe("world");
+    act(() => {
+      vi.advanceTimersByTime(2100);
+    });
+    expect(showing(container)).toBe("map");
   });
 });

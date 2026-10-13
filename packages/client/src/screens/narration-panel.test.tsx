@@ -262,3 +262,18 @@ describe("the story turn (spec §6.1)", () => {
     expect(screen.queryByText(/turn to choose/)).toBeNull();
   });
 });
+
+describe("a fight", () => {
+  it("folds the panel to a strip so the board shows", () => {
+    const { container } = mount({
+      sceneType: "encounter",
+      encounter: { round: 1, turnOrder: [], combatants: [] } as never,
+    });
+    expect(container.querySelector(".narration--fight")).not.toBeNull();
+  });
+
+  it("is a full panel outside one", () => {
+    const { container } = mount({ encounter: null });
+    expect(container.querySelector(".narration--fight")).toBeNull();
+  });
+});

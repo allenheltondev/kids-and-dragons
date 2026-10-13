@@ -21,6 +21,7 @@ import type {
   RulesContent,
   RunState,
   StateResponse,
+  WorldMap,
 } from "@kad/shared";
 
 export class ApiError extends Error {
@@ -141,6 +142,12 @@ export interface Api {
    * The engine's copy lives server-side; this one is read-only dressing.
    */
   loadChapter(id: string): Promise<Chapter>;
+  /**
+   * The world map's key — every placed biome and location with its anchor on
+   * the realm painting (`content/world.json`, generated from canon). What the
+   * phone's map needs to stand the party on the right country.
+   */
+  loadWorld(): Promise<WorldMap>;
   /**
    * The combat ability catalog, raw. `content/abilities.json` wraps the
    * catalog in `{ version, abilities }` with authoring `$comment`s throughout;
@@ -328,6 +335,10 @@ export const api: Api = {
 
   loadAbilities() {
     return request<unknown>("/content/abilities.json");
+  },
+
+  loadWorld() {
+    return request<WorldMap>("/content/world.json");
   },
 
   // --- optional sign-in (architecture §4.5) --------------------------------
