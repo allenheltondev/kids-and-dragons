@@ -58,4 +58,10 @@ describe("the lobby's campaign premise", () => {
     mount({ campaign: { ...FIRST, next: { index: 4, title: "The Pride Roads" } } });
     expect(screen.queryByText(PREMISE)).toBeNull();
   });
+
+  it("is not told at a routed fork nobody has chosen yet", () => {
+    // `next: null` only happens past the first beat (CampaignView.next).
+    mount({ campaign: { ...FIRST, next: null } });
+    expect(screen.queryByText(PREMISE)).toBeNull();
+  });
 });
