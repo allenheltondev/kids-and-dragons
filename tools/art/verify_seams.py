@@ -19,10 +19,15 @@ the part drawn behind and F the part drawn in front:
   joint     When B is the parent (body under an arm), every pixel F paints
             opaquely within JOINT_PX of the pinned pivot must be painted by B
             too: the shoulder is where the most is revealed.     >= BAND_MIN
-  copy      B's hidden pixels in the band must be B's own continuation, not a
-            copy of F's artwork sampled from assembled.png (which is what the
-            old brief asked for, and which shows a ghost of F when F moves).
-            Share of band pixels identical to assembled.png:     <= COPY_MAX
+  copy      WARNING ONLY. B's hidden pixels in the band should be B's own
+            continuation, not a copy of F's artwork sampled from assembled.png
+            (what the old brief asked for; it shows a ghost of F when F moves).
+            Pixel equality is not proof of copying — a flat coat painted
+            honestly under a flat arm of the same colour is equal too — so it
+            is measured only where assembled.png has texture (a neighbour
+            differs by more than TEXTURE_DELTA), and reported for a person to
+            look at rather than failed. Share of textured band pixels
+            identical to assembled.png, warned above:            COPY_MAX
 
 And per part set:
 
@@ -64,6 +69,9 @@ BAND_PX = 24
 JOINT_PX = 64
 BAND_MIN = 0.98
 COPY_MAX = 0.5
+TEXTURE_DELTA = 8
+TEXTURE_MIN_PX = 200
+YELLOW = "\x1b[33m" if sys.stdout.isatty() else ""
 GROUND_PX = 40
 TRUNK = ("body", "head", "mane")
 ACTS = ("head", "arm_l", "arm_r", "leg_l", "leg_r", "tail", "wings")
@@ -110,10 +118,11 @@ def hierarchy(cfg: dict, names: set[str]) -> dict[str, str]:
     return parent
 
 
-def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str]]:
-    """(problems, notes) for one part set; no problems means it passes."""
+def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str], list[str]]:
+    """(problems, warnings, notes) for one part set; no problems means it passes."""
     problems: list[str] = []
     notes: list[str] = []
+    warnings: list[str] = []
     parts_dir = os.path.join(base, "parts")
     cfg = json.load(open(cfg_path))
     z = [n for n in cfg["zOrder"] if os.path.exists(os.path.join(parts_dir, f"{n}.png"))]
@@ -128,6 +137,11 @@ def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str
     for i, n in enumerate(z):
         owner[alpha[n] >= 128] = i
     zi = {n: i for i, n in enumerate(z)}
+    # Where the approved art has texture: a pixel differing from a neighbour.
+    rgb = asm[..., :3].astype(int)
+    textured = np.zeros(asm.shape[:2], bool)
+    textured[:, :-1] |= np.abs(rgb[:, :-1] - rgb[:, 1:]).max(axis=-1) > TEXTURE_DELTA
+    textured[:-1] |= np.abs(rgb[:-1] - rgb[1:]).max(axis=-1) > TEXTURE_DELTA
 
     joints_path = os.path.join(base, "joints.json")
     joints = {}
@@ -175,12 +189,12 @@ def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str
                 jc = (b_solid & near).sum() / near.sum()
                 if jc < BAND_MIN:
                     problems.append(f"{b}/{f}: joint {jc:.1%} of {f} within {JOINT_PX}px of the pivot is painted by {b} (need {BAND_MIN:.0%})")
-        hidden = band & b_solid & (owner != bi)
-        if hidden.any():
+        hidden = band & b_solid & (owner != bi) & textured
+        if hidden.sum() >= TEXTURE_MIN_PX:
             same = (np.abs(img[b][..., :3].astype(int) - asm[..., :3].astype(int)).max(axis=-1) == 0) & hidden
             share = same.sum() / hidden.sum()
             if share > COPY_MAX:
-                problems.append(f"{b}/{f}: copy {share:.0%} of {b}'s hidden band is a copy of assembled.png (max {COPY_MAX:.0%}); paint {b}'s own continuation")
+                warnings.append(f"{b}/{f}: copy? {share:.0%} of {b}'s textured hidden band equals assembled.png exactly; check it is {b}'s own continuation, not {f}'s art")
 
     ground_y = MANIFEST["canvas"]["originY"] - GROUND_PX
     for n in TRUNK:
@@ -188,7 +202,7 @@ def check_set(label: str, base: str, cfg_path: str) -> tuple[list[str], list[str
             low = (owner == zi[n])[ground_y:].sum()
             if low:
                 problems.append(f"ground: {n} owns {low} visible px within {GROUND_PX}px of the standing line (feet belong to the limbs)")
-    return problems, notes
+    return problems, warnings, notes
 
 
 def main() -> int:
@@ -200,7 +214,7 @@ def main() -> int:
     for label, _sp, base, cfg in sets:
         if not os.path.isdir(os.path.join(base, "parts")):
             print(f"  {DIM}skip  {label}  not delivered{RESET}"); continue
-        problems, notes = check_set(label, base, cfg)
+        problems, warnings, notes = check_set(label, base, cfg)
         if problems:
             failed += 1
             print(f"  {RED}FAIL{RESET}  {label}")
@@ -208,6 +222,8 @@ def main() -> int:
                 print(f"        {p}")
         else:
             print(f"  {GREEN}ok{RESET}    {label}")
+        for w in warnings:
+            print(f"        {YELLOW}warn{RESET} {w}")
         for n in notes:
             print(f"        {DIM}note {n}{RESET}")
     print(f"\n{len(sets) - failed} passed   {failed} failed")

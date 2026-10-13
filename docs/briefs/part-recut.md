@@ -106,7 +106,7 @@ plus body/mane.
 
 1. **Band.** B must be painted, fully opaque, under **every pixel F paints opaquely within 24px of their visible seam**. This applies whichever of the two is the parent: a leg drawn behind the body extends at least 24px up under the body, and the body extends at least 24px under an arm drawn over it.
 2. **Joint zone.** When B is the parent (the body under an arm, under the head, under the tail…), B must also be painted under **every pixel F paints opaquely within 64px of the pivot** in `joints.json`. The most is revealed at the shoulder.
-3. **Paint B's own continuation, not a copy of F.** The hidden pixels of B are what B would look like if F were not there: the torso's fur continuing under the arm, the thigh continuing up under the belly. **Do not** sample the hidden area from `assembled.png` (that copies F's art into B, which shows a ghost of F the moment F moves). At most 50% of B's hidden band pixels may be identical to `assembled.png` at the same coordinates (checked).
+3. **Paint B's own continuation, not a copy of F.** The hidden pixels of B are what B would look like if F were not there: the torso's fur continuing under the arm, the thigh continuing up under the belly. **Do not** sample the hidden area from `assembled.png` (that copies F's art into B, which shows a ghost of F the moment F moves). `verify_seams.py` warns when more than 50% of B's hidden band, where the art is textured, is identical to `assembled.png`. Equality doesn't prove copying (a flat coat painted honestly under a flat arm is equal too), so a warning is a prompt to look, not a failure. Look, and say in the report what you found.
 4. **Match B's own surface.** Use B's colours, value range and texture (the palette in asset-brief §2.3 and the art around the seam). Continue markings plausibly (spots, stars, stripes), or leave them out. Don't invent new features.
 5. **No outlines inside hidden areas.** Don't paint an outline stroke along F's edge on B's hidden paint. B's own outline only appears where B's real silhouette is.
 6. **Don't paint beyond what's needed.** Hidden paint stays under F. It must never extend past F's footprint, because at rest it must stay invisible (check A). It also must not cross onto an unrelated part (e.g. a leg's hidden paint must not reach under the other leg).
@@ -174,7 +174,7 @@ Then, for a set `<set>` (e.g. `bigfoot/fledgling`, or
 | | Command | Must show |
 |---|---|---|
 | A | `python3 tools/art/verify.py <species>/<tier> --fail-fragments` (base sets; class sets are covered by B–G) | PASS: recomposite IoU ≥ 0.999 and mean RGB delta ≤ 2.0, format, bounds, no fragments |
-| B | `python3 tools/art/verify_seams.py <set>` | `ok`: band ≥ 98%, joint zone ≥ 98%, copy ≤ 50%, ground, pivots painted by both parts. A `note … no visible seam` line is fine |
+| B | `python3 tools/art/verify_seams.py <set>` | `ok`: band ≥ 98%, joint zone ≥ 98%, ground, pivots painted by both parts. A `note … no visible seam` line is fine. Every `warn … copy?` line is explained in the report (§10) |
 | C | `npm run art:rig:build -- <set>` | `ok`, every pivot `pinned`, `contract ok` |
 | D | `npm run art:rig:build -- --check <set>` | reproducible |
 | E | `npm run art:verify:rig:strict` | PASS |
@@ -204,7 +204,7 @@ check is wrong for a specific set, stop and report it (§10) with the evidence.
 **For the pilot (`bigfoot/fledgling`), and in each PR description:**
 
 1. The output of checks A–G for each set (pass lines and numbers, not just "passed").
-2. `verify_seams.py` before and after for each set: the band, joint and copy percentages per pair.
+2. `verify_seams.py` before and after for each set: the band and joint percentages per pair, and every `copy?` warning with what you found when you looked.
 3. The `comes apart` warning count from check G, before and after.
 4. The contact sheets from H, plus one full-size frame of `walk` and one of `attack` per species, rendered with the rig CLI on a dark background, before and after side by side.
 5. Every pivot changed under §7.3, old → new, with the reason.
