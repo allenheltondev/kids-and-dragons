@@ -1,4 +1,6 @@
-import { dismissPlayerSheet, setPlayerSection } from "../store/player-navigation";
+import { dismissPlayerSheet, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
+import { setFieldGuideOverride } from "../feature-flags";
+import { resetFieldGuideCache } from "./content";
 // @vitest-environment jsdom
 /**
  * PlayerPanel — the four prompts, the bag, and the rule they all share.
@@ -1328,5 +1330,77 @@ describe("the scene behind the controls", () => {
     });
     expect(document.querySelector(".player__echo")).toBeNull();
     expect(screen.getByRole("button", { name: /roll/i })).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Field Guide (#107): local navigation behind VITE_FIELD_GUIDE
+// ---------------------------------------------------------------------------
+
+describe("the Field Guide section", () => {
+  const guideJson = { version: 1, entries: { "creature.a": {} } };
+  const fetchSpy = vi.fn(async () => ({ ok: true, json: async () => guideJson }) as unknown as Response);
+
+  function stubFetch() {
+    fetchSpy.mockClear();
+    vi.stubGlobal("fetch", fetchSpy);
+    resetFieldGuideCache();
+  }
+
+  afterEach(() => {
+    setFieldGuideOverride(null);
+    vi.unstubAllGlobals();
+    resetFieldGuideCache();
+  });
+
+  const entry = () => screen.queryByRole("button", { name: "Field Guide" });
+
+  it("is invisible and never fetched with the flag off", () => {
+    stubFetch();
+    setFieldGuideOverride(false);
+    mount({ phase: "lobby" });
+    act(() => { setPlayerSection("bag"); });
+    expect(entry()).toBeNull();
+    act(() => { setPlayerSection("guide"); });
+    expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  const states: Array<[string, () => ReturnType<typeof mount>]> = [
+    ["the lobby", () => mount({ phase: "lobby" })],
+    ["a story scene", () => mount({ prompt: choicePrompt() })],
+    ["combat", () => {
+      const view = mount({ phase: "encounter" });
+      serverSends({ encounter: realEncounter() });
+      return view;
+    }],
+  ];
+
+  for (const [name, start] of states) {
+    it(`opens in ${name}, returns to the bag, and sends nothing`, async () => {
+      stubFetch();
+      setFieldGuideOverride(true);
+      const user = userEvent.setup();
+      const { sent } = start();
+      act(() => { setPlayerSection("bag"); });
+
+      await user.click(entry()!);
+      expect(usePlayerNavigation.getState().section).toBe("guide");
+      expect(await screen.findByText("0 of 1 found")).toBeTruthy();
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+      await user.click(screen.getByRole("button", { name: "Back to your bag" }));
+      expect(usePlayerNavigation.getState().section).toBe("bag");
+      expect(entry()).toBeTruthy();
+      expect(sent).toEqual([]);
+    });
+  }
+
+  it("a tray tap leaves the guide for the bag", () => {
+    setFieldGuideOverride(true);
+    mount({ phase: "lobby" });
+    act(() => { setPlayerSection("guide"); });
+    act(() => { dismissPlayerSheet(); });
+    expect(usePlayerNavigation.getState()).toMatchObject({ section: "bag", guideEntry: null });
   });
 });

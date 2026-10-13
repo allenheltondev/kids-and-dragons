@@ -35,13 +35,42 @@ env:
   STACK_NAME: kad-staging
 
 jobs:
+  changes:
+    # Staging is ~10-45 minutes of sam deploy for a reviewer to click through.
+    # A pull request that changes only docs, tests, source art, rig parts or
+    # tooling ships nothing new, so there is nothing new to look at.
+    # The rules are in tools/ci/changes.mjs. A skip here is a job-level `if:`
+    # (reports as passed), never `on.paths` (reports nothing). Manual runs
+    # skip nothing.
+    name: does this change need it
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      deploy: ${{ steps.classify.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Classify the change
+        id: classify
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE"
+            node tools/ci/changes.mjs "$BASE" HEAD
+          else
+            node tools/ci/changes.mjs --all
+          fi
+
   deploy:
     name: sam deploy staging
+    needs: changes
     # Dependabot pull requests run with a separate secret store that cannot
     # see the deploy role ARN, so OIDC fails before anything useful happens.
     # CI still gates the merge, and the post-merge production deploy exercises
     # the bump for real.
-    if: github.actor != 'dependabot[bot]'
+    if: needs.changes.outputs.deploy == 'true' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     environment:
