@@ -32,6 +32,9 @@
   "scenes": {
     "scene_mouth": {
       "type": "story",
+      "discovers": [
+        "creature.restless_remains"
+      ],
       "art": "scenes/gemfall/gem-gallery",
       "narration": "The lava tube opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
       "choices": [
@@ -119,6 +122,9 @@
     },
     "scene_moth_road": {
       "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
       "art": "scenes/gemfall/gem-gallery",
       "narration": "The embermoths still trust you. They lead you down a side tunnel where the rock is cool enough to touch, and one of them rides on your nose the whole way, like a tiny glowing hat. Behind you, the bones sit back down. Nobody was in a hurry, so nobody had to be.",
       "choices": [
@@ -202,6 +208,9 @@
     },
     "rest_cool_gallery": {
       "type": "rest",
+      "discovers": [
+        "creature.embermoth"
+      ],
       "art": "scenes/gemfall/gem-gallery",
       "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. Eat what you have left, patch each other up, and listen to the mountain breathing below you. It is breathing faster.",
       "heal": 3,
@@ -328,6 +337,10 @@
     },
     "scene_keeper": {
       "type": "story",
+      "discovers": [
+        "creature.legend_dragon",
+        "creature.embermoth"
+      ],
       "art": "scenes/gemfall/seal-chamber",
       "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. It has looked at a great many people for a long time, and it is very good at it. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
       "choices": [

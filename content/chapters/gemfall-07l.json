@@ -93,6 +93,9 @@
     },
     "scene_ledger": {
       "type": "story",
+      "discovers": [
+        "faction.skywardens"
+      ],
       "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, and the desk is guarded by Pellam, who has never once smiled on duty and has logged that fact twice. \"Not for lending,\" says Pellam, before you have said anything at all.",
       "choices": [
         {
@@ -185,6 +188,9 @@
     },
     "scene_choir": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "Up a side valley the Deep Hollow choir is humming with their bark masks pushed up on their heads. They are singing the stones' own note, and the stones in your packs hum along, as if they know the words.",
       "choices": [
         {
@@ -372,6 +378,10 @@
     },
     "scene_ossley": {
       "type": "story",
+      "discovers": [
+        "individual.old_ossley",
+        "npc.frogfolk"
+      ],
       "narration": "Old Ossley is poling his flat boat up a creek with no water in it, loaded with every toll the trolls took this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
       "choices": [
         {
@@ -429,6 +439,9 @@
     },
     "scene_boggart": {
       "type": "story",
+      "discovers": [
+        "npc.boggart"
+      ],
       "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
       "choices": [
         {
@@ -485,6 +498,9 @@
     },
     "scene_ford_witch": {
       "type": "story",
+      "discovers": [
+        "npc.witch_order"
+      ],
       "narration": "Mother Thrum, the ford witch, has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
       "choices": [
         {
@@ -561,6 +577,9 @@
     },
     "scene_stall_witch": {
       "type": "story",
+      "discovers": [
+        "npc.witch_order"
+      ],
       "narration": "At the end of the road a witch in a patched hat runs a remedy stall, and every charm on it is ringing by itself. \"I'll lend you my question,\" she says, \"if you answer it first. What do you actually want?\"",
       "choices": [
         {
@@ -666,6 +685,9 @@
     },
     "scene_centaur_relay": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "The centaur relay pulls up at your table and unrolls a sash-map. \"Fat caravan tomorrow, biggest stone in the funnel,\" says the lead runner. \"Where do you want it?\" You point at the worst bend, and she nods as if that is the most sensible thing anyone has said all day.",
       "onEnter": [
         {
@@ -704,6 +726,9 @@
     },
     "scene_ember": {
       "type": "story",
+      "discovers": [
+        "npc.merfolk"
+      ],
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "choices": [
         {
@@ -765,6 +790,10 @@
     },
     "scene_switchback": {
       "type": "story",
+      "discovers": [
+        "creature.echo_hunter",
+        "creature.cinder_wolf"
+      ],
       "narration": "Halfway up the switchback the road runs through a narrow cutting, and something in the cutting is repeating every sound you make, half a breath late. Your footsteps. Your whispers. Your humming stones. With it, a lone cinder wolf, coming down off the mountain with its ears flat.",
       "choices": [
         {
