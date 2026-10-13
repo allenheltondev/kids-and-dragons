@@ -128,8 +128,8 @@
         {{/* Pagefind UI will be injected here */}}
       </div>
     </div>
-    <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
-    <script src="/pagefind/pagefind-ui.js"></script>
+    <link href="{{ "pagefind/pagefind-ui.css" | relURL }}" rel="stylesheet">
+    <script src="{{ "pagefind/pagefind-ui.js" | relURL }}"></script>
     <script>
       window.addEventListener('DOMContentLoaded', () => {
         new PagefindUI({ element: "#search", showSubResults: true });

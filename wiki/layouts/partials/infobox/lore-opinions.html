@@ -16,7 +16,7 @@
     <ul class="wiki-opinion-list">
       {{ range . }}
       <li>
-        <a class="wiki-opinion wiki-opinion--like" href="{{ .url | relURL }}" title="{{ .because }}">{{ .title }}</a>
+        <a class="wiki-opinion wiki-opinion--like" href="{{ strings.TrimPrefix "/" .url | relURL }}" title="{{ .because }}">{{ .title }}</a>
       </li>
       {{ end }}
     </ul>
@@ -28,7 +28,7 @@
     <ul class="wiki-opinion-list">
       {{ range . }}
       <li>
-        <a class="wiki-opinion wiki-opinion--dislike" href="{{ .url | relURL }}" title="{{ .because }}">{{ .title }}</a>
+        <a class="wiki-opinion wiki-opinion--dislike" href="{{ strings.TrimPrefix "/" .url | relURL }}" title="{{ .because }}">{{ .title }}</a>
       </li>
       {{ end }}
     </ul>
