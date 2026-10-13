@@ -1114,6 +1114,7 @@ function doStartChapter(
 
   draft.campaignId = chapter.campaignId;
   draft.chapterId = chapter.id;
+  draft.chapterInfo = { index: chapter.index, title: chapter.title };
   draft.xpEarned = 0;
   // Cleared with the XP they belong to. Left behind, the previous chapter's
   // setback and its bonus list would still be on the state the moment this one
@@ -1634,6 +1635,7 @@ function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefine
      */
     draft.phase = "lobby";
     draft.chapterId = null;
+    draft.chapterInfo = null;
     draft.sceneId = null;
     draft.sceneType = null;
     draft.narration = "";

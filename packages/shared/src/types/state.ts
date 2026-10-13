@@ -45,6 +45,13 @@ export type PhaseKind =
 export interface CampaignView {
   id: string;
   title: string;
+  /**
+   * The campaign's premise, as authored (`Campaign.blurb`). The lobby shows it
+   * before chapter 1, so the table knows what it is setting out on before the
+   * first scene drops it into the middle of things. Optional: absent on runs
+   * persisted before it existed.
+   */
+  blurb?: string;
   /** How many chapters a playthrough visits — beats, not files. */
   chapters: number;
   /** The chapter "Begin" would start; null only at a fork nobody has chosen. */
@@ -111,6 +118,13 @@ export interface RunState {
    */
   campaign?: CampaignView | null;
   chapterId: string | null;
+  /**
+   * The chapter in play, by the name and number the table knows it by — the
+   * shared screen heads every scene with "Chapter 1 of 8 · The City That
+   * Smelled Opportunity" rather than a file id. Set at chapter start, cleared
+   * with `chapterId`. Optional for runs persisted before it existed.
+   */
+  chapterInfo?: { index: number; title: string } | null;
   sceneId: SceneId | null;
   sceneType: SceneType | null;
   /** Rendered narration for the current scene (authored, or LLM-validated). */

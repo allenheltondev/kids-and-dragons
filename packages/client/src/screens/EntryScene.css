@@ -39,6 +39,11 @@
   border-radius: 0.5em;
   background: rgb(13 11 26 / 88%);
 }
+.entry-scene-host .lobby__premise {
+  padding: 0.6em 0.8em;
+  border-radius: 0.75em;
+  background: rgb(13 11 26 / 88%);
+}
 /* Wide enough on a TV for a full party (MAX_PARTY, four) to stand in one row:
    at 36em the lineup held two across, and on a 720p screen the third card
    fell below the bottom edge of a display nobody can scroll. A phone pane is
