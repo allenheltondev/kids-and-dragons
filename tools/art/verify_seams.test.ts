@@ -25,7 +25,7 @@ const ART = fileURLToPath(new URL(".", import.meta.url));
 const work = mkdtempSync(join(tmpdir(), "kad-seams-test-"));
 afterAll(() => rmSync(work, { recursive: true, force: true }));
 
-function run(kind: "flat" | "gap" | "copied"): { problems: string[]; warnings: string[] } {
+function run(kind: "flat" | "gap" | "copied" | "rider"): { problems: string[]; warnings: string[] } {
   const py = `
 import json, os, sys
 import numpy as np
@@ -62,7 +62,24 @@ Image.fromarray(armp).save(os.path.join(base, "parts", "arm_l.png"))
 Image.fromarray(assembled).save(os.path.join(base, "assembled.png"))
 json.dump({"arm_l": {"parent": "body", "x": 580, "y": 340}}, open(os.path.join(base, "joints.json"), "w"))
 cfg = os.path.join(base, "rig.json")
-json.dump({"root": "body", "adjacency": [["body", "arm_l"]], "zOrder": ["body", "arm_l"]}, open(cfg, "w"))
+adjacency, z = [["body", "arm_l"]], ["body", "arm_l"]
+if ${JSON.stringify(kind)} == "rider":
+    # A leg behind the body, its band painted up under the body, except where
+    # the arm (riding the body) hangs over the hip seam: the leg leaves that
+    # alone, as the brief requires, and the check must not ask for it.
+    leg = (xx >= 520) & (xx < 600) & (yy >= 600) & (yy < 820)
+    under = leg | ((xx >= 480) & (xx < 640) & (yy >= 560) & (yy < 600) & ~arm)
+    legp = paint(under, False)
+    Image.fromarray(legp).save(os.path.join(base, "parts", "leg_l.png"))
+    asm = np.asarray(Image.open(os.path.join(base, "assembled.png"))).copy()
+    fill = leg & (asm[..., 3] == 0)
+    asm[fill] = legp[fill]
+    Image.fromarray(asm).save(os.path.join(base, "assembled.png"))
+    j = json.load(open(os.path.join(base, "joints.json")))
+    j["leg_l"] = {"parent": "body", "x": 540, "y": 590}
+    json.dump(j, open(os.path.join(base, "joints.json"), "w"))
+    adjacency, z = [["body", "arm_l"], ["body", "leg_l"]], ["leg_l", "body", "arm_l"]
+json.dump({"root": "body", "adjacency": adjacency, "zOrder": z}, open(cfg, "w"))
 problems, warnings, notes = vs.check_set(${JSON.stringify(kind)}, base, cfg)
 print(json.dumps({"problems": problems, "warnings": warnings}))
 `;
@@ -78,6 +95,11 @@ describe("verify_seams", () => {
     const { problems } = run("gap");
     expect(problems.some((p) => /^body\/arm_l: band/.test(p))).toBe(true);
     expect(problems.some((p) => /^body\/arm_l: joint/.test(p))).toBe(true);
+  });
+
+  it("does not ask a leg to paint under an arm that rides the body over the hip seam", () => {
+    const { problems } = run("rider");
+    expect(problems).toEqual([]);
   });
 
   it("warns, but does not fail, when textured hidden paint equals assembled.png", () => {

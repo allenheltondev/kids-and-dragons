@@ -48,6 +48,9 @@
   "scenes": {
     "scene_parade": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "The shortest road north is a parade: gem wagons up to their axles in ruts, a campfire on every rise, and centaur relay-runners weaving through it all at a canter. Then the whole parade stops. Somebody up ahead is shouting \"NUMBERS! GET YOUR NUMBERS!\"",
       "choices": [
         {
@@ -112,6 +115,9 @@
     },
     "scene_number_pebble": {
       "type": "story",
+      "discovers": [
+        "npc.faun"
+      ],
       "narration": "The road ends at the west branch of the river, and the queue to cross it is two days long. A faun provisioner named Burdock is selling numbered pebbles out of a bucket, and honeycakes at bridge-queue prices, which means three times what they are worth. Your pebble says 412. The ford is on number 9.",
       "choices": [
         {
@@ -149,6 +155,9 @@
     },
     "scene_three_cards": {
       "type": "story",
+      "discovers": [
+        "character.kitsune"
+      ],
       "narration": "Behind Burdock's stall, a kitsune in a tall hat is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
       "choices": [
         {
@@ -461,6 +470,9 @@
     },
     "scene_dusk_wolves": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "At dusk, cinder wolves come and sit just past the firelight, cold and thin, with a faint warm glow under their fur. They are not hunting. They are pointedly not sitting anywhere near the gem wagons. Every campfire in the queue is arguing about whether to feed them.",
       "choices": [
         {
@@ -530,6 +542,9 @@
     },
     "scene_witch_stall": {
       "type": "story",
+      "discovers": [
+        "npc.witch_order"
+      ],
       "narration": "Down the queue there is a remedy stall with a pointed hat hanging off the corner. Every time a gem wagon rolls past, all the little bell charms on the stall ring by themselves, and the witch behind the counter winces. Her name is Mother Thrum. She looks at you over her spectacles. \"What do you actually want?\"",
       "choices": [
         {
@@ -742,6 +757,9 @@
     },
     "scene_surge": {
       "type": "story",
+      "discovers": [
+        "creature.river_drake"
+      ],
       "narration": "Halfway across, a gang of queue-jumpers charges into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
       "choices": [
         {
@@ -815,6 +833,9 @@
     },
     "end_marsh_west": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The west branch does what rivers do: it whooshes you west into the green tangles of the Whispering Marsh, past a boggart in a reed hat who applauds. At last the channels let you go on a muddy bank near MossHome, at the flooded edge of the Enchanted Woods. You never chose this road, but here you are, and the tuned charm is still humming. The road people will hear about it. The road people hear about everything.",
       "heal": 3,
       "onEnter": [
@@ -833,6 +854,9 @@
     },
     "end_swept_setback": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The current takes you a long, long way west, through the marsh's tangles and out the far side, three days later than you meant to arrive anywhere. You wash up on the flooded paths of the Enchanted Woods with wet bags, a cold supper, and a drake-shaped grudge. It is not the road you chose, and it cost you time, but you are all together and the charm is still humming.",
       "heal": 3,
       "onEnter": [

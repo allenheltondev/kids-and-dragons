@@ -96,6 +96,9 @@
     },
     "scene_courtesy": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "You wave first, from far off, tail curled politely away, the way road peoples have done for longer than anybody remembers. A centaur on the ridge stops dead, puts a hand on her heart, and waves back so hard her sash ribbons tangle.",
       "choices": [
         {
@@ -108,6 +111,9 @@
     },
     "scene_fennick": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor.\" She says it once. Centaurs do not say a warning twice.",
       "onEnter": [
         {
@@ -186,6 +192,9 @@
     },
     "scene_troll": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll"
+      ],
       "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you would rest a hand on a sleeping dog. The toll is a story or a riddle from each of you, and he hears every single one in full. Slowly. A bird builds half a nest on his shoulder while he listens.",
       "choices": [
         {
@@ -341,6 +350,9 @@
     },
     "scene_drake_shelf": {
       "type": "story",
+      "discovers": [
+        "creature.river_drake"
+      ],
       "narration": "In the bridge's shadow, a river drake lies along a rock shelf like a cat on a windowsill. The shelf holds fish bones, three boat hinges, one otter-polished pebble, and right in the middle a new gem that hums. Beside it, a slate says RATES, and the drake keeps rubbing the numbers out with its tail and writing bigger ones.",
       "choices": [
         {
@@ -431,6 +443,9 @@
     },
     "scene_crossing_bank": {
       "type": "choice_point",
+      "discovers": [
+        "npc.frogfolk"
+      ],
       "narration": "At last, your turn. The flat stones march out across the river, and then the last stretch is simply under: brown water hurrying over where the stones should be. In the reeds, a flat boat bumps the bank. A frog in a very old hat sits in it, saying nothing, in a way that sounds like he has been saying nothing for years.",
       "choices": [
         {
@@ -470,6 +485,9 @@
     },
     "scene_ossley_price": {
       "type": "story",
+      "discovers": [
+        "individual.old_ossley"
+      ],
       "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks at each of you in turn and asks for one thing each: the song you hum when nobody is listening, the last thing you were proud of, and a promise to carry something for somebody, someday. He does not say what. He does not say who.",
       "choices": [
         {
@@ -525,6 +543,9 @@
     },
     "rest_dry_end": {
       "type": "rest",
+      "discovers": [
+        "biome.eastern_plains"
+      ],
       "narration": "The east bank. The Eastern Plains roll away ahead, gold and green, and behind you a caravan is still telling the troll its story. On the far ridge a manticore silhouette waves first. Wave back. Camp here tonight, dry, with the river in your ears and that older note humming in your packs.",
       "onEnter": [
         {
@@ -557,6 +578,10 @@
     },
     "scene_mouth": {
       "type": "story",
+      "discovers": [
+        "individual.old_ossley",
+        "npc.frogfolk"
+      ],
       "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is Old Ossley. He fishes you out one at a time and says nothing. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
       "onEnter": [
         {
@@ -575,6 +600,9 @@
     },
     "scene_crawlers": {
       "type": "story",
+      "discovers": [
+        "creature.bone_crawler"
+      ],
       "narration": "The beach is covered in old bone chips laid out in neat spirals. Then a spiral stands up. Bone crawlers: little scuttlers wearing shells of borrowed fossil, sleeves too long, dignity enormous. They are clattering straight for your humming packs.",
       "choices": [
         {
