@@ -49,6 +49,19 @@ Single wide 16:9 painterly detailed fantasy storybook game environment for Gemfa
 
 Single wide 16:9 painterly detailed fantasy storybook game backdrop, Gemfall Kids & Dragons, children age 8. Finale seal chamber beneath Mount Red Sky. Vast vaulted basalt cavern, in upper middle a large ancient circular octagonal mineral seal set into a raised stone dais, eight radial great facet sockets and a warm amber keystone at its crown. Seal visibly incomplete with vacant sockets and fine lines of restrained amber light suggesting something immense stirring beneath it, but DO NOT depict a titan or any recognizable creature under or above the seal; its identity remains a mystery. Floating mineral dust, teal and blue gem veins, tiny gold embermoths, luminous reflected light, awe and gentle tension not horror. Dais viewed at shallow frontal angle; lower third open dark stone floor for game character sprites. Rich warm gold against cool blue charcoal, dimensional soft painted brushwork matching a polished fantasy environment. No people, dragons, readable text, lettering, UI, border or weapons.
 
+## Pending
+
+### Sheeple ridge
+
+Not generated yet. Save it as `assets/scenes/gemfall/sheeple-ridge.webp` (1920×1080 WebP, quality
+88), and in the same change add `"art": "scenes/gemfall/sheeple-ridge"` to these 02 scenes:
+`scene_flock_ridge`, `scene_flock_bigfoot`, `check_flock_clever`, `scene_flock_copies`,
+`scene_flock_scatters`. Until then they fall back to the Sunward Fields backdrop. Do not add the
+`art` key before the file exists, because the wiring test checks that every referenced
+illustration is there.
+
+Single wide 16:9 painterly detailed fantasy storybook game backdrop for Kids & Dragons Gemfall, family friendly age 8. Base it on the Sunward Fields biome: warm green farm country, pumpkin rows and golden fields, soft late-morning light, with something slightly uneasy at the edges. Added extra: on a low grassy ridge in the upper middle stands a tight woolly knot of about thirty sheeple, upright sheep-folk on two hooves about 4 feet tall, soft round faces, some with curled horns, fleece in cream, grey, brown and black. Every one of them wears the same felted outfit: a tall stacked hat with seven brims, tassels hung from the horns, a ring-collar like a float. They stand close together, all looking the same way, toward a stretch of long grass at the side of the picture. Below the ridge, a dusty farm road is crowded with small jackalopes sitting packed together, ears all pointed the same way. The long grass is still and empty; no wolves are visible. Lower third is open dusty road and verge for separately rendered character sprites. No named characters, no text, UI, border or weapons. Friendly, funny and a little uneasy, never scary.
+
 ## Validation
 
 Content validation checks chapter schemas and scene graphs. Gemfall wiring tests check that
