@@ -9,7 +9,7 @@
  * looking at. A question that sat behind the map would be a turn nobody took.
  */
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import type { Prompt } from "@kad/shared";
 import { makeMember, makeState } from "../testing/fixtures";
@@ -47,6 +47,32 @@ afterEach(() => {
 });
 
 describe("Party Mode and the map", () => {
+  it("preserves the world subtree across World, You and Map visits", () => {
+    const { container } = mount();
+    const narration = container.querySelector('[data-pane="world"] .narration');
+    expect(narration).not.toBeNull();
+    for (const name of ["World", "Map", "You", "World"]) {
+      act(() => screen.getByRole("button", { name }).click());
+      expect(container.querySelector('[data-pane="world"] .narration')).toBe(narration);
+    }
+  });
+
+  it("offers live room mode switching in settings, outside the three-tab tray", () => {
+    const send = vi.fn(async () => true);
+    useGameStore.setState({ send });
+    mount();
+    const nav = screen.getByRole("navigation", { name: "What to look at" });
+    expect(nav.querySelectorAll("button")).toHaveLength(3);
+    act(() => screen.getByText("Room settings").click());
+    act(() => screen.getByRole("button", { name: "No TV? Show the world on the phones" }).click());
+    expect(send).toHaveBeenCalledWith({ type: "SET_MODE", mode: "travel" });
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, mode: "travel" } });
+    });
+    act(() => screen.getByRole("button", { name: "Use a TV for the world" }).click());
+    expect(send).toHaveBeenLastCalledWith({ type: "SET_MODE", mode: "party" });
+  });
   it("dismisses a character sheet when the already-selected You destination is tapped", () => {
     mount();
     act(() => screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).click());

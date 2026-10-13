@@ -1163,6 +1163,12 @@ describe("being offered an item with a full bag", () => {
  * "what is her Guard?" is a question a fight raises more often than a camp.
  */
 describe("the party strip", () => {
+  it.each([1, 2])("names a Rest task for %i unspent stat points", (points) => {
+    mount({ sceneType: "rest", prompt: null, party: [member({ character: character({ unspentPoints: points }) })] });
+    act(() => dismissPlayerSheet());
+    expect(screen.getByRole("button", { name: points === 1 ? "Spend your stat point" : "Spend your stat points" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "View the fight" })).toBeNull();
+  });
   it("opens the bag from You, offers the turn, and returns without losing a selection", async () => {
     const user = userEvent.setup();
     mount({ prompt: choicePrompt() });

@@ -22,6 +22,7 @@ import { useEffect, useRef, useState } from "react";
 import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
+import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
 import { useMyTurnKey } from "../store";
 
@@ -105,13 +106,11 @@ function PhoneLayout(): React.JSX.Element {
       {/* `hidden` rather than unmounted, like the Travel panes: a selection
           half-made in the bag survives a look at the map. */}
       <div className="kad-party__pane" data-pane="player" data-showing={showing === "player"}>
-        <PlayerView />
+        <PlayerView roomControls={<ModeSwitch />} />
       </div>
-      {showing === "world" ? (
-        <div className="kad-party__pane" data-pane="world" data-showing>
+        <div className="kad-party__pane" data-pane="world" data-showing={showing === "world"}>
           <WorldView />
         </div>
-      ) : null}
       {onMap ? (
         <div className="kad-party__pane" data-pane="map" data-showing>
           <MapView />
