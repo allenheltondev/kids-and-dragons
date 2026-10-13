@@ -23,12 +23,14 @@
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
+import { FieldGuideToast } from "../screens/FieldGuideNews";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
 import { PlaytestPanel } from "../screens/PlaytestPanel";
 import { useMe, useSession } from "../store";
-import { dismissPlayerSheet } from "../store/player-navigation";
+import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
+import { FieldGuide } from "../screens/FieldGuide";
 import { useKeepsakeStore } from "../store/keepsake";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
@@ -61,14 +63,24 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // bring one before being asked to make anybody (spec §5), and one who has
   // none goes straight through to the creation flow.
   const creating = me === null;
+  // The tray's Guide tab works before there is a character too. PlayerPanel
+  // shows the guide itself once there is one; until then it stands over the
+  // creation flow, which stays mounted (hidden) so a half-made hero survives.
+  const section = usePlayerNavigation((navigation) => navigation.section);
+  const guideOverCreation = creating && section === "guide";
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
-      {creating ? <WelcomeBack /> : <PlayerPanel roomControls={roomControls} />}
+      {guideOverCreation ? <FieldGuide /> : null}
+      {creating ? (
+        <div className="player-view__creation" hidden={guideOverCreation}><WelcomeBack /></div>
+      ) : <PlayerPanel roomControls={roomControls} />}
       {/* A panel over the surface, not a route: the game keeps running behind
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
       <SignInFlow />
+      {/* Field Guide finds; waits while a turn prompt is open. */}
+      <FieldGuideToast />
       {/*
        * Roadmap chapter 6's playtest drawer — warp to a scene, load the next
        * d20. `import.meta.env.DEV` is replaced with a literal `false` in the

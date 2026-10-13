@@ -1,4 +1,5 @@
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
+import { GuideTab } from "./GuideTab";
 /**
  * Travel Mode — one surface at a time (spec §2.2).
  *
@@ -138,11 +139,13 @@ export function TravelLayout(): React.JSX.Element {
    * looking at. Nothing outranks the transformation.
    */
   const showing: Focus = transforming || rolling ? "world" : focus;
+  const inGuide = showing === "player" && section === "guide";
 
   return (
     <div className="kad-travel">
       {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
-          row of tabs — the realm globe, the map, your satchel. */}
+          row of tabs — the realm globe, your satchel, the Field Guide's journal,
+          the map. */}
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
@@ -157,16 +160,16 @@ export function TravelLayout(): React.JSX.Element {
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" && !inGuide ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-label="You"
-          aria-pressed={showing === "player"}
+          aria-pressed={showing === "player" && !inGuide}
           onClick={() => { dismissPlayerSheet(); setFocus("player"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />
             {/* A badge with a shape, not a colour: "you are needed" must not
                 be colour alone (spec §11). */}
-            {myTurn && (showing !== "player" || section === "bag") ? (
+            {myTurn && (showing !== "player" || section !== "turn") ? (
               <span className="kad-travel__nudge kad-tray__badge" aria-label="Your turn">
                 ★
               </span>
@@ -174,6 +177,8 @@ export function TravelLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">You</span>
         </button>
+        <GuideTab on={inGuide} onShowPlayer={() => setFocus("player")}
+          className="kad-travel__tab" onClassName="kad-travel__tab--on" />
         <button
           type="button"
           className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
