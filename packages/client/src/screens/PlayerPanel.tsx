@@ -534,12 +534,14 @@ export function PlayerPanel(): ReactElement {
   /*
    * Which picture to stand the controls in: the scene's own illustration when
    * it has one, else the chapter's biome — the same choice the stage makes.
-   * None in the lobby (EntryScene owns that), none in a fight (the combat
-   * grid is a map and needs the contrast), none before the chapter is known.
+   * None in the lobby (EntryScene owns that), none before the chapter is
+   * known. In a fight it stays, dimmed harder (`player--fighting`): the grid
+   * carries its own dark panel for contrast, and the half-pane above it was
+   * black otherwise.
    */
   const sceneArt = sceneArtFor(chapter, state);
   const backdrop =
-    inLobby || inEncounter || chapter === null || chapter.id !== state.chapterId
+    inLobby || chapter === null || chapter.id !== state.chapterId
       ? null
       : (sceneArt ? sceneBackdropUrl(sceneArt) : null) ?? biomeBackdropUrl(chapter.biome);
   const banked = me.character.unspentPoints;
@@ -642,7 +644,7 @@ export function PlayerPanel(): ReactElement {
 
   return (
     <section
-      className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}`}
+      className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
