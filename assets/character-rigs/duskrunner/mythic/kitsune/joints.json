@@ -1,0 +1,53 @@
+{
+  "$comment": "This part set's joints, pinned: child part -> its pivot with its parent, in canvas px (1024 canvas, origin 512,900). The rig builder uses these instead of measuring the overlap centroid (docs/briefs/part-recut.md). Recorded from the stamped joint discs the parts were delivered with; move one only to correct a joint that is anatomically wrong.",
+  "head": {
+    "parent": "body",
+    "x": 327.0057142857143,
+    "y": 437.9890476190476
+  },
+  "arm_l": {
+    "parent": "body",
+    "x": 311.0057142857143,
+    "y": 531.9890476190476
+  },
+  "arm_r": {
+    "parent": "body",
+    "x": 207.01095238095238,
+    "y": 532.0057142857142
+  },
+  "leg_l": {
+    "parent": "body",
+    "x": 622.9890476190476,
+    "y": 557.9942857142858
+  },
+  "leg_r": {
+    "parent": "body",
+    "x": 466.9942857142857,
+    "y": 567.9890476190476
+  },
+  "tail": {
+    "parent": "body",
+    "x": 672.362763915547,
+    "y": 495.40690978886755
+  },
+  "gear_behind": {
+    "parent": "body",
+    "x": 602.05,
+    "y": 550.1125
+  },
+  "gear_visible": {
+    "parent": "body",
+    "x": 503.5,
+    "y": 503.5
+  },
+  "mane": {
+    "parent": "head",
+    "x": 302.9942857142857,
+    "y": 270.0109523809524
+  },
+  "gear_head": {
+    "parent": "head",
+    "x": 259.6249549679372,
+    "y": 347.1368614453491
+  }
+}
