@@ -4,7 +4,7 @@
   "index": 8,
   "title": "Gemfall",
   "biome": "mount_red_sky",
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 45,
   "xpAward": 120,
   "entry": "scene_mouth",
   "objectives": [
@@ -52,7 +52,7 @@
           "label": "Set the Table Stone back into the vein",
           "icon": "gem",
           "requiresItem": "facet_table",
-          "goto": "rest_cool_gallery",
+          "goto": "scene_mouth_table_back",
           "effects": [
             {
               "type": "setFlag",
@@ -66,7 +66,7 @@
           "label": "Set the Ember Facet back into the wall",
           "icon": "gem",
           "requiresItem": "facet_ember",
-          "goto": "rest_cool_gallery",
+          "goto": "scene_mouth_ember_back",
           "effects": [
             {
               "type": "setFlag",
@@ -88,6 +88,32 @@
           "icon": "ear",
           "requiresFlag": "clock_late",
           "goto": "scene_bells_first"
+        }
+      ]
+    },
+    "scene_mouth_ember_back": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "You press the Ember Facet into the wall, your very first stone, warm as toast all the way from the Exchange gutter. It fits. Of course it fits. The vein takes it with a sound like a sigh, and the bones sink back into the rock as if somebody had finally said the thing they were waiting to hear.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on down",
+          "icon": "gem",
+          "goto": "rest_cool_gallery"
+        }
+      ]
+    },
+    "scene_mouth_table_back": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "You set the Table Stone into the nearest gem-vein, and it slides in as if it had been missing exactly that long. The wall glows brighter along the whole vein, like a lamp being turned up. The bones stop, consider this, and lie back down one by one, very carefully, the way you put down something you had been meaning to put down for years.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on down",
+          "icon": "gem",
+          "goto": "rest_cool_gallery"
         }
       ]
     },
@@ -227,20 +253,59 @@
           "label": "Wedge the Table Stone into the crack and buy one more ring",
           "icon": "gem",
           "requiresItem": "facet_table",
-          "goto": "scene_keeper"
+          "goto": "scene_bells_ringing_table_wedge"
         },
         {
           "id": "harvest_wedge",
           "label": "Set the Harvest Stone back and buy one more ring",
           "icon": "gem",
           "requiresItem": "facet_harvest",
-          "goto": "scene_keeper"
+          "goto": "scene_bells_ringing_harvest_wedge"
         },
         {
           "id": "unassigned_wedge",
           "label": "Put the Unassigned Stone back where nobody should dig",
           "icon": "gem",
           "requiresItem": "facet_unassigned",
+          "goto": "scene_bells_ringing_unassigned_wedge"
+        }
+      ]
+    },
+    "scene_bells_ringing_unassigned_wedge": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognised something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You run.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Run for the seal",
+          "icon": "gem",
+          "goto": "scene_keeper"
+        }
+      ]
+    },
+    "scene_bells_ringing_harvest_wedge": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "You set the Harvest Stone down in the crack, medal and all. BEST, says the medal, upside down. The floor goes still for one long breath, and somewhere very far away a harvest sprite would have been proud. One ring bought. You run.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Run for the seal",
+          "icon": "gem",
+          "goto": "scene_keeper"
+        }
+      ]
+    },
+    "scene_bells_ringing_table_wedge": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "You wedge the Table Stone into the crack in the floor, and the shaking stops for exactly one breath. Far above, the bells pause too, as if the whole realm had been listening for that. Then the shaking comes back, softer, and you have bought one ring, and you run.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Run for the seal",
+          "icon": "gem",
           "goto": "scene_keeper"
         }
       ]
@@ -264,20 +329,20 @@
     "scene_keeper": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
+      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. It has looked at a great many people for a long time, and it is very good at it. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
       "choices": [
         {
           "id": "truth",
           "label": "Tell it the truth: every stone, every pocket",
           "icon": "heart",
-          "goto": "scene_q2"
+          "goto": "scene_keeper_truth"
         },
         {
           "id": "medal",
           "label": "Show it the sprites' woven medal",
           "icon": "star",
           "requiresFlag": "sprites_friends",
-          "goto": "scene_q2",
+          "goto": "scene_keeper_medal",
           "effects": [
             {
               "type": "setFlag",
@@ -291,7 +356,7 @@
           "label": "Say sorry about the sprites' stone, before it asks",
           "icon": "thorn",
           "requiresFlag": "sprites_wronged",
-          "goto": "scene_q2",
+          "goto": "scene_keeper_sorry_sprites",
           "effects": [
             {
               "type": "setFlag",
@@ -305,27 +370,118 @@
           "label": "Hold up the Ember Facet, back from the Exchange",
           "icon": "gem",
           "requiresItem": "facet_ember",
-          "goto": "scene_q2"
+          "goto": "scene_keeper_ember"
         },
         {
           "id": "ember_sold",
           "label": "Admit you sold the very first stone you found",
           "icon": "hand",
           "requiresFlag": "ember_sold",
-          "goto": "scene_q2"
+          "goto": "scene_keeper_ember_sold"
         },
         {
           "id": "table",
           "label": "Set down the Table Stone the wardens logged twice",
           "icon": "gem",
           "requiresItem": "facet_table",
-          "goto": "scene_q2"
+          "goto": "scene_keeper_table"
         },
         {
           "id": "caravan",
           "label": "Show it the Caravan Stone from the fattest wagon on the road",
           "icon": "gem",
           "requiresItem": "facet_caravan",
+          "goto": "scene_keeper_caravan"
+        }
+      ]
+    },
+    "scene_keeper_caravan": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You show it the Caravan Stone, the big one, the one the mules wore earmuffs for. The Seal-Keeper's eye widens, which takes some time. \"That one has been loud for a month,\" it says. \"I could hear it from here.\" The stone hums, and something far beneath the floor hums back, and the dragon goes very still.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "gem",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_table": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You set down the Table Stone, logged twice by the wardens and once more on the way out. The Seal-Keeper looks at it for a long moment. \"They log everything,\" it says. \"They always have. They have never once brought one back.\" It nudges the stone with the very tip of one claw, toward the seal.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "gem",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_ember_sold": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We sold the first one we found,\" you say. \"For a lot.\" The Seal-Keeper's breath comes out warm and slow, and the gem-veins in the walls flicker with it. \"Most do,\" it says. \"It is the one honest answer I hear every time.\" It does not sound angry. It sounds like somebody who has heard it every time.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "hand",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_ember": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You hold up the Ember Facet, back from the Exchange gutter by way of a merfolk's barrel and a very long road. The Seal-Keeper looks at it and then, slowly, at you. \"That one went the furthest,\" it says. \"And came back.\" It sounds, very faintly, as if it had not expected that.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "gem",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_sorry_sprites": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We took the sprites' stone,\" you say, before it asks. \"We're sorry.\" The Seal-Keeper is silent. Then it does something you did not expect: it blinks. \"I was going to ask,\" it says. \"Nobody has ever told me first.\" The embermoths on its nose shift about, as if they have never seen it blink either.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "thorn",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_medal": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You hold up the sprites' woven medal. The Seal-Keeper's eye, the size of a door, moves to it and stays there for a long moment. \"Harvest sprites,\" it says, and something in its voice has changed. \"They do not give those to many.\" An embermoth lands on the medal, and the dragon does not brush it off.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "star",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_truth": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You tell it the truth: every stone, every pocket, the ones you found and the ones you bought and the ones you were given. The Seal-Keeper listens the way the mountain listens, without moving at all. \"Yes,\" it says when you finish, as if checking your answer against a list it has had for a very long time. \"That is what you carried.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "heart",
           "goto": "scene_q2"
         }
       ]
@@ -339,14 +495,14 @@
           "id": "road",
           "label": "Tell it what happened, the good bits and the soggy bits",
           "icon": "heart",
-          "goto": "scene_verdict"
+          "goto": "scene_q2_road"
         },
         {
           "id": "glade_mended",
           "label": "\"We mended a wounded glade.\"",
           "icon": "leaf",
           "requiresFlag": "glade_mended",
-          "goto": "scene_verdict",
+          "goto": "scene_q2_glade_mended",
           "effects": [
             {
               "type": "setFlag",
@@ -360,21 +516,21 @@
           "label": "\"We took the Glade Stone. The glade is healing slowly.\"",
           "icon": "leaf",
           "requiresFlag": "glade_finished",
-          "goto": "scene_verdict"
+          "goto": "scene_q2_glade_finished"
         },
         {
           "id": "crossed_dry",
           "label": "\"The trolls heard our toll stories, all the way through.\"",
           "icon": "note",
           "requiresFlag": "crossed_dry",
-          "goto": "scene_verdict"
+          "goto": "scene_q2_crossed_dry"
         },
         {
           "id": "river_took",
           "label": "\"The river took us, and Old Ossley fished us out.\"",
           "icon": "drop",
           "requiresFlag": "river_took_us",
-          "goto": "scene_verdict",
+          "goto": "scene_q2_river_took",
           "effects": [
             {
               "type": "setFlag",
@@ -388,21 +544,21 @@
           "label": "\"We crossed the ford at the drovers' pace, with ceremony.\"",
           "icon": "boot",
           "requiresFlag": "forded_clean",
-          "goto": "scene_verdict"
+          "goto": "scene_q2_forded"
         },
         {
           "id": "marsh",
           "label": "\"The marsh kept us for a while, and the forest let us go.\"",
           "icon": "leaf",
           "requiresFlag": "marsh_kept_us",
-          "goto": "scene_verdict"
+          "goto": "scene_q2_marsh"
         },
         {
           "id": "refused",
           "label": "\"We said no to the soup line's cure.\"",
           "icon": "hand",
           "requiresFlag": "refused_the_cult",
-          "goto": "scene_verdict",
+          "goto": "scene_q2_refused",
           "effects": [
             {
               "type": "setFlag",
@@ -413,9 +569,126 @@
         },
         {
           "id": "funded",
-          "label": "Tell it about the stones you sold the cult. It knows.",
+          "label": "Tell it what you gave the soup tents. It already knows.",
           "icon": "moon",
           "requiresFlag": "funded_the_break",
+          "goto": "scene_q2_funded"
+        }
+      ]
+    },
+    "scene_q2_funded": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You tell it what you gave the soup tents. It already knew. \"I know,\" it says, before you have finished. \"I felt it. One more thread pulled.\" It does not sound angry. It sounds tired, the way a mountain might be tired. \"Go on,\" it says. \"The rest of it.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "moon",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_refused": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We said no to the soup line's cure,\" you say. The Seal-Keeper is still for so long you think it has not heard. \"Kindly?\" it asks at last. You say yes, kindly. \"Then you have done something I cannot,\" it says, and the gem-veins flicker, and an embermoth lands on your hand as if it had been told to.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "hand",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_marsh": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"The marsh kept us a while,\" you say. \"The forest let us go.\" The Seal-Keeper nods, slowly. \"The marsh keeps what it likes,\" it says. \"The forest lets go what it trusts.\" It leaves a silence after that, so you can hear what it has just told you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "leaf",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_forded": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We crossed the ford at the drovers' pace,\" you say. \"With ceremony.\" \"With the verse?\" asks the Seal-Keeper. You say yes, with the verse. \"Good,\" it says, and hums one line of it, badly, under its breath, as if it has not sung in a long time.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "boot",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_river_took": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"The river took us,\" you say. \"Old Ossley fished us out.\" The Seal-Keeper's head comes up. \"Ossley,\" it says, and for the first time it sounds surprised. \"He does not fish out everybody.\" It looks at you again, more carefully, as if Ossley's opinion is one it takes seriously.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "drop",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_crossed_dry": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"The trolls heard our toll stories all the way through,\" you say. The Seal-Keeper makes a sound that might be a laugh and might be a rockfall. \"Lintel,\" it says. \"He has stopped asking riddles, hasn't he. He only does that when he is worried.\" It seems to find this very interesting.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "note",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_glade_finished": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We took the Glade Stone,\" you say. \"The glade is healing slowly.\" The Seal-Keeper does not say anything for a long time. \"Slowly,\" it says at last. \"Yes. It would be.\" The embermoth on its eyebrow folds its wings.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "leaf",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_glade_mended": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We mended a wounded glade,\" you say. The Seal-Keeper closes its eyes. When it opens them, the gem-veins in the walls have gone a soft green for a moment, like moss remembering its colour. \"I felt that,\" it says. \"From here. I did not know who.\" It looks at you as if it is memorising something.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "leaf",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_road": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You tell it what happened: the good bits, the soggy bits, the bits you are not proud of. The Seal-Keeper listens to all of it without interrupting, which is more than most people managed on the way here. \"Yes,\" it says at the end. \"That is a road.\" It does not say whether it was a good one.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "heart",
           "goto": "scene_verdict"
         }
       ]
@@ -442,14 +715,14 @@
           "label": "Wait. Something in its eyes has changed.",
           "icon": "eye",
           "requiresFlag": "dragon_surprised",
-          "goto": "scene_seal_chamber"
+          "goto": "scene_verdict_surprised"
         },
         {
           "id": "gatherers",
           "label": "\"We told the grandmothers, and they told everyone.\"",
           "icon": "whistle",
           "requiresFlag": "told_gatherers",
-          "goto": "scene_seal_chamber"
+          "goto": "scene_verdict_gatherers"
         },
         {
           "id": "wardens",
@@ -485,6 +758,32 @@
           "icon": "star",
           "requiresFlag": "motive_proving",
           "goto": "check_verdict"
+        }
+      ]
+    },
+    "scene_verdict_gatherers": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We told the grandmothers,\" you say, \"and they told everyone.\" The Seal-Keeper's breath goes out in a long warm rush, and every embermoth in the cave rises and settles again. \"The grandmothers,\" it says. \"They have been telling everyone for a thousand years.\" It moves aside. \"Finally,\" it says, \"somebody listened.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the seal",
+          "icon": "whistle",
+          "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "scene_verdict_surprised": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "Something in its eyes has changed, and you wait for it. The Seal-Keeper lowers its head until one eye is level with you. \"I am very rarely surprised,\" it says. \"Twice in a thousand years, before today.\" It moves aside, slowly, the way a hill would move aside if it chose to.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the seal",
+          "icon": "eye",
+          "goto": "scene_seal_chamber"
         }
       ]
     },
@@ -621,13 +920,26 @@
           "label": "Call Captain Voss down, as you promised",
           "icon": "whistle",
           "requiresFlag": "told_wardens",
-          "goto": "ending_wardens_regret"
+          "goto": "scene_tether_call_voss"
         },
         {
           "id": "back",
           "label": "Let go of it, and choose again",
           "icon": "back",
           "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "scene_tether_call_voss": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You whistle the warden's note, the one you promised, and for a long moment nothing happens. Then Captain Voss comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hand it to the wardens' cage",
+          "icon": "whistle",
+          "goto": "ending_wardens_regret"
         }
       ]
     },
@@ -665,7 +977,7 @@
     },
     "ending_heroes": {
       "type": "rest",
-      "narration": "You give the stones back, every one: the ones you found, the ones you bought, the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
+      "narration": "You give the stones back, every one: the ones you found, the ones you bought, the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once, and the embermoths come home in one enormous glowing cloud. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
       "heal": 4,
       "choices": []
     },
@@ -683,7 +995,7 @@
     },
     "ending_collectors": {
       "type": "rest",
-      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and does not move again. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
+      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and stays there, and means to stay. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
       "heal": 4,
       "choices": []
     },

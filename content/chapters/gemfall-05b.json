@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 26,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_mosshome",
   "objectives": [
@@ -42,7 +42,7 @@
   "scenes": {
     "scene_mosshome": {
       "type": "story",
-      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong — it leans — and a little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder.",
+      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder, and does not stop jogging to say hello.",
       "choices": [
         {
           "id": "ask",
@@ -54,15 +54,39 @@
           "id": "ask_door",
           "label": "Ask the archive door first, the MossHome way",
           "icon": "bigfoot",
-          "goto": "scene_archive_table",
+          "goto": "scene_mosshome_ask_door",
           "requiresSpecies": "bigfoot"
         },
         {
           "id": "glade_word",
           "label": "Mention the glade you mended",
           "icon": "heart",
-          "goto": "scene_archive_table",
+          "goto": "scene_mosshome_glade_word",
           "requiresFlag": "glade_mended"
+        }
+      ]
+    },
+    "scene_mosshome_glade_word": {
+      "type": "story",
+      "narration": "You mention the glade. The archivist at the door goes still, then pulls a cord from her belt and runs her thumb along it to a knot near the end. \"That glade,\" she says. \"The path record changed this morning. It got better.\" She looks at you as if you have just handed her a book she has been waiting for. \"In. Feet.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "heart",
+          "goto": "scene_archive_table"
+        }
+      ]
+    },
+    "scene_mosshome_ask_door": {
+      "type": "story",
+      "narration": "Your bigfoot walks up to the archive door and knocks on it, three slow knocks, the way MossHome children are taught before they can walk. The door opens by itself. Behind it, an archivist drops a whole armful of cords and says, \"Nobody's done that in years. Come in. Wipe your feet.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "bigfoot",
+          "goto": "scene_archive_table"
         }
       ]
     },
@@ -122,7 +146,7 @@
             "value": true
           }
         ],
-        "narration": "Thorn, yarn, thorn, yarn — and slowly, a shape comes out of it."
+        "narration": "Thorn, yarn, thorn, yarn, and slowly a shape comes out of it."
       },
       "onFailure": {
         "goto": "scene_spiral",
@@ -131,7 +155,7 @@
     },
     "scene_spiral": {
       "type": "story",
-      "narration": "Plotted on the table, the moved paths aren't random at all. They spiral — round and round every place a stone fell, like water round a plughole, every path bending away. It's what the land has been saying all the way north. The Woods isn't flinching from the mountain. It's flinching from the stones.",
+      "narration": "Plotted on the table, the moved paths are not random at all. They spiral, round and round every place a stone fell, like water round a plughole, every path bending away. It is what the land has been saying all the way north. The Woods is not flinching from the mountain. It is flinching from the stones.",
       "choices": [
         {
           "id": "on",
@@ -143,7 +167,7 @@
     },
     "scene_knot_cords": {
       "type": "story",
-      "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots — records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
+      "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots: records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
       "choices": [
         {
           "id": "pile",
@@ -161,7 +185,7 @@
     },
     "scene_pile_question": {
       "type": "story",
-      "narration": "The archivists look at each other. Yes, they know about the forest's pile — everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
+      "narration": "The archivists look at each other. Yes, they know about the forest's pile, everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
       "choices": [
         {
           "id": "trust",
@@ -228,7 +252,7 @@
           "id": "carry",
           "label": "Carry the stone north",
           "icon": "gem",
-          "goto": "rest_guest_tree",
+          "goto": "scene_pile_visit_carry",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -240,6 +264,30 @@
           "id": "leave",
           "label": "Leave it with the forest",
           "icon": "leaf",
+          "goto": "scene_pile_visit_leave"
+        }
+      ]
+    },
+    "scene_pile_visit_leave": {
+      "type": "story",
+      "narration": "You leave the loud stone where the forest put it. The archivist does not look surprised. She ties a small knot in a cord anyway, a different knot, and says, \"The record will remember that too.\" Behind you the pile hums on in the dark, keeping itself company.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and rest",
+          "icon": "leaf",
+          "goto": "rest_guest_tree"
+        }
+      ]
+    },
+    "scene_pile_visit_carry": {
+      "type": "story",
+      "narration": "You lift the loud stone out of the pile. It hums against your chest like a cat that has decided you will do. The archivist ties a small knot in a cord and does not say what it means. \"North,\" she says. \"That's all it wants.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and rest",
+          "icon": "gem",
           "goto": "rest_guest_tree"
         }
       ]
@@ -252,7 +300,7 @@
           "id": "pocket",
           "label": "Pocket the loud stone",
           "icon": "gem",
-          "goto": "rest_guest_tree",
+          "goto": "scene_pile_sneak_pocket",
           "effects": [
             {
               "type": "grantQuestItem",
@@ -264,6 +312,30 @@
           "id": "leave",
           "label": "Remember where it is, and leave it",
           "icon": "eye",
+          "goto": "scene_pile_sneak_leave"
+        }
+      ]
+    },
+    "scene_pile_sneak_leave": {
+      "type": "story",
+      "narration": "Your kitsune looks at the loud stone for a long moment, memorises exactly where it is, and leaves it there. On the way back up the root-stair, a root moves out of the way to make the step easier. It did not do that on the way down.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Slip back out",
+          "icon": "eye",
+          "goto": "rest_guest_tree"
+        }
+      ]
+    },
+    "scene_pile_sneak_pocket": {
+      "type": "story",
+      "narration": "Your kitsune pockets the loud stone with the smoothest hand in the realm. Nobody sees. Then every root in the hollow creaks at once, very softly, like a very large person clearing its throat. Nobody saw. The forest saw.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Slip back out",
+          "icon": "gem",
           "goto": "rest_guest_tree"
         }
       ]
@@ -289,7 +361,7 @@
           "id": "wardens",
           "label": "The Skywardens at Redspire Citadel",
           "icon": "shield",
-          "goto": "scene_runner",
+          "goto": "choice_elders_wardens",
           "effects": [
             {
               "type": "setFlag",
@@ -302,7 +374,7 @@
           "id": "gatherers",
           "label": "The dragonling gatherers in the foothills",
           "icon": "flame",
-          "goto": "scene_runner",
+          "goto": "choice_elders_gatherers",
           "effects": [
             {
               "type": "setFlag",
@@ -315,7 +387,7 @@
           "id": "close",
           "label": "Nobody yet. Keep it close.",
           "icon": "lantern",
-          "goto": "scene_runner",
+          "goto": "choice_elders_close",
           "effects": [
             {
               "type": "setFlag",
@@ -323,6 +395,42 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "choice_elders_close": {
+      "type": "story",
+      "narration": "\"Nobody yet,\" says the eldest, and looks at you over her cup for a long time. \"Careful,\" she says at last. \"Careful is a kind of telling, too.\" She sips. \"When you do tell. Second.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and pack",
+          "icon": "lantern",
+          "goto": "scene_runner"
+        }
+      ]
+    },
+    "choice_elders_gatherers": {
+      "type": "story",
+      "narration": "\"The grandmothers,\" says the eldest, and for the first time all evening she smiles. \"Bells carry further than cords.\" She sips. \"Tell them we said so. And tell us second.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and pack",
+          "icon": "flame",
+          "goto": "scene_runner"
+        }
+      ]
+    },
+    "choice_elders_wardens": {
+      "type": "story",
+      "narration": "\"The wardens,\" says the eldest, and sips. \"They write things down. That is not nothing.\" She sips again. \"Second,\" she reminds you, and the whole ring of elders nods at once, which makes the tea in every cup ripple.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and pack",
+          "icon": "shield",
+          "goto": "scene_runner"
         }
       ]
     },
@@ -352,13 +460,13 @@
           "id": "soup",
           "label": "Have some soup, and say nothing",
           "icon": "potion",
-          "goto": "scene_high_paths"
+          "goto": "scene_soup_tent_soup"
         },
         {
           "id": "refuse",
           "label": "Say no, kindly but firmly",
           "icon": "hand",
-          "goto": "scene_high_paths",
+          "goto": "scene_soup_tent_refuse",
           "effects": [
             {
               "type": "setFlag",
@@ -371,7 +479,7 @@
           "id": "coins",
           "label": "Drop some coins in her box to help it wake",
           "icon": "bead",
-          "goto": "scene_high_paths",
+          "goto": "scene_soup_tent_coins",
           "effects": [
             {
               "type": "setFlag",
@@ -379,6 +487,42 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_soup_tent_coins": {
+      "type": "story",
+      "narration": "You drop a few coins in the box. They do not clink. The box is lined with something soft, and the woman's whole face lights up as if you have handed her the sun. \"Thank you,\" she whispers. \"It'll wake so gently.\" You walk on with your hands feeling oddly empty.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the high paths",
+          "icon": "bead",
+          "goto": "scene_high_paths"
+        }
+      ]
+    },
+    "scene_soup_tent_refuse": {
+      "type": "story",
+      "narration": "\"No, thank you,\" you say, kindly but firmly. She nods as if she expected it. \"Soup's still soup,\" she says, and ladles you some anyway, and you take it, because it is cold up here and she is right. The box stays where it is.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the high paths",
+          "icon": "hand",
+          "goto": "scene_high_paths"
+        }
+      ]
+    },
+    "scene_soup_tent_soup": {
+      "type": "story",
+      "narration": "You have the soup. It is very good soup. The woman watches you eat with great kindness and says nothing more, and when you hand the bowls back she has somehow already washed them. The little box rattles once as you go, on its own.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the high paths",
+          "icon": "potion",
+          "goto": "scene_high_paths"
         }
       ]
     },
@@ -471,10 +615,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_foothills_view",
-        "narration": "You find everything — even the sock nobody wanted back — and climb on, late but whole."
+        "narration": "You find everything, even the sock nobody wanted back, and climb on, late but whole."
       },
       "onFailure": {
-        "goto": "ending_long_way_round"
+        "goto": "ending_long_way_round",
+        "narration": "You find one pack, half of another, and a hat that is not yours. The light goes while you are still looking, and somewhere above you a wolf grumbles at the mountain as if it has lost something too."
       }
     },
     "scene_foothills_view": {
@@ -497,7 +642,7 @@
     },
     "ending_long_way_round": {
       "type": "rest",
-      "narration": "By the time you've found most of your things it's dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round — a day late and one sock short. The mountain didn't wait for you.",
+      "narration": "By the time you have found most of your things it is dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round, a day late and one sock short. The mountain did not wait for you.",
       "heal": 3,
       "choices": [],
       "outcome": "setback"
