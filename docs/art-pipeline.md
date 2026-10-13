@@ -1059,6 +1059,25 @@ that make it safe, each found by a gate or a render going wrong first:
 - **Reproducible bytes.** Filled PNGs are encoded with a fixed filter choice and zlib's RLE strategy,
   so `art:rig:build --check` stays byte-exact on any machine.
 
+**How much, measured.** A "slit" is a see-through pixel that a 13px morphological closing would
+fill: a narrow opening inside the figure. The enclosed-hole metric in §3.1 misses these whenever the
+opening reaches the outline. Mean slit pixels per frame, every tick of five clips, rendered at 700px,
+fledgling tier, without underpaint → with it. Each count includes the figure's own concavities
+(between the legs, under the chin), so only the change means anything. No cell got worse:
+
+| species | idle | walk | attack | cast | celebrate |
+|---|---|---|---|---|---|
+| unicorn | 2,741 → 2,704 | 2,312 → 2,282 | 2,372 → 2,164 | 2,263 → 2,263 | 2,175 → 2,166 |
+| dragonling | 3,047 → 2,901 | 3,411 → 2,802 | 4,131 → 3,521 | 3,582 → 3,331 | 3,633 → 3,402 |
+| griffin | 2,826 → 2,716 | 3,214 → 2,504 | 3,378 → 2,902 | 3,566 → 3,399 | 3,384 → 3,295 |
+| bigfoot | 1,967 → 1,796 | 2,121 → 1,700 | 2,663 → 1,850 | 1,963 → 1,699 | 1,811 → 1,550 |
+| kitsune | 3,340 → 2,291 | 2,532 → 2,213 | 2,910 → 2,189 | 2,893 → 2,593 | 2,977 → 2,642 |
+| manticore | 1,798 → 1,552 | 1,821 → 1,752 | 2,831 → 2,101 | 1,459 → 1,447 | 1,756 → 1,737 |
+
+Reach 96 was measured too. It helps the long-seamed species a little more (kitsune `cast`
+2,593 → 2,203) but gives most of the gain back on bigfoot (`attack` 2,160, `celebrate` 1,801), whose
+broad slab cuts show a fill that wide. So the configs use 48.
+
 **What underpaint cannot fix: the cuts.** The parts are cut as straight-edged slabs. bigfoot's body
 is nearly a rectangle, the legs are vertical strips, and the "arm" parts carry thigh pixels below
 row 650. Some parts have holes where a part *behind* them shows at rest (unicorn's chest, where the
