@@ -21,6 +21,8 @@ import { describe, expect, it } from "vitest";
 import path from "node:path";
 import {
   applyIntent,
+  chapterDiscoveries,
+  chapterStartDiscoveries,
   createRunState,
   currentActor,
   currentActorId,
@@ -28,6 +30,7 @@ import {
   legalMoves,
   makeRng,
   positionOf,
+  sceneDiscoveries,
   type ClassId,
   type ClientIntent,
   type RunState,
@@ -51,6 +54,13 @@ interface Playthrough {
   chapters: string[];
   outcomes: string[];
   routeFlags: Record<string, boolean>;
+  /** The household's Field Guide at the end (#106). */
+  book: Record<string, { firstFoundBy: string }>;
+  /** What the chapters played should have found, derived from the shared rules. */
+  expectedFinds: Set<string>;
+  /** Everything those chapters *could* have found, had every road been taken. */
+  possibleFinds: Set<string>;
+  playerIds: string[];
 }
 
 async function playCampaign(seed: number): Promise<Playthrough> {
@@ -105,6 +115,11 @@ async function playCampaign(seed: number): Promise<Playthrough> {
 
   const chapters: string[] = [];
   const outcomes: string[] = [];
+  // The Field Guide (#106): what the scenes this party actually walked
+  // through reveal, by the shared rules — not hardcoded, so tagging scenes
+  // (#104) moves the expectation with the content.
+  const expectedFinds = new Set<string>();
+  const possibleFinds = new Set<string>();
 
   for (let evening = 0; evening < 12; evening++) {
     for (const playerId of playerIds) await must(playerId, { type: "READY", ready: true });
@@ -204,9 +219,25 @@ async function playCampaign(seed: number): Promise<Playthrough> {
 
     const done = await state();
     outcomes.push(done.chapterOutcome ?? "success");
+    const played = content.chapter(done.chapterId!)!;
+    for (const id of chapterStartDiscoveries(played, content.world())) expectedFinds.add(id);
+    for (const sceneId of done.visited ?? []) {
+      const scene = played.scenes[sceneId];
+      if (scene) for (const id of sceneDiscoveries(scene, content.bestiary())) expectedFinds.add(id);
+    }
+    for (const id of chapterDiscoveries(played, content.world(), content.bestiary())) possibleFinds.add(id);
     const attempt = await harness.repo.getCampaignProgress(householdId, "gemfall");
     if (attempt && attempt.status !== "active") {
-      return { status: attempt.status, chapters, outcomes, routeFlags: attempt.routeFlags ?? {} };
+      return {
+        status: attempt.status,
+        chapters,
+        outcomes,
+        routeFlags: attempt.routeFlags ?? {},
+        book: (await harness.repo.getFieldGuide(householdId)).entries,
+        expectedFinds,
+        possibleFinds,
+        playerIds,
+      };
     }
     // The completion screen's button: back to the lobby for next evening.
     await must(playerIds[0]!, { type: "ADVANCE" });
@@ -223,6 +254,17 @@ describe("Gemfall can be played from the Exchange to the mountain", () => {
       const run = await playCampaign(seed);
       runs.push(run);
       expect(["complete", "failed"]).toContain(run.status);
+
+      // The household's Field Guide holds exactly what the road walked revealed
+      // — every chapter's biome, every creature fought — once each, credited
+      // to somebody at the table.
+      expect(new Set(Object.keys(run.book))).toEqual(run.expectedFinds);
+      for (const id of Object.keys(run.book)) expect(run.possibleFinds).toContain(id);
+      for (const find of Object.values(run.book)) expect(run.playerIds).toContain(find.firstFoundBy);
+      // Implicit finds need no tagging: chapter 1's biome is always there.
+      const opening = content.chapter("gemfall-01")!;
+      for (const id of chapterStartDiscoveries(opening, content.world())) expect(run.book).toHaveProperty([id]);
+      expect(Object.keys(run.book).length).toBeGreaterThan(0);
       if (run.status === "complete") {
         // A finished campaign toured one chapter per beat, in order — all
         // eight, or seven when the Collection took the Walk at the tree line.

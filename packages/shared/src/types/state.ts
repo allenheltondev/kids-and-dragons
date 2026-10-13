@@ -8,6 +8,7 @@
 import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
+import type { FieldGuideFind } from "../field-guide-record.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -244,6 +245,31 @@ export interface RunState {
    * somehow opened by a deployed one rolls honest dice.
    */
   playtestDie?: number | null;
+  /**
+   * The household's Field Guide — canon id → who found it first and when
+   * (epic #101, #106). A **mirror** of the household's `FIELDGUIDE` record,
+   * carried on the run for the reason `campaignOptions` is: it is household
+   * data every screen in the room needs, and riding the run state means the
+   * join, the TV's watch, a snapshot resync and an event replay all deliver
+   * the same book with no second fetch or second sync path.
+   *
+   * The server writes it, never the engine (which cannot reach the store):
+   * loaded when a room opens for a settled household or is first joined,
+   * re-read from the store at every chapter start (which heals any drift from
+   * a second room of the same household), and grown by `applyAction` on every
+   * step that discovers something, in the same patch as the scene it was found
+   * in. The store record stays the truth — this copy may briefly disagree
+   * about *who* found something first when two rooms find it at once.
+   *
+   * Absent while the room's household is unsettled (a TV-opened room before a
+   * phone joins, architecture §4.5) and on runs persisted before it existed;
+   * readers treat absent as an empty book.
+   *
+   * What is *new* is not derivable from here on purpose: replaying patches on
+   * a reconnect would re-announce everything. That signal rides the live
+   * broadcast only (`ServerMessage.discovered`).
+   */
+  fieldGuide?: Record<string, FieldGuideFind>;
   updatedAt: string;
 }
 
