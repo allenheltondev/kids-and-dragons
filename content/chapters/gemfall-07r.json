@@ -844,7 +844,7 @@
     },
     "choice_the_bend_relay": {
       "type": "story",
-      "narration": "You whistle the relay's note, the one Fennick taught you on the east road. A centaur appears on the ridge almost before the note has finished, and two more behind her, and between them they turn the fattest caravan in the funnel off the main road and straight into your checkpoint as neatly as threading a needle.",
+      "narration": "You cup your hands and give a sharp whistle toward the relay road. A centaur appears on the ridge almost before the sound has faded, with two more behind her. Between them they turn the fattest caravan in the funnel off the main road and straight into your checkpoint as neatly as threading a needle.",
       "choices": [
         {
           "id": "on",
