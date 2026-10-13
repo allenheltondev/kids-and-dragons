@@ -64,6 +64,14 @@ async function createCharacter(page: Page, species: string, name: string): Promi
 }
 
 /** The server's view, so the test asserts on authority rather than on pixels. */
+/** A fresh story prompt must replace ready-up before a manual World tap.
+ * Otherwise its arriving turn key legitimately returns focus to You. */
+async function waitForAdventurePrompt(page: Page): Promise<void> {
+  await expect(page.locator(".player__scroll:visible .player__task-entry, .player__prompt:visible .prompt__title")
+    .filter({ hasText: /Your turn|What do you do/i }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /^You$/i })).toHaveAttribute("aria-pressed", "true");
+}
+
 async function serverState(
   code: string,
 ): Promise<{ phase: string; xpEarned: number; sceneId: string | null; encounter?: unknown }> {
@@ -334,6 +342,7 @@ test.describe("first playable", () => {
 
     // ...and the world is one tap away for the art and the detail.
     await solo.getByRole("button", { name: /^world$/i }).click();
+    await waitForAdventurePrompt(solo);
     await solo.getByRole("button", { name: /^World$/i }).click();
     await expect(solo.locator(".narration__body")).toBeVisible();
     // Still your turn, and the tab says so without relying on colour.
@@ -383,6 +392,7 @@ test.describe("first playable", () => {
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
+    await waitForAdventurePrompt(host);
     await host.getByRole("button", { name: /^World$/i }).click();
     await expect(host.locator(".narration__body")).toBeVisible();
     await host.getByRole("button", { name: /^You$/i }).click();

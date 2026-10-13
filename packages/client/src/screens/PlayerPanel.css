@@ -1047,3 +1047,9 @@
 
 .player__inventory-story { margin: 0 0 0.5em; flex: 0 0 auto; line-height: 1.4; color: var(--kad-ink); }
 .player .player__inventory-back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
+.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.5em; }
+.player__room-settings > summary { min-block-size: var(--kad-touch-min); display: flex; align-items: center; cursor: pointer; color: var(--kad-ink-dim); font-size: 0.85em; }
+.player__room-settings > summary::before { content: "▸"; margin-inline-end: 0.5em; }
+.player__room-settings[open] > summary::before { content: "▾"; }
+.kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
+.kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }

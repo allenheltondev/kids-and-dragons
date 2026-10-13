@@ -24,18 +24,16 @@ export function ModeSwitch(): React.JSX.Element | null {
   if (isDisplay) return null;
   const next = mode === "party" ? "travel" : "party";
 
-  // An object on the tray like the others (screens/TrayObjects.tsx): the
-  // phone you would switch to, or the television you would hand back to.
-  // Smaller and quieter, because it is used once an evening at most.
+  // Room settings owns this control; the bottom tray keeps three destinations.
   return (
     <button
       type="button"
-      className="kad-mode-switch kad-tray__tab kad-tap kad-focusable"
+      className="kad-mode-switch kad-room-mode kad-tap kad-focusable"
       onClick={() => {
         cue("tap");
         void send({ type: "SET_MODE", mode: next });
       }}
-      // Named in full: the word under the object is two letters wide.
+      // Explain which device will carry the world after switching.
       aria-label={mode === "party" ? "No TV? Show the world on the phones" : "Use a TV for the world"}
       title={
         mode === "party"
@@ -46,7 +44,7 @@ export function ModeSwitch(): React.JSX.Element | null {
       <span className="kad-tray__object">
         <TrayObject name={next === "travel" ? "phone" : "tv"} />
       </span>
-      <span className="kad-tray__label">{mode === "party" ? "No TV?" : "Use TV"}</span>
+      <span>{mode === "party" ? "Play on phones instead" : "Use a TV for the world"}</span>
     </button>
   );
 }

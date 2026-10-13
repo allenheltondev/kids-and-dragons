@@ -22,7 +22,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
 import type {
   ClientIntent,
@@ -332,7 +332,7 @@ function SceneBackdrop({ src }: { src: string }): ReactElement | null {
 
 // ---------------------------------------------------------------------------
 
-export function PlayerPanel(): ReactElement {
+export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {}): ReactElement {
   useEnsureContent();
   const state = useRunState();
   const me = useMe();
@@ -1242,7 +1242,7 @@ export function PlayerPanel(): ReactElement {
         {hasTask ? (
           <Button variant="primary" size="lg" block className="player__task-entry"
             icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-            {offersToMe.length > 0 ? "A gift for you" : inLobby ? "Ready to play" : state.phase === "chapter_complete" ? "Chapter rewards" : myPrompt !== null || isMyCombatTurn ? "Your turn" : "View the fight"}
+            {offersToMe.length > 0 ? "A gift for you" : inLobby ? "Ready to play" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : "View the fight"}
           </Button>
         ) : null}
         {!hasTask ? (
@@ -1464,6 +1464,12 @@ export function PlayerPanel(): ReactElement {
           </div>
         ) : null}
 
+        {roomControls ? (
+          <details className="player__room-settings">
+            <summary className="kad-focusable">Room settings</summary>
+            {roomControls}
+          </details>
+        ) : null}
       </div>
         {!showSheet ? (
           <Button

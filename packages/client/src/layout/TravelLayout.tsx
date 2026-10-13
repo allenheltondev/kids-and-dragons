@@ -47,6 +47,7 @@ import { useEffect, useRef, useState } from "react";
 import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
+import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
@@ -191,7 +192,7 @@ export function TravelLayout(): React.JSX.Element {
         <WorldView />
       </div>
       <div className="kad-travel__pane" data-pane="player" data-showing={showing === "player"}>
-        <PlayerView />
+        <PlayerView roomControls={<ModeSwitch />} />
       </div>
       {/* The map is cheap to draw and holds no state worth keeping, so it is
           mounted only while it is looked at — and it is the one pane whose
