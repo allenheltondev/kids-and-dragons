@@ -159,6 +159,7 @@ async function offerCampaigns(
 ): Promise<void> {
   const options = await lobbyCampaigns(householdId, featuredId, deps);
   state.campaignOptions = options;
+  state.campaignOptionsFor = householdId;
   state.campaignVotes = {};
   if (options[0]) state.campaign = options[0];
 }
@@ -235,25 +236,51 @@ export async function settleRoom(
     return ok(await deps.repo.getRoom(room.code));
   }
 
+  // The lobby is refreshed for the new household by the join that follows
+  // (`refreshLobby`), not here: the claim has landed whatever happens next,
+  // so the refresh has to be one any later join can redo.
   const { claimable: _claimable, ...rest } = room;
-  const settled: RoomRecord = { ...rest, householdId };
-  if (moving) {
-    // Nobody can act in a room nobody has joined, so this should land first
-    // time; the retry is for the reconnect of whoever joins a moment later.
-    const options = await lobbyCampaigns(householdId, run.campaignId, deps);
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const state = await deps.repo.getState(room.runId);
-      if (!state) break;
-      const next: RunState = {
-        ...state,
-        campaignOptions: options,
-        campaignVotes: {},
-        ...(options[0] ? { campaign: options[0] } : {}),
-      };
-      if ((await advanceRoom(state, next, "", deps)).campaignOptions === options) break;
-    }
+  return ok({ ...rest, householdId });
+}
+
+/**
+ * The run's state, with its lobby speaking for the household the room now
+ * belongs to.
+ *
+ * A claim moves the room and refreshes the lobby as two writes, and only the
+ * first is guarded by the room being claimable. So the refresh does not hang
+ * off the claim: every join compares `campaignOptionsFor` with the room's
+ * household and redoes it on a mismatch — a failed lookup, a lost seq race,
+ * or a server that died between the two writes is repaired by whoever joins
+ * next. A run persisted before the stamp existed is left alone; it was never
+ * claimed.
+ */
+async function refreshLobby(room: RoomRecord, deps: HandlerDeps): Promise<RunState | null> {
+  let state = await deps.repo.getState(room.runId);
+  if (!state || state.campaignOptionsFor === undefined) return state;
+  if (state.campaignOptionsFor === room.householdId) return state;
+
+  const run = await deps.repo.getRun(room.runId);
+  const changed = structuredClone(state);
+  await offerCampaigns(changed, room.householdId, run?.campaignId ?? null, deps);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const next = await advanceRoom(state, { ...state, ...lobbyOf(changed) }, "", deps);
+    if (next.campaignOptionsFor === room.householdId) return next;
+    state = next;
   }
-  return ok(settled);
+  // Still behind after three races: this join goes ahead on what the run
+  // says now, and the next one tries again.
+  return state;
+}
+
+/** The lobby fields `offerCampaigns` writes, to lay over a newer state. */
+function lobbyOf(state: RunState): Partial<RunState> {
+  return {
+    campaignOptions: state.campaignOptions ?? [],
+    campaignVotes: {},
+    ...(state.campaignOptionsFor === undefined ? {} : { campaignOptionsFor: state.campaignOptionsFor }),
+    ...(state.campaign ? { campaign: state.campaign } : {}),
+  };
 }
 
 export async function joinRoom(
@@ -280,7 +307,7 @@ export async function joinRoom(
   const player = await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId);
   if (!player) return fail("NOT_FOUND", `no player ${input.principal.playerId}`);
 
-  const state = await deps.repo.getState(room.runId);
+  const state = await refreshLobby(room, deps);
   if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
 
   const joined = await markConnected(state, input.principal.playerId, deps);
