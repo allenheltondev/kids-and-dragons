@@ -52,6 +52,18 @@ export function campaignPremise(view: CampaignView | null | undefined): string |
   return view.next?.index === 1 ? view.blurb : null;
 }
 
+/**
+ * The line under a campaign in the lobby's "which adventure?" vote: where this
+ * household would pick it up, or that it would be a fresh start.
+ */
+export function campaignOptionLine(view: CampaignView): string {
+  // `next: null` is a routed fork nobody has chosen yet — only ever past
+  // chapter 1, so the campaign is under way.
+  if (!view.next) return "Pick up where you left off";
+  if (view.next.index === 1) return view.ended ? "Start it again" : "A new adventure";
+  return `Pick up at chapter ${String(view.next.index)} of ${String(view.chapters)}`;
+}
+
 /** The lobby's go button. Beginning, continuing, or beginning again. */
 export function beginLabel(view: CampaignView | null | undefined): string {
   if (view?.ended) return `Start ${view.title} again`;

@@ -117,6 +117,22 @@ export interface RunState {
    * on runs persisted before it existed and on rooms with no campaign.
    */
   campaign?: CampaignView | null;
+  /**
+   * The campaigns this lobby can play: the one the room was opened for, then
+   * every other campaign the household has part-way through, so a party that
+   * started something on another evening can pick it back up. Computed by the
+   * server from the household's attempts — and recomputed when a phone claims
+   * a TV's room for its household. One option means there is nothing to
+   * decide; two or more and the lobby votes (`campaignVotes`, `lobbyCampaign`).
+   * Optional: absent on runs persisted before it existed.
+   */
+  campaignOptions?: CampaignView[];
+  /**
+   * The lobby's vote on which campaign to play, playerId → campaign id. Only
+   * cast while there is more than one option; cleared when a chapter starts,
+   * so the next time the party is back in the lobby it decides again.
+   */
+  campaignVotes?: Record<string, string>;
   chapterId: string | null;
   /**
    * The chapter in play, by the name and number the table knows it by — the

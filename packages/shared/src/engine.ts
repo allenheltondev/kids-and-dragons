@@ -70,6 +70,7 @@ import {
 import { parseBoard, type Position } from "./grid.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
+  CampaignView,
   DiceRoll,
   EarnedBonus,
   PartyMember,
@@ -822,6 +823,9 @@ function dispatch(
       // attempt, which the engine never sees.
       throw new Illegal("ILLEGAL", "continuing a campaign is resolved by the server");
 
+    case "VOTE_CAMPAIGN":
+      return doVoteCampaign(draft, playerId, intent.campaignId);
+
     case "CHOOSE":
       return doChoose(draft, playerId, intent.choiceId, ctx);
 
@@ -1142,6 +1146,8 @@ function doStartChapter(
    */
   draft.visited = [];
   draft.recap = null;
+  // The lobby's decision is spent: back in the lobby, the party decides again.
+  draft.campaignVotes = {};
   for (const member of draft.party) member.ready = false;
 
   return enterSceneDraft(draft, chapter.entry, ctx);
@@ -1258,6 +1264,81 @@ export function turnHolderAway(
 function passStoryTurn(draft: RunState, fromPlayerId: string): void {
   const at = draft.party.findIndex((m) => m.playerId === fromPlayerId);
   draft.storyTurn = (at === -1 ? (draft.storyTurn ?? 0) : at) + 1;
+}
+
+/**
+ * A lobby vote for which campaign to play. Only a seated player votes — the
+ * same people whose READY the chapter start waits on — and only for one of the
+ * campaigns the server offered this room. `campaign` follows the leader, so the
+ * TV's "Chapter 3 of 8" line and the Begin button always name the campaign
+ * that a tap would start.
+ */
+function doVoteCampaign(draft: RunState, playerId: string, campaignId: string): undefined {
+  // "creation" is the lobby too — see doStartChapter: the engine sets it on
+  // the first character and never clears it.
+  if (draft.phase !== "lobby" && draft.phase !== "creation") {
+    throw new Illegal("ILLEGAL", "the campaign is picked in the lobby");
+  }
+  if (!memberByPlayer(draft, playerId)) {
+    throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
+  }
+  const options = draft.campaignOptions ?? [];
+  if (!options.some((option) => option.id === campaignId)) {
+    throw new Illegal("ILLEGAL", `"${campaignId}" is not one of this room's campaigns`);
+  }
+  draft.campaignVotes = { ...(draft.campaignVotes ?? {}), [playerId]: campaignId };
+  const leader = lobbyCampaign(draft).leader;
+  if (leader) draft.campaign = leader;
+  return undefined;
+}
+
+/** Where the lobby's campaign decision stands. */
+export interface LobbyCampaignChoice {
+  /**
+   * The campaign a Begin tap would play right now: the only option, or the
+   * vote's leader. Before anybody has voted, it is the campaign the screens
+   * already show (`RunState.campaign`), else the first option. Null only on a
+   * run with neither options nor a campaign.
+   */
+  leader: CampaignView | null;
+  /** Seated, connected players who have not voted yet. Empty with one option. */
+  waitingOn: PartyMember[];
+  /** True when the room has a real choice to make (two or more options). */
+  contested: boolean;
+}
+
+/**
+ * The lobby's campaign decision, as the server enforces it and the screens show
+ * it — one function so the two can never disagree.
+ *
+ * One option is no decision at all: it is picked without a vote. Two or more,
+ * and every connected seat votes before the chapter can start; a phone that has
+ * dropped is not waited on, exactly as a Choice point does not wait on it. The
+ * count is `tallyVotes`, so a tie breaks toward the story turn marker.
+ */
+export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
+  const options = state.campaignOptions ?? [];
+  if (options.length <= 1) {
+    return { leader: options[0] ?? state.campaign ?? null, waitingOn: [], contested: false };
+  }
+  const votes: Record<string, string> = {};
+  for (const member of state.party) {
+    const vote = state.campaignVotes?.[member.playerId];
+    if (vote !== undefined && options.some((option) => option.id === vote)) {
+      votes[member.playerId] = vote;
+    }
+  }
+  const waitingOn = state.party.filter((m) => m.connected && votes[m.playerId] === undefined);
+  const leaderId = Object.keys(votes).length > 0 ? tallyVotes(state, votes) : null;
+  // Before anybody votes, the leader is whatever the screens already show
+  // (the room's campaign, or the one this room just played), else the first.
+  const shownId = state.campaign?.id;
+  const leader =
+    options.find((option) => option.id === leaderId) ??
+    options.find((option) => option.id === shownId) ??
+    options[0] ??
+    null;
+  return { leader, waitingOn, contested: true };
 }
 
 /**
