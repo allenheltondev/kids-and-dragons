@@ -27,7 +27,7 @@
     <ul class="wiki-relationships__list">
       {{ range $entities }}
       <li class="wiki-relationships__item">
-        {{ $targetPage := printf "/%ss/%s/" $type (index (split .id ".") 1) }}
+        {{ $targetPage := printf "%ss/%s/" $type (index (split .id ".") 1) }}
         <a href="{{ $targetPage | relURL }}" class="wiki-relationships__link">
           <span class="wiki-relationships__name">{{ .id }}</span>
           {{ with .relationship }}
