@@ -16,6 +16,7 @@ import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/tes
 import { makeRng } from "@kad/shared";
 import type {
   AbilityCatalog,
+  Bestiary,
   Campaign,
   Chapter,
   EncounterMap,
@@ -23,6 +24,7 @@ import type {
   Role,
   RulesContent,
   RunState,
+  WorldMap,
 } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import type { ContentStore } from "./content/loader.ts";
@@ -63,6 +65,9 @@ export function makeContent(
     maps?: EncounterMap[];
     abilities?: AbilityCatalog;
     campaigns?: Campaign[];
+    /** The Field Guide's lookups (#106). Absent: chapters discover nothing implicit. */
+    world?: WorldMap | null;
+    bestiary?: Bestiary | null;
   } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
@@ -89,6 +94,8 @@ export function makeContent(
     map: (id) => maps.get(id) ?? null,
     abilities: () => abilities,
     campaign: (id) => campaigns.get(id) ?? null,
+    world: () => overrides.world ?? null,
+    bestiary: () => overrides.bestiary ?? null,
     // The same selection the real store makes (shared `chapterFor`), over
     // whatever chapters this fixture was given — so a test about a routed
     // beat exercises the rule rather than a fixture's idea of it.
