@@ -124,12 +124,12 @@ export function HomeScreen(): ReactElement {
           <p className="home__tagline kad-muted">Grab a phone. Pick an adventure.</p>
         </header>
 
-        <section className="home__card" aria-labelledby="home-join">
+        <section className="home__card home__card--join" aria-labelledby="home-join">
           <h2 className="home__card-title" id="home-join">
             <Icon name="qr" />
             <span>Join a game</span>
           </h2>
-          <p className="home__hint kad-muted">Type the four letters on the big screen.</p>
+          <p className="home__hint home__join-hint">Type the four letters on the big screen.</p>
 
           {/*
             One real input behind four big boxes: on-screen keyboards, paste and
@@ -154,7 +154,7 @@ export function HomeScreen(): ReactElement {
               {CODE_SLOTS.map((i) => (
                 <span
                   key={i}
-                  className={`home__code-box${code.length === i ? " home__code-box--next" : ""}`}
+                  className={`home__code-box${code.length === i ? " home__code-box--next" : ""}${code[i] ? " home__code-box--filled" : ""}`}
                 >
                   {code[i] ?? ""}
                 </span>
@@ -165,6 +165,7 @@ export function HomeScreen(): ReactElement {
           <Button
             variant="primary"
             size="lg"
+            className={`home__join${codeReady ? " home__join--ready" : ""}`}
             icon={<Icon name="forward" />}
             disabled={!codeReady || busy !== null}
             onClick={() => void join()}
