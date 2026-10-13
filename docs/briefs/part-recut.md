@@ -132,6 +132,26 @@ plus body/mane.
 6. **Don't paint beyond what's needed.** Hidden paint stays under F. It must never extend past F's footprint, because at rest it must stay invisible (check A). It also must not cross onto an unrelated part (e.g. a leg's hidden paint must not reach under the other leg).
 7. **Gear (class sets).** Gear layers that ride the body (armour, `gear_visible`, `focus_stone`, collars…) don't rotate relative to the body, so they need no band. Two rules still apply. First, the body must be fully painted under every gear layer drawn over it. Second, every gear layer that overlaps a moving limb seam is cut so the limb's band (rule 1) is satisfied by the body or limb, not by the gear.
 
+8. **Reviewed seam exceptions (band only).** The 24px band is a square around
+   every seam pixel, so at the *ends* of a seam, where B's own true silhouette
+   comes out from under F, it can reach past where B really ends. A torso that
+   tapers to the waist behind a hanging arm is the case that found this. Filling
+   that area would grow a slab that swings into view. **Do not fill past B's own
+   contour to pass the band.** Instead, stop and show the area on a frame (as the
+   bigfoot pilot did). If the person reviewing the art agrees the contour is
+   right, record the exception in `<set>/seam-exceptions.json`:
+
+   ```json
+   { "body/arm_r": { "band": 0.80, "reason": "torso tapers to the waist behind the arm; paint past the contour projects in attack" } }
+   ```
+
+   The key is the pair exactly as `verify_seams.py` prints it (`B/F`). `band` is
+   the coverage that set reaches, rounded down to the percent, from 0.50 up to
+   below 0.98. `reason` says where and why. The check then holds that pair to the
+   floor and prints the reason. The joint zone, ground, pivots and islands are
+   never excepted. An exception goes in the PR description with its frame, and
+   is approved with the art, not separately.
+
 **How to produce the hidden paint** is your choice, provided the output meets §4–§6:
 - Generative inpainting constrained to B's region, with B's visible pixels as context. Review every result at full size.
 - Hand-style extension (clone, extend and blend B's own nearby texture into the hidden area).
@@ -199,7 +219,7 @@ Then, for a set `<set>` (e.g. `bigfoot/fledgling`, or
 | | Command | Must show |
 |---|---|---|
 | A | `python3 tools/art/verify.py <species>/<tier> --fail-fragments` (base sets; class sets are covered by B–G) | PASS: recomposite IoU ≥ 0.999 and mean RGB delta ≤ 2.0, format, bounds, no fragments |
-| B | `python3 tools/art/verify_seams.py <set>` | `ok`: band ≥ 98%, joint zone ≥ 98%, ground, pivots painted by both parts. A `note … no visible seam` line is fine. Every `warn … copy?` line is explained in the report (§10) |
+| B | `python3 tools/art/verify_seams.py <set>` | `ok`: band ≥ 98% (or the reviewed floor in `seam-exceptions.json`, §6 rule 8), joint zone ≥ 98%, ground, pivots painted by both parts. A `note … no visible seam` line is fine. Every `warn … copy?` line is explained in the report (§10) |
 | C | `npm run art:rig:build -- <set>` | `ok`, every pivot `pinned`, `contract ok` |
 | D | `npm run art:rig:build -- --check <set>` | reproducible |
 | E | `npm run art:verify:rig:strict` | PASS |
@@ -235,7 +255,7 @@ earlier candidate does not count for a later one. Rerun A–H on the final PNGs.
 2. `verify_seams.py` before and after for each set: the band and joint percentages per pair, and every `copy?` warning with what you found when you looked.
 3. The `comes apart` warning count from check G, before and after.
 4. The contact sheets from H, plus one full-size frame of `walk` and one of `attack` per species, rendered with the rig CLI on a dark background, before and after side by side.
-5. Every pivot changed under §7.3, old → new, with the reason.
+5. Every pivot changed under §7.3, old → new, with the reason, and every entry in `seam-exceptions.json` with its frame (§6 rule 8).
 6. How the hidden paint was produced (tool, model, prompts if generative) and anything you had to judge by eye.
 7. Anything in this brief you could not satisfy, and why. **Do not silently relax a rule.**
 
