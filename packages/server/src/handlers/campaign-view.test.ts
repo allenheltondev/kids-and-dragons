@@ -74,6 +74,8 @@ describe("the campaign, as the table sees it", () => {
     expect((await state()).campaign).toEqual({
       id: "the-hollow-crown",
       title: "The Hollow Crown",
+      // The premise rides along, so the lobby can tell a new table the story.
+      blurb: "Two chapters.",
       chapters: 2,
       next: { index: 1, title: "The Path" },
     });

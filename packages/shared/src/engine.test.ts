@@ -671,6 +671,8 @@ describe("START_CHAPTER", () => {
     expect(result.state).toMatchObject({
       phase: "scene",
       chapterId: "bramblewood-01",
+      // The name and number the table knows it by, for the shared screen.
+      chapterInfo: { index: 1, title: "The Rustling Path" },
       campaignId: "the-hollow-crown",
       sceneId: "scene_clearing",
       sceneType: "story",
@@ -1969,6 +1971,7 @@ describe("the end of a chapter", () => {
     // The completion screen offers a button; it has to land somewhere real.
     expect(result.state.phase).toBe("lobby");
     expect(result.state.chapterId).toBeNull();
+    expect(result.state.chapterInfo).toBeNull();
     expect(result.state.prompt).toBeNull();
     expect(result.state.party).toHaveLength(2);
     expect(result.state.party.every((m) => !m.ready)).toBe(true);

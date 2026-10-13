@@ -39,6 +39,11 @@
   border-radius: 0.5em;
   background: rgb(13 11 26 / 88%);
 }
+.entry-scene-host .lobby__premise {
+  padding: 0.6em 0.8em;
+  border-radius: 0.75em;
+  background: rgb(13 11 26 / 88%);
+}
 .entry-scene-host .lobby__join, .entry-scene-host .lobby__party {
   inline-size: min(100%, 36em);
   align-self: center;
