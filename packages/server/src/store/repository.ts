@@ -32,6 +32,17 @@ export interface RunRecord {
   campaignId: string | null;
   status: "active" | "complete" | "failed";
   createdAt: string;
+  /**
+   * The household the run state's lobby (`RunState.campaignOptions`) was
+   * last built for. A phone claiming a TV's room moves the room and this row
+   * first and refreshes the lobby second, as separate writes; until the
+   * refresh lands this still names the TV's household, and the next join
+   * sees the mismatch and refreshes again (`refreshLobby` in room.ts). On the
+   * run row rather than the run state because the state goes to every screen,
+   * the unauthenticated TV included, and a household id has no business there.
+   * Absent on runs created before it existed, which were never claimable.
+   */
+  lobbyFor?: string;
 }
 
 /**
