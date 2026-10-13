@@ -39,7 +39,7 @@
   "scenes": {
     "scene_prologue_realm": {
       "type": "story",
-      "narration": "This is the Realm of Red Sky. Far in the north stands Mount Red Sky, the biggest mountain anybody knows. Old maps call it the Source of the Gemfalls, and say it is only sleeping.",
+      "narration": "This is the Realm of Red Sky. Far in the north stands Mount Red Sky, the biggest mountain anybody knows. Old maps call it the Source of the Gemfalls, and add, in much smaller writing, that it is only sleeping.",
       "choices": [
         {
           "id": "prologue_to_city",
@@ -51,7 +51,7 @@
     },
     "scene_prologue_city": {
       "type": "story",
-      "narration": "Far in the south, where every road and river runs down to the sea, is the Exchange: a busy city of towers, bridges and docks, where travellers from all over the realm come to trade, swap news, and find adventure.",
+      "narration": "Far in the south, where every road and river runs down to the sea, is the Exchange: a busy city of towers, bridges and docks, where travellers from all over the realm come to trade, swap news, and find adventure. Nobody is from here. That is rather the point of it.",
       "choices": [
         {
           "id": "prologue_to_party",
@@ -63,7 +63,7 @@
     },
     "scene_prologue_party": {
       "type": "story",
-      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own. Tonight is a quiet night, and the harbour lamps are just coming on.",
+      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight is a quiet night, and the harbour lamps are just coming on.",
       "choices": [
         {
           "id": "prologue_begin",
@@ -75,7 +75,7 @@
     },
     "scene_red_sky": {
       "type": "story",
-      "narration": "It is a quiet night at the Exchange, and then it isn't. Far to the north, the sky over Mount Red Sky turns red as a cherry, and a glittering rain of gem-light falls over the foothills. For one blink, some of it seems to fall up. A seagull drops its fish in surprise.",
+      "narration": "It is a quiet night at the Exchange, and then it isn't. Far to the north, the sky over Mount Red Sky turns red as a cherry, and a glittering rain of gem-light falls over the foothills. For one blink, some of it seems to fall up. A seagull drops its fish in surprise, and the fish looks surprised too.",
       "choices": [
         {
           "id": "fly_up",
@@ -94,7 +94,7 @@
     },
     "scene_lighthouse": {
       "type": "story",
-      "narration": "From the top of the lighthouse the gem-light is falling slow as snow. And there — just for a moment — a thread of it rises back toward the mountain, like a kite string being reeled in. The lighthouse keeper, a very old merfolk in a bathtub, says she did not see that. And neither did you.",
+      "narration": "From the top of the lighthouse the gem-light falls slow as snow. Then, just for a moment, one thread of it rises back toward the mountain, like a kite string being reeled in. The lighthouse keeper, a very old merfolk in a bathtub, says she did not see that. Neither did you. Officially.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -113,7 +113,7 @@
     },
     "scene_stampede": {
       "type": "story",
-      "narration": "Three days later the Exchange is so full you can't see the cobbles. Merchants, scholars, pilgrims and pickpockets pour in from every road and every ship. The chalkboard prices change while you read them: a pie now costs as much as a tent, and a tent costs as much as a pony.",
+      "narration": "Three days later the Exchange is so full you can't see the cobbles. Merchants, scholars, pilgrims and pickpockets pour in from every road and every ship, all saying the same word: gems. The chalkboard prices change while you read them. A pie now costs as much as a tent, and a tent costs as much as a pony, and the pony has gone north with everybody else.",
       "choices": [
         {
           "id": "plaques",
@@ -131,7 +131,7 @@
     },
     "scene_plaques": {
       "type": "story",
-      "narration": "Seventeen brass plaques stand around the harbour. Each one says who founded the Exchange, and each one names somebody different: a faun, a frogfolk, a family of selkies, and one that just says \"my nan\". Nobody is from here, so everybody is from here. A centaur tour guide says that is the best thing about the city, and charges you for telling you.",
+      "narration": "Seventeen brass plaques stand around the harbour. Each one says who founded the Exchange, and each one names somebody different: a faun, a frogfolk, a family of selkies, and one that just says \"my nan\". Nobody is from here, so everybody is from here. A centaur tour guide says that is the best thing about the city, and charges you a copper for telling you.",
       "choices": [
         {
           "id": "sit_down",
@@ -143,11 +143,11 @@
     },
     "choice_why_north": {
       "type": "choice_point",
-      "narration": "At a noodle stall you find the one empty chair — every table in the Exchange keeps one, for whoever arrives next. Today, that's you. Everyone in the city is going north. So: why is our party going north? Everybody vote.",
+      "narration": "At a noodle stall you find the one empty chair. Every table in the Exchange keeps one, for whoever arrives next, and today that is you. Everyone in the whole city is going north. So why is our party going north? Everybody vote.",
       "choices": [
         {
           "id": "wealth",
-          "label": "For the treasure — gems, gems, gems!",
+          "label": "For the treasure. Gems, gems, gems!",
           "icon": "gem",
           "goto": "scene_docks",
           "effects": [{ "type": "setFlag", "flag": "motive_wealth", "value": true }]
@@ -191,7 +191,7 @@
     },
     "scene_docks": {
       "type": "story",
-      "narration": "The docks are where the Exchange trades its news. Here nobody asks where a thing came from — only where it's going. A boggart in a coat made of other coats is selling \"slightly used rumours, hardly heard\". A yeti fishmonger shouts the price of herring and, in between herrings, the price of roads.",
+      "narration": "The docks are where the Exchange trades its news. Here nobody asks where a thing came from, only where it is going. A boggart in a coat made of other coats is selling \"slightly used rumours, hardly heard\". A yeti fishmonger shouts the price of herring and, in between herrings, the price of roads.",
       "choices": [
         {
           "id": "swap",
@@ -223,7 +223,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_three_rumours",
-        "narration": "You trade a story about the seagull and the fish, and the dock folk like it so much they pay you back three times over.",
+        "narration": "You trade the story about the seagull and the surprised fish, and the dock folk like it so much they pay you back three times over.",
         "effects": [{ "type": "setFlag", "flag": "heard_every_road", "value": true }]
       },
       "onFailure": {
@@ -233,7 +233,7 @@
     },
     "scene_boggart": {
       "type": "story",
-      "narration": "The boggart's rumours come in little jars. You pay with a button. You open the jar, and the rumour is: \"The mountain is grumpy.\" You already knew that. Then the boggart says it again, slower, looking sideways at the marsh road, and you realise it meant something else entirely.",
+      "narration": "The boggart's rumours come in little jars with the lids screwed on tight. You pay with a button. You open the jar, and the rumour inside is: \"The mountain is grumpy.\" You already knew that. Then the boggart says it again, slower, looking sideways at the marsh road, and you realise it meant something else entirely.",
       "choices": [
         {
           "id": "listen_more",
@@ -245,7 +245,7 @@
     },
     "scene_three_rumours": {
       "type": "story",
-      "narration": "By sunset you've heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody's on it, wheel to wheel. West, the frogfolk still pole travellers through the Whispering Marsh, if they like you — and the marsh has been noisy since the red night.",
+      "narration": "By sunset you have heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travellers through the Whispering Marsh, if they like you. And the marsh has been noisy since the red night.",
       "choices": [
         {
           "id": "through_market",
@@ -257,7 +257,7 @@
     },
     "scene_gutter_glint": {
       "type": "story",
-      "narration": "Overhead, a courier griffin's mail sack splits open, and letters flutter down over the market like pigeons. Something heavier lands in the gutter beside your boot with a little plink. It is a red stone the size of a plum, glittering, and warm, like toast just out of the fire.",
+      "narration": "Overhead, a courier griffin's mail sack splits open, and letters flutter down over the market like pigeons. Something heavier lands in the gutter beside your boot with a little plink. It is a red stone the size of a plum, glittering, and warm, like toast just out of the fire. It is also, very faintly, humming.",
       "choices": [
         {
           "id": "pocket",
@@ -275,7 +275,7 @@
     },
     "scene_nobody_claims": {
       "type": "story",
-      "narration": "Eleven people say it's theirs. None of them can say what colour it is. The griffin is already a dot over the sea. It seems the stone is yours, for now.",
+      "narration": "Eleven people say it is theirs. None of them can say what colour it is. The griffin is already a dot over the sea, and the dot is not coming back. It seems the stone is yours, for now.",
       "choices": [
         {
           "id": "to_tavern",
@@ -287,7 +287,7 @@
     },
     "scene_tavern": {
       "type": "story",
-      "narration": "The Empty Chair tavern is packed with prospectors. On a table in the middle, a selkie scholar with ink on both elbows is waving her arms. \"The gem-light fell upward! Only for a moment, but it did!\" The whole room laughs, and two very polite stone trolls carry her out the door, table and all.",
+      "narration": "The Empty Chair tavern is packed with prospectors. On a table in the middle, a selkie scholar with ink on both elbows is waving her arms. \"The gem-light fell upward! Only for a moment, but it did!\" The whole room laughs, and two very polite stone trolls carry her out of the door, table and all. She keeps talking the whole way.",
       "choices": [
         {
           "id": "follow",
@@ -304,14 +304,14 @@
         },
         {
           "id": "curious",
-          "label": "Ask her what it means — that's why we're going",
+          "label": "Ask what it means. That is why we came, after all",
           "icon": "eye",
           "requiresFlag": "motive_curiosity",
           "goto": "scene_scholar_believed"
         },
         {
           "id": "shopping",
-          "label": "Leave her be — there are gem-buyers to see",
+          "label": "Leave her be. There are gem-buyers to see",
           "icon": "gem",
           "goto": "choice_ember"
         }
@@ -319,7 +319,7 @@
     },
     "scene_scholar_believed": {
       "type": "story",
-      "narration": "The scholar stops wringing out her notes and stares at you. Then she hugs you, which is very wet, because she is a selkie and it is raining. \"Professor Marrow Tidewell,\" she says, \"and you are the first people who've believed me all week.\" She gives you the owl-feather clasp off her own coat, for clear thinking.",
+      "narration": "The scholar stops wringing out her notes and stares at you. Then she hugs you, which is very wet, because she is a selkie and it is raining. \"Professor Marrow Tidewell,\" she says, \"and you are the first people who have believed me all week.\" She unpins the owl-feather clasp from her own coat and gives it to you, for clear thinking.",
       "onEnter": [
         { "type": "grantItem", "itemId": "owlfeather_clasp", "to": "party" }
       ],
@@ -334,7 +334,7 @@
     },
     "scene_scholar_theory": {
       "type": "story",
-      "narration": "Outside, Professor Tidewell draws on a napkin: a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal — like a lid on a jar — with eight great facets. I think the mountain just threw seven of them across the realm, and everybody's selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
+      "narration": "Outside, Professor Tidewell draws on a napkin: a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, with eight great facets. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
       "onEnter": [
         { "type": "setFlag", "flag": "listened_to_scholar", "value": true }
       ],
@@ -383,7 +383,7 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Madame Fenn pays with a purse so heavy it clanks, and throws in a hearthstone bead \"for luck, darlings.\" Then she writes your names in a little green book. \"I never forget a good seller,\" she says, and somehow you believe her.",
+      "narration": "Madame Fenn pays with a purse so heavy it clanks, and throws in a hearthstone bead \"for luck, darlings.\" Then she writes your names in a little green book. \"I never forget a good seller,\" she says, and somehow you believe her. The stone goes into her barrel, still humming, and the humming goes with it.",
       "onEnter": [
         { "type": "grantItem", "itemId": "hearthstone_bead", "to": "party" }
       ],
@@ -398,7 +398,7 @@
     },
     "scene_kept": {
       "type": "story",
-      "narration": "You close your hand around the stone. Still warm. Madame Fenn sighs a sigh so big her barrel rocks. \"Your loss, darlings. Or somebody's.\" The stone feels a little heavier now, the way a promise does.",
+      "narration": "You close your hand around the stone. Still warm. Madame Fenn sighs a sigh so big her barrel rocks on its wheels. \"Your loss, darlings. Or somebody's.\" The stone feels a little heavier now, the way a promise does.",
       "choices": [
         {
           "id": "go_outfit",
@@ -410,7 +410,7 @@
     },
     "scene_market": {
       "type": "story",
-      "narration": "Every shop on the Outfitters' Steps is selling the same three things: boots, rope, and quickfoot laces. A faun cobbler called Tobble Reedpipe sings the price of each lace as he sells it, and every verse goes up a key.",
+      "narration": "Every shop on the Outfitters' Steps is selling the same three things: boots, rope, and quickfoot laces. A faun cobbler called Tobble Reedpipe sings the price of each lace as he sells it, and every verse goes up a key. By the top of the steps he is squeaking.",
       "choices": [
         {
           "id": "haggle",
@@ -420,7 +420,7 @@
         },
         {
           "id": "buy_outright",
-          "label": "Buy the best laces outright — we're rich now!",
+          "label": "Buy the best laces outright. We're rich now!",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_laced",
@@ -488,7 +488,7 @@
     },
     "rest_empty_chair": {
       "type": "rest",
-      "narration": "You rent the last room in the Exchange, which is a cupboard under some stairs with a lovely view of the stairs. Somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions.",
+      "narration": "You rent the last room in the Exchange, which is a cupboard under some stairs with a lovely view of the stairs. Somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions, and all three of them are right.",
       "heal": 2,
       "choices": [
         {
@@ -501,7 +501,7 @@
     },
     "scene_caravan_yard": {
       "type": "story",
-      "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. \"Room for three,\" she says. \"Why should it be you?\"",
+      "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. She looks at the three of you the way she looks at weather. \"Room for three,\" she says. \"Why should it be you?\"",
       "choices": [
         {
           "id": "honest",
@@ -561,7 +561,7 @@
     },
     "scene_hired": {
       "type": "story",
-      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and the Exchange shrinks behind you into a bright muddle of roofs.",
+      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and the Exchange shrinks behind you into a bright muddle of roofs, with one lighthouse still pretending it saw nothing.",
       "choices": [
         {
           "id": "roll_north",
