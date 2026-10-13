@@ -23,7 +23,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ReactElement } from "react";
-import type { ClientIntent, EncounterState, ItemDef, LegalAction, Position } from "@kad/shared";
+import type { ClientIntent, EncounterState, IntentPreview, ItemDef, LegalAction, Position } from "@kad/shared";
 import {
   combatantById,
   currentActor,
@@ -32,7 +32,7 @@ import {
   legalMoves,
   samePosition,
 } from "@kad/shared";
-import { useAbilities, useItems, useMe, useParty, useRules, useRunState, useSend } from "../store";
+import { useAbilities, useItems, useMe, useParty, useRules, useRunState, useSend, useSharePreview } from "../store";
 import { combatContext } from "../store/combat";
 import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -97,6 +97,10 @@ export function CombatControls(): ReactElement | null {
     },
     [send],
   );
+
+  // What the TV lights up while this phone is still deciding (§11's confirm
+  // step, shown to the table). Read off the same selection the confirm bar is.
+  useSharePreview(previewOf(selection));
 
   if (!encounter || !me) return null;
 
@@ -542,6 +546,35 @@ export function CombatControls(): ReactElement | null {
       ) : null}
     </div>
   );
+}
+
+/** The selection as the table should see it, or null when nothing is picked. */
+export function previewOf(selection: Selection): IntentPreview | null {
+  switch (selection.step) {
+    case "idle":
+      return null;
+    case "move":
+      return { kind: "move", to: selection.to };
+    case "target":
+      return { kind: "action", abilityId: selection.action.abilityId, targetIds: [...selection.picked] };
+    case "tile":
+      return { kind: "action", abilityId: selection.action.abilityId, tiles: [...selection.picked] };
+    case "tile-target":
+      return { kind: "action", abilityId: selection.action.abilityId, tiles: [selection.tile] };
+    case "act":
+      return {
+        kind: "action",
+        abilityId: selection.action.abilityId,
+        ...(selection.targetIds?.length ? { targetIds: [...selection.targetIds] } : {}),
+        ...(selection.tiles?.length ? { tiles: [...selection.tiles] } : {}),
+      };
+    case "item-target":
+      return { kind: "item", itemId: selection.itemId };
+    case "item-act":
+      return { kind: "item", itemId: selection.itemId, ...(selection.targetId ? { targetId: selection.targetId } : {}) };
+    case "end":
+      return { kind: "end_turn" };
+  }
 }
 
 function confirmLabel(

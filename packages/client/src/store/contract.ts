@@ -13,6 +13,7 @@ import type {
   Campaign,
   Chapter,
   ClientIntent,
+  IntentPreview,
   ItemCatalog,
   PartyMember,
   Presentation,
@@ -57,6 +58,13 @@ export interface GameStore {
   presentation: PresentationEvent | null;
   /** Last ordered progression update; subscribers dedupe by its server seq. */
   progression: ProgressionEvent | null;
+  /**
+   * What each player has tapped but not confirmed yet, by playerId — the live
+   * `PreviewMessage`s, for the shared screen to light up. Not part of the
+   * mirror: never in a snapshot, emptied on leaving or re-attaching, and
+   * possibly stale, so a reader checks a preview still fits the state.
+   */
+  previews: Readonly<Record<string, IntentPreview>>;
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -115,6 +123,12 @@ export interface GameStore {
    * the one time the phone was on a bad connection.
    */
   send(intent: ClientIntent): Promise<boolean>;
+  /**
+   * Tell the table what this phone has picked but not confirmed, or `null`
+   * once it has backed out or confirmed. Fire-and-forget: a lost preview costs
+   * a highlight on the TV, never a turn, so it neither retries nor reports.
+   */
+  preview(preview: IntentPreview | null): void;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;
