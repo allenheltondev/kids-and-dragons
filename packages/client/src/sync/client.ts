@@ -14,6 +14,7 @@ import type {
   Chapter,
   CreateRoomRequest,
   CreateRoomResponse,
+  IntentPreview,
   ItemCatalog,
   JoinRoomRequest,
   JoinRoomResponse,
@@ -124,6 +125,8 @@ export interface Api {
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
   watchRoom(code: string, timeoutMs?: number): Promise<WatchRoomResponse>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
+  /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
+  postPreview(preview: IntentPreview | null, token: string): Promise<void>;
   /**
    * `timeoutMs` narrows the request funnel's default bound for this one call.
    * Refresh recovery passes the *remaining* recovery budget here, so five
@@ -299,6 +302,15 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token,
       body: JSON.stringify(body),
+    });
+  },
+
+  async postPreview(preview, token) {
+    await request<{ ok: boolean }>("/api/preview", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ preview }),
     });
   },
 

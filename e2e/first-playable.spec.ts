@@ -750,4 +750,41 @@ test.describe("first playable", () => {
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible({ timeout: 15_000 });
     expect(tvErrors).toEqual([]);
   });
+
+  test("party mode: the TV lights up a choice before it is confirmed", async ({ browser }) => {
+    const tv = await phone(browser, 1280, 720);
+    const tvErrors: string[] = [];
+    tv.on("pageerror", (e) => tvErrors.push(e.message));
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+
+    const controller = await phone(browser);
+    await controller.goto("/");
+    await controller.getByLabel(/room code/i).fill(code);
+    await controller.getByRole("button", { name: /join a game/i }).click();
+    await createCharacter(controller, "unicorn", "Sparklehoof");
+    await openPlayerTask(controller);
+    await controller.getByRole("button", { name: /i'm ready/i }).click(TAP);
+    await controller.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await openPlayerTask(controller);
+
+    // Tap an option and stop there: no "Do it!".
+    const option = controller.locator(".prompt .choice").first();
+    const label = (await option.locator(".choice__label").textContent())!.trim();
+    await option.click(TAP);
+    const picked = tv.locator(".narration__choice--picked");
+    await expect(picked).toHaveCount(1, { timeout: 10_000 });
+    await expect(picked).toContainText(label);
+    await expect(picked).toContainText("Sparklehoof");
+    if (process.env.KAD_SHOT) await tv.screenshot({ path: process.env.KAD_SHOT });
+
+    // Backing out takes the highlight away again.
+    await controller.getByRole("button", { name: /^change$/i }).click(TAP);
+    await expect(picked).toHaveCount(0, { timeout: 10_000 });
+    expect(tvErrors).toEqual([]);
+  });
 });

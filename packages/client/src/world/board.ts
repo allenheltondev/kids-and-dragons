@@ -81,6 +81,7 @@ import {
   type NameplateBox,
 } from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
+import type { BoardAim } from "./previews";
 
 export { BOARD_TILE_PX } from "./board-math";
 
@@ -151,6 +152,11 @@ export interface BoardViewState {
   readonly enemyArt: Readonly<Record<string, string>>;
   /** For species/tier art lookup by character id. */
   readonly party: readonly PartyMember[];
+  /**
+   * What the fighter whose turn it is has picked on their phone but not
+   * confirmed (world/previews.ts) — ringed so the table sees it coming.
+   */
+  readonly aim?: BoardAim | null;
 }
 
 export interface BoardLayer {
@@ -216,6 +222,9 @@ interface PendingBeat {
   at: number;
   event: EncounterEvent;
 }
+
+/** The picked-not-confirmed mark — a cool cyan against the reach's gold. */
+const AIM_COLOR = 0x6fe6ff;
 
 const FLOATER_LIFE_S = 1.1;
 const FLOATER_RISE = BOARD_TILE_PX * 0.5;
@@ -509,12 +518,13 @@ export function createBoardLayer(): BoardLayer {
   // Highlights — §7.2 "reachable tiles highlighted", straight from legalMoves
   // -------------------------------------------------------------------------
 
-  function drawHighlights(encounter: EncounterState): void {
+  function drawHighlights(encounter: EncounterState, aim: BoardAim | null): void {
     // Only a party figure's reach is the table's business; a monster's would
     // telegraph the AI and clutter the board (the server drives it anyway).
     const actor = currentActor(encounter);
     const moves = actor?.side === "party" ? legalMoves(encounter) : [];
-    const key = moves.map((m) => `${m.x},${m.y}`).join(";");
+    const spots = (list: readonly Position[]) => list.map((m) => `${m.x},${m.y}`).join(";");
+    const key = `${spots(moves)}|${spots(aim?.tiles ?? [])}|${spots(aim?.targets ?? [])}`;
     if (key === movesKey) return;
     movesKey = key;
 
@@ -531,6 +541,33 @@ export function createBoardLayer(): BoardLayer {
         )
         .fill({ color: 0xffc95c, alpha: 0.14 })
         .stroke({ width: 3, color: 0xffc95c, alpha: 0.55 });
+    }
+
+    // The picked-but-not-confirmed tile and figures: brighter and thicker than
+    // the reach, in a colour of their own, so "where she *could* go" and
+    // "where she is about to go" never read as the same mark.
+    for (const tile of aim?.tiles ?? []) {
+      const pad = BOARD_TILE_PX * 0.04;
+      highlightLayer
+        .roundRect(
+          tile.x * BOARD_TILE_PX + pad,
+          tile.y * BOARD_TILE_PX + pad,
+          BOARD_TILE_PX - pad * 2,
+          BOARD_TILE_PX - pad * 2,
+          BOARD_TILE_PX * 0.14,
+        )
+        .fill({ color: AIM_COLOR, alpha: 0.32 })
+        .stroke({ width: 6, color: AIM_COLOR, alpha: 0.95 });
+    }
+    for (const target of aim?.targets ?? []) {
+      highlightLayer
+        .circle(
+          (target.x + 0.5) * BOARD_TILE_PX,
+          (target.y + 0.5) * BOARD_TILE_PX,
+          BOARD_TILE_PX * 0.46,
+        )
+        .fill({ color: AIM_COLOR, alpha: 0.22 })
+        .stroke({ width: 6, color: AIM_COLOR, alpha: 0.95 });
     }
   }
 
@@ -652,7 +689,7 @@ export function createBoardLayer(): BoardLayer {
         buildTiles(encounter, biome);
       }
       syncActors(next);
-      drawHighlights(encounter);
+      drawHighlights(encounter, next.aim ?? null);
     },
 
     playEvents(events, totalMs) {

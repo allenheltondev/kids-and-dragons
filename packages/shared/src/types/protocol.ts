@@ -264,9 +264,49 @@ export interface SnapshotMessage {
   state: RunState;
 }
 
+/**
+ * What a player has tapped on their phone but not yet confirmed — the
+ * half-made choice the shared screen lights up so the table can see it coming
+ * (a story option, a tile to walk to, an ability and who it is aimed at).
+ *
+ * A hint, never an intent: nothing here is validated against the rules or
+ * applied to anything, and the confirmed intent that follows is checked as if
+ * this had never been sent. The TV shows one only while it still fits the
+ * state it is looking at (the player's own combat turn, a choice still on
+ * offer), so a stale preview fades on its own rather than needing an undo.
+ */
+export type IntentPreview =
+  | { kind: "choice"; choiceId: string }
+  | { kind: "move"; to: { x: number; y: number } }
+  /** An ability, with whatever has been aimed so far — maybe nothing yet. */
+  | {
+      kind: "action";
+      abilityId: string;
+      targetIds?: string[];
+      tiles?: { x: number; y: number }[];
+    }
+  | { kind: "item"; itemId: string; targetId?: string }
+  | { kind: "end_turn" };
+
+/**
+ * A live-only relay of one player's `IntentPreview`, or `null` when they backed
+ * out. Never committed and never in the event log, so it has no seq of its
+ * own: `seq` is the run's seq when it was relayed, carried only so every
+ * message on the channel has one, and the sequencer never orders by it. A
+ * preview that went through the state instead would bump the seq on every tap,
+ * and a second player's real move would bounce off STALE_SEQ for it.
+ */
+export interface PreviewMessage {
+  seq: number;
+  runId: string;
+  playerId: string;
+  preview: IntentPreview | null;
+}
+
 export type ChannelMessage =
   | ({ kind: "patch" } & ServerMessage)
-  | ({ kind: "snapshot" } & SnapshotMessage);
+  | ({ kind: "snapshot" } & SnapshotMessage)
+  | ({ kind: "preview" } & PreviewMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4

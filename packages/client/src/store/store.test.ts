@@ -90,6 +90,7 @@ function harness(state: RunState = makeState()): Harness {
       state,
     })),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
+    postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
@@ -354,6 +355,40 @@ describe("the mirror", () => {
     await h.channelOptions().resync(1);
 
     expect(h.store.getState().state?.narration).toBe("three");
+  });
+});
+
+describe("preview", () => {
+  it("posts the newest pick only, one at a time, and skips a repeat", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    let release: () => void = () => undefined;
+    h.api.postPreview.mockImplementationOnce(() => new Promise<void>((resolve) => (release = resolve)));
+
+    const { preview } = h.store.getState();
+    preview({ kind: "choice", choiceId: "east" });
+    // Two more taps while the first is in the air: only the last is worth sending.
+    preview({ kind: "choice", choiceId: "west" });
+    preview(null);
+    expect(h.api.postPreview).toHaveBeenCalledTimes(1);
+    release();
+    await vi.waitFor(() => expect(h.api.postPreview).toHaveBeenCalledTimes(2));
+    expect(h.api.postPreview).toHaveBeenLastCalledWith(null, "tok_1");
+
+    // Already told: saying it again sends nothing.
+    preview(null);
+    await Promise.resolve();
+    expect(h.api.postPreview).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps everybody's picks from the channel, and forgets a withdrawn one", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: { kind: "end_turn" } });
+    expect(h.store.getState().previews).toEqual({ p_2: { kind: "end_turn" } });
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null });
+    expect(h.store.getState().previews).toEqual({});
+    expect(h.store.getState().state?.seq).toBe(7);
   });
 });
 

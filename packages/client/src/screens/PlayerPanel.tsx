@@ -44,6 +44,7 @@ import {
   usePrompt,
   useRunState,
   useSend,
+  useSharePreview,
 } from "../store";
 // Path helpers only — `screens/` never drags the renderer in (art-paths.ts).
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
@@ -443,6 +444,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     if (myPrompt === null || myPrompt.kind !== "choice" || pendingChoice === null) return null;
     return myPrompt.options.find((o) => o.id === pendingChoice) ?? null;
   }, [myPrompt, pendingChoice]);
+
+  // The shared screen lights up the option this phone is hovering over, so the
+  // table sees it coming before "Do it!". A vote already cast is not a
+  // preview — it is on the record — so only a pick that differs from it shows.
+  const unconfirmedChoice =
+    chosenOption !== null &&
+    !(myPrompt?.kind === "choice" && me !== null && myPrompt.votes?.[me.playerId] === chosenOption.id)
+      ? chosenOption.id
+      : null;
+  useSharePreview(unconfirmedChoice === null ? null : { kind: "choice", choiceId: unconfirmedChoice });
 
   if (state === null || me === null) {
     return (

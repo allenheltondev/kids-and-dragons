@@ -268,6 +268,38 @@ describe("the story turn (spec §6.1)", () => {
   });
 });
 
+describe("what somebody has picked but not confirmed", () => {
+  const vote = {
+    prompt: {
+      kind: "choice" as const,
+      sceneId: "s",
+      options: [
+        { id: "east", label: "Go east", icon: "arrow" },
+        { id: "west", label: "Go west", icon: "arrow" },
+      ],
+      forPlayerIds: [],
+      vote: true,
+    },
+  };
+
+  afterEach(() => useGameStore.setState({ previews: {} }));
+
+  it("lights up the option and names who is leaning toward it", () => {
+    useGameStore.setState({ previews: { p_2: { kind: "choice", choiceId: "west" } } });
+    const { container } = mount(vote);
+    const picked = container.querySelectorAll(".narration__choice--picked");
+    expect(picked).toHaveLength(1);
+    expect(picked[0]?.textContent).toContain("Go west");
+    expect(picked[0]?.textContent).toContain("Thistle");
+  });
+
+  it("lights up nothing while nobody is picking", () => {
+    useGameStore.setState({ previews: {} });
+    const { container } = mount(vote);
+    expect(container.querySelector(".narration__choice--picked")).toBeNull();
+  });
+});
+
 describe("a fight", () => {
   it("folds the panel to a strip so the board shows", () => {
     const { container } = mount({

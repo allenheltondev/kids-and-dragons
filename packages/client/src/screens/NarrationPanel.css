@@ -184,6 +184,43 @@
   font-weight: 600;
 }
 
+/*
+ * A choice somebody has tapped on their phone but not confirmed, and the
+ * fighter's half-made pick in a fight. The same cyan the board rings its aim
+ * in (world/board.ts AIM_COLOR), so "about to" reads as one mark everywhere.
+ */
+.narration__choice--picked {
+  border-color: #6fe6ff;
+  border-width: 0.16em;
+  background: rgba(111, 230, 255, 0.14);
+  box-shadow: 0 0 0.8em rgba(111, 230, 255, 0.35);
+}
+
+.narration__picker,
+.narration__aim {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  color: #6fe6ff;
+}
+
+.narration__picker {
+  margin-inline-start: auto;
+  font-size: 0.8em;
+  font-weight: 700;
+}
+
+.narration__aim {
+  align-self: flex-start;
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border: 0.16em solid #6fe6ff;
+  border-radius: var(--radius-pill, 999em);
+  background: rgba(111, 230, 255, 0.14);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 600;
+}
+
 .narration__prompt {
   align-self: flex-start;
   border-color: var(--color-accent, #f5c86c);

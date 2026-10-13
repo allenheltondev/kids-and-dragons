@@ -18,6 +18,7 @@ import type {
   Campaign,
   Chapter,
   ClientIntent,
+  IntentPreview,
   JoinRoomResponse,
   ItemCatalog,
   PartyMember,
@@ -202,6 +203,15 @@ interface Runtime {
   chapter: { id: string; task: Promise<void> } | null;
   /** In-flight world map fetch. */
   world: Promise<void> | null;
+  /**
+   * This phone's preview sender: what the server last heard, and the newest
+   * one waiting while a post is in the air. One post at a time so they cannot
+   * land out of order — the TV must never end on a tap the player has
+   * already moved past — and only the latest waiting one is ever sent.
+   */
+  previewSent: string;
+  previewInFlight: boolean;
+  previewNext: { key: string; preview: IntentPreview | null } | null;
 }
 
 /**
@@ -230,6 +240,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       broadcastWatchdog: null,
       chapter: null,
       world: null,
+      previewSent: "null",
+      previewInFlight: false,
+      previewNext: null,
     };
 
     /** Cache successful discovery, including the explicit local 404 answer. */
@@ -280,6 +293,11 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onProgression: (progression) => set({ progression }),
           // Live-only "new page!" ids (#106) — queued for #110 to celebrate.
           onDiscovered: ({ runId, seq, canonIds }) => announceFieldGuideNews(runId, seq, canonIds),
+          onPreview: ({ runId, playerId, preview }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            const { [playerId]: _old, ...rest } = get().previews;
+            set({ previews: preview === null ? rest : { ...rest, [playerId]: preview } });
+          },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
@@ -368,6 +386,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     function disconnect(): void {
+      // Previews are live-only: a fresh channel starts from nobody picking.
+      set({ previews: {} });
+      runtime.previewSent = "null";
+      runtime.previewNext = null;
       runtime.channel?.close();
       runtime.channel = null;
       runtime.sequencer?.dispose();
@@ -558,6 +580,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       state: null,
       presentation: null,
       progression: null,
+      previews: {},
       error: null,
       rules: null,
       items: null,
@@ -906,6 +929,37 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      preview(preview: IntentPreview | null) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return;
+        const key = JSON.stringify(preview);
+        runtime.previewNext = { key, preview };
+        if (runtime.previewInFlight) return;
+
+        const pump = async (): Promise<void> => {
+          runtime.previewInFlight = true;
+          try {
+            for (;;) {
+              const next = runtime.previewNext;
+              runtime.previewNext = null;
+              if (next === null) return;
+              if (next.key === runtime.previewSent) continue;
+              const current = get().session;
+              if (current?.sessionToken !== session.sessionToken) return;
+              try {
+                await deps.api.postPreview(next.preview, session.sessionToken);
+                runtime.previewSent = next.key;
+              } catch {
+                // A highlight, not a turn: drop it and let the next tap speak.
+              }
+            }
+          } finally {
+            runtime.previewInFlight = false;
+          }
+        };
+        void pump();
+      },
+
       leave() {
         const session = get().session;
         runtime.attaching = null;
@@ -998,6 +1052,26 @@ export function useIsMyPrompt(): boolean {
 
 export function useSend(): (intent: ClientIntent) => Promise<boolean> {
   return useGameStore((store) => store.send);
+}
+
+/** Every player's unconfirmed tap, by playerId (`GameStore.previews`). */
+export function usePreviews(): Readonly<Record<string, IntentPreview>> {
+  return useGameStore((store) => store.previews);
+}
+
+/**
+ * Keep the table told what this phone has picked but not confirmed. Sends on
+ * change and sends `null` when the picking surface goes away — a confirmed
+ * choice, a turn that ended, a screen that closed — so the TV never holds a
+ * highlight for something nobody is still deciding.
+ */
+export function useSharePreview(preview: IntentPreview | null): void {
+  const send = useGameStore((store) => store.preview);
+  const key = JSON.stringify(preview);
+  useEffect(() => {
+    send(JSON.parse(key) as IntentPreview | null);
+  }, [send, key]);
+  useEffect(() => () => send(null), [send]);
 }
 
 export function useRules(): RulesContent | null {

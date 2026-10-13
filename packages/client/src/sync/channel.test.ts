@@ -566,6 +566,37 @@ describe("openChannel", () => {
   });
 });
 
+describe("a preview on the channel", () => {
+  it("is handed over at once and never moves seq or the mirror", () => {
+    const states: RunState[] = [];
+    const previews: unknown[] = [];
+    const withPreview = new MessageSequencer({
+      handlers: {
+        onState: (state) => void states.push(state),
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+        onPreview: (message) => void previews.push(message),
+      },
+    });
+    withPreview.reset(makeState({ seq: 4 }), 4);
+    const message = { kind: "preview" as const, seq: 9, runId: "r_1", playerId: "p_1", preview: { kind: "end_turn" as const } };
+    withPreview.ingest(message);
+    expect(previews).toEqual([message]);
+    expect(withPreview.seq).toBe(4);
+    expect(withPreview.buffered).toEqual([]);
+    expect(states).toHaveLength(1);
+  });
+
+  it("parses a preview, and drops a malformed one", () => {
+    const good = { kind: "preview", seq: 3, runId: "r_1", playerId: "p_1", preview: { kind: "choice", choiceId: "east" } };
+    expect(parseChannelMessage(JSON.stringify(good))).toEqual(good);
+    expect(parseChannelMessage(JSON.stringify({ ...good, preview: null }))).toEqual({ ...good, preview: null });
+    expect(parseChannelMessage(JSON.stringify({ ...good, preview: { kind: "roll" } }))).toBeNull();
+    expect(parseChannelMessage(JSON.stringify({ ...good, playerId: 7 }))).toBeNull();
+  });
+});
+
 describe("parseChannelMessage", () => {
   it("parses a patch message", () => {
     const parsed = parseChannelMessage(
