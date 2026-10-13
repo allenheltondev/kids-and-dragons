@@ -47,6 +47,7 @@ on:
       - "tools/art/verify-rig-motion.mjs"
       - "tools/art/rig_motion.py"
       - "tools/art/gap-calibration.mjs"
+      - "tools/ci/changes.mjs"
       - ".github/workflows/rig-motion.yml"
   pull_request:
     paths:
@@ -57,6 +58,7 @@ on:
       - "tools/art/verify-rig-motion.mjs"
       - "tools/art/rig_motion.py"
       - "tools/art/gap-calibration.mjs"
+      - "tools/ci/changes.mjs"
       - ".github/workflows/rig-motion.yml"
   workflow_dispatch:
 
@@ -68,10 +70,41 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    # `on.paths` above is coarse: it lists assets/manifest.json whole, so a new
+    # entity or effect ran this 25-45 minute gate. This narrows that to the
+    # manifest sections the rig tooling reads.
+    # The rules are in tools/ci/changes.mjs. A skip here is a job-level `if:`
+    # (reports as passed), never `on.paths` (reports nothing). Manual runs
+    # skip nothing.
+    name: does this change need it
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      motion: ${{ steps.classify.outputs.motion }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Classify the change
+        id: classify
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE"
+            node tools/ci/changes.mjs "$BASE" HEAD
+          else
+            node tools/ci/changes.mjs --all
+          fi
+
   motion:
+    needs: changes
     # Dependabot PRs cannot access RIVE_MCP_TOKEN for the private renderer.
     # Normal PRs, pushes to main, and manual runs keep the motion gate.
-    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    if: >-
+      needs.changes.outputs.motion == 'true' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]')
     name: every clip of every rig
     runs-on: ubuntu-latest
     # 54 rigs (24 base + 30 class) x 13 clips. Measured on a local 4-core box:
