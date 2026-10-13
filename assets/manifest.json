@@ -128,6 +128,7 @@
   ],
 
   "entities": [
+    { "id": "sheeple", "classification": "supporting_people", "primaryBiome": "plains", "canonicalLocations": ["plains", "sunward_fields", "exchange"], "scale": "medium" },
     { "id": "centaur", "classification": "supporting_people", "primaryBiome": "plains", "canonicalLocations": ["the_plains", "eastern_plains", "stone_crossing"], "scale": "large" },
     { "id": "faun", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields"], "scale": "medium" },
     { "id": "harvest_sprite", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields", "enchanted_woods"], "scale": "tiny" },
