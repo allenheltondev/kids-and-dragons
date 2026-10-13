@@ -38,10 +38,15 @@ export function chapterHeading(
  * and only then. A party coming back for chapter 4 knows what Gemfall is; a
  * party that has never played needs telling before the first scene drops them
  * into the middle of it.
+ *
+ * Not for a table that has just finished it. `ended` is only ever set on the
+ * room that played the last chapter, whose party is still seated and has just
+ * lived the story; a new room starting the campaign over has no `ended` and
+ * gets the premise through `next.index === 1` like any first evening.
  */
 export function campaignPremise(view: CampaignView | null | undefined): string | null {
-  if (!view?.blurb) return null;
-  const fresh = view.ended !== undefined || view.next === null || view.next.index === 1;
+  if (!view?.blurb || view.ended !== undefined) return null;
+  const fresh = view.next === null || view.next.index === 1;
   return fresh ? view.blurb : null;
 }
 
