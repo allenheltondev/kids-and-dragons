@@ -94,6 +94,7 @@ const EXPECTED_REACHABLE = [
   "npc.harvest_sprite",
   "npc.merfolk",
   "npc.selkie",
+  "npc.sheeple",
   "npc.stone_troll",
   "npc.witch_order",
   "npc.yeti",
@@ -117,7 +118,6 @@ const EXPECTED_UNREACHABLE = [
   "location.bone_yard",
   "location.skullwater_cave",
   "location.the_whirlpool",
-  "npc.sheeple",
 ];
 
 describe("Field Guide reach", () => {
