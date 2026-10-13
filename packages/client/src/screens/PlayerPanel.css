@@ -696,8 +696,7 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin: 0;
-  padding: var(--space-3, 0.75em) var(--space-4, 1em) 0;
+  margin: 0 0 var(--space-3, 0.75em);
   color: var(--color-text-muted, #b9b0d8);
   font-size: var(--font-size-md, 1em);
   line-height: 1.35;
@@ -737,10 +736,113 @@
   max-block-size: none;
   border-bottom: 0;
   container: prompt / size;
+  /* A column, so the scene's words can sit at the top and the answers can
+     sink to the bottom with the picture between them. */
+  display: flex;
+  flex-direction: column;
 }
 
-.player__echo {
-  padding-block-start: var(--space-2, 0.5em);
+/*
+ * While deciding, the scene is read in full: the whole narration, not two
+ * clamped lines with the rest behind a toggle. The pane has the room — it
+ * used to be mostly empty — and an eight-year-old choosing between "look for
+ * a gap" and "listen first" needs the sentence that set them up.
+ */
+.player--deciding .player__echo {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+  max-inline-size: var(--kad-measure, 34em);
+  color: var(--color-text, #f4f0ff);
+  font-size: var(--font-size-lg, 1.25em);
+  line-height: 1.4;
+  text-wrap: pretty;
+  text-shadow: 0 0.1em 0.5em rgb(13 11 26 / 90%), 0 0 1.2em rgb(13 11 26 / 80%);
+}
+
+/*
+ * Read down, tap at the thumb: whatever comes first in the box sinks to the
+ * bottom, and when that is the scene's words they stay at the top and push
+ * the answers down instead. Auto margins rather than `justify-content:
+ * flex-end`, because a flex-end column that overflows clips its *top* and
+ * cannot be scrolled back to it — a long fight grid would lose its heading.
+ * An auto margin collapses to zero the moment there is no spare room, and
+ * the box scrolls as normal.
+ */
+.player--deciding .player__prompt > :first-child {
+  margin-block-start: auto;
+}
+
+.player--deciding .player__echo {
+  margin-block-start: 0;
+  margin-block-end: auto;
+  padding-block-end: var(--space-3, 0.75em);
+}
+
+/* --- The scene, behind the controls ------------------------------------ */
+
+.player--scene {
+  position: relative;
+  isolation: isolate;
+}
+
+.player__scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--color-bg, #0d0b1a);
+}
+
+.player__scene-art {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  animation: player-scene-arrive 420ms ease-out;
+}
+
+/* Dark at the top under the words and dark at the bottom under the buttons;
+   the picture shows through the middle. The strip and the dock carry their
+   own fills, so the art only ever shows between them. */
+.player__scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgb(13 11 26 / 78%) 0%,
+    rgb(13 11 26 / 45%) 35%,
+    rgb(13 11 26 / 55%) 65%,
+    rgb(13 11 26 / 92%) 100%
+  );
+}
+
+/* The headings and the sheet blocks sit on the art too; give them a floor. */
+.player--scene .prompt__title,
+.player--scene .player__waiting {
+  text-shadow: 0 0.1em 0.5em rgb(13 11 26 / 90%);
+}
+
+.player--scene:not(.player--deciding) .player__scroll {
+  background: linear-gradient(to bottom, transparent, var(--color-bg, #0d0b1a) 6em);
+}
+
+@keyframes player-scene-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player__scene-art {
+    animation: none;
+  }
 }
 
 /* A short pane: tighter rows, still a full-width tap target. */

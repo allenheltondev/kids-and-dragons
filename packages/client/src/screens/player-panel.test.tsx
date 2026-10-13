@@ -1221,3 +1221,57 @@ describe("the party strip", () => {
     expect(screen.getByText(/How far they have come/)).toBeTruthy();
   });
 });
+
+describe("the scene behind the controls", () => {
+  const CHAPTER = {
+    id: "ch_1",
+    campaignId: "c",
+    index: 1,
+    title: "Ch",
+    biome: "sunward_fields",
+    estimatedMinutes: 1,
+    xpAward: 1,
+    entry: "s_1",
+    scenes: { s_1: { type: "story", narration: "…", choices: [] } },
+  } as unknown as import("@kad/shared").Chapter;
+
+  it("stands a story choice in the chapter's picture", () => {
+    mount({ prompt: choicePrompt(), narration: "A wall of thorns." });
+    act(() => {
+      useGameStore.setState({ chapter: CHAPTER });
+    });
+    const scene = screen.getByTestId("player-scene");
+    expect(scene.querySelector("img")?.getAttribute("src")).toBe("/assets/biomes/sunward_fields/bg.webp");
+    // The whole narration, inside the prompt box with the answers.
+    const echo = document.querySelector(".player__prompt .player__echo");
+    expect(echo?.textContent).toBe("A wall of thorns.");
+  });
+
+  it("keeps the picture out of the lobby, where the entry scene is the picture", () => {
+    mount({ phase: "lobby", prompt: null });
+    act(() => {
+      useGameStore.setState({ chapter: CHAPTER });
+    });
+    expect(screen.queryByTestId("player-scene")).toBeNull();
+  });
+
+  it("waits for the chapter in play rather than drawing the last one", () => {
+    mount({ prompt: choicePrompt() });
+    act(() => {
+      useGameStore.setState({ chapter: { ...CHAPTER, id: "ch_0" } });
+    });
+    expect(screen.queryByTestId("player-scene")).toBeNull();
+  });
+
+  it("does not read a check's prompt twice", () => {
+    // A check scene with no narration of its own is narrated by its prompt,
+    // and the roll card already carries it.
+    mount({
+      prompt: { kind: "roll", sceneId: "s_1", stat: "quick", tn: 12, prompt: "Wriggle through", characterId: "c_1" },
+      narration: "Wriggle through",
+      sceneType: "check",
+    });
+    expect(document.querySelector(".player__echo")).toBeNull();
+    expect(screen.getByRole("button", { name: /roll/i })).toBeTruthy();
+  });
+});

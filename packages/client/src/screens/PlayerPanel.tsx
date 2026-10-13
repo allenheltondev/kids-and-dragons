@@ -13,8 +13,11 @@
  *     (spec §11). "Change" is always available until then.
  *   - There is no timer anywhere in this file, and there never will be.
  *
- * Laid out for the ~40% pane of Travel Mode first (roadmap): the identity strip
- * and the prompt are pinned, the sheet and inventory scroll under them.
+ * Laid out for a phone first (roadmap, "Travel layout first"): the identity
+ * strip is pinned, and while the game is asking you something the question
+ * owns the pane — the scene's picture behind it (`SceneBackdrop`), the words
+ * at the top, the answers at the bottom under the thumb. Otherwise the sheet
+ * and the inventory scroll under the strip.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -31,6 +34,7 @@ import type {
 } from "@kad/shared";
 import {
   useCampaign,
+  useChapter,
   useIsMyCombatTurn,
   useIsMyPrompt,
   useItems,
@@ -40,6 +44,8 @@ import {
   useRunState,
   useSend,
 } from "../store";
+// Path helpers only — `screens/` never drags the renderer in (art-paths.ts).
+import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -48,7 +54,7 @@ import { Icon } from "./icons";
 import { beginLabel, campaignEndHeading, campaignEndLine, nextChapterLine } from "./campaign-copy";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
-import { useEnsureContent } from "./content";
+import { useEnsureChapter, useEnsureContent } from "./content";
 import "./shared.css";
 import "./PlayerPanel.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
@@ -330,6 +336,36 @@ function SheetDock({
   );
 }
 
+/**
+ * The scene, behind your controls.
+ *
+ * Travel Mode shows one surface at a time, so without this the picture of the
+ * place lives on the far side of a toggle from the question about it — and
+ * the pane the question is asked in is mostly black. The same art the stage
+ * draws (world/scene.ts picks the URL the same way), dimmed under the text
+ * and the choices so both stay readable. In Party Mode it is a quiet echo of
+ * the television, exactly like the narration line above the choices.
+ *
+ * Decoration: aria-hidden, no layout of its own, and the pane reads the same
+ * with the image missing — `onError` just takes it away.
+ */
+function SceneBackdrop({ src }: { src: string }): ReactElement | null {
+  const [failed, setFailed] = useState<string | null>(null);
+  if (failed === src) return null;
+  return (
+    <div className="player__scene" aria-hidden="true" data-testid="player-scene">
+      <img
+        className="player__scene-art"
+        key={src}
+        src={src}
+        alt=""
+        decoding="async"
+        onError={() => setFailed(src)}
+      />
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 
 export function PlayerPanel(): ReactElement {
@@ -347,6 +383,10 @@ export function PlayerPanel(): ReactElement {
   // otherwise let one person start the chapter alone.
   const everyoneReady = party.length > 0 && party.every((member) => member.ready);
   const inLobby = state?.phase === "lobby" || state?.phase === "creation";
+  // The chapter in play, for its art — fetched by id, idempotent, quiet on
+  // failure (the pane just has no picture, which is what it had before).
+  useEnsureChapter();
+  const chapter = useChapter();
   // Which chapter comes next is the server's answer, not ours: where the party
   // got to and which road it took live on the household's campaign attempt.
   const campaignId = campaign?.id ?? null;
@@ -491,6 +531,17 @@ export function PlayerPanel(): ReactElement {
       inLobby ||
       state.phase === "chapter_complete");
   const showSheet = !deciding || sheetOpen;
+  /*
+   * Which picture to stand the controls in: the scene's own illustration when
+   * it has one, else the chapter's biome — the same choice the stage makes.
+   * None in the lobby (EntryScene owns that), none in a fight (the combat
+   * grid is a map and needs the contrast), none before the chapter is known.
+   */
+  const sceneArt = sceneArtFor(chapter, state);
+  const backdrop =
+    inLobby || inEncounter || chapter === null || chapter.id !== state.chapterId
+      ? null
+      : (sceneArt ? sceneBackdropUrl(sceneArt) : null) ?? biomeBackdropUrl(chapter.biome);
   const banked = me.character.unspentPoints;
   /*
    * A party snapshot persisted before `spendableStats` existed has no list at
@@ -590,8 +641,11 @@ export function PlayerPanel(): ReactElement {
   }
 
   return (
-    <section className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}`}>
+    <section
+      className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}`}
+    >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
+      {backdrop ? <SceneBackdrop src={backdrop} /> : null}
       <IdentityStrip me={me} />
 
       {me.down ? (
@@ -614,15 +668,23 @@ export function PlayerPanel(): ReactElement {
         scene either way, and the shell decides whether that is a duplicate or
         the only copy on screen.
       */}
-      {state.narration && myPrompt !== null && !(deciding && sheetOpen) ? (
-        <p className="player__echo" aria-hidden="true">
-          {state.narration}
-        </p>
-      ) : null}
-
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
       <div className="player__prompt" hidden={deciding && sheetOpen}>
+        {/* Inside the prompt's scroll box rather than above it, so that while
+            deciding the words sit at the top and the answers sink to the
+            bottom — read down, tap at the thumb — with the scene showing
+            between them, and a long scene scrolls with its choices. */}
+        {/* A check scene with no narration of its own is narrated by its
+            prompt, and the roll card below already says it; twice is noise. */}
+        {state.narration &&
+        myPrompt !== null &&
+        !(myPrompt.kind === "roll" && myPrompt.prompt === state.narration) ? (
+          <p className="player__echo" aria-hidden="true">
+            {state.narration}
+          </p>
+        ) : null}
+
         {/* ---------------- combat (spec §7.2) ----------------
             Renders itself only while `state.encounter` exists, and owns the
             slot when it does: there is never an open Prompt during a fight
