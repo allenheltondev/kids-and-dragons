@@ -121,7 +121,6 @@ export function HomeScreen(): ReactElement {
       <div className="home__inner kad-stack">
         <header className="home__masthead">
           <h1 className="home__title">Kids &amp; Dragons</h1>
-          <p className="home__tagline kad-muted">Grab a phone. Pick an adventure.</p>
         </header>
 
         <section className="home__card home__card--join" aria-labelledby="home-join">
