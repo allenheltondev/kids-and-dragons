@@ -45,14 +45,14 @@ Any browser can be the TV client, so **a tablet propped on the table is just a s
 No shared screen. Every phone renders **both** surfaces, one at a time, with a toggle:
 
 ```
-┌─────────────────┐
-│ [World] [You] ● │  the toggle, always there
-├─────────────────┤
-│                 │
-│  one surface,   │  World — shared, identical on every phone
-│  whole screen   │  You   — your sheet, your actions
-│                 │
-└─────────────────┘
+┌───────────────────────┐
+│ [World] [Map] [You] ● │  the toggle, always there
+├───────────────────────┤
+│                       │
+│  one surface,         │  World — shared, identical on every phone
+│  whole screen         │  Map   — the chapter as a trail, the party standing on its scene
+│                       │  You   — your sheet, your actions
+└───────────────────────┘
 ```
 
 This started as a 60/40 stack and that was wrong on a phone: neither half had
@@ -65,6 +65,7 @@ Design consequences, all of which we accept:
 - **No private information channel.** Every phone shows the same world. That's fine — this game has no hidden information by design. It does mean **hidden-role or secret-objective mechanics are permanently off the table**, and that's a deliberate trade.
 - **The grid needs a focus camera.** A 10×8 board on a phone has unreadable tiles at full extent. Combat gets an auto-framing camera that follows the active actor, with pinch-zoom and pan to override. This is good for the TV too — Party Mode gets it for free.
 - **The dice take over.** On the TV the roll is the centerpiece; on a phone it takes the world for its ~1.5s wherever you were, then returns you.
+- **The map is on request.** "How far have we got?" is the question a phone in the back of a car gets asked every three minutes, and the world pane answers only "what is happening now". The Map tab draws the chapter as a trail — the scenes the party has played, named; the party's own faces on the one it is in; everything ahead as fog, dots without names, so the shape of the road shows and nothing is spoiled. In Party Mode it rides on the phone, never the TV: a Map button swaps your controls for it and back.
 - **Your turn comes to you.** Being asked something pushes your controls in front of you automatically — and so does having no character yet, because creation is the first turn anyone takes. The toggle keeps a marker on "You" while you are looking at the world, so a turn can never sit unnoticed behind it.
 - **The question travels with the answers.** The scene's narration is echoed above your choices, because the question and its answers would otherwise sit on opposite sides of a toggle and an 8-year-old would flip back and forth to work out what she is choosing between. The world view remains where you go to read it properly.
 

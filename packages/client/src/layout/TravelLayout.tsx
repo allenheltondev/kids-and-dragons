@@ -4,9 +4,9 @@
  * Built first, on purpose. This is the constrained case: anything that fits a
  * phone fits a TV, and the reverse is not true (roadmap, "Travel layout first").
  *
- *   ┌─────────────────┐
- *   │ [ world ] [ me ]│  ← the toggle, always there
- *   ├─────────────────┤
+ *   ┌───────────────────────┐
+ *   │ [ world ] [ map ] [ me ]│  ← the toggle, always there
+ *   ├───────────────────────┤
  *   │                 │
  *   │  one surface,   │
  *   │  whole screen   │
@@ -23,6 +23,9 @@
  *   • Your turn pushes your controls in front of you, automatically.
  *   • The toggle takes you back to the world for the art, the party, the detail
  *     — and back again. Never sticky past the turn it was used in.
+ *   • The map is the one surface nothing ever pushes in front of you. It is
+ *     brought up on request — "how far have we got?" — and left the moment the
+ *     game needs you, like the world.
  *   • A roll takes the world for its ~1.5s wherever you were, then returns you.
  *   • A transformation takes it for as long as the cutscene runs. Same rule,
  *     bigger stakes: without it, spec §8.1's "single most important moment in
@@ -42,12 +45,13 @@
 import { useEffect, useRef, useState } from "react";
 import { WorldView } from "./WorldView";
 import { PlayerView } from "./PlayerView";
+import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
 import { Icon } from "../screens/icons";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 
-type Focus = "world" | "player";
+type Focus = "world" | "map" | "player";
 
 /** Long enough for the die to land and be read (spec §2.2). */
 const ROLL_HOLD_MS = 2000;
@@ -83,8 +87,16 @@ export function TravelLayout(): React.JSX.Element {
   // Needing you pushes your controls in front of you. Deliberately keyed on
   // the turn rather than set once: going back to the world to re-read a scene
   // must not stop the *next* question from reaching you.
+  //
+  // On the *transition* into your turn, tracked by hand, rather than on every
+  // run of the effect: React re-runs effects when a subtree is hidden and
+  // revealed by a Suspense boundary above it, and a re-run that read "it is
+  // still your turn" as "it has just become your turn" would yank the map or
+  // the world away from somebody who opened it mid-turn to think.
+  const wasMyTurn = useRef(false);
   useEffect(() => {
-    if (myTurn) setFocus("player");
+    if (myTurn && !wasMyTurn.current) setFocus("player");
+    wasMyTurn.current = myTurn;
   }, [myTurn]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
@@ -139,8 +151,17 @@ export function TravelLayout(): React.JSX.Element {
           aria-pressed={showing === "world"}
           onClick={() => setFocus("world")}
         >
-          <Icon name="map" />
+          <Icon name="eye" />
           <span>World</span>
+        </button>
+        <button
+          type="button"
+          className={`kad-travel__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on" : ""}`}
+          aria-pressed={showing === "map"}
+          onClick={() => setFocus("map")}
+        >
+          <Icon name="map" />
+          <span>Map</span>
         </button>
         <button
           type="button"
@@ -162,12 +183,21 @@ export function TravelLayout(): React.JSX.Element {
       </nav>
 
       {/* `hidden` rather than unmounted — see the header. */}
-      <div className="kad-travel__pane" data-showing={showing === "world"}>
+      <div className="kad-travel__pane" data-pane="world" data-showing={showing === "world"}>
         <WorldView />
       </div>
-      <div className="kad-travel__pane" data-showing={showing === "player"}>
+      <div className="kad-travel__pane" data-pane="player" data-showing={showing === "player"}>
         <PlayerView />
       </div>
+      {/* The map is cheap to draw and holds no state worth keeping, so it is
+          mounted only while it is looked at — and it is the one pane whose
+          chapter fetch (`useEnsureChapter`) should not run on a phone that
+          never asked for it. */}
+      {showing === "map" ? (
+        <div className="kad-travel__pane" data-pane="map" data-showing>
+          <MapView />
+        </div>
+      ) : null}
     </div>
   );
 }
