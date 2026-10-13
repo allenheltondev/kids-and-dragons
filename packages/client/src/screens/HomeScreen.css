@@ -34,6 +34,14 @@
   font-size: var(--font-size-md, 1em);
 }
 
+.home__crest {
+  display: block;
+  width: min(100%, 14em);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 0.12em 0.3em rgba(8, 7, 17, 0.55));
+}
+
 .home__field {
   display: flex;
   flex-direction: column;
