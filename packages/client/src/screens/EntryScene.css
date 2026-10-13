@@ -39,8 +39,12 @@
   border-radius: 0.5em;
   background: rgb(13 11 26 / 88%);
 }
+/* Wide enough on a TV for a full party (MAX_PARTY, four) to stand in one row:
+   at 36em the lineup held two across, and on a 720p screen the third card
+   fell below the bottom edge of a display nobody can scroll. A phone pane is
+   narrower than the cap, so this changes nothing there. */
 .entry-scene-host .lobby__join, .entry-scene-host .lobby__party {
-  inline-size: min(100%, 36em);
+  inline-size: min(100%, 54em);
   align-self: center;
 }
 .entry-scene-host .lobby__party-heading {
