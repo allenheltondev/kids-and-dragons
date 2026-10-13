@@ -176,7 +176,7 @@
 .keepsake__input--code {
   font-size: var(--kad-text-2xl);
   font-weight: var(--kad-weight-black);
-  /* Six digits read as six digits, not as a word. */
+  /* Eight digits read as eight digits, not as a word. */
   letter-spacing: 0.25em;
   /* letter-spacing adds a trailing gap after the last glyph, which visually
      shifts centred text left. Give it back. */
