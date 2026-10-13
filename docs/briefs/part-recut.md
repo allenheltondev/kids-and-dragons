@@ -49,6 +49,26 @@ Read before starting:
 One pull request per species (base tiers plus that species' class sets is fine
 once the class work starts). Never one giant PR.
 
+**The builder's underpaint is switched off per config, as each config's sets are
+recut.** Every config in `art/rig/` sets `underpaint: 48`, a build-time stopgap
+that grows each part 48px further under its neighbours (art-pipeline.md §6.4).
+On a recut set the hand-painted continuation already covers the seam. The
+stopgap then smears 48px more past it, which shows as wedges and streaks beside
+the torso in motion. So:
+
+- One config covers all four base tiers of a species (`art/rig/<species>.rig.json`).
+  A species' base PR recuts **all four tiers** and sets `underpaint` to `0` in
+  that config, in the same PR. A PR that recuts only some tiers of a species
+  does not merge: the config cannot be right for both kinds of set.
+- Each class set has its own config (`art/rig/<class>-<tier>-<species>.rig.json`).
+  Set its `underpaint` to `0` in the PR that recuts that set.
+- **Judging the pilot:** because the pilot recuts only `bigfoot/fledgling`, build
+  and render it once with `underpaint: 0` in a **local, uncommitted** copy of
+  `art/rig/bigfoot.rig.json` (`npm run art:rig:build -- bigfoot/fledgling`).
+  Report the walk/attack frames from both builds side by side, so the wedges
+  can be attributed to the stopgap or to the hand-painted fill. Restore the
+  file before committing.
+
 ---
 
 ## 3. What you must not change
@@ -57,7 +77,7 @@ once the class work starts). Never one giant PR.
 |---|---|
 | `assets/**/assembled.png` | **Never modify.** It is the approved art and the ground truth for every check. |
 | Part file names and the part list | Exactly the names in `assets/manifest.json` (`species[].parts`, `rigVariants[].parts`). No new parts, no renamed parts, no removed parts. |
-| `art/rig/*.rig.json` | Do not edit. zOrder, adjacency and root are fixed. |
+| `art/rig/*.rig.json` | Do not edit, except to set `underpaint` to `0` as §2 describes. zOrder, adjacency, root and every other key are fixed. |
 | `assets/manifest.json` | Do not edit. |
 | `art/rig/rive-mcp.pin.json`, `tools/art/*`, `.github/*`, `packages/*` | Do not edit. If a check seems wrong, report it (§10); do not change the check. |
 | `art/rig/motion-baseline.json` | Do not update. A human blesses the baseline after review. |
@@ -168,6 +188,11 @@ RIVE_MCP_TOKEN=<read token for allenheltondev/rive-mcp> npm run art:rig:setup
 export RIVE_MCP_CHROME=/path/to/chrome
 ```
 
+`python3` below means Python 3. On Windows, where it may be called `python`,
+run the Python commands with `python` and say so in the report. `npm run
+art:verify` calls `python3` itself, so on Windows run check A's command
+directly instead.
+
 Then, for a set `<set>` (e.g. `bigfoot/fledgling`, or
 `thornguard/sworn/bigfoot`), in this order:
 
@@ -187,6 +212,9 @@ Then, before opening the PR: `npm run art:verify` (all sets) and
 
 **Do not weaken, skip or edit any check to make it pass.** If you believe a
 check is wrong for a specific set, stop and report it (§10) with the evidence.
+
+**Report every check from the candidate you are submitting.** A result from an
+earlier candidate does not count for a later one. Rerun A–H on the final PNGs.
 
 ---
 
@@ -220,7 +248,5 @@ check is wrong for a specific set, stop and report it (§10) with the evidence.
 
 ## 11. Done means
 
-All 66 sets pass checks A–G. A human has approved the contact sheets.
-`art:verify:seams` is then made a CI gate, and `underpaint` is reconsidered.
-Underpaint stays harmless on well-cut art, but it should no longer be doing the
-work.
+All 66 sets pass checks A–G, every config has `underpaint: 0`, and a human has
+approved the contact sheets. `art:verify:seams` is then made a CI gate.
