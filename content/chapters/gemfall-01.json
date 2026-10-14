@@ -1,11 +1,11 @@
 {
-  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). The six motive votes each land on a short result scene (scene_motive_*) before the docks, so the vote is seen to matter at the table. No combat: the Exchange is people, prices and promises.",
+  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md Â§1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). The six motive votes each land on a short result scene (scene_motive_*) before the docks, so the vote is seen to matter at the table. No combat: the Exchange is people, prices and promises. Expansion: the prologue ends on a vote (what the party was doing on the docks that night), and each pick pays off later in the chapter: the lamps open Old Wick's path over the Long Bridge, the oranges buy the sailors' rumors, the sardine feeds the gull. Further episodes: the jammed Long Bridge, the Griffin Post (whose friends can vouch for the stone), the gull, Mrs. Tuft's provision barge, Mortar's goodbye (whose word gets you hired by Hesper), and the North Gate on the way out. Second pass: a selkie family arriving on the quay (help them, and they make room for you when the Empty Chair inn is full) and the full inn itself.",
   "id": "gemfall-01",
   "campaignId": "gemfall",
   "index": 1,
   "title": "The City That Smelled Opportunity",
   "biome": "exchange",
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 45,
   "xpAward": 100,
   "entry": "scene_prologue_realm",
   "objectives": [
@@ -62,13 +62,117 @@
       ]
     },
     "scene_prologue_party": {
-      "type": "story",
-      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight is a quiet night, and the harbor lamps are just coming on.",
+      "type": "choice_point",
+      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight the harbor lamps are just coming on. So what is our party doing on the docks tonight? Everybody vote.",
       "choices": [
         {
           "id": "prologue_begin",
-          "label": "Let's begin!",
-          "icon": "party",
+          "label": "Fishing off the end of the long pier",
+          "icon": "drop",
+          "goto": "scene_prologue_party_prologue_begin",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "night_fishing",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "oranges",
+          "label": "Helping a ship unload its oranges",
+          "icon": "hand",
+          "goto": "scene_prologue_party_oranges",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "night_oranges",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "lamps",
+          "label": "Helping the old lamplighter light the lamps",
+          "icon": "lantern",
+          "goto": "scene_prologue_party_lamps",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "night_lamps",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "cards",
+          "label": "Doing card tricks for the sailors",
+          "icon": "spark",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_prologue_party_cards",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "luckstone",
+              "to": "party"
+            }
+          ]
+        }
+      ]
+    },
+    "scene_prologue_party_prologue_begin": {
+      "type": "story",
+      "narration": "You sit on the very end of the long pier with a fishing line each and one bucket. In an hour you catch an old boot, a smaller boot, and one silver sardine. You keep the sardine in a pocket for later, because you never know. A seagull on the next post watches the sardine. The sardine, as much as a sardine can, watches the seagull.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Keep fishing while the stars come out",
+          "icon": "moon",
+          "goto": "scene_red_sky"
+        }
+      ]
+    },
+    "scene_prologue_party_oranges": {
+      "type": "story",
+      "narration": "A ship called the Sunny Disposition has come in packed to the mast with oranges. You pass crates down a long line of sailors until your arms smell like breakfast. \"We owe you one,\" says the captain, a cheerful yeti with orange peel in his fur. \"Sailors always pay their debts.\" He thinks about it. \"Mostly in oranges.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit on a crate and peel an orange",
+          "icon": "hand",
+          "goto": "scene_red_sky"
+        }
+      ]
+    },
+    "scene_prologue_party_lamps": {
+      "type": "story",
+      "discovers": [
+        "npc.frogfolk"
+      ],
+      "narration": "The lamplighter is a frogfolk called Old Wick, who is so old that his lamp-pole has a lamp-pole. You carry the ladder. He lights each lamp and wishes it goodnight by name. Then he shows you the lamplighters' path: a narrow ledge along the Long Bridge rail. \"Nobody else uses it,\" he croaks. \"Nobody else looks.\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Wick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Light the last lamp at the end of the harbor",
+          "icon": "lantern",
+          "goto": "scene_red_sky"
+        }
+      ]
+    },
+    "scene_prologue_party_cards": {
+      "type": "story",
+      "narration": "Your kitsune does card tricks on an upturned barrel. A sailor picks a card, and it turns up in his own boot. Then in his hat. Then in his sandwich. The sailors laugh so hard that one of them gives you his lucky stone, a smooth pebble with a hole in it. \"You clearly don't need luck,\" he says, \"so it'll be safe with you.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Shuffle up for one more trick",
+          "icon": "spark",
           "goto": "scene_red_sky"
         }
       ]
@@ -179,9 +283,9 @@
         },
         {
           "id": "find_table",
-          "label": "Find somewhere to sit and talk",
+          "label": "Find somewhere to sit down and talk",
           "icon": "party",
-          "goto": "choice_why_north"
+          "goto": "scene_long_bridge"
         }
       ]
     },
@@ -200,8 +304,97 @@
       "choices": [
         {
           "id": "sit_down",
-          "label": "Find somewhere to sit and talk",
+          "label": "Find somewhere to sit down and talk",
           "icon": "party",
+          "goto": "scene_long_bridge"
+        }
+      ]
+    },
+    "scene_long_bridge": {
+      "type": "story",
+      "narration": "The best noodle stall in the Exchange is on the far side of the Long Bridge, and the Long Bridge is jammed. People are standing on other people's luggage. A goat is standing on a merchant, and the merchant is too busy shouting prices to notice. Nobody can go forward and nobody can go back. How do we get across?",
+      "choices": [
+        {
+          "id": "squeeze",
+          "label": "Squeeze through the crowd",
+          "icon": "quick",
+          "goto": "check_bridge_squeeze"
+        },
+        {
+          "id": "barge",
+          "label": "Ride the cabbage barge under the bridge",
+          "icon": "drop",
+          "goto": "scene_long_bridge_barge"
+        },
+        {
+          "id": "lamp_path",
+          "label": "Take Old Wick's lamplighters' path",
+          "icon": "lantern",
+          "requiresFlag": "night_lamps",
+          "goto": "scene_long_bridge_lamp_path"
+        },
+        {
+          "id": "wade",
+          "label": "Wade the canal beside the bridge",
+          "icon": "boot",
+          "requiresSpecies": "bigfoot",
+          "goto": "scene_long_bridge_wade"
+        }
+      ]
+    },
+    "check_bridge_squeeze": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Wriggle across a bridge where nobody can move",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "choice_why_north",
+        "narration": "You go sideways, then under a cart, then over a very patient yeti, and pop out of the far end like a cork from a bottle. The noodle stall is right there."
+      },
+      "onFailure": {
+        "goto": "choice_why_north",
+        "narration": "The crowd swallows you up and carries you the whole way across without your feet touching the ground once. It sets you down very politely, facing the wrong way, right beside the noodle stall."
+      }
+    },
+    "scene_long_bridge_barge": {
+      "type": "story",
+      "narration": "The cabbage barge is the only thing in the whole city that is still moving. The bargewoman lets you ride on top for a copper each, and charges the cabbages nothing. You glide under the bridge in the cool dark, past hundreds of dangling feet, and climb out by the noodle stall smelling very strongly of cabbage.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb off and shake out the cabbage leaves",
+          "icon": "drop",
+          "goto": "choice_why_north"
+        }
+      ]
+    },
+    "scene_long_bridge_lamp_path": {
+      "type": "story",
+      "narration": "You find the narrow ledge along the bridge rail, right where Old Wick showed you. Nobody else is on it, because nobody else ever looks. You cross in single file, high above the whole jam. Halfway over, Old Wick himself is lighting a lamp at noon, just to be sure. He tips his hat as you pass.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Wick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hop down by the noodle stall",
+          "icon": "lantern",
+          "goto": "choice_why_north"
+        }
+      ]
+    },
+    "scene_long_bridge_wade": {
+      "type": "story",
+      "narration": "Your bigfoot steps off the bank into the canal. It comes up to their knees. Everybody else climbs onto their shoulders, and then two strangers climb on too, and then the goat. You wade across like a walking tower, and the whole bridge cheers you all the way to the noodle stall.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Set everybody down, goat last",
+          "icon": "boot",
           "goto": "choice_why_north"
         }
       ]
@@ -315,7 +508,7 @@
           "id": "to_docks",
           "label": "Go and find out what gems are fetching at the docks",
           "icon": "gem",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -337,7 +530,7 @@
           "id": "to_docks",
           "label": "Go and ask the docks what they heard",
           "icon": "eye",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -364,7 +557,7 @@
           "id": "to_docks",
           "label": "Go where the news is made: the docks",
           "icon": "crown",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -374,7 +567,7 @@
         "npc.stone_troll",
         "npc.faun"
       ],
-      "narration": "Mortar, the stone troll who runs the noodle stall, says nothing at all. He just fills a fourth bowl and sets it on your table. \"For whoever needs it,\" he rumbles. The whoever turns out to be a faun at the next table whose field caravan left without her, and by the time she has finished the bowl she has told you every road north and which one her cousins are on.",
+      "narration": "Mortar, the stone troll who runs the noodle stall, says nothing at all. He just fills a fourth bowl and sets it on your table. \"For whoever needs it,\" he rumbles. The whoever turns out to be a faun at the next table whose field caravan left without her, and by the time she has finished the bowl she has told you every road north and which one her cousins are on. Then she spots her cousins' wagon going past, squeaks, and runs to catch it, waving her spoon.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -388,9 +581,9 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Walk her down to the docks and find her a wagon",
+          "label": "Wave her off and head down to the docks",
           "icon": "shield",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -412,7 +605,7 @@
           "id": "to_docks",
           "label": "Take your first steps as new people: down to the docks",
           "icon": "leaf",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -434,6 +627,118 @@
           "id": "to_docks",
           "label": "Waddle down to the docks, victorious",
           "icon": "star",
+          "goto": "scene_newcomers"
+        }
+      ]
+    },
+    "scene_newcomers": {
+      "type": "story",
+      "discovers": [
+        "npc.selkie"
+      ],
+      "narration": "On the way to the docks, a little boat bumps the quay, and off climbs a family of selkies: two grown-ups, a grandmother, and five children, carrying everything they own. They read the rush prices on the chalkboard and go very quiet. They came for a fresh start, in the same week as everybody else in the world. Just along the quay stand the harbor's brass plaques, the ones that say who founded the Exchange. Nobody stops to help. Everybody is busy going north.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "carry",
+          "label": "Carry their bags to the Empty Chair inn",
+          "icon": "might",
+          "goto": "check_newcomers_carry",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "selkies_at_inn",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "plaque",
+          "label": "Walk them along the brass plaques on the quay",
+          "icon": "scroll",
+          "goto": "scene_newcomers_plaque",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "river_charm",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "fresh",
+          "label": "Tell them we're starting fresh too",
+          "icon": "leaf",
+          "requiresFlag": "motive_fresh_start",
+          "goto": "scene_newcomers_fresh",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "selkies_at_inn",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_newcomers_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Carry a whole family's luggage up the busiest street in the realm",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_docks",
+        "narration": "Trunks, bundles, a rocking chair and a fishbowl with a very calm fish in it: you carry the lot up the hill without dropping a thing. The selkies take a room at the Empty Chair, and the five children wave from the window until you turn the corner."
+      },
+      "onFailure": {
+        "goto": "scene_docks",
+        "narration": "Halfway up the hill the biggest trunk pops open, and out pour about a hundred knitted socks. All five children help you chase them down the street. It takes ages, and it is the most fun anybody has had all week. The selkies take a room at the Empty Chair, socks and all."
+      }
+    },
+    "scene_newcomers_plaque": {
+      "type": "story",
+      "narration": "You walk them to the seventeen brass plaques and find the one that names a family of selkies among the founders of the Exchange. The grandmother reads it twice. Then she sits down on her trunk and says, \"Well, then. We're home.\" She unties a river charm from her own wrist and ties it to yours, \"for the road north, since you're going.\"",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave goodbye and head for the docks",
+          "icon": "scroll",
+          "goto": "scene_docks"
+        }
+      ]
+    },
+    "scene_newcomers_fresh": {
+      "type": "story",
+      "narration": "\"Us too,\" you tell them, and the whole family relaxes at once, like a sail when the wind drops. You swap the only fresh-start advice you know: eat at Mortar's, ignore the chalkboards, and save the empty chair for whoever comes next. They take a room at the Empty Chair inn and promise to save one for you.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head down to the docks",
+          "icon": "leaf",
           "goto": "scene_docks"
         }
       ]
@@ -480,6 +785,38 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "sailors",
+          "label": "Find the orange ship's sailors. They owe us one",
+          "icon": "ear",
+          "requiresFlag": "night_oranges",
+          "goto": "scene_docks_sailors",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "heard_every_road",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_docks_sailors": {
+      "type": "story",
+      "narration": "The crew of the Sunny Disposition are mending sails on the quay, and they cheer when they see you. Sailors pay their debts, and they pay this one in rumors: one from every port they stopped at on the way in. The yeti captain throws in an orange each for the road, because he cannot help himself.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Orange Captain"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tally up everything you heard",
+          "icon": "ear",
+          "goto": "scene_three_rumours"
         }
       ]
     },
@@ -549,6 +886,118 @@
           "id": "through_market",
           "label": "Head back through the market, keeping one eye on the sky",
           "icon": "arrow",
+          "goto": "scene_griffin_post"
+        }
+      ]
+    },
+    "scene_griffin_post": {
+      "type": "story",
+      "discovers": [
+        "character.griffin"
+      ],
+      "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Postmaster Quill"
+        }
+      ],
+      "choices": [
+        {
+          "id": "sort",
+          "label": "Help sort the letters",
+          "icon": "scroll",
+          "goto": "check_post_sort"
+        },
+        {
+          "id": "feed",
+          "label": "Share our supper with the tired couriers",
+          "icon": "heart",
+          "goto": "scene_griffin_post_feed",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "griffin_friends",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "shop",
+          "label": "Talk shop with the couriers",
+          "icon": "griffin",
+          "requiresSpecies": "griffin",
+          "goto": "scene_griffin_post_shop",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "griffin_friends",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_post_sort": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Sort nine hundred claim letters before the griffins take off",
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Postmaster Quill"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_gutter_glint",
+        "narration": "You sort them by mountain, then by valley, then by how loud the handwriting is. Postmaster Quill is so pleased she gives you a brave whistle, the kind couriers blow to clear the sky.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "roller"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_gutter_glint",
+        "narration": "You sort the letters beautifully, into all the wrong sacks. A letter for a duke is now going to a duck. Quill sighs, says it will all come out in the wash, and stuffs everything into one enormous sack anyway."
+      }
+    },
+    "scene_griffin_post_feed": {
+      "type": "story",
+      "narration": "The couriers have been flying since the red night and have not stopped once for supper. You share yours. One young griffin eats a whole loaf in a single gulp, then a second loaf to check the first one was real. He bows to you with his wings out, which in griffin means: I will remember your faces.",
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Courier Griffin"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave them off into the sky",
+          "icon": "heart",
+          "goto": "scene_gutter_glint"
+        }
+      ]
+    },
+    "scene_griffin_post_shop": {
+      "type": "story",
+      "narration": "Your griffin and the couriers talk wing to wing about headwinds, sack straps and the worst roofs to land on. Then they lower their voices. Since the red night, no courier will fly within a day of the mountain. \"The air up there hums,\" says one, \"like a kettle that's thinking about it.\" They make you an honorary courier, which mostly means free gossip.",
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Courier Griffin"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Swap one last bit of gossip",
+          "icon": "griffin",
           "goto": "scene_gutter_glint"
         }
       ]
@@ -570,13 +1019,38 @@
           "id": "pocket",
           "label": "Pick it up and pocket it",
           "icon": "hand",
-          "goto": "scene_tavern"
+          "goto": "scene_gull_dive"
         },
         {
           "id": "whose",
           "label": "Shout \"Whose is this?\"",
           "icon": "whistle",
           "goto": "scene_nobody_claims"
+        },
+        {
+          "id": "griffin",
+          "label": "Call up to the courier who knows us",
+          "icon": "whistle",
+          "requiresFlag": "griffin_friends",
+          "goto": "scene_gutter_glint_griffin"
+        }
+      ]
+    },
+    "scene_gutter_glint_griffin": {
+      "type": "story",
+      "narration": "The courier hears you, wobbles round, and lands on a chimney pot with his split sack in his beak. He peers at the red stone. \"Not mine,\" he says. \"That didn't come out of my sack. That came out of the sky, after it.\" He fluffs his feathers. \"Finders keepers. Tell nobody I said so.\"",
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Courier Griffin"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pocket it, and wave him off",
+          "icon": "hand",
+          "goto": "scene_gull_dive"
         }
       ]
     },
@@ -586,8 +1060,94 @@
       "choices": [
         {
           "id": "to_tavern",
-          "label": "Pocket it and find somewhere warm",
+          "label": "Pocket it and head for somewhere warm",
           "icon": "hand",
+          "goto": "scene_gull_dive"
+        }
+      ]
+    },
+    "scene_gull_dive": {
+      "type": "story",
+      "narration": "You have gone about ten steps when a seagull lands on the cobbles in front of you. It looks at your pocket. It looks at you. It looks like the very same gull that dropped its fish on the red night, and it has clearly been waiting three days for something better. Gulls love anything shiny. It crouches, ready to dive.",
+      "choices": [
+        {
+          "id": "grab",
+          "label": "Grab the gull before it grabs the stone",
+          "icon": "quick",
+          "goto": "check_gull_grab"
+        },
+        {
+          "id": "bread",
+          "label": "Offer it a bread roll instead",
+          "icon": "cake",
+          "goto": "scene_gull_dive_bread"
+        },
+        {
+          "id": "sardine",
+          "label": "Throw it the sardine from the red night",
+          "icon": "drop",
+          "requiresFlag": "night_fishing",
+          "goto": "scene_gull_dive_sardine"
+        },
+        {
+          "id": "outfly",
+          "label": "Chase it off on the wing",
+          "icon": "wing",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ],
+          "goto": "scene_gull_dive_outfly"
+        }
+      ]
+    },
+    "check_gull_grab": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Catch a seagull in mid-dive, gently",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tavern",
+        "narration": "You catch the gull in mid-dive, very gently, like a loaf of bread. It looks embarrassed. You set it down on a post, and it pretends that was where it was going all along."
+      },
+      "onFailure": {
+        "goto": "scene_tavern",
+        "narration": "The gull is quicker. It snatches the stone, flaps three circles over the market, finds it is much heavier than a fish, and drops it down the chimney of the nearest tavern. You run in after it and fish it out of the ashes, still warm, and only a little sooty."
+      }
+    },
+    "scene_gull_dive_bread": {
+      "type": "story",
+      "narration": "You hold out a bread roll. The gull considers the roll. It considers the stone. It takes the roll, and while you are feeling pleased with yourselves, it takes your other roll too. Fair is fair. It flaps away full and happy, and leaves the stone alone. Your tummies rumble all the way to the tavern.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and find some supper",
+          "icon": "cake",
+          "goto": "scene_tavern"
+        }
+      ]
+    },
+    "scene_gull_dive_sardine": {
+      "type": "story",
+      "narration": "You pull out the silver sardine from the red night. It has had a long three days. The gull catches it in the air, swallows it whole, and from that moment on is your friend for life. It follows you all the way to the tavern door and waits outside, like a very small and very loud guard.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Leave your new friend on guard",
+          "icon": "drop",
+          "goto": "scene_tavern"
+        }
+      ]
+    },
+    "scene_gull_dive_outfly": {
+      "type": "story",
+      "narration": "Wings snap open and up you go. The gull has never been chased by anything bigger than a cat. It flies one loop, sees who is behind it, and decides it had other plans today. A crowd on the quay claps. Two pickpockets who were also watching your pocket decide they had other plans too.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Land with a bow by the tavern door",
+          "icon": "wing",
           "goto": "scene_tavern"
         }
       ]
@@ -787,7 +1347,7 @@
           "id": "go_shopping",
           "label": "Go and spend some of it",
           "icon": "boot",
-          "goto": "scene_market"
+          "goto": "scene_provisions"
         }
       ]
     },
@@ -805,6 +1365,146 @@
           "id": "go_outfit",
           "label": "Go and get ready for the road",
           "icon": "boot",
+          "goto": "scene_provisions"
+        }
+      ]
+    },
+    "scene_provisions": {
+      "type": "story",
+      "discovers": [
+        "npc.sheeple"
+      ],
+      "narration": "First, food for the road. A provision barge is moored at the foot of the Outfitters' Steps, run by Mrs. Tuft, a sheeple grocer whose wool is stuck all over with price tags. Everything she sells comes in a jar, even the jars. There is room in the pack for one good thing. What shall it be?",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "choices": [
+        {
+          "id": "honey",
+          "label": "A tin of honeycakes, for sharing",
+          "icon": "cake",
+          "goto": "scene_provisions_honey",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "sunbloom",
+          "label": "A sunbloom draught, for bumps and scrapes",
+          "icon": "potion",
+          "goto": "scene_provisions_sunbloom",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "sunbloom_draught",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "mosslight",
+          "label": "A jar of mosslight, for dark roads",
+          "icon": "lantern",
+          "goto": "scene_provisions_mosslight",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "stone",
+          "label": "Show Mrs. Tuft the warm red stone",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "scene_provisions_stone",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        }
+      ]
+    },
+    "scene_provisions_honey": {
+      "type": "story",
+      "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You all promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb the steps to the cobbler",
+          "icon": "cake",
+          "goto": "scene_market"
+        }
+      ]
+    },
+    "scene_provisions_sunbloom": {
+      "type": "story",
+      "narration": "The sunbloom draught glows in its bottle like a little sunrise. \"For bumps, scrapes and grumps,\" says Mrs. Tuft. \"Mostly grumps.\" She wraps it in a sock so it will not clink against anything, and then charges you for the sock.",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb the steps to the cobbler",
+          "icon": "potion",
+          "goto": "scene_market"
+        }
+      ]
+    },
+    "scene_provisions_mosslight": {
+      "type": "story",
+      "narration": "The mosslight glows soft and green, like a tiny forest that fits in your hand. \"Picked far to the west by my cousins,\" says Mrs. Tuft. \"It likes to be talked to. Not sung to. It's very particular.\" The jar seems to brighten a little when you say thank you.",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb the steps to the cobbler",
+          "icon": "lantern",
+          "goto": "scene_market"
+        }
+      ]
+    },
+    "scene_provisions_stone": {
+      "type": "story",
+      "narration": "Mrs. Tuft takes one look at the red stone, and every jar on her barge starts to rattle on its shelf, very gently, the way spoons do when a cart goes by. She hands it back rather quickly. \"Lovely,\" she says, not meaning it. She gives you a honeycake for free, and you get the feeling it is so you will leave a bit sooner.",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pocket the stone and climb the steps",
+          "icon": "gem",
           "goto": "scene_market"
         }
       ]
@@ -968,7 +1668,7 @@
           "id": "to_inn",
           "label": "Find a bed for the night",
           "icon": "rest",
-          "goto": "rest_empty_chair"
+          "goto": "scene_inn_full"
         }
       ]
     },
@@ -993,19 +1693,267 @@
           "id": "to_inn_cake",
           "label": "Find a bed for the night",
           "icon": "rest",
+          "goto": "scene_inn_full"
+        }
+      ]
+    },
+    "scene_inn_full": {
+      "type": "story",
+      "narration": "Every inn in the Exchange is full to the chimneys. At the Empty Chair, Innkeeper Flint, a stone troll in a very small nightcap, has one bed left: a cupboard under the stairs. Four other groups of prospectors want it too. Flint folds his arms. \"Best offer,\" he rumbles. How do we win the cupboard?",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "choices": [
+        {
+          "id": "story",
+          "label": "Tell the best story of the red night",
+          "icon": "heart",
+          "goto": "check_inn_story"
+        },
+        {
+          "id": "dishes",
+          "label": "Offer to wash up the supper bowls for it",
+          "icon": "drop",
+          "goto": "scene_inn_full_dishes"
+        },
+        {
+          "id": "selkies",
+          "label": "Find the selkie family upstairs",
+          "icon": "party",
+          "requiresFlag": "selkies_at_inn",
+          "goto": "scene_inn_full_selkies"
+        },
+        {
+          "id": "outbid",
+          "label": "Outbid everybody with Madame Fenn's purse",
+          "icon": "gem",
+          "requiresFlag": "ember_sold",
+          "goto": "scene_inn_full_outbid"
+        }
+      ]
+    },
+    "check_inn_story": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the red night so well a whole inn goes quiet",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "rest_empty_chair",
+        "narration": "You tell it all: the cherry-red sky, the gem-light falling, the seagull and its very surprised fish. The whole inn goes quiet. Flint wipes one eye with a dishcloth and hands you the cupboard key without a word."
+      },
+      "onFailure": {
+        "goto": "rest_empty_chair",
+        "narration": "Your story wanders off somewhere around the fish and never quite comes back. The prospectors laugh so kindly that Flint gives the cupboard to someone else and you the hayloft above the mules, which is warm, smells of apples, and is honestly nicer."
+      }
+    },
+    "scene_inn_full_dishes": {
+      "type": "story",
+      "narration": "There are three hundred supper bowls, and some of them have been used twice. You wash, dry and stack until your fingers go wrinkly as raisins and the kitchen is full of soap bubbles. At midnight Flint inspects one bowl very closely, says \"Hm,\" and hands you the key. The other prospectors are still arguing about prices.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squeeze into the cupboard",
+          "icon": "drop",
+          "goto": "rest_empty_chair"
+        }
+      ]
+    },
+    "scene_inn_full_selkies": {
+      "type": "story",
+      "narration": "The selkie family you helped today hear your voices and come thundering down the stairs. \"You'll squash in with us,\" says the grandmother, and that is the end of the argument. Their room is tiny, and eight selkies is a lot of selkie, but it is warm. The five children want a bedtime story, and they want it about you.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squash in and tell the story",
+          "icon": "party",
+          "goto": "rest_empty_chair"
+        }
+      ]
+    },
+    "scene_inn_full_outbid": {
+      "type": "story",
+      "narration": "You open Madame Fenn's clanking purse and name a number. The other prospectors go pale and wander off to sleep in the stables. Flint bites one coin to check it is real, then another to check the first one was. The cupboard is yours. It is still a cupboard, but it is the most expensive cupboard in the realm.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Admire your very expensive cupboard",
+          "icon": "gem",
           "goto": "rest_empty_chair"
         }
       ]
     },
     "rest_empty_chair": {
       "type": "rest",
-      "narration": "You rent the last room in the Exchange, which is a cupboard under some stairs with a lovely view of the stairs. Somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions, and all three of them are right.",
+      "narration": "Cupboard, hayloft or squashed-up room, it is warm and dry, and somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions, and all three of them are right. Tomorrow the caravans leave.",
       "heal": 2,
       "choices": [
         {
           "id": "to_yard",
           "label": "Up at dawn for the caravan yard",
           "icon": "travel",
+          "goto": "scene_last_noodles"
+        }
+      ]
+    },
+    "scene_last_noodles": {
+      "type": "story",
+      "narration": "On the way to the caravan yard you pass the noodle stall. Mortar is already up, or has never gone to bed. He looks at your packed bags. He stirs one whole slow turn. \"Going, then,\" he says. The caravans are lighting their lanterns, but there is time for one thing before you go.",
+      "cast": [
+        {
+          "figure": "cast/mortar",
+          "name": "Mortar",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask him which caravan to join",
+          "icon": "ear",
+          "goto": "scene_last_noodles_ask",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "mortar_vouched",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "gift",
+          "label": "Leave a gift on the empty chair",
+          "icon": "heart",
+          "goto": "scene_last_noodles_gift",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "songbird_ribbon",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "bowl",
+          "label": "Eat one last bowl, for the road",
+          "icon": "cake",
+          "goto": "scene_last_noodles_bowl",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "thistle_pin",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "listen",
+          "label": "Let Mortar listen to the warm stone",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "scene_last_noodles_listen"
+        }
+      ]
+    },
+    "scene_last_noodles_ask": {
+      "type": "story",
+      "narration": "Mortar stirs one whole slow turn. Then another. \"Longstride,\" he says at last. \"Lantern wagon. Listens to the whole answer.\" He taps the table with one enormous finger. \"Tell her Mortar sent you.\" That is more words than he has said all week, and he looks a bit tired afterwards.",
+      "cast": [
+        {
+          "figure": "cast/mortar",
+          "name": "Mortar",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Thank him, and head for the lantern wagon",
+          "icon": "ear",
+          "goto": "scene_caravan_yard"
+        }
+      ]
+    },
+    "scene_last_noodles_gift": {
+      "type": "story",
+      "narration": "Every table in the Exchange keeps an empty chair for whoever comes next. You leave a button on it, and a note that says GOOD LUCK in all your different handwritings. Underneath, tied to the chair leg, you find a songbird ribbon. Somebody left it there for you, before you ever came. Mortar pretends not to see. He is smiling, very slowly.",
+      "cast": [
+        {
+          "figure": "cast/mortar",
+          "name": "Mortar",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tie on the ribbon and go",
+          "icon": "heart",
+          "goto": "scene_caravan_yard"
+        }
+      ]
+    },
+    "scene_last_noodles_bowl": {
+      "type": "story",
+      "narration": "Mortar ladles out the biggest breakfast of your lives. When you are done, he unpins the little thistle from his apron and pins it on you. \"Strong noodles,\" he rumbles. \"Strong legs.\" Then, after a long stir: \"Come back.\" Two words, which from a stone troll is practically a speech.",
+      "cast": [
+        {
+          "figure": "cast/mortar",
+          "name": "Mortar",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave goodbye with full tummies",
+          "icon": "cake",
+          "goto": "scene_caravan_yard"
+        }
+      ]
+    },
+    "scene_last_noodles_listen": {
+      "type": "story",
+      "narration": "Mortar holds the warm stone to his great stone ear for a long, long time. The whole stall goes quiet. \"Sings,\" he says at last. \"Like my nan's pot, just before it boiled over.\" He gives it back to you very carefully, the way you hand somebody a baby bird, and fills your water flasks for nothing.",
+      "cast": [
+        {
+          "figure": "cast/mortar",
+          "name": "Mortar",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tuck the stone away and go",
+          "icon": "gem",
           "goto": "scene_caravan_yard"
         }
       ]
@@ -1015,7 +1963,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. She looks at the three of you the way she looks at weather. \"Room for three,\" she says. \"Why should it be you?\"",
+      "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. She looks your party up and down the way she looks at weather. \"Room for one more crew,\" she says. \"Why should it be you?\"",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -1078,6 +2026,20 @@
           "icon": "crown",
           "requiresFlag": "motive_prestige",
           "goto": "scene_caravan_yard_banner",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "hired_as_crew",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "mortar",
+          "label": "Tell Hesper that Mortar sent us",
+          "icon": "scroll",
+          "requiresFlag": "mortar_vouched",
+          "goto": "scene_caravan_yard_mortar",
           "effects": [
             {
               "type": "setFlag",
@@ -1177,6 +2139,25 @@
         }
       ]
     },
+    "scene_caravan_yard_mortar": {
+      "type": "story",
+      "narration": "Hesper's ears turn right round. \"Mortar,\" she says. \"How many words did he say about you?\" You count. Four. She is quiet for a moment, the way weather is quiet before it decides something. Then she nods once. From a stone troll, four words is a letter of recommendation.",
+      "cast": [
+        {
+          "figure": "cast/hesper",
+          "name": "Hesper Longstride",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Report for duty",
+          "icon": "lantern",
+          "goto": "scene_hired"
+        }
+      ]
+    },
     "check_signon": {
       "type": "check",
       "stat": "heart",
@@ -1208,7 +2189,7 @@
     },
     "scene_hired": {
       "type": "story",
-      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and the Exchange shrinks behind you into a bright muddle of roofs, with the lighthouse winking after you, as if it knows something.",
+      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and you roll with them, through the crowded streets to the North Gate, where everybody leaving the Exchange stops for one last thing.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -1221,13 +2202,13 @@
           "id": "roll_north",
           "label": "Roll north",
           "icon": "travel",
-          "goto": "rest_northbound"
+          "goto": "scene_north_gate"
         }
       ]
     },
     "scene_turnip_wagon": {
       "type": "story",
-      "narration": "\"Cargo, then,\" says Hesper, kindly. You ride north squashed into a wagon full of turnips, which is not glamorous, but it is north. One turnip rolls into your lap and stays there, like a cat.",
+      "narration": "\"Cargo, then,\" says Hesper, kindly. You ride out squashed into a wagon full of turnips, which is not glamorous, but it is going north. One turnip rolls into your lap and stays there, like a cat. At the North Gate the wagons stop for one last thing.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -1240,6 +2221,101 @@
           "id": "roll_north_turnips",
           "label": "Roll north anyway",
           "icon": "travel",
+          "goto": "scene_north_gate"
+        }
+      ]
+    },
+    "scene_north_gate": {
+      "type": "story",
+      "narration": "The North Gate is where the city says goodbye. Over the arch hangs the Leaving Bell, with a rope worn smooth by a thousand travelers. Beyond it, the road runs out into the green fields, and far away on the edge of the world sits Mount Red Sky. Hesper gives you one minute. How do we leave the Exchange?",
+      "cast": [
+        {
+          "figure": "cast/hesper",
+          "name": "Hesper Longstride",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "bell",
+          "label": "Ring the Leaving Bell",
+          "icon": "might",
+          "goto": "check_leaving_bell"
+        },
+        {
+          "id": "wave",
+          "label": "Wave goodbye to everyone we met",
+          "icon": "heart",
+          "goto": "scene_north_gate_wave"
+        },
+        {
+          "id": "look",
+          "label": "Turn round and face the mountain",
+          "icon": "eye",
+          "goto": "scene_north_gate_look"
+        },
+        {
+          "id": "tidewell",
+          "label": "Look for Professor Tidewell in the crowd",
+          "icon": "scroll",
+          "requiresFlag": "listened_to_scholar",
+          "goto": "scene_north_gate_tidewell"
+        }
+      ]
+    },
+    "check_leaving_bell": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Ring the Leaving Bell loud enough for the whole city",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "rest_northbound",
+        "narration": "You haul on the rope together. BONG. The bell is so loud that every gull in the harbor lifts off at once, and all over the Exchange, people you have never met stop and wave you goodbye."
+      },
+      "onFailure": {
+        "goto": "rest_northbound",
+        "narration": "You haul on the rope, and the rope hauls back. Up you go, dangling under the bell like the world's most surprised clapper. It rings anyway. The whole gate cheers, and Hesper waits, very patiently, for you to come down."
+      }
+    },
+    "scene_north_gate_wave": {
+      "type": "story",
+      "narration": "You wave, and the Exchange waves back. Tobble sings a goodbye verse from the Outfitters' Steps, three keys too high. Madame Fenn's barrel rolls along the quay to keep up. \"Bring me back something shiny, darlings!\" High on the lighthouse, the great lamp winks twice, as if it knows something.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Keep waving until the roofs are gone",
+          "icon": "heart",
+          "goto": "rest_northbound"
+        }
+      ]
+    },
+    "scene_north_gate_look": {
+      "type": "story",
+      "narration": "You turn your backs on the city and look north. Far away, over the fields, Mount Red Sky sits on the edge of the world with a little red glow on top, like a candle somebody forgot to blow out. For one blink you feel as if it is looking back. Then a wheel hits a bump, and it is just a mountain again.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Keep your eyes on the road ahead",
+          "icon": "eye",
+          "goto": "rest_northbound"
+        }
+      ]
+    },
+    "scene_north_gate_tidewell": {
+      "type": "story",
+      "narration": "There she is, running alongside the wagons with an armful of soggy notes. \"Count them!\" shouts Professor Tidewell. \"Every stone you see, count it! Write it down!\" She throws you a napkin with an eight-sided shape drawn on it, trips over a goose, and keeps waving from the ground until you are out of sight.",
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Fold up the napkin and keep it safe",
+          "icon": "scroll",
           "goto": "rest_northbound"
         }
       ]
@@ -1274,7 +2350,14 @@
       "boggart": "a rumor-selling boggart in a coat made of other coats; never says anything straight, always says it twice",
       "lighthouse_keeper": "a very old merfolk in a bathtub at the top of the lighthouse; firmly did not see anything",
       "tour_guide": "a centaur tour guide who loves the seventeen plaques and charges for every fact",
-      "mortar": "Mortar, a stone troll noodle cook; stirs one full slow turn before answering anything, says very little, and means all of it"
+      "mortar": "Mortar, a stone troll noodle cook; stirs one full slow turn before answering anything, says very little, and means all of it",
+      "old_wick": "Old Wick, a very old frogfolk lamplighter; croaks softly, wishes every lamp goodnight by name, knows the paths nobody else looks for",
+      "orange_captain": "the yeti captain of the Sunny Disposition, an orange ship; cheerful, orange peel in his fur, pays every debt, mostly in oranges",
+      "postmaster_quill": "Postmaster Quill, a griffin with spectacles on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
+      "courier_griffin": "a young courier griffin, always hungry, bows with wings out to people it will remember",
+      "mrs_tuft": "Mrs. Tuft, a sheeple grocer on a provision barge, wool full of price tags; everything comes in a jar; brisk and a little dry",
+      "selkie_grandmother": "the grandmother of a selkie family just arrived for a fresh start; brisk, warm, decides things are settled and they are",
+      "innkeeper_flint": "Innkeeper Flint, a stone troll who runs the Empty Chair inn in a very small nightcap; rumbles, folds his arms, secretly soft"
     }
   }
 }
