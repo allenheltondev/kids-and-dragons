@@ -3,7 +3,7 @@ title: Will-o'-Wisp
 id: creature.will_o_wisp
 type: creature
 status: draft
-lastReviewed: "2026-08-04"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supernatural", "marsh", "memory", "misdirection"]
 classification: supernatural_manifestation
@@ -70,46 +70,46 @@ infobox: creature
 
 > *A memory that got loose, and is still trying to finish itself.*
 
-When a memory matters enough — a way home, a hiding place, a game interrupted at the best part — it can tangle in marsh magic and keep going without its person. That is a wisp: one moment, replaying. Some glow through it quietly forever. Others need a witness, and will lead anyone who follows toward the place where the moment lived, without ever checking whether the route still exists.
+When a memory matters enough (a way home, a hiding place, a game interrupted at the best part) it can tangle in marsh magic and keep going without its person. That is a wisp: one moment, replaying. Some glow through it quietly forever. Others need a witness, and will lead anyone who follows toward the place where the moment lived, without ever checking whether the route still exists.
 
 ### For Fun
 
 - Replaying the good part.
-- Leading anything that will follow — travelers, moths, other wisps — toward the remembered place.
+- Leading anything that will follow (travelers, moths, other wisps) toward the remembered place.
 - Hovering at the edge of frogfolk lantern festivals, at exactly the distance of an uninvited guest.
 
 ### Getting Along
 
-A wisp cannot converse, exactly, but it responds — to patience, to being walked with instead of away from, and above all to please, which in the entire recorded history of the marsh almost nobody has tried.
+A wisp cannot converse, exactly, but it responds: to patience, to being walked with instead of away from, and above all to please, which in the entire recorded history of the marsh almost nobody has tried.
 
 ### Likes
 
-- **[Boggart](/npcs/boggart/)** — They listen to the whole memory, every single time, and they write it down.
-- **[Witches](/npcs/witch_order/)** — Once in a while, one of them can untangle the memory and let it finish. The wisp-equivalent of going home.
-- **[Loftmire](/creatures/loftmire/)** — Drift inside one and you come out somewhere you have never been. It is the only thing in the marsh that has ever given a wisp a new route.
+- **[Boggart](/npcs/boggart/)**: They listen to the whole memory, every single time, and they write it down.
+- **[Witches](/npcs/witch_order/)**: Once in a while, one of them can untangle the memory and let it finish. The wisp-equivalent of going home.
+- **[Loftmire](/creatures/loftmire/)**: Drift inside one and you come out somewhere you have never been. It is the only thing in the marsh that has ever given a wisp a new route.
 
 ### Dislikes
 
-- **[Mire Mimic](/creatures/mire_mimic/)** — It keeps eating the audience in the middle of the story.
+- **[Mire Mimic](/creatures/mire_mimic/)**: It keeps eating the audience in the middle of the story.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Skirmisher** — Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
+**Skirmisher**: Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
 
 | | |
 |---|---|
 | Health | 6 |
-| Guard | 11 — how hard it is to hit |
+| Guard | 11, how hard it is to hit |
 | Attack | +3 |
 | Speed | 5 steps, 3 initiative |
 | Usually | 3 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Conversation** (Heart, normal) — Nobody has ever said please to a wisp before. It is not ready for it.
-- **Observation** (Clever, normal) — Noticing that the route it is offering is not a route.
+- **Conversation** (Heart, normal): Nobody has ever said please to a wisp before. It is not ready for it.
+- **Observation** (Clever, normal): Noticing that the route it is offering is not a route.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

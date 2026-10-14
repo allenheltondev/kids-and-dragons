@@ -3,7 +3,7 @@ title: Cloud Whale
 id: creature.cloud_whale
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "sky", "majestic", "semi_sapient"]
 classification: ambient_creature
@@ -54,7 +54,7 @@ infobox: creature
 
 > *Too big to land. Too gentle to mind.*
 
-Cloud whales swim the same high currents that carry the Sky Islands, and have been swimming them since before the islands had names. They sing near storms — not to calm them, as far as anyone can tell, but about them, the way sailors sing about the sea. Kitsune navigators write the songs down and steer by them, which the whales either do not know or do not mind.
+Cloud whales swim the same high currents that carry the Sky Islands, and have been swimming them since before the islands had names. They sing near storms, not to calm them, as far as anyone can tell, but about them, the way sailors sing about the sea. Kitsune navigators write the songs down and steer by them, which the whales either do not know or do not mind.
 
 ### For Fun
 
@@ -68,12 +68,12 @@ A cloud whale acknowledges a ship, an island, or a griffin with one slow pass an
 
 ### Likes
 
-- **[Kitsune](/characters/kitsune/)** — The little navigators sing back. Off-key, but sincerely.
-- **[Griffin](/characters/griffin/)** — They carry the stranded into its wake, where the wind is kind. It approves of this use of itself.
+- **[Kitsune](/characters/kitsune/)**: The little navigators sing back. Off-key, but sincerely.
+- **[Griffin](/characters/griffin/)**: They carry the stranded into its wake, where the wind is kind. It approves of this use of itself.
 
 ### Dislikes
 
-- **[Legend Dragon](/creatures/legend_dragon/)** — One wingbeat unsettles a week of wind, and it has never once apologized.
+- **[Legend Dragon](/creatures/legend_dragon/)**: One wingbeat unsettles a week of wind, and it has never once apologized.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

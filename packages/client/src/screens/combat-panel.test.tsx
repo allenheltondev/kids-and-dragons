@@ -403,13 +403,13 @@ describe("aiming", () => {
     const { sent } = mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike — who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
     expect(sent).toEqual([]);
 
     // Enemy ids carry their placement ordinal, so "which one am I about to
     // hit" survives three identical wisps (combat-grid.ts `combatantLabel`).
     await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
-    expect(screen.getByText("Strike — Bramblewisp 1")).toBeTruthy();
+    expect(screen.getByText("Strike: Bramblewisp 1")).toBeTruthy();
 
     await user.click(doIt());
     expect(sent).toEqual([
@@ -432,12 +432,12 @@ describe("aiming", () => {
     });
 
     await user.click(card("Volley"));
-    expect(screen.getByText(/Volley — who\? \(1 of 2\)/)).toBeTruthy();
+    expect(screen.getByText(/Volley: who\? \(1 of 2\)/)).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
     // The one already picked is gone from the list — the same figure twice is
     // not two targets, and the server would refuse it.
-    expect(screen.getByText(/Volley — who\? \(2 of 2\)/)).toBeTruthy();
+    expect(screen.getByText(/Volley: who\? \(2 of 2\)/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Bramblewisp 1/ })).toBeNull();
 
     await user.click(screen.getByRole("button", { name: /Bramblewisp 2/ }));
@@ -501,7 +501,7 @@ describe("aiming", () => {
 
     await user.click(card("Pounce"));
     await user.click(tile(3, 4));
-    expect(screen.getByText(/Pounce — who\?/)).toBeTruthy();
+    expect(screen.getByText(/Pounce: who\?/)).toBeTruthy();
 
     // Exactly one victim is reachable from where it would land.
     const offered = screen.getAllByRole("button", { name: /Bramblewisp/ });
@@ -691,7 +691,7 @@ describe("the turn boundary", () => {
     mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike — who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
 
     const current = useGameStore.getState().state!;
     const wispIndex = current.encounter!.order.findIndex((id) => id.startsWith("wisp"));

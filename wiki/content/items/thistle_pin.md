@@ -3,7 +3,7 @@ title: Thistle Pin
 id: item.thistle_pin
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["charm", "might", "expanse", "common"]
 related:
@@ -27,7 +27,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Trinket** — Carried. It works the whole time you have it.
+**Trinket**: Carried. It works the whole time you have it.
 
 > +1 Might.
 <!-- END GENERATED: mechanics -->
