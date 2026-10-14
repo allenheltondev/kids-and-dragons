@@ -437,3 +437,23 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+## Gemfall 05A — The bridge in the river
+
+Five character-free backdrops for the northern bridge and its broken crossing. Generated at 1920×1080 WebP, quality 88; foreground remains open for the stage.
+
+| Asset | Coverage |
+|---|---|
+| `northern-bridge-foot.webp` | North-bank approach and old bridge |
+| `hollis-soup-queue.webp` | Soup queue and repair barrow |
+| `bridge-engineers-tent.webp` | Engineers' tent and blank plans |
+| `cracked-bridge-span.webp` | Cracked but passable bridge span |
+| `bridge-pillar-shallows.webp` | Shallows beneath the bridge pillar |
+
+### Generation prompts
+
+- Northern bridge foot: Great River north-bank road approach to a broad old stone bridge, wagon ruts and repair bundles, river beyond, open dirt foreground; warm storybook watercolor and gouache; no people, animals, signs or text.
+- Hollis soup queue: Roadside soup pots, bowls, blankets, canvas awnings and a plain barrow with a loose wheel beside the Great River; open foreground; no people, animals or lettering.
+- Bridge engineers' tent: Open canvas engineer tent with timber braces, ropes, measuring rods, blank diagram sheets and tools on a table, river bridge beyond; no people, animals or text.
+- Cracked bridge span: Old stone bridge over shallow blue-green water, one section cracked and tilted but passable, uneven paving and open stone path; no people, animals, signs or text.
+- Bridge pillar shallows: Smooth stones and shallow water beneath a massive bridge pillar, reeds and ripples with a shadowed pocket; open shallow foreground; no people, wolves or other animals.
