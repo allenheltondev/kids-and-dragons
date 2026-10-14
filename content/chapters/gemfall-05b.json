@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 42,
   "xpAward": 90,
   "entry": "scene_mosshome",
   "objectives": [
@@ -45,7 +45,7 @@
       "discovers": [
         "character.bigfoot"
       ],
-      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder, and does not stop jogging to say hello.",
+      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. The bigfoot runner from the woods jogs past with a fresh bundle of cords, waves without stopping, and shouts, \"Told you! Bring your feet!\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -61,6 +61,12 @@
           "goto": "check_archive_door"
         },
         {
+          "id": "feet",
+          "label": "Wipe your feet on the welcome moss before you even knock",
+          "icon": "boot",
+          "goto": "scene_mosshome_feet"
+        },
+        {
           "id": "ask_door",
           "label": "Ask the archive door first, the MossHome way",
           "icon": "bigfoot",
@@ -73,6 +79,25 @@
           "icon": "heart",
           "goto": "scene_mosshome_glade_word",
           "requiresFlag": "glade_mended"
+        }
+      ]
+    },
+    "scene_mosshome_feet": {
+      "type": "story",
+      "narration": "Before anybody knocks, you all wipe your feet on the welcome moss by the archive door. Then, to be safe, you wipe them again. The door flies open. An archivist stands there with her hand over her heart. \"Twice,\" she breathes. \"Nobody from outside ever wipes twice.\" She lets you straight in, and tells two other archivists about it on the way.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in, feet spotless",
+          "icon": "boot",
+          "goto": "scene_archive_table"
         }
       ]
     },
@@ -151,7 +176,7 @@
           "id": "read",
           "label": "Read the path records yourself",
           "icon": "bigfoot",
-          "goto": "scene_spiral",
+          "goto": "scene_archive_table_read",
           "requiresSpecies": "bigfoot",
           "effects": [
             {
@@ -166,6 +191,50 @@
           "label": "Help plot the moved paths with pins and yarn",
           "icon": "hand",
           "goto": "check_plot"
+        },
+        {
+          "id": "newest",
+          "label": "Ask to see the newest thorns",
+          "icon": "eye",
+          "goto": "scene_archive_table_newest"
+        }
+      ]
+    },
+    "scene_archive_table_read": {
+      "type": "story",
+      "narration": "Your bigfoot leans over the table and reads it the way MossHome children learn to: one finger along the moss-ink, humming each path's name. The archivist stops fussing about feet altogether. The finger goes round, and round, and round again, and your bigfoot goes very quiet, because the shape is already there under the finger.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Say what you see",
+          "icon": "bigfoot",
+          "goto": "scene_spiral"
+        }
+      ]
+    },
+    "scene_archive_table_newest": {
+      "type": "story",
+      "narration": "The archivist points to the freshest thorns, still green. A path that folded itself up three times in one morning. A hedge that held three prospectors by the coat-tails. A beech that sat down across a path and asked a question. \"Somebody walked through all of those this week,\" she says, and looks at your boots. \"Somebody with marsh mud on.\"",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step back and look at the whole table",
+          "icon": "eye",
+          "goto": "scene_spiral"
         }
       ]
     },
@@ -213,6 +282,101 @@
           "id": "on",
           "label": "Ask if this has ever happened before",
           "icon": "ear",
+          "goto": "scene_spiral_on"
+        },
+        {
+          "id": "hum",
+          "label": "Tell them the stones hum, and hum the note",
+          "icon": "note",
+          "goto": "scene_spiral_hum"
+        },
+        {
+          "id": "pin",
+          "label": "Pin your own road onto the table",
+          "icon": "map",
+          "goto": "scene_spiral_pin"
+        },
+        {
+          "id": "charm",
+          "label": "Hold the witch's tuned charm over the table",
+          "icon": "charm",
+          "requiresItem": "charm_ford_witch",
+          "goto": "scene_spiral_charm"
+        }
+      ]
+    },
+    "scene_spiral_on": {
+      "type": "story",
+      "narration": "\"Before?\" The archivist looks at the others. Nobody answers. Then one of them goes, very quietly, to the back of the archive, and after a while you hear slow footsteps coming back, and a small bird singing, getting closer, as if the footsteps have brought their own music.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the footsteps",
+          "icon": "ear",
+          "goto": "scene_knot_cords"
+        }
+      ]
+    },
+    "scene_spiral_hum": {
+      "type": "story",
+      "narration": "You hum the note, the one the stones hum. Every archivist in the room stops. One drops a whole spool of cord, and it rolls away under the table, unwinding, and nobody chases it. \"That note,\" says the archivist, very quietly. \"The oldest knots were tied to that note.\" Then she will not say another word until somebody fetches the oldest archivist.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the oldest archivist",
+          "icon": "note",
+          "goto": "scene_knot_cords"
+        }
+      ]
+    },
+    "scene_spiral_pin": {
+      "type": "story",
+      "narration": "You take a thorn and pin your own road: through the marsh, over the river, into the trees. Your thread runs right past three of the spiral's middles. The archivists lean in. \"You walked the edge of it all the way,\" one says. \"No wonder the paths noticed you.\" She ties a knot to remember it, then sends for the oldest archivist.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the oldest archivist",
+          "icon": "map",
+          "goto": "scene_knot_cords"
+        }
+      ]
+    },
+    "scene_spiral_charm": {
+      "type": "story",
+      "narration": "You hold the witch's charm over the table and move it slowly across. Over every middle of every spiral it rings, ding, ding, ding, like a finger tapping a map. Between them it is silent. The archivists go pale under their fur. Then they send, quickly, for the oldest archivist, who does not like to be sent for quickly.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the oldest archivist",
+          "icon": "charm",
           "goto": "scene_knot_cords"
         }
       ]
@@ -243,7 +407,31 @@
           "id": "rest",
           "label": "Thank him, and go and rest",
           "icon": "rest",
-          "goto": "rest_guest_tree"
+          "goto": "scene_knot_cords_rest"
+        }
+      ]
+    },
+    "scene_knot_cords_rest": {
+      "type": "story",
+      "narration": "You thank him and turn to go. Behind you, the oldest archivist tells a very old cord, not quite quietly enough, \"Didn't ask about the pile. Good manners, or no curiosity.\" The archivist walking you out stops in the doorway, sighs, and turns round. \"You'll want to know about the pile,\" she says. \"Everybody does, in the end.\"",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        },
+        {
+          "figure": "cast/oldest_archivist",
+          "name": "Oldest Archivist",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Ask about the pile, then",
+          "icon": "ear",
+          "goto": "scene_pile_question"
         }
       ]
     },
@@ -294,7 +482,7 @@
           "id": "let_be",
           "label": "Let it be. It's the forest's pile.",
           "icon": "leaf",
-          "goto": "rest_guest_tree"
+          "goto": "scene_leaning_chair"
         }
       ]
     },
@@ -328,7 +516,7 @@
         "narration": "They listen to the whole thing. Then they all write something down at once, and the oldest one nods."
       },
       "onFailure": {
-        "goto": "rest_guest_tree",
+        "goto": "scene_leaning_chair",
         "narration": "\"The record doesn't know you yet,\" says the archivist, kindly, and closes the box. Maybe it will, by the time you're further north."
       }
     },
@@ -378,7 +566,7 @@
           "id": "on",
           "label": "Go and rest",
           "icon": "leaf",
-          "goto": "rest_guest_tree"
+          "goto": "scene_leaning_chair"
         }
       ]
     },
@@ -397,7 +585,7 @@
           "id": "on",
           "label": "Go and rest",
           "icon": "gem",
-          "goto": "rest_guest_tree"
+          "goto": "scene_leaning_chair"
         }
       ]
     },
@@ -433,7 +621,7 @@
           "id": "on",
           "label": "Slip back out",
           "icon": "eye",
-          "goto": "rest_guest_tree"
+          "goto": "scene_leaning_chair"
         }
       ]
     },
@@ -445,6 +633,51 @@
           "id": "on",
           "label": "Slip back out",
           "icon": "gem",
+          "goto": "scene_leaning_chair"
+        }
+      ]
+    },
+    "scene_leaning_chair": {
+      "type": "story",
+      "narration": "Crossing the square toward the guest trees, you pass the leaning chair again. Now that you have seen the spiral, you know what to look for. It is not leaning at random. It is leaning away from something, the way the mosshorns stepped away from the gem cart. A small archivist is measuring it with a string, and sighing.",
+      "choices": [
+        {
+          "id": "sit",
+          "label": "Sit in it and try to lean it back upright",
+          "icon": "might",
+          "goto": "check_chair_sit"
+        },
+        {
+          "id": "follow",
+          "label": "Work out what it's leaning away from",
+          "icon": "eye",
+          "goto": "scene_leaning_chair_follow"
+        }
+      ]
+    },
+    "check_chair_sit": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Sit in the leaning chair and lean it back upright with your whole weight",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_guest_tree",
+        "narration": "You sit and lean back hard. With a long creak the chair comes upright, and holds, and holds, and the moment you stand up it leans straight back again, slowly, like a sunflower turning. The small archivist writes on her sign, under FILE OPENED: STILL OPEN."
+      },
+      "onFailure": {
+        "goto": "rest_guest_tree",
+        "narration": "You sit, and lean, and the chair politely tips you out onto the moss, the way you would tip out a cat that has sat on your homework. The small archivist laughs so hard she drops her string. \"It does that to everybody,\" she says. \"Even the Eldest. Especially the Eldest.\""
+      }
+    },
+    "scene_leaning_chair_follow": {
+      "type": "story",
+      "narration": "You stand behind the chair and look where its back is pointing. It leans away from the root-stairs behind the archive, the ones that go down into the dark under the town. The small archivist sees you looking, and very carefully goes and stands in front of the root-stairs, humming, as if she has always wanted to stand exactly there.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pretend you did not notice",
+          "icon": "eye",
           "goto": "rest_guest_tree"
         }
       ]
@@ -458,6 +691,145 @@
           "id": "elders",
           "label": "Go and see the elders",
           "icon": "forward",
+          "goto": "scene_runners_post"
+        },
+        {
+          "id": "knot",
+          "label": "Help the runner tie the day's cords first",
+          "icon": "ribbon",
+          "goto": "rest_guest_tree_knot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "learned_a_knot",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "hammock",
+          "label": "Rock in a humming hammock until it sings you to sleep",
+          "icon": "rest",
+          "goto": "rest_guest_tree_hammock"
+        }
+      ]
+    },
+    "rest_guest_tree_knot": {
+      "type": "story",
+      "narration": "The runner is sitting on the guest tree's root, still jogging her feet, tying the day's cords. She shows you a MossHome knot: over, under, twist, and pull. \"Holds a bridge plank,\" she puffs. \"Holds a promise. Holds a whole path in the record.\" It takes you nine tries. On the tenth, she cheers so loudly a hammock wakes up.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and see the elders",
+          "icon": "ribbon",
+          "goto": "scene_runners_post"
+        }
+      ]
+    },
+    "rest_guest_tree_hammock": {
+      "type": "story",
+      "narration": "You climb into a hammock and rock it, and it hums, a low, slow lullaby that sounds a lot like rain on leaves. You mean to rock for just a minute. When you wake, it is morning, there is moss tea on a little shelf beside you, and somebody's hammock is still humming, very softly, a little out of tune.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and see the elders",
+          "icon": "rest",
+          "goto": "scene_runners_post"
+        }
+      ]
+    },
+    "scene_runners_post": {
+      "type": "story",
+      "narration": "On the way to the elders you pass the runners' post, a hollow stump where MossHome runners drop off their cords and pick up new ones. Three runners have just come in from very far away, steaming, still jogging on the spot. They carry news from the other roads north, and everybody wants to hear it. You get to ask first.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "rush",
+          "label": "Ask for news from the rush road",
+          "icon": "travel",
+          "goto": "scene_runners_post_rush"
+        },
+        {
+          "id": "river",
+          "label": "Ask for news from the river road",
+          "icon": "drop",
+          "goto": "scene_runners_post_river"
+        },
+        {
+          "id": "gullet",
+          "label": "Ask if there is any word from Gullet the ferrywoman",
+          "icon": "note",
+          "requiresFlag": "forded_clean",
+          "goto": "scene_runners_post_gullet"
+        }
+      ]
+    },
+    "scene_runners_post_rush": {
+      "type": "story",
+      "narration": "\"The rush road?\" A runner puffs out the news. A ford queue two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on to the elders' ring",
+          "icon": "travel",
+          "goto": "choice_elders"
+        }
+      ]
+    },
+    "scene_runners_post_river": {
+      "type": "story",
+      "narration": "\"The river road?\" A runner wipes his brow. A stone troll at Stone Crossing has stopped asking riddles. All its tolls are one question now: where did you get that, and where is it going? And out east, the manticore prides are bending their roads around something they won't name. \"Everybody's noticing,\" he puffs. \"Nobody's telling.\"",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on to the elders' ring",
+          "icon": "drop",
+          "goto": "choice_elders"
+        }
+      ]
+    },
+    "scene_runners_post_gullet": {
+      "type": "story",
+      "narration": "\"Gullet?\" A runner laughs. \"Notched hat, hums a lot?\" He has news from the marsh: Gullet has run out of hat. She has started on her other hat. And the ribbon crew moved the wisp line out twice more this week. \"She said to tell anybody who asked,\" he puffs, \"that she is not worried. Which means she is.\"",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on to the elders' ring",
+          "icon": "note",
           "goto": "choice_elders"
         }
       ]
@@ -592,6 +964,98 @@
           "id": "on",
           "label": "Tie it somewhere safe, and set off",
           "icon": "ribbon",
+          "goto": "scene_falls_stair"
+        }
+      ]
+    },
+    "scene_falls_stair": {
+      "type": "story",
+      "narration": "The way out of MossHome climbs the falls stair, and the falls are in a mood. Water is running over steps that should be dry, and the flood-warden in very tall boots is standing right in it, frowning at a pole marked with notches. \"Rising,\" she says. \"Then falling. All day. In time with the mountain's grumbles. Never seen that before.\"",
+      "cast": [
+        {
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "logs",
+          "label": "Help her drag stepping logs across the stair",
+          "icon": "might",
+          "goto": "check_falls_logs"
+        },
+        {
+          "id": "count",
+          "label": "Watch the pole and count the rises with her",
+          "icon": "clever",
+          "goto": "scene_falls_stair_count"
+        },
+        {
+          "id": "dripping",
+          "label": "Remind her she met you dripping on the flooded paths",
+          "icon": "drop",
+          "requiresFlag": "marsh_kept_us",
+          "goto": "scene_falls_stair_dripping"
+        }
+      ]
+    },
+    "check_falls_logs": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Drag heavy stepping logs across a flooded stair",
+      "cast": [
+        {
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_soup_tent",
+        "narration": "Heave, roll, heave, and three logs settle across the flooded steps like a little bridge. The flood-warden stamps on each one, hard, and nods. \"Proper work,\" she says, which from a flood-warden is a medal. You cross with dry boots, and she waves you up toward the high paths."
+      },
+      "onFailure": {
+        "goto": "scene_soup_tent",
+        "narration": "A log rolls the wrong way and you sit down in the falls with a splash. The flood-warden hauls you out with one hand, sets you on the top step, and says, \"Happens every season. Not usually to this many.\" Then she drags the logs across herself, as if they weigh nothing at all."
+      }
+    },
+    "scene_falls_stair_count": {
+      "type": "story",
+      "narration": "You stand with her and watch the pole. The mountain grumbles, far off, and the water climbs a notch. It goes quiet, and the water drops. Grumble, rise. Quiet, fall. Like breathing. The flood-warden writes it all on a cord and ties it to your pack. \"For whoever you're telling,\" she says. \"Tell them the water knows too.\"",
+      "cast": [
+        {
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb the stair, carefully",
+          "icon": "clever",
+          "goto": "scene_soup_tent"
+        }
+      ]
+    },
+    "scene_falls_stair_dripping": {
+      "type": "story",
+      "narration": "\"You!\" The flood-warden's whole face cracks into a grin. \"The soggy ones! Off the flooded paths!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she lifts each of you across the worst of the steps like parcels, one, two, three, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
+      "cast": [
+        {
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, still dry",
+          "icon": "drop",
           "goto": "scene_soup_tent"
         }
       ]
@@ -645,7 +1109,7 @@
           "id": "on",
           "label": "Up the high paths",
           "icon": "bead",
-          "goto": "scene_high_paths"
+          "goto": "choice_rope_bridge"
         }
       ]
     },
@@ -657,7 +1121,7 @@
           "id": "on",
           "label": "Up the high paths",
           "icon": "hand",
-          "goto": "scene_high_paths"
+          "goto": "choice_rope_bridge"
         }
       ]
     },
@@ -669,9 +1133,139 @@
           "id": "on",
           "label": "Up the high paths",
           "icon": "potion",
+          "goto": "choice_rope_bridge"
+        }
+      ]
+    },
+    "choice_rope_bridge": {
+      "type": "choice_point",
+      "narration": "The high paths begin with a rope bridge over a gorge so deep the river at the bottom looks like a bit of string. Halfway across, two planks are missing. A bigfoot sign at the start says, in careful letters, MIND THE GAP. Underneath, somebody else has added: IT IS A BIG GAP. How will you cross? Everybody vote.",
+      "choices": [
+        {
+          "id": "test",
+          "label": "Test every plank before you step on it",
+          "icon": "clever",
+          "goto": "check_bridge_test"
+        },
+        {
+          "id": "rope",
+          "label": "Go hand over hand along the side rope past the gap",
+          "icon": "quick",
+          "goto": "check_bridge_rope"
+        },
+        {
+          "id": "knot",
+          "label": "Rig a new plank with the runner's knot",
+          "icon": "ribbon",
+          "requiresFlag": "learned_a_knot",
+          "goto": "choice_rope_bridge_knot"
+        }
+      ]
+    },
+    "check_bridge_test": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Tap every plank and find the safe ones before anyone steps",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_halfway_hut",
+        "narration": "Tap, tap, step. Tap, tap, step. You find the two good planks hiding among the wobbly ones and lay them across the gap, and everybody crosses without a single wobble. On the far side, you add a line under the sign: WE MINDED IT."
+      },
+      "onFailure": {
+        "goto": "scene_halfway_hut",
+        "narration": "You tap a plank. It says CREAK. You all say AAH. Then it turns out to be perfectly fine, it is just a very dramatic plank. You cross with hearts thumping, and laugh about it all the way to the other side."
+      }
+    },
+    "check_bridge_rope": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Swing hand over hand along the side rope past the missing planks",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_halfway_hut",
+        "narration": "Hand, hand, hand, and swing your feet onto the far planks. One after another you go over the gap like monkeys, and the bridge hardly sways. A bigfoot coming the other way stops to clap, very slowly, with enormous hands."
+      },
+      "onFailure": {
+        "goto": "scene_halfway_hut",
+        "narration": "Halfway along, your arms get tired and you dangle for a moment, like a sock on a washing line, until the others reach out and pull you in by the belt. Nobody looks down. Well, one person looks down, once, and decides never to do that again."
+      }
+    },
+    "choice_rope_bridge_knot": {
+      "type": "story",
+      "narration": "Over, under, twist, and pull. You tie a spare plank into the gap with the knot the runner taught you, and it holds like it grew there. A bigfoot coming the other way stops, inspects your knot, tugs it twice, and nods. \"MossHome knot,\" he says. \"Somebody taught you right.\" You cross like it is a garden path.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Cross over",
+          "icon": "ribbon",
+          "goto": "scene_halfway_hut"
+        }
+      ]
+    },
+    "scene_halfway_hut": {
+      "type": "story",
+      "narration": "Halfway up the high paths stands a stone hut with a mossy roof, and an old bigfoot path-keeper sitting outside it with a book open on his knees. \"Visitors' book,\" he says proudly. \"Everybody who goes up, signs. Been kept since before MossHome had a name.\" The book is enormous. The oldest pages are not written at all. They are knotted.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Path-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "sign",
+          "label": "Sign your names in the book",
+          "icon": "scroll",
+          "goto": "scene_halfway_hut_sign"
+        },
+        {
+          "id": "read",
+          "label": "Read back through the oldest pages",
+          "icon": "clever",
+          "goto": "check_hut_pages"
+        }
+      ]
+    },
+    "scene_halfway_hut_sign": {
+      "type": "story",
+      "narration": "You sign your names, in your best writing. The path-keeper reads them out loud, slowly, as if he is tasting them. Then he turns back a few pages and shows you a long column of names from this season, all going up, more than in any year he can remember. \"Busy mountain,\" he says, and blows on your ink to dry it.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Path-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "scroll",
           "goto": "scene_high_paths"
         }
       ]
+    },
+    "check_hut_pages": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Make sense of the oldest knotted pages of the visitors' book",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Path-Keeper"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_high_paths",
+        "narration": "Back and back you turn, past ink, past scratches, to the knotted pages. And there, in one old cord, a knot shaped like a spiral. The path-keeper whistles. \"The paths moved like that once before,\" he says. \"Long, long ago. The archivists will want to know you found that.\" He ties a ribbon on the page."
+      },
+      "onFailure": {
+        "goto": "scene_high_paths",
+        "narration": "The knotted pages are like trying to read a jumper. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you each a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
+      }
     },
     "scene_high_paths": {
       "type": "story",
@@ -701,7 +1295,7 @@
           "id": "hidden",
           "label": "Take the hidden high path the wolves don't know",
           "icon": "bigfoot",
-          "goto": "scene_foothills_view",
+          "goto": "scene_high_paths_hidden",
           "requiresSpecies": "bigfoot"
         },
         {
@@ -709,6 +1303,18 @@
           "label": "Stand tall and make them go round",
           "icon": "swords",
           "goto": "encounter_wolves"
+        }
+      ]
+    },
+    "scene_high_paths_hidden": {
+      "type": "story",
+      "narration": "Your bigfoot points to a crack in the cliff that looks like nothing at all. It is a path, an old MossHome one, worn into the rock and hidden behind a curtain of ivy. You squeeze along it in single file, right past the wolves' noses, and not one of them so much as twitches an ear. Above you, the cloud is coming down.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb into the cloud",
+          "icon": "bigfoot",
+          "goto": "scene_cloud_gatherer"
         }
       ]
     },
@@ -724,7 +1330,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_foothills_view",
+        "goto": "scene_cloud_gatherer",
         "narration": "You lob the last of the MossHome biscuits down the slope. Three wolves look at each other, then at the biscuits, and decide biscuits win."
       },
       "onFailure": {
@@ -744,7 +1350,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_foothills_view",
+        "goto": "scene_cloud_gatherer",
         "narration": "Over a rope bridge, under a ledge, and gone before a single wolf has finished yawning."
       },
       "onFailure": {
@@ -764,7 +1370,7 @@
         }
       ],
       "onVictory": {
-        "goto": "scene_foothills_view",
+        "goto": "scene_cloud_gatherer",
         "narration": "The wolves decide this path isn't worth it and lope off downhill, still grumbling, trailing sparks like a sneeze."
       },
       "onDefeat": {
@@ -779,13 +1385,114 @@
       "prompt": "Gather up your scattered packs before it gets dark",
       "roller": "all",
       "onSuccess": {
-        "goto": "scene_foothills_view",
+        "goto": "scene_cloud_gatherer",
         "narration": "You find everything, even the sock nobody wanted back, and climb on, late but whole."
       },
       "onFailure": {
         "goto": "ending_long_way_round",
         "narration": "You find one pack, half of another, and a hat that is not yours. The light goes while you are still looking, and somewhere above you a wolf grumbles at the mountain as if it has lost something too."
       }
+    },
+    "scene_cloud_gatherer": {
+      "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
+      "narration": "Past the wolves the path climbs into cloud, and in it, sitting on a rock with her tail wrapped round her knees, is a young dragonling with a gathering bag. \"I'm not lost,\" she says at once. \"I'm waiting for the cloud to go.\" A flock of embermoths drifts past you both, glowing, heading south, away from the mountain. She stares. \"They never go that way.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Young Gatherer",
+          "size": "small"
+        },
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "choices": [
+        {
+          "id": "walk",
+          "label": "Walk her up out of the cloud with you",
+          "icon": "hand",
+          "goto": "scene_cloud_gatherer_walk"
+        },
+        {
+          "id": "moths",
+          "label": "Follow the embermoths a little way to see where they go",
+          "icon": "eye",
+          "goto": "check_follow_moths"
+        },
+        {
+          "id": "greet",
+          "label": "Greet her the gathering way",
+          "icon": "dragonling",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_cloud_gatherer_greet"
+        }
+      ]
+    },
+    "scene_cloud_gatherer_walk": {
+      "type": "story",
+      "narration": "You walk her up through the cloud together. On the way she tells you the one rule, the way every dragonling learns it: \"Take what the mountain drops. Never pry at what it holds.\" She says it twice, to be sure you have it. \"The grandmothers say it at the boundary stones. Nobody listens this year.\" At the top, the cloud ends all at once.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Young Gatherer",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step out of the cloud",
+          "icon": "hand",
+          "goto": "scene_foothills_view"
+        }
+      ]
+    },
+    "check_follow_moths": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep up with a drifting flock of embermoths in the cloud",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Young Gatherer",
+          "size": "small"
+        },
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "You follow them, the gatherer at your heels, to a ledge where the whole flock has settled. Every single moth is facing away from the mountain, like people with their backs to a cold draught. \"I'm telling my grandmother,\" the gatherer whispers. Then she leads you up out of the cloud."
+      },
+      "onFailure": {
+        "goto": "scene_foothills_view",
+        "narration": "The moths vanish into the cloud, glowing, and you lose them. Then they come drifting back past you the other way, as if they have changed their minds, and then change them again. \"Even they don't know where to go,\" says the gatherer, and leads you up out of the cloud."
+      }
+    },
+    "scene_cloud_gatherer_greet": {
+      "type": "story",
+      "narration": "Your dragonling touches a claw to their brow and recites the gatherer's greeting: \"What the mountain drops, we keep. What it holds, we leave.\" The young gatherer's whole face lights up. \"You're from the foothills!\" She sticks to your side the rest of the climb, naming every rock, and at the top she points out her town's bell tower.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Young Gatherer",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step out of the cloud",
+          "icon": "dragonling",
+          "goto": "scene_foothills_view"
+        }
+      ]
     },
     "scene_foothills_view": {
       "type": "story",
@@ -798,6 +1505,24 @@
           "id": "camp",
           "label": "Make camp on the flat rock",
           "icon": "rest",
+          "goto": "ending_foothills_rim"
+        },
+        {
+          "id": "lookout",
+          "label": "Climb the lookout rock first",
+          "icon": "eye",
+          "goto": "scene_foothills_view_lookout"
+        }
+      ]
+    },
+    "scene_foothills_view_lookout": {
+      "type": "story",
+      "narration": "You scramble up the lookout rock as the sun goes down. From the top you can see the whole of the foothills: the dragonling towns with their bell towers, a citadel of red stone with tiny lights coming on in its windows, and the rush, a long glittering line of lanterns, crawling toward the mountain. The young gatherer waves, and heads home.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb down and make camp",
+          "icon": "eye",
           "goto": "ending_foothills_rim"
         }
       ]
@@ -835,7 +1560,10 @@
       "oldest_archivist": "very old, very slow, a bird lives in his beard; talks to the knot-cords as much as to you",
       "eldest": "MossHome elder; mild, sips tea between every sentence, asks to be told second and means it",
       "runner": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking",
-      "soup_woman": "a Deep Hollow Cult member; genuinely kind, soft-spoken, believes every word; kindness first, always, and never menacing"
+      "soup_woman": "a Deep Hollow Cult member; genuinely kind, soft-spoken, believes every word; kindness first, always, and never menacing",
+      "flood_warden": "MossHome bigfoot in very tall boots; brisk, practical, has seen every kind of soggy",
+      "path_keeper": "old bigfoot who keeps the halfway hut on the high paths; slow, kind, proud of his visitors' book",
+      "young_gatherer": "a young dragonling gatherer; insists she is not lost, knows the one rule by heart, braver than she feels"
     }
   }
 }
