@@ -60,7 +60,9 @@
 }
 @container (max-width: 38em) {
   .entry-scene__image { object-position: center; }
-  .entry-scene::after { background: linear-gradient(0deg, rgb(13 11 26 / 90%), rgb(13 11 26 / 50%) 60%, rgb(13 11 26 / 25%)); }
+  /* Phone panes put text over the whole picture, not just its foot, so the
+     scrim stays dark enough to read on all the way up. */
+  .entry-scene::after { background: linear-gradient(0deg, rgb(13 11 26 / 92%), rgb(13 11 26 / 78%) 55%, rgb(13 11 26 / 62%)); }
 }
 @media (max-width: 640px) {
   .home .entry-scene::after { background: linear-gradient(0deg, rgb(13 11 26 / 65%), rgb(13 11 26 / 30%)); }

@@ -197,7 +197,7 @@
     },
     "scene_downbound_fly_look": {
       "type": "story",
-      "narration": "You go up. From above, the crowd is a river of hats, all of them brown or grey or straw, except one. One orange dot, standing perfectly still beside a pony, talking.",
+      "narration": "You go up. From above, the crowd is a river of hats, all of them brown or gray or straw, except one. One orange dot, standing perfectly still beside a pony, talking.",
       "choices": [
         {
           "id": "on",
@@ -311,7 +311,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-coloured sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
+      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-colored sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
       "choices": [
         {
           "id": "say_no",

@@ -42,7 +42,7 @@
   "scenes": {
     "scene_stones_line": {
       "type": "story",
-      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
+      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall gray stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
       "choices": [
         {
           "id": "join_queue",

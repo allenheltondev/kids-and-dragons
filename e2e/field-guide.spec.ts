@@ -59,7 +59,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   }
   await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(0);
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
@@ -116,9 +115,8 @@ test.describe("the Field Guide", () => {
 
     await createCharacter(phone, "unicorn", HERO);
     await createCharacter(friend, "griffin", FRIEND);
+    // "Ready to play" at the end of creation already said ready.
     for (const page of [phone, friend]) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);

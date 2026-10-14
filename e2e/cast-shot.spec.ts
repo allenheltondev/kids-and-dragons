@@ -12,7 +12,6 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
-import { openPlayerTask } from "./player-navigation";
 
 const TAP = { timeout: 20_000 } as const;
 const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_motive_wealth")
@@ -34,7 +33,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
     if ((await adds.count()) === 0) break;
     await adds.first().click(TAP);
   }
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
@@ -79,10 +77,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
   const tv = await tvCtx.newPage();
   await tv.goto(`/tv/${code}`);
 
-  for (const [page] of party) {
-    await openPlayerTask(page);
-    await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
-  }
+  // "Ready to play" at the end of creation already said ready.
   await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
   await expect(tv.locator(".narration__body")).toBeVisible({ timeout: 30_000 });
 

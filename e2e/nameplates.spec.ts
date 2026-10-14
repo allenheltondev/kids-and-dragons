@@ -138,12 +138,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
     await page.waitForTimeout(150);
   }
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  // Straight past the appearance step without touching a swatch. That is the
-  // assertion: colour and accent are optional (CreationFlow `stepDone`), so
-  // "Next" has to be live on arrival. first-playable.spec.ts covers the other
-  // path, where somebody does pick.
-  await expect(page.getByRole("button", { name: /^next$/i })).toBeEnabled();
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
@@ -201,9 +195,8 @@ test.describe("nameplates", () => {
       .poll(async () => (await read(tv)).boxes.length, { timeout: 30_000 })
       .toBe(0);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
