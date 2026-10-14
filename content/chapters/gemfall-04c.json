@@ -1278,7 +1278,7 @@
     },
     "scene_ash_wind": {
       "type": "choice_point",
-      "narration": "Walking north under the stars, a warm wind blows down from the mountain, full of grey ash as soft as moth dust. It glitters in your lantern light. Every gem in every pack on the road starts humming louder, all at once, as if the wind has said something they all agree with. Everybody vote.",
+      "narration": "Walking north under the stars, a warm wind blows down from the mountain, full of gray ash as soft as moth dust. It glitters in your lantern light. Every gem in every pack on the road starts humming louder, all at once, as if the wind has said something they all agree with. Everybody vote.",
       "choices": [
         {
           "id": "push_on",
@@ -1309,11 +1309,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_road_bend",
-        "narration": "You link arms and march on through the glitter. It is like walking through warm grey snow. By the time the wind passes, you are grey from head to toe and look like a row of statues, and the bend in the road is just ahead."
+        "narration": "You link arms and march on through the glitter. It is like walking through warm gray snow. By the time the wind passes, you are gray from head to toe and look like a row of statues, and the bend in the road is just ahead."
       },
       "onFailure": {
         "goto": "scene_road_bend",
-        "narration": "The wind shoves you sideways into a hedge, one after another, like skittles. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, greyer and wiser, and the bend in the road is just ahead."
+        "narration": "The wind shoves you sideways into a hedge, one after another, like skittles. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
       }
     },
     "scene_ash_wind_shelter": {

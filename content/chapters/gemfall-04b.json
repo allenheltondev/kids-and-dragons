@@ -1206,7 +1206,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
-        "narration": "Clapping, stamping, a pot lid, somebody yodelling. The echo hunter's frills flatten in dismay, and it backs down its crack to wait for some peace and quiet."
+        "narration": "Clapping, stamping, a pot lid, somebody yodeling. The echo hunter's frills flatten in dismay, and it backs down its crack to wait for some peace and quiet."
       },
       "onFailure": {
         "goto": "encounter_echo",
@@ -1443,7 +1443,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk north, labelled",
+          "label": "Walk north, labeled",
           "icon": "heart",
           "goto": "ending_marked_something"
         }

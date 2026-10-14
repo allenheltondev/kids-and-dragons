@@ -438,7 +438,7 @@
             "value": true
           }
         ],
-        "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorising your face."
+        "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorizing your face."
       },
       "onFailure": {
         "goto": "scene_claim_boulder",
@@ -1665,7 +1665,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "Ding, ding-ding, ding, very softly, out of the window into the dark. For a moment nothing happens. Then, far below, a very small bell answers: ding, dong, clatter. The smallest dragonling is still up, practising. Captain Voss turns away from the window so that nobody can see whether she is smiling.",
+      "narration": "Ding, ding-ding, ding, very softly, out of the window into the dark. For a moment nothing happens. Then, far below, a very small bell answers: ding, dong, clatter. The smallest dragonling is still up, practicing. Captain Voss turns away from the window so that nobody can see whether she is smiling.",
       "choices": [
         {
           "id": "on",

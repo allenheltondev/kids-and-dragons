@@ -135,7 +135,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "Hollis talks while she ladles, gently, like she's telling you the weather. \"The world's rules are broken, love. Look at this line. The power under the mountain could write new ones. The seal on it isn't a lock. It's a lid on the cure.\" She nods at a jar labelled THE BREAK. It is half full of humming stones.",
+      "narration": "Hollis talks while she ladles, gently, like she's telling you the weather. \"The world's rules are broken, love. Look at this line. The power under the mountain could write new ones. The seal on it isn't a lock. It's a lid on the cure.\" She nods at a jar labeled THE BREAK. It is half full of humming stones.",
       "choices": [
         {
           "id": "say_no_kindly",
