@@ -449,7 +449,7 @@
       "discovers": [
         "npc.boggart"
       ],
-      "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
+      "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalog. Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
       "choices": [
         {
           "id": "brisk_said",
@@ -481,7 +481,7 @@
     },
     "scene_boggart_choir_said": {
       "type": "story",
-      "narration": "You hum what the choir hums when nobody is listening, which is the same three notes, only sadder. The boggart goes completely still and listens with its whole body. \"Sidelong,\" it says at last, approvingly, and hands over the catalogue without ever once looking at you.",
+      "narration": "You hum what the choir hums when nobody is listening, which is the same three notes, only sadder. The boggart goes completely still and listens with its whole body. \"Sidelong,\" it says at last, approvingly, and hands over the catalog without ever once looking at you.",
       "choices": [
         {
           "id": "on",
@@ -493,7 +493,7 @@
     },
     "scene_boggart_brisk_said": {
       "type": "story",
-      "narration": "You tell it what Pellam mutters to his ledger when he thinks nobody is listening, which is mostly numbers and once, very quietly, \"oh dear.\" The boggart hugs itself. \"A clerk's oh dear,\" it tells nobody. \"Rarer than rubies.\" The catalogue is in your hands before you notice it has let go.",
+      "narration": "You tell it what Pellam mutters to his ledger when he thinks nobody is listening, which is mostly numbers and once, very quietly, \"oh dear.\" The boggart hugs itself. \"A clerk's oh dear,\" it tells nobody. \"Rarer than rubies.\" The catalog is in your hands before you notice it has let go.",
       "choices": [
         {
           "id": "on",
@@ -924,7 +924,7 @@
         },
         {
           "id": "buyers",
-          "label": "The catalogue says whose stone it is. Ask them first.",
+          "label": "The catalog says whose stone it is. Ask them first.",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "check_hold"
