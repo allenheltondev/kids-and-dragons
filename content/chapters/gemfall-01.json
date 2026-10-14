@@ -681,7 +681,7 @@
       "narration": "Gem-buyers line the whole quay. The biggest is Madame Coralie Fenn, a merfolk who gets about in a barrel on wheels, and she smells your warm red stone from ten stalls away. \"Rush prices, darlings,\" she says, and names a number so big that a pigeon faints. Do we sell it, or keep it?",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Coralie Fenn"
         }
       ],
@@ -742,7 +742,7 @@
       "narration": "You name a bigger number. Madame Fenn names a smaller one. You name a bigger one again, and a second pigeon faints. In the end she pays twice what she offered, laughs so hard her barrel rolls into a bollard, and throws in a brave whistle \"for cheek, darlings.\" Then she writes your names in her little green book, twice.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Coralie Fenn"
         }
       ],
@@ -760,7 +760,7 @@
       "narration": "Madame Fenn pays with a purse so heavy it clanks, and throws in a hearthstone bead \"for luck, darlings.\" Then she writes your names in a little green book. \"I never forget a good seller,\" she says, and somehow you believe her. The stone goes into her barrel, still humming, and the humming goes with it.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Coralie Fenn"
         }
       ],
@@ -785,7 +785,7 @@
       "narration": "You close your hand around the stone. Still warm. Madame Fenn sighs a sigh so big her barrel rocks on its wheels. \"Your loss, darlings. Or somebody's.\" The stone feels a little heavier now, the way a promise does.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Coralie Fenn"
         }
       ],

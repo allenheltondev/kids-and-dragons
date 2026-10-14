@@ -105,7 +105,7 @@
       "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, and the desk is guarded by Pellam, who has never once smiled on duty and has logged that fact twice. \"Not for lending,\" says Pellam, before you have said anything at all.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -153,7 +153,7 @@
       "narration": "You promise him the choir's chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -171,7 +171,7 @@
       "narration": "\"You told us first,\" you say. \"At the citadel. We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -191,7 +191,7 @@
       "prompt": "Show Pellam why a cage needs a key-holder",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -862,7 +862,7 @@
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Fenn"
         }
       ],
@@ -892,7 +892,7 @@
       "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Fenn"
         }
       ],
@@ -910,7 +910,7 @@
       "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Fenn"
         }
       ],
