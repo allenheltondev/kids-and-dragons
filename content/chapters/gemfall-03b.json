@@ -348,7 +348,7 @@
     "encounter_mimic": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The barge heaves up out of the mud on long grey legs. A wisp that has been leading prospectors this way drifts in to watch the show.",
+      "narration": "The barge heaves up out of the mud on long gray legs. A wisp that has been leading prospectors this way drifts in to watch the show.",
       "enemies": [
         {
           "id": "mimic",
@@ -578,7 +578,7 @@
     },
     "scene_wisp_trap": {
       "type": "story",
-      "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug, beside something huge and grey.",
+      "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug, beside something huge and gray.",
       "cast": [
         {
           "figure": "entities/will_o_wisp"

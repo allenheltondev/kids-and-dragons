@@ -27,10 +27,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
     await adds.first().click(TAP);
   }
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  const fieldsets = page.locator(".creation-fieldset");
-  await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
-  await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);

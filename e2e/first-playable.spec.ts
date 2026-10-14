@@ -46,14 +46,7 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(0);
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
-  // Appearance: a colour and an accent, both deliberate taps. Neither is
-  // required — picking a species already applied a default, and the step
-  // gates on nothing (CreationFlow `stepDone`) — so this is the "somebody
-  // chose" path. nameplates.spec.ts walks past without touching them.
-  const fieldsets = page.locator(".creation-fieldset");
-  await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
-  await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
+  // No appearance step: the server assigns colors (shared player-colors.ts).
 
   // Name. "Surprise me" has to be there — typing must never be required
   // (spec §5.5) — but the test types, so it can assert on the result later.
@@ -341,8 +334,8 @@ test.describe("first playable", () => {
     await expect(solo.getByRole("button", { name: /unicorn/i }).first()).toBeVisible();
     await createCharacter(solo, "unicorn", "Sparklehoof");
 
-    await openPlayerTask(solo);
-    await solo.getByRole("button", { name: /i'm ready/i }).click();
+    // "Ready to play" at the end of creation already said ready.
+    await expect(solo.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     await solo.getByRole("button", { name: /begin the adventure/i }).click();
 
     // The scene opens a choice, so the controls come forward on their own...
@@ -392,9 +385,8 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       // Assert the tap actually took. A ready that silently fails to register
       // is the exact failure worth catching here, and without this the test
       // just hangs later with nothing to say about why.
@@ -510,9 +502,8 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
@@ -719,8 +710,9 @@ test.describe("first playable", () => {
     await host.getByRole("button", { name: /play as sparklehoof/i }).click(TAP);
     await host.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 
-    // Seated: the lobby's ready button is theirs, with no creation flow between.
-    await expect(host.getByRole("button", { name: /i'm ready/i })).toBeVisible({ timeout: 15_000 });
+    // Seated and ready — "Ready to play" is the one tap, with no creation
+    // flow between.
+    await expect(host.getByRole("button", { name: /wait, not yet/i })).toBeVisible({ timeout: 15_000 });
     const response = await fetch(`http://localhost:8787/api/state?code=${second}`);
     const { state } = (await response.json()) as { state: { party: { character: { name: string } }[] } };
     expect(state.party.map((m) => m.character.name)).toEqual(["Sparklehoof"]);
@@ -771,8 +763,8 @@ test.describe("first playable", () => {
     await controller.getByLabel(/room code/i).fill(code);
     await controller.getByRole("button", { name: /join a game/i }).click();
     await createCharacter(controller, "unicorn", "Sparklehoof");
-    await openPlayerTask(controller);
-    await controller.getByRole("button", { name: /i'm ready/i }).click(TAP);
+    // "Ready to play" at the end of creation already said ready.
+    await expect(controller.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     await controller.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await openPlayerTask(controller);
 
