@@ -140,7 +140,7 @@
       },
       "onFailure": {
         "goto": "choice_the_race",
-        "narration": "The numbers change faster than you can read them, and a puff of chalk dust makes all three of you sneeze at once. Bryony laughs so hard she nearly falls off her ladder, and throws you down a stick of chalk, for luck."
+        "narration": "The numbers change faster than you can read them, and a puff of chalk dust makes you all sneeze at once. Bryony laughs so hard she nearly falls off her ladder, and throws you down a stick of chalk, for luck."
       }
     },
     "scene_price_board_ask": {
@@ -152,7 +152,7 @@
           "size": "small"
         }
       ],
-      "narration": "Bryony slides down the ladder. \"Everything that hums,\" she says. \"The masks pay double for it. The wardens take it for nothing. And Grandmother says not to sell it at all.\" She looks at your humming packs. \"You're the weather people,\" she says. \"Everybody's talking about you.\"",
+      "narration": "Bryony slides down the ladder. \"Everything that hums,\" she says. \"The people in masks pay double for it. The wardens take it for nothing. And Grandmother says not to sell it at all.\" She looks at your humming packs. \"You're the weather people,\" she says. \"Everybody's talking about you.\"",
       "choices": [
         {
           "id": "on",
@@ -187,7 +187,7 @@
       "choices": [
         {
           "id": "warden_pass",
-          "label": "Show the wardens your citadel pass",
+          "label": "Ask the wardens to let you through",
           "icon": "shield",
           "requiresFlag": "told_wardens",
           "goto": "scene_warden_pass"
@@ -247,7 +247,7 @@
     },
     "scene_warden_pass": {
       "type": "story",
-      "narration": "You told the wardens the truth at the citadel, and they still trust you. A clerk stamps your pass and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
+      "narration": "You told the wardens the truth, and they still trust you. A clerk stamps a pass for you and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -393,7 +393,7 @@
           "name": "Lady Fleecewick"
         }
       ],
-      "narration": "Her best stone is pink and shy and very beautiful. Your loudest stone, in her cabinet, hums so hard that every label falls off its cushion. Lady Fleecewick does not mind one bit. \"Marvellous,\" she says, and gives you a luckstone as well, for the noise.",
+      "narration": "Her best stone is pink and shy and very beautiful. Your loudest stone, in her cabinet, hums so hard that every label falls off its cushion. Lady Fleecewick does not mind one bit. \"Marvelous,\" she says, and gives you a luckstone as well, for the noise.",
       "choices": [
         {
           "id": "on",
@@ -502,7 +502,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat piled with every stone the river took off somebody this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: the frog from the reeds of the Great River, with OLD OSSLEY painted on the side of his boat, and the boat piled with every stone the river took off somebody this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -643,7 +643,7 @@
       "choices": [
         {
           "id": "wardens_said",
-          "label": "Tell it what a warden said about acceptable losses",
+          "label": "Tell it what Dunmore shouted on the grandmother's doorstep",
           "icon": "ear",
           "goto": "scene_boggart_wardens_said",
           "effects": [
@@ -688,7 +688,7 @@
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
+      "narration": "\"It hums!\" you shout, in Dunmore's exact voice, pointing at nothing at all. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -708,7 +708,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you, and then at your packs again. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "It is Mother Thrum, the witch from the ford queue, with a wool sock under one arm, and something in it is ringing. She looks at your packs, and then at you, and then at your packs again. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -745,7 +745,7 @@
     },
     "scene_ford_witch_dont_know": {
       "type": "story",
-      "narration": "\"I don't know any more,\" you say. Mother Thrum's face softens for the first time since the ford. She keeps the stone, and ties a songbird ribbon round your wrist instead. \"That's the first true thing anyone's said to me on this hill,\" she says. \"I'll ask again. I always do.\"",
+      "narration": "\"I don't know any more,\" you say. Mother Thrum's face softens for the first time since the ford. She keeps her ringing sock, and ties a songbird ribbon round your wrist instead. \"That's the first true thing anyone's said to me on this hill,\" she says. \"I'll ask again. I always do.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -763,7 +763,7 @@
     },
     "scene_ford_witch_all_of_them": {
       "type": "story",
-      "narration": "\"All of them,\" you say. Mother Thrum does not sigh, which is worse than if she had. She unwraps the Ford Stone and puts it in your hands, still ringing. \"Then here is one more,\" she says. \"Mind it doesn't ring you to sleep.\" It does not stop ringing. Not for you.",
+      "narration": "\"All of them,\" you say. Mother Thrum does not sigh, which is worse than if she had. She unwraps the sock and puts a stone from the ford in your hands, still ringing. \"Then here is one more,\" she says. \"Mind it doesn't ring you to sleep.\" It does not stop ringing. Not for you.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1009,7 +1009,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1240,7 +1240,7 @@
     },
     "scene_milestone_boy": {
       "type": "story",
-      "narration": "Past the checkpoint, a boy in a coat three sizes too big sits on a milestone. His name is Alder. He holds out one small humming stone. \"Will you buy it?\" he asks. \"I need enough for the wagon home. Mum says the mountain is no place for us now.\" It is a good stone. It is a very good stone.",
+      "narration": "Past the checkpoint, a boy in a coat three sizes too big sits on a milestone. His name is Alder. He holds out one small humming stone. \"Will you buy it?\" he asks. \"I need enough for the wagon home. Mom says the mountain is no place for us now.\" It is a good stone. It is a very good stone.",
       "choices": [
         {
           "id": "buy",
@@ -1669,7 +1669,7 @@
           "name": "Professor Tidewell"
         }
       ],
-      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is Professor Tidewell, the scholar from the docks, the one with the napkin and the eight-sided drawing. She stops dead. She listens to your packs like a doctor listening to a heartbeat. \"Oh,\" she whispers. \"Oh, you have been busy.\"",
+      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. She stops dead. She listens to your packs like a doctor listening to a heartbeat. \"Oh,\" she whispers. \"Oh, you have been busy.\"",
       "choices": [
         {
           "id": "eighth",
@@ -1685,7 +1685,7 @@
         },
         {
           "id": "ember",
-          "label": "Show her the Ember Facet, the one she saw at the docks",
+          "label": "Show her the Ember Facet, your very first stone",
           "icon": "gem",
           "goto": "scene_tidewell_ember",
           "requiresItem": "facet_ember"
@@ -1706,7 +1706,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tamsins_offer",
-        "narration": "She draws on a napkin again, faster than ever. \"The eighth is the crown of the seal. The Keystone. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
+        "narration": "She grabs a napkin and draws on it, very fast. \"The eighth is the crown of the seal. The Keystone. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -1746,7 +1746,7 @@
           "name": "Professor Tidewell"
         }
       ],
-      "narration": "You hold up the Ember Facet. Professor Tidewell laughs out loud. \"The very one! The one in your pocket at the docks!\" She holds it to her ear like a seashell, and goes quiet. \"It's humming the same note it did then,\" she says. \"Only louder. As if it's nearly home.\"",
+      "narration": "You hold up the Ember Facet. Professor Tidewell laughs out loud. \"From the Exchange! The night the gem-light fell upward! I knew one of them came down there.\" She holds it to her ear like a seashell, and goes quiet. \"It's humming the same note as all the others,\" she says. \"Only louder. As if it's nearly home.\"",
       "choices": [
         {
           "id": "on",
@@ -1821,7 +1821,7 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. As she carries the stones away into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
+      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. She carries away every stone you traded for at the Pinch, sack after sack. The great stones, the ones the road gave you, she leaves humming in your packs. \"Bring those to the mountain,\" she says. As she goes off into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
       "choices": [
         {
           "id": "on",
@@ -1833,7 +1833,7 @@
     },
     "scene_handed_back": {
       "type": "story",
-      "narration": "Hessa puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
+      "narration": "Hessa puts her mask back on and goes. In the morning you carry every stone you traded for at the Pinch to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. The great stones, the ones the road gave you, she will not take. \"Those are for the mountain, dear,\" she says, and pats your packs, which hum on, heavier than ever.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -1867,7 +1867,7 @@
         },
         {
           "id": "ribbon",
-          "label": "Tie it up with Mother Thrum's songbird ribbon",
+          "label": "Tie it up with your songbird ribbon",
           "icon": "ribbon",
           "goto": "scene_dawn_bell_ribbon",
           "requiresItem": "songbird_ribbon"
@@ -1903,7 +1903,7 @@
     },
     "scene_dawn_bell_ribbon": {
       "type": "story",
-      "narration": "You tie the bell up with Mother Thrum's songbird ribbon, with a neat bow on top. The bell stops. The ribbon sings, very faintly, a little song about staying quiet. The grandmothers agree it is the best-tied bell in the foothills, and nobody asks where the ribbon went.",
+      "narration": "You tie the bell up with your songbird ribbon, with a neat bow on top. The bell stops. The ribbon sings, very faintly, a little song about staying quiet. The grandmothers agree it is the best-tied bell in the foothills, and nobody asks where the ribbon went.",
       "choices": [
         {
           "id": "on",
@@ -1972,7 +1972,7 @@
     },
     "walk_scene_tree_line": {
       "type": "story",
-      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that the three of you sound like a walking beehive, and a passing drover gives you a very wide berth.",
+      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that you all sound like a walking beehive, and a passing drover gives you a very wide berth.",
       "choices": [
         {
           "id": "down",
@@ -2236,7 +2236,7 @@
         },
         {
           "id": "confess",
-          "label": "Tell her who you sold stones to",
+          "label": "Tell her you helped pay for the break",
           "icon": "moon",
           "requiresFlag": "funded_the_break",
           "goto": "walk_scene_the_fuse"
@@ -2326,7 +2326,7 @@
     },
     "walk_scene_the_fuse_give": {
       "type": "story",
-      "narration": "You put a stone in her hand after all. She looks at it, and at you, and the needles stop shaking for exactly as long as it takes her to tuck it into her apron. \"Well,\" she says. \"That's one.\" Then she picks up the knitting again, and the bells go on counting.",
+      "narration": "You put a stone in her hand after all. She looks at it, and at you, and the needles stop shaking for exactly as long as it takes her to tuck it into her apron. \"Well,\" she says. \"That's one.\" Then she picks up the knitting again. The bells go on counting, but somewhere under them one small bell rings a ring you have not heard before, and it is a happy one.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",

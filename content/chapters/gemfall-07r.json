@@ -509,7 +509,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the ferryman from Stone Crossing, Old Ossley, and the boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the frog from the reeds of the Great River, and the name painted on the side of his boat is OLD OSSLEY. The boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -610,7 +610,7 @@
       "choices": [
         {
           "id": "wardens_said",
-          "label": "Tell it what a warden said about acceptable losses",
+          "label": "Tell it what Dunmore shouted on the grandmother's doorstep",
           "icon": "ear",
           "goto": "scene_boggart_wardens_said",
           "effects": [
@@ -655,7 +655,7 @@
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
+      "narration": "\"It hums!\" you shout, in Dunmore's exact voice, pointing at nothing at all. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -675,7 +675,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone under one arm. It is still ringing. She has walked the whole road north for this. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "It is Mother Thrum, the witch from the ford queue, in her pointed hat, with a wool sock tucked under one arm. Something in the sock is ringing. She has walked the whole road north for this. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -717,7 +717,7 @@
     },
     "scene_ford_witch_not_sure": {
       "type": "story",
-      "narration": "\"Honestly? We're still working it out.\" Mother Thrum nods slowly, as if that is a better answer than most. She keeps the stone. She gives you a songbird ribbon instead, \"for the working out,\" and says she will ask again, because she always does.",
+      "narration": "\"Honestly? We're still working it out.\" Mother Thrum nods slowly, as if that is a better answer than most. She keeps her ringing sock. She gives you a songbird ribbon instead, \"for the working out,\" and says she will ask again, because she always does.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -735,7 +735,7 @@
     },
     "scene_ford_witch_put_back": {
       "type": "story",
-      "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her spectacles. Then she unwraps the sock and sets the Ford Stone in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
+      "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her spectacles. Then she unwraps the sock and sets a stone from the ford in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1063,7 +1063,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1695,7 +1695,7 @@
     },
     "scene_caravan_lost": {
       "type": "story",
-      "narration": "The masks have the Caravan Stone. Hessa's cell drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
+      "narration": "The masks have the Caravan Stone. A cell of masks drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
       "onEnter": [
         {
           "type": "setFlag",
