@@ -122,7 +122,7 @@
     },
     "scene_prologue_party_prologue_begin": {
       "type": "story",
-      "narration": "You sit on the very end of the long pier with three fishing lines and one bucket. In an hour you catch an old boot, a smaller boot, and one silver sardine. You keep the sardine in a pocket for later, because you never know. A seagull on the next post watches the sardine. The sardine, as much as a sardine can, watches the seagull.",
+      "narration": "You sit on the very end of the long pier with a fishing line each and one bucket. In an hour you catch an old boot, a smaller boot, and one silver sardine. You keep the sardine in a pocket for later, because you never know. A seagull on the next post watches the sardine. The sardine, as much as a sardine can, watches the seagull.",
       "choices": [
         {
           "id": "on",
@@ -1899,7 +1899,7 @@
     },
     "scene_last_noodles_gift": {
       "type": "story",
-      "narration": "Every table in the Exchange keeps an empty chair for whoever comes next. You leave a button on it, and a note that says GOOD LUCK in three different handwritings. Underneath, tied to the chair leg, you find a songbird ribbon. Somebody left it there for you, before you ever came. Mortar pretends not to see. He is smiling, very slowly.",
+      "narration": "Every table in the Exchange keeps an empty chair for whoever comes next. You leave a button on it, and a note that says GOOD LUCK in all your different handwritings. Underneath, tied to the chair leg, you find a songbird ribbon. Somebody left it there for you, before you ever came. Mortar pretends not to see. He is smiling, very slowly.",
       "cast": [
         {
           "figure": "cast/mortar",

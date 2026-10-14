@@ -89,7 +89,7 @@
       },
       "onFailure": {
         "goto": "scene_faun_family",
-        "narration": "The slope slides, and you slide with it, sideways, like three sleds, right onto the old stair halfway up. That was not the plan. It works anyway, and the dragonling face carved on the next step looks very surprised to see you."
+        "narration": "The slope slides, and you slide with it, sideways, like a row of sleds, right onto the old stair halfway up. That was not the plan. It works anyway, and the dragonling face carved on the next step looks very surprised to see you."
       }
     },
     "scene_tree_line_fly": {
@@ -332,7 +332,7 @@
       "choices": [
         {
           "id": "sign",
-          "label": "Sign in properly, all three names",
+          "label": "Sign in properly, every one of your names",
           "icon": "scroll",
           "goto": "scene_warden_post_sign",
           "effects": [
@@ -378,7 +378,7 @@
     },
     "scene_warden_post_sign": {
       "type": "story",
-      "narration": "You sign in, all three names, in your very best writing. Under WHERE TO you write: the bottom. Under BACK BY you write nothing, because nobody knows. The little box clicks open. Inside is a warden's mosslight jar, glowing green, with a label: FOR THE WAY DOWN. Somebody thought about you getting back. That helps more than you expected.",
+      "narration": "You sign in, every one of your names, in your very best writing. Under WHERE TO you write: the bottom. Under BACK BY you write nothing, because nobody knows. The little box clicks open. Inside is a warden's mosslight jar, glowing green, with a label: FOR THE WAY DOWN. Somebody thought about you getting back. That helps more than you expected.",
       "choices": [
         {
           "id": "on",
@@ -529,7 +529,7 @@
       "choices": [
         {
           "id": "names",
-          "label": "A pebble with all three of our names on it",
+          "label": "A pebble with all our names on it",
           "icon": "star",
           "goto": "choice_cairn_names"
         },
@@ -563,7 +563,7 @@
     },
     "choice_cairn_names": {
       "type": "story",
-      "narration": "You scratch all three names onto a pebble and set it carefully near the top. It looks very small up there, among all the other names. But it is there now, and it will still be there tomorrow, and the day after that, whatever happens down below. That is what a cairn is for. The whole pile creaks a little, as if making room.",
+      "narration": "You scratch all your names onto a pebble and set it carefully near the top. It looks very small up there, among all the other names. But it is there now, and it will still be there tomorrow, and the day after that, whatever happens down below. That is what a cairn is for. The whole pile creaks a little, as if making room.",
       "choices": [
         {
           "id": "on",
@@ -2219,7 +2219,7 @@
     "scene_tether_call_voss": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You shout for the wardens, as loud as three people can shout, and for a long moment nothing happens. Then the wardens' captain, Captain Voss, comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
+      "narration": "You shout for the wardens, as loud as you can all shout, and for a long moment nothing happens. Then the wardens' captain, Captain Voss, comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2258,7 +2258,7 @@
       },
       "onFailure": {
         "goto": "ending_broken_tether",
-        "narration": "It pulls once, hard, and the leash slips through all three pairs of hands."
+        "narration": "It pulls once, hard, and the leash slips through every one of your hands."
       }
     },
     "check_tether_cult": {
@@ -2321,7 +2321,7 @@
     },
     "ending_new_weather": {
       "type": "rest",
-      "narration": "You hold the leash yourselves, and the power under the mountain lies still in your three pairs of hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Wolf packs set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
+      "narration": "You hold the leash yourselves, and the power under the mountain lies still in your own hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Wolf packs set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
       "heal": 4,
       "choices": []
     },
@@ -2351,7 +2351,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "heart",
       "tn": 16,
-      "prompt": "Hold the leash with nothing but your own three pairs of hands",
+      "prompt": "Hold the leash with nothing but your own hands",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2365,7 +2365,7 @@
       },
       "onFailure": {
         "goto": "ending_broken_tether",
-        "narration": "Bare hands are not enough. It pulls once, hard, and slips through all three pairs."
+        "narration": "Bare hands are not enough. It pulls once, hard, and slips through every hand on it."
       }
     },
     "check_tether_cult_bare": {

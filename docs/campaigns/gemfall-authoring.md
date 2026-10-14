@@ -171,3 +171,7 @@ Read bramblewood-01 aloud and match it: short sentences an 8-year-old follows wh
 reads them off the TV, one concrete funny detail per scene, warm and a little spooky, never
 scary. Nobody dies. Losses in chapter 8 are grief and consequence, never gore; the realm
 endures and every loss ends on a spark. The Hollow Gate is witnessed, never explained.
+
+Never count the party. A table seats one to four players, so "all three of you", "your two
+names" and "three pairs of hands" read wrong at most tables; say "all of you", "your names",
+"every hand". `gemfall-flow.test.mjs` fails on the common forms.

@@ -1619,7 +1619,7 @@
     },
     "scene_reed_edge_prospectors": {
       "type": "story",
-      "narration": "\"Oi! Tussock people!\" The three prospectors you hauled out of the marsh are halfway up the queue. They come running, still damp, and the tallest one shouts, \"We owe these lot!\" Six hands and three more push, and the cart shoots out of the mud so fast the sausage seller has to chase it. Sausages for everybody, and an extra one for the tall one.",
+      "narration": "\"Oi! Tussock people!\" The three prospectors you hauled out of the marsh are halfway up the queue. They come running, still damp, and the tallest one shouts, \"We owe these lot!\" Six prospector hands and all of yours push, and the cart shoots out of the mud so fast the sausage seller has to chase it. Sausages for everybody, and an extra one for the tall one.",
       "choices": [
         {
           "id": "on",
