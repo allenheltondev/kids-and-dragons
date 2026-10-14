@@ -33,12 +33,13 @@ import {
   legalMoves,
   samePosition,
 } from "@kad/shared";
-import { useAbilities, useItems, useMe, useParty, useRules, useRunState, useSend, useSharePreview } from "../store";
+import { useAbilities, useChapter, useItems, useMe, useParty, useRules, useRunState, useSend, useSharePreview } from "../store";
 import { combatContext } from "../store/combat";
+import { useEnsureChapter } from "./content";
 import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
-import { combatantIcon, combatantLabel, gridCells, turnKey } from "./combat-grid";
+import { combatantIcon, combatantLabel, enemyPortraitUrl, gridCells, turnKey, type GridOccupant } from "./combat-grid";
 import "./shared.css";
 import "./CombatPanel.css";
 
@@ -77,6 +78,9 @@ export function CombatControls(): ReactElement | null {
 
   const [selection, setSelection] = useState<Selection>(IDLE);
   const [busy, setBusy] = useState(false);
+  // The grid draws each monster's portrait, which hangs off the chapter. A
+  // Party Mode phone draws no board of its own, so nothing else fetched it.
+  useEnsureChapter();
 
   const encounter = state?.encounter ?? null;
   // A new question always starts from a clean slate — a selection made against
@@ -351,7 +355,9 @@ export function CombatControls(): ReactElement | null {
                 cell.selected ? " combat__cell--selected" : "",
                 cell.occupant?.active ? " combat__cell--active" : "",
                 cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
+                cell.occupant?.down ? " combat__cell--down" : "",
               ].join("");
+              const figure = cell.occupant ? <CellFigure occupant={cell.occupant} /> : null;
               if (cell.tappable) {
                 const aiming = selection.step === "tile";
                 return (
@@ -362,17 +368,17 @@ export function CombatControls(): ReactElement | null {
                     data-aim-tile={aiming ? true : undefined}
                     data-x={cell.x}
                     data-y={cell.y}
-                    className={`combat__cell combat__cell--tap kad-focusable${marks}`}
+                    className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                     aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}`}
                     onClick={() => tapTile({ x: cell.x, y: cell.y })}
                   >
-                    <Icon name={aiming ? "spark" : "steps"} size="0.9em" />
+                    {figure ?? (aiming ? <Icon name="spark" size="70%" /> : <span className="combat__dot" />)}
                   </button>
                 );
               }
               return (
                 <span key={key} className={`combat__cell${marks}`} aria-hidden="true">
-                  {cell.occupant ? <Icon name={cell.occupant.down ? "down" : cell.occupant.icon} /> : null}
+                  {figure}
                 </span>
               );
             })}
@@ -534,7 +540,7 @@ export function CombatControls(): ReactElement | null {
           {selection.step === "move" ? (
             <ConfirmBar
               icon="steps"
-              label={`Move to column ${selection.to.x + 1}, row ${selection.to.y + 1}`}
+              label="Walk to the purple square"
               busy={busy}
               onBack={() => setSelection(IDLE)}
               onGo={() => void dispatch({ type: "MOVE", to: selection.to })}
@@ -592,6 +598,46 @@ export function CombatControls(): ReactElement | null {
         </>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * What stands on a grid square, drawn to fill it: a hero's face, a monster's
+ * portrait, a big glyph when there is no picture. These were 0.875em glyphs
+ * on a ~33px square, and "which one is me" took squinting.
+ */
+function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
+  const state = useRunState();
+  const party = useParty();
+  const chapter = useChapter();
+  const [broken, setBroken] = useState(false);
+  const member = occupant.side === "party" ? party.find((m) => m.character.id === occupant.id) : undefined;
+  const badge = occupant.down ? <span className="combat__down-badge"><Icon name="down" size="100%" /></span> : null;
+  if (member) {
+    return (
+      <>
+        <CharacterPortrait
+          backdrop
+          species={member.character.species}
+          accent={member.character.appearance.accent}
+          tier={member.character.tier}
+          characterClass={member.character.class}
+          className="combat__cell-face"
+        />
+        {badge}
+      </>
+    );
+  }
+  const portrait = occupant.side === "enemy" ? enemyPortraitUrl(chapter, state?.sceneId ?? null, occupant.id) : null;
+  return (
+    <>
+      {portrait && !broken ? (
+        <img className="combat__cell-art" src={portrait} alt="" draggable={false} onError={() => setBroken(true)} />
+      ) : (
+        <Icon name={occupant.icon} size="72%" />
+      )}
+      {badge}
+    </>
   );
 }
 
