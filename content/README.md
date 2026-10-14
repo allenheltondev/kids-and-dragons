@@ -150,3 +150,37 @@ Guidance:
 - Do not tag protected mysteries: if the story withholds what something is, leave it out until the scene that
   reveals it.
 - Tag the scene where the meeting happens, not an earlier one that only foreshadows it.
+
+## Who is on stage: `cast`
+
+A story, check, choice-point or rest scene may say who is standing there with the party. The shared
+screen draws them opposite the heroes, the heroes turn to face them, and they walk in when they arrive
+and out when the story leaves them behind. Without it, meeting a selkie professor looks exactly like
+reading about one.
+
+```json
+"cast": [
+  { "figure": "entities/selkie", "name": "Professor Tidewell" },
+  { "figure": "characters/dragonling", "name": "Grandmother Tull", "size": "small" }
+]
+```
+
+- `figure` is a path under `assets/`: `entities/<id>` (a creature or people's figure),
+  `characters/<species>` (that playable species' fledgling art, for NPCs of the party's own kinds), or
+  `cast/<id>` (a named character's own figure, `assets/cast/<id>/assembled.png`). `npm run
+  content:validate` fails, naming the expected file, if the art is not there.
+- `name` is the nameplate (32 characters at most). Omit it for an unnamed creature.
+- `size` defaults to the entity's `scale` in `assets/manifest.json`, or `medium` (a hero's height).
+- Three at most, and never a party member.
+
+Guidance:
+
+- Cast who is **physically there and part of the moment**. Not who is mentioned, remembered, far away,
+  or a crowd in the background. Same rule as `discovers`, applied to every scene they stand in rather
+  than only the first.
+- **Keep figure and name identical across consecutive scenes.** The stage keys a cast member on the
+  pair, so the same pair stays put while a changed one walks off and a "new" one walks on.
+- `discovers` and `cast` are different facts and often sit together: the scene where the kids first
+  meet Mortar discovers `npc.stone_troll` and casts Mortar; the next four scenes only cast him.
+- Characters who still stand in for a generic figure (Tidewell as `entities/selkie`) are listed in
+  [`docs/briefs/story-cast-art.md`](../docs/briefs/story-cast-art.md), which commissions their own.

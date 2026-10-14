@@ -104,6 +104,11 @@
         "creature.embermoth"
       ],
       "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over. The detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain, which is a thing embermoths never do.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
       "choices": [
         {
           "id": "follow_moths",
@@ -132,6 +137,14 @@
         "creature.jackalope"
       ],
       "narration": "The moths lead you along the edge of the grass, glowing like slow sparks, and the pride markers curve the same way, bending wide around something you can't see yet. Forty jackalopes have squashed themselves together along the pride edge, for safety. It is mostly ears.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        },
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -173,6 +186,12 @@
         "character.manticore"
       ],
       "narration": "On the ridge, a manticore pride watches you come. Their elder stands, tail curled carefully away, and gives the formal greeting from a polite distance. Somebody in a passing caravan faints anyway, and the elder sighs the sigh of someone this happens to a lot.",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        }
+      ],
       "choices": [
         {
           "id": "greet_back",
@@ -194,6 +213,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Wave first, slowly and kindly, the way the road peoples do",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_pride_camp",
@@ -214,6 +239,16 @@
     "scene_hospitality": {
       "type": "story",
       "narration": "The elder sees your silhouette and drops the formal greeting completely. \"Look who's come home the front way!\" Cubs pile on you. Somebody's grandmother insists you eat. You are given a honeycake whether you want one or not.",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        },
+        {
+          "figure": "characters/manticore",
+          "size": "small"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -238,6 +273,12 @@
     "scene_pride_camp": {
       "type": "story",
       "narration": "Elder Sefa Tallgrass has a voice like warm gravel. \"We won't den within a day's walk of a gem caravan's rest stop. The cubs sleep badly near the stones. They dream about humming.\" She cannot say why. Nobody can. The prides have simply stopped arguing about it, which for a pride is a very loud thing to do.",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        }
+      ],
       "choices": [
         {
           "id": "ask_account",
@@ -256,6 +297,12 @@
     "scene_riddle_account": {
       "type": "story",
       "narration": "The prides have kept a riddle score with the Stone Crossing trolls for generations, and the two totals have never once matched. Sefa unrolls the ledger. The newest line isn't a riddle at all. It's the trolls' new toll, carried east: WHERE DID YOU GET THAT, AND WHERE IS IT GOING? The prides have started asking it too.",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        }
+      ],
       "choices": [
         {
           "id": "write_question",
@@ -283,6 +330,12 @@
       "stat": "clever",
       "tn": 16,
       "prompt": "Answer the riddle nobody has solved in sixty years",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_waystation",
@@ -306,6 +359,12 @@
         "npc.centaur"
       ],
       "narration": "The centaur waystation is a long barn full of sashes. Every road-warden's sash is a stitched map of the roads, and this season every single one is being unpicked and sewn again. There are needles everywhere. A centaur with three spools in her mouth waves you to the big table.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road-Warden"
+        }
+      ],
       "choices": [
         {
           "id": "lay_out",
@@ -320,6 +379,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Line up the new stitched detours, thread by thread",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road-Warden"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_spiral",
@@ -340,6 +405,12 @@
     "scene_spiral": {
       "type": "story",
       "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centred on a patch of grass a short walk from here.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road-Warden"
+        }
+      ],
       "choices": [
         {
           "id": "to_rest",
@@ -352,6 +423,12 @@
     "rest_waystation": {
       "type": "rest",
       "narration": "The centaurs feed you oat-cakes and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road-Warden"
+        }
+      ],
       "heal": 2,
       "choices": [
         {
@@ -379,6 +456,16 @@
     "rest_waystation_with_escort": {
       "type": "story",
       "narration": "Elder Sefa walks with you herself, and two cubs come too, because nobody told them not to. The pride goes quiet as the grass starts to lean. At the edge of the widest bend, Sefa stops, and the cubs stop, and nobody takes one step further. \"We'll wait here,\" she says. \"We always wait here.\"",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        },
+        {
+          "figure": "characters/manticore",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -432,6 +519,12 @@
     "scene_leave_stone": {
       "type": "story",
       "narration": "You leave it humming in its crater. When you turn round, Elder Sefa is standing on the ridge. She bows, tail curled away, slow and deep. \"Come to the fire,\" she says.",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -454,6 +547,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "You make camp at the old caravan rest stop, among carts nobody has used since the stone fell. Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "share_supper",
@@ -481,6 +579,11 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Throw supper far enough that the pack takes the easy meal",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "rest_wolf_fire",
@@ -514,12 +617,27 @@
     "rest_pride_fire": {
       "type": "rest",
       "narration": "Pride fire is the best fire. The cubs fall asleep on your boots, and the elders tell the story of the riddle nobody can answer. Out in the dark the Pride Stone hums in its crater, alone. North, tomorrow, the broken bridge.",
+      "cast": [
+        {
+          "figure": "characters/manticore",
+          "name": "Elder Sefa"
+        },
+        {
+          "figure": "characters/manticore",
+          "size": "small"
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "rest_wolf_fire": {
       "type": "rest",
       "narration": "By midnight the cinder wolves are stacked in a glowing pile on the far side of your fire, taking turns at the bottom by some rule nobody understands. It is the warmest camp you have ever had. North, tomorrow, the broken bridge.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "heal": 3,
       "choices": []
     },
@@ -533,6 +651,11 @@
     "scene_escort_answers": {
       "type": "story",
       "narration": "You call out toward the ridge. Nothing, for a long moment. Then Elder Sefa's voice comes back out of the dark, from exactly as close as a pride will come to a humming pack and not one step nearer, and the cubs with her start a growl so low you feel it in your boots. Every ember eye on the road turns toward the ridge, thinks about it, and decides your fire is not worth the argument. The pack slinks round to the far side of your camp, as far from the pride as the warm will let them.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "settle",
