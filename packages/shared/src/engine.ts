@@ -1524,7 +1524,18 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
         `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${draft.party.length}`,
       );
     }
-    return { character: member.character, at, hp: member.hp, down: member.down };
+    // Luckstone charges come from the bag (content/items.json `rerollOnes`).
+    const rerollOnes = member.character.inventory.reduce((n, entry) => {
+      const passive = ctx.items[entry.itemId]?.passive;
+      return passive?.type === "rerollOnes" ? n + passive.perEncounter : n;
+    }, 0);
+    return {
+      character: member.character,
+      at,
+      hp: member.hp,
+      down: member.down,
+      ...(rerollOnes > 0 ? { rerollOnes } : {}),
+    };
   });
 
   const enemies: EnemyPlacement[] = [];

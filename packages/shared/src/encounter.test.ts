@@ -1207,6 +1207,30 @@ describe("actions", () => {
     expect(combatantById(boosted.state, "c_hero")?.rollBonus).toBe(0);
   });
 
+  it("throws a Luckstone holder's 1 again, once per fight", () => {
+    // A 1, then a 20 on the second chance; then a 1 with no charge left.
+    const draws = [0, 0.999, 0];
+    const scripted: Rng = { next: () => draws.shift() ?? 0 };
+    const state = beginEncounter(
+      setup({
+        party: [{ character: hero({ id: "c_hero", quick: 20 }), at: { x: 1, y: 2 }, rerollOnes: 1 }],
+        enemies: [{ spec: wisp({ hp: 20 }), at: { x: 2, y: 2 } }],
+      }),
+      ctxWith(ALWAYS_HIT),
+    );
+    const lucky = ok(performAction(state, ctxWith(scripted), { abilityId: ATTACK_ID, targetId: "wisp#1" }));
+    const rolls = lucky.events.filter((e) => e.type === "roll");
+    expect(rolls.map((e) => (e.type === "roll" ? e.roll.die : 0))).toEqual([1, 20]);
+    expect(hpOf(lucky.state, "wisp#1")).toBe(17);
+    expect(combatantById(lucky.state, "c_hero")?.rerollOnes).toBe(0);
+
+    let next = lucky.state;
+    for (let i = 0; i < 2; i++) next = endTurn(next);
+    const unlucky = ok(performAction(next, ctxWith(scripted), { abilityId: ATTACK_ID, targetId: "wisp#1" }));
+    expect(unlucky.events.filter((e) => e.type === "roll")).toHaveLength(1);
+    expect(hpOf(unlucky.state, "wisp#1")).toBe(17);
+  });
+
   it("takes the larger of two roll bonuses rather than adding them", () => {
     // §4.1 promises one die plus one number. Catches bonuses stacking into the
     // arithmetic the whole mechanic exists to avoid.
