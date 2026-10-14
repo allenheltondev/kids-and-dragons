@@ -516,14 +516,14 @@
           "goto": "scene_soup_line_ask_crystal"
         }
       ],
+      "discovers": [
+        "npc.frogfolk"
+      ],
       "cast": [
         {
           "figure": "cast/wend",
           "name": "Wend"
         }
-      ],
-      "discovers": [
-        "npc.frogfolk"
       ]
     },
     "scene_soup_line_ask_crystal": {
