@@ -67,7 +67,7 @@ async function createCharacter(page: Page, species: string, name: string): Promi
 /** End the hero's turn through the combat card, as a player would. */
 async function endTurn(page: Page): Promise<void> {
   await openPlayerTask(page);
-  await page.locator(".combat .choice").filter({ hasText: /end turn/i }).first().click({ timeout: 5_000 }).catch(() => {});
+  await page.locator(".combat__end").first().click({ timeout: 5_000 }).catch(() => {});
   await page.getByRole("button", { name: /do it!/i }).click({ timeout: 5_000 }).catch(() => {});
 }
 
@@ -189,7 +189,7 @@ test.describe("the Field Guide", () => {
     await phone.getByRole("button", { name: /^Your turn$/ }).click(TAP);
     const before = await encounterOf(code);
     expect(before).not.toBeNull();
-    await phone.locator(".combat .choice").filter({ hasText: /end turn/i }).first().click(TAP);
+    await phone.locator(".combat__end").first().click(TAP);
     await phone.getByRole("button", { name: /do it!/i }).click(TAP);
     await expect
       .poll(async () => {

@@ -30,6 +30,7 @@ import {
   LobbyContent,
   NarrationPanel,
   TransformCutscene,
+  TurnBanner,
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
@@ -126,6 +127,7 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
       {creating ? <CreationPreview /> : null}
       {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
+      {isSceneLike(phase) && <TurnBanner />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that

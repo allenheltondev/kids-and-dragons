@@ -13,9 +13,11 @@
  */
 
 import type { Operation } from "fast-json-patch";
+import { readIntentPreview } from "@kad/shared";
 import type {
   ChannelMessage,
   Presentation,
+  PreviewMessage,
   RunState,
   ServerMessage,
 } from "@kad/shared";
@@ -52,6 +54,12 @@ export interface SequencerHandlers {
    * snapshot or a replayed gap never emits this.
    */
   onDiscovered?(event: { runId: string; seq: number; canonIds: string[] }): void;
+  /**
+   * A player's unconfirmed tap (`PreviewMessage`). Handed over the moment it
+   * arrives and never ordered: it is not a step of the state, so it neither
+   * waits for a gap to fill nor moves `seq`.
+   */
+  onPreview?(message: PreviewMessage): void;
 }
 
 export type TimerHandle = ReturnType<typeof setTimeout> | number;
@@ -124,6 +132,11 @@ export class MessageSequencer {
 
   ingest(message: ChannelMessage): void {
     if (this.disposed) return;
+
+    if (message.kind === "preview") {
+      this.handlers.onPreview?.(message);
+      return;
+    }
 
     if (message.kind === "snapshot") {
       // A snapshot always wins: it is the server's own view, not a delta.
@@ -289,6 +302,23 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     patch?: unknown;
   };
   if (typeof candidate.seq !== "number" || typeof candidate.runId !== "string") return null;
+
+  if (candidate.kind === "preview") {
+    const { playerId, context } = candidate as Partial<PreviewMessage>;
+    const preview = readIntentPreview((candidate as Partial<PreviewMessage>).preview ?? null);
+    if (typeof playerId !== "string" || preview === undefined) return null;
+    // A pick with no decision named cannot be checked against the screen, so
+    // it is not a pick at all; a clear needs none.
+    if (preview !== null && typeof context !== "string") return null;
+    return {
+      kind: "preview",
+      seq: candidate.seq,
+      runId: candidate.runId,
+      playerId,
+      preview,
+      context: preview === null ? null : (context as string),
+    };
+  }
 
   if (candidate.kind === "snapshot" || (candidate.kind === undefined && candidate.state)) {
     if (!candidate.state) return null;

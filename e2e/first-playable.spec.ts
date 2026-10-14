@@ -201,11 +201,20 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
      * second because it is what ends a fight; End turn when nothing else is
      * offered, which is what an unreachable enemy looks like from here.
      */
-    const help = labels.findIndex((label) => /help up/i.test(label));
-    const attack = labels.findIndex((label) => /attack/i.test(label));
-    const end = labels.findIndex((label) => /end turn/i.test(label));
-    const pick = help >= 0 ? help : attack >= 0 ? attack : end;
-    if (pick < 0) return false;
+    // A card's first line is its name; the line under it says what it does,
+    // and "…then attack an enemy" in Pounce's must not read as Attack.
+    const names = labels.map((label) => label.split("\n")[0] ?? "");
+    const help = names.findIndex((name) => /help up/i.test(name));
+    const attack = names.findIndex((name) => /^attack$/i.test(name.trim()));
+    const pick = help >= 0 ? help : attack;
+    if (pick < 0) {
+      // Ending the turn sits apart from the cards, under them.
+      const end = panel.locator(".combat__end");
+      if (!(await end.isVisible().catch(() => false))) return false;
+      await end.click({ timeout: 3_000 }).catch(() => {});
+      await page.waitForTimeout(200);
+      continue;
+    }
     await cards.nth(pick).click({ timeout: 3_000 }).catch(() => {});
     await page.waitForTimeout(200);
   }
@@ -631,12 +640,7 @@ test.describe("first playable", () => {
       if (!ready) continue; // patches still draining; poll the server again
 
       const endTurn = async () => {
-        await page
-          .locator(".combat .choice")
-          .filter({ hasText: /end turn/i })
-          .first()
-          .click({ timeout: 4_000 })
-          .catch(() => {});
+        await page.locator(".combat__end").first().click({ timeout: 4_000 }).catch(() => {});
         await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
         await page.waitForTimeout(600);
       };
@@ -740,6 +744,43 @@ test.describe("first playable", () => {
     // The TV never asked for this and has no session — it arrived over the
     // room channel alone.
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible({ timeout: 15_000 });
+    expect(tvErrors).toEqual([]);
+  });
+
+  test("party mode: the TV lights up a choice before it is confirmed", async ({ browser }) => {
+    const tv = await phone(browser, 1280, 720);
+    const tvErrors: string[] = [];
+    tv.on("pageerror", (e) => tvErrors.push(e.message));
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+
+    const controller = await phone(browser);
+    await controller.goto("/");
+    await controller.getByLabel(/room code/i).fill(code);
+    await controller.getByRole("button", { name: /join a game/i }).click();
+    await createCharacter(controller, "unicorn", "Sparklehoof");
+    // "Ready to play" at the end of creation already said ready.
+    await expect(controller.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
+    await controller.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await openPlayerTask(controller);
+
+    // Tap an option and stop there: no "Do it!".
+    const option = controller.locator(".prompt .choice").first();
+    const label = (await option.locator(".choice__label").textContent())!.trim();
+    await option.click(TAP);
+    const picked = tv.locator(".narration__choice--picked");
+    await expect(picked).toHaveCount(1, { timeout: 10_000 });
+    await expect(picked).toContainText(label);
+    await expect(picked).toContainText("Sparklehoof");
+    if (process.env.KAD_SHOT) await tv.screenshot({ path: process.env.KAD_SHOT });
+
+    // Backing out takes the highlight away again.
+    await controller.getByRole("button", { name: /^change$/i }).click(TAP);
+    await expect(picked).toHaveCount(0, { timeout: 10_000 });
     expect(tvErrors).toEqual([]);
   });
 });

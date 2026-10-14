@@ -18,6 +18,7 @@ vi.mock("../screens", () => ({
   LobbyContent: () => null,
   NarrationPanel: () => <button onClick={action}>Continue the story</button>,
   TransformCutscene: () => null,
+  TurnBanner: () => null,
 }));
 
 import { WorldView } from "./WorldView";

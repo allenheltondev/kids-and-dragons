@@ -23,8 +23,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ReactElement } from "react";
-import type { ClientIntent, EncounterState, ItemDef, LegalAction, Position } from "@kad/shared";
+import type { AbilityCatalog, ClientIntent, EncounterState, IntentPreview, ItemDef, LegalAction, Position } from "@kad/shared";
 import {
+  UNIVERSAL_ABILITIES,
   combatantById,
   currentActor,
   legalActions,
@@ -32,12 +33,13 @@ import {
   legalMoves,
   samePosition,
 } from "@kad/shared";
-import { useAbilities, useItems, useMe, useParty, useRules, useRunState, useSend } from "../store";
+import { useAbilities, useChapter, useItems, useMe, useParty, useRules, useRunState, useSend, useSharePreview } from "../store";
 import { combatContext } from "../store/combat";
+import { useEnsureChapter } from "./content";
 import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
-import { combatantIcon, combatantLabel, gridCells, turnKey } from "./combat-grid";
+import { combatantIcon, combatantLabel, enemyPortraitUrl, gridCells, turnKey, type GridOccupant } from "./combat-grid";
 import "./shared.css";
 import "./CombatPanel.css";
 
@@ -76,6 +78,9 @@ export function CombatControls(): ReactElement | null {
 
   const [selection, setSelection] = useState<Selection>(IDLE);
   const [busy, setBusy] = useState(false);
+  // The grid draws each monster's portrait, which hangs off the chapter. A
+  // Party Mode phone draws no board of its own, so nothing else fetched it.
+  useEnsureChapter();
 
   const encounter = state?.encounter ?? null;
   // A new question always starts from a clean slate — a selection made against
@@ -97,6 +102,10 @@ export function CombatControls(): ReactElement | null {
     },
     [send],
   );
+
+  // What the TV lights up while this phone is still deciding (§11's confirm
+  // step, shown to the table). Read off the same selection the confirm bar is.
+  useSharePreview(previewOf(selection));
 
   if (!encounter || !me) return null;
 
@@ -302,15 +311,27 @@ export function CombatControls(): ReactElement | null {
 
       {myTurn && active ? (
         <>
-          <div className="combat__meters">
-            <span className="kad-chip">
-              <Icon name="steps" />
-              <span>{encounter.stepsLeft} steps left</span>
-            </span>
-            <span className={`kad-chip${encounter.actionTaken ? "" : " kad-chip--ok"}`}>
-              <Icon name={encounter.actionTaken ? "check" : "star"} />
-              <span>{encounter.actionTaken ? "Action spent" : "1 action"}</span>
-            </span>
+          {/*
+            A turn is two things in order (§7.2): walk, then do one thing. They
+            used to be a meter row, a board and a block of cards with nothing
+            saying which part was which — "move on the map, act with the
+            buttons" was a rule a player had to guess. Now each half is a
+            numbered step that says in words what to tap.
+          */}
+          <div className={`combat__step${moves.length === 0 ? " combat__step--done" : ""}`}>
+            <h4 className="combat__step-title">
+              <span className="combat__step-num" aria-hidden="true">
+                {moves.length === 0 ? <Icon name="check" size="0.9em" /> : "1"}
+              </span>
+              <span>Move <span className="kad-muted">(if you want)</span></span>
+            </h4>
+            <p className="combat__step-hint">
+              {moves.length > 0
+                ? `Tap a gold square on the map to walk there. ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"} left.`
+                : encounter.actionTaken
+                  ? "No more moving this turn."
+                  : "You can't move any further. Do something below!"}
+            </p>
           </div>
 
           {/*
@@ -334,7 +355,9 @@ export function CombatControls(): ReactElement | null {
                 cell.selected ? " combat__cell--selected" : "",
                 cell.occupant?.active ? " combat__cell--active" : "",
                 cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
+                cell.occupant?.down ? " combat__cell--down" : "",
               ].join("");
+              const figure = cell.occupant ? <CellFigure occupant={cell.occupant} /> : null;
               if (cell.tappable) {
                 const aiming = selection.step === "tile";
                 return (
@@ -345,25 +368,48 @@ export function CombatControls(): ReactElement | null {
                     data-aim-tile={aiming ? true : undefined}
                     data-x={cell.x}
                     data-y={cell.y}
-                    className={`combat__cell combat__cell--tap kad-focusable${marks}`}
+                    className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                     aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}`}
                     onClick={() => tapTile({ x: cell.x, y: cell.y })}
                   >
-                    <Icon name={aiming ? "spark" : "steps"} size="0.9em" />
+                    {figure ?? (aiming ? <Icon name="spark" size="70%" /> : <span className="combat__dot" />)}
                   </button>
                 );
               }
               return (
                 <span key={key} className={`combat__cell${marks}`} aria-hidden="true">
-                  {cell.occupant ? <Icon name={cell.occupant.down ? "down" : cell.occupant.icon} /> : null}
+                  {figure}
                 </span>
               );
             })}
           </div>
 
-          {/* ------------- what to do: cards, or the aim step ------------- */}
-          {selection.step === "idle" ? (
-            <ul className="prompt__options">
+          {/* What the board's marks mean, once, under the board. */}
+          <ul className="combat__legend" aria-hidden="true">
+            <li><span className="combat__key combat__key--you" />You</li>
+            <li><span className="combat__key combat__key--friend" />Friend</li>
+            <li><span className="combat__key combat__key--enemy" />Enemy</li>
+            {moves.length > 0 ? <li><span className="combat__key combat__key--walk" />You can walk here</li> : null}
+          </ul>
+
+          {/* ------------- step 2: do one thing ------------- */}
+          {selection.step === "idle" || selection.step === "move" || selection.step === "end" ? (
+            <div className={`combat__step${encounter.actionTaken ? " combat__step--done" : ""}`}>
+              <h4 className="combat__step-title">
+                <span className="combat__step-num" aria-hidden="true">
+                  {encounter.actionTaken ? <Icon name="check" size="0.9em" /> : "2"}
+                </span>
+                <span>{encounter.actionTaken ? "Done!" : "Then do one thing"}</span>
+              </h4>
+              <p className="combat__step-hint">
+                {encounter.actionTaken
+                  ? "You've used your one action this turn."
+                  : "Pick one. You only get one each turn."}
+              </p>
+            </div>
+          ) : null}
+          {selection.step === "idle" && (actions.length > 0 || usableItems.length > 0) ? (
+            <ul className="prompt__options combat__actions">
               {actions.map((action) => (
                 <li key={action.abilityId}>
                   <button
@@ -374,7 +420,12 @@ export function CombatControls(): ReactElement | null {
                     <span className="choice__icon">
                       <Icon name={action.icon} size="1.8em" />
                     </span>
-                    <span className="choice__label">{action.name}</span>
+                    <span className="choice__text">
+                      <span className="choice__label">{action.name}</span>
+                      {summaryOf(action.abilityId, abilities) ? (
+                        <span className="choice__sub">{summaryOf(action.abilityId, abilities)}</span>
+                      ) : null}
+                    </span>
                   </button>
                 </li>
               ))}
@@ -389,23 +440,29 @@ export function CombatControls(): ReactElement | null {
                     <span className="choice__icon">
                       <Icon name={def.icon} size="1.8em" />
                     </span>
-                    <span className="choice__label">Use {def.name}</span>
+                    <span className="choice__text">
+                      <span className="choice__label">Use {def.name}</span>
+                      <span className="choice__sub">{itemSummary(def)}</span>
+                    </span>
                   </button>
                 </li>
               ))}
-              <li>
-                <button
-                  type="button"
-                  className="choice kad-tap kad-focusable"
-                  onClick={() => setSelection({ step: "end" })}
-                >
-                  <span className="choice__icon">
-                    <Icon name="forward" size="1.8em" />
-                  </span>
-                  <span className="choice__label">End turn</span>
-                </button>
-              </li>
             </ul>
+          ) : null}
+
+          {/* Ending the turn is not one of the things you do — it is how you
+              say you are finished, so it sits apart, under everything. */}
+          {selection.step === "idle" ? (
+            <Button
+              variant="secondary"
+              size="md"
+              block
+              className="combat__end"
+              icon={<Icon name="forward" />}
+              onClick={() => setSelection({ step: "end" })}
+            >
+              I'm done. End my turn
+            </Button>
           ) : null}
 
           {selection.step === "tile" ? (
@@ -483,7 +540,7 @@ export function CombatControls(): ReactElement | null {
           {selection.step === "move" ? (
             <ConfirmBar
               icon="steps"
-              label={`Move to column ${selection.to.x + 1}, row ${selection.to.y + 1}`}
+              label="Walk to the purple square"
               busy={busy}
               onBack={() => setSelection(IDLE)}
               onGo={() => void dispatch({ type: "MOVE", to: selection.to })}
@@ -542,6 +599,89 @@ export function CombatControls(): ReactElement | null {
       ) : null}
     </div>
   );
+}
+
+/**
+ * What stands on a grid square, drawn to fill it: a hero's face, a monster's
+ * portrait, a big glyph when there is no picture. These were 0.875em glyphs
+ * on a ~33px square, and "which one is me" took squinting.
+ */
+function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
+  const state = useRunState();
+  const party = useParty();
+  const chapter = useChapter();
+  const [broken, setBroken] = useState(false);
+  const member = occupant.side === "party" ? party.find((m) => m.character.id === occupant.id) : undefined;
+  const badge = occupant.down ? <span className="combat__down-badge"><Icon name="down" size="100%" /></span> : null;
+  if (member) {
+    return (
+      <>
+        <CharacterPortrait
+          backdrop
+          species={member.character.species}
+          accent={member.character.appearance.accent}
+          tier={member.character.tier}
+          characterClass={member.character.class}
+          className="combat__cell-face"
+        />
+        {badge}
+      </>
+    );
+  }
+  const portrait = occupant.side === "enemy" ? enemyPortraitUrl(chapter, state?.sceneId ?? null, occupant.id) : null;
+  return (
+    <>
+      {portrait && !broken ? (
+        <img className="combat__cell-art" src={portrait} alt="" draggable={false} onError={() => setBroken(true)} />
+      ) : (
+        <Icon name={occupant.icon} size="72%" />
+      )}
+      {badge}
+    </>
+  );
+}
+
+/** The card's one-line explanation: the catalog's, then the built-in three's. */
+function summaryOf(abilityId: string, abilities: AbilityCatalog | null): string | null {
+  return abilities?.[abilityId]?.summary ?? UNIVERSAL_ABILITIES[abilityId]?.summary ?? null;
+}
+
+/** What a consumable does, in the same voice as the ability cards. */
+function itemSummary(def: ItemDef): string {
+  const effect = def.effect;
+  if (!effect) return "Use it now.";
+  if (effect.type === "heal") return `Get ${effect.amount} hearts back.`;
+  if (effect.type === "damage") return `Throw it at an enemy for ${effect.amount} damage.`;
+  return `+${effect.amount} on your next roll.`;
+}
+
+/** The selection as the table should see it, or null when nothing is picked. */
+export function previewOf(selection: Selection): IntentPreview | null {
+  switch (selection.step) {
+    case "idle":
+      return null;
+    case "move":
+      return { kind: "move", to: selection.to };
+    case "target":
+      return { kind: "action", abilityId: selection.action.abilityId, targetIds: [...selection.picked] };
+    case "tile":
+      return { kind: "action", abilityId: selection.action.abilityId, tiles: [...selection.picked] };
+    case "tile-target":
+      return { kind: "action", abilityId: selection.action.abilityId, tiles: [selection.tile] };
+    case "act":
+      return {
+        kind: "action",
+        abilityId: selection.action.abilityId,
+        ...(selection.targetIds?.length ? { targetIds: [...selection.targetIds] } : {}),
+        ...(selection.tiles?.length ? { tiles: [...selection.tiles] } : {}),
+      };
+    case "item-target":
+      return { kind: "item", itemId: selection.itemId };
+    case "item-act":
+      return { kind: "item", itemId: selection.itemId, ...(selection.targetId ? { targetId: selection.targetId } : {}) };
+    case "end":
+      return { kind: "end_turn" };
+  }
 }
 
 function confirmLabel(

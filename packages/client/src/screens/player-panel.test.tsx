@@ -468,7 +468,7 @@ describe("readying up", () => {
 
     serverSends({ party: [member({ ready: true })] });
     expect(screen.queryByRole("button", { name: "I'm ready!" })).toBeNull();
-    expect(screen.getByText("You're ready")).toBeTruthy();
+    expect(screen.getByText("You're ready to play")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Wait, not yet" }));
     expect(sent[1]).toEqual({ type: "READY", ready: false });
@@ -868,11 +868,11 @@ describe("spending a banked stat point", () => {
 
   it("keeps the reminder on the pinned strip, where a whole sitting can pass without scrolling to it", () => {
     mount({ party: [withPoints(1)], sceneType: "story" });
-    expect(screen.getByText("Spend 1 point at rest")).toBeTruthy();
+    expect(screen.getByText("1 point to spend at the next rest stop")).toBeTruthy();
 
     cleanup();
     mount({ party: [withPoints(2)], sceneType: "story" });
-    expect(screen.getByText("Spend 2 points at rest")).toBeTruthy();
+    expect(screen.getByText("2 points to spend at the next rest stop")).toBeTruthy();
   });
 });
 

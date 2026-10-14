@@ -950,6 +950,12 @@ describe("a full walk of a chapter", () => {
     expect(result.state.prompt).toMatchObject({ kind: "ready" });
     expect(result.state.encounter).toBeFalsy();
 
+    // The board goes up stamped with the step it began on: the fight's
+    // identity, which live previews key on (previewContext).
+    const p1Ready = applyIntent(result.state, { playerId: "p_1", intent: { type: "READY", ready: true } }, context).state;
+    const begun = applyIntent(p1Ready, { playerId: "p_2", intent: { type: "READY", ready: true } }, context).state;
+    expect(begun.encounter?.startedAt).toBe(p1Ready.seq);
+
     // Ready up, and the fight is real — `walk` plays it out (see its comment).
     // ADVANCE used to cross this for free, back when the engine handed out an
     // automatic victory.
