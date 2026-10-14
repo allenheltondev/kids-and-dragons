@@ -9,7 +9,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiceRoll } from "@kad/shared";
 import { useGameStore } from "../store";
 import { ROLL_HELP_TUMBLE_MS, ROLL_READ_MS, ROLL_TUMBLE_MS } from "../world/presentation";
-import { DiceOverlay, groupLine, spokenRoll } from "./DiceOverlay";
+import { DiceOverlay, celebrationFor, groupLine, marginLine, spokenRoll } from "./DiceOverlay";
+import { burst } from "./DiceCelebration";
 
 const HELPED: DiceRoll = {
   die: 9,
@@ -67,5 +68,36 @@ describe("the dice card", () => {
   it("tallies a whole-party check on its last roll", () => {
     expect(groupLine({ made: 2, of: 3, result: "success" })).toBe("2 of 3 made it. The party makes it!");
     expect(groupLine({ made: 1, of: 3, result: "failure" })).toBe("1 of 3 made it. Not this time for the party.");
+  });
+
+  it("picks the celebration from the die and the result", () => {
+    expect(celebrationFor({ die: 20, result: "success" })).toBe("crit");
+    expect(celebrationFor({ die: 1, result: "failure" })).toBe("fumble");
+    expect(celebrationFor({ die: 12, result: "success" })).toBe("success");
+    expect(celebrationFor({ die: 5, result: "failure" })).toBe("miss");
+  });
+
+  it("says by how much, in numbers a kid can check", () => {
+    expect(marginLine({ die: 11, total: 16, tn: 12, result: "success" })).toBe("Beat 12 by 4!");
+    expect(marginLine({ die: 9, total: 12, tn: 12, result: "success" })).toBe("Exactly 12. Just made it!");
+    expect(marginLine({ die: 5, total: 9, tn: 12, result: "failure" })).toBe("3 short of 12.");
+    expect(marginLine({ die: 20, total: 22, tn: 25, result: "success" })).toBe("A natural 20 always makes it!");
+    expect(marginLine({ die: 1, total: 15, tn: 8, result: "failure" })).toBe("A natural 1 never does. Next time!");
+  });
+
+  it("throws the same confetti for the same roll, more of it on a 20, and fans it upward", () => {
+    expect(burst("success", 7)).toEqual(burst("success", 7));
+    expect(burst("crit", 7).length).toBeGreaterThan(burst("success", 7).length);
+    for (const piece of burst("success", 3)) expect(piece.y).toBeLessThanOrEqual(0);
+    expect(burst("success", 3).some((p) => p.shape === "star")).toBe(false);
+  });
+
+  it("drops the confetti and stamps the headline once every die is down", () => {
+    render(<DiceOverlay />);
+    throwRoll(HELPED);
+    expect(document.querySelector(".celebration")).toBeNull();
+    act(() => vi.advanceTimersByTime(ROLL_TUMBLE_MS + ROLL_HELP_TUMBLE_MS));
+    expect(document.querySelector(".celebration--success")).not.toBeNull();
+    expect(screen.getByText("Beat 12 by 2!")).toBeTruthy();
   });
 });
