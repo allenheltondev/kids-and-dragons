@@ -2,7 +2,7 @@
 
 ![All ten figures](figures.png)
 
-Ten new figures complete the A1 group alongside approved Great-Gran Ashby.
+Ten new figures complete the A1 group alongside approved Great-Gran Ashby. This review also includes four revisions requested after the first review: Tull and the gate-town grandmother now have distinct silhouettes and mint-green dragonling coats; the Elder Unicorn and Archivist have stronger visible age cues.
 All match the species references and face left; anatomy was visually checked.
 Production files are 1024×1024 RGBA, baseline y=900, minimum margin 77px.
 
@@ -17,6 +17,8 @@ prerequisite. Scene narration, cast, and biome remain unchanged. Production
 campaigns and code are unchanged. Phone edge/label cropping remains visible in
 some scenes, particularly Tull and the gate-town grandmother; this renderer
 limitation is documented in the pilot and is not an art-contract change.
+
+Revised figures: Tull is short and broad; the gate-town grandmother is tall and long-necked. Both use the dragonling mint palette; Ashby remains deliberately pale and faded. The Elder Unicorn has a silver-white mane and forelock, a longer lined muzzle, and mature shoulders. The Archivist has a silver-streaked tied mane, visible face lines, and a slight alert stoop.
 
 Design calls and full prompts are in [generation notes](../../campaigns/gemfall-illustrations.md#cast-figures--elders-and-adults-a1).
 

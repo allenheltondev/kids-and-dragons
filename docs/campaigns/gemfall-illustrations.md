@@ -289,3 +289,24 @@ Correct ONLY the eyes to the approved game house style: entirely SOLID warm dark
 Use case: illustration-story. NEW single game cast character Tamsin Three-Cards. Reference image is for species identity and house painted style, not child age. Tamsin Three-Cards, adult kitsune card-sharp. Cream coat, vermilion mane and facial markings, EXACTLY THREE large fluffy teal tails with pale tips, clearly same fox species as reference, mature narrow clever muzzle. Tall slightly crooked dark plum hat, sly friendly expression. Fan of EXACTLY THREE blank ivory playing cards tucked visibly in a small leather chest harness pouch, no text or suits. Cards are fanned prominently below chin, held by pouch, not an extra hand. EXACTLY FOUR planted paws, no arms or fifth leg. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
 
 Reference: `assets/characters/kitsune/fledgling/assembled.png`.
+
+y.
+
+## A1 figure revisions after review
+
+### Grandmother Tull
+
+Revised: broad compact body silhouette and a clear mint-green dragonling coat distinguish Tull from the taller, long-necked gate-town grandmother. Great-Gran Ashby remains the deliberately faded pale elder.
+
+### Grandmother
+
+Revised: taller, narrower build, longer neck and legs distinguish her from compact Tull. The mint-green palette follows the dragonling species; age reads from gentle creases rather than near-white scales.
+
+### Archivist
+
+Revised: broad silver streaks through the tied mane and clear age lines make her read as an older woman while preserving her brisk, attentive character.
+
+### Elder Unicorn
+
+Revised: age now reads at a glance through a long creased muzzle, lowered lids, mature shoulders, and prominent silver-white mane and forelock.
+
