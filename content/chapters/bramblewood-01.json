@@ -126,7 +126,7 @@
       },
       "onFailure": {
         "goto": "scene_first_clearing",
-        "narration": "You get the last note wrong. The humming stops, very politely, and does not start again \u2014 but while you were listening you found a gap in the hedge anyway."
+        "narration": "You get the last note wrong. The humming stops, very politely, and does not start again. But while you were listening, you found a gap in the hedge anyway."
       }
     },
     "check_squeeze": {
@@ -321,7 +321,7 @@
     "scene_singing_stream": {
       "type": "story",
       "art": "bg/bramblewood/stream",
-      "narration": "Three bramblewisps \u2014 little blue lights with far too much energy \u2014 are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
+      "narration": "Three bramblewisps (little blue lights with far too much energy) are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
       "choices": [
         {
           "id": "ask_nicely",
@@ -390,7 +390,7 @@
     "scene_bundled": {
       "type": "story",
       "art": "bg/bramblewood/thicket",
-      "narration": "The wisps tie all your bootlaces together, eat the snacks, and then \u2014 feeling a bit guilty \u2014 tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
+      "narration": "The wisps tie all your bootlaces together, eat the snacks, and then, feeling a bit guilty, tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
       "onEnter": [
         {
           "type": "heal",
@@ -523,7 +523,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_lanternfall",
-        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand \u2014 a smooth gray stone that feels lucky.",
+        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand: a smooth gray stone that feels lucky.",
         "effects": [
           {
             "type": "grantItem",
@@ -540,7 +540,7 @@
     "rest_lanternfall": {
       "type": "rest",
       "art": "bg/bramblewood/lanternfall",
-      "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill \u2014 and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
+      "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill, and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
       "heal": 4,
       "choices": []
     }
