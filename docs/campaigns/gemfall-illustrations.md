@@ -437,3 +437,33 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+## Gemfall 03C — Ford queue and camp
+
+Generated with the built-in image-generation tool. Each scene illustration is a 1920×1080 WebP at quality 88. The paintings contain no characters or creatures; each keeps a level open foreground for the stage. The queue moves from the rutted caravan road, through its roadside market and camp, to the west branch ford.
+
+| Asset | Coverage |
+|---|---|
+| `caravan-road-ruts.webp` | Northbound rutted road and marker line |
+| `ford-queue-market.webp` | West branch queue market |
+| `wend-soup-tent.webp` | Soup tent at the edge of camp |
+| `bracken-cart.webp` | Cracked cart beside the queue road |
+| `queue-dusk-camp.webp` | Dusk campfires along the queue |
+| `ford-witch-stall.webp` | Mother Thrum's roadside remedy stall |
+| `west-branch-ford.webp` | Wide brown ford and crossing approach |
+
+### Generation prompts
+
+**Caravan road ruts:** Wide 16:9 storybook environment: a northbound road through open grassland with deep wagon ruts, empty campfire rings on low rises, and a flattened line of road markers toward the west river branch. No vehicles. Tactile watercolor/gouache, warm natural light. Upper-half landscape landmark; lower 30% open level ground. No people, creatures, animals, text, marks, UI, border or watermark.
+
+**Ford queue market:** Wide 16:9 environment at the west branch ford: an empty provisioner's table with a bucket of plain unmarked pebbles and tiny honeycakes, plus an upturned barrel for a simple card game; broad brown river ford and standing stones in upper half. Friendly storybook gouache/watercolor. Lower 30% open and level. Rural horizon with no buildings. No people, creatures, animals, text, signs, UI or watermark.
+
+**Wend soup tent:** Wide 16:9 rural roadside soup tent at the edge of a river-crossing camp: open canvas flaps, iron kettle, bowls, ladle, dark wool robes hung to dry, one tiny crystal on a cord. Tent is the only structure; horizon is wooded hills and grassland. Warm handcrafted storybook watercolor/gouache. Tent in upper half; lower 30% open, level grass. No characters, creatures, animals, symbols, lettering, signs, UI or watermark.
+
+**Bracken cart:** Wide 16:9 roadside queue meadow with an empty small wooden family cart, its cracked wheel looped with spare rope; crumbs and a honeycake piece on folded cloth. Road continues toward a distant ford. Warm quiet storybook gouache/watercolor. Cart in upper half to one side; lower 30% open and walkable. Natural hills only. No family, people, animals, creatures, text, UI, frame or watermark.
+
+**Queue dusk camp:** Wide 16:9 dusk at a roadside queue camp in open grassland; empty campfire rings and gentle amber coals dot the distant rises, with simple supplies beside the far fires. Muted twilight, first stars, safe and calm watercolor/gouache. Natural field horizon only. Lower 30% open, level ground. No wolves, animals, people, creatures, wagons, text, UI, border or watermark.
+
+**Ford witch stall:** Wide 16:9 rural remedy stall beside a queue: pointed hat hanging off the awning, tiny bell charms, a thick wool sock wrapped around a softly ringing stone, unmarked medicine bottles. Warm storybook watercolor/gouache. Modest stall in upper half toward one side; lower 30% open level ground. Natural hill and tree horizon only. No witch, people, creatures, animals, text, signs, UI, border or watermark.
+
+**West branch ford:** Wide 16:9 storybook environment: a wide brown, fast but fordable river branch through open grassland, with a sequence of low stones and gravel bars showing where a wagon may cross one at a time. Roads approach from both banks; a few blank wooden route posts. Bright overcast light, watercolor/gouache. River in upper half; lower 30% open bank. Natural plains only. No people, wagons, creatures, animals, lettering, UI, border or watermark.
