@@ -67,6 +67,8 @@ export type ClientIntent =
   | { type: "VOTE_CAMPAIGN"; campaignId: string }
   | { type: "CHOOSE"; choiceId: string }
   | { type: "ROLL" }
+  /** Offer your help on the check someone else is about to roll. */
+  | { type: "HELP" }
   | { type: "ADVANCE" }
   /**
    * `targetId` is for a thrown consumable during the holder's combat turn —

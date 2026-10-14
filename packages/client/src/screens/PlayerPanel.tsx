@@ -23,7 +23,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
+import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
 import type {
   ClientIntent,
@@ -32,6 +32,7 @@ import type {
   ItemDef,
   PartyMember,
   Prompt,
+  RulesContent,
   StatId,
 } from "@kad/shared";
 import {
@@ -43,6 +44,7 @@ import {
   useMe,
   useParty,
   usePrompt,
+  useRules,
   useRunState,
   useSend,
   useSharePreview,
@@ -135,6 +137,18 @@ function waitingLine(prompt: Prompt, party: PartyMember[]): string {
       return waiting.length === 0 ? "Everyone is ready." : `Waiting for ${waiting.join(" and ")}.`;
     }
   }
+}
+
+/** The die this player would add as a helper (content/rules.json `helpDie`). */
+function helpSides(rules: RulesContent | null, me: PartyMember): number {
+  return (rules?.helpDie ?? DEFAULT_HELP_DIE)[me.character.tier];
+}
+
+/** "Windstep is helping: +d6", for whoever can see the check. */
+function helperLine(prompt: Prompt & { kind: "roll" }, party: PartyMember[], meId: string | undefined): string | null {
+  if (!prompt.helper) return null;
+  const who = prompt.helper.characterId === meId ? "You are" : `${nameOfCharacter(party, prompt.helper.characterId)} is`;
+  return `${who} helping: +d${String(prompt.helper.sides)}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -346,6 +360,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const myPrompt = usePrompt();
   const isMyPrompt = useIsMyPrompt();
   const items = useItems();
+  const rules = useRules();
   const campaign = useCampaign();
   const send = useSend();
 
@@ -400,7 +415,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   useEffect(() => { setSheetFor(null); }, [navigationRevision]);
   const [busy, setBusy] = useState(false);
   const isMyCombatTurn = useIsMyCombatTurn();
-  const hasTask = myPrompt !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+  // Someone else's check is a task too while you still have help to give.
+  const canHelp =
+    myPrompt === null &&
+    state?.prompt?.kind === "roll" &&
+    me !== null &&
+    !me.down &&
+    !state.prompt.helper &&
+    !(state.helpSpent ?? []).includes(me.character.id);
+  const hasTask = myPrompt !== null || canHelp || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
     (state?.phase === "scene" && state.sceneType === "rest" && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
   useEffect(() => {
@@ -989,6 +1012,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <span aria-hidden="true">·</span>
               <span>{checkTarget(myPrompt.tn)}</span>
             </p>
+            {helperLine(myPrompt, party, me?.character.id) === null ? null : (
+              <p className="prompt__sub" role="status">
+                <Icon name="players" />
+                <span>{helperLine(myPrompt, party, me?.character.id)}</span>
+              </p>
+            )}
             <Button
               variant="primary"
               size="lg"
@@ -1264,6 +1293,33 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             <Icon name="waiting" />
             <span>{waitingLine(globalPrompt, party)}</span>
           </p>
+        ) : null}
+
+        {/* ---------------- help a friend's check ---------------- */}
+        {myPrompt === null && !isMyPrompt && globalPrompt !== null && globalPrompt.kind === "roll" && me && !me.down ? (
+          <div className="prompt">
+            {globalPrompt.helper ? (
+              <p className="prompt__sub" role="status">
+                <Icon name="players" />
+                <span>{helperLine(globalPrompt, party, me.character.id)}</span>
+              </p>
+            ) : (state.helpSpent ?? []).includes(me.character.id) ? (
+              <p className="prompt__sub kad-muted">
+                <Icon name="players" />
+                <span>You have helped once already. Rest to help again.</span>
+              </p>
+            ) : (
+              <Button
+                variant="secondary"
+                size="lg"
+                icon={<Icon name="players" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "HELP" })}
+              >
+                {`Help ${nameOfCharacter(party, globalPrompt.characterId)}: +d${String(helpSides(rules, me))}`}
+              </Button>
+            )}
+          </div>
         ) : null}
 
         {myPrompt === null && globalPrompt === null && !state.encounter && state.phase !== "lobby" && state.phase !== "chapter_complete" ? (

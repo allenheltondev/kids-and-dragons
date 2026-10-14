@@ -902,6 +902,50 @@ describe("checks", () => {
     expect(result.state.lastRoll?.characterId).toBe(dropped.party[0]!.character.id);
   });
 
+  it("adds a helper's die to the roll, sized by the helper's tier", () => {
+    // Every draw is 0.451: a 10 on the d20, and floor(0.451 * 4) + 1 = 2 on the d4.
+    const context = ctx({ rng: fixedRng(10) });
+    const helped = applyIntent(atCheck(context), { playerId: "p_1", intent: { type: "HELP" } }, context);
+    expect(helped.error).toBeUndefined();
+    const unicorn = helped.state.party[0]!.character.id;
+    expect(helped.state.prompt).toMatchObject({ kind: "roll", helper: { characterId: unicorn, sides: 4 } });
+    const rolled = applyIntent(helped.state, { playerId: "p_2", intent: { type: "ROLL" } }, context);
+    expect(rolled.state.lastRoll).toMatchObject({
+      die: 10,
+      mod: 5,
+      help: { characterId: unicorn, sides: 4, value: 2 },
+      total: 17,
+    });
+  });
+
+  it("refuses help from the roller, a second helper, or one who has helped since the last rest", () => {
+    const context = ctx();
+    const state = atCheck(context);
+    expect(applyIntent(state, { playerId: "p_2", intent: { type: "HELP" } }, context).error?.code).toBe("ILLEGAL");
+    const helped = applyIntent(state, { playerId: "p_1", intent: { type: "HELP" } }, context).state;
+    expect(applyIntent(helped, { playerId: "p_1", intent: { type: "HELP" } }, context).error?.code).toBe("ILLEGAL");
+    const unicorn = state.party[0]!.character.id;
+    const spent = { ...state, helpSpent: [unicorn] };
+    expect(applyIntent(spent, { playerId: "p_1", intent: { type: "HELP" } }, context).error?.code).toBe("ILLEGAL");
+  });
+
+  it("recharges help at a rest", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const unicorn = atCheck(context).party[0]!.character.id;
+    const atCamp = walk(
+      { ...atCheck(context), helpSpent: [unicorn] },
+      [
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    expect(atCamp.sceneType).toBe("rest");
+    expect(atCamp.helpSpent).toEqual([]);
+  });
+
   it("only the nominated character's player may roll", () => {
     const context = ctx();
     const state = atCheck(context);
