@@ -176,7 +176,7 @@
       "narration": "A grandmother looks at your bulging packs over her knitting for a long, long time. She does not say \"No, dear.\" She does not say anything at all. Then she hands you a warm bead, because it is cold up there.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -214,7 +214,7 @@
       "narration": "You put one stone in her knitting basket. The needles stop. \"Thank you, dear,\" she says, and for a moment her voice is not the knitting voice at all. She digs out a second warm bead and presses it into your palm. \"One for the one you gave,\" she says. Then the needles start again.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -232,7 +232,7 @@
       "narration": "You thank her and walk on. She says nothing. Her needles click a little faster. Twenty paces on, you realize she has not stopped looking at your packs, and that she has not blinked.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -351,8 +351,9 @@
       "narration": "A MossHome runner jogs up with a string of grumbling mules, loaded with everything the Woods confiscated from careless hunters. She counts the knots on your cord. Then she looks at your packs, and counts them again, slower.",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "MossHome Runner"
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
         }
       ],
       "choices": [
@@ -389,8 +390,9 @@
       "narration": "\"Take the stones back to the Woods,\" you say. The runner stares. Then she grins so wide the moss in her hair shifts, ties a new knot in your cord, and turns the mules round on the spot. \"The record will like that,\" she calls over her shoulder, already jogging. \"The record likes a surprise.\"",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "MossHome Runner"
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
         }
       ],
       "choices": [
@@ -407,8 +409,9 @@
       "narration": "You claim everything the cord is owed. The runner unloads it all, every shovel and hat and humming stone, and counts your packs again as she does it, slower each time. \"The record will know who has these,\" she says, which is what she was told to say, and jogs off without looking back.",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "MossHome Runner"
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
         }
       ],
       "choices": [
@@ -1101,7 +1104,7 @@
       "narration": "Hessa puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -1411,7 +1414,7 @@
       "narration": "At the boundary stones, a dragonling grandmother sits on the oldest stone, knitting something long and red. She looks at your humming packs. \"Take what the mountain drops,\" she says. \"Never pry at what it holds.\" Then she holds out one hand, palm up, and waits.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -1463,7 +1466,7 @@
       "narration": "You thank her, and keep walking. Her hand stays out, palm up, for a long time after you have passed. You know this because you look back, and you wish you had not.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -1481,7 +1484,7 @@
       "narration": "You put a stone in her hand. She closes her fingers round it and holds it against the long red knitting as if warming it. \"Take what the mountain drops,\" she says, more softly this time. \"Thank you, dear.\" Behind you, a small bell rings a ring you have not heard before, and it is a happy one.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -1499,7 +1502,7 @@
       "narration": "The grandmother puts her knitting down. Up on the mountain the bells are counting, every town at once. \"Everybody knows what the last ring means,\" she says. \"Nobody says it.\" She does not say it either. She just looks at you for a long time, and then knits faster.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -1530,7 +1533,7 @@
       "narration": "You put a stone in her hand after all. She looks at it, and at you, and the needles stop shaking for exactly as long as it takes her to tuck it into her apron. \"Well,\" she says. \"That's one.\" Then she picks up the knitting again, and the bells go on counting.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],

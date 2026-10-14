@@ -67,7 +67,7 @@
       "narration": "A grandmother with spectacles on a chain looks up from her tally book, looks at you, and drops the pencil. \"Well! Look who came home the FRONT way.\" Within a minute you have been hugged by four aunts and handed a warm rock to hold. Then her face goes serious. \"Worst season in the tallies, love. Come and help.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -95,7 +95,7 @@
       "narration": "The gate town is all bells: big bells, little bells, bells on poles and bells on goats. Dragonling grandmothers inspect every pick that comes through and recite the one rule to every prospector: \"Take what the mountain drops. Never pry at what it holds.\" A man with an enormous pry bar is saying he didn't hear that.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -126,7 +126,7 @@
       "narration": "A small dragonling explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         },
         {
@@ -151,7 +151,7 @@
       "prompt": "Help a stubborn prospector actually hear the one rule",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -170,7 +170,7 @@
       "narration": "The man looks at his pry bar for a long moment. Then he hands it to the grandmother, who hangs it on a wall already covered in pry bars. There are hundreds of them. \"Every one of those listened, in the end,\" she says.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],

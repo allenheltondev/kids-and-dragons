@@ -215,7 +215,7 @@
       "narration": "The dragonling towns have turned gathering law inside out. A grandmother sits outside every gem-buyer's tent, knitting, saying \"No, dear,\" until the buyer feels so bad he hands his stones over himself. One buyer is crying into a very expensive hat.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -253,7 +253,7 @@
       "narration": "You keep the queue of sorry buyers moving. It is a long queue and they are very sorry. One of them tries to leave without handing anything over, and three grandmothers say \"No, dear\" at once, in harmony, and he comes back without a word and empties both pockets.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -271,7 +271,7 @@
       "narration": "A grandmother hands you needles and wool without looking up. You do not know how to knit. By the end of the morning you know how to knit badly, and two gem-buyers have handed over their sacks rather than watch you drop another stitch. \"That's the trick,\" says the grandmother. \"Nobody can stand it.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -423,8 +423,9 @@
       "narration": "A MossHome runner jogs up with moss in her hair and a string of grumbling mules behind her. She counts the knots on your cord twice, nods, and unloads everything the Woods confiscated from careless hunters: shovels, a teapot, one very surprised hat, and stones. Lots of stones.",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "MossHome Runner"
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
         }
       ],
       "choices": [

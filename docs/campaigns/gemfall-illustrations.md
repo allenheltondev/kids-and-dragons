@@ -179,3 +179,114 @@ a temporary content tree makes the original chapter a single-chapter review camp
 room-create request selects that review campaign. This avoids playing four chapters
 to reach Ashby and Pellam while exercising the real party creation, server, cast
 renderer, narration, and playtest scene jump. Production campaigns are unchanged.
+
+
+## Cast figures — elders and adults (A1)
+
+Ten figures complete A1 after the approved Ashby pilot. Generated with the built-in
+image generation tool using the approved species and Ashby references. Production
+PNGs are 1024×1024 RGBA, feet at y=900, facing left. Packaging uses the same uniform
+alpha-bounds fit as the pilot; scale words are applied to every matching cast entry.
+
+| id | basis | scale | references |
+|---|---|---|---|
+| grandmother_tull | dragonling | medium | 1 |
+| dragonling_grandmother | dragonling | medium | 21 |
+| mosshome_archivist | bigfoot | large | 12 |
+| oldest_archivist | bigfoot | large | 3 |
+| mosshome_eldest | bigfoot | large | 4 |
+| mosshome_runner | bigfoot | medium_to_large | 8 |
+| flood_warden | bigfoot | large | 1 |
+| elder_sefa | manticore | large | 9 |
+| elder_unicorn | unicorn | large | 6 |
+| tamsin | kitsune | medium | 4 |
+
+Design calls: Tull wears a blue wrap and night bell; the gate-town grandmother wears
+spectacles and a book satchel, so neither duplicates Ashby. Tamsin carries three blank
+cards in a chest pouch, preserving four-legged fox anatomy. The runner pauses mid-jog,
+with one foot providing the stage baseline. Sefa retains the approved wingless
+manticore anatomy and folds her tail away along the far flank. Archivist hair is
+tied back; the oldest has the bird and cord box; the Eldest has silver fur and tea.
+
+[Figure sheet and TV/phone review](../review/story-cast-elders/README.md).
+
+### Grandmother Tull generation prompt
+
+Use case: illustration-story. NEW single game cast character Grandmother Tull. Reference image is for species identity and house painted style, do not copy the reference's props. Elder dragonling bell-keeper grandmother, cosy and brisk. Faded pale mint scales, emerald spines, orange small folded wings, mature long muzzle, kind wrinkles. Wears a muted blue wool shoulder wrap. A small bronze NIGHT BELL hangs from a simple neck cord, ringing freely beside her chest. EXACTLY FOUR planted legs, one tail, two small folded wings; no hands or fifth leg. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/cast/great_gran_ashby/assembled.png`.
+
+### Grandmother generation prompt
+
+Use case: illustration-story. NEW single game cast character Grandmother. Reference image is for species identity and house painted style, do not copy the reference's props. Gate-town elder dragonling grandmother, welcoming but observant. Pale mint spotted scales, emerald spines, orange small folded wings, mature long muzzle and gentle wrinkles. Round spectacles on a bronze chain, a tidy leather tally-book satchel at her shoulder with a closed small book and one pencil visible. EXACTLY FOUR planted legs, no arms, no extra paw; book supported by satchel rather than hand. A soft moss-green collar wrap distinguishes her from Ashby. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/cast/great_gran_ashby/assembled.png`.
+
+### Archivist generation prompt
+
+Use case: illustration-story. NEW single game cast character Archivist. Reference image is for species identity and house painted style, not child age. Brisk adult FEMALE bigfoot archivist with cream furry body and umber mane, mature proportions longer torso and arms than child reference, sternly attentive but kind eyes, neatly tied mane, simple leather belt hung with thick knotted archival cords. Two big bare feet, TWO arms only, one hand gently gathering cords at belt. One individual, no books or glasses required. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/bigfoot/fledgling/assembled.png`.
+
+Final eye-style correction using the generated figure:
+
+Make one tiny house-style correction to this character: BOTH eyes must be entirely solid warm dark brown (#2B2118) ovals with ONE small round highlight dot in upper left of each eye. Remove white sclera, colored iris rings, eyeliner, and eyelashes. Keep eyes the same size and preserve the direction of gaze toward image LEFT, expression, face shape and everything else: fur, limbs, props, pose, palette, transparent background, and hand-painted illustration. No redesign, no added objects, no ground shadow, no text. Preserve true transparency.
+
+### Oldest Archivist generation prompt
+
+Use case: illustration-story. NEW single game cast character Oldest Archivist. Reference image is for species identity and house painted style, not child age. Very old slow male bigfoot archivist, cream fur and faded grey-umber mane, long greying beard, gently stooped mature body, kind creased face. ONE small friendly brown bird nestles in his beard, not a second main character. Both hands support one shallow wooden BOX of thick knotted cords at waist. EXACTLY TWO legs and TWO arms, two big bare feet planted. No staff, no extra arms. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/bigfoot/fledgling/assembled.png`.
+
+Final eye-style correction using the generated figure:
+
+Make one tiny house-style correction to this character: BOTH eyes must be entirely solid warm dark brown (#2B2118) ovals with ONE small round highlight dot in upper left of each eye. Remove white sclera, colored iris rings, eyeliner, and eyelashes. Keep eyes the same size and preserve the direction of gaze toward image LEFT, expression, face shape and everything else: fur, limbs, props, pose, palette, transparent background, and hand-painted illustration. No redesign, no added objects, no ground shadow, no text. Preserve true transparency.
+
+### The Eldest generation prompt
+
+Use case: illustration-story. NEW single game cast character The Eldest. Reference image is for species identity and house painted style, not child age. Mild elderly bigfoot town elder, cream body fur, umber mane streaked with silver, adult longer torso, gentle age lines and calm soft smile, broad sturdy build. Holds ONE small ceramic cup of moss tea in both hands at chest. Simple ochre woven shoulder shawl. EXACTLY TWO legs and TWO arms, big bare feet planted. No bird, no cords or book; dignified contemplative individual. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/bigfoot/fledgling/assembled.png`.
+
+Final eye-style correction using the generated figure:
+
+Make one tiny house-style correction to this character: BOTH eyes must be entirely solid warm dark brown (#2B2118) ovals with ONE small round highlight dot in upper left of each eye. Remove white sclera, colored iris rings, eyeliner, and eyelashes. Keep eyes the same size and preserve the direction of gaze toward image LEFT, expression, face shape and everything else: fur, limbs, props, pose, palette, transparent background, and hand-painted illustration. No redesign, no added objects, no ground shadow, no text. Preserve true transparency.
+
+### MossHome Runner generation prompt
+
+Use case: illustration-story. NEW single game cast character MossHome Runner. Reference image is for species identity and house painted style, not child age. Cheerful young ADULT bigfoot courier, cream body fur and dark umber mane, mature lean longer torso and limbs, out of breath and alert, mouth slightly open. Bundle of thick knotted cords slung over ONE shoulder on a wide leather strap. A relaxed mid-jog pause: one knee slightly bent, both broad bare feet still touching ground for stage placement, arms naturally balanced. EXACTLY TWO arms and TWO legs. No child head proportions. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/bigfoot/fledgling/assembled.png`.
+
+### Flood-Warden generation prompt
+
+Use case: illustration-story. NEW single game cast character Flood-Warden. Reference image is for species identity and house painted style, not child age. Adult bigfoot flood warden, cream body fur with dark umber mane, sturdy mature broad build, very tall muddy leather WADING BOOTS up to knees. Holds one glass jar of softly luminous green mosslight securely in both hands, no lettering. Simple practical reed belt. EXACTLY TWO arms and TWO legs, both boot soles grounded. Calm responsible and helpful. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/bigfoot/fledgling/assembled.png`.
+
+### Elder Sefa generation prompt
+
+Use case: illustration-story. NEW single game cast character Elder Sefa. Reference image is for species identity and house painted style, not child age. Elder Sefa, elderly FEMALE manticore pride elder, formal and kind. Same lion quadruped anatomy as reference, pale rose coat with subtle markings, deep crimson mane now streaked with grey at temples, mature longer lion muzzle and gentle creases. ONE green segmented scorpion tail curled safely LOW around far flank, stinger pointing away from viewer and party. Simple small bronze pride medallion. EXACTLY FOUR paws on ground, no arms, NO wings (match reference). Dignified adult lion proportions, not a cub. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/manticore/fledgling/assembled.png`.
+
+Final eye-style correction using the generated figure:
+
+Correct ONLY the eyes to the approved game house style: entirely SOLID warm dark brown (#2B2118) ovals with ONE small round highlight dot in each eye, like a painted storybook animal. NO white sclera, no colored iris or iris ring, absolutely NO eyelashes or eyeliner, simple single brow line above. Preserve the kind elder expression and left-facing gaze. Everything else stays identical: exactly four planted legs, species anatomy, mature body proportions, hair, tail, horn or medallion, bags, colors, brushwork and true transparent background. No added limbs or objects, no ground shadow, no text.
+
+### Elder Unicorn generation prompt
+
+Use case: illustration-story. NEW single game cast character Elder Unicorn. Reference image is for species identity and house painted style, not child age. Older FEMALE unicorn, calm, expresses a thoughtful frown with ears gently angled back. Pale violet-white coat, violet mane streaked with silver, blue bold cone horn, subtle star markings same as reference. Mature equine longer muzzle, adult sturdy body and longer neck, gentle eye-corner age creases, no eyelashes. Pair of practical moss-brown leather SADDLEBAGS across back without saddle rider. EXACTLY FOUR planted hooves, one horn, one tail. No human arms. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/unicorn/fledgling/assembled.png`.
+
+Final eye-style correction using the generated figure:
+
+Correct ONLY the eyes to the approved game house style: entirely SOLID warm dark brown (#2B2118) ovals with ONE small round highlight dot in each eye, like a painted storybook animal. NO white sclera, no colored iris or iris ring, absolutely NO eyelashes or eyeliner, simple single brow line above. Preserve the kind elder expression and left-facing gaze. Everything else stays identical: exactly four planted legs, species anatomy, mature body proportions, hair, tail, horn or medallion, bags, colors, brushwork and true transparent background. No added limbs or objects, no ground shadow, no text.
+
+### Tamsin Three-Cards generation prompt
+
+Use case: illustration-story. NEW single game cast character Tamsin Three-Cards. Reference image is for species identity and house painted style, not child age. Tamsin Three-Cards, adult kitsune card-sharp. Cream coat, vermilion mane and facial markings, EXACTLY THREE large fluffy teal tails with pale tips, clearly same fox species as reference, mature narrow clever muzzle. Tall slightly crooked dark plum hat, sly friendly expression. Fan of EXACTLY THREE blank ivory playing cards tucked visibly in a small leather chest harness pouch, no text or suits. Cards are fanned prominently below chin, held by pouch, not an extra hand. EXACTLY FOUR planted paws, no arms or fifth leg. Warm crafted storybook illustration, tapered warm brown outlines, restrained soft cel shading, subtle brush texture, upper-left light, family friendly age 8. Solid dark eyes with one highlight, simple brows, no eyelashes. Full complete single figure, three-quarter view facing LEFT, nose and gaze toward image left. True transparent background, no floor, no ground shadow, no text, no UI. 1024x1024 square RGBA; figure top about y80, feet around y900, generous 40px clear margins. All defining props fully inside canvas. Readable at 120px height. Check correct limb count, no duplicate limbs.
+
+Reference: `assets/characters/kitsune/fledgling/assembled.png`.
+
