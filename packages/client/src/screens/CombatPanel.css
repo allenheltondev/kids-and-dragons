@@ -323,3 +323,96 @@
   inline-size: min(100%, (100cqh - 12.5em) * 1.25);
   margin-inline: auto;
 }
+
+/*
+ * Motion — so a tap visibly *does* something and the board feels alive.
+ * Transform and opacity only (cheap on a phone), short, and all of it off
+ * under prefers-reduced-motion at the bottom.
+ */
+
+/* The squares you can walk to breathe, gently, together: "tap one of these". */
+.combat__cell--walk .combat__dot {
+  animation: combat-dot-breathe 1.8s ease-in-out infinite;
+}
+
+@keyframes combat-dot-breathe {
+  0%, 100% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* The one you picked pops to its bigger purple self. */
+.combat__cell--selected .combat__dot {
+  animation: combat-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* A figure arriving on a square — the board's first draw, a step, a shove. */
+.combat__cell-face,
+.combat__cell-art,
+.combat__cell > .kad-icon {
+  animation: combat-pop 280ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes combat-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Whoever's turn it is glows, slowly. */
+.combat__cell--active {
+  animation: combat-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes combat-glow {
+  0%, 100% { box-shadow: 0 0 0 0.16em var(--color-accent, #ffc95c), 0 0 0.3em var(--color-accent, #ffc95c); }
+  50% { box-shadow: 0 0 0 0.16em var(--color-accent, #ffc95c), 0 0 0.9em var(--color-accent, #ffc95c); }
+}
+
+/* Aiming squares twinkle. */
+.combat__cell--aim > .kad-icon {
+  animation: combat-twinkle 1.2s ease-in-out infinite;
+}
+
+@keyframes combat-twinkle {
+  0%, 100% { transform: scale(0.9) rotate(0deg); opacity: 0.75; }
+  50% { transform: scale(1.1) rotate(12deg); opacity: 1; }
+}
+
+/* Knocked down: the badge drops in. */
+.combat__down-badge {
+  animation: combat-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* A step finished: its number becomes a tick with a little bounce. */
+.combat__step--done .combat__step-num {
+  animation: combat-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* "Your turn" arrives rather than appears. */
+.combat > .prompt__title {
+  animation: combat-rise 360ms ease-out both;
+}
+
+@keyframes combat-rise {
+  from { transform: translateY(0.5em); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.combat__end {
+  animation: combat-rise 300ms ease-out 200ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .combat__cell--walk .combat__dot,
+  .combat__cell--selected .combat__dot,
+  .combat__cell-face,
+  .combat__cell-art,
+  .combat__cell > .kad-icon,
+  .combat__cell--active,
+  .combat__cell--aim > .kad-icon,
+  .combat__down-badge,
+  .combat__step--done .combat__step-num,
+  .combat > .prompt__title,
+  .combat__end {
+    animation: none;
+  }
+}
