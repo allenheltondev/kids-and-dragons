@@ -38,6 +38,8 @@ export type CueId =
   | "cavern-air"
   // The table's centrepiece (spec §2.2's ~1.5s roll).
   | "dice"
+  // A natural 1: a cartoon knock on the head, so the worst roll gets a laugh.
+  | "bonk"
   // Combat beats, one per presentation kind that lands a hit or a rescue.
   | "attack"
   | "heal"

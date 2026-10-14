@@ -32,6 +32,7 @@ import { ROLL_TUMBLE_MS, rollCardMs, rollRevealMs } from "../world/presentation"
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { DiceCelebration } from "./DiceCelebration";
+import { cue } from "../audio/cue";
 import type { Celebration } from "./DiceCelebration";
 import { Icon } from "./icons";
 import "./shared.css";
@@ -123,7 +124,7 @@ export function celebrationFor(roll: Pick<DiceRoll, "die" | "result">): Celebrat
  */
 export function marginLine(roll: Pick<DiceRoll, "die" | "total" | "tn" | "result">): string {
   if (roll.die === 20) return "A natural 20 always makes it!";
-  if (roll.die === 1) return "A natural 1 never does. Next time!";
+  if (roll.die === 1) return "Bonk! A natural 1 never makes it. Next time!";
   const by = roll.total - roll.tn;
   if (GOOD.has(roll.result)) {
     return by === 0 ? `Exactly ${String(roll.tn)}. Just made it!` : `Beat ${String(roll.tn)} by ${String(by)}!`;
@@ -211,6 +212,8 @@ export function DiceOverlay(): ReactElement | null {
     if (roll === null || !settled || shownId === null || spokenFor.current === shownId) return;
     spokenFor.current = shownId;
     speak(spokenRoll(roll, roller?.character.name ?? "", helper?.character.name ?? null));
+    // A natural 1 gets its bonk, on the beat the die topples over.
+    if (roll.die === 1) cue("bonk");
   }, [roll, settled, shownId, roller, helper]);
 
   if (roll === null) return null;

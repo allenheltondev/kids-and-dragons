@@ -3,9 +3,12 @@
  *
  * A success throws confetti out of the die; a natural 20 throws more of it, in
  * gold, with stars. A miss lets a little dust fall off the die instead; a
- * natural 1 adds a wobble. Feeling, not information: the headline word and its
- * shape under the die (DiceOverlay) carry the outcome on their own (spec §11),
- * so this draws nothing at all under `prefers-reduced-motion`.
+ * natural 1 topples over with a comic "BONK!" and a ring of dizzy stars, so
+ * the worst roll at the table is the funniest one rather than the saddest.
+ *
+ * Feeling, not information: the headline word and its shape under the die
+ * (DiceOverlay) carry the outcome on their own (spec §11), so this draws
+ * nothing at all under `prefers-reduced-motion`.
  *
  * Pure CSS, no canvas. The pieces are a few dozen spans with their flight
  * written into custom properties, and the layout comes from `burst()` — seeded,
@@ -106,6 +109,16 @@ export function DiceCelebration({ kind, seed }: { kind: Celebration; seed: numbe
           }
         />
       ))}
+      {kind === "fumble" ? (
+        <>
+          <span className="celebration__bonk">BONK!</span>
+          <span className="celebration__dizzy">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="celebration__dizzy-star" style={{ "--i": i } as React.CSSProperties} />
+            ))}
+          </span>
+        </>
+      ) : null}
     </span>
   );
 }
