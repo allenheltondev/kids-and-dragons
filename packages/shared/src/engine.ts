@@ -1470,6 +1470,13 @@ function doGroupRoll(
   });
   group.rolls.push(result);
   group.pending = group.pending.filter((id) => id !== slot);
+  // A die rolled in a group check is a turn rolled like any other: it counts
+  // toward the "fewest checks" rotation for whoever actually threw it, a
+  // stand-in for an absent friend included.
+  draft.checkRolls = {
+    ...draft.checkRolls,
+    [me.character.id]: (draft.checkRolls?.[me.character.id] ?? 0) + 1,
+  };
 
   if (group.pending.length > 0) {
     prompt.characterId = group.pending[0] as string;

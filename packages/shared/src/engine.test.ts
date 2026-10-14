@@ -1040,6 +1040,57 @@ describe("whole-party checks", () => {
     expect(done.sceneId).toBe("scene_scratched");
   });
 
+  it("counts each group die toward the rotation, so whoever sat it out rolls next", () => {
+    // A three-seat party: the griffin's phone is away for the group check, so
+    // only the unicorn and the third hero roll. Once it reconnects, the next
+    // shared check must go to the griffin, who has rolled the fewest.
+    const chapter = makeChapter();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "all" } as Scene;
+    const context = ctx({ chapter, rng: fixedRng(20) });
+    const seated = seatedParty(context);
+    const third = {
+      ...seated.party[0]!,
+      playerId: "p_3",
+      character: { ...seated.party[0]!.character, id: `${seated.party[0]!.character.id}_3`, ownerPlayerId: "p_3" },
+    };
+    const started = walk(
+      { ...seated, party: [...seated.party, third] },
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const [unicorn, griffin, other] = started.party.map((m) => m.character.id);
+    const griffinAway = {
+      ...started,
+      party: started.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const done = walk(
+      griffinAway,
+      [
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_1", intent: { type: "ROLL" } },
+        { playerId: "p_3", intent: { type: "ROLL" } },
+      ],
+      context,
+    ).state;
+    expect(done.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
+    expect(done.checkRolls).toEqual({ [unicorn!]: 1, [other!]: 1 });
+
+    // Back online, and the next shared check comes round: the griffin is due.
+    const back = {
+      ...done,
+      party: done.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: true } : m)),
+    };
+    const rotating = makeChapter();
+    const next = enterScene(back, "check_squeeze", {
+      ...ctx({ chapter: rotating }),
+      chapter: {
+        ...rotating,
+        scenes: { ...rotating.scenes, check_squeeze: { ...rotating.scenes["check_squeeze"]!, roller: "party" } as Scene },
+      },
+    });
+    expect(next.state.prompt).toMatchObject({ kind: "roll", characterId: griffin });
+  });
+
   it("refuses help, since everyone is rolling", () => {
     const context = groupCtx(fixedRng(10));
     const result = applyIntent(atGroupCheck(context), { playerId: "p_1", intent: { type: "HELP" } }, context);
