@@ -3,7 +3,7 @@ title: Restless Remains
 id: creature.restless_remains
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supernatural", "bone_yard", "rare", "guardian"]
 classification: supernatural_manifestation
@@ -53,7 +53,7 @@ infobox: creature
 
 > *Not a monster. A grievance, wearing whatever was available.*
 
-The Bone Yard mostly sleeps, and prefers to. But when the rest is seriously disturbed, something rises in whichever remains are nearest — not the dead themselves, but the cause: the taken thing, the broken promise, given shape and momentum until it is put right. It does not chase you out of the Yard. It walks toward the wrong until the wrong stops, and then, with visible relief, it lies back down.
+The Bone Yard mostly sleeps, and prefers to. But when the rest is seriously disturbed, something rises in whichever remains are nearest, not the dead themselves, but the cause: the taken thing, the broken promise, given shape and momentum until it is put right. It does not chase you out of the Yard. It walks toward the wrong until the wrong stops, and then, with visible relief, it lies back down.
 
 ### For Fun
 
@@ -67,30 +67,30 @@ It answers a wrong, not a person. Put back what was taken and it settles mid-str
 
 ### Likes
 
-- **[Merfolk](/npcs/merfolk/)** — The songs reach across the water on still nights, and the bones settle a little lower for hearing them.
+- **[Merfolk](/npcs/merfolk/)**: The songs reach across the water on still nights, and the bones settle a little lower for hearing them.
 
 ### Dislikes
 
-- **[Bone Crawler](/creatures/bone_crawler/)** — Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely.
+- **[Bone Crawler](/creatures/bone_crawler/)**: Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Brute** — Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
+**Brute**: Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
 
 | | |
 |---|---|
 | Health | 14 |
-| Guard | 12 — how hard it is to hit |
+| Guard | 12, how hard it is to hit |
 | Attack | +4 |
 | Speed | 3 steps, 1 initiative |
 | Usually | 2 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Restoring Habitat** (Heart, normal) — It woke because something was taken or disturbed. Put it back and it settles.
-- **Conversation** (Heart, hard) — There is enough of a person left to answer, if you are gentle about asking.
+- **Restoring Habitat** (Heart, normal): It woke because something was taken or disturbed. Put it back and it settles.
+- **Conversation** (Heart, hard): There is enough of a person left to answer, if you are gentle about asking.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

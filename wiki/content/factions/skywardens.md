@@ -3,7 +3,7 @@ title: The Skywardens
 id: faction.skywardens
 type: faction
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: intentionally_undefined
 draft: true
 tags: ["military", "order", "protectors", "highlands"]
@@ -79,7 +79,7 @@ The Skywardens were founded to watch the red sky and answer whatever finally com
 
 - Watch-games: competitive cloud identification, governed by four centuries of accumulated house rules.
 - Forge nights at the citadel, where the smithing is real and the storytelling is quality-controlled.
-- Sky-cartography — charting a thing that will not hold still, revised nightly, bound annually, shelved forever.
+- Sky-cartography: charting a thing that will not hold still, revised nightly, bound annually, shelved forever.
 
 ### Getting Along
 
@@ -87,13 +87,13 @@ Formal, reliable, and rigid in exactly the way that makes them excellent in a cr
 
 ### Likes
 
-- **[Griffin](/characters/griffin/)** — The northern watch shares its logs. Half of warden doctrine is griffin weather.
-- **[Centaur](/npcs/centaur/)** — The roads are the realm's nervous system, and the centaurs run it faster than any signal tower.
+- **[Griffin](/characters/griffin/)**: The northern watch shares its logs. Half of warden doctrine is griffin weather.
+- **[Centaur](/npcs/centaur/)**: The roads are the realm's nervous system, and the centaurs run it faster than any signal tower.
 
 ### Dislikes
 
-- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)** — The sky is watched so that nobody has to find out. The cult wants to find out.
-- **[Legend Dragon](/creatures/legend_dragon/)** — An unaccountable power seated exactly where the watch points. Not an enemy. Somehow worse.
+- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)**: The sky is watched so that nobody has to find out. The cult wants to find out.
+- **[Legend Dragon](/creatures/legend_dragon/)**: An unaccountable power seated exactly where the watch points. Not an enemy. Somehow worse.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

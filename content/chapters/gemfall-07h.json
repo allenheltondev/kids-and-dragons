@@ -46,7 +46,7 @@
       "discovers": [
         "creature.mosshorn"
       ],
-      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, and somewhere in it is the next stone on your list.",
+      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, one gap between two red hills, and somewhere in it is the next stone on your list.",
       "choices": [
         {
           "id": "walk_on",
@@ -247,11 +247,18 @@
           "goto": "scene_boggart"
         },
         {
+          "id": "boggart_walked_over",
+          "label": "A boggart is sidling up with a satchel",
+          "icon": "scroll",
+          "requiresFlag": "walked_over",
+          "goto": "scene_boggart"
+        },
+        {
           "id": "witch",
           "label": "Someone in a pointed hat is pushing to the front",
           "icon": "charm",
-          "requiresFlag": "route_rush",
-          "goto": "scene_ford_witch"
+          "goto": "scene_ford_witch",
+          "requiresItem": "charm_ford_witch"
         },
         {
           "id": "trade_on",
@@ -267,7 +274,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "Old Ossley is poling his flat boat up a creek with no water in it, piled with every toll the trolls took this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat piled with every stone the river took off somebody this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
       "choices": [
         {
           "id": "debt",
@@ -381,7 +388,7 @@
         },
         {
           "id": "grandma_said",
-          "label": "Tell it what a grandmother said about cake",
+          "label": "Tell it what Grandmother Tull said about the unused bell",
           "icon": "cake",
           "goto": "scene_boggart_grandma_said",
           "effects": [
@@ -396,7 +403,7 @@
     },
     "scene_boggart_grandma_said": {
       "type": "story",
-      "narration": "You tell it what a grandmother said about cake, word for word, including the pause. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalog is in your hands before you notice it has let go.",
+      "narration": "You tell it what Grandmother Tull said about the bell nobody rings, word for word, including the second time she said it. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalog is in your hands before you notice it has let go.",
       "choices": [
         {
           "id": "on",

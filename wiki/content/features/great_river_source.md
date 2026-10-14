@@ -3,7 +3,7 @@ title: Source of the Great River
 id: feature.great_river_source
 type: feature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: []
 related:

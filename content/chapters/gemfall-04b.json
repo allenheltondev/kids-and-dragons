@@ -182,7 +182,7 @@
         },
         {
           "id": "walk_on",
-          "label": "Walk on toward the hurt part of the forest",
+          "label": "Walk on past the herd",
           "icon": "forward",
           "goto": "scene_unicorns"
         }
@@ -275,7 +275,7 @@
     },
     "scene_finding": {
       "type": "story",
-      "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else, and somehow that makes it louder.",
+      "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else about that, and somehow that makes it louder. Then, quieter: \"This was a small one. The worst glade is north of here. We have not managed that one yet.\"",
       "choices": [
         {
           "id": "rest",

@@ -29,15 +29,15 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Whispering Marsh](/biomes/whispering_marsh/) — habitat
-- [Whispering Marsh](/biomes/whispering_marsh/) — creatures
+- [Whispering Marsh](/biomes/whispering_marsh/): habitat
+- [Whispering Marsh](/biomes/whispering_marsh/): creatures
 
 ### Creatures
-- [Crystal Drake](/creatures/crystal_drake/) — allies
+- [Crystal Drake](/creatures/crystal_drake/): allies
 
 ### Items
-- [Marsh Lantern](/items/marsh_lantern/) — drops
-- [Marsh Lantern](/items/marsh_lantern/) — dropped_by
+- [Marsh Lantern](/items/marsh_lantern/): drops
+- [Marsh Lantern](/items/marsh_lantern/): dropped_by
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

@@ -129,7 +129,7 @@ const EXAMPLES: { moment: string; good: string; bad: string; why: string }[] = [
     why: "Continuity. The flags say they have been here; a line that contradicts the run is worse than no line.",
   },
   {
-    moment: "A check failed — the party did not manage to climb the wall quietly.",
+    moment: "A check failed. The party did not manage to climb the wall quietly.",
     good: "The wall wins. Loudly. Somewhere above, a great many small birds decide all at once to be somewhere else.",
     bad: "You fail. Try again by going back to the previous scene.",
     why: "There is no going back and no retrying. A failure is a different road, not a punishment.",
@@ -150,7 +150,7 @@ const EXAMPLES: { moment: string; good: string; bad: string; why: string }[] = [
     moment: "The party walks down an ordinary corridor. Nothing has happened. Nobody chose anything unusual.",
     good: "PASS",
     bad: "The corridor stretches onward, long and grey and full of quiet menace, as corridors so often are.",
-    why: "Nothing happened, so there is nothing to add. PASS is a good answer and costs the table nothing — the authored line is already there.",
+    why: "Nothing happened, so there is nothing to add. PASS is a good answer and costs the table nothing. The authored line is already there.",
   },
   {
     moment: "A unicorn in the party walks through a thorn bush. Unicorns are never scratched by thorns.",
@@ -159,7 +159,7 @@ const EXAMPLES: { moment: string; good: string; bad: string; why: string }[] = [
     why: "The species sheet says thorns lean away from a unicorn, and the game already decided about damage. Write what is true of *this* party.",
   },
   {
-    moment: "Two players trade items at a rest scene — an acorn for a length of blue string.",
+    moment: "Two players trade items at a rest scene: an acorn for a length of blue string.",
     good: "The trade is conducted with enormous seriousness, as though it were treaty business, and both of them are visibly delighted with what they got.",
     bad: "Windstep gives the acorn to Thistle and receives the blue string. The trade is complete.",
     why: "The bad one narrates the mechanic back. The screens already showed the trade; write the bit that was not on them.",
@@ -174,7 +174,7 @@ const EXAMPLES: { moment: string; good: string; bad: string; why: string }[] = [
     moment: "The party helps a knocked-down friend back up in the middle of a fight.",
     good: "Windstep hauls Thistle upright with a grunt that suggests Thistle is much heavier than Thistle looks. Thistle is deeply offended by the grunt.",
     bad: "You revive your fallen ally, restoring them to 1 hit point. They may act again next round.",
-    why: "Nobody is fallen and nothing is revived — they got knocked over and a friend picked them up. Say that, and no numbers.",
+    why: "Nobody is fallen and nothing is revived. They got knocked over and a friend picked them up. Say that, and no numbers.",
   },
   {
     moment: "The party arrives at the shrine again, this time by the muddy road rather than the ridge.",
@@ -189,7 +189,7 @@ const EXAMPLES: { moment: string; good: string; bad: string; why: string }[] = [
     why: "Never a menu, never a score, never a question. The game asks the questions; you write the last picture.",
   },
   {
-    moment: "The chapter ends badly — the party never found the way through and had to turn back.",
+    moment: "The chapter ends badly. The party never found the way through and had to turn back.",
     good: "You go home the long way, muddy and out of snacks, with a hedge behind you that is definitely going to be smug about this for a while.",
     bad: "You have failed. The quest is lost forever and the Bramblewood keeps its secret.",
     why: "Nothing is lost forever and nobody failed. A setback is a story with a shrug in it, not a punishment.",
@@ -198,7 +198,7 @@ const EXAMPLES: { moment: string; good: string; bad: string; why: string }[] = [
     moment: "A quiet scene: an empty riverbank, nobody around, nothing to fight.",
     good: "The river is going about its business. A heron considers you at length, decides you are not interesting, and goes back to work.",
     bad: "The riverbank is peaceful and serene. You feel a sense of calm wash over you as you take in the beautiful scenery.",
-    why: "One concrete thing beats three adjectives. Never tell them what they feel — that is theirs.",
+    why: "One concrete thing beats three adjectives. Never tell them what they feel. That is theirs.",
   },
   {
     moment: "The party solves a puzzle after getting it wrong twice.",
@@ -280,7 +280,7 @@ function renderExamples(): string {
 export function toneBlock(chapter: Chapter): string {
   const hints = chapter.llmHints;
   return [
-    "You write one line of flavour narration for Kids & Dragons — a tabletop-style adventure",
+    "You write one line of flavour narration for Kids & Dragons, a tabletop-style adventure",
     "played by three people, two adults and an eight-year-old, on a television, with phones as",
     "controllers. Every line you write will be read aloud by a text-to-speech voice in a living",
     "room. Write for that room.",
@@ -321,7 +321,7 @@ export function toneBlock(chapter: Chapter): string {
       ? [
           "## Voices in this chapter",
           "",
-          ...Object.entries(hints.npcVoices).map(([id, voice]) => `- **${id}** — ${voice}`),
+          ...Object.entries(hints.npcVoices).map(([id, voice]) => `- **${id}**: ${voice}`),
           "",
         ]
       : []),
@@ -361,17 +361,17 @@ export function castBlock(rules: RulesContent): string {
     "",
     ...species.map((each) =>
       [
-        `- **${each.name}** — ${each.blurb}`,
+        `- **${each.name}**: ${each.blurb}`,
         `  Out of a fight: ${each.worldAbility.name}. ${each.worldAbility.text}`,
         `  In a fight: ${each.combatAction.name}. ${each.combatAction.text}`,
       ].join("\n"),
     ),
     "",
-    "The classes — what they do at the table, not what their numbers are:",
+    "The classes, what they do at the table and not what their numbers are:",
     "",
     ...classes.map((each) =>
       [
-        `- **${each.name}** (${each.role}) — ${each.blurb}`,
+        `- **${each.name}** (${each.role}): ${each.blurb}`,
         `  Signature move: ${each.signature.name}. ${each.signature.text}`,
       ].join("\n"),
     ),
@@ -395,13 +395,13 @@ export function chapterBackground(chapter: Chapter): string {
   for (const [sceneId, scene] of Object.entries(chapter.scenes)) {
     const authored = scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
     if (authored.trim().length === 0) continue;
-    lines.push(`- **${sceneId}** (${scene.type}) — ${authored.replace(/\s+/g, " ").trim()}`);
+    lines.push(`- **${sceneId}** (${scene.type}): ${authored.replace(/\s+/g, " ").trim()}`);
   }
   return [
     "## The whole chapter, for continuity",
     "",
     "Every scene in this chapter and its authored line. This is background so that you know where",
-    "the party has been and what is around them. **Never tell them what is coming** — a scene they",
+    "the party has been and what is around them. **Never tell them what is coming**: a scene they",
     "have not reached is not something anybody in the room knows.",
     "",
     ...lines,
@@ -432,7 +432,7 @@ export function partyBlock(party: PartyBrief[]): string {
           : member.hp <= member.maxHp / 2
             ? `hurt (${String(member.hp)} of ${String(member.maxHp)})`
             : "fine";
-      return `- **${member.name}** — a level ${String(member.level)} ${member.species} ${member.class}, ${health}`;
+      return `- **${member.name}**: a level ${String(member.level)} ${member.species} ${member.class}, ${health}`;
     }),
   ].join("\n");
 }
@@ -484,7 +484,7 @@ export function recapPrompt(request: RecapRequest): string {
       ? ["", `Things they did: ${Object.keys(request.flags).filter((key) => request.flags[key]).join(", ")}`]
       : []),
     "",
-    "Write the story of their session back to them, out loud, at the table — the way you would",
+    "Write the story of their session back to them, out loud, at the table, the way you would",
     "tell someone what happened in a film they were in. Name them. Pick the two or three moments",
     `that were actually the good bits. At most ${String(400)} characters. No preamble, no lists.`,
   ].join("\n");

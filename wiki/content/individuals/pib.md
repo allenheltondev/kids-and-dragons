@@ -3,7 +3,7 @@ title: Pib
 id: individual.pib
 type: individual
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["bramblewood", "hedges", "sprite", "helpful"]
 related:

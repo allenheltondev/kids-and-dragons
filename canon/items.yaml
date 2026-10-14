@@ -142,7 +142,7 @@ items:
       factions: []
 
   # -------------------------------------------------------------------------
-  # Carried things — D7.
+  # Carried things (D7).
   #
   # These were mechanics without a world: they lived in
   # content/items.json with a name, an icon and an effect, and nothing said

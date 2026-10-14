@@ -3,7 +3,7 @@ title: The Bone Yard
 id: location.bone_yard
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ancient_remains", "forbidden", "supernatural", "river_mouth", "saltrot"]
 danger_level: high
@@ -89,15 +89,15 @@ The realm's resting place for its oldest dead, and its longest-running lesson in
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - No object taken from the Yard has ever stayed sold. Every one has found its way back - returned by tide, by conscience, or by a buyer who could not sleep near it. The 'genuine Bone Yard relics' in circulation at the Exchange are hand-me-down crawler shells, every one.
 
 ### Neighbors
 
-- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The flats are the Yard's threshold: reaching the bones takes effort, the effort is the point, and the guides who provide it double as the Yard's unofficial doorkeepers.
-- **[The Great River](/features/great_river/)** — The river built the Yard and staffs it still, delivering silt, driftwood, and the occasional new resident with every flood.
-- **[Mermaid Cove](/biomes/mermaid_cove/)** — The song circles carry across the water on still nights, and the Yard is measurably quieter for it - the realm's gentlest ongoing act of neighborliness, unacknowledged from both shores.
+- **[The Sallow Wastelands](/biomes/sallow_wastelands/)**: The flats are the Yard's threshold: reaching the bones takes effort, the effort is the point, and the guides who provide it double as the Yard's unofficial doorkeepers.
+- **[The Great River](/features/great_river/)**: The river built the Yard and staffs it still, delivering silt, driftwood, and the occasional new resident with every flood.
+- **[Mermaid Cove](/biomes/mermaid_cove/)**: The song circles carry across the water on still nights, and the Yard is measurably quieter for it - the realm's gentlest ongoing act of neighborliness, unacknowledged from both shores.
 
 ### Current Tensions
 

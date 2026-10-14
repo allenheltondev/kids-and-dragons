@@ -3,7 +3,7 @@ title: Bone Crawler
 id: creature.bone_crawler
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "bone_yard", "scavenger", "swarm"]
 classification: dangerous_creature
@@ -48,7 +48,7 @@ infobox: creature
 
 > *A hermit crab that moved into history.*
 
-A bone crawler's shell is generations of borrowed fossil, fitted and refitted until it is more heirloom than armor. When a crawler outgrows its shell it leaves the whole assembly standing on the sand, and a younger crawler moves in the way a child inherits a coat — sleeves too long, dignity enormous. The Bone Yard's oldest shells have housed forty owners and are considered fine addresses.
+A bone crawler's shell is generations of borrowed fossil, fitted and refitted until it is more heirloom than armor. When a crawler outgrows its shell it leaves the whole assembly standing on the sand, and a younger crawler moves in the way a child inherits a coat: sleeves too long, dignity enormous. The Bone Yard's oldest shells have housed forty owners and are considered fine addresses.
 
 ### For Fun
 
@@ -58,30 +58,30 @@ A bone crawler's shell is generations of borrowed fossil, fitted and refitted un
 
 ### Getting Along
 
-Timid alone, bold in a clatter, and entirely without enemies it is aware of — everything it ought to fear is far too old to bother with it. A swarm converging on your pack is not an attack; something in the pack is humming with magic, and they would like it very much.
+Timid alone, bold in a clatter, and entirely without enemies it is aware of, since everything it ought to fear is far too old to bother with it. A swarm converging on your pack is not an attack; something in the pack is humming with magic, and they would like it very much.
 
 ### Likes
 
-- **[Restless Remains](/creatures/restless_remains/)** — A walking quarry and a parade in one. The crawlers attend every manifestation.
+- **[Restless Remains](/creatures/restless_remains/)**: A walking quarry and a parade in one. The crawlers attend every manifestation.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Skirmisher** — Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
+**Skirmisher**: Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
 
 | | |
 |---|---|
 | Health | 6 |
-| Guard | 11 — how hard it is to hit |
+| Guard | 11, how hard it is to hit |
 | Attack | +3 |
 | Speed | 5 steps, 3 initiative |
 | Usually | 3 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Distraction** (Clever, normal) — It swarms whatever carries fresh magical energy. Throw the glowing thing somewhere you are not.
-- **Escape** (Quick, normal) — It hides from anything large, so standing tall and leaving loudly usually works.
+- **Distraction** (Clever, normal): It swarms whatever carries fresh magical energy. Throw the glowing thing somewhere you are not.
+- **Escape** (Quick, normal): It hides from anything large, so standing tall and leaving loudly usually works.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

@@ -19,7 +19,7 @@ agent_instructions:
   - Creature ids must not be invented outside this file or docs/red-sky-creature-canon.yaml.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
   - A creature whose encounter block names no band cannot be fought at all, and the omission is a claim rather than an unfinished entry. Do not give one a stat line, put it on a combat board, or write a chapter that resolves it by defeating it; its resolutions are the encounter.
-  - "`lore` is the storyteller's half: story, pastimes, and how a creature engages with others. `likes` and `dislikes` are opinions about kinds with stated reasons, never moral verdicts about a species — the `because` is the story hook, and it is required."
+  - "`lore` is the storyteller's half: story, pastimes, and how a creature engages with others. `likes` and `dislikes` are opinions about kinds with stated reasons, never moral verdicts about a species: the `because` is the story hook, and it is required."
 
 controlled_values:
   canon_status:
@@ -111,7 +111,7 @@ creatures:
         generations ago, and treat a settling swarm the way sailors treat a
         falling barometer.
       pastimes:
-        - "Basking in spirals on freshly warmed stone, in strict order of seniority. Nobody knows how the order is decided — not even, apparently, the moths."
+        - "Basking in spirals on freshly warmed stone, in strict order of seniority. Nobody knows how the order is decided, not even, apparently, the moths."
         - "Riding cinder wolves between warm patches like slow ferries, which the wolves have agreed to never notice."
         - "Crowding a traveler's lantern in a polite ring, at exactly the distance where nobody's wings catch."
       social: >-
@@ -264,7 +264,7 @@ creatures:
       story: >-
         Cloud whales swim the same high currents that carry the Sky Islands,
         and have been swimming them since before the islands had names. They
-        sing near storms — not to calm them, as far as anyone can tell, but
+        sing near storms, not to calm them, as far as anyone can tell, but
         about them, the way sailors sing about the sea. Kitsune navigators
         write the songs down and steer by them, which the whales either do not
         know or do not mind.
@@ -316,7 +316,7 @@ creatures:
       story: >-
         Snowhorn goats walk lines through the Frostfang that no map holds,
         passed from nanny to kid over generations of hard winters. When a herd
-        abandons a slope, the slope fails within the day — every time, without
+        abandons a slope, the slope fails within the day, every time, without
         exception, and without comment. The mountain peoples long ago stopped
         asking how the goats know and started simply watching where they stand.
       pastimes:
@@ -473,7 +473,7 @@ creatures:
         foothills is usually gemstone, which is why every treasure rush in
         history has included somebody trying to mine one. The crab minds
         enormously. It gives one warning, which is more than most prospectors
-        deserve, and it holds no grudge afterward — off its warm ground, you
+        deserve, and it holds no grudge afterward: off its warm ground, you
         have never existed.
       pastimes:
         - "Rearranging the mineral garden at its burrow mouth. Taste in arrangement appears to be hereditary."
@@ -537,7 +537,7 @@ creatures:
       hook: "Not a monster. Cold, mostly, and a long way from home."
       story: >-
         Cinder wolves carry banked heat under their coats the way other packs
-        carry nothing at all — a shared hearth that never quite goes out, fed
+        carry nothing at all, a shared hearth that never quite goes out, fed
         by closeness. A pack sleeping is one animal with twelve legs. When the
         mountain grumbles and the prey moves, whole packs are pushed onto the
         roads with their hearth and their hunger, and neither one is malice.
@@ -604,7 +604,7 @@ creatures:
       story: >-
         Nobody knows whether the mire mimic thinks of itself as a hunter or as
         a performance. It has been a log, a jetty, three different abandoned
-        boats, and once — memorably — a small footbridge, for eleven years,
+        boats, and once, memorably, a small footbridge, for eleven years,
         during which it let every school child in the marsh cross safely and
         ate exactly one tax collector's satchel. Its impressions improve with
         study; the newest boats have a smell.
@@ -645,7 +645,7 @@ creatures:
           stat: might
           difficulty: normal
           text: >-
-            Strong vibration moves it off a hunting site — stamping works as
+            Strong vibration moves it off a hunting site, and stamping works as
             well as anything.
 
   - id: creature.frost_wyrm
@@ -674,7 +674,7 @@ creatures:
       hook: "The glacier's other tenant. It was here first, and the receipts are frozen."
       story: >-
         Frost wyrms tunnel the deep ice along seams older than any map,
-        spiraling their nests around things frozen far below — whether they
+        spiraling their nests around things frozen far below, whether they
         guard those things or simply like the company is one of the north's
         politely unasked questions. A wyrm's whole idea of a good year is one
         in which nothing at all happens near its tunnel, and it enforces this
@@ -812,7 +812,7 @@ creatures:
         A bone crawler's shell is generations of borrowed fossil, fitted and
         refitted until it is more heirloom than armor. When a crawler outgrows
         its shell it leaves the whole assembly standing on the sand, and a
-        younger crawler moves in the way a child inherits a coat — sleeves too
+        younger crawler moves in the way a child inherits a coat: sleeves too
         long, dignity enormous. The Bone Yard's oldest shells have housed forty
         owners and are considered fine addresses.
       pastimes:
@@ -821,7 +821,7 @@ creatures:
         - "Arranging spare fragments in spirals on the tideline. No explanation has ever been offered."
       social: >-
         Timid alone, bold in a clatter, and entirely without enemies it is
-        aware of — everything it ought to fear is far too old to bother with
+        aware of, since everything it ought to fear is far too old to bother with
         it. A swarm converging on your pack is not an attack; something in the
         pack is humming with magic, and they would like it very much.
       likes:
@@ -877,7 +877,7 @@ creatures:
       story: >-
         An echo hunter's memory is a library of sound: every drip, every
         chamber, every visitor filed by footfall. It does not patrol so much as
-        proofread — a new sound in a known tunnel is an error in the text, and
+        proofread: a new sound in a known tunnel is an error in the text, and
         the hunter will keep returning to the sentence until it parses. It is
         not cruel. It is thorough, in the dark, which can amount to the same
         thing for the unprepared.
@@ -891,7 +891,7 @@ creatures:
         approach in chaos and you are a problem the dark now needs to solve.
       likes:
         - of: npc.stone_troll
-          because: "They knock on stone before entering a passage — in its language, the height of good manners."
+          because: "They knock on stone before entering a passage, which in its language is the height of good manners."
       dislikes:
         - of: creature.bone_crawler
           because: "A crowd of clattering shells is a paragraph with no punctuation. It cannot bear it."
@@ -944,18 +944,18 @@ creatures:
     lore:
       hook: "A memory that got loose, and is still trying to finish itself."
       story: >-
-        When a memory matters enough — a way home, a hiding place, a game
-        interrupted at the best part — it can tangle in marsh magic and keep
+        When a memory matters enough (a way home, a hiding place, a game
+        interrupted at the best part) it can tangle in marsh magic and keep
         going without its person. That is a wisp: one moment, replaying. Some
         glow through it quietly forever. Others need a witness, and will lead
         anyone who follows toward the place where the moment lived, without
         ever checking whether the route still exists.
       pastimes:
         - "Replaying the good part."
-        - "Leading anything that will follow — travelers, moths, other wisps — toward the remembered place."
+        - "Leading anything that will follow (travelers, moths, other wisps) toward the remembered place."
         - "Hovering at the edge of frogfolk lantern festivals, at exactly the distance of an uninvited guest."
       social: >-
-        A wisp cannot converse, exactly, but it responds — to patience, to
+        A wisp cannot converse, exactly, but it responds: to patience, to
         being walked with instead of away from, and above all to please,
         which in the entire recorded history of the marsh almost nobody has
         tried.
@@ -1017,7 +1017,7 @@ creatures:
       hook: "Not a monster. A grievance, wearing whatever was available."
       story: >-
         The Bone Yard mostly sleeps, and prefers to. But when the rest is
-        seriously disturbed, something rises in whichever remains are nearest —
+        seriously disturbed, something rises in whichever remains are nearest,
         not the dead themselves, but the cause: the taken thing, the broken
         promise, given shape and momentum until it is put right. It does not
         chase you out of the Yard. It walks toward the wrong until the wrong
@@ -1075,7 +1075,7 @@ creatures:
       A flat-bottomed cloud hanging a few feet off the water, pale and slow and
       wider than a barn, with a faint grit coming out of its underside that
       drifts the wrong way. Reeds beneath it stand straight up. The water under
-      it dimples upward. Its interior, glimpsed from below, is furnished —
+      it dimples upward. Its interior, glimpsed from below, is furnished:
       rope, a lit lantern, boots, somebody's washing, all floating at whatever
       height their weight decided on.
     common_story_uses: >-
@@ -1086,13 +1086,13 @@ creatures:
       It never hunts, chases, or targets a person. It follows its own sand,
       which is a different sentence and the one to write. It does not injure,
       crush, drown, or drop anything it has lifted. Its sand cannot be
-      contained, stored, or carried as equipment — it is always leaving, and a
+      contained, stored, or carried as equipment. It is always leaving, and a
       jar of it is a jar with a cloud coming after it. Strays outside the marsh
       are rare and are always lost; they are never a population.
     standard_behavior: >-
       Drifts at walking pace, cannot turn, and sheds grit continuously. Sand
       that lands on something living or something carried begins pulling it
-      toward the cloud, as hard as the dose is large — a dusting makes a
+      toward the cloud, as hard as the dose is large: a dusting makes a
       traveler light on their feet, a pocketful takes them off the ground. The
       pull leans toward the cloud rather than straight up, so the first sign is
       usually a party all tilting the same way. Brushing, wetting, or muddying
@@ -1145,7 +1145,7 @@ creatures:
         No asset_id yet. It is weather rather than a figure, so its art is
         likelier to be a biome effect than an entry in assets/entities/.
     encounter:
-      # No band. There is nothing here to hit — see D18. What the party does
+      # No band. There is nothing here to hit; see D18. What the party does
       # instead is the whole encounter, so all five ways past are load-bearing.
       resolutions:
         - kind: observation
@@ -1165,13 +1165,13 @@ creatures:
           difficulty: normal
           text: >-
             Someone going up can be held and brushed down. Two hands beat one,
-            and the pull is gentle — it is only constant.
+            and the pull is gentle. It is only constant.
         - kind: environmental_problem_solving
           stat: clever
           difficulty: hard
           text: >-
             Carry a doseful and it follows. Walk it over the stuck barge, off
-            the channel the children use, or away from the village — then put
+            the channel the children use, or away from the village, then put
             the sand down somewhere that does not matter, and go.
         - kind: restoring_habitat
           stat: heart
