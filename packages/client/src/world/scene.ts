@@ -92,6 +92,8 @@ import {
   type NameplateReading,
 } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
+import { stageSlots, type StageCastMember } from "./cast";
+import { storyStageHeight } from "./stage-inset";
 
 export { characterArtUrl };
 
@@ -112,9 +114,23 @@ const DESIGN = { width: 1600, height: 900 } as const;
 export const STORY_TILE = 100;
 const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / STORY_TILE } as const;
 
-const GROUND_Y = DESIGN.height * 0.82;
+/*
+ * The floor sits low and the figures stand tall in the design rect because the
+ * story camera frames only what is above the narration plate (setStageInset):
+ * the rect is the stage, and the text has its own band beneath it. When the
+ * floor was at 82% with a gradient of words over the bottom 60% of the pane,
+ * the party stood behind the paragraph on every scene.
+ */
+const GROUND_Y = DESIGN.height * 0.88;
 /** A character's drawn height in design units at zoom 1. */
-const ACTOR_HEIGHT = DESIGN.height * 0.46;
+const ACTOR_HEIGHT = DESIGN.height * 0.56;
+/** How far off to the right a cast member starts their entrance. */
+const CAST_ENTRY_OFFSET = DESIGN.width * 0.18;
+/** Per-second approach rates for a cast entrance/exit and a hero turning. */
+const CAST_ENTER_RATE = 5;
+const TURN_RATE = 9;
+/** The widest the lineup spreads on a wide pane, as a multiple of the design width. */
+const MAX_STAGE_SPREAD = 1.6;
 /** How much of a lineup slot a nameplate may fill — the rest is the gutter
     that keeps two names from running into each other. */
 const NAMEPLATE_SLOT = 0.9;
@@ -183,6 +199,19 @@ export interface PartyScene {
    */
   setNameplatesVisible(visible: boolean): void;
   /**
+   * Who is standing in the scene with the party (world/cast.ts). They walk in
+   * from the right, the party turns to face them, and they leave the same way
+   * when the story moves on without them. Keyed, so a character who stays
+   * across scenes stays put. Empty clears the stage back to the party alone.
+   */
+  setCast(members: readonly StageCastMember[]): void;
+  /**
+   * How many CSS px along the bottom of the pane the story text covers
+   * (world/stage-inset.ts). The story camera frames the stage into the rest,
+   * so nobody stands behind a paragraph. The fight board ignores it.
+   */
+  setStageInset(bottomPx: number): void;
+  /**
    * The names currently drawn, as boxes in whichever space is on screen —
    * board pixels during a fight, design units otherwise.
    *
@@ -230,6 +259,21 @@ interface Actor {
    * and FALLEN_* pose below stay away from it.
    */
   rive: RiveActorHandle | null;
+}
+
+/** Somebody standing opposite the party (world/cast.ts). */
+interface CastActor {
+  key: string;
+  container: Container;
+  art: Container;
+  label: Text | null;
+  scale: number;
+  /** Where layout wants them, in design units. */
+  x: number;
+  /** 0 offstage → 1 in place. Eased by tick(). */
+  presence: number;
+  leaving: boolean;
+  phase: number;
 }
 
 /**
@@ -308,6 +352,11 @@ export function createScene(app: Application): PartyScene {
   storyLayer.addChild(actorsLayer);
 
   const actors = new Map<string, Actor>();
+  const castActors = new Map<string, CastActor>();
+  /** -1 = facing right, toward a cast on the right; 1 = as drawn. */
+  let facing = 1;
+  /** CSS px of pane the narration plate covers. See setStageInset. */
+  let insetBottom = 0;
   let board: BoardLayer | null = null;
   let encounterView: BoardViewState | null = null;
   /**
@@ -434,10 +483,21 @@ export function createScene(app: Application): PartyScene {
     return tiles;
   }
 
+  /**
+   * The rect the camera frames into. The board gets the whole pane; the story
+   * gets the part above the narration plate, so the figures stand clear of
+   * the words instead of behind them.
+   */
+  function cameraViewport(): Viewport {
+    if (encounterView !== null) return viewport;
+    return { width: viewport.width, height: storyStageHeight(viewport.width, viewport.height, insetBottom) };
+  }
+
   function applyCamera(dt: number): void {
     const inCombat = encounterView !== null;
     camState = setFocus(camState, inCombat ? boardFocus() : storyFocusTiles(target, [...actors.values()]));
-    const cam = resolveCamera(camState, viewport);
+    const frame = cameraViewport();
+    const cam = resolveCamera(camState, frame);
 
     // A live gesture tracks the finger 1:1; only the auto-frame is eased.
     if (camNow === null || cam.manual) {
@@ -455,28 +515,57 @@ export function createScene(app: Application): PartyScene {
     // `screenPx = tile · scale + offset`, and the layer's own geometry is in
     // units of `unit` px per tile — so the container scale is scale/unit.
     layer.scale.set(camNow.scale / unit);
-    layer.x = viewport.width / 2 - camNow.x * camNow.scale;
-    layer.y = viewport.height / 2 - camNow.y * camNow.scale;
+    layer.x = frame.width / 2 - camNow.x * camNow.scale;
+    layer.y = frame.height / 2 - camNow.y * camNow.scale;
 
     storyLayer.visible = !inCombat;
     boardWrap.visible = inCombat;
   }
 
+  /**
+   * How much story space is in view across, in design units: the design rect
+   * on a 16:9 pane, more on anything wider, capped so a very wide pane does
+   * not scatter the party to its edges.
+   */
+  function stageWidth(): number {
+    const frame = cameraViewport();
+    if (!(frame.width > 0) || !(frame.height > 0)) return DESIGN.width;
+    const contain = Math.min(frame.width / DESIGN.width, frame.height / DESIGN.height);
+    return Math.max(DESIGN.width, Math.min(frame.width / contain, DESIGN.width * MAX_STAGE_SPREAD));
+  }
+
   function layoutActors(): void {
     const list = [...actors.values()];
-    const spacing = Math.min(DESIGN.width / (list.length + 1), DESIGN.width * 0.26);
-    const start = DESIGN.width / 2 - (spacing * (list.length - 1)) / 2;
+    const cast = [...castActors.values()].filter((member) => !member.leaving);
+    // Lay out across what the camera actually shows, not just the design
+    // rect: a TV's stage above the plate is far wider than 16:9, and spending
+    // that width on spacing is what keeps three heroes and a centaur from
+    // standing in each other.
+    const width = stageWidth();
+    const left = (DESIGN.width - width) / 2;
+    const slots = stageSlots(list.length, cast.map((member) => member.scale), width);
+    slots.party = slots.party.map((x) => x + left);
+    slots.cast = slots.cast.map((x) => x + left);
+    // Heroes are drawn facing left; with company on the right they turn round.
+    facing = cast.length > 0 ? -1 : 1;
     // A name may be no wider than the slot its character stands in, less a
     // gutter — two nameplates that touch are one unreadable name, which is the
     // failure the nameplate was added to fix. The slot is only known here,
     // because it shrinks as the party grows.
-    const slot = spacing * NAMEPLATE_SLOT;
+    const slot = slots.partySlot * NAMEPLATE_SLOT;
+    cast.forEach((member, index) => {
+      member.x = slots.cast[index] ?? member.x;
+      if (member.label) {
+        member.label.visible = nameplatesVisible;
+        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * NAMEPLATE_SLOT);
+      }
+    });
     list.forEach((actor, index) => {
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
         fitNameplate(actor.label, slot);
       }
-      actor.x = start + spacing * index;
+      actor.x = slots.party[index] ?? actor.x;
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
       actor.y = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
@@ -563,7 +652,12 @@ export function createScene(app: Application): PartyScene {
       biomeSprite.alpha = approach(biomeSprite.alpha, 1, FADE_RATE, dt);
     }
 
+    tickCast(dt);
+
     for (const actor of actors.values()) {
+      // Turning to face whoever is here: a quick squash through edge-on, which
+      // reads as the figure turning round rather than flipping.
+      actor.art.scale.x = approach(actor.art.scale.x, facing, TURN_RATE, dt);
       if (actor.rive) {
         // The rig owns the acting: idle is a clip, the fall is down/down_loop
         // driven by the contract's knockedDown boolean, and the procedural
@@ -587,6 +681,72 @@ export function createScene(app: Application): PartyScene {
       actor.art.y = bob * ACTOR_HEIGHT * 0.012;
       actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
     }
+  }
+
+  function tickCast(dt: number): void {
+    const still = prefersReducedMotion();
+    for (const member of [...castActors.values()]) {
+      member.presence = approach(member.presence, member.leaving ? 0 : 1, CAST_ENTER_RATE, dt);
+      if (member.leaving && member.presence < 0.02) {
+        member.container.destroy({ children: true });
+        castActors.delete(member.key);
+        continue;
+      }
+      const away = 1 - member.presence;
+      member.container.x = member.x + (still ? 0 : away * CAST_ENTRY_OFFSET);
+      member.container.y = GROUND_Y;
+      member.container.zIndex = GROUND_Y - 1;
+      member.art.alpha = member.presence;
+      if (member.label) member.label.alpha = member.presence;
+      if (!still) {
+        const bob = Math.sin(elapsed * 1.3 + member.phase);
+        member.art.y = bob * ACTOR_HEIGHT * member.scale * 0.01;
+      }
+    }
+  }
+
+  function makeCastActor(member: StageCastMember): CastActor {
+    const container = new Container();
+    const art = new Container();
+    container.addChild(art);
+    actorsLayer.addChild(container);
+    const height = ACTOR_HEIGHT * member.scale;
+    const label =
+      member.name === null
+        ? null
+        : createNameplate(member.name, { typeHeight: ACTOR_HEIGHT, figureHeight: height, maxWidth: ACTOR_HEIGHT });
+    if (label) {
+      label.visible = nameplatesVisible;
+      container.addChild(label);
+    }
+    const actor: CastActor = {
+      key: member.key,
+      container,
+      art,
+      label,
+      scale: member.scale,
+      x: DESIGN.width,
+      presence: 0,
+      leaving: false,
+      phase: Math.random() * Math.PI * 2,
+    };
+    container.x = DESIGN.width + CAST_ENTRY_OFFSET;
+    container.y = GROUND_Y;
+    art.alpha = 0;
+    void Assets.load<Texture>(member.url)
+      .then((texture) => {
+        if (destroyed || castActors.get(member.key) !== actor || actor.leaving) return;
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+        // Canvas-relative, like the party's PNGs: every figure is drawn to the
+        // same 1024 canvas, so scale alone says sprite or centaur.
+        sprite.scale.set(height / texture.height);
+        art.addChild(sprite);
+      })
+      .catch(() => {
+        /* nobody there is better than a broken image; the validator guards the path */
+      });
+    return actor;
   }
 
   app.ticker.add(tick);
@@ -626,7 +786,7 @@ export function createScene(app: Application): PartyScene {
       // A finger has to actually travel before a tap becomes a pan — an
       // override taken by a wobbly tap would then need explaining away.
       if (Math.abs(dx) + Math.abs(dy) > 2) {
-        camState = panBy(camState, viewport, { x: dx, y: dy });
+        camState = panBy(camState, cameraViewport(), { x: dx, y: dy });
       }
     } else if (pointers.size === 2) {
       const [a, b] = [...pointers.entries()].map(([id, at]) =>
@@ -639,9 +799,9 @@ export function createScene(app: Application): PartyScene {
         const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
         const midBefore = { x: (pa.x + pb.x) / 2, y: (pa.y + pb.y) / 2 };
         if (before > 0 && after > 0) {
-          camState = zoomBy(camState, viewport, after / before, mid);
+          camState = zoomBy(camState, cameraViewport(), after / before, mid);
         }
-        camState = panBy(camState, viewport, { x: mid.x - midBefore.x, y: mid.y - midBefore.y });
+        camState = panBy(camState, cameraViewport(), { x: mid.x - midBefore.x, y: mid.y - midBefore.y });
       }
     }
 
@@ -654,7 +814,7 @@ export function createScene(app: Application): PartyScene {
 
   function onWheel(event: WheelEvent): void {
     event.preventDefault();
-    camState = zoomBy(camState, viewport, Math.exp(-event.deltaY * 0.0015), localPoint(event));
+    camState = zoomBy(camState, cameraViewport(), Math.exp(-event.deltaY * 0.0015), localPoint(event));
   }
 
   canvas.addEventListener("pointerdown", onPointerDown);
@@ -831,6 +991,7 @@ export function createScene(app: Application): PartyScene {
         .clear()
         .ellipse(width / 2, height / 2, width * 0.8, height * 0.8)
         .fill({ color: 0xffd98a });
+      layoutActors();
       applyCamera(0);
     },
 
@@ -879,6 +1040,40 @@ export function createScene(app: Application): PartyScene {
       layoutActors();
     },
 
+    setCast(members) {
+      if (destroyed) return;
+      const wanted = new Set(members.map((member) => member.key));
+      for (const member of castActors.values()) {
+        if (!wanted.has(member.key)) member.leaving = true;
+      }
+      for (const member of members) {
+        const existing = castActors.get(member.key);
+        if (existing && !existing.leaving) continue;
+        if (existing) {
+          // Called back before they had finished leaving: turn round, no reload.
+          existing.leaving = false;
+          continue;
+        }
+        castActors.set(member.key, makeCastActor(member));
+      }
+      // Keep the authored order for those staying, so layout reads left→right
+      // as the chapter wrote it.
+      const order = members.map((member) => member.key);
+      const sorted = [...castActors.entries()].sort(
+        ([a], [b]) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99),
+      );
+      castActors.clear();
+      for (const [key, value] of sorted) castActors.set(key, value);
+      layoutActors();
+    },
+
+    setStageInset(bottomPx) {
+      if (destroyed) return;
+      insetBottom = Math.max(0, bottomPx);
+      layoutActors();
+      applyCamera(0);
+    },
+
     focusCamera(next) {
       target = next;
     },
@@ -888,6 +1083,9 @@ export function createScene(app: Application): PartyScene {
       nameplatesVisible = visible;
       for (const actor of actors.values()) {
         if (actor.label) actor.label.visible = visible;
+      }
+      for (const member of castActors.values()) {
+        if (member.label) member.label.visible = visible;
       }
     },
 
@@ -909,6 +1107,11 @@ export function createScene(app: Application): PartyScene {
           const box = nameplateBoxOf(actor.label!);
           return { ...box, x: actor.container.x + box.x, y: actor.container.y + box.y };
         });
+      for (const member of castActors.values()) {
+        if (member.leaving || member.label === null || !member.label.visible) continue;
+        const box = nameplateBoxOf(member.label);
+        boxes.push({ ...box, x: member.x + box.x, y: GROUND_Y + box.y });
+      }
       return { space: "story" as const, boxes };
     },
 
@@ -1037,6 +1240,7 @@ export function createScene(app: Application): PartyScene {
         actor.container.destroy({ children: true });
       }
       actors.clear();
+      castActors.clear();
       board?.destroy();
       board = null;
       backdrop.destroy({ children: true });

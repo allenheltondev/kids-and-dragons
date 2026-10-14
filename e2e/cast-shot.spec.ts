@@ -1,0 +1,104 @@
+/**
+ * Review tool, not a test: photograph story scenes with a cast on a TV and on
+ * a Travel Mode phone, so a human can judge whether the party and whoever
+ * they have met stand clear of the narration (world/cast.ts,
+ * world/stage-inset.ts). Like rig-shot, everything it could assert is pinned
+ * by unit tests; "does it read from the sofa" is not.
+ *
+ * Run against a dev server launching Gemfall:
+ *   npm run dev            # VITE_LAUNCH_CAMPAIGN unset → gemfall
+ *   KAD_CAST_SCENES=scene_tavern,choice_ember npx playwright test e2e/cast-shot.spec.ts
+ * Shots land in art/review/cast-<scene>-{tv,phone}.png.
+ */
+
+import { test, expect, type Page } from "@playwright/test";
+import { openPlayerTask } from "./player-navigation";
+
+const TAP = { timeout: 20_000 } as const;
+const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_motive_wealth")
+  .split(",")
+  .map((id) => id.trim())
+  .filter((id) => id.length > 0);
+
+async function createCharacter(page: Page, species: string, name: string): Promise<void> {
+  await page.getByRole("button", { name: new RegExp(species, "i") }).first().click(TAP);
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
+  await page
+    .locator(".creation-choice, .creation-card, button")
+    .filter({ hasText: /thornguard|duskrunner|starweaver|songkeeper/i })
+    .first()
+    .click(TAP);
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
+  for (let i = 0; i < 12; i++) {
+    const adds = page.getByRole("button", { name: /add a point to/i });
+    if ((await adds.count()) === 0) break;
+    await adds.first().click(TAP);
+  }
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
+  await page.getByRole("button", { name: /^next$/i }).click(TAP);
+  await page.getByPlaceholder("Tap to type").fill(name, TAP);
+  await page.getByRole("button", { name: /that's me/i }).click(TAP);
+  await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
+}
+
+test("photograph a cast on the story stage", async ({ browser }) => {
+  test.setTimeout(300_000);
+  const contexts: { close(): Promise<void> }[] = [];
+  const phone = async () => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    contexts.push(ctx);
+    return ctx.newPage();
+  };
+
+  const host = await phone();
+  await host.goto("/");
+  await host.getByRole("button", { name: /want to host/i }).click();
+  await host.getByText("Phone Mode").click();
+  await host.fill('input[placeholder="Type your name"]', "Allen");
+  await host.getByRole("button", { name: /start a game/i }).click();
+  await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
+  const code = new URL(host.url()).pathname.split("/").pop()!;
+
+  const others = [await phone(), await phone()];
+  for (const page of others) {
+    await page.goto("/");
+    await page.getByLabel(/room code/i).fill(code);
+    await page.getByRole("button", { name: /join a game/i }).click();
+    await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
+  }
+
+  const party: [Page, string, string][] = [
+    [host, "unicorn", "Sparklehoof"],
+    [others[0]!, "kitsune", "Tumblefern"],
+    [others[1]!, "bigfoot", "Bramblebeard"],
+  ];
+  for (const [page, species, name] of party) await createCharacter(page, species, name);
+
+  const tvCtx = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  contexts.push(tvCtx);
+  const tv = await tvCtx.newPage();
+  await tv.goto(`/tv/${code}`);
+
+  for (const [page] of party) {
+    await openPlayerTask(page);
+    await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
+  }
+  await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+  await expect(tv.locator(".narration__body")).toBeVisible({ timeout: 30_000 });
+
+  for (const scene of SCENES) {
+    await host.getByRole("button", { name: /^playtest/i }).click(TAP);
+    await host.getByRole("button", { name: new RegExp(`^${scene}(story|check|choice_point|rest|encounter)$`) }).click(TAP);
+    await host.getByRole("button", { name: /^close$/i }).click(TAP);
+    // The veil, the entrance, the rigs settling into idle.
+    await tv.waitForTimeout(4_000);
+    await tv.screenshot({ path: `art/review/cast-${scene}-tv.png` });
+    // Another seat's phone, parked on its World tab: the host's stays on the
+    // tab the Playtest drawer lives on.
+    const watcher = others[0]!;
+    await watcher.getByRole("button", { name: /^world$/i }).click(TAP).catch(() => undefined);
+    await watcher.screenshot({ path: `art/review/cast-${scene}-phone.png` });
+  }
+
+  await Promise.all(contexts.map((c) => c.close().catch(() => undefined)));
+});

@@ -456,3 +456,45 @@ describe("Field Guide tags (`discovers`)", () => {
     expect(result.out).toContain("duplicate items");
   });
 });
+
+describe("story cast (`cast`)", () => {
+  const sceneOf = (chapter) => chapter.scenes[chapter.entry];
+
+  it("accepts figures that resolve to art, read from this checkout even in a staged tree", () => {
+    // copyTree() carries no PNGs; the figure check still finds them.
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).cast = [
+        { figure: "entities/selkie", name: "Professor Tidewell" },
+        { figure: "characters/dragonling", name: "Grandmother Tull", size: "small" },
+      ];
+    });
+    expect(result.out).toContain("PASS");
+    expect(result.code).toBe(0);
+  });
+
+  it("names chapter, scene and expected file when a figure has no art", () => {
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).cast = [{ figure: "cast/nobody_drew_this" }];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("bramblewood-01");
+    expect(result.out).toContain('cast figure "cast/nobody_drew_this" has no art');
+    expect(result.out).toContain("assets/cast/nobody_drew_this/assembled.png");
+  });
+
+  it("refuses a crowd: three at most, so the party keeps its stage", () => {
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).cast = ["a", "b", "c", "d"].map((name) => ({ figure: "entities/sheeple", name }));
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("/cast");
+  });
+
+  it("refuses the same member twice", () => {
+    const result = withChapter((chapter) => {
+      sceneOf(chapter).cast = [{ figure: "entities/yeti" }, { figure: "entities/yeti" }];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("the same cast member twice");
+  });
+});

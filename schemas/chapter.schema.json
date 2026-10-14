@@ -397,6 +397,48 @@
         "pattern": "^[a-z]+\\.[a-z0-9_]+$"
       }
     },
+    "cast": {
+      "description": "Who is standing in this scene with the party, drawn on the shared screen opposite them (CastMember in chapter.ts). Name only the people and creatures physically present and part of the moment, never a mere mention. At most three, so the party is never crowded off its own stage. The validator resolves every figure to a file under assets/.",
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/castMember"
+      }
+    },
+    "castMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "figure"
+      ],
+      "properties": {
+        "figure": {
+          "description": "entities/<id> (assets/entities/<id>/assembled.png), characters/<species> (that species' fledgling art), or cast/<id> (a named character's own figure, assets/cast/<id>/assembled.png).",
+          "type": "string",
+          "pattern": "^(entities|characters|cast)/[a-z0-9]+(_[a-z0-9]+)*$"
+        },
+        "name": {
+          "description": "What the nameplate under the figure says, e.g. \"Professor Tidewell\". Omit for an unnamed creature, which then stands without a nameplate.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "size": {
+          "description": "How big the figure stands beside the party. Defaults to the entity's manifest scale, or medium (party-sized).",
+          "enum": [
+            "tiny",
+            "tiny_to_small",
+            "small",
+            "small_to_medium",
+            "medium",
+            "medium_to_large",
+            "large",
+            "very_large",
+            "colossal"
+          ]
+        }
+      }
+    },
     "endsCampaign": {
       "description": "This ending finishes the whole campaign, not just the chapter: the attempt completes and the party's gains commit, exactly as finishing the campaign's last beat does. For an authored exit before the last beat, such as Gemfall's Walk. Only read on a scene with an empty `choices` array \u2014 the validator rejects it anywhere else.",
       "const": true
@@ -714,6 +756,9 @@
         "discovers": {
           "$ref": "#/$defs/discovers"
         },
+        "cast": {
+          "$ref": "#/$defs/cast"
+        },
         "choices": {
           "$ref": "#/$defs/choices"
         },
@@ -768,6 +813,9 @@
         "discovers": {
           "$ref": "#/$defs/discovers"
         },
+        "cast": {
+          "$ref": "#/$defs/cast"
+        },
         "roller": {
           "enum": [
             "party",
@@ -809,6 +857,9 @@
         },
         "discovers": {
           "$ref": "#/$defs/discovers"
+        },
+        "cast": {
+          "$ref": "#/$defs/cast"
         },
         "choices": {
           "allOf": [
@@ -854,6 +905,9 @@
         },
         "discovers": {
           "$ref": "#/$defs/discovers"
+        },
+        "cast": {
+          "$ref": "#/$defs/cast"
         },
         "heal": {
           "type": "integer",
