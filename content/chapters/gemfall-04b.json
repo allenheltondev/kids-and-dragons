@@ -205,7 +205,7 @@
     },
     "scene_read_herd": {
       "type": "story",
-      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen. You can see the bald grey patches in the forest where they have stopped going. The herd is a map of where it hurts.",
+      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen. You can see the bald gray patches in the forest where they have stopped going. The herd is a map of where it hurts.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -216,7 +216,7 @@
       "choices": [
         {
           "id": "follow",
-          "label": "Follow the grey patches",
+          "label": "Follow the gray patches",
           "icon": "map",
           "goto": "scene_unicorns"
         }
@@ -227,7 +227,7 @@
       "discovers": [
         "character.unicorn"
       ],
-      "narration": "In a small glade the moss has gone the colour of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
+      "narration": "In a small glade the moss has gone the color of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
       "choices": [
         {
           "id": "help",
@@ -255,7 +255,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hum with the unicorns while the moss remembers its colour",
+      "prompt": "Hum with the unicorns while the moss remembers its color",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_finding",
@@ -270,7 +270,7 @@
       },
       "onFailure": {
         "goto": "scene_finding",
-        "narration": "You hum, and the moss goes green, then grey, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
+        "narration": "You hum, and the moss goes green, then gray, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
       }
     },
     "scene_finding": {
@@ -397,16 +397,16 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
-        "narration": "You follow the grey patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
+        "narration": "You follow the gray patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
       },
       "onFailure": {
         "goto": "ending_shown_the_door",
-        "narration": "The grey patches lead you in a circle, and then into a hedge, and then back to the same embarrassed toadstool. The forest has decided where you are going, and it is not the glade."
+        "narration": "The gray patches lead you in a circle, and then into a hedge, and then back to the same embarrassed toadstool. The forest has decided where you are going, and it is not the glade."
       }
     },
     "scene_glade_heart": {
       "type": "choice_point",
-      "narration": "In the very middle of the worst glade, in a bruise of grey moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
+      "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
       "choices": [
         {
           "id": "mend",

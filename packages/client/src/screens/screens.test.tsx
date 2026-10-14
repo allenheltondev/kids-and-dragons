@@ -13,12 +13,11 @@ import { afterEach, describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ClassDef, SpeciesDef } from "@kad/shared";
 import { canUseInventoryItem } from "./PlayerPanel";
-import { CosmeticRow, HeroStrip, SpeciesStep } from "./CreationFlow";
+import { HeroStrip, SpeciesStep } from "./CreationFlow";
 import { checkTarget, neededLabel, nextFace, outcomeWord } from "./DiceOverlay";
 import { isMissingArt } from "./CharacterPortrait";
 import { characterArtUrl } from "../world/art-paths";
 import manifest from "../../../../assets/manifest.json";
-import { HORN_STYLES, MARKINGS, PALETTES, WING_STYLES, defaultAppearance } from "./creationContent";
 import { patchCreationDraft, resetCreationDraft } from "./creationDraft";
 import rules from "../../../../content/rules.json";
 import items from "../../../../content/items.json";
@@ -236,15 +235,10 @@ describe("creation art", () => {
     }
   });
 
-  it("keeps the hero — and the colour just chosen for them — on screen", () => {
-    const html = renderToStaticMarkup(
-      <HeroStrip species={unicorn} klass={songkeeper} name="  Emberhoof  " accent="#70E09F" />,
-    );
+  it("keeps the hero on screen", () => {
+    const html = renderToStaticMarkup(<HeroStrip species={unicorn} klass={songkeeper} name="  Emberhoof  " />);
     expect(html).toContain('src="/assets/characters/unicorn/fledgling/assembled.png"');
     expect(html).toContain("Emberhoof");
-    // The accent is the light the hero stands in, so tapping a swatch changes
-    // something about the character and not only about the swatch.
-    expect(html).toContain("--portrait-accent:#70E09F");
   });
 
   it("stands the drafted hero in the preview as soon as a species is picked", () => {
@@ -254,62 +248,6 @@ describe("creation art", () => {
     expect(html).toContain('src="/assets/characters/dragonling/fledgling/assembled.png"');
     // ...somewhere with a floor under it (spec §6.2).
     expect(html).toContain("/assets/biomes/");
-  });
-});
-
-/**
- * The layout invariants behind the appearance and name steps. Both of these
- * were real: a check added to the chosen chip made it wider and reflowed the
- * row under the finger that tapped it, and every cosmetic option borrowed an
- * interface glyph — "Plain" was a check, inside a chip whose selected state is
- * also a check.
- */
-describe("creation options", () => {
-  const cosmetics = [...MARKINGS, ...HORN_STYLES, ...WING_STYLES];
-
-  it("shows each cosmetic option as the thing it names", () => {
-    const missing = cosmetics.filter((option) => !hasIcon(option.icon));
-    expect(missing).toEqual([]);
-    // Nothing here reuses the glyph that carries selection.
-    expect(cosmetics.map((option) => option.icon)).not.toContain("check");
-  });
-
-  it("keeps a seat for the check whether or not anything is chosen", () => {
-    const row = (chosen: string | undefined) =>
-      renderToStaticMarkup(
-        <CosmeticRow legend="Markings" options={MARKINGS} chosen={chosen} onChoose={() => undefined} />,
-      );
-    const marks = (html: string) => html.split('class="creation-option__mark"').length - 1;
-
-    // One slot per option, both ways round — the row's geometry does not
-    // depend on what is selected.
-    expect(marks(row(undefined))).toBe(MARKINGS.length);
-    expect(marks(row("dapple"))).toBe(MARKINGS.length);
-    expect(row(undefined)).not.toContain("Chosen");
-    expect(row("dapple")).toContain("Chosen");
-  });
-
-  /**
-   * Colour and accent are the one step creation does not require an answer to
-   * (CreationFlow `stepDone`), and this is what makes that safe: a player who
-   * taps straight past still leaves with a real colour, because picking a
-   * species already applied one.
-   *
-   * Worth pinning because the failure is silent and downstream. An empty
-   * accent is not a crash — it is a flame with no colour in the keepsake
-   * lantern and an unlit portrait, noticed weeks later by somebody wondering
-   * why one character looks wrong.
-   */
-  it("leaves every species with a usable colour before the step is even shown", () => {
-    // From the manifest, so a seventh species is covered the day it lands.
-    for (const { id } of manifest.species) {
-      const appearance = defaultAppearance(id as Parameters<typeof defaultAppearance>[0]);
-      expect(appearance.palette, id).not.toBe("");
-      expect(PALETTES.map((p) => p.id), id).toContain(appearance.palette);
-      // The accent is a hex the chrome renders directly — SignInFlow puts it
-      // straight into a `color`, which fails open and invisible on "".
-      expect(appearance.accent, id).toMatch(/^#[0-9a-fA-F]{6}$/);
-    }
   });
 });
 

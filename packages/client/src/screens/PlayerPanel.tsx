@@ -418,6 +418,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const section = usePlayerNavigation((navigation) => navigation.section);
   useEffect(() => { setSheetFor(null); }, [navigationRevision]);
   const [busy, setBusy] = useState(false);
+  /**
+   * "Ready to play" was tapped and the READY is on its way. Held locally so
+   * the ready page never flashes a second "I'm ready!" between the tap and
+   * the server's answer — the first tap is the whole decision.
+   */
+  const [readyRequested, setReadyRequested] = useState(false);
+  useEffect(() => {
+    if (me?.ready) setReadyRequested(false);
+  }, [me?.ready]);
   const isMyCombatTurn = useIsMyCombatTurn();
   // Someone else's check is a task too while you still have help to give.
   const canHelp =
@@ -577,6 +586,19 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const trades = state.trades ?? [];
   const offersToMe = trades.filter((offer) => offer.toPlayerId === me.playerId);
   const offersFromMe = trades.filter((offer) => offer.fromPlayerId === me.playerId);
+
+  /** The lobby's one tap: say ready, and show who else is. */
+  const readyToPlay = (): void => {
+    setPlayerSection("turn");
+    if (me.ready || offersToMe.length > 0) return;
+    setReadyRequested(true);
+    setBusy(true);
+    void send({ type: "READY", ready: true })
+      .then((accepted) => {
+        if (!accepted) setReadyRequested(false);
+      }, () => setReadyRequested(false))
+      .finally(() => setBusy(false));
+  };
   /*
    * Who this item can go to. A full bag is deliberately *not* a reason to
    * leave somebody out: §9.1 already has an answer for six full slots — "keep
@@ -1137,24 +1159,42 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <Icon name={inLobby ? "ready" : "swords"} />
               <span>
                 {inLobby
-                  ? me.ready ? "You're ready to play" : "Ready to play?"
+                  ? me.ready || readyRequested ? "You're ready to play" : "Ready to play?"
                   : me.ready ? "You're ready to fight" : "A fight is starting!"}
               </span>
             </h3>
             <p className="prompt__sub kad-muted">
               {inLobby
-                ? "Tap when you're ready. The adventure starts when everyone is."
+                ? "The adventure starts when everyone is ready."
                 : "Tap when you're ready. The fight starts when everyone is."}
             </p>
-            <Button
-              variant={me.ready ? "secondary" : "primary"}
-              size="lg"
-              icon={<Icon name={me.ready ? "back" : "ready"} />}
-              disabled={busy}
-              onClick={() => void dispatch({ type: "READY", ready: !me.ready })}
-            >
-              {me.ready ? "Wait, not yet" : inLobby ? "I'm ready!" : "I'm ready to fight!"}
-            </Button>
+            {/* In the lobby, "Ready to play" on the bag page already said yes,
+                so this page only offers the way back out. Before a fight the
+                button is still the whole answer. */}
+            {me.ready ? (
+              <Button
+                variant="secondary"
+                size="md"
+                icon={<Icon name="back" />}
+                disabled={busy}
+                onClick={() => {
+                  void dispatch({ type: "READY", ready: false });
+                  if (inLobby) setPlayerSection("bag");
+                }}
+              >
+                Wait, not yet
+              </Button>
+            ) : inLobby && readyRequested ? null : (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<Icon name="ready" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "READY", ready: true })}
+              >
+                {inLobby ? "I'm ready!" : "I'm ready to fight!"}
+              </Button>
+            )}
             <ul className="prompt__party">
               {party.map((member) => (
                 <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
@@ -1342,7 +1382,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       </div>
 
       <div className="player__scroll kad-scroll" hidden={!showSheet}>
-        {hasTask ? (
+        {hasTask && !inLobby ? (
           <Button variant="primary" size="lg" block className="player__task-entry"
             icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
             {offersToMe.length > 0 ? "A gift for you" : inLobby ? "Ready to play" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : "View the fight"}
@@ -1572,6 +1612,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             <summary className="kad-focusable">Room settings</summary>
             {roomControls}
           </details>
+        ) : null}
+
+        {/* In the lobby the one thing left to do comes last, at the foot of
+            the page, after the sheet you have just been looking over — and
+            it is the whole answer: the tap says you are ready. */}
+        {inLobby ? (
+          <Button variant="primary" size="lg" block className="player__task-entry player__task-entry--foot"
+            icon={<Icon name="hand" />} disabled={readyRequested && busy} onClick={readyToPlay}>
+            {offersToMe.length > 0 ? "A gift for you" : "Ready to play"}
+          </Button>
         ) : null}
       </div>
         {!showSheet ? (

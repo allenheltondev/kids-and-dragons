@@ -88,7 +88,7 @@
       ]
     },
     "sentinel": {
-      "description": "The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.",
+      "description": "The hardest thing in an ordinary fight. Slow, very well armored, and it does not leave.",
       "stats": {
         "hp": 20,
         "guard": 14,

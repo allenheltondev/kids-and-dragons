@@ -283,7 +283,7 @@
     "scene_bells_ringing_unassigned_wedge": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognised something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You run.",
+      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You run.",
       "choices": [
         {
           "id": "on",
@@ -683,7 +683,7 @@
     "scene_q2_glade_mended": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "\"We mended a wounded glade,\" you say. The Seal-Keeper closes its eyes. When it opens them, the gem-veins in the walls have gone a soft green for a moment, like moss remembering its colour. \"I felt that,\" it says. \"From here. I did not know who.\" It looks at you as if it is memorising something.",
+      "narration": "\"We mended a wounded glade,\" you say. The Seal-Keeper closes its eyes. When it opens them, the gem-veins in the walls have gone a soft green for a moment, like moss remembering its color. \"I felt that,\" it says. \"From here. I did not know who.\" It looks at you as if it is memorising something.",
       "choices": [
         {
           "id": "on",
@@ -1002,7 +1002,7 @@
     },
     "ending_quiet_fixers": {
       "type": "rest",
-      "narration": "You put every stone back, then slip out of the mountain by a side tunnel and never tell a soul. The foothills only know that the tremors stopped and the moths came home. History files it as a lucky year. But four hundred years from now, a warden clerk will find one line in a ledger bound in a different colour, and smile, and wonder who. The Quiet Fixers.",
+      "narration": "You put every stone back, then slip out of the mountain by a side tunnel and never tell a soul. The foothills only know that the tremors stopped and the moths came home. History files it as a lucky year. But four hundred years from now, a warden clerk will find one line in a ledger bound in a different color, and smile, and wonder who. The Quiet Fixers.",
       "heal": 4,
       "choices": []
     },
@@ -1014,7 +1014,7 @@
     },
     "ending_wardens_regret": {
       "type": "rest",
-      "narration": "You hand the leash to the Skywardens. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, Captain Voss writes one line in a ledger of a different colour: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
+      "narration": "You hand the leash to the Skywardens. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, Captain Voss writes one line in a ledger of a different color: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
       "heal": 4,
       "choices": []
     },

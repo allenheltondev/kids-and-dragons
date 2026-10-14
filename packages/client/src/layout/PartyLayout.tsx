@@ -92,7 +92,6 @@ function PhoneLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">You</span>
         </button>
-        <GuideTab on={inGuide} onShowPlayer={() => setShowing("player")} />
         <button
           type="button"
           className={`kad-tray__tab kad-tap kad-focusable${onMap ? " kad-tray__tab--on" : ""}`}
@@ -104,6 +103,7 @@ function PhoneLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
+        <GuideTab on={inGuide} onShowPlayer={() => setShowing("player")} />
       </nav>
 
       {/* `hidden` rather than unmounted, like the Travel panes: a selection
