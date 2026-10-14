@@ -582,7 +582,7 @@
     }
   },
   "llmHints": {
-    "tone": "busy, grey-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
+    "tone": "busy, gray-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
     "vocabulary": "age-8",
     "forbidden": [
       "death",

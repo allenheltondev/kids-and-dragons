@@ -454,16 +454,33 @@ describe("an item swap", () => {
 // ---------------------------------------------------------------------------
 
 describe("readying up", () => {
-  it("toggles to ready, and back", async () => {
+  it("readies with the one Ready to play tap, and can take it back", async () => {
     const user = userEvent.setup();
     const { sent } = mount({ phase: "lobby" });
+    act(() => setPlayerSection("bag"));
 
-    await user.click(screen.getByRole("button", { name: "I'm ready!" }));
+    await user.click(screen.getByRole("button", { name: "Ready to play" }));
     expect(sent).toEqual([{ type: "READY", ready: true }]);
+    // The tap was the answer: no second "I'm ready!" to press, before or
+    // after the server agrees.
+    expect(usePlayerNavigation.getState().section).toBe("turn");
+    expect(screen.queryByRole("button", { name: "I'm ready!" })).toBeNull();
 
     serverSends({ party: [member({ ready: true })] });
+    expect(screen.queryByRole("button", { name: "I'm ready!" })).toBeNull();
+    expect(screen.getByText("You're ready to play")).toBeTruthy();
+
     await user.click(screen.getByRole("button", { name: "Wait, not yet" }));
     expect(sent[1]).toEqual({ type: "READY", ready: false });
+    expect(usePlayerNavigation.getState().section).toBe("bag");
+  });
+
+  it("puts Ready to play at the foot of the lobby sheet", () => {
+    mount({ phase: "lobby" });
+    act(() => setPlayerSection("bag"));
+    const sheet = document.querySelector(".player__scroll") as HTMLElement;
+    const ready = screen.getByRole("button", { name: "Ready to play" });
+    expect(sheet.lastElementChild).toBe(ready);
   });
 
   it("hides Begin the adventure until the whole party is ready", async () => {

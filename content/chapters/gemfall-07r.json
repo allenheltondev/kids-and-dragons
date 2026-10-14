@@ -240,7 +240,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Talk travellers into letting their stones go home",
+      "prompt": "Talk travelers into letting their stones go home",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_road_gifts",
@@ -382,7 +382,7 @@
       "discovers": [
         "npc.boggart"
       ],
-      "narration": "A boggart with a satchel full of scribbled paper sidles up beside you, not looking at you, and says to nobody: \"Catalogue. Who bought what in the marsh. Very interesting. Costs one really good sentence you overheard.\"",
+      "narration": "A boggart with a satchel full of scribbled paper sidles up beside you, not looking at you, and says to nobody: \"Catalog. Who bought what in the marsh. Very interesting. Costs one really good sentence you overheard.\"",
       "choices": [
         {
           "id": "wardens_said",
@@ -414,7 +414,7 @@
     },
     "scene_boggart_grandma_said": {
       "type": "story",
-      "narration": "You tell it what Grandmother Tull said about the bell nobody rings, word for word, including the second time she said it. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalogue is in your hands before you notice it has let go.",
+      "narration": "You tell it what Grandmother Tull said about the bell nobody rings, word for word, including the second time she said it. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalog is in your hands before you notice it has let go.",
       "choices": [
         {
           "id": "on",
@@ -426,7 +426,7 @@
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalogue without ever once looking at you.",
+      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "choices": [
         {
           "id": "on",
@@ -731,7 +731,7 @@
     },
     "scene_switchback_fly_round": {
       "type": "story",
-      "narration": "You go up, find a side path the wolves have not thought of, and talk the others along it one careful step at a time. The pack streams down the main road beneath you in a long grey ribbon, and one wolf glances up, and decides you are not worth the climb.",
+      "narration": "You go up, find a side path the wolves have not thought of, and talk the others along it one careful step at a time. The pack streams down the main road beneath you in a long gray ribbon, and one wolf glances up, and decides you are not worth the climb.",
       "choices": [
         {
           "id": "on",
@@ -788,7 +788,7 @@
       ],
       "onVictory": {
         "goto": "choice_the_bend",
-        "narration": "The pack decides you are more trouble than the road is worth, and pours past you down the hill in a long grey ribbon."
+        "narration": "The pack decides you are more trouble than the road is worth, and pours past you down the hill in a long gray ribbon."
       },
       "onDefeat": {
         "goto": "ending_scattered",
@@ -836,7 +836,7 @@
         },
         {
           "id": "buyers",
-          "label": "You know from the catalogue who it was sold to",
+          "label": "You know from the catalog who it was sold to",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "check_caravan_helped"
