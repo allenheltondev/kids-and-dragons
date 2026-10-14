@@ -215,7 +215,6 @@
   font-size: var(--font-size-lg, 1.25em);
 }
 
-.preview__palette,
 .preview__name {
   display: flex;
   align-items: center;
@@ -223,13 +222,6 @@
   margin: 0;
   font-size: var(--font-size-md, 1em);
   font-weight: 600;
-}
-
-.preview__palette-chip {
-  inline-size: 1.2em;
-  block-size: 1.2em;
-  border: 0.16em solid;
-  border-radius: var(--radius-pill, 999em);
 }
 
 .preview__waiting {

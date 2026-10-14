@@ -90,7 +90,7 @@ describe("Party Mode and the map", () => {
   it("offers four destinations and returns from World to a new turn", () => {
     const { container } = mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Guide", "Map"]);
+    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map", "Guide"]);
     act(() => screen.getByRole("button", { name: /^world$/i }).click());
     expect(showing(container)).toEqual(["world"]);
     act(() => {
