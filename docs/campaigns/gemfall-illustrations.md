@@ -1,7 +1,7 @@
 # Gemfall scene illustrations
 
 Six backdrops created with the built-in image generation tool. Production files live in
-`assets/scenes/gemfall/`: 1920Ã—1080 WebP, quality 88, about 3.0 MB total. Original generated
+`assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.
 
 | Asset | Coverage |
@@ -52,7 +52,7 @@ Single wide 16:9 painterly detailed fantasy storybook game backdrop, Gemfall Kid
 
 ### Sheeple ridge
 
-Generated with the built-in image generation tool and exported to `assets/scenes/gemfall/sheeple-ridge.webp` (1920Ã—1080 WebP, quality 88). Wired into `scene_flock_ridge`, `scene_flock_bigfoot`, `check_flock_clever`, `scene_flock_copies`, and `scene_flock_scatters`; registered in `assets/manifest.json`.
+Generated with the built-in image generation tool and exported to `assets/scenes/gemfall/sheeple-ridge.webp` (1920×1080 WebP, quality 88). Wired into `scene_flock_ridge`, `scene_flock_bigfoot`, `check_flock_clever`, `scene_flock_copies`, and `scene_flock_scatters`; registered in `assets/manifest.json`.
 
 Original scene brief from PR 131 was followed, with slate-blue felt wraps and sheep muzzles matching the current NPC artwork. The initial prompt is recorded in `art/source/sheeple-ridge-generation.md`; the final appearance correction used the existing sheeple trio as a visual reference and is documented in `art/source/sheeple-ridge-revision.md`.
 
@@ -62,18 +62,18 @@ Content validation checks chapter schemas and scene graphs. Gemfall wiring tests
 every referenced illustration exists and none is assigned to an encounter. Renderer tests
 cover biome fallback and late-load cancellation; asset-path tests cover scene selection,
 combat, epilogues, and mismatched chapter content. The original five backdrops were visually reviewed using the real WorldView at
-1440Ã—900 and a 390Ã—520 phone-sized world pane.
+1440×900 and a 390×520 phone-sized world pane.
 
 The sheeple ridge was visually inspected for flock grouping, sheep-folk outfits, jackalopes, empty long grass, and an open foreground. Its WebP dimensions and format were verified; content validation and all 91 Gemfall wiring, flow, and field-guide reach tests passed.
 
-## Cast figures â€” story-stage pilot
+## Cast figures — story-stage pilot
 
 Generated with the built-in image generation tool on 2026-10-14, using the existing
 merfolk, fledgling dragonling, and Skywarden assembled figures as visual references.
-Production files are `assets/cast/<id>/assembled.png`: 1024Ã—1024 RGBA with true alpha,
+Production files are `assets/cast/<id>/assembled.png`: 1024×1024 RGBA with true alpha,
 three-quarter left, no ground shadows, baseline y=900. All three use `medium` scale.
-Generated outputs were 1254Ã—1254; packaging crops to the alpha>128 figure bounds,
-uniformly fits within 940Ã—820, horizontally centers, and places the bottom at y=900.
+Generated outputs were 1254×1254; packaging crops to the alpha>128 figure bounds,
+uniformly fits within 940×820, horizontally centers, and places the bottom at y=900.
 No painting, alpha removal, recoloring, or replacement of existing art was used.
 
 | id | basis | scene references | design |
@@ -181,11 +181,11 @@ to reach Ashby and Pellam while exercising the real party creation, server, cast
 renderer, narration, and playtest scene jump. Production campaigns are unchanged.
 
 
-## Cast figures â€” elders and adults (A1)
+## Cast figures — elders and adults (A1)
 
 Ten figures complete A1 after the approved Ashby pilot. Generated with the built-in
 image generation tool using the approved species and Ashby references. Production
-PNGs are 1024Ã—1024 RGBA, feet at y=900, facing left. Packaging uses the same uniform
+PNGs are 1024×1024 RGBA, feet at y=900, facing left. Packaging uses the same uniform
 alpha-bounds fit as the pilot; scale words are applied to every matching cast entry.
 
 | id | basis | scale | references |
@@ -310,10 +310,10 @@ Revised: broad silver streaks through the tied mane and clear age lines make her
 
 Revised: age now reads at a glance through a long creased muzzle, lowered lids, mature shoulders, and prominent silver-white mane and forelock.
 
-## Cast figures â€” Recurring individuals (A2)
+## Cast figures — Recurring individuals (A2)
 
 Generated with the built-in image generation tool against the existing species/order
-references. Production PNGs are 1024Ã—1024 RGBA, facing left, feet at y=900.
+references. Production PNGs are 1024×1024 RGBA, facing left, feet at y=900.
 The pilot alpha-bounds fit is used without repainting or recoloring.
 
 Existing peoples are retained. Hesper's embroidered road sash and Marda's grey-dappled coat and apron distinguish the centaur hosts. Gullet has the notched ferry hat and long pole; Ossley has an old floppy hat and short pole. Tidewell keeps her seal-skin cloak with an owl-feather clasp and ink-stained notes. Mortar has a pot and ladle; Lintel has moss, a nest and an open palm. Tobble sings with laces and a shoe; Hob waves his hat. Nan holds mittens, a teapot lid and a folded umbrella.
@@ -393,10 +393,10 @@ NEW single game cast figure Nan Rummage. Match the supplied species reference an
 
 Reference: `assets/entities/boggart/assembled.png`.
 
-## Cast figures â€” Individual order members (A3)
+## Cast figures — Individual order members (A3)
 
 Generated with the built-in image generation tool against the existing species/order
-references. Production PNGs are 1024Ã—1024 RGBA, facing left, feet at y=900.
+references. Production PNGs are 1024×1024 RGBA, facing left, feet at y=900.
 The pilot alpha-bounds fit is used without repainting or recoloring.
 
 Voss is a griffin, Brask a female faun, Holloway a griffin, and Mother Thrum a bigfoot: all are already represented in their order reference images. Voss has the direct beaked silhouette; Brask's ears and curls carry her three pencils; Holloway keeps the uniform and tidy ledger on a griffin old flyer; Mother Thrum's elder bigfoot body and bell charms suit a steady ford witch. Skywarden bases use actual species because the faction is absent from manifest entities, as in the approved Pellam pilot. Mother Thrum uses witch_order, which is a valid manifest entity. Group casts remain unchanged.
@@ -438,9 +438,9 @@ NEW single individual game cast figure Mother Thrum; the supplied reference is a
 
 Reference: `assets/entities/witch_order/assembled.png`.
 
-## Gemfall 04A â€” Pride country
+## Gemfall 04A — Pride country
 
-Generated with the built-in image-generation tool. Six character-free 1920Ã—1080 WebP backdrops at quality 88; prompts below. The Eastern Plains palette shifts from day gold to night indigo. The foreground stays open and level for the stage.
+Generated with the built-in image-generation tool. Six character-free 1920×1080 WebP backdrops at quality 88; prompts below. The Eastern Plains palette shifts from day gold to night indigo. The foreground stays open and level for the stage.
 
 | Asset | Coverage |
 |---|---|
