@@ -835,7 +835,24 @@ describe("isPromptForPlayer", () => {
     };
     expect(isPromptForPlayer(prompt, "p_1", party)).toBe(true);
     expect(isPromptForPlayer(prompt, "p_2", party)).toBe(false);
-    expect(isPromptForPlayer({ ...prompt, characterId: "c_nope" }, "p_1", party)).toBe(false);
+    // A roller who has left the run cannot hold the check up: anyone may roll.
+    expect(isPromptForPlayer({ ...prompt, characterId: "c_nope" }, "p_1", party)).toBe(true);
+  });
+
+  it("opens a roll to the table when the nominee's phone has dropped", () => {
+    const prompt = {
+      kind: "roll" as const,
+      sceneId: "s",
+      stat: "quick" as const,
+      tn: 12,
+      prompt: "Wriggle through",
+      characterId: "c_1",
+    };
+    const table = [...party, makeMember({ playerId: "p_2", character: { ...party[0]!.character, id: "c_2" } })];
+    expect(isPromptForPlayer(prompt, "p_2", table)).toBe(false);
+    const dropped = table.map((m) => (m.character.id === "c_1" ? { ...m, connected: false } : m));
+    expect(isPromptForPlayer(prompt, "p_2", dropped)).toBe(true);
+    expect(isPromptForPlayer(prompt, "p_stranger", dropped)).toBe(false);
   });
 
   it("is never true for a display client", () => {
