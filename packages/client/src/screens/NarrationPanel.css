@@ -108,13 +108,54 @@
  * way and gets the same strip, because rule 1 forbids knowing the difference.
  */
 
+/*
+ * In a fight the panel stops being a layer over the whole pane. It used to keep
+ * `inset: 0` and the story gradient, which darkened the bottom ~40% of the
+ * board — exactly where the enemies tend to stand — for the whole fight, and
+ * held the opening line up the entire time. Now it is a strip along the bottom
+ * with no backdrop of its own; each line gets a small plate, arrives, stays
+ * long enough to read aloud, and gets out of the way. The board is the picture.
+ */
+.narration--fight {
+  inset: auto 0 0 0;
+  background: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.narration--fight .narration__head {
+  display: none;
+}
+
 .narration--fight .narration__body {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  inline-size: fit-content;
+  max-inline-size: min(var(--kad-measure, 34em), 100%);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-md, 0.75em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
   font-size: var(--font-size-lg, 1.25em);
+  animation:
+    narration-arrive 320ms ease-out,
+    narration-leave 600ms ease-in 7s forwards;
+}
+
+@keyframes narration-leave {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* No travel, but the line still has to leave the board. */
+@media (prefers-reduced-motion: reduce) {
+  .narration--fight .narration__body {
+    animation: narration-leave 1ms linear 7s forwards;
+  }
 }
 
 .narration__choices {
@@ -184,6 +225,43 @@
   font-weight: 600;
 }
 
+/*
+ * A choice somebody has tapped on their phone but not confirmed, and the
+ * fighter's half-made pick in a fight. The same cyan the board rings its aim
+ * in (world/board.ts AIM_COLOR), so "about to" reads as one mark everywhere.
+ */
+.narration__choice--picked {
+  border-color: #6fe6ff;
+  border-width: 0.16em;
+  background: rgba(111, 230, 255, 0.14);
+  box-shadow: 0 0 0.8em rgba(111, 230, 255, 0.35);
+}
+
+.narration__picker,
+.narration__aim {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  color: #6fe6ff;
+}
+
+.narration__picker {
+  margin-inline-start: auto;
+  font-size: 0.8em;
+  font-weight: 700;
+}
+
+.narration__aim {
+  align-self: flex-start;
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border: 0.16em solid #6fe6ff;
+  border-radius: var(--radius-pill, 999em);
+  background: rgba(111, 230, 255, 0.14);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 600;
+}
+
 .narration__prompt {
   align-self: flex-start;
   border-color: var(--color-accent, #f5c86c);
@@ -197,5 +275,34 @@
 @container world (max-width: 32em) {
   .narration__body {
     font-size: var(--font-size-xl, 1.5em);
+  }
+}
+
+/* The TV's highlight for an unconfirmed pick: arrives with a pop and keeps
+   a slow glow while the player is still deciding. */
+.narration__choice--picked {
+  animation:
+    narration-picked-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    narration-picked-glow 1.6s ease-in-out 260ms infinite;
+}
+
+@keyframes narration-picked-in {
+  from { transform: scale(0.94); }
+  to { transform: scale(1); }
+}
+
+@keyframes narration-picked-glow {
+  0%, 100% { box-shadow: 0 0 0.5em rgba(111, 230, 255, 0.25); }
+  50% { box-shadow: 0 0 1.2em rgba(111, 230, 255, 0.55); }
+}
+
+.narration__aim {
+  animation: narration-arrive 260ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .narration__choice--picked,
+  .narration__aim {
+    animation: none;
   }
 }

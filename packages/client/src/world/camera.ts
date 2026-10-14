@@ -143,6 +143,13 @@ export const FOCUS_MARGIN_TILES = 3;
 /** A pinch may not zoom past this many tiles across either axis of the pane. */
 export const MIN_VISIBLE_TILES = 3;
 
+/**
+ * A tile this wide (CSS px) reads from a sofa, so a pane that can draw the whole
+ * board at this size draws the whole board (`wholeWhenRoomy`). A 1280 × 720 TV
+ * gets 90; a 390 px phone's world pane gets ~39 and keeps the follow camera.
+ */
+export const ROOMY_TILE_PX = 72;
+
 /** The pane the camera renders into, in CSS pixels. Never the window. */
 export interface Viewport {
   readonly width: number;
@@ -208,12 +215,19 @@ export interface CameraState {
   readonly override: CameraView | null;
   /** The attention key the override was taken under. See the header. */
   readonly attention: string;
+  /**
+   * Show the whole board, held still, on a pane roomy enough to read it at
+   * `ROOMY_TILE_PX` a tile. The battle board wants this; the story stage,
+   * which zooms in on a character on purpose, does not.
+   */
+  readonly wholeWhenRoomy: boolean;
 }
 
 export interface CameraOptions {
   readonly board?: BoardSize;
   readonly focus?: readonly Position[];
   readonly attention?: string;
+  readonly wholeWhenRoomy?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -226,6 +240,7 @@ export function createCameraState(options: CameraOptions = {}): CameraState {
     focus: safeFocus(options.focus),
     override: null,
     attention: options.attention ?? "",
+    wholeWhenRoomy: options.wholeWhenRoomy ?? false,
   };
 }
 
@@ -337,7 +352,7 @@ function override(state: CameraState, viewport: Viewport, wanted: CameraView): C
 export function resolveCamera(state: CameraState, viewport: Viewport): Camera {
   const pane = safeViewport(viewport);
   const board = state.board;
-  const wanted = state.override ?? autoFrame(board, state.focus, pane);
+  const wanted = state.override ?? autoFrame(board, state.focus, pane, state.wholeWhenRoomy);
   const view = settle(board, pane, wanted);
 
   const visibleWidth = pane.width / view.scale;
@@ -401,7 +416,20 @@ export function focusFrame(board: BoardSize, focus: readonly Position[]): BoardR
   };
 }
 
-function autoFrame(board: BoardSize, focus: readonly Position[], pane: Viewport): CameraView {
+function autoFrame(
+  board: BoardSize,
+  focus: readonly Position[],
+  pane: Viewport,
+  wholeWhenRoomy: boolean,
+): CameraView {
+  // A pane that holds the whole board at a readable size gets the whole board,
+  // held still. On a TV the focus frame only ever cropped a row or two — often
+  // the one the monsters stood on — and re-zoomed on every turn for no gain.
+  // A phone's world pane is nowhere near this, so it keeps following the actor.
+  const whole = Math.min(pane.width / board.width, pane.height / board.height);
+  if (wholeWhenRoomy && whole >= ROOMY_TILE_PX) {
+    return { centre: { x: board.width / 2, y: board.height / 2 }, scale: whole };
+  }
   const frame = focusFrame(board, focus);
   return {
     centre: { x: frame.x + frame.width / 2, y: frame.y + frame.height / 2 },
