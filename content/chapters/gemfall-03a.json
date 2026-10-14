@@ -1,5 +1,5 @@
 {
-  "$comment": "Gemfall beat 3 on the River Road (docs/campaigns/gemfall.md, 3A). Every ending sets exactly one member of `crossing`: rest_dry_end sets crossed_dry on entry; scene_swept sets river_took_us on entry and is the only door to rest_wet_end and rest_setback. The two never share a path - scene_swept is reached only from a failed crossing check or a lost drake fight, and rest_dry_end only from a passed crossing check. The setback needs a swept party to fail a crawler check AND lose the crawler fight.",
+  "$comment": "Gemfall beat 3 on the River Road (docs/campaigns/gemfall.md, 3A). Every ending sets exactly one member of `crossing`: rest_dry_end sets crossed_dry on entry; scene_swept sets river_took_us on entry and is the only door to rest_wet_end and rest_setback. The two never share a path - scene_swept is reached only from a failed crossing check or a lost drake fight, and rest_dry_end only from a passed crossing check. The setback needs a swept party to fail a crawler check AND lose the crawler fight. The expansion's episodes (kettle camp, wagon, river view, passes, Dilly, gem toll, camp vote, night rope, wake fee, east landing, mouth shore) set only chapter-local flags.",
   "id": "gemfall-03a",
   "campaignId": "gemfall",
   "index": 3,
@@ -9,7 +9,7 @@
     "set": "road",
     "flag": "route_river"
   },
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_east_road",
   "objectives": [
@@ -68,7 +68,7 @@
           "id": "walk_on",
           "label": "Keep walking to the crossing",
           "icon": "arrow",
-          "goto": "scene_queue"
+          "goto": "scene_kettle_camp"
         }
       ]
     },
@@ -90,7 +90,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_queue",
+        "goto": "scene_kettle_camp",
         "narration": "Every marker goes back in. MILE 7 goes back in between MILE 2 and MILE 3, so the road now runs backwards for a bit. A centaur thunders past, groans, and fixes it without stopping. No guide for you today."
       }
     },
@@ -120,7 +120,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice.",
+      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice. Then she trots off ahead to check on her detour signs.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -137,9 +137,9 @@
       "choices": [
         {
           "id": "follow_fennick",
-          "label": "Follow Fennick to the river",
+          "label": "Walk on toward the river",
           "icon": "arrow",
-          "goto": "scene_queue"
+          "goto": "scene_kettle_camp"
         }
       ]
     },
@@ -164,8 +164,12 @@
           "id": "let_it_go",
           "label": "Let it go and wait your turn",
           "icon": "rest",
-          "goto": "scene_troll"
+          "goto": "scene_skip_passes"
         }
+      ],
+      "discovers": [
+        "location.stone_crossing",
+        "npc.burrowfolk"
       ],
       "cast": [
         {
@@ -176,9 +180,6 @@
           "figure": "entities/burrowfolk",
           "name": "Brassbuckle recordkeeper"
         }
-      ],
-      "discovers": [
-        "npc.burrowfolk"
       ]
     },
     "check_rivals": {
@@ -192,7 +193,7 @@
         "narration": "You point out that the rope has fresh knots, the knots are brass-hat knots, and one of them still has a brass hat caught in it."
       },
       "onFailure": {
-        "goto": "scene_troll",
+        "goto": "scene_skip_passes",
         "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
       },
       "cast": [
@@ -208,7 +209,7 @@
     },
     "scene_rivals_caught": {
       "type": "story",
-      "narration": "A troll who does not hurry walks the whole Brassbuckle Expedition to the back of the queue. In their rush they leave behind a coil of good rope, tied across the shallows. It was their secret shortcut. Now it is yours.",
+      "narration": "The brass hats call themselves the Brassbuckle Expedition, and a troll who does not hurry walks all six of them to the back of the queue. In their rush they leave behind a coil of good rope, tied across the shallows. It was their secret shortcut. Now it is yours.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -219,9 +220,9 @@
       "choices": [
         {
           "id": "to_troll",
-          "label": "Step up to the toll",
+          "label": "Take your place in the queue",
           "icon": "arrow",
-          "goto": "scene_troll"
+          "goto": "scene_skip_passes"
         }
       ],
       "cast": [
@@ -262,6 +263,13 @@
           "goto": "scene_troll_ask_riddle"
         },
         {
+          "id": "new_story",
+          "label": "Make up a brand-new story, right now",
+          "icon": "spark",
+          "requiresFlag": "gave_our_story",
+          "goto": "scene_troll_new_story"
+        },
+        {
           "id": "riddle_account",
           "label": "Bring him the prides' riddle score",
           "icon": "crown",
@@ -292,7 +300,7 @@
           "id": "on",
           "label": "Wait for the next toll",
           "icon": "crown",
-          "goto": "scene_troll_hum"
+          "goto": "scene_gem_toll"
         }
       ]
     },
@@ -311,7 +319,7 @@
           "id": "on",
           "label": "Wait for the next toll",
           "icon": "clever",
-          "goto": "scene_troll_hum"
+          "goto": "scene_gem_toll"
         }
       ]
     },
@@ -330,13 +338,13 @@
           "id": "on",
           "label": "Wait for the next toll",
           "icon": "scroll",
-          "goto": "scene_troll_hum"
+          "goto": "scene_gem_toll"
         }
       ]
     },
     "scene_troll_hum": {
       "type": "story",
-      "narration": "Halfway through, Old Lintel stops listening to you and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" He has stopped asking riddles this season. Now there is only one toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
+      "narration": "Old Lintel stops listening to the queue and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" Stories and riddles are not enough this season. Now there is one more toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -388,7 +396,7 @@
           "id": "on",
           "label": "Join the queue camp",
           "icon": "gem",
-          "goto": "rest_queue_camp"
+          "goto": "choice_camp_spot"
         }
       ]
     },
@@ -407,7 +415,7 @@
           "id": "on",
           "label": "Join the queue camp",
           "icon": "ear",
-          "goto": "rest_queue_camp"
+          "goto": "choice_camp_spot"
         }
       ]
     },
@@ -426,13 +434,13 @@
           "id": "on",
           "label": "Join the queue camp",
           "icon": "heart",
-          "goto": "rest_queue_camp"
+          "goto": "choice_camp_spot"
         }
       ]
     },
     "rest_queue_camp": {
       "type": "rest",
-      "narration": "The queue moves about one troll-story an hour, so everybody camps right where they stand. Someone shares toffee. Somebody else's goat eats the toffee. Sit a while and listen to the river argue with the stones.",
+      "narration": "The queue moves about one troll-story an hour, so everybody camps right where they stand. Someone shares toffee. Somebody's goat eats the toffee. Sit a while and listen to the river argue with the stones. Under the bridge, something with a slate is rubbing out numbers.",
       "heal": 2,
       "choices": [
         {
@@ -443,9 +451,9 @@
         },
         {
           "id": "to_bank",
-          "label": "Wait for your turn at the water",
+          "label": "Settle down to sleep",
           "icon": "arrow",
-          "goto": "scene_crossing_bank"
+          "goto": "scene_night_rope"
         }
       ]
     },
@@ -484,7 +492,7 @@
           "id": "leave_shelf",
           "label": "Leave it. Rates are rates.",
           "icon": "back",
-          "goto": "scene_crossing_bank"
+          "goto": "scene_night_rope"
         }
       ]
     },
@@ -504,7 +512,7 @@
         "narration": "You offer a song, a shiny button, and a really excellent fish story. The drake weighs all three, decides it has been treated like a professional, and nudges the humming gem across the shelf."
       },
       "onFailure": {
-        "goto": "scene_crossing_bank",
+        "goto": "scene_night_rope",
         "narration": "The drake listens to your offer, then raises its rates. Then it raises them again, just to watch your face. The humming gem stays exactly where it is."
       }
     },
@@ -530,9 +538,9 @@
       "choices": [
         {
           "id": "back_to_bank",
-          "label": "Back to the water",
+          "label": "Back to camp for the night",
           "icon": "arrow",
-          "goto": "scene_crossing_bank"
+          "goto": "scene_night_rope"
         }
       ]
     },
@@ -599,6 +607,20 @@
           "goto": "check_crossing_easy"
         },
         {
+          "id": "heron_step",
+          "label": "Step only where the heron stepped",
+          "icon": "feather",
+          "requiresFlag": "heron_line",
+          "goto": "check_crossing_easy"
+        },
+        {
+          "id": "slow_line",
+          "label": "Take the slow line you watched all evening",
+          "icon": "drop",
+          "requiresFlag": "learned_the_river",
+          "goto": "check_crossing_easy"
+        },
+        {
           "id": "ask_frog",
           "label": "Ask the frog in the boat",
           "icon": "ear",
@@ -648,8 +670,8 @@
       "prompt": "Step from drowned stone to drowned stone across the last stretch",
       "roller": "party",
       "onSuccess": {
-        "goto": "rest_dry_end",
-        "narration": "Slip, wobble, step, step, step. The river grabs at your ankles, grumbles, and lets go. You stand on the east bank with boots that are, astonishingly, dry."
+        "goto": "scene_east_landing",
+        "narration": "Slip, wobble, step, step, step. The river grabs at your ankles, grumbles, and lets go. You stand on the east bank with boots that are, astonishingly, dry, in the middle of a traffic jam."
       },
       "onFailure": {
         "goto": "scene_swept",
@@ -663,7 +685,7 @@
       "prompt": "Hold on tight through the last fast stretch",
       "roller": "party",
       "onSuccess": {
-        "goto": "rest_dry_end",
+        "goto": "scene_east_landing",
         "narration": "The current tugs, and sulks, and lets you go. Your boots touch the east bank and they are, astonishingly, dry."
       },
       "onFailure": {
@@ -703,6 +725,12 @@
           "label": "Hold on to each other",
           "icon": "hand",
           "goto": "scene_mouth"
+        },
+        {
+          "id": "float",
+          "label": "Float on your backs like starfish",
+          "icon": "drop",
+          "goto": "scene_swept_float"
         }
       ]
     },
@@ -712,7 +740,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then: \"Ossley,\" which turns out to be his name. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
+      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, as if he had been waiting for you, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then: \"Ossley,\" which turns out to be his name. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -731,7 +759,7 @@
           "id": "squelch",
           "label": "Squelch up the beach",
           "icon": "boot",
-          "goto": "scene_crawlers"
+          "goto": "scene_mouth_shore"
         }
       ]
     },
@@ -839,6 +867,708 @@
       "heal": 3,
       "outcome": "setback",
       "choices": []
+    },
+    "scene_kettle_camp": {
+      "type": "story",
+      "narration": "Halfway down the Long Mile, a rush camp has a kettle on the boil. Beside the fire sits a tidy pile of firewood, and the firewood is painted. It says THIS WAY ROUND, and NOT THAT WAY, and GO UPSTREAM, PLEASE. They are the centaurs' detour signs, and the kettle is just about to whistle.",
+      "choices": [
+        {
+          "id": "swap_kindling",
+          "label": "Swap them your kindling for the signs",
+          "icon": "hand",
+          "goto": "scene_kettle_camp_swap_kindling",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "saved_the_signs",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "explain",
+          "label": "Explain what the signs are for",
+          "icon": "heart",
+          "goto": "check_kettle"
+        }
+      ]
+    },
+    "scene_kettle_camp_swap_kindling": {
+      "type": "story",
+      "narration": "You trade your whole bag of kindling for the signs. The campers think this is a wonderful deal, because kindling burns better than paint. You walk on with an armful of arrows that all point different ways, which makes you look extremely lost.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Carry the signs on down the road",
+          "icon": "hand",
+          "goto": "scene_stuck_wagon"
+        }
+      ]
+    },
+    "check_kettle": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Make a rush camp care about a centaur's detour sign",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_stuck_wagon",
+        "narration": "You explain that the signs steer wagons round the new sinkholes and away from the river's fast bits. The campers go pink, stand every sign back up by the road, and pour you tea to say sorry. It is excellent tea."
+      },
+      "onFailure": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The campers nod, and nod, and say \"oh, absolutely,\" and then set the kettle back down on NOT THAT WAY. You leave them arguing about which way that way is."
+      }
+    },
+    "scene_stuck_wagon": {
+      "type": "story",
+      "narration": "A rush wagon sits axle-deep in a rut right across the road, piled high with crates. Its driver, a big man in a bigger coat, is pretending he stopped on purpose. \"Admiring the view,\" he says. His mule is staring at the rut as if it has said something rude about the mule's mother.",
+      "choices": [
+        {
+          "id": "push",
+          "label": "Put your shoulders to the wheels",
+          "icon": "might",
+          "goto": "check_wagon"
+        },
+        {
+          "id": "unload",
+          "label": "Help him unload the crates first",
+          "icon": "hand",
+          "goto": "scene_stuck_wagon_unload"
+        }
+      ]
+    },
+    "check_wagon": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Heave a loaded wagon out of a rut",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_river_view",
+        "narration": "One, two, HEAVE! The wagon pops out of the rut like a cork from a bottle. The driver says he was just about to do that himself, and gives you a honeycake for your trouble anyway.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_river_view",
+        "narration": "One, two, HEAVE! Nothing. Again! Nothing. The mule sighs, leans into its harness, and pulls the whole wagon out by itself, looking at all of you as if you were luggage."
+      }
+    },
+    "scene_stuck_wagon_unload": {
+      "type": "story",
+      "narration": "You lift the crates down one at a time. Every single one hums, low and buzzy, like a beehive having a nap. \"Gems for the north,\" says the driver proudly. The wagon rolls free easily once it is empty. While you load it back up, the mule edges as far from the crates as its rope will let it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave him off and walk on",
+          "icon": "travel",
+          "goto": "scene_river_view"
+        }
+      ]
+    },
+    "scene_river_view": {
+      "type": "story",
+      "narration": "The road tops a rise, and there it is: Stone Crossing, giant flat stones marching across the Great River, the far end lost under hurrying brown water. On a drowned stone a gray heron stands fishing on one leg, perfectly dry, as if the river were a carpet. Down the slope, a centaur trots from post to empty post, looking for her signs.",
+      "choices": [
+        {
+          "id": "watch_heron",
+          "label": "Watch where the heron steps",
+          "icon": "eye",
+          "goto": "check_heron"
+        },
+        {
+          "id": "queue_map",
+          "label": "Buy a map of the queue from a boy with a tray",
+          "icon": "map",
+          "goto": "scene_river_view_queue_map"
+        },
+        {
+          "id": "give_signs",
+          "label": "Give the centaur her detour signs back",
+          "icon": "hand",
+          "requiresFlag": "saved_the_signs",
+          "goto": "scene_river_view_give_signs"
+        }
+      ]
+    },
+    "check_heron": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Learn the crossing by watching a heron fish it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_queue",
+        "narration": "Left foot, right foot, never the middle. The heron only ever steps on the upstream edge of the stones, where they are only half under. You learn its line by heart. The heron notices you learning it and looks deeply offended.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "heron_line",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_queue",
+        "narration": "The heron catches you staring. It stares back. It is much better at staring than you are, and by the time you blink it has flown off with a fish, and you have learned nothing at all except humility."
+      }
+    },
+    "scene_river_view_queue_map": {
+      "type": "story",
+      "narration": "The map of the queue costs one button. It is a long wiggly sausage with YOU ARE HERE written at the very end, which turns out to be completely correct. On the back, in pencil, somebody has copied out the river drake's rates from last week. They were a lot smaller last week.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Join the end of the sausage",
+          "icon": "map",
+          "goto": "scene_queue"
+        }
+      ]
+    },
+    "scene_river_view_give_signs": {
+      "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
+      "narration": "The centaur is Fennick Longstride, road-warden, and when she sees her signs she hugs them like lost puppies. She hammers each one back on its post, and on the last one she scratches a new arrow pointing at the upstream edge of the crossing, where the stones are only half under. \"For you,\" she says, and gallops off.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Fennick"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "had_a_guide",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow her arrow down to the queue",
+          "icon": "map",
+          "goto": "scene_queue"
+        }
+      ]
+    },
+    "scene_skip_passes": {
+      "type": "story",
+      "narration": "The six brass hats call themselves the Brassbuckle Expedition, and wherever they have ended up in the queue, one of them comes strolling down the line with a tray. \"SKIP-A-STORY passes!\" she sings. \"Why tell the troll a story when you can show him a pass? Two coins! Brass! Very official!\" All along the queue, people start reaching for their purses.",
+      "choices": [
+        {
+          "id": "small_print",
+          "label": "Read the small print",
+          "icon": "eye",
+          "goto": "check_small_print"
+        },
+        {
+          "id": "no_thanks",
+          "label": "Say it loud: stories are the toll",
+          "icon": "heart",
+          "goto": "scene_skip_passes_no_thanks"
+        }
+      ]
+    },
+    "check_small_print": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read the tiny writing on a SKIP-A-STORY pass",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_first_story",
+        "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole queue laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
+      },
+      "onFailure": {
+        "goto": "scene_first_story",
+        "narration": "The print is so small it might just be ants. One of the letters walks away. You hand the pass back politely, and the Brassbuckle moves on down the line, selling briskly."
+      }
+    },
+    "scene_skip_passes_no_thanks": {
+      "type": "story",
+      "narration": "\"No thank you,\" you say, loud enough for the whole line. \"Stories are the toll.\" The family behind you hears it and puts their purse away. So does the family behind them. The Brassbuckle gives you a look like a closed door and moves off down the queue, a good deal faster than she came.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Shuffle forward in the queue",
+          "icon": "arrow",
+          "goto": "scene_first_story"
+        }
+      ]
+    },
+    "scene_first_story": {
+      "type": "story",
+      "narration": "Just ahead of you stands a small girl from a carpet caravan, muttering to herself. Her name is Dilly, and today she has to tell a troll her very first story. She knows the beginning. She knows the middle. She has lost the end, and she is next but three.",
+      "choices": [
+        {
+          "id": "help_ending",
+          "label": "Help her find an ending",
+          "icon": "clever",
+          "goto": "scene_first_story_help_ending"
+        },
+        {
+          "id": "give_story",
+          "label": "Give her your best story to keep",
+          "icon": "heart",
+          "goto": "scene_first_story_give_story",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gave_our_story",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_first_story_help_ending": {
+      "type": "story",
+      "narration": "Everybody suggests an ending. A dragon? A wedding? And then everyone had a sandwich? Dilly picks the sandwich. It is a very good ending. She practices it four times, and on the fourth time she bows, and the whole queue claps.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Your turn at the toll",
+          "icon": "clever",
+          "goto": "scene_troll"
+        }
+      ]
+    },
+    "scene_first_story_give_story": {
+      "type": "story",
+      "narration": "You give Dilly your best story, the whole thing, beginning, middle and end. She hugs it like a kitten and runs off to practice. It is only when you reach the front that you remember: you have just given away the story you were going to tell.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Your turn at the toll",
+          "icon": "heart",
+          "goto": "scene_troll"
+        }
+      ]
+    },
+    "scene_troll_new_story": {
+      "type": "story",
+      "narration": "You make up a story on the spot. It wobbles. It has a goat in it for no reason. Old Lintel listens to every wobble, and at the end he says, \"Never been told before. Rare, that.\" Out on the far stones, Dilly turns round and waves. Her story went down very well.",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the next toll",
+          "icon": "spark",
+          "goto": "scene_gem_toll"
+        }
+      ]
+    },
+    "scene_gem_toll": {
+      "type": "story",
+      "narration": "Before you can step aside, a prospector shoves forward and slaps a gem down on the bridge. \"There! Paid! Let me through!\" The gem hums. Old Lintel does not look at it, and he does not touch it. But the stone under it starts to hum too, very softly, the same note, as if the bridge were answering.",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "explain",
+          "label": "Whisper that the toll here is a story",
+          "icon": "scroll",
+          "goto": "scene_gem_toll_explain"
+        },
+        {
+          "id": "lift_gem",
+          "label": "Lift the gem off the bridge",
+          "icon": "gem",
+          "goto": "scene_gem_toll_lift_gem"
+        }
+      ]
+    },
+    "scene_gem_toll_explain": {
+      "type": "story",
+      "narration": "\"It's a story,\" you whisper. \"Or a riddle.\" The prospector goes red, thinks very hard, and tells the shortest story ever told: \"I wanted a gem. I got a gem. The end.\" Old Lintel turns this over for a long, long time. \"Hm,\" he says at last. \"Not finished yet, that one.\"",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Listen to what the troll does next",
+          "icon": "scroll",
+          "goto": "scene_troll_hum"
+        }
+      ]
+    },
+    "scene_gem_toll_lift_gem": {
+      "type": "story",
+      "narration": "You lift the gem off the stone. The bridge's hum stops at once, like a held breath let go. You set the gem down again, and the hum comes back. Old Lintel watches you do it twice, and nods, very slowly, as if you had just asked the right question without saying a single word.",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hand the prospector his gem",
+          "icon": "gem",
+          "goto": "scene_troll_hum"
+        }
+      ]
+    },
+    "choice_camp_spot": {
+      "type": "choice_point",
+      "narration": "The queue will not move again until morning, so the whole line camps where it stands. There are three spaces left. One is next to a family with a goat. One is next to six brass hats. One is right down by the water, where the river talks all night. Where do you sleep? Everybody vote.",
+      "choices": [
+        {
+          "id": "by_goat",
+          "label": "Next to the goat family",
+          "icon": "heart",
+          "goto": "choice_camp_spot_by_goat",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "by_brass",
+          "label": "Next to the brass hats, to keep an eye on them",
+          "icon": "eye",
+          "goto": "choice_camp_spot_by_brass",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "camped_by_brass",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "by_water",
+          "label": "Down by the water, to learn the river",
+          "icon": "drop",
+          "goto": "choice_camp_spot_by_water",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "learned_the_river",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "choice_camp_spot_by_goat": {
+      "type": "story",
+      "narration": "The goat family are lovely. The goat is not lovely. Before supper the goat eats a map, a mitten, and most of a hat. To say sorry, the family gives you a warm honeycake wrapped in a cloth, which the goat also tries to eat.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Unroll your blankets",
+          "icon": "heart",
+          "goto": "rest_queue_camp"
+        }
+      ]
+    },
+    "choice_camp_spot_by_brass": {
+      "type": "story",
+      "narration": "You lay your blankets right beside the Brassbuckle Expedition. They are very polite. They are much too polite. All evening they whisper, and coil a long rope, and stop whispering whenever you look up. Somebody here is planning something.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Unroll your blankets",
+          "icon": "eye",
+          "goto": "rest_queue_camp"
+        }
+      ]
+    },
+    "choice_camp_spot_by_water": {
+      "type": "story",
+      "narration": "You camp on the bank, right where the flat stones go under. All evening you watch the brown water slide over them: fast in the middle, slow along the upstream edge. By bedtime you could draw the current with your eyes shut. You also have extremely damp socks.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Unroll your blankets",
+          "icon": "drop",
+          "goto": "rest_queue_camp"
+        }
+      ]
+    },
+    "scene_night_rope": {
+      "type": "story",
+      "narration": "In the middle of the night, a splash. Six brass hats are creeping down to the water in the dark, carrying a long rope. They mean to sneak across before morning and skip the whole queue. The river is very loud tonight, and it does not sound like it is joking.",
+      "choices": [
+        {
+          "id": "grab_rope",
+          "label": "Grab the end of their rope",
+          "icon": "hand",
+          "goto": "check_night_rope"
+        },
+        {
+          "id": "wake_troll",
+          "label": "Wake Old Lintel",
+          "icon": "ear",
+          "goto": "scene_night_rope_wake_troll"
+        },
+        {
+          "id": "sit_on_rope",
+          "label": "You're right beside them. Sit on their rope.",
+          "icon": "rest",
+          "requiresFlag": "camped_by_brass",
+          "goto": "scene_night_rope_sit_on_rope"
+        }
+      ]
+    },
+    "check_night_rope": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Catch the Brassbuckles' rope before the river does",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_wake_fee",
+        "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the queue and stay there."
+      },
+      "onFailure": {
+        "goto": "scene_wake_fee",
+        "narration": "The rope zips through your hands, but the Brassbuckles grab it too, and everybody ends up in one dripping heap on the bank. One brass hat sails off downstream, spinning. Nobody says anything. Everybody goes back to bed."
+      }
+    },
+    "scene_night_rope_wake_troll": {
+      "type": "story",
+      "narration": "You shake Old Lintel's arm. You shake it again. Trolls wake up the way mountains do: slowly. By the time he has opened one eye, the Brassbuckles have looked at the black water, changed their minds, and crept back to bed. Old Lintel closes the eye. \"Good,\" he rumbles, to nobody in particular.",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to your blankets",
+          "icon": "ear",
+          "goto": "scene_wake_fee"
+        }
+      ]
+    },
+    "scene_night_rope_sit_on_rope": {
+      "type": "story",
+      "narration": "You are sleeping right next to them, so you simply roll over and sit on the rope. The Brassbuckles tug. You sit. They tug harder. You yawn. In the end they give up and go back to bed, muttering, and you get the best sleep of the whole trip, on a very lumpy rope.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sleep till morning",
+          "icon": "rest",
+          "goto": "scene_wake_fee"
+        }
+      ]
+    },
+    "scene_wake_fee": {
+      "type": "story",
+      "narration": "Morning. The queue shuffles forward, and at the waterline is a second slate propped on a rock: WAKE FEE. ONE GOOD JOKE. Two drake eyes watch you from the water. A drake who has not been paid might swim past just as you cross, very fast, for fun.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "joke",
+          "label": "Tell the drake a joke",
+          "icon": "star",
+          "goto": "check_wake_joke"
+        },
+        {
+          "id": "pay_fish",
+          "label": "Pay it a fish from the queue soup",
+          "icon": "cake",
+          "goto": "scene_wake_fee_pay_fish"
+        },
+        {
+          "id": "show_paid",
+          "label": "Show it the stone it marked PAID",
+          "icon": "gem",
+          "requiresItem": "facet_drakes_rate",
+          "goto": "scene_wake_fee_show_paid"
+        }
+      ]
+    },
+    "check_wake_joke": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Make a river drake laugh",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crossing_bank",
+        "narration": "\"What do you call a fish with no eyes? A fsh.\" A long silence. Then the water bubbles and bubbles: the drake is laughing so hard it has to come up for air. It taps the slate with its tail. PAID."
+      },
+      "onFailure": {
+        "goto": "scene_crossing_bank",
+        "narration": "You tell your best joke. The drake looks at you. You explain the joke. The drake looks at you harder. Then it writes NOTED on the slate, which is somehow worse than not laughing, and sinks out of sight."
+      }
+    },
+    "scene_wake_fee_pay_fish": {
+      "type": "story",
+      "narration": "You fish a fish out of the queue soup and hold it out, dripping. The drake takes it with enormous dignity, checks it against a chart only it can see, and writes PAID. The soup seller looks into her pot, counts, and decides not to ask.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the water",
+          "icon": "cake",
+          "goto": "scene_crossing_bank"
+        }
+      ]
+    },
+    "scene_wake_fee_show_paid": {
+      "type": "story",
+      "narration": "You hold up the Drake's Rate, with PAID underlined twice. The drake in the water squints at it, recognizes its own handwriting, and huffs with deep professional respect. It wipes the slate clean and writes, very neatly: FRIENDS AND FAMILY RATE.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the water",
+          "icon": "gem",
+          "goto": "scene_crossing_bank"
+        }
+      ]
+    },
+    "scene_east_landing": {
+      "type": "story",
+      "narration": "The east bank is a muddle of carts, all landing at once. One driver is arguing with his donkey. The donkey's name is Parsnip, and Parsnip will not stand anywhere near the gem crates. She has made this very clear by lying down in the road with her eyes shut.",
+      "choices": [
+        {
+          "id": "move_crates",
+          "label": "Move the humming crates to the last cart",
+          "icon": "hand",
+          "goto": "scene_east_landing_move_crates"
+        },
+        {
+          "id": "ask_question",
+          "label": "Ask the driver Old Lintel's question",
+          "icon": "ear",
+          "goto": "scene_east_landing_ask_question"
+        }
+      ]
+    },
+    "scene_east_landing_move_crates": {
+      "type": "story",
+      "narration": "You shift every humming crate to the very last cart. Parsnip gets up at once, shakes herself, and trots to the front, where she belongs. The driver says this is a lot of fuss about a donkey. Then he gives her an apple when he thinks nobody is looking.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find a dry spot to camp",
+          "icon": "hand",
+          "goto": "rest_dry_end"
+        }
+      ]
+    },
+    "scene_east_landing_ask_question": {
+      "type": "story",
+      "narration": "\"Where did you get them? And where are they going?\" The driver opens his mouth, and shuts it again. \"Off the rush. North, to whoever pays,\" he says at last. Parsnip snorts, as if that is not a very good answer. The driver looks at his crates for quite a long time.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find a dry spot to camp",
+          "icon": "ear",
+          "goto": "rest_dry_end"
+        }
+      ]
+    },
+    "scene_swept_float": {
+      "type": "story",
+      "narration": "Everybody lets go of being scared and floats on their back, arms and legs out, like a row of starfish. The river seems to like this better. It carries you more gently, round the bends and past the reeds, and the heron flies along overhead, disapproving of the starfish too.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Drift where the river takes you",
+          "icon": "drop",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
+    "scene_mouth_shore": {
+      "type": "story",
+      "narration": "You wring out your socks on the shore. Somebody's hat comes bobbing down the river, spins twice, and washes up at your feet. All along the tide line, little chips of old bone lie in spirals, hundreds of them, neat as a garden. The heron lands on a rock and looks at your wet socks with total disapproval.",
+      "choices": [
+        {
+          "id": "read_spirals",
+          "label": "Look closely at the spirals",
+          "icon": "eye",
+          "goto": "check_spirals"
+        },
+        {
+          "id": "dry_dance",
+          "label": "Do the drying-off dance",
+          "icon": "boot",
+          "goto": "scene_mouth_shore_dry_dance"
+        }
+      ]
+    },
+    "check_spirals": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out why the bone chips lie in spirals",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crawlers",
+        "narration": "The spirals are not random. Each one curls around a bare patch where something humming must have lain, and every chip leans away from it, like grass in a wind. Even the beach flinches from the stones. Your packs hum. Somewhere up the beach, something rattles."
+      },
+      "onFailure": {
+        "goto": "scene_crawlers",
+        "narration": "You count spirals until you lose count, and start again, and lose count again. The heron watches you do it three times, cannot bear it, and flies off. Somewhere up the beach, something rattles."
+      }
+    },
+    "scene_mouth_shore_dry_dance": {
+      "type": "story",
+      "narration": "You do the drying-off dance: hop, shake, flap, hop. It is not a real dance, but it works, mostly. The heron does not join in. A little way up the beach the bone chips begin to rattle, as if something there liked the music.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and see what's rattling",
+          "icon": "boot",
+          "goto": "scene_crawlers"
+        }
+      ]
     }
   },
   "llmHints": {
@@ -857,7 +1587,12 @@
       "old_lintel": "a stone troll toll-taker, mostly moss; speaks very slowly, hears everything in full, palm always on the bridge; asks only 'where did you get that, and where is it going?'",
       "drake": "a river drake; semi-sapient, transactional, writes its rates on a slate; communicates in huffs, tail-taps and underlinings",
       "brassbuckles": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the queue",
-      "old_ossley": "frogfolk ferryman; very few words, long pauses that are not hesitation; answers the question you meant; never asks for coin"
+      "old_ossley": "frogfolk ferryman; very few words, long pauses that are not hesitation; answers the question you meant; never asks for coin",
+      "kettle_campers": "a rush camp boiling a kettle on the centaurs' detour signs; cheerful, agreeable, say 'oh, absolutely' and do not change",
+      "wagon_driver": "a big rush wagon driver in a bigger coat, stuck in a rut, too proud to ask for help; 'admiring the view'",
+      "dilly": "a small girl from a carpet caravan telling a troll her first ever story; nervous, then magnificent",
+      "prospector": "a pushy prospector who tries to pay the troll toll with a gem; tells the shortest story ever told",
+      "parsnip_driver": "a caravan driver landing on the east bank, arguing with his donkey Parsnip, secretly very fond of her"
     }
   }
 }

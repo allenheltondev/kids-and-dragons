@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_north_roads",
   "objectives": [
@@ -54,7 +54,7 @@
           "id": "fall_in",
           "label": "Fall in with the northbound traffic",
           "icon": "arrow",
-          "goto": "scene_empty_stretch"
+          "goto": "scene_north_roads_fall_in"
         },
         {
           "id": "ride_queue",
@@ -72,6 +72,18 @@
         }
       ]
     },
+    "scene_north_roads_fall_in": {
+      "type": "story",
+      "narration": "You fall in between a wagon full of picks and a wagon full of pickles. Nobody knows you, nobody minds you, and everybody is singing a different song. A man with a parrot tells you the Gemfall is two days north. The parrot says three. They argue about it for a mile.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Roll on north",
+          "icon": "arrow",
+          "goto": "scene_jackalope_race"
+        }
+      ]
+    },
     "scene_drovers_wagon": {
       "type": "story",
       "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" It is what he calls everybody he likes. You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
@@ -80,7 +92,7 @@
           "id": "onward",
           "label": "Roll on north",
           "icon": "arrow",
-          "goto": "scene_empty_stretch"
+          "goto": "scene_jackalope_race"
         }
       ]
     },
@@ -92,6 +104,107 @@
           "id": "onward",
           "label": "Carry your buckets north",
           "icon": "drop",
+          "goto": "scene_jackalope_race"
+        }
+      ]
+    },
+    "scene_jackalope_race": {
+      "type": "story",
+      "discovers": [
+        "creature.jackalope"
+      ],
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
+      "narration": "Out on the open road, jackalopes are everywhere: little antlered hares racing the wagons for fun, and winning. One of them lopes alongside you, looks you up and down, and thumps the road twice with a back foot. On the Plains, everybody knows what that means. It is a challenge.",
+      "choices": [
+        {
+          "id": "race",
+          "label": "Race it to the next mile marker",
+          "icon": "quick",
+          "goto": "check_jackalope_race"
+        },
+        {
+          "id": "cheer",
+          "label": "Cheer for the wagon horses instead",
+          "icon": "heart",
+          "goto": "scene_jackalope_race_cheer"
+        },
+        {
+          "id": "fly",
+          "label": "Race it from the air",
+          "icon": "wing",
+          "goto": "scene_jackalope_race_fly",
+          "requiresSpecies": "griffin",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "raced_jackalope",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_jackalope_race": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Race a jackalope to the mile marker",
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_empty_stretch",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "raced_jackalope",
+            "value": true
+          }
+        ],
+        "narration": "You run like the wind and lose by one ear, which is the best anybody has done all season. The jackalope looks you over with new respect and thumps once. That means friends. It lopes along beside you for the next mile, showing off."
+      },
+      "onFailure": {
+        "goto": "scene_empty_stretch",
+        "narration": "You run like the wind. The jackalope runs like a much faster wind, then sits at the mile marker cleaning its antlers until you catch up. It thumps once anyway, as if to say: nice try. Then it is off to race a cart."
+      }
+    },
+    "scene_jackalope_race_cheer": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
+      "narration": "You cheer the wagon horses on, and the horses try their very best. The jackalope wins by a mile, turns round, and runs the whole race again backwards, just to make a point. The drivers laugh. \"That's the Plains,\" one says. \"The jackalopes always win. Always. Everywhere.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on up the road",
+          "icon": "heart",
+          "goto": "scene_empty_stretch"
+        }
+      ]
+    },
+    "scene_jackalope_race_fly": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
+      "narration": "Your griffin takes off and races it from above. The jackalope zigzags, doubles back, and dives under a wagon. Nobody wins, which by jackalope rules means you are now best friends. It lopes along under your shadow for the next mile, thumping happily.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on up the road",
+          "icon": "wing",
           "goto": "scene_empty_stretch"
         }
       ]
@@ -114,8 +227,44 @@
           "goto": "scene_silence_follows"
         },
         {
+          "id": "racer",
+          "label": "Watch the jackalope you raced",
+          "icon": "eye",
+          "goto": "scene_empty_stretch_racer",
+          "requiresFlag": "raced_jackalope"
+        },
+        {
           "id": "keep_walking",
           "label": "Keep walking toward the depot",
+          "icon": "arrow",
+          "goto": "scene_empty_stretch_keep_walking"
+        }
+      ]
+    },
+    "scene_empty_stretch_racer": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
+      "narration": "Your jackalope friend is still loping beside you. Then, at one particular stone, it stops dead. It thumps the road three times, hard, and will not take one more step, not toward the depot and not toward your packs. It is not the road it is worried about. It is what you are carrying.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look at your packs",
+          "icon": "eye",
+          "goto": "scene_silence_follows"
+        }
+      ]
+    },
+    "scene_empty_stretch_keep_walking": {
+      "type": "story",
+      "narration": "You keep walking. The mile is very quiet: no thumps, no rustles, not one antler in the grass. Even the wagon drivers stop singing. Somebody's horse keeps looking back over its shoulder, as if it has heard something you cannot.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the downbound lane",
           "icon": "arrow",
           "goto": "scene_downbound"
         }
@@ -245,7 +394,7 @@
         "narration": "The runner nods, sings \"small, orange hat, talks to horses\" to the next runner, and in less time than it takes to eat a honeycake the word comes back down the line: found."
       },
       "onFailure": {
-        "goto": "rest_soup_tents",
+        "goto": "scene_stubborn_mule",
         "narration": "The runner hears \"small orange horse\" and gallops off. Much later, word comes back that Tib turned up by himself, talking to a centaur. Ma Ruddle's thanks are tired, and her papers went in the auction pile."
       }
     },
@@ -260,7 +409,7 @@
         "narration": "You spot the hat, lose it behind a wagon, spot it again, and finally find Tib explaining something very seriously to a pony."
       },
       "onFailure": {
-        "goto": "rest_soup_tents",
+        "goto": "scene_stubborn_mule",
         "narration": "Every time you get close, the orange hat turns out to be a pumpkin. Much later the relay finds Tib on its own, and Ma Ruddle's papers have gone in the auction pile."
       }
     },
@@ -287,9 +436,9 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Thank her and walk on",
+          "label": "Thank her and walk on down the lane",
           "icon": "scroll",
-          "goto": "rest_soup_tents"
+          "goto": "scene_stubborn_mule"
         }
       ],
       "cast": [
@@ -300,6 +449,70 @@
         {
           "figure": "cast/tib",
           "name": "Tib"
+        }
+      ]
+    },
+    "scene_stubborn_mule": {
+      "type": "story",
+      "narration": "Farther down the downbound lane, nobody is moving at all. A mule has sat down in the middle of the road with a gem sack on its back, and it will not get up. Its owner is pleading, the wagons behind are shouting, and the mule is calmly chewing a daisy, as if none of this is its problem.",
+      "choices": [
+        {
+          "id": "push",
+          "label": "Push the mule up onto its feet",
+          "icon": "might",
+          "goto": "check_push_mule"
+        },
+        {
+          "id": "unload",
+          "label": "Take the sack off and carry it yourselves",
+          "icon": "hand",
+          "goto": "scene_stubborn_mule_unload"
+        },
+        {
+          "id": "ask_mule",
+          "label": "Kneel down and feel what the mule feels",
+          "icon": "heart",
+          "goto": "scene_stubborn_mule_ask_mule",
+          "requiresSpecies": "unicorn"
+        }
+      ]
+    },
+    "check_push_mule": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Shift a mule that has decided not to move",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_soup_tents",
+        "narration": "You heave together, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\""
+      },
+      "onFailure": {
+        "goto": "rest_soup_tents",
+        "narration": "You push. The mule leans. The mule wins, and you all sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off."
+      }
+    },
+    "scene_stubborn_mule_unload": {
+      "type": "story",
+      "narration": "You lift the gem sack off. The mule springs up at once, brays a thank you, and trots off with its ears high. The sack hums in your arms all the way to some big tents by the roadside, where you hand it back to its very puzzled owner. Your arms ache. The mule waves its ears at you from the roadside.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head for the tents by the road",
+          "icon": "hand",
+          "goto": "rest_soup_tents"
+        }
+      ]
+    },
+    "scene_stubborn_mule_ask_mule": {
+      "type": "story",
+      "narration": "Your unicorn kneels by the mule and goes quiet. The mule is not stubborn. It is uneasy, the way you feel before a thunderstorm, when the sky has not done anything yet. And the feeling is coming from the sack. Your unicorn says so, gently, and the owner takes the sack off without another word.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head for the tents by the road",
+          "icon": "heart",
+          "goto": "rest_soup_tents"
         }
       ]
     },
@@ -318,7 +531,19 @@
           "id": "rest_go",
           "label": "Thank everyone and get back on the road",
           "icon": "arrow",
-          "goto": "scene_warden_patrol"
+          "goto": "rest_soup_tents_rest_go"
+        }
+      ]
+    },
+    "rest_soup_tents_rest_go": {
+      "type": "story",
+      "narration": "You thank everybody, fold your blankets, and get back on the road. Wend waves you off with the ladle. \"Come back any time,\" Wend calls. \"We'll still be here. We're always here now.\" Behind you, the robed folk are putting up a fourth tent.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back on the road",
+          "icon": "arrow",
+          "goto": "scene_road_crew"
         }
       ]
     },
@@ -327,7 +552,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-colored sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\"",
+      "narration": "\"The world's a little bit broken, isn't it?\" Wend says gently. \"Wrong-colored sky, humming stones. We think it could be fixed, right at the root.\" Wend's crystal hums the same note as the stones. \"Would you carry a letter north for us? Just a letter.\" By the soup pot sits a little wooden box with a slot in the lid.",
       "choices": [
         {
           "id": "say_no",
@@ -347,6 +572,19 @@
           "label": "Say maybe, and leave it there",
           "icon": "moon",
           "goto": "scene_wend_pitch_say_later"
+        },
+        {
+          "id": "coin",
+          "label": "Drop a coin in the box, for the soup",
+          "icon": "gem",
+          "goto": "scene_wend_pitch_coin",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "funded_the_break",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -358,7 +596,7 @@
           "id": "on",
           "label": "Back on the road",
           "icon": "moon",
-          "goto": "scene_warden_patrol"
+          "goto": "scene_road_crew"
         }
       ]
     },
@@ -370,6 +608,138 @@
           "id": "on",
           "label": "Back on the road",
           "icon": "hand",
+          "goto": "scene_road_crew"
+        }
+      ]
+    },
+    "scene_wend_pitch_coin": {
+      "type": "story",
+      "narration": "You drop a coin in the little wooden box. The lid says FOR THE ROOT OF THINGS. Wend's crystal hums louder for a moment, like a hive woken up. \"Kindness first,\" says Wend softly, and writes your names in a small book with a soft pencil. You are not quite sure what you just paid for.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back on the road",
+          "icon": "gem",
+          "goto": "scene_road_crew"
+        }
+      ]
+    },
+    "scene_road_crew": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road Boss"
+        }
+      ],
+      "narration": "Up ahead, a crew of centaurs is moving the road. Not mending it: moving it. They pull up old marker posts and plant new ones in a long curve through the grass, around a scorched hollow where a fallen stone once lay. \"Third detour this month,\" puffs the road boss, a post on each shoulder. \"Lend a hand?\"",
+      "choices": [
+        {
+          "id": "haul",
+          "label": "Haul marker posts with the crew",
+          "icon": "might",
+          "goto": "check_haul_posts"
+        },
+        {
+          "id": "ask_why",
+          "label": "Ask why the road keeps moving",
+          "icon": "ear",
+          "goto": "scene_road_crew_ask_why"
+        },
+        {
+          "id": "charm",
+          "label": "Hold Mother Thrum's charm over the hollow",
+          "icon": "charm",
+          "goto": "scene_road_crew_charm",
+          "requiresItem": "charm_ford_witch"
+        },
+        {
+          "id": "fly",
+          "label": "Fly up and look at the shape of the detours",
+          "icon": "wing",
+          "goto": "scene_road_crew_fly",
+          "requiresSpecies": "griffin"
+        }
+      ]
+    },
+    "check_haul_posts": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Carry marker posts for a centaur road crew",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road Boss"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_warden_patrol",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_road_crew",
+            "value": true
+          }
+        ],
+        "narration": "You carry posts until your arms feel like noodles, and you plant every one straight. The road boss looks down the new curve and nods. \"Good work. The relay will sing about this,\" she says, and she does not sound like she is joking."
+      },
+      "onFailure": {
+        "goto": "scene_warden_patrol",
+        "narration": "You carry a post the wrong way round and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
+      }
+    },
+    "scene_road_crew_ask_why": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road Boss"
+        }
+      ],
+      "narration": "The road boss leans on a post. \"A stone fell here, the red night. Since then nothing will walk past this hollow. Not horses, not hares. The grass won't even lean toward it. So the road goes round. A road always goes where the walking goes.\" She glances at your packs, and then away.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk the new curve north",
+          "icon": "ear",
+          "goto": "scene_warden_patrol"
+        }
+      ]
+    },
+    "scene_road_crew_charm": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road Boss"
+        }
+      ],
+      "narration": "You hold the tuned charm out over the scorched hollow. It sings, faint and thin, though the stone that fell here was carried off weeks ago. The ground still remembers it. The whole crew stops work to stare. \"Well,\" says the road boss slowly. \"That would explain a thing or two.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk the new curve north",
+          "icon": "charm",
+          "goto": "scene_warden_patrol"
+        }
+      ]
+    },
+    "scene_road_crew_fly": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Road Boss"
+        }
+      ],
+      "narration": "From up high you can see it: this is not the only detour. All along the north roads, little curves of new posts bend away from scorched hollows, one after another, like somebody walking carefully round puddles. The road is not wandering. It is stepping around something.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Land and walk the new curve",
+          "icon": "wing",
           "goto": "scene_warden_patrol"
         }
       ]
@@ -434,9 +804,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "On to the depot",
+          "label": "On toward the depot",
           "icon": "wing",
-          "goto": "scene_depot"
+          "goto": "scene_signposts"
         }
       ]
     },
@@ -452,9 +822,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "On to the depot",
+          "label": "On toward the depot",
           "icon": "check",
-          "goto": "scene_depot"
+          "goto": "scene_signposts"
         }
       ]
     },
@@ -471,7 +841,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_depot",
+        "goto": "scene_signposts",
         "effects": [
           {
             "type": "setFlag",
@@ -482,9 +852,73 @@
         "narration": "You find a mistake in the sergeant's sums. Sergeant Holloway checks it twice, corrects it, and pays you back two coppers with deep respect."
       },
       "onFailure": {
-        "goto": "scene_depot",
+        "goto": "scene_signposts",
         "narration": "Sergeant Holloway listens to your whole argument, writes it down in the ledger under 'Complaints, Polite', and charges you the fixed rate anyway."
       }
+    },
+    "scene_signposts": {
+      "type": "story",
+      "narration": "Where the road forks, somebody has nailed up forty signs that all say GEMS THIS WAY, and they all point different ways. Under them, a man in a velvet coat is selling maps to the Gemfall. \"Two coppers each! Guaranteed accurate, or your money back from my cousin,\" he says, \"who has left.\"",
+      "choices": [
+        {
+          "id": "buy_map",
+          "label": "Buy one of his maps",
+          "icon": "scroll",
+          "goto": "scene_signposts_buy_map"
+        },
+        {
+          "id": "read_signs",
+          "label": "Work out which signs are honest",
+          "icon": "clever",
+          "goto": "check_read_signs"
+        },
+        {
+          "id": "outsell",
+          "label": "Beat the map seller at his own game",
+          "icon": "spark",
+          "goto": "scene_signposts_outsell",
+          "requiresSpecies": "kitsune"
+        }
+      ]
+    },
+    "check_read_signs": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Sort the honest signs from the nonsense",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_depot",
+        "narration": "Most of the signs are nonsense. But a few old, weathered ones, nailed up by the relay, all agree about one thing: the road north bends away from every place a stone came down. You follow the honest arrows straight to the depot."
+      },
+      "onFailure": {
+        "goto": "scene_depot",
+        "narration": "You follow the most convincing sign for half an hour and arrive at a pig farm. The pigs are friendly. The farmer points you back toward the depot, and politely waits until you are out of sight before he laughs."
+      }
+    },
+    "scene_signposts_buy_map": {
+      "type": "story",
+      "narration": "You buy a map. It is beautifully drawn. It is also, when you turn it the right way up, a drawing of a duck. By the time you notice, the velvet coat has moved to a different fork. You keep the duck anyway. It is a very good duck.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Ask a wagon driver the way to the depot",
+          "icon": "scroll",
+          "goto": "scene_depot"
+        }
+      ]
+    },
+    "scene_signposts_outsell": {
+      "type": "story",
+      "narration": "Your kitsune sets up right next to him, selling maps that say, honestly, ASK A CENTAUR. They sell out in ten minutes. The man in the velvet coat is so impressed that he buys one himself. Then he packs up his maps and goes off to ask a centaur.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the honest arrows to the depot",
+          "icon": "spark",
+          "goto": "scene_depot"
+        }
+      ]
     },
     "scene_depot": {
       "type": "story",
@@ -507,7 +941,7 @@
           "id": "leave",
           "label": "Leave it in the strongbox and head on",
           "icon": "arrow",
-          "goto": "scene_relay_sing"
+          "goto": "scene_depot_leave"
         }
       ]
     },
@@ -522,7 +956,7 @@
         "narration": "Clerk Pennywhistle holds your form up to the lamp, finds no smudges, and looks as if he might cry with happiness. He stamps it four times."
       },
       "onFailure": {
-        "goto": "scene_relay_sing",
+        "goto": "scene_rumor_fire",
         "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
       }
     },
@@ -543,8 +977,195 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Follow the singing to the campfires",
+          "label": "Walk on to the noon stop",
+          "icon": "gem",
+          "goto": "scene_rumor_fire"
+        }
+      ]
+    },
+    "scene_depot_leave": {
+      "type": "story",
+      "narration": "You leave the ringing stone in strongbox number nine. Clerk Pennywhistle looks enormously relieved and stamps something to celebrate. As you go out, the strongbox rings after you, one long note, and every pen on his counter rattles in its pot.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the noon stop",
+          "icon": "arrow",
+          "goto": "scene_rumor_fire"
+        }
+      ]
+    },
+    "scene_rumor_fire": {
+      "type": "story",
+      "narration": "At the noon stop, a ring of travelers is swapping news, and the news has clearly been swapped a great many times. \"On the River Road,\" says one, \"a troll charges you a story instead of a coin.\" \"On the Wild Road,\" says another, \"the marsh steals your boots and gives back different boots.\" Everybody turns to you. \"What's your news?\"",
+      "choices": [
+        {
+          "id": "tall_tale",
+          "label": "Tell the tallest tale you can",
+          "icon": "heart",
+          "goto": "check_tall_tale"
+        },
+        {
+          "id": "true_news",
+          "label": "Tell them the true thing: the gems all hum",
+          "icon": "ear",
+          "goto": "scene_rumor_fire_true_news"
+        },
+        {
+          "id": "ford_news",
+          "label": "Tell them about the two-day queue at the ford",
+          "icon": "drop",
+          "goto": "scene_rumor_fire_ford_news",
+          "requiresFlag": "forded_clean"
+        },
+        {
+          "id": "marsh_news",
+          "label": "Tell them what the marsh is really like",
+          "icon": "boot",
+          "goto": "scene_rumor_fire_marsh_news",
+          "requiresFlag": "walked_over"
+        }
+      ]
+    },
+    "check_tall_tale": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell a tall tale the whole ring believes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_bell_courier",
+        "narration": "You tell them you rode a river drake across the ford, sideways, wearing a hat. By the end the whole ring believes you, and three people are already retelling it with a bigger hat. By nightfall, the hat has feathers."
+      },
+      "onFailure": {
+        "goto": "scene_bell_courier",
+        "narration": "You start well, but you mix up the drake with the river, and the river with your aunt. The ring laughs kindly and decides your aunt must be a river. That rumor will be all over the Plains by Tuesday."
+      }
+    },
+    "scene_rumor_fire_true_news": {
+      "type": "story",
+      "narration": "You tell them plainly: every gem on the road hums the same note. The ring goes quiet. Then an old woman says, \"My nephew on the River Road said a troll told him the very same.\" A boy says, \"My cousin heard it from a boggart.\" Three roads, one note. Nobody says anything for a while.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on into the evening",
+          "icon": "ear",
+          "goto": "scene_bell_courier"
+        }
+      ]
+    },
+    "scene_rumor_fire_ford_news": {
+      "type": "story",
+      "narration": "You tell them about the two-day queue, the numbered pebbles, Burdock's goat with a bucket on her head, and the drovers singing the crossing verse. The ring gasps in all the right places. By sunset the story has gone up and down the road twice and come back with three extra goats.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on into the evening",
+          "icon": "drop",
+          "goto": "scene_bell_courier"
+        }
+      ]
+    },
+    "scene_rumor_fire_marsh_news": {
+      "type": "story",
+      "narration": "You tell them the marsh does not steal boots. The boggarts only borrow things, and keep very careful records, and hum. The ring is fascinated. One man takes off his boots and looks at them suspiciously. Somewhere far behind you, you are sure, a boggart is laughing.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on into the evening",
+          "icon": "boot",
+          "goto": "scene_bell_courier"
+        }
+      ]
+    },
+    "scene_bell_courier": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell Courier",
+          "size": "small"
+        }
+      ],
+      "narration": "Toward evening, a small dragonling on a fat pony comes trotting down from the north, ringing a hand bell in a pattern: ding, ding, pause, ding. She stops to let the pony drink, puffing. \"News from the boundary stones,\" she says. \"Can't stop long. Got to ring it all the way to the river.\"",
+      "choices": [
+        {
+          "id": "ring_for_her",
+          "label": "Offer to ring the pattern while she rests",
           "icon": "note",
+          "goto": "check_ring_pattern"
+        },
+        {
+          "id": "ask_news",
+          "label": "Ask what the news is",
+          "icon": "ear",
+          "goto": "scene_bell_courier_ask_news"
+        },
+        {
+          "id": "ring_back",
+          "label": "Ring her an answer, the way they do at home",
+          "icon": "flame",
+          "goto": "scene_bell_courier_ring_back",
+          "requiresSpecies": "dragonling"
+        }
+      ]
+    },
+    "check_ring_pattern": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Ring a bell pattern exactly right",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell Courier",
+          "size": "small"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_relay_sing",
+        "narration": "Ding, ding, pause, ding. You get it exactly right, and far away to the south, very faintly, another bell rings it back. The courier beams. \"You'd make a grandmother one day,\" she says, which is the biggest compliment she knows."
+      },
+      "onFailure": {
+        "goto": "scene_relay_sing",
+        "narration": "Ding, pause, ding, ding, ding. The courier goes pink. \"That one means the cake is ready,\" she whispers. Far to the south, a whole camp sits down hopefully to wait for cake. She takes the bell back, giggling, and rings it properly."
+      }
+    },
+    "scene_bell_courier_ask_news": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell Courier",
+          "size": "small"
+        }
+      ],
+      "narration": "\"The grandmothers are turning pry bars back at the boundary stones,\" she says. \"Whole wagonloads. And they say anybody carrying a stone that hums should come and see them first.\" She looks hard at your packs. \"Like yours.\" Then she is back on the pony, bell going, before you can ask her how she knew.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head for the relay campfire",
+          "icon": "ear",
+          "goto": "scene_relay_sing"
+        }
+      ]
+    },
+    "scene_bell_courier_ring_back": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell Courier",
+          "size": "small"
+        }
+      ],
+      "narration": "You take the bell and ring the answer every dragonling child knows: heard you, coming home. The courier's mouth falls open. \"You're from the hills!\" she squeaks. \"Oh, the grandmothers will want YOU.\" She rings the news of you all the way down the road, as proud as if she had found you herself.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head for the relay campfire",
+          "icon": "flame",
           "goto": "scene_relay_sing"
         }
       ]
@@ -572,7 +1193,14 @@
           "id": "listen",
           "label": "Just listen, very closely",
           "icon": "ear",
-          "goto": "scene_spiral"
+          "goto": "scene_relay_sing_listen"
+        },
+        {
+          "id": "crew_verse",
+          "label": "Hear the verse the road crew made",
+          "icon": "note",
+          "goto": "scene_relay_sing_crew_verse",
+          "requiresFlag": "helped_road_crew"
         }
       ]
     },
@@ -604,6 +1232,42 @@
         "narration": "You sing the wrong verse, the one about a bridge three hundred miles away. Old Corran gently sings the right one over the top, and nobody minds at all."
       }
     },
+    "scene_relay_sing_listen": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Old Corran"
+        }
+      ],
+      "narration": "You sit very still and listen. Old Corran sings slowly, so you can follow. Verse after verse, landmark after landmark, and in every new verse the road bends away from somewhere. Away, and away, and away again. You begin to hear a shape in it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Ask Old Corran about the shape",
+          "icon": "ear",
+          "goto": "scene_spiral"
+        }
+      ]
+    },
+    "scene_relay_sing_crew_verse": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Old Corran"
+        }
+      ],
+      "narration": "Halfway through, the road crew from the detour come cantering in, and the road boss sings a brand new verse: about travelers who hauled marker posts and never once complained, much. It is about you. The whole campfire sings the chorus back. The road remembers.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Listen to the rest of the verses",
+          "icon": "note",
+          "goto": "scene_spiral"
+        }
+      ]
+    },
     "scene_spiral": {
       "type": "story",
       "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark with a hoof-pick and gives it to you.",
@@ -624,6 +1288,76 @@
           "id": "onward",
           "label": "Walk north under the stars",
           "icon": "travel",
+          "goto": "scene_ash_wind"
+        }
+      ]
+    },
+    "scene_ash_wind": {
+      "type": "choice_point",
+      "narration": "Walking north under the stars, a warm wind blows down from the mountain, full of gray ash as soft as moth dust. It glitters in your lantern light. Every gem in every pack on the road starts humming louder, all at once, as if the wind has said something they all agree with. Everybody vote.",
+      "choices": [
+        {
+          "id": "push_on",
+          "label": "Pull up your collars and push on",
+          "icon": "might",
+          "goto": "check_ash_wind"
+        },
+        {
+          "id": "shelter",
+          "label": "Shelter behind a Skywarden supply wagon",
+          "icon": "shield",
+          "goto": "scene_ash_wind_shelter"
+        },
+        {
+          "id": "fly_above",
+          "label": "Fly above the ash and look north",
+          "icon": "wing",
+          "goto": "scene_ash_wind_fly_above",
+          "requiresSpecies": "griffin"
+        }
+      ]
+    },
+    "check_ash_wind": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Lean into the ash wind and keep walking",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_road_bend",
+        "narration": "You link arms and march on through the glitter. It is like walking through warm gray snow. By the time the wind passes, you are gray from head to toe and look like a row of statues, and the bend in the road is just ahead."
+      },
+      "onFailure": {
+        "goto": "scene_road_bend",
+        "narration": "The wind shoves you sideways into a hedge, one after another, like skittles. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
+      }
+    },
+    "scene_ash_wind_shelter": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "narration": "You duck behind a Skywarden supply wagon and find Sergeant Holloway already there, writing by lantern. \"Ash wind,\" says the sergeant. \"Third this week. Wind from the mountain means the mountain is busy.\" Holloway writes BUSY, underlines it twice, and offers you each a very dry biscuit.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on when the wind drops",
+          "icon": "shield",
+          "goto": "scene_road_bend"
+        }
+      ]
+    },
+    "scene_ash_wind_fly_above": {
+      "type": "story",
+      "narration": "Your griffin climbs above the ash into clear starlight. Below, the rush's lanterns stretch north in one long glowing line. And the line is not straight. It curls around and around, bending away from dark patches, exactly like the verses on the bark. The whole road is singing the spiral with its feet.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Glide back down to the road",
+          "icon": "wing",
           "goto": "scene_road_bend"
         }
       ]
@@ -644,7 +1378,7 @@
           "id": "wait",
           "label": "Wait quietly until they pass",
           "icon": "moon",
-          "goto": "end_foothills_in_sight"
+          "goto": "scene_road_bend_wait"
         },
         {
           "id": "sneak",
@@ -700,6 +1434,23 @@
         "narration": "The pack bowls through your camp, and everyone scatters in the dark."
       }
     },
+    "scene_road_bend_wait": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "narration": "You sit down in the road and wait, very quietly. The wolves pace, and pace, and then one by one they lift their noses toward the mountain and trot off north into the dark, glowing like a string of lanterns going home. Not one of them comes anywhere near your packs.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Make camp past the bend",
+          "icon": "moon",
+          "goto": "end_foothills_in_sight"
+        }
+      ]
+    },
     "end_foothills_in_sight": {
       "type": "rest",
       "narration": "You make camp past the bend, where it is safe. To the north, in the morning light, you can see the red foothills, and the line where the rush is heading. The bark strip of verses is in your pack, and you know now what the whole road is quietly saying: it is not the eruption the land is flinching from. It is the stones.",
@@ -738,7 +1489,10 @@
       "wend": "a Deep Hollow ladler; gentle, generous, remembers every name, certain the world can be fixed at the root",
       "sergeant_holloway": "a Skywarden supply sergeant; rigid, honest, calls everything 'arithmetic', writes everything down",
       "clerk_pennywhistle": "a depot clerk; loves forms, horrified by smudges, very sorry about Form 7B",
-      "old_corran": "an old centaur relay singer; slow, warm, sings more than he speaks"
+      "old_corran": "an old centaur relay singer; slow, warm, sings more than he speaks",
+      "road_boss": "a centaur road-crew boss; brisk and practical, a marker post on each shoulder, says 'a road goes where the walking goes'",
+      "map_seller": "a map seller in a velvet coat; smooth, cheerful, never technically lies",
+      "rumor_ring": "noon-stop travelers swapping news; eager, garbled, every story a little bigger each time"
     }
   }
 }

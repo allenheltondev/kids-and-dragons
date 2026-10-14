@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 30,
+  "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_stones_line",
   "objectives": [
@@ -48,7 +48,7 @@
           "id": "join_queue",
           "label": "Join the inspection queue",
           "icon": "travel",
-          "goto": "scene_gate_town"
+          "goto": "scene_inspection"
         },
         {
           "id": "home",
@@ -76,7 +76,7 @@
           "id": "help",
           "label": "Help at the gate",
           "icon": "hand",
-          "goto": "scene_gate_town",
+          "goto": "scene_inspection",
           "effects": [
             {
               "type": "setFlag",
@@ -84,6 +84,94 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_inspection": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "At the front of the queue, a grandmother waves a little bell on a stick over every pack that comes past. When it passes a gem, the bell rings by itself. She writes each ring in her tally book. Rules are rules, even for family. When she reaches you, the bell goes off like a fire alarm. She looks at you over her spectacles. \"Well, now.\"",
+      "choices": [
+        {
+          "id": "open_packs",
+          "label": "Open your packs and let her look",
+          "icon": "hand",
+          "goto": "scene_inspection_open_packs"
+        },
+        {
+          "id": "argue",
+          "label": "Explain that you are not here to dig",
+          "icon": "clever",
+          "goto": "check_not_diggers"
+        },
+        {
+          "id": "show_charm",
+          "label": "Show her Mother Thrum's tuned charm",
+          "icon": "charm",
+          "goto": "scene_inspection_show_charm",
+          "requiresItem": "charm_ford_witch"
+        }
+      ]
+    },
+    "check_not_diggers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Convince a grandmother you are not prospectors",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_gate_town",
+        "narration": "You explain about the hum, and the queues, and the roads that bend, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Listeners.\" She waves you through with a look that is almost respect."
+      },
+      "onFailure": {
+        "goto": "scene_gate_town",
+        "narration": "You explain very well, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
+      }
+    },
+    "scene_inspection_open_packs": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You open your packs. The grandmother counts every humming thing inside into her tally book, slowly, with her tongue between her teeth. Then she looks up. \"That's a lot of humming for one little family,\" she says, not unkindly. \"The tally house will want to see you. Don't wander off.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on into the gate town",
+          "icon": "hand",
+          "goto": "scene_gate_town"
+        }
+      ]
+    },
+    "scene_inspection_show_charm": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You hold up the witch's charm. Her bell and the charm ring together, the very same note. The grandmother's eyebrows go all the way up. \"That's Thrum's work. Is that old crow still sitting at the ford?\" She chuckles and waves you straight through. \"Anybody Thrum trusts can skip my socks.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on into the gate town",
+          "icon": "charm",
+          "goto": "scene_gate_town"
         }
       ]
     },
@@ -121,7 +209,7 @@
           "label": "Say the rule the way your grandmother says it",
           "icon": "flame",
           "requiresSpecies": "dragonling",
-          "goto": "scene_rule_heard"
+          "goto": "scene_gate_town_explain_home"
         }
       ]
     },
@@ -148,6 +236,24 @@
         }
       ]
     },
+    "scene_gate_town_explain_home": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You plant your feet and say it exactly the way your grandmother says it, finger wagging and all: \"Take what the mountain drops. Never pry at what it holds. And wipe your feet.\" The man with the pry bar blinks. Every grandmother in earshot nods so hard their spectacles bounce.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Watch him think about it",
+          "icon": "flame",
+          "goto": "scene_rule_heard"
+        }
+      ]
+    },
     "check_one_rule": {
       "type": "check",
       "stat": "heart",
@@ -166,7 +272,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rule_heard",
-        "narration": "You do not shout the rule at him. You tell him about the crabs, and the bells, and the wall of pry bars, and you tell it like a story, because it is one. Somewhere in the middle he stops saying \"right, right\" and starts actually listening."
+        "narration": "You do not shout the rule at him. You tell him about the bells, and the tallies, and what a mountain might do to anybody who pries at it, and you tell it like a story, because it is one. Somewhere in the middle he stops saying \"right, right\" and starts actually listening."
       },
       "onFailure": {
         "goto": "scene_crab_warning",
@@ -196,9 +302,9 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Follow the grandmother up to the tally house",
+          "label": "Walk back past the stones",
           "icon": "arrow",
-          "goto": "scene_tallies"
+          "goto": "scene_turned_back"
         }
       ]
     },
@@ -281,9 +387,9 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Take the pry bar down to the tally house",
+          "label": "Take the pry bar back down the hill",
           "icon": "arrow",
-          "goto": "scene_tallies"
+          "goto": "scene_turned_back"
         }
       ]
     },
@@ -300,13 +406,96 @@
         }
       ],
       "onVictory": {
-        "goto": "scene_tallies",
-        "narration": "The crabs decide you are more trouble than you are worth and back into their warm burrow, still clacking. The prospector drops his pry bar and runs all the way down to the gate."
+        "goto": "scene_turned_back",
+        "narration": "The crabs decide you are more trouble than you are worth and back into their warm burrow, still clacking. The prospector drops his pry bar and runs all the way back down past the stones."
       },
       "onDefeat": {
         "goto": "end_rolled_down",
         "narration": "The crabs chase you off their warm patch, down the hill, past the bells, and right back out through the boundary stones."
       }
+    },
+    "scene_turned_back": {
+      "type": "story",
+      "narration": "Just outside the stones, where the turned-back prospectors sit about with nowhere to go, somebody has put up a tent with DEEP HOLLOW stitched small on the flap. A ladler with a humming crystal on a string is filling bowls. It is Wend, from the north road, who looks up and says all your names at once.",
+      "choices": [
+        {
+          "id": "share_soup",
+          "label": "Sit down and eat with the turned-back prospectors",
+          "icon": "heart",
+          "goto": "scene_turned_back_share_soup"
+        },
+        {
+          "id": "ask_root",
+          "label": "Ask Wend what \"the root of things\" means",
+          "icon": "ear",
+          "goto": "check_ask_wend"
+        },
+        {
+          "id": "said_no",
+          "label": "Remind Wend that you said no",
+          "icon": "hand",
+          "goto": "scene_turned_back_said_no",
+          "requiresFlag": "refused_the_cult"
+        },
+        {
+          "id": "coin",
+          "label": "Let Wend thank you for your coin",
+          "icon": "gem",
+          "goto": "scene_turned_back_coin",
+          "requiresFlag": "funded_the_break"
+        }
+      ]
+    },
+    "check_ask_wend": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Get a straight answer out of Wend",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tallies",
+        "narration": "Wend thinks for a long time. \"Everything that hums wants to go home,\" Wend says at last. \"We'd like to help it get there, all at once.\" It sounds lovely. It also sounds like something nobody should do on a guess. You go up to the tally house thinking about it."
+      },
+      "onFailure": {
+        "goto": "scene_tallies",
+        "narration": "Wend answers a different question, beautifully, about the right amount of salt in soup. By the end you know a great deal about salt and nothing at all about roots. Wend waves you off to the tally house with a full bowl each."
+      }
+    },
+    "scene_turned_back_share_soup": {
+      "type": "story",
+      "narration": "You squeeze onto a bench between two prospectors who were turned back at the stones. They grumble about grandmothers, and then they talk about home, and by the second bowl they are talking about going there. Wend listens to everyone and learns everyone's name. The crystal hums along.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to the tally house",
+          "icon": "heart",
+          "goto": "scene_tallies"
+        }
+      ]
+    },
+    "scene_turned_back_said_no": {
+      "type": "story",
+      "narration": "\"We said no,\" you tell Wend, \"on the north road.\" Wend nods. \"I remember. I remember everything about you.\" Wend fills your bowls anyway, exactly as warmly as before. \"Soup's still free. Kindness first.\" The crystal hums the same note as the stones in your packs.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to the tally house",
+          "icon": "hand",
+          "goto": "scene_tallies"
+        }
+      ]
+    },
+    "scene_turned_back_coin": {
+      "type": "story",
+      "narration": "Wend greets you like family, hugs everybody, and shows the others your names in the little book. \"These ones helped,\" Wend tells the tent, and everybody claps. It is very warm in the tent. It is warmer than you expected, and you are not entirely sure you like it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to the tally house",
+          "icon": "gem",
+          "goto": "scene_tallies"
+        }
+      ]
     },
     "scene_tallies": {
       "type": "story",
@@ -333,8 +522,32 @@
           "goto": "scene_verses_sung"
         },
         {
+          "id": "hear_tallies",
+          "label": "Ask her to read the newest tallies aloud first",
+          "icon": "ear",
+          "goto": "scene_tallies_hear_tallies"
+        },
+        {
           "id": "lay_out",
           "label": "Lay out everything you've seen on the floor",
+          "icon": "map",
+          "goto": "check_outline"
+        }
+      ]
+    },
+    "scene_tallies_hear_tallies": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "narration": "Great-Gran Ashby reads aloud. For a thousand years the falls came like a heartbeat: so many moons, then a small Gemfall, then so many moons again. Since the big eruption, nothing. No beat at all. Just scribbles, and question marks, and one page where somebody has drawn a very worried face.",
+      "choices": [
+        {
+          "id": "more",
+          "label": "Now show her what you have brought",
           "icon": "map",
           "goto": "check_outline"
         }
@@ -397,7 +610,7 @@
             "value": true
           }
         ],
-        "narration": "The witch's note, the songs that curl, the jackalopes going quiet, the tallies breaking: you put them all down in the right order, and the shape they make is plain."
+        "narration": "The one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking: you put them all down in the right order, and the shape they make is plain."
       },
       "onFailure": {
         "goto": "scene_here_first",
@@ -415,8 +628,53 @@
       ],
       "choices": [
         {
+          "id": "read_marks",
+          "label": "Go out and read the oldest stone",
+          "icon": "eye",
+          "goto": "check_read_stone"
+        },
+        {
           "id": "onward",
           "label": "Ask what's on the shelf behind her",
+          "icon": "eye",
+          "goto": "scene_here_first_onward"
+        }
+      ]
+    },
+    "check_read_stone": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read the worn marks on the oldest boundary stone",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_unassigned",
+        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now come and see my shelf.\""
+      },
+      "onFailure": {
+        "goto": "scene_unassigned",
+        "narration": "The marks are worn so smooth you cannot tell scratches from weather. Great-Gran Ashby takes your hand and runs your fingers along them: one, one, one, and a gap. \"Counting,\" she says. \"Before us. Come and see the shelf.\""
+      }
+    },
+    "scene_here_first_onward": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "narration": "Behind Great-Gran Ashby, on a shelf of its own, something glints. She sees you looking and does not pretend she hasn't. \"Clever eyes,\" she says, and she reaches up with her walking stick, very gently, the way you would touch a sleeping baby's blanket. \"Come here, then. Carefully.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the shelf",
           "icon": "eye",
           "goto": "scene_unassigned"
         }
@@ -483,9 +741,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Find somewhere to sleep",
+          "label": "Step out into the evening",
           "icon": "moon",
-          "goto": "rest_bell_house"
+          "goto": "scene_moths_leaving"
         }
       ]
     },
@@ -501,9 +759,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Find somewhere to sleep",
+          "label": "Step out into the evening",
           "icon": "flame",
-          "goto": "rest_bell_house"
+          "goto": "scene_moths_leaving"
         }
       ]
     },
@@ -520,7 +778,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "rest_bell_house",
+        "goto": "scene_moths_leaving",
         "effects": [
           {
             "type": "grantQuestItem",
@@ -535,9 +793,193 @@
         "narration": "Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
       },
       "onFailure": {
-        "goto": "rest_bell_house",
+        "goto": "scene_moths_leaving",
         "narration": "Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
       }
+    },
+    "scene_moths_leaving": {
+      "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        },
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve. She is the town's bell-code expert, and she will tell you so. \"Moths leaving,\" she whispers. \"Every night this month.\"",
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Run after the moths and see where they go",
+          "icon": "quick",
+          "goto": "check_follow_moths"
+        },
+        {
+          "id": "hold_one",
+          "label": "Hold out your hands for one to land",
+          "icon": "heart",
+          "goto": "scene_moths_leaving_hold_one"
+        },
+        {
+          "id": "ask_bells",
+          "label": "Ask why the bells count moths",
+          "icon": "ear",
+          "goto": "scene_moths_leaving_ask_bells"
+        }
+      ]
+    },
+    "check_follow_moths": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep up with a river of embermoths",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_bell_house_supper",
+        "narration": "You run along the hillside under the glowing river. The moths do not drift at random. They flow around every cave where a stone has fallen, the way water flows around a rock, and then carry on south. You come back out of breath, with sparks in your hair."
+      },
+      "onFailure": {
+        "goto": "scene_bell_house_supper",
+        "narration": "You run, trip over a goat, and lie on your back in the heather watching the moths go over. From down there it is the most beautiful thing you have ever seen. The goat lies down too. Neither of you says anything for a while."
+      }
+    },
+    "scene_moths_leaving_hold_one": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        },
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "narration": "You hold out your hands. One embermoth circles, comes down, and lands, warm as a cup of cocoa. Then it notices your pack. It lifts off at once and flies a wide loop round the humming thing inside before it joins the others going south. The small dragonling pats your arm. \"They all do that,\" she says.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in to supper",
+          "icon": "heart",
+          "goto": "scene_bell_house_supper"
+        }
+      ]
+    },
+    "scene_moths_leaving_ask_bells": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        },
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "narration": "\"Because they always leave a little before the mountain wakes up,\" says the small dragonling, very fast, \"and come back after, and grandmothers count everything.\" She thinks. \"But they've never left this many. And they haven't come back.\" She rings the moth bell once more, very carefully, as if it might break.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in to supper",
+          "icon": "ear",
+          "goto": "scene_bell_house_supper"
+        }
+      ]
+    },
+    "scene_bell_house_supper": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "narration": "Supper in the bell house is a long table, forty grandmothers, and bread baked on hot rocks. The rule at this table is old: every guest brings something to it. A story, a recipe, a thing from the road. Forty pairs of spectacles turn your way, all at once, and wait.",
+      "choices": [
+        {
+          "id": "tell_road",
+          "label": "Tell them the story of your road",
+          "icon": "heart",
+          "goto": "check_supper_story"
+        },
+        {
+          "id": "ask_recipe",
+          "label": "Ask how they bake bread on rocks",
+          "icon": "cake",
+          "goto": "scene_bell_house_supper_ask_recipe"
+        },
+        {
+          "id": "depot_tag",
+          "label": "Put the Depot Stone on the table, SOLD tag and all",
+          "icon": "gem",
+          "goto": "scene_bell_house_supper_depot_tag",
+          "requiresItem": "facet_depot"
+        }
+      ]
+    },
+    "check_supper_story": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Tell forty grandmothers a good story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_bell_house",
+        "narration": "You tell them about the queues and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
+      },
+      "onFailure": {
+        "goto": "rest_bell_house",
+        "narration": "You get the order muddled and tell the end first. The grandmothers do not mind at all. They simply tell it back to you in the right order, interrupting each other, until it is a much better story than the one you started with."
+      }
+    },
+    "scene_bell_house_supper_ask_recipe": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "narration": "Asking forty grandmothers for one recipe gets you forty recipes, all different, and an argument that lasts until the pudding. The only thing they agree on is that you are all too thin. You go to bed carrying three loaves each, and a list of instructions you will never fully understand.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to bed, very full",
+          "icon": "cake",
+          "goto": "rest_bell_house"
+        }
+      ]
+    },
+    "scene_bell_house_supper_depot_tag": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "narration": "You set the Depot Stone on the table. The whole bell house goes silent. Great-Gran Ashby picks up the SOLD tag with two fingers, as if it smells. \"Nobody sells what the mountain drops,\" she says, and she drops the tag in the fire. She pushes the stone back to you. \"Now you're keeping it. Not owning it.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to bed, thinking",
+          "icon": "gem",
+          "goto": "rest_bell_house"
+        }
+      ]
     },
     "rest_bell_house": {
       "type": "rest",
@@ -546,8 +988,251 @@
       "choices": [
         {
           "id": "morning",
-          "label": "Go out into the morning",
-          "icon": "arrow",
+          "label": "Sleep, until somebody shakes you awake",
+          "icon": "moon",
+          "goto": "scene_night_lights"
+        }
+      ]
+    },
+    "scene_night_lights": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        }
+      ],
+      "narration": "In the middle of the night, a small hand shakes you awake. It is the bell-code expert, in a nightgown. \"Lanterns,\" she whispers, pointing. Up on the dark hillside, three little lights are bobbing toward a cave mouth. \"That's one of the caves on the list,\" she says. \"Nobody goes there. Nobody.\"",
+      "choices": [
+        {
+          "id": "wake_grans",
+          "label": "Wake the grandmothers",
+          "icon": "note",
+          "goto": "scene_night_lights_wake_grans"
+        },
+        {
+          "id": "go_quietly",
+          "label": "Climb up quietly and talk to them",
+          "icon": "heart",
+          "goto": "check_night_talk"
+        },
+        {
+          "id": "fly_look",
+          "label": "Fly up silently and look first",
+          "icon": "wing",
+          "goto": "scene_night_lights_fly_look",
+          "requiresSpecies": "griffin"
+        }
+      ]
+    },
+    "check_night_talk": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk three night diggers out of a cave",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_morning_bells",
+        "narration": "Halfway up you find three young prospectors with lanterns and one shovel. You sit down on a rock with them and tell them about the list, and the one rule, and the grandmothers' bells. They go a bit pale. \"We thought it was just a cave,\" says one. They walk back down with you, and nobody digs."
+      },
+      "onFailure": {
+        "goto": "scene_morning_bells",
+        "narration": "You climb up quietly, step on a bell somebody left in the heather, and it goes CLANG. The three diggers drop everything and run straight back down to the stones. Their shovel stays behind. A grandmother collects it at dawn and hangs it on the wall where the grandmothers keep every pry bar anybody ever gave up."
+      }
+    },
+    "scene_night_lights_wake_grans": {
+      "type": "story",
+      "narration": "You wake the grandmothers. Within one minute, eleven of them are marching up the hill in nightgowns and slippers, every one ringing a hand bell. The three lanterns stop, wobble, and then flee downhill, very fast. Great-Gran Ashby comes back yawning. \"Thank you, dears. Back to bed.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to bed",
+          "icon": "note",
+          "goto": "scene_morning_bells"
+        }
+      ]
+    },
+    "scene_night_lights_fly_look": {
+      "type": "story",
+      "narration": "Your griffin glides up without a sound. The lanterns belong to three young prospectors, not much older than you, with one shovel between them and no idea where they are. You land beside them and point them gently back toward the stones. They go, and say thank you, and do not dig.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Glide back to the bell house",
+          "icon": "wing",
+          "goto": "scene_morning_bells"
+        }
+      ]
+    },
+    "scene_morning_bells": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        }
+      ],
+      "narration": "In the morning the bell house rings the dawn round, and everybody helps. The bells are enormous, the ropes are fat as your arm, and the small bell-code expert is bossing everyone. In the corner hangs one bell nobody touches, with a rope tied up out of reach. She does not look at it, very hard.",
+      "choices": [
+        {
+          "id": "pull_rope",
+          "label": "Pull the biggest bell rope",
+          "icon": "might",
+          "goto": "check_big_bell"
+        },
+        {
+          "id": "polish",
+          "label": "Help polish the little bells instead",
+          "icon": "hand",
+          "goto": "scene_morning_bells_polish"
+        },
+        {
+          "id": "unrung",
+          "label": "Ask about the bell in the corner",
+          "icon": "ear",
+          "goto": "scene_morning_bells_unrung"
+        }
+      ]
+    },
+    "check_big_bell": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Ring the biggest bell in the bell house",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crowd_at_stones",
+        "narration": "You haul on the rope. The bell swings, and BONG, the whole hillside hums, and you feel it in your teeth. Far up the hills, other bell houses answer, one after another. The small dragonling says that was very nearly as good as a grandmother."
+      },
+      "onFailure": {
+        "goto": "scene_crowd_at_stones",
+        "narration": "You haul on the rope, and the bell swings, and the rope swings back up and takes you with it. For one glorious moment you are flying. Then the grandmothers catch you, one on each ankle, and the bell rings anyway, louder than ever."
+      }
+    },
+    "scene_morning_bells_polish": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        }
+      ],
+      "narration": "You polish the little bells until you can see your faces in them, stretched out silly. Each one gives a tiny ring when you finish. The small dragonling inspects them all and declares them \"acceptable,\" which you find out later is the highest mark she has ever given anybody.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go down to the stones",
+          "icon": "hand",
+          "goto": "scene_crowd_at_stones"
+        }
+      ]
+    },
+    "scene_morning_bells_unrung": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        }
+      ],
+      "narration": "You ask about the bell in the corner. The small dragonling, who has talked without stopping since yesterday, stops. \"Nobody rings that one,\" she says quietly. \"Not ever. Great-Gran says we'll know.\" She reaches up on tiptoe and touches its rim, just once. It is cold, in a house full of warm stones.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go down to the stones",
+          "icon": "ear",
+          "goto": "scene_crowd_at_stones"
+        }
+      ]
+    },
+    "scene_crowd_at_stones": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "Down at the line, the morning queue has turned into a crowd, and the crowd is getting loud. A big man in a feathered hat is up on a cart, shouting that the stones are just old rocks and the grandmothers are just old ladies. People are starting to push. The grandmothers stand very still with their bells. Everybody vote.",
+      "choices": [
+        {
+          "id": "tell_story",
+          "label": "Climb up and tell the crowd what you have seen",
+          "icon": "heart",
+          "goto": "check_tell_crowd"
+        },
+        {
+          "id": "stand_with",
+          "label": "Stand in the line with the grandmothers",
+          "icon": "shield",
+          "goto": "choice_crowd_at_stones_stand_with"
+        },
+        {
+          "id": "sing_verses",
+          "label": "Sing the spiral verses, loud",
+          "icon": "note",
+          "goto": "choice_crowd_at_stones_sing_verses",
+          "requiresItem": "verses_relay_spiral"
+        }
+      ]
+    },
+    "check_tell_crowd": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Get a shouting crowd to listen",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_centaur_whisper",
+        "narration": "You climb up beside the feathered hat and tell them: the hum, the silent warrens, the roads that bend, the moths going south. You tell it like a story, because it is one. The crowd goes quiet. The feathered hat comes off. Nobody pushes after that."
+      },
+      "onFailure": {
+        "goto": "scene_centaur_whisper",
+        "narration": "You climb up and start to tell them, and the crowd shouts you down. But while they are shouting at you, nobody is pushing. By the time they run out of breath, the grandmothers have rung for help, and twenty more grandmothers have arrived. The crowd sits down, grumbling."
+      }
+    },
+    "choice_crowd_at_stones_stand_with": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You walk out and stand in the line between two grandmothers, and do not say anything at all. The crowd looks at the old ladies, and at you, and at the old stones. The feathered hat climbs down off his cart, muttering. It is very hard to push past people who are just standing there, being right.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Stay until the crowd settles",
+          "icon": "shield",
+          "goto": "scene_centaur_whisper"
+        }
+      ]
+    },
+    "choice_crowd_at_stones_sing_verses": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You sing Old Corran's spiral verses, loud, from the top of a stone. Half the crowd know the old verses and start singing along. Then they reach the new ones, the ones that bend away and away, and their voices trail off. They know those roads. They have walked those bends. The crowd goes very quiet.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Let the quiet settle",
+          "icon": "note",
           "goto": "scene_centaur_whisper"
         }
       ]
@@ -557,7 +1242,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "In the morning, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
+      "narration": "When the crowd has settled, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -575,13 +1260,20 @@
           "id": "caravan_road",
           "label": "Thank him and take the caravan road",
           "icon": "travel",
-          "goto": "scene_who_to_tell"
+          "goto": "scene_centaur_whisper_caravan_road"
+        },
+        {
+          "id": "show_bark",
+          "label": "Show him Old Corran's bark of verses",
+          "icon": "note",
+          "goto": "scene_centaur_whisper_show_bark",
+          "requiresItem": "verses_relay_spiral"
         }
       ]
     },
     "scene_shortcut": {
       "type": "story",
-      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Perrin stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
+      "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and comes out at the very last boundary stone, a whole day ahead of the caravan road. Perrin stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -593,7 +1285,7 @@
           "id": "promise",
           "label": "Promise never, ever to say so",
           "icon": "hand",
-          "goto": "scene_who_to_tell",
+          "goto": "scene_warden_count",
           "effects": [
             {
               "type": "setFlag",
@@ -604,9 +1296,133 @@
         }
       ]
     },
+    "scene_centaur_whisper_caravan_road": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Perrin Nine-Verse"
+        }
+      ],
+      "narration": "You thank Perrin and choose the caravan road. He looks so relieved that he has to sit down. \"Good. Good! The argument lives,\" he says, wiping his eyes. \"My grandfather would have been furious if it ended on a Tuesday.\" He gallops off to argue about it with someone at once.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go to the last boundary stone",
+          "icon": "travel",
+          "goto": "scene_warden_count"
+        }
+      ]
+    },
+    "scene_centaur_whisper_show_bark": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Perrin Nine-Verse"
+        }
+      ],
+      "narration": "Perrin reads Old Corran's bark, and his lips move along with the verses. Then he goes pale. \"Corran's new verses bend round the falls,\" he whispers, \"and they bend round the Shortcut too. It's in the song. It's been in the song all along.\" He rolls the bark up and hands it back with shaking hooves. \"Don't tell Corran.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go to the last boundary stone",
+          "icon": "note",
+          "goto": "scene_warden_count"
+        }
+      ]
+    },
+    "scene_warden_count": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "narration": "At the last boundary stone, a Skywarden patrol is counting the rush through, and it is Sergeant Holloway from the north road, ledger open. \"You again,\" says the sergeant. \"Good. I need counters. Picks going north: four hundred and twelve today. Picks coming back: nine. That is arithmetic. I do not like it.\"",
+      "choices": [
+        {
+          "id": "count",
+          "label": "Help count the picks going through",
+          "icon": "clever",
+          "goto": "check_count_picks"
+        },
+        {
+          "id": "ask_logs",
+          "label": "Ask what the wardens do with all the counting",
+          "icon": "ear",
+          "goto": "scene_warden_count_ask_logs"
+        },
+        {
+          "id": "sky_news",
+          "label": "Swap sky news with the sergeant, flyer to flyer",
+          "icon": "wing",
+          "goto": "scene_warden_count_sky_news",
+          "requiresSpecies": "griffin"
+        }
+      ]
+    },
+    "check_count_picks": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Count every pick in a moving crowd",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_who_to_tell",
+        "narration": "You count, and count, and your number matches the sergeant's exactly. Holloway writes your names in the ledger under 'Counters, Reliable,' which is apparently a great honor. \"The citadel keeps logs,\" the sergeant says. \"Somebody has to.\""
+      },
+      "onFailure": {
+        "goto": "scene_who_to_tell",
+        "narration": "You count four hundred and twelve picks, two goats and a very tall hat. Holloway checks your sums, crosses out the goats, keeps the hat, and writes you down as 'Counters, Enthusiastic.' \"Close enough,\" says the sergeant. \"For arithmetic.\""
+      }
+    },
+    "scene_warden_count_ask_logs": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "narration": "\"We write it down,\" says Holloway. \"Every pick, every ash wind, every moth night. It all goes up to Redspire, and it all goes on a shelf.\" The sergeant closes the ledger. \"Mostly, nobody reads it. Mostly.\" For a moment, the sergeant looks very tired, and very honest.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk over to the grandmothers",
+          "icon": "ear",
+          "goto": "scene_who_to_tell"
+        }
+      ]
+    },
+    "scene_warden_count_sky_news": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "narration": "Your griffin and the sergeant swap sky news: ash over the peak every evening now, the moths all flying south, and warm wind where there should be cold. Holloway writes all of it down and reads it back twice. \"Same as our logs,\" the sergeant says quietly. \"Exactly the same. Thank you.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk over to the grandmothers",
+          "icon": "wing",
+          "goto": "scene_who_to_tell"
+        }
+      ]
+    },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "The grandmothers walk you to the last boundary stone. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks at each of you in turn. \"Make somebody finally listen.\" Who will you tell?",
+      "narration": "The grandmothers come down to the last boundary stone to see you off. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks at each of you in turn. \"Make somebody finally listen.\" Who will you tell?",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -749,7 +1565,7 @@
     },
     "end_rolled_down": {
       "type": "rest",
-      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you each a warm rock and a stern look. You have lost a whole day, and the tally house is full of other people's arguments by the time you get there. You keep what you know close, because there is no time today to make anyone listen.",
+      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you each a warm rock and a stern look. You have lost a whole day, and by the time you reach the grandmothers' tally house, it is full of other people's arguments. You keep what you know close, because there is no time today to make anyone listen.",
       "heal": 3,
       "onEnter": [
         {
@@ -779,7 +1595,10 @@
       "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
       "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
       "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
-      "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument"
+      "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument",
+      "wend": "a Deep Hollow ladler from the north road; gentle, generous, remembers every name, certain the world can be fixed at the root",
+      "sergeant_holloway": "a Skywarden supply sergeant from the north road; rigid, honest, calls everything 'arithmetic', writes everything down",
+      "feathered_hat": "a loud prospector on a cart; blustering, sure the stones are just old rocks, quiet once he really listens"
     }
   }
 }
