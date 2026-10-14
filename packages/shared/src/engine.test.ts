@@ -18,6 +18,7 @@ import {
   type LegalAction,
 } from "./encounter.js";
 import { planEnemyTurn } from "./enemy-ai.js";
+import { PLAYER_COLORS } from "./player-colors.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
@@ -427,6 +428,17 @@ describe("CREATE_CHARACTER", () => {
     expect(unicorn.character.stats.heart).toBe(5); // 1 base + 3 assigned + 1 species
     expect(unicorn.hp).toBe(unicorn.character.maxHp);
     expect(unicorn.down).toBe(false);
+  });
+
+  it("assigns each character its own colors, whatever the phone sent", () => {
+    // Both intents send the same APPEARANCE; the table picks instead, and
+    // never the same pair twice.
+    const state = seatedParty();
+    const [first, second] = state.party.map((member) => member.character.appearance);
+    expect(first?.accent).not.toBe(second?.accent);
+    for (const appearance of [first, second]) {
+      expect(PLAYER_COLORS.map((colors) => colors.accent)).toContain(appearance?.accent);
+    }
   });
 
   it("hands the persistence layer the unresolved character", () => {

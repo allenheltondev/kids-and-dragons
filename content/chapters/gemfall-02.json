@@ -333,7 +333,7 @@
     "scene_flock_scatters": {
       "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
-      "narration": "The flock scatters in threes, every three running a different way. Then each little three stops, throws back its head, and calls the Gather. You can't hear a thing. It looks like thirty sheeple yawning at the sky in perfect silence. A minute later they are all back in one woolly knot, pretending nothing happened. One of them points at the long grass, just to be helpful, and you see two grey shapes lying in it.",
+      "narration": "The flock scatters in threes, every three running a different way. Then each little three stops, throws back its head, and calls the Gather. You can't hear a thing. It looks like thirty sheeple yawning at the sky in perfect silence. A minute later they are all back in one woolly knot, pretending nothing happened. One of them points at the long grass, just to be helpful, and you see two gray shapes lying in it.",
       "choices": [
         {
           "id": "on",
@@ -348,7 +348,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "From above, the long grass is a green sea, and two grey shapes are lying in it like boats, perfectly still, each with a faint orange glow under the fur. Mountain wolves. In farm country. One of them looks straight up at you and does not even pretend it isn't there.",
+      "narration": "From above, the long grass is a green sea, and two gray shapes are lying in it like boats, perfectly still, each with a faint orange glow under the fur. Mountain wolves. In farm country. One of them looks straight up at you and does not even pretend it isn't there.",
       "choices": [
         {
           "id": "on",
@@ -403,7 +403,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_embermoths",
-        "narration": "The wolves eat every sausage, curl up into one warm grey heap with eight legs, and watch you go. They are not tame. But they will remember you.",
+        "narration": "The wolves eat every sausage, curl up into one warm gray heap with eight legs, and watch you go. They are not tame. But they will remember you.",
         "effects": [
           {
             "type": "setFlag",
@@ -936,7 +936,7 @@
         "individual.marda_thorn",
         "npc.centaur"
       ],
-      "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumour board is where you decide.",
+      "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumor board is where you decide.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -947,7 +947,7 @@
       "choices": [
         {
           "id": "to_board",
-          "label": "Go and read the rumour board",
+          "label": "Go and read the rumor board",
           "icon": "scroll",
           "goto": "choice_rumour_board"
         },
@@ -960,7 +960,7 @@
         },
         {
           "id": "ask_believe",
-          "label": "Ask Marda which rumour she believes",
+          "label": "Ask Marda which rumor she believes",
           "icon": "eye",
           "requiresFlag": "motive_curiosity",
           "goto": "scene_marda_question"
@@ -987,7 +987,7 @@
     },
     "scene_marda_question": {
       "type": "story",
-      "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumours,\" she adds. \"That's the trouble with this season.\"",
+      "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumors,\" she adds. \"That's the trouble with this season.\"",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -997,7 +997,7 @@
       "choices": [
         {
           "id": "to_board_after",
-          "label": "Go and read the rumour board",
+          "label": "Go and read the rumor board",
           "icon": "scroll",
           "goto": "choice_rumour_board"
         }
@@ -1005,7 +1005,7 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -1108,7 +1108,7 @@
       "hob": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
       "sprites": "harvest sprites; tiny, earnest, over-explaining, very serious about guard duty and award ceremonies, heartbroken by a refusal for about four seconds",
       "pib": "a bramble sprite the size of a teapot who keeps the hedges; earnest, narrates their own maintenance, offers you things you did not ask for, cannot open the hedges for anyone who has not asked properly",
-      "marda": "Marda Thorn, a grey-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
+      "marda": "Marda Thorn, a gray-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
       "drover": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner",
       "sheeple": "a flock of sheeple, never fewer than three and never named; warm, agreeable, and in chorus, checks with the others first (\"What do we think?\"), answers in three voices slightly out of step, finishes each other's sentences, skittish but never silly"
     }
