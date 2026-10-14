@@ -186,7 +186,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on toward the depot",
+          "label": "Walk on up the road",
           "icon": "heart",
           "goto": "scene_empty_stretch"
         }
@@ -203,7 +203,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on toward the depot",
+          "label": "Walk on up the road",
           "icon": "wing",
           "goto": "scene_empty_stretch"
         }
@@ -478,11 +478,11 @@
     },
     "scene_stubborn_mule_unload": {
       "type": "story",
-      "narration": "You lift the gem sack off. The mule springs up at once, brays a thank you, and trots off with its ears high. The sack hums in your arms all the way to the rest tents, where you hand it back to its very puzzled owner. Your arms ache. The mule waves its ears at you from the roadside.",
+      "narration": "You lift the gem sack off. The mule springs up at once, brays a thank you, and trots off with its ears high. The sack hums in your arms all the way to some big tents by the roadside, where you hand it back to its very puzzled owner. Your arms ache. The mule waves its ears at you from the roadside.",
       "choices": [
         {
           "id": "on",
-          "label": "Head for the rest tents",
+          "label": "Head for the tents by the road",
           "icon": "hand",
           "goto": "rest_soup_tents"
         }
@@ -494,7 +494,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Head for the rest tents",
+          "label": "Head for the tents by the road",
           "icon": "heart",
           "goto": "rest_soup_tents"
         }

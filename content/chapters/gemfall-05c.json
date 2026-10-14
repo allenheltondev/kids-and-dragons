@@ -264,7 +264,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rule_heard",
-        "narration": "You do not shout the rule at him. You tell him about the crabs, and the bells, and the wall of pry bars, and you tell it like a story, because it is one. Somewhere in the middle he stops saying \"right, right\" and starts actually listening."
+        "narration": "You do not shout the rule at him. You tell him about the bells, and the tallies, and what a mountain might do to anybody who pries at it, and you tell it like a story, because it is one. Somewhere in the middle he stops saying \"right, right\" and starts actually listening."
       },
       "onFailure": {
         "goto": "scene_crab_warning",
@@ -590,7 +590,7 @@
             "value": true
           }
         ],
-        "narration": "The witch's note, the songs that curl, the jackalopes going quiet, the tallies breaking: you put them all down in the right order, and the shape they make is plain."
+        "narration": "The one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking: you put them all down in the right order, and the shape they make is plain."
       },
       "onFailure": {
         "goto": "scene_here_first",
@@ -635,7 +635,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_unassigned",
-        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now you see the shelf.\""
+        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now come and see my shelf.\""
       },
       "onFailure": {
         "goto": "scene_unassigned",
@@ -792,7 +792,7 @@
           "figure": "entities/embermoth"
         }
       ],
-      "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. The small bell-code expert tugs your sleeve. \"Moths leaving,\" she whispers. \"Every night this month.\"",
+      "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve. She is the town's bell-code expert, and she will tell you so. \"Moths leaving,\" she whispers. \"Every night this month.\"",
       "choices": [
         {
           "id": "follow",
@@ -1014,11 +1014,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_morning_bells",
-        "narration": "Halfway up you find three young prospectors with lanterns and one shovel. You sit down on a rock with them and tell them about the list, and the crabs, and the pry bar wall. They go a bit pale. \"We thought it was just a cave,\" says one. They walk back down with you, and nobody digs."
+        "narration": "Halfway up you find three young prospectors with lanterns and one shovel. You sit down on a rock with them and tell them about the list, and the one rule, and the grandmothers' bells. They go a bit pale. \"We thought it was just a cave,\" says one. They walk back down with you, and nobody digs."
       },
       "onFailure": {
         "goto": "scene_morning_bells",
-        "narration": "You climb up quietly, step on a bell somebody left in the heather, and it goes CLANG. The three diggers drop everything and run straight back down to the stones. Their shovel stays behind. A grandmother collects it at dawn and hangs it on the pry bar wall."
+        "narration": "You climb up quietly, step on a bell somebody left in the heather, and it goes CLANG. The three diggers drop everything and run straight back down to the stones. Their shovel stays behind. A grandmother collects it at dawn and hangs it on the wall where the grandmothers keep every pry bar anybody ever gave up."
       }
     },
     "scene_night_lights_wake_grans": {
@@ -1545,7 +1545,7 @@
     },
     "end_rolled_down": {
       "type": "rest",
-      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you each a warm rock and a stern look. You have lost a whole day, and the tally house is full of other people's arguments by the time you get there. You keep what you know close, because there is no time today to make anyone listen.",
+      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you each a warm rock and a stern look. You have lost a whole day, and by the time you reach the grandmothers' tally house, it is full of other people's arguments. You keep what you know close, because there is no time today to make anyone listen.",
       "heal": 3,
       "onEnter": [
         {

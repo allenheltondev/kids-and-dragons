@@ -39,6 +39,11 @@ Everything else a chapter sets — doors opened, objectives earned — dies with
 A route set is a **fork**: at most one of its flags stands at a time, and a newly set member
 replaces the old one. That is what lets a chapter *re-route* a party (3C's failed ford sets
 `route_wild`, which replaces `route_rush`, and the party plays 4B).
+The roads weave both ways: 3B's walk-over ending sets `route_rush`, and that party plays 4C.
+So a road flag says which chapters 4 and 5 a party plays, **not** which chapter 3 it played:
+a 4B/5B party may never have met Gullet or seen the Hollow Gate, and a 4C/5C party may never
+have met Mother Thrum or Burdock. A callback to one chapter 3 gates on something only that
+chapter gives (its facet, a prop, a `crossing` / `west_branch` member it alone sets).
 
 | Set | Members | Must be set by | Read by |
 |---|---|---|---|
