@@ -1516,7 +1516,7 @@
       "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -1580,7 +1580,7 @@
       "narration": "You say nothing. Pellam waits, and the lantern burns, and at last his pen scratches anyway. \"The Reckoning, then,\" he whispers. \"Hardest road. Nobody promised.\" A blanket comes through the hatch, and then, after a moment, a second one.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -1598,7 +1598,7 @@
       "narration": "\"Hold it,\" you whisper. \"The leash.\" The pen stops. \"That's the captain's word,\" Pellam whispers, sounding puzzled, and passes out a blanket and a very small book with CAGE on the spine, which he asks you to give back in the morning.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -1616,7 +1616,7 @@
       "narration": "\"Finish the collection,\" you whisper. There is a pause behind the hatch. \"Noted,\" Pellam whispers at last, and then, after another pause, a blanket comes through anyway.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -1634,7 +1634,7 @@
       "narration": "\"Put it back,\" you whisper through the hatch. Pellam's pen scratches. \"Good,\" he whispers back, which is not a thing clerks say, and passes out a blanket after the lantern.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
