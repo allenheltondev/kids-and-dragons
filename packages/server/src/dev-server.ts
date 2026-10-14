@@ -30,6 +30,7 @@ import { ContentError, loadContent, type ContentStore } from "./content/loader.t
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
+import { relayPreview } from "./handlers/preview.ts";
 import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
@@ -271,6 +272,21 @@ async function main(): Promise<void> {
     // reads `error.code` and resyncs. 200 keeps that path free of fetch()
     // error handling on a phone with a flaky connection.
     res.json(response);
+  });
+
+  // A tap not yet confirmed — relayed to the room, never committed
+  // (handlers/preview.ts). The seat comes from the session token alone.
+  app.post("/api/preview", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "a preview needs a room session token");
+    const result = await relayPreview(
+      { runId: session.runId, playerId: session.playerId, preview: (req.body ?? {}).preview, context: (req.body ?? {}).context },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
   });
 
   app.post("/api/progression/spend", async (req: Request, res: Response) => {
