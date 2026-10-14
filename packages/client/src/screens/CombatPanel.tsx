@@ -734,7 +734,7 @@ function ConfirmBar({
         <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={onBack}>
           Change
         </Button>
-        <Button variant="primary" size="lg" icon={<Icon name="check" />} disabled={busy} onClick={onGo}>
+        <Button variant="primary" size="md" icon={<Icon name="check" />} disabled={busy} onClick={onGo}>
           {busy ? "Sending…" : "Do it!"}
         </Button>
       </div>
