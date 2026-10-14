@@ -205,6 +205,7 @@
       ]
     },
     "scene_flock_ridge": {
+      "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
       "discovers": [
         "npc.sheeple"
@@ -233,6 +234,7 @@
       ]
     },
     "scene_flock_bigfoot": {
+      "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
       "narration": "Nobody bolts. Nobody even flinches. The whole flock shuffles in around the bigfoot and leans on them like a warm, woolly wall, and a calm flock notices things. It notices, without anybody saying a word, which one of you is the clever one. Thirty heads turn to watch them.",
       "choices": [
@@ -252,6 +254,7 @@
       ]
     },
     "check_flock_clever": {
+      "art": "scenes/gemfall/sheeple-ridge",
       "type": "check",
       "stat": "clever",
       "tn": 12,
@@ -274,6 +277,7 @@
       }
     },
     "scene_flock_copies": {
+      "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
       "narration": "Thirty pairs of eyes see a lot more than one pair. Down in the long grass are two cinder wolves, and they are not hunting. They are shivering, and they have been staring at the caravan's sausage wagon since breakfast. When you stand up to go, three sheeple in seven-brimmed hats stand up too. They follow you down the ridge at a very polite distance, and they stop whenever you stop.",
       "choices": [
@@ -286,6 +290,7 @@
       ]
     },
     "scene_flock_scatters": {
+      "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
       "narration": "The flock scatters in threes, every three running a different way. Then each little three stops, throws back its head, and calls the Gather. You can't hear a thing. It looks like thirty sheeple yawning at the sky in perfect silence. A minute later they are all back in one woolly knot, pretending nothing happened. One of them points at the long grass, just to be helpful, and you see two gray shapes lying in it.",
       "choices": [
