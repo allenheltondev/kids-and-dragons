@@ -39,6 +39,11 @@ Everything else a chapter sets — doors opened, objectives earned — dies with
 A route set is a **fork**: at most one of its flags stands at a time, and a newly set member
 replaces the old one. That is what lets a chapter *re-route* a party (3C's failed ford sets
 `route_wild`, which replaces `route_rush`, and the party plays 4B).
+The roads weave both ways: 3B's walk-over ending sets `route_rush`, and that party plays 4C.
+So a road flag says which chapters 4 and 5 a party plays, **not** which chapter 3 it played:
+a 4B/5B party may never have met Gullet or seen the Hollow Gate, and a 4C/5C party may never
+have met Mother Thrum or Burdock. A callback to one chapter 3 gates on something only that
+chapter gives (its facet, a prop, a `crossing` / `west_branch` member it alone sets).
 
 | Set | Members | Must be set by | Read by |
 |---|---|---|---|
@@ -115,8 +120,14 @@ stone stays in the bag as a memory until the campaign ends and quest items are c
 
 Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
 
-- **25–70 scenes, 25–45 minutes.** `estimatedMinutes` 25–45. Most of the count is result
-  scenes (below), which take a few seconds each at the table.
+- **A real evening: 30–45 minutes at the table.** The first draft's chapters ran in about
+  eight minutes each in playtesting, because a party could win one in a dozen scenes with
+  four or five real decisions. So the bar is the **shortest path to a success ending**: at
+  least **30 scenes**, at least **14** of which ask something (a scene with two or more
+  ungated choices, a `choice_point` vote, or a check). New material goes on the spine
+  every path walks, never on a detour a party can skip. That puts most chapters at 80–120
+  scenes, and that is fine: most of the count is result scenes (below), which take a few
+  seconds each at the table. `estimatedMinutes` 30–45.
 - **Every choice lands somewhere that shows its result.** Two choices may reach the same
   place, but never without a scene in between that tells the party what their pick did: a
   troll answers the story you told, the room reacts to the pursuit you declared, the dragon
@@ -160,3 +171,7 @@ Read bramblewood-01 aloud and match it: short sentences an 8-year-old follows wh
 reads them off the TV, one concrete funny detail per scene, warm and a little spooky, never
 scary. Nobody dies. Losses in chapter 8 are grief and consequence, never gore; the realm
 endures and every loss ends on a spark. The Hollow Gate is witnessed, never explained.
+
+Never count the party. A table seats one to four players, so "all three of you", "your two
+names" and "three pairs of hands" read wrong at most tables; say "all of you", "your names",
+"every hand". `gemfall-flow.test.mjs` fails on the common forms.

@@ -59,6 +59,21 @@ function ctx(overrides: Partial<EngineContext> = {}): EngineContext {
 const MAP = makeMap();
 
 /**
+ * The fixture chapter with a second way out of the shrine. Its shrine beat has
+ * only one ("Take the path east"), which is not a decision and so does not
+ * move the story turn — a test about the marker going round needs two.
+ */
+function chapterWithForkedShrine(): Chapter {
+  const chapter = makeChapter();
+  const shrine = chapter.scenes["scene_shrine"] as StoryScene;
+  shrine.choices = [
+    ...shrine.choices,
+    { id: "west", label: "Take the path west", icon: "arrow", goto: "encounter_wisps" },
+  ];
+  return chapter;
+}
+
+/**
  * Plays a fight to its end, the party attacking whatever it can reach.
  *
  * The chapter-walk tests used to get past the encounter for free: the engine
@@ -775,7 +790,7 @@ describe("story turns (spec §6.1)", () => {
   });
 
   it("passes the turn to the next seat once the choice is made, and wraps around", () => {
-    const context = ctx({ rng: fixedRng(20) });
+    const context = ctx({ rng: fixedRng(20), chapter: chapterWithForkedShrine() });
     const state = atFirstStory(context);
     const taken = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
     expect(taken.error).toBeUndefined();
@@ -787,6 +802,40 @@ describe("story turns (spec §6.1)", () => {
     const second = applyIntent(rolled, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "east" } }, context);
     expect(second.error).toBeUndefined();
     expect(storyTurnHolder(second.state)?.playerId).toBe("p_1");
+  });
+
+  it("keeps the turn where it is on a beat with only one way on", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = atFirstStory(context);
+    const taken = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    const rolled = applyIntent(taken.state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    // The shrine offers only "Take the path east": p_2 reads on, and the
+    // next real decision is still theirs.
+    expect(rolled.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_2"] });
+    const onward = applyIntent(rolled, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "east" } }, context);
+    expect(onward.error).toBeUndefined();
+    expect(storyTurnHolder(onward.state)?.playerId).toBe("p_2");
+  });
+
+  it("counts only the options the party can see when deciding if a beat is a decision", () => {
+    // The clearing has two ways out, but "Go over it" needs wings. Without a
+    // griffin or dragonling at the table it is a one-way beat.
+    const context = ctx();
+    const grounded = walk(
+      newRun(),
+      [
+        { playerId: "p_1", intent: CREATE_UNICORN },
+        { playerId: "p_2", intent: { ...CREATE_UNICORN, name: "Second" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+      ],
+      context,
+    ).state;
+    expect(grounded.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_1"] });
+    const taken = applyIntent(grounded, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    expect(taken.error).toBeUndefined();
+    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_1");
   });
 
   it("skips a seat whose phone has dropped when the turn comes round", () => {
@@ -1233,7 +1282,7 @@ describe("a full walk of a chapter", () => {
   });
 
   it("breaks a tied vote toward whoever holds the story turn (spec §6.1)", () => {
-    const context = ctx({ rng: fixedRng(20) });
+    const context = ctx({ rng: fixedRng(20), chapter: chapterWithForkedShrine() });
     const atRidge = walk(
       seatedParty(context),
       [

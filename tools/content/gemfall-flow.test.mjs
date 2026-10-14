@@ -70,6 +70,32 @@ describe("Gemfall reads cleanly", () => {
   }
 });
 
+/*
+ * A party is one to four players (MAX_PARTY), so the story never counts them.
+ * "All three names", "the other two heads" and "three pairs of hands" read
+ * wrong at every table but one. Say "your names", "every head", "your hands".
+ */
+const PARTY_COUNT = [
+  /\b(?:two|three|four) of (?:you|us|our|your)\b/i,
+  /\b(?:all|both) (?:two|three|four) (?:of your|of our|names|heads|pairs)\b/i,
+  /\b(?:two|three|four|six|eight) pairs of hands\b/i,
+  /\byour (?:two|three|four) (?:names|heads|hands)\b/i,
+  /\broom for (?:two|three|four)\b/i,
+  /\bthe other (?:two|three) heads\b/i,
+];
+
+describe("Gemfall never assumes how many players are at the table", () => {
+  for (const { id, raw } of chapters) {
+    it(`${id} has no counted party`, () => {
+      const lines = raw
+        .split("\n")
+        .map((l, i) => [i + 1, l])
+        .filter(([, l]) => PARTY_COUNT.some((re) => re.test(l)));
+      expect(lines.map(([n, l]) => `${n}: ${l.trim().slice(0, 100)}`)).toEqual([]);
+    });
+  }
+});
+
 describe("every Gemfall choice lands on a scene that shows its result", () => {
   for (const { id, raw } of chapters) {
     const scenes = JSON.parse(raw).scenes;
