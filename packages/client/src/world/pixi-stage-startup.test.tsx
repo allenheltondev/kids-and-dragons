@@ -29,6 +29,7 @@ vi.mock("../store", () => ({
   useRunState: () => null,
   useSession: () => null,
   usePresentation: vi.fn(),
+  usePreviews: () => ({}),
   useGameStore: { getState: () => ({}) },
 }));
 

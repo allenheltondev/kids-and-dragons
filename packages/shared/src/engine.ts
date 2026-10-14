@@ -1461,10 +1461,12 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
     }
   }
 
-  draft.encounter = beginEncounter(
-    { board: parseBoard(map.rows), party, enemies },
-    combatCtx(ctx),
-  );
+  draft.encounter = {
+    ...beginEncounter({ board: parseBoard(map.rows), party, enemies }, combatCtx(ctx)),
+    // The step this fight began on. Unique per fight and replayed identically
+    // from the event log, so it is the fight's identity (EncounterState).
+    startedAt: draft.seq,
+  };
 
   /*
    * The ready-up has been answered — close it.

@@ -772,6 +772,13 @@
   display: none;
 }
 
+/* The panel stays mounted under an open Field Guide (PlayerPanel), and
+   `.player`'s own `display: flex` would otherwise beat the `hidden` attribute
+   and leave a second full-height pane laid out beneath the guide. */
+.player[hidden] {
+  display: none;
+}
+
 .player--deciding .player__prompt {
   flex: 1 1 auto;
   min-block-size: 0;
@@ -1053,3 +1060,50 @@
 .player__room-settings[open] > summary::before { content: "▾"; }
 .kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
+
+/*
+ * Motion shared by every question on the phone — story choices and fight
+ * cards alike. The options deal in one after another, a picked one settles
+ * with a small bounce, and the confirm bar slides up from below so the eye
+ * follows it to "Do it!". Off under prefers-reduced-motion.
+ */
+.prompt__options > li {
+  animation: prompt-deal 320ms ease-out both;
+}
+
+.prompt__options > li:nth-child(2) { animation-delay: 50ms; }
+.prompt__options > li:nth-child(3) { animation-delay: 100ms; }
+.prompt__options > li:nth-child(4) { animation-delay: 150ms; }
+.prompt__options > li:nth-child(5) { animation-delay: 200ms; }
+.prompt__options > li:nth-child(n + 6) { animation-delay: 250ms; }
+
+@keyframes prompt-deal {
+  from { transform: translateY(0.6em); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.choice--on {
+  animation: prompt-chosen 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes prompt-chosen {
+  from { transform: scale(0.96); }
+  to { transform: scale(1); }
+}
+
+.confirm {
+  animation: prompt-confirm 260ms cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+
+@keyframes prompt-confirm {
+  from { transform: translateY(1.2em); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt__options > li,
+  .choice--on,
+  .confirm {
+    animation: none;
+  }
+}
