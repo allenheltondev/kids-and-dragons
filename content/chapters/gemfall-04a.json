@@ -77,6 +77,12 @@
           "icon": "arrow",
           "goto": "scene_pride_road"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Cart driver"
+        }
       ]
     },
     "scene_mouthlands_walk": {

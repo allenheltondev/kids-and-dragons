@@ -46,6 +46,10 @@
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
         }
       ],
       "choices": [
@@ -142,6 +146,10 @@
       "cast": [
         {
           "figure": "entities/embermoth"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
         }
       ],
       "choices": [
@@ -173,6 +181,10 @@
       "cast": [
         {
           "figure": "entities/embermoth"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
         }
       ],
       "choices": [
@@ -459,6 +471,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "choices": [
@@ -511,6 +527,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "roller": "party",
@@ -594,6 +614,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "choices": [
@@ -649,6 +673,12 @@
           "label": "Up the ridge road at last",
           "icon": "hand",
           "goto": "scene_citadel_gate"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ]
     },
@@ -1662,6 +1692,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "choices": [
