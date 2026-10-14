@@ -1,4 +1,5 @@
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
+import { GuideTab } from "./GuideTab";
 /**
  * Travel Mode — one surface at a time (spec §2.2).
  *
@@ -27,7 +28,7 @@ import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigat
  *   • The map is the one surface nothing ever pushes in front of you. It is
  *     brought up on request — "how far have we got?" — and left the moment the
  *     game needs you, like the world.
- *   • A roll takes the world for its ~1.5s wherever you were, then returns you.
+ *   • A roll takes the world while its card is up, wherever you were, then returns you.
  *   • A transformation takes it for as long as the cutscene runs. Same rule,
  *     bigger stakes: without it, spec §8.1's "single most important moment in
  *     the game" plays inside a `display: none` pane for whoever last tapped
@@ -51,11 +52,10 @@ import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
+import { rollCardMs } from "../world/presentation";
 
 type Focus = "world" | "map" | "player";
 
-/** Long enough for the die to land and be read (spec §2.2). */
-const ROLL_HOLD_MS = 2000;
 
 /**
  * A little past the last beat, so the world is not yanked away on the exact
@@ -97,10 +97,12 @@ export function TravelLayout(): React.JSX.Element {
   }, [turnKey]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
-  usePresentation("ROLL", () => {
+  // Held for as long as the dice card is up, so it can be read (spec §2.2).
+  usePresentation("ROLL", (event) => {
+    if (event.kind !== "ROLL") return;
     setRolling(true);
     if (rollTimer.current) clearTimeout(rollTimer.current);
-    rollTimer.current = setTimeout(() => setRolling(false), ROLL_HOLD_MS);
+    rollTimer.current = setTimeout(() => setRolling(false), rollCardMs(event.roll));
   });
 
   /*
@@ -138,11 +140,13 @@ export function TravelLayout(): React.JSX.Element {
    * looking at. Nothing outranks the transformation.
    */
   const showing: Focus = transforming || rolling ? "world" : focus;
+  const inGuide = showing === "player" && section === "guide";
 
   return (
     <div className="kad-travel">
       {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
-          row of tabs — the realm globe, the map, your satchel. */}
+          row of tabs — the realm globe, your satchel, the map, the Field Guide's
+          journal. */}
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
@@ -157,16 +161,16 @@ export function TravelLayout(): React.JSX.Element {
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" && !inGuide ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-label="You"
-          aria-pressed={showing === "player"}
+          aria-pressed={showing === "player" && !inGuide}
           onClick={() => { dismissPlayerSheet(); setFocus("player"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />
             {/* A badge with a shape, not a colour: "you are needed" must not
                 be colour alone (spec §11). */}
-            {myTurn && (showing !== "player" || section === "bag") ? (
+            {myTurn && (showing !== "player" || section !== "turn") ? (
               <span className="kad-travel__nudge kad-tray__badge" aria-label="Your turn">
                 ★
               </span>
@@ -185,6 +189,8 @@ export function TravelLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
+        <GuideTab on={inGuide} onShowPlayer={() => setFocus("player")}
+          className="kad-travel__tab" onClassName="kad-travel__tab--on" />
       </nav>
 
       {/* `hidden` rather than unmounted — see the header. */}

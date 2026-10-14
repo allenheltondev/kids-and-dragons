@@ -3,7 +3,7 @@ title: Griffin
 id: character.griffin
 type: character
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["playable", "mountain", "flight", "scout"]
 scale: medium_to_large
@@ -85,13 +85,13 @@ Formal at first meeting, fierce in friendship, and constitutionally incapable of
 
 ### Likes
 
-- **[Snowhorn Goat](/creatures/snowhorn_goat/)** — The mountain's own early-warning system. When the goats move, a griffin calls it down the valley, and both halves of the arrangement are proud of it.
-- **[Cloud Whale](/creatures/cloud_whale/)** — A storm-song heard early has ended a hundred rescues before they began.
-- **[Yeti](/npcs/yeti/)** — Below the ice line, the other half of every rescue.
+- **[Snowhorn Goat](/creatures/snowhorn_goat/)**: The mountain's own early-warning system. When the goats move, a griffin calls it down the valley, and both halves of the arrangement are proud of it.
+- **[Cloud Whale](/creatures/cloud_whale/)**: A storm-song heard early has ended a hundred rescues before they began.
+- **[Yeti](/npcs/yeti/)**: Below the ice line, the other half of every rescue.
 
 ### Dislikes
 
-- **[Frost Wyrm](/creatures/frost_wyrm/)** — Every path it collapses is a rescue that did not have to happen.
+- **[Frost Wyrm](/creatures/frost_wyrm/)**: Every path it collapses is a rescue that did not have to happen.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

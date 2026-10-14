@@ -46,9 +46,12 @@ describe("createRoom", () => {
 
     const run = await harness.repo.getRun(result.value.runId);
     expect(run?.householdId).toBe(householdId);
+    // The dice secret lives on the private run row, never on the broadcast state.
+    expect(run?.diceSecret).toMatch(/^[0-9a-f]{32}$/);
     const state = await harness.repo.getState(result.value.runId);
     expect(state?.seq).toBe(0);
     expect(state?.roomCode).toBe(result.value.code);
+    expect(JSON.stringify(state)).not.toContain(run!.diceSecret!);
   });
 
   it("rolls a new code when the first one is taken", async () => {

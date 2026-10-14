@@ -126,7 +126,7 @@
       },
       "onFailure": {
         "goto": "scene_first_clearing",
-        "narration": "You get the last note wrong. The humming stops, very politely, and does not start again \u2014 but while you were listening you found a gap in the hedge anyway."
+        "narration": "You get the last note wrong. The humming stops, very politely, and does not start again. But while you were listening, you found a gap in the hedge anyway."
       }
     },
     "check_squeeze": {
@@ -171,6 +171,9 @@
     },
     "scene_first_clearing": {
       "type": "story",
+      "discovers": [
+        "npc.harvest_sprite"
+      ],
       "art": "bg/bramblewood/clearing",
       "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot.",
       "choices": [
@@ -190,6 +193,9 @@
     },
     "scene_pib": {
       "type": "story",
+      "discovers": [
+        "individual.pib"
+      ],
       "art": "bg/bramblewood/clearing",
       "narration": "\"I'm Pib,\" says the sprite, \"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\" Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous.",
       "onEnter": [
@@ -315,7 +321,7 @@
     "scene_singing_stream": {
       "type": "story",
       "art": "bg/bramblewood/stream",
-      "narration": "Three bramblewisps \u2014 little blue lights with far too much energy \u2014 are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
+      "narration": "Three bramblewisps (little blue lights with far too much energy) are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
       "choices": [
         {
           "id": "ask_nicely",
@@ -348,7 +354,7 @@
     "check_wisps": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Talk three excited wisps into handing it over",
       "roller": "party",
       "onSuccess": {
@@ -374,7 +380,7 @@
       ],
       "onVictory": {
         "goto": "scene_wisp_friends",
-        "narration": "Tagged, all three, fair and square. The wisps sulk for about four seconds and then decide you are their favourite people."
+        "narration": "Tagged, all three, fair and square. The wisps sulk for about four seconds and then decide you are their favorite people."
       },
       "onDefeat": {
         "goto": "scene_bundled",
@@ -384,7 +390,7 @@
     "scene_bundled": {
       "type": "story",
       "art": "bg/bramblewood/thicket",
-      "narration": "The wisps tie all your bootlaces together, eat the snacks, and then \u2014 feeling a bit guilty \u2014 tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
+      "narration": "The wisps tie all your bootlaces together, eat the snacks, and then, feeling a bit guilty, tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
       "onEnter": [
         {
           "type": "heal",
@@ -466,7 +472,7 @@
     "rest_mossbank": {
       "type": "rest",
       "art": "bg/bramblewood/shrine",
-      "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while — this is the part of an afternoon where you notice you have got a little bit better at something.",
+      "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while. This is the part of an afternoon where you notice you have got a little bit better at something.",
       "heal": 3,
       "choices": [
         {
@@ -517,7 +523,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_lanternfall",
-        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand \u2014 a smooth grey stone that feels lucky.",
+        "narration": "You feel the lock think about it, and then click. Something small and round rolls out of the keyhole into your hand: a smooth gray stone that feels lucky.",
         "effects": [
           {
             "type": "grantItem",
@@ -534,7 +540,7 @@
     "rest_lanternfall": {
       "type": "rest",
       "art": "bg/bramblewood/lanternfall",
-      "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill \u2014 and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
+      "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill, and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
       "heal": 4,
       "choices": []
     }

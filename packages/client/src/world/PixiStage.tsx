@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import type { Chapter, PartyMember, RunState } from "@kad/shared";
+import type { HeldPreview } from "../store/contract";
 import { currentActorId, enemyArtId } from "@kad/shared";
 import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
@@ -10,7 +11,8 @@ import { presentationDuration } from "./presentation";
 import { shakeStrengthFor } from "./shake";
 import { justWonAFight } from "./victory";
 import { cue } from "../audio/cue";
-import { useChapter, useGameStore, useParty, usePresentation, useRunState, useSession } from "../store";
+import { useChapter, useGameStore, useParty, usePresentation, usePreviews, useRunState, useSession } from "../store";
+import { boardAim, tablePreviews } from "./previews";
 import { useEnsureChapter } from "../screens/content";
 import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
@@ -84,6 +86,7 @@ function boardView(
   state: RunState | null,
   party: readonly PartyMember[],
   chapter: Chapter | null,
+  previews: Readonly<Record<string, HeldPreview>> = {},
 ): BoardViewState | null {
   const encounter = state?.encounter ?? null;
   if (!encounter) return null;
@@ -92,6 +95,7 @@ function boardView(
     biome: chapter?.biome ?? null,
     enemyArt: enemyArtFor(chapter, state?.sceneId ?? null),
     party,
+    aim: boardAim(encounter, tablePreviews(state, previews).combat?.preview ?? null),
   };
 }
 
@@ -103,6 +107,7 @@ export function PixiStage(): React.JSX.Element {
   const state = useRunState();
   const session = useSession();
   const chapter = useChapter();
+  const previews = usePreviews();
   // The board needs the chapter for its biome and enemy art; content is data,
   // fetched over HTTP like rules and items, never baked into the bundle.
   useEnsureChapter();
@@ -178,7 +183,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
       scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
-      scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter));
+      scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
 
       /** Run the ticker only when a frame could actually be seen. */
       const syncTicker = () => {
@@ -243,8 +248,8 @@ export function PixiStage(): React.JSX.Element {
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.
   useEffect(() => {
-    sceneRef.current?.setEncounter(boardView(state, party, chapter));
-  }, [state, party, chapter]);
+    sceneRef.current?.setEncounter(boardView(state, party, chapter, previews));
+  }, [state, party, chapter, previews]);
 
   /*
    * The victory beat — roadmap chapter 8, read off the state rather than

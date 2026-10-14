@@ -22,6 +22,10 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactElement } from "react";
+import {
+  useFieldGuideDiscoveries,
+  type FieldGuideDiscoveries,
+} from "../store/field-guide-discoveries";
 import { useKeepsakeStore } from "../store/keepsake";
 import { useParty } from "../store";
 import { Button } from "../ui/Button";
@@ -31,8 +35,17 @@ import { KeepsakeLantern } from "./KeepsakeLantern";
 import "./shared.css";
 import "./SignInFlow.css";
 
-/** Cognito's email OTP. */
-const CODE_LENGTH = 6;
+/**
+ * Whether the keepsake copy should mention the Field Guide: only when the
+ * household has actually found something, so a family with an empty guide is
+ * never told about losing nothing.
+ */
+export function guideAtStake(discoveries: FieldGuideDiscoveries): boolean {
+  return Object.keys(discoveries).length > 0;
+}
+
+/** Cognito's email OTP is eight digits (its SMS codes are six). */
+const CODE_LENGTH = 8;
 
 export function SignInFlow(): ReactElement | null {
   const step = useKeepsakeStore((s) => s.step);
@@ -40,6 +53,7 @@ export function SignInFlow(): ReactElement | null {
   const error = useKeepsakeStore((s) => s.error);
   const close = useKeepsakeStore((s) => s.close);
   const party = useParty();
+  const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 
   /*
    * The flame is the *character's* accent colour, not the player's UI colour.
@@ -74,12 +88,12 @@ export function SignInFlow(): ReactElement | null {
           </p>
         )}
 
-        {step === "offer" ? <OfferStep motes={motes} /> : null}
+        {step === "offer" ? <OfferStep motes={motes} fieldGuide={fieldGuide} /> : null}
         {step === "email" ? <EmailStep busy={busy} /> : null}
         {step === "code" ? <CodeStep busy={busy} /> : null}
         {step === "choose" ? <ChooseStep busy={busy} /> : null}
         {step === "passkey" ? <PasskeyStep busy={busy} /> : null}
-        {step === "kept" ? <KeptStep motes={motes} /> : null}
+        {step === "kept" ? <KeptStep motes={motes} fieldGuide={fieldGuide} /> : null}
       </div>
     </div>
   );
@@ -101,7 +115,14 @@ interface Mote {
  * can be asserted without a DOM: zustand serves `getInitialState()` as the SSR
  * snapshot, so a store-driven render cannot be steered by `setState`.
  */
-export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
+export function OfferStep({
+  motes,
+  fieldGuide = false,
+}: {
+  motes: Mote[];
+  /** The household has a Field Guide worth keeping — see `guideAtStake`. */
+  fieldGuide?: boolean;
+}): ReactElement {
   // A selector, not the whole store: subscribing to everything re-renders the
   // offer on every keystroke of the email step behind it.
   const close = useKeepsakeStore((s) => s.close);
@@ -121,9 +142,10 @@ export function OfferStep({ motes }: { motes: Mote[] }): ReactElement {
          * one character and for three — the party is 1–3 people and a sentence
          * that needs a plural branch will eventually get the branch wrong.
          */}
-        Right now they only live on this phone, and only while you keep
-        playing: <b>seven days</b> after your last adventure, they&rsquo;re
-        forgotten. Add an email and they stay for good — levels, items and all.
+        Right now they only live on this phone, and only while you keep playing: <b>seven days</b>{" "}
+        after your last adventure, they&rsquo;re forgotten
+        {fieldGuide ? <>, along with your Field Guide</> : null}. Add an email and they stay for
+        good, levels, items and all.
       </p>
       <ul className="keepsake__party">
         {motes.map((mote) => (
@@ -181,11 +203,13 @@ function EmailStep({ busy }: { busy: boolean }): ReactElement {
         /* One flow for both, so say so: there is no "sign up" screen to hunt
            for, and no password to forget. */
         <p className="keepsake__body">
-          We&rsquo;ll email you a six-digit code. New here? That makes your account. Played
-          before? It signs you back in.
+          We&rsquo;ll email you an eight-digit code. New here? That makes your account. Played before?
+          It signs you back in.
         </p>
       ) : (
-        <p className="keepsake__body">We&rsquo;ll send a six-digit code. That&rsquo;s the whole thing.</p>
+        <p className="keepsake__body">
+          We&rsquo;ll send an eight-digit code. That&rsquo;s the whole thing.
+        </p>
       )}
 
       <label className="keepsake__label" htmlFor={fieldId}>
@@ -243,7 +267,7 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
   const ready = code.length === CODE_LENGTH;
 
   /*
-   * Submit as soon as the sixth digit lands. Typing six digits and then hunting
+   * Submit as soon as the last digit lands. Typing the digits and then hunting
    * for a button is the step people abandon, and a phone keyboard covers the
    * button anyway. The guard stops a re-render (or a paste) firing it twice.
    */
@@ -265,35 +289,49 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
         Check your email
       </h2>
       <p className="keepsake__body">
-        We sent six digits to <b>{challenge?.destination ?? challenge?.email ?? "your inbox"}</b>.
+        We sent eight digits to <b>{challenge?.destination ?? challenge?.email ?? "your inbox"}</b>.
       </p>
 
       <label className="keepsake__label" htmlFor={fieldId}>
         <Icon name="envelope" />
         <span>The code</span>
       </label>
-      <input
-        className="keepsake__input keepsake__input--code"
-        id={fieldId}
-        type="text"
-        inputMode="numeric"
-        // Lets both iOS and Android offer the code straight from the SMS/email
-        // notification, which removes the app-switch entirely.
-        autoComplete="one-time-code"
-        pattern="[0-9]*"
-        maxLength={CODE_LENGTH}
-        autoFocus
-        placeholder="000000"
-        value={code}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          const next = e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH);
-          // Clear the guard when the code changes, so a corrected digit can
-          // resubmit after a CodeMismatch.
-          if (next !== submitted.current) submitted.current = "";
-          setCode(next);
-        }}
-        disabled={busy}
-      />
+      {/* The same eight-box entry as the room code on the home screen: the real
+          input sits on top, transparent, so paste, autofill and the native
+          keyboard all behave, and the boxes underneath do the drawing. */}
+      <div className="keepsake__code">
+        <input
+          className="keepsake__code-input"
+          id={fieldId}
+          type="text"
+          inputMode="numeric"
+          // Lets both iOS and Android offer the code straight from the SMS/email
+          // notification, which removes the app-switch entirely.
+          autoComplete="one-time-code"
+          pattern="[0-9]*"
+          maxLength={CODE_LENGTH}
+          autoFocus
+          value={code}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            const next = e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH);
+            // Clear the guard when the code changes, so a corrected digit can
+            // resubmit after a CodeMismatch.
+            if (next !== submitted.current) submitted.current = "";
+            setCode(next);
+          }}
+          disabled={busy}
+        />
+        <div className="keepsake__code-boxes" aria-hidden="true">
+          {Array.from({ length: CODE_LENGTH }, (_, i) => (
+            <span
+              key={i}
+              className={`keepsake__code-box${code.length === i ? " keepsake__code-box--next" : ""}${code[i] ? " keepsake__code-box--filled" : ""}`}
+            >
+              {code[i] ?? ""}
+            </span>
+          ))}
+        </div>
+      </div>
 
       <div className="keepsake__actions">
         <Button
@@ -352,7 +390,7 @@ function ChooseStep({ busy }: { busy: boolean }): ReactElement {
             >
               {player.displayName}
               {player.characters.length > 0 ? (
-                <span className="keepsake__choice-sub"> — {player.characters.join(", ")}</span>
+                <span className="keepsake__choice-sub">: {player.characters.join(", ")}</span>
               ) : null}
             </Button>
           </li>
@@ -373,8 +411,7 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
         {purpose === "keep" ? "They’re kept." : "Found them."}
       </h2>
       <p className="keepsake__body">
-        Want to skip the email next time? This phone can remember you with a
-        fingerprint or face.
+        Want to skip the email next time? This phone can remember you with a fingerprint or face.
       </p>
       <div className="keepsake__actions">
         <Button
@@ -387,7 +424,12 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
         >
           {busy ? "Asking…" : "Remember this phone"}
         </Button>
-        <Button variant="ghost" icon={<Icon name="forward" />} onClick={skipPasskey} disabled={busy}>
+        <Button
+          variant="ghost"
+          icon={<Icon name="forward" />}
+          onClick={skipPasskey}
+          disabled={busy}
+        >
           Skip
         </Button>
       </div>
@@ -395,7 +437,7 @@ function PasskeyStep({ busy }: { busy: boolean }): ReactElement {
   );
 }
 
-function KeptStep({ motes }: { motes: Mote[] }): ReactElement {
+function KeptStep({ motes, fieldGuide }: { motes: Mote[]; fieldGuide: boolean }): ReactElement {
   const close = useKeepsakeStore((s) => s.close);
   const passkeyAdded = useKeepsakeStore((s) => s.passkeyAdded);
   const account = useKeepsakeStore((s) => s.account);
@@ -408,25 +450,28 @@ function KeptStep({ motes }: { motes: Mote[] }): ReactElement {
   return (
     <>
       <h2 className="keepsake__title" id="keepsake-title">
-        {restored ? "This phone is set up." : `${namesOf(motes)} ${motes.length === 1 ? "is" : "are"} safe.`}
+        {restored
+          ? "This phone is set up."
+          : `${namesOf(motes)} ${motes.length === 1 ? "is" : "are"} safe.`}
       </h2>
       <p className="keepsake__body">
         {restored ? (
           <>
-            Signed in as <b>{account?.email ?? "you"}</b>. Start or join a game and your
-            character will be there.
+            Signed in as <b>{account?.email ?? "you"}</b>. Start or join a game and your character
+            will be there.
           </>
         ) : (
           <>
-            Kept under <b>{account?.email ?? "your email"}</b>. They&rsquo;ll be here next
-            time, with everything they&rsquo;re carrying.
+            Kept under <b>{account?.email ?? "your email"}</b>. They&rsquo;ll be here next time,
+            with everything they&rsquo;re carrying
+            {fieldGuide ? <> and your Field Guide</> : null}.
           </>
         )}
       </p>
       {passkeyAdded ? (
         <p className="keepsake__body keepsake__body--note">
           <Icon name="passkey" />
-          <span>This phone will remember you — no code next time.</span>
+          <span>This phone will remember you. No code next time.</span>
         </p>
       ) : null}
       <div className="keepsake__actions">
@@ -469,6 +514,7 @@ export function KeepsakeOffer(): ReactElement | null {
   const account = useKeepsakeStore((s) => s.account);
   const open = useKeepsakeStore((s) => s.open);
   const party = useParty();
+  const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 
   if (!shouldOfferKeepsake(available, account !== null, party.length)) return null;
 
@@ -492,7 +538,9 @@ export function KeepsakeOffer(): ReactElement | null {
       <span className="keepsake-offer__text">
         <span className="keepsake-offer__lead">Keep {namesOf(motes)}?</span>
         <span className="keepsake-offer__sub">
-          They&rsquo;re forgotten seven days after you stop playing.
+          {fieldGuide
+            ? "They and your Field Guide are forgotten seven days after you stop playing."
+            : "They\u2019re forgotten seven days after you stop playing."}
         </span>
       </span>
       <Icon name="forward" />

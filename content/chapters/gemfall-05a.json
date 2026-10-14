@@ -43,7 +43,10 @@
   "scenes": {
     "scene_bridge": {
       "type": "story",
-      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
+      "discovers": [
+        "faction.skywardens"
+      ],
+      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in silver and violet stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
       "choices": [
         {
           "id": "join_line",
@@ -124,6 +127,9 @@
     },
     "scene_cult_pitch": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "Hollis talks while she ladles, gently, like she's telling you the weather. \"The world's rules are broken, love. Look at this line. The power under the mountain could write new ones. The seal on it isn't a lock. It's a lid on the cure.\" She nods at a jar labelled THE BREAK. It is half full of humming stones.",
       "choices": [
         {
@@ -141,7 +147,7 @@
         },
         {
           "id": "drop_stone",
-          "label": "Drop a humming stone in the jar",
+          "label": "Drop a coin in the jar",
           "icon": "gem",
           "goto": "scene_cult_pitch_drop_stone",
           "effects": [
@@ -174,7 +180,7 @@
     },
     "scene_cult_pitch_drop_stone": {
       "type": "story",
-      "narration": "You drop a humming stone into the jar marked THE BREAK. The whole jar hums louder for a moment, like a hive woken up. Hollis's eyes shine. She writes your names in a little book with a soft pencil, and gives each of you a second bowl, and you are not sure how you feel about any of it.",
+      "narration": "You drop a coin into the jar marked THE BREAK, in among the humming stones. The whole jar hums louder for a moment, like a hive woken up. Hollis's eyes shine. She writes your names in a little book with a soft pencil, and gives each of you a second bowl, and you are not sure how you feel about any of it.",
       "choices": [
         {
           "id": "on",
@@ -245,7 +251,7 @@
     "check_ledger": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Find the rule that lets a logged gem change hands",
       "roller": "party",
       "onSuccess": {
@@ -412,6 +418,9 @@
     },
     "scene_told_gatherers": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "The bell-rider, Nim, is a dragonling about your size on a very small, very fast pony. She listens, rings her bell once, high and clear, and says, \"Grandmother is going to say she told everyone.\" Then she gallops north with your news.",
       "choices": [
         {
@@ -463,7 +472,7 @@
     "check_span": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Cross the swaying span before the warden's flag drops",
       "roller": "party",
       "onSuccess": {
@@ -477,6 +486,9 @@
     },
     "scene_under_bridge": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "Under the bridge the stone is warm from the sun, and somebody else has noticed. A pack of cinder wolves lies heaped against the pillars, ember-eyed and cold, a long way from home. They lift their heads at the hum in your packs and do not like it at all.",
       "choices": [
         {
@@ -542,6 +554,9 @@
     },
     "scene_far_rim": {
       "type": "story",
+      "discovers": [
+        "biome.red_sky_foothills"
+      ],
       "narration": "The far side climbs, and keeps climbing. The grass gets shorter, the stones get redder, and the sky ahead glows like the inside of a lantern. These are the foothills of Mount Red Sky, and you are coming down into them from the north-east, with the truth folded up in your packs.",
       "choices": [
         {
@@ -554,7 +569,7 @@
     },
     "rest_end": {
       "type": "rest",
-      "narration": "You camp on the rim and look down. The foothills are full of tiny campfires, thousands of them, all the rush in the world. Above it all, the mountain glows. The stones hum. Somebody has to put this all together on one table, and tomorrow, at the citadel, somebody will.",
+      "narration": "You camp on the rim and look down. The foothills are full of tiny campfires, thousands of them, all the rush in the world. Above it all, the mountain glows. The stones hum. Somebody has to put this all together on one table, and tomorrow, at Redspire, the wardens' citadel, somebody will.",
       "heal": 4,
       "choices": []
     },
@@ -567,7 +582,7 @@
     }
   },
   "llmHints": {
-    "tone": "busy, grey-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
+    "tone": "busy, gray-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
     "vocabulary": "age-8",
     "forbidden": [
       "death",

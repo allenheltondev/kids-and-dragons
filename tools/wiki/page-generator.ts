@@ -485,7 +485,7 @@ function generateLoreSection(
     lines.push(`### ${heading}`, '');
     for (const opinion of opinions) {
       const title = getTitleForEntity(opinion.of, allEntities);
-      lines.push(`- **[${title}](${entityUrl(opinion.of)})** — ${opinion.because.trim()}`);
+      lines.push(`- **[${title}](${entityUrl(opinion.of)})**: ${opinion.because.trim()}`);
     }
     lines.push('');
   }
@@ -536,7 +536,7 @@ function generatePlaceLoreSection(
   const hiddenTruths = loreStrings(lore.hidden_truths);
   if (hiddenTruths.length > 0) {
     lines.push('### Hidden Truths', '');
-    lines.push('> *Creator canon — not generally known in-world. No NPC recites these.*', '');
+    lines.push('> *Creator canon, not generally known in-world. No NPC recites these.*', '');
     for (const truth of hiddenTruths) {
       lines.push(`- ${truth.trim()}`);
     }
@@ -548,7 +548,7 @@ function generatePlaceLoreSection(
     lines.push('### Neighbors', '');
     for (const entry of neighbours) {
       const title = getTitleForEntity(entry.place, allEntities);
-      lines.push(`- **[${title}](${entityUrl(entry.place)})** — ${entry.relationship.trim()}`);
+      lines.push(`- **[${title}](${entityUrl(entry.place)})**: ${entry.relationship.trim()}`);
     }
     lines.push('');
   }
@@ -847,12 +847,12 @@ function generateEncounterSection(
   const band = bands?.[entry.band];
   const lines: string[] = ['## In a Fight', ''];
 
-  lines.push(`**${toTitleCase(entry.band)}**${band ? ` — ${band.description}` : ''}`);
+  lines.push(`**${toTitleCase(entry.band)}**${band ? `: ${band.description}` : ''}`);
   lines.push('');
   lines.push('| | |');
   lines.push('|---|---|');
   lines.push(`| Health | ${entry.hp} |`);
-  lines.push(`| Guard | ${entry.guard} — how hard it is to hit |`);
+  lines.push(`| Guard | ${entry.guard}, how hard it is to hit |`);
   lines.push(`| Attack | +${entry.attack} |`);
   lines.push(`| Speed | ${entry.steps} steps, ${entry.quick} initiative |`);
   lines.push(`| Usually | ${entry.usualCount === 1 ? 'alone' : `${entry.usualCount} of them`} |`);
@@ -866,7 +866,7 @@ function generateEncounterSection(
     for (const r of entry.resolutions) {
       const label = toTitleCase(r.kind);
       const check = `${toTitleCase(r.stat)}, ${r.difficulty}`;
-      lines.push(`- **${label}** (${check})${r.text ? ` — ${r.text}` : ''}`);
+      lines.push(`- **${label}** (${check})${r.text ? `: ${r.text}` : ''}`);
     }
     lines.push('');
   }
@@ -895,7 +895,7 @@ function generateUnfightableSection(entity: CanonEntity): string {
   lines.push('');
   for (const r of encounter.resolutions) {
     const check = `${toTitleCase(r.stat)}, ${r.difficulty}`;
-    lines.push(`- **${toTitleCase(r.kind)}** (${check})${r.text ? ` — ${r.text}` : ''}`);
+    lines.push(`- **${toTitleCase(r.kind)}** (${check})${r.text ? `: ${r.text}` : ''}`);
   }
   return lines.join('\n');
 }
@@ -935,7 +935,7 @@ function generateMechanicsSection(
   if (!entry) return '';
 
   const lines: string[] = ['## In Your Hands', ''];
-  lines.push(`**${toTitleCase(entry.kind)}** — ${KIND_BLURB[entry.kind] ?? ''}`.trim());
+  lines.push(`**${toTitleCase(entry.kind)}**${KIND_BLURB[entry.kind] ? `: ${KIND_BLURB[entry.kind]}` : ''}`);
   lines.push('');
   lines.push(`> ${entry.text}`);
   return lines.join('\n');

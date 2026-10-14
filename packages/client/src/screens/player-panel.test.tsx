@@ -1,4 +1,5 @@
-import { dismissPlayerSheet, setPlayerSection } from "../store/player-navigation";
+import { dismissPlayerSheet, openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
+import { resetFieldGuideCache } from "./content";
 // @vitest-environment jsdom
 /**
  * PlayerPanel — the four prompts, the bag, and the rule they all share.
@@ -338,10 +339,26 @@ describe("a roll", () => {
     // Scoped to the prompt: the stat name also appears down in the stat row.
     const prompt = screen.getByText("Can you read the runes?").closest(".prompt")!;
     expect(within(prompt as HTMLElement).getByText("clever")).toBeTruthy();
-    expect(within(prompt as HTMLElement).getByText("beat 12")).toBeTruthy();
+    expect(within(prompt as HTMLElement).getByText("Tricky: needed 12")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Roll!" }));
     expect(sent).toEqual([{ type: "ROLL" }]);
+  });
+
+  it("offers the other players a Help button with their tier's die", async () => {
+    const user = userEvent.setup();
+    const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
+    const { sent } = mount({ prompt: roll, playerId: "p_2", party: [member(), friend] });
+
+    await user.click(screen.getByRole("button", { name: "Help Sparklehoof: +d4" }));
+    expect(sent).toEqual([{ type: "HELP" }]);
+  });
+
+  it("says who is helping, and hides the button once help is spent", () => {
+    const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
+    mount({ prompt: { ...roll, helper: { characterId: "c_2", sides: 4 } }, playerId: "p_1", party: [member(), friend] });
+    expect(screen.getByText("Windstep is helping: +d4")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Help/ })).toBeNull();
   });
 
   it("will not roll twice while the first one is in flight", async () => {
@@ -453,16 +470,33 @@ describe("an item swap", () => {
 // ---------------------------------------------------------------------------
 
 describe("readying up", () => {
-  it("toggles to ready, and back", async () => {
+  it("readies with the one Ready to play tap, and can take it back", async () => {
     const user = userEvent.setup();
     const { sent } = mount({ phase: "lobby" });
+    act(() => setPlayerSection("bag"));
 
-    await user.click(screen.getByRole("button", { name: "I'm ready!" }));
+    await user.click(screen.getByRole("button", { name: "Ready to play" }));
     expect(sent).toEqual([{ type: "READY", ready: true }]);
+    // The tap was the answer: no second "I'm ready!" to press, before or
+    // after the server agrees.
+    expect(usePlayerNavigation.getState().section).toBe("turn");
+    expect(screen.queryByRole("button", { name: "I'm ready!" })).toBeNull();
 
     serverSends({ party: [member({ ready: true })] });
+    expect(screen.queryByRole("button", { name: "I'm ready!" })).toBeNull();
+    expect(screen.getByText("You're ready to play")).toBeTruthy();
+
     await user.click(screen.getByRole("button", { name: "Wait, not yet" }));
     expect(sent[1]).toEqual({ type: "READY", ready: false });
+    expect(usePlayerNavigation.getState().section).toBe("bag");
+  });
+
+  it("puts Ready to play at the foot of the lobby sheet", () => {
+    mount({ phase: "lobby" });
+    act(() => setPlayerSection("bag"));
+    const sheet = document.querySelector(".player__scroll") as HTMLElement;
+    const ready = screen.getByRole("button", { name: "Ready to play" });
+    expect(sheet.lastElementChild).toBe(ready);
   });
 
   it("hides Begin the adventure until the whole party is ready", async () => {
@@ -700,7 +734,7 @@ describe("waiting", () => {
   it("says when a player is knocked down, and that it is recoverable", () => {
     mount({ party: [member({ down: true, hp: 0 })] });
     expect(someStatusSays("Knocked down")).toBe(true);
-    expect(someStatusSays("a friend can help you up")).toBe(true);
+    expect(someStatusSays("A friend can help you up")).toBe(true);
   });
 
   it("echoes the narration next to the answers so they are readable together", () => {
@@ -850,11 +884,11 @@ describe("spending a banked stat point", () => {
 
   it("keeps the reminder on the pinned strip, where a whole sitting can pass without scrolling to it", () => {
     mount({ party: [withPoints(1)], sceneType: "story" });
-    expect(screen.getByText("Spend 1 point at rest")).toBeTruthy();
+    expect(screen.getByText("1 point to spend at the next rest stop")).toBeTruthy();
 
     cleanup();
     mount({ party: [withPoints(2)], sceneType: "story" });
-    expect(screen.getByText("Spend 2 points at rest")).toBeTruthy();
+    expect(screen.getByText("2 points to spend at the next rest stop")).toBeTruthy();
   });
 });
 
@@ -1205,27 +1239,80 @@ describe("the party strip", () => {
     expect(screen.getByText(/How far they have come/)).toBeTruthy();
   });
 
-  it("keeps an overview open when a new question arrives", async () => {
+  it("opens a new question by itself, even from the bag", async () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })] });
     act(() => dismissPlayerSheet());
-    serverSends({ prompt: choicePrompt() });
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
-    await user.click(screen.getByRole("button", { name: /^Your turn$/ }));
+    serverSends({ prompt: choicePrompt() });
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^Your turn$/ })).toBeNull();
+
+    // Going back to the bag on purpose sticks while the question stays the same…
+    await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+    serverSends({ prompt: choicePrompt({ votes: { p_2: "east" } }) });
+    expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
+
+    // …and the next question brings the controls straight back.
     serverSends({ prompt: choicePrompt({ sceneId: "s_2" }) });
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
-    await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
-    expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
   });
 
-  it("returns to the overview after a turn finishes and keeps the next turn behind its entry button", () => {
+  it("returns to the overview after a turn finishes and opens the next turn by itself", () => {
     mount({ prompt: choicePrompt() });
     serverSends({ prompt: null });
     expect(screen.getByText("Your things")).toBeTruthy();
     serverSends({ prompt: choicePrompt({ sceneId: "s_next" }) });
-    expect(screen.getByRole("button", { name: /^Your turn$/ })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
+    expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^Your turn$/ })).toBeNull();
+  });
+
+  describe("progress on the same check is not a new turn", () => {
+    const WINDSTEP = character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" });
+    const check: Prompt = {
+      kind: "roll",
+      sceneId: "s_1",
+      stat: "quick",
+      tn: 12,
+      prompt: "Wriggle through",
+      characterId: "c_1",
+    };
+
+    it("leaves a pending group roller on their bag while somebody else rolls", async () => {
+      const user = userEvent.setup();
+      const group: Prompt = { ...check, characterId: "c_2", group: { pending: ["c_2", "c_1"], rolls: [] } };
+      mount({ prompt: group, party: [member(), member({ character: WINDSTEP, playerId: "p_2" })] });
+      expect(screen.getByRole("button", { name: "Roll!" })).toBeTruthy();
+
+      await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+      expect(screen.getByText("Your things")).toBeTruthy();
+
+      // Windstep rolls: the check is the same, only its progress moved.
+      serverSends({
+        prompt: {
+          ...check,
+          characterId: "c_1",
+          group: { pending: ["c_1"], rolls: [{ die: 14, mod: 1, total: 15, tn: 12, result: "success", characterId: "c_2", stat: "quick" }] },
+        },
+      });
+      expect(screen.getByText("Your things")).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Roll!" })).toBeNull();
+    });
+
+    it("leaves the roller on their bag when a friend offers help", async () => {
+      const user = userEvent.setup();
+      mount({ prompt: check, party: [member(), member({ character: WINDSTEP, playerId: "p_2" })] });
+      await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+      expect(screen.getByText("Your things")).toBeTruthy();
+
+      serverSends({ prompt: { ...check, helper: { characterId: "c_2", sides: 4 } } });
+      expect(screen.getByText("Your things")).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Roll!" })).toBeNull();
+
+      // A different check is a new turn, and opens itself.
+      serverSends({ prompt: { ...check, sceneId: "s_2", prompt: "Climb the wall" } });
+      expect(screen.getByRole("button", { name: "Roll!" })).toBeTruthy();
+    });
   });
 
   it("keeps the bag available while somebody else starts a fight", async () => {
@@ -1328,5 +1415,83 @@ describe("the scene behind the controls", () => {
     });
     expect(document.querySelector(".player__echo")).toBeNull();
     expect(screen.getByRole("button", { name: /roll/i })).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Field Guide (#107, #112): opened from the tray's Guide tab (layout/GuideTab)
+// ---------------------------------------------------------------------------
+
+describe("the Field Guide section", () => {
+  const guideJson = { version: 1, entries: { "creature.a": {} } };
+  const fetchSpy = vi.fn(async () => ({ ok: true, json: async () => guideJson }) as unknown as Response);
+
+  function stubFetch() {
+    fetchSpy.mockClear();
+    vi.stubGlobal("fetch", fetchSpy);
+    resetFieldGuideCache();
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    resetFieldGuideCache();
+  });
+
+  it("has no entry of its own in the panel and fetches nothing until opened", () => {
+    stubFetch();
+    mount({ phase: "lobby" });
+    act(() => { setPlayerSection("bag"); });
+    expect(screen.queryByRole("button", { name: "Field Guide" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  const states: Array<[string, () => ReturnType<typeof mount>]> = [
+    ["the lobby", () => mount({ phase: "lobby" })],
+    ["a story scene", () => mount({ prompt: choicePrompt() })],
+    ["a rest", () => mount({ sceneType: "rest" })],
+    ["combat", () => {
+      const view = mount({ phase: "encounter" });
+      serverSends({ encounter: realEncounter() });
+      return view;
+    }],
+  ];
+
+  for (const [name, start] of states) {
+    it(`opens in ${name}, returns to the bag, and sends nothing`, async () => {
+      stubFetch();
+      const user = userEvent.setup();
+      const { sent } = start();
+      act(() => { setPlayerSection("bag"); });
+
+      act(() => { openGuide(); });
+      expect(screen.getByRole("region", { name: "Field Guide" })).toBeTruthy();
+      expect(await screen.findByText("0 of 1 found")).toBeTruthy();
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+      await user.click(screen.getByRole("button", { name: "Back to your bag" }));
+      expect(usePlayerNavigation.getState().section).toBe("bag");
+      expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
+      expect(sent).toEqual([]);
+    });
+  }
+
+  it("leaves the turn entry one tap away in a fight", async () => {
+    stubFetch();
+    mount({ phase: "encounter" });
+    serverSends({ encounter: realEncounter() });
+    act(() => { openGuide(); });
+    await screen.findByText("0 of 1 found");
+    // Hidden, not unmounted, while the guide is open — then straight back.
+    act(() => { dismissPlayerSheet(); });
+    expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
+    expect(screen.getByRole("button", { name: /your turn|view the fight/i })).toBeTruthy();
+  });
+
+  it("a tray tap leaves the guide for the bag", () => {
+    mount({ phase: "lobby" });
+    act(() => { setPlayerSection("guide"); });
+    act(() => { dismissPlayerSheet(); });
+    expect(usePlayerNavigation.getState()).toMatchObject({ section: "bag", guideEntry: null });
   });
 });

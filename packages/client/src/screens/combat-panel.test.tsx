@@ -279,7 +279,7 @@ describe("whose turn it is", () => {
     expect(screen.getByRole("status").textContent).toContain("Bramblewisp");
     // No board, no cards — the whole input half is absent, not disabled.
     expect(screen.queryByRole("grid")).toBeNull();
-    expect(screen.queryByRole("button", { name: "End turn" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "I'm done. End my turn" })).toBeNull();
   });
 
   it("renders nothing at all once the fight is over", () => {
@@ -320,9 +320,9 @@ describe("select then confirm (spec §11)", () => {
     expect(sent).toEqual([]);
     // The confirm bar names the tile in the same words the button did.
     expect(doIt()).toBeTruthy();
-    expect(screen.getByText(/Move to column 2, row 2/)).toBeTruthy();
+    expect(screen.getByText("Walk to the purple square")).toBeTruthy();
     // One question at a time: the cards step aside while the move is asked.
-    expect(screen.queryByRole("button", { name: "End turn" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "I'm done. End my turn" })).toBeNull();
 
     await user.click(doIt());
     expect(sent).toEqual([{ type: "MOVE", to: { x: 1, y: 1 } }]);
@@ -347,7 +347,7 @@ describe("select then confirm (spec §11)", () => {
     const user = userEvent.setup();
     const { sent } = mount();
 
-    await user.click(card("End turn"));
+    await user.click(card("I'm done. End my turn"));
     expect(sent).toEqual([]);
     expect(screen.getByText("End the turn")).toBeTruthy();
 
@@ -365,7 +365,7 @@ describe("select then confirm (spec §11)", () => {
     expect(sent).toEqual([]);
     expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
     // And the cards are back, so the turn is not stuck.
-    expect(screen.getByRole("button", { name: "End turn" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "I'm done. End my turn" })).toBeTruthy();
   });
 
   it("holds the commit open while it is in flight, then lets go", async () => {
@@ -403,13 +403,13 @@ describe("aiming", () => {
     const { sent } = mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike — who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
     expect(sent).toEqual([]);
 
     // Enemy ids carry their placement ordinal, so "which one am I about to
     // hit" survives three identical wisps (combat-grid.ts `combatantLabel`).
     await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
-    expect(screen.getByText("Strike — Bramblewisp 1")).toBeTruthy();
+    expect(screen.getByText("Strike: Bramblewisp 1")).toBeTruthy();
 
     await user.click(doIt());
     expect(sent).toEqual([
@@ -432,12 +432,12 @@ describe("aiming", () => {
     });
 
     await user.click(card("Volley"));
-    expect(screen.getByText(/Volley — who\? \(1 of 2\)/)).toBeTruthy();
+    expect(screen.getByText(/Volley: who\? \(1 of 2\)/)).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
     // The one already picked is gone from the list — the same figure twice is
     // not two targets, and the server would refuse it.
-    expect(screen.getByText(/Volley — who\? \(2 of 2\)/)).toBeTruthy();
+    expect(screen.getByText(/Volley: who\? \(2 of 2\)/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Bramblewisp 1/ })).toBeNull();
 
     await user.click(screen.getByRole("button", { name: /Bramblewisp 2/ }));
@@ -501,7 +501,7 @@ describe("aiming", () => {
 
     await user.click(card("Pounce"));
     await user.click(tile(3, 4));
-    expect(screen.getByText(/Pounce — who\?/)).toBeTruthy();
+    expect(screen.getByText(/Pounce: who\?/)).toBeTruthy();
 
     // Exactly one victim is reachable from where it would land.
     const offered = screen.getAllByRole("button", { name: /Bramblewisp/ });
@@ -579,9 +579,9 @@ describe("only legal taps exist (§7.2)", () => {
     mount({ encounter: { ...base, stepsLeft: 0, actionTaken: true } });
 
     expect(screen.queryAllByRole("button", { name: /^Move to column/ })).toEqual([]);
-    expect(screen.getByText("Action spent")).toBeTruthy();
+    expect(screen.getByText("Done!")).toBeTruthy();
     // End turn is still there: the turn has to be endable.
-    expect(screen.getByRole("button", { name: "End turn" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "I'm done. End my turn" })).toBeTruthy();
   });
 
   it("offers no action cards once the action is spent", () => {
@@ -683,7 +683,7 @@ describe("the turn boundary", () => {
     });
 
     expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
-    expect(screen.getByRole("button", { name: "End turn" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "I'm done. End my turn" })).toBeTruthy();
   });
 
   it("drops a pending selection when the clock hands on to somebody else", async () => {
@@ -691,7 +691,7 @@ describe("the turn boundary", () => {
     mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike — who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
 
     const current = useGameStore.getState().state!;
     const wispIndex = current.encounter!.order.findIndex((id) => id.startsWith("wisp"));

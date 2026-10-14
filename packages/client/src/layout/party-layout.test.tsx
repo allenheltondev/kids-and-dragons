@@ -10,10 +10,12 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import type { Prompt } from "@kad/shared";
 import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
+import { resetFieldGuideCache } from "../screens/content";
+import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { PartyLayout } from "./PartyLayout";
 
 function mount(prompt: Prompt | null = null) {
@@ -44,6 +46,9 @@ function showing(container: HTMLElement): string[] {
 
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
+  resetFieldGuideCache();
+  dismissPlayerSheet();
 });
 
 describe("Party Mode and the map", () => {
@@ -57,12 +62,12 @@ describe("Party Mode and the map", () => {
     }
   });
 
-  it("offers live room mode switching in settings, outside the three-tab tray", () => {
+  it("offers live room mode switching in settings, outside the four-tab tray", () => {
     const send = vi.fn(async () => true);
     useGameStore.setState({ send });
     mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect(nav.querySelectorAll("button")).toHaveLength(3);
+    expect(nav.querySelectorAll("button")).toHaveLength(4);
     act(() => screen.getByText("Room settings").click());
     act(() => screen.getByRole("button", { name: "No TV? Show the world on the phones" }).click());
     expect(send).toHaveBeenCalledWith({ type: "SET_MODE", mode: "travel" });
@@ -82,10 +87,10 @@ describe("Party Mode and the map", () => {
     expect(screen.queryByRole("region", { name: "Sparklehoof's character sheet" })).toBeNull();
     expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ })).toBeTruthy();
   });
-  it("offers only three destinations and returns from World to a new turn", () => {
+  it("offers four destinations and returns from World to a new turn", () => {
     const { container } = mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
-    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map"]);
+    expect([...nav.querySelectorAll("button")].map((button) => button.textContent?.trim())).toEqual(["World", "You", "Map", "Guide"]);
     act(() => screen.getByRole("button", { name: /^world$/i }).click());
     expect(showing(container)).toEqual(["world"]);
     act(() => {
@@ -207,5 +212,61 @@ describe("Party Mode and the map", () => {
     });
     render(<PartyLayout surface="world" />);
     expect(screen.queryByRole("button", { name: /map/i })).toBeNull();
+  });
+});
+
+describe("Party Mode and the Field Guide (#112)", () => {
+  const guideJson = { version: 1, entries: { "creature.a": { id: "creature.a", category: "creatures", title: "A" } } };
+  function stubGuide() {
+    vi.stubGlobal("fetch", vi.fn((url: string) => String(url).includes("field-guide")
+      ? Promise.resolve({ ok: true, json: async () => guideJson } as unknown as Response)
+      : new Promise<Response>(() => undefined)));
+    resetFieldGuideCache();
+  }
+  const turn: Prompt = {
+    kind: "choice", sceneId: "scene_hedge_wall", vote: false,
+    options: [{ id: "gap", label: "Find a gap", icon: "eye" }],
+    forPlayerIds: ["p_1"],
+  };
+
+  it("is a permanent tray destination that opens the guide in the player pane", async () => {
+    stubGuide();
+    const { container } = mount();
+    const guide = screen.getByRole("button", { name: /^guide$/i });
+    expect(guide.getAttribute("aria-pressed")).toBe("false");
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    act(() => guide.click());
+    expect(showing(container)).toEqual(["player"]);
+    expect(guide.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /^you$/i }).getAttribute("aria-pressed")).toBe("false");
+    expect(await screen.findByRole("region", { name: "Field Guide" })).toBeTruthy();
+    expect(usePlayerNavigation.getState().section).toBe("guide");
+  });
+
+  it("never hides the turn: You keeps its badge, and one tap brings the bag back", async () => {
+    stubGuide();
+    mount(turn);
+    act(() => screen.getByRole("button", { name: /^guide$/i }).click());
+    await screen.findByRole("region", { name: "Field Guide" });
+    const you = screen.getByRole("button", { name: /^you$/i });
+    expect(within(you).getByLabelText("Your turn")).toBeTruthy();
+    act(() => you.click());
+    expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
+    expect(screen.getByRole("button", { name: /^your turn$/i })).toBeTruthy();
+  });
+
+  it("works before there is a character, without unmounting creation", async () => {
+    stubGuide();
+    const { container } = mount();
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, party: [] } });
+    });
+    const creation = container.querySelector(".player-view__creation");
+    expect(creation).not.toBeNull();
+    act(() => screen.getByRole("button", { name: /^guide$/i }).click());
+    expect(await screen.findByRole("region", { name: "Field Guide" })).toBeTruthy();
+    expect(container.querySelector(".player-view__creation")).toBe(creation);
+    expect(creation?.hasAttribute("hidden")).toBe(true);
   });
 });

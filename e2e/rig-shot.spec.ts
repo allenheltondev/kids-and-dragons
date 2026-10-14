@@ -27,10 +27,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
     await adds.first().click(TAP);
   }
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  const fieldsets = page.locator(".creation-fieldset");
-  await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
-  await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
@@ -49,8 +45,9 @@ test("photograph the party on a TV", async ({ browser }) => {
   };
   const host = await phone();
   await host.goto("/");
+  await host.getByRole("button", { name: /want to host/i }).click();
+  await host.getByText("Phone Mode").click();
   await host.fill('input[placeholder="Type your name"]', "Allen");
-  await host.getByText("Travel Mode").click();
   await host.getByRole("button", { name: /start a game/i }).click();
   await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
   const code = new URL(host.url()).pathname.split("/").pop()!;
@@ -58,7 +55,6 @@ test("photograph the party on a TV", async ({ browser }) => {
   const others = [await phone(), await phone()];
   for (const [i, page] of others.entries()) {
     await page.goto("/");
-    await page.fill('input[placeholder="Type your name"]', ["Sam", "Rosie"][i]!);
     await page.getByLabel(/room code/i).fill(code);
     await page.getByRole("button", { name: /join a game/i }).click();
     await expect(page).toHaveURL(new RegExp(`/p/${code}$`));

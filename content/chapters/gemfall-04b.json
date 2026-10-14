@@ -126,7 +126,7 @@
     "check_ask_trees": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Ask the forest, politely, what it is objecting to",
       "roller": "party",
       "onSuccess": {
@@ -159,6 +159,9 @@
     },
     "scene_mosshorns": {
       "type": "story",
+      "discovers": [
+        "creature.mosshorn"
+      ],
       "narration": "A herd of mosshorns grazes ahead, their antlers sprouting little gardens. One has a whole strawberry patch on its head and is clearly very proud of it. A prospector's cart rattles by with a sack of gems, and the entire herd steps away from it at once, like one long breath out.",
       "choices": [
         {
@@ -179,7 +182,7 @@
         },
         {
           "id": "walk_on",
-          "label": "Walk on toward the hurt part of the forest",
+          "label": "Walk on past the herd",
           "icon": "forward",
           "goto": "scene_unicorns"
         }
@@ -202,7 +205,7 @@
     },
     "scene_read_herd": {
       "type": "story",
-      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen. You can see the bald grey patches in the forest where they have stopped going. The herd is a map of where it hurts.",
+      "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen. You can see the bald gray patches in the forest where they have stopped going. The herd is a map of where it hurts.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -213,7 +216,7 @@
       "choices": [
         {
           "id": "follow",
-          "label": "Follow the grey patches",
+          "label": "Follow the gray patches",
           "icon": "map",
           "goto": "scene_unicorns"
         }
@@ -221,7 +224,10 @@
     },
     "scene_unicorns": {
       "type": "story",
-      "narration": "In a small glade the moss has gone the colour of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
+      "discovers": [
+        "character.unicorn"
+      ],
+      "narration": "In a small glade the moss has gone the color of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
       "choices": [
         {
           "id": "help",
@@ -249,7 +255,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hum with the unicorns while the moss remembers its colour",
+      "prompt": "Hum with the unicorns while the moss remembers its color",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_finding",
@@ -264,12 +270,12 @@
       },
       "onFailure": {
         "goto": "scene_finding",
-        "narration": "You hum, and the moss goes green, then grey, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
+        "narration": "You hum, and the moss goes green, then gray, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
       }
     },
     "scene_finding": {
       "type": "story",
-      "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else, and somehow that makes it louder.",
+      "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else about that, and somehow that makes it louder. Then, quieter: \"This was a small one. The worst glade is north of here. We have not managed that one yet.\"",
       "choices": [
         {
           "id": "rest",
@@ -294,6 +300,9 @@
     },
     "scene_crater": {
       "type": "story",
+      "discovers": [
+        "creature.echo_hunter"
+      ],
       "narration": "The worst glade is a hollow torn into the forest floor where a big stone landed, and the crash cracked the ground open into the dark. Something pale and frilled has climbed up out of the crack. It has no eyes at all, and it is listening very hard to the humming in the middle of the glade. Now it is listening to you.",
       "choices": [
         {
@@ -383,21 +392,21 @@
     "check_way_back": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Find the hidden way back to the worst glade",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
-        "narration": "You follow the grey patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
+        "narration": "You follow the gray patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
       },
       "onFailure": {
         "goto": "ending_shown_the_door",
-        "narration": "The grey patches lead you in a circle, and then into a hedge, and then back to the same embarrassed toadstool. The forest has decided where you are going, and it is not the glade."
+        "narration": "The gray patches lead you in a circle, and then into a hedge, and then back to the same embarrassed toadstool. The forest has decided where you are going, and it is not the glade."
       }
     },
     "scene_glade_heart": {
       "type": "choice_point",
-      "narration": "In the very middle of the worst glade, in a bruise of grey moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
+      "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
       "choices": [
         {
           "id": "mend",

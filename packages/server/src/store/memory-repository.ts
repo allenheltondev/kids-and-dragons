@@ -14,12 +14,20 @@
  */
 
 import fs from "node:fs/promises";
-import { CHARACTER_VERSION, migrateCharacter } from "@kad/shared";
+import {
+  CHARACTER_VERSION,
+  FIELD_GUIDE_VERSION,
+  migrateCharacter,
+  migrateFieldGuide,
+} from "@kad/shared";
 import { readAll } from "./character-io.ts";
 import path from "node:path";
 import type {
   Character,
   DeviceBinding,
+  FieldGuideDiscovery,
+  FieldGuideFind,
+  FieldGuideRecord,
   Household,
   PlayerProfile,
   RunState,
@@ -41,6 +49,7 @@ import {
   CHAR_SK,
   DEVICE_SK,
   EVT_SK,
+  FIELDGUIDE,
   GSI1_DEVICE,
   GSI1_GUEST,
   GSI1_GUEST_SK,
@@ -458,6 +467,42 @@ export class MemoryRepository implements GameRepository {
     return this.query(HH(householdId), PREFIX.campaign).map(
       (i) => i.data as CampaignProgressRecord,
     );
+  }
+
+  async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
+    return this.readFieldGuide(householdId);
+  }
+
+  private readFieldGuide(householdId: string): FieldGuideRecord {
+    const item = this.get(HH(householdId), FIELDGUIDE);
+    return migrateFieldGuide(item?.data ?? {}, item ? (item.v ?? 0) : FIELD_GUIDE_VERSION);
+  }
+
+  async recordDiscoveries(householdId: string, discoveries: FieldGuideDiscovery[]): Promise<string[]> {
+    // The first-wins rule is what DynamoRepository gets from `if_not_exists`.
+    // No `await` between the read and the put - that is the atomicity.
+    const entries = { ...this.readFieldGuide(householdId).entries };
+    const added: string[] = [];
+    for (const d of discoveries) {
+      if (!d.canonId || Object.hasOwn(entries, d.canonId)) continue;
+      const entry: FieldGuideFind = {
+        firstFoundBy: d.playerId,
+        foundAt: d.foundAt ?? new Date(this.now()).toISOString(),
+        ...(d.runId ? { runId: d.runId } : {}),
+      };
+      entries[d.canonId] = entry;
+      added.push(d.canonId);
+    }
+    if (added.length > 0) {
+      this.put({
+        PK: HH(householdId),
+        SK: FIELDGUIDE,
+        entity: "field-guide",
+        v: FIELD_GUIDE_VERSION,
+        data: { entries },
+      });
+    }
+    return added;
   }
 
   async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {

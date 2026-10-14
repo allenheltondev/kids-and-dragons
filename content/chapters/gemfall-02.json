@@ -45,6 +45,9 @@
   "scenes": {
     "scene_song_stops": {
       "type": "story",
+      "discovers": [
+        "npc.faun"
+      ],
       "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. Every Sunward child knows what a stopped song means: somebody has seen something worth stopping for.",
       "choices": [
         {
@@ -114,7 +117,7 @@
     "check_reroute": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Talk a grumpy drover out of a shortcut",
       "roller": "party",
       "onSuccess": {
@@ -153,7 +156,7 @@
     },
     "scene_caravan_turned": {
       "type": "story",
-      "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there.\"",
+      "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there, all the way to Bramblewood.\"",
       "onEnter": [
         {
           "type": "grantItem",
@@ -172,7 +175,10 @@
     },
     "scene_jackalope_road": {
       "type": "story",
-      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
+      "discovers": [
+        "creature.jackalope"
+      ],
+      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming. Up on the low ridge above the road, a flock of sheeple stands in one woolly knot, all staring the same way.",
       "choices": [
         {
           "id": "look_inland",
@@ -189,12 +195,119 @@
             "dragonling"
           ],
           "goto": "scene_jackalope_road_fly_look"
+        },
+        {
+          "id": "flock",
+          "label": "Visit the flock on the ridge",
+          "icon": "party",
+          "goto": "scene_flock_ridge"
+        }
+      ]
+    },
+    "scene_flock_ridge": {
+      "art": "scenes/gemfall/sheeple-ridge",
+      "type": "story",
+      "discovers": [
+        "npc.sheeple"
+      ],
+      "narration": "On the low ridge above the road, about thirty sheeple are standing in one tight woolly knot. Every one of them is wearing the same felted hat with seven brims. When you walk up, nobody says anything for a whole minute, because each sheeple is waiting for another one to say hello first. Then twenty of them say hello at once. \"What do we think?\" asks the one in the middle. \"We think wolves,\" they all answer, slightly out of step. \"In the grass.\" \"We all saw them.\" \"Because one of us did.\"",
+      "choices": [
+        {
+          "id": "crouch",
+          "label": "Crouch down and look where they're looking",
+          "icon": "clever",
+          "goto": "check_flock_clever"
+        },
+        {
+          "id": "stroll",
+          "label": "Stroll into the middle of the flock",
+          "icon": "bigfoot",
+          "requiresSpecies": "bigfoot",
+          "goto": "scene_flock_bigfoot"
+        },
+        {
+          "id": "wave",
+          "label": "Wave goodbye and go back to the road",
+          "icon": "back",
+          "goto": "scene_wolf_sign"
+        }
+      ]
+    },
+    "scene_flock_bigfoot": {
+      "art": "scenes/gemfall/sheeple-ridge",
+      "type": "story",
+      "narration": "Nobody bolts. Nobody even flinches. The whole flock shuffles in around the bigfoot and leans on them like a warm, woolly wall, and a calm flock notices things. It notices, without anybody saying a word, which one of you is the clever one. Thirty heads turn to watch them.",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Let the clever one crouch and look",
+          "icon": "eye",
+          "goto": "scene_flock_copies",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "flock_followed",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_flock_clever": {
+      "art": "scenes/gemfall/sheeple-ridge",
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Look closely enough that a whole flock decides you are worth copying",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_flock_copies",
+        "narration": "You crouch, and you squint, and you tilt your head. Thirty sheeple crouch, squint, and tilt their heads exactly the same way. The flock has decided you are clever. Nobody told it to. It just knows.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "flock_followed",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_flock_scatters",
+        "narration": "You crouch down. The flock watches you politely and does not crouch. Then a jackalope bursts out of the grass right beside you, and that is the end of the meeting."
+      }
+    },
+    "scene_flock_copies": {
+      "art": "scenes/gemfall/sheeple-ridge",
+      "type": "story",
+      "narration": "Thirty pairs of eyes see a lot more than one pair. Down in the long grass are two cinder wolves, and they are not hunting. They are shivering, and they have been staring at the caravan's sausage wagon since breakfast. When you stand up to go, three sheeple in seven-brimmed hats stand up too. They follow you down the ridge at a very polite distance, and they stop whenever you stop.",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Head down toward the wolves, with company",
+          "icon": "party",
+          "goto": "scene_wolf_sign"
+        }
+      ]
+    },
+    "scene_flock_scatters": {
+      "art": "scenes/gemfall/sheeple-ridge",
+      "type": "story",
+      "narration": "The flock scatters in threes, every three running a different way. Then each little three stops, throws back its head, and calls the Gather. You can't hear a thing. It looks like thirty sheeple yawning at the sky in perfect silence. A minute later they are all back in one woolly knot, pretending nothing happened. One of them points at the long grass, just to be helpful, and you see two gray shapes lying in it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Thank the flock and go and see",
+          "icon": "eye",
+          "goto": "scene_wolf_sign"
         }
       ]
     },
     "scene_jackalope_road_fly_look": {
       "type": "story",
-      "narration": "From above, the long grass is a green sea, and two grey shapes are lying in it like boats, perfectly still, each with a faint orange glow under the fur. Mountain wolves. In farm country. One of them looks straight up at you and does not even pretend it isn't there.",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
+      "narration": "From above, the long grass is a green sea, and two gray shapes are lying in it like boats, perfectly still, each with a faint orange glow under the fur. Mountain wolves. In farm country. One of them looks straight up at you and does not even pretend it isn't there.",
       "choices": [
         {
           "id": "on",
@@ -206,6 +319,9 @@
     },
     "scene_wolf_sign": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves, mountain wolves, all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon the way you might watch a birthday cake.",
       "choices": [
         {
@@ -236,7 +352,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_embermoths",
-        "narration": "The wolves eat every sausage, curl up into one warm grey heap with eight legs, and watch you go. They are not tame. But they will remember you.",
+        "narration": "The wolves eat every sausage, curl up into one warm gray heap with eight legs, and watch you go. They are not tame. But they will remember you.",
         "effects": [
           {
             "type": "setFlag",
@@ -273,6 +389,9 @@
     },
     "scene_embermoths": {
       "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
       "narration": "At sunset a cloud of embermoths drifts overhead, thousands of them, glowing like slow sparks. One lands on your soup and will not get out. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
       "choices": [
         {
@@ -304,6 +423,9 @@
     },
     "scene_corner_row": {
       "type": "story",
+      "discovers": [
+        "npc.harvest_sprite"
+      ],
       "narration": "In the morning, near the last farm before Bramblewood, there is one corner row nobody has picked. Every farmer knows to leave the corner rows, and nobody says why. Today the row is guarded. Four harvest sprites in acorn-cup helmets stand to attention, and every time a pea-pod trumpet toots, four new ones march in to take their places.",
       "choices": [
         {
@@ -372,7 +494,7 @@
     "check_trade": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Offer the sprites the best thing in your pockets",
       "roller": "party",
       "onSuccess": {
@@ -444,7 +566,7 @@
     "check_steal": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Snatch the stone between one trumpet toot and the next",
       "roller": "party",
       "onSuccess": {
@@ -526,6 +648,11 @@
     },
     "scene_hedge_mob": {
       "type": "story",
+      "discovers": [
+        "location.bramblewood",
+        "individual.pib",
+        "npc.harvest_sprite"
+      ],
       "narration": "Outside Bramblewood's tall hedges, a mob of treasure hunters is camped and shouting, \"Open up! Let us through!\" The hedges are not listening. Along the wall, a small thorny sprite with a satchel too big for them is trimming one leaf at a time and narrating it. \"I'm Pib,\" they say. \"I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?\"",
       "choices": [
         {
@@ -570,6 +697,32 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "flock",
+          "label": "Bow to the hedge and ask, the way the flock would",
+          "icon": "party",
+          "requiresFlag": "flock_followed",
+          "goto": "scene_hedge_mob_flock",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "let_in_properly",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_hedge_mob_flock": {
+      "type": "story",
+      "narration": "You step up to the hedge and bow. Far back from the shouting, the three sheeple bow too. Then all three throw back their heads in perfect silence. For a minute, nothing happens. Then sheeple start arriving at the edge of the clearing: ten, twenty, thirty, all in the same hat, all bowing to the hedge at once. \"Please may we come in,\" they say, slightly out of step. The mob is so surprised it stops shouting. Pib drops their shears. The hedge has never been asked that politely by that many people, ever. It opens a path wide enough for all of you, and the flock trots in too, very pleased with itself.",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Follow the flock to the inn",
+          "icon": "forward",
+          "goto": "rest_marda_inn"
         }
       ]
     },
@@ -600,7 +753,7 @@
     "check_hedge": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Say why you came, plainly enough for a hedge to hear",
       "roller": "party",
       "onSuccess": {
@@ -633,12 +786,16 @@
     },
     "rest_marda_inn": {
       "type": "rest",
-      "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumour board is where you decide.",
+      "discovers": [
+        "individual.marda_thorn",
+        "npc.centaur"
+      ],
+      "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumor board is where you decide.",
       "heal": 3,
       "choices": [
         {
           "id": "to_board",
-          "label": "Go and read the rumour board",
+          "label": "Go and read the rumor board",
           "icon": "scroll",
           "goto": "choice_rumour_board"
         },
@@ -651,7 +808,7 @@
         },
         {
           "id": "ask_believe",
-          "label": "Ask Marda which rumour she believes",
+          "label": "Ask Marda which rumor she believes",
           "icon": "eye",
           "requiresFlag": "motive_curiosity",
           "goto": "scene_marda_question"
@@ -672,11 +829,11 @@
     },
     "scene_marda_question": {
       "type": "story",
-      "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumours,\" she adds. \"That's the trouble with this season.\"",
+      "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumors,\" she adds. \"That's the trouble with this season.\"",
       "choices": [
         {
           "id": "to_board_after",
-          "label": "Go and read the rumour board",
+          "label": "Go and read the rumor board",
           "icon": "scroll",
           "goto": "choice_rumour_board"
         }
@@ -684,7 +841,7 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumour board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "choices": [
         {
           "id": "east",
@@ -756,14 +913,16 @@
       "weapons that wound",
       "anyone being left behind",
       "wolves hurting anyone badly",
-      "explaining why the embermoths are flying the wrong way"
+      "explaining why the embermoths are flying the wrong way",
+      "naming a sheeple, or showing fewer than three"
     ],
     "npcVoices": {
       "hob": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
       "sprites": "harvest sprites; tiny, earnest, over-explaining, very serious about guard duty and award ceremonies, heartbroken by a refusal for about four seconds",
       "pib": "a bramble sprite the size of a teapot who keeps the hedges; earnest, narrates their own maintenance, offers you things you did not ask for, cannot open the hedges for anyone who has not asked properly",
-      "marda": "Marda Thorn, a grey-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
-      "drover": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner"
+      "marda": "Marda Thorn, a gray-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
+      "drover": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner",
+      "sheeple": "a flock of sheeple, never fewer than three and never named; warm, agreeable, and in chorus, checks with the others first (\"What do we think?\"), answers in three voices slightly out of step, finishes each other's sentences, skittish but never silly"
     }
   }
 }

@@ -33,7 +33,11 @@ export type ClientIntent =
       class: ClassId;
       /** Points the player assigned, before species bonus. */
       stats: Stats;
-      appearance: Appearance;
+      /**
+       * Ignored: the engine assigns each new character its colors
+       * (player-colors.ts). Accepted so an older client still gets through.
+       */
+      appearance?: Appearance;
       /**
        * Joining a party already underway (spec §8.4) — 1, or the party's tier
        * floor. Absent means 1. Validated in `newCharacter()`, never trusted:
@@ -67,6 +71,8 @@ export type ClientIntent =
   | { type: "VOTE_CAMPAIGN"; campaignId: string }
   | { type: "CHOOSE"; choiceId: string }
   | { type: "ROLL" }
+  /** Offer your help on the check someone else is about to roll. */
+  | { type: "HELP" }
   | { type: "ADVANCE" }
   /**
    * `targetId` is for a thrown consumable during the holder's combat turn —
@@ -242,6 +248,19 @@ export interface ServerMessage {
   presentation?: Presentation;
   /** Additive progression data; older clients safely ignore this field. */
   progression?: ProgressionUpdate;
+  /**
+   * Field Guide ids this step added to the household's book for the first
+   * time — the "new entry!" signal (#106; #110 celebrates it). The entries
+   * themselves arrive in this message's `patch`, under `/fieldGuide`.
+   *
+   * **Live only.** Set on the broadcast and never written to the event log,
+   * so `GET /state` — a snapshot or a replay of missed events (§4.3) — can
+   * never announce a discovery a second time. A client that misses the live
+   * message still gets the book, just not the fanfare. Taken from what the
+   * store reported as newly added, so two rooms of one household cannot both
+   * announce the same find.
+   */
+  discovered?: string[];
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */
@@ -251,9 +270,57 @@ export interface SnapshotMessage {
   state: RunState;
 }
 
+/**
+ * What a player has tapped on their phone but not yet confirmed — the
+ * half-made choice the shared screen lights up so the table can see it coming
+ * (a story option, a tile to walk to, an ability and who it is aimed at).
+ *
+ * A hint, never an intent: nothing here is validated against the rules or
+ * applied to anything, and the confirmed intent that follows is checked as if
+ * this had never been sent. Each carries the decision it was made for
+ * (`previewContext`); the server refuses one whose decision has passed and the
+ * TV shows one only while its state still names that decision, so a stale
+ * preview fades on its own rather than needing an undo.
+ */
+export type IntentPreview =
+  | { kind: "choice"; choiceId: string }
+  | { kind: "move"; to: { x: number; y: number } }
+  /** An ability, with whatever has been aimed so far — maybe nothing yet. */
+  | {
+      kind: "action";
+      abilityId: string;
+      targetIds?: string[];
+      tiles?: { x: number; y: number }[];
+    }
+  | { kind: "item"; itemId: string; targetId?: string }
+  | { kind: "end_turn" };
+
+/**
+ * A live-only relay of one player's `IntentPreview`, or `null` when they backed
+ * out. Never committed and never in the event log, so it has no seq of its
+ * own: `seq` is the run's seq when it was relayed, carried only so every
+ * message on the channel has one, and the sequencer never orders by it. A
+ * preview that went through the state instead would bump the seq on every tap,
+ * and a second player's real move would bounce off STALE_SEQ for it.
+ */
+export interface PreviewMessage {
+  seq: number;
+  runId: string;
+  playerId: string;
+  preview: IntentPreview | null;
+  /**
+   * The decision this preview was made for (`previewContext`), as the phone
+   * saw it. A screen draws the preview only while its own state gives the same
+   * context, so a late or orphaned one cannot surface on a later turn or a
+   * later question. Null on a clearing `preview: null`.
+   */
+  context: string | null;
+}
+
 export type ChannelMessage =
   | ({ kind: "patch" } & ServerMessage)
-  | ({ kind: "snapshot" } & SnapshotMessage);
+  | ({ kind: "snapshot" } & SnapshotMessage)
+  | ({ kind: "preview" } & PreviewMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4

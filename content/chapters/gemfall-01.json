@@ -17,7 +17,7 @@
     },
     {
       "id": "three_roads",
-      "label": "Heard the rumours of all three roads north",
+      "label": "Heard the rumors of all three roads north",
       "flag": "heard_every_road",
       "xp": 8
     },
@@ -51,7 +51,7 @@
     },
     "scene_prologue_city": {
       "type": "story",
-      "narration": "Far in the south, where every road and river runs down to the sea, is the Exchange: a busy city of towers, bridges and docks, where travellers from all over the realm come to trade, swap news, and find adventure. Nobody is from here. That is rather the point of it.",
+      "narration": "Far in the south, where every road and river runs down to the sea, is the Exchange: a busy city of towers, bridges and docks, where travelers from all over the realm come to trade, swap news, and find adventure. Nobody is from here. That is rather the point of it.",
       "choices": [
         {
           "id": "prologue_to_party",
@@ -63,7 +63,7 @@
     },
     "scene_prologue_party": {
       "type": "story",
-      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight is a quiet night, and the harbour lamps are just coming on.",
+      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight is a quiet night, and the harbor lamps are just coming on.",
       "choices": [
         {
           "id": "prologue_begin",
@@ -89,7 +89,7 @@
         },
         {
           "id": "watch_wall",
-          "label": "Watch from the harbour wall",
+          "label": "Watch from the harbor wall",
           "icon": "eye",
           "goto": "scene_harbour_wall"
         },
@@ -103,6 +103,9 @@
     },
     "scene_lighthouse": {
       "type": "story",
+      "discovers": [
+        "npc.merfolk"
+      ],
       "narration": "From the top of the lighthouse the gem-light falls slow as snow. Then, just for a moment, one thread of it rises back toward the mountain, like a kite string being reeled in. The lighthouse keeper, a very old merfolk in a bathtub, says she did not see that. Neither did you. Officially.",
       "onEnter": [
         {
@@ -122,7 +125,7 @@
     },
     "scene_harbour_wall": {
       "type": "story",
-      "narration": "From the harbour wall you watch the whole city find out at once. Every ship in the harbour swings on its anchor until its nose points north, as if the boats are thinking about it too. Bells ring on three towers, then stop, because nobody knows which ring this is. On the lighthouse, the great lamp goes dark for a moment, the way you might close your eyes rather than see something. Then it comes back on and pretends it did not.",
+      "narration": "From the harbor wall you watch the whole city find out at once. Every ship in the harbor swings on its anchor until its nose points north, as if the boats are thinking about it too. Bells ring on three towers, then stop, because nobody knows which ring this is. On the lighthouse, the great lamp goes dark for a moment, the way you might close your eyes rather than see something. Then it comes back on and pretends it did not.",
       "choices": [
         {
           "id": "wall_wait",
@@ -134,6 +137,10 @@
     },
     "scene_night_docks": {
       "type": "story",
+      "discovers": [
+        "npc.merfolk",
+        "npc.yeti"
+      ],
       "narration": "The docks are awake before the red has even faded. A boy on a ladder is already rubbing out the price of rope and writing a bigger one. A barrel on wheels rumbles past in the dark with a merfolk inside it, shouting \"Rush prices, darlings, rush prices!\" to nobody in particular yet. A yeti fishmonger looks north, looks at his herring, and quietly doubles the price of herring.",
       "choices": [
         {
@@ -150,7 +157,7 @@
       "choices": [
         {
           "id": "plaques",
-          "label": "Read the brass plaques on the harbour",
+          "label": "Read the brass plaques on the harbor",
           "icon": "scroll",
           "goto": "scene_plaques"
         },
@@ -164,7 +171,10 @@
     },
     "scene_plaques": {
       "type": "story",
-      "narration": "Seventeen brass plaques stand around the harbour. Each one says who founded the Exchange, and each one names somebody different: a faun, a frogfolk, a family of selkies, and one that just says \"my nan\". Nobody is from here, so everybody is from here. A centaur tour guide says that is the best thing about the city, and charges you a copper for telling you.",
+      "discovers": [
+        "npc.centaur"
+      ],
+      "narration": "Seventeen brass plaques stand around the harbor. Each one says who founded the Exchange, and each one names somebody different: a faun, a frogfolk, a family of selkies, and one that just says \"my nan\". Nobody is from here, so everybody is from here. A centaur tour guide says that is the best thing about the city, and charges you a copper for telling you.",
       "choices": [
         {
           "id": "sit_down",
@@ -260,6 +270,9 @@
     },
     "scene_motive_wealth": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll"
+      ],
       "narration": "\"Gems,\" says Mortar, the stone troll who runs the noodle stall. He stirs the pot one whole slow turn before he says anything else. Then he chalks a new line on his board, RUSH PRICES, and your noodles cost twice what they did a minute ago. The crowd cheers you. Three pickpockets move one table closer. A merchant by the door writes your names down and underlines them.",
       "choices": [
         {
@@ -272,6 +285,9 @@
     },
     "scene_motive_curiosity": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll"
+      ],
       "narration": "Mortar, the stone troll who runs the noodle stall, stops stirring, which he never does. \"The gull,\" he says. \"Dropped its fish before the light got here. Heard something first.\" He has clearly been thinking about this for three days. He tips your bowl so the soup slops into the shape of the mountain, and taps the top of it with one enormous finger.",
       "choices": [
         {
@@ -284,6 +300,10 @@
     },
     "scene_motive_prestige": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll",
+        "npc.faun"
+      ],
       "narration": "Mortar, the stone troll who runs the noodle stall, turns round, very slowly, and writes your names on the specials board under TODAY'S HEROES. He spells one of them wrong. The whole stall applauds. A very small faun asks you to sign her dumpling, and you do, and she eats it straight away so nobody can steal it.",
       "choices": [
         {
@@ -296,6 +316,10 @@
     },
     "scene_motive_duty": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll",
+        "npc.faun"
+      ],
       "narration": "Mortar, the stone troll who runs the noodle stall, says nothing at all. He just fills a fourth bowl and sets it on your table. \"For whoever needs it,\" he rumbles. The whoever turns out to be a faun at the next table whose field caravan left without her, and by the time she has finished the bowl she has told you every road north and which one her cousins are on.",
       "choices": [
         {
@@ -308,6 +332,9 @@
     },
     "scene_motive_fresh_start": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll"
+      ],
       "narration": "Mortar, the stone troll who runs the noodle stall, reaches under your table with one slow hand and scratches three marks on the underside of the empty chair. \"It's yours now,\" he says. \"Everyone at the Exchange started over. Some of us twice.\" He gives you the heel of the bread for nothing, which at rush prices is practically a house.",
       "choices": [
         {
@@ -320,6 +347,9 @@
     },
     "scene_motive_proving": {
       "type": "story",
+      "discovers": [
+        "npc.stone_troll"
+      ],
       "narration": "Mortar, the stone troll who runs the noodle stall, points at a bowl on the top shelf that is the size of a bath. \"Nobody finishes the Big Bowl,\" he says. You finish the Big Bowl. It takes all afternoon, and somebody has to be rolled off their chair at the end, but you finish it. \"Hm,\" says Mortar, which from a stone troll is a round of applause.",
       "choices": [
         {
@@ -332,17 +362,21 @@
     },
     "scene_docks": {
       "type": "story",
-      "narration": "The docks are where the Exchange trades its news. Here nobody asks where a thing came from, only where it is going. A boggart in a coat made of other coats is selling \"slightly used rumours, hardly heard\". A yeti fishmonger shouts the price of herring and, in between herrings, the price of roads.",
+      "discovers": [
+        "npc.boggart",
+        "npc.yeti"
+      ],
+      "narration": "The docks are where the Exchange trades its news. Here nobody asks where a thing came from, only where it is going. A boggart in a coat made of other coats is selling \"slightly used rumors, hardly heard\". A yeti fishmonger shouts the price of herring and, in between herrings, the price of roads.",
       "choices": [
         {
           "id": "swap",
-          "label": "Swap rumours with the dock folk",
+          "label": "Swap rumors with the dock folk",
           "icon": "scroll",
           "goto": "check_rumours"
         },
         {
           "id": "boggart",
-          "label": "Buy a rumour from the boggart",
+          "label": "Buy a rumor from the boggart",
           "icon": "hand",
           "goto": "scene_boggart"
         },
@@ -365,8 +399,8 @@
     "check_rumours": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
-      "prompt": "Trade a good rumour for three better ones",
+      "tn": 8,
+      "prompt": "Trade a good rumor for three better ones",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_three_rumours",
@@ -381,12 +415,12 @@
       },
       "onFailure": {
         "goto": "scene_three_rumours",
-        "narration": "Nobody wants your rumour. In the end you trade your lunch for theirs, which is a fair price, because their rumours are better than your lunch."
+        "narration": "Nobody wants your rumor. In the end you trade your lunch for theirs, which is a fair price, because their rumors are better than your lunch."
       }
     },
     "scene_boggart": {
       "type": "story",
-      "narration": "The boggart's rumours come in little jars with the lids screwed on tight. You pay with a button. You open the jar, and the rumour inside is: \"The mountain is grumpy.\" You already knew that. Then the boggart says it again, slower, looking sideways at the marsh road, and you realise it meant something else entirely.",
+      "narration": "The boggart's rumors come in little jars with the lids screwed on tight. You pay with a button. You open the jar, and the rumor inside is: \"The mountain is grumpy.\" You already knew that. Then the boggart says it again, slower, looking sideways at the marsh road, and you realize it meant something else entirely.",
       "choices": [
         {
           "id": "listen_more",
@@ -398,7 +432,7 @@
     },
     "scene_three_rumours": {
       "type": "story",
-      "narration": "By sunset you have heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travellers through the Whispering Marsh, if they like you, and the marsh has been noisy since the red night. \"And mind the sky,\" adds the yeti. \"The courier griffins are flying so overloaded with claim letters they can barely steer.\"",
+      "narration": "By sunset you have heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travelers through the Whispering Marsh, if they like you, and the marsh has been noisy since the red night. \"And mind the sky,\" adds the yeti. \"The courier griffins are flying so overloaded with claim letters they can barely steer.\"",
       "choices": [
         {
           "id": "through_market",
@@ -410,6 +444,9 @@
     },
     "scene_gutter_glint": {
       "type": "story",
+      "discovers": [
+        "character.griffin"
+      ],
       "narration": "Right on cue, a courier griffin wobbles overhead with a mail sack bigger than it is. The sack splits, and letters flutter down over the market like pigeons. Something heavier lands in the gutter beside your boot with a little plink. It is a red stone the size of a plum, glittering, and warm, like toast just out of the fire. It is also, very faintly, humming.",
       "choices": [
         {
@@ -428,7 +465,7 @@
     },
     "scene_nobody_claims": {
       "type": "story",
-      "narration": "Eleven people say it is theirs. None of them can say what colour it is. The griffin is already a dot over the sea, and the dot is not coming back. It seems the stone is yours, for now.",
+      "narration": "Eleven people say it is theirs. None of them can say what color it is. The griffin is already a dot over the sea, and the dot is not coming back. It seems the stone is yours, for now.",
       "choices": [
         {
           "id": "to_tavern",
@@ -440,6 +477,10 @@
     },
     "scene_tavern": {
       "type": "story",
+      "discovers": [
+        "npc.selkie",
+        "npc.stone_troll"
+      ],
       "narration": "The Empty Chair tavern is packed with prospectors. On a table in the middle, a selkie scholar with ink on both elbows is waving her arms. \"The gem-light fell upward! Only for a moment, but it did!\" The whole room laughs, and two very polite stone trolls carry her out of the door, table and all. She keeps talking the whole way.",
       "choices": [
         {
@@ -491,7 +532,7 @@
     },
     "scene_scholar_theory": {
       "type": "story",
-      "narration": "Outside, Professor Tidewell draws on a napkin: a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, with eight great facets. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
+      "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, with eight great facets. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -510,6 +551,9 @@
     },
     "choice_ember": {
       "type": "choice_point",
+      "discovers": [
+        "npc.merfolk"
+      ],
       "narration": "Gem-buyers line the whole quay. The biggest is Madame Coralie Fenn, a merfolk who gets about in a barrel on wheels, and she smells your warm red stone from ten stalls away. \"Rush prices, darlings,\" she says, and names a number so big that a pigeon faints. Do we sell it, or keep it?",
       "choices": [
         {
@@ -608,6 +652,9 @@
     },
     "scene_market": {
       "type": "story",
+      "discovers": [
+        "npc.faun"
+      ],
       "narration": "Every shop on the Outfitters' Steps is selling the same three things: boots, rope, and quickfoot laces. A faun cobbler called Tobble Reedpipe sings the price of each lace as he sells it, and every verse goes up a key. By the top of the steps he is squeaking.",
       "choices": [
         {
@@ -764,6 +811,9 @@
     },
     "scene_caravan_yard": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. She looks at the three of you the way she looks at weather. \"Room for three,\" she says. \"Why should it be you?\"",
       "choices": [
         {
@@ -832,7 +882,7 @@
     },
     "scene_caravan_yard_banner": {
       "type": "story",
-      "narration": "The banner is taller than any of you and heavier than it looks, and the wind off the harbour wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
+      "narration": "The banner is taller than any of you and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
       "choices": [
         {
           "id": "on",
@@ -844,6 +894,9 @@
     },
     "scene_caravan_yard_race": {
       "type": "story",
+      "discovers": [
+        "npc.yeti"
+      ],
       "narration": "A yeti crew bets you cannot load a wagon faster than they can. You load it in the time it takes them to argue about who goes first. Half of it is loaded upside down, but it is loaded. The yetis pay up in dried apples, and Hesper, very slightly, smiles.",
       "choices": [
         {
@@ -868,6 +921,9 @@
     },
     "scene_caravan_yard_lift_wagon": {
       "type": "story",
+      "discovers": [
+        "npc.faun"
+      ],
       "narration": "You walk over to the wagon stuck in the mud, take hold of the back axle, and lift. The wagon comes up. So does the mud. So does a small faun who was sitting in the wagon eating breakfast, and who keeps eating it. Hesper watches the whole thing without a word, then nods once.",
       "choices": [
         {
@@ -881,7 +937,7 @@
     "check_signon": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Tell a caravan master the truth and mean it",
       "roller": "party",
       "onSuccess": {
@@ -902,7 +958,7 @@
     },
     "scene_hired": {
       "type": "story",
-      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and the Exchange shrinks behind you into a bright muddle of roofs, with one lighthouse still pretending it saw nothing.",
+      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and the Exchange shrinks behind you into a bright muddle of roofs, with the lighthouse winking after you, as if it knows something.",
       "choices": [
         {
           "id": "roll_north",
@@ -926,6 +982,9 @@
     },
     "rest_northbound": {
       "type": "rest",
+      "discovers": [
+        "biome.sunward_fields"
+      ],
       "narration": "That night the caravan camps in the first of the Sunward Fields, where the grass smells of honey and everybody's boots still smell of the city. Far to the north the sky glows faintly red, like a coal somebody forgot to put out. Share out your things, patch each other up, and get some sleep. The road starts properly tomorrow.",
       "heal": 4,
       "choices": []
@@ -948,7 +1007,7 @@
       "coralie_fenn": "Madame Coralie Fenn, a merfolk gem-buyer in a barrel on wheels; calls everyone darlings, names enormous numbers cheerfully, never forgets a seller",
       "tobble": "Tobble Reedpipe, a faun cobbler who sings every price, going up a key each verse; delighted by anyone who sings back",
       "hesper": "Hesper Longstride, a centaur caravan master with a road-stitched sash; few words, listens to the whole answer, kind but busy",
-      "boggart": "a rumour-selling boggart in a coat made of other coats; never says anything straight, always says it twice",
+      "boggart": "a rumor-selling boggart in a coat made of other coats; never says anything straight, always says it twice",
       "lighthouse_keeper": "a very old merfolk in a bathtub at the top of the lighthouse; firmly did not see anything",
       "tour_guide": "a centaur tour guide who loves the seventeen plaques and charges for every fact",
       "mortar": "Mortar, a stone troll noodle cook; stirs one full slow turn before answering anything, says very little, and means all of it"

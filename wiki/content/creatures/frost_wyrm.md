@@ -3,7 +3,7 @@ title: Frost Wyrm
 id: creature.frost_wyrm
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "mountain", "ice", "predator"]
 classification: dangerous_creature
@@ -56,7 +56,7 @@ infobox: creature
 
 > *The glacier's other tenant. It was here first, and the receipts are frozen.*
 
-Frost wyrms tunnel the deep ice along seams older than any map, spiraling their nests around things frozen far below — whether they guard those things or simply like the company is one of the north's politely unasked questions. A wyrm's whole idea of a good year is one in which nothing at all happens near its tunnel, and it enforces this idea with total commitment.
+Frost wyrms tunnel the deep ice along seams older than any map, spiraling their nests around things frozen far below, whether they guard those things or simply like the company is one of the north's politely unasked questions. A wyrm's whole idea of a good year is one in which nothing at all happens near its tunnel, and it enforces this idea with total commitment.
 
 ### For Fun
 
@@ -70,30 +70,30 @@ A frost wyrm defends the tunnel, never the mountain. It holds no grudges because
 
 ### Likes
 
-- **[Yeti](/npcs/yeti/)** — Their songs carry through the ice. It has opinions on the repertoire, all favorable, none shared.
+- **[Yeti](/npcs/yeti/)**: Their songs carry through the ice. It has opinions on the repertoire, all favorable, none shared.
 
 ### Dislikes
 
-- **[Griffin](/characters/griffin/)** — A shadow crossing the snow is the one shape it has never argued with.
+- **[Griffin](/characters/griffin/)**: A shadow crossing the snow is the one shape it has never argued with.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Sentinel** — The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
+**Sentinel**: The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
 
 | | |
 |---|---|
 | Health | 20 |
-| Guard | 14 — how hard it is to hit |
+| Guard | 14, how hard it is to hit |
 | Attack | +4 |
 | Speed | 3 steps, 0 initiative |
 | Usually | alone |
 
 ### Ways Past It That Are Not Fighting
 
-- **Escape** (Quick, normal) — It defends the tunnel, not the mountain. Leave the tunnel and it stops.
-- **Observation** (Clever, hard) — Telling a nesting tunnel from an ordinary one, before you are standing in it.
+- **Escape** (Quick, normal): It defends the tunnel, not the mountain. Leave the tunnel and it stops.
+- **Observation** (Clever, hard): Telling a nesting tunnel from an ordinary one, before you are standing in it.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

@@ -424,9 +424,18 @@ def check_palette(rep: Report, label: str, species: dict,
 
 
 def joint_centroids(parts: dict[str, np.ndarray], assembled: np.ndarray,
-                    adjacency: list[list[str]], thr: int) -> dict[str, tuple[float, float]]:
-    """Joint locations as the centroid of each seam-overlap band, normalised to the
-    character's bounding box.
+                    adjacency: list[list[str]], thr: int,
+                    pinned: dict | None = None) -> dict[str, tuple[float, float]]:
+    """Joint locations, normalised to the character's bounding box: the pinned
+    pivot from the set's joints.json where there is one, else the centroid of
+    the seam-overlap band.
+
+    Pinned first because the centroid is only a stand-in for the joint, and a
+    poor one once parts overlap properly: a band painted the length of a seam
+    has its centroid mid-limb. The rig is built on joints.json
+    (docs/briefs/part-recut.md section 7), so that is what has to line up across
+    tiers. Measuring the band instead failed a recut whose pinned pivots had not
+    moved at all.
 
     Normalised because tiers legitimately get bigger - a `mythic` is taller than a
     `fledgling`, and a rig absorbs that with a per-tier scale. What must not change
@@ -444,8 +453,14 @@ def joint_centroids(parts: dict[str, np.ndarray], assembled: np.ndarray,
         return {}
 
     joints: dict[str, tuple[float, float]] = {}
+    pinned = pinned or {}
     for a, b in adjacency:
         if a not in masks or b not in masks:
+            continue
+        pin = next((pinned[c] for c, p in ((b, a), (a, b))
+                    if isinstance(pinned.get(c), dict) and pinned[c].get("parent") == p), None)
+        if pin is not None:
+            joints[f"{a}/{b}"] = ((float(pin["x"]) - bx0) / bw, (float(pin["y"]) - by0) / bh)
             continue
         band = masks[a] & masks[b]
         if band.sum() < 50:
@@ -471,7 +486,11 @@ def check_cross_tier(rep: Report, species: dict,
     thr = tol["alphaThreshold"]
     limit = tol["jointDriftToleranceNormalizedPx"]
     ref_tier = tiers[0]
-    ref = joint_centroids(*per_tier[ref_tier], adjacency, thr)
+    def pins(tier: str) -> dict:
+        path = os.path.join(ROOT, "assets", "characters", species["id"], tier, "joints.json")
+        return json.load(open(path)) if os.path.exists(path) else {}
+
+    ref = joint_centroids(*per_tier[ref_tier], adjacency, thr, pins(ref_tier))
     if not ref:
         return
 
@@ -479,7 +498,7 @@ def check_cross_tier(rep: Report, species: dict,
     scale = float(canvas["height"])  # express normalised drift back in canvas px
 
     for tier in tiers[1:]:
-        got = joint_centroids(*per_tier[tier], adjacency, thr)
+        got = joint_centroids(*per_tier[tier], adjacency, thr, pins(tier))
         drifted, checked, worst = [], 0, 0.0
         for name, (rx, ry) in ref.items():
             if name not in got:

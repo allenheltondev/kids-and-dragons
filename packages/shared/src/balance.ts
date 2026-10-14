@@ -156,15 +156,15 @@ export function defaultParty(rules: RulesContent, attackMod = 3): PartyProfile {
 /**
  * P(d20 + mod ≥ target).
  *
- * No criticals and no automatic miss: `resolveAttack` is a plain `total >= tn`
- * comparison (dice.ts), so a natural 20 is only special when it clears the
- * number anyway, and a natural 1 lands if the modifier is large enough.
+ * A natural 20 always lands and a natural 1 always misses (`clears` in
+ * dice.ts), so the chance never leaves [1/20, 19/20] however far the modifier
+ * and the target are apart.
  */
 export function hitChance(mod: number, target: number): number {
   const needed = target - mod;
-  // Faces `needed`..20 succeed, out of 20. A `needed` of 1 or less always hits;
-  // 21 or more never does.
-  return Math.max(0, Math.min(1, (21 - needed) / 20));
+  // Faces `needed`..20 succeed, out of 20, but face 20 always does and face 1
+  // never does.
+  return Math.max(1 / 20, Math.min(19 / 20, (21 - needed) / 20));
 }
 
 /** What one playthrough of the model produced. */
@@ -271,10 +271,13 @@ export function estimateEncounter(
     hitChance(party.attackMod, meanGuard) * attackDamage;
   const damagePerEnemy = hitChance(meanAttack, party.guard) * attackDamage;
 
-  if (damagePerAttacker <= 0) {
+  // A natural 20 always lands, so the chance is never zero. But a Guard only a
+  // natural 20 can reach is still a mistake rather than a hard fight, and an
+  // author is better served by the sentence than by a 50-round grind.
+  if (party.attackMod + 20 < meanGuard) {
     notes.push(
-      `The party cannot hit this at all: Guard ${meanGuard.toFixed(1)} is out of reach of ` +
-        `d20+${String(party.attackMod)}.`,
+      `The party cannot hit this except on a natural 20: Guard ${meanGuard.toFixed(1)} is out of ` +
+        `reach of d20+${String(party.attackMod)}.`,
     );
     return {
       rounds: ROUND_CAP,

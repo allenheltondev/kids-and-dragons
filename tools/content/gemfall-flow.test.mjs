@@ -47,6 +47,9 @@ const INTENDED = {
     ["gatherers", "stay_gatherers"],
     ["close", "stay_close"],
   ],
+  "gemfall-07r/scene_road_gifts": ["boggart", "boggart_walked_over"], // the Wild Road and the walked-over Rush Road both met the marsh
+  "gemfall-07l/scene_road_gifts": ["boggart", "boggart_walked_over"],
+  "gemfall-07h/scene_road_gifts": ["boggart", "boggart_walked_over"],
   "gemfall-07h/walk_scene_boundary": ["confess", "bells", "stirring"], // three ways to ask about the fuse
   "gemfall-07h/walk_scene_look_back": ["trust", "moths", "happy_ring"], // the ending is the answer
 };

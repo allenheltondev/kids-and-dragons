@@ -608,9 +608,9 @@ describe('generatePage — lore section', () => {
     expect(content).toContain('### For Fun');
     expect(content).toContain('- Doing the thing.');
     expect(content).toContain('### Getting Along');
-    expect(content).toContain('**[Mosshorn](/creatures/mosshorn/)** — They weed.');
+    expect(content).toContain('**[Mosshorn](/creatures/mosshorn/)**: They weed.');
     // An opinion of an entity outside the registry falls back to a derived title.
-    expect(content).toContain('**[Unknown Folk](/npcs/unknown_folk/)** — Long story.');
+    expect(content).toContain('**[Unknown Folk](/npcs/unknown_folk/)**: Long story.');
 
     // Lore leads the body: before relationships.
     const loreIdx = content.indexOf('<!-- BEGIN GENERATED: lore -->');
@@ -720,9 +720,9 @@ describe('generatePage — place lore section', () => {
     expect(content).toContain('### Disputed Beliefs');
     expect(content).toContain('- Some say otherwise.');
     expect(content).toContain('### Neighbors');
-    expect(content).toContain('**[Whispering Marsh](/biomes/whispering_marsh/)** — Downstream of it.');
+    expect(content).toContain('**[Whispering Marsh](/biomes/whispering_marsh/)**: Downstream of it.');
     // A neighbour outside the registry falls back to a derived title.
-    expect(content).toContain('**[Unknown Town](/locations/unknown_town/)** — Trades with it.');
+    expect(content).toContain('**[Unknown Town](/locations/unknown_town/)**: Trades with it.');
     expect(content).toContain('### Current Tensions');
     expect(content).toContain('### Story Hooks');
     expect(content).toContain('- A story seed.');
@@ -737,7 +737,7 @@ describe('generatePage — place lore section', () => {
   it('labels hidden truths as creator canon', () => {
     const { content } = generatePage({ entity, assets, reverseRefs: [] }, entities);
     expect(content).toContain('### Hidden Truths');
-    expect(content).toContain('> *Creator canon — not generally known in-world. No NPC recites these.*');
+    expect(content).toContain('> *Creator canon, not generally known in-world. No NPC recites these.*');
     expect(content).toContain('- Only the creator knows.');
   });
 

@@ -38,6 +38,9 @@
   "scenes": {
     "scene_arrival": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing.",
       "choices": [
         {
@@ -83,7 +86,7 @@
     },
     "scene_door_wild": {
       "type": "story",
-      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. Your MossHome runner waves goodbye and does not take one step farther. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
+      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. A MossHome runner coming the other way waves, and does not take one step onto the ash. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
       "choices": [
         {
           "id": "down",
@@ -95,7 +98,7 @@
     },
     "scene_door_rush": {
       "type": "story",
-      "narration": "You walk up the caravan road through the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
+      "narration": "You walk up the caravan road from the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
       "choices": [
         {
           "id": "up",
@@ -107,6 +110,9 @@
     },
     "scene_moths": {
       "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
       "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts, and the prospector has given up and is eating around it.",
       "choices": [
         {
@@ -157,6 +163,9 @@
     },
     "scene_wolves": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "Down on the caravan road, a pack of cinder wolves is lying in one big heap in the ruts, glowing faintly, like a pile of coals with ears. They are not hunting. They are cold and hungry, and forty wagons are stuck behind them, with forty drovers yelling.",
       "choices": [
         {
@@ -214,7 +223,7 @@
     "check_wolves": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Find the hungry wolves something better than the road",
       "roller": "party",
       "onSuccess": {
@@ -235,6 +244,9 @@
     },
     "scene_soup_tent": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles you each a bowl, asks your names, and remembers them. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
       "choices": [
         {
@@ -285,7 +297,7 @@
         },
         {
           "id": "ford_soup",
-          "label": "Tell her you remember Wend's soup line at the ford",
+          "label": "Tell her you remember Wend's soup tents on the road north",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "scene_soup_tent_ford_soup",
@@ -301,7 +313,7 @@
     },
     "scene_soup_tent_ford_soup": {
       "type": "story",
-      "narration": "\"Wend's line, at the ford!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the queue.",
+      "narration": "\"Wend's tents, on the north road!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the queue.",
       "choices": [
         {
           "id": "on",
@@ -349,7 +361,7 @@
     },
     "scene_soup_tent_ask_cure": {
       "type": "story",
-      "narration": "\"What would it fix?\" Hessa thinks about it properly, which not everyone does. \"Who gets to be hungry,\" she says at last. \"Who gets to be cold. Why the sky is the wrong colour and nobody with a ledger can say why.\" She refills your bowl. \"Little things,\" she says. \"Everything.\"",
+      "narration": "\"What would it fix?\" Hessa thinks about it properly, which not everyone does. \"Who gets to be hungry,\" she says at last. \"Who gets to be cold. Why the sky is the wrong color and nobody with a ledger can say why.\" She refills your bowl. \"Little things,\" she says. \"Everything.\"",
       "choices": [
         {
           "id": "on",
@@ -361,12 +373,12 @@
     },
     "rest_warm_stones": {
       "type": "rest",
-      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cosy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
+      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cozy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
       "heal": 2,
       "choices": [
         {
           "id": "morning",
-          "label": "In the morning, climb the ridge toward Redspire",
+          "label": "In the morning, climb the ridge toward the wardens' citadel",
           "icon": "forward",
           "goto": "scene_crab"
         }
@@ -374,6 +386,9 @@
     },
     "scene_crab": {
       "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
       "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. A prospector called Dunmore is raising a pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
       "choices": [
         {
@@ -406,7 +421,7 @@
           "id": "back_off",
           "label": "Back everyone off its warm ground, go the long way",
           "icon": "back",
-          "goto": "scene_citadel_gate",
+          "goto": "scene_crab_long_way",
           "effects": [
             {
               "type": "setFlag",
@@ -436,13 +451,13 @@
       },
       "onFailure": {
         "goto": "encounter_crab",
-        "narration": "Two claws up and a rock to the left means... you guess \"hello.\" It does not mean hello. The crab charges, and its neighbour from the next burrow scuttles over to see what all the fuss is."
+        "narration": "Two claws up and a rock to the left means... you guess \"hello.\" It does not mean hello. The crab charges, and its neighbor from the next burrow scuttles over to see what all the fuss is."
       }
     },
     "encounter_crab": {
       "type": "encounter",
       "map": "switchback",
-      "narration": "Two glassback crabs clatter down the switchbacks, their shells flashing every colour of the gems around them.",
+      "narration": "Two glassback crabs clatter down the switchbacks, their shells flashing every color of the gems around them.",
       "enemies": [
         {
           "id": "crab",
@@ -470,7 +485,7 @@
     "check_late_gate": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Race the sunset up the ridge before the citadel gate closes",
       "roller": "party",
       "onSuccess": {
@@ -571,6 +586,10 @@
     },
     "scene_citadel_gate": {
       "type": "story",
+      "discovers": [
+        "location.redspire_citadel",
+        "faction.skywardens"
+      ],
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "Redspire Citadel is a black tower where every single window faces up. Inside, a clerk named Pellam writes your names in a big ledger, then writes them again in a second ledger, just to be sure. \"This way,\" he says. \"The captain has a table.\"",
       "choices": [
@@ -622,21 +641,28 @@
         },
         {
           "id": "wild_clues",
-          "label": "Show the boggart's hum, the glades and the path archive",
+          "label": "Show the wounded glades, the path archive and the knot-cord",
           "icon": "leaf",
           "requiresFlag": "route_wild",
           "goto": "scene_truth_table_wild_clues"
         },
         {
           "id": "rush_clues",
-          "label": "Show the witch's charm, route-songs and boundary tallies",
+          "label": "Show the relay's spiral verses and the boundary tallies",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "scene_truth_table_rush_clues"
         },
         {
+          "id": "charm",
+          "label": "Set Mother Thrum's tuned charm on the table",
+          "icon": "charm",
+          "requiresItem": "charm_ford_witch",
+          "goto": "scene_truth_table_charm"
+        },
+        {
           "id": "odd_ledger",
-          "label": "Point at the one ledger bound in a different colour",
+          "label": "Point at the one ledger bound in a different color",
           "icon": "eye",
           "requiresSpecies": "bigfoot",
           "goto": "scene_truth_table_odd_ledger"
@@ -646,7 +672,7 @@
     "scene_truth_table_odd_ledger": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Your bigfoot points at the one ledger bound in a different colour, half under the others. Pellam looks as if he has been caught stealing biscuits. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
+      "narration": "Your bigfoot points at the one ledger bound in a different color, half under the others. Pellam looks as if he has been caught stealing biscuits. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
       "choices": [
         {
           "id": "on",
@@ -659,7 +685,7 @@
     "scene_truth_table_rush_clues": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You lay out Mother Thrum's tuned charm, the spiral verses and the boundary-stone tallies. The moment the charm touches the table it rings, and the Table Stone rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
+      "narration": "You lay out the spiral verses and the boundary-stone tallies, and Pellam lays a watch-log four hundred years old beside them. The grandmothers' tally marks and the relay's new verses curl the same way the old log does, round every place a stone has ever fallen. Captain Voss looks at the three of them side by side for a long time and says nothing, which from her is a great deal.",
       "choices": [
         {
           "id": "on",
@@ -672,7 +698,7 @@
     "scene_truth_table_wild_clues": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You lay out the boggart's hum, the wounded glades and the path archive. Pellam goes very pale and opens the oldest log on the table, the one nobody reads. One line: the marsh gate hums the same note. Beside it, in three different hands: nobody knows why. \"Well,\" says Captain Voss. \"Somebody does now.\"",
+      "narration": "You lay out the wounded glades, the path archive and the MossHome knot-cord. Pellam runs a finger down the cord, counting knots, goes very pale, and reaches for the oldest log on the table, the one nobody reads. \"Well,\" says Captain Voss. \"The forest keeps records too.\"",
       "choices": [
         {
           "id": "on",
@@ -790,7 +816,7 @@
     },
     "scene_acceptable_losses_hear_plan": {
       "type": "story",
-      "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the Table Stone is the only thing in the room making a sound.",
+      "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch, the one gap every road squeezes through, all the way down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the Table Stone is the only thing in the room making a sound.",
       "choices": [
         {
           "id": "on",
@@ -1122,7 +1148,7 @@
     "scene_declared_leash": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, Hessa's choir is humming the same three notes.",
+      "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, somebody at Hessa's soup tent is humming.",
       "choices": [
         {
           "id": "record",
@@ -1217,6 +1243,10 @@
     },
     "scene_shut_out": {
       "type": "story",
+      "discovers": [
+        "location.redspire_citadel",
+        "faction.skywardens"
+      ],
       "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
       "choices": [
         {
@@ -1328,6 +1358,30 @@
       "heal": 3,
       "choices": [],
       "outcome": "setback"
+    },
+    "scene_crab_long_way": {
+      "type": "story",
+      "narration": "You back everybody off the warm ground, Dunmore last and grumbling, and take the goat track round the ridge instead. The crab goes back to its pebbles. The goat track is a goat's idea of a road, and by the time it brings you out on the citadel side, the sun is high and the whole morning is gone.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the ridge road at last",
+          "icon": "hand",
+          "goto": "scene_citadel_gate"
+        }
+      ]
+    },
+    "scene_truth_table_charm": {
+      "type": "story",
+      "narration": "You set Mother Thrum's tuned charm on the table. The moment it touches the stone it rings, and the Table Stone rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
+      "choices": [
+        {
+          "id": "click",
+          "label": "Watch it all click together",
+          "icon": "eye",
+          "goto": "scene_whole_truth"
+        }
+      ]
     }
   },
   "llmHints": {
@@ -1345,7 +1399,7 @@
       "hessa": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
       "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
       "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
-      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cosy, says 'nothing to worry about' one time too many",
+      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
       "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well"
     }
   }

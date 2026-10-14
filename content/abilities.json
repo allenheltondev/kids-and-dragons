@@ -6,6 +6,7 @@
     "brace": {
       "id": "brace",
       "name": "Brace",
+      "summary": "Stand guard next to a friend and take the hit meant for them.",
       "icon": "shield",
       "timing": "action",
       "$comment": "\"Take a hit that was meant for a friend standing next to you.\" The whole Thornguard fantasy, and the reason `protect` is a verb.",
@@ -24,6 +25,7 @@
     "first_strike": {
       "id": "first_strike",
       "name": "First Strike",
+      "summary": "You always go first when a fight starts.",
       "icon": "arrow",
       "timing": "initiative",
       "$comment": "\"Go before anybody else on the first round.\" Read once, when order is rolled — never a button on a turn, which is why the timing is `initiative` and not `action`.",
@@ -42,6 +44,7 @@
     "burst": {
       "id": "burst",
       "name": "Burst",
+      "summary": "Pick a spot up to 6 squares away. Every enemy in that 2-by-2 patch gets hit.",
       "icon": "spark",
       "timing": "action",
       "$comment": "\"Hit every enemy inside a 2x2 square of tiles.\" `area: 2` is literally that square, anchored top-left on the tile she taps. One roll per enemy caught — `attack` is a roll, so the dice decide each one. The text gives no range, so this takes 6, the same reach every other card that stays silent about it gets — and it has to say *something*, because an absent range means adjacent and a Starweaver who must stand next to the square she blasts is a Thornguard. `openTileOnly: false` is the other half of that: it defaults to *open*, which is right for a leap and exactly wrong here, because the square you most want to blast is the one with a monster standing in it.",
@@ -65,6 +68,7 @@
     "rally": {
       "id": "rally",
       "name": "Rally",
+      "summary": "Heal a friend anywhere, or help a knocked-down friend back up.",
       "icon": "hand",
       "timing": "action",
       "$comment": "\"Heal a friend, or lift a knocked-down friend back up from across the board.\" One ability with two readings, and `when` is how the data says so rather than the resolver growing a rule about heals not stacking onto a revive. Heals 2 where soothe heals 3: rally reaches the whole board from level 1, so the level-3 upgrade has to be worth taking.",
@@ -92,6 +96,7 @@
     "shove": {
       "id": "shove",
       "name": "Shove",
+      "summary": "Push an enemy next to you back 2 squares and step into its spot.",
       "icon": "fist",
       "timing": "action",
       "$comment": "\"Push an enemy back 2 steps and step into its place.\" Two verbs in order: the shove empties the tile, then `moveSelf` takes it. Order matters — swap them and the Thornguard tries to stand where the monster still is.",
@@ -116,6 +121,7 @@
     "glimmer": {
       "id": "glimmer",
       "name": "Glimmer",
+      "summary": "A friend anywhere gets +2 on their next roll.",
       "icon": "star",
       "timing": "action",
       "$comment": "\"A friend anywhere on the board gets +2 on their next roll.\" `range: \"board\"` is that \"anywhere\", and the point of the ability — the Starweaver helps from wherever she is standing.",
@@ -135,6 +141,7 @@
     "soothe": {
       "id": "soothe",
       "name": "Soothe",
+      "summary": "A friend up to 4 squares away gets 3 hearts back.",
       "icon": "flame",
       "timing": "action",
       "$comment": "\"A friend within 4 steps gets 3 HP back.\" Straight across the board and through walls, as every \"within N steps\" range is (grid.ts) — she is counting tiles between two figures, not tracing a route.",
@@ -154,6 +161,7 @@
     "chorus": {
       "id": "chorus",
       "name": "Chorus",
+      "summary": "Every friend gets 2 hearts back and +1 on their next roll.",
       "icon": "note",
       "timing": "action",
       "$comment": "\"Every friend gets 2 HP back and +1 on their next roll.\" No target at all — the effects find their own audience, and `allies` includes the Songkeeper herself, which the word \"every\" fairly promises.",
@@ -181,6 +189,7 @@
     "mending_light": {
       "id": "mending_light",
       "name": "Mending Light",
+      "summary": "A friend next to you gets 3 hearts back.",
       "icon": "hand",
       "timing": "action",
       "$comment": "\"Touch a friend standing next to you. They get 3 HP back.\" `state` defaults to standing, which is what \"standing next to you\" means and also §7.3's rule that healing never lifts anybody off the floor.",
@@ -201,6 +210,7 @@
     "gliding_leap": {
       "id": "gliding_leap",
       "name": "Gliding Leap",
+      "summary": "Fly over anything to an open square up to 6 squares away.",
       "icon": "wing",
       "timing": "action",
       "$comment": "\"Sail over anything in your way and land on any open tile within 6 steps.\" `openTileOnly` is the landing being somewhere she could stand, and the straight-line range is what \"sail over anything in your way\" means — this range ignores walls by design.",
@@ -221,6 +231,7 @@
     "sky_watch": {
       "id": "sky_watch",
       "name": "Sky Watch",
+      "summary": "Every friend gets +2 on their next roll.",
       "icon": "eye",
       "timing": "action",
       "$comment": "\"Every friend gets +2 on their next roll.\" The griffin calls out where the enemies are going, so it lands on the whole party at once and needs nothing pointed at.",
@@ -242,6 +253,7 @@
     "ground_smash": {
       "id": "ground_smash",
       "name": "Ground Smash",
+      "summary": "Every enemy next to you gets pushed back 2 squares.",
       "icon": "fist",
       "timing": "action",
       "$comment": "\"Every enemy next to you is shoved back 2 steps.\" The `adjacent` scope with `affects: enemy` is that sentence; no target, because \"next to you\" is decided by where the bigfoot is standing rather than by a tap.",
@@ -263,6 +275,7 @@
     "fox_fire": {
       "id": "fox_fire",
       "name": "Fox Fire",
+      "summary": "Dazzle an enemy so it misses its next turn.",
       "icon": "spark",
       "timing": "action",
       "$comment": "\"It is so busy watching them that it skips its next turn.\" The text gives no range, so this takes 6 — the same reach the other two ranged species actions use, which keeps \"how far can my species action go\" one answer instead of six.",
@@ -282,6 +295,7 @@
     "pounce": {
       "id": "pounce",
       "name": "Pounce",
+      "summary": "Jump to an open square, then attack an enemy next to it.",
       "icon": "arrow",
       "timing": "action",
       "$comment": "Jump to an open tile, then choose and attack one adjacent enemy.",
@@ -313,6 +327,7 @@
     "vanish": {
       "id": "vanish",
       "name": "Vanish",
+      "summary": "Slip out of sight. The next enemy that swings at you misses.",
       "icon": "moon",
       "timing": "action",
       "$comment": "\"Slip out of sight. The next enemy that swings at you misses.\" The `evade` verb: spent by the next attack aimed at you, however many rounds later that comes, and the miss happens before any die is thrown — an auto-miss dressed as a bad roll would read as rigged dice.",
@@ -331,6 +346,7 @@
     "twin_step": {
       "id": "twin_step",
       "name": "Twin Step",
+      "summary": "Attack an enemy next to you, then move again.",
       "icon": "wing",
       "timing": "action",
       "$comment": "\"Move, attack, and then move again.\" An adjacent attack, then `extraMove` reopens movement with a fresh budget — the level-6 exception to §7.2's move-then-act, which is what makes it worth unlocking. The second move is the full allowance: \"move again\" on the card is a second move, not the change from the first one.",
@@ -356,6 +372,7 @@
     "storm_of_blades": {
       "id": "storm_of_blades",
       "name": "Storm of Blades",
+      "summary": "Attack two different enemies next to you.",
       "icon": "arrow",
       "timing": "action",
       "$comment": "\"Attack two different enemies standing next to you.\" `count: 2` is chosen targets, not the `adjacent` scope — the scope hits everything beside you, which is more generous than the card and would make the level-9 unlock strictly better than it reads. One roll per enemy, the dice deciding each (Burst's rule), and the engine refuses the same figure twice.",
@@ -376,6 +393,7 @@
     "bramble_wall": {
       "id": "bramble_wall",
       "name": "Bramble Wall",
+      "summary": "Grow thorns on two squares. Enemies have to go around.",
       "icon": "thorn",
       "timing": "action",
       "$comment": "\"Grow thorns on two tiles. Enemies have to go around.\" `growWall` turns each chosen tile into blocked terrain for the rest of the fight — real terrain, the same word the map is drawn in, which is why grid.ts made terrain board state rather than art. `tileCount: 2` is exact: the ability is withheld when the board cannot give it two open tiles, rather than walling less than the card says. The text gives no range, so this takes 6, same as every card that stays silent about it.",
@@ -396,6 +414,7 @@
     "unbreakable": {
       "id": "unbreakable",
       "name": "Unbreakable",
+      "summary": "Until your next turn, you and friends beside you take 1 less damage.",
       "icon": "shield",
       "timing": "action",
       "$comment": "\"Until your next turn, you and every friend beside you take 1 less damage from every hit.\" The `ward` verb, granted to self and adjacent — two effect lines, exactly as the card reads. It hangs on each recipient and every ward comes down when the Thornguard's next turn starts, the same expiry shape Brace already taught: \"until your next turn\" is the one duration this game has.",
@@ -423,6 +442,7 @@
     "tanglelight": {
       "id": "tanglelight",
       "name": "Tanglelight",
+      "summary": "Wrap an enemy in light so it can't move on its next turn.",
       "icon": "thorn",
       "timing": "action",
       "$comment": "\"Ribbons of light wrap one enemy. It cannot move on its next turn.\" The `root` verb: the wrapped figure keeps its action and starts its next turn with zero steps, which is precisely what the card says and nothing more — `skipTurn` was the nearest verb for years, and it cost the monster its whole turn, a stronger and different effect. The text gives no range, so this takes 6.",
@@ -441,6 +461,7 @@
     "starfall": {
       "id": "starfall",
       "name": "Starfall",
+      "summary": "Every enemy on the board takes 2 damage. Once per fight.",
       "icon": "star",
       "timing": "action",
       "$comment": "\"Every enemy on the board takes 2 damage. Once per fight.\" The `enemies` scope is the whole other side wherever it stands — the board-wide counterpart of `allies`, not a square anchored anywhere. Flat damage, no rolls: the sky does not miss. The card says once per fight, so `oncePerEncounter` — the one class ability (with Encore) that carries it, and the card text is what licenses it (content:validate holds the two in agreement).",
@@ -462,6 +483,7 @@
     "encore": {
       "id": "encore",
       "name": "Encore",
+      "summary": "A friend gets to do another action right now. Once per fight.",
       "icon": "note",
       "timing": "action",
       "$comment": "\"A friend takes another action right now. Once per fight.\" The `extraTurn` verb queues the friend, and the moment the Songkeeper's turn ends the clock lands on them — an action, no steps, because the card says \"another action\" and steps it does not say would be a stronger card than the one she read. Their own turn still arrives in the rolled order, full budget and all. The text gives no range, so this takes 6.",

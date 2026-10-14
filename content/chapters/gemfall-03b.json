@@ -36,6 +36,10 @@
   "scenes": {
     "scene_poling_in": {
       "type": "story",
+      "discovers": [
+        "npc.frogfolk",
+        "creature.will_o_wisp"
+      ],
       "narration": "A frogfolk ferrywoman called Gullet poles you into the Whispering Marsh. She carves a notch in her pole for every new wisp she sees, and this week she ran out of pole and started on her hat. Whole channels are roped off with ribbon and tiny bells, and behind them brand-new wisps bob about like they can't find their slippers. \"Too many new ones,\" says Gullet, and very carefully does not say why.",
       "choices": [
         {
@@ -99,6 +103,9 @@
     },
     "scene_boggart_isle": {
       "type": "story",
+      "discovers": [
+        "npc.boggart"
+      ],
       "narration": "On a mud island stacked with lost things (odd mittens, a teapot lid, nine umbrellas) sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
       "choices": [
         {
@@ -198,7 +205,7 @@
     "check_name": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Spot what's wrong with this barge, and say what it really is",
       "roller": "party",
       "onSuccess": {
@@ -234,6 +241,9 @@
     },
     "scene_kitsune_review": {
       "type": "story",
+      "discovers": [
+        "creature.mire_mimic"
+      ],
       "narration": "Your kitsune walks once round the barge with their nose in the air. \"The barnacles are on the wrong side. That rope is a tail. And nobody abandons a barge with the lantern still polished.\" A long, wounded silence. Then the barge unfolds into a mire mimic and slinks off into the reeds, mortified.",
       "onEnter": [
         {
@@ -254,7 +264,7 @@
     "encounter_mimic": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The barge heaves up out of the mud on long grey legs. A wisp that has been leading prospectors this way drifts in to watch the show.",
+      "narration": "The barge heaves up out of the mud on long gray legs. A wisp that has been leading prospectors this way drifts in to watch the show.",
       "enemies": [
         {
           "id": "mimic",
@@ -295,6 +305,9 @@
     },
     "scene_act_closed": {
       "type": "story",
+      "discovers": [
+        "creature.mire_mimic"
+      ],
       "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem, the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
       "choices": [
         {
@@ -421,7 +434,7 @@
     "check_patience": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Walk with the wisp, not after it, however slowly it goes",
       "roller": "party",
       "onSuccess": {
@@ -442,7 +455,7 @@
     },
     "scene_wisp_trap": {
       "type": "story",
-      "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug, beside something huge and grey.",
+      "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug, beside something huge and gray.",
       "onEnter": [
         {
           "type": "damage",
@@ -472,6 +485,9 @@
     },
     "scene_hollow_gate": {
       "type": "story",
+      "discovers": [
+        "location.hollow_gate"
+      ],
       "art": "scenes/gemfall/hollow-gate",
       "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to. Older than the marsh. Older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in a knot. It does not open. It does not look like it has ever opened.",
       "choices": [
@@ -612,9 +628,9 @@
     "check_ford_song": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Keep time with the frogfolk's crossing song",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "ending_forded_clean",
         "narration": "You sing badly but exactly in time, which is the part that counts."
@@ -641,6 +657,9 @@
     },
     "ending_forded_clean": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The frogfolk set you down dry-footed on the north bank, and Gullet waves her notched hat until the fog swallows her. Ahead, the Enchanted Woods stand very still, like they've been expecting you. Camp at the tree line and listen to the river go by. You heard the note today. You won't forget it.",
       "heal": 4,
       "onEnter": [
@@ -654,6 +673,9 @@
     },
     "ending_swept_west": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The branch grabs you and carries you west, through the marsh's outermost tangles, past floating logs (real ones, you check), until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
       "heal": 4,
       "onEnter": [
@@ -685,6 +707,9 @@
     },
     "ending_marsh_kept_secrets": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The channels all look the same in the dark, and the wisps think it's a game. You never find the Gate. At dawn the current gets bored of you and carries you west through the outer tangles, and drops you, soggy and sorry, on the flooded paths at the edge of the Enchanted Woods. The marsh kept its secrets tonight. Sleep it off.",
       "heal": 3,
       "onEnter": [

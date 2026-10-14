@@ -46,14 +46,7 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(0);
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
 
-  // Appearance: a colour and an accent, both deliberate taps. Neither is
-  // required — picking a species already applied a default, and the step
-  // gates on nothing (CreationFlow `stepDone`) — so this is the "somebody
-  // chose" path. nameplates.spec.ts walks past without touching them.
-  const fieldsets = page.locator(".creation-fieldset");
-  await fieldsets.nth(0).locator(".creation-swatch").first().click(TAP);
-  await fieldsets.nth(1).locator(".creation-swatch").first().click(TAP);
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
+  // No appearance step: the server assigns colors (shared player-colors.ts).
 
   // Name. "Surprise me" has to be there — typing must never be required
   // (spec §5.5) — but the test types, so it can assert on the result later.
@@ -208,11 +201,20 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
      * second because it is what ends a fight; End turn when nothing else is
      * offered, which is what an unreachable enemy looks like from here.
      */
-    const help = labels.findIndex((label) => /help up/i.test(label));
-    const attack = labels.findIndex((label) => /attack/i.test(label));
-    const end = labels.findIndex((label) => /end turn/i.test(label));
-    const pick = help >= 0 ? help : attack >= 0 ? attack : end;
-    if (pick < 0) return false;
+    // A card's first line is its name; the line under it says what it does,
+    // and "…then attack an enemy" in Pounce's must not read as Attack.
+    const names = labels.map((label) => label.split("\n")[0] ?? "");
+    const help = names.findIndex((name) => /help up/i.test(name));
+    const attack = names.findIndex((name) => /^attack$/i.test(name.trim()));
+    const pick = help >= 0 ? help : attack;
+    if (pick < 0) {
+      // Ending the turn sits apart from the cards, under them.
+      const end = panel.locator(".combat__end");
+      if (!(await end.isVisible().catch(() => false))) return false;
+      await end.click({ timeout: 3_000 }).catch(() => {});
+      await page.waitForTimeout(200);
+      continue;
+    }
     await cards.nth(pick).click({ timeout: 3_000 }).catch(() => {});
     await page.waitForTimeout(200);
   }
@@ -278,8 +280,9 @@ test.describe("first playable", () => {
     const [host, ...others] = phones as [Page, Page, Page];
 
     await host.goto("/");
+    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', NAMES[0]);
-    await host.getByText("Travel Mode").click();
     await host.getByRole("button", { name: /start a game/i }).click();
 
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
@@ -287,7 +290,6 @@ test.describe("first playable", () => {
 
     for (const [i, page] of others.entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
@@ -321,8 +323,9 @@ test.describe("first playable", () => {
   test("travel mode: your turn comes to you, and the world is one tap back", async ({ browser }) => {
     const solo = await phone(browser);
     await solo.goto("/");
+    await solo.getByRole("button", { name: /want to host/i }).click();
+    await solo.getByText("Phone Mode").click();
     await solo.fill('input[placeholder="Type your name"]', NAMES[0]);
-    await solo.getByText("Travel Mode").click();
     await solo.getByRole("button", { name: /start a game/i }).click();
     await expect(solo).toHaveURL(/\/p\/[A-Z]{4}$/);
 
@@ -331,8 +334,8 @@ test.describe("first playable", () => {
     await expect(solo.getByRole("button", { name: /unicorn/i }).first()).toBeVisible();
     await createCharacter(solo, "unicorn", "Sparklehoof");
 
-    await openPlayerTask(solo);
-    await solo.getByRole("button", { name: /i'm ready/i }).click();
+    // "Ready to play" at the end of creation already said ready.
+    await expect(solo.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     await solo.getByRole("button", { name: /begin the adventure/i }).click();
 
     // The scene opens a choice, so the controls come forward on their own...
@@ -364,15 +367,15 @@ test.describe("first playable", () => {
     const [host] = phones as [Page, ...Page[]];
 
     await host.goto("/");
+    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', NAMES[0]);
-    await host.getByText("Travel Mode").click();
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
     const code = new URL(host.url()).pathname.split("/").pop()!;
 
     for (const [i, page] of phones.slice(1).entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
     }
@@ -382,9 +385,8 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       // Assert the tap actually took. A ready that silently fails to register
       // is the exact failure worth catching here, and without this the test
       // just hangs later with nothing to say about why.
@@ -481,15 +483,15 @@ test.describe("first playable", () => {
     const [host] = phones as [Page, ...Page[]];
 
     await host.goto("/");
+    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', NAMES[0]);
-    await host.getByText("Travel Mode").click();
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
     const code = new URL(host.url()).pathname.split("/").pop()!;
 
     for (const [i, page] of phones.slice(1).entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', NAMES[i + 1]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
     }
@@ -500,9 +502,8 @@ test.describe("first playable", () => {
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
     for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 20_000 });
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
@@ -639,12 +640,7 @@ test.describe("first playable", () => {
       if (!ready) continue; // patches still draining; poll the server again
 
       const endTurn = async () => {
-        await page
-          .locator(".combat .choice")
-          .filter({ hasText: /end turn/i })
-          .first()
-          .click({ timeout: 4_000 })
-          .catch(() => {});
+        await page.locator(".combat__end").first().click({ timeout: 4_000 }).catch(() => {});
         await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
         await page.waitForTimeout(600);
       };
@@ -675,8 +671,9 @@ test.describe("first playable", () => {
   test("scanning the lobby QR lands on a prefilled join", async ({ browser }) => {
     const host = await phone(browser);
     await host.goto("/");
+    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', "Allen");
-    await host.getByText("Travel Mode").click();
     await host.getByRole("button", { name: /start a game/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
     const code = new URL(host.url()).pathname.split("/").pop()!;
@@ -693,8 +690,9 @@ test.describe("first playable", () => {
     const host = await phone(browser);
     const startTravel = async () => {
       await host.goto("/");
+      await host.getByRole("button", { name: /want to host/i }).click();
+      await host.getByText("Phone Mode").click();
       await host.fill('input[placeholder="Type your name"]', "Allen");
-      await host.getByText("Travel Mode").click();
       await host.getByRole("button", { name: /start a game/i }).click();
       await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
       return new URL(host.url()).pathname.split("/").pop()!;
@@ -712,8 +710,9 @@ test.describe("first playable", () => {
     await host.getByRole("button", { name: /play as sparklehoof/i }).click(TAP);
     await host.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 
-    // Seated: the lobby's ready button is theirs, with no creation flow between.
-    await expect(host.getByRole("button", { name: /i'm ready/i })).toBeVisible({ timeout: 15_000 });
+    // Seated and ready — "Ready to play" is the one tap, with no creation
+    // flow between.
+    await expect(host.getByRole("button", { name: /wait, not yet/i })).toBeVisible({ timeout: 15_000 });
     const response = await fetch(`http://localhost:8787/api/state?code=${second}`);
     const { state } = (await response.json()) as { state: { party: { character: { name: string } }[] } };
     expect(state.party.map((m) => m.character.name)).toEqual(["Sparklehoof"]);
@@ -726,6 +725,7 @@ test.describe("first playable", () => {
     const tvErrors: string[] = [];
     tv.on("pageerror", (e) => tvErrors.push(e.message));
     await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
@@ -736,7 +736,6 @@ test.describe("first playable", () => {
 
     const controller = await phone(browser);
     await controller.goto("/");
-    await controller.fill('input[placeholder="Type your name"]', "Allen");
     await controller.getByLabel(/room code/i).fill(code);
     await controller.getByRole("button", { name: /join a game/i }).click();
     await expect(controller).toHaveURL(new RegExp(`/p/${code}$`));
@@ -745,6 +744,43 @@ test.describe("first playable", () => {
     // The TV never asked for this and has no session — it arrived over the
     // room channel alone.
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible({ timeout: 15_000 });
+    expect(tvErrors).toEqual([]);
+  });
+
+  test("party mode: the TV lights up a choice before it is confirmed", async ({ browser }) => {
+    const tv = await phone(browser, 1280, 720);
+    const tvErrors: string[] = [];
+    tv.on("pageerror", (e) => tvErrors.push(e.message));
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+
+    const controller = await phone(browser);
+    await controller.goto("/");
+    await controller.getByLabel(/room code/i).fill(code);
+    await controller.getByRole("button", { name: /join a game/i }).click();
+    await createCharacter(controller, "unicorn", "Sparklehoof");
+    // "Ready to play" at the end of creation already said ready.
+    await expect(controller.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
+    await controller.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await openPlayerTask(controller);
+
+    // Tap an option and stop there: no "Do it!".
+    const option = controller.locator(".prompt .choice").first();
+    const label = (await option.locator(".choice__label").textContent())!.trim();
+    await option.click(TAP);
+    const picked = tv.locator(".narration__choice--picked");
+    await expect(picked).toHaveCount(1, { timeout: 10_000 });
+    await expect(picked).toContainText(label);
+    await expect(picked).toContainText("Sparklehoof");
+    if (process.env.KAD_SHOT) await tv.screenshot({ path: process.env.KAD_SHOT });
+
+    // Backing out takes the highlight away again.
+    await controller.getByRole("button", { name: /^change$/i }).click(TAP);
+    await expect(picked).toHaveCount(0, { timeout: 10_000 });
     expect(tvErrors).toEqual([]);
   });
 });

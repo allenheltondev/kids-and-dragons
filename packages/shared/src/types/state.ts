@@ -8,6 +8,7 @@
 import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
+import type { FieldGuideFind } from "../field-guide-record.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -20,6 +21,13 @@ export interface DiceRoll {
   /** Who rolled. */
   characterId: string;
   stat?: StatId;
+  /** A friend's die, already counted in `total`. Checks only. */
+  help?: { characterId: string; sides: number; value: number };
+  /**
+   * On the last roll of a whole-party check (`roller: "all"`): how many made
+   * it, out of how many, and so how the party did. Half or more is a success.
+   */
+  group?: { made: number; of: number; result: "success" | "failure" };
 }
 
 /** A member of the party, as the clients see them. */
@@ -84,6 +92,14 @@ export type Prompt =
       tn: number;
       prompt: string;
       characterId: string;
+      /** Who has offered to help, and the die they will add. One per check. */
+      helper?: { characterId: string; sides: number };
+      /**
+       * A whole-party check (`roller: "all"`): everyone rolls their own d20 +
+       * stat, and half or more succeeding carries the party. `pending` is who
+       * still has to roll; `characterId` is the first of them.
+       */
+      group?: { pending: string[]; rolls: DiceRoll[] };
     }
   | {
       kind: "item_swap";
@@ -244,6 +260,46 @@ export interface RunState {
    * somehow opened by a deployed one rolls honest dice.
    */
   playtestDie?: number | null;
+  /**
+   * How many checks each character has rolled this run, by character id. A
+   * check the party shares (`roller: "party"`) goes to whoever has rolled the
+   * fewest, so the dice go round the table instead of always landing on the
+   * character with the best stat. Kept across chapters: one evening is one
+   * rotation. Optional for runs persisted before it existed, which simply
+   * start counting from zero.
+   */
+  checkRolls?: Record<string, number>;
+  /**
+   * Characters who have helped on a check since the party last rested. Help
+   * recharges at a Rest scene and at the start of each chapter, so it is a
+   * thing you save for the roll that matters rather than tap every time.
+   */
+  helpSpent?: string[];
+  /**
+   * The household's Field Guide — canon id → who found it first and when
+   * (epic #101, #106). A **mirror** of the household's `FIELDGUIDE` record,
+   * carried on the run for the reason `campaignOptions` is: it is household
+   * data every screen in the room needs, and riding the run state means the
+   * join, the TV's watch, a snapshot resync and an event replay all deliver
+   * the same book with no second fetch or second sync path.
+   *
+   * The server writes it, never the engine (which cannot reach the store):
+   * loaded when a room opens for a settled household or is first joined,
+   * re-read from the store at every chapter start (which heals any drift from
+   * a second room of the same household), and grown by `applyAction` on every
+   * step that discovers something, in the same patch as the scene it was found
+   * in. The store record stays the truth — this copy may briefly disagree
+   * about *who* found something first when two rooms find it at once.
+   *
+   * Absent while the room's household is unsettled (a TV-opened room before a
+   * phone joins, architecture §4.5) and on runs persisted before it existed;
+   * readers treat absent as an empty book.
+   *
+   * What is *new* is not derivable from here on purpose: replaying patches on
+   * a reconnect would re-announce everything. That signal rides the live
+   * broadcast only (`ServerMessage.discovered`).
+   */
+  fieldGuide?: Record<string, FieldGuideFind>;
   updatedAt: string;
 }
 

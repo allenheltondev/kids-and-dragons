@@ -109,6 +109,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
+| Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
@@ -242,8 +243,9 @@ Not every record needs a migration path, because most of them expire on their ow
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
 | Character, household, player profile | forever | **Yes**, permanently |
+| Field Guide | forever (deleted only with a guest household) | **Yes**, permanently — `migrateFieldGuide()` |
 
-So the permanent burden is three record types, and only one of them — the character — is under
+So the permanent burden is four record types, and only one of them — the character — is under
 active development. That is a small enough surface to do this by hand and keep it readable.
 
 #### The shape of it
@@ -337,11 +339,51 @@ Splitting **state patch** from **presentation** is the key move. Phones apply th
 presentation. The TV applies the patch *after* playing the animation. State and spectacle stay
 decoupled, so animation timing never blocks game logic.
 
+**Previews** (`POST /api/preview`, `{ "preview": IntentPreview | null }`) are the one thing on the
+channel that is not state. A phone sends one whenever its player taps a choice, a tile, an ability
+or a target but has not hit "Do it!" yet, and `null` when they back out; the server checks the shape
+and the seat and publishes `{ "kind": "preview", playerId, preview }` straight to the room. Nothing is
+committed and the seq does not move — a preview that went through `applyAction` would make every
+exploratory tap a STALE_SEQ for whoever confirms next. They are live-only (never logged, never
+replayed, sent over SSE with no `id:`), so each names the decision it was made for:
+`previewContext(state)` (shared/src/preview.ts) — the combat turn as it stands (which fight, by
+`EncounterState.startedAt`, then whose turn, round, slot, steps left, action spent) or the story question (chapter, scenes entered, scene, story turn).
+The phone stamps it from its own mirror, the server refuses a pick whose decision has moved on, and
+the TV draws one only while its own state names the same decision (`client/src/world/previews.ts`).
+A late pick, or one whose clearing `null` was lost with a dropped phone, therefore never surfaces on
+a later turn or a later question — a lost or stale preview costs a highlight, never a turn.
+
 ### 4.3 Reconnect
 
 Every client tracks the last `seq` it applied. On reconnect it calls `GET /state?runId&sinceSeq=N`,
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
+
+#### The Field Guide: the book on the state, the news on the wire
+
+The household's Field Guide (`HH#…/FIELDGUIDE`, §3) is household data, not run data, but every
+screen in the room shows it. It travels the way `campaignOptions` already does — **as a mirror on
+`RunState`** (`fieldGuide`: canon id → `{ firstFoundBy, foundAt, runId }`) — so the join, the TV's
+`/watch`, a snapshot and a replayed gap all deliver the same book through the one sync path, with
+no second fetch and no second sequencer.
+
+- **Filled** when a room opens for a settled household, or at the first join of a TV's claimable
+  room (whose household is only a placeholder until a phone settles it, §4.5 — such a room carries
+  no book and records nothing until then). **Re-read** from the store at every chapter start, which
+  heals the copy when a second room of the same household has found things in the meantime.
+- **Grown** by `applyAction`: the handler compares the state before and after the step (the
+  engine stays pure), asks shared `discoveries.ts` what the chapter start and every scene entered
+  reveal (a chapter's biome; an encounter's creatures; a scene's `discovers` tags), credits the
+  player whose tap caused it (else the story-turn holder, else the first seat), and folds what is
+  not already in the book into this step's patch. After the commit — the book is not part of the
+  run's transaction — `recordDiscoveries` writes them, first finder wins.
+- **New** is a separate, live-only signal: the store's answer ("these ids were added just now")
+  rides the broadcast as `ServerMessage.discovered` and is **never written to the event log**.
+  Replaying patches on a reconnect rebuilds the book without re-announcing anything, which a
+  signal derived from the patch could not promise. A client that misses the live message keeps
+  the page, and loses only the fanfare. In the client, the book is projected into
+  `store/field-guide-discoveries.ts` and the news queued in `store/field-guide-news.ts`, both
+  outside the game store's mirror.
 
 ### 4.4 Transport seam
 
@@ -409,7 +451,7 @@ Saturday that they want to keep the unicorn.
 #### Signing in, which is optional
 
 The browser talks to Cognito directly — no hosted UI, no credential through our
-Lambda. First time: a six-digit code by email, so there is no password to invent
+Lambda. First time: an eight-digit code by email, so there is no password to invent
 and none to forget between Tuesday nights. Then the browser may register a
 **passkey** on that device for one tap after.
 

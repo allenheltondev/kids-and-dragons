@@ -86,7 +86,7 @@ npcs:
       hook: "Ask one how far. You will get the distance, the weather, and one warning, once."
       story: >-
         Centaurs have walked the roads since before the roads were roads, and
-        the old routes are taught to foals as songs — one verse per landmark,
+        the old routes are taught to foals as songs, one verse per landmark,
         with the hazards in the chorus so nobody forgets them. A centaur's
         caravan sash is also a map, embroidered a stitch at a time over a
         working life, and reading a stranger's sash is how centaurs shake
@@ -94,11 +94,11 @@ npcs:
       pastimes:
         - "Sash embroidery. A route walked is a route stitched, and an elder's sash is a life you can read."
         - "Relay runs for the joy of it: how fast can news cross the realm? The record is disputed, loudly, at every campfire."
-        - "The Shortcut Debate — a nine-generation argument about one hypothetical route through the foothills. No centaur alive believes it exists. No centaur alive will concede."
+        - "The Shortcut Debate: a nine-generation argument about one hypothetical route through the foothills. No centaur alive believes it exists. No centaur alive will concede."
       social: >-
         Unhurried, factual, and impossible to alarm. A centaur states the
         distance, the weather, and the trouble in the same level tone, and
-        never repeats a warning — the road is honest, and expects the same of
+        never repeats a warning. The road is honest, and expects the same of
         you.
       likes:
         - of: creature.jackalope
@@ -145,14 +145,14 @@ npcs:
       hook: "The harvest is a song, and everyone is in the chorus whether they know it or not."
       story: >-
         Fauns farm the Sunward Fields in cooperatives older than money, and
-        their music is not decoration — the beat is the schedule, the harmony
+        their music is not decoration: the beat is the schedule, the harmony
         is the division of labor, and a field's work-song tells you what stage
         the season is in from half a mile away. A faun who stops singing
         mid-verse has seen something worth stopping for, and every hand in
         earshot knows it.
       pastimes:
         - "Festival-inventing. First frost, last frost, a notably good pumpkin: the calendar has more festivals than days, which the fauns consider a scheduling triumph."
-        - "Building instruments out of farm surplus — gourd-drums, seed-shakers, and the irrigation flute, which waters a row while you play it."
+        - "Building instruments out of farm surplus: gourd-drums, seed-shakers, and the irrigation flute, which waters a row while you play it."
         - "Competitive pie diplomacy. Recipes are state secrets. Judges are bribed openly, in pie."
       social: >-
         Warm, rhythmic, and incapable of letting a stranger stand at the edge
@@ -262,7 +262,7 @@ npcs:
       story: >-
         The marsh is passable because frogfolk make it so: safe channels
         marked, mist lanterns kept, and routes closed the day the whispers
-        change — not the day after. A frogfolk pause is not hesitation; it is
+        change, not the day after. A frogfolk pause is not hesitation; it is
         the size of the true answer being checked before it is issued. They
         say little because the marsh says a great deal, and someone has to be
         listening.
@@ -282,7 +282,7 @@ npcs:
         - of: npc.stone_troll
           because: "Water people who keep their crossings. A kinship of maintenance."
         - of: npc.boggart
-          because: "Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
+          because: "Neighbors. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
       dislikes:
         - of: creature.mire_mimic
           because: "Every marked channel it imitates is a review of frogfolk work, and the review is a trap."
@@ -325,7 +325,7 @@ npcs:
       hook: "Nothing in the marsh is lost. It has simply changed management."
       story: >-
         Boggarts collect what the world drops: buttons, keys, bells, sounds,
-        secrets. A boggart's collection is its memoir — ask about any button
+        secrets. A boggart's collection is its memoir: ask about any button
         and you will get the story, though not necessarily the story you
         wanted, and never in order. They do not steal, a distinction boggarts
         consider obvious and everyone else considers ongoing: a thing on the
@@ -338,7 +338,7 @@ npcs:
       social: >-
         Sidelong, delighted, and constitutionally allergic to stating a thing
         plainly when a hint will do. A boggart tests whether you pay attention
-        and rewards you in exact proportion to the result — which makes them
+        and rewards you in exact proportion to the result, which makes them
         the marsh's most honest people, hidden inside its most annoying ones.
       likes:
         - of: creature.will_o_wisp
@@ -348,7 +348,7 @@ npcs:
         - of: creature.silver_otter
           because: "A fellow collector with excellent taste and no small talk."
         - of: character.kitsune
-          because: "Stories with missing pieces — the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won."
+          because: "Stories with missing pieces, the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won."
       dislikes:
         - of: npc.harvest_sprite
           because: "They return found things to their owners. On purpose. The waste is unspeakable."
@@ -392,10 +392,10 @@ npcs:
         in amber, and the yetis' whole slow civilization is arranged around
         finding them, interpreting them, and keeping them company. They speak
         of the long-dead as though they stepped out a moment ago because, from
-        the glacier's point of view, they did — and a yeti sees no reason to
+        the glacier's point of view, they did, and a yeti sees no reason to
         take a shorter view than the thing it lives on.
       pastimes:
-        - "Singing in halls carved from the ice — low songs, felt through the feet more than heard, some of them older than their words."
+        - "Singing in halls carved from the ice: low songs, felt through the feet more than heard, some of them older than their words."
         - "Memory-walks: retracing a preserved moment on the surface where it happened, at the original pace, in the original weather if it can be arranged."
         - "Tea. Brewed from meltwater of a specific named year, for occasions that have earned it."
       social: >-
@@ -450,13 +450,13 @@ npcs:
       story: >-
         Merfolk keep Mermaid Cove, its reefs, and an alliance older than any
         surviving record of what, exactly, it was made against. The song
-        circles are the center of everything — part choir, part civic
-        engineering — and the old verses are sung precisely because nobody
+        circles are the center of everything, part choir and part civic
+        engineering, and the old verses are sung precisely because nobody
         remembers what they hold shut, which the merfolk consider the strongest
         possible argument for not missing a night.
       pastimes:
         - "Song circles, nightly, attendance a joy and also the infrastructure."
-        - "Reef-gardening: coral grown into archways, nurseries, and — for a visiting dignitary — furniture."
+        - "Reef-gardening: coral grown into archways, nurseries, and, for a visiting dignitary, furniture."
         - "The formal receiving of guests, an art form with tides in it. Rescued swimmers are technically guests, which surprises the swimmers."
       social: >-
         Courteous, precise about promises, and quietly warm underneath the
@@ -515,7 +515,7 @@ npcs:
         - "Message-racing the tide: the letter must beat the water to the third rock. The letter usually wins. The occasions it did not are famous."
         - "Storm-swimming for fun, an activity every other people on the coast has independently classified as a rescue situation."
       social: >-
-        Easy, quick, and register-shifting — a selkie talks to a merfolk
+        Easy, quick, and register-shifting: a selkie talks to a merfolk
         elder, a dockhand, and a child in three different voices inside one
         minute, and means every word in all three. Their friendship is loyal
         and their coat is not a topic.
@@ -561,7 +561,7 @@ npcs:
     lore:
       hook: "The bridge stands because someone patient is under it. This is not a metaphor."
       story: >-
-        Stone trolls keep the crossings — the masonry, the current-watch, and
+        Stone trolls keep the crossings: the masonry, the current-watch, and
         the judgment about who crosses and what it costs. The toll is never
         money and never cruel: a story, a riddle, a promise sized to the
         crosser, because a troll's real ledger is made of what people are
@@ -573,7 +573,7 @@ npcs:
         - "Games of strategy played across seasons, one move per market day. Spectators bring grandchildren, then great-grandchildren."
       social: >-
         Immensely slow to begin and then complete. A troll weighs a question
-        out loud before answering, and the answer is final — not from
+        out loud before answering, and the answer is final, not from
         stubbornness, but because it was weighed. They are not default
         enemies, do not eat travelers, and are politely tired of the question.
       likes:
@@ -726,8 +726,8 @@ npcs:
       story: >-
         Witchcraft is a tradition, not a people: any of the realm's folk may
         learn, and the pointed hat fits every head that earns it. The real
-        discipline is not the spellwork but the question asked before it —
-        what do you actually want? — because most of the trouble a witch is
+        discipline is not the spellwork but the question asked before it,
+        what do you actually want?, because most of the trouble a witch is
         called to fix began as an answer somebody skipped. Witches disagree
         with each other constantly, in the margins of each other's notebooks,
         as a form of quality control and, plainly, of affection.
@@ -738,14 +738,14 @@ npcs:
       social: >-
         Careful and instructive. A witch asks what you actually want before
         saying what is possible, never promises the first thing, and delivers
-        exactly what was agreed — which is why people trust witches and why
+        exactly what was agreed, which is why people trust witches and why
         people are also slightly afraid of them, and why witches consider both
         reactions correct.
       likes:
         - of: creature.will_o_wisp
           because: "A patient, in the oldest sense. Some can be untangled and allowed to finish, and there is no better feeling in the craft."
         - of: npc.boggart
-          because: "Suppliers of ingredients, rumors, and — twice now, at the exact crucial moment — a button."
+          because: "Suppliers of ingredients, rumors, and, twice now, at the exact crucial moment, a button."
         - of: npc.yeti
           because: "Fellow keepers of the principle that knowing something makes you responsible for it."
       dislikes:

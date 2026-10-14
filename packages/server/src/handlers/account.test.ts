@@ -293,3 +293,86 @@ describe("adoptDevice", () => {
     expect(result.ok).toBe(false);
   });
 });
+
+describe("the Field Guide is part of what a claim keeps", () => {
+  const found = (canonId: string, playerId: string, foundAt: string) => ({
+    canonId,
+    playerId,
+    foundAt,
+  });
+
+  /** What `lambda/sweep.ts` does, against the harness repo and clock. */
+  async function sweep(harness: TestHarness): Promise<string[]> {
+    const nowIso = new Date(harness.clock.now()).toISOString();
+    const deleted: string[] = [];
+    for (const household of await harness.repo.listExpiredGuestHouseholds(nowIso)) {
+      if (await harness.repo.deleteGuestHousehold(household.id, nowIso)) deleted.push(household.id);
+    }
+    return deleted;
+  }
+
+  it("is swept with an unclaimed guest household (the stake the offer names)", async () => {
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    await harness.repo.recordDiscoveries(host.household.id, [
+      found("moth", host.player.id, "2026-01-01T00:00:00.000Z"),
+    ]);
+
+    harness.clock.advance(GUEST_HOUSEHOLD_TTL_MS + 1);
+    expect(await sweep(harness)).toEqual([host.household.id]);
+    expect((await harness.repo.getFieldGuide(host.household.id)).entries).toEqual({});
+  });
+
+  it("survives claim and a sweep past the guest expiry", async () => {
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    const foundAt = "2026-01-01T00:00:00.000Z";
+    await harness.repo.recordDiscoveries(host.household.id, [
+      found("moth", host.player.id, foundAt),
+      found("newt", host.player.id, foundAt),
+    ]);
+
+    const claimed = await linkAccount(
+      { cognitoSub: "sub_a", email: "allen@example.com", principal: host.principal },
+      harness.deps,
+    );
+    expect(claimed.ok && claimed.value.claimed).toBe(true);
+
+    harness.clock.advance(GUEST_HOUSEHOLD_TTL_MS * 2);
+    expect(await sweep(harness)).toEqual([]);
+
+    const book = await harness.repo.getFieldGuide(host.household.id);
+    expect(Object.keys(book.entries).sort()).toEqual(["moth", "newt"]);
+    expect(book.entries["moth"]).toMatchObject({ firstFoundBy: host.player.id, foundAt });
+  });
+
+  it("is readable on a new phone after the restore sign-in", async () => {
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    await harness.repo.recordDiscoveries(host.household.id, [
+      found("moth", host.player.id, "2026-01-01T00:00:00.000Z"),
+    ]);
+    await linkAccount({ cognitoSub: "sub_a", principal: host.principal }, harness.deps);
+    harness.clock.advance(GUEST_HOUSEHOLD_TTL_MS * 2);
+    await sweep(harness);
+
+    // A fresh phone: it played a guest game first, then restores.
+    const replacement = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
+    const restored = await linkAccount(
+      { cognitoSub: "sub_a", principal: replacement.principal, preferExisting: true },
+      harness.deps,
+    );
+    expect(restored.ok).toBe(true);
+    if (!restored.ok) return;
+    expect(restored.value.householdId).toBe(host.household.id);
+
+    const adopted = await adoptDevice(
+      { cognitoSub: "sub_a", householdId: restored.value.householdId, playerId: host.player.id },
+      harness.deps,
+    );
+    expect(adopted.ok).toBe(true);
+
+    const book = await harness.repo.getFieldGuide(restored.value.householdId);
+    expect(Object.keys(book.entries)).toEqual(["moth"]);
+  });
+});

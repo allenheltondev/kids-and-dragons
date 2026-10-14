@@ -43,7 +43,7 @@
   "scenes": {
     "scene_east_bank": {
       "type": "story",
-      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay and, very faintly, of lion. Far north there is a broken bridge and a red sky. Between here and there is pride country.",
+      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay and, very faintly, of lion. Far north, every caravan says, the river bridge is cracked, and the sky above it is red. Between here and there is pride country.",
       "choices": [
         {
           "id": "ride_caravans",
@@ -100,6 +100,9 @@
     },
     "scene_pride_road": {
       "type": "choice_point",
+      "discovers": [
+        "creature.embermoth"
+      ],
       "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over. The detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain, which is a thing embermoths never do.",
       "choices": [
         {
@@ -125,6 +128,9 @@
     },
     "scene_embermoths": {
       "type": "story",
+      "discovers": [
+        "creature.jackalope"
+      ],
       "narration": "The moths lead you along the edge of the grass, glowing like slow sparks, and the pride markers curve the same way, bending wide around something you can't see yet. Forty jackalopes have squashed themselves together along the pride edge, for safety. It is mostly ears.",
       "onEnter": [
         {
@@ -163,6 +169,9 @@
     },
     "scene_pride_greeting": {
       "type": "story",
+      "discovers": [
+        "character.manticore"
+      ],
       "narration": "On the ridge, a manticore pride watches you come. Their elder stands, tail curled carefully away, and gives the formal greeting from a polite distance. Somebody in a passing caravan faints anyway, and the elder sighs the sigh of someone this happens to a lot.",
       "choices": [
         {
@@ -183,7 +192,7 @@
     "check_greeting": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Wave first, slowly and kindly, the way the road peoples do",
       "roller": "party",
       "onSuccess": {
@@ -293,6 +302,9 @@
     },
     "scene_waystation": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "The centaur waystation is a long barn full of sashes. Every road-warden's sash is a stitched map of the roads, and this season every single one is being unpicked and sewn again. There are needles everywhere. A centaur with three spools in her mouth waves you to the big table.",
       "choices": [
         {
@@ -327,7 +339,7 @@
     },
     "scene_spiral": {
       "type": "story",
-      "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centred on a patch of grass a short walk from here.",
+      "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centered on a patch of grass a short walk from here.",
       "choices": [
         {
           "id": "to_rest",
@@ -438,7 +450,10 @@
     },
     "scene_wolves": {
       "type": "story",
-      "narration": "Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
+      "narration": "You make camp at the old caravan rest stop, among carts nobody has used since the stone fell. Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
       "choices": [
         {
           "id": "share_supper",
@@ -451,7 +466,7 @@
           "label": "Call for the pride escort",
           "icon": "crown",
           "requiresFlag": "escorted",
-          "goto": "rest_wolf_fire"
+          "goto": "scene_escort_answers"
         },
         {
           "id": "chase_off",
@@ -514,6 +529,18 @@
       "heal": 3,
       "outcome": "setback",
       "choices": []
+    },
+    "scene_escort_answers": {
+      "type": "story",
+      "narration": "You call out toward the ridge. Nothing, for a long moment. Then Elder Sefa's voice comes back out of the dark, from exactly as close as a pride will come to a humming pack and not one step nearer, and the cubs with her start a growl so low you feel it in your boots. Every ember eye on the road turns toward the ridge, thinks about it, and decides your fire is not worth the argument. The pack slinks round to the far side of your camp, as far from the pride as the warm will let them.",
+      "choices": [
+        {
+          "id": "settle",
+          "label": "Settle in, with the pride on the ridge",
+          "icon": "rest",
+          "goto": "rest_wolf_fire"
+        }
+      ]
     }
   },
   "llmHints": {

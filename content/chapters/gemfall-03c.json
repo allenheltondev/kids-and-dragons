@@ -48,6 +48,9 @@
   "scenes": {
     "scene_parade": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "The shortest road north is a parade: gem wagons up to their axles in ruts, a campfire on every rise, and centaur relay-runners weaving through it all at a canter. Then the whole parade stops. Somebody up ahead is shouting \"NUMBERS! GET YOUR NUMBERS!\"",
       "choices": [
         {
@@ -112,6 +115,9 @@
     },
     "scene_number_pebble": {
       "type": "story",
+      "discovers": [
+        "npc.faun"
+      ],
       "narration": "The road ends at the west branch of the river, and the queue to cross it is two days long. A faun provisioner named Burdock is selling numbered pebbles out of a bucket, and honeycakes at bridge-queue prices, which means three times what they are worth. Your pebble says 412. The ford is on number 9.",
       "choices": [
         {
@@ -149,6 +155,9 @@
     },
     "scene_three_cards": {
       "type": "story",
+      "discovers": [
+        "character.kitsune"
+      ],
       "narration": "Behind Burdock's stall, a kitsune in a tall hat is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
       "choices": [
         {
@@ -181,7 +190,7 @@
     "check_expose": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Spot where the Sun Card really goes",
       "roller": "party",
       "onSuccess": {
@@ -461,6 +470,9 @@
     },
     "scene_dusk_wolves": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "At dusk, cinder wolves come and sit just past the firelight, cold and thin, with a faint warm glow under their fur. They are not hunting. They are pointedly not sitting anywhere near the gem wagons. Every campfire in the queue is arguing about whether to feed them.",
       "choices": [
         {
@@ -530,6 +542,9 @@
     },
     "scene_witch_stall": {
       "type": "story",
+      "discovers": [
+        "npc.witch_order"
+      ],
       "narration": "Down the queue there is a remedy stall with a pointed hat hanging off the corner. Every time a gem wagon rolls past, all the little bell charms on the stall ring by themselves, and the witch behind the counter winces. Her name is Mother Thrum. She looks at you over her spectacles. \"What do you actually want?\"",
       "choices": [
         {
@@ -621,7 +636,7 @@
     },
     "scene_tuned_charm_take_it_home": {
       "type": "story",
-      "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognised the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
+      "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognized the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
       "choices": [
         {
           "id": "on",
@@ -634,7 +649,7 @@
     "check_answer": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Tell Mother Thrum what you actually want, and mean it",
       "roller": "party",
       "onSuccess": {
@@ -659,7 +674,7 @@
     },
     "rest_witch_fire": {
       "type": "rest",
-      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, one of them is shouting your number.",
+      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, a drover is shouting numbers, and the ford is a great deal closer than it was.",
       "heal": 2,
       "choices": [
         {
@@ -730,7 +745,7 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Stay calm and cross together",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "end_forded",
         "narration": "With friends on every side, the ford is just very wet walking. Somebody up on a wagon starts clapping as you reach the north bank."
@@ -742,6 +757,9 @@
     },
     "scene_surge": {
       "type": "story",
+      "discovers": [
+        "creature.river_drake"
+      ],
       "narration": "Halfway across, a gang of queue-jumpers charges into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
       "choices": [
         {
@@ -767,7 +785,7 @@
     "check_drake_toll": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Pay the river drakes politely in bread",
       "roller": "party",
       "onSuccess": {
@@ -815,6 +833,9 @@
     },
     "end_marsh_west": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The west branch does what rivers do: it whooshes you west into the green tangles of the Whispering Marsh, past a boggart in a reed hat who applauds. At last the channels let you go on a muddy bank near MossHome, at the flooded edge of the Enchanted Woods. You never chose this road, but here you are, and the tuned charm is still humming. The road people will hear about it. The road people hear about everything.",
       "heal": 3,
       "onEnter": [
@@ -833,6 +854,9 @@
     },
     "end_swept_setback": {
       "type": "rest",
+      "discovers": [
+        "biome.enchanted_woods"
+      ],
       "narration": "The current takes you a long, long way west, through the marsh's tangles and out the far side, three days later than you meant to arrive anywhere. You wash up on the flooded paths of the Enchanted Woods with wet bags, a cold supper, and a drake-shaped grudge. It is not the road you chose, and it cost you time, but you are all together and the charm is still humming.",
       "heal": 3,
       "onEnter": [

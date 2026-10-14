@@ -11,6 +11,7 @@
  * | `HomeScreen`           | full page  | no session                           |
  * | `LobbyContent`         | WorldView  | phase === "lobby"                    |
  * | `NarrationPanel`       | WorldView  | phase is scene-like                  |
+ * | `TurnBanner`           | WorldView  | a hero's combat turn begins          |
  * | `DiceOverlay`          | WorldView  | a ROLL presentation arrives          |
  * | `TransformCutscene`    | WorldView  | a progression award crosses a tier   |
  * | `ChapterCompletePanel` | WorldView  | phase === "chapter_complete"         |
@@ -31,6 +32,7 @@
 export { HomeScreen } from "./HomeScreen";
 export { LobbyContent } from "./LobbyContent";
 export { NarrationPanel } from "./NarrationPanel";
+export { TurnBanner } from "./TurnBanner";
 export { DiceOverlay } from "./DiceOverlay";
 export { TransformCutscene, previousTier } from "./TransformCutscene";
 export { ChapterCompletePanel } from "./ChapterCompletePanel";

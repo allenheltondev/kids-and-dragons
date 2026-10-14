@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}">
   {{/* Load custom RPG stylesheet via Hugo Pipes */}}
   {{ $css := resources.Get "css/custom.css" }}
@@ -44,7 +44,7 @@
 
   {{ block "footer" . }}
   <footer class="site-footer">
-    <p>Realm of Red Sky — World Wiki</p>
+    <p>Realm of Red Sky: World Wiki</p>
   </footer>
   {{ end }}
 

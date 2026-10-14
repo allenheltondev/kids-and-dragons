@@ -64,7 +64,7 @@ Design consequences, all of which we accept:
 
 - **No private information channel.** Every phone shows the same world. That's fine — this game has no hidden information by design. It does mean **hidden-role or secret-objective mechanics are permanently off the table**, and that's a deliberate trade.
 - **The grid needs a focus camera.** A 10×8 board on a phone has unreadable tiles at full extent. Combat gets an auto-framing camera that follows the active actor, with pinch-zoom and pan to override. This is good for the TV too — Party Mode gets it for free.
-- **The dice take over.** On the TV the roll is the centerpiece; on a phone it takes the world for its ~1.5s wherever you were, then returns you.
+- **The dice take over.** On the TV the roll is the centerpiece; on a phone it takes the world for the few seconds the card is up (long enough to read the sum out loud), wherever you were, then returns you.
 - **The map is on request.** "Where are we?" is the question a phone in the back of a car gets asked every three minutes, and the world pane answers only "what is happening now". The Map tab answers it twice, with a flip at the top. **World** is the realm painting with the party's own faces standing on the chapter's country, fitted to the phone and zoomable in steps, so "we are *here*" lands against the whole shape of the realm. **Route** draws tonight's chapter as a trail — the scenes the party has played, named; the party on the one it is in; everything ahead as fog, dots without names, so the shape of the road shows and nothing is spoiled. In Party Mode the map rides on the phone, never the TV: a Map button swaps your controls for it and back.
 - **The scene comes with the question.** The You surface stands your controls in the scene's own picture, with the whole narration at the top and the answers at the bottom where a thumb is — a visual novel, not a form — so an eight-year-old is never flipping to the world to find out what she is choosing between. In a fight the board needs the contrast, so the picture steps back and the world pane's narration folds to a two-line strip.
 - **Your turn comes to you.** Being asked something pushes your controls in front of you automatically — and so does having no character yet, because creation is the first turn anyone takes. The toggle keeps a marker on "You" while you are looking at the world, so a turn can never sit unnoticed behind it.
@@ -111,6 +111,12 @@ Resolution is always the same: **d20 + stat vs. a target number.**
 | Easy | 8 |
 | Normal | 12 |
 | Hard | 16 |
+
+The die decides on its two ends: a **natural 20 always succeeds** and a **natural 1 always fails**, whatever the stat and the target. Nothing is ever certain, and both faces get a name on the screen.
+
+The target is shown as a word as well as a number (**Easy**, **Tricky**, **Hard**), so the table knows how much of a stretch a check is before anyone rolls. Chapters should use all three: a run of nothing but 12s makes every check feel the same.
+
+**Helping.** While someone else's check waits, any other standing player can tap **Help** and add their own die to the roll: a d4 at Fledgling, d6 at Sworn, d8 at Radiant, d10 at Mythic. One helper per check, and each player can help once until the party next rests (or a new chapter starts). The d20 never changes size; the help you give grows as you do.
 
 One roll type, one die, one big animation. She learns it in five minutes and it never changes.
 
@@ -174,7 +180,7 @@ World  →  Campaign  →  Chapter  →  Scene
 | Type | What happens |
 |---|---|
 | **Story** | Art + narration + 2–4 tappable choices. May branch. Players **take turns** choosing: a story turn marker passes round the party after each choice, and the TV says whose turn it is. A turn holder whose phone drops is skipped, and anyone may answer a choice they were holding. |
-| **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. |
+| **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. Checks **take turns** too: whoever has rolled the fewest checks this run rolls next, and the better stat breaks a tie. An author can pin a check to the party's best in that stat (`roller: "best"`) when the story needs it, or make it a **party check** (`roller: "all"`): everyone rolls their own d20 + stat, and if half or more make it, the party does. |
 | **Encounter** | Tactical grid combat. See §7. |
 | **Choice point** | Party votes; ties broken by whoever's turn marker is active. Prevents one player steamrolling. |
 | **Rest** | Heal, spend a level-up, trade items, look at each other's characters. The natural end-of-session beat. |
@@ -405,3 +411,23 @@ This is a hard architectural rule, tested in CI with the live layer stubbed out.
 - **Colorblind-safe status indicators** — status effects and item rarity use shape + icon, never color alone.
 - **Undo on non-committal taps.** Selecting a target is confirmable; only the confirm is final.
 - **Big touch targets.** Phone UI assumes a small hand and imprecise taps — and stays that way in Travel Mode's compressed layout.
+
+---
+
+## 12. The Field Guide
+
+A picture book of the world that the family fills in by playing — creatures, peoples, folk, places and factions, each with its painting, a story, what it does for fun, and who it likes and dislikes. It is the realm's canon told for an 8-year-old: entries are generated from the canon (`npm run canon:field-guide` writes `content/field-guide.json`, the same source the wiki is built from), never written by hand in the client.
+
+**One book per household.** The guide belongs to the household (§3), not to a character or a run: every campaign, every evening and every player adds to the same book, and every phone and the TV read the same one. A guest household keeps its book for as long as it keeps its heroes, and the keepsake offer names the guide among what is kept once there is something in it.
+
+**What fills a page.** Entries start undiscovered — a "?" card that gives nothing away. A page is filled the moment the party *meets* the thing at the table, never by reading ahead:
+
+- a chapter starting discovers its **biome**;
+- entering an encounter discovers every **creature it fights**;
+- entering any scene discovers what that scene lists in **`discovers`** — the author's tag for meeting someone or somewhere the two rules above miss ([how to tag](../content/README.md#field-guide-tags-discovers)).
+
+**First finder.** Each page remembers who found it first — the player whose action got there (or the player leading the story) — and that never changes. A later visit is not a new find.
+
+**"New!" moments.** A find is celebrated once, live: a toast on the phones ("New in your Field Guide") and a banner on the TV, each waiting for a quiet moment rather than covering a question or a dice roll — a phone holds its toast while it is that player's turn. Tapping the toast opens the entry. Celebrations are never replayed by a reload or reconnect; the book keeps a "New" badge on each page until it is opened on that device.
+
+**Open any time.** The guide is a permanent destination in the phone tray, beside World, You and Map — in the lobby, the story, at rest and in the middle of a fight. It is reading, not playing: opening it sends nothing and decides nothing, a half-made choice underneath survives, and the "Your turn" badge stays on You so the turn is always one tap away.

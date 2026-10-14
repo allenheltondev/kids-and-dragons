@@ -9,7 +9,7 @@ vi.mock("../store", () => ({
   useRunState: () => ({ phase: "scene" }),
   useMe: () => null,
   useSession: () => null,
-  useGameStore: { getState: () => ({ registerPresentationPlayer: () => () => undefined }) },
+  useGameStore: { getState: () => ({ registerPresentationPlayer: () => () => undefined }), subscribe: () => () => undefined },
 }));
 vi.mock("../screens", () => ({
   ChapterCompletePanel: () => null,
@@ -18,6 +18,7 @@ vi.mock("../screens", () => ({
   LobbyContent: () => null,
   NarrationPanel: () => <button onClick={action}>Continue the story</button>,
   TransformCutscene: () => null,
+  TurnBanner: () => null,
 }));
 
 import { WorldView } from "./WorldView";

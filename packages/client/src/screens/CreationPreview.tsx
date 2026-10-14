@@ -12,15 +12,12 @@
  * to draw through, and that never worked: the Pixi scene draws the *committed*
  * party (world/scene.ts), and a draft is deliberately not on the wire
  * (creationDraft.ts header), so nothing was ever drawn into it. It then drew a
- * tier PNG itself, which was honest about being a stand-in and dishonest about
- * colour — a PNG cannot show the palette the player just picked, so this
- * screen promised choices it could not display.
+ * tier PNG itself, which was honest about being a stand-in and could not move.
  *
  * It now draws the *rig* (RigFigure), which is the seam that note was waiting
- * for: the same `.riv` the scene draws, in a canvas of its own, with the
- * draft's palette bound live. The PNG portrait stays underneath as the
- * fallback for the moments — and the species/tiers — where a rig will not
- * load.
+ * for: the same `.riv` the scene draws, in a canvas of its own. The PNG
+ * portrait stays underneath as the fallback for the moments — and the
+ * species/tiers — where a rig will not load.
  *
  * Its own canvas rather than the shared stage, still, for the reason the
  * transparent hole failed: the figure lands *exactly* in the frame reserved
@@ -41,7 +38,6 @@ import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import { useCreationDraft } from "./creationDraft";
 import type { CreationStep } from "./creationDraft";
-import { PALETTES } from "./creationContent";
 import "./shared.css";
 import "./CreationPreview.css";
 import { EntryScene } from "./EntryScene";
@@ -50,7 +46,6 @@ const STEP_HINT: Record<CreationStep, string> = {
   species: "Choosing who they are…",
   class: "Choosing how they fight…",
   stats: "Deciding what they're best at…",
-  appearance: "Picking colours…",
   name: "Thinking of a name…",
 };
 
@@ -72,7 +67,6 @@ export function CreationPreview(): ReactElement {
     return out;
   })();
 
-  const palette = PALETTES.find((p) => p.id === draft.appearance.palette) ?? null;
 
   /*
    * Somewhere to stand. The run's own biome once a chapter is loaded, and the
@@ -119,7 +113,6 @@ export function CreationPreview(): ReactElement {
                 <CharacterPortrait
                   stand="floor"
                   species={draft.species}
-                  accent={draft.appearance.accent}
                   lit
                   float
                 />
@@ -169,22 +162,6 @@ export function CreationPreview(): ReactElement {
                 </li>
               ))}
             </ul>
-          )}
-
-          {palette === null ? null : (
-            <p className="preview__palette kad-muted">
-              {/* Mane inside, accent as the ring. The figure itself is drawn
-                  in its authored colours — these dress this player's UI
-                  chrome, which is what the pair is for now (world/nameplate.ts
-                  on why the rig stopped wearing them). */}
-              <span
-                className="preview__palette-chip"
-                style={{ background: palette.mane, borderColor: draft.appearance.accent }}
-                aria-hidden="true"
-              />
-              <Icon name="palette" />
-              <span>{palette.name}</span>
-            </p>
           )}
 
           {draft.name.trim() === "" ? null : (

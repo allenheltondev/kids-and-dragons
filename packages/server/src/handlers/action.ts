@@ -7,7 +7,8 @@
  * Three things this file is responsible for keeping true:
  *
  * 1. **All dice roll here.** The client sends an *intent*; the server decides
- *    what happened. The `Rng` is seeded from `runId:seq`, so replaying the event
+ *    what happened. The `Rng` is seeded from `runId:seq` (behind the run's
+ *    server-only `diceSecret`, see `diceSeed`), so replaying the event
  *    log re-rolls exactly the same numbers — a replay that re-rolls differently
  *    is not a replay (§4.1, §4.3).
  * 2. **Seq is monotonic and gapless.** Every published patch takes a client from
@@ -36,6 +37,7 @@ import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
   expectedIndex,
   joinOrStartAttempt,
@@ -221,8 +223,9 @@ export async function applyAction(
         // start seeds its flags from rather than starting empty. Empty for
         // every other intent — nothing else touches the chapter boundary.
         campaignFlags,
-        // Seeded per event, never per wall clock — see the header.
-        rng: deps.rng(`${input.runId}:${nextSeq}`),
+        // Seeded per event, never per wall clock — see the header. The run's
+        // secret keeps the next roll unguessable from the public run id.
+        rng: deps.rng(diceSeed(auth.run, input.runId, nextSeq)),
         now: iso(nowMs),
         // Roadmap chapter 6's playtest cheats, refused by the engine unless
         // this is true. `dev-server.ts` sets it; `lambda/runtime.ts` passes a
@@ -352,6 +355,30 @@ export async function applyAction(
     seq: nextSeq,
     updatedAt: iso(nowMs),
   };
+
+  /*
+   * The Field Guide (#106, field-guide.ts) — what this step revealed.
+   *
+   * Worked out before `diff()` so the household's book, with this step's finds
+   * in it, rides the same patch as the scene that revealed them; *recorded*
+   * after the commit (below), because the book is the household's and is not
+   * part of this run's transaction. Read off before/after, like
+   * `finishedChapter` above, so no path into a scene can skip it.
+   */
+  const finds = await prepareStepFinds(
+    {
+      before: state,
+      after: next,
+      chapter,
+      chapterStarted: input.intent.type === "START_CHAPTER",
+      actorId: input.playerId,
+      run: auth.run,
+      now: iso(nowMs),
+    },
+    deps,
+  );
+  if (finds) next.fieldGuide = finds.book;
+
   const patch = diff(state, next);
 
   /*
@@ -419,6 +446,19 @@ export async function applyAction(
   // hold the completion back from the table.
   const renewal = finishedChapter ? keepGuestHousehold(auth.run.householdId, deps) : null;
 
+  /*
+   * The finds land in the household's book now that the step has, and what the
+   * store says was *new* rides this broadcast as `discovered` — the "new page!"
+   * signal (#110). On the message and not on `event`: the log is what a
+   * reconnect replays (§4.3), and a replay must never announce a find twice.
+   *
+   * This is the one store write that sits in front of the broadcast, and only
+   * on a step that found something not already in the book — a handful of
+   * times a chapter. It is there so the signal can ride the patch that shows
+   * the scene; publishing first would mean a second, out-of-band message.
+   */
+  const discovered = await recordStepFinds(finds, deps);
+
   const message = {
     kind: "patch" as const,
     seq: event.seq,
@@ -426,6 +466,7 @@ export async function applyAction(
     patch: event.patch,
     ...(event.presentation ? { presentation: event.presentation } : {}),
     ...(event.progression ? { progression: event.progression } : {}),
+    ...(discovered.length > 0 ? { discovered } : {}),
   };
   try {
     await deps.channel.publish(next.roomCode, message);
@@ -785,6 +826,16 @@ async function nextChapter(
     };
   }
   return { chapterId: chapter.id };
+}
+
+/**
+ * The seed for one event's dice. `runId:seq` alone is public (every screen has
+ * the run id and the seq), which made the next roll computable; the run's
+ * server-only secret in front of it is not. A run from before the secret
+ * existed keeps its old seed so its log still replays roll for roll.
+ */
+export function diceSeed(run: Pick<RunRecord, "diceSecret">, runId: string, seq: number): string {
+  return run.diceSecret ? `${run.diceSecret}:${runId}:${String(seq)}` : `${runId}:${String(seq)}`;
 }
 
 /**

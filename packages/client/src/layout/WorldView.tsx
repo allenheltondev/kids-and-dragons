@@ -30,7 +30,9 @@ import {
   LobbyContent,
   NarrationPanel,
   TransformCutscene,
+  TurnBanner,
 } from "../screens";
+import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -125,11 +127,12 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
       {creating ? <CreationPreview /> : null}
       {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
+      {isSceneLike(phase) && <TurnBanner />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that
           is the room; on a phone the shell hands the world the whole screen for
-          its ~1.5s (spec §2.2) — but the overlay itself only ever fills its
+          the few seconds the card is up (spec §2.2) — but the overlay itself only ever fills its
           container, which is why it has no viewport units in it.
 
           Mounted unconditionally on purpose: it renders nothing while idle and
@@ -145,6 +148,10 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
           the single most important moment in the game. It draws nothing until
           somebody crosses a tier. */}
       <TransformCutscene />
+
+      {/* The shared screen's own copy of the Field Guide news. A phone's world
+          pane has a player, and that phone's toast speaks for it instead. */}
+      {isDisplay ? <FieldGuideBanner /> : null}
 
       {measuring ? (
         <Suspense fallback={null}>

@@ -1,0 +1,84 @@
+/*
+ * "New in the Field Guide" toast (phone) and banner (TV). Absolutely placed in
+ * their surface and sized in em/%, per the surface rules. Top edge on both:
+ * the phone's actions and the TV's narration live lower down.
+ */
+.guide-news {
+  position: absolute;
+  inset-block-start: 0.6em;
+  inset-inline: 0.75em;
+  margin-inline: auto;
+  inline-size: fit-content;
+  max-inline-size: 92%;
+  z-index: 5;
+  animation: guide-news-in var(--kad-dur-base, 200ms) var(--kad-ease-out, ease-out);
+}
+
+.guide-news__body {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.5em 0.9em 0.5em 0.6em;
+  border-radius: 999px;
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-accent);
+  box-shadow: var(--kad-shadow-lg);
+  color: var(--kad-ink);
+  font: inherit;
+  text-align: start;
+}
+
+button.guide-news__body {
+  cursor: pointer;
+  min-block-size: 44px;
+}
+
+.guide-news__arts {
+  display: flex;
+}
+
+.guide-news__art {
+  inline-size: 2.2em;
+  block-size: 2.2em;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 auto;
+  background: var(--kad-bg-sunken);
+}
+
+.guide-news__art--star {
+  display: grid;
+  place-items: center;
+  background: var(--kad-accent);
+  color: var(--kad-accent-ink);
+}
+
+.guide-news__text {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.guide-news__lead {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.guide-news__title {
+  font-weight: var(--kad-weight-black, 800);
+  overflow-wrap: anywhere;
+}
+
+.guide-news--tv .guide-news__body {
+  font-size: 1.15em;
+  padding: 0.6em 1.2em 0.6em 0.7em;
+}
+
+@keyframes guide-news-in {
+  from { opacity: 0; transform: translateY(-0.5em); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-news { animation: none; }
+}
