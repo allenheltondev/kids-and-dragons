@@ -198,7 +198,7 @@
     },
     "scene_faun_family_sock": {
       "type": "story",
-      "narration": "You show her how the ford witch wrapped the Ford Stone in a wool sock, and how it rings much quieter that way. Tansy's mother pulls a sock out of a bundle at once. It is a very loud sock, striped orange and green. The pink stone goes in, and its hum goes soft as a purr. Tansy hugs the sock, and the family trots on downhill.",
+      "narration": "You show her how the ford witch kept the Ford Stone: wrapped up snug in a thick wool sock, and kept warm. Tansy's mother pulls a sock out of a bundle at once. It is a very loud sock, striped orange and green. The pink stone goes in, and its hum goes soft as a purr. Tansy hugs the sock, and the family trots on downhill.",
       "cast": [
         {
           "figure": "entities/faun",
@@ -363,7 +363,7 @@
         },
         {
           "id": "note",
-          "label": "Leave Captain Voss a note: we went up",
+          "label": "Leave the wardens a note: we went up",
           "icon": "shield",
           "requiresFlag": "told_wardens",
           "goto": "scene_warden_post_note",
@@ -414,7 +414,7 @@
     },
     "scene_warden_post_note": {
       "type": "story",
-      "narration": "You tear a page from the back of the log and write: Captain Voss, we went up. You know what for. You fold it into a warden-neat square and set it on top of the log, exactly straight, where she will look first. It feels like keeping a promise to somebody who keeps all of hers. The little box clicks open. Inside is a mosslight jar, glowing green.",
+      "narration": "You tear a page from the back of the log and write: To the wardens. We went up. You know what for. You fold it into a warden-neat square and set it on top of the log, exactly straight, where a warden will look first. It feels like keeping a promise to people who keep all of theirs. The little box clicks open. Inside is a mosslight jar, glowing green.",
       "choices": [
         {
           "id": "on",
@@ -513,7 +513,7 @@
     },
     "scene_overlook_wild": {
       "type": "story",
-      "narration": "You find the forest, a dark green blanket over half the realm, and somewhere in the middle of it, MossHome. As you look, the whole forest sways at once, every tree together, like a crowd waving. It is probably the wind. It is probably not the wind. You wave back, all three of you, just in case, and a little way down the slope a raven pretends not to have seen.",
+      "narration": "You find the forest, a dark green blanket over half the realm, and somewhere in the middle of it, MossHome. As you look, the whole forest sways at once, every tree together, like a crowd waving. It is probably the wind. It is probably not the wind. You all wave back, just in case, and a little way down the slope a raven pretends not to have seen.",
       "choices": [
         {
           "id": "on",
@@ -575,7 +575,7 @@
     },
     "choice_cairn_wish": {
       "type": "story",
-      "narration": "Each of you whispers a wish into the same pebble, one after another, and nobody tells anybody what they wished. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on, all three of you pretending you are not trying to guess each other's wishes. Everybody is trying to guess.",
+      "narration": "Each of you whispers a wish into the same pebble, one after another, and nobody tells anybody what they wished. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on, all of you pretending you are not trying to guess each other's wishes. Everybody is trying to guess.",
       "choices": [
         {
           "id": "on",
@@ -702,7 +702,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "The path crosses a field of grey ash, and the field is covered in gems. Big ones, glittering, just lying there. Except every so often, a gem blinks. They are glassback crabs, hundreds of them, pretending to be a gem deposit so nobody will dig them up. It is not a very good plan. Several of them are already waving their claws at you, in a way that clearly means something.",
+      "narration": "The path crosses a field of gray ash, and the field is covered in gems. Big ones, glittering, just lying there. Except every so often, a gem blinks. They are glassback crabs, hundreds of them, pretending to be a gem deposit so nobody will dig them up. It is not a very good plan. Several of them are already waving their claws at you, in a way that clearly means something.",
       "cast": [
         {
           "figure": "entities/glassback_crab"
@@ -810,7 +810,7 @@
     },
     "scene_ember_drift": {
       "type": "story",
-      "narration": "Near the top, something tiny glows in a drift of grey ash: one embermoth, stuck up to its wings, blinking slowly like a nightlight running low. Every other moth has flown away from the mountain. This one must have turned around too late, or too early. It looks up at you the way a lost puppy looks at the first nice person it sees.",
+      "narration": "Near the top, something tiny glows in a drift of gray ash: one embermoth, stuck up to its wings, blinking slowly like a nightlight running low. Every other moth has flown away from the mountain. This one must have turned around too late, or too early. It looks up at you the way a lost puppy looks at the first nice person it sees.",
       "cast": [
         {
           "figure": "entities/embermoth"
@@ -1101,7 +1101,7 @@
     "scene_mouth_ember_back": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You press the Ember Facet into the wall, your very first stone, warm as toast all the way from the Exchange gutter. It fits. Of course it fits. The vein takes it with a sound like a sigh, and the bones sink back into the rock as if somebody had finally said the thing they were waiting to hear.",
+      "narration": "You press the Ember Facet into the wall, your very first stone, warm as toast all the way from the Exchange gutter. It fits. Of course it fits. The vein takes it with a sound like a sigh, and the bones sink back into the rock as if somebody had finally said the thing they were waiting to hear. Then the wall warms and nudges the stone back out into your hand, gently, as if to say: not here. Further down.",
       "cast": [
         {
           "figure": "entities/restless_remains"
@@ -1119,7 +1119,7 @@
     "scene_mouth_table_back": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You set the Table Stone into the nearest gem-vein, and it slides in as if it had been missing exactly that long. The wall glows brighter along the whole vein, like a lamp being turned up. The bones stop, consider this, and lie back down one by one, very carefully, the way you put down something you had been meaning to put down for years.",
+      "narration": "You set the Table Stone into the nearest gem-vein, and it slides in as if it had been missing exactly that long. The wall glows brighter along the whole vein, like a lamp being turned up. The bones stop, consider this, and lie back down one by one, very carefully, the way you put down something you had been meaning to put down for years. Then the vein pushes the stone back into your palm, the way you hand back something borrowed. Further down, it seems to say.",
       "cast": [
         {
           "figure": "entities/restless_remains"
@@ -1140,7 +1140,7 @@
         "creature.embermoth"
       ],
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "The embermoths still trust you. They lead you down a side tunnel where the rock is cool enough to touch, and one of them rides on your nose the whole way, like a tiny glowing hat. Behind you, the bones sit back down. Nobody was in a hurry, so nobody had to be.",
+      "narration": "The embermoths have not given up on this mountain yet. They lead you down a side tunnel where the rock is cool enough to touch, and one of them rides on your nose the whole way, like a tiny glowing hat. Behind you, the bones sit back down. Nobody was in a hurry, so nobody had to be.",
       "choices": [
         {
           "id": "follow",
@@ -1227,7 +1227,7 @@
       },
       "onDefeat": {
         "goto": "scene_bells_ringing",
-        "narration": "The bones do not hurt you. They just carry you, gently and very slowly, all the way back up the tube to where you started. By the time you climb back down, the bells have started."
+        "narration": "The bones do not hurt you. They just carry you, gently and very slowly, all the way back up the tube to where you started. By the time you climb back down, the bells have started counting down."
       }
     },
     "rest_cool_gallery": {
@@ -1307,7 +1307,7 @@
     "scene_bells_ringing_unassigned_wedge": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You run.",
+      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You snatch the stone back up and run.",
       "choices": [
         {
           "id": "on",
@@ -1320,7 +1320,7 @@
     "scene_bells_ringing_harvest_wedge": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You set the Harvest Stone down in the crack, medal and all. BEST, says the medal, upside down. The floor goes still for one long breath, and somewhere very far away a harvest sprite would have been proud. One ring bought. You run.",
+      "narration": "You set the Harvest Stone down in the crack, medal and all. BEST, says the medal, upside down. The floor goes still for one long breath, and somewhere very far away a harvest sprite would have been proud. One ring bought. You scoop it back up, medal and all, and run.",
       "choices": [
         {
           "id": "on",
@@ -1333,7 +1333,7 @@
     "scene_bells_ringing_table_wedge": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You wedge the Table Stone into the crack in the floor, and the shaking stops for exactly one breath. Far above, the bells pause too, as if the whole realm had been listening for that. Then the shaking comes back, softer, and you have bought one ring, and you run.",
+      "narration": "You wedge the Table Stone into the crack in the floor, and the shaking stops for exactly one breath. Far above, the bells pause too, as if the whole realm had been listening for that. Then the shaking comes back, softer, and you have bought one ring. You pull the stone free and run.",
       "choices": [
         {
           "id": "on",
@@ -1437,7 +1437,7 @@
         },
         {
           "id": "ember",
-          "label": "Hold up the Ember Facet, back from the Exchange",
+          "label": "Hold up the Ember Facet, all the way from the Exchange",
           "icon": "gem",
           "requiresItem": "facet_ember",
           "goto": "scene_keeper_ember"
@@ -1458,7 +1458,7 @@
         },
         {
           "id": "caravan",
-          "label": "Show it the Caravan Stone from the fattest wagon on the road",
+          "label": "Show it the Caravan Stone, from the fattest caravan",
           "icon": "gem",
           "requiresItem": "facet_caravan",
           "goto": "scene_keeper_caravan"
@@ -1468,7 +1468,7 @@
     "scene_keeper_caravan": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You show it the Caravan Stone, the big one, the one the mules wore earmuffs for. The Seal-Keeper's eye widens, which takes some time. \"That one has been loud for a month,\" it says. \"I could hear it from here.\" The stone hums, and something far beneath the floor hums back, and the dragon goes very still.",
+      "narration": "You show it the Caravan Stone, the big one, the one that hummed in the middle of the fattest caravan on the road. The Seal-Keeper's eye widens, which takes some time. \"That one has been loud for a month,\" it says. \"I could hear it from here.\" The stone hums, and something far beneath the floor hums back, and the dragon goes very still.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1525,7 +1525,7 @@
     "scene_keeper_ember": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You hold up the Ember Facet, back from the Exchange gutter by way of a merfolk's barrel and a very long road. The Seal-Keeper looks at it and then, slowly, at you. \"That one went the furthest,\" it says. \"And came back.\" It sounds, very faintly, as if it had not expected that.",
+      "narration": "You hold up the Ember Facet, your very first stone, all the way from the Exchange gutter by a very long road. The Seal-Keeper looks at it and then, slowly, at you. \"That one came the furthest,\" it says. \"And it is still with you.\" It sounds, very faintly, as if it had not expected that.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1582,7 +1582,7 @@
     "scene_keeper_truth": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You tell it the truth: every stone, every pocket, the ones you found and the ones you bought and the ones you were given. The Seal-Keeper listens the way the mountain listens, without moving at all. \"Yes,\" it says when you finish, as if checking your answer against a list it has had for a very long time. \"That is what you carried.\"",
+      "narration": "You tell it the truth: every stone, every pocket, where each one came from, and who was there when it did. The Seal-Keeper listens the way the mountain listens, without moving at all. \"Yes,\" it says when you finish, as if checking your answer against a list it has had for a very long time. \"That is what you carried.\"",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1637,7 +1637,7 @@
     "scene_keeper_moth": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You open your hands, and the embermoth you carried up the mountain flies straight to the Seal-Keeper's nose and lands among the others. They all shuffle over to make room. The dragon goes cross-eyed looking at it, which is something you will remember for the rest of your life. \"That one was lost,\" it says at last. \"It is not, now.\"",
+      "narration": "The embermoth you carried up the mountain wakes, stretches, and flies straight to the Seal-Keeper's nose and lands among the others. They all shuffle over to make room. The dragon goes cross-eyed looking at it, which is something you will remember for the rest of your life. \"That one was lost,\" it says at last. \"It is not, now.\"",
       "cast": [
         {
           "figure": "entities/legend_dragon"
@@ -1677,7 +1677,7 @@
         },
         {
           "id": "glade_mended",
-          "label": "\"We mended a wounded glade.\"",
+          "label": "\"The wounded glade is green again.\"",
           "icon": "leaf",
           "requiresFlag": "glade_mended",
           "goto": "scene_q2_glade_mended",
@@ -1698,7 +1698,7 @@
         },
         {
           "id": "crossed_dry",
-          "label": "\"The trolls heard our toll stories, all the way through.\"",
+          "label": "\"Old Lintel heard our toll stories, all the way through.\"",
           "icon": "note",
           "requiresFlag": "crossed_dry",
           "goto": "scene_q2_crossed_dry"
@@ -1719,7 +1719,7 @@
         },
         {
           "id": "forded",
-          "label": "\"We crossed the west branch dry-footed, with a song.\"",
+          "label": "\"We forded the west branch, clean across.\"",
           "icon": "boot",
           "requiresFlag": "forded_clean",
           "goto": "scene_q2_forded"
@@ -1814,7 +1814,7 @@
     "scene_q2_forded": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "\"We crossed the west branch dry-footed,\" you say. \"With a song.\" \"Which song?\" asks the Seal-Keeper, so you sing it a line, and it hums the next one, badly, under its breath, as if it has not sung in a long time.",
+      "narration": "\"We forded the west branch,\" you say. \"Clean across.\" \"How?\" asks the Seal-Keeper, so you tell it, and somewhere in the telling you start to hum, and it hums along, badly, under its breath, as if it has not sung in a long time.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1852,7 +1852,7 @@
     "scene_q2_crossed_dry": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "\"The trolls heard our toll stories all the way through,\" you say. The Seal-Keeper makes a sound that might be a laugh and might be a rockfall. \"Lintel,\" it says. \"He has stopped asking riddles, hasn't he. He only does that when he is worried.\" It seems to find this very interesting.",
+      "narration": "\"Old Lintel heard our toll stories all the way through,\" you say. The Seal-Keeper makes a sound that might be a laugh and might be a rockfall. \"Lintel,\" it says. \"He used to ask riddles himself, you know. He only stops when he is worried.\" It seems to find this very interesting.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1890,7 +1890,7 @@
     "scene_q2_glade_mended": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "\"We mended a wounded glade,\" you say. The Seal-Keeper closes its eyes. When it opens them, the gem-veins in the walls have gone a soft green for a moment, like moss remembering its color. \"I felt that,\" it says. \"From here. I did not know who.\" It looks at you as if it is memorising something.",
+      "narration": "\"The wounded glade is green again,\" you say. The Seal-Keeper closes its eyes. When it opens them, the gem-veins in the walls have gone a soft green for a moment, like moss remembering its color. \"I felt that,\" it says. \"From here.\" It looks at you as if it is memorizing something.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2111,7 +2111,7 @@
       },
       "onDefeat": {
         "goto": "ending_turned_back",
-        "narration": "The Seal-Keeper scoops all three of you up in one enormous claw, very carefully, the way you would carry a bird's nest."
+        "narration": "The Seal-Keeper scoops your whole party up in one enormous claw, very carefully, the way you would carry a bird's nest."
       }
     },
     "scene_seal_chamber": {
@@ -2197,13 +2197,13 @@
         },
         {
           "id": "cult",
-          "label": "Hand it to the cult's cure, and hope they keep the bargain",
+          "label": "Hand it to Hessa's cure, and hope they keep the bargain",
           "icon": "note",
           "goto": "check_tether_cult_bare"
         },
         {
           "id": "call_voss",
-          "label": "Call Captain Voss down. You stood with her plan.",
+          "label": "Call the wardens down. You told them first.",
           "icon": "whistle",
           "requiresFlag": "told_wardens",
           "goto": "scene_tether_call_voss"
@@ -2219,7 +2219,7 @@
     "scene_tether_call_voss": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You shout for the wardens, as loud as three people can shout, and for a long moment nothing happens. Then Captain Voss comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
+      "narration": "You shout for the wardens, as loud as three people can shout, and for a long moment nothing happens. Then the wardens' captain, Captain Voss, comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2244,7 +2244,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hold the leash steady with all three of your hands",
+      "prompt": "Hold the leash steady, every hand on it",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2280,12 +2280,12 @@
       },
       "onFailure": {
         "goto": "ending_broken_tether",
-        "narration": "The choir sings one note more than the bargain said. Just one. It is enough."
+        "narration": "The choir sings one note more than the bargain said. Just one. It is enough, and Hessa's face falls before anyone else's."
       }
     },
     "ending_heroes": {
       "type": "rest",
-      "narration": "You give the stones back, every one: the ones you found, the ones you bought, the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once, and the embermoths come home in one enormous glowing cloud. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
+      "narration": "You give the stones back, every one, however you came by it, even the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once, and the embermoths come home in one enormous glowing cloud. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
       "heal": 4,
       "choices": []
     },
@@ -2309,19 +2309,19 @@
     },
     "ending_wardens_regret": {
       "type": "rest",
-      "narration": "You hand the leash to the Skywardens. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, Captain Voss writes one line in a ledger of a different color: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
+      "narration": "You hand the leash to the wardens, the Skywardens of the citadel. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, the wardens' captain writes one line in a ledger of a different color: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
       "heal": 4,
       "choices": []
     },
     "ending_cure": {
       "type": "rest",
-      "narration": "The Deep Hollow choir sings its crystal chord into the seal, and you hold them to every word. Something under the mountain hums back. The cult swears the world's broken laws are mending, and maybe they are: the sky is a little less red, and Hessa cries into a pot of soup. History calls it The Cure, with a question mark that nobody has ever quite been able to rub out.",
+      "narration": "Hessa's people, the Deep Hollow choir, sing their crystal chord into the seal, and you hold them to every word. Something under the mountain hums back. The cult swears the world's broken laws are mending, and maybe they are: the sky is a little less red, and Hessa cries into a pot of soup. History calls it The Cure, with a question mark that nobody has ever quite been able to rub out.",
       "heal": 4,
       "choices": []
     },
     "ending_new_weather": {
       "type": "rest",
-      "narration": "You hold the leash yourselves, and the power under the mountain lies still in your three pairs of hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Prides set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
+      "narration": "You hold the leash yourselves, and the power under the mountain lies still in your three pairs of hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Wolf packs set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
       "heal": 4,
       "choices": []
     },
@@ -2341,7 +2341,7 @@
     },
     "ending_broken_tether": {
       "type": "rest",
-      "narration": "The leash snaps. The cure cracks the seal instead of holding it, and the titan rolls over, half awake, and the mountain throws gemstones across the whole sky. The Seal-Keeper throws itself across the crack and holds it, and keeps on holding. The cult grieves loudest of anyone, which is the worst part. But the seal is cracked, not broken, and the Keeper is still holding. Holding is something somebody can help with, someday.",
+      "narration": "The leash snaps. The seal cracks instead of holding, and the titan rolls over, half awake, and the mountain throws gemstones across the whole sky. The Seal-Keeper throws itself across the crack and holds it, and keeps on holding. Everybody who reached for that leash grieves, which is the worst part. But the seal is cracked, not broken, and the Keeper is still holding. Holding is something somebody can help with, someday.",
       "heal": 3,
       "choices": [],
       "outcome": "setback"
@@ -2361,11 +2361,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "ending_new_weather",
-        "narration": "Nobody built you a tether, so you become one. It pulls, and pulls, and then settles in your hands. The Seal-Keeper blinks, which it has not done in a very long time."
+        "narration": "No tether this time, only hands, so you become the tether. It pulls, and pulls, and then settles in your hands. The Seal-Keeper blinks, which it has not done in a very long time."
       },
       "onFailure": {
         "goto": "ending_broken_tether",
-        "narration": "You did not spend the road making a leash, and bare hands are not enough. It pulls once, hard, and slips through all three pairs."
+        "narration": "Bare hands are not enough. It pulls once, hard, and slips through all three pairs."
       }
     },
     "check_tether_cult_bare": {
@@ -2373,7 +2373,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "clever",
       "tn": 16,
-      "prompt": "Hold the Deep Hollow choir to a bargain you made up just now",
+      "prompt": "Hold Hessa's singers to a bargain you made up just now",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2387,7 +2387,7 @@
       },
       "onFailure": {
         "goto": "ending_broken_tether",
-        "narration": "Nobody wrote the bargain down, so the choir sings it the way they remember it. One note more than you meant. It is enough."
+        "narration": "Nobody wrote the bargain down, so Hessa's singers sing it the way they remember it. One note more than you meant. It is enough, and Hessa's face falls before anyone else's."
       }
     },
     "scene_keystone": {

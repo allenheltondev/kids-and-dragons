@@ -55,7 +55,7 @@
   "scenes": {
     "scene_the_table": {
       "type": "story",
-      "narration": "The wardens will not sit with the cult. The cult will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
+      "narration": "The wardens will not sit with the cult, the people in painted bark masks who follow Hessa from the soup tent. The masks will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
       "choices": [
         {
           "id": "wardens_first",
@@ -193,7 +193,7 @@
       "choices": [
         {
           "id": "friend",
-          "label": "You told them first, at the citadel. Ask as a friend.",
+          "label": "You told the wardens first. Ask as a friend.",
           "icon": "heart",
           "requiresFlag": "told_wardens",
           "goto": "scene_ledger_friend",
@@ -231,7 +231,7 @@
     },
     "scene_ledger_false_promise": {
       "type": "story",
-      "narration": "You promise him the choir's chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
+      "narration": "You promise him the masks' secret chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -249,7 +249,7 @@
     },
     "scene_ledger_friend": {
       "type": "story",
-      "narration": "\"You told us first,\" you say. \"At the citadel. We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
+      "narration": "\"We told you first,\" you say. \"We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -675,7 +675,7 @@
         },
         {
           "id": "ford_witch",
-          "label": "The ford witch is here, with her ringing stone",
+          "label": "Mother Thrum from the ford is here, with a ringing sock",
           "icon": "charm",
           "goto": "scene_ford_witch",
           "requiresItem": "charm_ford_witch"
@@ -694,7 +694,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat full of every stone the river took off somebody this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: the frog from the reeds of the Great River, with OLD OSSLEY painted on the side of his boat, and a boat full of every stone the river took off somebody this season. He looks at your packs, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -849,7 +849,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "Mother Thrum, the ford witch, has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "Mother Thrum, the witch from the ford queue, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -931,7 +931,7 @@
     },
     "scene_ford_witch_hold_safe": {
       "type": "story",
-      "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\" Then she tips the ringing thing out of her sock as well, a stone from the ford, and it goes quiet in your hand.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1252,7 +1252,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1324,7 +1324,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "Late at night, Pellam comes to your table alone, without his ledger, which you have never seen before. He sits down carefully on the steady side. \"One question,\" he says quietly. \"Where does the choir sing at night? I only want to know.\" Across the road, a mask's fire crackles, and somebody over there is very still.",
+      "narration": "Late at night, Pellam comes to your table alone, with no ledger under his arm for once. He sits down carefully on the steady side. \"One question,\" he says quietly. \"Where does the choir sing at night? I only want to know.\" Across the road, a mask's fire crackles, and somebody over there is very still.",
       "choices": [
         {
           "id": "tell",
@@ -1440,7 +1440,7 @@
         },
         {
           "id": "loose_knot",
-          "label": "Tie it with the knot you promised, the one you can undo",
+          "label": "Tie on with a knot you can undo, the way you were told",
           "icon": "drop",
           "goto": "scene_rope_bridge_loose_knot",
           "requiresFlag": "loose_knot"
@@ -1481,7 +1481,7 @@
     },
     "scene_rope_bridge_loose_knot": {
       "type": "story",
-      "narration": "You tie yourselves to the handrail with Ossley's knot, the one you can undo. Every few steps, you undo it and tie it again further along. It is slow, and very safe, and by the far side you could tie that knot in your sleep. Which, Ossley would say, was the point.",
+      "narration": "You tie yourselves to the handrail with a loose knot, the kind you can undo. Every few steps, you undo it and tie it again further along. It is slow, and very safe, and by the far side you could tie that knot in your sleep. Which was, you suspect, the point.",
       "choices": [
         {
           "id": "on",
@@ -1537,7 +1537,7 @@
     },
     "scene_switchback_fly_over": {
       "type": "story",
-      "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with the instruments still rattling in your packs.",
+      "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with your humming stones still rattling in your packs.",
       "cast": [
         {
           "figure": "entities/echo_hunter"
@@ -1611,7 +1611,7 @@
       },
       "onDefeat": {
         "goto": "ending_lost_in_echoes",
-        "narration": "The echoes get louder and louder until you cannot hear yourselves think. You stumble back down the switchback the way you came, and the instruments rattle loose in your packs."
+        "narration": "The echoes get louder and louder until you cannot hear yourselves think. You stumble back down the switchback the way you came, and your humming stones rattle loose in your packs."
       }
     },
     "scene_bend_crowds": {
@@ -1818,7 +1818,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "No ledger, no chord, no question. Just three of you, holding on. And for one long breath, astonishingly, it is enough."
+        "narration": "No ledger, no chord, no question. Just you, holding on. And for one long breath, astonishingly, it is enough."
       },
       "onFailure": {
         "goto": "scene_tether_slips",
@@ -1855,7 +1855,7 @@
     },
     "scene_tether_slips": {
       "type": "story",
-      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologising as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
+      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologizing as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1896,7 +1896,7 @@
         },
         {
           "id": "ossley",
-          "label": "Ask Old Ossley to float it somewhere safe",
+          "label": "Whistle down the dry creek for the frog from the river",
           "icon": "drop",
           "goto": "scene_who_keeps_table_ossley",
           "requiresFlag": "route_river"
@@ -1951,7 +1951,7 @@
           "size": "small_to_medium"
         }
       ],
-      "narration": "Old Ossley poles his flat boat up the dry creek, looks at the table for a long time, and then lays it across his boat like a roof. \"Tables float,\" he says. That is all he says. The boat slides away down a creek with no water in it, carrying your table somewhere safe.",
+      "narration": "A frog in a very old hat comes poling his flat boat up the dry creek, as if he had been waiting to be asked: the frog from the reeds of the Great River, with OLD OSSLEY painted on his boat. He looks at the table for a long time, and then lays it across his boat like a roof. \"Tables float,\" he says. That is all he says. The boat slides away down a creek with no water in it, carrying your table somewhere safe.",
       "choices": [
         {
           "id": "on",
