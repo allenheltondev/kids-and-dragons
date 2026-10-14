@@ -437,3 +437,30 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+## Gemfall 04A — Pride country
+
+Generated with the built-in image-generation tool. Six character-free 1920×1080 WebP backdrops at quality 88; prompts below. The Eastern Plains palette shifts from day gold to night indigo. The foreground stays open and level for the stage.
+
+| Asset | Coverage |
+|---|---|
+| `pride-marker-road.webp` | Curved pride-country road markers |
+| `sefa-ridge-camp.webp` | Manticore pride ridge camp |
+| `centaur-sash-barn.webp` | Centaur road-warden waystation |
+| `pride-stone-crater.webp` | Humming gem in the small crater |
+| `abandoned-caravan-rest.webp` | Empty old caravan rest stop |
+| `pride-night-fire.webp` | Night fire below the pride ridge |
+
+### Generation prompts
+
+**Pride marker road:** Wide 16:9 Kids & Dragons storybook environment of golden Eastern Plains at sunset. A dirt road makes a graceful wide curve around an unseen hot spot. Along the curve are low, plainly inanimate stone cairns and painted flat rocks with tiny rust-red fur tufts tied flat to stones; no upright posts. Tiny embermoth lights float above the grass. Warm gouache and watercolor; curve and cairns in upper half; lower 30% open level grass. No upright objects, figures, statues, scarecrows, people, animals, creatures, buildings, signs, text, UI, border or watermark.
+
+**Sefa ridge camp:** Open manticore-pride camp on a low grass ridge in the Eastern Plains: empty fire ring, neatly placed cushions, shared honeycake on a wooden tray, warm plains beyond; road markers below bend away from camp. No den or building. Gentle evening light, welcoming storybook gouache/watercolor, gold grasses and sage shadows. Upper-half landmark; lower 30% open level grass. No people, cubs, animals, creatures, text, UI, border or watermark.
+
+**Centaur sash barn:** Inside a long timber waystation barn, a wall of colorful stitched road-map sashes is being unpicked and resewn; spools and needles on shelves, large shared worktable with blank folded maps, hay lofts at sides. No readable writing or map labels. Warm daylight, tactile storybook gouache/watercolor. Sashes and beams upper half; clear wood floor lower 30%. No centaurs, people, animals, creatures, text, UI, frame or watermark.
+
+**Pride stone crater:** Open golden pride-country grassland with a small round impact crater, no bigger than a wash tub; surrounding grass leans outward. A single warm amber gem rests in shallow crater, with a few tiny paw prints pressed in ash nearby. Mysterious but safe. Painted gouache/watercolor, late-afternoon gold and sage. Crater in upper half and off-center; lower 30% open level grass. No animals, creatures, people, buildings, text, UI, border or watermark.
+
+**Abandoned caravan rest:** Old grassland rest stop with a few long-unused empty wooden carts and covered wagons parked off-road, quiet broken fence posts, and a cold fire ring; open plains beneath blue night sky. Gentle tension, safe storybook gouache/watercolor. Landmark upper half, lower 30% open level grass and dirt. No wolves, creatures, characters, buildings, text, UI, border or watermark.
+
+**Pride night fire:** Single warm campfire on open pride-country grass below a low dark ridge; stars above distant gold plains, ridge curves around the camp, small amber gem glows faintly near the far horizon. Peaceful storybook watercolor/gouache, indigo night and amber firelight. Ridge and fire upper half; lower 30% open level earth. No people, animals, cubs, creatures, shelters, text, UI, frame or watermark.
