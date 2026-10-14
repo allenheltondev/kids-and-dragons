@@ -35,19 +35,19 @@ infobox: npc
 ## Related Entities
 
 ### Characters
-- [Lyra Nighthollow](/characters/lyra_nighthollow/) — allies
+- [Lyra Nighthollow](/characters/lyra_nighthollow/): allies
 
 ### Factions
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — faction
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — members
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/): faction
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/): members
 
 ### Locations
-- [The Crystal Font](/locations/crystal_font/) — location
-- [The Crystal Font](/locations/crystal_font/) — npcs
+- [The Crystal Font](/locations/crystal_font/): location
+- [The Crystal Font](/locations/crystal_font/): npcs
 
 ### Quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — npcs
+- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/): quests
+- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/): npcs
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

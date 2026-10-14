@@ -129,7 +129,7 @@ export function ChapterCompletePanel(): ReactElement {
         {setback && ended === undefined ? (
           <p className="complete__setback">
             <Icon name="forward" />
-            <span>Not how you hoped — and the adventure carries on from here.</span>
+            <span>Not how you hoped, and the adventure carries on from here.</span>
           </p>
         ) : null}
         {/*

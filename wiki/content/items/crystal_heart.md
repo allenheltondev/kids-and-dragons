@@ -3,7 +3,7 @@ title: Crystal Heart
 id: item.crystal_heart
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["artifact", "crystal", "magical", "legendary"]
 related:
