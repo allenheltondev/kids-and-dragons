@@ -21,7 +21,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  * and the inventory scroll under the strip.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
@@ -40,6 +40,7 @@ import {
   useChapter,
   useIsMyCombatTurn,
   useIsMyPrompt,
+  useMyTurnKey,
   useItems,
   useMe,
   useParty,
@@ -291,7 +292,7 @@ function InventoryGrid({
                 aria-pressed={selected}
                 onClick={() => onSelect(selected ? null : index)}
               >
-                <Icon name={def?.icon ?? entry.kind} size="1.7em" />
+                <Icon name={def?.icon ?? entry.kind} size="2.2em" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
                 <span className="inv__kind kad-label">
@@ -443,6 +444,24 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   useEffect(() => {
     if (!hasTask && section === "turn") setPlayerSection("bag");
   }, [hasTask, section]);
+
+  /*
+   * A new question opens the turn page by itself. The layout shells already
+   * bring this pane forward on the same key; stopping on the bag with a
+   * "Your turn" button to tap first was one tap too many on a phone, every
+   * single turn. Keyed on the question, not a boolean, so back-to-back turns
+   * each land here, and a vote ticking over on the current one does not drag
+   * her off the bag she went back to on purpose. "creation" is no question.
+   */
+  const turnKey = useMyTurnKey();
+  const previousTurnKey = useRef<string | null>(null);
+  useEffect(() => {
+    if (turnKey !== null && turnKey !== "creation" && turnKey !== previousTurnKey.current) {
+      setPlayerSection("turn");
+      setSheetFor(null);
+    }
+    previousTurnKey.current = turnKey;
+  }, [turnKey]);
 
   const globalPrompt = state?.prompt ?? null;
   const key = promptKey(myPrompt ?? globalPrompt);
@@ -790,7 +809,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       </Button>
                       <Button
                         variant="primary"
-                        size="lg"
+                        size="md"
                         icon={<Icon name="check" />}
                         disabled={busy}
                         onClick={() => {
@@ -916,7 +935,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       {myBagIsFull && chosenDrop === null ? null : (
                         <Button
                           variant="primary"
-                          size="lg"
+                          size="md"
                           icon={<Icon name="check" />}
                           disabled={busy}
                           onClick={() => {
@@ -1013,7 +1032,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   </Button>
                   <Button
                     variant="primary"
-                    size="lg"
+                    size="md"
                     icon={<Icon name="check" />}
                     disabled={busy}
                     onClick={() => void dispatch({ type: "CHOOSE", choiceId: chosenOption.id })}
@@ -1130,7 +1149,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   </Button>
                   <Button
                     variant="primary"
-                    size="lg"
+                    size="md"
                     icon={<Icon name="check" />}
                     disabled={busy}
                     onClick={() =>
@@ -1482,7 +1501,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               ) ? (
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   icon={<Icon name="consumable" />}
                   disabled={busy}
                   onClick={() => {
