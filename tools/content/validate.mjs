@@ -46,6 +46,12 @@ const ROOT = process.env.KAD_CONTENT_ROOT
 const CONTENT = join(ROOT, "content");
 const SCHEMAS = join(ROOT, "schemas");
 const MANIFEST = join(ROOT, "assets", "manifest.json");
+/**
+ * The art itself is always this checkout's, whichever tree is being judged: a
+ * staged generator tree (generate-gate.ts) carries the manifest and not the
+ * megabytes of PNG a cast figure points at.
+ */
+const REPO_ASSETS = fileURLToPath(new URL("../../assets", import.meta.url));
 
 const tty = process.stdout.isTTY;
 const RED = tty ? "\u001b[31m" : "";
@@ -890,11 +896,41 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     }
   }
 
+  // Cast (CastMember in chapter.ts): every figure is a file the shared screen
+  // can draw. A typo here would leave an empty space opposite the party where
+  // the selkie was meant to be, and nothing at runtime would say why.
+  for (const [sceneId, scene] of Object.entries(scenes)) {
+    const seen = new Set();
+    for (const [i, member] of (scene.cast ?? []).entries()) {
+      const at = `/scenes/${sceneId}/cast/${i}`;
+      const file = castFigureFile(member.figure);
+      if (!file || !existsSync(file)) {
+        fail(
+          `${at}/figure`,
+          `chapter "${chapter.id}", scene "${sceneId}": cast figure "${member.figure}" has no art`,
+          `Expected ${file ? rel(file).replace(/^.*?assets\//, "assets/") : "entities/<id>, characters/<species> or cast/<id>"}. Use an existing figure (ls assets/entities) or commission one (docs/briefs/story-cast-art.md).`,
+        );
+      }
+      const key = `${member.figure}|${member.name ?? ""}`;
+      if (seen.has(key)) fail(at, `chapter "${chapter.id}", scene "${sceneId}": the same cast member twice`, "Name each figure once; two of a kind need two names.");
+      seen.add(key);
+    }
+  }
+
   if (ok) {
     const bonusNote = objectives.length ? `, ${objectives.length} objective(s) within the ${bonusCap} XP cap` : "";
     rep.ok(`${f}  graph  (${ids.size} scenes, ${endings.length} ending${endings.length === 1 ? "" : "s"}${bonusNote}, all reachable, all goto/itemId resolve)`);
   }
   return ok;
+}
+
+/** `entities/selkie` → its assembled.png under this checkout's assets/. */
+function castFigureFile(figure) {
+  const match = /^(entities|characters|cast)\/([a-z0-9_]+)$/.exec(figure ?? "");
+  if (!match) return null;
+  const [, kind, id] = match;
+  if (kind === "characters") return join(REPO_ASSETS, "characters", id, "fledgling", "assembled.png");
+  return join(REPO_ASSETS, kind, id, "assembled.png");
 }
 
 function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {

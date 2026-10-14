@@ -274,6 +274,12 @@
         "npc.stone_troll"
       ],
       "narration": "\"Gems,\" says Mortar, the stone troll who runs the noodle stall. He stirs the pot one whole slow turn before he says anything else. Then he chalks a new line on his board, RUSH PRICES, and your noodles cost twice what they did a minute ago. The crowd cheers you. Three pickpockets move one table closer. A merchant by the door writes your names down and underlines them.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Mortar"
+        }
+      ],
       "choices": [
         {
           "id": "to_docks",
@@ -482,6 +488,12 @@
         "npc.stone_troll"
       ],
       "narration": "The Empty Chair tavern is packed with prospectors. On a table in the middle, a selkie scholar with ink on both elbows is waving her arms. \"The gem-light fell upward! Only for a moment, but it did!\" The whole room laughs, and two very polite stone trolls carry her out of the door, table and all. She keeps talking the whole way.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Professor Tidewell"
+        }
+      ],
       "choices": [
         {
           "id": "follow",
@@ -555,6 +567,12 @@
         "npc.merfolk"
       ],
       "narration": "Gem-buyers line the whole quay. The biggest is Madame Coralie Fenn, a merfolk who gets about in a barrel on wheels, and she smells your warm red stone from ten stalls away. \"Rush prices, darlings,\" she says, and names a number so big that a pigeon faints. Do we sell it, or keep it?",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Coralie Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "sell",
@@ -898,6 +916,15 @@
         "npc.yeti"
       ],
       "narration": "A yeti crew bets you cannot load a wagon faster than they can. You load it in the time it takes them to argue about who goes first. Half of it is loaded upside down, but it is loaded. The yetis pay up in dried apples, and Hesper, very slightly, smiles.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Hesper Longstride"
+        },
+        {
+          "figure": "entities/yeti"
+        }
+      ],
       "choices": [
         {
           "id": "on",
