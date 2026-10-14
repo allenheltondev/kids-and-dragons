@@ -251,7 +251,7 @@
     "check_ledger": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Find the rule that lets a logged gem change hands",
       "roller": "party",
       "onSuccess": {
@@ -472,7 +472,7 @@
     "check_span": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Cross the swaying span before the warden's flag drops",
       "roller": "party",
       "onSuccess": {

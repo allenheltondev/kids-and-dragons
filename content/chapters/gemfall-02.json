@@ -117,7 +117,7 @@
     "check_reroute": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Talk a grumpy drover out of a shortcut",
       "roller": "party",
       "onSuccess": {
@@ -494,7 +494,7 @@
     "check_trade": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Offer the sprites the best thing in your pockets",
       "roller": "party",
       "onSuccess": {
@@ -566,7 +566,7 @@
     "check_steal": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Snatch the stone between one trumpet toot and the next",
       "roller": "party",
       "onSuccess": {
@@ -753,7 +753,7 @@
     "check_hedge": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Say why you came, plainly enough for a hedge to hear",
       "roller": "party",
       "onSuccess": {

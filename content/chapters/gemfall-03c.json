@@ -190,7 +190,7 @@
     "check_expose": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Spot where the Sun Card really goes",
       "roller": "party",
       "onSuccess": {
@@ -649,7 +649,7 @@
     "check_answer": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Tell Mother Thrum what you actually want, and mean it",
       "roller": "party",
       "onSuccess": {
@@ -785,7 +785,7 @@
     "check_drake_toll": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Pay the river drakes politely in bread",
       "roller": "party",
       "onSuccess": {

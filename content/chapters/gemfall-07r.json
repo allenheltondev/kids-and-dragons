@@ -561,7 +561,7 @@
     "check_tamsin": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Convince Hessa the seal is not a cage",
       "roller": "party",
       "onSuccess": {
@@ -756,7 +756,7 @@
     "check_wolves": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Roll a smoked sausage down the side trail at exactly the right moment",
       "roller": "party",
       "onSuccess": {

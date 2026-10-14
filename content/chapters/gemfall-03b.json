@@ -205,7 +205,7 @@
     "check_name": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Spot what's wrong with this barge, and say what it really is",
       "roller": "party",
       "onSuccess": {
@@ -434,7 +434,7 @@
     "check_patience": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Walk with the wisp, not after it, however slowly it goes",
       "roller": "party",
       "onSuccess": {
@@ -628,7 +628,7 @@
     "check_ford_song": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Keep time with the frogfolk's crossing song",
       "roller": "party",
       "onSuccess": {

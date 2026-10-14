@@ -159,7 +159,7 @@
     "check_rivals": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Prove the Brassbuckle Expedition moved the queue rope",
       "roller": "party",
       "onSuccess": {
@@ -643,7 +643,7 @@
     "check_crawlers_leave": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Stomp off the beach looking as big as you possibly can",
       "roller": "party",
       "onSuccess": {
