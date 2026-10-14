@@ -24,6 +24,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
+import { checkTarget } from "./DiceOverlay";
 import type {
   ClientIntent,
   InventoryEntry,
@@ -986,7 +987,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <Icon name={myPrompt.stat} />
               <span className="prompt__stat">{myPrompt.stat}</span>
               <span aria-hidden="true">·</span>
-              <span>beat {myPrompt.tn}</span>
+              <span>{checkTarget(myPrompt.tn)}</span>
             </p>
             <Button
               variant="primary"

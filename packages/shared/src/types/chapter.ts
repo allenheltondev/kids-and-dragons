@@ -109,7 +109,7 @@ export interface CheckScene {
    * this scene. See `discoveries.ts` and content/README.md.
    */
   discovers?: string[];
-  /** Which player rolls. Default: the party picks. */
+  /** Which player rolls. Default ("party"): whoever has rolled the fewest checks. */
   roller?: "party" | "active" | "best";
   onSuccess: Branch;
   onFailure: Branch;

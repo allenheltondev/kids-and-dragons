@@ -28,8 +28,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { speak } from "@kad/shared";
-import type { DiceRoll } from "@kad/shared";
+import { difficultyFor, speak } from "@kad/shared";
+import type { DiceRoll, Difficulty } from "@kad/shared";
 import { useParty, usePresentation } from "../store";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -83,6 +83,34 @@ const OUTCOME_WORD: Record<DiceRoll["result"], string> = {
   failure: "Not this time",
   miss: "A miss",
 };
+
+/** "Normal" undersells a check most kids pass about half the time. */
+const DIFFICULTY_WORD: Record<Difficulty, string> = {
+  easy: "Easy",
+  normal: "Tricky",
+  hard: "Hard",
+};
+
+/**
+ * What the outcome line says. A natural 20 or 1 decides the roll on its own
+ * (dice.ts `clears`), so it gets named: that is the moment the table shouts.
+ */
+export function outcomeWord(roll: Pick<DiceRoll, "die" | "result">): string {
+  if (roll.die === 20) return "Natural 20!";
+  if (roll.die === 1) return "Natural 1";
+  return OUTCOME_WORD[roll.result];
+}
+
+/** A check's target, with the word for how hard it is: "Tricky: needed 12". */
+export function checkTarget(tn: number): string {
+  return `${DIFFICULTY_WORD[difficultyFor(tn)]}: needed ${String(tn)}`;
+}
+
+/** A check has a difficulty; an attack's number is the target's Guard. */
+export function neededLabel(roll: Pick<DiceRoll, "tn" | "result">): string {
+  const isCheck = roll.result === "success" || roll.result === "failure";
+  return isCheck ? checkTarget(roll.tn) : `Needed ${String(roll.tn)}`;
+}
 
 export function DiceOverlay(): ReactElement | null {
   const party = useParty();
@@ -139,7 +167,7 @@ export function DiceOverlay(): ReactElement | null {
     spokenFor.current = shownId;
     const who = roller?.character.name ?? "";
     speak(
-      `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}, ${String(roll.total)}. ${OUTCOME_WORD[roll.result]}`,
+      `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}, ${String(roll.total)}. ${outcomeWord(roll)}`,
     );
   }, [roll, settled, shownId, roller]);
 
@@ -205,17 +233,17 @@ export function DiceOverlay(): ReactElement | null {
 
         <p className="dice__tn" aria-hidden="true">
           <Icon name="guard" />
-          <span>Needed {roll.tn}</span>
+          <span>{neededLabel(roll)}</span>
         </p>
 
         {/* Outcome is a word plus a shape, never a colour on its own (spec §11). */}
         <p className={`dice__outcome${good ? " dice__outcome--good" : " dice__outcome--bad"}`}>
           <Icon name={good ? "check" : "close"} />
-          <span>{OUTCOME_WORD[roll.result]}</span>
+          <span>{outcomeWord(roll)}</span>
         </p>
 
         <ScreenReaderOnly>
-          {`Rolled ${String(roll.die)} plus ${String(roll.mod)} equals ${String(roll.total)}, needed ${String(roll.tn)}. ${OUTCOME_WORD[roll.result]}`}
+          {`Rolled ${String(roll.die)} plus ${String(roll.mod)} equals ${String(roll.total)}. ${neededLabel(roll)}. ${outcomeWord(roll)}`}
         </ScreenReaderOnly>
       </div>
     </div>

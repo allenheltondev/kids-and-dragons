@@ -246,6 +246,15 @@ export interface RunState {
    */
   playtestDie?: number | null;
   /**
+   * How many checks each character has rolled this run, by character id. A
+   * check the party shares (`roller: "party"`) goes to whoever has rolled the
+   * fewest, so the dice go round the table instead of always landing on the
+   * character with the best stat. Kept across chapters: one evening is one
+   * rotation. Optional for runs persisted before it existed, which simply
+   * start counting from zero.
+   */
+  checkRolls?: Record<string, number>;
+  /**
    * The household's Field Guide — canon id → who found it first and when
    * (epic #101, #106). A **mirror** of the household's `FIELDGUIDE` record,
    * carried on the run for the reason `campaignOptions` is: it is household

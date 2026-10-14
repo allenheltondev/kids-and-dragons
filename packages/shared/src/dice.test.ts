@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { makeRng, resolveAttack, resolveCheck, roll, rollD20 } from "./dice.js";
+import { difficultyFor, makeRng, resolveAttack, resolveCheck, roll, rollD20 } from "./dice.js";
 
 function series(seed: string | number, n: number): number[] {
   const rng = makeRng(seed);
@@ -69,6 +69,22 @@ describe("roll", () => {
   it("succeeds on exactly the target number", () => {
     expect(roll(fixed(10), { mod: 2, tn: 12 }).result).toBe("success");
   });
+
+  it("always succeeds on a natural 20, even when the total falls short", () => {
+    expect(roll(fixed(20), { mod: -5, tn: 25 }).result).toBe("success");
+  });
+
+  it("always fails on a natural 1, even when the total clears the target", () => {
+    expect(roll(fixed(1), { mod: 15, tn: 8 }).result).toBe("failure");
+  });
+});
+
+describe("difficultyFor", () => {
+  it("bands the three target numbers of spec §4.1", () => {
+    expect(difficultyFor(8)).toBe("easy");
+    expect(difficultyFor(12)).toBe("normal");
+    expect(difficultyFor(16)).toBe("hard");
+  });
 });
 
 describe("resolveCheck", () => {
@@ -87,6 +103,11 @@ describe("resolveAttack", () => {
   it("returns hit/miss against Guard, not success/failure", () => {
     expect(resolveAttack(fixed(20), { characterId: "c_1", mod: 3, guard: 11 }).result).toBe("hit");
     expect(resolveAttack(fixed(1), { characterId: "c_1", mod: 3, guard: 11 }).result).toBe("miss");
+  });
+
+  it("hits on a natural 20 and misses on a natural 1 whatever the Guard", () => {
+    expect(resolveAttack(fixed(20), { characterId: "c_1", mod: 0, guard: 30 }).result).toBe("hit");
+    expect(resolveAttack(fixed(1), { characterId: "c_1", mod: 20, guard: 11 }).result).toBe("miss");
   });
 
   it("puts Guard in the tn field so the presentation layer has one shape", () => {

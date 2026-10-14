@@ -828,7 +828,7 @@ describe("checks", () => {
     ).state;
   }
 
-  it("nominates the best roller and opens a roll prompt", () => {
+  it("nominates the best roller when nobody has rolled yet, and opens a roll prompt", () => {
     const state = atCheck(ctx());
     expect(state.phase).toBe("check");
     expect(state.prompt).toMatchObject({
@@ -841,6 +841,34 @@ describe("checks", () => {
       // *which* character was nominated, not how ids are built.
       characterId: state.party[1]!.character.id,
     });
+  });
+
+  it("passes the die to whoever has rolled the fewest checks", () => {
+    // The griffin's 5 Quick would win this check on stat alone. Once they have
+    // had a turn, the shared check goes round to the unicorn instead. The
+    // fixture pins this check to "best", so it is reopened as the default.
+    const chapter = makeChapter();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "party" } as Scene;
+    const context = ctx({ chapter });
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const griffin = started.party[1]!.character.id;
+    const unicorn = started.party[0]!.character.id;
+    const atCheck = walk(
+      { ...started, checkRolls: { [griffin]: 1 } },
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }],
+      context,
+    ).state;
+    expect(atCheck.prompt).toMatchObject({ kind: "roll", characterId: unicorn });
+  });
+
+  it("counts each roll toward the roller's turn", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const result = applyIntent(atCheck(context), { playerId: "p_2", intent: { type: "ROLL" } }, context);
+    expect(result.state.checkRolls).toEqual({ [result.state.party[1]!.character.id]: 1 });
   });
 
   it("only the nominated character's player may roll", () => {

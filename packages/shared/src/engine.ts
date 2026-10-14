@@ -460,18 +460,30 @@ export function applyEffects(
 // Scenes
 // ---------------------------------------------------------------------------
 
-/** Who rolls a check. `roller: "party"` has no pick-a-roller prompt yet, so it
- * behaves like "best" — the party would nominate them anyway. */
+/**
+ * Who rolls a check.
+ *
+ * `"active"` is whoever is first in the party, `"best"` is the highest score
+ * in the check's stat, and `"party"` (the default) takes turns: whoever has
+ * rolled the fewest checks this run goes next, so every kid gets the die in
+ * their hands. Ties go to the higher stat, then party order, so among those
+ * who are due the one most likely to succeed still steps up.
+ */
 function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
   const standing = draft.party.filter((m) => !m.down);
   const pool = standing.length > 0 ? standing : draft.party;
   const first = pool[0];
   if (!first) throw new Illegal("ILLEGAL", "nobody is in the party to roll");
   if (scene.roller === "active") return first;
-  return pool.reduce(
-    (best, m) => (m.character.stats[scene.stat] > best.character.stats[scene.stat] ? m : best),
-    first,
-  );
+  const stat = (m: PartyMember): number => m.character.stats[scene.stat];
+  if (scene.roller === "best") {
+    return pool.reduce((best, m) => (stat(m) > stat(best) ? m : best), first);
+  }
+  const rolled = (m: PartyMember): number => draft.checkRolls?.[m.character.id] ?? 0;
+  return pool.reduce((pick, m) => {
+    if (rolled(m) !== rolled(pick)) return rolled(m) < rolled(pick) ? m : pick;
+    return stat(m) > stat(pick) ? m : pick;
+  }, first);
 }
 
 /**
@@ -1390,6 +1402,10 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   });
   draft.lastRoll = result;
   draft.prompt = null;
+  draft.checkRolls = {
+    ...draft.checkRolls,
+    [roller.character.id]: (draft.checkRolls?.[roller.character.id] ?? 0) + 1,
+  };
 
   // Both outcomes continue the story down different paths (spec §6.1).
   const branch = result.result === "success" ? scene.onSuccess : scene.onFailure;
