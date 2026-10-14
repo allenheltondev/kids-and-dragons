@@ -223,7 +223,7 @@
     "check_wolves": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Find the hungry wolves something better than the road",
       "roller": "party",
       "onSuccess": {
@@ -485,7 +485,7 @@
     "check_late_gate": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Race the sunset up the ridge before the citadel gate closes",
       "roller": "party",
       "onSuccess": {
