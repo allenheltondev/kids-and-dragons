@@ -327,7 +327,7 @@ biomes:
         - "Check the low sky before you cross. A marking pole with no cloth on it means one came through this week."
       disputed_beliefs:
         - "Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way."
-        - "Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that, which is why every people calls it something different."
+        - "Whether a loftmire chooses where to stand. It has no discernible reason to favor one bend of a channel over another and it favors them anyway, and every people in the marsh has drawn a different conclusion from that, which is why every people calls it something different."
       hidden_truths:
         - "Most whispers are recordings. The mist holds sound the way the northern glacier holds memory, and on still nights the marsh replays conversations older than the peoples having them."
         - "The mist that holds sound and the sand that holds nothing down are the same mist, doing the same thing to two different kinds of cargo. Nobody in the marsh has put those two facts beside each other."
@@ -824,7 +824,7 @@ biomes:
         - "A frost wyrm has nested exactly where the next reading room was planned, and the yetis' response - wait a century or two - has, for the first time, struck some younger yetis as slow."
       historical_hooks:
         - "A newly melted memory shows the river leaving by a different valley. The yetis have re-catalogued it three times, which is yeti for alarm."
-        - "One meltwater year is never served as tea and never named. The vintage exists; the catalogue simply moves past it, and the politeness is glacial in every sense."
+        - "One meltwater year is never served as tea and never named. The vintage exists; the catalog simply moves past it, and the politeness is glacial in every sense."
     borders: [biome.expanse, biome.frostfang_peaks]
     inhabitants:
       primary_peoples: []
@@ -1240,7 +1240,7 @@ biomes:
       vegetation, and ground that cannot be trusted twice. Travelers commonly
       call the region the Saltrot.
     visual_identity: >-
-      Grey-green flats under a hazy sky: silt banks, salt-crusted pools,
+      Gray-green flats under a hazy sky: silt banks, salt-crusted pools,
       drowned and stunted trees, channels that braid and rebraid with the
       floods, and the pale gleam of the Bone Yard at the river mouth.
     common_story_uses: >-

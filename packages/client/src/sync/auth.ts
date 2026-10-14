@@ -56,7 +56,7 @@ export class AuthError extends Error {
  */
 const FRIENDLY: Record<string, string> = {
   CodeMismatchException: "That code doesn't match. Have another look at the email.",
-  ExpiredCodeException: "That code has expired — we can send a fresh one.",
+  ExpiredCodeException: "That code has expired. We can send a fresh one.",
   NotAuthorizedException: "That code didn't work. Try sending a new one.",
   TooManyRequestsException: "Too many tries just now. Wait a moment and try again.",
   TooManyFailedAttemptsException: "Too many wrong codes. Wait a moment and start again.",
