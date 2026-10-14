@@ -1,5 +1,5 @@
 {
-  "$comment": "Gemfall beat 7, the Collection's chapter 7 (docs/campaigns/gemfall.md, 7H). Defines facet_caravan, which 07r and 07l also grant. Summit: scene_tree_line's two choices set climbed_the_mountain or walked_away; the lost-fight setback sets climbed_the_mountain. Cult and clock are both decided once, at scene_tamsins_offer: sell (funded_the_break + clock_late), refuse (refused_the_cult), or hand the stones back (refused_the_cult + clock_steady). The setback path never reaches that scene and sets clock_late itself. The Walk is the Collection's own exit from the campaign, and it lives here: after the tree line a walking party plays the epilogue in this chapter (the walk_ scenes) and its endings carry endsCampaign, so the campaign completes without a chapter 8. A walking party never enters the mountain.",
+  "$comment": "Gemfall beat 7, the Collection's chapter 7 (docs/campaigns/gemfall.md, 7H). Defines facet_caravan, which 07r and 07l also grant. Summit: scene_tree_line's two choices set climbed_the_mountain or walked_away; the lost-fight setback sets climbed_the_mountain. Cult and clock are both decided once, at scene_tamsins_offer: sell (funded_the_break + clock_late), refuse (refused_the_cult), or hand the stones back (refused_the_cult + clock_steady). The setback path never reaches that scene and sets clock_late itself. The Walk is the Collection's own exit from the campaign, and it lives here: after the tree line a walking party plays the epilogue in this chapter (the walk_ scenes) and its endings carry endsCampaign, so the campaign completes without a chapter 8. A walking party never enters the mountain. Pacing episodes on the spine (the price board, the rival collector, the mosshorn calf, the humming night, the checkpoint, the boy on the milestone, the bend approach, Professor Tidewell, the dawn bell) set only chapter-local flags and leave cult, clock and the Walk untouched.",
   "id": "gemfall-07h",
   "campaignId": "gemfall",
   "index": 7,
@@ -52,7 +52,7 @@
           "id": "walk_on",
           "label": "Walk on into the Pinch",
           "icon": "forward",
-          "goto": "choice_the_race"
+          "goto": "scene_price_board"
         },
         {
           "id": "listen_silence",
@@ -78,6 +78,105 @@
           "id": "on",
           "label": "Walk on into the Pinch",
           "icon": "bigfoot",
+          "goto": "scene_price_board"
+        }
+      ]
+    },
+    "scene_price_board": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryony",
+          "size": "small"
+        }
+      ],
+      "narration": "At the mouth of the Pinch stands a price board as tall as a house. A dragonling girl called Bryony is up a ladder with a stick of chalk, rubbing out numbers and writing bigger ones every time the ground shrugs. Every gem-buyer on the road is staring up at it. So is your pack, which has started humming along.",
+      "choices": [
+        {
+          "id": "read",
+          "label": "Work out what the numbers are really saying",
+          "icon": "clever",
+          "goto": "check_price_board"
+        },
+        {
+          "id": "ask",
+          "label": "Ask Bryony what is selling",
+          "icon": "heart",
+          "goto": "scene_price_board_ask"
+        },
+        {
+          "id": "sums",
+          "label": "Do the sums in your head. You came north for this.",
+          "icon": "gem",
+          "goto": "scene_price_board_sums",
+          "requiresFlag": "motive_wealth"
+        }
+      ]
+    },
+    "check_price_board": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryony",
+          "size": "small"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read a price board that changes every time the ground shrugs",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_race",
+        "narration": "Every time the ground shrugs, prices jump. But the loudest stones are the cheapest: buyers think the humming means they are cracked. Nobody here knows what you know. You do the sums, and grin.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "loud_is_cheap",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_race",
+        "narration": "The numbers change faster than you can read them, and a puff of chalk dust makes you all sneeze at once. Bryony laughs so hard she nearly falls off her ladder, and throws you down a stick of chalk, for luck."
+      }
+    },
+    "scene_price_board_ask": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryony",
+          "size": "small"
+        }
+      ],
+      "narration": "Bryony slides down the ladder. \"Everything that hums,\" she says. \"The people in masks pay double for it. The wardens take it for nothing. And Grandmother says not to sell it at all.\" She looks at your humming packs. \"You're the weather people,\" she says. \"Everybody's talking about you.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Into the Pinch",
+          "icon": "heart",
+          "goto": "choice_the_race"
+        }
+      ]
+    },
+    "scene_price_board_sums": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryony",
+          "size": "small"
+        }
+      ],
+      "narration": "Somebody in your party came north to get rich, and has been doing sums since the docks. In about four seconds they work out what your packs are worth at today's prices, and have to sit down on the ladder. Bryony brings them a cup of water, then climbs up and writes a brand new number at the very top of the board, just to see.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Into the Pinch",
+          "icon": "gem",
           "goto": "choice_the_race"
         }
       ]
@@ -88,7 +187,7 @@
       "choices": [
         {
           "id": "warden_pass",
-          "label": "Show the wardens your citadel pass",
+          "label": "Ask the wardens to let you through",
           "icon": "shield",
           "requiresFlag": "told_wardens",
           "goto": "scene_warden_pass"
@@ -130,7 +229,7 @@
           "id": "on",
           "label": "Into the trading",
           "icon": "gem",
-          "goto": "scene_road_gifts"
+          "goto": "scene_rival_collector"
         }
       ]
     },
@@ -142,13 +241,13 @@
           "id": "on",
           "label": "Into the trading",
           "icon": "moon",
-          "goto": "scene_road_gifts"
+          "goto": "scene_rival_collector"
         }
       ]
     },
     "scene_warden_pass": {
       "type": "story",
-      "narration": "You told the wardens the truth at the citadel, and they still trust you. A clerk stamps your pass and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
+      "narration": "You told the wardens the truth, and they still trust you. A clerk stamps a pass for you and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -160,7 +259,7 @@
           "id": "through",
           "label": "Go through",
           "icon": "forward",
-          "goto": "scene_road_gifts",
+          "goto": "scene_rival_collector",
           "effects": [
             {
               "type": "setFlag",
@@ -223,7 +322,7 @@
           "id": "on",
           "label": "Into the trading",
           "icon": "heart",
-          "goto": "scene_road_gifts"
+          "goto": "scene_rival_collector"
         }
       ]
     },
@@ -241,6 +340,111 @@
           "id": "on",
           "label": "Into the trading",
           "icon": "hand",
+          "goto": "scene_rival_collector"
+        }
+      ]
+    },
+    "scene_rival_collector": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Lady Fleecewick"
+        }
+      ],
+      "discovers": [
+        "npc.sheeple"
+      ],
+      "narration": "In the middle of the camps you meet your first real rival. Lady Fleecewick is a sheeple in a lace collar, pushing a glass cabinet on wheels. Inside are forty stones on velvet cushions, every one labeled in tiny writing. She peers at your packs through very small spectacles. \"Collectors,\" she says. \"How lovely. I'll trade. My best for your loudest.\"",
+      "choices": [
+        {
+          "id": "trade",
+          "label": "Trade her your loudest stone for her best",
+          "icon": "gem",
+          "goto": "scene_rival_collector_trade",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "luckstone",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "haggle",
+          "label": "Haggle, collector to collector",
+          "icon": "clever",
+          "goto": "check_rival_collector"
+        },
+        {
+          "id": "pride",
+          "label": "Show her the Pride Stone",
+          "icon": "gem",
+          "goto": "scene_rival_collector_pride",
+          "requiresItem": "facet_pride"
+        }
+      ]
+    },
+    "scene_rival_collector_trade": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Lady Fleecewick"
+        }
+      ],
+      "narration": "Her best stone is pink and shy and very beautiful. Your loudest stone, in her cabinet, hums so hard that every label falls off its cushion. Lady Fleecewick does not mind one bit. \"Marvelous,\" she says, and gives you a luckstone as well, for the noise.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back into the trading",
+          "icon": "gem",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "check_rival_collector": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Lady Fleecewick"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Out-talk a sheeple who has been collecting since before you were born",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "You admire her cabinet so knowledgeably that she goes pink to the tips of her wool. In the end she will not trade at all. She gives you a luckstone, just for the conversation, and asks you to write.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "You haggle hard. She haggles harder. By the end you have traded nothing, agreed to everything, and promised to visit her cabinet at home, which apparently has a room of its own. She seems delighted."
+      }
+    },
+    "scene_rival_collector_pride": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/sheeple",
+          "name": "Lady Fleecewick"
+        }
+      ],
+      "narration": "Lady Fleecewick takes off her spectacles, cleans them, puts them back on, and looks again. Then she sits down very suddenly on her own cabinet. \"Oh my,\" she says. \"Oh my, oh my.\" She does not offer to trade after that. She only asks, very politely, whether she may draw it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back into the trading",
+          "icon": "gem",
           "goto": "scene_road_gifts"
         }
       ]
@@ -286,9 +490,9 @@
         },
         {
           "id": "trade_on",
-          "label": "Keep trading until dark",
+          "label": "Keep trading through the afternoon",
           "icon": "gem",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
@@ -298,7 +502,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat piled with every stone the river took off somebody this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: the frog from the reeds of the Great River, with OLD OSSLEY painted on the side of his boat, and the boat piled with every stone the river took off somebody this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -318,7 +522,7 @@
           "id": "let_go",
           "label": "Let him pole on up the mountain",
           "icon": "hand",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
@@ -337,7 +541,7 @@
           "id": "pay",
           "label": "Choose a stone and put it in his boat",
           "icon": "heart",
-          "goto": "scene_evening",
+          "goto": "scene_mosshorn_calf",
           "effects": [
             {
               "type": "setFlag",
@@ -400,9 +604,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Trade on until dark",
+          "label": "Trade on through the afternoon",
           "icon": "leaf",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
@@ -419,9 +623,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Trade on until dark",
+          "label": "Trade on through the afternoon",
           "icon": "gem",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
@@ -439,7 +643,7 @@
       "choices": [
         {
           "id": "wardens_said",
-          "label": "Tell it what a warden said about acceptable losses",
+          "label": "Tell it what Dunmore shouted on the grandmother's doorstep",
           "icon": "ear",
           "goto": "scene_boggart_wardens_said",
           "effects": [
@@ -476,15 +680,15 @@
       "choices": [
         {
           "id": "on",
-          "label": "Trade on until dark",
+          "label": "Trade on through the afternoon",
           "icon": "cake",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
+      "narration": "\"It hums!\" you shout, in Dunmore's exact voice, pointing at nothing at all. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -493,9 +697,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Trade on until dark",
+          "label": "Trade on through the afternoon",
           "icon": "scroll",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
@@ -504,7 +708,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you, and then at your packs again. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "It is Mother Thrum, the witch from the ford queue, with a wool sock under one arm, and something in it is ringing. She looks at your packs, and then at you, and then at your packs again. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -541,7 +745,7 @@
     },
     "scene_ford_witch_dont_know": {
       "type": "story",
-      "narration": "\"I don't know any more,\" you say. Mother Thrum's face softens for the first time since the ford. She keeps the stone, and ties a songbird ribbon round your wrist instead. \"That's the first true thing anyone's said to me on this hill,\" she says. \"I'll ask again. I always do.\"",
+      "narration": "\"I don't know any more,\" you say. Mother Thrum's face softens for the first time since the ford. She keeps her ringing sock, and ties a songbird ribbon round your wrist instead. \"That's the first true thing anyone's said to me on this hill,\" she says. \"I'll ask again. I always do.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -551,15 +755,15 @@
       "choices": [
         {
           "id": "on",
-          "label": "Trade on until dark",
+          "label": "Trade on through the afternoon",
           "icon": "feather",
-          "goto": "scene_evening"
+          "goto": "scene_mosshorn_calf"
         }
       ]
     },
     "scene_ford_witch_all_of_them": {
       "type": "story",
-      "narration": "\"All of them,\" you say. Mother Thrum does not sigh, which is worse than if she had. She unwraps the Ford Stone and puts it in your hands, still ringing. \"Then here is one more,\" she says. \"Mind it doesn't ring you to sleep.\" It does not stop ringing. Not for you.",
+      "narration": "\"All of them,\" you say. Mother Thrum does not sigh, which is worse than if she had. She unwraps the sock and puts a stone from the ford in your hands, still ringing. \"Then here is one more,\" she says. \"Mind it doesn't ring you to sleep.\" It does not stop ringing. Not for you.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -569,8 +773,92 @@
       "choices": [
         {
           "id": "on",
-          "label": "Trade on until dark",
+          "label": "Trade on through the afternoon",
           "icon": "gem",
+          "goto": "scene_mosshorn_calf"
+        }
+      ]
+    },
+    "scene_mosshorn_calf": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "narration": "Out past the camps, a mosshorn calf has lost its mother. It is all knees and moss and worried noises. Its mother stands on the ridge a stone's throw away, calling and calling, and will not come one step closer. She can hear your packs. And the calf is standing right in the middle of your silence.",
+      "choices": [
+        {
+          "id": "packs_down",
+          "label": "Put your packs down and carry the calf over",
+          "icon": "heart",
+          "goto": "scene_mosshorn_calf_packs_down"
+        },
+        {
+          "id": "moss_trail",
+          "label": "Lay a trail of moss for the calf to follow",
+          "icon": "clever",
+          "goto": "check_mosshorn_calf"
+        },
+        {
+          "id": "ask_mother",
+          "label": "Ask the mother what she is afraid of",
+          "icon": "unicorn",
+          "goto": "scene_mosshorn_calf_ask_mother",
+          "requiresSpecies": "unicorn"
+        }
+      ]
+    },
+    "scene_mosshorn_calf_packs_down": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "narration": "You set the humming packs down in a heap and carry the calf over between you, one of you at each end and one in the middle for luck. The moment you are away from the packs, the mother comes trotting. She sniffs you all over. Then she licks one of you, very wetly, from chin to eyebrow.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to your packs",
+          "icon": "heart",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "check_mosshorn_calf": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Coax a lost mosshorn calf along a trail of moss",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "Moss, moss, moss, all the way up the ridge. The calf follows it, nibbling, and walks straight into its mother's side with a happy bump."
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The calf ignores the moss and follows you instead, everywhere, like a shadow with knees. In the end you walk it all the way up the ridge, packs and all, and its mother is so cross with you that she forgets to be frightened."
+      }
+    },
+    "scene_mosshorn_calf_ask_mother": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "narration": "Your unicorn walks up the ridge alone, slowly, and touches noses with the mother, and she lets the calf come home. \"She isn't frightened of us,\" your unicorn says afterwards. \"She's frightened of the sound. She says it sounds like the mountain, waking up.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to your packs",
+          "icon": "unicorn",
           "goto": "scene_evening"
         }
       ]
@@ -601,10 +889,28 @@
           "goto": "scene_ember"
         },
         {
+          "id": "count",
+          "label": "Lay the collection out by the fire and count it",
+          "icon": "gem",
+          "goto": "scene_evening_count"
+        },
+        {
           "id": "camp",
           "label": "Make camp",
           "icon": "rest",
-          "goto": "rest_lonely_camp"
+          "goto": "scene_humming_night"
+        }
+      ]
+    },
+    "scene_evening_count": {
+      "type": "story",
+      "narration": "You lay every stone out on a blanket in one long, glittering line. They hum at each other. You count them twice and get two different answers, because one of them keeps rolling to the end of the line to be counted again. Nobody else at the Pinch has a line like this. Nobody else at the Pinch comes over to look.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Make camp",
+          "icon": "gem",
+          "goto": "scene_humming_night"
         }
       ]
     },
@@ -657,7 +963,7 @@
           "id": "on",
           "label": "Make camp",
           "icon": "hand",
-          "goto": "rest_lonely_camp"
+          "goto": "scene_humming_night"
         }
       ]
     },
@@ -675,7 +981,7 @@
           "id": "on",
           "label": "Make camp",
           "icon": "manticore",
-          "goto": "rest_lonely_camp"
+          "goto": "scene_humming_night"
         }
       ]
     },
@@ -694,7 +1000,7 @@
           "id": "fold",
           "label": "Fold the list away",
           "icon": "scroll",
-          "goto": "rest_lonely_camp"
+          "goto": "scene_humming_night"
         }
       ]
     },
@@ -703,7 +1009,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -745,7 +1051,7 @@
           "id": "on",
           "label": "Find somewhere to sleep",
           "icon": "hand",
-          "goto": "rest_lonely_camp"
+          "goto": "scene_humming_night"
         }
       ]
     },
@@ -763,6 +1069,70 @@
           "id": "on",
           "label": "Find somewhere to sleep",
           "icon": "gem",
+          "goto": "scene_humming_night"
+        }
+      ]
+    },
+    "scene_humming_night": {
+      "type": "story",
+      "narration": "You lay out your bedrolls, but nobody can sleep. The stones will not stop humming. Not low and sleepy: loud, and all together, like a choir warming up. A mule in the next camp has its hooves over its ears. Somebody three tents away shouts \"KEEP IT DOWN!\"",
+      "choices": [
+        {
+          "id": "socks",
+          "label": "Wrap every stone in a sock",
+          "icon": "hand",
+          "goto": "scene_humming_night_socks"
+        },
+        {
+          "id": "lullaby",
+          "label": "Sing them a lullaby",
+          "icon": "note",
+          "goto": "check_humming_night"
+        },
+        {
+          "id": "glade",
+          "label": "Put the Glade Stone in the middle",
+          "icon": "leaf",
+          "goto": "scene_humming_night_glade",
+          "requiresItem": "facet_glade"
+        }
+      ]
+    },
+    "scene_humming_night_socks": {
+      "type": "story",
+      "narration": "Every sock you own, and two you borrow. The stones hum on inside them, muffled, like bees in a pillow. It is quieter. It is not quiet. You fall asleep at last with very cold feet.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Settle down",
+          "icon": "hand",
+          "goto": "rest_lonely_camp"
+        }
+      ]
+    },
+    "check_humming_night": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Sing a whole pack of humming stones to sleep",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "rest_lonely_camp",
+        "narration": "You sing the softest song you know. Slowly the stones find your note and hum along, then softer, and softer, until they are only purring. Three tents away, somebody says thank you."
+      },
+      "onFailure": {
+        "goto": "rest_lonely_camp",
+        "narration": "You sing. The stones love it. They hum along at the tops of their voices, and the mule joins in, and the camp three tents away joins in too, and soon everybody is singing and nobody minds about sleep at all."
+      }
+    },
+    "scene_humming_night_glade": {
+      "type": "story",
+      "narration": "You set the Glade Stone in the middle of the pile. It hums low and slow, like wind in leaves, and one by one the other stones settle round it and hush, the way birds go quiet when the forest does. The mule takes its hooves off its ears.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Settle down",
+          "icon": "leaf",
           "goto": "rest_lonely_camp"
         }
       ]
@@ -776,6 +1146,155 @@
           "id": "to_bend",
           "label": "Set off for the bend",
           "icon": "boot",
+          "goto": "scene_checkpoint"
+        }
+      ]
+    },
+    "scene_checkpoint": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Warden Clerk"
+        }
+      ],
+      "narration": "Halfway up the north road, the wardens have built a checkpoint overnight: a gate, a long table, and a clerk with two rubber stamps. Everything that hums goes into a numbered box. The queue is very long, and everybody in it is hiding stones in their hats.",
+      "choices": [
+        {
+          "id": "declare",
+          "label": "Queue up and declare everything",
+          "icon": "scroll",
+          "goto": "scene_checkpoint_declare"
+        },
+        {
+          "id": "scree",
+          "label": "Go round the checkpoint over the scree",
+          "icon": "quick",
+          "goto": "check_checkpoint"
+        },
+        {
+          "id": "pass",
+          "label": "Show the stamp on your pass",
+          "icon": "shield",
+          "goto": "scene_checkpoint_pass",
+          "requiresFlag": "warden_pass"
+        }
+      ]
+    },
+    "scene_checkpoint_declare": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Warden Clerk"
+        }
+      ],
+      "narration": "You queue for an hour, then set everything on the table. The clerk's eyes go very wide. He stamps, and stamps, and logs it all twice, keeps one stone \"for the seal,\" and hands you a receipt. Then he lets you through with the rest. The receipt hums faintly too, somehow.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On up the road",
+          "icon": "scroll",
+          "goto": "scene_milestone_boy"
+        }
+      ]
+    },
+    "check_checkpoint": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Warden Clerk"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Scramble round a warden checkpoint over loose scree",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_milestone_boy",
+        "narration": "Up the scree and round the gate, quick and light as goats. Nobody sees. Well. One goat sees. It does not tell."
+      },
+      "onFailure": {
+        "goto": "scene_milestone_boy",
+        "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint queue, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
+      }
+    },
+    "scene_checkpoint_pass": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Warden Clerk"
+        }
+      ],
+      "narration": "The clerk sees yesterday's stamp on your pass and waves you through without looking up. Behind you, a boy in the queue watches your humming packs go past the table untouched, and his mouth falls open.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On up the road",
+          "icon": "shield",
+          "goto": "scene_milestone_boy"
+        }
+      ]
+    },
+    "scene_milestone_boy": {
+      "type": "story",
+      "narration": "Past the checkpoint, a boy in a coat three sizes too big sits on a milestone. His name is Alder. He holds out one small humming stone. \"Will you buy it?\" he asks. \"I need enough for the wagon home. Mom says the mountain is no place for us now.\" It is a good stone. It is a very good stone.",
+      "choices": [
+        {
+          "id": "buy",
+          "label": "Pay him a fair price for it",
+          "icon": "gem",
+          "goto": "scene_milestone_boy_buy"
+        },
+        {
+          "id": "fare",
+          "label": "Pay his fare home, and let him keep his stone",
+          "icon": "heart",
+          "goto": "scene_milestone_boy_fare"
+        },
+        {
+          "id": "fresh_start",
+          "label": "Tell him about your own fresh start",
+          "icon": "feather",
+          "goto": "scene_milestone_boy_fresh_start",
+          "requiresFlag": "motive_fresh_start"
+        }
+      ]
+    },
+    "scene_milestone_boy_buy": {
+      "type": "story",
+      "narration": "You pay him a fair price, and then a bit more, because the wagon home is a long way. Alder counts the coins three times, beams, and runs for the wagon. His stone goes into your pack with the others and hums in tune at once, as if it had been waiting to join.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On toward the bend",
+          "icon": "gem",
+          "goto": "scene_roadside_glitter"
+        }
+      ]
+    },
+    "scene_milestone_boy_fare": {
+      "type": "story",
+      "narration": "You give him the fare home and fold his fingers back round his stone. He stares at you. \"But you're the collectors,\" he says. \"Everybody says.\" You tell him everybody says a lot of things. He waves from the back of the wagon all the way down the hill.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On toward the bend",
+          "icon": "heart",
+          "goto": "scene_roadside_glitter"
+        }
+      ]
+    },
+    "scene_milestone_boy_fresh_start": {
+      "type": "story",
+      "narration": "One of you came north for a fresh start, too, and tells him so. Alder listens with his whole face. Then he decides something. \"Then I'll keep mine till I'm bigger,\" he says, \"and come back for a fresh start of my own.\" He shakes your hand like a grown-up and runs to catch the wagon.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On toward the bend",
+          "icon": "feather",
           "goto": "scene_roadside_glitter"
         }
       ]
@@ -806,7 +1325,7 @@
           "label": "Follow the trail of tiny tied grass knots around them",
           "icon": "leaf",
           "requiresFlag": "sprites_friends",
-          "goto": "choice_the_bend"
+          "goto": "scene_bend_approach"
         }
       ]
     },
@@ -825,7 +1344,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "choice_the_bend",
+        "goto": "scene_bend_approach",
         "narration": "They are glassback crabs, and they are waving their claws in the most polite warning in the realm: this is our warm spot. You walk the long way round, and they wave you off like aunties.",
         "effects": [
           {
@@ -853,12 +1372,71 @@
         }
       ],
       "onVictory": {
-        "goto": "choice_the_bend",
+        "goto": "scene_bend_approach",
         "narration": "The crabs decide the warm spot was overrated anyway, and clatter off sideways into the rocks, grumbling."
       },
       "onDefeat": {
         "goto": "ending_robbed",
         "narration": "The crabs shove you clean off the road and into a ditch. By the time you climb out, half your packs have burst open, and the masks are already scooping up what rolled out."
+      }
+    },
+    "scene_bend_approach": {
+      "type": "story",
+      "narration": "Round the last corner you can see the worst bend, and you are not the first. Wardens are stacking boxes. Grandmothers are setting out stools. Masks are tuning something that might be a song. Far below, the fattest caravan in the funnel crawls up the zigzags. You have a little time.",
+      "choices": [
+        {
+          "id": "mules",
+          "label": "Go down and make friends with the caravan's mules",
+          "icon": "heart",
+          "goto": "scene_bend_approach_mules",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "mule_friends",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "high_rock",
+          "label": "Climb the high rock to look inside the wagons",
+          "icon": "eye",
+          "goto": "check_bend_approach"
+        }
+      ]
+    },
+    "scene_bend_approach_mules": {
+      "type": "story",
+      "narration": "You trot down and walk beside the lead mules for a mile, scratching ears, taking the cotton out to whisper nice things, and putting it back. By the time you peel off, the lead mule has decided you are its favorite people in the whole world.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back up to the bend",
+          "icon": "heart",
+          "goto": "choice_the_bend"
+        }
+      ]
+    },
+    "check_bend_approach": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Scramble up a crumbly rock for a look inside the caravan",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_bend",
+        "narration": "From the top you can see into every wagon. Eleven are full of pots, pans and grumpy passengers. The middle one holds a single crate, nailed shut, and the canvas above it is trembling. Now you know exactly where to stand.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_middle_wagon",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_bend",
+        "narration": "The rock is crumblier than it looks. You come down faster than you went up, in a little landslide of your own, and land at the feet of a grandmother, who hands you a biscuit without a word."
       }
     },
     "choice_the_bend": {
@@ -913,6 +1491,27 @@
           "icon": "moon",
           "requiresFlag": "nobody_knows",
           "goto": "check_bend"
+        },
+        {
+          "id": "mule_whistle",
+          "label": "The lead mule knows you. Give a whistle.",
+          "icon": "whistle",
+          "goto": "choice_the_bend_mule_whistle",
+          "requiresFlag": "mule_friends"
+        },
+        {
+          "id": "middle_wagon",
+          "label": "Stand exactly where the middle wagon will stop",
+          "icon": "eye",
+          "goto": "choice_the_bend_middle_wagon",
+          "requiresFlag": "knows_middle_wagon"
+        },
+        {
+          "id": "loud_offer",
+          "label": "Offer what a loud stone fetches at the Pinch",
+          "icon": "gem",
+          "goto": "choice_the_bend_loud_offer",
+          "requiresFlag": "loud_is_cheap"
         },
         {
           "id": "outbid",
@@ -988,6 +1587,42 @@
         }
       ]
     },
+    "choice_the_bend_mule_whistle": {
+      "type": "story",
+      "narration": "You whistle. The lead mule's ears shoot up through the cotton, and it turns, very firmly, toward you, and the whole caravan turns after it. The caravan master hauls on the reins and gets nowhere at all. \"Fine,\" she says. \"The mules have decided. What's your offer?\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lift the Caravan Stone",
+          "icon": "whistle",
+          "goto": "scene_caravan_won"
+        }
+      ]
+    },
+    "choice_the_bend_middle_wagon": {
+      "type": "story",
+      "narration": "While three crowds rush the lead wagon, you are already standing beside the middle one, the one with the trembling canvas. The caravan master climbs down right in front of you and blinks. \"How did you know?\" she says. You tell her you looked. She sells you the crate before anyone else has worked it out.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lift the Caravan Stone",
+          "icon": "eye",
+          "goto": "scene_caravan_won"
+        }
+      ]
+    },
+    "choice_the_bend_loud_offer": {
+      "type": "story",
+      "narration": "You offer exactly what a loud stone fetches at the Pinch, which is not much, because buyers think loud means cracked. The caravan master has had a headache since this stone came aboard. She takes your offer so fast she nearly shakes your arm off. \"Take it,\" she says. \"Please. Take the noise.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Lift the Caravan Stone",
+          "icon": "gem",
+          "goto": "scene_caravan_won"
+        }
+      ]
+    },
     "check_bend": {
       "type": "check",
       "stat": "clever",
@@ -999,7 +1634,7 @@
         "narration": "Your offer is so good, and so fast, that the caravan master shakes your hand before anybody else has finished shouting."
       },
       "onFailure": {
-        "goto": "scene_tamsins_offer",
+        "goto": "scene_tidewell",
         "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The Caravan Stone is gone, and the masks have it."
       }
     },
@@ -1020,8 +1655,103 @@
       "choices": [
         {
           "id": "on",
-          "label": "Make camp below the tree line",
+          "label": "On up the road",
           "icon": "forward",
+          "goto": "scene_tidewell"
+        }
+      ]
+    },
+    "scene_tidewell": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. She stops dead. She listens to your packs like a doctor listening to a heartbeat. \"Oh,\" she whispers. \"Oh, you have been busy.\"",
+      "choices": [
+        {
+          "id": "eighth",
+          "label": "Ask her about the eighth facet",
+          "icon": "clever",
+          "goto": "check_tidewell"
+        },
+        {
+          "id": "show",
+          "label": "Lay out the collection for her",
+          "icon": "gem",
+          "goto": "scene_tidewell_show"
+        },
+        {
+          "id": "ember",
+          "label": "Show her the Ember Facet, your very first stone",
+          "icon": "gem",
+          "goto": "scene_tidewell_ember",
+          "requiresItem": "facet_ember"
+        }
+      ]
+    },
+    "check_tidewell": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Follow a very fast-talking scholar to the end of her theory",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tamsins_offer",
+        "narration": "She grabs a napkin and draws on it, very fast. \"The eighth is the crown of the seal. The Keystone. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_keystone",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_tamsins_offer",
+        "narration": "She starts to explain, talking faster and faster, and then the ground shakes, and her notes fly off down the hill like startled birds. She runs after them, shouting back over her shoulder, \"Whatever you do, don't PRY!\" You never quite hear the rest."
+      }
+    },
+    "scene_tidewell_show": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "narration": "You lay out the collection on a flat rock. Professor Tidewell counts it with one inky finger, twice, and has to sit down. \"I was right,\" she says, and laughs, and then her eyes go shiny. \"I was right, and you went and found them all. I don't know whether to hug you or scold you.\" She hugs you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Make camp below the tree line",
+          "icon": "gem",
+          "goto": "scene_tamsins_offer"
+        }
+      ]
+    },
+    "scene_tidewell_ember": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "narration": "You hold up the Ember Facet. Professor Tidewell laughs out loud. \"From the Exchange! The night the gem-light fell upward! I knew one of them came down there.\" She holds it to her ear like a seashell, and goes quiet. \"It's humming the same note as all the others,\" she says. \"Only louder. As if it's nearly home.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Make camp below the tree line",
+          "icon": "gem",
           "goto": "scene_tamsins_offer"
         }
       ]
@@ -1055,7 +1785,7 @@
           "id": "refuse",
           "label": "\"No, thank you. They're ours.\"",
           "icon": "hand",
-          "goto": "choice_tree_line",
+          "goto": "scene_dawn_bell",
           "effects": [
             {
               "type": "setFlag",
@@ -1091,19 +1821,19 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. As she carries the stones away into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
+      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. She carries away every stone you traded for at the Pinch, sack after sack. The great stones, the ones the road gave you, she leaves humming in your packs. \"Bring those to the mountain,\" she says. As she goes off into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on to the tree line",
+          "label": "Try to sleep",
           "icon": "forward",
-          "goto": "choice_tree_line"
+          "goto": "scene_dawn_bell"
         }
       ]
     },
     "scene_handed_back": {
       "type": "story",
-      "narration": "Hessa puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
+      "narration": "Hessa puts her mask back on and goes. In the morning you carry every stone you traded for at the Pinch to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. The great stones, the ones the road gave you, she will not take. \"Those are for the mountain, dear,\" she says, and pats your packs, which hum on, heavier than ever.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -1113,8 +1843,72 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on to the tree line",
+          "label": "Head back up the road",
           "icon": "forward",
+          "goto": "scene_dawn_bell"
+        }
+      ]
+    },
+    "scene_dawn_bell": {
+      "type": "story",
+      "narration": "That morning the ground gives the biggest shake yet. Down in the last dragonling village, the great bell's ribbon slips loose, and the bell begins to swing. Just a little. Then a little more. If it rings now, every town in the foothills will think it is the ring that nobody ever says out loud.",
+      "choices": [
+        {
+          "id": "rope",
+          "label": "Run and grab the bell rope",
+          "icon": "quick",
+          "goto": "check_dawn_bell"
+        },
+        {
+          "id": "clapper",
+          "label": "Climb up and hug the clapper",
+          "icon": "hand",
+          "goto": "scene_dawn_bell_clapper"
+        },
+        {
+          "id": "ribbon",
+          "label": "Tie it up with your songbird ribbon",
+          "icon": "ribbon",
+          "goto": "scene_dawn_bell_ribbon",
+          "requiresItem": "songbird_ribbon"
+        }
+      ]
+    },
+    "check_dawn_bell": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Catch a swinging bell rope before it rings",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_tree_line",
+        "narration": "You reach it in three bounds and hang on with everything you have. The bell swings, slows, and stops, one hair from ringing. A grandmother in a nightcap looks out of a window and nods at you, once."
+      },
+      "onFailure": {
+        "goto": "choice_tree_line",
+        "narration": "You are one step too slow. The bell gives a single small tink. The whole valley freezes. Then a grandmother leans out of a window in her nightcap and shouts, \"Just the wind, dears!\" and everybody breathes again."
+      }
+    },
+    "scene_dawn_bell_clapper": {
+      "type": "story",
+      "narration": "You scramble up the bell frame and wrap your arms round the clapper, which is cold and heavy and smells of old pennies. The bell swings you gently back and forth like a very serious swing until it gives up and stops. Getting down takes longer than getting up.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the tree line",
+          "icon": "hand",
+          "goto": "choice_tree_line"
+        }
+      ]
+    },
+    "scene_dawn_bell_ribbon": {
+      "type": "story",
+      "narration": "You tie the bell up with your songbird ribbon, with a neat bow on top. The bell stops. The ribbon sings, very faintly, a little song about staying quiet. The grandmothers agree it is the best-tied bell in the foothills, and nobody asks where the ribbon went.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the tree line",
+          "icon": "ribbon",
           "goto": "choice_tree_line"
         }
       ]
@@ -1178,7 +1972,7 @@
     },
     "walk_scene_tree_line": {
       "type": "story",
-      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that the three of you sound like a walking beehive, and a passing drover gives you a very wide berth.",
+      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that you all sound like a walking beehive, and a passing drover gives you a very wide berth.",
       "choices": [
         {
           "id": "down",
@@ -1442,7 +2236,7 @@
         },
         {
           "id": "confess",
-          "label": "Tell her who you sold stones to",
+          "label": "Tell her you helped pay for the break",
           "icon": "moon",
           "requiresFlag": "funded_the_break",
           "goto": "walk_scene_the_fuse"
@@ -1532,7 +2326,7 @@
     },
     "walk_scene_the_fuse_give": {
       "type": "story",
-      "narration": "You put a stone in her hand after all. She looks at it, and at you, and the needles stop shaking for exactly as long as it takes her to tuck it into her apron. \"Well,\" she says. \"That's one.\" Then she picks up the knitting again, and the bells go on counting.",
+      "narration": "You put a stone in her hand after all. She looks at it, and at you, and the needles stop shaking for exactly as long as it takes her to tuck it into her apron. \"Well,\" she says. \"That's one.\" Then she picks up the knitting again. The bells go on counting, but somewhere under them one small bell rings a ring you have not heard before, and it is a happy one.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -1656,7 +2450,11 @@
       "centaur_relay": "brisk, proud of the roads, speaks over her shoulder at a canter",
       "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
       "caravan_master": "exhausted, practical, will sell to whoever stops shouting first",
-      "brisk": "Brisk, a centaur relay runner; fast-talking, fair, says a lot by saying nothing"
+      "brisk": "Brisk, a centaur relay runner; fast-talking, fair, says a lot by saying nothing",
+      "bryony": "a dragonling girl who keeps the price board at the Pinch; chalky, quick, nosy, cheerful",
+      "lady_fleecewick": "a rival collector, a sheeple in a lace collar with a glass cabinet on wheels; gracious, thrilled by any stone, never sore about losing",
+      "alder": "a boy on a milestone selling his one stone for the wagon home; polite, hopeful, trying hard to be grown-up",
+      "tidewell": "Professor Marrow Tidewell, the selkie scholar from chapter 1; ink on both elbows, talks fast, draws on napkins, proud and worried at once"
     }
   }
 }
