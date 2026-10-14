@@ -89,7 +89,8 @@
 
 /* The combat clock: a ring, not a colour change. */
 .combat__cell--active {
-  box-shadow: inset 0 0 0 0.18em var(--color-accent, #ffc95c);
+  box-shadow: 0 0 0 0.16em var(--color-accent, #ffc95c), 0 0 0.6em var(--color-accent, #ffc95c);
+  z-index: 1;
 }
 
 .combat__cell--tap {
@@ -99,6 +100,49 @@
   cursor: pointer;
   padding: 0;
   font: inherit;
+}
+
+/* What stands on a square fills it (CombatPanel CellFigure). */
+.combat__cell-face,
+.combat__cell-art {
+  inline-size: 92%;
+  block-size: 92%;
+  border-radius: 0.2em;
+  object-fit: cover;
+}
+
+.combat__cell--down .combat__cell-face,
+.combat__cell--down .combat__cell-art,
+.combat__cell--down > .kad-icon {
+  opacity: 0.45;
+  filter: grayscale(0.7);
+}
+
+.combat__down-badge {
+  position: absolute;
+  inset-block-end: 4%;
+  inset-inline-end: 4%;
+  inline-size: 42%;
+  block-size: 42%;
+  border-radius: 50%;
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+}
+
+/* A square you can walk to: a big gold dot, the one mark on the board that
+   means "tap me". The old footprints glyph was a few pixels of detail. */
+.combat__dot {
+  inline-size: 38%;
+  block-size: 38%;
+  border-radius: 50%;
+  background: var(--color-accent, #ffc95c);
+  box-shadow: 0 0 0.35em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
+}
+
+.combat__cell--selected .combat__dot {
+  inline-size: 58%;
+  block-size: 58%;
+  background: var(--color-primary, #7c5cff);
 }
 
 .combat__cell--selected {
@@ -226,7 +270,9 @@
 
 .combat__key--walk {
   border: 0.12em solid var(--color-accent, #ffc95c);
-  background: color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
+  background:
+    radial-gradient(circle, var(--color-accent, #ffc95c) 0 28%, transparent 32%),
+    color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
 }
 
 /* One card a row: each now carries a sentence saying what it does. */
