@@ -8,7 +8,7 @@ import {
   stubEngine,
   type TestHarness,
 } from "../test-support.ts";
-import { applyAction } from "./action.ts";
+import { applyAction, diceSeed } from "./action.ts";
 import { createRoom } from "./room.ts";
 
 /** A room with one player, ready to be acted on. */
@@ -368,5 +368,15 @@ describe("applyAction — authorization (§4.5)", () => {
       harness.deps,
     );
     expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+});
+
+describe("diceSeed", () => {
+  it("puts the run's secret in front of the public run id and seq", () => {
+    expect(diceSeed({ diceSecret: "abc" }, "r_1", 7)).toBe("abc:r_1:7");
+  });
+
+  it("keeps a run from before the secret on its old seed, so its log replays", () => {
+    expect(diceSeed({}, "r_1", 7)).toBe("r_1:7");
   });
 });
