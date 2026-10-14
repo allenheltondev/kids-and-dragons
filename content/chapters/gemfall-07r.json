@@ -862,6 +862,12 @@
           "icon": "forward",
           "goto": "scene_masks_let_be"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk masked singer"
+        }
       ]
     },
     "scene_masks_let_be": {
@@ -873,6 +879,12 @@
           "label": "Back to your pile",
           "icon": "forward",
           "goto": "choice_haul"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk masked singer"
         }
       ]
     },
@@ -913,7 +925,13 @@
       "onFailure": {
         "goto": "choice_haul",
         "narration": "She listens kindly, all the way to the end. Then she puts her mask back on. \"I hope you're right,\" she says. \"I don't think you are.\" Her cell rolls on with a full sack."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk masked singer"
+        }
+      ]
     },
     "choice_haul": {
       "type": "choice_point",

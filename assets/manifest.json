@@ -328,6 +328,18 @@
       "scale": "medium"
     },
     {
+      "id": "burrowfolk",
+      "classification": "supporting_people",
+      "primaryBiome": "sunward_fields",
+      "canonicalLocations": [
+        "sunward_fields",
+        "plains",
+        "red_sky_foothills",
+        "exchange"
+      ],
+      "scale": "small_to_medium"
+    },
+    {
       "id": "harvest_sprite",
       "classification": "supporting_people",
       "primaryBiome": "sunward_fields",
@@ -394,16 +406,6 @@
         "stone_crossing",
         "skullwater_cave",
         "eastern_plains"
-      ],
-      "scale": "very_large"
-    },
-    {
-      "id": "boughkin",
-      "classification": "supporting_people",
-      "primaryBiome": "enchanted_woods",
-      "canonicalLocations": [
-        "enchanted_woods",
-        "mosshome"
       ],
       "scale": "very_large"
     },
@@ -593,6 +595,16 @@
         "bone_yard"
       ],
       "scale": "variable"
+    },
+    {
+      "id": "boughkin",
+      "classification": "supporting_people",
+      "primaryBiome": "enchanted_woods",
+      "canonicalLocations": [
+        "enchanted_woods",
+        "mosshome"
+      ],
+      "scale": "very_large"
     }
   ],
   "gear": [
@@ -2009,6 +2021,24 @@
       "name": "Mother Thrum",
       "basis": "witch_order",
       "scale": "medium"
+    },
+    {
+      "id": "ma_ruddle",
+      "name": "Ma Ruddle",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "tib",
+      "name": "Tib",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "dunmore",
+      "name": "Dunmore",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
     }
   ],
   "globalPalette": {
