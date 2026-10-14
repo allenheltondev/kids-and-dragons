@@ -18,10 +18,14 @@
  */
 
 import { useSyncExternalStore } from "react";
-import type { Appearance, ClassId, SpeciesId, Stats } from "@kad/shared";
+import type { ClassId, SpeciesId, Stats } from "@kad/shared";
 
-/** The five screens of spec §5, in order. One decision each. */
-export const CREATION_STEPS = ["species", "class", "stats", "appearance", "name"] as const;
+/**
+ * The screens of spec §5, in order. One decision each. There is no
+ * appearance screen: colors are assigned by the server, not chosen
+ * (shared player-colors.ts), and nothing else about a look is ever drawn.
+ */
+export const CREATION_STEPS = ["species", "class", "stats", "name"] as const;
 
 export type CreationStep = (typeof CREATION_STEPS)[number];
 
@@ -32,7 +36,6 @@ export interface CreationDraft {
   klass: ClassId | null;
   /** Points the player has assigned, over and above base + species. */
   assigned: Stats;
-  appearance: Appearance;
   name: string;
   /** True once CREATE_CHARACTER is in flight, so the preview can settle. */
   submitting: boolean;
@@ -45,7 +48,6 @@ export const EMPTY_DRAFT: CreationDraft = {
   species: null,
   klass: null,
   assigned: NO_POINTS,
-  appearance: { palette: "", accent: "" },
   name: "",
   submitting: false,
 };

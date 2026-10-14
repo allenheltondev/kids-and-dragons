@@ -119,7 +119,9 @@ async function realContent() {
  */
 function normalise(state: RunState): unknown {
   const { narration: _ignored, ...rest } = state;
-  const json = JSON.stringify(rest)
+  // Player colors are seeded from the run id (shared player-colors.ts), which
+  // differs between the two runs exactly as the id itself does.
+  const json = JSON.stringify(rest, (key, value: unknown) => (key === "appearance" ? "<colors>" : value))
     .split(state.runId)
     .join("<run>")
     .split(state.roomCode)

@@ -339,7 +339,7 @@
     },
     "scene_spiral": {
       "type": "story",
-      "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centred on a patch of grass a short walk from here.",
+      "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centered on a patch of grass a short walk from here.",
       "choices": [
         {
           "id": "to_rest",
