@@ -74,17 +74,23 @@
   );
 }
 
+/* Tinted squares, not just tinted glyphs: at a tenth of a phone's width a
+   red icon alone did not read as "the enemy is here". The legend under the
+   board uses the same fills. */
 .combat__cell--enemy {
-  color: var(--color-danger, #ff6b6b);
+  background: color-mix(in srgb, var(--color-danger, #ff6b6b) 55%, var(--color-surface, #191534));
+  color: #fff;
 }
 
 .combat__cell--party {
-  color: var(--color-accent, #ffc95c);
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
+  color: var(--kad-accent-ink, #0d0b1a);
 }
 
 /* The combat clock: a ring, not a colour change. */
 .combat__cell--active {
-  box-shadow: inset 0 0 0 0.18em var(--color-accent, #ffc95c);
+  box-shadow: 0 0 0 0.16em var(--color-accent, #ffc95c), 0 0 0.6em var(--color-accent, #ffc95c);
+  z-index: 1;
 }
 
 .combat__cell--tap {
@@ -94,6 +100,49 @@
   cursor: pointer;
   padding: 0;
   font: inherit;
+}
+
+/* What stands on a square fills it (CombatPanel CellFigure). */
+.combat__cell-face,
+.combat__cell-art {
+  inline-size: 92%;
+  block-size: 92%;
+  border-radius: 0.2em;
+  object-fit: cover;
+}
+
+.combat__cell--down .combat__cell-face,
+.combat__cell--down .combat__cell-art,
+.combat__cell--down > .kad-icon {
+  opacity: 0.45;
+  filter: grayscale(0.7);
+}
+
+.combat__down-badge {
+  position: absolute;
+  inset-block-end: 4%;
+  inset-inline-end: 4%;
+  inline-size: 42%;
+  block-size: 42%;
+  border-radius: 50%;
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+}
+
+/* A square you can walk to: a big gold dot, the one mark on the board that
+   means "tap me". The old footprints glyph was a few pixels of detail. */
+.combat__dot {
+  inline-size: 38%;
+  block-size: 38%;
+  border-radius: 50%;
+  background: var(--color-accent, #ffc95c);
+  box-shadow: 0 0 0.35em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
+}
+
+.combat__cell--selected .combat__dot {
+  inline-size: 58%;
+  block-size: 58%;
+  background: var(--color-primary, #7c5cff);
 }
 
 .combat__cell--selected {
@@ -137,15 +186,118 @@
   block-size: 1.3em;
 }
 
-.combat .prompt__options:not(.combat__targets) {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+/*
+ * The two steps of a turn (§7.2): a numbered heading and one line saying what
+ * to tap. A finished step keeps its place with a tick, so the order stays
+ * readable after the move has been made.
+ */
+.combat__step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
 }
 
-.combat .prompt__options:not(.combat__targets) .choice {
+.combat__step-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 800;
+}
+
+.combat__step-num {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-accent, #ffc95c);
+  color: var(--kad-accent-ink, #0d0b1a);
+  font-size: 0.9em;
+  font-weight: 900;
+}
+
+.combat__step-hint {
+  margin: 0;
+  padding-inline-start: 2em;
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.combat__step--done .combat__step-num {
+  background: var(--color-ok, #6fd39b);
+}
+
+/* What the board's marks mean, in the same shapes the board draws. */
+.combat__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 0.9em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.combat__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.combat__key {
+  display: inline-block;
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  border-radius: 0.2em;
+  background: var(--color-surface, #191534);
+}
+
+.combat__key--you {
+  box-shadow: inset 0 0 0 0.15em var(--color-accent, #ffc95c);
+}
+
+.combat__key--friend {
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
+}
+
+.combat__key--enemy {
+  background: var(--color-danger, #ff6b6b);
+}
+
+.combat__key--walk {
+  border: 0.12em solid var(--color-accent, #ffc95c);
+  background:
+    radial-gradient(circle, var(--color-accent, #ffc95c) 0 28%, transparent 32%),
+    color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
+}
+
+/* One card a row: each now carries a sentence saying what it does. */
+.combat .combat__actions .choice {
   grid-template-columns: auto minmax(0, 1fr);
-  block-size: 100%;
-  padding: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+}
+
+.choice__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  min-inline-size: 0;
+  text-align: start;
+}
+
+.choice__sub {
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.combat__end {
+  margin-block-start: var(--space-1, 0.25em);
 }
 
 .combat .prompt__options:not(.combat__targets) .choice__icon {
@@ -170,4 +322,97 @@
      fits. The pane scrolls only if a phone is shorter than any we know. */
   inline-size: min(100%, (100cqh - 12.5em) * 1.25);
   margin-inline: auto;
+}
+
+/*
+ * Motion — so a tap visibly *does* something and the board feels alive.
+ * Transform and opacity only (cheap on a phone), short, and all of it off
+ * under prefers-reduced-motion at the bottom.
+ */
+
+/* The squares you can walk to breathe, gently, together: "tap one of these". */
+.combat__cell--walk .combat__dot {
+  animation: combat-dot-breathe 1.8s ease-in-out infinite;
+}
+
+@keyframes combat-dot-breathe {
+  0%, 100% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* The one you picked pops to its bigger purple self. */
+.combat__cell--selected .combat__dot {
+  animation: combat-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* A figure arriving on a square — the board's first draw, a step, a shove. */
+.combat__cell-face,
+.combat__cell-art,
+.combat__cell > .kad-icon {
+  animation: combat-pop 280ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes combat-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Whoever's turn it is glows, slowly. */
+.combat__cell--active {
+  animation: combat-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes combat-glow {
+  0%, 100% { box-shadow: 0 0 0 0.16em var(--color-accent, #ffc95c), 0 0 0.3em var(--color-accent, #ffc95c); }
+  50% { box-shadow: 0 0 0 0.16em var(--color-accent, #ffc95c), 0 0 0.9em var(--color-accent, #ffc95c); }
+}
+
+/* Aiming squares twinkle. */
+.combat__cell--aim > .kad-icon {
+  animation: combat-twinkle 1.2s ease-in-out infinite;
+}
+
+@keyframes combat-twinkle {
+  0%, 100% { transform: scale(0.9) rotate(0deg); opacity: 0.75; }
+  50% { transform: scale(1.1) rotate(12deg); opacity: 1; }
+}
+
+/* Knocked down: the badge drops in. */
+.combat__down-badge {
+  animation: combat-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* A step finished: its number becomes a tick with a little bounce. */
+.combat__step--done .combat__step-num {
+  animation: combat-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* "Your turn" arrives rather than appears. */
+.combat > .prompt__title {
+  animation: combat-rise 360ms ease-out both;
+}
+
+@keyframes combat-rise {
+  from { transform: translateY(0.5em); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.combat__end {
+  animation: combat-rise 300ms ease-out 200ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .combat__cell--walk .combat__dot,
+  .combat__cell--selected .combat__dot,
+  .combat__cell-face,
+  .combat__cell-art,
+  .combat__cell > .kad-icon,
+  .combat__cell--active,
+  .combat__cell--aim > .kad-icon,
+  .combat__down-badge,
+  .combat__step--done .combat__step-num,
+  .combat > .prompt__title,
+  .combat__end {
+    animation: none;
+  }
 }

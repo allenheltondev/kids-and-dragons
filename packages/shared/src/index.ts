@@ -34,3 +34,4 @@ export * from "./enemy-ai.js";
 export * from "./balance.js";
 export * from "./playtest.js";
 export * from "./speak.js";
+export * from "./preview.js";

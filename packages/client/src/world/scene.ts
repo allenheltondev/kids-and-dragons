@@ -970,6 +970,7 @@ export function createScene(app: Application): PartyScene {
         camState = createCameraState({
           board: { width: view.encounter.board.width, height: view.encounter.board.height },
           attention,
+          wholeWhenRoomy: true,
         });
         camNow = null; // the ENCOUNTER_BEGAN beat covers the cut
       }

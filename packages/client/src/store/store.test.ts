@@ -90,6 +90,7 @@ function harness(state: RunState = makeState()): Harness {
       state,
     })),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
+    postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
@@ -354,6 +355,41 @@ describe("the mirror", () => {
     await h.channelOptions().resync(1);
 
     expect(h.store.getState().state?.narration).toBe("three");
+  });
+});
+
+describe("preview", () => {
+  it("posts the newest pick only, one at a time, and skips a repeat", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    let release: () => void = () => undefined;
+    h.api.postPreview.mockImplementationOnce(() => new Promise<void>((resolve) => (release = resolve)));
+
+    const { preview } = h.store.getState();
+    preview({ kind: "choice", choiceId: "east" }, "choice:1");
+    // Two more taps while the first is in the air: only the last is worth sending.
+    preview({ kind: "choice", choiceId: "west" }, "choice:1");
+    preview(null, null);
+    expect(h.api.postPreview).toHaveBeenCalledTimes(1);
+    expect(h.api.postPreview).toHaveBeenLastCalledWith({ kind: "choice", choiceId: "east" }, "choice:1", "tok_1");
+    release();
+    await vi.waitFor(() => expect(h.api.postPreview).toHaveBeenCalledTimes(2));
+    expect(h.api.postPreview).toHaveBeenLastCalledWith(null, null, "tok_1");
+
+    // Already told: saying it again sends nothing.
+    preview(null, null);
+    await Promise.resolve();
+    expect(h.api.postPreview).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps everybody's picks with the decision they were made for, and forgets a withdrawn one", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: { kind: "end_turn" }, context: "fight:x" });
+    expect(h.store.getState().previews).toEqual({ p_2: { preview: { kind: "end_turn" }, context: "fight:x" } });
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null, context: null });
+    expect(h.store.getState().previews).toEqual({});
+    expect(h.store.getState().state?.seq).toBe(7);
   });
 });
 

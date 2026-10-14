@@ -51,6 +51,7 @@
       "required": [
         "id",
         "name",
+        "summary",
         "icon",
         "timing",
         "target",
@@ -66,6 +67,12 @@
         "name": {
           "type": "string",
           "minLength": 1
+        },
+        "summary": {
+          "$comment": "One plain sentence under the card on the phone: what tapping it does, for a reader of about eight. Name the effect, not the mechanic.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
         },
         "icon": {
           "$comment": "Icons before text (roadmap): nothing tappable ships without one.",

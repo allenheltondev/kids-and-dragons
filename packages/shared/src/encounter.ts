@@ -299,6 +299,8 @@ export interface AbilityEffectSpec {
 export interface CombatAbility {
   readonly id: string;
   readonly name: string;
+  /** One plain sentence for the card on the phone: what tapping it does. */
+  readonly summary?: string;
   readonly icon: string;
   readonly timing: AbilityTiming;
   readonly target: TargetRule;
@@ -351,6 +353,7 @@ export const UNIVERSAL_ABILITIES: AbilityCatalog = {
   [ATTACK_ID]: {
     id: ATTACK_ID,
     name: "Attack",
+    summary: "Swing at an enemy standing next to you.",
     icon: "fist",
     timing: "action",
     target: { kind: "enemy", range: "adjacent" },
@@ -359,6 +362,7 @@ export const UNIVERSAL_ABILITIES: AbilityCatalog = {
   [HELP_UP_ID]: {
     id: HELP_UP_ID,
     name: "Help Up",
+    summary: "Help a knocked-down friend next to you back on their feet.",
     icon: "hand",
     timing: "action",
     // §7.3 — "any ally who spends an action adjacent to them". The `down`
@@ -369,7 +373,11 @@ export const UNIVERSAL_ABILITIES: AbilityCatalog = {
   },
   [READY_ID]: {
     id: READY_ID,
-    name: "Ready",
+    // "Get Ready", not "Ready": the same phone has just asked "I'm ready to
+    // fight?" before the board went up, and two different "Ready"s a minute
+    // apart was the most confusing thing on the turn screen.
+    name: "Get Ready",
+    summary: "Wait this turn, and get +2 on your next roll.",
     icon: "shield",
     timing: "action",
     target: { kind: "none" },
@@ -436,6 +444,13 @@ export interface Combatant {
 }
 
 export interface EncounterState {
+  /**
+   * The run's seq when this fight began (engine.ts), and so its identity: two
+   * fights can share every turn field (the same hero first in round 1 of
+   * each), but never this. Previews key on it (`previewContext`). Optional
+   * because a fight persisted before it existed has none.
+   */
+  readonly startedAt?: number;
   readonly board: Board;
   readonly combatants: readonly Combatant[];
   /** Initiative order, rolled once (§7.2). Ids only; stats live above. */
