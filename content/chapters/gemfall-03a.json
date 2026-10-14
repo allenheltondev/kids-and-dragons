@@ -168,7 +168,18 @@
         }
       ],
       "discovers": [
-        "location.stone_crossing"
+        "location.stone_crossing",
+        "npc.burrowfolk"
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "check_rivals": {
@@ -184,7 +195,17 @@
       "onFailure": {
         "goto": "scene_skip_passes",
         "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_rivals_caught": {
       "type": "story",
@@ -202,6 +223,16 @@
           "label": "Take your place in the queue",
           "icon": "arrow",
           "goto": "scene_skip_passes"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
