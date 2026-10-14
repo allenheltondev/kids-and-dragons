@@ -2,7 +2,7 @@
  * The dice.
  *
  * Fills its *surface*, not the viewport (WorldView rule 2): in Travel Mode the
- * shell hands the world pane 100% of the stack for the roll's ~1.5s and takes
+ * shell hands the world pane 100% of the stack while the dice card is up and takes
  * it back afterwards (spec §2.2), so `position: absolute` gets the full-screen
  * takeover without a single `vh`. A `100vh` overlay here would hang off the
  * bottom of the pane and swallow PlayerView.
@@ -17,11 +17,21 @@
   padding: var(--space-4, 1em);
   /* An opaque-enough fill and no backdrop-filter: this overlay sits on the
      live WebGL canvas, and blurring that backdrop forces the compositor to
-     re-filter every animation frame for the roll's entire 1.5s — the fill
+     re-filter every animation frame for as long as the card is up — the fill
      alone reads the same and costs nothing. (The keepsake/sign-in blurs are
      fine: only static DOM sits behind them.) */
   background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
   animation: dice-fade var(--kad-dur-fast, 120ms) ease-out;
+}
+
+/*
+ * Darker once the dice are down. The card stays up for a few seconds of
+ * reading after the world has moved on to the next scene, and that scene's
+ * narration showing through at 82% competes with "14 + 3 = 17" for the eye.
+ * Only the scrim's colour changes, so the canvas is still never filtered.
+ */
+.dice--settled {
+  background: rgba(8, 7, 17, 0.96);
 }
 
 .dice__card {
@@ -154,6 +164,51 @@
 }
 
 .dice__die--settled {
+  animation: dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1;
+}
+
+/* --- A friend's die ------------------------------------------------------ */
+
+.dice__help {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  margin: 0;
+  opacity: 0;
+  transform: translateY(-0.6em) scale(0.8);
+  transition:
+    opacity var(--kad-dur-base, 260ms) ease-out,
+    transform var(--kad-dur-base, 260ms) ease-out;
+}
+
+.dice__help--thrown {
+  opacity: 1;
+  transform: none;
+}
+
+.dice__help-who {
+  font-size: var(--font-size-md, 1em);
+  font-weight: 600;
+  color: var(--color-text-muted, #b9b0d8);
+}
+
+.dice__help-die {
+  display: grid;
+  place-items: center;
+  inline-size: 2.6em;
+  block-size: 2.6em;
+  border: 0.12em solid var(--color-accent, #f5c86c);
+  border-radius: 0.5em;
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
+  color: var(--color-accent, #f5c86c);
+}
+
+.dice__help-die .dice__die-number--rolling {
+  font-size: 1em;
+}
+
+.dice__help-die--settled {
   animation: dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1;
 }
 
@@ -316,6 +371,7 @@
   .dice,
   .dice__die,
   .dice__die--settled,
+  .dice__help-die--settled,
   .dice__shadow,
   .dice__stage--settled .dice__shadow,
   .dice__stage--good::before {

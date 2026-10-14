@@ -19,6 +19,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import type { PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { TravelLayout } from "./TravelLayout";
+import { rollCardMs } from "../world/presentation";
 
 function character(): ResolvedCharacter {
   return {
@@ -330,7 +331,12 @@ describe("Travel Mode and the map", () => {
     });
     expect(showing(container)).toBe("world");
     act(() => {
-      vi.advanceTimersByTime(2100);
+      vi.advanceTimersByTime(rollCardMs({}) - 100);
+    });
+    // Still the die: the card is up for its whole read, not a quick flash.
+    expect(showing(container)).toBe("world");
+    act(() => {
+      vi.advanceTimersByTime(200);
     });
     expect(showing(container)).toBe("map");
   });
