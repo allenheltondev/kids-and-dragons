@@ -357,6 +357,24 @@ describe("real audio, when there is any", () => {
 });
 
 describe("music", () => {
+  it.each([false, true])("eases lobby music in over six seconds (recorded: %s)", (recorded) => {
+    const ctx = new FakeContext();
+    ctx.currentTime = 10;
+    const engine = createAudioEngine({
+      createContext: () => ctx as unknown as BaseAudioContext,
+      storage: memoryStore(),
+      samples: () => ({ preload() {}, cue: () => null, music: () => recorded ? {} as AudioBuffer : null, wantMusic() {} }),
+    });
+    engine.unlock();
+    engine.sink.music("entry-lobby");
+    const entrance = ctx.gains.find((gain) => gain.gain.history.some((event) => event.kind === "ramp" && event.value === 1));
+    expect(entrance?.gain.history).toEqual([
+      { kind: "set", value: 0, at: 10 },
+      { kind: "ramp", value: 1, at: 16 },
+    ]);
+    engine.dispose();
+  });
+
   it("is idempotent for the biome already playing", () => {
     const { engine, contexts } = build();
     engine.unlock();
