@@ -212,7 +212,7 @@
       "narration": "At the bridge foot, a warden clerk named Pellam writes down every gem that crosses westbound, and keeps none of them. \"Logged is not owned,\" he says. \"Owned is not my department.\" A tagged caravan rolls up: gem 4117. As it passes, it hums, and his pen skips right off the page.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -251,7 +251,7 @@
       "prompt": "Talk a tired carter into trading gem 4117",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -272,7 +272,7 @@
       "prompt": "Find the rule that lets a logged gem change hands",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -291,7 +291,7 @@
       "narration": "Pellam crosses out WESTBOUND, writes EASTBOUND, crosses that out, and writes WITH THEM, pointing at you. \"Very irregular,\" he says. \"Entirely legal.\" The stone is cool and heavy, and its hum makes your teeth feel fizzy.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -626,7 +626,7 @@
       "narration": "One at a time, you carry everybody over the broken gap, wings beating hard over the cold water. Behind you, clerk Pellam watches the whole thing, sighs, and writes UNRATIFIED in his ledger in very large letters.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],
@@ -665,7 +665,7 @@
       "narration": "Nobody is hurt. The wolves just wanted the warm side more. You wait two whole days on the south bank for the span to open again, while the rush gets further ahead and the mountain glows a little brighter every night. In the end Pellam waves you across himself. \"Logged,\" he says. \"Late. But logged.\"",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/pellam",
           "name": "Pellam"
         }
       ],

@@ -737,7 +737,7 @@
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Fenn"
         }
       ],
@@ -767,7 +767,7 @@
       "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Fenn"
         }
       ],
@@ -785,7 +785,7 @@
       "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
       "cast": [
         {
-          "figure": "entities/merfolk",
+          "figure": "cast/coralie_fenn",
           "name": "Madame Fenn"
         }
       ],
