@@ -176,6 +176,13 @@
       ],
       "art": "bg/bramblewood/clearing",
       "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot.",
+      "cast": [
+        {
+          "figure": "entities/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
       "choices": [
         {
           "id": "say_hello",
@@ -198,6 +205,13 @@
       ],
       "art": "bg/bramblewood/clearing",
       "narration": "\"I'm Pib,\" says the sprite, \"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\" Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous.",
+      "cast": [
+        {
+          "figure": "entities/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -322,6 +336,11 @@
       "type": "story",
       "art": "bg/bramblewood/stream",
       "narration": "Three bramblewisps (little blue lights with far too much energy) are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "choices": [
         {
           "id": "ask_nicely",
@@ -356,6 +375,11 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Talk three excited wisps into handing it over",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_wisp_friends",
@@ -391,6 +415,11 @@
       "type": "story",
       "art": "bg/bramblewood/thicket",
       "narration": "The wisps tie all your bootlaces together, eat the snacks, and then, feeling a bit guilty, tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "onEnter": [
         {
           "type": "heal",
@@ -410,6 +439,11 @@
       "type": "story",
       "art": "bg/bramblewood/stream",
       "narration": "The shiny thing is a jar of mosslight, and the wisps hand it over with great ceremony. Then they point downstream, all three at once, at a hill with a door in it.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",

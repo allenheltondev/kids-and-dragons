@@ -15,6 +15,7 @@ import type { ReactElement } from "react";
 import { speak, turnHolderAway } from "@kad/shared";
 import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
+import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
 import { chapterHeading } from "./campaign-copy";
 import "./shared.css";
@@ -161,12 +162,35 @@ export function NarrationPanel(): ReactElement | null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingKey]);
 
-  if (state === null) return null;
-
   // In a fight the board is the thing to look at and the words are its
   // caption: the panel folds to a strip (NarrationPanel.css) so a phone's
   // world pane shows tiles, not a paragraph over them.
-  const fighting = state.encounter != null;
+  const fighting = state?.encounter != null;
+
+  /*
+   * The plate's height, told to the stage (world/stage-inset.ts) so the story
+   * frames its figures above the words rather than behind them. Nothing in a
+   * fight: the board takes the whole pane and the caption floats over it.
+   */
+  const plate = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const element = plate.current;
+    if (fighting || element === null) {
+      setStageInsetBottom(0);
+      return;
+    }
+    const report = (): void => setStageInsetBottom(element.getBoundingClientRect().height);
+    report();
+    if (typeof ResizeObserver === "undefined") return () => setStageInsetBottom(0);
+    const observer = new ResizeObserver(report);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      setStageInsetBottom(0);
+    };
+  }, [fighting, state === null]);
+
+  if (state === null) return null;
 
   return (
     <section className={`narration${fighting ? " narration--fight" : ""}`} aria-live="polite">
@@ -184,83 +208,85 @@ export function NarrationPanel(): ReactElement | null {
         roadmap chapter 8's transitions, DOM half. The key is the content
         itself: same words, same node, no re-animation on unrelated patches.
       */}
-      <div className="narration__story">
-        {choices !== null && choices.length > 0 && turnName !== null ? (
-          <p className="narration__turn">{turnName}&rsquo;s turn to choose</p>
+      <div className="narration__plate" ref={plate}>
+        <div className="narration__story">
+          {choices !== null && choices.length > 0 && turnName !== null ? (
+            <p className="narration__turn">{turnName}&rsquo;s turn to choose</p>
+          ) : null}
+          <p className="narration__body" key={narration}>
+            {narration}
+          </p>
+        </div>
+
+        {/*
+          The shared screen shows *what* the choices are; the buttons live on the
+          phones (spec §2). Read-only here — nothing on WorldView is tappable.
+        */}
+        {choices !== null && choices.length > 0 ? (
+          <ul className="narration__choices">
+            {choices.map((choice) => {
+              const who = leaning.choices[choice.id] ?? [];
+              return (
+                <li
+                  className={`narration__choice${who.length > 0 ? " narration__choice--picked" : ""}`}
+                  key={choice.id}
+                >
+                  <Icon name={choice.icon} />
+                  <span>{choice.label}</span>
+                  {who.length > 0 ? (
+                    <span className="narration__picker">
+                      <Icon name="hand" />
+                      <span>{who.join(", ")}</span>
+                    </span>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
         ) : null}
-        <p className="narration__body" key={narration}>
-          {narration}
-        </p>
-      </div>
 
-      {/*
-        The shared screen shows *what* the choices are; the buttons live on the
-        phones (spec §2). Read-only here — nothing on WorldView is tappable.
-      */}
-      {choices !== null && choices.length > 0 ? (
-        <ul className="narration__choices">
-          {choices.map((choice) => {
-            const who = leaning.choices[choice.id] ?? [];
-            return (
-              <li
-                className={`narration__choice${who.length > 0 ? " narration__choice--picked" : ""}`}
-                key={choice.id}
-              >
-                <Icon name={choice.icon} />
-                <span>{choice.label}</span>
-                {who.length > 0 ? (
-                  <span className="narration__picker">
-                    <Icon name="hand" />
-                    <span>{who.join(", ")}</span>
-                  </span>
-                ) : null}
+        {/*
+          The fighter whose turn it is, mid-pick: the board rings what they are
+          aiming at, and this names it, because a ring alone does not say
+          *which* power is about to land.
+        */}
+        {leaning.combat !== null && state.encounter ? (
+          <p className="narration__aim" role="status">
+            <Icon name="hand" />
+            <span>
+              <b>{leaning.combat.name}</b>:{" "}
+              {describeCombatPreview(leaning.combat.preview, state.encounter, abilities, items)}
+            </span>
+          </p>
+        ) : null}
+
+        {prompt !== null && prompt.kind === "roll" ? (
+          <p className="narration__prompt">
+            <Icon name="d20" />
+            <span>{prompt.prompt}</span>
+          </p>
+        ) : null}
+
+        {/*
+          Hand-offs in the air (spec §9.4). On the shared screen for the same
+          reason the choices are: the buttons belong to the phones, but the table
+          should be able to see what is being passed around without reading over
+          somebody's shoulder. Read-only, like everything else on WorldView.
+        */}
+        {trades.length === 0 ? null : (
+          <ul className="narration__trades">
+            {trades.map((offer) => (
+              <li className="narration__trade" key={offer.id}>
+                <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
+                <span>
+                  <b>{nameOfPlayer(offer.fromPlayerId)}</b> offers{" "}
+                  {nameOfItem(offer.itemId)} to <b>{nameOfPlayer(offer.toPlayerId)}</b>
+                </span>
               </li>
-            );
-          })}
-        </ul>
-      ) : null}
-
-      {/*
-        The fighter whose turn it is, mid-pick: the board rings what they are
-        aiming at, and this names it, because a ring alone does not say
-        *which* power is about to land.
-      */}
-      {leaning.combat !== null && state.encounter ? (
-        <p className="narration__aim" role="status">
-          <Icon name="hand" />
-          <span>
-            <b>{leaning.combat.name}</b>:{" "}
-            {describeCombatPreview(leaning.combat.preview, state.encounter, abilities, items)}
-          </span>
-        </p>
-      ) : null}
-
-      {prompt !== null && prompt.kind === "roll" ? (
-        <p className="narration__prompt">
-          <Icon name="d20" />
-          <span>{prompt.prompt}</span>
-        </p>
-      ) : null}
-
-      {/*
-        Hand-offs in the air (spec §9.4). On the shared screen for the same
-        reason the choices are: the buttons belong to the phones, but the table
-        should be able to see what is being passed around without reading over
-        somebody's shoulder. Read-only, like everything else on WorldView.
-      */}
-      {trades.length === 0 ? null : (
-        <ul className="narration__trades">
-          {trades.map((offer) => (
-            <li className="narration__trade" key={offer.id}>
-              <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
-              <span>
-                <b>{nameOfPlayer(offer.fromPlayerId)}</b> offers{" "}
-                {nameOfItem(offer.itemId)} to <b>{nameOfPlayer(offer.toPlayerId)}</b>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

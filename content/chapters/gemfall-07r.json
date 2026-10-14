@@ -119,6 +119,16 @@
         "npc.faun"
       ],
       "narration": "The wardens did exactly what you told them would work. Overnight their checkpoint grew a gate, a ledger and a very long table, and every stone goes into a numbered box. It works. A small faun watches her one shiny pebble get a number, and her lip wobbles.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        },
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "pebble",
@@ -156,6 +166,16 @@
     "scene_wardens_let_work": {
       "type": "story",
       "narration": "You let the wardens work. It is quick and it is fair and nobody enjoys it, least of all the wardens. Box after numbered box fills with humming stones, and the sergeant writes every number down twice, and the small faun's pebble gets a number too. It works. You keep telling yourself it works.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        },
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -168,6 +188,16 @@
     "scene_wardens_pebble": {
       "type": "story",
       "narration": "\"It's only a pebble,\" you say. The sergeant looks at the pebble, looks at the box, looks at the ledger, and then does something that is not in any ledger: hands it back. The small faun holds it in both hands and gives you a honeycake she had been saving for a very bad day, which this now is not.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        },
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -183,6 +213,12 @@
         "character.dragonling"
       ],
       "narration": "The dragonling towns have turned gathering law inside out. A grandmother sits outside every gem-buyer's tent, knitting, saying \"No, dear,\" until the buyer feels so bad he hands his stones over himself. One buyer is crying into a very expensive hat.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "knit",
@@ -215,6 +251,12 @@
     "scene_grandmothers_queue": {
       "type": "story",
       "narration": "You keep the queue of sorry buyers moving. It is a long queue and they are very sorry. One of them tries to leave without handing anything over, and three grandmothers say \"No, dear\" at once, in harmony, and he comes back without a word and empties both pockets.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -227,6 +269,12 @@
     "scene_grandmothers_knit": {
       "type": "story",
       "narration": "A grandmother hands you needles and wool without looking up. You do not know how to knit. By the end of the morning you know how to knit badly, and two gem-buyers have handed over their sacks rather than watch you drop another stitch. \"That's the trick,\" says the grandmother. \"Nobody can stand it.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -312,6 +360,13 @@
         "npc.frogfolk"
       ],
       "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the ferryman from Stone Crossing, Old Ossley, and the boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
+        }
+      ],
       "choices": [
         {
           "id": "debt",
@@ -338,6 +393,13 @@
     "scene_ossley_debt": {
       "type": "story",
       "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. He presses one plain, wet stone into your hand: \"Carry this one up yourselves. When you put it down, say thank you to the river.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -361,6 +423,13 @@
     "scene_mosshome_runner": {
       "type": "story",
       "narration": "A MossHome runner jogs up with moss in her hair and a string of grumbling mules behind her. She counts the knots on your cord twice, nods, and unloads everything the Woods confiscated from careless hunters: shovels, a teapot, one very surprised hat, and stones. Lots of stones.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
       "choices": [
         {
           "id": "thank",
@@ -383,6 +452,11 @@
         "npc.boggart"
       ],
       "narration": "A boggart with a satchel full of scribbled paper sidles up beside you, not looking at you, and says to nobody: \"Catalog. Who bought what in the marsh. Very interesting. Costs one really good sentence you overheard.\"",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "wardens_said",
@@ -415,6 +489,11 @@
     "scene_boggart_grandma_said": {
       "type": "story",
       "narration": "You tell it what Grandmother Tull said about the bell nobody rings, word for word, including the second time she said it. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalog is in your hands before you notice it has let go.",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -427,6 +506,11 @@
     "scene_boggart_wardens_said": {
       "type": "story",
       "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -442,6 +526,12 @@
         "npc.witch_order"
       ],
       "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone under one arm. It is still ringing. She has walked the whole road north for this. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "put_back",
@@ -478,6 +568,12 @@
     "scene_ford_witch_not_sure": {
       "type": "story",
       "narration": "\"Honestly? We're still working it out.\" Mother Thrum nods slowly, as if that is a better answer than most. She keeps the stone. She gives you a songbird ribbon instead, \"for the working out,\" and says she will ask again, because she always does.",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -490,6 +586,12 @@
     "scene_ford_witch_put_back": {
       "type": "story",
       "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her spectacles. Then she unwraps the sock and sets the Ford Stone in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -636,6 +738,12 @@
         "npc.merfolk"
       ],
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "cast": [
+        {
+          "figure": "cast/coralie_fenn",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "buy_back",
@@ -660,6 +768,12 @@
     "scene_ember_wave": {
       "type": "story",
       "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
+      "cast": [
+        {
+          "figure": "cast/coralie_fenn",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -672,6 +786,12 @@
     "scene_ember_buy_back": {
       "type": "story",
       "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
+      "cast": [
+        {
+          "figure": "cast/coralie_fenn",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -700,6 +820,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "The road zigzags up to the worst bend, and coming down it, the wrong way, is a pack of cinder wolves. They are not hunting. They are leaving the mountain, and you are standing in their way.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "easier_way",
@@ -758,6 +883,11 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Roll a smoked sausage down the side trail at exactly the right moment",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "choice_the_bend",
@@ -881,6 +1011,11 @@
         "npc.centaur"
       ],
       "narration": "You cup your hands and give a sharp whistle toward the relay road. A centaur appears on the ridge almost before the sound has faded, with two more behind her. Between them they turn the fattest caravan in the funnel off the main road and to a stop right in front of you, as neatly as threading a needle.",
+      "cast": [
+        {
+          "figure": "entities/centaur"
+        }
+      ],
       "choices": [
         {
           "id": "on",

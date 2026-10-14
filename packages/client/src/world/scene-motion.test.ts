@@ -160,14 +160,21 @@ describe("the backdrop under a jolt", () => {
      */
     const { app } = scene(); // resize(1600, 900) — exactly 16:9
     const backdrop = app.stage.children[0] as Container;
-    const art = backdrop.children[0] as Container;
+    // [0] the plate's dark under the painting, [1] the painting (backdropFit).
+    const floor = backdrop.children[0] as Container;
+    const art = backdrop.children[1] as Container;
     const maxJolt = 900 * SHAKE_MAX_FRACTION;
 
     const drawnWidth = 1600 * art.scale.x;
-    const drawnHeight = 900 * art.scale.y;
     expect(art.x).toBeLessThanOrEqual(-maxJolt);
     expect(art.x + drawnWidth).toBeGreaterThanOrEqual(1600 + maxJolt);
-    expect(art.y + drawnHeight).toBeGreaterThanOrEqual(900 + maxJolt);
+    expect(art.y).toBeLessThanOrEqual(-maxJolt);
+    // The painting may stop above the bottom (its floor follows the feet);
+    // the dark under it may not.
+    const under = floor.getLocalBounds();
+    expect(under.y).toBeLessThanOrEqual(-maxJolt);
+    expect(under.y + under.height).toBeGreaterThanOrEqual(900 + maxJolt);
+    expect(under.x + under.width).toBeGreaterThanOrEqual(1600 + maxJolt);
   });
 });
 

@@ -22,13 +22,13 @@
  */
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { Assets, Container, Text, Texture } from "pixi.js";
+import { Assets, Container, Sprite, Text, Texture } from "pixi.js";
 import type { Application } from "pixi.js";
 import { beginEncounter, parseBoard } from "@kad/shared";
 import type { PartyMember, ResolvedCharacter } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
-import { createScene, type PartyScene } from "./scene";
+import { BACKDROP_FLOOR, backdropFit, createScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
 
 beforeAll(installFakeCanvas2D);
@@ -61,13 +61,65 @@ describe("illustrated backdrops", () => {
       scene.setBiome("plains");
       await new Promise((resolve) => setTimeout(resolve, 0));
       const backdrop = app.stage.children[0] as Container;
-      const art = backdrop.children[0] as Container;
+      // [0] is the dark under the painting; [1] the painting (backdropFit).
+      const art = backdrop.children[1] as Container;
       const count = art.children.length;
       finish(Texture.WHITE);
       await new Promise((resolve) => setTimeout(resolve, 0));
       expect(art.children.length).toBe(count);
       expect(load).toHaveBeenCalledTimes(2);
     } finally { scene.destroy(); load.mockRestore(); }
+  });
+});
+
+describe("the cast", () => {
+  const tidewell = { key: "entities/selkie|Professor Tidewell", url: "/assets/entities/selkie/assembled.png", name: "Professor Tidewell", scale: 1 };
+
+  function sprites(app: FakeApp): number {
+    let found = 0;
+    const walk = (node: Container): void => {
+      if (node.destroyed) return;
+      if (node instanceof Sprite) found += 1;
+      for (const child of node.children) walk(child as Container);
+    };
+    walk(app.stage);
+    return found;
+  }
+
+  it("still draws a member called back while their art was loading (A → B → A)", async () => {
+    let finish!: (texture: Texture) => void;
+    const load = vi.spyOn(Assets, "load").mockImplementation(
+      () => new Promise<Texture>((resolve) => { finish = resolve; }) as unknown as Promise<Record<string, unknown>>,
+    );
+    const { scene: s, app } = scene();
+    try {
+      s.setCast([tidewell]);
+      const before = sprites(app);
+      s.setCast([]); // scene B: she starts walking off
+      finish(Texture.WHITE); // her art arrives mid-exit
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      s.setCast([tidewell]); // back to A before she is gone: the same actor, revived
+      // Never loaded again, so the one load has to have landed.
+      expect(load).toHaveBeenCalledTimes(1);
+      expect(sprites(app)).toBe(before + 1);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
+  it("does not draw into a member who finished leaving", async () => {
+    let finish!: (texture: Texture) => void;
+    const load = vi.spyOn(Assets, "load").mockImplementation(
+      () => new Promise<Texture>((resolve) => { finish = resolve; }) as unknown as Promise<Record<string, unknown>>,
+    );
+    const { scene: s, app } = scene();
+    try {
+      s.setCast([tidewell]);
+      s.setCast([]);
+      app.ticker.frame(5_000); // the exit completes; the actor is destroyed
+      const before = sprites(app);
+      finish(Texture.WHITE);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(sprites(app)).toBe(before);
+    } finally { s.destroy(); load.mockRestore(); }
   });
 });
 
@@ -385,5 +437,47 @@ describe("the scene's life", () => {
     expect(boxes).toHaveLength(2);
     // Two figures, two distinct slots — not stacked on the same spot.
     expect(boxes[0]!.x).not.toBeCloseTo(boxes[1]!.x, 1);
+  });
+});
+
+describe("backdropFit: nobody floats", () => {
+  const tv = { width: 1920, height: 1080 };
+  const phone = { width: 390, height: 780 };
+
+  for (const [label, pane, feet, stage] of [
+    ["a TV with the plate up", tv, 560, 640],
+    ["a TV with no plate", tv, 950, 1080],
+    ["a phone with a long paragraph", phone, 200, 220],
+  ] as const) {
+    it(`puts the painting's floor under the feet on ${label}`, () => {
+      const bleed = 20;
+      const fit = backdropFit(pane, feet, stage, bleed);
+      expect(fit.y + BACKDROP_FLOOR * fit.scale).toBeCloseTo(feet);
+      // Still covers the pane across and above, through a jolt.
+      expect(fit.x).toBeLessThanOrEqual(-bleed + 0.001);
+      expect(fit.x + 1600 * fit.scale).toBeGreaterThanOrEqual(pane.width + bleed - 0.001);
+      expect(fit.y).toBeLessThanOrEqual(-bleed + 0.001);
+      // And runs on under the top of the plate rather than stopping at it.
+      expect(fit.y + 900 * fit.scale).toBeGreaterThan(stage);
+    });
+  }
+
+  it("just covers the pane when there is no story floor (a fight)", () => {
+    const fit = backdropFit(tv, 0, 1080, 0);
+    expect(fit.scale).toBeCloseTo(1.2);
+    expect(fit.y).toBeCloseTo(0);
+  });
+});
+
+describe("a new pane", () => {
+  it("is framed at once, not zoomed into over the next ticks", () => {
+    // A phone's World tab: the stage was laid out at the default size while
+    // hidden (no ticks), then shown at 390px. The first frame must already
+    // fit the whole 16-tile story across it, or the party is cropped.
+    const { scene: s, app } = scene(); // 1600×900, ticked never
+    s.resize(390, 780);
+    const story = app.stage.children[1] as Container;
+    expect(story.scale.x).toBeCloseTo(390 / 1600);
+    expect(story.x).toBeCloseTo(0);
   });
 });
