@@ -292,7 +292,7 @@ function InventoryGrid({
                 aria-pressed={selected}
                 onClick={() => onSelect(selected ? null : index)}
               >
-                <Icon name={def?.icon ?? entry.kind} size="1.7em" />
+                <Icon name={def?.icon ?? entry.kind} size="2.2em" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
                 <span className="inv__kind kad-label">
