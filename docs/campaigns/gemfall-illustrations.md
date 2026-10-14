@@ -489,3 +489,28 @@ Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 
 ### caravan-yard generation prompt
 
 Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: Exchange caravan yard at DAWN, several stationary wooden wagons pointed north, one lantern wagon with many unlit brass lanterns and a tall plain teal banner with no writing, cream-stone city gate and blue roofs high behind, warm pale sunrise. All wagons and landmarks in upper half, carts at rear and margins. Broad empty LEVEL hard-packed earth staging apron across entire width from70% to bottom, standing row80%. No horses, oxen, people, animals, wheels in foreground, text or creatures. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+## Gemfall 1 — expansion locations
+
+Three additional backdrops cover the Long Bridge, Griffin Post and North Gate episodes. The prologue stays on the established docks image except Old Wick's bridge-lamp scene; the plaque walk and single rooftop discovery use biome art because they are brief transitions with no recurring set.
+
+| Asset | Coverage |
+|---|---|
+| `exchange-long-bridge.webp` | `scene_prologue_party_lamps`, `scene_long_bridge`, `check_bridge_squeeze`, `scene_long_bridge_barge`, `scene_long_bridge_lamp_path`, `scene_long_bridge_wade` |
+| `exchange-griffin-post.webp` | `scene_griffin_post`, `check_post_sort`, `scene_griffin_post_feed`, `scene_griffin_post_shop` |
+| `exchange-north-gate.webp` | `scene_north_gate`, `check_leaving_bell`, `scene_north_gate_wave`, `scene_north_gate_look`, `scene_north_gate_tidewell` |
+
+Generated with the built-in image tool. Each is a new 16:9 Exchange location, exported as 1920×1080 WebP at quality 88. Composition keeps the landmark in the top half and a clear level floor in the lower 30 percent; no characters or readable text.
+
+### Long Bridge generation prompt
+
+Create a polished landscape 16:9 fantasy storybook game backdrop for the Long Bridge in the Exchange. A broad ancient cream-stone arch bridge crosses a blue canal, with round lamp posts, blue-roofed cream-stone buildings and the harbor beyond. Camera at character eye-height on the bridge, perspective toward a distant noodle stall; lower 30 percent is broad unobstructed flat stone walkway, floor contact around 80 percent. Bridge arch and lamps in top half. Warm dimensional storybook painting, soft pale morning light. No people, creatures, animals, silhouettes, signage, words, UI, border, foreground props or shadows. Full bleed, mobile-safe crop.
+
+### Griffin Post generation prompt
+
+Create a polished landscape 16:9 fantasy storybook game backdrop of the Griffin Post in the Exchange. A tall elegant cream-stone tower with round windows and slate-blue roof rises in the upper half, with a small rooftop landing ledge, blank mail sacks on a distant bench and brass weather vane; neighboring blue-roofed buildings frame it. Sunny late afternoon with harbor haze. View from open courtyard looking up; lower 30 percent is unobstructed pale cobblestone plaza, floor around 80 percent. No people, griffins, birds, creatures, silhouettes, readable marks, signage, lettering, UI or border.
+
+### North Gate generation prompt
+
+Create a polished landscape 16:9 painterly fantasy storybook game backdrop of the North Gate of the Exchange, viewed from inside the city toward a great open cream-stone archway with a bronze leaving bell and worn rope. Beyond the arch, a green road winds through fields toward a distant enormous mountain with a tiny red summit glow; blue-roofed city towers frame it. Hopeful early morning farewell, warm detailed painting. Keep arch, bell, mountain in top half and a broad level cobbled road in the lower 30 percent, floor around 80 percent. No characters, creatures, animals, silhouettes, signage, words, UI, border or weapons.
+
