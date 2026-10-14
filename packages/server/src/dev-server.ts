@@ -282,7 +282,7 @@ async function main(): Promise<void> {
     const session = await resolveSession(req, base);
     if (!session) return sendError(res, 401, "FORBIDDEN", "a preview needs a room session token");
     const result = await relayPreview(
-      { runId: session.runId, playerId: session.playerId, preview: (req.body ?? {}).preview },
+      { runId: session.runId, playerId: session.playerId, preview: (req.body ?? {}).preview, context: (req.body ?? {}).context },
       deps,
     );
     if (!result.ok) return sendError(res, result.status, result.code, result.message);

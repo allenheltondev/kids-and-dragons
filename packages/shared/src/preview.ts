@@ -9,6 +9,8 @@
  */
 
 import type { IntentPreview } from "./types/protocol.js";
+import type { RunState } from "./types/state.js";
+import { currentActorId } from "./encounter.js";
 
 const MAX_ID = 64;
 /** Generous next to any real ability: Storm of Blades aims at two. */
@@ -80,4 +82,46 @@ export function readIntentPreview(raw: unknown): IntentPreview | null | undefine
     default:
       return undefined;
   }
+}
+
+/**
+ * Which decision a preview belongs to: one combat turn *as it stands* (a step
+ * or the action moves it on), or one story question. Null when nothing on the
+ * table can be previewed.
+ *
+ * Previews bypass the ordered state stream, so a late one — or one whose
+ * clearing `null` was lost with a dropped phone — can outlive its moment. The
+ * phone stamps every preview with the context it was made in, the server
+ * refuses one that no longer matches its state, and the TV draws one only
+ * while it matches the state on screen. Nothing else has to be cleaned up.
+ *
+ * - A fight: the turn key the phone's own selection resets on (whose turn,
+ *   round, slot, steps left, action spent), so a preview from before a
+ *   confirmed move or action is already stale.
+ * - A story question: the chapter, how many scenes it has entered (which
+ *   moves on a revisit of the same scene, where option ids repeat), the
+ *   scene, and the story turn marker (which moves on every resolved choice).
+ */
+export function previewContext(state: RunState | null): string | null {
+  if (!state) return null;
+  const encounter = state.encounter ?? null;
+  if (encounter) {
+    return [
+      "fight",
+      currentActorId(encounter) ?? "nobody",
+      encounter.round,
+      encounter.turnIndex,
+      encounter.stepsLeft,
+      encounter.actionTaken,
+    ].join(":");
+  }
+  const prompt = state.prompt;
+  if (prompt === null || prompt.kind !== "choice") return null;
+  return [
+    "choice",
+    state.chapterId ?? "-",
+    state.visited?.length ?? 0,
+    prompt.sceneId,
+    state.storyTurn ?? 0,
+  ].join(":");
 }

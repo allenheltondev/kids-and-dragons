@@ -271,9 +271,10 @@ export interface SnapshotMessage {
  *
  * A hint, never an intent: nothing here is validated against the rules or
  * applied to anything, and the confirmed intent that follows is checked as if
- * this had never been sent. The TV shows one only while it still fits the
- * state it is looking at (the player's own combat turn, a choice still on
- * offer), so a stale preview fades on its own rather than needing an undo.
+ * this had never been sent. Each carries the decision it was made for
+ * (`previewContext`); the server refuses one whose decision has passed and the
+ * TV shows one only while its state still names that decision, so a stale
+ * preview fades on its own rather than needing an undo.
  */
 export type IntentPreview =
   | { kind: "choice"; choiceId: string }
@@ -301,6 +302,13 @@ export interface PreviewMessage {
   runId: string;
   playerId: string;
   preview: IntentPreview | null;
+  /**
+   * The decision this preview was made for (`previewContext`), as the phone
+   * saw it. A screen draws the preview only while its own state gives the same
+   * context, so a late or orphaned one cannot surface on a later turn or a
+   * later question. Null on a clearing `preview: null`.
+   */
+  context: string | null;
 }
 
 export type ChannelMessage =

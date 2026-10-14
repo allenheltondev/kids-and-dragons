@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
-import type { Chapter, IntentPreview, PartyMember, RunState } from "@kad/shared";
+import type { Chapter, PartyMember, RunState } from "@kad/shared";
+import type { HeldPreview } from "../store/contract";
 import { currentActorId, enemyArtId } from "@kad/shared";
 import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
@@ -85,7 +86,7 @@ function boardView(
   state: RunState | null,
   party: readonly PartyMember[],
   chapter: Chapter | null,
-  previews: Readonly<Record<string, IntentPreview>> = {},
+  previews: Readonly<Record<string, HeldPreview>> = {},
 ): BoardViewState | null {
   const encounter = state?.encounter ?? null;
   if (!encounter) return null;

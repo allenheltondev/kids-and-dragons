@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { readIntentPreview } from "./preview.js";
+import { previewContext, readIntentPreview } from "./preview.js";
+import type { RunState } from "./types/state.js";
 
 describe("readIntentPreview", () => {
   it("reads every kind", () => {
@@ -41,5 +42,30 @@ describe("readIntentPreview", () => {
     ]) {
       expect(readIntentPreview(bad)).toBeUndefined();
     }
+  });
+});
+
+describe("previewContext", () => {
+  const base = {
+    chapterId: "ch1",
+    visited: ["start", "fork"],
+    storyTurn: 0,
+    encounter: null,
+    prompt: { kind: "choice", sceneId: "fork", options: [], forPlayerIds: [], vote: false },
+  } as unknown as RunState;
+
+  it("names a story question by chapter, trail, scene and turn marker", () => {
+    expect(previewContext(base)).toBe("choice:ch1:2:fork:0");
+  });
+
+  it("moves on when the same question comes round again", () => {
+    expect(previewContext({ ...base, visited: ["start", "fork", "brook", "fork"] })).not.toBe(previewContext(base));
+    expect(previewContext({ ...base, storyTurn: 1 })).not.toBe(previewContext(base));
+  });
+
+  it("is null when there is nothing to preview", () => {
+    expect(previewContext(null)).toBeNull();
+    expect(previewContext({ ...base, prompt: null })).toBeNull();
+    expect(previewContext({ ...base, prompt: { kind: "roll" } } as unknown as RunState)).toBeNull();
   });
 });
