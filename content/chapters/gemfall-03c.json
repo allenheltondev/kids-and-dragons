@@ -119,6 +119,12 @@
         "npc.faun"
       ],
       "narration": "The road ends at the west branch of the river, and the queue to cross it is two days long. A faun provisioner named Burdock is selling numbered pebbles out of a bucket, and honeycakes at bridge-queue prices, which means three times what they are worth. Your pebble says 412. The ford is on number 9.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
       "choices": [
         {
           "id": "buy_cake",
@@ -144,6 +150,12 @@
     "scene_number_pebble_buy_cake": {
       "type": "story",
       "narration": "Burdock sells you a honeycake the size of a coin for the price of a honeycake the size of a hat. \"My lucky number,\" he says fondly, and means your money. It is, to be fair, a very good honeycake. You make it last three bites.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -159,6 +171,12 @@
         "character.kitsune"
       ],
       "narration": "Behind Burdock's stall, a kitsune in a tall hat is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
+      "cast": [
+        {
+          "figure": "cast/tamsin",
+          "name": "Tamsin Three-Cards"
+        }
+      ],
       "choices": [
         {
           "id": "expose",
@@ -192,6 +210,12 @@
       "stat": "clever",
       "tn": 16,
       "prompt": "Spot where the Sun Card really goes",
+      "cast": [
+        {
+          "figure": "cast/tamsin",
+          "name": "Tamsin Three-Cards"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_exposed",
@@ -205,6 +229,12 @@
     "scene_exposed": {
       "type": "story",
       "narration": "The kitsune, whose name turns out to be Tamsin Three-Cards, sighs and shakes the Sun Card out of her sleeve. The whole crowd gets their pebbles back. The drovers at the front of the queue have noticed you, and drovers remember faces.",
+      "cast": [
+        {
+          "figure": "cast/tamsin",
+          "name": "Tamsin Three-Cards"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -224,6 +254,12 @@
     "scene_join_con": {
       "type": "story",
       "narration": "You stand in the crowd and gasp very loudly every time somebody almost wins. Tamsin pays you with a front-of-the-queue pebble and a wink. It is shiny and it says number 1, and it is absolutely not fair.",
+      "cast": [
+        {
+          "figure": "cast/tamsin",
+          "name": "Tamsin Three-Cards"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -291,6 +327,17 @@
     "choice_tolls": {
       "type": "choice_point",
       "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by queue-jumpers. And a faun family called the Brackens is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Mother Bracken"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Littlest Bracken",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "wagon",
@@ -370,6 +417,12 @@
     "scene_markers_restored": {
       "type": "story",
       "narration": "The marker line stands straight again, every post pointing the safe way to the ford. A centaur relay-runner slows down just long enough to say \"The relay remembers,\" and then she is gone, already singing it to the next runner up the road.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -389,6 +442,17 @@
     "scene_family": {
       "type": "story",
       "narration": "The Brackens' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Bracken is holding a queue pebble with a big number on it and trying very hard not to cry about it.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Mother Bracken"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Littlest Bracken",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "give_pebble",
@@ -435,6 +499,17 @@
     "scene_family_fix_wheel": {
       "type": "story",
       "narration": "You lash the cracked wheel together with rope, round and round, until it looks like a wheel wearing a jumper. It turns. It wobbles, but it turns. The littlest Bracken rides on top of the cart to test it and declares it the best wheel ever made, which is not true, but it will get them home.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Mother Bracken"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Littlest Bracken",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -447,6 +522,17 @@
     "scene_family_share_cake": {
       "type": "story",
       "narration": "You break the honeycake into four, then five, so the littlest Bracken gets a bit from everyone. For a while nobody says anything, because honeycake. Then the mother says their season was not all bad, really, and the littlest one falls asleep against a cart wheel with crumbs on both cheeks.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Mother Bracken"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Littlest Bracken",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -459,6 +545,17 @@
     "scene_family_give_pebble": {
       "type": "story",
       "narration": "You hand the littlest Bracken your pebble, and take theirs. Their number is enormous. Yours was not. The littlest Bracken looks at the small number for a long time and then stops trying not to cry and just cries, happily, all over it. The Brackens will cross at dawn, and they do not stop thanking you until dusk.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Mother Bracken"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Littlest Bracken",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -474,6 +571,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "At dusk, cinder wolves come and sit just past the firelight, cold and thin, with a faint warm glow under their fur. They are not hunting. They are pointedly not sitting anywhere near the gem wagons. Every campfire in the queue is arguing about whether to feed them.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "feed",
@@ -498,6 +600,11 @@
     "scene_wolves_fed": {
       "type": "story",
       "narration": "You put your supper down on a flat stone and step back. The wolves eat politely, and then the whole pack lies down in a heap by your fire, glowing like a pile of coals. It is the warmest night anybody in the queue has had all week. The road will remember this.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -546,6 +653,12 @@
         "npc.witch_order"
       ],
       "narration": "Down the queue there is a remedy stall with a pointed hat hanging off the corner. Every time a gem wagon rolls past, all the little bell charms on the stall ring by themselves, and the witch behind the counter winces. Her name is Mother Thrum. She looks at you over her spectacles. \"What do you actually want?\"",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "real_question",
@@ -571,6 +684,12 @@
     "scene_witch_stall_sore_feet": {
       "type": "story",
       "narration": "Mother Thrum hands you a sunbloom draught without looking, because sore feet are the one thing everybody in a queue wants. Then she looks. \"That's a want,\" she says. \"It isn't the want.\" She raises one eyebrow and waits to see if you have a better question.",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -583,6 +702,12 @@
     "scene_tuned_charm": {
       "type": "story",
       "narration": "\"Better question than most,\" says Mother Thrum, and she hands you one bell charm she has tuned to the note the stones are humming. Hold it near a gem and it sings. The note is older than the road, she says, and the centaurs will tell you the road was here before everything. On her shelf, wrapped in a thick wool sock, is a stone that will not stop ringing.",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -625,6 +750,12 @@
     "scene_tuned_charm_leave_it": {
       "type": "story",
       "narration": "You leave the stone in its sock on her shelf. Mother Thrum nods, not surprised, and tucks the wool tighter round it. \"Then it rings another night,\" she says. \"And so do I.\" The charms on the stall all chime once, softly, as a wagon rolls past in the dark.",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -637,6 +768,12 @@
     "scene_tuned_charm_take_it_home": {
       "type": "story",
       "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognized the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -651,6 +788,12 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Tell Mother Thrum what you actually want, and mean it",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "rest_witch_fire",
@@ -761,6 +904,11 @@
         "creature.river_drake"
       ],
       "narration": "Halfway across, a gang of queue-jumpers charges into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
       "choices": [
         {
           "id": "toss_bread",
@@ -787,6 +935,11 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Pay the river drakes politely in bread",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "end_forded",

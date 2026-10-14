@@ -79,6 +79,39 @@ export interface ChapterObjective {
   xp: number;
 }
 
+/**
+ * Somebody standing in a story scene with the party (schemas/chapter.schema.json
+ * `castMember`). The shared screen draws them opposite the heroes, so meeting
+ * the selkie professor is something the room *sees* rather than only reads.
+ *
+ * Presence, not mention: a scene casts whoever is physically there and part of
+ * the moment. Field Guide `discovers` is a different fact (the first meeting);
+ * a recurring character is cast in every scene they stand in and discovered in
+ * one.
+ */
+export interface CastMember {
+  /**
+   * `entities/<id>`, `characters/<species>` or `cast/<id>`: a path under
+   * `assets/` that tools/content/validate.mjs resolves to a real file.
+   */
+  figure: string;
+  /** The nameplate. Omitted for an unnamed creature. */
+  name?: string;
+  /** How big they stand beside the party. Defaults per figure (world/cast.ts). */
+  size?: CastSize;
+}
+
+export type CastSize =
+  | "tiny"
+  | "tiny_to_small"
+  | "small"
+  | "small_to_medium"
+  | "medium"
+  | "medium_to_large"
+  | "large"
+  | "very_large"
+  | "colossal";
+
 export interface StoryScene {
   type: "story";
   art?: string;
@@ -89,6 +122,8 @@ export interface StoryScene {
    * this scene. See `discoveries.ts` and content/README.md.
    */
   discovers?: string[];
+  /** Who is standing here with the party. See `CastMember`. */
+  cast?: CastMember[];
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   outcome?: ChapterOutcome;
@@ -109,6 +144,8 @@ export interface CheckScene {
    * this scene. See `discoveries.ts` and content/README.md.
    */
   discovers?: string[];
+  /** Who is standing here with the party. See `CastMember`. */
+  cast?: CastMember[];
   /**
    * Which player rolls. Default ("party"): whoever has rolled the fewest
    * checks. "all": everyone rolls, and half or more succeeding carries it.
@@ -128,6 +165,8 @@ export interface ChoicePointScene {
    * this scene. See `discoveries.ts` and content/README.md.
    */
   discovers?: string[];
+  /** Who is standing here with the party. See `CastMember`. */
+  cast?: CastMember[];
   /** Party votes; ties broken by the active turn marker. spec §6.1. */
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
@@ -146,6 +185,8 @@ export interface RestScene {
    * this scene. See `discoveries.ts` and content/README.md.
    */
   discovers?: string[];
+  /** Who is standing here with the party. See `CastMember`. */
+  cast?: CastMember[];
   /** Heals the party by this much on entry. */
   heal?: number;
   choices: Choice[];

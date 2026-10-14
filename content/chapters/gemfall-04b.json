@@ -82,6 +82,13 @@
     "scene_flooded_paths": {
       "type": "story",
       "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
+      "cast": [
+        {
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -163,6 +170,11 @@
         "creature.mosshorn"
       ],
       "narration": "A herd of mosshorns grazes ahead, their antlers sprouting little gardens. One has a whole strawberry patch on its head and is clearly very proud of it. A prospector's cart rattles by with a sack of gems, and the entire herd steps away from it at once, like one long breath out.",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
       "choices": [
         {
           "id": "read_herd",
@@ -193,6 +205,11 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Watch the herd long enough to see the pattern",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_read_herd",
@@ -206,6 +223,11 @@
     "scene_read_herd": {
       "type": "story",
       "narration": "The mosshorns don't mind people. They mind the stones. They walk wide around anything that hums, and they will not graze where a stone has fallen. You can see the bald gray patches in the forest where they have stopped going. The herd is a map of where it hurts.",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -228,6 +250,16 @@
         "character.unicorn"
       ],
       "narration": "In a small glade the moss has gone the color of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
       "choices": [
         {
           "id": "help",
@@ -256,6 +288,16 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Hum with the unicorns while the moss remembers its color",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_finding",
@@ -276,6 +318,16 @@
     "scene_finding": {
       "type": "story",
       "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else about that, and somehow that makes it louder. Then, quieter: \"This was a small one. The worst glade is north of here. We have not managed that one yet.\"",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
       "choices": [
         {
           "id": "rest",
@@ -288,6 +340,12 @@
     "rest_glade_edge": {
       "type": "rest",
       "narration": "You rest where the moss is soft again. A mosshorn calf wanders over and falls asleep across everybody's feet, and nobody is allowed to move until it wakes up. Those are the rules. Everyone knows the rules.",
+      "cast": [
+        {
+          "figure": "entities/mosshorn",
+          "size": "small"
+        }
+      ],
       "heal": 2,
       "choices": [
         {
@@ -304,6 +362,11 @@
         "creature.echo_hunter"
       ],
       "narration": "The worst glade is a hollow torn into the forest floor where a big stone landed, and the crash cracked the ground open into the dark. Something pale and frilled has climbed up out of the crack. It has no eyes at all, and it is listening very hard to the humming in the middle of the glade. Now it is listening to you.",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ],
       "choices": [
         {
           "id": "noisy",
@@ -337,6 +400,11 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Make so many sounds at once that the echo hunter can't follow any of them",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
@@ -352,6 +420,11 @@
       "stat": "quick",
       "tn": 16,
       "prompt": "Cross the glade without making a single sound",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_glade_heart",
@@ -407,6 +480,16 @@
     "scene_glade_heart": {
       "type": "choice_point",
       "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
       "choices": [
         {
           "id": "mend",
@@ -443,6 +526,16 @@
     "scene_mend_glade": {
       "type": "story",
       "narration": "You kneel round the stone and press it, gently, down into the moss. It sinks like a pebble into honey. Green spreads out from the middle in a ring, and every flower in the glade turns round at once to look at you. The unicorns bow, ears and all.",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -455,6 +548,16 @@
     "scene_pocket_stone": {
       "type": "story",
       "narration": "The stone is warm in your hand and loud in your pocket. Behind you, the glade goes quiet, the way a room goes quiet when somebody says the wrong thing. The unicorns don't say a word. One of them writes something down.",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -491,6 +594,11 @@
     "ending_marked_present": {
       "type": "rest",
       "narration": "You camp at the northern edge of the Woods on moss as soft as a pillow. All night, a mosshorn stands at the edge of your firelight like a guard, its antler flowers open. The forest has taken attendance, and it has marked you present.",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
       "heal": 4,
       "choices": []
     },

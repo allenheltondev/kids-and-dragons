@@ -549,6 +549,172 @@
     "scenes/gemfall/sheeple-ridge"
   ],
 
+  "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
+  "castFigures": [
+    {
+      "id": "coralie_fenn",
+      "name": "Madame Coralie Fenn",
+      "basis": "merfolk",
+      "scale": "medium"
+    },
+    {
+      "id": "great_gran_ashby",
+      "name": "Great-Gran Ashby",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "pellam",
+      "name": "Pellam",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "grandmother_tull",
+      "name": "Grandmother Tull",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "dragonling_grandmother",
+      "name": "Grandmother",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "mosshome_archivist",
+      "name": "Archivist",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "oldest_archivist",
+      "name": "Oldest Archivist",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "mosshome_eldest",
+      "name": "The Eldest",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "mosshome_runner",
+      "name": "MossHome Runner",
+      "basis": "bigfoot",
+      "scale": "medium_to_large"
+    },
+    {
+      "id": "flood_warden",
+      "name": "Flood-Warden",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "elder_sefa",
+      "name": "Elder Sefa",
+      "basis": "manticore",
+      "scale": "large"
+    },
+    {
+      "id": "elder_unicorn",
+      "name": "Elder Unicorn",
+      "basis": "unicorn",
+      "scale": "large"
+    },
+    {
+      "id": "tamsin",
+      "name": "Tamsin Three-Cards",
+      "basis": "kitsune",
+      "scale": "medium"
+    },
+    {
+      "id": "tidewell",
+      "name": "Professor Tidewell",
+      "basis": "selkie",
+      "scale": "medium"
+    },
+    {
+      "id": "mortar",
+      "name": "Mortar",
+      "basis": "stone_troll",
+      "scale": "very_large"
+    },
+    {
+      "id": "gullet",
+      "name": "Gullet",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "old_ossley",
+      "name": "Old Ossley",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "old_lintel",
+      "name": "Old Lintel",
+      "basis": "stone_troll",
+      "scale": "very_large"
+    },
+    {
+      "id": "hesper",
+      "name": "Hesper Longstride",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "marda_thorn",
+      "name": "Marda Thorn",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "tobble",
+      "name": "Tobble Reedpipe",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "hob",
+      "name": "Hob Thistledown",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "nan_rummage",
+      "name": "Nan Rummage",
+      "basis": "boggart",
+      "scale": "small"
+    },
+    {
+      "id": "captain_voss",
+      "name": "Captain Voss",
+      "basis": "griffin",
+      "scale": "medium"
+    },
+    {
+      "id": "brask",
+      "name": "Engineer Brask",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "holloway",
+      "name": "Sergeant Holloway",
+      "basis": "griffin",
+      "scale": "medium"
+    },
+    {
+      "id": "mother_thrum",
+      "name": "Mother Thrum",
+      "basis": "witch_order",
+      "scale": "medium"
+    }
+  ],
+
   "globalPalette": {
     "outline": "#3A2A1E",
     "darkest": "#2B2118",

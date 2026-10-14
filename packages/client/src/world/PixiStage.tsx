@@ -16,6 +16,8 @@ import { boardAim, tablePreviews } from "./previews";
 import { useEnsureChapter } from "../screens/content";
 import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
+import { castFor } from "./cast";
+import { onStageInset, stageInsetBottom } from "./stage-inset";
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -183,6 +185,8 @@ export function PixiStage(): React.JSX.Element {
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
       scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
+      scene.setCast(castFor(live.chapter, live.state));
+      scene.setStageInset(stageInsetBottom());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
 
       /** Run the ticker only when a frame could actually be seen. */
@@ -244,6 +248,15 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => {
     sceneRef.current?.setBiome(chapter?.biome ?? null, sceneArtFor(chapter, state));
   }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
+
+  // Who is standing in the scene with the party. Keyed by the scene, not by
+  // every patch: a vote tick must not re-run the cast diff.
+  useEffect(() => {
+    sceneRef.current?.setCast(castFor(chapter, state));
+  }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
+
+  // The narration plate's height, so the story stands above it.
+  useEffect(() => onStageInset((px) => sceneRef.current?.setStageInset(px)), []);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

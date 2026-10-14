@@ -42,6 +42,12 @@
         "character.dragonling"
       ],
       "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "walk_up",
@@ -75,6 +81,12 @@
     "scene_door_river": {
       "type": "story",
       "narration": "You come down off the cracked bridge with the wardens' engineers, who are still arguing about one crack in particular. From up here the whole road home is laid out behind you: the bridge, the bent pride roads, the river where the trolls still ask their question. All of it leans toward the mountain, the way grass leans in a wind.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Warden Engineers"
+        }
+      ],
       "choices": [
         {
           "id": "down",
@@ -87,6 +99,13 @@
     "scene_door_wild": {
       "type": "story",
       "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. A MossHome runner coming the other way waves, and does not take one step onto the ash. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
       "choices": [
         {
           "id": "down",
@@ -99,6 +118,12 @@
     "scene_door_rush": {
       "type": "story",
       "narration": "You walk up the caravan road from the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "up",
@@ -114,6 +139,11 @@
         "creature.embermoth"
       ],
       "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts, and the prospector has given up and is eating around it.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
       "choices": [
         {
           "id": "follow",
@@ -140,6 +170,11 @@
     "scene_moths_count": {
       "type": "story",
       "narration": "Your bigfoot counts them. All of them. It takes a while, and the prospector with the moth in his soup gets quite impatient. Three hundred and twelve embermoths, and every single one is facing away from the mountain, like an audience that has turned its back on the stage.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -152,6 +187,11 @@
     "scene_moths_say_it": {
       "type": "story",
       "narration": "\"Moths leaving the warm is a warning,\" says your dragonling, out loud, in the voice grandmothers use. A grandmother three tents away hears it, stops arguing with the man on her doorstep, and rings her hand bell once, sharp, toward the next town. Then she goes back to arguing. The man has not moved. Neither have the moths.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -167,6 +207,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "Down on the caravan road, a pack of cinder wolves is lying in one big heap in the ruts, glowing faintly, like a pile of coals with ears. They are not hunting. They are cold and hungry, and forty wagons are stuck behind them, with forty drovers yelling.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "easier_prey",
@@ -199,6 +244,11 @@
     "scene_wolves_wait": {
       "type": "story",
       "narration": "You sit on a rock and wait. The drovers yell. The wolves do not care. After an hour the pack gets up, all at once, stretches, and trots off downhill as if that had always been the plan. Forty wagons start moving. Forty drovers decide it was their doing.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -211,6 +261,11 @@
     "scene_wolves_fly_look": {
       "type": "story",
       "narration": "From the air you see it at once: a sausage cart tipped on its side in the ditch, a hundred paces down, with the drover long gone. You come down low over the wolves and fly a slow, obvious line toward it. The biggest wolf lifts its nose, understands you perfectly, and the whole pack flows out of the ruts after it like water finding a drain.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -225,6 +280,11 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Find the hungry wolves something better than the road",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_soup_tent",
@@ -374,6 +434,12 @@
     "rest_warm_stones": {
       "type": "rest",
       "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cozy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
+      "cast": [
+        {
+          "figure": "cast/grandmother_tull",
+          "name": "Grandmother Tull"
+        }
+      ],
       "heal": 2,
       "choices": [
         {
@@ -390,6 +456,11 @@
         "creature.glassback_crab"
       ],
       "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. A prospector called Dunmore is raising a pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "choices": [
         {
           "id": "read_it",
@@ -437,6 +508,11 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Read the glassback crab's threat display",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_crab_thanks",
@@ -515,6 +591,11 @@
       "type": "story",
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "Dunmore lowers his pick and goes rather pink. The crab moves three pebbles in a way that looks a lot like a thank-you note. And at the top of the ridge, the black tower of Redspire Citadel catches the morning sun.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "choices": [
         {
           "id": "straight_up",
@@ -575,6 +656,12 @@
       "type": "story",
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "You fly ahead up the ridge and land on the citadel wall, which is apparently not allowed. The warden on the gate looks up, looks at the ledger in his hand, and sighs. By the time the rest of you reach the top, the gate is already open and a clerk is already waiting with two ledgers.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -592,6 +679,12 @@
       ],
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "Redspire Citadel is a black tower where every single window faces up. Inside, a clerk named Pellam writes your names in a big ledger, then writes them again in a second ledger, just to be sure. \"This way,\" he says. \"The captain has a table.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "pellam_again",
@@ -612,6 +705,12 @@
       "type": "story",
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "Pellam does not look up from the second ledger. \"The bridge is logged,\" he says. \"The citadel needed logging. I go where the ledgers are.\" He writes your names a third time, in a very small notebook he keeps for people he has met twice. \"Irregular,\" he says. \"Entirely legal. This way. The captain has a table.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "follow",
@@ -625,6 +724,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "On a long stone table, the wardens have laid out four hundred years of watch-logs, and in the middle of them a gemstone sits humming to itself. Captain Orla Voss folds her arms. \"Show us what you found on the road,\" she says. \"Our logs will fill in the rest.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "logs_first",
@@ -673,6 +778,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Your bigfoot points at the one ledger bound in a different color, half under the others. Pellam looks as if he has been caught stealing biscuits. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -686,6 +797,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "You lay out the spiral verses and the boundary-stone tallies, and Pellam lays a watch-log four hundred years old beside them. The grandmothers' tally marks and the relay's new verses curl the same way the old log does, round every place a stone has ever fallen. Captain Voss looks at the three of them side by side for a long time and says nothing, which from her is a great deal.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -699,6 +816,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "You lay out the wounded glades, the path archive and the MossHome knot-cord. Pellam runs a finger down the cord, counting knots, goes very pale, and reaches for the oldest log on the table, the one nobody reads. \"Well,\" says Captain Voss. \"The forest keeps records too.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -712,6 +835,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "You lay out the troll's question, the sash-maps and the bridge survey. Captain Voss does not blink. Then Pellam turns a watch-log round and taps a line four hundred years old, in faded ink: WHERE DID YOU GET THAT, AND WHERE IS IT GOING? The trolls have been asking it for a very long time. Nobody at this table ever wrote down an answer.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -725,6 +854,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all the Table Stone hums, logged twice. One very old line just says: the marsh gate hums the same note. Next to it, in three different handwritings: nobody knows why.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "take_stone",
@@ -755,6 +890,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "You leave the Table Stone where it is. Captain Voss nods once. \"Custody,\" she says, and Pellam writes CUSTODY beside both earlier entries, so it has now been logged three times without going anywhere. The stone hums on in the middle of the table, as if it had never expected to leave.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -768,6 +909,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam logs the Table Stone a third time, under WITH THEM, and slides it across. It is cool, and heavier than it looks, and it hums against your palm the whole time Captain Voss is unrolling her map. Nobody in the room says you cannot have it. Everybody in the room watches you take it.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -780,6 +927,12 @@
     "scene_acceptable_losses": {
       "type": "story",
       "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast. The Table Stone hums a little louder, as if it disagrees.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "not_a_number",
@@ -805,6 +958,12 @@
     "scene_acceptable_losses_polite_roar": {
       "type": "story",
       "narration": "Your manticore roars at the map. It is a polite roar, with a please in it, and it still makes the parchment curl up at the corners and every pen in the room roll off its table. Captain Voss waits until the last pen has stopped. Then she flattens the map, picks up a pencil, and redraws one circle so it misses a town.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -817,6 +976,12 @@
     "scene_acceptable_losses_hear_plan": {
       "type": "story",
       "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch, the one gap every road squeezes through, all the way down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the Table Stone is the only thing in the room making a sound.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -829,6 +994,12 @@
     "scene_acceptable_losses_not_a_number": {
       "type": "story",
       "narration": "\"A town is not a number,\" you say. Captain Voss looks at the map for a long moment. \"No,\" she says. \"It's three numbers. Houses, people, bells.\" Then, much quieter, so only your table hears: \"I know.\" She does not rub the circles out. She does draw one of them a little smaller.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -841,6 +1012,12 @@
     "scene_ledger": {
       "type": "story",
       "narration": "Pellam opens a fresh page and dips his pen. \"Before anybody decides anything,\" he says, \"the record. What have you been doing, all this way?\" The whole room waits. Even the Table Stone seems to hum more quietly.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "plainly",
@@ -924,6 +1101,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam reads it all back and taps the page. \"Medals. Mending. Putting things back,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -944,6 +1127,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam reads it back, and the stones in your packs hum along with every line. \"Pockets,\" he says. \"A great many pockets. That adds up to a collection.\" Nobody in the room says he is wrong. A moth lands on your bag, thinks about it, and leaves.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -964,6 +1153,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam reads it back slowly. \"Questions about what the power could do. Who holds it. What it's for.\" He writes one word and underlines it twice: leash. Somewhere below, Hessa's soup tent is still serving.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -984,6 +1179,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "\"Now,\" says Captain Voss. \"Who else gets to know? Choose carefully. Nobody is going to ask you again.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "wardens",
@@ -1051,6 +1252,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "\"Nobody else,\" says Captain Voss. The room is quiet. \"Then you had better be right,\" she says, \"and you had better be quick.\" Pellam writes nothing at all, which he tells you later is the best entry a ledger can have.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1064,6 +1271,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "\"Grandmothers,\" says Captain Voss, and sighs the sigh of somebody who has argued with grandmothers before. \"Very well. They are at least thorough.\" Pellam writes BELLS in the ledger and underlines it, and somewhere far below, right on cue, one rings.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1077,6 +1290,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Captain Voss nods once, which is as much as she ever nods. \"Then you'll want to know the plan properly,\" she says, and Pellam opens a fresh ledger with WARDENS AND PARTY on the spine, which he has clearly had ready for some time.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1090,6 +1309,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Then the captain asks the real question. \"And you? What is it all for?\" Somewhere a stone hums. Everybody in the room is looking at you, and nobody is going to look away first.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "restore",
@@ -1149,6 +1374,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, somebody at Hessa's soup tent is humming.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "record",
@@ -1162,6 +1393,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam turns back to the first page. \"Maybe you spent the road helping people. Maybe you filled your bags. Maybe you asked who gets to decide,\" he says. \"None of those is the same as holding the leash.\" He looks up to make sure you hear him. \"If the record points another way, you can still choose this one. But you have to know you are choosing.\" Captain Voss closes the book.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "bunks",
@@ -1175,6 +1412,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "\"Finish the collection,\" you say. The room goes very quiet. Captain Voss does not look angry. She looks like somebody doing arithmetic. \"Seven on the table and one in the mountain,\" she says. \"I'll write you down as weather.\" Pellam writes WEATHER and then, after a moment, puts a question mark after it.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "record",
@@ -1188,6 +1431,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam opens the ledger again. \"The record may tell a different story,\" he says. \"A kindness done on the road, a question asked, a thing returned. But you have just said collection.\" He writes COLLECT in his neatest hand, then draws a small question mark beside it. Captain Voss watches the ink dry. \"You will have to live up to that word,\" she says.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "bunks",
@@ -1201,6 +1450,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "\"Put it back,\" you say. \"Every stone.\" The Table Stone hums one clear note, as if it heard. Captain Voss does something nobody in the citadel has seen: she unfolds her arms. \"Then we'll need every stone that came down,\" she says. \"Tomorrow they start coming back up. Rest.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "record",
@@ -1214,6 +1469,12 @@
       "type": "story",
       "art": "scenes/gemfall/facet-table",
       "narration": "Pellam flips back through the record. He reads a line, turns a page, and looks up. \"The pages may have pointed somewhere else,\" he says. \"But you are asking to put the stones back. That is what I am writing down.\" He sets RETURN beside your names and leaves a little space after it, in case the road teaches you something else. Captain Voss watches him write, then nods.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "bunks",
@@ -1226,6 +1487,12 @@
     "scene_undeclared": {
       "type": "story",
       "narration": "Nobody says anything. Pellam waits, pen up, then writes it down anyway: no answer means the Reckoning, putting it all back the hard way, with nobody promised to help. \"Hardest road there is,\" says Captain Voss. \"Freest, too.\" She very nearly smiles, and the Table Stone hums as if it approves of the silence.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "bed",
@@ -1248,6 +1515,12 @@
         "faction.skywardens"
       ],
       "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "restore",
@@ -1306,6 +1579,12 @@
     "scene_shut_out_refuse": {
       "type": "story",
       "narration": "You say nothing. Pellam waits, and the lantern burns, and at last his pen scratches anyway. \"The Reckoning, then,\" he whispers. \"Hardest road. Nobody promised.\" A blanket comes through the hatch, and then, after a moment, a second one.",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1318,6 +1597,12 @@
     "scene_shut_out_leash": {
       "type": "story",
       "narration": "\"Hold it,\" you whisper. \"The leash.\" The pen stops. \"That's the captain's word,\" Pellam whispers, sounding puzzled, and passes out a blanket and a very small book with CAGE on the spine, which he asks you to give back in the morning.",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1330,6 +1615,12 @@
     "scene_shut_out_hoard": {
       "type": "story",
       "narration": "\"Finish the collection,\" you whisper. There is a pause behind the hatch. \"Noted,\" Pellam whispers at last, and then, after another pause, a blanket comes through anyway.",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1342,6 +1633,12 @@
     "scene_shut_out_restore": {
       "type": "story",
       "narration": "\"Put it back,\" you whisper through the hatch. Pellam's pen scratches. \"Good,\" he whispers back, which is not a thing clerks say, and passes out a blanket after the lantern.",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1362,6 +1659,11 @@
     "scene_crab_long_way": {
       "type": "story",
       "narration": "You back everybody off the warm ground, Dunmore last and grumbling, and take the goat track round the ridge instead. The crab goes back to its pebbles. The goat track is a goat's idea of a road, and by the time it brings you out on the citadel side, the sun is high and the whole morning is gone.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1374,6 +1676,12 @@
     "scene_truth_table_charm": {
       "type": "story",
       "narration": "You set Mother Thrum's tuned charm on the table. The moment it touches the stone it rings, and the Table Stone rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "click",
