@@ -468,3 +468,16 @@ describe("backdropFit: nobody floats", () => {
     expect(fit.y).toBeCloseTo(0);
   });
 });
+
+describe("a new pane", () => {
+  it("is framed at once, not zoomed into over the next ticks", () => {
+    // A phone's World tab: the stage was laid out at the default size while
+    // hidden (no ticks), then shown at 390px. The first frame must already
+    // fit the whole 16-tile story across it, or the party is cropped.
+    const { scene: s, app } = scene(); // 1600×900, ticked never
+    s.resize(390, 780);
+    const story = app.stage.children[1] as Container;
+    expect(story.scale.x).toBeCloseTo(390 / 1600);
+    expect(story.x).toBeCloseTo(0);
+  });
+});
