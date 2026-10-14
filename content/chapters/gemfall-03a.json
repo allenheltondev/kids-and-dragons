@@ -70,7 +70,8 @@
           "icon": "arrow",
           "goto": "scene_queue"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "check_markers": {
       "type": "check",
@@ -92,7 +93,8 @@
       "onFailure": {
         "goto": "scene_queue",
         "narration": "Every marker goes back in. MILE 7 goes back in between MILE 2 and MILE 3, so the road now runs backwards for a bit. A centaur thunders past, groans, and fixes it without stopping. No guide for you today."
-      }
+      },
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_courtesy": {
       "type": "story",
@@ -113,7 +115,8 @@
           "icon": "hand",
           "goto": "scene_fennick"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_fennick": {
       "type": "story",
@@ -141,7 +144,8 @@
           "icon": "arrow",
           "goto": "scene_queue"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_queue": {
       "type": "story",
@@ -166,7 +170,8 @@
           "icon": "rest",
           "goto": "scene_troll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "check_rivals": {
       "type": "check",
@@ -181,7 +186,8 @@
       "onFailure": {
         "goto": "scene_troll",
         "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
-      }
+      },
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_rivals_caught": {
       "type": "story",
@@ -200,7 +206,8 @@
           "icon": "arrow",
           "goto": "scene_troll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_troll": {
       "type": "story",
@@ -242,7 +249,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_riddle_account": {
       "type": "story",
@@ -261,7 +269,8 @@
           "icon": "crown",
           "goto": "scene_troll_hum"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_ask_riddle": {
       "type": "story",
@@ -280,7 +289,8 @@
           "icon": "clever",
           "goto": "scene_troll_hum"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_tell_story": {
       "type": "story",
@@ -299,7 +309,8 @@
           "icon": "scroll",
           "goto": "scene_troll_hum"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum": {
       "type": "story",
@@ -338,7 +349,8 @@
           "requiresItem": "facet_ember",
           "goto": "scene_troll_hum_show_ember"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum_show_ember": {
       "type": "story",
@@ -357,7 +369,8 @@
           "icon": "gem",
           "goto": "rest_queue_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum_dont_know": {
       "type": "story",
@@ -376,7 +389,8 @@
           "icon": "ear",
           "goto": "rest_queue_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum_answer_honest": {
       "type": "story",
@@ -395,7 +409,8 @@
           "icon": "heart",
           "goto": "rest_queue_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "rest_queue_camp": {
       "type": "rest",
@@ -414,7 +429,8 @@
           "icon": "arrow",
           "goto": "scene_crossing_bank"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_drake_shelf": {
       "type": "story",
@@ -453,7 +469,8 @@
           "icon": "back",
           "goto": "scene_crossing_bank"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drake-rock-shelf"
     },
     "check_drake": {
       "type": "check",
@@ -473,7 +490,8 @@
       "onFailure": {
         "goto": "scene_crossing_bank",
         "narration": "The drake listens to your offer, then raises its rates. Then it raises them again, just to watch your face. The humming gem stays exactly where it is."
-      }
+      },
+      "art": "scenes/gemfall/drake-rock-shelf"
     },
     "scene_drake_deal": {
       "type": "story",
@@ -501,7 +519,8 @@
           "icon": "arrow",
           "goto": "scene_crossing_bank"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drake-rock-shelf"
     },
     "encounter_drake": {
       "type": "encounter",
@@ -571,7 +590,8 @@
           "icon": "ear",
           "goto": "scene_ossley_price"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "scene_ossley_price": {
       "type": "story",
@@ -606,7 +626,8 @@
           "icon": "boot",
           "goto": "check_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "check_crossing": {
       "type": "check",
@@ -621,7 +642,8 @@
       "onFailure": {
         "goto": "scene_swept",
         "narration": "One stone is not where it was yesterday. The river decides it wants you more than the bank does, and everybody goes in together with a splash that startles a heron into next week."
-      }
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "check_crossing_easy": {
       "type": "check",
@@ -636,7 +658,8 @@
       "onFailure": {
         "goto": "scene_swept",
         "narration": "Right at the fastest bit, a drake's wake rolls by, and the river decides it wants you more than the bank does. Everybody goes in together with a splash that startles a heron into next week."
-      }
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "rest_dry_end": {
       "type": "rest",
@@ -700,7 +723,8 @@
           "icon": "boot",
           "goto": "scene_crawlers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "scene_crawlers": {
       "type": "story",
@@ -732,7 +756,8 @@
           "icon": "swords",
           "goto": "encounter_crawlers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "check_crawlers": {
       "type": "check",
@@ -752,7 +777,8 @@
       "onFailure": {
         "goto": "encounter_crawlers",
         "narration": "The spoon glitters. Your packs hum. The crawlers are not stupid. They clatter round the spoon and keep coming."
-      }
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "check_crawlers_leave": {
       "type": "check",
@@ -772,7 +798,8 @@
       "onFailure": {
         "goto": "encounter_crawlers",
         "narration": "Somebody stomps into a rock pool, sits down very suddenly, and is no longer the biggest thing on the beach. The crawlers notice."
-      }
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "encounter_crawlers": {
       "type": "encounter",
@@ -798,14 +825,16 @@
       "type": "rest",
       "narration": "You build a driftwood fire on the eastern shore and steam gently, like puddings. North of here the Eastern Plains are waiting, and you will walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp, and you suspect it always will be.",
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/eastern-shore-camp"
     },
     "rest_setback": {
       "type": "rest",
       "narration": "The crawlers carry off the snacks, two bootlaces and the map, none of which hum but all of which they apparently wanted. By the time you've chased your boots down, the whole day is gone. Old Ossley poles past without stopping and nods once, as if to say: you'll still get there. Just later.",
       "heal": 3,
       "outcome": "setback",
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/eastern-shore-camp"
     }
   },
   "llmHints": {
