@@ -628,6 +628,66 @@
       "name": "Tamsin Three-Cards",
       "basis": "kitsune",
       "scale": "medium"
+    },
+    {
+      "id": "tidewell",
+      "name": "Professor Tidewell",
+      "basis": "selkie",
+      "scale": "medium"
+    },
+    {
+      "id": "mortar",
+      "name": "Mortar",
+      "basis": "stone_troll",
+      "scale": "very_large"
+    },
+    {
+      "id": "gullet",
+      "name": "Gullet",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "old_ossley",
+      "name": "Old Ossley",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "old_lintel",
+      "name": "Old Lintel",
+      "basis": "stone_troll",
+      "scale": "very_large"
+    },
+    {
+      "id": "hesper",
+      "name": "Hesper Longstride",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "marda_thorn",
+      "name": "Marda Thorn",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "tobble",
+      "name": "Tobble Reedpipe",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "hob",
+      "name": "Hob Thistledown",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "nan_rummage",
+      "name": "Nan Rummage",
+      "basis": "boggart",
+      "scale": "small"
     }
   ],
 
