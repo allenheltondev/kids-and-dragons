@@ -10,7 +10,7 @@
  * Node versions, which `Math.random()` explicitly is not.
  */
 
-import type { StatId } from "./types/domain.js";
+import type { Difficulty, StatId } from "./types/domain.js";
 import type { DiceRoll } from "./types/state.js";
 
 export interface Rng {
@@ -51,12 +51,37 @@ export function rollD20(rng: Rng): number {
   return Math.floor(rng.next() * 20) + 1;
 }
 
+/**
+ * Which difficulty band a target number sits in (spec §4.1: easy 8, normal 12,
+ * hard 16). A bare "Needed 12" on every check makes them all feel the same; a
+ * word says up front how much of a stretch this one is. Banded rather than
+ * keyed to the exact values in content/rules.json so a TN between the bands
+ * still reads sensibly.
+ */
+export function difficultyFor(tn: number): Difficulty {
+  if (tn <= 9) return "easy";
+  if (tn <= 13) return "normal";
+  return "hard";
+}
+
 export interface RollInput {
   mod: number;
   tn: number;
   /** Who is rolling. Defaults to "" for previews that have no character yet. */
   characterId?: string;
   stat?: StatId;
+}
+
+/**
+ * The die alone decides on its two ends: a natural 20 always succeeds and a
+ * natural 1 always fails, whatever the modifier and the target. Everything in
+ * between is `total >= tn`. It keeps both faces worth cheering (or groaning)
+ * at, and it means no check is ever certain in either direction.
+ */
+export function clears(die: number, total: number, tn: number): boolean {
+  if (die >= 20) return true;
+  if (die <= 1) return false;
+  return total >= tn;
 }
 
 /**
@@ -71,7 +96,7 @@ export function roll(rng: Rng, input: RollInput): DiceRoll {
     mod: input.mod,
     total,
     tn: input.tn,
-    result: total >= input.tn ? "success" : "failure",
+    result: clears(die, total, input.tn) ? "success" : "failure",
     characterId: input.characterId ?? "",
     ...(input.stat === undefined ? {} : { stat: input.stat }),
   };

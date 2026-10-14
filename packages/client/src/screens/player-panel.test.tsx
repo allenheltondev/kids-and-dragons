@@ -339,7 +339,7 @@ describe("a roll", () => {
     // Scoped to the prompt: the stat name also appears down in the stat row.
     const prompt = screen.getByText("Can you read the runes?").closest(".prompt")!;
     expect(within(prompt as HTMLElement).getByText("clever")).toBeTruthy();
-    expect(within(prompt as HTMLElement).getByText("beat 12")).toBeTruthy();
+    expect(within(prompt as HTMLElement).getByText("Tricky: needed 12")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Roll!" }));
     expect(sent).toEqual([{ type: "ROLL" }]);

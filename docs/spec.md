@@ -112,6 +112,10 @@ Resolution is always the same: **d20 + stat vs. a target number.**
 | Normal | 12 |
 | Hard | 16 |
 
+The die decides on its two ends: a **natural 20 always succeeds** and a **natural 1 always fails**, whatever the stat and the target. Nothing is ever certain, and both faces get a name on the screen.
+
+The target is shown as a word as well as a number (**Easy**, **Tricky**, **Hard**), so the table knows how much of a stretch a check is before anyone rolls. Chapters should use all three: a run of nothing but 12s makes every check feel the same.
+
 One roll type, one die, one big animation. She learns it in five minutes and it never changes.
 
 ### 4.2 Species — the world layer
@@ -174,7 +178,7 @@ World  →  Campaign  →  Chapter  →  Scene
 | Type | What happens |
 |---|---|
 | **Story** | Art + narration + 2–4 tappable choices. May branch. Players **take turns** choosing: a story turn marker passes round the party after each choice, and the TV says whose turn it is. A turn holder whose phone drops is skipped, and anyone may answer a choice they were holding. |
-| **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. |
+| **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. Checks **take turns** too: whoever has rolled the fewest checks this run rolls next, and the better stat breaks a tie. An author can pin a check to the party's best in that stat (`roller: "best"`) when the story needs it. |
 | **Encounter** | Tactical grid combat. See §7. |
 | **Choice point** | Party votes; ties broken by whoever's turn marker is active. Prevents one player steamrolling. |
 | **Rest** | Heal, spend a level-up, trade items, look at each other's characters. The natural end-of-session beat. |

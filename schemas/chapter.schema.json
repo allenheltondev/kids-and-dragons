@@ -769,6 +769,7 @@
           "$ref": "#/$defs/discovers"
         },
         "roller": {
+          "description": "Who rolls. \"party\" (default): whoever has rolled the fewest checks this run, the better stat breaking a tie. \"best\": the highest score in the check's stat. \"active\": the first standing member.",
           "enum": [
             "party",
             "active",

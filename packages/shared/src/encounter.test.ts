@@ -49,6 +49,8 @@ const RULES = makeRules();
  */
 const ALWAYS_HIT: Rng = { next: () => 0.999 };
 const ALWAYS_MISS: Rng = { next: () => 0 };
+/** One short of a natural 20: a hit only when the modifier carries it. */
+const ROLLS_19: Rng = { next: () => 18 / 20 + 0.001 };
 
 /**
  * A catalog written from `content/rules.json` — the four class signatures and
@@ -1178,19 +1180,20 @@ describe("actions", () => {
       setup({
         // Quick only pins the order here: a Guard-21 wisp reads as Quick 13.
         party: [{ character: hero({ id: "c_hero", quick: 20, might: 0 }), at: { x: 1, y: 2 } }],
-        // Guard 21 needs a 20 plus the +2 to land, so the bonus is the whole
-        // difference between a hit and a miss.
+        // Every die comes up 19. Guard 21 needs the +2 on top of that, so the
+        // bonus is the whole difference between a hit and a miss (and a 19 is
+        // not a natural 20, which would land regardless).
         enemies: [{ spec: wisp({ guard: 21 }), at: { x: 2, y: 2 } }],
       }),
-      ctxWith(ALWAYS_HIT),
+      ctxWith(ROLLS_19),
     );
 
     const bare = ok(
-      performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "wisp#1" }),
+      performAction(state, ctxWith(ROLLS_19), { abilityId: ATTACK_ID, targetId: "wisp#1" }),
     );
     expect(hpOf(bare.state, "wisp#1")).toBe(6);
 
-    const readied = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: READY_ID })).state;
+    const readied = ok(performAction(state, ctxWith(ROLLS_19), { abilityId: READY_ID })).state;
     expect(combatantById(readied, "c_hero")?.rollBonus).toBe(2);
 
     let next = readied;
@@ -1198,7 +1201,7 @@ describe("actions", () => {
     expect(currentActorId(next)).toBe("c_hero");
 
     const boosted = ok(
-      performAction(next, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "wisp#1" }),
+      performAction(next, ctxWith(ROLLS_19), { abilityId: ATTACK_ID, targetId: "wisp#1" }),
     );
     expect(hpOf(boosted.state, "wisp#1")).toBe(3);
     expect(combatantById(boosted.state, "c_hero")?.rollBonus).toBe(0);
