@@ -674,7 +674,7 @@
     },
     "rest_witch_fire": {
       "type": "rest",
-      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, one of them is shouting your number.",
+      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, a drover is shouting numbers, and the ford is a great deal closer than it was.",
       "heal": 2,
       "choices": [
         {
