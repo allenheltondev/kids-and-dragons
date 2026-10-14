@@ -320,7 +320,7 @@ describe("select then confirm (spec §11)", () => {
     expect(sent).toEqual([]);
     // The confirm bar names the tile in the same words the button did.
     expect(doIt()).toBeTruthy();
-    expect(screen.getByText(/Move to column 2, row 2/)).toBeTruthy();
+    expect(screen.getByText("Walk to the purple square")).toBeTruthy();
     // One question at a time: the cards step aside while the move is asked.
     expect(screen.queryByRole("button", { name: "I'm done. End my turn" })).toBeNull();
 
