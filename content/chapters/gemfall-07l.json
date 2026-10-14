@@ -476,6 +476,10 @@
         {
           "figure": "cast/cult_frogfolk",
           "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -497,6 +501,10 @@
         },
         {
           "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
           "name": "Masked choir singer"
         }
       ]
@@ -520,6 +528,10 @@
         {
           "figure": "cast/cult_bigfoot",
           "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -541,6 +553,10 @@
         },
         {
           "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
           "name": "Masked choir singer"
         }
       ]
@@ -595,6 +611,10 @@
         },
         {
           "figure": "cast/cult_bigfoot",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
           "name": "Masked choir singer"
         }
       ]

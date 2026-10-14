@@ -875,6 +875,10 @@
         {
           "figure": "cast/cult_frogfolk",
           "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -896,6 +900,10 @@
         },
         {
           "figure": "cast/soup_woman",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
           "name": "Masked choir singer"
         }
       ]
@@ -945,6 +953,10 @@
         },
         {
           "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
           "name": "Masked choir singer"
         }
       ]

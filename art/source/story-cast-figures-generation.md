@@ -9,7 +9,6 @@ Generated with the built-in image-generation tool. Named figures follow the 1024
 - Clerk Pennywhistle: harvest sprite clerk with blank forms and a stamp.
 - Caravan Master: recurring centaur traveler with a headache, route map and road gear.
 - Crying gem-buyer: merfolk with an expensive hat.
-- Brassbuckle faun and centaur: matching plain brass expedition caps.
 - Rope-shop boy: young faun with chalk and rope at the shop.
 - Cult choir variants: frogfolk and bigfoot singers with masks pushed up and humming crystals.
 - Donkey, pony and mule: ordinary four-legged working animals; the mule has cotton in its ears for the quiet caravan scene.
