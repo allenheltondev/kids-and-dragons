@@ -82,7 +82,7 @@ describe("the dice card", () => {
     expect(marginLine({ die: 9, total: 12, tn: 12, result: "success" })).toBe("Exactly 12. Just made it!");
     expect(marginLine({ die: 5, total: 9, tn: 12, result: "failure" })).toBe("3 short of 12.");
     expect(marginLine({ die: 20, total: 22, tn: 25, result: "success" })).toBe("A natural 20 always makes it!");
-    expect(marginLine({ die: 1, total: 15, tn: 8, result: "failure" })).toBe("A natural 1 never does. Next time!");
+    expect(marginLine({ die: 1, total: 15, tn: 8, result: "failure" })).toBe("Bonk! A natural 1 never makes it. Next time!");
   });
 
   it("throws the same confetti for the same roll, more of it on a 20, and fans it upward", () => {
@@ -99,5 +99,18 @@ describe("the dice card", () => {
     act(() => vi.advanceTimersByTime(ROLL_TUMBLE_MS + ROLL_HELP_TUMBLE_MS));
     expect(document.querySelector(".celebration--success")).not.toBeNull();
     expect(screen.getByText("Beat 12 by 2!")).toBeTruthy();
+  });
+
+  it("bonks a natural 1: the starburst, the dizzy stars and the sound", async () => {
+    const audio = await import("../audio/cue");
+    const played: string[] = [];
+    audio.setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
+    render(<DiceOverlay />);
+    throwRoll({ die: 1, mod: 4, total: 5, tn: 8, result: "failure", characterId: "c_1", stat: "quick" });
+    act(() => vi.advanceTimersByTime(ROLL_TUMBLE_MS));
+    expect(screen.getByText("BONK!")).toBeTruthy();
+    expect(document.querySelectorAll(".celebration__dizzy-star")).toHaveLength(3);
+    expect(played).toContain("bonk");
+    audio.setAudioSink(null);
   });
 });
