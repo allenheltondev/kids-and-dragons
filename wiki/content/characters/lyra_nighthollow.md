@@ -38,22 +38,22 @@ infobox: character
 ## Related Entities
 
 ### Campaigns
-- [Echoes Beneath](/campaigns/echoes_beneath/) — campaigns
-- [Echoes Beneath](/campaigns/echoes_beneath/) — characters
+- [Echoes Beneath](/campaigns/echoes_beneath/): campaigns
+- [Echoes Beneath](/campaigns/echoes_beneath/): characters
 
 ### Characters
-- [Kael Stormborn](/characters/kael_stormborn/) — allies
+- [Kael Stormborn](/characters/kael_stormborn/): allies
 
 ### Factions
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — faction
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — members
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/): faction
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/): members
 
 ### Npcs
-- [Mira Crystalweaver](/npcs/mira_crystalweaver/) — allies
+- [Mira Crystalweaver](/npcs/mira_crystalweaver/): allies
 
 ### Quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — quests
-- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/) — characters
+- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/): quests
+- [Crystal Heart Retrieval](/quests/crystal_heart_retrieval/): characters
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

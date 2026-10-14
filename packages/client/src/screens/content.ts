@@ -8,7 +8,33 @@
  */
 
 import { useEffect } from "react";
+import type { FieldGuide } from "@kad/shared";
 import { useGameStore } from "../store";
+
+/**
+ * `content/field-guide.json`, fetched on first ask and kept — only once the
+ * guide is opened or there is news to name, so a quiet session never requests
+ * it. A failed fetch clears the cache so the next ask retries.
+ */
+let fieldGuide: Promise<FieldGuide> | null = null;
+
+export function loadFieldGuide(): Promise<FieldGuide> {
+  fieldGuide ??= fetch("/content/field-guide.json")
+    .then((response) => {
+      if (!response.ok) throw new Error(`field guide: ${response.status}`);
+      return response.json() as Promise<FieldGuide>;
+    })
+    .catch((error: unknown) => {
+      fieldGuide = null;
+      throw error;
+    });
+  return fieldGuide;
+}
+
+/** Test seam: forget the cached guide. */
+export function resetFieldGuideCache(): void {
+  fieldGuide = null;
+}
 
 export function useEnsureContent(): void {
   const loadContent = useGameStore((s) => s.loadContent);

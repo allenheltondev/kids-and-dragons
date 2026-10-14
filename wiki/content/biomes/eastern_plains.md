@@ -3,7 +3,7 @@ title: The Eastern Plains
 id: biome.eastern_plains
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["eastern_grassland", "manticore_homeland", "roads", "prides", "caravans"]
 danger_level: moderate
@@ -139,16 +139,16 @@ East of the river, safe passage is a manticore promise, and the realm has learne
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The famous formal greeting - performed at a distance, tail curled conspicuously away - is not ancient. It was composed by one mortified elder after an incident involving a fainting merchant, and the prides agreed within a generation to remember it as immemorial.
 
 ### Neighbors
 
-- **[Stone Crossing](/locations/stone_crossing/)** — The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue.
-- **[Northern River Bridge](/routes/northern_river_bridge/)** — The northern door, quieter and colder, held in reserve; when Stone Crossing closes, the prides reroute the realm's traffic overnight and consider it good exercise.
-- **[Frostfang Peaks](/biomes/frostfang_peaks/)** — The peaks watch the north and the prides watch the ground, and between them very little crosses the east unobserved.
-- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The southern flats are where pride escorts stop, hand travelers to the Saltrot guides, and wish everyone luck in a tone that means it.
+- **[Stone Crossing](/locations/stone_crossing/)**: The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue.
+- **[Northern River Bridge](/routes/northern_river_bridge/)**: The northern door, quieter and colder, held in reserve; when Stone Crossing closes, the prides reroute the realm's traffic overnight and consider it good exercise.
+- **[Frostfang Peaks](/biomes/frostfang_peaks/)**: The peaks watch the north and the prides watch the ground, and between them very little crosses the east unobserved.
+- **[The Sallow Wastelands](/biomes/sallow_wastelands/)**: The southern flats are where pride escorts stop, hand travelers to the Saltrot guides, and wish everyone luck in a tone that means it.
 
 ### Current Tensions
 

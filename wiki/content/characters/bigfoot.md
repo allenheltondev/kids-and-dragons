@@ -3,7 +3,7 @@ title: Bigfoot
 id: character.bigfoot
 type: character
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["playable", "forest", "strong", "observer"]
 scale: large
@@ -75,7 +75,7 @@ Bigfoots build MossHome into the living trees rather than out of them, and their
 
 ### For Fun
 
-- Keeping calendar gardens — beds planted so that what is blooming tells you the week. The garden is also the record. Do not eat the record.
+- Keeping calendar gardens: beds planted so that what is blooming tells you the week. The garden is also the record. Do not eat the record.
 - Growing furniture. A good chair takes nine years, and there is no bad word in the language strong enough for someone who rushes one.
 - Observation sits: hours of companionable stillness watching one thing. Mosshorns frequently nap against them mid-sit, which is considered peer review.
 
@@ -85,13 +85,13 @@ Quiet, deliberate, and much funnier than strangers expect, in the way of people 
 
 ### Likes
 
-- **[Mosshorn](/creatures/mosshorn/)** — A survey of forest health that conducts itself, on legs.
-- **[Unicorn](/characters/unicorn/)** — They feel what the record cannot show. Between the two of them the Woods is fully witnessed.
-- **[Boggart](/npcs/boggart/)** — Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained.
+- **[Mosshorn](/creatures/mosshorn/)**: A survey of forest health that conducts itself, on legs.
+- **[Unicorn](/characters/unicorn/)**: They feel what the record cannot show. Between the two of them the Woods is fully witnessed.
+- **[Boggart](/npcs/boggart/)**: Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained.
 
 ### Dislikes
 
-- **[Jackalope](/creatures/jackalope/)** — One ate three years of the eastern calendar garden. The garden is fenced now. It was never about the lettuce; it was about the data.
+- **[Jackalope](/creatures/jackalope/)**: One ate three years of the eastern calendar garden. The garden is fenced now. It was never about the lettuce; it was about the data.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

@@ -18,6 +18,7 @@ import {
   type LegalAction,
 } from "./encounter.js";
 import { planEnemyTurn } from "./enemy-ai.js";
+import { PLAYER_COLORS } from "./player-colors.js";
 import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
@@ -429,6 +430,17 @@ describe("CREATE_CHARACTER", () => {
     expect(unicorn.down).toBe(false);
   });
 
+  it("assigns each character its own colors, whatever the phone sent", () => {
+    // Both intents send the same APPEARANCE; the table picks instead, and
+    // never the same pair twice.
+    const state = seatedParty();
+    const [first, second] = state.party.map((member) => member.character.appearance);
+    expect(first?.accent).not.toBe(second?.accent);
+    for (const appearance of [first, second]) {
+      expect(PLAYER_COLORS.map((colors) => colors.accent)).toContain(appearance?.accent);
+    }
+  });
+
   it("hands the persistence layer the unresolved character", () => {
     /*
      * `state.party` holds the *resolved* view, whose stats already include the
@@ -828,7 +840,7 @@ describe("checks", () => {
     ).state;
   }
 
-  it("nominates the best roller and opens a roll prompt", () => {
+  it("nominates the best roller when nobody has rolled yet, and opens a roll prompt", () => {
     const state = atCheck(ctx());
     expect(state.phase).toBe("check");
     expect(state.prompt).toMatchObject({
@@ -841,6 +853,109 @@ describe("checks", () => {
       // *which* character was nominated, not how ids are built.
       characterId: state.party[1]!.character.id,
     });
+  });
+
+  it("passes the die to whoever has rolled the fewest checks", () => {
+    // The griffin's 5 Quick would win this check on stat alone. Once they have
+    // had a turn, the shared check goes round to the unicorn instead. The
+    // fixture pins this check to "best", so it is reopened as the default.
+    const chapter = makeChapter();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "party" } as Scene;
+    const context = ctx({ chapter });
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const griffin = started.party[1]!.character.id;
+    const unicorn = started.party[0]!.character.id;
+    const atCheck = walk(
+      { ...started, checkRolls: { [griffin]: 1 } },
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }],
+      context,
+    ).state;
+    expect(atCheck.prompt).toMatchObject({ kind: "roll", characterId: unicorn });
+  });
+
+  it("counts each roll toward the roller's turn", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const result = applyIntent(atCheck(context), { playerId: "p_2", intent: { type: "ROLL" } }, context);
+    expect(result.state.checkRolls).toEqual({ [result.state.party[1]!.character.id]: 1 });
+  });
+
+  it("never nominates a player whose phone has dropped", () => {
+    const context = ctx();
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const griffinAway = {
+      ...started,
+      party: started.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const state = walk(
+      griffinAway,
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }],
+      context,
+    ).state;
+    expect(state.prompt).toMatchObject({ kind: "roll", characterId: state.party[0]!.character.id });
+  });
+
+  it("lets anyone roll, as themselves, once the nominee's phone drops", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const before = atCheck(context);
+    const dropped = {
+      ...before,
+      party: before.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const result = applyIntent(dropped, { playerId: "p_1", intent: { type: "ROLL" } }, context);
+    expect(result.error).toBeUndefined();
+    expect(result.state.lastRoll?.characterId).toBe(dropped.party[0]!.character.id);
+  });
+
+  it("adds a helper's die to the roll, sized by the helper's tier", () => {
+    // Every draw is 0.451: a 10 on the d20, and floor(0.451 * 4) + 1 = 2 on the d4.
+    const context = ctx({ rng: fixedRng(10) });
+    const helped = applyIntent(atCheck(context), { playerId: "p_1", intent: { type: "HELP" } }, context);
+    expect(helped.error).toBeUndefined();
+    const unicorn = helped.state.party[0]!.character.id;
+    expect(helped.state.prompt).toMatchObject({ kind: "roll", helper: { characterId: unicorn, sides: 4 } });
+    const rolled = applyIntent(helped.state, { playerId: "p_2", intent: { type: "ROLL" } }, context);
+    expect(rolled.state.lastRoll).toMatchObject({
+      die: 10,
+      mod: 5,
+      help: { characterId: unicorn, sides: 4, value: 2 },
+      total: 17,
+    });
+  });
+
+  it("refuses help from the roller, a second helper, or one who has helped since the last rest", () => {
+    const context = ctx();
+    const state = atCheck(context);
+    expect(applyIntent(state, { playerId: "p_2", intent: { type: "HELP" } }, context).error?.code).toBe("ILLEGAL");
+    const helped = applyIntent(state, { playerId: "p_1", intent: { type: "HELP" } }, context).state;
+    expect(applyIntent(helped, { playerId: "p_1", intent: { type: "HELP" } }, context).error?.code).toBe("ILLEGAL");
+    const unicorn = state.party[0]!.character.id;
+    const spent = { ...state, helpSpent: [unicorn] };
+    expect(applyIntent(spent, { playerId: "p_1", intent: { type: "HELP" } }, context).error?.code).toBe("ILLEGAL");
+  });
+
+  it("recharges help at a rest", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const unicorn = atCheck(context).party[0]!.character.id;
+    const atCamp = walk(
+      { ...atCheck(context), helpSpent: [unicorn] },
+      [
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    expect(atCamp.sceneType).toBe("rest");
+    expect(atCamp.helpSpent).toEqual([]);
   });
 
   it("only the nominated character's player may roll", () => {
@@ -873,6 +988,125 @@ describe("checks", () => {
     // `to` was omitted, and there was a roller — so only the roller took it.
     expect(unicorn!.hp).toBe(hpBefore[0]);
     expect(griffin!.hp).toBe(hpBefore[1]! - 1);
+  });
+});
+
+describe("whole-party checks", () => {
+  function groupCtx(rng: Rng): EngineContext {
+    const chapter = makeChapter();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "all" } as Scene;
+    return ctx({ chapter, rng });
+  }
+  function atGroupCheck(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+      ],
+      context,
+    ).state;
+  }
+
+  it("waits for everyone, then succeeds when half or more make it", () => {
+    const context = groupCtx(fixedRng(20));
+    const start = atGroupCheck(context);
+    const [unicorn, griffin] = start.party.map((m) => m.character.id);
+    expect(start.prompt).toMatchObject({ kind: "roll", group: { pending: [unicorn, griffin], rolls: [] } });
+
+    const first = applyIntent(start, { playerId: "p_1", intent: { type: "ROLL" } }, context);
+    expect(first.presentation).toMatchObject({ kind: "ROLL" });
+    expect(first.state.prompt).toMatchObject({ kind: "roll", characterId: griffin, group: { pending: [griffin] } });
+    expect(applyIntent(first.state, { playerId: "p_1", intent: { type: "ROLL" } }, context).error?.code).toBe(
+      "ILLEGAL",
+    );
+
+    const last = applyIntent(first.state, { playerId: "p_2", intent: { type: "ROLL" } }, context);
+    expect(last.state.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
+    expect(last.state.sceneId).toBe("scene_shrine");
+  });
+
+  it("fails when fewer than half make it", () => {
+    const context = groupCtx(fixedRng(1));
+    const done = walk(
+      atGroupCheck(context),
+      [
+        { playerId: "p_1", intent: { type: "ROLL" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+      ],
+      context,
+    ).state;
+    expect(done.lastRoll?.group).toEqual({ made: 0, of: 2, result: "failure" });
+    expect(done.sceneId).toBe("scene_scratched");
+  });
+
+  it("counts each group die toward the rotation, so whoever sat it out rolls next", () => {
+    // A three-seat party: the griffin's phone is away for the group check, so
+    // only the unicorn and the third hero roll. Once it reconnects, the next
+    // shared check must go to the griffin, who has rolled the fewest.
+    const chapter = makeChapter();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "all" } as Scene;
+    const context = ctx({ chapter, rng: fixedRng(20) });
+    const seated = seatedParty(context);
+    const third = {
+      ...seated.party[0]!,
+      playerId: "p_3",
+      character: { ...seated.party[0]!.character, id: `${seated.party[0]!.character.id}_3`, ownerPlayerId: "p_3" },
+    };
+    const started = walk(
+      { ...seated, party: [...seated.party, third] },
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const [unicorn, griffin, other] = started.party.map((m) => m.character.id);
+    const griffinAway = {
+      ...started,
+      party: started.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const done = walk(
+      griffinAway,
+      [
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_1", intent: { type: "ROLL" } },
+        { playerId: "p_3", intent: { type: "ROLL" } },
+      ],
+      context,
+    ).state;
+    expect(done.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
+    expect(done.checkRolls).toEqual({ [unicorn!]: 1, [other!]: 1 });
+
+    // Back online, and the next shared check comes round: the griffin is due.
+    const back = {
+      ...done,
+      party: done.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: true } : m)),
+    };
+    const rotating = makeChapter();
+    const next = enterScene(back, "check_squeeze", {
+      ...ctx({ chapter: rotating }),
+      chapter: {
+        ...rotating,
+        scenes: { ...rotating.scenes, check_squeeze: { ...rotating.scenes["check_squeeze"]!, roller: "party" } as Scene },
+      },
+    });
+    expect(next.state.prompt).toMatchObject({ kind: "roll", characterId: griffin });
+  });
+
+  it("refuses help, since everyone is rolling", () => {
+    const context = groupCtx(fixedRng(10));
+    const result = applyIntent(atGroupCheck(context), { playerId: "p_1", intent: { type: "HELP" } }, context);
+    expect(result.error?.code).toBe("ILLEGAL");
+  });
+
+  it("lets the table roll for a friend whose phone dropped", () => {
+    const context = groupCtx(fixedRng(20));
+    const first = applyIntent(atGroupCheck(context), { playerId: "p_1", intent: { type: "ROLL" } }, context).state;
+    const dropped = {
+      ...first,
+      party: first.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const done = applyIntent(dropped, { playerId: "p_1", intent: { type: "ROLL" } }, context);
+    expect(done.error).toBeUndefined();
+    expect(done.state.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
   });
 });
 
@@ -937,6 +1171,12 @@ describe("a full walk of a chapter", () => {
     expect(result.state.phase).toBe("encounter");
     expect(result.state.prompt).toMatchObject({ kind: "ready" });
     expect(result.state.encounter).toBeFalsy();
+
+    // The board goes up stamped with the step it began on: the fight's
+    // identity, which live previews key on (previewContext).
+    const p1Ready = applyIntent(result.state, { playerId: "p_1", intent: { type: "READY", ready: true } }, context).state;
+    const begun = applyIntent(p1Ready, { playerId: "p_2", intent: { type: "READY", ready: true } }, context).state;
+    expect(begun.encounter?.startedAt).toBe(p1Ready.seq);
 
     // Ready up, and the fight is real — `walk` plays it out (see its comment).
     // ADVANCE used to cross this for free, back when the engine handed out an

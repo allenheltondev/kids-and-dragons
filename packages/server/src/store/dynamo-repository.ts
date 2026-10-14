@@ -20,7 +20,12 @@
  */
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { CHARACTER_VERSION, migrateCharacter } from "@kad/shared";
+import {
+  CHARACTER_VERSION,
+  FIELD_GUIDE_VERSION,
+  migrateCharacter,
+  migrateFieldGuide,
+} from "@kad/shared";
 import { readAll } from "./character-io.ts";
 import {
   BatchWriteCommand,
@@ -36,6 +41,8 @@ import {
 import type {
   Character,
   DeviceBinding,
+  FieldGuideDiscovery,
+  FieldGuideRecord,
   Household,
   PlayerProfile,
   RunState,
@@ -58,6 +65,7 @@ import {
   DEVICE_SK,
   EVT_SK,
   EVT_SK_MAX,
+  FIELDGUIDE,
   GSI1_DEVICE,
   GSI1_GUEST,
   GSI1_GUEST_SK,
@@ -628,6 +636,95 @@ export class DynamoRepository implements GameRepository {
   async listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]> {
     const items = await this.partition(HH(householdId), PREFIX.campaign);
     return items.map((i) => i.data as CampaignProgressRecord);
+  }
+
+  async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
+    const item = await this.get(HH(householdId), FIELDGUIDE);
+    if (!item) return migrateFieldGuide({}, FIELD_GUIDE_VERSION);
+    return migrateFieldGuide(item.data, item.v);
+  }
+
+  /*
+   * Design: one item, `data.entries` a map keyed by canon id, written with a
+   * per-key `SET data.entries.<id> = if_not_exists(data.entries.<id>, :entry)`.
+   *
+   * `if_not_exists` on each key is what makes first-finder-wins hold with no
+   * read and no lock: two concurrent writers each add only the keys the other
+   * has not, and a key that exists is left byte-for-byte alone. Different keys
+   * touch different paths, so they merge instead of racing.
+   *
+   * The wrinkle is that a nested `SET` needs its *parent* map to exist, and
+   * `SET entries = if_not_exists(entries, :empty)` cannot share an expression
+   * with `SET entries.<id> = ...` (DynamoDB rejects overlapping paths). So the
+   * write is optimistic with a one-time bootstrap: try the nested write; on the
+   * ValidationException that means "no such map yet", create the empty map
+   * (itself idempotent - `if_not_exists`, so a racing bootstrap is harmless and
+   * can never wipe entries) and retry. After the first discovery ever, every
+   * call is a single UpdateItem. `ReturnValues: ALL_OLD` hands back the item as
+   * it was *atomically before* this write, so "newly added" is exactly the ids
+   * absent from that image - correct even when another writer lands in between.
+   *
+   * Capacity note: all entries share one item (400 KB cap, ~100 B/entry =>
+   * thousands of discoveries), far above any content pack.
+   */
+  async recordDiscoveries(householdId: string, discoveries: FieldGuideDiscovery[]): Promise<string[]> {
+    const nowIso = new Date(this.now()).toISOString();
+    // First occurrence wins; repeated paths in one expression are an error.
+    const wanted = new Map<string, FieldGuideDiscovery>();
+    for (const d of discoveries) {
+      if (d.canonId && !wanted.has(d.canonId)) wanted.set(d.canonId, d);
+    }
+    if (wanted.size === 0) return [];
+
+    const names: Record<string, string> = { "#d": "data", "#e": "entries" };
+    const values: Record<string, unknown> = {};
+    const sets: string[] = [];
+    let i = 0;
+    for (const [canonId, d] of wanted) {
+      names[`#k${i}`] = canonId;
+      values[`:e${i}`] = {
+        firstFoundBy: d.playerId,
+        foundAt: d.foundAt ?? nowIso,
+        ...(d.runId ? { runId: d.runId } : {}),
+      };
+      sets.push(`#d.#e.#k${i} = if_not_exists(#d.#e.#k${i}, :e${i})`);
+      i++;
+    }
+    const key = { PK: HH(householdId), SK: FIELDGUIDE };
+
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const out = await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: `SET ${sets.join(", ")}`,
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: values,
+            ReturnValues: "ALL_OLD",
+          }),
+        );
+        const before = (out.Attributes?.["data"] as { entries?: Record<string, unknown> } | undefined)?.entries ?? {};
+        return [...wanted.keys()].filter((id) => !Object.hasOwn(before, id));
+      } catch (err) {
+        // Only "the entries map does not exist yet" is recoverable, and only once.
+        if (nameOf(err) !== "ValidationException" || attempt >= 2) throw err;
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression:
+              "SET #d = if_not_exists(#d, :empty), v = if_not_exists(v, :v), entity = if_not_exists(entity, :entity)",
+            ExpressionAttributeNames: { "#d": "data" },
+            ExpressionAttributeValues: {
+              ":empty": { entries: {} },
+              ":v": FIELD_GUIDE_VERSION,
+              ":entity": "field-guide",
+            },
+          }),
+        );
+      }
+    }
   }
 
   async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {

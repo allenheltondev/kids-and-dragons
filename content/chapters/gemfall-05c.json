@@ -42,7 +42,7 @@
   "scenes": {
     "scene_stones_line": {
       "type": "story",
-      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall grey stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
+      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall gray stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
       "choices": [
         {
           "id": "join_queue",
@@ -61,6 +61,9 @@
     },
     "scene_dragonling_home": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "A grandmother with spectacles on a chain looks up from her tally book, looks at you, and drops the pencil. \"Well! Look who came home the FRONT way.\" Within a minute you have been hugged by four aunts and handed a warm rock to hold. Then her face goes serious. \"Worst season in the tallies, love. Come and help.\"",
       "choices": [
         {
@@ -80,6 +83,9 @@
     },
     "scene_gate_town": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "The gate town is all bells: big bells, little bells, bells on poles and bells on goats. Dragonling grandmothers inspect every pick that comes through and recite the one rule to every prospector: \"Take what the mountain drops. Never pry at what it holds.\" A man with an enormous pry bar is saying he didn't hear that.",
       "choices": [
         {
@@ -151,6 +157,9 @@
     },
     "scene_crab_warning": {
       "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
       "narration": "Up the hill, the prospector is about to pry at a sparkling heap on a patch of warm ground. The heap stands up. It is a glassback crab, and it is doing a slow, clacking dance with its claws raised. Its friend is standing up too.",
       "choices": [
         {
@@ -282,7 +291,7 @@
     "check_outline": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Put every clue in the right place on the floor map",
       "roller": "party",
       "onSuccess": {
@@ -421,6 +430,9 @@
     },
     "scene_centaur_whisper": {
       "type": "story",
+      "discovers": [
+        "npc.centaur"
+      ],
       "narration": "In the morning, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
       "choices": [
         {

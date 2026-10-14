@@ -254,7 +254,7 @@ export function CharacterSheet({ member, isMe, items }: CharacterSheetProps): Re
                   <Icon name="ribbon" />
                   <span>
                     <b>{prettyCampaign(campaignId)}</b>
-                    {tier === null ? null : <> — was {TIER_WORD[tier]} once</>}
+                    {tier === null ? null : <>, was {TIER_WORD[tier]} once</>}
                   </span>
                 </li>
               );

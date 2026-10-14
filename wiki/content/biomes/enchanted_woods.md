@@ -3,7 +3,7 @@ title: Enchanted Woods
 id: biome.enchanted_woods
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ancient_forest", "living_magic", "changing_paths", "memory", "hidden_glades"]
 danger_level: moderate
@@ -138,15 +138,15 @@ The realm swears its serious promises here, on the theory that the forest rememb
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - One clearing has never moved in the entire span of the archives. The forest is holding it for a promise that has not come due yet.
 
 ### Neighbors
 
-- **[MossHome](/locations/mosshome/)** — The settlement is the forest's memory in writing and the forest is the settlement's memory in fact; neither could be itself without the other, and both know it.
-- **[Whispering Marsh](/biomes/whispering_marsh/)** — The forest's waters drain south into the marsh, and marsh-folk say everything the Woods chooses to forget arrives downstream eventually, still muttering.
-- **[Red Sky Foothills](/biomes/red_sky_foothills/)** — Ash from the mountain drifts onto the canopy in eruption years, and the forest reroutes paths away from the foothills for a season afterward, the way one avoids a neighbor after a loud party.
+- **[MossHome](/locations/mosshome/)**: The settlement is the forest's memory in writing and the forest is the settlement's memory in fact; neither could be itself without the other, and both know it.
+- **[Whispering Marsh](/biomes/whispering_marsh/)**: The forest's waters drain south into the marsh, and marsh-folk say everything the Woods chooses to forget arrives downstream eventually, still muttering.
+- **[Red Sky Foothills](/biomes/red_sky_foothills/)**: Ash from the mountain drifts onto the canopy in eruption years, and the forest reroutes paths away from the foothills for a season afterward, the way one avoids a neighbor after a loud party.
 
 ### Current Tensions
 

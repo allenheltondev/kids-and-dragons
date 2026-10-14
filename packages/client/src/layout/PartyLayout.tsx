@@ -24,6 +24,7 @@ import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
+import { GuideTab } from "./GuideTab";
 import { useMyTurnKey } from "../store";
 
 export interface PartyLayoutProps {
@@ -61,10 +62,11 @@ function PhoneLayout(): React.JSX.Element {
 
   const section = usePlayerNavigation((navigation) => navigation.section);
   const onMap = showing === "map";
+  const inGuide = showing === "player" && section === "guide";
 
   return (
     <div className="kad-party kad-party--player">
-      {/* Three destinations on every phone; the TV stays a pure display. */}
+      {/* Four destinations on every phone; the TV stays a pure display. */}
       <nav className="kad-party__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
@@ -77,14 +79,14 @@ function PhoneLayout(): React.JSX.Element {
         </button>
         <button
           type="button"
-          className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" ? " kad-tray__tab--on" : ""}`}
+          className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" && !inGuide ? " kad-tray__tab--on" : ""}`}
           aria-label="You"
-          aria-pressed={showing === "player"}
+          aria-pressed={showing === "player" && !inGuide}
           onClick={() => { dismissPlayerSheet(); setShowing("player"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />
-            {turnKey !== null && (showing !== "player" || section === "bag") ? (
+            {turnKey !== null && (showing !== "player" || section !== "turn") ? (
               <span className="kad-tray__badge" aria-label="Your turn">★</span>
             ) : null}
           </span>
@@ -101,6 +103,7 @@ function PhoneLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
+        <GuideTab on={inGuide} onShowPlayer={() => setShowing("player")} />
       </nav>
 
       {/* `hidden` rather than unmounted, like the Travel panes: a selection

@@ -49,6 +49,12 @@ const cueVoices: Partial<Record<CueId, Voice[]>> = {
     { at, duration: 0.025 + (i % 3) * 0.006, freq: 0, noise: true, cutoff: 3200 + (i % 4) * 360, highpass: 650, gain: 0.24 - i * 0.008, attack: 0.0008, decay: 8, pan: (i % 3 - 1) * 0.25 },
     { at, duration: 0.025, freq: [210, 275, 235, 310][i % 4]!, gain: 0.025, attack: 0.0008, decay: 9 },
   ]),
+  // A hollow wooden knock, then a wobbly boing on top (vibrato does the wobble).
+  bonk: [
+    { at: 0, duration: 0.16, freq: 540, endFreq: 170, gain: 0.32, attack: 0.002, decay: 7, partials: [[1, 1], [2.7, 0.25]] },
+    { at: 0, duration: 0.05, freq: 0, noise: true, cutoff: 1800, highpass: 400, gain: 0.14, attack: 0.001, decay: 10 },
+    { at: 0.13, duration: 0.5, freq: 340, endFreq: 250, gain: 0.12, attack: 0.01, decay: 3, vibrato: [11, 60] },
+  ],
   attack: [
     { at: 0, duration: 0.3, freq: 130, endFreq: 52, gain: 0.5, attack: 0.004 },
     { at: 0, duration: 0.11, freq: 0, gain: 0.22, noise: true, cutoff: 850, attack: 0.004 },

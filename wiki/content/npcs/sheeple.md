@@ -3,7 +3,7 @@ title: Sheeple
 id: npc.sheeple
 type: npc
 status: draft
-lastReviewed: "2026-10-13"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["supporting_people", "plains", "flock", "skittish"]
 classification: supporting_people
@@ -45,6 +45,9 @@ related:
   - id: biome.plains
     type: biome
     relationship: supporting_peoples
+assets:
+  primary: assets/entities/sheeple/portrait.webp
+  primaryFull: assets/entities/sheeple/assembled.png
 ai_context:
   mood: "Friendly, skittish sheep-folk of the Plains who live, think, and do everything as a flock, are never fewer than three, and never have names."
   themes: "Supporting_people, Plains, Flock, Skittish"
@@ -78,14 +81,14 @@ Friendly, warm, and skittish. Meeting a flock starts with a full minute of silen
 
 ### Likes
 
-- **[Faun](/npcs/faun/)** — A whole village singing the same song at the same time. The sheeple consider fauns the only other people who have really got it right.
-- **[Centaur](/npcs/centaur/)** — They walk the same road in the same order every year. The sheeple have decided centaurs are a very tall flock, and are delighted for them.
-- **[Bigfoot](/characters/bigfoot/)** — Slow, soft-spoken, and impossible to be startled by. A bigfoot can walk into the middle of a flock and nobody bolts.
+- **[Faun](/npcs/faun/)**: A whole village singing the same song at the same time. The sheeple consider fauns the only other people who have really got it right.
+- **[Centaur](/npcs/centaur/)**: They walk the same road in the same order every year. The sheeple have decided centaurs are a very tall flock, and are delighted for them.
+- **[Bigfoot](/characters/bigfoot/)**: Slow, soft-spoken, and impossible to be startled by. A bigfoot can walk into the middle of a flock and nobody bolts.
 
 ### Dislikes
 
-- **[Cinder Wolf](/creatures/cinder_wolf/)** — Wolves. The flock agrees on this faster than it has ever agreed on anything. Now that the displaced packs cross the roads at dusk, Plains flocks graze in a tighter knot and call the Gather earlier every evening.
-- **[Jackalope](/creatures/jackalope/)** — It bursts out of the grass without warning, every time. One jackalope can scatter a hillside of sheeple, and the jackalope never once looks sorry.
+- **[Cinder Wolf](/creatures/cinder_wolf/)**: Wolves. The flock agrees on this faster than it has ever agreed on anything. Now that the displaced packs cross the roads at dusk, Plains flocks graze in a tighter knot and call the Gather earlier every evening.
+- **[Jackalope](/creatures/jackalope/)**: It bursts out of the grass without warning, every time. One jackalope can scatter a hillside of sheeple, and the jackalope never once looks sorry.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

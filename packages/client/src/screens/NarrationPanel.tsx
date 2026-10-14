@@ -13,7 +13,8 @@
 import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
 import { speak, turnHolderAway } from "@kad/shared";
-import { useItems, useParty, useRunState } from "../store";
+import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../store";
+import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { Icon } from "./icons";
 import { chapterHeading } from "./campaign-copy";
 import "./shared.css";
@@ -50,6 +51,9 @@ export function NarrationPanel(): ReactElement | null {
   const state = useRunState();
   const party = useParty();
   const items = useItems();
+  const abilities = useAbilities();
+  // Who is leaning toward what, on their phone, before "Do it!" (world/previews.ts).
+  const leaning = tablePreviews(state, usePreviews());
   const narration = state?.narration ?? "";
   const sceneId = state?.sceneId ?? null;
   const prompt = state?.prompt ?? null;
@@ -195,13 +199,40 @@ export function NarrationPanel(): ReactElement | null {
       */}
       {choices !== null && choices.length > 0 ? (
         <ul className="narration__choices">
-          {choices.map((choice) => (
-            <li className="narration__choice" key={choice.id}>
-              <Icon name={choice.icon} />
-              <span>{choice.label}</span>
-            </li>
-          ))}
+          {choices.map((choice) => {
+            const who = leaning.choices[choice.id] ?? [];
+            return (
+              <li
+                className={`narration__choice${who.length > 0 ? " narration__choice--picked" : ""}`}
+                key={choice.id}
+              >
+                <Icon name={choice.icon} />
+                <span>{choice.label}</span>
+                {who.length > 0 ? (
+                  <span className="narration__picker">
+                    <Icon name="hand" />
+                    <span>{who.join(", ")}</span>
+                  </span>
+                ) : null}
+              </li>
+            );
+          })}
         </ul>
+      ) : null}
+
+      {/*
+        The fighter whose turn it is, mid-pick: the board rings what they are
+        aiming at, and this names it, because a ring alone does not say
+        *which* power is about to land.
+      */}
+      {leaning.combat !== null && state.encounter ? (
+        <p className="narration__aim" role="status">
+          <Icon name="hand" />
+          <span>
+            <b>{leaning.combat.name}</b>:{" "}
+            {describeCombatPreview(leaning.combat.preview, state.encounter, abilities, items)}
+          </span>
+        </p>
       ) : null}
 
       {prompt !== null && prompt.kind === "roll" ? (

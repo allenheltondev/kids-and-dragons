@@ -84,6 +84,23 @@
         "minimum": 1
       }
     },
+    "helpDie": {
+      "description": "Sides on the die a helper adds to a check, by the helper's tier. The d20 never changes; the help you give grows as you do.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fledgling",
+        "sworn",
+        "radiant",
+        "mythic"
+      ],
+      "properties": {
+        "fledgling": { "type": "integer", "minimum": 2, "maximum": 20 },
+        "sworn": { "type": "integer", "minimum": 2, "maximum": 20 },
+        "radiant": { "type": "integer", "minimum": 2, "maximum": 20 },
+        "mythic": { "type": "integer", "minimum": 2, "maximum": 20 }
+      }
+    },
     "tierLevels": {
       "description": "spec \u00a78.1 \u2014 the level at which each appearance tier is reached.",
       "type": "object",

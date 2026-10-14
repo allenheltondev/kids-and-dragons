@@ -138,12 +138,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
     await page.waitForTimeout(150);
   }
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  // Straight past the appearance step without touching a swatch. That is the
-  // assertion: colour and accent are optional (CreationFlow `stepDone`), so
-  // "Next" has to be live on arrival. first-playable.spec.ts covers the other
-  // path, where somebody does pick.
-  await expect(page.getByRole("button", { name: /^next$/i })).toBeEnabled();
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
@@ -178,6 +172,7 @@ test.describe("nameplates", () => {
     // nameplates are for. It is the lobby, not a seat (spec §2.1).
     const tv = await client(browser, 1280, 720);
     await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
@@ -185,7 +180,6 @@ test.describe("nameplates", () => {
 
     for (const [i, page] of phones.entries()) {
       await page.goto("/");
-      await page.fill('input[placeholder="Type your name"]', ["Allen", "Sam", "Rosie"][i]!);
       await page.getByLabel(/room code/i).fill(code);
       await page.getByRole("button", { name: /join a game/i }).click();
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
@@ -201,9 +195,8 @@ test.describe("nameplates", () => {
       .poll(async () => (await read(tv)).boxes.length, { timeout: 30_000 })
       .toBe(0);
 
+    // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {
-      await openPlayerTask(page);
-      await page.getByRole("button", { name: /i'm ready/i }).click(TAP);
       await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);

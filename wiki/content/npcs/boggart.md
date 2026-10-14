@@ -3,7 +3,7 @@ title: Boggart
 id: npc.boggart
 type: npc
 status: draft
-lastReviewed: "2026-08-04"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "collector", "secretive"]
 classification: supporting_people
@@ -26,7 +26,7 @@ likes:
   - id: character.kitsune
     title: "Kitsune"
     url: "/characters/kitsune/"
-    because: "Stories with missing pieces — the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won."
+    because: "Stories with missing pieces, the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won."
 dislikes:
   - id: npc.harvest_sprite
     title: "Harvest Sprite"
@@ -71,7 +71,7 @@ infobox: npc
 
 > *Nothing in the marsh is lost. It has simply changed management.*
 
-Boggarts collect what the world drops: buttons, keys, bells, sounds, secrets. A boggart's collection is its memoir — ask about any button and you will get the story, though not necessarily the story you wanted, and never in order. They do not steal, a distinction boggarts consider obvious and everyone else considers ongoing: a thing on the ground has been filed under ground, and filing is a service.
+Boggarts collect what the world drops: buttons, keys, bells, sounds, secrets. A boggart's collection is its memoir: ask about any button and you will get the story, though not necessarily the story you wanted, and never in order. They do not steal, a distinction boggarts consider obvious and everyone else considers ongoing: a thing on the ground has been filed under ground, and filing is a service.
 
 ### For Fun
 
@@ -82,19 +82,19 @@ Boggarts collect what the world drops: buttons, keys, bells, sounds, secrets. A 
 
 ### Getting Along
 
-Sidelong, delighted, and constitutionally allergic to stating a thing plainly when a hint will do. A boggart tests whether you pay attention and rewards you in exact proportion to the result — which makes them the marsh's most honest people, hidden inside its most annoying ones.
+Sidelong, delighted, and constitutionally allergic to stating a thing plainly when a hint will do. A boggart tests whether you pay attention and rewards you in exact proportion to the result, which makes them the marsh's most honest people, hidden inside its most annoying ones.
 
 ### Likes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A secret that tells itself, on schedule. Boggarts attend with notebooks.
-- **[Loftmire](/creatures/loftmire/)** — The marsh's other filing system, and the only one that ever gives anything back. A boggart with a jar of its sand can walk a whole cloud home, and charges the Exchange accordingly.
-- **[Silver Otter](/creatures/silver_otter/)** — A fellow collector with excellent taste and no small talk.
-- **[Kitsune](/characters/kitsune/)** — Stories with missing pieces — the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A secret that tells itself, on schedule. Boggarts attend with notebooks.
+- **[Loftmire](/creatures/loftmire/)**: The marsh's other filing system, and the only one that ever gives anything back. A boggart with a jar of its sand can walk a whole cloud home, and charges the Exchange accordingly.
+- **[Silver Otter](/creatures/silver_otter/)**: A fellow collector with excellent taste and no small talk.
+- **[Kitsune](/characters/kitsune/)**: Stories with missing pieces, the collector's favorite kind. The trades are legendary and nobody has ever agreed on who won.
 
 ### Dislikes
 
-- **[Harvest Sprite](/npcs/harvest_sprite/)** — They return found things to their owners. On purpose. The waste is unspeakable.
-- **[Mire Mimic](/creatures/mire_mimic/)** — It sits on the best salvage and pretends to be it.
+- **[Harvest Sprite](/npcs/harvest_sprite/)**: They return found things to their owners. On purpose. The waste is unspeakable.
+- **[Mire Mimic](/creatures/mire_mimic/)**: It sits on the best salvage and pretends to be it.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

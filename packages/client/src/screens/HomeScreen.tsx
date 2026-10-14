@@ -1,14 +1,16 @@
 /**
  * HomeScreen — the only screen with no session behind it.
  *
- * Two jobs: start a game (choosing Party or Travel mode, spec §2) or join one
- * with a room code (architecture §4.5). Everything else in the app assumes a
- * session exists.
+ * Two jobs, very unequal: join a game with a room code (architecture §4.5) —
+ * what nearly every visitor, and every child, is here to do — or start one
+ * (choosing Party or Phone mode, spec §2). Joining leads and stands alone;
+ * starting is a grown-up's job and sits behind a quiet "Want to host?" link, so
+ * a child sees one thing to do. Everything else in the app assumes a session
+ * exists.
  *
- * This is the one adult-facing screen in the game. Device binding
- * (architecture §4.5) will eventually make even the display name unnecessary —
- * a bound phone already knows who it is — so nothing here is on the path a
- * child walks: she opens the app and taps her avatar.
+ * Joining asks for no name: the character-creation flow asks "What's your
+ * name?" where it means something. The only name field left is under the host
+ * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
 import { useCallback, useEffect, useId, useState } from "react";
@@ -31,8 +33,8 @@ import "./HomeScreen.css";
 const CODE_SLOTS = [0, 1, 2, 3];
 
 const MODE_BLURB: Record<RoomMode, string> = {
-  party: "This screen becomes the TV — everyone joins from their phones.",
-  travel: "Phones only — everyone sees the world and their own controls.",
+  party: "This screen becomes the TV. Everyone joins from their phones.",
+  travel: "Phones only. Everyone sees the world and their own controls.",
 };
 
 const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" };
@@ -51,6 +53,7 @@ export function HomeScreen(): ReactElement {
   const pendingCode = useGameStore((s) => s.pendingCode);
 
   const [displayName, setDisplayName] = useState("");
+  const [hosting, setHosting] = useState(false);
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
@@ -59,6 +62,7 @@ export function HomeScreen(): ReactElement {
 
   const nameFieldId = useId();
   const nameHintId = useId();
+  const hostPanelId = useId();
 
   // Whether this deployment has a user pool at all. Asked once, here, because
   // HomeScreen is the first thing a fresh phone renders (§4.5).
@@ -71,11 +75,10 @@ export function HomeScreen(): ReactElement {
   }, [checkKeepsake]);
 
   const trimmedName = displayName.trim();
-  const nameReady = trimmedName.length > 0;
   const codeReady = code.length === CODE_LENGTH;
   // Party Mode is started from the TV, and the TV is nobody (spec §2.1): it
-  // needs no name, and the phones bring their own when they join.
-  const startReady = mode === "party" || nameReady;
+  // needs no name. Phone Mode seats the host as a player, so it does.
+  const startReady = mode === "party" || trimmedName.length > 0;
 
   const onCodeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setCode(normalizeCode(e.target.value));
@@ -106,13 +109,13 @@ export function HomeScreen(): ReactElement {
     setError(null);
     setBusy("join");
     try {
-      await joinRoom(code, trimmedName);
+      await joinRoom(code, "");
     } catch (err) {
       setError(err instanceof Error ? err.message : "That code did not work. Try again?");
     } finally {
       setBusy(null);
     }
-  }, [joinRoom, code, trimmedName]);
+  }, [joinRoom, code]);
 
   return (
     <main className="home entry-scene-host">
@@ -132,184 +135,214 @@ export function HomeScreen(): ReactElement {
               />
             )}
           </h1>
-          <p className="home__tagline kad-muted">Grab a phone. Pick an adventure.</p>
         </header>
 
-        <div className="home__field">
-          <label className="home__label" htmlFor={nameFieldId}>
-            <Icon name="name" />
-            <span>Your name</span>
-          </label>
-          <input
-            id={nameFieldId}
-            className="home__text-input kad-focusable"
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Type your name"
-            autoComplete="nickname"
-            enterKeyHint="done"
-            maxLength={20}
-            aria-describedby={nameHintId}
-          />
-          <p id={nameHintId} className="home__hint kad-muted">
-            This is the name the others see.
-          </p>
-        </div>
+        <div className="home__body">
+          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting}>
+            <h2 className="home__card-title" id="home-join">
+              <Icon name="qr" />
+              <span>Join a game</span>
+            </h2>
+            <p className="home__hint home__join-hint">Type the four letters on the big screen.</p>
 
-        <section className="home__card" aria-labelledby="home-start">
-          <h2 className="home__card-title" id="home-start">
-            <Icon name="play" />
-            <span>Start a game</span>
-          </h2>
-
-          <div className="home__modes" role="radiogroup" aria-label="How are you playing?">
-            {(["party", "travel"] as const).map((m) => (
-              <label
-                key={m}
-                className={`home__mode kad-tap${mode === m ? " home__mode--on" : ""}`}
-              >
-                <input
-                  className="home__mode-radio"
-                  type="radio"
-                  name="room-mode"
-                  value={m}
-                  checked={mode === m}
-                  onChange={() => setMode(m)}
-                />
-                <span className="home__mode-icon" aria-hidden="true">
-                  <Icon name={MODE_ICON[m]} size="2em" />
-                </span>
-                <span className="home__mode-text">
-                  <span className="home__mode-name">
-                    {m === "party" ? "Party Mode" : "Travel Mode"}
-                    {/* spec §11 — selection is shown by a check glyph, not colour. */}
-                    {mode === m ? <Icon name="check" label="Selected" /> : null}
+            {/*
+              One real input behind four big boxes: on-screen keyboards, paste and
+              backspace all behave, and the boxes stay legible for small hands.
+            */}
+            <label className="home__code">
+              <input
+                className="home__code-input"
+                type="text"
+                value={code}
+                onChange={onCodeChange}
+                inputMode="text"
+                autoCapitalize="characters"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck={false}
+                maxLength={CODE_LENGTH}
+                enterKeyHint="go"
+                aria-label="Room code, four letters"
+              />
+              <div className="home__code-boxes" aria-hidden="true">
+                {CODE_SLOTS.map((i) => (
+                  <span
+                    key={i}
+                    className={`home__code-box${code.length === i ? " home__code-box--next" : ""}${code[i] ? " home__code-box--filled" : ""}`}
+                  >
+                    {code[i] ?? ""}
                   </span>
-                  <span className="home__mode-blurb kad-muted">{MODE_BLURB[m]}</span>
-                </span>
-              </label>
-            ))}
-          </div>
+                ))}
+              </div>
+            </label>
 
-          <Button
-            variant="primary"
-            size="lg"
-            icon={<Icon name="play" />}
-            disabled={!startReady || busy !== null}
-            onClick={() => void start()}
+            <Button
+              variant="primary"
+              size="lg"
+              className={`home__join${codeReady ? " home__join--ready" : ""}`}
+              icon={<Icon name="forward" />}
+              disabled={!codeReady || busy !== null}
+              onClick={() => void join()}
+            >
+              {busy === "join" ? "Joining…" : "Join a game"}
+            </Button>
+
+            <div className="home__host-toggle">
+              <button
+                type="button"
+                className="home__link kad-focusable"
+                aria-controls={hostPanelId}
+                onClick={() => setHosting(true)}
+              >
+                Want to host? Set up a game
+              </button>
+            </div>
+          </section>
+
+          <section
+            className="home__card home__host"
+            id={hostPanelId}
+            aria-labelledby="home-start"
+            hidden={!hosting}
           >
-            {busy === "create" ? "Starting…" : mode === "party" ? "Open the lobby here" : "Start a game"}
-          </Button>
-        </section>
+            <h2 className="home__card-title" id="home-start">
+              <Icon name="play" />
+              <span>Start a game</span>
+            </h2>
 
-        <section className="home__card" aria-labelledby="home-join">
-          <h2 className="home__card-title" id="home-join">
-            <Icon name="qr" />
-            <span>Join a game</span>
-          </h2>
-          <p className="home__hint kad-muted">Type the four letters on the big screen.</p>
-
-          {/*
-            One real input behind four big boxes: on-screen keyboards, paste and
-            backspace all behave, and the boxes stay legible for small hands.
-          */}
-          <label className="home__code">
-            <input
-              className="home__code-input"
-              type="text"
-              value={code}
-              onChange={onCodeChange}
-              inputMode="text"
-              autoCapitalize="characters"
-              autoCorrect="off"
-              autoComplete="off"
-              spellCheck={false}
-              maxLength={CODE_LENGTH}
-              enterKeyHint="go"
-              aria-label="Room code, four letters"
-            />
-            <div className="home__code-boxes" aria-hidden="true">
-              {CODE_SLOTS.map((i) => (
-                <span
-                  key={i}
-                  className={`home__code-box${code.length === i ? " home__code-box--next" : ""}`}
+            <div className="home__modes" role="radiogroup" aria-label="How are you playing?">
+              {(["party", "travel"] as const).map((m) => (
+                <label
+                  key={m}
+                  className={`home__mode kad-tap${mode === m ? " home__mode--on" : ""}`}
                 >
-                  {code[i] ?? ""}
-                </span>
+                  <input
+                    className="home__mode-radio"
+                    type="radio"
+                    name="room-mode"
+                    value={m}
+                    checked={mode === m}
+                    onChange={() => setMode(m)}
+                  />
+                  <span className="home__mode-icon" aria-hidden="true">
+                    <Icon name={MODE_ICON[m]} size="2em" />
+                  </span>
+                  <span className="home__mode-text">
+                    <span className="home__mode-name">
+                      {m === "party" ? "Party Mode" : "Phone Mode"}
+                      {/* spec §11 — selection is shown by a check glyph, not colour. */}
+                      {mode === m ? <Icon name="check" label="Selected" /> : null}
+                    </span>
+                    <span className="home__mode-blurb kad-muted">{MODE_BLURB[m]}</span>
+                  </span>
+                </label>
               ))}
             </div>
-          </label>
 
-          <Button
-            variant="secondary"
-            size="lg"
-            icon={<Icon name="forward" />}
-            disabled={!nameReady || !codeReady || busy !== null}
-            onClick={() => void join()}
-          >
-            {busy === "join" ? "Joining…" : "Join a game"}
-          </Button>
-        </section>
-
-        {busy !== null ? (
-          /* A div, not a p: Spinner renders a div, and a block element inside
-             a <p> is invalid HTML that React warns about at runtime. */
-          <div className="home__busy kad-row" role="status">
-            <Spinner />
-            <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
-          </div>
-        ) : null}
-
-        {error !== null ? (
-          <p className="home__error kad-chip kad-chip--bad" role="alert">
-            <Icon name="close" />
-            <span>{error}</span>
-          </p>
-        ) : null}
-
-        {/*
-         * Sign in or create an account (§4.5). Always reachable where sign-in
-         * works, because an adult who wants their characters to outlive a
-         * week should not have to finish a chapter to find the door. Last and
-         * quiet, since nobody needs it to play.
-         *
-         * Signing in, not "keep these": an account that already has a
-         * household goes back to it and picks who this phone is, even if the
-         * phone has started a guest game since. Only a brand-new account keeps
-         * the guest household this phone is playing in (or gets a fresh one).
-         * The server makes that call (`linkAccount` `preferExisting`), because
-         * only it knows whether the account owns anything yet.
-         */}
-        {signInAvailable ? (
-          <section className="home__card home__account" aria-labelledby="home-account">
-            <h2 className="home__card-title" id="home-account">
-              <Icon name="lantern" />
-              {account !== null ? "Your adventurers are saved" : "Save your adventurers"}
-            </h2>
-            {account !== null ? (
-              <p className="home__hint kad-muted" role="status">
-                Signed in as <b className="home__account-email">{account.email}</b>
-              </p>
-            ) : (
-              <>
-                <p className="home__hint kad-muted">
-                  For grown-ups. Without an account, characters fade after a week away.
+            {mode === "travel" ? (
+              <div className="home__field">
+                <label className="home__label" htmlFor={nameFieldId}>
+                  <Icon name="name" />
+                  <span>Your name</span>
+                </label>
+                <input
+                  id={nameFieldId}
+                  className="home__text-input kad-focusable"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Type your name"
+                  autoComplete="nickname"
+                  enterKeyHint="done"
+                  maxLength={20}
+                  aria-describedby={nameHintId}
+                />
+                <p id={nameHintId} className="home__hint kad-muted">
+                  This is the name the others see.
                 </p>
-                <Button
-                  variant="secondary"
-                  block
-                  icon={<Icon name="envelope" />}
-                  onClick={() => {
-                    openKeepsake("restore", "home");
-                  }}
-                >
-                  Sign in or create an account
-                </Button>
-              </>
-            )}
+              </div>
+            ) : null}
+
+            <Button
+              variant="primary"
+              size="lg"
+              icon={<Icon name="play" />}
+              disabled={!startReady || busy !== null}
+              onClick={() => void start()}
+            >
+              {busy === "create" ? "Starting…" : mode === "party" ? "Open the lobby here" : "Start a game"}
+            </Button>
+
+            <div className="home__host-toggle">
+              <button
+                type="button"
+                className="home__link kad-focusable"
+                onClick={() => setHosting(false)}
+              >
+                Back to joining
+              </button>
+            </div>
           </section>
-        ) : null}
+
+          {busy !== null ? (
+            /* A div, not a p: Spinner renders a div, and a block element inside
+               a <p> is invalid HTML that React warns about at runtime. */
+            <div className="home__busy kad-row" role="status">
+              <Spinner />
+              <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
+            </div>
+          ) : null}
+
+          {error !== null ? (
+            <p className="home__error kad-chip kad-chip--bad" role="alert">
+              <Icon name="close" />
+              <span>{error}</span>
+            </p>
+          ) : null}
+
+          {/*
+           * Sign in or create an account (§4.5). Always reachable where sign-in
+           * works, because an adult who wants their characters to outlive a
+           * week should not have to finish a chapter to find the door. Last and
+           * quiet, since nobody needs it to play.
+           *
+           * Signing in, not "keep these": an account that already has a
+           * household goes back to it and picks who this phone is, even if the
+           * phone has started a guest game since. Only a brand-new account keeps
+           * the guest household this phone is playing in (or gets a fresh one).
+           * The server makes that call (`linkAccount` `preferExisting`), because
+           * only it knows whether the account owns anything yet.
+           */}
+          {signInAvailable ? (
+            <section className="home__card home__account" aria-labelledby="home-account">
+              <h2 className="home__card-title" id="home-account">
+                <Icon name="lantern" />
+                {account !== null ? "Your adventurers are saved" : "Save your adventurers"}
+              </h2>
+              {account !== null ? (
+                <p className="home__hint kad-muted" role="status">
+                  Signed in as <b className="home__account-email">{account.email}</b>
+                </p>
+              ) : (
+                <>
+                  <p className="home__hint kad-muted">
+                    For grown-ups. Without an account, characters fade after a week away.
+                  </p>
+                  <Button
+                    variant="secondary"
+                    block
+                    icon={<Icon name="envelope" />}
+                    onClick={() => {
+                      openKeepsake("restore", "home");
+                    }}
+                  >
+                    Sign in or create an account
+                  </Button>
+                </>
+              )}
+            </section>
+          ) : null}
+        </div>
       </div>
 
       <SignInFlow />

@@ -13,9 +13,11 @@
  */
 
 import type { Operation } from "fast-json-patch";
+import { readIntentPreview } from "@kad/shared";
 import type {
   ChannelMessage,
   Presentation,
+  PreviewMessage,
   RunState,
   ServerMessage,
 } from "@kad/shared";
@@ -45,6 +47,19 @@ export interface SequencerHandlers {
   onProgression(event: ProgressionEvent): void;
   /** A hole that did not fill in time. Resync from `sinceSeq`. */
   onGap(sinceSeq: number): void;
+  /**
+   * Field Guide ids a step found for the first time (`ServerMessage.discovered`,
+   * #106), emitted once, right after that step's patch is applied. Only live
+   * messages carry them — the server keeps them out of the event log — so a
+   * snapshot or a replayed gap never emits this.
+   */
+  onDiscovered?(event: { runId: string; seq: number; canonIds: string[] }): void;
+  /**
+   * A player's unconfirmed tap (`PreviewMessage`). Handed over the moment it
+   * arrives and never ordered: it is not a step of the state, so it neither
+   * waits for a gap to fill nor moves `seq`.
+   */
+  onPreview?(message: PreviewMessage): void;
 }
 
 export type TimerHandle = ReturnType<typeof setTimeout> | number;
@@ -117,6 +132,11 @@ export class MessageSequencer {
 
   ingest(message: ChannelMessage): void {
     if (this.disposed) return;
+
+    if (message.kind === "preview") {
+      this.handlers.onPreview?.(message);
+      return;
+    }
 
     if (message.kind === "snapshot") {
       // A snapshot always wins: it is the server's own view, not a delta.
@@ -192,6 +212,9 @@ export class MessageSequencer {
     this.handlers.onState(this.mirror, this.lastSeq);
     if (message.progression) {
       this.handlers.onProgression({ seq: message.seq, progression: message.progression });
+    }
+    if (message.discovered && message.discovered.length > 0) {
+      this.handlers.onDiscovered?.({ runId: message.runId, seq: message.seq, canonIds: message.discovered });
     }
   }
 
@@ -280,6 +303,23 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
   };
   if (typeof candidate.seq !== "number" || typeof candidate.runId !== "string") return null;
 
+  if (candidate.kind === "preview") {
+    const { playerId, context } = candidate as Partial<PreviewMessage>;
+    const preview = readIntentPreview((candidate as Partial<PreviewMessage>).preview ?? null);
+    if (typeof playerId !== "string" || preview === undefined) return null;
+    // A pick with no decision named cannot be checked against the screen, so
+    // it is not a pick at all; a clear needs none.
+    if (preview !== null && typeof context !== "string") return null;
+    return {
+      kind: "preview",
+      seq: candidate.seq,
+      runId: candidate.runId,
+      playerId,
+      preview,
+      context: preview === null ? null : (context as string),
+    };
+  }
+
   if (candidate.kind === "snapshot" || (candidate.kind === undefined && candidate.state)) {
     if (!candidate.state) return null;
     return { kind: "snapshot", seq: candidate.seq, runId: candidate.runId, state: candidate.state };
@@ -294,10 +334,16 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
   };
   const presentation = (candidate as ServerMessage).presentation;
   const progression = (candidate as ServerMessage).progression;
+  const discovered: unknown = (candidate as ServerMessage).discovered;
+  const finds =
+    Array.isArray(discovered) && discovered.every((id): id is string => typeof id === "string")
+      ? discovered
+      : null;
   return {
     ...message,
     ...(presentation ? { presentation } : {}),
     ...(progression ? { progression } : {}),
+    ...(finds ? { discovered: finds } : {}),
   };
 }
 

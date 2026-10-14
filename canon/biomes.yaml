@@ -327,7 +327,7 @@ biomes:
         - "Check the low sky before you cross. A marking pole with no cloth on it means one came through this week."
       disputed_beliefs:
         - "Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way."
-        - "Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that — which is why every people calls it something different."
+        - "Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that, which is why every people calls it something different."
       hidden_truths:
         - "Most whispers are recordings. The mist holds sound the way the northern glacier holds memory, and on still nights the marsh replays conversations older than the peoples having them."
         - "The mist that holds sound and the sand that holds nothing down are the same mist, doing the same thing to two different kinds of cargo. Nobody in the marsh has put those two facts beside each other."
@@ -793,7 +793,7 @@ biomes:
       recorded_history: >-
         History here is not written but excavated: the yetis read events out
         of the ice, name meltwater years the way other peoples name children,
-        and serve the important ones as tea. The reading rooms' catalogue runs
+        and serve the important ones as tea. The reading rooms' catalog runs
         back further than every archive in the realm combined, and the yetis
         will show you, slowly.
       cultural_significance: >-

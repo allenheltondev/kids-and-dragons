@@ -3,7 +3,7 @@ title: Stone Crossing
 id: location.stone_crossing
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["river_crossing", "bridge", "bottleneck", "current", "trade_route"]
 danger_level: moderate
@@ -123,15 +123,15 @@ The realm's bottleneck, and proud of it: every eastern story crosses here eventu
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The troll and the drake have never exchanged a single word. Each privately believes the other founded the arrangement, and is too professional to raise the subject now.
 
 ### Neighbors
 
-- **[The Great River](/features/great_river/)** — The river is the reason, the obstacle, and the business model. The crossing exists because the Great River narrows here once, briefly, and has never been talked into doing it anywhere else.
-- **[The Sunward Fields](/biomes/sunward_fields/)** — The western approach is Fields country, and a long queue at the bridge is the best market day the nearby cooperatives get.
-- **[The Eastern Plains](/biomes/eastern_plains/)** — The eastern side is pride country, where escorts begin and end and the riddle account is honored; the bridge is the seam between two halves of the realm, stitched daily.
+- **[The Great River](/features/great_river/)**: The river is the reason, the obstacle, and the business model. The crossing exists because the Great River narrows here once, briefly, and has never been talked into doing it anywhere else.
+- **[The Sunward Fields](/biomes/sunward_fields/)**: The western approach is Fields country, and a long queue at the bridge is the best market day the nearby cooperatives get.
+- **[The Eastern Plains](/biomes/eastern_plains/)**: The eastern side is pride country, where escorts begin and end and the riddle account is honored; the bridge is the seam between two halves of the realm, stitched daily.
 
 ### Current Tensions
 

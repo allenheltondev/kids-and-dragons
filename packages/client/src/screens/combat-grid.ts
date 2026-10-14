@@ -7,8 +7,8 @@
  * `EncounterState` to "what can she tap" is testable without a DOM.
  */
 
-import type { Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
-import { currentActorId } from "@kad/shared";
+import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
+import { currentActorId, enemyArtId } from "@kad/shared";
 
 export interface GridOccupant {
   readonly id: string;
@@ -114,4 +114,26 @@ export function turnKey(encounter: EncounterState | null): string {
     encounter.stepsLeft,
     encounter.actionTaken,
   ].join(":");
+}
+
+/**
+ * The square portrait a monster's grid cell shows, by combatant id, or null
+ * when its art is unknown (the cell then falls back to a glyph). Enemy ids are
+ * `<specId>#<n>` (encounter.ts) and the art hangs off the chapter's spec, the
+ * same lookup the TV board makes for the full figure.
+ */
+export function enemyPortraitUrl(
+  chapter: Chapter | null,
+  sceneId: string | null,
+  combatantId: string,
+): string | null {
+  if (!chapter || !sceneId) return null;
+  const scene = chapter.scenes[sceneId];
+  if (!scene || scene.type !== "encounter") return null;
+  const specId = combatantId.split("#")[0] ?? combatantId;
+  const spec = scene.enemies.find((e) => e.id === specId);
+  const art = spec ? enemyArtId(spec) : null;
+  if (!art) return null;
+  const id = art.startsWith("enemies/") ? art.slice("enemies/".length) : art;
+  return `/assets/entities/${id}/portrait.webp`;
 }

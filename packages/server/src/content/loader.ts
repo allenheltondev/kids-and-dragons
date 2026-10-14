@@ -35,6 +35,7 @@ import type {
   RulesContent,
   Scene,
   SceneId,
+  WorldMap,
 } from "@kad/shared";
 import { contentDir } from "../paths.ts";
 
@@ -116,6 +117,19 @@ export interface ContentStore {
    * `$deferred`, so the gap can never be an accident.
    */
   abilities(): AbilityCatalog;
+  /**
+   * `content/world.json` — the realm's places, which the Field Guide's
+   * chapter-start rule needs to turn a chapter's `biome` into a canon id
+   * (shared `chapterStartDiscoveries`). `null` when the content set has none:
+   * a chapter start then discovers no place, which is thin, not broken.
+   */
+  world(): WorldMap | null;
+  /**
+   * `content/bestiary.json` — canon's creatures, which the Field Guide's
+   * scene rule needs to turn an encounter's enemies into canon ids (shared
+   * `sceneDiscoveries`). `null` when the content set has none.
+   */
+  bestiary(): Bestiary | null;
 }
 
 class LoadedContent implements ContentStore {
@@ -127,7 +141,17 @@ class LoadedContent implements ContentStore {
     private readonly _maps: ReadonlyMap<string, EncounterMap>,
     private readonly _abilities: AbilityCatalog,
     private readonly _campaigns: ReadonlyMap<string, Campaign>,
+    private readonly _world: WorldMap | null = null,
+    private readonly _bestiary: Bestiary | null = null,
   ) {}
+
+  world(): WorldMap | null {
+    return this._world;
+  }
+
+  bestiary(): Bestiary | null {
+    return this._bestiary;
+  }
 
   chapterAt(
     campaignId: string,
@@ -333,7 +357,11 @@ async function readAll(root: string): Promise<ContentStore> {
   if (!rules || !items || problems.length > 0) {
     throw new ContentError(root, problems);
   }
-  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns);
+  // The Field Guide's two lookups (shared discoveries.ts). Optional like
+  // maps/: a content set without them discovers less, it does not break, and
+  // `content:validate` is what insists the shipped set has both.
+  const world = await readJson<WorldMap>(path.join(root, "world.json"), []);
+  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary);
 }
 
 /**

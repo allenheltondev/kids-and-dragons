@@ -18,6 +18,7 @@ import type {
   Campaign,
   Chapter,
   ClientIntent,
+  IntentPreview,
   JoinRoomResponse,
   ItemCatalog,
   PartyMember,
@@ -28,12 +29,13 @@ import type {
   RunState,
   WorldMap,
 } from "@kad/shared";
-import { turnHolderAway } from "@kad/shared";
+import { previewContext, rollerAway, turnHolderAway } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
   ClientSession,
   ConnectionStatus,
   GameStore,
+  HeldPreview,
   PresentationEvent,
   ProgressionEvent,
 } from "./contract";
@@ -63,6 +65,8 @@ import {
   type PresentationGate,
 } from "../sync/channel";
 import { appSyncEventSource } from "../sync/appsync-socket";
+import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
+import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
 import { navigate } from "../router";
 
 /**
@@ -151,7 +155,17 @@ export function isPromptForPlayer(
       );
     case "ready":
       return prompt.forPlayerIds.length === 0 || prompt.forPlayerIds.includes(playerId);
-    case "roll":
+    case "roll": {
+      // The nominee's phone dropped: anyone at the table can roll instead.
+      if (rollerAway(party, prompt)) return party.some((m) => m.playerId === playerId);
+      // A whole-party check is yours until you have rolled your own die.
+      if (prompt.group) {
+        const mine = party.find((member) => member.playerId === playerId);
+        return mine !== undefined && prompt.group.pending.includes(mine.character.id);
+      }
+      const owner = party.find((member) => member.character.id === prompt.characterId);
+      return owner?.playerId === playerId;
+    }
     case "item_swap": {
       const owner = party.find((member) => member.character.id === prompt.characterId);
       return owner?.playerId === playerId;
@@ -200,6 +214,15 @@ interface Runtime {
   chapter: { id: string; task: Promise<void> } | null;
   /** In-flight world map fetch. */
   world: Promise<void> | null;
+  /**
+   * This phone's preview sender: what the server last heard, and the newest
+   * one waiting while a post is in the air. One post at a time so they cannot
+   * land out of order — the TV must never end on a tap the player has
+   * already moved past — and only the latest waiting one is ever sent.
+   */
+  previewSent: string;
+  previewInFlight: boolean;
+  previewNext: { key: string; preview: IntentPreview | null; context: string | null } | null;
 }
 
 /**
@@ -228,6 +251,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       broadcastWatchdog: null,
       chapter: null,
       world: null,
+      previewSent: "[null,null]",
+      previewInFlight: false,
+      previewNext: null,
     };
 
     /** Cache successful discovery, including the explicit local 404 answer. */
@@ -268,9 +294,24 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       const sequencer = new MessageSequencer({
         gate: runtime.gate,
         handlers: {
-          onState: (state) => set({ state }),
+          onState: (state) => {
+            set({ state });
+            // The household's Field Guide rides the mirror (`RunState.fieldGuide`);
+            // its own store is a projection of it, never written any other way.
+            setFieldGuideDiscoveries(state.fieldGuide);
+          },
           onPresentation: (presentation) => set({ presentation }),
           onProgression: (progression) => set({ progression }),
+          // Live-only "new page!" ids (#106) — queued for #110 to celebrate.
+          onDiscovered: ({ runId, seq, canonIds }) => announceFieldGuideNews(runId, seq, canonIds),
+          onPreview: ({ runId, playerId, preview, context }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            const { [playerId]: _old, ...rest } = get().previews;
+            set({
+              previews:
+                preview === null || context === null ? rest : { ...rest, [playerId]: { preview, context } },
+            });
+          },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
@@ -359,6 +400,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     function disconnect(): void {
+      // Previews are live-only: a fresh channel starts from nobody picking.
+      set({ previews: {} });
+      runtime.previewSent = "[null,null]";
+      runtime.previewNext = null;
       runtime.channel?.close();
       runtime.channel = null;
       runtime.sequencer?.dispose();
@@ -549,6 +594,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       state: null,
       presentation: null,
       progression: null,
+      previews: {},
       error: null,
       rules: null,
       items: null,
@@ -701,10 +747,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return heroes;
       },
 
-      async joinRoom(code: string, displayName: string) {
+      async joinRoom(code: string, name: string) {
         const roomCode = code.trim().toUpperCase();
         set({ connection: "connecting", error: null });
         const identity = loadIdentity(deps.storage);
+        // The home screen no longer asks for a name when joining; the character
+        // flow does. Keep whatever this phone used last, else a placeholder.
+        const displayName = name.trim() || identity.displayName || "Player";
         saveIdentity({ ...identity, displayName }, deps.storage);
 
         try {
@@ -894,11 +943,48 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      preview(preview: IntentPreview | null, context: string | null) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return;
+        // A pick with no decision to belong to is not worth sending.
+        if (preview !== null && context === null) preview = null;
+        const key = JSON.stringify([preview, preview === null ? null : context]);
+        runtime.previewNext = { key, preview, context: preview === null ? null : context };
+        if (runtime.previewInFlight) return;
+
+        const pump = async (): Promise<void> => {
+          runtime.previewInFlight = true;
+          try {
+            for (;;) {
+              const next = runtime.previewNext;
+              runtime.previewNext = null;
+              if (next === null) return;
+              if (next.key === runtime.previewSent) continue;
+              const current = get().session;
+              if (current?.sessionToken !== session.sessionToken) return;
+              try {
+                await deps.api.postPreview(next.preview, next.context, session.sessionToken);
+                runtime.previewSent = next.key;
+              } catch {
+                // A highlight, not a turn: drop it and let the next tap speak.
+              }
+            }
+          } finally {
+            runtime.previewInFlight = false;
+          }
+        };
+        void pump();
+      },
+
       leave() {
         const session = get().session;
         runtime.attaching = null;
         disconnect();
         if (session) clearSession(session.roomCode, deps.storage);
+        // The book and its news belong to the room's household; out of the
+        // room there is neither.
+        setFieldGuideDiscoveries(null);
+        clearFieldGuideNews();
         set({
           connection: "idle",
           session: null,
@@ -984,6 +1070,30 @@ export function useSend(): (intent: ClientIntent) => Promise<boolean> {
   return useGameStore((store) => store.send);
 }
 
+/** Every player's unconfirmed tap, by playerId (`GameStore.previews`). */
+export function usePreviews(): Readonly<Record<string, HeldPreview>> {
+  return useGameStore((store) => store.previews);
+}
+
+/**
+ * Keep the table told what this phone has picked but not confirmed. Sends on
+ * change and sends `null` when the picking surface goes away — a confirmed
+ * choice, a turn that ended, a screen that closed — so the TV never holds a
+ * highlight for something nobody is still deciding.
+ */
+export function useSharePreview(preview: IntentPreview | null): void {
+  const send = useGameStore((store) => store.preview);
+  // Stamped with the decision it is made in, from this phone's own mirror —
+  // which is also what the selection it describes was made against.
+  const context = useGameStore((store) => previewContext(store.state));
+  const key = JSON.stringify([preview, context]);
+  useEffect(() => {
+    const [next, made] = JSON.parse(key) as [IntentPreview | null, string | null];
+    send(next, made);
+  }, [send, key]);
+  useEffect(() => () => send(null, null), [send]);
+}
+
 export function useRules(): RulesContent | null {
   return useGameStore((store) => store.rules);
 }
@@ -1030,8 +1140,22 @@ export function useMyTurnKey(): string | null {
 
     const prompt = state.prompt;
     if (isPromptForPlayer(prompt, playerId, state.party) && prompt) {
-      // Votes mutate the current question, not its identity. Ignore them.
-      const stablePrompt = prompt.kind === "choice" ? { ...prompt, votes: undefined } : prompt;
+      // Progress on the current question is not a new question. Votes, a
+      // friend's offered help and the rest of the party rolling a group check
+      // all rewrite the prompt in place; only what identifies the check counts.
+      // A group check names its next roller in `characterId`, which moves as
+      // others roll, so it is left out there and kept for a single roller.
+      const stablePrompt =
+        prompt.kind === "choice"
+          ? { ...prompt, votes: undefined }
+          : prompt.kind === "roll"
+            ? {
+                ...prompt,
+                helper: undefined,
+                group: prompt.group ? true : undefined,
+                characterId: prompt.group ? undefined : prompt.characterId,
+              }
+            : prompt;
       // Revisiting the same authored scene is a *new* question, even when
       // it uses the same choice ids and narration.
       return `prompt:${state.chapterId ?? ""}:${state.visited?.length ?? 0}:${JSON.stringify(stablePrompt)}`;

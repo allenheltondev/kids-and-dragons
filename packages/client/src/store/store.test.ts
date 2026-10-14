@@ -12,6 +12,13 @@ import type { ChannelOptions } from "../sync/channel";
 import { ApiError, type Api } from "../sync/client";
 import type { KeyValueStorage } from "./persistence";
 import { makeMember, makeState } from "../testing/fixtures";
+import { getFieldGuideDiscoveries, setFieldGuideDiscoveries } from "./field-guide-discoveries";
+import {
+  ackFieldGuideNews,
+  clearFieldGuideNews,
+  getFieldGuideNews,
+  subscribeFieldGuideNews,
+} from "./field-guide-news";
 
 // ---------------------------------------------------------------------------
 // Harness — no network, no DOM, no timers.
@@ -83,6 +90,7 @@ function harness(state: RunState = makeState()): Harness {
       state,
     })),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
+    postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
@@ -347,6 +355,41 @@ describe("the mirror", () => {
     await h.channelOptions().resync(1);
 
     expect(h.store.getState().state?.narration).toBe("three");
+  });
+});
+
+describe("preview", () => {
+  it("posts the newest pick only, one at a time, and skips a repeat", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    let release: () => void = () => undefined;
+    h.api.postPreview.mockImplementationOnce(() => new Promise<void>((resolve) => (release = resolve)));
+
+    const { preview } = h.store.getState();
+    preview({ kind: "choice", choiceId: "east" }, "choice:1");
+    // Two more taps while the first is in the air: only the last is worth sending.
+    preview({ kind: "choice", choiceId: "west" }, "choice:1");
+    preview(null, null);
+    expect(h.api.postPreview).toHaveBeenCalledTimes(1);
+    expect(h.api.postPreview).toHaveBeenLastCalledWith({ kind: "choice", choiceId: "east" }, "choice:1", "tok_1");
+    release();
+    await vi.waitFor(() => expect(h.api.postPreview).toHaveBeenCalledTimes(2));
+    expect(h.api.postPreview).toHaveBeenLastCalledWith(null, null, "tok_1");
+
+    // Already told: saying it again sends nothing.
+    preview(null, null);
+    await Promise.resolve();
+    expect(h.api.postPreview).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps everybody's picks with the decision they were made for, and forgets a withdrawn one", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: { kind: "end_turn" }, context: "fight:x" });
+    expect(h.store.getState().previews).toEqual({ p_2: { preview: { kind: "end_turn" }, context: "fight:x" } });
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null, context: null });
+    expect(h.store.getState().previews).toEqual({});
+    expect(h.store.getState().state?.seq).toBe(7);
   });
 });
 
@@ -792,7 +835,39 @@ describe("isPromptForPlayer", () => {
     };
     expect(isPromptForPlayer(prompt, "p_1", party)).toBe(true);
     expect(isPromptForPlayer(prompt, "p_2", party)).toBe(false);
-    expect(isPromptForPlayer({ ...prompt, characterId: "c_nope" }, "p_1", party)).toBe(false);
+    // A roller who has left the run cannot hold the check up: anyone may roll.
+    expect(isPromptForPlayer({ ...prompt, characterId: "c_nope" }, "p_1", party)).toBe(true);
+  });
+
+  it("hands a whole-party check to everyone who has not rolled yet", () => {
+    const table = [...party, makeMember({ playerId: "p_2", character: { ...party[0]!.character, id: "c_2" } })];
+    const prompt = {
+      kind: "roll" as const,
+      sceneId: "s",
+      stat: "quick" as const,
+      tn: 12,
+      prompt: "Cross together",
+      characterId: "c_2",
+      group: { pending: ["c_2"], rolls: [] },
+    };
+    expect(isPromptForPlayer(prompt, "p_2", table)).toBe(true);
+    expect(isPromptForPlayer(prompt, "p_1", table)).toBe(false);
+  });
+
+  it("opens a roll to the table when the nominee's phone has dropped", () => {
+    const prompt = {
+      kind: "roll" as const,
+      sceneId: "s",
+      stat: "quick" as const,
+      tn: 12,
+      prompt: "Wriggle through",
+      characterId: "c_1",
+    };
+    const table = [...party, makeMember({ playerId: "p_2", character: { ...party[0]!.character, id: "c_2" } })];
+    expect(isPromptForPlayer(prompt, "p_2", table)).toBe(false);
+    const dropped = table.map((m) => (m.character.id === "c_1" ? { ...m, connected: false } : m));
+    expect(isPromptForPlayer(prompt, "p_2", dropped)).toBe(true);
+    expect(isPromptForPlayer(prompt, "p_stranger", dropped)).toBe(false);
   });
 
   it("is never true for a display client", () => {
@@ -1167,5 +1242,91 @@ describe("the recovery deadline", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The Field Guide (#106): the book rides the mirror, the news rides the wire.
+// ---------------------------------------------------------------------------
+
+describe("the Field Guide sync", () => {
+  const MOTH = { firstFoundBy: "p_1", foundAt: "2026-07-04T18:00:00.000Z", runId: "r_1" };
+  const NEWT = { firstFoundBy: "p_2", foundAt: "2026-07-04T18:05:00.000Z", runId: "r_1" };
+
+  beforeEach(() => {
+    setFieldGuideDiscoveries(null);
+    clearFieldGuideNews();
+  });
+
+  it("fills the guide from the joined state and every patch after it", async () => {
+    const h = harness(makeState({ fieldGuide: { "creature.moth": MOTH } }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    expect(getFieldGuideDiscoveries()).toEqual({ "creature.moth": MOTH });
+
+    h.publish(patch(2, [{ op: "add", path: "/fieldGuide/creature.newt", value: NEWT }]));
+    expect(getFieldGuideDiscoveries()).toEqual({ "creature.moth": MOTH, "creature.newt": NEWT });
+
+    // A patch that does not touch the book leaves the same object in place.
+    const book = getFieldGuideDiscoveries();
+    h.publish(patch(3, [{ op: "replace", path: "/narration", value: "on" }]));
+    expect(getFieldGuideDiscoveries()).toBe(book);
+  });
+
+  it("announces a new find once, after its patch, and acking consumes it", async () => {
+    const h = harness(makeState({ fieldGuide: {} }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    const seen: string[][] = [];
+    const off = subscribeFieldGuideNews((pending) => {
+      seen.push(pending.map((n) => n.canonId));
+      // The book already holds whatever is announced.
+      for (const n of pending) expect(getFieldGuideDiscoveries()).toHaveProperty([n.canonId]);
+    });
+
+    const message = {
+      ...patch(2, [{ op: "add", path: "/fieldGuide/creature.newt", value: NEWT }]),
+      discovered: ["creature.newt"],
+    };
+    h.publish(message);
+    h.publish(message); // a duplicate delivery
+    off();
+
+    expect(getFieldGuideNews()).toEqual([{ canonId: "creature.newt", seq: 2 }]);
+    expect(seen).toEqual([["creature.newt"]]);
+    ackFieldGuideNews(["creature.newt"]);
+    expect(getFieldGuideNews()).toEqual([]);
+  });
+
+  it("a resync rebuilds the book without replaying the news", async () => {
+    const h = harness(makeState({ fieldGuide: {} }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    // The server's log never carries `discovered`; a replay is patches alone.
+    h.api.fetchState.mockResolvedValueOnce({
+      seq: 2,
+      events: [patch(2, [{ op: "add", path: "/fieldGuide/creature.moth", value: MOTH }])],
+    });
+    await h.channelOptions().resync(1);
+    expect(getFieldGuideDiscoveries()).toEqual({ "creature.moth": MOTH });
+
+    // And a cold snapshot, the same.
+    h.api.fetchState.mockResolvedValueOnce({
+      seq: 3,
+      state: makeState({ seq: 3, fieldGuide: { "creature.moth": MOTH, "creature.newt": NEWT } }),
+    });
+    await h.channelOptions().resync(2);
+    expect(Object.keys(getFieldGuideDiscoveries())).toEqual(["creature.moth", "creature.newt"]);
+    expect(getFieldGuideNews()).toEqual([]);
+  });
+
+  it("leaving the room clears the book and anything not yet celebrated", async () => {
+    const h = harness(makeState({ fieldGuide: { "creature.moth": MOTH } }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({
+      ...patch(2, [{ op: "add", path: "/fieldGuide/creature.newt", value: NEWT }]),
+      discovered: ["creature.newt"],
+    });
+    h.store.getState().leave();
+    expect(getFieldGuideDiscoveries()).toEqual({});
+    expect(getFieldGuideNews()).toEqual([]);
   });
 });

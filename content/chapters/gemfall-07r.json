@@ -95,7 +95,7 @@
           "label": "Work quietly, the way only you know how",
           "icon": "moon",
           "requiresFlag": "kept_close",
-          "goto": "scene_road_gifts",
+          "goto": "scene_quiet_work",
           "effects": [
             {
               "type": "setFlag",
@@ -114,6 +114,10 @@
     },
     "scene_wardens": {
       "type": "story",
+      "discovers": [
+        "faction.skywardens",
+        "npc.faun"
+      ],
       "narration": "The wardens did exactly what you told them would work. Overnight their checkpoint grew a gate, a ledger and a very long table, and every stone goes into a numbered box. It works. A small faun watches her one shiny pebble get a number, and her lip wobbles.",
       "choices": [
         {
@@ -175,6 +179,9 @@
     },
     "scene_grandmothers": {
       "type": "story",
+      "discovers": [
+        "character.dragonling"
+      ],
       "narration": "The dragonling towns have turned gathering law inside out. A grandmother sits outside every gem-buyer's tent, knitting, saying \"No, dear,\" until the buyer feels so bad he hands his stones over himself. One buyer is crying into a very expensive hat.",
       "choices": [
         {
@@ -233,7 +240,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Talk travellers into letting their stones go home",
+      "prompt": "Talk travelers into letting their stones go home",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_road_gifts",
@@ -277,11 +284,18 @@
           "goto": "scene_boggart"
         },
         {
+          "id": "boggart_walked_over",
+          "label": "A boggart is sidling up with a satchel",
+          "icon": "scroll",
+          "requiresFlag": "walked_over",
+          "goto": "scene_boggart"
+        },
+        {
           "id": "witch",
           "label": "Someone in a pointed hat is pushing to the front",
           "icon": "charm",
-          "requiresFlag": "route_rush",
-          "goto": "scene_ford_witch"
+          "goto": "scene_ford_witch",
+          "requiresItem": "charm_ford_witch"
         },
         {
           "id": "watch",
@@ -293,7 +307,11 @@
     },
     "scene_ossley": {
       "type": "story",
-      "narration": "Old Ossley is poling his flat boat up a creek with no water in it. Nobody asks how. The boat is full of stones: every toll the trolls took this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
+      "discovers": [
+        "individual.old_ossley",
+        "npc.frogfolk"
+      ],
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the ferryman from Stone Crossing, Old Ossley, and the boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
       "choices": [
         {
           "id": "debt",
@@ -361,7 +379,10 @@
     },
     "scene_boggart": {
       "type": "story",
-      "narration": "A boggart with a satchel full of scribbled paper sidles up beside you, not looking at you, and says to nobody: \"Catalogue. Who bought what in the marsh. Very interesting. Costs one really good sentence you overheard.\"",
+      "discovers": [
+        "npc.boggart"
+      ],
+      "narration": "A boggart with a satchel full of scribbled paper sidles up beside you, not looking at you, and says to nobody: \"Catalog. Who bought what in the marsh. Very interesting. Costs one really good sentence you overheard.\"",
       "choices": [
         {
           "id": "wardens_said",
@@ -378,7 +399,7 @@
         },
         {
           "id": "grandma_said",
-          "label": "Tell it what a grandmother said about cake",
+          "label": "Tell it what Grandmother Tull said about the unused bell",
           "icon": "cake",
           "goto": "scene_boggart_grandma_said",
           "effects": [
@@ -393,7 +414,7 @@
     },
     "scene_boggart_grandma_said": {
       "type": "story",
-      "narration": "You tell it what a grandmother said about cake, word for word, including the pause. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalogue is in your hands before you notice it has let go.",
+      "narration": "You tell it what Grandmother Tull said about the bell nobody rings, word for word, including the second time she said it. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalog is in your hands before you notice it has let go.",
       "choices": [
         {
           "id": "on",
@@ -405,7 +426,7 @@
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalogue without ever once looking at you.",
+      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "choices": [
         {
           "id": "on",
@@ -417,6 +438,9 @@
     },
     "scene_ford_witch": {
       "type": "story",
+      "discovers": [
+        "npc.witch_order"
+      ],
       "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone under one arm. It is still ringing. She has walked the whole road north for this. \"I am still asking,\" she says. \"What do you actually want?\"",
       "choices": [
         {
@@ -477,6 +501,9 @@
     },
     "scene_masks": {
       "type": "story",
+      "discovers": [
+        "faction.deep_hollow_cult"
+      ],
       "narration": "Further down the road, people in painted bark masks are running the same funnel backwards, collecting stones gently from anyone who will hand them over. \"We'll break it properly, all at once, so it can be fixed properly,\" one of them says. You know that voice. It is Hessa from the soup tent, with her ladle still on her belt.",
       "choices": [
         {
@@ -521,7 +548,7 @@
     },
     "scene_masks_mask_swap": {
       "type": "story",
-      "narration": "Your kitsune borrows a mask from a hook on a cart, pulls it down, and walks straight into the masks' camp humming the right three notes. Twenty minutes later your kitsune walks out again with a sack of stones \"for the break\" and a bowl of soup, and nobody is any the wiser. The soup is very good.",
+      "narration": "Your kitsune borrows a mask from a hook on a cart, pulls it down, and walks straight into the masks' camp humming along with everybody else. Twenty minutes later your kitsune walks out again with a sack of stones \"for the break\" and a bowl of soup, and nobody is any the wiser. The soup is very good.",
       "choices": [
         {
           "id": "on",
@@ -534,7 +561,7 @@
     "check_tamsin": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Convince Hessa the seal is not a cage",
       "roller": "party",
       "onSuccess": {
@@ -605,6 +632,9 @@
     },
     "scene_ember": {
       "type": "story",
+      "discovers": [
+        "npc.merfolk"
+      ],
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
       "choices": [
         {
@@ -666,6 +696,9 @@
     },
     "scene_switchback": {
       "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
       "narration": "The road zigzags up to the worst bend, and coming down it, the wrong way, is a pack of cinder wolves. They are not hunting. They are leaving the mountain, and you are standing in their way.",
       "choices": [
         {
@@ -698,7 +731,7 @@
     },
     "scene_switchback_fly_round": {
       "type": "story",
-      "narration": "You go up, find a side path the wolves have not thought of, and talk the others along it one careful step at a time. The pack streams down the main road beneath you in a long grey ribbon, and one wolf glances up, and decides you are not worth the climb.",
+      "narration": "You go up, find a side path the wolves have not thought of, and talk the others along it one careful step at a time. The pack streams down the main road beneath you in a long gray ribbon, and one wolf glances up, and decides you are not worth the climb.",
       "choices": [
         {
           "id": "on",
@@ -710,7 +743,7 @@
     },
     "scene_switchback_sprite_knots": {
       "type": "story",
-      "narration": "Somebody has been here before you. Tiny knots of grass, tied at ankle height, lead off the road and along a goat path above the zigzags. Harvest sprites, this far north, still keeping their promise. You follow the knots, and the wolves pour past below you without ever looking up.",
+      "narration": "Somebody has been here before you. Tiny knots of grass, tied at ankle height, lead off the road and along a goat path above the zigzags. Harvest sprites, this far north, still looking out for you. You follow the knots, and the wolves pour past below you without ever looking up.",
       "choices": [
         {
           "id": "on",
@@ -723,7 +756,7 @@
     "check_wolves": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Roll a smoked sausage down the side trail at exactly the right moment",
       "roller": "party",
       "onSuccess": {
@@ -755,7 +788,7 @@
       ],
       "onVictory": {
         "goto": "choice_the_bend",
-        "narration": "The pack decides you are more trouble than the road is worth, and pours past you down the hill in a long grey ribbon."
+        "narration": "The pack decides you are more trouble than the road is worth, and pours past you down the hill in a long gray ribbon."
       },
       "onDefeat": {
         "goto": "ending_scattered",
@@ -782,7 +815,7 @@
         },
         {
           "id": "warden_flag",
-          "label": "Wave the warden flag",
+          "label": "Call up the warden checkpoint",
           "icon": "shield",
           "requiresFlag": "wardens_helping",
           "goto": "check_caravan_helped"
@@ -803,7 +836,7 @@
         },
         {
           "id": "buyers",
-          "label": "You know from the catalogue who it was sold to",
+          "label": "You know from the catalog who it was sold to",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "check_caravan_helped"
@@ -844,7 +877,10 @@
     },
     "choice_the_bend_relay": {
       "type": "story",
-      "narration": "You cup your hands and give a sharp whistle toward the relay road. A centaur appears on the ridge almost before the sound has faded, with two more behind her. Between them they turn the fattest caravan in the funnel off the main road and straight into your checkpoint as neatly as threading a needle.",
+      "discovers": [
+        "npc.centaur"
+      ],
+      "narration": "You cup your hands and give a sharp whistle toward the relay road. A centaur appears on the ridge almost before the sound has faded, with two more behind her. Between them they turn the fattest caravan in the funnel off the main road and to a stop right in front of you, as neatly as threading a needle.",
       "choices": [
         {
           "id": "on",
@@ -962,6 +998,18 @@
       "heal": 3,
       "outcome": "setback",
       "choices": []
+    },
+    "scene_quiet_work": {
+      "type": "story",
+      "narration": "You tell nobody what you are for. You just start. A stone slipped out of a sack here, a pocket emptied into a better pocket there, a wagon that reaches the camps one crate lighter than it left. Nobody notices, which is the point, and by noon the pile behind your tent is humming.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and see what the road is doing",
+          "icon": "eye",
+          "goto": "scene_road_gifts"
+        }
+      ]
     }
   },
   "llmHints": {

@@ -81,6 +81,7 @@ import {
   type NameplateBox,
 } from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
+import type { BoardAim } from "./previews";
 
 export { BOARD_TILE_PX } from "./board-math";
 
@@ -151,6 +152,11 @@ export interface BoardViewState {
   readonly enemyArt: Readonly<Record<string, string>>;
   /** For species/tier art lookup by character id. */
   readonly party: readonly PartyMember[];
+  /**
+   * What the fighter whose turn it is has picked on their phone but not
+   * confirmed (world/previews.ts) — ringed so the table sees it coming.
+   */
+  readonly aim?: BoardAim | null;
 }
 
 export interface BoardLayer {
@@ -216,6 +222,67 @@ interface PendingBeat {
   at: number;
   event: EncounterEvent;
 }
+
+/** The smallest share of the figure's height its art may fill on the board. */
+const MIN_ART_FILL = 0.5;
+/** And never more than this much growth, whatever the art measures. */
+const MAX_ART_BOOST = 2.2;
+
+/**
+ * How much to grow a cutout whose painted part is small inside its canvas.
+ * Measured once per texture from a 64 × 64 copy of its alpha; 1 when it cannot
+ * be measured (no DOM canvas, a tainted image), so nothing ever shrinks.
+ */
+const artBoosts = new WeakMap<object, number>();
+function smallArtBoost(texture: Texture): number {
+  const source = texture.source?.resource as CanvasImageSource | undefined;
+  if (!source || typeof document === "undefined") return 1;
+  const known = artBoosts.get(source as object);
+  if (known !== undefined) return known;
+  let boost = 1;
+  try {
+    const size = 64;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (ctx) {
+      ctx.drawImage(source, 0, 0, size, size);
+      const alpha = ctx.getImageData(0, 0, size, size).data;
+      let top = size;
+      let bottom = -1;
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          if ((alpha[(y * size + x) * 4 + 3] ?? 0) > 24) {
+            top = Math.min(top, y);
+            bottom = y;
+            break;
+          }
+        }
+      }
+      const fill = bottom < top ? 1 : (bottom - top + 1) / size;
+      if (fill < MIN_ART_FILL) boost = Math.min(MAX_ART_BOOST, MIN_ART_FILL / fill);
+    }
+  } catch {
+    boost = 1;
+  }
+  artBoosts.set(source as object, boost);
+  return boost;
+}
+
+function drawShadow(side: string): Graphics {
+  const shadow = new Graphics();
+  shadow
+    .ellipse(0, 0, BOARD_TILE_PX * 0.34, BOARD_TILE_PX * 0.11)
+    .fill({ color: 0x0b0a14, alpha: side === "party" ? 0.32 : 0.28 });
+  return shadow;
+}
+
+/** How long a figure's art may take before its stand-in is drawn instead. */
+const PLACEHOLDER_GRACE_MS = 700;
+
+/** The picked-not-confirmed mark — a cool cyan against the reach's gold. */
+const AIM_COLOR = 0x6fe6ff;
 
 const FLOATER_LIFE_S = 1.1;
 const FLOATER_RISE = BOARD_TILE_PX * 0.5;
@@ -351,11 +418,26 @@ export function createBoardLayer(): BoardLayer {
   function makeActor(combatant: Combatant, at: Position, current: BoardViewState): BoardActor {
     const actorContainer = new Container();
     const art = new Container();
-    actorContainer.addChild(art);
+    // A soft shadow on the tile under the feet. It sits outside `art` so a
+    // fallen figure's tilt and fade leave it where it is: it is what puts a
+    // flat cutout *on* the board rather than pasted over it.
+    // Hidden until there is a figure to cast it: a shadow on an empty tile
+    // while the art loads read as a hole in the board.
+    const shadow = drawShadow(combatant.side);
+    shadow.visible = false;
+    actorContainer.addChild(shadow, art);
     actorsLayer.addChild(actorContainer);
 
+    // The stand-in only shows if the art is genuinely late or missing. Drawn
+    // at once, it flashed up as a row of dark blocks at the start of every
+    // fight on the TV for the beat it took the cutouts to load.
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
+    placeholder.visible = false;
     art.addChild(placeholder);
+    const reveal = setTimeout(() => {
+      if (!placeholder.destroyed) placeholder.visible = true;
+      if (!shadow.destroyed) shadow.visible = true;
+    }, PLACEHOLDER_GRACE_MS);
 
     const feet = feetOf(at);
     const named =
@@ -404,13 +486,26 @@ export function createBoardLayer(): BoardLayer {
           if (destroyed || actors.get(combatant.id) !== actor) return;
           const sprite = new Sprite(texture);
           sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
+          // Some art fills a quarter of its canvas (a will-o'-wisp is a small
+          // flame by design) and drew as a speck from the sofa. Grow it about
+          // the feet until it reads as a figure; art that already does is
+          // untouched.
+          sprite.scale.set((ACTOR_HEIGHT / CANVAS.height) * smallArtBoost(texture));
+          clearTimeout(reveal);
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
+          shadow.visible = true;
+          // Fades up through the same easing that stands a fallen figure back
+          // up (tick), so a figure arrives rather than appearing.
+          if (!actor.down) art.alpha = 0;
         })
         .catch(() => {
-          /* keep the placeholder: a missing enemy must never blank the board */
+          // Keep the placeholder, and show it now: a missing enemy must never
+          // blank the board.
+          clearTimeout(reveal);
+          if (!placeholder.destroyed) placeholder.visible = true;
+          if (!shadow.destroyed) shadow.visible = true;
         });
     };
 
@@ -437,6 +532,7 @@ export function createBoardLayer(): BoardLayer {
           loadCutout();
           return;
         }
+        clearTimeout(reveal);
         art.removeChildren();
         placeholder.destroy();
         // The rig plays its own fall, so hand it the state it joined in and
@@ -445,6 +541,7 @@ export function createBoardLayer(): BoardLayer {
         art.alpha = 1;
         rive.setKnockedDown(actor.down);
         art.addChild(rive.sprite);
+        shadow.visible = true;
         actor.rive = rive;
       })
       .catch(loadCutout);
@@ -509,12 +606,13 @@ export function createBoardLayer(): BoardLayer {
   // Highlights — §7.2 "reachable tiles highlighted", straight from legalMoves
   // -------------------------------------------------------------------------
 
-  function drawHighlights(encounter: EncounterState): void {
+  function drawHighlights(encounter: EncounterState, aim: BoardAim | null): void {
     // Only a party figure's reach is the table's business; a monster's would
     // telegraph the AI and clutter the board (the server drives it anyway).
     const actor = currentActor(encounter);
     const moves = actor?.side === "party" ? legalMoves(encounter) : [];
-    const key = moves.map((m) => `${m.x},${m.y}`).join(";");
+    const spots = (list: readonly Position[]) => list.map((m) => `${m.x},${m.y}`).join(";");
+    const key = `${spots(moves)}|${spots(aim?.tiles ?? [])}|${spots(aim?.targets ?? [])}`;
     if (key === movesKey) return;
     movesKey = key;
 
@@ -531,6 +629,33 @@ export function createBoardLayer(): BoardLayer {
         )
         .fill({ color: 0xffc95c, alpha: 0.14 })
         .stroke({ width: 3, color: 0xffc95c, alpha: 0.55 });
+    }
+
+    // The picked-but-not-confirmed tile and figures: brighter and thicker than
+    // the reach, in a colour of their own, so "where she *could* go" and
+    // "where she is about to go" never read as the same mark.
+    for (const tile of aim?.tiles ?? []) {
+      const pad = BOARD_TILE_PX * 0.04;
+      highlightLayer
+        .roundRect(
+          tile.x * BOARD_TILE_PX + pad,
+          tile.y * BOARD_TILE_PX + pad,
+          BOARD_TILE_PX - pad * 2,
+          BOARD_TILE_PX - pad * 2,
+          BOARD_TILE_PX * 0.14,
+        )
+        .fill({ color: AIM_COLOR, alpha: 0.32 })
+        .stroke({ width: 6, color: AIM_COLOR, alpha: 0.95 });
+    }
+    for (const target of aim?.targets ?? []) {
+      highlightLayer
+        .circle(
+          (target.x + 0.5) * BOARD_TILE_PX,
+          (target.y + 0.5) * BOARD_TILE_PX,
+          BOARD_TILE_PX * 0.46,
+        )
+        .fill({ color: AIM_COLOR, alpha: 0.22 })
+        .stroke({ width: 6, color: AIM_COLOR, alpha: 0.95 });
     }
   }
 
@@ -652,7 +777,7 @@ export function createBoardLayer(): BoardLayer {
         buildTiles(encounter, biome);
       }
       syncActors(next);
-      drawHighlights(encounter);
+      drawHighlights(encounter, next.aim ?? null);
     },
 
     playEvents(events, totalMs) {

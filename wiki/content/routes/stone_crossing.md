@@ -3,7 +3,7 @@ title: Stone Crossing Route
 id: route.stone_crossing
 type: route
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: []
 related:

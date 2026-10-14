@@ -1184,6 +1184,7 @@ const SHARED = [
   { path: "/api/room/:code/join", method: "POST", probe: "/api/room/ABCD/join" },
   { path: "/api/room/:code/watch", method: "POST", probe: "/api/room/ABCD/watch" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
+  { path: "/api/preview", method: "POST", probe: "/api/preview" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
   { path: "/api/state", method: "GET", probe: "/api/state" },
   { path: "/api/health", method: "GET", probe: "/api/health" },

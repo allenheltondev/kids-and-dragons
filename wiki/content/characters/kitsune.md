@@ -3,7 +3,7 @@ title: Kitsune
 id: character.kitsune
 type: character
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["playable", "sky", "illusion", "clever"]
 scale: small_to_medium
@@ -16,7 +16,7 @@ likes:
   - id: npc.boggart
     title: "Boggart"
     url: "/npcs/boggart/"
-    because: "Finally, someone who appreciates a story with missing pieces. They trade — a tale for a secret — and both sides are certain they won."
+    because: "Finally, someone who appreciates a story with missing pieces. They trade, a tale for a secret, and both sides are certain they won."
 dislikes:
   - id: creature.mire_mimic
     title: "Mire Mimic"
@@ -67,26 +67,26 @@ infobox: character
 
 > *Their home moves. Their maps are songs. Their jokes have layovers.*
 
-Kitsune keep the drifting Sky Islands connected — navigators, messengers, and story-carriers between communities that are never in the same place twice. Illusion, to a kitsune, is a teaching tool, a stage, and occasionally a way of making a point that would take too long in words; it is no more dishonest than a drawing is, and a kitsune will tell you so at length, in a voice coming from somewhere slightly to your left.
+Kitsune keep the drifting Sky Islands connected: navigators, messengers, and story-carriers between communities that are never in the same place twice. Illusion, to a kitsune, is a teaching tool, a stage, and occasionally a way of making a point that would take too long in words; it is no more dishonest than a drawing is, and a kitsune will tell you so at length, in a voice coming from somewhere slightly to your left.
 
 ### For Fun
 
 - Wind-mapping, which is half science and half gossip. Currents have names and reputations, and some of them are not spoken to.
 - Illusion theater: retelling the week's news as a play, with unauthorized casting.
-- Leaving small illusory gifts on windowsills — a flower that lasts exactly until it is noticed.
+- Leaving small illusory gifts on windowsills, a flower that lasts exactly until it is noticed.
 
 ### Getting Along
 
-Quick, curious, and generous with everything except the ending of a story. A kitsune promise is real; the packaging around it is where the artistry lives. Do not portray every kitsune as mischievous — merely be aware the ratio is not in your favor.
+Quick, curious, and generous with everything except the ending of a story. A kitsune promise is real; the packaging around it is where the artistry lives. Do not portray every kitsune as mischievous; merely be aware the ratio is not in your favor.
 
 ### Likes
 
-- **[Cloud Whale](/creatures/cloud_whale/)** — The islands navigate by their songs. Half the star-charts are really whale-charts, and every navigator knows it.
-- **[Boggart](/npcs/boggart/)** — Finally, someone who appreciates a story with missing pieces. They trade — a tale for a secret — and both sides are certain they won.
+- **[Cloud Whale](/creatures/cloud_whale/)**: The islands navigate by their songs. Half the star-charts are really whale-charts, and every navigator knows it.
+- **[Boggart](/npcs/boggart/)**: Finally, someone who appreciates a story with missing pieces. They trade, a tale for a secret, and both sides are certain they won.
 
 ### Dislikes
 
-- **[Mire Mimic](/creatures/mire_mimic/)** — Impersonation without craft. One impression, performed lying down. And it keeps working, which is the insulting part.
+- **[Mire Mimic](/creatures/mire_mimic/)**: Impersonation without craft. One impression, performed lying down. And it keeps working, which is the insulting part.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

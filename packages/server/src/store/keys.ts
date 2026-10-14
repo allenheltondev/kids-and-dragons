@@ -14,6 +14,7 @@
  * | Device binding   | HH#<hhId>       | DEVICE#<deviceId>  |
  * | Character        | HH#<hhId>       | CHAR#<charId>      |
  * | Campaign run     | HH#<hhId>       | RUN#<runId>        |
+ * | Field guide      | HH#<hhId>       | FIELDGUIDE         |
  * | Chapter progress | RUN#<runId>     | CHAPTER#<n>        |
  * | Game state       | RUN#<runId>     | STATE              |
  * | Event log        | RUN#<runId>     | EVT#<seq>          |
@@ -31,6 +32,9 @@ export const ACCT = (sub: string) => `ACCT#${sub}`;
 
 export const META = "META";
 export const STATE = "STATE";
+
+/** The household's permanent discovery record — see `FieldGuideRecord`. */
+export const FIELDGUIDE = "FIELDGUIDE";
 
 export const PLAYER_SK = (playerId: string) => `PLAYER#${playerId}`;
 export const DEVICE_SK = (deviceId: string) => `DEVICE#${deviceId}`;

@@ -10,7 +10,7 @@
  * Node versions, which `Math.random()` explicitly is not.
  */
 
-import type { StatId } from "./types/domain.js";
+import type { Difficulty, StatId, TierId } from "./types/domain.js";
 import type { DiceRoll } from "./types/state.js";
 
 export interface Rng {
@@ -51,12 +51,60 @@ export function rollD20(rng: Rng): number {
   return Math.floor(rng.next() * 20) + 1;
 }
 
+/**
+ * Which difficulty band a target number sits in (spec §4.1: easy 8, normal 12,
+ * hard 16). A bare "Needed 12" on every check makes them all feel the same; a
+ * word says up front how much of a stretch this one is. Banded rather than
+ * keyed to the exact values in content/rules.json so a TN between the bands
+ * still reads sensibly.
+ */
+export function difficultyFor(tn: number): Difficulty {
+  if (tn <= 9) return "easy";
+  if (tn <= 13) return "normal";
+  return "hard";
+}
+
+/** Any die: 1..sides inclusive. The helper's die, mostly. */
+export function rollDie(rng: Rng, sides: number): number {
+  return Math.floor(rng.next() * sides) + 1;
+}
+
+/** The helper's die by tier, when content/rules.json does not say. */
+export const DEFAULT_HELP_DIE: Readonly<Record<TierId, number>> = {
+  fledgling: 4,
+  sworn: 6,
+  radiant: 8,
+  mythic: 10,
+};
+
+export interface HelpInput {
+  characterId: string;
+  sides: number;
+}
+
 export interface RollInput {
   mod: number;
   tn: number;
+  /**
+   * A friend's die added on top (spec §4.1 helping). Thrown after the d20, so
+   * a roll with no helper draws exactly what it always drew.
+   */
+  help?: HelpInput;
   /** Who is rolling. Defaults to "" for previews that have no character yet. */
   characterId?: string;
   stat?: StatId;
+}
+
+/**
+ * The die alone decides on its two ends: a natural 20 always succeeds and a
+ * natural 1 always fails, whatever the modifier and the target. Everything in
+ * between is `total >= tn`. It keeps both faces worth cheering (or groaning)
+ * at, and it means no check is ever certain in either direction.
+ */
+export function clears(die: number, total: number, tn: number): boolean {
+  if (die >= 20) return true;
+  if (die <= 1) return false;
+  return total >= tn;
 }
 
 /**
@@ -65,15 +113,20 @@ export interface RollInput {
  */
 export function roll(rng: Rng, input: RollInput): DiceRoll {
   const die = rollD20(rng);
-  const total = die + input.mod;
+  const help =
+    input.help === undefined
+      ? undefined
+      : { ...input.help, value: rollDie(rng, input.help.sides) };
+  const total = die + input.mod + (help?.value ?? 0);
   return {
     die,
     mod: input.mod,
     total,
     tn: input.tn,
-    result: total >= input.tn ? "success" : "failure",
+    result: clears(die, total, input.tn) ? "success" : "failure",
     characterId: input.characterId ?? "",
     ...(input.stat === undefined ? {} : { stat: input.stat }),
+    ...(help === undefined ? {} : { help }),
   };
 }
 
@@ -82,6 +135,7 @@ export interface CheckInput {
   stat: StatId;
   mod: number;
   tn: number;
+  help?: HelpInput;
 }
 
 /** A check scene roll: d20 + stat vs. TN. Both outcomes continue the story. */
@@ -91,6 +145,7 @@ export function resolveCheck(rng: Rng, input: CheckInput): DiceRoll {
     tn: input.tn,
     characterId: input.characterId,
     stat: input.stat,
+    ...(input.help === undefined ? {} : { help: input.help }),
   });
 }
 

@@ -129,7 +129,7 @@ export function ChapterCompletePanel(): ReactElement {
         {setback && ended === undefined ? (
           <p className="complete__setback">
             <Icon name="forward" />
-            <span>Not how you hoped — and the adventure carries on from here.</span>
+            <span>Not how you hoped, and the adventure carries on from here.</span>
           </p>
         ) : null}
         {/*
@@ -222,6 +222,15 @@ export function ChapterCompletePanel(): ReactElement {
                     </span>
                   )}
                 </span>
+                {/* The point the level brought can't be spent here — only at a
+                    Rest scene while the next chapter is in play — so the
+                    moment it is earned is the moment to say where it goes. */}
+                {newLevel === undefined ? null : (
+                  <span className="complete-card__hint kad-muted">
+                    <Icon name="rest" />
+                    <span>New stat point! Spend it on your phone at the next rest stop.</span>
+                  </span>
+                )}
                 {/* spec §9.5: what is in the bag right now is provisional until
                     the campaign is finished, so it is shown as "carrying", not
                     "won". */}

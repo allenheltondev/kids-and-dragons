@@ -92,7 +92,16 @@ export class LocalSseChannel implements RoomChannel {
     const first = room.buffer[0];
     if (!first) return [];
     if (first.seq > sinceSeq + 1) return null; // buffer already rolled past the gap
-    return room.buffer.filter((m) => m.seq > sinceSeq);
+    // A replay is a reconnect's catch-up, so it carries what the event log
+    // would (§4.3) and not the live-only Field Guide fanfare (`discovered`):
+    // a reconnect rebuilds the book, it never re-announces a find.
+    return room.buffer
+      .filter((m) => m.seq > sinceSeq)
+      .map((m) => {
+        if (m.kind !== "patch" || !("discovered" in m)) return m;
+        const { discovered: _live, ...rest } = m;
+        return rest;
+      });
   }
 
   /**
@@ -130,6 +139,14 @@ export class LocalSseChannel implements RoomChannel {
       // it — so naming these would mean every transport adapter has to know
       // the message kinds up front. `ChannelMessage.kind` already carries the
       // discriminator inside the payload, where the ordering logic reads it.
+      //
+      // A preview carries no `id:` at all. It is not a step the client has
+      // applied, and an SSE event with no id leaves Last-Event-ID where the
+      // last patch put it — so a reconnect can never skip a patch over one.
+      if (message.kind === "preview") {
+        sink.write(`data: ${JSON.stringify(message)}\n\n`);
+        return;
+      }
       sink.write(`id: ${message.seq}\ndata: ${JSON.stringify(message)}\n\n`);
     };
 

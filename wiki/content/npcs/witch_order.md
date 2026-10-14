@@ -3,7 +3,7 @@ title: Witches
 id: npc.witch_order
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["cultural_order", "cross_species", "magic", "tradition"]
 classification: cultural_order
@@ -18,7 +18,7 @@ likes:
   - id: npc.boggart
     title: "Boggart"
     url: "/npcs/boggart/"
-    because: "Suppliers of ingredients, rumors, and — twice now, at the exact crucial moment — a button."
+    because: "Suppliers of ingredients, rumors, and, twice now, at the exact crucial moment, a button."
   - id: npc.yeti
     title: "Yeti"
     url: "/npcs/yeti/"
@@ -66,7 +66,7 @@ infobox: npc
 
 > *Magic answers anyone who studies. This is the problem, and the witches are the ones who take it seriously.*
 
-Witchcraft is a tradition, not a people: any of the realm's folk may learn, and the pointed hat fits every head that earns it. The real discipline is not the spellwork but the question asked before it — what do you actually want? — because most of the trouble a witch is called to fix began as an answer somebody skipped. Witches disagree with each other constantly, in the margins of each other's notebooks, as a form of quality control and, plainly, of affection.
+Witchcraft is a tradition, not a people: any of the realm's folk may learn, and the pointed hat fits every head that earns it. The real discipline is not the spellwork but the question asked before it, what do you actually want?, because most of the trouble a witch is called to fix began as an answer somebody skipped. Witches disagree with each other constantly, in the margins of each other's notebooks, as a form of quality control and, plainly, of affection.
 
 ### For Fun
 
@@ -76,17 +76,17 @@ Witchcraft is a tradition, not a people: any of the realm's folk may learn, and 
 
 ### Getting Along
 
-Careful and instructive. A witch asks what you actually want before saying what is possible, never promises the first thing, and delivers exactly what was agreed — which is why people trust witches and why people are also slightly afraid of them, and why witches consider both reactions correct.
+Careful and instructive. A witch asks what you actually want before saying what is possible, never promises the first thing, and delivers exactly what was agreed, which is why people trust witches and why people are also slightly afraid of them, and why witches consider both reactions correct.
 
 ### Likes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A patient, in the oldest sense. Some can be untangled and allowed to finish, and there is no better feeling in the craft.
-- **[Boggart](/npcs/boggart/)** — Suppliers of ingredients, rumors, and — twice now, at the exact crucial moment — a button.
-- **[Yeti](/npcs/yeti/)** — Fellow keepers of the principle that knowing something makes you responsible for it.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A patient, in the oldest sense. Some can be untangled and allowed to finish, and there is no better feeling in the craft.
+- **[Boggart](/npcs/boggart/)**: Suppliers of ingredients, rumors, and, twice now, at the exact crucial moment, a button.
+- **[Yeti](/npcs/yeti/)**: Fellow keepers of the principle that knowing something makes you responsible for it.
 
 ### Dislikes
 
-- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)** — They skip the question. All of them. Every time.
+- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)**: They skip the question. All of them. Every time.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
