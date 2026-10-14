@@ -3,7 +3,7 @@ title: Loftmire
 id: creature.loftmire
 type: creature
 status: draft
-lastReviewed: "2026-08-04"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["supernatural", "marsh", "mist", "hazard", "drift", "lost_things"]
 classification: supernatural_manifestation
@@ -32,15 +32,18 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: supernatural_manifestations
+assets:
+  primary: assets/entities/loftmire/portrait.webp
+  primaryFull: assets/entities/loftmire/assembled.png
 ai_context:
   mood: "A low drifting cloud that sheds a fine sand which falls upward, lifting whatever it settles on toward the cloud the sand is trying to get back to."
   themes: "Supernatural, Marsh, Mist, Hazard, Drift, Lost_things"
-  visual_style: "A flat-bottomed cloud hanging a few feet off the water, pale and slow and wider than a barn, with a faint grit coming out of its underside that drifts the wrong way. Reeds beneath it stand straight up. The water under it dimples upward. Its interior, glimpsed from below, is furnished — rope, a lit lantern, boots, somebody's washing, all floating at whatever height their weight decided on."
+  visual_style: "A flat-bottomed cloud hanging a few feet off the water, pale and slow and wider than a barn, with a faint grit coming out of its underside that drifts the wrong way. Reeds beneath it stand straight up. The water under it dimples upward. Its interior, glimpsed from below, is furnished: rope, a lit lantern, boots, somebody's washing, all floating at whatever height their weight decided on."
   common_encounters: "A hazard the party can see coming and steer, separation of the party, recovery of a thing lost years ago, hauling something too heavy to drag, and a stray met far from home that needs walking back."
   lore_highlights: "It is not chasing you. It is collecting."
   related_entities: "biome.whispering_marsh, biome.whispering_marsh"
-  writing_guidance: "It never hunts, chases, or targets a person. It follows its own sand, which is a different sentence and the one to write. It does not injure, crush, drown, or drop anything it has lifted. Its sand cannot be contained, stored, or carried as equipment — it is always leaving, and a jar of it is a jar with a cloud coming after it. Strays outside the marsh are rare and are always lost; they are never a population."
-  generation_hints: "Drifts at walking pace, cannot turn, and sheds grit continuously. Sand that lands on something living or something carried begins pulling it toward the cloud, as hard as the dose is large — a dusting makes a traveler light on their feet, a pocketful takes them off the ground. The pull leans toward the cloud rather than straight up, so the first sign is usually a party all tilting the same way. Brushing, wetting, or muddying the sand ends it. The cloud thins over moving water and open sun, and sets down everything it holds, gently, heaviest first."
+  writing_guidance: "It never hunts, chases, or targets a person. It follows its own sand, which is a different sentence and the one to write. It does not injure, crush, drown, or drop anything it has lifted. Its sand cannot be contained, stored, or carried as equipment. It is always leaving, and a jar of it is a jar with a cloud coming after it. Strays outside the marsh are rare and are always lost; they are never a population."
+  generation_hints: "Drifts at walking pace, cannot turn, and sheds grit continuously. Sand that lands on something living or something carried begins pulling it toward the cloud, as hard as the dose is large: a dusting makes a traveler light on their feet, a pocketful takes them off the ground. The pull leans toward the cloud rather than straight up, so the first sign is usually a party all tilting the same way. Brushing, wetting, or muddying the sand ends it. The cloud thins over moving water and open sun, and sets down everything it holds, gently, heaviest first."
 layout: creatures
 infobox: creature
 ---
@@ -64,12 +67,12 @@ Two loftmires that meet drift through one another and come out the far side havi
 
 ### Likes
 
-- **[Boggart](/npcs/boggart/)** — Boggarts are the only people in the marsh who reliably give it back. They are also the sole reason it is now three miles from where it started.
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A wisp that drifts inside becomes the lighting. It is also the only thing that ever hands a wisp a route it does not remember.
+- **[Boggart](/npcs/boggart/)**: Boggarts are the only people in the marsh who reliably give it back. They are also the sole reason it is now three miles from where it started.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A wisp that drifts inside becomes the lighting. It is also the only thing that ever hands a wisp a route it does not remember.
 
 ### Dislikes
 
-- **[Frogfolk](/npcs/frogfolk/)** — They weight the poles, brush the coats, chart the drift, and give it nothing. A frogfolk channel is the emptiest crossing in the marsh.
+- **[Frogfolk](/npcs/frogfolk/)**: They weight the poles, brush the coats, chart the drift, and give it nothing. A frogfolk channel is the emptiest crossing in the marsh.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
@@ -77,11 +80,11 @@ Two loftmires that meet drift through one another and come out the far side havi
 
 There is nothing here to fight. These are the ways through.
 
-- **Observation** (Clever, normal) — The reeds under it stand straight up and the water dimples upward. Read that, and read who in the party is already carrying how much.
-- **Escape** (Quick, normal) — Get out from under it before the dose matters. It drifts at walking pace and it cannot turn.
-- **Rescue** (Might, normal) — Someone going up can be held and brushed down. Two hands beat one, and the pull is gentle — it is only constant.
-- **Environmental Problem Solving** (Clever, hard) — Carry a doseful and it follows. Walk it over the stuck barge, off the channel the children use, or away from the village — then put the sand down somewhere that does not matter, and go.
-- **Restoring Habitat** (Heart, normal) — A stray followed something too far and cannot find the marsh. Getting it home is the same trick as luring it anywhere else, done kindly and for much longer.
+- **Observation** (Clever, normal): The reeds under it stand straight up and the water dimples upward. Read that, and read who in the party is already carrying how much.
+- **Escape** (Quick, normal): Get out from under it before the dose matters. It drifts at walking pace and it cannot turn.
+- **Rescue** (Might, normal): Someone going up can be held and brushed down. Two hands beat one, and the pull is gentle. It is only constant.
+- **Environmental Problem Solving** (Clever, hard): Carry a doseful and it follows. Walk it over the stuck barge, off the channel the children use, or away from the village, then put the sand down somewhere that does not matter, and go.
+- **Restoring Habitat** (Heart, normal): A stray followed something too far and cannot find the marsh. Getting it home is the same trick as luring it anywhere else, done kindly and for much longer.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

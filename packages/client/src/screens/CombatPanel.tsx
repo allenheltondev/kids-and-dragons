@@ -413,7 +413,7 @@ export function CombatControls(): ReactElement | null {
               <p className="prompt__sub kad-muted">
                 <Icon name={selection.action.icon} />
                 <span>
-                  {selection.action.name} — tap a glowing tile.
+                  {selection.action.name}: tap a glowing tile.
                   {(selection.action.tileCount ?? 1) > 1
                     ? ` (${selection.picked.length + 1} of ${selection.action.tileCount})`
                     : ""}
@@ -435,7 +435,7 @@ export function CombatControls(): ReactElement | null {
               <p className="prompt__sub kad-muted">
                 <Icon name={aimingWho.icon} />
                 <span>
-                  {aimingWho.name} — who?
+                  {aimingWho.name}: who?
                   {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
                     ? ` (${selection.picked.length + 1} of ${Math.min(
                         selection.action.maxTargets ?? 1,
@@ -552,11 +552,11 @@ function confirmLabel(
     .map((id) => combatantById(encounter, id))
     .filter((c): c is NonNullable<typeof c> => c !== null)
     .map(combatantLabel);
-  if (names.length > 0) return `${selection.action.name} — ${names.join(" and ")}`;
+  if (names.length > 0) return `${selection.action.name}: ${names.join(" and ")}`;
   const tiles = selection.tiles ?? [];
   if (tiles.length > 0) {
     const spots = tiles.map((t) => `column ${t.x + 1}, row ${t.y + 1}`).join(" and ");
-    return `${selection.action.name} — ${spots}`;
+    return `${selection.action.name}: ${spots}`;
   }
   return selection.action.name;
 }
@@ -568,7 +568,7 @@ function itemLabel(
 ): string {
   const name = def?.name ?? selection.itemId;
   const target = selection.targetId ? combatantById(encounter, selection.targetId) : null;
-  return target ? `Use ${name} — ${combatantLabel(target)}` : `Use ${name}`;
+  return target ? `Use ${name} on ${combatantLabel(target)}` : `Use ${name}`;
 }
 
 function ConfirmBar({

@@ -3,7 +3,7 @@ title: Thunder Acorn
 id: item.thunder_acorn
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["thrown", "noise", "enchanted_woods", "uncommon"]
 related:
@@ -27,7 +27,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Consumable** — Used once, then it is gone.
+**Consumable**: Used once, then it is gone.
 
 > Throw it. It cracks like thunder. 3 damage.
 <!-- END GENERATED: mechanics -->

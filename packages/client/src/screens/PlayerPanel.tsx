@@ -609,7 +609,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {me.down ? (
         <p className="player__down" role="status">
           <Icon name="down" />
-          <span>Knocked down — a friend can help you up.</span>
+          <span>Knocked down. A friend can help you up.</span>
         </p>
       ) : null}
 
@@ -1366,7 +1366,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     {inEncounter
                       ? "Use it from your turn in the fight"
                       : selectedDef?.effect?.type === "heal"
-                        ? "You're at full health — save it for later"
+                        ? "You're at full health. Save it for later"
                         : "Save it for a fight"}
                   </span>
                 </p>

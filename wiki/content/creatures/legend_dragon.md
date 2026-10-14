@@ -3,7 +3,7 @@ title: Legend Dragon
 id: creature.legend_dragon
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["legendary", "volcano", "sapient", "ancient"]
 classification: legendary_beast
@@ -45,7 +45,7 @@ ai_context:
   common_encounters: "Legendary guardian, dangerous source of ancient knowledge, powerful individual whose goals are not understood."
   lore_highlights: "The mountain has a tenant. Nobody has read the lease."
   related_entities: "location.mount_red_sky, campaign.gemfall, location.mount_red_sky"
-  writing_guidance: "Not the rulers or parents of dragonling society. No specific legend dragon has yet been named or designed."
+  writing_guidance: "Not the rulers or parents of dragonling society. The Gemfall Seal-Keeper is the first approved individual design and must not be reused as a species-default or interchangeable enemy."
   generation_hints: "Guards a claimed lair or purpose, monitors intrusions, may warn, test, bargain with, or attack depending on individual."
 layout: creatures
 infobox: creature
@@ -71,23 +71,23 @@ It may warn, test, bargain, or attack, and which one is a fact about the individ
 
 ### Likes
 
-- **[Cloud Whale](/creatures/cloud_whale/)** — Something else old and slow that sings. The whales will not come near it, which it has decided not to notice.
-- **[Embermoth](/creatures/embermoth/)** — The only living things permitted in the lair. They dust the scales, and they know the mountain's moods almost as well as it does.
+- **[Cloud Whale](/creatures/cloud_whale/)**: Something else old and slow that sings. The whales will not come near it, which it has decided not to notice.
+- **[Embermoth](/creatures/embermoth/)**: The only living things permitted in the lair. They dust the scales, and they know the mountain's moods almost as well as it does.
 
 ### Dislikes
 
-- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)** — They keep knocking.
+- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)**: They keep knocking.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Legend** — A designed encounter rather than an ordinary one. Whatever it is, it is the reason the chapter exists.
+**Legend**: A designed encounter rather than an ordinary one. Whatever it is, it is the reason the chapter exists.
 
 | | |
 |---|---|
 | Health | 36 |
-| Guard | 16 — how hard it is to hit |
+| Guard | 16, how hard it is to hit |
 | Attack | +5 |
 | Speed | 4 steps, 2 initiative |
 | Usually | alone |
@@ -95,8 +95,8 @@ It may warn, test, bargain, or attack, and which one is a fact about the individ
 
 ### Ways Past It That Are Not Fighting
 
-- **Bargaining** (Heart, hard) — It may warn, test, or bargain before it attacks. Which one is a fact about the individual, not the species.
-- **Conversation** (Clever, hard) — It is guarding a purpose. Working out which one is most of the conversation.
+- **Bargaining** (Heart, hard): It may warn, test, or bargain before it attacks. Which one is a fact about the individual, not the species.
+- **Conversation** (Clever, hard): It is guarding a purpose. Working out which one is most of the conversation.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

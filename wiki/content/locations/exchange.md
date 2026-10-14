@@ -3,7 +3,7 @@ title: The Exchange
 id: location.exchange
 type: location
 status: draft
-lastReviewed: "2026-10-13"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["coastal_city", "trade", "crossroads", "docks", "mixed_population", "stories"]
 danger_level: low
@@ -138,15 +138,15 @@ Where the realm meets itself. News, cargo, reunions, and campaigns all begin at 
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The lost-and-found stalls' best supplier is a standing arrangement with the marsh boggarts. Neither side has ever put it in words, which both sides consider the strongest clause in it.
 
 ### Neighbors
 
-- **[The Sunward Fields](/biomes/sunward_fields/)** — The Fields feed the city and the city pays for the Fields; each assumes the other would collapse first, and neither wants to check.
-- **[Whispering Marsh](/biomes/whispering_marsh/)** — The marsh approach delivers remedies, guides, boggart salvage, and customers who prefer not to say which of those they came for.
-- **[The Open Sea](/biomes/open_sea/)** — The docks are the city's fortune and its weathervane: whatever the sea is doing to shipping, the Exchange knows it by lunch and has priced it by dinner.
+- **[The Sunward Fields](/biomes/sunward_fields/)**: The Fields feed the city and the city pays for the Fields; each assumes the other would collapse first, and neither wants to check.
+- **[Whispering Marsh](/biomes/whispering_marsh/)**: The marsh approach delivers remedies, guides, boggart salvage, and customers who prefer not to say which of those they came for.
+- **[The Open Sea](/biomes/open_sea/)**: The docks are the city's fortune and its weathervane: whatever the sea is doing to shipping, the Exchange knows it by lunch and has priced it by dinner.
 
 ### Current Tensions
 

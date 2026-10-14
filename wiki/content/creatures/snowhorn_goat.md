@@ -3,7 +3,7 @@ title: Snowhorn Goat
 id: creature.snowhorn_goat
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "mountain", "climbing", "indicator"]
 classification: ambient_creature
@@ -63,7 +63,7 @@ infobox: creature
 
 > *It has never once been wrong about an avalanche, and it is not going to start explaining itself now.*
 
-Snowhorn goats walk lines through the Frostfang that no map holds, passed from nanny to kid over generations of hard winters. When a herd abandons a slope, the slope fails within the day — every time, without exception, and without comment. The mountain peoples long ago stopped asking how the goats know and started simply watching where they stand.
+Snowhorn goats walk lines through the Frostfang that no map holds, passed from nanny to kid over generations of hard winters. When a herd abandons a slope, the slope fails within the day, every time, without exception, and without comment. The mountain peoples long ago stopped asking how the goats know and started simply watching where they stand.
 
 ### For Fun
 
@@ -77,12 +77,12 @@ A snowhorn tolerates climbers who follow its line and despairs, visibly, of thos
 
 ### Likes
 
-- **[Yeti](/npcs/yeti/)** — They remember where the good lichen was frozen two hundred years ago, and they walk slowly enough to follow.
-- **[Griffin](/characters/griffin/)** — When the herd reroutes, the griffins call the warning down the valley. A good division of labor: the goats know, the griffins are loud.
+- **[Yeti](/npcs/yeti/)**: They remember where the good lichen was frozen two hundred years ago, and they walk slowly enough to follow.
+- **[Griffin](/characters/griffin/)**: When the herd reroutes, the griffins call the warning down the valley. A good division of labor: the goats know, the griffins are loud.
 
 ### Dislikes
 
-- **[Frost Wyrm](/creatures/frost_wyrm/)** — It collapses in one morning what took the herd generations to map.
+- **[Frost Wyrm](/creatures/frost_wyrm/)**: It collapses in one morning what took the herd generations to map.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

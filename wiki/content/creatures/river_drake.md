@@ -3,7 +3,7 @@ title: River Drake
 id: creature.river_drake
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "river", "semi_sapient", "territorial"]
 classification: dangerous_creature
@@ -74,31 +74,31 @@ Semi-sapient and thoroughly transactional. A drake learns individual faces, indi
 
 ### Likes
 
-- **[Stone Troll](/npcs/stone_troll/)** — A colleague in the crossing trade. They have never spoken. The tolls are honored between professionals.
-- **[Old Ossley](/individuals/old_ossley/)** — The one ferryman who pays without arguing, and who once threw in a honeycake unprompted.
+- **[Stone Troll](/npcs/stone_troll/)**: A colleague in the crossing trade. They have never spoken. The tolls are honored between professionals.
+- **[Old Ossley](/individuals/old_ossley/)**: The one ferryman who pays without arguing, and who once threw in a honeycake unprompted.
 
 ### Dislikes
 
-- **[Silver Otter](/creatures/silver_otter/)** — They call the toll 'borrowing.' It is not borrowing.
+- **[Silver Otter](/creatures/silver_otter/)**: They call the toll 'borrowing.' It is not borrowing.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Brute** — Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
+**Brute**: Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
 
 | | |
 |---|---|
 | Health | 14 |
-| Guard | 12 — how hard it is to hit |
+| Guard | 12, how hard it is to hit |
 | Attack | +4 |
 | Speed | 3 steps, 1 initiative |
 | Usually | 2 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Bargaining** (Heart, normal) — It blocks boats and demands dropped food. Paying the toll is a complete answer.
-- **Conversation** (Clever, hard) — It learns routines, so it can be talked into a different one.
+- **Bargaining** (Heart, normal): It blocks boats and demands dropped food. Paying the toll is a complete answer.
+- **Conversation** (Clever, hard): It learns routines, so it can be talked into a different one.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->
