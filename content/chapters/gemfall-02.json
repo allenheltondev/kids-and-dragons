@@ -63,7 +63,7 @@
       "narration": "The road ahead is jammed with gem wagons, so a rush caravan has decided to drive straight through a field of pumpkins that nobody has harvested yet. A faun foreman called Hob Thistledown waves his hat at you. \"Help us turn them,\" he says, \"before they make soup of the whole season!\"",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/hob",
           "name": "Hob Thistledown"
         }
       ],
@@ -101,7 +101,7 @@
       "narration": "You plant your feet in the road in front of the lead wagon and do not move. The oxen stop with their noses touching your coat. The drover shouts. You stay. A pumpkin rolls out of the field, bumps your boot, and stays too, as if it has joined you. The drover throws up her hands and turns the oxen.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/hob",
           "name": "Hob Thistledown"
         }
       ],
@@ -119,7 +119,7 @@
       "narration": "You step into the road, clear your throat, and roar. It is a polite roar, the kind with a please in it, and it still rattles the pumpkins. Every ox in the caravan sits down at once. The drover looks at her oxen, looks at you, and decides the field can keep its pumpkins.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/hob",
           "name": "Hob Thistledown"
         }
       ],
@@ -139,7 +139,7 @@
       "prompt": "Talk a grumpy drover out of a shortcut",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/hob",
           "name": "Hob Thistledown"
         }
       ],
@@ -164,7 +164,7 @@
       "narration": "You walk the rows instead of through them, hopping between pumpkins like stepping stones, and find a cart track around the edge of the field. Something tiny pats your boot, very approvingly, and is gone before you can look.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/hob",
           "name": "Hob Thistledown"
         }
       ],
@@ -189,7 +189,7 @@
       "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there, all the way to Bramblewood.\"",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/hob",
           "name": "Hob Thistledown"
         }
       ],
@@ -939,8 +939,9 @@
       "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumor board is where you decide.",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "heal": 3,
@@ -972,8 +973,9 @@
       "narration": "Marda takes the warm red stone in one big hand and holds it to her ear. The common room goes quiet. The stone hums. \"Mm,\" says Marda, and gives it back, and wipes her hand on her apron as if the hum might come off. Then she asks the one question she asks everybody this season.",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "choices": [
@@ -990,8 +992,9 @@
       "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumors,\" she adds. \"That's the trouble with this season.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "choices": [
@@ -1008,8 +1011,9 @@
       "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "choices": [
@@ -1059,8 +1063,9 @@
       "narration": "East, then. Marda chalks your names under EAST, and in the morning you'll take the Sunward road to the Great River, where the trolls want stories instead of coins. Tonight you sleep in a real bed for the first time since the Exchange. Somewhere far off, you can almost hear the river.",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "heal": 4,
@@ -1071,8 +1076,9 @@
       "narration": "North, then, straight up the middle with everybody else. Marda chalks your names under NORTH, right at the bottom of a very long list. Tonight you sleep in a real bed while the wagons creak past the hedges all night long, and every one of them is going your way.",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "heal": 4,
@@ -1083,8 +1089,9 @@
       "narration": "West, then, into the reeds where hardly anybody else is going. Marda chalks your names under WEST, where there is lots of room. Tonight you sleep in a real bed. Out past the hedges, the marsh frogs sing very loudly, as if somebody has already told them you are coming.",
       "cast": [
         {
-          "figure": "entities/centaur",
-          "name": "Marda Thorn"
+          "figure": "cast/marda_thorn",
+          "name": "Marda Thorn",
+          "size": "large"
         }
       ],
       "heal": 4,

@@ -362,8 +362,9 @@
       "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the ferryman from Stone Crossing, Old Ossley, and the boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
       "cast": [
         {
-          "figure": "entities/frogfolk",
-          "name": "Old Ossley"
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
         }
       ],
       "choices": [
@@ -394,8 +395,9 @@
       "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. He presses one plain, wet stone into your hand: \"Carry this one up yourselves. When you put it down, say thank you to the river.\"",
       "cast": [
         {
-          "figure": "entities/frogfolk",
-          "name": "Old Ossley"
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
         }
       ],
       "onEnter": [

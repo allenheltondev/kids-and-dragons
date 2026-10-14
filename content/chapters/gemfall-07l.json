@@ -428,8 +428,9 @@
       "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat full of every stone the river took off somebody this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
       "cast": [
         {
-          "figure": "entities/frogfolk",
-          "name": "Old Ossley"
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
         }
       ],
       "choices": [
@@ -453,8 +454,9 @@
       "narration": "Ossley's price is not coin. It never was. \"Whatever you tie,\" he says, \"tie it with a knot you can undo.\" He makes you show him the knot, there and then, on his boat rope. It takes three tries.",
       "cast": [
         {
-          "figure": "entities/frogfolk",
-          "name": "Old Ossley"
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
         }
       ],
       "choices": [
