@@ -44,7 +44,7 @@
       "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -101,8 +101,9 @@
       "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. A MossHome runner coming the other way waves, and does not take one step onto the ash. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "MossHome Runner"
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
         }
       ],
       "choices": [
@@ -119,7 +120,7 @@
       "narration": "You walk up the caravan road from the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -435,7 +436,7 @@
       "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cozy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/grandmother_tull",
           "name": "Grandmother Tull"
         }
       ],

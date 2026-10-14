@@ -188,8 +188,9 @@
       "narration": "On the ridge, a manticore pride watches you come. Their elder stands, tail curled carefully away, and gives the formal greeting from a polite distance. Somebody in a passing caravan faints anyway, and the elder sighs the sigh of someone this happens to a lot.",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         }
       ],
       "choices": [
@@ -215,8 +216,9 @@
       "prompt": "Wave first, slowly and kindly, the way the road peoples do",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         }
       ],
       "roller": "party",
@@ -241,8 +243,9 @@
       "narration": "The elder sees your silhouette and drops the formal greeting completely. \"Look who's come home the front way!\" Cubs pile on you. Somebody's grandmother insists you eat. You are given a honeycake whether you want one or not.",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         },
         {
           "figure": "characters/manticore",
@@ -275,8 +278,9 @@
       "narration": "Elder Sefa Tallgrass has a voice like warm gravel. \"We won't den within a day's walk of a gem caravan's rest stop. The cubs sleep badly near the stones. They dream about humming.\" She cannot say why. Nobody can. The prides have simply stopped arguing about it, which for a pride is a very loud thing to do.",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         }
       ],
       "choices": [
@@ -299,8 +303,9 @@
       "narration": "The prides have kept a riddle score with the Stone Crossing trolls for generations, and the two totals have never once matched. Sefa unrolls the ledger. The newest line isn't a riddle at all. It's the trolls' new toll, carried east: WHERE DID YOU GET THAT, AND WHERE IS IT GOING? The prides have started asking it too.",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         }
       ],
       "choices": [
@@ -332,8 +337,9 @@
       "prompt": "Answer the riddle nobody has solved in sixty years",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         }
       ],
       "roller": "party",
@@ -458,8 +464,9 @@
       "narration": "Elder Sefa walks with you herself, and two cubs come too, because nobody told them not to. The pride goes quiet as the grass starts to lean. At the edge of the widest bend, Sefa stops, and the cubs stop, and nobody takes one step further. \"We'll wait here,\" she says. \"We always wait here.\"",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         },
         {
           "figure": "characters/manticore",
@@ -521,8 +528,9 @@
       "narration": "You leave it humming in its crater. When you turn round, Elder Sefa is standing on the ridge. She bows, tail curled away, slow and deep. \"Come to the fire,\" she says.",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         }
       ],
       "onEnter": [
@@ -619,8 +627,9 @@
       "narration": "Pride fire is the best fire. The cubs fall asleep on your boots, and the elders tell the story of the riddle nobody can answer. Out in the dark the Pride Stone hums in its crater, alone. North, tomorrow, the broken bridge.",
       "cast": [
         {
-          "figure": "characters/manticore",
-          "name": "Elder Sefa"
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
         },
         {
           "figure": "characters/manticore",
