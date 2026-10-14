@@ -3,7 +3,7 @@ title: Brave Whistle
 id: item.brave_whistle
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["tool", "courage", "stone_crossing", "common"]
 related:
@@ -33,7 +33,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Consumable** — Used once, then it is gone.
+**Consumable**: Used once, then it is gone.
 
 > One loud note. +2 on your next roll.
 <!-- END GENERATED: mechanics -->

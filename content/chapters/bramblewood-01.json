@@ -472,7 +472,7 @@
     "rest_mossbank": {
       "type": "rest",
       "art": "bg/bramblewood/shrine",
-      "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while — this is the part of an afternoon where you notice you have got a little bit better at something.",
+      "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while. This is the part of an afternoon where you notice you have got a little bit better at something.",
       "heal": 3,
       "choices": [
         {

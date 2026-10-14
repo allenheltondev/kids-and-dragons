@@ -35,19 +35,19 @@ infobox: npc
 ## Related Entities
 
 ### Characters
-- [Kael Stormborn](/characters/kael_stormborn/) — allies
+- [Kael Stormborn](/characters/kael_stormborn/): allies
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — faction
-- [The Skywardens](/factions/skywardens/) — members
+- [The Skywardens](/factions/skywardens/): faction
+- [The Skywardens](/factions/skywardens/): members
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) — location
-- [Redspire Citadel](/locations/redspire_citadel/) — npcs
+- [Redspire Citadel](/locations/redspire_citadel/): location
+- [Redspire Citadel](/locations/redspire_citadel/): npcs
 
 ### Quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — npcs
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/): quests
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/): npcs
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

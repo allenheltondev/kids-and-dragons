@@ -3,7 +3,7 @@ title: Frogfolk
 id: npc.frogfolk
 type: npc
 status: draft
-lastReviewed: "2026-08-04"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "amphibious", "navigator"]
 classification: supporting_people
@@ -64,7 +64,7 @@ infobox: npc
 
 > *They know where the ground actually is. This is rarer than it sounds.*
 
-The marsh is passable because frogfolk make it so: safe channels marked, mist lanterns kept, and routes closed the day the whispers change — not the day after. A frogfolk pause is not hesitation; it is the size of the true answer being checked before it is issued. They say little because the marsh says a great deal, and someone has to be listening.
+The marsh is passable because frogfolk make it so: safe channels marked, mist lanterns kept, and routes closed the day the whispers change, not the day after. A frogfolk pause is not hesitation; it is the size of the true answer being checked before it is issued. They say little because the marsh says a great deal, and someone has to be listening.
 
 ### For Fun
 
@@ -79,14 +79,14 @@ Reserved and precise, with a hospitality that consists of getting you where you 
 
 ### Likes
 
-- **[Silver Otter](/creatures/silver_otter/)** — The river's other honest professionals. Boats and otters have traded right-of-way for a hundred years without one collision.
-- **[Stone Troll](/npcs/stone_troll/)** — Water people who keep their crossings. A kinship of maintenance.
-- **[Boggart](/npcs/boggart/)** — Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done.
+- **[Silver Otter](/creatures/silver_otter/)**: The river's other honest professionals. Boats and otters have traded right-of-way for a hundred years without one collision.
+- **[Stone Troll](/npcs/stone_troll/)**: Water people who keep their crossings. A kinship of maintenance.
+- **[Boggart](/npcs/boggart/)**: Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done.
 
 ### Dislikes
 
-- **[Mire Mimic](/creatures/mire_mimic/)** — Every marked channel it imitates is a review of frogfolk work, and the review is a trap.
-- **[Loftmire](/creatures/loftmire/)** — It takes the cloth off the marking poles and leaves the pole, which is a season's work rewritten by something that cannot read. The poles are weighted now. It was not a concession.
+- **[Mire Mimic](/creatures/mire_mimic/)**: Every marked channel it imitates is a review of frogfolk work, and the review is a trap.
+- **[Loftmire](/creatures/loftmire/)**: It takes the cloth off the marking poles and leaves the pole, which is a season's work rewritten by something that cannot read. The poles are weighted now. It was not a concession.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

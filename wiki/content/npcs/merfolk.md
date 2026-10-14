@@ -3,7 +3,7 @@ title: Merfolk
 id: npc.merfolk
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "ocean", "reef", "alliance"]
 classification: supporting_people
@@ -54,12 +54,12 @@ infobox: npc
 
 > *An alliance is not a mood. They will keep the agreement; that is what agreements are for.*
 
-Merfolk keep Mermaid Cove, its reefs, and an alliance older than any surviving record of what, exactly, it was made against. The song circles are the center of everything — part choir, part civic engineering — and the old verses are sung precisely because nobody remembers what they hold shut, which the merfolk consider the strongest possible argument for not missing a night.
+Merfolk keep Mermaid Cove, its reefs, and an alliance older than any surviving record of what, exactly, it was made against. The song circles are the center of everything, part choir and part civic engineering, and the old verses are sung precisely because nobody remembers what they hold shut, which the merfolk consider the strongest possible argument for not missing a night.
 
 ### For Fun
 
 - Song circles, nightly, attendance a joy and also the infrastructure.
-- Reef-gardening: coral grown into archways, nurseries, and — for a visiting dignitary — furniture.
+- Reef-gardening: coral grown into archways, nurseries, and, for a visiting dignitary, furniture.
 - The formal receiving of guests, an art form with tides in it. Rescued swimmers are technically guests, which surprises the swimmers.
 
 ### Getting Along
@@ -68,8 +68,8 @@ Courteous, precise about promises, and quietly warm underneath the protocol. A c
 
 ### Likes
 
-- **[Selkie](/npcs/selkie/)** — Treaty kin who take nothing seriously except the things that matter, in exactly the right order.
-- **[Reefglider](/creatures/reefglider/)** — The song circles' faithful orbit. The singers pretend not to be flattered.
+- **[Selkie](/npcs/selkie/)**: Treaty kin who take nothing seriously except the things that matter, in exactly the right order.
+- **[Reefglider](/creatures/reefglider/)**: The song circles' faithful orbit. The singers pretend not to be flattered.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

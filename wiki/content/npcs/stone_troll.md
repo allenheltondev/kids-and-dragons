@@ -3,7 +3,7 @@ title: Stone Troll
 id: npc.stone_troll
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "river", "bridgekeeper", "masonry"]
 classification: supporting_people
@@ -66,7 +66,7 @@ infobox: npc
 
 > *The bridge stands because someone patient is under it. This is not a metaphor.*
 
-Stone trolls keep the crossings — the masonry, the current-watch, and the judgment about who crosses and what it costs. The toll is never money and never cruel: a story, a riddle, a promise sized to the crosser, because a troll's real ledger is made of what people are carrying that isn't cargo. A troll begins a sentence the way other people begin a journey, and finishes it the same way: completely.
+Stone trolls keep the crossings: the masonry, the current-watch, and the judgment about who crosses and what it costs. The toll is never money and never cruel: a story, a riddle, a promise sized to the crosser, because a troll's real ledger is made of what people are carrying that isn't cargo. A troll begins a sentence the way other people begin a journey, and finishes it the same way: completely.
 
 ### For Fun
 
@@ -76,17 +76,17 @@ Stone trolls keep the crossings — the masonry, the current-watch, and the judg
 
 ### Getting Along
 
-Immensely slow to begin and then complete. A troll weighs a question out loud before answering, and the answer is final — not from stubbornness, but because it was weighed. They are not default enemies, do not eat travelers, and are politely tired of the question.
+Immensely slow to begin and then complete. A troll weighs a question out loud before answering, and the answer is final, not from stubbornness, but because it was weighed. They are not default enemies, do not eat travelers, and are politely tired of the question.
 
 ### Likes
 
-- **[Manticore](/characters/manticore/)** — The riddle account, faithfully honored from both ends.
-- **[Echo Hunter](/creatures/echo_hunter/)** — The deep tunnels' politest neighbor. They have never once met in a hurry.
-- **[River Drake](/creatures/river_drake/)** — A colleague in the crossing trade. The rates differ; the principle does not.
+- **[Manticore](/characters/manticore/)**: The riddle account, faithfully honored from both ends.
+- **[Echo Hunter](/creatures/echo_hunter/)**: The deep tunnels' politest neighbor. They have never once met in a hurry.
+- **[River Drake](/creatures/river_drake/)**: A colleague in the crossing trade. The rates differ; the principle does not.
 
 ### Dislikes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A bridge's entire argument is that the way is known. A light that argues otherwise makes work.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A bridge's entire argument is that the way is known. A light that argues otherwise makes work.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

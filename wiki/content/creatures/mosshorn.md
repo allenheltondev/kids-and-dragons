@@ -3,7 +3,7 @@ title: Mosshorn
 id: creature.mosshorn
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "forest", "gentle", "indicator"]
 classification: ambient_creature
@@ -78,13 +78,13 @@ Shy but ceremonious. A mosshorn approaches a calm stranger exactly once, inspect
 
 ### Likes
 
-- **[Harvest Sprite](/npcs/harvest_sprite/)** — The best tenants an antler ever had. They weed.
-- **[Bigfoot](/characters/bigfoot/)** — They prune with respect, and they always ask first.
-- **[Unicorn](/characters/unicorn/)** — Where a glade is hurt, they mend it, and the grazing comes back.
+- **[Harvest Sprite](/npcs/harvest_sprite/)**: The best tenants an antler ever had. They weed.
+- **[Bigfoot](/characters/bigfoot/)**: They prune with respect, and they always ask first.
+- **[Unicorn](/characters/unicorn/)**: Where a glade is hurt, they mend it, and the grazing comes back.
 
 ### Dislikes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — The lights lead calves off the safe paths, and the herd has no way to say no to a light.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: The lights lead calves off the safe paths, and the herd has no way to say no to a light.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

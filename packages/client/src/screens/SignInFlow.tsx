@@ -145,7 +145,7 @@ export function OfferStep({
         Right now they only live on this phone, and only while you keep playing: <b>seven days</b>{" "}
         after your last adventure, they&rsquo;re forgotten
         {fieldGuide ? <>, along with your Field Guide</> : null}. Add an email and they stay for
-        good — levels, items and all.
+        good, levels, items and all.
       </p>
       <ul className="keepsake__party">
         {motes.map((mote) => (
@@ -390,7 +390,7 @@ function ChooseStep({ busy }: { busy: boolean }): ReactElement {
             >
               {player.displayName}
               {player.characters.length > 0 ? (
-                <span className="keepsake__choice-sub"> — {player.characters.join(", ")}</span>
+                <span className="keepsake__choice-sub">: {player.characters.join(", ")}</span>
               ) : null}
             </Button>
           </li>
@@ -471,7 +471,7 @@ function KeptStep({ motes, fieldGuide }: { motes: Mote[]; fieldGuide: boolean })
       {passkeyAdded ? (
         <p className="keepsake__body keepsake__body--note">
           <Icon name="passkey" />
-          <span>This phone will remember you — no code next time.</span>
+          <span>This phone will remember you. No code next time.</span>
         </p>
       ) : null}
       <div className="keepsake__actions">

@@ -3,7 +3,7 @@ title: The Sunward Fields
 id: biome.sunward_fields
 type: biome
 status: draft
-lastReviewed: "2026-10-13"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
@@ -169,16 +169,16 @@ The realm eats because the Fields work. Every region knows it, the Fields never 
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The harvest sprites keep real ledgers, and the award ceremonies have minutes. If the big folk ever learned how much of the harvest is sprite arithmetic, the corner rows would get considerably bigger.
 
 ### Neighbors
 
-- **[The Exchange](/locations/exchange/)** — The harvest road ends at the city's markets, and the city's appetite sets the Fields' spring planting. Each privately believes it is feeding the other.
-- **[Stone Crossing](/locations/stone_crossing/)** — The eastern gate: everything bound over the river queues at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields.
-- **[Bramblewood](/locations/bramblewood/)** — The far waystop, first to hear eastern news; the hedges decide who arrives, and the Fields have learned to trust the hedges' taste.
-- **[Whispering Marsh](/biomes/whispering_marsh/)** — The Fields' ditches borrow the water and the marsh keeps the ledger; the two settle accounts through the frogfolk every dry year, and have never once been overdrawn.
+- **[The Exchange](/locations/exchange/)**: The harvest road ends at the city's markets, and the city's appetite sets the Fields' spring planting. Each privately believes it is feeding the other.
+- **[Stone Crossing](/locations/stone_crossing/)**: The eastern gate: everything bound over the river queues at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields.
+- **[Bramblewood](/locations/bramblewood/)**: The far waystop, first to hear eastern news; the hedges decide who arrives, and the Fields have learned to trust the hedges' taste.
+- **[Whispering Marsh](/biomes/whispering_marsh/)**: The Fields' ditches borrow the water and the marsh keeps the ledger; the two settle accounts through the frogfolk every dry year, and have never once been overdrawn.
 
 ### Current Tensions
 

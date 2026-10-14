@@ -3,7 +3,7 @@ title: Yeti
 id: npc.yeti
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "glacier", "memory_keeper", "patient"]
 classification: supporting_people
@@ -63,11 +63,11 @@ infobox: npc
 
 > *The glacier remembers everything. The yetis are its reading room.*
 
-Yetis read the ice. Memories catch in the glacier the way leaves catch in amber, and the yetis' whole slow civilization is arranged around finding them, interpreting them, and keeping them company. They speak of the long-dead as though they stepped out a moment ago because, from the glacier's point of view, they did — and a yeti sees no reason to take a shorter view than the thing it lives on.
+Yetis read the ice. Memories catch in the glacier the way leaves catch in amber, and the yetis' whole slow civilization is arranged around finding them, interpreting them, and keeping them company. They speak of the long-dead as though they stepped out a moment ago because, from the glacier's point of view, they did, and a yeti sees no reason to take a shorter view than the thing it lives on.
 
 ### For Fun
 
-- Singing in halls carved from the ice — low songs, felt through the feet more than heard, some of them older than their words.
+- Singing in halls carved from the ice: low songs, felt through the feet more than heard, some of them older than their words.
 - Memory-walks: retracing a preserved moment on the surface where it happened, at the original pace, in the original weather if it can be arranged.
 - Tea. Brewed from meltwater of a specific named year, for occasions that have earned it.
 
@@ -77,13 +77,13 @@ Slow, enormous, and gentle, with a courtesy built for centuries: a yeti delibera
 
 ### Likes
 
-- **[Snowhorn Goat](/creatures/snowhorn_goat/)** — The mountains' own surveyors. When the herd reroutes, the yetis annotate.
-- **[Griffin](/characters/griffin/)** — The other half of every mountain rescue, and the fast half, which the yetis acknowledge without envy.
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A memory that got up and walked away. Professionally fascinating. Every one deserves an interview.
+- **[Snowhorn Goat](/creatures/snowhorn_goat/)**: The mountains' own surveyors. When the herd reroutes, the yetis annotate.
+- **[Griffin](/characters/griffin/)**: The other half of every mountain rescue, and the fast half, which the yetis acknowledge without envy.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A memory that got up and walked away. Professionally fascinating. Every one deserves an interview.
 
 ### Dislikes
 
-- **[Frost Wyrm](/creatures/frost_wyrm/)** — A thousand years of stratigraphy, ruined by one nest. The wyrms are ancient too, which somehow makes it worse.
+- **[Frost Wyrm](/creatures/frost_wyrm/)**: A thousand years of stratigraphy, ruined by one nest. The wyrms are ancient too, which somehow makes it worse.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

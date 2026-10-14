@@ -3,7 +3,7 @@ title: The Expanse
 id: biome.expanse
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: intentionally_undefined
 draft: true
 tags: ["barren", "northern_waste", "forbidden", "unknown", "plateau"]

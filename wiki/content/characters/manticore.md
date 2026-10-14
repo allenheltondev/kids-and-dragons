@@ -3,7 +3,7 @@ title: Manticore
 id: character.manticore
 type: character
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["playable", "plains", "guardian", "proud"]
 scale: medium_to_large
@@ -71,7 +71,7 @@ infobox: character
 
 > *The scariest silhouette on the road is the reason the road is safe.*
 
-Manticores travel the Eastern Plains in family prides, and the roads east of the river are theirs in the sense that gardens belong to gardeners. A manticore's tail can end an argument, so pride etiquette holds that it must never start one — and the famous formal greeting, performed at a distance with the tail conspicuously curled away, exists specifically to give strangers time to stop panicking.
+Manticores travel the Eastern Plains in family prides, and the roads east of the river are theirs in the sense that gardens belong to gardeners. A manticore's tail can end an argument, so pride etiquette holds that it must never start one, and the famous formal greeting, performed at a distance with the tail conspicuously curled away, exists specifically to give strangers time to stop panicking.
 
 ### For Fun
 
@@ -85,13 +85,13 @@ Proud, courteous, and resigned to being misjudged on sight, which every manticor
 
 ### Likes
 
-- **[Centaur](/npcs/centaur/)** — The other people who understand that a road is a promise.
-- **[Stone Troll](/npcs/stone_troll/)** — A riddle traded at the crossing is worth the whole queue.
-- **[Jackalope](/creatures/jackalope/)** — Keeps the cubs humble and exercised at no charge to the pride.
+- **[Centaur](/npcs/centaur/)**: The other people who understand that a road is a promise.
+- **[Stone Troll](/npcs/stone_troll/)**: A riddle traded at the crossing is worth the whole queue.
+- **[Jackalope](/creatures/jackalope/)**: Keeps the cubs humble and exercised at no charge to the pride.
 
 ### Dislikes
 
-- **[River Drake](/creatures/river_drake/)** — It holds up escorted caravans to negotiate, mid-current, at length. The pride considers this banditry with extra steps.
+- **[River Drake](/creatures/river_drake/)**: It holds up escorted caravans to negotiate, mid-current, at length. The pride considers this banditry with extra steps.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

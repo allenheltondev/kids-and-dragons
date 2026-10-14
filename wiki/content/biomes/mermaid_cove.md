@@ -3,7 +3,7 @@ title: Mermaid Cove
 id: biome.mermaid_cove
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["warm_water", "coral_reefs", "lagoon", "alliance", "island"]
 danger_level: moderate
@@ -95,15 +95,15 @@ The realm's southern door to the sea, and its standing proof that an agreement c
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The oldest verses of the nightly song are not merfolk compositions. They are borrowed reefglider signal patterns, older than the alliance, and the gliders still answer them - which the singers have decided is harmony rather than correspondence.
 
 ### Neighbors
 
-- **[The Bone Yard](/locations/bone_yard/)** — On still nights the song circles sing a little louder for the neighbors across the water, and the Yard is measurably quieter for it. Neither shore has ever acknowledged the arrangement.
-- **[The Open Sea](/biomes/open_sea/)** — Everything arrives from it and everything is eventually owed back to it; the cove is the sea's guest room, kept beautiful on purpose.
-- **[The Exchange](/locations/exchange/)** — Sea trade and selkie couriers bind the cove to the city's docks closely enough that cove news reaches the Exchange while it is still gossip.
+- **[The Bone Yard](/locations/bone_yard/)**: On still nights the song circles sing a little louder for the neighbors across the water, and the Yard is measurably quieter for it. Neither shore has ever acknowledged the arrangement.
+- **[The Open Sea](/biomes/open_sea/)**: Everything arrives from it and everything is eventually owed back to it; the cove is the sea's guest room, kept beautiful on purpose.
+- **[The Exchange](/locations/exchange/)**: Sea trade and selkie couriers bind the cove to the city's docks closely enough that cove news reaches the Exchange while it is still gossip.
 
 ### Current Tensions
 
