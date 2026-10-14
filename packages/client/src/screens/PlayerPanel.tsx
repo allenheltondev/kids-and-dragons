@@ -44,6 +44,7 @@ import {
   usePrompt,
   useRunState,
   useSend,
+  useSharePreview,
 } from "../store";
 // Path helpers only — `screens/` never drags the renderer in (art-paths.ts).
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
@@ -171,16 +172,19 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
          * at the *next* Rest scene, which can be a whole sitting later — so the
          * reminder has to live on the one strip that is never scrolled away.
          * It says where to spend it, because "1 point" alone tells an
-         * eight-year-old nothing about what to do next.
+         * eight-year-old nothing about what to do next — and "rest stop" with
+         * the moon, because a bare "at rest" read as a state rather than a
+         * place. The moon is the same one the chapter map draws on a Rest.
          */}
         {character.unspentPoints > 0 ? (
           <span className="sheet__points">
             <Icon name="levelup" />
             <span>
               {character.unspentPoints === 1
-                ? "Spend 1 point at rest"
-                : `Spend ${String(character.unspentPoints)} points at rest`}
+                ? "1 point to spend at the next rest stop"
+                : `${String(character.unspentPoints)} points to spend at the next rest stop`}
             </span>
+            <Icon name="rest" />
           </span>
         ) : null}
       </span>
@@ -440,6 +444,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     if (myPrompt === null || myPrompt.kind !== "choice" || pendingChoice === null) return null;
     return myPrompt.options.find((o) => o.id === pendingChoice) ?? null;
   }, [myPrompt, pendingChoice]);
+
+  // The shared screen lights up the option this phone is hovering over, so the
+  // table sees it coming before "Do it!". A vote already cast is not a
+  // preview — it is on the record — so only a pick that differs from it shows.
+  const unconfirmedChoice =
+    chosenOption !== null &&
+    !(myPrompt?.kind === "choice" && me !== null && myPrompt.votes?.[me.playerId] === chosenOption.id)
+      ? chosenOption.id
+      : null;
+  useSharePreview(unconfirmedChoice === null ? null : { kind: "choice", choiceId: unconfirmedChoice });
 
   if (state === null || me === null) {
     return (
@@ -1075,10 +1089,22 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             waiting in the lobby, whatever the run calls the phase. */}
         {(myPrompt !== null && myPrompt.kind === "ready") || inLobby ? (
           <div className="prompt">
+            {/* Outside the lobby the only ready-up is the pause before a
+                fight (engine.ts), so it says so: a bare "Ready when you are"
+                read as one more mystery button. */}
             <h3 className="prompt__title">
-              <Icon name="ready" />
-              <span>{me.ready ? "You're ready" : "Ready when you are"}</span>
+              <Icon name={inLobby ? "ready" : "swords"} />
+              <span>
+                {inLobby
+                  ? me.ready ? "You're ready to play" : "Ready to play?"
+                  : me.ready ? "You're ready to fight" : "A fight is starting!"}
+              </span>
             </h3>
+            <p className="prompt__sub kad-muted">
+              {inLobby
+                ? "Tap when you're ready. The adventure starts when everyone is."
+                : "Tap when you're ready. The fight starts when everyone is."}
+            </p>
             <Button
               variant={me.ready ? "secondary" : "primary"}
               size="lg"
@@ -1086,7 +1112,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               disabled={busy}
               onClick={() => void dispatch({ type: "READY", ready: !me.ready })}
             >
-              {me.ready ? "Wait, not yet" : "I'm ready!"}
+              {me.ready ? "Wait, not yet" : inLobby ? "I'm ready!" : "I'm ready to fight!"}
             </Button>
             <ul className="prompt__party">
               {party.map((member) => (

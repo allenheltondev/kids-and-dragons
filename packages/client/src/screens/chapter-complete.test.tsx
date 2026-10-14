@@ -197,6 +197,7 @@ describe("who grew (progression awards)", () => {
     mount();
     expect(screen.queryByText("Levelled up!")).toBeNull();
     expect(screen.queryByText(/New look/)).toBeNull();
+    expect(screen.queryByText(/next rest stop/)).toBeNull();
   });
 
   it("marks a level-up and shows the new number", () => {
@@ -205,6 +206,7 @@ describe("who grew (progression awards)", () => {
 
     expect(screen.getByText("Levelled up!")).toBeTruthy();
     expect(screen.getByText("Level 3")).toBeTruthy();
+    expect(screen.getByText(/Spend it on your phone at the next rest stop/)).toBeTruthy();
   });
 
   it("marks a tier crossing, which is the receipt for the cutscene", () => {

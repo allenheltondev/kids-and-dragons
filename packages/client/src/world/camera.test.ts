@@ -446,3 +446,27 @@ describe("degenerate input", () => {
     expectInsideOrCentred(cam, { width: 1, height: 1 });
   });
 });
+
+describe("a roomy pane shows the whole board (wholeWhenRoomy)", () => {
+  const board = { width: 10, height: 8 };
+  const corner = [{ x: 0, y: 0 }];
+
+  it("frames all of it on a TV, wherever the fighter stands", () => {
+    const state = createCameraState({ board, focus: corner, wholeWhenRoomy: true });
+    const cam = resolveCamera(state, { width: 1280, height: 720 });
+    expect(cam.scale).toBe(90);
+    expect(cam.centre).toEqual({ x: 5, y: 4 });
+  });
+
+  it("keeps following the fighter on a phone", () => {
+    const state = createCameraState({ board, focus: corner, wholeWhenRoomy: true });
+    const cam = resolveCamera(state, { width: 390, height: 420 });
+    expect(cam.visible.height).toBeLessThan(board.height);
+  });
+
+  it("leaves the story stage's character zoom alone", () => {
+    const state = createCameraState({ board, focus: corner });
+    const cam = resolveCamera(state, { width: 1280, height: 720 });
+    expect(cam.scale).toBeGreaterThan(90);
+  });
+});
