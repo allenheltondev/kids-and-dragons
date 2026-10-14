@@ -444,6 +444,13 @@ export interface Combatant {
 }
 
 export interface EncounterState {
+  /**
+   * The run's seq when this fight began (engine.ts), and so its identity: two
+   * fights can share every turn field (the same hero first in round 1 of
+   * each), but never this. Previews key on it (`previewContext`). Optional
+   * because a fight persisted before it existed has none.
+   */
+  readonly startedAt?: number;
   readonly board: Board;
   readonly combatants: readonly Combatant[];
   /** Initiative order, rolled once (§7.2). Ids only; stats live above. */

@@ -95,7 +95,8 @@ export function readIntentPreview(raw: unknown): IntentPreview | null | undefine
  * refuses one that no longer matches its state, and the TV draws one only
  * while it matches the state on screen. Nothing else has to be cleaned up.
  *
- * - A fight: the turn key the phone's own selection resets on (whose turn,
+ * - A fight: which fight (`startedAt`, since two fights can repeat every turn
+ *   field), then the turn key the phone's own selection resets on (whose turn,
  *   round, slot, steps left, action spent), so a preview from before a
  *   confirmed move or action is already stale.
  * - A story question: the chapter, how many scenes it has entered (which
@@ -108,6 +109,7 @@ export function previewContext(state: RunState | null): string | null {
   if (encounter) {
     return [
       "fight",
+      encounter.startedAt ?? "-",
       currentActorId(encounter) ?? "nobody",
       encounter.round,
       encounter.turnIndex,
