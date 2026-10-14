@@ -21,6 +21,8 @@ export interface DiceRoll {
   /** Who rolled. */
   characterId: string;
   stat?: StatId;
+  /** A friend's die, already counted in `total`. Checks only. */
+  help?: { characterId: string; sides: number; value: number };
 }
 
 /** A member of the party, as the clients see them. */
@@ -85,6 +87,8 @@ export type Prompt =
       tn: number;
       prompt: string;
       characterId: string;
+      /** Who has offered to help, and the die they will add. One per check. */
+      helper?: { characterId: string; sides: number };
     }
   | {
       kind: "item_swap";
@@ -254,6 +258,12 @@ export interface RunState {
    * start counting from zero.
    */
   checkRolls?: Record<string, number>;
+  /**
+   * Characters who have helped on a check since the party last rested. Help
+   * recharges at a Rest scene and at the start of each chapter, so it is a
+   * thing you save for the roll that matters rather than tap every time.
+   */
+  helpSpent?: string[];
   /**
    * The household's Field Guide — canon id → who found it first and when
    * (epic #101, #106). A **mirror** of the household's `FIELDGUIDE` record,

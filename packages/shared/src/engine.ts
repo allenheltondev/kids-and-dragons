@@ -81,7 +81,7 @@ import type {
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
-import { resolveCheck } from "./dice.js";
+import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter, withInventory } from "./character.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
@@ -562,6 +562,8 @@ function openScenePrompt(
   sceneId: SceneId,
   ctx: EngineContext,
 ): Presentation | undefined {
+  // A rest is where help recharges (doHelp).
+  if (scene.type === "rest") draft.helpSpent = [];
   switch (scene.type) {
     case "story":
     case "rest":
@@ -846,6 +848,9 @@ function dispatch(
 
     case "ROLL":
       return doRoll(draft, playerId, ctx);
+
+    case "HELP":
+      return doHelp(draft, playerId, ctx);
 
     case "ADVANCE":
       return doAdvance(draft, ctx);
@@ -1145,6 +1150,8 @@ function doStartChapter(
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
   draft.lastRoll = null;
+  // A new chapter is a new day on the road: everyone's help is back.
+  draft.helpSpent = [];
   /*
    * The live layer's two fields, cleared for exactly the reason above them.
    *
@@ -1394,6 +1401,32 @@ function tallyVotes(draft: RunState, votes: Record<string, string>): string {
   return tied[0] as string;
 }
 
+/**
+ * Offer a friend your die on their check. One helper per check, never the
+ * roller, and once per rest: the helper's die joins the roll when the roller
+ * taps, sized by the helper's tier (content/rules.json `helpDie`).
+ */
+function doHelp(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
+  const prompt = draft.prompt;
+  if (!prompt || prompt.kind !== "roll") {
+    throw new Illegal("ILLEGAL", "there is no check to help with");
+  }
+  const helper = memberByPlayer(draft, playerId);
+  if (!helper) throw new Illegal("FORBIDDEN", "only a seated player can help");
+  if (helper.character.id === prompt.characterId) {
+    throw new Illegal("ILLEGAL", "you cannot help your own roll");
+  }
+  if (helper.down) throw new Illegal("ILLEGAL", `${helper.character.name} is knocked down`);
+  if (prompt.helper) throw new Illegal("ILLEGAL", "someone is already helping");
+  if (draft.helpSpent?.includes(helper.character.id)) {
+    throw new Illegal("ILLEGAL", `${helper.character.name} has already helped since the last rest`);
+  }
+  const sides = (ctx.rules.helpDie ?? DEFAULT_HELP_DIE)[helper.character.tier];
+  prompt.helper = { characterId: helper.character.id, sides };
+  draft.helpSpent = [...(draft.helpSpent ?? []), helper.character.id];
+  return undefined;
+}
+
 function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
   const prompt = draft.prompt;
   if (!prompt || prompt.kind !== "roll") {
@@ -1418,11 +1451,18 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
 
   // Rolled here, in the engine, on the server. Never in the browser
   // (architecture §4.1).
+  // Nobody helps themselves: a helper who ends up rolling (their nominee's
+  // phone dropped) gets the help back instead of adding their own die.
+  const helper = prompt.helper?.characterId === roller.character.id ? undefined : prompt.helper;
+  if (prompt.helper && !helper) {
+    draft.helpSpent = (draft.helpSpent ?? []).filter((id) => id !== roller.character.id);
+  }
   const result: DiceRoll = resolveCheck(ctx.rng, {
     characterId: roller.character.id,
     stat: scene.stat,
     mod: roller.character.stats[scene.stat],
     tn: scene.tn,
+    ...(helper === undefined ? {} : { help: helper }),
   });
   draft.lastRoll = result;
   draft.prompt = null;
