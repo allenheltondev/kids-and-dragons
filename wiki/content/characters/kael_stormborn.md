@@ -38,22 +38,22 @@ infobox: character
 ## Related Entities
 
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — characters
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/): campaigns
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/): characters
 
 ### Characters
-- [Lyra Nighthollow](/characters/lyra_nighthollow/) — allies
+- [Lyra Nighthollow](/characters/lyra_nighthollow/): allies
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — faction
-- [The Skywardens](/factions/skywardens/) — members
+- [The Skywardens](/factions/skywardens/): faction
+- [The Skywardens](/factions/skywardens/): members
 
 ### Npcs
-- [Old Ferryn](/npcs/old_ferryn/) — allies
+- [Old Ferryn](/npcs/old_ferryn/): allies
 
 ### Quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — quests
-- [The Shattered Sky Rite](/quests/shattered_sky_rite/) — characters
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/): quests
+- [The Shattered Sky Rite](/quests/shattered_sky_rite/): characters
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

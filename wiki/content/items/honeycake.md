@@ -3,7 +3,7 @@ title: Honeycake
 id: item.honeycake
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["provision", "healing", "bramblewood", "common"]
 related:
@@ -36,7 +36,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Consumable** — Used once, then it is gone.
+**Consumable**: Used once, then it is gone.
 
 > Still warm. Heal 2 HP.
 <!-- END GENERATED: mechanics -->

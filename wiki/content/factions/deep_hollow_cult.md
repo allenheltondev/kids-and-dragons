@@ -3,7 +3,7 @@ title: The Deep Hollow Cult
 id: faction.deep_hollow_cult
 type: faction
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: intentionally_undefined
 draft: true
 tags: ["cult", "underground", "mystical", "antagonist"]
@@ -25,7 +25,7 @@ dislikes:
   - id: npc.witch_order
     title: "Witches"
     url: "/npcs/witch_order/"
-    because: "The question-first rule — which the cult calls cowardice dressed as ethics, and the witches call the whole difference between them."
+    because: "The question-first rule, which the cult calls cowardice dressed as ethics, and the witches call the whole difference between them."
 related:
   - id: location.skullwater_cave
     type: location
@@ -58,7 +58,7 @@ ai_context:
   common_encounters: "Antagonist faction, knowledge brokers, morally grey opposition."
   lore_highlights: "They looked at the red sky and asked the question everyone else is sworn not to."
   related_entities: "location.skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, campaign.gemfall, quest.crystal_heart_retrieval"
-  writing_guidance: "Not purely evil — motivated by a desire to fix the world. Methods are extreme."
+  writing_guidance: "Not purely evil; motivated by a desire to fix the world. Methods are extreme."
   generation_hints: "Operate in cells, communicate through crystal resonance, recruit the desperate."
 layout: factions
 infobox: faction
@@ -70,13 +70,13 @@ infobox: faction
 
 > *They looked at the red sky and asked the question everyone else is sworn not to.*
 
-The Deep Hollow Cult began as scholars who concluded, from evidence they will happily show you, that the world's laws are broken — the sky is the wrong color, memories walk the marsh, the dead do not always rest — and that somewhere beneath the realm is the power to set them right. In their own telling they are not villains but the only people brave enough to fix what everyone else has agreed to merely survive. The methods are where the telling and the truth part company.
+The Deep Hollow Cult began as scholars who concluded, from evidence they will happily show you, that the world's laws are broken (the sky is the wrong color, memories walk the marsh, the dead do not always rest) and that somewhere beneath the realm is the power to set them right. In their own telling they are not villains but the only people brave enough to fix what everyone else has agreed to merely survive. The methods are where the telling and the truth part company.
 
 ### For Fun
 
-- Resonance choirs: chords rung through crystal that carry farther than voices, which is communication, worship, and — the cult insists — tuning.
+- Resonance choirs: chords rung through crystal that carry farther than voices, which is communication, worship, and, the cult insists, tuning.
 - Evidence-collecting. Wisp sightings, restless-remains reports, tremor logs: annotated, cross-referenced, alarmingly thorough.
-- Recruiting by kindness — finding the desperate before anyone else bothers to, which would be admirable if it stopped there.
+- Recruiting by kindness: finding the desperate before anyone else bothers to, which would be admirable if it stopped there.
 
 ### Getting Along
 
@@ -84,13 +84,13 @@ Cells, masks, and patience. A cult member met in daylight is likely the most sym
 
 ### Likes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — Exhibit A: a law of the world, visibly broken, wandering the marsh in public.
-- **[Restless Remains](/creatures/restless_remains/)** — Exhibit B, with footnotes.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: Exhibit A: a law of the world, visibly broken, wandering the marsh in public.
+- **[Restless Remains](/creatures/restless_remains/)**: Exhibit B, with footnotes.
 
 ### Dislikes
 
-- **[The Skywardens](/factions/skywardens/)** — Watchers who guard a question instead of answering it.
-- **[Witches](/npcs/witch_order/)** — The question-first rule — which the cult calls cowardice dressed as ethics, and the witches call the whole difference between them.
+- **[The Skywardens](/factions/skywardens/)**: Watchers who guard a question instead of answering it.
+- **[Witches](/npcs/witch_order/)**: The question-first rule, which the cult calls cowardice dressed as ethics, and the witches call the whole difference between them.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

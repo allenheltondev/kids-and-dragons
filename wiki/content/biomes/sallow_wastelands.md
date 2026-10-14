@@ -3,7 +3,7 @@ title: The Sallow Wastelands
 id: biome.sallow_wastelands
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["coastal_lowland", "brackish", "mudflats", "saltrot", "unstable_ground"]
 danger_level: high
@@ -48,6 +48,9 @@ related:
   - id: location.bone_yard
     type: location
     relationship: biome
+assets:
+  primary: assets/biomes/sallow_wastelands/portrait.webp
+  primaryFull: assets/biomes/sallow_wastelands/bg.webp
 ai_context:
   mood: "The humid, brackish coastal lowland where the Glacierflow loses its strength before the sea - mudflats, shallow shifting channels, stunted vegetation, and ground that cannot be trusted twice. Travelers commonly call the region the Saltrot."
   themes: "Coastal_lowland, Brackish, Mudflats, Saltrot, Unstable_ground"
@@ -86,15 +89,15 @@ To the realm, the Saltrot is the cautionary approach to the Bone Yard and the pr
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The guides' real secret is sedimentary. Each flood drops its coarse, quick-draining material first, along the old channel spines, and carries the finest silt furthest - out toward the mouth, where the Bone Yard stands. Firm ground returns in that order, spines first, mouth last, so the earliest safe paths always run away from the Yard. The flats are not warning anyone. They are draining.
 
 ### Neighbors
 
-- **[The Great River](/features/great_river/)** — The employer. The Glacierflow delivers, the flats receive, and the arrangement has run without a contract since the north was first cold.
-- **[The Bone Yard](/locations/bone_yard/)** — The flats hold the only landward approach, and hold it loosely: reaching the Yard is meant to take effort, and the Saltrot provides the effort.
-- **[The Eastern Plains](/biomes/eastern_plains/)** — The grass ends where the salt begins, and the manticore escorts end with it; the handover to the guides is short, practiced, and taken seriously on both sides of the salt line.
+- **[The Great River](/features/great_river/)**: The employer. The Glacierflow delivers, the flats receive, and the arrangement has run without a contract since the north was first cold.
+- **[The Bone Yard](/locations/bone_yard/)**: The flats hold the only landward approach, and hold it loosely: reaching the Yard is meant to take effort, and the Saltrot provides the effort.
+- **[The Eastern Plains](/biomes/eastern_plains/)**: The grass ends where the salt begins, and the manticore escorts end with it; the handover to the guides is short, practiced, and taken seriously on both sides of the salt line.
 
 ### Current Tensions
 

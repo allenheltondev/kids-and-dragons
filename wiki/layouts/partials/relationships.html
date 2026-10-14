@@ -31,7 +31,7 @@
         <a href="{{ $targetPage | relURL }}" class="wiki-relationships__link">
           <span class="wiki-relationships__name">{{ .id }}</span>
           {{ with .relationship }}
-          <span class="wiki-relationships__type">— {{ . }}</span>
+          <span class="wiki-relationships__type">({{ . }})</span>
           {{ end }}
         </a>
       </li>

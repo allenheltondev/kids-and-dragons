@@ -3,7 +3,7 @@ title: Reefglider
 id: creature.reefglider
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "ocean", "reef", "indicator"]
 classification: ambient_creature
@@ -63,8 +63,8 @@ Reefgliders have no known dislikes, which the merfolk privately find suspicious.
 
 ### Likes
 
-- **[Merfolk](/npcs/merfolk/)** — The song circles. The singers pretend not to be flattered by the audience, and fail.
-- **[Selkie](/npcs/selkie/)** — Their wakes are the best game in the cove, and the selkies swim like they know it.
+- **[Merfolk](/npcs/merfolk/)**: The song circles. The singers pretend not to be flattered by the audience, and fail.
+- **[Selkie](/npcs/selkie/)**: Their wakes are the best game in the cove, and the selkies swim like they know it.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

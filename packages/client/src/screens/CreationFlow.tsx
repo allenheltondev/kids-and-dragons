@@ -684,7 +684,7 @@ export function CreationFlow(): ReactElement {
                 accent by role rather than by position. */}
             <OptionRow
               legend="Your colour"
-              hint="Marks your things — your flame in the lantern, the glow behind your picture. Your creature keeps the colours it was painted in."
+              hint="Marks your things: your flame in the lantern, the glow behind your picture. Your creature keeps the colours it was painted in."
               quiet
             >
               {PALETTES.map((palette) => (

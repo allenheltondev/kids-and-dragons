@@ -3,7 +3,7 @@ title: Sunbloom Draught
 id: item.sunbloom_draught
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["provision", "healing", "sunward_fields", "uncommon"]
 related:
@@ -30,7 +30,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Consumable** — Used once, then it is gone.
+**Consumable**: Used once, then it is gone.
 
 > Heal 4 HP.
 <!-- END GENERATED: mechanics -->

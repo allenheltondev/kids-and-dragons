@@ -29,15 +29,15 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Crimson Highlands](/biomes/crimson_highlands/) — habitat
-- [Crimson Highlands](/biomes/crimson_highlands/) — creatures
+- [Crimson Highlands](/biomes/crimson_highlands/): habitat
+- [Crimson Highlands](/biomes/crimson_highlands/): creatures
 
 ### Creatures
-- [Crystal Drake](/creatures/crystal_drake/) — enemies
+- [Crystal Drake](/creatures/crystal_drake/): enemies
 
 ### Items
-- [Crimson Shard](/items/crimson_shard/) — drops
-- [Crimson Shard](/items/crimson_shard/) — dropped_by
+- [Crimson Shard](/items/crimson_shard/): drops
+- [Crimson Shard](/items/crimson_shard/): dropped_by
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

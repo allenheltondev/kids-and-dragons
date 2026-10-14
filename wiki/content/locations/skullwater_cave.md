@@ -3,7 +3,7 @@ title: Skullwater Cave
 id: location.skullwater_cave
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["offshore_cave", "underground_gateway", "skull_rock", "caverns", "unknown_depths"]
 danger_level: high
@@ -93,15 +93,15 @@ The realm's agreed front door to the underground, and the reason coastal charts 
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - Parts of the cave sound designed because they are. The echo hunter has spent lifetimes adjusting drips and moving pebbles until its chambers ring true - the deep galleries are one creature's centuries-long housekeeping, a fact that would comfort no expedition.
 
 ### Neighbors
 
-- **[The Open Sea](/biomes/open_sea/)** — The sea is the doorstep and the doorman: every approach is by water, and the water sets the schedule.
-- **[Frostfang Peaks](/biomes/frostfang_peaks/)** — The aeries watch the skull from their coast and give it flight-rule distance; griffin manners, like troll manners, extend to doors.
-- **[The Bone Yard](/locations/bone_yard/)** — The realm's two great deposits of enormous old bone, forever compared by scholars and never yet matched; whatever the skull was, the Yard did not bury its relatives.
+- **[The Open Sea](/biomes/open_sea/)**: The sea is the doorstep and the doorman: every approach is by water, and the water sets the schedule.
+- **[Frostfang Peaks](/biomes/frostfang_peaks/)**: The aeries watch the skull from their coast and give it flight-rule distance; griffin manners, like troll manners, extend to doors.
+- **[The Bone Yard](/locations/bone_yard/)**: The realm's two great deposits of enormous old bone, forever compared by scholars and never yet matched; whatever the skull was, the Yard did not bury its relatives.
 
 ### Current Tensions
 

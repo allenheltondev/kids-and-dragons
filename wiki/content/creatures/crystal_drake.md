@@ -32,16 +32,16 @@ infobox: creature
 ## Related Entities
 
 ### Biomes
-- [Crystal Caverns](/biomes/crystal_caverns/) — habitat
-- [Crystal Caverns](/biomes/crystal_caverns/) — creatures
+- [Crystal Caverns](/biomes/crystal_caverns/): habitat
+- [Crystal Caverns](/biomes/crystal_caverns/): creatures
 
 ### Creatures
-- [Ember Wraith](/creatures/ember_wraith/) — enemies
-- [Marsh Lurker](/creatures/marsh_lurker/) — allies
+- [Ember Wraith](/creatures/ember_wraith/): enemies
+- [Marsh Lurker](/creatures/marsh_lurker/): allies
 
 ### Items
-- [Crystal Heart](/items/crystal_heart/) — drops
-- [Crystal Heart](/items/crystal_heart/) — dropped_by
+- [Crystal Heart](/items/crystal_heart/): drops
+- [Crystal Heart](/items/crystal_heart/): dropped_by
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

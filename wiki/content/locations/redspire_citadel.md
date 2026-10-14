@@ -3,7 +3,7 @@ title: Redspire Citadel
 id: location.redspire_citadel
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: intentionally_undefined
 draft: true
 tags: ["fortress", "skywardens", "highlands", "hub"]
@@ -79,8 +79,8 @@ The foothills' fixed point: caravans navigate by its silhouette, locals set thei
 
 ### Neighbors
 
-- **[Red Sky Foothills](/biomes/red_sky_foothills/)** — Protector and tenant: the citadel watches the sky for the region, and the region keeps the citadel fed, informed, and supplied with recruits who think the job is about swords.
-- **[Mount Red Sky](/locations/mount_red_sky/)** — The watch points at the sky, but the windows face the mountain too. The order has never said whether that is architecture or policy.
+- **[Red Sky Foothills](/biomes/red_sky_foothills/)**: Protector and tenant: the citadel watches the sky for the region, and the region keeps the citadel fed, informed, and supplied with recruits who think the job is about swords.
+- **[Mount Red Sky](/locations/mount_red_sky/)**: The watch points at the sky, but the windows face the mountain too. The order has never said whether that is architecture or policy.
 
 ### Current Tensions
 

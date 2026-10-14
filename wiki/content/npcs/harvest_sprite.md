@@ -3,7 +3,7 @@ title: Harvest Sprite
 id: npc.harvest_sprite
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "fields", "tiny", "semi_sapient"]
 classification: supporting_people
@@ -80,13 +80,13 @@ Earnest, over-explaining, and heartbroken by refusal for about four seconds at a
 
 ### Likes
 
-- **[Faun](/npcs/faun/)** — The only big folk whose work-songs have a verse for the small workers.
-- **[Mosshorn](/creatures/mosshorn/)** — An antler posting is the profession's highest honor: a garden that walks, with tenure.
+- **[Faun](/npcs/faun/)**: The only big folk whose work-songs have a verse for the small workers.
+- **[Mosshorn](/creatures/mosshorn/)**: An antler posting is the profession's highest honor: a garden that walks, with tenure.
 
 ### Dislikes
 
-- **[Jackalope](/creatures/jackalope/)** — It eats the overlooked plants. The overlooked plants are the entire jurisdiction.
-- **[Boggart](/npcs/boggart/)** — Recovered items keep un-recovering. The paperwork is endless, and the paperwork is imaginary, and it is still endless.
+- **[Jackalope](/creatures/jackalope/)**: It eats the overlooked plants. The overlooked plants are the entire jurisdiction.
+- **[Boggart](/npcs/boggart/)**: Recovered items keep un-recovering. The paperwork is endless, and the paperwork is imaginary, and it is still endless.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

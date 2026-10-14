@@ -46,7 +46,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in grey coats stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
+      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in silver and violet stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
       "choices": [
         {
           "id": "join_line",
@@ -147,7 +147,7 @@
         },
         {
           "id": "drop_stone",
-          "label": "Drop a humming stone in the jar",
+          "label": "Drop a coin in the jar",
           "icon": "gem",
           "goto": "scene_cult_pitch_drop_stone",
           "effects": [
@@ -180,7 +180,7 @@
     },
     "scene_cult_pitch_drop_stone": {
       "type": "story",
-      "narration": "You drop a humming stone into the jar marked THE BREAK. The whole jar hums louder for a moment, like a hive woken up. Hollis's eyes shine. She writes your names in a little book with a soft pencil, and gives each of you a second bowl, and you are not sure how you feel about any of it.",
+      "narration": "You drop a coin into the jar marked THE BREAK, in among the humming stones. The whole jar hums louder for a moment, like a hive woken up. Hollis's eyes shine. She writes your names in a little book with a soft pencil, and gives each of you a second bowl, and you are not sure how you feel about any of it.",
       "choices": [
         {
           "id": "on",
@@ -569,7 +569,7 @@
     },
     "rest_end": {
       "type": "rest",
-      "narration": "You camp on the rim and look down. The foothills are full of tiny campfires, thousands of them, all the rush in the world. Above it all, the mountain glows. The stones hum. Somebody has to put this all together on one table, and tomorrow, at the citadel, somebody will.",
+      "narration": "You camp on the rim and look down. The foothills are full of tiny campfires, thousands of them, all the rush in the world. Above it all, the mountain glows. The stones hum. Somebody has to put this all together on one table, and tomorrow, at Redspire, the wardens' citadel, somebody will.",
       "heal": 4,
       "choices": []
     },

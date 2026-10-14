@@ -3,7 +3,7 @@ title: Whispering Marsh
 id: biome.whispering_marsh
 type: biome
 status: draft
-lastReviewed: "2026-08-04"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
 danger_level: moderate
@@ -143,20 +143,20 @@ People come to the marsh to consult witches, to leave things behind, and to hear
 ### Disputed Beliefs
 
 - Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way.
-- Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that — which is why every people calls it something different.
+- Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that, which is why every people calls it something different.
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - Most whispers are recordings. The mist holds sound the way the northern glacier holds memory, and on still nights the marsh replays conversations older than the peoples having them.
 - The mist that holds sound and the sand that holds nothing down are the same mist, doing the same thing to two different kinds of cargo. Nobody in the marsh has put those two facts beside each other.
 
 ### Neighbors
 
-- **[Western Branch of the Great River](/features/great_river_west_branch/)** — The branch feeds the marsh and the marsh slows the branch; a flood upstream redraws the channels here a season later, which the frogfolk describe as the river forwarding its mail.
-- **[The Exchange](/locations/exchange/)** — The city sits a short, famously soggy walk south, and depends on marsh remedies, marsh guides, and the marsh's habit of returning lost cargo at boggart prices.
-- **[The Sunward Fields](/biomes/sunward_fields/)** — The fields' irrigation and the marsh's water table are the same water and the same argument, renegotiated through the frogfolk every dry year, in very few words.
+- **[Western Branch of the Great River](/features/great_river_west_branch/)**: The branch feeds the marsh and the marsh slows the branch; a flood upstream redraws the channels here a season later, which the frogfolk describe as the river forwarding its mail.
+- **[The Exchange](/locations/exchange/)**: The city sits a short, famously soggy walk south, and depends on marsh remedies, marsh guides, and the marsh's habit of returning lost cargo at boggart prices.
+- **[The Sunward Fields](/biomes/sunward_fields/)**: The fields' irrigation and the marsh's water table are the same water and the same argument, renegotiated through the frogfolk every dry year, in very few words.
 
 ### Current Tensions
 
