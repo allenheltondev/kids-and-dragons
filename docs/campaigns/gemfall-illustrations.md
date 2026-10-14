@@ -437,3 +437,47 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+## Gemfall 03A — Great River crossing
+
+Generated with the built-in image-generation tool. Production files are WebP, 1920×1080, quality 88. Every illustration has an open level foreground band for the party and cast; landmarks sit above it. No people or creatures are painted into the backdrops.
+
+| Asset | Coverage |
+|---|---|
+| `east-road-markers.webp` | East road, missing marker stump, and river approach |
+| `stone-crossing-queue.webp` | Queue and waiting camp before the Great River stepping stones |
+| `lintel-toll-stone.webp` | First toll stone and the old stone crossing |
+| `drake-rock-shelf.webp` | Empty shelf under the bridge with the humming gem and discarded finds |
+| `drowned-crossing-bank.webp` | Submerged final stones and ferry landing |
+| `river-mouth-shore.webp` | Eastern river-mouth beach and distant Bone Yard ridge |
+| `eastern-shore-camp.webp` | Driftwood camp after the crossing |
+
+### Generation prompts
+
+**East road markers**
+
+Wide 16:9 Kids & Dragons Gemfall environment backdrop: the old east road runs beside the Great River through broad open grassland, with a little stump where a mile marker was removed and a plain porridge pot resting on it. The road bends toward distant crossing stones. Tactile watercolor and gouache storybook painting, warm natural light, muted green, river blue, earth and stone palette. Road and river in the upper half; keep the walkable band from 70% to the bottom broad, level and open across the width. No people, creatures, animals, readable marks, UI, border or watermark.
+
+**Stone crossing queue**
+
+Wide 16:9 Kids & Dragons Gemfall storybook environment: a very long, slow queue gathers before Stone Crossing, where enormous flat stepping stones span the Great River's narrowest point; a simple rope guides the line, a tiny empty soup counter and blank rolled map stand far at the edges. River and broad crossing are the upper-half landmark. Hand-painted gouache, warm daylight, tactile river stone and grass, friendly humor. Keep lower 30% and center foreground open and level for separate characters. No people, creatures, animals, text, signs, UI, frame or watermark.
+
+**Lintel toll stone**
+
+Wide 16:9 storybook environment: the first giant flat basalt slab of Stone Crossing rests at the broad river edge, with a wide palm-shaped patch of moss from years of use; enormous flat stones extend across the river. A small empty nest rests on a far ledge. Warm sunlight, dimensional watercolor and gouache, riverbank plants. Landmark upper-middle; lower 30% is open level stone and bank for separate cast. No people, characters, creatures, animals, writing, UI, frame or watermark.
+
+**Drake rock shelf**
+
+Wide landscape 16:9 Kids & Dragons environment: beneath a high river bridge is an empty broad rock shelf above flowing water; scattered fish bones, three rusted boat hinges, one smooth polished pebble, and a softly glowing humming gem sit on it. A plain blank slate leans against the rock. Cool bridge shadow, sunlight shimmering from the river; detailed painted storybook landscape. Upper-half bridge and shelf landmark; lower 30% open, flat riverbank floor. No drake, animals, people, creatures, text or symbols, UI, frame or watermark.
+
+**Drowned crossing bank**
+
+Wide 16:9 storybook scene: a shallow river crossing, giant flat stones marching into fast brown water with the final stretch submerged; a simple flat-bottom ferry nudges a reed-lined bank. Clear, lively but safe water. Painted reeds, rounded stones, soft reflections and warm overcast light. Upper-half landmark; lower 30% broad, level and unobstructed for separate figures. No people, animals, boatman, characters, creatures, text, UI, border or watermark.
+
+**River mouth shore**
+
+Wide 16:9 Kids & Dragons backdrop: a quiet sandy beach at the river mouth, shallow river and reeds, with a distant mist-softened Bone Yard ridge and pale fossils in a few neat spirals. An empty flat-bottom boat may rest at the reed edge. Warm soft morning light, inviting gouache and watercolor, calm curious mood. Open level beach foreground from 70% to bottom; fossil landmark in upper half and away from center foreground. No people, animals, creatures, skeletons, text, UI, border or watermark.
+
+**Eastern shore camp**
+
+Wide 16:9 Kids & Dragons backdrop: quiet evening camp on the eastern shore after crossing the Great River; driftwood lies beside a small safe glowing campfire, wet sand and shallow water catch amber light, distant open Eastern Plains fade northward, reeds and smooth stones frame the sides. Warm, slightly damp, peaceful storybook environment, detailed hand-painted gouache and watercolor. Upper-half landmark; lower 30% broad, level, open shore. No tent, building, people, animals, creatures, text, UI, frame or watermark.
