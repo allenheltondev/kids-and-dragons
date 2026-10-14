@@ -179,7 +179,7 @@ World  →  Campaign  →  Chapter  →  Scene
 
 | Type | What happens |
 |---|---|
-| **Story** | Art + narration + 2–4 tappable choices. May branch. Players **take turns** choosing: a story turn marker passes round the party after each choice, and the TV says whose turn it is. A turn holder whose phone drops is skipped, and anyone may answer a choice they were holding. |
+| **Story** | Art + narration + 2–4 tappable choices. May branch. Players **take turns** choosing: a story turn marker passes round the party after each choice, and the TV says whose turn it is. A beat that offers the party only one way on ("Go on") is not a decision, so tapping it keeps the turn where it is: the holder reads on and still gets to make the next real choice. A turn holder whose phone drops is skipped, and anyone may answer a choice they were holding. |
 | **Check** | One player rolls d20 + stat vs. TN. Success and failure both continue the story down different paths. Checks **take turns** too: whoever has rolled the fewest checks this run rolls next, and the better stat breaks a tie. An author can pin a check to the party's best in that stat (`roller: "best"`) when the story needs it, or make it a **party check** (`roller: "all"`): everyone rolls their own d20 + stat, and if half or more make it, the party does. |
 | **Encounter** | Tactical grid combat. See §7. |
 | **Choice point** | Party votes; ties broken by whoever's turn marker is active. Prevents one player steamrolling. |
