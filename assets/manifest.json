@@ -595,6 +595,16 @@
         "bone_yard"
       ],
       "scale": "variable"
+    },
+    {
+      "id": "boughkin",
+      "classification": "supporting_people",
+      "primaryBiome": "enchanted_woods",
+      "canonicalLocations": [
+        "enchanted_woods",
+        "mosshome"
+      ],
+      "scale": "very_large"
     }
   ],
   "gear": [
