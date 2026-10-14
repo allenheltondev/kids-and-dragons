@@ -301,18 +301,19 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   function startPad(biome: string): void {
     if (!ctx || !musicBus) return;
     const now = ctx.currentTime;
+    // Let the lobby's sustained opening settle in gradually.
+    const fadeIn = biome === "entry-lobby" ? 6 : MUSIC_FADE_S;
 
     /*
-     * A real loop, when the biome has one. Faded in over the same window the
-     * synth pad uses, so swapping a chapter's music from placeholder to
-     * composed changes what plays and nothing about how it arrives.
+     * A real loop, when the biome has one. Both the loop and synth pad use
+     * the slower lobby entrance, including when a download arrives late.
      */
     const recorded = library?.music(biome) ?? null;
     musicRecorded = recorded !== null;
     if (recorded) {
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(1, now + MUSIC_FADE_S);
+      gain.gain.linearRampToValueAtTime(1, now + fadeIn);
       gain.connect(musicBus);
       const source = ctx.createBufferSource();
       source.buffer = recorded;
@@ -335,7 +336,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
 
     const padGain = ctx.createGain();
     padGain.gain.setValueAtTime(0, now);
-    padGain.gain.linearRampToValueAtTime(1, now + MUSIC_FADE_S);
+    padGain.gain.linearRampToValueAtTime(1, now + fadeIn);
     padGain.connect(musicBus);
 
     const breath = ctx.createGain();
