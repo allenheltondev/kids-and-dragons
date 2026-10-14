@@ -494,7 +494,7 @@
     },
     "rest_waystation_with_escort": {
       "type": "story",
-      "narration": "At dawn Elder Sefa walks out with you herself, and two cubs come too, because nobody told them not to. The pride goes quiet as the grass starts to lean. Where it leans hardest, Sefa stops, and the cubs stop, and nobody takes one step further. \"We'll wait here,\" she says. \"We always wait here.\"",
+      "narration": "At dawn Elder Sefa walks out with you herself, and two cubs come too, because nobody told them not to. Out on the plain, the grass ahead begins to lean, just a little, away from something. Right there, Sefa stops, and the cubs stop, and nobody takes one step further. \"We'll wait here,\" she says. \"We always wait here.\"",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -535,7 +535,7 @@
     },
     "scene_take_stone": {
       "type": "story",
-      "narration": "The Pride Stone is heavy and warm and hums right through your fingers. When you walk back, the pride walks too, but further off. Tonight they will not camp near you. They are very sorry. They just can't.",
+      "narration": "The Pride Stone is heavy and warm and hums right through your fingers. When you walk back, the pride comes down off the ridge to walk with you, but further off than before. Tonight they will not camp near you. They are very sorry. They just can't.",
       "onEnter": [
         {
           "type": "grantQuestItem",

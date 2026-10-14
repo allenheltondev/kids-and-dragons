@@ -120,7 +120,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice.",
+      "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice. Then she trots off ahead to check on her detour signs.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -137,7 +137,7 @@
       "choices": [
         {
           "id": "follow_fennick",
-          "label": "Follow Fennick toward the river",
+          "label": "Walk on toward the river",
           "icon": "arrow",
           "goto": "scene_kettle_camp"
         }
@@ -188,7 +188,7 @@
     },
     "scene_rivals_caught": {
       "type": "story",
-      "narration": "A troll who does not hurry walks the whole Brassbuckle Expedition to the back of the queue. In their rush they leave behind a coil of good rope, tied across the shallows. It was their secret shortcut. Now it is yours.",
+      "narration": "The brass hats call themselves the Brassbuckle Expedition, and a troll who does not hurry walks all six of them to the back of the queue. In their rush they leave behind a coil of good rope, tied across the shallows. It was their secret shortcut. Now it is yours.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -313,7 +313,7 @@
     },
     "scene_troll_hum": {
       "type": "story",
-      "narration": "Old Lintel stops listening to the queue and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" He has stopped asking riddles this season. Now there is only one toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
+      "narration": "Old Lintel stops listening to the queue and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" Stories and riddles are not enough this season. Now there is one more toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -709,7 +709,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then: \"Ossley,\" which turns out to be his name. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
+      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, as if he had been waiting for you, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then: \"Ossley,\" which turns out to be his name. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1030,7 +1030,7 @@
     },
     "scene_skip_passes": {
       "type": "story",
-      "narration": "Wherever the Brassbuckles have ended up in the queue, one of them comes strolling down the line with a tray. \"SKIP-A-STORY passes!\" she sings. \"Why tell the troll a story when you can show him a pass? Two coins! Brass! Very official!\" All along the queue, people start reaching for their purses.",
+      "narration": "The six brass hats call themselves the Brassbuckle Expedition, and wherever they have ended up in the queue, one of them comes strolling down the line with a tray. \"SKIP-A-STORY passes!\" she sings. \"Why tell the troll a story when you can show him a pass? Two coins! Brass! Very official!\" All along the queue, people start reaching for their purses.",
       "choices": [
         {
           "id": "small_print",
