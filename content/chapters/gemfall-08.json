@@ -6,7 +6,7 @@
   "biome": "mount_red_sky",
   "estimatedMinutes": 45,
   "xpAward": 120,
-  "entry": "scene_mouth",
+  "entry": "scene_tree_line",
   "objectives": [
     {
       "id": "settled_bones",
@@ -30,13 +30,1012 @@
     }
   },
   "scenes": {
+    "scene_tree_line": {
+      "type": "story",
+      "discovers": [
+        "location.mount_red_sky"
+      ],
+      "narration": "The last tree on the mountain is a small, bent pine, and someone has nailed a sign to it: NO ROAD BEYOND THIS POINT. SERIOUSLY. Above it, Mount Red Sky goes up and up, glowing at the top like a lamp somebody forgot to turn off. There are two ways on. An old stair cut into the rock zigzags back and forth forever. A slope of loose stones goes straight up.",
+      "choices": [
+        {
+          "id": "stair",
+          "label": "Take the old zigzag stair",
+          "icon": "boot",
+          "goto": "scene_tree_line_stair"
+        },
+        {
+          "id": "scree",
+          "label": "Scramble straight up the loose stones",
+          "icon": "quick",
+          "goto": "check_scree"
+        },
+        {
+          "id": "fly",
+          "label": "Fly up ahead and pick the best way",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_tree_line_fly"
+        },
+        {
+          "id": "verses",
+          "label": "Sing the Spiral Verses and let the path curl",
+          "icon": "note",
+          "requiresItem": "verses_relay_spiral",
+          "goto": "scene_tree_line_verses"
+        }
+      ]
+    },
+    "scene_tree_line_stair": {
+      "type": "story",
+      "narration": "The stair goes left, then right, then left, then right, about four hundred times. Somebody carved a tiny dragonling face on every hundredth step, and each face looks a little more tired than the last. By the top you are tired too, but you are tired together, and the summit is a lot closer than it was.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Keep climbing",
+          "icon": "forward",
+          "goto": "scene_faun_family"
+        }
+      ]
+    },
+    "check_scree": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Scramble straight up the loose, sliding stones",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_faun_family",
+        "narration": "You go up like mountain goats, one quick foot after another, and the stones only slide where you just were. At the top you look down at the long zigzag stair everybody else would have taken, and feel extremely smug."
+      },
+      "onFailure": {
+        "goto": "scene_faun_family",
+        "narration": "The slope slides, and you slide with it, sideways, like three sleds, right onto the old stair halfway up. That was not the plan. It works anyway, and the dragonling face carved on the next step looks very surprised to see you."
+      }
+    },
+    "scene_tree_line_fly": {
+      "type": "story",
+      "narration": "You flap up over the mountain's shoulder, where the air is warm and smells of struck matches. From up here you can see the best way: a goat track nobody else noticed, hiding behind a big rock shaped like a sleeping cow. You land, point, and lead everyone up it, trying very hard not to look pleased with yourself.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the goat track",
+          "icon": "wing",
+          "goto": "scene_faun_family"
+        }
+      ]
+    },
+    "scene_tree_line_verses": {
+      "type": "story",
+      "narration": "You sing the Spiral Verses in order, the way the relay taught them, and the path does a strange thing. It curls. Around a boulder, up a gully, past a ledge you would never have found, always gently uphill. Maybe the song was never really about the roads. Maybe it was about getting where the stones are going.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the curling path",
+          "icon": "note",
+          "goto": "scene_faun_family"
+        }
+      ]
+    },
+    "scene_faun_family": {
+      "type": "story",
+      "discovers": [
+        "npc.faun"
+      ],
+      "narration": "On the first slope, a faun family comes trotting downhill with everything they own on their backs, including a goat. The smallest one, Tansy, stops right in front of you and holds out a tiny pink stone. \"It hums at night,\" she whispers. \"It hummed louder when the ground shook. Is it my fault?\" Her family waits for her, very politely, and very much wanting to keep running.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "carry",
+          "label": "Promise to carry it up and put it back for her",
+          "icon": "hand",
+          "goto": "scene_faun_family_carry",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "carried_little_stone",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "hello",
+          "label": "Tell her it is only saying hello, and let her keep it",
+          "icon": "heart",
+          "goto": "scene_faun_family_hello"
+        },
+        {
+          "id": "sock",
+          "label": "Show her the ford witch's sock trick",
+          "icon": "charm",
+          "requiresItem": "facet_ford",
+          "goto": "scene_faun_family_sock"
+        }
+      ]
+    },
+    "scene_faun_family_carry": {
+      "type": "story",
+      "narration": "Tansy looks at the stone, and at the mountain, and at you. Then she puts it in your hand and folds your fingers over it, very seriously, like signing a contract. \"Tell it sorry from me,\" she says. Then her family is off down the slope, the goat complaining the whole way. The little stone is warm. It is yours to carry now.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, carrying it",
+          "icon": "hand",
+          "goto": "scene_wolf_ledge"
+        }
+      ]
+    },
+    "scene_faun_family_hello": {
+      "type": "story",
+      "narration": "\"It is saying hello,\" you tell her. \"Stones do that up here.\" Tansy holds it to her ear, and her face goes from worried to delighted. \"Hello,\" she whispers back to it. Then she trots off downhill after her family, holding the stone to her ear the whole way, and the goat gives you a long look that says it is not convinced.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave goodbye and climb on",
+          "icon": "heart",
+          "goto": "scene_wolf_ledge"
+        }
+      ]
+    },
+    "scene_faun_family_sock": {
+      "type": "story",
+      "narration": "You show her how the ford witch wrapped the Ford Stone in a wool sock, and how it rings much quieter that way. Tansy's mother pulls a sock out of a bundle at once. It is a very loud sock, striped orange and green. The pink stone goes in, and its hum goes soft as a purr. Tansy hugs the sock, and the family trots on downhill.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "charm",
+          "goto": "scene_wolf_ledge"
+        }
+      ]
+    },
+    "scene_wolf_ledge": {
+      "type": "story",
+      "discovers": [
+        "creature.cinder_wolf"
+      ],
+      "narration": "The path squeezes along a narrow ledge, and a whole pack of cinder wolves is lying across it. They are coming off the mountain like everybody else, and they have stopped to rest on the only warm rock. Nobody is growling. They look like dogs who have heard thunder and are pretending they have not. The biggest one opens one ember-colored eye.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "choices": [
+        {
+          "id": "tiptoe",
+          "label": "Tiptoe past along the cliff edge",
+          "icon": "quick",
+          "goto": "check_wolf_ledge"
+        },
+        {
+          "id": "sit",
+          "label": "Sit with them a minute, like with a worried dog",
+          "icon": "heart",
+          "goto": "scene_wolf_ledge_sit"
+        },
+        {
+          "id": "nod",
+          "label": "Give the big wolf a proper manticore nod",
+          "icon": "eye",
+          "requiresSpecies": "manticore",
+          "goto": "scene_wolf_ledge_nod"
+        },
+        {
+          "id": "pride",
+          "label": "Let the Pride Stone hum, and see if they move",
+          "icon": "gem",
+          "requiresItem": "facet_pride",
+          "goto": "scene_wolf_ledge_pride"
+        }
+      ]
+    },
+    "check_wolf_ledge": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Tiptoe along the cliff edge past a pack of sleepy wolves",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_warden_post",
+        "narration": "You tiptoe so well that not one wolf wakes up. Well, one does, but only to roll over and stick all four paws in the air. You step over the paws, one at a time, holding your breath, and you are past."
+      },
+      "onFailure": {
+        "goto": "scene_warden_post",
+        "narration": "A pebble clatters off the edge, and every wolf looks up at once. Then the big one sighs, gets up, and shuffles sideways to make room, like a grandpa on a crowded bench. You squeeze past, saying sorry to each wolf in turn."
+      }
+    },
+    "scene_wolf_ledge_sit": {
+      "type": "story",
+      "narration": "You sit down on the warm rock with them. After a while the big wolf leans on you, heavy and toasty as a stove. Every time the ground shakes, the whole pack shivers, and so do you, and then everybody feels a little better about it. When you finally get up to go, the wolves walk you to the end of the ledge, and no further.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "heart",
+          "goto": "scene_warden_post"
+        }
+      ]
+    },
+    "scene_wolf_ledge_nod": {
+      "type": "story",
+      "narration": "You give the big wolf the nod: chin down, tail still, one hunter to another, very proper. The big wolf looks at you for a long moment. Then it nods back, gets up, and leads the whole pack off the ledge in single file so you can pass. The smallest wolf stares at your tail the whole way. Professional courtesy is old, and it still works.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "eye",
+          "goto": "scene_warden_post"
+        }
+      ]
+    },
+    "scene_wolf_ledge_pride": {
+      "type": "story",
+      "narration": "You let the Pride Stone hum in your pack. The wolves' ears go flat. One by one they get up and slink off the ledge into the rocks, the same way the prides would never den near it. The way is clear. It is also very quiet, and the warm rock is empty, and you are not sure you like being the thing that wolves get out of the way of.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, a bit quieter",
+          "icon": "gem",
+          "goto": "scene_warden_post"
+        }
+      ]
+    },
+    "scene_warden_post": {
+      "type": "story",
+      "narration": "Higher up, the wardens' last post sits on a ledge with nobody in it. On the table is a big logbook, open to today, with a pencil on a string and a sign in very neat letters: ALL CLIMBERS MUST SIGN IN. Under it, a smaller sign: THIS MEANS YOU. Nobody has signed in all day. Beside the log is a little box labeled FOR CLIMBERS WHO SIGNED.",
+      "choices": [
+        {
+          "id": "sign",
+          "label": "Sign in properly, all three names",
+          "icon": "scroll",
+          "goto": "scene_warden_post_sign",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar"
+            }
+          ]
+        },
+        {
+          "id": "silly",
+          "label": "Sign in as Sir Pudding and the Biscuit Twins",
+          "icon": "cake",
+          "goto": "scene_warden_post_silly"
+        },
+        {
+          "id": "clerks",
+          "label": "Find tag 4117 in the log, and write FOUND",
+          "icon": "gem",
+          "requiresItem": "facet_clerks",
+          "goto": "scene_warden_post_clerks",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar"
+            }
+          ]
+        },
+        {
+          "id": "note",
+          "label": "Leave Captain Voss a note: we went up",
+          "icon": "shield",
+          "requiresFlag": "told_wardens",
+          "goto": "scene_warden_post_note",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar"
+            }
+          ]
+        }
+      ]
+    },
+    "scene_warden_post_sign": {
+      "type": "story",
+      "narration": "You sign in, all three names, in your very best writing. Under WHERE TO you write: the bottom. Under BACK BY you write nothing, because nobody knows. The little box clicks open. Inside is a warden's mosslight jar, glowing green, with a label: FOR THE WAY DOWN. Somebody thought about you getting back. That helps more than you expected.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "scroll",
+          "goto": "scene_overlook"
+        }
+      ]
+    },
+    "scene_warden_post_silly": {
+      "type": "story",
+      "narration": "You sign in as Sir Pudding and the Biscuit Twins, and under REASON FOR CLIMB you write: snacks. You laugh so hard that the next steep bit of path goes by without anyone noticing it was steep. The little box stays shut. It is a warden box. It knows. Somewhere in the future, a warden is going to write a very confused report about three biscuits.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, still laughing",
+          "icon": "cake",
+          "goto": "scene_overlook"
+        }
+      ]
+    },
+    "scene_warden_post_clerks": {
+      "type": "story",
+      "narration": "You flip back through the log until you find it: TAG 4117. STATUS: MISSING. Underlined three times. Somebody has been very upset about tag 4117. You take the pencil on its string and, next to MISSING, you write: FOUND, AND GOING HOME. The little box clicks open for that, too. Inside is a mosslight jar, glowing green, labeled FOR THE WAY DOWN.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "gem",
+          "goto": "scene_overlook"
+        }
+      ]
+    },
+    "scene_warden_post_note": {
+      "type": "story",
+      "narration": "You tear a page from the back of the log and write: Captain Voss, we went up. You know what for. You fold it into a warden-neat square and set it on top of the log, exactly straight, where she will look first. It feels like keeping a promise to somebody who keeps all of hers. The little box clicks open. Inside is a mosslight jar, glowing green.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "shield",
+          "goto": "scene_overlook"
+        }
+      ]
+    },
+    "scene_overlook": {
+      "type": "story",
+      "narration": "At the mountain's shoulder the clouds pull apart, and suddenly you can see the whole realm at once: the city where you started, the green fields, the river roads and the rush roads and the dark forest roads, all of them winding north to right here. Tiny lights crawl along every one of them, going the other way. Somewhere down there is everything that happened to you.",
+      "choices": [
+        {
+          "id": "home",
+          "label": "Find home, all the way south",
+          "icon": "map",
+          "goto": "scene_overlook_home"
+        },
+        {
+          "id": "up",
+          "label": "Don't look back. Look up.",
+          "icon": "star",
+          "goto": "scene_overlook_up"
+        },
+        {
+          "id": "river",
+          "label": "Find the Great River, all the way down",
+          "icon": "drop",
+          "requiresFlag": "route_river",
+          "goto": "scene_overlook_river"
+        },
+        {
+          "id": "rush",
+          "label": "Find the caravan road, and hum the relay-song",
+          "icon": "note",
+          "requiresFlag": "route_rush",
+          "goto": "scene_overlook_rush"
+        },
+        {
+          "id": "wild",
+          "label": "Find the forest, and MossHome inside it",
+          "icon": "leaf",
+          "requiresFlag": "route_wild",
+          "goto": "scene_overlook_wild"
+        }
+      ]
+    },
+    "scene_overlook_home": {
+      "type": "story",
+      "narration": "You find it: a tiny smudge, very far south, about the size of your thumbnail. Somebody there is probably having dinner. You all stand and look at the thumbnail for a while, and nobody says anything, and that turns out to be exactly the right thing to say. Then you turn around. Home will still be there. That is the whole point of going up.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn around and climb",
+          "icon": "map",
+          "goto": "choice_cairn"
+        }
+      ]
+    },
+    "scene_overlook_up": {
+      "type": "story",
+      "narration": "You turn your back on all of it and look up instead. The summit is close now, glowing red at the edges like a coal somebody just blew on. \"Nobody look back,\" somebody says. Then everybody looks back, just once, very quickly. Then up again. Everybody agrees that it still counts as not looking back, if you are quick.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb",
+          "icon": "star",
+          "goto": "choice_cairn"
+        }
+      ]
+    },
+    "scene_overlook_river": {
+      "type": "story",
+      "narration": "You find the Great River, a silver ribbon running all the way down the realm, and on it a tiny dot that might be a flat boat with a frog in a very old hat. It is much too far to be sure. But the dot stops moving, the way a boat would stop if somebody on it had just looked up a mountain. Then it drifts on downstream.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "drop",
+          "goto": "choice_cairn"
+        }
+      ]
+    },
+    "scene_overlook_rush": {
+      "type": "story",
+      "narration": "You find the caravan road, the busiest road in the realm, and you hum the relay-song down at it. It is a very long way down. But a moment later, faint as a whisper, the next line comes floating back up on the wind, sung by a hundred travelers all going the other way. The relay never stops. Not even now. Not even for this.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, humming",
+          "icon": "note",
+          "goto": "choice_cairn"
+        }
+      ]
+    },
+    "scene_overlook_wild": {
+      "type": "story",
+      "narration": "You find the forest, a dark green blanket over half the realm, and somewhere in the middle of it, MossHome. As you look, the whole forest sways at once, every tree together, like a crowd waving. It is probably the wind. It is probably not the wind. You wave back, all three of you, just in case, and a little way down the slope a raven pretends not to have seen.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "leaf",
+          "goto": "choice_cairn"
+        }
+      ]
+    },
+    "choice_cairn": {
+      "type": "choice_point",
+      "narration": "Near the top of the path stands a cairn: a tall pile of stones, each one left by somebody who climbed this far. Some have names scratched on them. Some have little drawings. One is wearing a tiny knitted hat. You leave something on the cairn before the last climb. That is the rule, and nobody remembers who made it. Everybody vote: what do we leave?",
+      "choices": [
+        {
+          "id": "names",
+          "label": "A pebble with all three of our names on it",
+          "icon": "star",
+          "goto": "choice_cairn_names"
+        },
+        {
+          "id": "wish",
+          "label": "A pebble with a secret wish whispered into it",
+          "icon": "moon",
+          "goto": "choice_cairn_wish"
+        },
+        {
+          "id": "snack",
+          "label": "Our last snack, for whoever climbs up next",
+          "icon": "cake",
+          "goto": "choice_cairn_snack"
+        },
+        {
+          "id": "big_names",
+          "label": "Our names, carved as BIG as they will go",
+          "icon": "crown",
+          "requiresFlag": "motive_prestige",
+          "goto": "choice_cairn_big_names"
+        },
+        {
+          "id": "oldest",
+          "label": "Read the very oldest stone first",
+          "icon": "eye",
+          "requiresFlag": "motive_curiosity",
+          "goto": "choice_cairn_oldest"
+        }
+      ]
+    },
+    "choice_cairn_names": {
+      "type": "story",
+      "narration": "You scratch all three names onto a pebble and set it carefully near the top. It looks very small up there, among all the other names. But it is there now, and it will still be there tomorrow, and the day after that, whatever happens down below. That is what a cairn is for. The whole pile creaks a little, as if making room.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "star",
+          "goto": "scene_bell_hut"
+        }
+      ]
+    },
+    "choice_cairn_wish": {
+      "type": "story",
+      "narration": "Each of you whispers a wish into the same pebble, one after another, and nobody tells anybody what they wished. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on, all three of you pretending you are not trying to guess each other's wishes. Everybody is trying to guess.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "moon",
+          "goto": "scene_bell_hut"
+        }
+      ]
+    },
+    "choice_cairn_snack": {
+      "type": "story",
+      "narration": "You set your very last snack on the cairn, wrapped up neatly, for whoever climbs up next. It is like the empty chair every table at the Exchange keeps for whoever arrives. Your stomachs grumble about it all the way up. But someday somebody tired is going to find a snack on top of a mountain, and that is a very good feeling to carry.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, hungry and pleased",
+          "icon": "cake",
+          "goto": "scene_bell_hut"
+        }
+      ]
+    },
+    "choice_cairn_big_names": {
+      "type": "story",
+      "narration": "You carve your names as big as they will go. They go very big. Then you run out of stone, and the last name has to go round the back and up the side, and one letter ends up on a different stone altogether. Climbers for years will read it and wonder who on earth MAGNIFICEN was. It is still, honestly, very impressive.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, magnificently",
+          "icon": "crown",
+          "goto": "scene_bell_hut"
+        }
+      ]
+    },
+    "choice_cairn_oldest": {
+      "type": "story",
+      "narration": "The oldest stone is right at the bottom, its name worn almost smooth. You trace it with a finger. It is not a name you know. But under it someone scratched a tiny drawing: a dragon, a round window, and a little stick figure waving. Somebody climbed up here a very, very long time ago, for the same reason you did. You set your pebble right beside it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "eye",
+          "goto": "scene_bell_hut"
+        }
+      ]
+    },
+    "scene_bell_hut": {
+      "type": "story",
+      "narration": "Just below the summit is the highest bell-hut in the foothills, where the dragonlings start the bell-code on its way down. It is empty. The bell rope is tied tight to a hook, with a note: GONE DOWN. TIED SO NOBODY RINGS THE LAST ONE BY ACCIDENT. There is just enough slack for an ordinary ring. Far below, every bell is quiet, holding its breath.",
+      "choices": [
+        {
+          "id": "ring",
+          "label": "Ring the all's well, for everyone below",
+          "icon": "note",
+          "goto": "check_bell_code"
+        },
+        {
+          "id": "knot",
+          "label": "Leave it be, and tie a second knot to be sure",
+          "icon": "hand",
+          "goto": "scene_bell_hut_knot"
+        },
+        {
+          "id": "family",
+          "label": "Ring it properly, the way your family does",
+          "icon": "note",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_bell_hut_family"
+        }
+      ]
+    },
+    "check_bell_code": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Remember the bell-code for all's well",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crab_field",
+        "narration": "Two long, one short, two long. You get it exactly right. The ring rolls down the mountain, and the next hut rings it back, and the next, and the next, all the way into the foothills: all's well, all's well. It is not quite true yet. It is a promise, and now everybody has heard you make it."
+      },
+      "onFailure": {
+        "goto": "scene_soup_ring",
+        "narration": "Two long, one short? Or one short, two long? You ring it anyway. Far below, the next hut pauses, as if it is checking. Then it rings it back, and the next hut does too, and the next. It is not all's well. It is something else entirely."
+      }
+    },
+    "scene_soup_ring": {
+      "type": "story",
+      "narration": "It is the soup's ready ring. All the way down the mountain, every bell-hut in the foothills is now ringing soup's ready, one after another, very cheerfully. Somewhere down there, thousands of frightened people stop running for a moment and think about soup. That is not nothing. Honestly, it might be better than all's well.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, still giggling",
+          "icon": "cake",
+          "goto": "scene_crab_field"
+        }
+      ]
+    },
+    "scene_bell_hut_knot": {
+      "type": "story",
+      "narration": "You tie a second knot, a good one, and then a third, because three is a nice number. Nobody is ringing anything by accident while you are around. As you leave, the old hut creaks in the wind, as if it had been worrying about that rope all day and can finally stop. You feel a bit like a bell-keeper yourself.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "hand",
+          "goto": "scene_crab_field"
+        }
+      ]
+    },
+    "scene_bell_hut_family": {
+      "type": "story",
+      "narration": "You ring it the family way: two long, one short, two long, with the little flick at the end that only grandmothers bother with. The ring rolls down the mountain, and the huts below answer one by one: all's well. Then one very far hut adds a flick at the end, just like yours. Somebody down there knows exactly who is ringing.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "note",
+          "goto": "scene_crab_field"
+        }
+      ]
+    },
+    "scene_crab_field": {
+      "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
+      "narration": "The path crosses a field of grey ash, and the field is covered in gems. Big ones, glittering, just lying there. Except every so often, a gem blinks. They are glassback crabs, hundreds of them, pretending to be a gem deposit so nobody will dig them up. It is not a very good plan. Several of them are already waving their claws at you, in a way that clearly means something.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "choices": [
+        {
+          "id": "read",
+          "label": "Read their claw-waving, and walk where they say",
+          "icon": "clever",
+          "goto": "check_crab_field"
+        },
+        {
+          "id": "around",
+          "label": "Go the long way round the field",
+          "icon": "boot",
+          "goto": "scene_crab_field_around"
+        },
+        {
+          "id": "glitter",
+          "label": "Out-pretend them with an even better act",
+          "icon": "spark",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_crab_field_glitter"
+        },
+        {
+          "id": "collection",
+          "label": "Let them hear your collection, and see what happens",
+          "icon": "gem",
+          "requiresFlag": "pursuit_hoard",
+          "goto": "scene_crab_field_collection"
+        }
+      ]
+    },
+    "check_crab_field": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read what the glassback crabs are waving about",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_ember_drift",
+        "narration": "Claw up means not here. Claw sideways means fine, go on. You read them like a signpost and walk a wiggly line right across the field, and not one crab gets stepped on. At the far side, one waves both claws at once. You decide that means well done."
+      },
+      "onFailure": {
+        "goto": "scene_ember_drift",
+        "narration": "You read go on where it clearly said absolutely not, and step right onto a crab. It is not hurt, only very offended, and it holds onto your bootlace all the way across like a ticket. At the far side it lets go and clatters back to its spot, muttering in crab."
+      }
+    },
+    "scene_crab_field_around": {
+      "type": "story",
+      "narration": "You take the long way round, along the edge of the ash, where nobody is pretending to be anything. It takes ages. Halfway round, the whole field of crabs shuffles slowly sideways to keep an eye on you, glittering, like the world's most suspicious audience. When you reach the far side, they all settle down and go back to being gems.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "boot",
+          "goto": "scene_ember_drift"
+        }
+      ]
+    },
+    "scene_crab_field_glitter": {
+      "type": "story",
+      "narration": "You crouch down, go perfectly still, and glitter. Somehow, you glitter. The crabs stare. One by one they decide you are a much better gem deposit than they are, and they shuffle aside in deep professional jealousy. You cross the whole field one sparkly step at a time. Nobody will ever believe this. You are going to tell it anyway.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, sparkling",
+          "icon": "spark",
+          "goto": "scene_ember_drift"
+        }
+      ]
+    },
+    "scene_crab_field_collection": {
+      "type": "story",
+      "narration": "You open your pack a crack, and the collection hums. Every crab in the field stops pretending. Hundreds of tiny eyes turn to stare at your pack, as if they have just met the biggest gem deposit in the world, and it is walking. They part to let you through without a single wave. You are not sure that was respect. It felt a little like being a mountain.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "gem",
+          "goto": "scene_ember_drift"
+        }
+      ]
+    },
+    "scene_ember_drift": {
+      "type": "story",
+      "narration": "Near the top, something tiny glows in a drift of grey ash: one embermoth, stuck up to its wings, blinking slowly like a nightlight running low. Every other moth has flown away from the mountain. This one must have turned around too late, or too early. It looks up at you the way a lost puppy looks at the first nice person it sees.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "choices": [
+        {
+          "id": "dig",
+          "label": "Dig it out, carefully, with your hands",
+          "icon": "might",
+          "goto": "check_ember_drift"
+        },
+        {
+          "id": "carry",
+          "label": "Scoop it up, ash and all, and carry it with you",
+          "icon": "heart",
+          "goto": "scene_ember_drift_carry",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "carried_moth",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "ember",
+          "label": "Hold the Ember Facet close, so it can find the warm",
+          "icon": "gem",
+          "requiresItem": "facet_ember",
+          "goto": "scene_ember_drift_ember",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "carried_moth",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "broom",
+          "label": "Use the tiny woven broom someone left by the drift",
+          "icon": "leaf",
+          "requiresFlag": "sprites_friends",
+          "goto": "scene_ember_drift_broom"
+        }
+      ]
+    },
+    "check_ember_drift": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Dig the embermoth out of the ash without squashing it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_last_breath",
+        "narration": "You dig very gently, like digging out a sandcastle you want to keep. The moth pops free, shakes the ash off its wings, and zooms ahead of you up the path, glowing brighter every second, as if it is showing you the way."
+      },
+      "onFailure": {
+        "goto": "choice_last_breath",
+        "narration": "You dig too fast, and ash flies everywhere, mostly up your nose. While you are busy sneezing, the moth wriggles out all by itself, gives you a very dignified look, and flies off uphill ahead of you. It definitely did that on purpose."
+      }
+    },
+    "scene_ember_drift_carry": {
+      "type": "story",
+      "narration": "You scoop it up, ash and all, and cup it in your hands. The moth is warm, like holding the last bit of a campfire. It sits there blinking at you, and slowly it glows a little brighter. Nobody can climb with both hands full, so somebody else carries your pack, and you carry the moth, very carefully, the rest of the way up.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, carrying it",
+          "icon": "heart",
+          "goto": "choice_last_breath"
+        }
+      ]
+    },
+    "scene_ember_drift_ember": {
+      "type": "story",
+      "narration": "You hold the Ember Facet close to the drift, your very first stone. The moth crawls out of the ash and straight onto it, as if it had been looking for exactly this all along. It curls up on the warm stone like a cat on a hearth and goes to sleep. So now you are carrying it up the mountain too. You do not mind one bit.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, carrying it",
+          "icon": "gem",
+          "goto": "choice_last_breath"
+        }
+      ]
+    },
+    "scene_ember_drift_broom": {
+      "type": "story",
+      "narration": "Leaning on a rock by the drift is a broom no bigger than your finger, woven out of straw, with a tiny medal on it that says HELP. Nobody is around. Nobody ever is, when the sprites are being kind. You sweep the moth free in three neat strokes, and it flies off uphill ahead of you, glowing. When you look back, the broom is gone.",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "leaf",
+          "goto": "choice_last_breath"
+        }
+      ]
+    },
+    "choice_last_breath": {
+      "type": "choice_point",
+      "narration": "At the very top, the path ends at a dark round hole in the mountain: a lava tube, breathing warm air out at you, slow and steady, like something asleep. The stones in your packs are humming so loudly now you can feel it in your teeth. This is it. Before you go in, everybody vote: what do we do with our last minute outside?",
+      "choices": [
+        {
+          "id": "best",
+          "label": "Tell each other the best bit of the whole road",
+          "icon": "heart",
+          "goto": "choice_last_breath_best"
+        },
+        {
+          "id": "count",
+          "label": "Count the stones, one more time",
+          "icon": "gem",
+          "goto": "choice_last_breath_count"
+        },
+        {
+          "id": "practice",
+          "label": "Practice what you will say when you give them back",
+          "icon": "hand",
+          "requiresFlag": "pursuit_restore",
+          "goto": "choice_last_breath_practice"
+        },
+        {
+          "id": "polish",
+          "label": "Polish the collection until it shines in the dark",
+          "icon": "crown",
+          "requiresFlag": "pursuit_hoard",
+          "goto": "choice_last_breath_polish"
+        },
+        {
+          "id": "tether",
+          "label": "Check the tether one last time",
+          "icon": "key",
+          "requiresFlag": "pursuit_leash",
+          "goto": "choice_last_breath_tether"
+        }
+      ]
+    },
+    "choice_last_breath_best": {
+      "type": "story",
+      "narration": "You each tell the best bit. Nobody picks the same one. One of you picks something so small the others had forgotten it, and then everybody remembers, and laughs. It turns out most of the best bits were the soggy bits. The tube breathes out warm air, patiently, as if it has been listening and does not mind waiting one more minute.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "heart",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
+    "choice_last_breath_count": {
+      "type": "story",
+      "narration": "You tip the stones out on a flat rock and count them, one more time. They hum together, each a little different, like a choir warming up. You remember where every single one came from, and who was there, and what it cost. Then you pack them away again, carefully, the way you pack something that was never exactly yours.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "gem",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
+    "choice_last_breath_practice": {
+      "type": "story",
+      "narration": "You practice what you will say when you give the stones back. \"Here you are.\" Too short. \"We are very sorry about the whole entire rush.\" Too long. \"These are yours.\" That one is right. You say it together, three times, until it sounds like you mean it. You do mean it. That was never the hard part.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "hand",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
+    "choice_last_breath_polish": {
+      "type": "story",
+      "narration": "You polish every stone in the collection on your sleeves until they shine, even in the shadow of the tube. Laid out on the rock, they glow in a rough circle, with one space left at the top. Nobody says anything about the space. Everybody looks at it. Then you pack them up and go in to find what fills it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "crown",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
+    "choice_last_breath_tether": {
+      "type": "story",
+      "narration": "You check the tether one last time: what you borrowed, what you promised, what you made up on the way. It is all there, or most of it is. One of you ties a knot in the last bit of string anybody has, for luck. It is not a leash. It might be the start of one. It is going to have to do.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "key",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
     "scene_mouth": {
       "type": "story",
       "discovers": [
         "creature.restless_remains"
       ],
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "Above the tree line the road gives up and a lava tube takes over, a tunnel the mountain made for itself long ago. You go in. The tube opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
+      "narration": "You step into the lava tube, a tunnel the mountain made for itself long ago. It opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
       "cast": [
         {
           "figure": "entities/restless_remains"
@@ -382,6 +1381,33 @@
           "goto": "scene_keeper_truth"
         },
         {
+          "id": "ask",
+          "label": "Ask it the same question back",
+          "icon": "ear",
+          "goto": "scene_keeper_ask"
+        },
+        {
+          "id": "little_stone",
+          "label": "Give it Tansy's little stone, and her sorry",
+          "icon": "hand",
+          "requiresFlag": "carried_little_stone",
+          "goto": "scene_keeper_little_stone",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "moth",
+          "label": "Let the lost embermoth go, there on its nose",
+          "icon": "feather",
+          "requiresFlag": "carried_moth",
+          "goto": "scene_keeper_moth"
+        },
+        {
           "id": "medal",
           "label": "Show it the sprites' woven medal",
           "icon": "star",
@@ -572,6 +1598,60 @@
         }
       ]
     },
+    "scene_keeper_ask": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"What did you carry?\" you ask it back. There is a very long pause. \"That,\" says the Seal-Keeper, \"is my question.\" But it answers anyway, slowly. \"The seal. The quiet. And lately, the sound of a great many pockets coming up my mountain.\" It looks pointedly at yours. Then at you, as if adding something to a list.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "ear",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_little_stone": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You hold out Tansy's little pink stone. \"A faun girl gave it to us on the way up,\" you say. \"She says sorry.\" The Seal-Keeper looks at the tiny stone for a very long time. \"Somebody else's stone,\" it says, \"carried up a mountain for somebody else's sorry.\" Its great eye blinks, slowly. \"That, I have not heard before.\"",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "hand",
+          "goto": "scene_q2"
+        }
+      ]
+    },
+    "scene_keeper_moth": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You open your hands, and the embermoth you carried up the mountain flies straight to the Seal-Keeper's nose and lands among the others. They all shuffle over to make room. The dragon goes cross-eyed looking at it, which is something you will remember for the rest of your life. \"That one was lost,\" it says at last. \"It is not, now.\"",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "feather",
+          "goto": "scene_q2"
+        }
+      ]
+    },
     "scene_q2": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
@@ -588,6 +1668,12 @@
           "label": "Tell it what happened, the good bits and the soggy bits",
           "icon": "heart",
           "goto": "scene_q2_road"
+        },
+        {
+          "id": "people",
+          "label": "Tell it about the people who helped you",
+          "icon": "party",
+          "goto": "scene_q2_people"
         },
         {
           "id": "glade_mended",
@@ -835,6 +1921,24 @@
           "id": "on",
           "label": "Hear the last question",
           "icon": "heart",
+          "goto": "scene_verdict"
+        }
+      ]
+    },
+    "scene_q2_people": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You tell it about the people: the ones who lent you rope, and pointed the way, and fed you soup that was only soup, and the ones who just waved. The Seal-Keeper listens with its head on one side. \"People,\" it says, trying the word out as if it has not used it in a while. \"They do keep turning up.\" It does not sound annoyed.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the last question",
+          "icon": "party",
           "goto": "scene_verdict"
         }
       ]
@@ -1370,7 +2474,8 @@
       "seal_keeper": "the Seal-Keeper, the legend dragon under Mount Red Sky; ancient, unhurried, dry as ash, asks questions it already knows the answers to, grades generously when surprised and is very rarely surprised",
       "bones": "the restless remains; do not speak, but nod, sigh and settle",
       "captain": "Captain Orla Voss of the Skywardens, only in epilogues; rigid, honest, quietly sorry",
-      "hessa": "Hessa Wren of the Deep Hollow Cult, only in epilogues; warm, certain, cries easily"
+      "hessa": "Hessa Wren of the Deep Hollow Cult, only in epilogues; warm, certain, cries easily",
+      "tansy": "Tansy, a small faun girl running downhill with her family; worried, brave, and very honest about the humming stone in her pocket"
     }
   }
 }
