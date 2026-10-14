@@ -1089,10 +1089,22 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             waiting in the lobby, whatever the run calls the phase. */}
         {(myPrompt !== null && myPrompt.kind === "ready") || inLobby ? (
           <div className="prompt">
+            {/* Outside the lobby the only ready-up is the pause before a
+                fight (engine.ts), so it says so: a bare "Ready when you are"
+                read as one more mystery button. */}
             <h3 className="prompt__title">
-              <Icon name="ready" />
-              <span>{me.ready ? "You're ready" : "Ready when you are"}</span>
+              <Icon name={inLobby ? "ready" : "swords"} />
+              <span>
+                {inLobby
+                  ? me.ready ? "You're ready to play" : "Ready to play?"
+                  : me.ready ? "You're ready to fight" : "A fight is starting!"}
+              </span>
             </h3>
+            <p className="prompt__sub kad-muted">
+              {inLobby
+                ? "Tap when you're ready. The adventure starts when everyone is."
+                : "Tap when you're ready. The fight starts when everyone is."}
+            </p>
             <Button
               variant={me.ready ? "secondary" : "primary"}
               size="lg"
@@ -1100,7 +1112,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               disabled={busy}
               onClick={() => void dispatch({ type: "READY", ready: !me.ready })}
             >
-              {me.ready ? "Wait, not yet" : "I'm ready!"}
+              {me.ready ? "Wait, not yet" : inLobby ? "I'm ready!" : "I'm ready to fight!"}
             </Button>
             <ul className="prompt__party">
               {party.map((member) => (

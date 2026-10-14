@@ -279,7 +279,7 @@ describe("whose turn it is", () => {
     expect(screen.getByRole("status").textContent).toContain("Bramblewisp");
     // No board, no cards — the whole input half is absent, not disabled.
     expect(screen.queryByRole("grid")).toBeNull();
-    expect(screen.queryByRole("button", { name: "End turn" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "I'm done. End my turn" })).toBeNull();
   });
 
   it("renders nothing at all once the fight is over", () => {
@@ -322,7 +322,7 @@ describe("select then confirm (spec §11)", () => {
     expect(doIt()).toBeTruthy();
     expect(screen.getByText(/Move to column 2, row 2/)).toBeTruthy();
     // One question at a time: the cards step aside while the move is asked.
-    expect(screen.queryByRole("button", { name: "End turn" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "I'm done. End my turn" })).toBeNull();
 
     await user.click(doIt());
     expect(sent).toEqual([{ type: "MOVE", to: { x: 1, y: 1 } }]);
@@ -347,7 +347,7 @@ describe("select then confirm (spec §11)", () => {
     const user = userEvent.setup();
     const { sent } = mount();
 
-    await user.click(card("End turn"));
+    await user.click(card("I'm done. End my turn"));
     expect(sent).toEqual([]);
     expect(screen.getByText("End the turn")).toBeTruthy();
 
@@ -365,7 +365,7 @@ describe("select then confirm (spec §11)", () => {
     expect(sent).toEqual([]);
     expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
     // And the cards are back, so the turn is not stuck.
-    expect(screen.getByRole("button", { name: "End turn" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "I'm done. End my turn" })).toBeTruthy();
   });
 
   it("holds the commit open while it is in flight, then lets go", async () => {
@@ -579,9 +579,9 @@ describe("only legal taps exist (§7.2)", () => {
     mount({ encounter: { ...base, stepsLeft: 0, actionTaken: true } });
 
     expect(screen.queryAllByRole("button", { name: /^Move to column/ })).toEqual([]);
-    expect(screen.getByText("Action spent")).toBeTruthy();
+    expect(screen.getByText("Done!")).toBeTruthy();
     // End turn is still there: the turn has to be endable.
-    expect(screen.getByRole("button", { name: "End turn" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "I'm done. End my turn" })).toBeTruthy();
   });
 
   it("offers no action cards once the action is spent", () => {
@@ -683,7 +683,7 @@ describe("the turn boundary", () => {
     });
 
     expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
-    expect(screen.getByRole("button", { name: "End turn" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "I'm done. End my turn" })).toBeTruthy();
   });
 
   it("drops a pending selection when the clock hands on to somebody else", async () => {

@@ -74,12 +74,17 @@
   );
 }
 
+/* Tinted squares, not just tinted glyphs: at a tenth of a phone's width a
+   red icon alone did not read as "the enemy is here". The legend under the
+   board uses the same fills. */
 .combat__cell--enemy {
-  color: var(--color-danger, #ff6b6b);
+  background: color-mix(in srgb, var(--color-danger, #ff6b6b) 55%, var(--color-surface, #191534));
+  color: #fff;
 }
 
 .combat__cell--party {
-  color: var(--color-accent, #ffc95c);
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
+  color: var(--kad-accent-ink, #0d0b1a);
 }
 
 /* The combat clock: a ring, not a colour change. */
@@ -137,15 +142,116 @@
   block-size: 1.3em;
 }
 
-.combat .prompt__options:not(.combat__targets) {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+/*
+ * The two steps of a turn (§7.2): a numbered heading and one line saying what
+ * to tap. A finished step keeps its place with a tick, so the order stays
+ * readable after the move has been made.
+ */
+.combat__step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
 }
 
-.combat .prompt__options:not(.combat__targets) .choice {
+.combat__step-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 800;
+}
+
+.combat__step-num {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-accent, #ffc95c);
+  color: var(--kad-accent-ink, #0d0b1a);
+  font-size: 0.9em;
+  font-weight: 900;
+}
+
+.combat__step-hint {
+  margin: 0;
+  padding-inline-start: 2em;
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.combat__step--done .combat__step-num {
+  background: var(--color-ok, #6fd39b);
+}
+
+/* What the board's marks mean, in the same shapes the board draws. */
+.combat__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 0.9em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.combat__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.combat__key {
+  display: inline-block;
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  border-radius: 0.2em;
+  background: var(--color-surface, #191534);
+}
+
+.combat__key--you {
+  box-shadow: inset 0 0 0 0.15em var(--color-accent, #ffc95c);
+}
+
+.combat__key--friend {
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
+}
+
+.combat__key--enemy {
+  background: var(--color-danger, #ff6b6b);
+}
+
+.combat__key--walk {
+  border: 0.12em solid var(--color-accent, #ffc95c);
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
+}
+
+/* One card a row: each now carries a sentence saying what it does. */
+.combat .combat__actions .choice {
   grid-template-columns: auto minmax(0, 1fr);
-  block-size: 100%;
-  padding: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+}
+
+.choice__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  min-inline-size: 0;
+  text-align: start;
+}
+
+.choice__sub {
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.combat__end {
+  margin-block-start: var(--space-1, 0.25em);
 }
 
 .combat .prompt__options:not(.combat__targets) .choice__icon {

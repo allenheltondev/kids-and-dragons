@@ -208,11 +208,20 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
      * second because it is what ends a fight; End turn when nothing else is
      * offered, which is what an unreachable enemy looks like from here.
      */
-    const help = labels.findIndex((label) => /help up/i.test(label));
-    const attack = labels.findIndex((label) => /attack/i.test(label));
-    const end = labels.findIndex((label) => /end turn/i.test(label));
-    const pick = help >= 0 ? help : attack >= 0 ? attack : end;
-    if (pick < 0) return false;
+    // A card's first line is its name; the line under it says what it does,
+    // and "…then attack an enemy" in Pounce's must not read as Attack.
+    const names = labels.map((label) => label.split("\n")[0] ?? "");
+    const help = names.findIndex((name) => /help up/i.test(name));
+    const attack = names.findIndex((name) => /^attack$/i.test(name.trim()));
+    const pick = help >= 0 ? help : attack;
+    if (pick < 0) {
+      // Ending the turn sits apart from the cards, under them.
+      const end = panel.locator(".combat__end");
+      if (!(await end.isVisible().catch(() => false))) return false;
+      await end.click({ timeout: 3_000 }).catch(() => {});
+      await page.waitForTimeout(200);
+      continue;
+    }
     await cards.nth(pick).click({ timeout: 3_000 }).catch(() => {});
     await page.waitForTimeout(200);
   }
@@ -640,12 +649,7 @@ test.describe("first playable", () => {
       if (!ready) continue; // patches still draining; poll the server again
 
       const endTurn = async () => {
-        await page
-          .locator(".combat .choice")
-          .filter({ hasText: /end turn/i })
-          .first()
-          .click({ timeout: 4_000 })
-          .catch(() => {});
+        await page.locator(".combat__end").first().click({ timeout: 4_000 }).catch(() => {});
         await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
         await page.waitForTimeout(600);
       };
