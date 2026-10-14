@@ -323,20 +323,20 @@
   font-size: var(--font-size-sm, 0.875em);
 }
 
-/* The confirm card is a raised panel with the gold "chosen" rim: this is the
-   thing you picked, held up for a second look before it commits. */
+/*
+ * The confirm row: what you picked, then Change / Do it!. Deliberately quiet —
+ * no card and no gold rim of its own. The gold already sits on the answer you
+ * picked, and a second glowing box right under it read as one more thing to
+ * choose between. Set apart from the answers by space and a rule instead, so a
+ * thumb heading for "Do it!" does not land on the option above it.
+ */
 .confirm {
   display: flex;
   flex-direction: column;
   gap: var(--space-2, 0.5em);
-  padding: var(--space-3, 0.75em);
-  border: 0;
-  border-radius: var(--radius-lg, 1.25em);
-  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 0.18em 0 var(--kad-raised-edge, #0a0814),
-    var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c);
+  margin-block-start: var(--space-3, 0.75em);
+  padding-block-start: var(--space-3, 0.75em);
+  border-block-start: 0.08em solid var(--color-border, #3a3468);
 }
 
 .confirm__what {
@@ -351,13 +351,20 @@
 .confirm__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5em);
+  justify-content: space-between;
+  gap: var(--space-3, 0.75em);
 }
 
-/* Change and Do it! share the row evenly, like the creation footer. */
+/* Change keeps its own width; the commit takes the rest, up to a point, so it
+   is the obvious button without being a slab across the whole phone. */
 .confirm__actions > * {
-  flex: 1 1 0;
+  flex: 0 0 auto;
   min-inline-size: 0;
+}
+
+.confirm__actions > .kad-button--primary {
+  flex: 0 1 12em;
+  margin-inline-start: auto;
 }
 
 /* --- The party strip (spec §6.1) --------------------------------------- */
@@ -948,7 +955,8 @@
    * bar keeps its words — they are the only place an action is named.
    */
   .confirm {
-    padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+    margin-block-start: var(--space-2, 0.5em);
+    padding-block-start: var(--space-2, 0.5em);
   }
 
   .prompt:not(.combat) .confirm__what {
