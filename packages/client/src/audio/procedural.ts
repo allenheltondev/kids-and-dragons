@@ -156,8 +156,10 @@ function entryMusic(): ProceduralSound[] {
     if (bar % 3 === 1) for (const [i, step] of [7, 9, 7, 4].entries()) home.push({ at: bar * 3 + i * 0.5, duration: 0.8, freq: 392 * 2 ** (step / 12), gain: 0.025, swell: true, vibrato: [4, 3] });
   }
   for (let phrase = 0; phrase < 4; phrase++) {
-    for (const [i, step] of chords[phrase]!.entries()) lobby.push({ at: phrase * 10, duration: 16, freq: 146.83 * 2 ** (step / 12), gain: 0.034, swell: true, pan: (i - 1) * 0.35, vibrato: [0.2, 3], partials: [[1, 1], [2, 0.08]] });
-    lobby.push({ at: phrase * 10 + 4, duration: 3.5, freq: 293.66 * 2 ** (chords[phrase]![1]! / 12), gain: 0.025, swell: true, vibrato: [3.8, 4] });
+    // Stagger shorter, softer strings. The old 16-second final chord wrapped
+    // into the opening already at full swell, obscuring its gentle attack.
+    for (const [i, step] of chords[phrase]!.entries()) lobby.push({ at: phrase * 10 + i * 0.7, duration: phrase === 0 ? 7 : 8.5, freq: 146.83 * 2 ** (step / 12), gain: phrase === 0 ? 0.018 : 0.028, swell: true, pan: (i - 1) * 0.35, vibrato: [0.2, 3], partials: [[1, 1], [2, 0.05]] });
+    lobby.push({ at: phrase * 10 + (phrase === 0 ? 6 : 4), duration: phrase === 0 ? 2.2 : 3.5, freq: 293.66 * 2 ** (chords[phrase]![1]! / 12), gain: phrase === 0 ? 0.012 : 0.025, swell: true, vibrato: [3.8, 4] });
     lobby.push({ at: phrase * 10, duration: 15, freq: 0, noise: true, cutoff: 350, gain: 0.012, swell: true });
   }
   return [

@@ -3,6 +3,19 @@ import { CUE_SPECS } from "./paths";
 import { proceduralSounds, renderProcedural } from "./procedural";
 
 describe("procedural audio previews", () => {
+  it("keeps the lobby opening quiet without a string tail wrapping into it", () => {
+    const lobby = proceduralSounds().find((sound) => sound.id === "entry-lobby")!;
+    expect(lobby.voices.filter((voice) => !voice.noise).every((voice) => voice.at + voice.duration <= lobby.seconds)).toBe(true);
+    const sampleRate = 6000;
+    const pcm = renderProcedural(lobby, sampleRate);
+    const rms = (start: number, end: number) => {
+      let energy = 0;
+      for (const channel of pcm) for (let i = start * sampleRate; i < end * sampleRate; i++) energy += channel[i]! ** 2;
+      return Math.sqrt(energy / ((end - start) * sampleRate * 2));
+    };
+    expect(rms(0, 1)).toBeLessThan(rms(2, 5) * 0.3);
+  });
+
   it("covers every game brief", () => {
     const sounds = proceduralSounds();
     expect(sounds.filter((s) => !s.loop).map((s) => s.id).sort()).toEqual(Object.keys(CUE_SPECS).sort());
