@@ -126,7 +126,7 @@
     "check_ask_trees": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Ask the forest, politely, what it is objecting to",
       "roller": "party",
       "onSuccess": {
@@ -392,7 +392,7 @@
     "check_way_back": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Find the hidden way back to the worst glade",
       "roller": "party",
       "onSuccess": {
