@@ -1264,8 +1264,12 @@ function doChoose(
   // beat (who may have stood in for an absent turn holder), the holder on a
   // vote — before the next scene opens its prompt against it. A Rest's way
   // out is open to anyone and is nobody's turn, so it leaves the marker be.
+  // So does a Story beat with only one way on: "Go on" is not a decision, and
+  // spending a turn on it would leave that player nothing to decide (§6.1).
   if (prompt.vote) passStoryTurn(draft, storyTurnHolder(draft)?.playerId ?? playerId);
-  else if (prompt.forPlayerIds.length > 0) passStoryTurn(draft, playerId);
+  else if (prompt.forPlayerIds.length > 0 && prompt.options.length > 1) {
+    passStoryTurn(draft, playerId);
+  }
 
   applyEffectsDraft(draft, choice.effects, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
