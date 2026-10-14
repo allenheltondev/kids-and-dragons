@@ -1023,6 +1023,15 @@ export function createScene(app: Application): PartyScene {
       // mount/unmount/remount does it on every save. Pixi nulls a destroyed
       // object's transform, so touching `scale` here would throw.
       if (destroyed) return;
+      /*
+       * A new pane is a cut, not a camera move. The ease below only advances on
+       * ticks, and a phone stops ticking while its World tab is hidden, so an
+       * eased resize opened the tab on the last frame's framing (at first, the
+       * 1600×900 default: four times too close on a 390px phone) and zoomed
+       * out over the next second, cropping the party at the edges until it
+       * settled. Snap instead.
+       */
+      if (width !== viewport.width || height !== viewport.height) camNow = null;
       viewport = { width, height };
       /*
        * Cover the pane with the *design rect*, not with the backdrop's bounds.

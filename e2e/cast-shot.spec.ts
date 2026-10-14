@@ -93,6 +93,12 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     const watcher = others[0]!;
     await watcher.getByRole("button", { name: /^world$/i }).click(TAP).catch(() => undefined);
     await watcher.screenshot({ path: `art/review/cast-${scene}-phone.png` });
+    // The host's phone too, the moment its World tab opens: a pane that was
+    // hidden must be framed on its first frame, not zoom out into place.
+    await host.getByRole("button", { name: /^world$/i }).click(TAP);
+    await host.waitForTimeout(200);
+    await host.screenshot({ path: `art/review/cast-${scene}-host.png` });
+    await host.getByRole("button", { name: /^you$/i }).click(TAP);
   }
 
   await Promise.all(contexts.map((c) => c.close().catch(() => undefined)));
