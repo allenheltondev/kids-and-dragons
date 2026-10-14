@@ -12,6 +12,9 @@
   position: absolute;
   inset: 0;
   z-index: 2;
+  /* Lets the headline size itself to the pane it is in (cqi below), which is
+     the whole screen on a phone and a slice of the room on a TV. */
+  container-type: inline-size;
   display: grid;
   place-items: center;
   padding: var(--space-4, 1em);
@@ -239,8 +242,7 @@
   opacity: 1;
 }
 
-.dice__tn,
-.dice__outcome {
+.dice__tn {
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
@@ -250,8 +252,7 @@
 }
 
 .dice__card--settled .dice__maths,
-.dice__card--settled .dice__tn,
-.dice__card--settled .dice__outcome {
+.dice__card--settled .dice__tn {
   opacity: 1;
 }
 
@@ -270,24 +271,196 @@
   color: var(--color-text-muted, #b9b0d8);
 }
 
-/* Outcome is a word and a shape; the colour is the third signal (spec §11). */
-.dice__outcome {
-  padding: var(--space-2, 0.5em) var(--space-5, 1.5em);
-  border: 0.1em solid currentColor;
-  border-radius: var(--radius-pill, 999em);
-  font-size: var(--font-size-xl, 1.5em);
-  font-weight: 800;
+/*
+ * The verdict: a big stamped word with its shape, then the line that says why.
+ * The word and the check/cross carry the outcome; colour is the third signal
+ * (spec §11). Hidden until every die is down, then stamped in.
+ */
+.dice__verdict {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  visibility: hidden;
 }
 
-.dice__outcome--good {
+.dice__card--settled .dice__verdict {
+  visibility: visible;
+}
+
+.dice__headline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  max-inline-size: 100%;
+  text-align: center;
+  margin: 0;
+  /* As big as it can be without wrapping "Not this time" on a small phone. */
+  font-size: min(var(--font-size-3xl, 2.4em), 10cqi);
+  font-weight: 900;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.dice__headline-icon {
+  inline-size: 0.8em;
+  block-size: 0.8em;
+}
+
+.dice__card--settled .dice__headline {
+  animation: dice-stamp 420ms cubic-bezier(0.2, 1.5, 0.4, 1) 1 both;
+}
+
+.dice__margin {
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+  opacity: 0;
+}
+
+.dice__card--settled .dice__margin {
+  animation: dice-rise 320ms ease-out 260ms 1 forwards;
+}
+
+.dice__verdict--success .dice__headline {
   color: var(--color-success, #5fd6a0);
+  text-shadow: 0 0 0.5em rgba(95, 214, 160, 0.45);
 }
 
-.dice__outcome--bad {
+.dice__verdict--crit .dice__headline {
+  color: var(--kad-gold, #f5c86c);
+  text-shadow:
+    0 0 0.4em rgba(245, 200, 108, 0.7),
+    0 0 1.2em rgba(245, 200, 108, 0.35);
+}
+
+.dice__verdict--success .dice__margin,
+.dice__verdict--crit .dice__margin {
+  color: var(--color-text, #f4f0ff);
+}
+
+.dice__verdict--miss .dice__headline,
+.dice__verdict--fumble .dice__headline {
   color: var(--color-text-muted, #b9b0d8);
 }
 
+.dice__verdict--miss .dice__margin,
+.dice__verdict--fumble .dice__margin {
+  color: var(--color-text-muted, #b9b0d8);
+}
+
+.dice__card--settled .dice__verdict--miss .dice__headline,
+.dice__card--settled .dice__verdict--fumble .dice__headline {
+  animation: dice-droop 560ms ease-out 1 both;
+}
+
+/* The die itself reacts: a hop and a glow on a 20, a sulk on a miss, a
+   topple on a 1. */
+.dice__die--crit {
+  animation:
+    dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1,
+    dice-hop 520ms cubic-bezier(0.3, 1.6, 0.5, 1) 340ms 1;
+  filter: drop-shadow(0 0 0.5em rgba(245, 200, 108, 0.75));
+  color: var(--kad-gold, #f5c86c);
+}
+
+.dice__die--miss {
+  animation:
+    dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1,
+    dice-shake 420ms ease-in-out 340ms 1;
+  opacity: 0.75;
+  transition: opacity 400ms ease-out 300ms;
+}
+
+.dice__die--fumble {
+  animation:
+    dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1,
+    dice-topple 900ms cubic-bezier(0.3, 1.4, 0.5, 1) 340ms 1 forwards;
+  opacity: 0.75;
+}
+
 /* --- Motion ------------------------------------------------------------ */
+
+@keyframes dice-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(2.2) rotate(-8deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.92) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dice-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dice-droop {
+  0% {
+    opacity: 0;
+    transform: translateY(-0.4em);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0.1em) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes dice-hop {
+  0%,
+  100% {
+    transform: none;
+  }
+  45% {
+    transform: translateY(-14%) scale(1.08);
+  }
+}
+
+@keyframes dice-shake {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-5%) rotate(-4deg);
+  }
+  75% {
+    transform: translateX(5%) rotate(4deg);
+  }
+}
+
+@keyframes dice-topple {
+  0% {
+    transform: none;
+  }
+  60% {
+    transform: rotate(28deg) translateY(4%);
+  }
+  80% {
+    transform: rotate(18deg) translateY(3%);
+  }
+  100% {
+    transform: rotate(22deg) translateY(3%);
+  }
+}
 
 @keyframes dice-fade {
   from {
@@ -387,6 +560,10 @@
   .dice,
   .dice__die,
   .dice__die--settled,
+  .dice__die--crit,
+  .dice__die--miss,
+  .dice__die--fumble,
+  .dice__card--settled .dice__headline,
   .dice__help-die--settled,
   .dice__shadow,
   .dice__stage--settled .dice__shadow,
@@ -402,5 +579,11 @@
 
   .dice__stage--good::before {
     opacity: 0;
+  }
+
+  /* The margin line fades in by animation; with none, it just shows. */
+  .dice__card--settled .dice__margin {
+    animation: none;
+    opacity: 1;
   }
 }

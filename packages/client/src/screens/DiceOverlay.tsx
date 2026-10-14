@@ -31,6 +31,8 @@ import { useParty, usePresentation } from "../store";
 import { ROLL_TUMBLE_MS, rollCardMs, rollRevealMs } from "../world/presentation";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
 import { CharacterPortrait } from "./CharacterPortrait";
+import { DiceCelebration } from "./DiceCelebration";
+import type { Celebration } from "./DiceCelebration";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./DiceOverlay.css";
@@ -105,6 +107,28 @@ export function checkTarget(tn: number): string {
 export function neededLabel(roll: Pick<DiceRoll, "tn" | "result">): string {
   const isCheck = roll.result === "success" || roll.result === "failure";
   return isCheck ? checkTarget(roll.tn) : `Needed ${String(roll.tn)}`;
+}
+
+/** Which celebration the die throws when it lands. */
+export function celebrationFor(roll: Pick<DiceRoll, "die" | "result">): Celebration {
+  if (roll.die === 20) return "crit";
+  if (roll.die === 1) return "fumble";
+  return GOOD.has(roll.result) ? "success" : "miss";
+}
+
+/**
+ * The line under the headline that says *why*, in numbers a kid can check:
+ * "Beat 12 by 4!", "3 short of 12." A natural 20 or 1 says the die decided,
+ * because there the numbers alone would not explain it.
+ */
+export function marginLine(roll: Pick<DiceRoll, "die" | "total" | "tn" | "result">): string {
+  if (roll.die === 20) return "A natural 20 always makes it!";
+  if (roll.die === 1) return "A natural 1 never does. Next time!";
+  const by = roll.total - roll.tn;
+  if (GOOD.has(roll.result)) {
+    return by === 0 ? `Exactly ${String(roll.tn)}. Just made it!` : `Beat ${String(roll.tn)} by ${String(by)}!`;
+  }
+  return `${String(-by)} short of ${String(roll.tn)}.`;
 }
 
 /** "The party: 2 of 3 made it. Success!" */
@@ -192,6 +216,7 @@ export function DiceOverlay(): ReactElement | null {
   if (roll === null) return null;
 
   const modLabel = `${roll.mod >= 0 ? "+" : "−"}${String(Math.abs(roll.mod))}`;
+  const celebration = celebrationFor(roll);
 
   return (
     <div className={`dice${settled ? " dice--settled" : ""}`} role="status" aria-live="assertive">
@@ -231,7 +256,9 @@ export function DiceOverlay(): ReactElement | null {
           className={`dice__stage${settled ? " dice__stage--settled" : ""}${settled && good ? " dice__stage--good" : ""}`}
           aria-hidden="true"
         >
-          <div className={`dice__die${settled ? " dice__die--settled" : ""}`}>
+          <div
+            className={`dice__die${settled ? ` dice__die--settled dice__die--${celebration}` : ""}`}
+          >
             <Icon name="d20_solid" size="100%" className="dice__die-art" />
             <span
               className={`dice__die-number${settled ? "" : " dice__die-number--rolling"}`}
@@ -240,6 +267,9 @@ export function DiceOverlay(): ReactElement | null {
             </span>
           </div>
           <span className="dice__shadow" />
+          {settled && !prefersReducedMotion() ? (
+            <DiceCelebration key={shownId} kind={celebration} seed={shownId ?? 0} />
+          ) : null}
         </div>
 
         {/* A friend's die, thrown once the d20 is down so each lands on its own beat. */}
@@ -279,11 +309,15 @@ export function DiceOverlay(): ReactElement | null {
           </p>
         )}
 
-        {/* Outcome is a word plus a shape, never a colour on its own (spec §11). */}
-        <p className={`dice__outcome${good ? " dice__outcome--good" : " dice__outcome--bad"}`}>
-          <Icon name={good ? "check" : "close"} />
-          <span>{outcomeWord(roll)}</span>
-        </p>
+        {/* Outcome is a word plus a shape, never a colour on its own (spec §11):
+            a big stamped headline, then the line that says why. */}
+        <div className={`dice__verdict dice__verdict--${celebration}`}>
+          <p className="dice__headline">
+            <Icon name={good ? "check" : "close"} className="dice__headline-icon" />
+            <span>{outcomeWord(roll)}</span>
+          </p>
+          <p className="dice__margin">{marginLine(roll)}</p>
+        </div>
 
         <ScreenReaderOnly>
           {`${spokenRoll(roll, roller?.character.name ?? "Someone", helper?.character.name ?? null)} ${neededLabel(roll)}.`}

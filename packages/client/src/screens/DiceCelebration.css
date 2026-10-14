@@ -1,0 +1,107 @@
+/*
+ * The die's celebration (DiceCelebration.tsx). Every piece starts at the die's
+ * centre and flies along the custom properties its component wrote on it, so
+ * one keyframe serves every piece. The stage it sits in never rotates, so the
+ * confetti does not spin with the die.
+ */
+
+.celebration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Above the die, so the burst comes out of it rather than from behind it. */
+  z-index: 1;
+}
+
+.celebration__piece {
+  position: absolute;
+  inset-block-start: 45%;
+  inset-inline-start: 50%;
+  inline-size: 0.45em;
+  block-size: 0.45em;
+  opacity: 0;
+  animation: celebration-burst var(--duration, 1800ms) cubic-bezier(0.15, 0.7, 0.35, 1) var(--delay, 0ms) 1
+    forwards;
+}
+
+.celebration__piece--strip {
+  inline-size: 0.35em;
+  block-size: 0.8em;
+  border-radius: 0.08em;
+}
+
+.celebration__piece--dot {
+  border-radius: 50%;
+}
+
+.celebration__piece--star {
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+/* Confetti: the four stat colours, gold and success green. */
+.celebration--success .celebration__piece--c0 { background: var(--kad-stat-might, #ff8f6b); }
+.celebration--success .celebration__piece--c1 { background: var(--kad-stat-quick, #6bd6ff); }
+.celebration--success .celebration__piece--c2 { background: var(--kad-stat-clever, #c98bff); }
+.celebration--success .celebration__piece--c3 { background: var(--kad-stat-heart, #ff6bab); }
+.celebration--success .celebration__piece--c4 { background: var(--kad-gold, #f5c86c); }
+.celebration--success .celebration__piece--c5 { background: var(--kad-success, #5fd6a0); }
+
+/* A natural 20 is all gold. */
+.celebration--crit .celebration__piece--c0 { background: var(--kad-gold, #f5c86c); }
+.celebration--crit .celebration__piece--c1 { background: var(--kad-gold-hi, #ffe6a8); }
+.celebration--crit .celebration__piece--c2 { background: var(--kad-gold-lo, #c9962f); }
+.celebration--crit .celebration__piece--star {
+  filter: drop-shadow(0 0 0.25em rgba(245, 200, 108, 0.8));
+}
+
+/* Dust off a miss: small, grey, and in no hurry. */
+.celebration--miss .celebration__piece,
+.celebration--fumble .celebration__piece {
+  inline-size: 0.3em;
+  block-size: 0.3em;
+  animation-name: celebration-dust;
+  animation-timing-function: ease-in;
+}
+.celebration--miss .celebration__piece--c0,
+.celebration--fumble .celebration__piece--c0 { background: var(--kad-ink-dim, #b9b0d8); }
+.celebration--miss .celebration__piece--c1,
+.celebration--fumble .celebration__piece--c1 { background: var(--kad-ink-faint, #7d74a0); }
+
+@keyframes celebration-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.3);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(calc(var(--spin) * 0.4)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x) * 1.25), calc(-50% + var(--y) + var(--fall))) rotate(var(--spin))
+      scale(0.9);
+  }
+}
+
+@keyframes celebration-dust {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x) * 0.5), calc(-50% + var(--y)));
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y) + var(--fall))) rotate(var(--spin));
+  }
+}
+
+/* The component draws nothing under reduced motion; this is belt and braces. */
+@media (prefers-reduced-motion: reduce) {
+  .celebration {
+    display: none;
+  }
+}
