@@ -84,8 +84,9 @@
       "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "Flood-Warden"
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
         }
       ],
       "onEnter": [
@@ -251,8 +252,9 @@
       "narration": "In a small glade the moss has gone the color of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
       "cast": [
         {
-          "figure": "characters/unicorn",
-          "name": "Elder Unicorn"
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
         },
         {
           "figure": "characters/unicorn"
@@ -288,8 +290,9 @@
       "prompt": "Hum with the unicorns while the moss remembers its color",
       "cast": [
         {
-          "figure": "characters/unicorn",
-          "name": "Elder Unicorn"
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
         },
         {
           "figure": "characters/unicorn"
@@ -317,8 +320,9 @@
       "narration": "When the glade is quiet, the older unicorn rests her horn on the spot where the stone fell. \"These stones are not of the mountain,\" she says. \"The forest remembers them. It remembers them from before the mountain had its name.\" She says nothing else about that, and somehow that makes it louder. Then, quieter: \"This was a small one. The worst glade is north of here. We have not managed that one yet.\"",
       "cast": [
         {
-          "figure": "characters/unicorn",
-          "name": "Elder Unicorn"
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
         },
         {
           "figure": "characters/unicorn"
@@ -478,8 +482,9 @@
       "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
       "cast": [
         {
-          "figure": "characters/unicorn",
-          "name": "Elder Unicorn"
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
         },
         {
           "figure": "characters/unicorn"
@@ -523,8 +528,9 @@
       "narration": "You kneel round the stone and press it, gently, down into the moss. It sinks like a pebble into honey. Green spreads out from the middle in a ring, and every flower in the glade turns round at once to look at you. The unicorns bow, ears and all.",
       "cast": [
         {
-          "figure": "characters/unicorn",
-          "name": "Elder Unicorn"
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
         },
         {
           "figure": "characters/unicorn"
@@ -544,8 +550,9 @@
       "narration": "The stone is warm in your hand and loud in your pocket. Behind you, the glade goes quiet, the way a room goes quiet when somebody says the wrong thing. The unicorns don't say a word. One of them writes something down.",
       "cast": [
         {
-          "figure": "characters/unicorn",
-          "name": "Elder Unicorn"
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
         },
         {
           "figure": "characters/unicorn"

@@ -84,7 +84,7 @@
       "narration": "You ask a grandmother to chair the table. She brings her knitting, sits down at the head of your old door, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Sit.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -333,7 +333,7 @@
       "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's nan comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
@@ -478,8 +478,9 @@
       "narration": "A MossHome runner jogs up with a string of grumbling mules carrying everything the Woods confiscated from careless hunters. She counts the knots on your cord, unloads it all, and passes on one message from the elders: \"Whatever you are tying, tie it loose.\"",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "MossHome Runner"
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
         }
       ],
       "choices": [
