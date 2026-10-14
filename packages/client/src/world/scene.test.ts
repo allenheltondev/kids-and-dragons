@@ -28,7 +28,7 @@ import { beginEncounter, parseBoard } from "@kad/shared";
 import type { PartyMember, ResolvedCharacter } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
-import { createScene, type PartyScene } from "./scene";
+import { BACKDROP_FLOOR, backdropFit, createScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
 
 beforeAll(installFakeCanvas2D);
@@ -385,5 +385,34 @@ describe("the scene's life", () => {
     expect(boxes).toHaveLength(2);
     // Two figures, two distinct slots — not stacked on the same spot.
     expect(boxes[0]!.x).not.toBeCloseTo(boxes[1]!.x, 1);
+  });
+});
+
+describe("backdropFit: nobody floats", () => {
+  const tv = { width: 1920, height: 1080 };
+  const phone = { width: 390, height: 780 };
+
+  for (const [label, pane, feet, stage] of [
+    ["a TV with the plate up", tv, 560, 640],
+    ["a TV with no plate", tv, 950, 1080],
+    ["a phone with a long paragraph", phone, 200, 220],
+  ] as const) {
+    it(`puts the painting's floor under the feet on ${label}`, () => {
+      const bleed = 20;
+      const fit = backdropFit(pane, feet, stage, bleed);
+      expect(fit.y + BACKDROP_FLOOR * fit.scale).toBeCloseTo(feet);
+      // Still covers the pane across and above, through a jolt.
+      expect(fit.x).toBeLessThanOrEqual(-bleed + 0.001);
+      expect(fit.x + 1600 * fit.scale).toBeGreaterThanOrEqual(pane.width + bleed - 0.001);
+      expect(fit.y).toBeLessThanOrEqual(-bleed + 0.001);
+      // And runs on under the top of the plate rather than stopping at it.
+      expect(fit.y + 900 * fit.scale).toBeGreaterThan(stage);
+    });
+  }
+
+  it("just covers the pane when there is no story floor (a fight)", () => {
+    const fit = backdropFit(tv, 0, 1080, 0);
+    expect(fit.scale).toBeCloseTo(1.2);
+    expect(fit.y).toBeCloseTo(0);
   });
 });
