@@ -399,13 +399,13 @@ Generated with the built-in image generation tool against the existing species/o
 references. Production PNGs are 1024×1024 RGBA, facing left, feet at y=900.
 The pilot alpha-bounds fit is used without repainting or recoloring.
 
-Voss is a griffin, Brask a female faun, Holloway a centaur, and Mother Thrum a bigfoot: all are already represented in their order reference images. Voss has the direct beaked silhouette; Brask's ears and curls carry her three pencils; Holloway keeps the uniform and tidy ledger on a caravan-ready centaur; Mother Thrum's elder bigfoot body and bell charms suit a steady ford witch. Skywarden bases use actual species because the faction is absent from manifest entities, as in the approved Pellam pilot. Mother Thrum uses witch_order, which is a valid manifest entity. Group casts remain unchanged.
+Voss is a griffin, Brask a female faun, Holloway a griffin, and Mother Thrum a bigfoot: all are already represented in their order reference images. Voss has the direct beaked silhouette; Brask's ears and curls carry her three pencils; Holloway keeps the uniform and tidy ledger on a griffin old flyer; Mother Thrum's elder bigfoot body and bell charms suit a steady ford witch. Skywarden bases use actual species because the faction is absent from manifest entities, as in the approved Pellam pilot. Mother Thrum uses witch_order, which is a valid manifest entity. Group casts remain unchanged.
 
 | id | basis | scale | references |
 |---|---|---|---|
 | captain_voss | griffin | medium | 1 |
 | brask | faun | medium | 6 |
-| holloway | centaur | medium | 5 |
+| holloway | griffin | medium | 5 |
 | mother_thrum | witch_order | medium | 16 |
 
 [Figure sheet and TV/phone captures](../review/story-cast-orders/README.md).
@@ -427,6 +427,10 @@ Final identity correction to Brask, using the generated figure:Targeted identity
 NEW single individual game cast figure Sergeant Holloway; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Sergeant Holloway is ONE adult female CENTAUR Skywarden supply sergeant, chestnut horse body, braided brown hair, neat silver and violet uniform, calm meticulous expression. Holds ONE closed tidy purple leather LEDGER in two humanoid hands at waist, no text. Exactly FOUR equine legs/grounded hooves and exactly TWO humanoid arms, one horse tail. Light silver leg armor, no shield or weapon. Full figure facing LEFT. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/skywardens/assembled.png`.
+
+Final Holloway correction for the narration's explicit old-flyer identity:
+
+Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFIN Skywarden supply sergeant. Story calls her an old flyer, so she must have eagle head, golden hooked beak, slate-grey feather crest, lion quadruped body, two folded wings, one lion tail; NOT a centaur. Use ONLY griffin at left of supplied mixed-order reference for species and silver/violet uniform, not other people. Calm meticulous older face, neatly groomed crest, practical lighter silver armor with violet tower emblem and small violet shoulder cape. One CLOSED neat purple leather ledger rides visibly in a simple chest harness below her neck, tucked alongside a supply satchel; no writing. All FOUR limbs on ground: TWO eagle forelegs with talons and TWO lion hindlegs with paws. No humanoid arms, no extra legs, no sword or shield. Full character three-quarter LEFT, beak and gaze toward imageLEFT, neutral relaxed pose, readable120px. Crafted warm hand-painted storybook illustration, upper-left light, controlled shading. 1024x1024 RGBA true transparent background, no floor or shadow, no text/border, clear40px margins, feet near y900.
 
 ### Mother Thrum generation prompt
 
