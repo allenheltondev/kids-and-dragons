@@ -599,7 +599,8 @@
     "scene_soup_tent": {
       "type": "story",
       "discovers": [
-        "faction.deep_hollow_cult"
+        "faction.deep_hollow_cult",
+        "npc.selkie"
       ],
       "narration": "Where the high paths begin, there's a little tent selling nothing and giving away soup. The woman ladling it is very kind, with a mask pushed up on her head. \"The world's rules are broken,\" she says gently. \"Whatever sleeps under that mountain could fix them. We're collecting, to help it wake.\" She rattles a little box.",
       "choices": [
@@ -635,6 +636,12 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Soup woman"
+        }
       ]
     },
     "scene_soup_tent_coins": {
@@ -646,6 +653,12 @@
           "label": "Up the high paths",
           "icon": "bead",
           "goto": "scene_high_paths"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Soup woman"
         }
       ]
     },
@@ -659,6 +672,12 @@
           "icon": "hand",
           "goto": "scene_high_paths"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Soup woman"
+        }
       ]
     },
     "scene_soup_tent_soup": {
@@ -670,6 +689,12 @@
           "label": "Up the high paths",
           "icon": "potion",
           "goto": "scene_high_paths"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Soup woman"
         }
       ]
     },

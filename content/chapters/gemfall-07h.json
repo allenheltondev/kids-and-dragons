@@ -956,6 +956,12 @@
           "icon": "scroll",
           "goto": "scene_caravan_won"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
       ]
     },
     "choice_the_bend_relay_owes": {
@@ -985,6 +991,12 @@
           "label": "Lift the Caravan Stone",
           "icon": "note",
           "goto": "scene_caravan_won"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
         }
       ]
     },
@@ -1087,6 +1099,12 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
       ]
     },
     "scene_sold": {
@@ -1098,6 +1116,12 @@
           "label": "Walk on to the tree line",
           "icon": "forward",
           "goto": "choice_tree_line"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ]
     },

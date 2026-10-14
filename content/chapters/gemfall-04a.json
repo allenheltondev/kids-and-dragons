@@ -77,6 +77,12 @@
           "icon": "arrow",
           "goto": "scene_pride_road"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/donkey",
+          "name": "Cart donkey"
+        }
       ]
     },
     "scene_mouthlands_walk": {

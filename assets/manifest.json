@@ -143,6 +143,9 @@
     { "id": "embermoth", "classification": "ambient_creature", "primaryBiome": "red_sky_foothills", "canonicalLocations": ["red_sky_foothills", "mount_redsky"], "scale": "tiny_to_small" },
     { "id": "mosshorn", "classification": "ambient_creature", "primaryBiome": "enchanted_woods", "canonicalLocations": ["enchanted_woods", "mosshome"], "scale": "medium" },
     { "id": "jackalope", "classification": "ambient_creature", "primaryBiome": "plains", "canonicalLocations": ["the_plains", "sunward_fields", "eastern_plains"], "scale": "small" },
+    { "id": "donkey", "classification": "ambient_creature", "primaryBiome": "plains", "canonicalLocations": ["plains", "eastern_plains", "great_river"], "scale": "medium" },
+    { "id": "mule", "classification": "ambient_creature", "primaryBiome": "plains", "canonicalLocations": ["plains", "eastern_plains", "great_river"], "scale": "medium_to_large" },
+    { "id": "pony", "classification": "ambient_creature", "primaryBiome": "plains", "canonicalLocations": ["plains", "eastern_plains", "great_river"], "scale": "small_to_medium" },
     { "id": "cloud_whale", "classification": "ambient_creature", "primaryBiome": "sky_islands", "canonicalLocations": ["sky_islands"], "scale": "colossal" },
     { "id": "snowhorn_goat", "classification": "ambient_creature", "primaryBiome": "frostfang_peaks", "canonicalLocations": ["frostfang_peaks", "glacier_of_origins"], "scale": "medium" },
     { "id": "silver_otter", "classification": "ambient_creature", "primaryBiome": "stone_crossing", "canonicalLocations": ["great_river", "stone_crossing", "mermaid_cove"], "scale": "small" },
@@ -676,6 +679,78 @@
       "name": "Tobble Reedpipe",
       "basis": "faun",
       "scale": "medium"
+    },
+    {
+      "id": "hessa_wren",
+      "name": "Hessa Wren",
+      "basis": "harvest_sprite",
+      "scale": "tiny"
+    },
+    {
+      "id": "wend",
+      "name": "Wend",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "hollis",
+      "name": "Hollis",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "soup_woman",
+      "name": "Soup woman",
+      "basis": "selkie",
+      "scale": "medium"
+    },
+    {
+      "id": "clerk_pennywhistle",
+      "name": "Clerk Pennywhistle",
+      "basis": "harvest_sprite",
+      "scale": "tiny"
+    },
+    {
+      "id": "caravan_master",
+      "name": "Caravan Master",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "crying_gem_buyer",
+      "name": "Crying gem-buyer",
+      "basis": "merfolk",
+      "scale": "medium"
+    },
+    {
+      "id": "brassbuckle_faun",
+      "name": "Brassbuckle faun",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "rope_shop_boy",
+      "name": "Rope-shop boy",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "brassbuckle_centaur",
+      "name": "Brassbuckle centaur",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "cult_frogfolk",
+      "name": "Masked frogfolk singer",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "cult_bigfoot",
+      "name": "Masked bigfoot singer",
+      "basis": "bigfoot",
+      "scale": "large"
     },
     {
       "id": "hob",

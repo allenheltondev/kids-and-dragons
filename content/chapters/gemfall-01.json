@@ -152,6 +152,10 @@
         {
           "figure": "entities/yeti",
           "name": "Fishmonger"
+        },
+        {
+          "figure": "cast/rope_shop_boy",
+          "name": "Rope-shop boy"
         }
       ],
       "choices": [

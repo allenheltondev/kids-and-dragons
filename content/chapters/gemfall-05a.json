@@ -116,6 +116,12 @@
           "icon": "arrow",
           "goto": "scene_clerk"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
       ]
     },
     "scene_soup_line_fix_barrow": {
@@ -127,6 +133,12 @@
           "label": "Take a bowl yourselves",
           "icon": "hand",
           "goto": "scene_cult_pitch"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
         }
       ]
     },
@@ -169,6 +181,12 @@
           "icon": "cake",
           "goto": "scene_cult_pitch_finish_soup"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
       ]
     },
     "scene_cult_pitch_finish_soup": {
@@ -180,6 +198,12 @@
           "label": "Walk on to the bridge foot",
           "icon": "cake",
           "goto": "scene_clerk"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
         }
       ]
     },
@@ -193,6 +217,12 @@
           "icon": "gem",
           "goto": "scene_clerk"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
       ]
     },
     "scene_cult_pitch_say_no_kindly": {
@@ -204,6 +234,12 @@
           "label": "Walk on to the bridge foot",
           "icon": "heart",
           "goto": "scene_clerk"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
         }
       ]
     },
@@ -253,6 +289,14 @@
         {
           "figure": "cast/pellam",
           "name": "Pellam"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Tired carter"
+        },
+        {
+          "figure": "entities/mule",
+          "name": "Carter's mule"
         }
       ],
       "roller": "party",

@@ -298,6 +298,15 @@
           "icon": "ear",
           "goto": "scene_soup_line_ask_crystal"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ],
+      "discovers": [
+        "npc.frogfolk"
       ]
     },
     "scene_soup_line_ask_crystal": {
@@ -310,6 +319,12 @@
           "icon": "ear",
           "goto": "choice_tolls"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
       ]
     },
     "scene_soup_line_thank_wend": {
@@ -321,6 +336,12 @@
           "label": "See what the queue needs",
           "icon": "heart",
           "goto": "choice_tolls"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
         }
       ]
     },
@@ -865,6 +886,12 @@
           "icon": "bead",
           "requiresFlag": "joined_the_con",
           "goto": "scene_surge"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
         }
       ]
     },
