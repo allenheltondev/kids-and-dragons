@@ -100,6 +100,12 @@
         "npc.centaur"
       ],
       "narration": "You wave first, from far off, tail curled politely away, the way road peoples have done for longer than anybody remembers. A centaur on the ridge stops dead, puts a hand on her heart, and waves back so hard her sash ribbons tangle.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Fennick"
+        }
+      ],
       "choices": [
         {
           "id": "accept_escort",
@@ -115,6 +121,12 @@
         "npc.centaur"
       ],
       "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Fennick"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -196,6 +208,12 @@
         "npc.stone_troll"
       ],
       "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you would rest a hand on a sleeping dog. The toll is a story or a riddle from each of you, and he hears every single one in full. Slowly. A bird builds half a nest on his shoulder while he listens.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "tell_story",
@@ -228,6 +246,12 @@
     "scene_troll_riddle_account": {
       "type": "story",
       "narration": "You bring him the prides' riddle score, the way manticores have for generations. Old Lintel reads the total. His total is different. His total has always been different. He makes a sound like two boulders being pleased with each other, writes your names under both numbers, and presses a smooth luckstone into your palm \"for keeping the argument going.\"",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -240,6 +264,12 @@
     "scene_troll_ask_riddle": {
       "type": "story",
       "narration": "You ask Old Lintel a riddle. He weighs it out loud, slowly, trying each answer like a stone in a wall, until he finds the one that fits. Then he asks you one back, and it is so old that the answer is a word nobody uses any more. You guess anyway. He accepts the guess, because you meant it.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -252,6 +282,12 @@
     "scene_troll_tell_story": {
       "type": "story",
       "narration": "You tell Old Lintel a story. He hears all of it, including the bit in the middle you nearly skipped, and the bird on his shoulder finishes its nest while you talk. When you reach the end, he is quiet for so long you think he has turned back into a bridge. Then: \"Good,\" he says. \"That one's paid.\"",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -264,6 +300,12 @@
     "scene_troll_hum": {
       "type": "story",
       "narration": "Halfway through, Old Lintel stops listening to you and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" He has stopped asking riddles this season. Now there is only one toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -296,6 +338,12 @@
     "scene_troll_hum_show_ember": {
       "type": "story",
       "narration": "You hold out the Ember Facet. Old Lintel does not take it. He lays one finger near it on the stone of the bridge, and the bridge hums back, the same low note, so deep you feel it in your boots. \"There,\" he says. \"Hear that? Older than me.\" He looks at the stone for a long time, and then at you.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -308,6 +356,12 @@
     "scene_troll_hum_dont_know": {
       "type": "story",
       "narration": "\"Don't know yet,\" you say. Old Lintel nods, which takes a while. \"Then that's the toll,\" he says. \"Find out.\" He has clearly decided that this counts as paying, and nobody argues with a troll about tolls.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -320,6 +374,12 @@
     "scene_troll_hum_answer_honest": {
       "type": "story",
       "narration": "You tell him about the red stone that landed by your boot at the Exchange, and where you think all of them are going, as honestly as you can. Old Lintel listens all the way to the end. \"Good,\" he says. \"Keep asking it. Of everyone.\" He lifts his palm off the stone just long enough to wave you toward the queue camp.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Old Lintel"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -354,6 +414,11 @@
         "creature.river_drake"
       ],
       "narration": "In the bridge's shadow, a river drake lies along a rock shelf like a cat on a windowsill. The shelf holds fish bones, three boat hinges, one otter-polished pebble, and right in the middle a new gem that hums. Beside it, a slate says RATES, and the drake keeps rubbing the numbers out with its tail and writing bigger ones.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
       "choices": [
         {
           "id": "haggle",
@@ -387,6 +452,11 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Haggle with a river drake who has done this before",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_drake_deal",
@@ -400,6 +470,11 @@
     "scene_drake_deal": {
       "type": "story",
       "narration": "The new gem is warm, and it hums against your palm like a cat purring under a blanket. The drake writes PAID on its slate, underlines it twice, and goes back to timing the queue.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -447,6 +522,12 @@
         "npc.frogfolk"
       ],
       "narration": "At last, your turn. The flat stones march out across the river, and then the last stretch is simply under: brown water hurrying over where the stones should be. In the reeds, a flat boat bumps the bank. A frog in a very old hat sits in it, saying nothing, in a way that sounds like he has been saying nothing for years.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "choices": [
         {
           "id": "wade",
@@ -489,6 +570,12 @@
         "individual.old_ossley"
       ],
       "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks at each of you in turn and asks for one thing each: the song you hum when nobody is listening, the last thing you were proud of, and a promise to carry something for somebody, someday. He does not say what. He does not say who.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "choices": [
         {
           "id": "pay_ossley",
@@ -583,6 +670,12 @@
         "npc.frogfolk"
       ],
       "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, somehow already here, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then: \"Ossley,\" which turns out to be his name. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -604,6 +697,11 @@
         "creature.bone_crawler"
       ],
       "narration": "The beach is covered in old bone chips laid out in neat spirals. Then a spiral stands up. Bone crawlers: little scuttlers wearing shells of borrowed fossil, sleeves too long, dignity enormous. They are clattering straight for your humming packs.",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler"
+        }
+      ],
       "choices": [
         {
           "id": "throw_shiny",
@@ -630,6 +728,11 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Fool a bone crawler swarm with something that glitters",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "rest_wet_end",
@@ -645,6 +748,11 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Stomp off the beach looking as big as you possibly can",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "rest_wet_end",

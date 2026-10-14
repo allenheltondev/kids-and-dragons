@@ -41,6 +41,15 @@
         "creature.will_o_wisp"
       ],
       "narration": "A frogfolk ferrywoman called Gullet poles you into the Whispering Marsh. She carves a notch in her pole for every new wisp she sees, and this week she ran out of pole and started on her hat. Whole channels are roped off with ribbon and tiny bells, and behind them brand-new wisps bob about like they can't find their slippers. \"Too many new ones,\" says Gullet, and very carefully does not say why.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "choices": [
         {
           "id": "say_it",
@@ -73,6 +82,15 @@
     "scene_poling_in_say_it": {
       "type": "story",
       "narration": "\"Something's leaking,\" you say. Gullet stops poling. The new wisps behind the ribbon all turn toward you at once, like a room full of candles noticing a draught. Gullet carves one more notch in her hat, very carefully, and starts poling again. \"Not near the wisps,\" she says. \"They remember things.\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -85,6 +103,15 @@
     "scene_unicorn_feels": {
       "type": "story",
       "narration": "You lower your horn toward the ribbon, and the wisps go still. Each one is a memory that got tangled in the marsh. And every single one of them is remembering the same thing: a night when red light fell out of the sky, and, for one moment, fell upward.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -107,6 +134,16 @@
         "npc.boggart"
       ],
       "narration": "On a mud island stacked with lost things (odd mittens, a teapot lid, nine umbrellas) sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/boggart",
+          "name": "Nan Rummage"
+        }
+      ],
       "choices": [
         {
           "id": "offer",
@@ -135,6 +172,16 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Work out, from her hints, what Nan Rummage actually wants",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/boggart",
+          "name": "Nan Rummage"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_boggart_clue",
@@ -155,6 +202,16 @@
     "scene_boggart_clue": {
       "type": "story",
       "narration": "Nan Rummage opens the bag a crack. Inside is a chip of fallen gem, no bigger than a tooth, humming one long, low note. \"Lost things all hum,\" she tells the teapot lid. \"This one hums like the Gate. Same note. Exactly.\" Then, to an umbrella: \"Not that I said.\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/boggart",
+          "name": "Nan Rummage"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -174,6 +231,12 @@
     "scene_barge": {
       "type": "story",
       "narration": "Round the next bend, half-sunk in the reeds, sits a gem barge with ABANDONED painted on the side in big, helpful letters. One gem sits on its deck, humming the boggart's note. There are prospector footprints in the mud going toward it, and, oddly, none coming back.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "choices": [
         {
           "id": "grab",
@@ -207,6 +270,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Spot what's wrong with this barge, and say what it really is",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_act_closed",
@@ -229,6 +298,12 @@
       "stat": "might",
       "tn": 12,
       "prompt": "Stamp the bank hard enough to shake a mimic off its patch",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_act_closed",
@@ -245,6 +320,15 @@
         "creature.mire_mimic"
       ],
       "narration": "Your kitsune walks once round the barge with their nose in the air. \"The barnacles are on the wrong side. That rope is a tail. And nobody abandons a barge with the lantern still polished.\" A long, wounded silence. Then the barge unfolds into a mire mimic and slinks off into the reeds, mortified.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/mire_mimic"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -309,6 +393,12 @@
         "creature.mire_mimic"
       ],
       "narration": "The show is over. Where the barge sat there is only mud, reeds, and one real gem, the only genuine thing in the whole performance. It hums the boggart's note, steady as a heartbeat.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "choices": [
         {
           "id": "take",
@@ -340,6 +430,12 @@
     "scene_act_closed_leave": {
       "type": "story",
       "narration": "You leave the stone where the barge was. For a moment nothing happens. Then the mud takes it, slowly, like a hand closing, until only the hum is left, and then not even that. Gullet, watching from the raft, nods once, the way frogfolk nod at a thing done properly.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -352,6 +448,12 @@
     "scene_act_closed_take": {
       "type": "story",
       "narration": "You lift the Barge Stone out of the mud. It hums louder in your hand, as if it is pleased to be held, and every reed along the bank leans toward it and then away again. Somewhere behind you, a long muddy shape sighs.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -364,6 +466,12 @@
     "rest_reed_raft": {
       "type": "rest",
       "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a flat hot stone. They taste like crunchy pond, which is better than it sounds. Rest a while. The fog is coming in, and something small and bright is waiting in it.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "heal": 2,
       "choices": [
         {
@@ -377,6 +485,11 @@
     "scene_wisp_lead": {
       "type": "story",
       "narration": "A single wisp drifts out of the fog and hangs in front of you, blinking hopefully, like a dog holding a ball. Then it bobs away between the reeds and stops, to see if you'll follow.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "choices": [
         {
           "id": "please",
@@ -422,6 +535,11 @@
     "scene_wisp_lead_please": {
       "type": "story",
       "narration": "\"Please,\" you say. The wisp stops dead. Nobody has ever said please to a wisp. It goes pink, then gold, then a flustered sort of white, and bobs in a little circle as if it does not know where to put itself. Then it comes back and hangs right in front of you, glowing, waiting to show you.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -436,6 +554,11 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Walk with the wisp, not after it, however slowly it goes",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_wisp_sight",
@@ -456,6 +579,11 @@
     "scene_wisp_trap": {
       "type": "story",
       "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug, beside something huge and grey.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "onEnter": [
         {
           "type": "damage",
@@ -474,6 +602,11 @@
     "scene_wisp_sight": {
       "type": "story",
       "narration": "The wisp brightens, and for a moment you see what it remembers: a night sky full of falling red sparks, and one moment when every spark fell upward. Then it leads you, gently, out of the reeds to the foot of something enormous.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -610,6 +743,16 @@
     "scene_west_branch": {
       "type": "story",
       "narration": "The west branch runs along the marsh's northern edge, wide and brown and in a hurry. Gullet's cousins have built a weir-ford of poles and stepping stones, and they are standing on it in their best hats, waiting to pole you over with ceremony.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet's Cousins"
+        }
+      ],
       "choices": [
         {
           "id": "ceremony",
@@ -630,6 +773,16 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Keep time with the frogfolk's crossing song",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet's Cousins"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "ending_forded_clean",
@@ -645,6 +798,16 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Hop the weir stones across the west branch",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        },
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet's Cousins"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "ending_forded_clean",
@@ -661,6 +824,12 @@
         "biome.enchanted_woods"
       ],
       "narration": "The frogfolk set you down dry-footed on the north bank, and Gullet waves her notched hat until the fog swallows her. Ahead, the Enchanted Woods stand very still, like they've been expecting you. Camp at the tree line and listen to the river go by. You heard the note today. You won't forget it.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Gullet"
+        }
+      ],
       "heal": 4,
       "onEnter": [
         {

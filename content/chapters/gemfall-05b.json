@@ -46,6 +46,12 @@
         "character.bigfoot"
       ],
       "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. A bigfoot runner jogs past with a bundle of knotted cords over one shoulder, and does not stop jogging to say hello.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "MossHome Runner"
+        }
+      ],
       "choices": [
         {
           "id": "ask",
@@ -72,6 +78,12 @@
     "scene_mosshome_glade_word": {
       "type": "story",
       "narration": "You mention the glade. The archivist at the door goes still, then pulls a cord from her belt and runs her thumb along it to a knot near the end. \"That glade,\" she says. \"The path record changed this morning. It got better.\" She looks at you as if you have just handed her a book she has been waiting for. \"In. Feet.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -84,6 +96,12 @@
     "scene_mosshome_ask_door": {
       "type": "story",
       "narration": "Your bigfoot walks up to the archive door and knocks on it, three slow knocks, the way MossHome children are taught before they can walk. The door opens by itself. Behind it, an archivist drops a whole armful of cords and says, \"Nobody's done that in years. Come in. Wipe your feet.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -98,6 +116,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Convince the archivist at the door you've seen something worth writing down",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_archive_table",
@@ -111,6 +135,12 @@
     "scene_archive_table": {
       "type": "story",
       "narration": "The archive table is one slice of an enormous tree, with every path in the Woods drawn on it in moss-ink. All season the archivists have been marking every path the Woods has moved since the mountain went off. Each change is pinned with a little thorn, and there are a great many thorns.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "read",
@@ -139,6 +169,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Plot every moved path, thorn by thorn, without tangling the yarn",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_spiral",
@@ -159,6 +195,12 @@
     "scene_spiral": {
       "type": "story",
       "narration": "Plotted on the table, the moved paths are not random at all. They spiral, round and round every place a stone fell, like water round a plughole, every path bending away. It is what the land has been saying all the way north. The Woods is not flinching from the mountain. It is flinching from the stones.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -171,6 +213,16 @@
     "scene_knot_cords": {
       "type": "story",
       "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots: records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        },
+        {
+          "figure": "characters/bigfoot",
+          "name": "Oldest Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "pile",
@@ -189,6 +241,16 @@
     "scene_pile_question": {
       "type": "story",
       "narration": "The archivists look at each other. Yes, they know about the forest's pile, everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        },
+        {
+          "figure": "characters/bigfoot",
+          "name": "Oldest Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "trust",
@@ -230,6 +292,16 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Tell the archivists, honestly, what you want the stones for",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        },
+        {
+          "figure": "characters/bigfoot",
+          "name": "Oldest Archivist"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_pile_visit",
@@ -250,6 +322,12 @@
     "scene_pile_visit": {
       "type": "story",
       "narration": "Behind MossHome, in a hollow under the roots, is the pile: pickaxes, sieves, three hats and a heap of humming gems. One stone hums louder than all the rest. \"That one wants to go north,\" says the archivist. \"You're going north. Carry it, if you like. The record will know who has it.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "carry",
@@ -274,6 +352,12 @@
     "scene_pile_visit_leave": {
       "type": "story",
       "narration": "You leave the loud stone where the forest put it. The archivist does not look surprised. She ties a small knot in a cord anyway, a different knot, and says, \"The record will remember that too.\" Behind you the pile hums on in the dark, keeping itself company.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -286,6 +370,12 @@
     "scene_pile_visit_carry": {
       "type": "story",
       "narration": "You lift the loud stone out of the pile. It hums against your chest like a cat that has decided you will do. The archivist ties a small knot in a cord and does not say what it means. \"North,\" she says. \"That's all it wants.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "Archivist"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -359,6 +449,12 @@
     "choice_elders": {
       "type": "choice_point",
       "narration": "The MossHome elders sit in a ring of tree stumps, sipping tea. \"You have the outline of it now,\" says the eldest. \"The stones are older than the mountain, and the land has been keeping records. Somebody must be told. Tell whoever you like first.\" She sips. \"Only tell us second.\" Who will you tell? Everybody vote.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "The Eldest"
+        }
+      ],
       "choices": [
         {
           "id": "wardens",
@@ -404,6 +500,12 @@
     "choice_elders_close": {
       "type": "story",
       "narration": "\"Nobody yet,\" says the eldest, and looks at you over her cup for a long time. \"Careful,\" she says at last. \"Careful is a kind of telling, too.\" She sips. \"When you do tell. Second.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "The Eldest"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -416,6 +518,12 @@
     "choice_elders_gatherers": {
       "type": "story",
       "narration": "\"The grandmothers,\" says the eldest, and for the first time all evening she smiles. \"Bells carry further than cords.\" She sips. \"Tell them we said so. And tell us second.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "The Eldest"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -428,6 +536,12 @@
     "choice_elders_wardens": {
       "type": "story",
       "narration": "\"The wardens,\" says the eldest, and sips. \"They write things down. That is not nothing.\" She sips again. \"Second,\" she reminds you, and the whole ring of elders nods at once, which makes the tea in every cup ripple.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "The Eldest"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -440,6 +554,12 @@
     "scene_runner": {
       "type": "story",
       "narration": "As you pack, the runner from the square jogs up and presses a knotted cord into your hands, still warm from carrying. \"For later,\" she says. \"When the forest pays back what it took, it'll want to see this. It means the record knows you.\" Then she's off again, at a jog, because MossHome runners never walk anywhere.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "MossHome Runner"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -538,6 +658,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "The bigfoot high paths climb along the cliffs above the falls, all rope bridges and stone steps worn into bowls. Halfway up, three cinder wolves are lying across the path, glowing faintly, as if the mountain kicked them out. They aren't hunting. They're cross. And they're in the way.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "distract",
@@ -571,6 +696,11 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Give three cross wolves something more interesting than you",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_foothills_view",
@@ -586,6 +716,11 @@
       "stat": "quick",
       "tn": 16,
       "prompt": "Dash past three cinder wolves on a narrow cliff path",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_foothills_view",

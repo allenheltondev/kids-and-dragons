@@ -65,6 +65,12 @@
         "character.dragonling"
       ],
       "narration": "A grandmother with spectacles on a chain looks up from her tally book, looks at you, and drops the pencil. \"Well! Look who came home the FRONT way.\" Within a minute you have been hugged by four aunts and handed a warm rock to hold. Then her face goes serious. \"Worst season in the tallies, love. Come and help.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "help",
@@ -87,6 +93,12 @@
         "character.dragonling"
       ],
       "narration": "The gate town is all bells: big bells, little bells, bells on poles and bells on goats. Dragonling grandmothers inspect every pick that comes through and recite the one rule to every prospector: \"Take what the mountain drops. Never pry at what it holds.\" A man with an enormous pry bar is saying he didn't hear that.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "explain",
@@ -112,6 +124,17 @@
     "scene_bell_code": {
       "type": "story",
       "narration": "A small dragonling explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bell-Code Expert",
+          "size": "small"
+        }
+      ],
       "choices": [
         {
           "id": "back",
@@ -126,6 +149,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Help a stubborn prospector actually hear the one rule",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rule_heard",
@@ -139,6 +168,12 @@
     "scene_rule_heard": {
       "type": "story",
       "narration": "The man looks at his pry bar for a long moment. Then he hands it to the grandmother, who hangs it on a wall already covered in pry bars. There are hundreds of them. \"Every one of those listened, in the end,\" she says.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -161,6 +196,11 @@
         "creature.glassback_crab"
       ],
       "narration": "Up the hill, the prospector is about to pry at a sparkling heap on a patch of warm ground. The heap stands up. It is a glassback crab, and it is doing a slow, clacking dance with its claws raised. Its friend is standing up too.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "choices": [
         {
           "id": "read",
@@ -188,6 +228,11 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Read what the glassback crab's dance means",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_crab_settles",
@@ -201,6 +246,11 @@
     "scene_crab_settles": {
       "type": "story",
       "narration": "Claws up and a sideways shuffle means: this warm ground is my house. Everybody takes three slow steps back off the warm patch. The crabs stop dancing, settle down, and go back to looking like a very expensive pile of gems. The prospector gives you his pry bar without being asked.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -241,6 +291,12 @@
     "scene_tallies": {
       "type": "story",
       "narration": "The tally house is full of books: every eruption the dragonlings ever counted, in neat rows of marks. Great-Gran Ashby, the oldest grandmother, opens the newest book. Since the big eruption, the Gemfall rhythm has broken completely. \"Show me what you've brought,\" she says. \"Everything.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "charm",
@@ -267,6 +323,12 @@
     "scene_charm_rings": {
       "type": "story",
       "narration": "The witch's charm rings the moment you hold it up, and Great-Gran Ashby goes very still. She opens the oldest book on the shelf, the one with the cracked spine, and points to a mark drawn like a little bell. \"Same note,\" she says. \"My great-great-gran heard it too.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "more",
@@ -279,6 +341,12 @@
     "scene_verses_sung": {
       "type": "story",
       "narration": "You sing the spiral verses, and the grandmothers lay a string on the floor map, landmark by landmark. The roads curl around the gemfalls exactly the way their tally marks do. One grandmother says a word that is not allowed in the tally house.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "more",
@@ -293,6 +361,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Put every clue in the right place on the floor map",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_here_first",
@@ -313,6 +387,12 @@
     "scene_here_first": {
       "type": "story",
       "narration": "\"One more thing,\" says Great-Gran Ashby. \"The boundary stones were here first. Before the first families. Already marking the line we mark now.\" She taps the floor map. Everything since Bramblewood points one way: the stones are older than the mountain's name, and the land has always known.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "onward",
@@ -325,6 +405,12 @@
     "scene_unassigned": {
       "type": "story",
       "narration": "On the shelf sits a fresh-fallen gem on top of a very old list: the caves that are never assigned to anyone. The list is older than every grandmother on record. \"We're not hiding it,\" says Great-Gran Ashby. \"We're keeping it. There's a difference.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "ask_carry",
@@ -368,6 +454,12 @@
     "scene_unassigned_leave_kept": {
       "type": "story",
       "narration": "You leave it on its list. Great-Gran Ashby looks at the gem, and at you, and nods one slow nod. \"Kept,\" she says, and squares the list underneath it with the end of her walking stick, so the two of them line up exactly. \"Some things want keeping more than they want carrying.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -380,6 +472,12 @@
     "scene_unassigned_ask_proper": {
       "type": "story",
       "narration": "You hold the warm rock in both hands and ask, the proper way, the way every dragonling child learns before they learn to fly. Great-Gran Ashby watches you do it with her mouth pressed tight, and then she lifts the gem off its list and sets it in your hands on top of the rock. \"Keeping,\" she says. \"Not taking. You know the difference. Don't you dare sell it.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -394,6 +492,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Show Great-Gran Ashby you know the difference between keeping and taking",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "rest_bell_house",
@@ -434,6 +538,12 @@
         "npc.centaur"
       ],
       "narration": "In the morning, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Perrin Nine-Verse"
+        }
+      ],
       "choices": [
         {
           "id": "take_shortcut",
@@ -452,6 +562,12 @@
     "scene_shortcut": {
       "type": "story",
       "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and out on the far side a whole day ahead of the caravan road. Perrin stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Perrin Nine-Verse"
+        }
+      ],
       "choices": [
         {
           "id": "promise",
@@ -471,6 +587,12 @@
     "scene_who_to_tell": {
       "type": "choice_point",
       "narration": "The grandmothers walk you to the last boundary stone. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks at each of you in turn. \"Make somebody finally listen.\" Who will you tell?",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "wardens",
@@ -530,6 +652,12 @@
     "scene_who_to_tell_ring_home": {
       "type": "story",
       "narration": "You ring your own family's bell, the pattern you learned before you could talk. For a moment nothing. Then, from three towns up the hills, faint and clear, a bell rings the pattern back, and then adds the one that means hurry home for supper. Great-Gran Ashby pretends very hard not to have heard.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -542,6 +670,12 @@
     "scene_tell_wardens": {
       "type": "story",
       "narration": "You write it all down for the Skywardens, neatly, the way Sergeant Holloway would like it, and a relay-runner takes it north at a gallop. Great-Gran Ashby sniffs. \"Wardens,\" she says. \"Well. They do write things down.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "north",
@@ -554,6 +688,12 @@
     "scene_tell_gatherers": {
       "type": "story",
       "narration": "The grandmothers ring a pattern on the bells that runs from town to town up the hills, faster than any rider. Every grandmother in the foothills knows now. Great-Gran Ashby blows her nose very loudly and pretends she has a cold.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "north",
@@ -566,6 +706,12 @@
     "scene_keep_close": {
       "type": "story",
       "narration": "You keep the outline folded up small, in the safest pocket. Great-Gran Ashby nods slowly. \"Careful is not the same as quiet,\" she says. \"But careful is a start.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Great-Gran Ashby"
+        }
+      ],
       "choices": [
         {
           "id": "north",

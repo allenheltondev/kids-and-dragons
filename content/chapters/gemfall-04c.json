@@ -129,6 +129,11 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Count the jackalopes and find where they stop",
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_silence_follows",
@@ -222,6 +227,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Explain Tib to a centaur at a full gallop",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tib_found",
@@ -353,6 +364,12 @@
         "faction.skywardens"
       ],
       "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food at fixed rates for Redspire, the wardens' citadel up in the foothills. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Sergeant Holloway"
+        }
+      ],
       "choices": [
         {
           "id": "pay",
@@ -392,6 +409,12 @@
     "scene_warden_patrol_griffin_logs": {
       "type": "story",
       "narration": "Your griffin and the sergeant swap sky news the way old flyers do: wind at the bridge, ash over the mountain, a storm sitting on the sea that will not come in. Holloway writes all of it down and reads it back twice. \"Useful,\" the sergeant says, and waves the patrol aside to let you through.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Sergeant Holloway"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -404,6 +427,12 @@
     "scene_warden_patrol_pay": {
       "type": "story",
       "narration": "You pay the fixed rate. Sergeant Holloway writes PAID, POLITE in the ledger and hands you a receipt, then a copy of the receipt, then a receipt for the copy. \"Arithmetic,\" the sergeant says, almost kindly. \"It's the only thing up here that isn't shouting.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Sergeant Holloway"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -418,6 +447,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Out-arithmetic a Skywarden",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Sergeant Holloway"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_depot",
@@ -504,6 +539,12 @@
         "npc.centaur"
       ],
       "narration": "At night the centaur relay gathers at the biggest campfire to sing the route-songs: one verse for every landmark, the dangers in the chorus. This season the songs have new verses every night, faster than anyone can learn them. A centaur called Old Corran passes you the next line.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Old Corran"
+        }
+      ],
       "choices": [
         {
           "id": "sing",
@@ -524,6 +565,12 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Sing a route-song verse in front of everybody",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Old Corran"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_spiral",
@@ -544,6 +591,12 @@
     "scene_spiral": {
       "type": "story",
       "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark with a hoof-pick and gives it to you.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Old Corran"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -565,6 +618,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "Plains folk say never camp where the road bends, because the road knows something. At the bend, a pack of cinder wolves is pacing back and forth across the road, glowing faintly, between you and tonight's camp.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "wait",
@@ -591,6 +649,11 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Creep through the long grass without a rustle",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "end_foothills_in_sight",
@@ -630,6 +693,12 @@
     "end_scattered": {
       "type": "rest",
       "narration": "By the time you find each other again, it is almost morning. The wolves have eaten the supplies and run off north, and Sergeant Holloway's patrol finds you and writes you down in the ledger as 'Stragglers, Muddy'. You have lost a day, but the bark strip of verses is safe, and you are all together.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Sergeant Holloway"
+        }
+      ],
       "heal": 3,
       "choices": [],
       "outcome": "setback"

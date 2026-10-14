@@ -549,6 +549,9 @@
     "scenes/gemfall/sheeple-ridge"
   ],
 
+  "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
+  "castFigures": [],
+
   "globalPalette": {
     "outline": "#3A2A1E",
     "darkest": "#2B2118",

@@ -82,6 +82,12 @@
     "scene_the_table_grandmothers_chair": {
       "type": "story",
       "narration": "You ask a grandmother to chair the table. She brings her knitting, sits down at the head of your old door, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Sit.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -97,6 +103,12 @@
         "faction.skywardens"
       ],
       "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, and the desk is guarded by Pellam, who has never once smiled on duty and has logged that fact twice. \"Not for lending,\" says Pellam, before you have said anything at all.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "friend",
@@ -139,6 +151,12 @@
     "scene_ledger_false_promise": {
       "type": "story",
       "narration": "You promise him the choir's chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -151,6 +169,12 @@
     "scene_ledger_friend": {
       "type": "story",
       "narration": "\"You told us first,\" you say. \"At the citadel. We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -165,6 +189,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Show Pellam why a cage needs a key-holder",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_choir",
@@ -301,6 +331,12 @@
     "scene_choir_vouch": {
       "type": "story",
       "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's nan comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -390,6 +426,12 @@
         "npc.frogfolk"
       ],
       "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat full of every stone the river took off somebody this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "choices": [
         {
           "id": "debt",
@@ -409,6 +451,12 @@
     "scene_ossley_debt": {
       "type": "story",
       "narration": "Ossley's price is not coin. It never was. \"Whatever you tie,\" he says, \"tie it with a knot you can undo.\" He makes you show him the knot, there and then, on his boat rope. It takes three tries.",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "choices": [
         {
           "id": "promise",
@@ -428,6 +476,12 @@
     "scene_mosshome_runner": {
       "type": "story",
       "narration": "A MossHome runner jogs up with a string of grumbling mules carrying everything the Woods confiscated from careless hunters. She counts the knots on your cord, unloads it all, and passes on one message from the elders: \"Whatever you are tying, tie it loose.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "MossHome Runner"
+        }
+      ],
       "choices": [
         {
           "id": "thank",
@@ -450,6 +504,11 @@
         "npc.boggart"
       ],
       "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "brisk_said",
@@ -482,6 +541,11 @@
     "scene_boggart_choir_said": {
       "type": "story",
       "narration": "You hum what the choir hums when nobody is listening, which is the same three notes, only sadder. The boggart goes completely still and listens with its whole body. \"Sidelong,\" it says at last, approvingly, and hands over the catalogue without ever once looking at you.",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -494,6 +558,11 @@
     "scene_boggart_brisk_said": {
       "type": "story",
       "narration": "You tell it what Pellam mutters to his ledger when he thinks nobody is listening, which is mostly numbers and once, very quietly, \"oh dear.\" The boggart hugs itself. \"A clerk's oh dear,\" it tells nobody. \"Rarer than rubies.\" The catalogue is in your hands before you notice it has let go.",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -509,6 +578,12 @@
         "npc.witch_order"
       ],
       "narration": "Mother Thrum, the ford witch, has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "hold_safe",
@@ -549,6 +624,12 @@
     "scene_ford_witch_flatter": {
       "type": "story",
       "narration": "You say whatever you think will get you the question. Mother Thrum listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -561,6 +642,12 @@
     "scene_ford_witch_hold_power": {
       "type": "story",
       "narration": "\"To hold it, because we can.\" Mother Thrum does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -573,6 +660,12 @@
     "scene_ford_witch_hold_safe": {
       "type": "story",
       "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -588,6 +681,12 @@
         "npc.witch_order"
       ],
       "narration": "At the end of the road a witch in a patched hat runs a remedy stall, and every charm on it is ringing by itself. \"I'll lend you my question,\" she says, \"if you answer it first. What do you actually want?\"",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Stall Witch"
+        }
+      ],
       "choices": [
         {
           "id": "hold_safe",
@@ -624,6 +723,12 @@
     "scene_stall_witch_flatter": {
       "type": "story",
       "narration": "You say whatever you think will get you the question. The stall witch listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Stall Witch"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -636,6 +741,12 @@
     "scene_stall_witch_hold_power": {
       "type": "story",
       "narration": "\"To hold it, because we can.\" The stall witch does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Stall Witch"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -648,6 +759,12 @@
     "scene_stall_witch_hold_safe": {
       "type": "story",
       "narration": "\"To hold it still, so nobody gets hurt.\" The stall witch looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Stall Witch"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -696,6 +813,12 @@
         "npc.centaur"
       ],
       "narration": "The centaur relay pulls up at your table and unrolls a sash-map. \"Fat caravan tomorrow, biggest stone in the funnel,\" says the lead runner. \"Where do you want it?\" You point at the worst bend, and she nods as if that is the most sensible thing anyone has said all day.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
@@ -737,6 +860,12 @@
         "npc.merfolk"
       ],
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "buy_back",
@@ -761,6 +890,12 @@
     "scene_ember_wave": {
       "type": "story",
       "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -773,6 +908,12 @@
     "scene_ember_buy_back": {
       "type": "story",
       "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -802,6 +943,14 @@
         "creature.cinder_wolf"
       ],
       "narration": "Halfway up the switchback the road runs through a narrow cutting, and something in the cutting is repeating every sound you make, half a breath late. Your footsteps. Your whispers. Your humming stones. With it, a lone cinder wolf, coming down off the mountain with its ears flat.",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        },
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "racket",
@@ -834,6 +983,11 @@
     "scene_switchback_fly_over": {
       "type": "story",
       "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with the instruments still rattling in your packs.",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -860,6 +1014,14 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Make the cutting so noisy the echo cannot pick one sound to follow",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        },
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "choice_the_test",

@@ -795,6 +795,39 @@ def check_effect_composition(rep: Report, label: str, img: np.ndarray,
     return ok
 
 
+def verify_cast_figure(rep: Report, mf: dict, figure: dict) -> None:
+    """A named character's own story figure (manifest.castFigures)."""
+    figure_id = figure["id"]
+    label = f"cast/{figure_id}"
+    print(f"\n{BOLD}{label}{RESET}")
+
+    path = os.path.join(ROOT, "assets", "cast", figure_id, "assembled.png")
+    if not os.path.exists(path):
+        rep.fail(f"{label} assembled.png", "present", "missing")
+        return
+
+    basis = figure.get("basis", "")
+    kinds = {e["id"] for e in mf.get("entities", [])} | {s["id"] for s in mf["species"]}
+    if basis not in kinds:
+        rep.fail(f"{label} basis", "an entity or species id", basis or "none")
+    else:
+        rep.ok(f"{label} basis  {basis}")
+
+    a = check_format(rep, path, mf["canvas"], mf["tolerance"])
+    if a is None:
+        return
+    # Standing on the floor: the stage hangs every figure from the canvas
+    # origin, so feet that stop short float and feet past it sink.
+    m = opaque_mask(a, mf["tolerance"]["alphaThreshold"])
+    if m.any():
+        bottom = int(np.where(m)[0].max())
+        origin = mf["canvas"]["originY"]
+        if abs(bottom - origin) > 12:
+            rep.fail(f"{label} feet", f"lowest opaque row within 12px of y={origin}", f"y={bottom}")
+        else:
+            rep.ok(f"{label} feet  y={bottom}")
+
+
 def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
     """Canonical NPCs and creatures are single, non-rigged runtime cutouts."""
     entity_id = entity["id"]
@@ -1071,6 +1104,11 @@ def main() -> int:
         if args and entity["id"] not in args:
             continue
         verify_entity(rep, mf, entity)
+
+    for figure in mf.get("castFigures", []):
+        if args and figure["id"] not in args:
+            continue
+        verify_cast_figure(rep, mf, figure)
 
     # Not gated on `args`: the effect sheets are shared by every species, so
     # narrowing to one character should not stop checking them.

@@ -47,6 +47,11 @@
         "faction.skywardens"
       ],
       "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in silver and violet stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
+      "cast": [
+        {
+          "figure": "entities/skywardens"
+        }
+      ],
       "choices": [
         {
           "id": "join_line",
@@ -205,6 +210,12 @@
     "scene_clerk": {
       "type": "story",
       "narration": "At the bridge foot, a warden clerk named Pellam writes down every gem that crosses westbound, and keeps none of them. \"Logged is not owned,\" he says. \"Owned is not my department.\" A tagged caravan rolls up: gem 4117. As it passes, it hums, and his pen skips right off the page.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "ask_carter",
@@ -238,6 +249,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Talk a tired carter into trading gem 4117",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_clerk_stone",
@@ -253,6 +270,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Find the rule that lets a logged gem change hands",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_clerk_stone",
@@ -266,6 +289,12 @@
     "scene_clerk_stone": {
       "type": "story",
       "narration": "Pellam crosses out WESTBOUND, writes EASTBOUND, crosses that out, and writes WITH THEM, pointing at you. \"Very irregular,\" he says. \"Entirely legal.\" The stone is cool and heavy, and its hum makes your teeth feel fizzy.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -289,6 +318,12 @@
     "scene_engineers": {
       "type": "story",
       "narration": "In the engineers' tent, a big chalk survey of the bridge is pinned up, every crack drawn in red. Engineer Brask, who has a pencil behind each ear and a third one she has forgotten about, says the cracks came with the tremors. Then she frowns at the drawing, as if it has just said something rude.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Engineer Brask"
+        }
+      ],
       "choices": [
         {
           "id": "lay_evidence",
@@ -317,6 +352,12 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Plot everything you've seen since Bramblewood against the cracks",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Engineer Brask"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_outline",
@@ -337,6 +378,12 @@
     "scene_outline": {
       "type": "story",
       "narration": "Everything points the same way. The troll's old note, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down on a bucket.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Engineer Brask"
+        }
+      ],
       "choices": [
         {
           "id": "to_tent_rest",
@@ -349,6 +396,12 @@
     "rest_tent": {
       "type": "rest",
       "narration": "The engineers share their tea, which is very strong and has a tremor ripple in every cup. Outside, the bridge creaks like an old ship. Rest a while. You have the outline of the truth, and now you have to decide what to do with it.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Engineer Brask"
+        }
+      ],
       "heal": 2,
       "choices": [
         {
@@ -362,6 +415,12 @@
     "scene_who_to_tell": {
       "type": "choice_point",
       "narration": "The wardens are right here: honest, careful, and already talking about acceptable losses. Out on the road, a dragonling bell-rider is heading home to the gathering towns, who have kept the mountain's rules for a thousand years. Or you could fold the map up small and keep it. Who do you tell? Everybody vote.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Engineer Brask"
+        }
+      ],
       "choices": [
         {
           "id": "tell_wardens",
@@ -407,6 +466,12 @@
     "scene_told_wardens": {
       "type": "story",
       "narration": "Brask listens to all of it, writes all of it down, and underlines the bit about the mountain three times. \"Thank you,\" she says, completely serious. \"This changes the arithmetic.\" She tears a crossing pass out of her book. It is the first thing all day anybody has given away for free.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Engineer Brask"
+        }
+      ],
       "choices": [
         {
           "id": "to_crossing_w",
@@ -422,6 +487,12 @@
         "character.dragonling"
       ],
       "narration": "The bell-rider, Nim, is a dragonling about your size on a very small, very fast pony. She listens, rings her bell once, high and clear, and says, \"Grandmother is going to say she told everyone.\" Then she gallops north with your news.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Nim"
+        }
+      ],
       "choices": [
         {
           "id": "to_crossing_g",
@@ -490,6 +561,11 @@
         "creature.cinder_wolf"
       ],
       "narration": "Under the bridge the stone is warm from the sun, and somebody else has noticed. A pack of cinder wolves lies heaped against the pillars, ember-eyed and cold, a long way from home. They lift their heads at the hum in your packs and do not like it at all.",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "choices": [
         {
           "id": "offer_food",
@@ -510,6 +586,11 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Get the pack interested in supper instead of you",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "scene_far_rim",
@@ -543,6 +624,12 @@
     "scene_griffin_shortcut": {
       "type": "story",
       "narration": "One at a time, you carry everybody over the broken gap, wings beating hard over the cold water. Behind you, clerk Pellam watches the whole thing, sighs, and writes UNRATIFIED in his ledger in very large letters.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "choices": [
         {
           "id": "on_to_rim",
@@ -576,6 +663,12 @@
     "rest_setback": {
       "type": "rest",
       "narration": "Nobody is hurt. The wolves just wanted the warm side more. You wait two whole days on the south bank for the span to open again, while the rush gets further ahead and the mountain glows a little brighter every night. In the end Pellam waves you across himself. \"Logged,\" he says. \"Late. But logged.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Pellam"
+        }
+      ],
       "heal": 3,
       "outcome": "setback",
       "choices": []
