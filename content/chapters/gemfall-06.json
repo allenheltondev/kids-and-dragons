@@ -46,6 +46,10 @@
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun prospector"
         }
       ],
       "choices": [
@@ -142,6 +146,10 @@
       "cast": [
         {
           "figure": "entities/embermoth"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun prospector"
         }
       ],
       "choices": [
@@ -173,6 +181,10 @@
       "cast": [
         {
           "figure": "entities/embermoth"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun prospector"
         }
       ],
       "choices": [
@@ -210,6 +222,14 @@
       "cast": [
         {
           "figure": "entities/cinder_wolf"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Centaur drover"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun drover"
         }
       ],
       "choices": [
@@ -247,6 +267,14 @@
       "cast": [
         {
           "figure": "entities/cinder_wolf"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Centaur drover"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun drover"
         }
       ],
       "choices": [
@@ -369,6 +397,12 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
       ]
     },
     "scene_soup_tent_ford_soup": {
@@ -380,6 +414,12 @@
           "label": "Find somewhere warm to sleep",
           "icon": "note",
           "goto": "rest_warm_stones"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ]
     },
@@ -393,6 +433,12 @@
           "icon": "spark",
           "goto": "rest_warm_stones"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
       ]
     },
     "scene_soup_tent_just_soup": {
@@ -404,6 +450,12 @@
           "label": "Find somewhere warm to sleep",
           "icon": "cake",
           "goto": "rest_warm_stones"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ]
     },
@@ -417,6 +469,12 @@
           "icon": "hand",
           "goto": "rest_warm_stones"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
       ]
     },
     "scene_soup_tent_ask_cure": {
@@ -428,6 +486,12 @@
           "label": "Find somewhere warm to sleep",
           "icon": "ear",
           "goto": "rest_warm_stones"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ]
     },

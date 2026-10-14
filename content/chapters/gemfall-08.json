@@ -1167,6 +1167,10 @@
         {
           "figure": "entities/legend_dragon",
           "name": "Seal-Keeper"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ],
       "roller": "party",
@@ -1274,6 +1278,10 @@
         {
           "figure": "entities/legend_dragon",
           "name": "Seal-Keeper"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ],
       "roller": "party",

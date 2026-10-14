@@ -166,6 +166,12 @@
           "icon": "rest",
           "goto": "scene_troll"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/brassbuckle_faun",
+          "name": "Brassbuckle faun"
+        }
       ]
     },
     "check_rivals": {
@@ -181,7 +187,13 @@
       "onFailure": {
         "goto": "scene_troll",
         "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/brassbuckle_faun",
+          "name": "Brassbuckle faun"
+        }
+      ]
     },
     "scene_rivals_caught": {
       "type": "story",
@@ -199,6 +211,12 @@
           "label": "Step up to the toll",
           "icon": "arrow",
           "goto": "scene_troll"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/brassbuckle_centaur",
+          "name": "Brassbuckle centaur"
         }
       ]
     },

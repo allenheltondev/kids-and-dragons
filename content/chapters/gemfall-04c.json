@@ -82,6 +82,12 @@
           "icon": "arrow",
           "goto": "scene_empty_stretch"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
       ]
     },
     "scene_out_of_marsh": {
@@ -285,6 +291,12 @@
           "icon": "scroll",
           "goto": "rest_soup_tents"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/pony",
+          "name": "Tib's pony"
+        }
       ]
     },
     "rest_soup_tents": {
@@ -303,6 +315,12 @@
           "label": "Thank everyone and get back on the road",
           "icon": "arrow",
           "goto": "scene_warden_patrol"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
         }
       ]
     },
@@ -332,6 +350,12 @@
           "icon": "moon",
           "goto": "scene_wend_pitch_say_later"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
       ]
     },
     "scene_wend_pitch_say_later": {
@@ -344,6 +368,12 @@
           "icon": "moon",
           "goto": "scene_warden_patrol"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
       ]
     },
     "scene_wend_pitch_say_no": {
@@ -355,6 +385,12 @@
           "label": "Back on the road",
           "icon": "hand",
           "goto": "scene_warden_patrol"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
         }
       ]
     },
@@ -493,6 +529,12 @@
           "icon": "arrow",
           "goto": "scene_relay_sing"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
       ]
     },
     "check_forms": {
@@ -508,7 +550,13 @@
       "onFailure": {
         "goto": "scene_relay_sing",
         "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ]
     },
     "scene_strongbox": {
       "type": "story",
@@ -530,6 +578,12 @@
           "label": "Follow the singing to the campfires",
           "icon": "note",
           "goto": "scene_relay_sing"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
         }
       ]
     },

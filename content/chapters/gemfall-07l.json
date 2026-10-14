@@ -290,6 +290,16 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        }
       ]
     },
     "scene_choir_hum_along": {
@@ -301,6 +311,16 @@
           "label": "Back to the table",
           "icon": "kitsune",
           "goto": "scene_road_gifts"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -314,6 +334,16 @@
           "icon": "gem",
           "goto": "scene_road_gifts"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_bigfoot",
+          "name": "Masked choir singer"
+        }
       ]
     },
     "scene_choir_sell_secrets": {
@@ -325,6 +355,16 @@
           "label": "Back to the table",
           "icon": "scroll",
           "goto": "scene_road_gifts"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -370,7 +410,17 @@
       "onFailure": {
         "goto": "scene_road_gifts",
         "narration": "They sing it for you once, very fast, and then pull their masks down. You remember the first note. Only the first."
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_bigfoot",
+          "name": "Masked choir singer"
+        }
+      ]
     },
     "scene_road_gifts": {
       "type": "story",
@@ -1193,6 +1243,12 @@
           "label": "Carry it up the mountain",
           "icon": "forward",
           "goto": "rest_up_the_mountain"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
         }
       ]
     },
