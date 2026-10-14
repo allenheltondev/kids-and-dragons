@@ -4,7 +4,7 @@
   "index": 6,
   "title": "Ashfall",
   "biome": "red_sky_foothills",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "entry": "scene_arrival",
   "objectives": [
@@ -57,7 +57,7 @@
           "id": "walk_up",
           "label": "Walk up into the foothills",
           "icon": "travel",
-          "goto": "scene_moths"
+          "goto": "scene_doorstep"
         },
         {
           "id": "door_river",
@@ -96,7 +96,7 @@
           "id": "down",
           "label": "Down into the camps",
           "icon": "arrow",
-          "goto": "scene_moths"
+          "goto": "scene_doorstep"
         }
       ]
     },
@@ -115,7 +115,7 @@
           "id": "down",
           "label": "Step down into the ash",
           "icon": "arrow",
-          "goto": "scene_moths"
+          "goto": "scene_doorstep"
         }
       ]
     },
@@ -133,6 +133,109 @@
           "id": "up",
           "label": "Up into the camps",
           "icon": "arrow",
+          "goto": "scene_doorstep"
+        }
+      ]
+    },
+    "scene_doorstep": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "The man with the pick is called Dunmore, and he has planted his claim flag right on the grandmother's front step. \"It hums!\" he says, pointing. It does hum. So does every stone up here. The grandmother rings her bell at him again, louder. Dunmore goes pink to the ears, but he does not let go of the pick.",
+      "choices": [
+        {
+          "id": "talk",
+          "label": "Talk Dunmore out of digging up somebody's house",
+          "icon": "heart",
+          "goto": "check_doorstep"
+        },
+        {
+          "id": "dig_elsewhere",
+          "label": "Help him find a humming rock that is nobody's door",
+          "icon": "hand",
+          "goto": "scene_doorstep_dig_elsewhere",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dunmore_friend",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "one_rule",
+          "label": "Say the one rule, the way grandmothers say it",
+          "icon": "spark",
+          "requiresSpecies": "dragonling",
+          "goto": "scene_doorstep_one_rule",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dunmore_friend",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_doorstep": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk Dunmore down off the grandmother's doorstep",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_moths",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dunmore_friend",
+            "value": true
+          }
+        ],
+        "narration": "You tell Dunmore that a house is a house, even when it hums. He looks at the step, then at the little round window with curtains in it, and goes pinker than ever. \"Sorry,\" he mumbles, and pulls up his flag. The grandmother gives him a biscuit. He is so surprised that he says thank you twice."
+      },
+      "onFailure": {
+        "goto": "scene_moths",
+        "narration": "Dunmore does not hear a word, because the grandmother has started ringing her bell right beside his ear. In the end he gives up on the step just to get away from the noise, and stomps off up the slope, rubbing his ear and grumbling about bells."
+      }
+    },
+    "scene_doorstep_dig_elsewhere": {
+      "type": "story",
+      "narration": "You walk Dunmore up the slope until you find a big humming boulder with nobody's door in it. He plants his flag on top, very proud. The grandmother rings her bell once, sweetly, which means thank you. Dunmore waves goodbye for a long time. He is the sort of man who keeps waving after everybody else has stopped.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on up into the foothills",
+          "icon": "hand",
+          "goto": "scene_moths"
+        }
+      ]
+    },
+    "scene_doorstep_one_rule": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "Your dragonling stands on the step and says it, the way it is said at every dragonling door: \"Take what the mountain drops. Never pry at what it holds.\" Dunmore takes off his hat. \"Nobody told me there were rules,\" he says, very quietly. The grandmother tells him there have always been rules. He writes them on the inside of his hat.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on up into the foothills",
+          "icon": "spark",
           "goto": "scene_moths"
         }
       ]
@@ -157,7 +260,13 @@
           "id": "follow",
           "label": "Follow the moths' line down the slope",
           "icon": "eye",
-          "goto": "scene_wolves"
+          "goto": "scene_moths_follow"
+        },
+        {
+          "id": "coax",
+          "label": "Carry the soup moth back to a warm crack",
+          "icon": "flame",
+          "goto": "scene_moths_coax"
         },
         {
           "id": "say_it",
@@ -172,6 +281,40 @@
           "icon": "eye",
           "requiresSpecies": "bigfoot",
           "goto": "scene_moths_count"
+        }
+      ]
+    },
+    "scene_moths_follow": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "narration": "You follow the moths down the slope. They are not scattered at all. They sit in a line, rock after rock, every one facing the same way, like an arrow somebody drew pointing away from the mountain. At the bottom of the arrow is the caravan road, and in the ruts of the road, something is glowing.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go and see what's glowing",
+          "icon": "eye",
+          "goto": "scene_wolves"
+        }
+      ]
+    },
+    "scene_moths_coax": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        }
+      ],
+      "narration": "You lift the soup moth out, very gently, and carry it to the warmest crack on the slope. It sits there for one breath. Then it walks, on its tiny feet, straight back out to the cold side of the rock, and looks at you as if you had asked it to sit in an oven. The prospector gets his soup back, and says thank you with his mouth full.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the moths down to the road",
+          "icon": "flame",
+          "goto": "scene_wolves"
         }
       ]
     },
@@ -198,7 +341,7 @@
     },
     "scene_moths_say_it": {
       "type": "story",
-      "narration": "\"Moths leaving the warm is a warning,\" says your dragonling, out loud, in the voice grandmothers use. A grandmother three tents away hears it, stops arguing with the man on her doorstep, and rings her hand bell once, sharp, toward the next town. Then she goes back to arguing. The man has not moved. Neither have the moths.",
+      "narration": "\"Moths leaving the warm is a warning,\" says your dragonling, out loud, in the voice grandmothers use. A grandmother three tents away hears it, stops in the middle of an argument, and rings her hand bell once, sharp, toward the next town. Then she goes back to arguing with a different man on her own doorstep. He has not moved. Neither have the moths.",
       "cast": [
         {
           "figure": "entities/embermoth"
@@ -264,9 +407,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Up the road to the soup tent",
+          "label": "Up the road, toward a smell of soup",
           "icon": "rest",
-          "goto": "scene_soup_tent"
+          "goto": "scene_claim_boulder"
         }
       ]
     },
@@ -281,9 +424,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Up the road to the soup tent",
+          "label": "Up the road, toward a smell of soup",
           "icon": "wing",
-          "goto": "scene_soup_tent"
+          "goto": "scene_claim_boulder"
         }
       ]
     },
@@ -299,7 +442,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_soup_tent",
+        "goto": "scene_claim_boulder",
         "effects": [
           {
             "type": "setFlag",
@@ -307,12 +450,95 @@
             "value": true
           }
         ],
-        "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorising your face."
+        "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorizing your face."
+      },
+      "onFailure": {
+        "goto": "scene_claim_boulder",
+        "narration": "Your plan involves a sausage on a string, and the wolves are not impressed. In the end they wander off on their own, howling long complaints at the mountain."
+      }
+    },
+    "scene_claim_boulder": {
+      "type": "story",
+      "narration": "Halfway up the road, below a soup tent you can already smell from here, two prospectors are standing back to back on one boulder, each holding a claim flag. The boulder hums. \"Mine,\" says one. \"Mine,\" says the other. They have been saying it since breakfast, and they have each tied a bootlace round the boulder so nobody can push them off. A crowd has brought snacks.",
+      "choices": [
+        {
+          "id": "whose_first",
+          "label": "Work out whose flag went in first",
+          "icon": "clever",
+          "goto": "check_claim"
+        },
+        {
+          "id": "share",
+          "label": "Tell them to share it, half each",
+          "icon": "hand",
+          "goto": "scene_claim_boulder_share"
+        },
+        {
+          "id": "show",
+          "label": "Turn the argument into a show for the crowd",
+          "icon": "spark",
+          "requiresSpecies": "kitsune",
+          "goto": "scene_claim_boulder_show"
+        },
+        {
+          "id": "nobodys",
+          "label": "Show them the Unassigned Stone: some stones are nobody's",
+          "icon": "gem",
+          "requiresItem": "facet_unassigned",
+          "goto": "scene_claim_boulder_nobodys"
+        }
+      ]
+    },
+    "check_claim": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find out whose claim flag went into the boulder first",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_soup_tent",
+        "narration": "You check the flag holes. Both are brand new. But under the moss at the bottom of the boulder is a third mark, a little carved line, so old the moss has grown into it. It was here before either of them. It was here before anyone. Both prospectors stare at it, untie their bootlaces, and go and find a different boulder, quietly."
       },
       "onFailure": {
         "goto": "scene_soup_tent",
-        "narration": "Your plan involves a sausage on a string, and the wolves are not impressed. In the end they wander off on their own, howling long complaints at the mountain."
+        "narration": "You measure the flags, count the footprints, and ask the crowd. Everybody gives a different answer, and two people give three. In the end the boulder settles it by humming so loudly that both prospectors hop off at once, and neither of them wants to get back on."
       }
+    },
+    "scene_claim_boulder_share": {
+      "type": "story",
+      "narration": "\"Half each,\" you say. Both prospectors look at the boulder, which is round, and then at each other. They draw a chalk line down the middle. Then they argue for a while about whose half the hum is in. But they are sitting down while they argue, which is progress, and somebody in the crowd claps.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the road to the soup tent",
+          "icon": "hand",
+          "goto": "scene_soup_tent"
+        }
+      ]
+    },
+    "scene_claim_boulder_show": {
+      "type": "story",
+      "narration": "Your kitsune jumps up beside them and turns the argument into a play, with voices. The crowd laughs, then cheers, then votes. The winner gets the boulder. The loser gets everybody's snacks, which turns out to be a much better prize. By the end, the winner is trying to swap.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the road to the soup tent",
+          "icon": "spark",
+          "goto": "scene_soup_tent"
+        }
+      ]
+    },
+    "scene_claim_boulder_nobodys": {
+      "type": "story",
+      "narration": "You hold up the Unassigned Stone and tell them about the grandmothers' very old list: the caves that are never given to anybody, not ever. The two prospectors look at it for a long time. \"Nobody's,\" says one, trying out the word. \"Nobody's,\" agrees the other. They leave the boulder where it is and go and share a sandwich instead.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the road to the soup tent",
+          "icon": "gem",
+          "goto": "scene_soup_tent"
+        }
+      ]
     },
     "scene_soup_tent": {
       "type": "story",
@@ -385,7 +611,7 @@
     },
     "scene_soup_tent_ford_soup": {
       "type": "story",
-      "narration": "\"Wend's tents, on the north road!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the queue.",
+      "narration": "\"Wend's tents, on the north road!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the whole road north.",
       "choices": [
         {
           "id": "on",
@@ -456,8 +682,102 @@
       "choices": [
         {
           "id": "morning",
-          "label": "In the morning, climb the ridge toward the wardens' citadel",
+          "label": "In the morning, see what the bells are doing",
           "icon": "forward",
+          "goto": "scene_morning_bells"
+        }
+      ]
+    },
+    "scene_morning_bells": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/grandmother_tull",
+          "name": "Grandmother Tull"
+        }
+      ],
+      "narration": "In the morning, Grandmother Tull is teaching the bell code to a row of very small dragonlings, each with a very small bell. One ring for breakfast. Two for visitors. Three for lost goats. On the top shelf sits one more bell, wrapped up tight in a woolly sock. \"Nothing to worry about,\" says Grandmother Tull, before anybody asks. High above the town, at the top of the ridge, stands a black tower: Redspire Citadel, where the Skywardens keep their records.",
+      "choices": [
+        {
+          "id": "learn",
+          "label": "Sit on the bench and learn the morning ring",
+          "icon": "note",
+          "goto": "check_bells"
+        },
+        {
+          "id": "sock",
+          "label": "Ask about the bell in the sock",
+          "icon": "ear",
+          "goto": "scene_morning_bells_sock"
+        },
+        {
+          "id": "fly_ring",
+          "label": "Fly the morning ring up the ridge to the next town",
+          "icon": "wing",
+          "requiresSpecies": "griffin",
+          "goto": "scene_morning_bells_fly_ring"
+        }
+      ]
+    },
+    "check_bells": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Ring the morning ring in time with the little dragonlings",
+      "cast": [
+        {
+          "figure": "cast/grandmother_tull",
+          "name": "Grandmother Tull"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_crab",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "learned_the_ring",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ],
+        "narration": "Ding, ding-ding, ding. You get it right, and the smallest dragonling gives you a solemn nod, as if you had joined something important. Grandmother Tull presses a warm honeycake into your hands for the climb, and tells you the ridge is that way, as if you might have forgotten."
+      },
+      "onFailure": {
+        "goto": "scene_crab",
+        "narration": "Your ring comes out ding, dong, clatter, which in bell code means, as far as anyone can tell, goats, but sideways. The little dragonlings laugh so hard that one falls off the bench. Grandmother Tull says you will get it next time, and points you up the ridge."
+      }
+    },
+    "scene_morning_bells_sock": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/grandmother_tull",
+          "name": "Grandmother Tull"
+        }
+      ],
+      "narration": "Grandmother Tull takes a long breath. \"That one has never been rung,\" she says. \"Not by me. Not by my grandmother. Everybody knows what it would mean, and nobody says it.\" She pats the sock, the way you pat a sleeping dog. \"Nothing to worry about.\" That is four times now, and this time she does not quite look at you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb the ridge toward the citadel",
+          "icon": "ear",
+          "goto": "scene_crab"
+        }
+      ]
+    },
+    "scene_morning_bells_fly_ring": {
+      "type": "story",
+      "narration": "You carry a little bell up the ridge and ring it, one, two-two, one, over the next town. Far below, a whole row of tiny bells rings back, very proudly and not quite together. From up here you can see the citadel's black tower, and halfway up the ridge, a crowd gathered round something that glitters.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Glide back down and lead the climb",
+          "icon": "wing",
           "goto": "scene_crab"
         }
       ]
@@ -467,7 +787,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. A prospector called Dunmore is raising a pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
+      "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. It is Dunmore again, of course, raising his pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
       "cast": [
         {
           "figure": "entities/glassback_crab"
@@ -499,6 +819,20 @@
           ]
         },
         {
+          "id": "dunmore",
+          "label": "Call to Dunmore by name. He listens to you now.",
+          "icon": "heart",
+          "requiresFlag": "dunmore_friend",
+          "goto": "scene_crab_dunmore",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_the_crab",
+              "value": true
+            }
+          ]
+        },
+        {
           "id": "fight",
           "label": "Pull Dunmore back and face the crab",
           "icon": "swords",
@@ -516,6 +850,23 @@
               "value": true
             }
           ]
+        }
+      ]
+    },
+    "scene_crab_dunmore": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "narration": "\"Dunmore!\" you call. He knows your voice now, and he stops mid-swing. \"Three big steps back.\" He does it at once, without one word of argument, and the whole crowd steps back with him. The crab lowers its claws, looks Dunmore up and down, and goes back to tidying its pebbles.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "See what the crab does next",
+          "icon": "heart",
+          "goto": "scene_crab_thanks"
         }
       ]
     },
@@ -727,6 +1078,134 @@
           "id": "follow",
           "label": "Follow Pellam to the table",
           "icon": "forward",
+          "goto": "scene_citadel_gate_desk"
+        },
+        {
+          "id": "windows",
+          "label": "Ask why every window faces up",
+          "icon": "eye",
+          "goto": "scene_citadel_gate_windows",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "asked_windows",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_citadel_gate_windows": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "\"So we see it first,\" says Pellam, as if it were obvious. \"Whatever the mountain does, a warden is watching, and a warden is writing it down.\" He points at a narrow stair that winds up and up. \"Four hundred years of watching. Most nights the log says nothing.\" He looks proud. \"Nothing is the best thing a log can say.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow Pellam down the hall",
+          "icon": "eye",
+          "goto": "scene_citadel_gate_desk"
+        }
+      ]
+    },
+    "scene_citadel_gate_desk": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Halfway down the hall, Pellam stops at a tall desk with a sign: ANYTHING THAT HUMS, LOG IT HERE. Your packs are humming. They have been humming all the way up the ridge. Pellam dips his pen and waits, the way a cat waits by a mouse hole: politely, and forever.",
+      "choices": [
+        {
+          "id": "tip_out",
+          "label": "Tip out your packs and let him log everything",
+          "icon": "hand",
+          "goto": "scene_citadel_gate_desk_tip_out",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "logged_at_the_desk",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "ask_why",
+          "label": "Ask what the log is for, first",
+          "icon": "ear",
+          "goto": "scene_citadel_gate_desk_ask_why"
+        },
+        {
+          "id": "clerks",
+          "label": "Show him the Clerk's Stone, already tagged at the bridge",
+          "icon": "scroll",
+          "requiresItem": "facet_clerks",
+          "goto": "scene_citadel_gate_desk_clerks"
+        }
+      ]
+    },
+    "scene_citadel_gate_desk_tip_out": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "You tip everything out: stones, socks, string, and a crust nobody can explain. Pellam logs every stone twice, with a tiny drawing beside each one. Then he hands it all back and stamps the back of your hands in blue ink: LOGGED. \"Now you're honest on paper,\" he says. \"The best kind.\" The ink will not wash off for days.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the captain's table",
+          "icon": "hand",
+          "goto": "scene_truth_table"
+        }
+      ]
+    },
+    "scene_citadel_gate_desk_ask_why": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Pellam turns the big log round so you can see. Page after page of stones, four hundred years of them: every gem that ever rolled down the mountain, written down, then written down again. \"Every one of them went somewhere,\" he says. \"Nobody ever wrote down where.\" He taps the newest page. It is full. So is the one before it.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the captain's table",
+          "icon": "ear",
+          "goto": "scene_truth_table"
+        }
+      ]
+    },
+    "scene_citadel_gate_desk_clerks": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Pellam looks at the little tag on the Clerk's Stone, then at the handwriting on it, which is his own. \"Logged at the bridge,\" he breathes. \"Carried up. Here.\" He has to sit down. It is the happiest anyone has ever seen a clerk. He waves you on without opening a single pack, and writes the word HOME next to the stone.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On to the captain's table",
+          "icon": "scroll",
           "goto": "scene_truth_table"
         }
       ]
@@ -744,9 +1223,9 @@
       "choices": [
         {
           "id": "follow",
-          "label": "Follow Pellam to the table",
+          "label": "Follow Pellam down the hall",
           "icon": "forward",
-          "goto": "scene_truth_table"
+          "goto": "scene_citadel_gate_desk"
         }
       ]
     },
@@ -766,6 +1245,12 @@
           "label": "Let the wardens read their logs out first",
           "icon": "scroll",
           "goto": "scene_whole_truth"
+        },
+        {
+          "id": "work_it_out",
+          "label": "Work it out yourselves before anybody reads a log",
+          "icon": "clever",
+          "goto": "scene_truth_table_puzzle"
         },
         {
           "id": "river_clues",
@@ -803,6 +1288,28 @@
           "goto": "scene_truth_table_odd_ledger"
         }
       ]
+    },
+    "scene_truth_table_puzzle": {
+      "type": "check",
+      "art": "scenes/gemfall/facet-table",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put the foothills together before the wardens read their logs",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_whole_truth",
+        "narration": "You lay the last two days on the table: moths facing away, wolves too cold to hunt, a crab guarding its warm ground, a whole hillside of stones humming one note. \"Everything up here is leaning away from the mountain,\" you say. Captain Voss pushes the oldest log across the table. \"So did we,\" she says. \"Four hundred years ago.\""
+      },
+      "onFailure": {
+        "goto": "scene_whole_truth",
+        "narration": "You lay out the moths, the wolves and the crab, and they go round and round and will not join up. Pellam clears his throat, very kindly, and opens the oldest log. \"It took us four hundred years,\" he says. \"You have had two days.\""
+      }
     },
     "scene_truth_table_odd_ledger": {
       "type": "story",
@@ -883,7 +1390,7 @@
     "scene_whole_truth": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all the Table Stone hums, logged twice. One very old line just says: the marsh gate hums the same note. Next to it, in three different handwritings: nobody knows why.",
+      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all, the gemstone on the table hums. The wardens call it the Table Stone, and Pellam has logged it twice. One very old line just says: an old stone gate, far away in a western marsh, hums the same note. Next to it, in three different handwritings: nobody knows why.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -997,9 +1504,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Give Pellam the record",
+          "label": "Step over to the window",
           "icon": "fist",
-          "goto": "scene_ledger"
+          "goto": "scene_whole_truth_window"
         }
       ]
     },
@@ -1015,9 +1522,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Give Pellam the record",
+          "label": "Step over to the window",
           "icon": "ear",
-          "goto": "scene_ledger"
+          "goto": "scene_whole_truth_window"
         }
       ]
     },
@@ -1033,8 +1540,167 @@
       "choices": [
         {
           "id": "on",
-          "label": "Give Pellam the record",
+          "label": "Step over to the window",
           "icon": "heart",
+          "goto": "scene_whole_truth_window"
+        }
+      ]
+    },
+    "scene_whole_truth_window": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Captain Voss rolls up the map, and Pellam says the record can wait for one cup of tea. From the tall window you can see the whole foothills going dark. Three lights catch your eye: the lantern on Hessa's soup tent, the glitter of the prospectors' camps, and the bell towers of the dragonling towns. Everybody vote. Which do you watch?",
+      "choices": [
+        {
+          "id": "soup",
+          "label": "Hessa's lantern, moving through the camp",
+          "icon": "lantern",
+          "goto": "scene_whole_truth_window_soup"
+        },
+        {
+          "id": "camps",
+          "label": "The glittering camps, full of stones",
+          "icon": "gem",
+          "goto": "scene_whole_truth_window_camps"
+        },
+        {
+          "id": "bells",
+          "label": "The bell towers of the dragonling towns",
+          "icon": "whistle",
+          "goto": "scene_whole_truth_window_bells"
+        },
+        {
+          "id": "wolf",
+          "label": "Look for the wolf that knows you",
+          "icon": "eye",
+          "requiresFlag": "wolves_fed",
+          "goto": "scene_whole_truth_window_wolf"
+        },
+        {
+          "id": "look_up",
+          "label": "Look up, the way the windows do",
+          "icon": "moon",
+          "requiresFlag": "asked_windows",
+          "goto": "scene_whole_truth_window_look_up"
+        },
+        {
+          "id": "ring",
+          "label": "Ring Grandmother Tull's morning ring, very softly",
+          "icon": "note",
+          "requiresFlag": "learned_the_ring",
+          "goto": "scene_whole_truth_window_ring"
+        }
+      ]
+    },
+    "scene_whole_truth_window_soup": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Hessa's lantern is the only light that moves. She is carrying soup out to the edge of the camp, to the tents nobody else visits. Wherever she stops, somebody sits up. It looks very kind from up here. It looks very certain, too. Pellam, beside you, writes nothing at all, and keeps watching.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table for the record",
+          "icon": "lantern",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "scene_whole_truth_window_camps": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "The camps glitter like a dropped necklace. Every tent has a stone in it, and every stone catches a little firelight. It is the most beautiful thing in the foothills. When you hold very still you can hear it, too: thousands of stones, all humming the same old note, very softly, a long way from home.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table for the record",
+          "icon": "gem",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "scene_whole_truth_window_bells": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "One by one, the dragonling towns ring their night bell, the ordinary one, passed up the dark from town to town like a lantern handed along a line. When the last town rings, they all go quiet together. Captain Voss counts every ring under her breath, and looks a little more relieved at each one.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table for the record",
+          "icon": "whistle",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "scene_whole_truth_window_wolf": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Down on the dark road, one small glow sits apart from its pack, round with sausage, looking up at the citadel. It is the wolf from the road. Cinder wolves do not wave. This one thumps its tail on the ground twice, which is close, and then curls up facing your window.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table for the record",
+          "icon": "eye",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "scene_whole_truth_window_look_up": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "You look up instead, the way the whole citadel does. Over Mount Red Sky the sky is a deep, wrong red, and right at the top the mountain lets out a slow puff of ash, like somebody breathing in their sleep. \"Every night for four hundred years,\" says Pellam softly, \"somebody has stood here and written that down. Tonight it's me.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table for the record",
+          "icon": "moon",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "scene_whole_truth_window_ring": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "Ding, ding-ding, ding, very softly, out of the window into the dark. For a moment nothing happens. Then, far below, a very small bell answers: ding, dong, clatter. The smallest dragonling is still up, practicing. Captain Voss turns away from the window so that nobody can see whether she is smiling.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table for the record",
+          "icon": "note",
           "goto": "scene_ledger"
         }
       ]
@@ -1130,7 +1796,7 @@
     "scene_reading_restore": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam reads it all back and taps the page. \"Medals. Mending. Putting things back,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
+      "narration": "Pellam reads it all back and taps the page. \"Helping. Fixing. Putting things back where they belong,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1544,7 +2210,7 @@
         "location.redspire_citadel",
         "faction.skywardens"
       ],
-      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
+      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and a warden clerk called Pellam passes the wardens' old watch-logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -1626,7 +2292,7 @@
     },
     "scene_shut_out_leash": {
       "type": "story",
-      "narration": "\"Hold it,\" you whisper. \"The leash.\" The pen stops. \"That's the captain's word,\" Pellam whispers, sounding puzzled, and passes out a blanket and a very small book with CAGE on the spine, which he asks you to give back in the morning.",
+      "narration": "\"Hold it,\" you whisper. \"The leash.\" The pen stops. \"That's my captain's word,\" Pellam whispers, sounding puzzled, and passes out a blanket and a very small book with CAGE on the spine, which he asks you to give back in the morning.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -1742,7 +2408,8 @@
       "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
       "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
       "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
-      "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well"
+      "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well",
+      "claim_pair": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time"
     }
   }
 }

@@ -1,11 +1,11 @@
 {
-  "$comment": "Gemfall beat 7, the Reckoning's chapter 7 (docs/campaigns/gemfall.md, 7R). Every ending sets climbed_the_mountain. The seal clock is set exactly once per path: scene_caravan_won (clock_steady), scene_caravan_lost (clock_late), or ending_scattered (clock_late, the lost-fight setback). Faction plays read the allies set; road callbacks read road, crossing, ember and sprites. facet_caravan is defined in gemfall-07h.",
+  "$comment": "Gemfall beat 7, the Reckoning's chapter 7 (docs/campaigns/gemfall.md, 7R). Every ending sets climbed_the_mountain. The seal clock is set exactly once per path: scene_caravan_won (clock_steady), scene_caravan_lost (clock_late), or ending_scattered (clock_late, the lost-fight setback). Faction plays read the allies set; road callbacks read road, crossing, ember and sprites. facet_caravan is defined in gemfall-07h. Pacing episodes on the spine (Odo's barrow, the noon shake, Posy's stone, the haul vote, the last moth, the morning slide, the lookout, the downhill crowd, the last-climb vote) set only chapter-local flags.",
   "id": "gemfall-07r",
   "campaignId": "gemfall",
   "index": 7,
   "title": "The Returning",
   "biome": "red_sky_foothills",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "route": {
     "set": "pursuit",
@@ -49,7 +49,7 @@
           "id": "set_up",
           "label": "Set up at the Pinch",
           "icon": "map",
-          "goto": "choice_how"
+          "goto": "scene_glitter_barrow"
         },
         {
           "id": "count_shakes",
@@ -68,6 +68,92 @@
           "id": "on",
           "label": "Set up at the Pinch",
           "icon": "dragonling",
+          "goto": "scene_glitter_barrow"
+        }
+      ]
+    },
+    "scene_glitter_barrow": {
+      "type": "story",
+      "narration": "Right in the middle of the Pinch, the man with the wheelbarrow full of glitter is stuck. His name is Odo, his wheel is jammed between two rocks, and forty wagons behind him are shouting. \"It's all gems,\" Odo tells you proudly. Most of it is painted gravel. But somewhere in that barrow, one thing is humming.",
+      "choices": [
+        {
+          "id": "lift",
+          "label": "Heave the barrow free",
+          "icon": "might",
+          "goto": "check_glitter_barrow"
+        },
+        {
+          "id": "sort",
+          "label": "Help Odo sort the glitter",
+          "icon": "clever",
+          "goto": "scene_glitter_barrow_sort"
+        },
+        {
+          "id": "under",
+          "label": "Look under the barrow",
+          "icon": "bigfoot",
+          "goto": "scene_glitter_barrow_under",
+          "requiresSpecies": "bigfoot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "odo_friend",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_glitter_barrow": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Heave Odo's wheelbarrow out of the Pinch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_how",
+        "narration": "With a grunt and a heave, the barrow pops free and forty wagons cheer. Odo is so grateful he digs through the glitter and hands you the humming thing: a real stone, warm as a teapot. \"Keeps me up at night,\" he says. \"Singing.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "odo_friend",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_how",
+        "narration": "You heave. The wheel pops off entirely and rolls away down the hill, and half the Pinch runs after it. In all the fuss the barrow tips, and one real stone rolls out humming at your feet. Odo waves at you to keep it. He is busy chasing a wheel."
+      }
+    },
+    "scene_glitter_barrow_sort": {
+      "type": "story",
+      "narration": "You tip the glitter onto a blanket and sort it, bit by bit. Painted gravel. Painted gravel. A button. Painted gravel. And one real stone, warm and humming. Odo stares at his barrow of gravel for a long time. Then he shrugs, hands you the stone, and says, \"Well. Gravel doesn't sing at night, I suppose.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the Pinch",
+          "icon": "clever",
+          "goto": "choice_how"
+        }
+      ]
+    },
+    "scene_glitter_barrow_under": {
+      "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "narration": "Your bigfoot crouches and looks where nobody else thought to. The wheel is not jammed. It is sitting on a glassback crab, who has decided Odo's barrow is a gem deposit and is guarding it very seriously. One polite tap on the shell and the crab scuttles off, offended. Odo is so grateful he hands you the one real stone in his barrow.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the Pinch",
+          "icon": "bigfoot",
           "goto": "choice_how"
         }
       ]
@@ -179,9 +265,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and see what the road is doing",
+          "label": "Keep working",
           "icon": "check",
-          "goto": "scene_road_gifts"
+          "goto": "scene_noon_shake"
         }
       ]
     },
@@ -201,9 +287,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and see what the road is doing",
+          "label": "Keep working",
           "icon": "heart",
-          "goto": "scene_road_gifts"
+          "goto": "scene_noon_shake"
         }
       ]
     },
@@ -260,9 +346,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and see what the road is doing",
+          "label": "Keep working",
           "icon": "forward",
-          "goto": "scene_road_gifts"
+          "goto": "scene_noon_shake"
         }
       ]
     },
@@ -278,9 +364,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and see what the road is doing",
+          "label": "Keep working",
           "icon": "ribbon",
-          "goto": "scene_road_gifts"
+          "goto": "scene_noon_shake"
         }
       ]
     },
@@ -291,7 +377,7 @@
       "prompt": "Talk travelers into letting their stones go home",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_road_gifts",
+        "goto": "scene_noon_shake",
         "narration": "A handcart, a sign that says STONES GOING HOME, and a lot of honest talking. By lunchtime the cart is half full, and somebody has drawn a smiley face on the sign.",
         "effects": [
           {
@@ -302,9 +388,73 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_road_gifts",
+        "goto": "scene_noon_shake",
         "narration": "Most people walk straight past the sign. One man gives you a stone, asks for it back, then gives it again. The cart is nearly empty, but at least you know which wagons hum the loudest."
       }
+    },
+    "scene_noon_shake": {
+      "type": "story",
+      "narration": "At noon the ground gives a big shrug, bigger than the morning ones. Every sack on the road jumps. One splits open, and its stones spill out and start to roll. Not downhill. Uphill. Slowly, all together, toward the mountain, like ducklings following their mother. A warden drops his pencil.",
+      "choices": [
+        {
+          "id": "catch",
+          "label": "Catch them before they roll away",
+          "icon": "quick",
+          "goto": "check_noon_shake"
+        },
+        {
+          "id": "follow",
+          "label": "Follow them and see where they stop",
+          "icon": "eye",
+          "goto": "scene_noon_shake_follow"
+        },
+        {
+          "id": "harvest",
+          "label": "Hold up the Harvest Stone",
+          "icon": "gem",
+          "goto": "scene_noon_shake_harvest",
+          "requiresItem": "facet_harvest"
+        }
+      ]
+    },
+    "check_noon_shake": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Scoop up a sack of stones that are rolling the wrong way",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "You dive, scoop and juggle. Every last stone ends up in your arms, still humming, still leaning gently uphill, like puppies pulling on a lead."
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "The stones slip through your fingers and roll straight into a goat pen. The goat gives them back one at a time, very slowly, and wants a scratch behind the ears for every single one."
+      }
+    },
+    "scene_noon_shake_follow": {
+      "type": "story",
+      "narration": "You follow them up the road. They roll as far as the last red rock before the slope, then stop in a neat line, all pointing the same way: straight at Mount Red Sky. You pick them up gently. They feel, somehow, a little disappointed.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Carry them back to the pile",
+          "icon": "eye",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "scene_noon_shake_harvest": {
+      "type": "story",
+      "narration": "You hold up the Harvest Stone, and the rolling stones change their minds. One by one they turn and roll to your feet instead, and sit there humming along with it, like a choir that has found its note. The warden picks up his pencil and writes that down.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Gather them up",
+          "icon": "gem",
+          "goto": "scene_road_gifts"
+        }
+      ]
     },
     "scene_road_gifts": {
       "type": "story",
@@ -349,7 +499,7 @@
           "id": "watch",
           "label": "Keep watching the road",
           "icon": "eye",
-          "goto": "scene_masks"
+          "goto": "scene_posy"
         }
       ]
     },
@@ -359,7 +509,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the ferryman from Stone Crossing, Old Ossley, and the boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it. Nobody asks how. It is the frog from the reeds of the Great River, and the name painted on the side of his boat is OLD OSSLEY. The boat is full of stones: every one the river took off somebody this season, and a lot of \"misplaced\" ones. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -379,7 +529,7 @@
           "id": "load",
           "label": "Load his stones onto your cart",
           "icon": "hand",
-          "goto": "scene_masks",
+          "goto": "scene_posy",
           "effects": [
             {
               "type": "setFlag",
@@ -416,7 +566,7 @@
           "id": "promise",
           "label": "Promise",
           "icon": "heart",
-          "goto": "scene_masks"
+          "goto": "scene_posy"
         }
       ]
     },
@@ -435,7 +585,7 @@
           "id": "thank",
           "label": "Thank her, and the Woods",
           "icon": "leaf",
-          "goto": "scene_masks",
+          "goto": "scene_posy",
           "effects": [
             {
               "type": "setFlag",
@@ -460,7 +610,7 @@
       "choices": [
         {
           "id": "wardens_said",
-          "label": "Tell it what a warden said about acceptable losses",
+          "label": "Tell it what Dunmore shouted on the grandmother's doorstep",
           "icon": "ear",
           "goto": "scene_boggart_wardens_said",
           "effects": [
@@ -497,15 +647,15 @@
       "choices": [
         {
           "id": "on",
-          "label": "Look down the road",
+          "label": "Look up the road",
           "icon": "cake",
-          "goto": "scene_masks"
+          "goto": "scene_posy"
         }
       ]
     },
     "scene_boggart_wardens_said": {
       "type": "story",
-      "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
+      "narration": "\"It hums!\" you shout, in Dunmore's exact voice, pointing at nothing at all. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalog without ever once looking at you.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -514,9 +664,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Look down the road",
+          "label": "Look up the road",
           "icon": "scroll",
-          "goto": "scene_masks"
+          "goto": "scene_posy"
         }
       ]
     },
@@ -525,7 +675,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone under one arm. It is still ringing. She has walked the whole road north for this. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "It is Mother Thrum, the witch from the ford queue, in her pointed hat, with a wool sock tucked under one arm. Something in the sock is ringing. She has walked the whole road north for this. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -567,7 +717,7 @@
     },
     "scene_ford_witch_not_sure": {
       "type": "story",
-      "narration": "\"Honestly? We're still working it out.\" Mother Thrum nods slowly, as if that is a better answer than most. She keeps the stone. She gives you a songbird ribbon instead, \"for the working out,\" and says she will ask again, because she always does.",
+      "narration": "\"Honestly? We're still working it out.\" Mother Thrum nods slowly, as if that is a better answer than most. She keeps her ringing sock. She gives you a songbird ribbon instead, \"for the working out,\" and says she will ask again, because she always does.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -577,15 +727,15 @@
       "choices": [
         {
           "id": "on",
-          "label": "Look down the road",
+          "label": "Look up the road",
           "icon": "feather",
-          "goto": "scene_masks"
+          "goto": "scene_posy"
         }
       ]
     },
     "scene_ford_witch_put_back": {
       "type": "story",
-      "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her spectacles. Then she unwraps the sock and sets the Ford Stone in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
+      "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her spectacles. Then she unwraps the sock and sets a stone from the ford in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -595,8 +745,86 @@
       "choices": [
         {
           "id": "on",
-          "label": "Look down the road",
+          "label": "Look up the road",
           "icon": "heart",
+          "goto": "scene_posy"
+        }
+      ]
+    },
+    "scene_posy": {
+      "type": "story",
+      "narration": "Coming up the road is a tired prospector called Corbin, with his daughter Posy on his shoulders. They spent everything they had to get here. Posy is holding one small stone in both fists, and it hums whenever she squeezes it. \"It's my lucky one,\" she tells you. \"It's going to make us rich.\" Corbin looks at your stones going home and says nothing.",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Tell Posy where her stone wants to go",
+          "icon": "heart",
+          "goto": "check_posy"
+        },
+        {
+          "id": "let_keep",
+          "label": "Let her keep it, and wish them luck",
+          "icon": "hand",
+          "goto": "scene_posy_let_keep",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "posy_kept",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "medal",
+          "label": "Show her the sprites' tiny medal",
+          "icon": "ribbon",
+          "goto": "scene_posy_medal",
+          "requiresItem": "medal_not"
+        }
+      ]
+    },
+    "check_posy": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Help a little girl decide to give up her lucky stone",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_masks",
+        "narration": "You tell Posy about the mountain and the hum, the gentle version. She thinks about it very hard. Then she opens her fists and puts the stone on your pile herself. \"So it can go home,\" she says. Corbin lets out a breath he has been holding since spring."
+      },
+      "onFailure": {
+        "goto": "scene_masks",
+        "narration": "Posy listens, and then hides the stone behind her back. \"It's mine,\" she says, and her lip wobbles. You do not push. Corbin gives you a small, sorry nod, and the two of them go on up the road toward the camps.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "posy_kept",
+            "value": true
+          }
+        ]
+      }
+    },
+    "scene_posy_let_keep": {
+      "type": "story",
+      "narration": "You wish them luck, and mean it. Posy waves the stone at you over her father's head as they go, and you can hear it humming all the way round the corner. You hope the mountain will not mind one small stone for a little while longer.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look down the road",
+          "icon": "hand",
+          "goto": "scene_masks"
+        }
+      ]
+    },
+    "scene_posy_medal": {
+      "type": "story",
+      "narration": "You show Posy the sprites' woven medal, the tiny one that says NOT. She has never seen anything so small or so important. \"You got a medal for not taking something?\" She looks at her stone. She looks at the medal. Then she puts the stone on your pile, and asks very seriously whether sprites give medals to girls.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look down the road",
+          "icon": "ribbon",
           "goto": "scene_masks"
         }
       ]
@@ -644,13 +872,13 @@
     },
     "scene_masks_let_be": {
       "type": "story",
-      "narration": "You let them be, and work your own side of the road. For a while the two of you pass stones in opposite directions ten paces apart, like a very slow dance, and once Hessa looks up and nods to you, and you nod back, and neither of you stops.",
+      "narration": "You let them be, and work your own side of the road. For a while you and the masks pass stones in opposite directions ten paces apart, like a very slow dance, and once Hessa looks up and nods to you, and you nod back, and neither of you stops.",
       "choices": [
         {
           "id": "on",
-          "label": "Back to your side of the road",
+          "label": "Back to your pile",
           "icon": "forward",
-          "goto": "scene_evening"
+          "goto": "choice_haul"
         }
       ],
       "cast": [
@@ -666,9 +894,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Back to your side of the road",
+          "label": "Back to your pile",
           "icon": "kitsune",
-          "goto": "scene_evening"
+          "goto": "choice_haul"
         }
       ]
     },
@@ -679,7 +907,7 @@
       "prompt": "Convince Hessa the seal is not a cage",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_evening",
+        "goto": "choice_haul",
         "narration": "Hessa takes off her mask. \"I only wanted somebody to fix things,\" she says quietly. She hands you her whole sack of stones, and then her ladle, and asks you to fix things.",
         "effects": [
           {
@@ -695,7 +923,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_evening",
+        "goto": "choice_haul",
         "narration": "She listens kindly, all the way to the end. Then she puts her mask back on. \"I hope you're right,\" she says. \"I don't think you are.\" Her cell rolls on with a full sack."
       },
       "cast": [
@@ -705,9 +933,83 @@
         }
       ]
     },
+    "choice_haul": {
+      "type": "choice_point",
+      "narration": "The afternoon is going, and your pile of going-home stones has grown far too big to carry. It has to get up the hill to the dragonling way-shelter before dark, where it will be safe. The ground shrugs again, as if to say hurry. How are you going to move it?",
+      "choices": [
+        {
+          "id": "goat",
+          "label": "Borrow a snowhorn goat from the dragonlings",
+          "icon": "heart",
+          "goto": "check_haul_goat"
+        },
+        {
+          "id": "carry",
+          "label": "Everybody carry a sackful up the hill",
+          "icon": "might",
+          "goto": "check_haul_carry"
+        },
+        {
+          "id": "sledge",
+          "label": "Build a sledge out of a broken door",
+          "icon": "clever",
+          "goto": "check_haul_sledge"
+        }
+      ]
+    },
+    "check_haul_goat": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Make friends with a grumpy snowhorn goat",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "The goat sniffs you, sniffs the cart, and decides you are acceptable. It pulls the whole load up the hill at a steady trot, stopping only once, to eat the corner of your sign."
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The goat sits down. It will not move. In the end you pull the cart yourselves, and the goat rides on top of the stones, looking very pleased with itself, all the way to the shelter."
+      }
+    },
+    "check_haul_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Carry the whole pile up the hill, sack by sack",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "You make a chain up the hill and pass the sacks along, hand to hand, singing a counting song. Strangers on the road join in. By the top the chain is forty people long, and nobody remembers who started it."
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "Halfway up, your arms turn to noodles. You sit down on the sacks to rest, and a passing grandmother tuts, hitches your cart to her own wagon, and tows the lot up the hill without a word."
+      }
+    },
+    "check_haul_sledge": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Build a sledge that slides uphill",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "Rope, a broken door and some greased planks. The sledge glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The sledge works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
+      }
+    },
     "scene_evening": {
       "type": "story",
-      "narration": "Evening on the Pinch. Campfires pop up all along the road like a string of beads, and the ground keeps shrugging, a little more often than this morning.",
+      "narration": "Evening on the Pinch. Your stones are stacked safe in the way-shelter's yard, humming. Below you, campfires pop up all along the road like a string of beads, and the ground keeps shrugging, a little more often than this morning.",
       "choices": [
         {
           "id": "relay_sing",
@@ -724,10 +1026,34 @@
           "goto": "scene_ember"
         },
         {
+          "id": "campfire",
+          "label": "Sit down at a campfire full of strangers",
+          "icon": "flame",
+          "goto": "scene_evening_campfire"
+        },
+        {
           "id": "camp",
-          "label": "Find somewhere to sleep",
+          "label": "Go up to the way-shelter to sleep",
           "icon": "rest",
-          "goto": "rest_way_shelter"
+          "goto": "scene_last_moth"
+        }
+      ]
+    },
+    "scene_evening_campfire": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "narration": "You sit down at a campfire with a family of fauns, a warden off duty, and a prospector with one boot. Everybody is talking about the shaking. The prospector says it is nothing. The warden says nothing at all, which is worse. Then the faun children ask how you got here, and make you tell the funny bit twice.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to the way-shelter to sleep",
+          "icon": "flame",
+          "goto": "scene_last_moth"
         }
       ]
     },
@@ -746,7 +1072,7 @@
           "id": "sleep",
           "label": "Fold the list away and get some sleep",
           "icon": "scroll",
-          "goto": "rest_way_shelter"
+          "goto": "scene_last_moth"
         }
       ]
     },
@@ -755,7 +1081,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -797,7 +1123,7 @@
           "id": "on",
           "label": "Find somewhere to sleep",
           "icon": "hand",
-          "goto": "rest_way_shelter"
+          "goto": "scene_last_moth"
         }
       ]
     },
@@ -815,6 +1141,102 @@
           "id": "on",
           "label": "Find somewhere to sleep",
           "icon": "gem",
+          "goto": "scene_last_moth"
+        }
+      ]
+    },
+    "scene_last_moth": {
+      "type": "story",
+      "discovers": [
+        "creature.embermoth"
+      ],
+      "cast": [
+        {
+          "figure": "entities/embermoth",
+          "size": "tiny"
+        }
+      ],
+      "narration": "At the way-shelter door, something small bumps against the lantern. Tap. Tap. It is an embermoth, glowing like a coal, the first one you have seen all day. Every other moth flew south days ago. This one is going the wrong way, and it looks very tired.",
+      "choices": [
+        {
+          "id": "lantern",
+          "label": "Let it into the lantern to rest",
+          "icon": "lantern",
+          "goto": "scene_last_moth_lantern",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "moth_with_us",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "south",
+          "label": "Cup it in your hands and send it south",
+          "icon": "feather",
+          "goto": "scene_last_moth_south"
+        },
+        {
+          "id": "feel",
+          "label": "Feel what it is feeling",
+          "icon": "unicorn",
+          "goto": "scene_last_moth_feel",
+          "requiresSpecies": "unicorn",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "moth_with_us",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_last_moth_lantern": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/embermoth",
+          "size": "tiny"
+        }
+      ],
+      "narration": "You open the little lantern door, and the moth crawls in and settles beside the wick as if it had been looking for exactly that. It glows a bit brighter. The shelter cat watches it all night and does not blink once.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go inside",
+          "icon": "lantern",
+          "goto": "rest_way_shelter"
+        }
+      ]
+    },
+    "scene_last_moth_south": {
+      "type": "story",
+      "narration": "You cup it in your hands, carry it to the south wall, and open them. The moth sits warm on your palm for a moment. Then it lifts off and drifts away down the valley after the others, a tiny spark getting smaller. It is the right way. It still feels lonely to watch.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go inside",
+          "icon": "feather",
+          "goto": "rest_way_shelter"
+        }
+      ]
+    },
+    "scene_last_moth_feel": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/embermoth",
+          "size": "tiny"
+        }
+      ],
+      "narration": "Your unicorn touches the moth with the very tip of the horn and goes quiet. \"It isn't lost,\" your unicorn says. \"It's homesick. It wants to go up, not down. It just can't go alone.\" The moth climbs into your unicorn's mane and stays there all night, glowing.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go inside",
+          "icon": "unicorn",
           "goto": "rest_way_shelter"
         }
       ]
@@ -828,6 +1250,95 @@
           "id": "first_light",
           "label": "Up the switchback at first light",
           "icon": "boot",
+          "goto": "scene_morning_slide"
+        }
+      ]
+    },
+    "scene_morning_slide": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "narration": "In the night the mountain shrugged so hard that half a hillside slid onto the road. A heap of red rocks taller than a wagon sits right across it. A warden stands in front of it with a clipboard, writing ROAD CLOSED in very small letters, as if that will help.",
+      "choices": [
+        {
+          "id": "shift",
+          "label": "Shift the rocks",
+          "icon": "might",
+          "goto": "check_morning_slide"
+        },
+        {
+          "id": "goat_path",
+          "label": "Take the goat path around",
+          "icon": "boot",
+          "goto": "scene_morning_slide_goat_path"
+        },
+        {
+          "id": "verses",
+          "label": "Sing the Spiral Verses",
+          "icon": "note",
+          "goto": "scene_morning_slide_verses",
+          "requiresItem": "verses_relay_spiral"
+        },
+        {
+          "id": "reed_knot",
+          "label": "Follow where Ossley's reed knot drips",
+          "icon": "drop",
+          "goto": "scene_morning_slide_reed_knot",
+          "requiresItem": "ossley_reed_knot"
+        }
+      ]
+    },
+    "check_morning_slide": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Find the one rock that holds up all the others, and pull",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_switchback",
+        "narration": "You find the one rock that holds up all the rest, and pull. The whole heap shrugs, sighs, and slides politely off the edge of the road. The warden crosses out CLOSED and writes OPEN, in slightly bigger letters."
+      },
+      "onFailure": {
+        "goto": "scene_switchback",
+        "narration": "The big rock will not budge. But behind it, between two boulders, there is a gap just wide enough to wriggle through. You come out the other side red with dust from head to toe, and the warden writes that down too."
+      }
+    },
+    "scene_morning_slide_goat_path": {
+      "type": "story",
+      "narration": "There is a goat path above the slide, about as wide as a sandwich. You go round in single file, holding hands, not looking down. A snowhorn goat coming the other way stops, considers you, and steps politely aside onto what appears to be nothing at all.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the zigzags",
+          "icon": "boot",
+          "goto": "scene_switchback"
+        }
+      ]
+    },
+    "scene_morning_slide_verses": {
+      "type": "story",
+      "narration": "You sing the Spiral Verses from the rush road, in order, the way the relay taught. One verse is about this very hill: an old cart track that curls round the back of it. And there it is, behind the gorse. The warden watches you go and decides not to write anything down at all.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the zigzags",
+          "icon": "note",
+          "goto": "scene_switchback"
+        }
+      ]
+    },
+    "scene_morning_slide_reed_knot": {
+      "type": "story",
+      "narration": "Ossley's reed knot, which never dries, starts dripping sideways. You follow the drips to a dry stream bed that runs right under the slide through a tunnel of old roots, and out the other side. Ossley would say nothing about this. You say nothing either. It seems polite.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the zigzags",
+          "icon": "drop",
           "goto": "scene_switchback"
         }
       ]
@@ -880,7 +1391,7 @@
           "id": "on",
           "label": "On to the worst bend",
           "icon": "griffin",
-          "goto": "choice_the_bend"
+          "goto": "scene_bend_lookout"
         }
       ]
     },
@@ -892,7 +1403,7 @@
           "id": "on",
           "label": "On to the worst bend",
           "icon": "leaf",
-          "goto": "choice_the_bend"
+          "goto": "scene_bend_lookout"
         }
       ]
     },
@@ -908,7 +1419,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "choice_the_bend",
+        "goto": "scene_bend_lookout",
         "narration": "The sausage bounces down the side trail, and the whole pack follows it with enormous dignity, as if that was where they were going all along.",
         "effects": [
           {
@@ -935,13 +1446,98 @@
         }
       ],
       "onVictory": {
-        "goto": "choice_the_bend",
+        "goto": "scene_bend_lookout",
         "narration": "The pack decides you are more trouble than the road is worth, and pours past you down the hill in a long gray ribbon."
       },
       "onDefeat": {
         "goto": "ending_scattered",
         "narration": "The wolves bowl straight through you and keep going. Nobody is hurt, but the cart is on its side and the stones are rolling every which way down the hill."
       }
+    },
+    "scene_bend_lookout": {
+      "type": "story",
+      "narration": "You reach the worst bend with an hour to spare. Far below, a long caravan is winding up the zigzags, twelve wagons long and slow as honey. There is time to get ready. Not much. The ground hums under your boots now, steady, like someone humming a song they cannot remember the end of.",
+      "choices": [
+        {
+          "id": "scout",
+          "label": "Creep down and look the caravan over",
+          "icon": "eye",
+          "goto": "check_bend_scout"
+        },
+        {
+          "id": "sign",
+          "label": "Paint a big sign for the caravan to read",
+          "icon": "ribbon",
+          "goto": "scene_bend_lookout_sign",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "big_sign",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "table_stone",
+          "label": "Hold up the Table Stone and listen",
+          "icon": "gem",
+          "goto": "scene_bend_lookout_table_stone",
+          "requiresItem": "facet_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knows_the_wagon",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_bend_scout": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Sneak along the ridge and pick out the humming wagon",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_bend",
+        "narration": "You creep along the ridge and watch. Mules with cotton in their ears. A caravan master rubbing her head every few minutes, as if it aches. And the middle wagon, humming so hard its canvas trembles. You know exactly where to go now.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_the_wagon",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_bend",
+        "narration": "You creep along the ridge, slip on loose gravel, and slide most of the way down to the road on your bottom. A mule looks at you. You look at the mule. Neither of you tells anybody, and you scramble back up just in time."
+      }
+    },
+    "scene_bend_lookout_sign": {
+      "type": "story",
+      "narration": "You paint STONES GOING HOME in letters as tall as a goat on an old tent, and stretch it between two rocks at the bend. It is a bit wonky. One S is backwards. It is, without any question, the biggest sign on the mountain.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the caravan",
+          "icon": "ribbon",
+          "goto": "choice_the_bend"
+        }
+      ]
+    },
+    "scene_bend_lookout_table_stone": {
+      "type": "story",
+      "narration": "You hold up the Table Stone, and from far below, the middle wagon answers it. Two stones humming to each other across a valley, like two cows calling over a field. Now you know exactly which wagon it is, and roughly how loud it will be when it gets here. Very.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the caravan",
+          "icon": "gem",
+          "goto": "choice_the_bend"
+        }
+      ]
     },
     "choice_the_bend": {
       "type": "choice_point",
@@ -1002,6 +1598,20 @@
           "icon": "dragonling",
           "requiresSpecies": "dragonling",
           "goto": "check_caravan_helped"
+        },
+        {
+          "id": "knew_wagon",
+          "label": "Walk straight up to the humming wagon you picked out",
+          "icon": "eye",
+          "goto": "check_caravan_helped",
+          "requiresFlag": "knows_the_wagon"
+        },
+        {
+          "id": "big_sign",
+          "label": "Point at your enormous sign",
+          "icon": "ribbon",
+          "goto": "check_caravan_helped",
+          "requiresFlag": "big_sign"
         },
         {
           "id": "talk_master",
@@ -1095,15 +1705,15 @@
       "choices": [
         {
           "id": "climb",
-          "label": "Carry it up the mountain",
+          "label": "Carry it on up the mountain",
           "icon": "forward",
-          "goto": "rest_tree_line"
+          "goto": "scene_downhill_crowd"
         }
       ]
     },
     "scene_caravan_lost": {
       "type": "story",
-      "narration": "The masks have the Caravan Stone. Hessa's cell drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
+      "narration": "The masks have the Caravan Stone. A cell of masks drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1116,6 +1726,183 @@
           "id": "climb",
           "label": "Climb anyway, with what you have",
           "icon": "forward",
+          "goto": "scene_downhill_crowd"
+        }
+      ]
+    },
+    "scene_downhill_crowd": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "narration": "Higher up, the whole road is coming the other way. Wagons, wardens, a family of fauns with all their chairs tied to a mule. Everyone is going down. Right beside you, the fauns' little cart drops a wheel into a crack in the road and sticks fast, and the smallest faun starts to cry.",
+      "choices": [
+        {
+          "id": "push",
+          "label": "Put your shoulders to the cart",
+          "icon": "might",
+          "goto": "check_downhill_cart"
+        },
+        {
+          "id": "unload",
+          "label": "Carry their things across the crack",
+          "icon": "hand",
+          "goto": "scene_downhill_crowd_unload"
+        },
+        {
+          "id": "posy",
+          "label": "Someone small is running up the hill toward you",
+          "icon": "heart",
+          "goto": "scene_downhill_crowd_posy",
+          "requiresFlag": "posy_kept"
+        },
+        {
+          "id": "odo",
+          "label": "Wave down Odo and his wheelbarrow",
+          "icon": "hand",
+          "goto": "scene_downhill_crowd_odo",
+          "requiresFlag": "odo_friend"
+        }
+      ]
+    },
+    "check_downhill_cart": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Heave a faun cart out of a crack in the road",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "choice_last_climb",
+        "narration": "One, two, three, heave! The wheel pops out of the crack and the cart rolls on. The fauns shout thank you all the way down the hill, and the smallest one throws you a very squashed flower."
+      },
+      "onFailure": {
+        "goto": "choice_last_climb",
+        "narration": "Heave as you might, the wheel stays stuck. So you lift the whole cart out instead, which takes everybody, the mule and a passing warden. The fauns say thank you seven times each."
+      }
+    },
+    "scene_downhill_crowd_unload": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "narration": "You carry everything across the crack: six chairs, a cooking pot, a birdcage with no bird in it, and the smallest faun, who stops crying to ride on your shoulders. Empty, the cart lifts out easily. You load it all again on the far side, and wave them off down the hill.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn back uphill",
+          "icon": "hand",
+          "goto": "choice_last_climb"
+        }
+      ]
+    },
+    "scene_downhill_crowd_posy": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "narration": "It is Posy, running up while everyone else runs down, with Corbin puffing behind her. She pushes her lucky stone into your hand. \"It kept humming at night,\" she says. \"I think it was asking. You take it home.\" Then Corbin gets his shoulder under the faun cart and pops it free, and they all go down together.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn back uphill",
+          "icon": "heart",
+          "goto": "choice_last_climb"
+        }
+      ]
+    },
+    "scene_downhill_crowd_odo": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "narration": "Odo comes clattering down the hill with his empty wheelbarrow, which turns out to be exactly the right size for six chairs and a small faun. Everyone piles in. Odo wheels the lot round the crack, singing. \"Never carried anything worth this much,\" he says, and he means the fauns.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn back uphill",
+          "icon": "hand",
+          "goto": "choice_last_climb"
+        }
+      ]
+    },
+    "choice_last_climb": {
+      "type": "choice_point",
+      "narration": "Above the last houses the road splits in two. To the left, a warden stair cut straight up the rock, steep and quick. To the right, the old dragonling path, which wanders and doubles back and takes its time. Behind you, the ground shakes in a slow, steady beat, like a drum. Which way up?",
+      "choices": [
+        {
+          "id": "stair",
+          "label": "Race up the warden stair",
+          "icon": "quick",
+          "goto": "check_last_climb_stair"
+        },
+        {
+          "id": "old_path",
+          "label": "Take the old dragonling path",
+          "icon": "map",
+          "goto": "choice_last_climb_old_path"
+        },
+        {
+          "id": "moth",
+          "label": "Follow the little embermoth",
+          "icon": "lantern",
+          "goto": "choice_last_climb_moth",
+          "requiresFlag": "moth_with_us"
+        }
+      ]
+    },
+    "check_last_climb_stair": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Race up a steep stair before the light goes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_tree_line",
+        "narration": "Up and up and up, two steps at a time. You reach the top with your legs wobbling and your hearts thumping, well ahead of the dark."
+      },
+      "onFailure": {
+        "goto": "rest_tree_line",
+        "narration": "Halfway up, a tremor shakes loose a shower of little stones. You press yourselves flat against the rock and wait, and then climb on carefully, one step at a time, and reach the top dusty but together, just as the light turns orange."
+      }
+    },
+    "choice_last_climb_old_path": {
+      "type": "story",
+      "narration": "The old path wanders, but it is kind. It finds the shade, the flat bits, a spring of cold water, and a carved stone at every bend with a little dragonling face on it, smiling. You count eleven faces. By the twelfth you are at the tree line, and nobody's legs hurt at all.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look back down the road",
+          "icon": "map",
+          "goto": "rest_tree_line"
+        }
+      ]
+    },
+    "choice_last_climb_moth": {
+      "type": "story",
+      "narration": "The little embermoth lifts off and flies ahead of you, up neither path, along a ledge nobody else had noticed. It glows at every turn so you can find it. At the tree line it circles your heads once, like a thank you, and flies on up the mountain, toward home.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look back down the road",
+          "icon": "lantern",
           "goto": "rest_tree_line"
         }
       ]
@@ -1158,9 +1945,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and see what the road is doing",
+          "label": "Keep working",
           "icon": "eye",
-          "goto": "scene_road_gifts"
+          "goto": "scene_noon_shake"
         }
       ]
     }
@@ -1186,7 +1973,9 @@
       "boggart": "talks sidelong to nobody, never meets your eye, treasures overheard sentences",
       "ford_witch": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
       "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
-      "caravan_master": "exhausted, practical, has had a headache since the stone came aboard"
+      "caravan_master": "exhausted, practical, has had a headache since the stone came aboard",
+      "odo": "a cheerful man with a wheelbarrow of painted gravel he believes is gems; proud, easily delighted, never sulks",
+      "posy": "Corbin the prospector's small daughter; serious, brave, thinks hard before she answers"
     }
   }
 }
