@@ -457,3 +457,14 @@ Five character-free backdrops for the northern bridge and its broken crossing. G
 - Bridge engineers' tent: Open canvas engineer tent with timber braces, ropes, measuring rods, blank diagram sheets and tools on a table, river bridge beyond; no people, animals or text.
 - Cracked bridge span: Old stone bridge over shallow blue-green water, one section cracked and tilted but passable, uneven paving and open stone path; no people, animals, signs or text.
 - Bridge pillar shallows: Smooth stones and shallow water beneath a massive bridge pillar, reeds and ripples with a shadowed pocket; open shallow foreground; no people, wolves or other animals.
+
+## Gemfall 05A — rim lookout
+
+`redspire-rim-lookout.webp` covers `scene_rim_lookout`, `check_fires`, `scene_rim_lookout_send_word`, and `scene_rim_lookout_fly_redspire`. The view shows the road marker above the foothill campfires with Redspire in the distance.
+
+Generated as a painterly 16:9 storybook environment and exported 1920×1080 WebP, quality 88. The lower 30 percent is a clear level rocky-grass platform; no characters or readable sign text.
+
+### Rim lookout generation prompt
+
+Create a painterly fantasy storybook game backdrop for a high rim lookout above the foothills on the road to Redspire. A simple freshly painted wooden road marker stands at a rocky ridge above tiny warm foothill campfires; far away, a black citadel catches the last red-orange light. Wind-bent gold grass, layered blue mountains and a dramatic but gentle twilight. Keep the marker and citadel in the upper half and a broad level platform in the lower 30 percent. No characters, animals, readable signs, text, UI or border.
+
