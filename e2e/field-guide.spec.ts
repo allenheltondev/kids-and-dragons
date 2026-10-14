@@ -59,7 +59,6 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   }
   await expect(page.getByRole("button", { name: /add a point to/i })).toHaveCount(0);
   await page.getByRole("button", { name: /^next$/i }).click(TAP);
-  await page.getByRole("button", { name: /^next$/i }).click(TAP);
   await page.getByPlaceholder("Tap to type").fill(name, TAP);
   await page.getByRole("button", { name: /that's me/i }).click(TAP);
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);

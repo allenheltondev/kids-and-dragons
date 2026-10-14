@@ -83,6 +83,7 @@ import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter, withInventory } from "./character.js";
+import { assignPlayerColors } from "./player-colors.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
@@ -982,7 +983,12 @@ function doCreateCharacter(
     species: intent.species,
     class: intent.class,
     stats: intent.stats,
-    appearance: intent.appearance,
+    // The table's pick, not the phone's: unique at this table, then frozen
+    // on the character for every game after (player-colors.ts).
+    appearance: assignPlayerColors(
+      `${draft.runId}:${playerId}:colors`,
+      draft.party.map((member) => member.character.appearance),
+    ),
     // A late joiner seats at the party's tier floor rather than level 1, so a
     // friend who sits down in campaign three is playable rather than a
     // passenger (spec §8.4). `newCharacter` rejects anything that is not 1 or

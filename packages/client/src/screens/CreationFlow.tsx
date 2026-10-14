@@ -1,8 +1,7 @@
 /**
  * CreationFlow — PlayerView during `phase === "creation"`.
  *
- * spec §5: one decision per screen, in order — species, class, stats,
- * appearance, name — with the character drawing itself on WorldView as the
+ * spec §5: one decision per screen, in order — species, class, stats, name — with the character drawing itself on WorldView as the
  * choices are made (see `creationDraft.ts` for how the preview is fed).
  *
  * Three rules shape every screen here:
@@ -21,7 +20,7 @@
  * remembering. The animated half is still the rigs' job (world/scene.ts header).
  */
 
-import { useCallback, useId, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { cue } from "../audio";
 import { STAT_IDS } from "@kad/shared";
@@ -30,9 +29,6 @@ import { useRules, useSend } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
-import { RigFigure } from "./RigFigure";
-import { STARTING_TIER } from "../world/art-paths";
-import type { RigLook } from "../world/rig-look";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import {
@@ -43,20 +39,7 @@ import {
   useCreationDraft,
 } from "./creationDraft";
 import type { CreationStep } from "./creationDraft";
-import {
-  ACCENTS,
-  MARKINGS,
-  NAME_MAX_LENGTH,
-  PALETTES,
-  defaultAppearance,
-  hornStylesFor,
-  randomNames,
-  rigLookFor,
-  sanitizeName,
-  signatureOf,
-  wingStylesFor,
-} from "./creationContent";
-import type { CosmeticOption } from "./creationContent";
+import { NAME_MAX_LENGTH, randomNames, sanitizeName } from "./creationContent";
 import "./shared.css";
 import "./CreationFlow.css";
 import { EntryScene } from "./EntryScene";
@@ -65,23 +48,13 @@ const STEP_TITLE: Record<CreationStep, string> = {
   species: "Who are you?",
   class: "How do you fight?",
   stats: "What are you best at?",
-  appearance: "What do you look like?",
   name: "What's your name?",
-};
-
-/** Where the second color lands, in the player's words. */
-const SECOND_COLOR_HINT: Record<ReturnType<typeof signatureOf>, string> = {
-  horn: "Colors your horn.",
-  wings: "Colors your wings.",
-  tail: "Colors your tail.",
-  mane: "Colors your mane.",
 };
 
 const STEP_ICON: Record<CreationStep, string> = {
   species: "unicorn",
   class: "swords",
   stats: "star",
-  appearance: "palette",
   name: "name",
 };
 
@@ -192,52 +165,31 @@ export function SpeciesStep({
  * The hero so far, pinned above every screen after the species is chosen.
  *
  * It is the only thing on the phone that answers "who am I making?" without
- * going back a step, and it is where the appearance choices land: the figure
- * is the rig itself, wearing the draft's look (world/rig-look.ts), so tapping
- * a color, a marking or a wing style changes the creature right there. On the
- * appearance step it grows (`large`) — that is the screen it is the answer on.
+ * going back a step.
  */
 export function HeroStrip({
   species,
   klass,
   name,
   accent,
-  look,
-  large = false,
 }: {
   species: SpeciesDef;
   klass: ClassDef | null;
   name: string;
-  accent: string;
-  look?: RigLook;
-  large?: boolean;
+  /** The player's color, once they have one — never during creation. */
+  accent?: string;
 }): ReactElement {
   const trimmed = name.trim();
-  const portrait = (
-    <CharacterPortrait species={species.id} accent={accent} backdrop lit float />
-  );
   return (
-    // A div, not a p — the rig figure renders block elements.
-    <div className={`creation-hero${large ? " creation-hero--large" : ""}`}>
-      {look === undefined ? (
-        <CharacterPortrait
-          species={species.id}
-          className="creation-hero__art"
-          accent={accent}
-          backdrop
-          lit
-          float
-        />
-      ) : (
-        <RigFigure
-          key={species.id}
-          species={species.id}
-          tier={STARTING_TIER}
-          className="creation-hero__art creation-hero__rig"
-          look={look}
-          fallback={portrait}
-        />
-      )}
+    <p className="creation-hero">
+      <CharacterPortrait
+        species={species.id}
+        className="creation-hero__art"
+        accent={accent}
+        backdrop
+        lit
+        float
+      />
       <span className="creation-hero__text">
         {/* Before there is a name the species *is* the name, so the second line
             drops it rather than saying "Unicorn / Unicorn Thornguard". */}
@@ -253,7 +205,7 @@ export function HeroStrip({
           )}
         </span>
       </span>
-    </div>
+    </p>
   );
 }
 
@@ -394,7 +346,7 @@ function StatsStep({
 }
 
 // ---------------------------------------------------------------------------
-// Small choices — colors, cosmetics, name suggestions (spec §5.4, §5.5)
+// Small choices — name suggestions (spec §5.5)
 //
 // One shape for all of them, because they are all the same question: pick one
 // of a handful of equal things. Two rules do most of the work:
@@ -410,44 +362,15 @@ function StatsStep({
 
 function OptionRow({
   legend,
-  hint,
-  quiet = false,
   children,
 }: {
   legend: string;
-  /**
-   * What this choice actually does, in the player's words. Only worth showing
-   * where the answer is not obvious from the picture — such as which part of
-   * the creature a second color lands on.
-   */
-  hint?: string;
-  /**
-   * Lighter chrome, for a choice that is genuinely optional. Same touch target
-   * — spec §11 wants big ones and "subtle" must never buy itself out of that —
-   * so the weight comes off the border, the fill and the type instead.
-   */
-  quiet?: boolean;
   children: ReactNode;
 }): ReactElement {
-  const classes = ["creation-fieldset"];
-  if (quiet) classes.push("creation-fieldset--quiet");
-  // Tied to the group with `aria-describedby`, not merely placed inside it: a
-  // screen reader lands on a swatch button, and "Orchid, pressed" without the
-  // sentence explaining what a color does here is exactly the confusion the
-  // sentence was added to remove.
-  const hintId = useId();
   return (
-    <fieldset className={classes.join(" ")} aria-describedby={hint ? hintId : undefined}>
-      <legend className="creation-legend kad-label">
-        {legend}
-        {quiet ? <span className="creation-legend__optional">optional</span> : null}
-      </legend>
-      {hint === undefined ? null : (
-        <p id={hintId} className="creation-hint kad-muted">
-          {hint}
-        </p>
-      )}
-      <div className={`creation-options${quiet ? " creation-options--quiet" : ""}`}>{children}</div>
+    <fieldset className="creation-fieldset">
+      <legend className="creation-legend kad-label">{legend}</legend>
+      <div className="creation-options">{children}</div>
     </fieldset>
   );
 }
@@ -484,39 +407,6 @@ function OptionButton({
 }
 
 // ---------------------------------------------------------------------------
-// Step 4 — appearance (spec §5.4)
-// ---------------------------------------------------------------------------
-
-export function CosmeticRow({
-  legend,
-  options,
-  chosen,
-  onChoose,
-}: {
-  legend: string;
-  options: readonly CosmeticOption[];
-  chosen: string | undefined;
-  onChoose: (id: string) => void;
-}): ReactElement | null {
-  if (options.length === 0) return null;
-  return (
-    <OptionRow legend={legend}>
-      {options.map((option) => (
-        <OptionButton
-          key={option.id}
-          selected={chosen === option.id}
-          onSelect={() => {
-            onChoose(option.id);
-          }}
-          media={<Icon name={option.icon} size="1.5em" />}
-          label={option.name}
-        />
-      ))}
-    </OptionRow>
-  );
-}
-
-// ---------------------------------------------------------------------------
 
 export function CreationFlow(): ReactElement {
   useEnsureContent();
@@ -544,20 +434,13 @@ export function CreationFlow(): ReactElement {
     return bonus;
   }, [speciesDef]);
 
-  // Memoized on the appearance, so the rig only repaints when a tap changed it.
-  const look = useMemo(
-    () => (draft.species === null ? undefined : rigLookFor(draft.species, draft.appearance)),
-    [draft.species, draft.appearance],
-  );
-
   const spent = sumStats(draft.assigned);
   const remaining = (rules?.creationPoints ?? 0) - spent;
 
   const stepIndex = CREATION_STEPS.indexOf(draft.step);
 
   const chooseSpecies = useCallback((id: SpeciesId) => {
-    // A species change resets cosmetics: a bigfoot has no horn to style.
-    patchCreationDraft({ species: id, appearance: defaultAppearance(id) });
+    patchCreationDraft({ species: id });
   }, []);
 
   const addPoint = useCallback(
@@ -584,21 +467,6 @@ export function CreationFlow(): ReactElement {
         return draft.klass !== null;
       case "stats":
         return remaining === 0;
-      case "appearance":
-        /*
-         * The one step nothing is required on. Every species starts dressed
-         * as it was painted (creationContent `defaultAppearance`), so there is
-         * no answer only they can give and no reason to hold the flow for one
-         * — spec §1.1's "typing must never be required" reasoning, applied to
-         * a tap.
-         *
-         * It was written as `palette !== "" && accent !== ""`, which looked
-         * like a gate and never was one: `chooseSpecies` applies
-         * `defaultAppearance`, so both are set before this step is reachable
-         * and the condition was already true on arrival. Saying `true` is the
-         * same behaviour, stated on purpose instead of by accident.
-         */
-        return true;
       case "name":
         return draft.name.trim().length > 0;
     }
@@ -628,11 +496,12 @@ export function CreationFlow(): ReactElement {
         // Assigned points only. Base stats and the species bonus are applied
         // server-side by resolveCharacter() (domain.ts, CharacterProgress.stats).
         stats: draft.assigned,
-        appearance: draft.appearance,
+        // No appearance: the server assigns each new character its colors,
+        // unique at the table and kept for good (shared player-colors.ts).
       });
       // Only throw the draft away once the character actually exists. A
       // rejected intent resolves normally, so resetting unconditionally would
-      // wipe five screens of choices because the phone blinked.
+      // wipe four screens of choices because the phone blinked.
       if (!accepted) {
         patchCreationDraft({ submitting: false });
         setError("That didn't send. Try again?");
@@ -684,9 +553,6 @@ export function CreationFlow(): ReactElement {
             species={speciesDef}
             klass={classDef}
             name={draft.name}
-            accent={draft.appearance.accent}
-            look={look}
-            large={draft.step === "appearance"}
           />
         )}
       </header>
@@ -714,82 +580,6 @@ export function CreationFlow(): ReactElement {
             onRemove={removePoint}
             onReset={() => patchCreationDraft({ assigned: NO_POINTS })}
           />
-        ) : null}
-
-        {draft.step === "appearance" && draft.species !== null ? (
-          <div className="creation-appearance">
-            {/* `creation-swatch` carries no styling of its own — it names the
-                kind of option this is, for the e2e that picks a color and an
-                accent by role rather than by position. */}
-            <OptionRow legend="Main color" quiet>
-              {PALETTES.map((palette) => (
-                <OptionButton
-                  key={palette.id}
-                  className="creation-swatch creation-option--quiet"
-                  selected={draft.appearance.palette === palette.id}
-                  onSelect={() => {
-                    patchCreationDraft({
-                      appearance: { ...draft.appearance, palette: palette.id },
-                    });
-                  }}
-                  media={
-                    /* Mane in the middle, coat as the ring — the pair reads as
-                       a creature rather than a dot (creationContent PALETTES). */
-                    <span
-                      className="creation-swatch__chip"
-                      style={{ background: palette.mane, borderColor: palette.coat }}
-                    />
-                  }
-                  label={palette.name}
-                />
-              ))}
-            </OptionRow>
-
-            <OptionRow legend="Second color" hint={SECOND_COLOR_HINT[signatureOf(draft.species)]} quiet>
-              {ACCENTS.map((accent) => (
-                <OptionButton
-                  key={accent.id}
-                  className="creation-swatch creation-option--quiet"
-                  selected={draft.appearance.accent === accent.hex}
-                  onSelect={() => {
-                    patchCreationDraft({ appearance: { ...draft.appearance, accent: accent.hex } });
-                  }}
-                  media={
-                    <span
-                      className="creation-swatch__chip"
-                      style={{ background: accent.hex, borderColor: accent.hex }}
-                    />
-                  }
-                  label={accent.name}
-                />
-              ))}
-            </OptionRow>
-
-            <CosmeticRow
-              legend="Horn"
-              options={hornStylesFor(draft.species)}
-              chosen={draft.appearance.hornStyle}
-              onChoose={(id) =>
-                patchCreationDraft({ appearance: { ...draft.appearance, hornStyle: id } })
-              }
-            />
-            <CosmeticRow
-              legend="Wings"
-              options={wingStylesFor(draft.species)}
-              chosen={draft.appearance.wingStyle}
-              onChoose={(id) =>
-                patchCreationDraft({ appearance: { ...draft.appearance, wingStyle: id } })
-              }
-            />
-            <CosmeticRow
-              legend="Markings"
-              options={MARKINGS}
-              chosen={draft.appearance.markings}
-              onChoose={(id) =>
-                patchCreationDraft({ appearance: { ...draft.appearance, markings: id } })
-              }
-            />
-          </div>
         ) : null}
 
         {draft.step === "name" ? (
