@@ -866,7 +866,7 @@
     },
     "scene_masks_let_be": {
       "type": "story",
-      "narration": "You let them be, and work your own side of the road. For a while the two of you pass stones in opposite directions ten paces apart, like a very slow dance, and once Hessa looks up and nods to you, and you nod back, and neither of you stops.",
+      "narration": "You let them be, and work your own side of the road. For a while you and the masks pass stones in opposite directions ten paces apart, like a very slow dance, and once Hessa looks up and nods to you, and you nod back, and neither of you stops.",
       "choices": [
         {
           "id": "on",

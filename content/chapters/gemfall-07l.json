@@ -1460,7 +1460,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_switchback",
-        "narration": "You wait for the swing to settle, then go, one, two, three, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
+        "narration": "You wait for the swing to settle, then go, one at a time, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
       },
       "onFailure": {
         "goto": "scene_switchback",

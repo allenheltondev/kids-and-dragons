@@ -68,7 +68,7 @@
     },
     "scene_tree_line_walk_in": {
       "type": "story",
-      "narration": "You just walk in, the plain way, under the first branches. A fern counts you. An acorn drops on the first head through, which is fairly clearly the forest's way of saying \"one\". Two more acorns follow, for the other two heads. Then the whole forest goes quiet, the way a teacher goes quiet while writing something down.",
+      "narration": "You just walk in, the plain way, under the first branches. A fern counts you. An acorn drops on the first head through, which is fairly clearly the forest's way of saying \"one\". Another acorn follows for every head after it, one each, counted. Then the whole forest goes quiet, the way a teacher goes quiet while writing something down.",
       "choices": [
         {
           "id": "on",

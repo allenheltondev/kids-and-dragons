@@ -1043,7 +1043,7 @@
     },
     "scene_falls_stair_dripping": {
       "type": "story",
-      "narration": "\"The flooded paths?\" The flood-warden's whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she lifts each of you across the worst of the steps like parcels, one, two, three, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
+      "narration": "\"The flooded paths?\" The flood-warden's whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she lifts each of you across the worst of the steps like parcels, one after another, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
       "cast": [
         {
           "figure": "cast/flood_warden",
