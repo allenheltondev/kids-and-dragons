@@ -1267,6 +1267,54 @@ describe("the party strip", () => {
     expect(screen.queryByRole("button", { name: /^Your turn$/ })).toBeNull();
   });
 
+  describe("progress on the same check is not a new turn", () => {
+    const WINDSTEP = character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" });
+    const check: Prompt = {
+      kind: "roll",
+      sceneId: "s_1",
+      stat: "quick",
+      tn: 12,
+      prompt: "Wriggle through",
+      characterId: "c_1",
+    };
+
+    it("leaves a pending group roller on their bag while somebody else rolls", async () => {
+      const user = userEvent.setup();
+      const group: Prompt = { ...check, characterId: "c_2", group: { pending: ["c_2", "c_1"], rolls: [] } };
+      mount({ prompt: group, party: [member(), member({ character: WINDSTEP, playerId: "p_2" })] });
+      expect(screen.getByRole("button", { name: "Roll!" })).toBeTruthy();
+
+      await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+      expect(screen.getByText("Your things")).toBeTruthy();
+
+      // Windstep rolls: the check is the same, only its progress moved.
+      serverSends({
+        prompt: {
+          ...check,
+          characterId: "c_1",
+          group: { pending: ["c_1"], rolls: [{ die: 14, mod: 1, total: 15, tn: 12, result: "success", characterId: "c_2", stat: "quick" }] },
+        },
+      });
+      expect(screen.getByText("Your things")).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Roll!" })).toBeNull();
+    });
+
+    it("leaves the roller on their bag when a friend offers help", async () => {
+      const user = userEvent.setup();
+      mount({ prompt: check, party: [member(), member({ character: WINDSTEP, playerId: "p_2" })] });
+      await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+      expect(screen.getByText("Your things")).toBeTruthy();
+
+      serverSends({ prompt: { ...check, helper: { characterId: "c_2", sides: 4 } } });
+      expect(screen.getByText("Your things")).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Roll!" })).toBeNull();
+
+      // A different check is a new turn, and opens itself.
+      serverSends({ prompt: { ...check, sceneId: "s_2", prompt: "Climb the wall" } });
+      expect(screen.getByRole("button", { name: "Roll!" })).toBeTruthy();
+    });
+  });
+
   it("keeps the bag available while somebody else starts a fight", async () => {
     mount({ playerId: "p_2", party: [member(), member({ character: THISTLE, playerId: "p_2" })], prompt: choicePrompt() });
     act(() => dismissPlayerSheet());
