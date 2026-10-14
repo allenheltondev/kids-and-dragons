@@ -199,7 +199,7 @@
       "narration": "The road ends at the west branch of the river, and the queue to cross it is two days long. A faun provisioner named Burdock is selling numbered pebbles out of a bucket, and honeycakes at bridge-queue prices, which means three times what they are worth. Your pebble says 412. The ford is on number 9.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/burdock",
           "name": "Burdock"
         }
       ],
@@ -230,7 +230,7 @@
       "narration": "Burdock sells you a honeycake the size of a coin for the price of a honeycake the size of a hat. \"My lucky number,\" he says fondly, and means your money. It is, to be fair, a very good honeycake. You make it last three bites.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/burdock",
           "name": "Burdock"
         }
       ],
@@ -247,7 +247,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/burdock",
           "name": "Burdock"
         }
       ],
@@ -265,7 +265,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/burdock",
           "name": "Burdock"
         }
       ],
@@ -332,7 +332,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/burdock",
           "name": "Burdock"
         }
       ],
@@ -350,7 +350,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/burdock",
           "name": "Burdock"
         }
       ],
@@ -761,11 +761,11 @@
       "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by queue-jumpers. And a faun family called the Brackens is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/mother_bracken",
           "name": "Mother Bracken"
         },
         {
-          "figure": "entities/faun",
+          "figure": "cast/littlest_bracken",
           "name": "Littlest Bracken",
           "size": "small"
         }
@@ -876,11 +876,11 @@
       "narration": "The Brackens' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Bracken is holding a queue pebble with a big number on it and trying very hard not to cry about it.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/mother_bracken",
           "name": "Mother Bracken"
         },
         {
-          "figure": "entities/faun",
+          "figure": "cast/littlest_bracken",
           "name": "Littlest Bracken",
           "size": "small"
         }
@@ -933,11 +933,11 @@
       "narration": "You lash the cracked wheel together with rope, round and round, until it looks like a wheel wearing a jumper. It turns. It wobbles, but it turns. The littlest Bracken rides on top of the cart to test it and declares it the best wheel ever made, which is not true, but it will get them home.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/mother_bracken",
           "name": "Mother Bracken"
         },
         {
-          "figure": "entities/faun",
+          "figure": "cast/littlest_bracken",
           "name": "Littlest Bracken",
           "size": "small"
         }
@@ -956,11 +956,11 @@
       "narration": "You break the honeycake into four, then five, so the littlest Bracken gets a bit from everyone. For a while nobody says anything, because honeycake. Then the mother says their season was not all bad, really, and the littlest one falls asleep against a cart wheel with crumbs on both cheeks.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/mother_bracken",
           "name": "Mother Bracken"
         },
         {
-          "figure": "entities/faun",
+          "figure": "cast/littlest_bracken",
           "name": "Littlest Bracken",
           "size": "small"
         }
@@ -979,11 +979,11 @@
       "narration": "You hand the littlest Bracken your pebble, and take theirs. Their number is enormous. Yours was not. The littlest Bracken looks at the small number for a long time and then stops trying not to cry and just cries, happily, all over it. The Brackens will cross at dawn, and they do not stop thanking you until dusk.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/mother_bracken",
           "name": "Mother Bracken"
         },
         {
-          "figure": "entities/faun",
+          "figure": "cast/littlest_bracken",
           "name": "Littlest Bracken",
           "size": "small"
         }

@@ -152,7 +152,7 @@
       "narration": "The lamplighter is a frogfolk called Old Wick, who is so old that his lamp-pole has a lamp-pole. You carry the ladder. He lights each lamp and wishes it goodnight by name. Then he shows you the lamplighters' path: a narrow ledge along the Long Bridge rail. \"Nobody else uses it,\" he croaks. \"Nobody else looks.\"",
       "cast": [
         {
-          "figure": "entities/frogfolk",
+          "figure": "cast/old_wick",
           "name": "Old Wick"
         }
       ],
@@ -370,7 +370,7 @@
       "narration": "You find the narrow ledge along the bridge rail, right where Old Wick showed you. Nobody else is on it, because nobody else ever looks. You cross in single file, high above the whole jam. Halfway over, Old Wick himself is lighting a lamp at noon, just to be sure. He tips his hat as you pass.",
       "cast": [
         {
-          "figure": "entities/frogfolk",
+          "figure": "cast/old_wick",
           "name": "Old Wick"
         }
       ],
@@ -894,7 +894,7 @@
       "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/postmaster_quill",
           "name": "Postmaster Quill"
         }
       ],
@@ -941,7 +941,7 @@
       "prompt": "Sort nine hundred claim letters before the griffins take off",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/postmaster_quill",
           "name": "Postmaster Quill"
         }
       ],
@@ -1373,7 +1373,7 @@
       "narration": "First, food for the road. A provision barge is moored at the foot of the Outfitters' Steps, run by Mrs. Tuft, a sheeple grocer whose wool is stuck all over with price tags. Everything she sells comes in a jar, even the jars. There is room in the pack for one good thing. What shall it be?",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/mrs_tuft",
           "name": "Mrs. Tuft"
         }
       ],
@@ -1438,7 +1438,7 @@
       "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You all promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/mrs_tuft",
           "name": "Mrs. Tuft"
         }
       ],
@@ -1456,7 +1456,7 @@
       "narration": "The sunbloom draught glows in its bottle like a little sunrise. \"For bumps, scrapes and grumps,\" says Mrs. Tuft. \"Mostly grumps.\" She wraps it in a sock so it will not clink against anything, and then charges you for the sock.",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/mrs_tuft",
           "name": "Mrs. Tuft"
         }
       ],
@@ -1474,7 +1474,7 @@
       "narration": "The mosslight glows soft and green, like a tiny forest that fits in your hand. \"Picked far to the west by my cousins,\" says Mrs. Tuft. \"It likes to be talked to. Not sung to. It's very particular.\" The jar seems to brighten a little when you say thank you.",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/mrs_tuft",
           "name": "Mrs. Tuft"
         }
       ],
@@ -1492,7 +1492,7 @@
       "narration": "Mrs. Tuft takes one look at the red stone, and every jar on her barge starts to rattle on its shelf, very gently, the way spoons do when a cart goes by. She hands it back rather quickly. \"Lovely,\" she says, not meaning it. She gives you a honeycake for free, and you get the feeling it is so you will leave a bit sooner.",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/mrs_tuft",
           "name": "Mrs. Tuft"
         }
       ],
@@ -1698,7 +1698,7 @@
       "narration": "Every inn in the Exchange is full to the chimneys. At the Empty Chair, Innkeeper Flint, a stone troll in a very small nightcap, has one bed left: a cupboard under the stairs. Four other groups of prospectors want it too. Flint folds his arms. \"Best offer,\" he rumbles. How do we win the cupboard?",
       "cast": [
         {
-          "figure": "entities/stone_troll",
+          "figure": "cast/innkeeper_flint",
           "name": "Innkeeper Flint"
         }
       ],
@@ -1738,7 +1738,7 @@
       "prompt": "Tell the red night so well a whole inn goes quiet",
       "cast": [
         {
-          "figure": "entities/stone_troll",
+          "figure": "cast/innkeeper_flint",
           "name": "Innkeeper Flint"
         }
       ],
@@ -1757,7 +1757,7 @@
       "narration": "There are three hundred supper bowls, and some of them have been used twice. You wash, dry and stack until your fingers go wrinkly as raisins and the kitchen is full of soap bubbles. At midnight Flint inspects one bowl very closely, says \"Hm,\" and hands you the key. The other prospectors are still arguing about prices.",
       "cast": [
         {
-          "figure": "entities/stone_troll",
+          "figure": "cast/innkeeper_flint",
           "name": "Innkeeper Flint"
         }
       ],
@@ -1793,7 +1793,7 @@
       "narration": "You open Madame Fenn's clanking purse and name a number. The other prospectors go pale and wander off to sleep in the stables. Flint bites one coin to check it is real, then another to check the first one was. The cupboard is yours. It is still a cupboard, but it is the most expensive cupboard in the realm.",
       "cast": [
         {
-          "figure": "entities/stone_troll",
+          "figure": "cast/innkeeper_flint",
           "name": "Innkeeper Flint"
         }
       ],
