@@ -12,7 +12,7 @@
  * drag the renderer into the main bundle (art-paths.ts says so, and WorldView
  * lazy-loads PixiStage precisely to avoid it), so the split is what lets the
  * creation flow show a real rigged figure without shipping Pixi to a phone
- * that is only picking colors.
+ * that is only picking colours.
  *
  * Three rules shape the module:
  *
@@ -25,16 +25,14 @@
  *     machine is a name from `assets/manifest.json`'s rigContract — the nine
  *     triggers, `knockedDown`, `facing`. Nothing here knows a clip name; clips
  *     are the rig's business.
- *   - **A rig wears the colours it was drawn in — unless asked not to.**
- *     There used to be a runtime recolour here that wrote one flat hue into
- *     the rigs' `mane`/`accent` tint slots, and it flattened the shading the
- *     tier art exists for. Those slots stay unbound. The one exception is
- *     creation, where the player is choosing a look and must see it: a rig
- *     made `recolorable` loads its own copy of the file and `setLook` swaps
- *     its part images for repainted ones (rig-look.ts), which keep every
- *     pixel's shading and move only the hues the palette says belong to the
- *     slot. Telling two players apart is still the nameplate's job
- *     (`nameplate.ts`), which also answers it for a player who cannot
+ *   - **A rig wears the colours it was drawn in.** There used to be a runtime
+ *     recolour here: the rigs expose `mane`/`accent` tint slots, and this
+ *     module wrote the player's palette into them through a data-binding view
+ *     model so two players who picked the same species could be told apart. A
+ *     hue pushed onto authored shading flattens the detail the tier art exists
+ *     for, and it was never going to read as commissioned. The figures are
+ *     drawn as authored now and the name under their feet does the telling
+ *     apart (`nameplate.ts`) — which also answers it for a player who cannot
  *     separate two hues in the first place (spec §11).
  *   - **Rive handles are C++ objects.** Everything this module *owns* is
  *     deleted in `destroy()`, exactly once — see the ownership audit below,
@@ -78,9 +76,6 @@ import RiveCanvas from "@rive-app/canvas-advanced";
 import wasmUrl from "@rive-app/canvas-advanced/rive.wasm?url";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { characterRigUrl } from "./art-paths";
-import { partLookKey } from "./rig-look";
-import { forgetPart, paintPartPng, warmPart } from "./rig-look-pool";
-import type { RigLook } from "./rig-look";
 
 // Re-exported so the Pixi wrapper takes its anchor from the same one source.
 // The *rig* anchor, not the static-art one: a rig is drawn on the 1400 stage and
@@ -152,80 +147,7 @@ export interface RigHandle {
   setKnockedDown(down: boolean): void;
   /** Fire one of the contract's nine triggers by name. Unknown names are ignored. */
   fire(trigger: string): void;
-  /**
-   * Repaint the figure's parts for a chosen look (rig-look.ts). Only present
-   * on a rig created with `{ recolorable: true }`, which owns its own file —
-   * an image swapped on a shared file would repaint every figure built from it.
-   */
-  setLook?: (look: RigLook) => Promise<void>;
   destroy(): void;
-}
-
-/** One embedded part image: the runtime's handle, and the bytes it came from. */
-interface PartImage {
-  /** Unique per loaded file, so the paint pool's decoded copies never mix. */
-  id: string;
-  name: string;
-  asset: any;
-  bytes: Uint8Array;
-  /** The `partLookKey` this part currently shows; "" is as painted. */
-  shown: string;
-  /** Encoded repaints by `partLookKey`, so a choice tapped twice is free. Bounded. */
-  cache: Map<string, Uint8Array>;
-}
-
-let nextPartFile = 1;
-
-/** Repaints kept per part: enough to tap back and forth without a wait. */
-const PART_CACHE_SIZE = 8;
-
-/**
- * A rig file of its own, with every embedded image captured on the way in.
- * Not cached: the images in it are about to be swapped for one player's look.
- */
-async function recolorableRigFile(url: string): Promise<{ file: any; parts: PartImage[] } | null> {
-  try {
-    const rive = await runtime();
-    if (!rive) return null;
-    const response = await fetch(url);
-    if (!response.ok) return null;
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    const parts: PartImage[] = [];
-    const loader = new rive.CustomFileAssetLoader({
-      loadContents: (asset: any, inBand: Uint8Array): boolean => {
-        if (asset.isImage && inBand && inBand.length > 0) {
-          // Copied: the view points into wasm memory, which the next
-          // allocation is free to move.
-          parts.push({
-            id: `part-${String(nextPartFile)}-${String(parts.length)}`,
-            name: String(asset.name).replace(/\.[a-z]+$/i, ""),
-            asset,
-            bytes: inBand.slice(),
-            shown: "",
-            cache: new Map(),
-          });
-        }
-        // Not handled — the runtime decodes the embedded image as it always
-        // does, so the rig draws as painted until a look is set.
-        return false;
-      },
-    });
-    nextPartFile += 1;
-    const file = await rive.load(bytes, loader);
-    return file ? { file, parts } : null;
-  } catch {
-    return null;
-  }
-}
-
-function decodeRiveImage(rive: RiveRuntime, bytes: Uint8Array): Promise<any | null> {
-  return new Promise((resolve) => {
-    try {
-      rive.decodeImage(bytes, (image: any) => resolve(image ?? null));
-    } catch {
-      resolve(null);
-    }
-  });
 }
 
 /**
@@ -239,14 +161,10 @@ export async function createRig(
   onDrawn?: () => void,
   /** Selects an exact manifest.rigVariants build when one is delivered. */
   characterClass?: ClassId,
-  /** `recolorable`: load a private copy of the file so `setLook` can repaint it. */
-  options: { recolorable?: boolean } = {},
 ): Promise<RigHandle | null> {
   const rive = await runtime();
   if (!rive) return null;
-  const url = characterRigUrl(species, tier, characterClass);
-  const own = options.recolorable ? await recolorableRigFile(url) : null;
-  const file = own ? own.file : await rigFile(url);
+  const file = await rigFile(characterRigUrl(species, tier, characterClass));
   if (!file) return null;
 
   let renderer: any = null;
@@ -331,67 +249,8 @@ export async function createRig(
       onDrawn?.();
     };
 
-    /*
-     * Per part: the look it currently shows, and the most recent request.
-     * Taps arrive faster than a repaint finishes, so a repaint that is no
-     * longer the latest request throws its work away rather than landing a
-     * stale color over a newer one. Each part is keyed on only what it
-     * depends on (`partLookKey`), so a tap repaints the parts it changes and
-     * nothing else, and a choice tapped before comes back from the cache.
-     */
-    let request = 0;
-    const setLook = own
-      ? async (look: RigLook): Promise<void> => {
-          const mine = ++request;
-          const stale = (): boolean => destroyed || mine !== request;
-          const changed = own.parts.filter((part) => part.shown !== partLookKey(part.name, look));
-          if (changed.length === 0) return;
-          const results = await Promise.all(
-            changed.map(async (part) => {
-              const key = partLookKey(part.name, look);
-              // "As painted" restores the original bytes rather than a
-              // repaint that changes nothing — exactly the art.
-              let png: Uint8Array | null = key === "" ? part.bytes : part.cache.get(key) ?? null;
-              if (png && key !== "") {
-                // Most recently used last, so the oldest is first to go.
-                part.cache.delete(key);
-                part.cache.set(key, png);
-              }
-              if (!png) {
-                png = await paintPartPng(part.id, part.name, part.bytes, look);
-                if (!png || stale()) return null;
-                part.cache.set(key, png);
-                const oldest = part.cache.keys().next().value;
-                if (part.cache.size > PART_CACHE_SIZE && oldest !== undefined) part.cache.delete(oldest);
-              }
-              const image = await decodeRiveImage(rive, png);
-              return image ? { part, key, image } : null;
-            }),
-          );
-          if (stale()) {
-            for (const result of results) result?.image.unref?.();
-            return;
-          }
-          // All parts land together, so no frame shows a half-painted figure.
-          for (const result of results) {
-            if (!result) continue;
-            result.part.asset.setRenderImage(result.image);
-            // The asset holds its own reference now.
-            result.image.unref?.();
-            result.part.shown = result.key;
-          }
-        }
-      : undefined;
-
-    // Decode every part as soon as the figure is standing, so the first tap
-    // only has to paint — the decode is most of a first repaint's wait.
-    if (own) {
-      for (const part of own.parts) warmPart(part.id, part.bytes);
-    }
-
     return {
       canvas,
-      ...(setLook ? { setLook } : {}),
       tick(dtSeconds: number): void {
         if (destroyed) return;
         drawnMachine.advance(dtSeconds);
@@ -411,7 +270,6 @@ export async function createRig(
         if (destroyed) return;
         destroyed = true;
         release();
-        for (const part of own?.parts ?? []) forgetPart(part.id);
         /*
          * And take the canvas out of whatever it was put into. A DOM caller
          * appends this element itself (screens/RigFigure.tsx), and a rig
