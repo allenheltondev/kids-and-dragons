@@ -22,7 +22,7 @@
   pointer-events: none;
   opacity: 0;
   transform: translate(-50%, -0.4em);
-  animation: turn-banner 2.4s ease-out forwards;
+  animation: turn-banner 3s ease-out forwards;
 }
 
 .turn-banner__face {
@@ -39,7 +39,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .turn-banner {
-    animation: turn-banner-still 2.4s linear forwards;
+    animation: turn-banner-still 3s linear forwards;
     transform: translate(-50%, 0);
   }
   @keyframes turn-banner-still {
