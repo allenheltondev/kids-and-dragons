@@ -421,7 +421,11 @@ export function createBoardLayer(): BoardLayer {
     // A soft shadow on the tile under the feet. It sits outside `art` so a
     // fallen figure's tilt and fade leave it where it is: it is what puts a
     // flat cutout *on* the board rather than pasted over it.
-    actorContainer.addChild(drawShadow(combatant.side), art);
+    // Hidden until there is a figure to cast it: a shadow on an empty tile
+    // while the art loads read as a hole in the board.
+    const shadow = drawShadow(combatant.side);
+    shadow.visible = false;
+    actorContainer.addChild(shadow, art);
     actorsLayer.addChild(actorContainer);
 
     // The stand-in only shows if the art is genuinely late or missing. Drawn
@@ -432,6 +436,7 @@ export function createBoardLayer(): BoardLayer {
     art.addChild(placeholder);
     const reveal = setTimeout(() => {
       if (!placeholder.destroyed) placeholder.visible = true;
+      if (!shadow.destroyed) shadow.visible = true;
     }, PLACEHOLDER_GRACE_MS);
 
     const feet = feetOf(at);
@@ -490,6 +495,7 @@ export function createBoardLayer(): BoardLayer {
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
+          shadow.visible = true;
           // Fades up through the same easing that stands a fallen figure back
           // up (tick), so a figure arrives rather than appearing.
           if (!actor.down) art.alpha = 0;
@@ -499,6 +505,7 @@ export function createBoardLayer(): BoardLayer {
           // blank the board.
           clearTimeout(reveal);
           if (!placeholder.destroyed) placeholder.visible = true;
+          if (!shadow.destroyed) shadow.visible = true;
         });
     };
 
@@ -534,6 +541,7 @@ export function createBoardLayer(): BoardLayer {
         art.alpha = 1;
         rive.setKnockedDown(actor.down);
         art.addChild(rive.sprite);
+        shadow.visible = true;
         actor.rive = rive;
       })
       .catch(loadCutout);
