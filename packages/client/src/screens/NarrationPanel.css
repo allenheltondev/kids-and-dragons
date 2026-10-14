@@ -1,10 +1,15 @@
 /*
  * Narration — WorldView.
  *
- * Sits over the art at the bottom of the pane, which is why it is positioned
- * (the Pixi canvas is absolute; a static sibling would paint under it) and why
- * its backdrop is a gradient rather than a fill — the scene has to stay visible
- * above the text.
+ * Two pieces over the stage: the chapter's name at the top, and a plate along
+ * the bottom carrying the story, the choices and whatever else is being asked.
+ * The panel itself is transparent and lets taps through, so the art between
+ * the two is the stage's alone.
+ *
+ * This used to be a gradient over the whole pane with the text on its lower
+ * half, which put the paragraph across the heroes' faces on every scene and
+ * dimmed whoever they had just met. Now the plate reports its height
+ * (world/stage-inset.ts) and the story camera stands everybody above it.
  *
  * Type is `em` against `.kad-surface`, so the same rule reads from a sofa and
  * inside a 60%-height portrait pane. `--kad-measure` caps the line length,
@@ -16,31 +21,40 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5em);
-  padding: var(--space-4, 1em);
   color: var(--color-text, #f4f0ff);
-  /* Four stops rather than three, since the thing behind the words is now the
-     biome's own painting (world/scene.ts, setBiome) instead of flat bands: the
-     body text needs a floor to sit on that a sunlit meadow cannot wash out,
-     and the top of the frame still has to be clear art. */
-  background: linear-gradient(
-    to top,
-    var(--kad-bg, #0d0b1a) 0%,
-    color-mix(in srgb, var(--kad-bg, #0d0b1a) 88%, transparent) 38%,
-    color-mix(in srgb, var(--kad-bg, #0d0b1a) 48%, transparent) 62%,
-    transparent 88%
-  );
+  pointer-events: none;
+}
+
+/*
+ * The plate: opaque enough that a sunlit meadow cannot wash the words out,
+ * feathered along its top edge so it reads as the floor of the picture rather
+ * than a box pasted on it. Capped so the stage keeps what it needs
+ * (stage-inset.ts says the same) and scrolls past that.
+ */
+.narration__plate {
+  margin-block-start: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  /* The stage keeps the larger of half the pane and a full-width 16:9 strip
+     (stage-inset.ts storyStageHeight); the plate may have the rest. */
+  max-block-size: max(50%, calc(100cqh - 56.25cqw));
   overflow-y: auto;
+  padding: var(--space-6, 1.5em) var(--space-4, 1em) var(--space-4, 1em);
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent) var(--space-6, 1.5em),
+    color-mix(in srgb, var(--kad-bg, #0d0b1a) 94%, transparent) 100%
+  );
+  pointer-events: auto;
 }
 
 /* The chapter stays at the top; spare space belongs before the story. */
 .narration__head {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   flex: 0 0 auto;
+  padding: var(--space-4, 1em);
   padding-inline-end: 2.5em;
-  padding-block-end: 0.6em;
   text-shadow: 0 0.1em 0.5em #0d0b1a;
   display: flex;
   flex-direction: column;
@@ -57,7 +71,6 @@
 }
 
 .narration__story {
-  margin-block-start: auto;
   flex: 0 0 auto;
 }
 
@@ -118,8 +131,12 @@
  */
 .narration--fight {
   inset: auto 0 0 0;
-  background: none;
+}
+
+.narration--fight .narration__plate {
+  max-block-size: none;
   overflow: visible;
+  background: none;
   pointer-events: none;
 }
 
