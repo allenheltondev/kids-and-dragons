@@ -83,7 +83,8 @@
           "icon": "arrow",
           "goto": "scene_jackalope_race"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_drovers_wagon": {
       "type": "story",
@@ -149,7 +150,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "check_jackalope_race": {
       "type": "check",
@@ -176,7 +178,8 @@
       "onFailure": {
         "goto": "scene_empty_stretch",
         "narration": "You run like the wind. The jackalope runs like a much faster wind, then sits at the mile marker cleaning its antlers until you catch up. It thumps once anyway, as if to say: nice try. Then it is off to race a cart."
-      }
+      },
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_jackalope_race_cheer": {
       "type": "story",
@@ -193,7 +196,8 @@
           "icon": "heart",
           "goto": "scene_empty_stretch"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_jackalope_race_fly": {
       "type": "story",
@@ -210,7 +214,8 @@
           "icon": "wing",
           "goto": "scene_empty_stretch"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_empty_stretch": {
       "type": "story",
@@ -260,7 +265,8 @@
           "icon": "eye",
           "goto": "scene_silence_follows"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/quiet-road-stretch"
     },
     "scene_empty_stretch_keep_walking": {
       "type": "story",
@@ -272,7 +278,8 @@
           "icon": "arrow",
           "goto": "scene_downbound"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/quiet-road-stretch"
     },
     "check_jackalopes": {
       "type": "check",
@@ -470,7 +477,8 @@
           "goto": "scene_stubborn_mule_ask_mule",
           "requiresSpecies": "unicorn"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "check_push_mule": {
       "type": "check",
@@ -485,7 +493,8 @@
       "onFailure": {
         "goto": "rest_soup_tents",
         "narration": "You push. The mule leans. The mule wins, and you all sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off."
-      }
+      },
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "scene_stubborn_mule_unload": {
       "type": "story",
@@ -497,7 +506,8 @@
           "icon": "hand",
           "goto": "rest_soup_tents"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "scene_stubborn_mule_ask_mule": {
       "type": "story",
@@ -509,7 +519,8 @@
           "icon": "heart",
           "goto": "rest_soup_tents"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "rest_soup_tents": {
       "type": "rest",
@@ -541,7 +552,8 @@
           "icon": "arrow",
           "goto": "scene_road_crew"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-soup-tents"
     },
     "scene_wend_pitch": {
       "type": "story",
@@ -621,7 +633,8 @@
           "icon": "gem",
           "goto": "scene_road_crew"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-soup-tents"
     },
     "scene_road_crew": {
       "type": "story",
@@ -659,7 +672,8 @@
           "goto": "scene_road_crew_fly",
           "requiresSpecies": "griffin"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-road-detour"
     },
     "check_haul_posts": {
       "type": "check",
@@ -687,7 +701,8 @@
       "onFailure": {
         "goto": "scene_warden_patrol",
         "narration": "You carry a post the wrong way round and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
-      }
+      },
+      "art": "scenes/gemfall/north-road-detour"
     },
     "scene_road_crew_ask_why": {
       "type": "story",
@@ -705,7 +720,8 @@
           "icon": "ear",
           "goto": "scene_warden_patrol"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-road-detour"
     },
     "scene_road_crew_charm": {
       "type": "story",
@@ -723,7 +739,8 @@
           "icon": "charm",
           "goto": "scene_warden_patrol"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-road-detour"
     },
     "scene_road_crew_fly": {
       "type": "story",
@@ -741,7 +758,8 @@
           "icon": "wing",
           "goto": "scene_warden_patrol"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-road-detour"
     },
     "scene_warden_patrol": {
       "type": "story",
@@ -882,7 +900,8 @@
           "goto": "scene_signposts_outsell",
           "requiresSpecies": "kitsune"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-signpost-fork"
     },
     "check_read_signs": {
       "type": "check",
@@ -897,7 +916,8 @@
       "onFailure": {
         "goto": "scene_depot",
         "narration": "You follow the most convincing sign for half an hour and arrive at a pig farm. The pigs are friendly. The farmer points you back toward the depot, and politely waits until you are out of sight before he laughs."
-      }
+      },
+      "art": "scenes/gemfall/north-signpost-fork"
     },
     "scene_signposts_buy_map": {
       "type": "story",
@@ -909,7 +929,8 @@
           "icon": "scroll",
           "goto": "scene_depot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-signpost-fork"
     },
     "scene_signposts_outsell": {
       "type": "story",
@@ -921,7 +942,8 @@
           "icon": "spark",
           "goto": "scene_depot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-signpost-fork"
     },
     "scene_depot": {
       "type": "story",
@@ -999,7 +1021,8 @@
           "icon": "arrow",
           "goto": "scene_rumor_fire"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/rush-depot"
     },
     "scene_rumor_fire": {
       "type": "story",
@@ -1031,7 +1054,8 @@
           "goto": "scene_rumor_fire_marsh_news",
           "requiresFlag": "walked_over"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-noon-stop"
     },
     "check_tall_tale": {
       "type": "check",
@@ -1046,7 +1070,8 @@
       "onFailure": {
         "goto": "scene_bell_courier",
         "narration": "You start well, but you mix up the drake with the river, and the river with your aunt. The ring laughs kindly and decides your aunt must be a river. That rumor will be all over the Plains by Tuesday."
-      }
+      },
+      "art": "scenes/gemfall/north-noon-stop"
     },
     "scene_rumor_fire_true_news": {
       "type": "story",
@@ -1058,7 +1083,8 @@
           "icon": "ear",
           "goto": "scene_bell_courier"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-noon-stop"
     },
     "scene_rumor_fire_ford_news": {
       "type": "story",
@@ -1070,7 +1096,8 @@
           "icon": "drop",
           "goto": "scene_bell_courier"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-noon-stop"
     },
     "scene_rumor_fire_marsh_news": {
       "type": "story",
@@ -1082,7 +1109,8 @@
           "icon": "boot",
           "goto": "scene_bell_courier"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-noon-stop"
     },
     "scene_bell_courier": {
       "type": "story",
@@ -1114,7 +1142,8 @@
           "goto": "scene_bell_courier_ring_back",
           "requiresSpecies": "dragonling"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "check_ring_pattern": {
       "type": "check",
@@ -1136,7 +1165,8 @@
       "onFailure": {
         "goto": "scene_relay_sing",
         "narration": "Ding, pause, ding, ding, ding. The courier goes pink. \"That one means the cake is ready,\" she whispers. Far to the south, a whole camp sits down hopefully to wait for cake. She takes the bell back, giggling, and rings it properly."
-      }
+      },
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_bell_courier_ask_news": {
       "type": "story",
@@ -1155,7 +1185,8 @@
           "icon": "ear",
           "goto": "scene_relay_sing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_bell_courier_ring_back": {
       "type": "story",
@@ -1174,7 +1205,8 @@
           "icon": "flame",
           "goto": "scene_relay_sing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_relay_sing": {
       "type": "story",
@@ -1256,7 +1288,8 @@
           "icon": "ear",
           "goto": "scene_spiral"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/relay-route-fire"
     },
     "scene_relay_sing_crew_verse": {
       "type": "story",
@@ -1274,7 +1307,8 @@
           "icon": "note",
           "goto": "scene_spiral"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/relay-route-fire"
     },
     "scene_spiral": {
       "type": "story",
@@ -1324,7 +1358,8 @@
           "goto": "scene_ash_wind_fly_above",
           "requiresSpecies": "griffin"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "check_ash_wind": {
       "type": "check",
@@ -1339,7 +1374,8 @@
       "onFailure": {
         "goto": "scene_road_bend",
         "narration": "The wind shoves you sideways into a hedge, one after another, like skittles. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
-      }
+      },
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "scene_ash_wind_shelter": {
       "type": "story",
@@ -1357,7 +1393,8 @@
           "icon": "shield",
           "goto": "scene_road_bend"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "scene_ash_wind_fly_above": {
       "type": "story",
@@ -1369,7 +1406,8 @@
           "icon": "wing",
           "goto": "scene_road_bend"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "scene_road_bend": {
       "type": "story",
@@ -1460,7 +1498,8 @@
           "icon": "moon",
           "goto": "end_foothills_in_sight"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "end_foothills_in_sight": {
       "type": "rest",

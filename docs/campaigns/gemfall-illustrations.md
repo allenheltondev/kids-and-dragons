@@ -463,3 +463,28 @@ Eight character-free backdrops for the Great River road chapter. Generated at 19
 - `rush-depot`: Interior of a timber strongbox depot barn, rows of secured boxes and a long counter with an ink stamp and blank forms; one box glows softly. Open floor foreground, no clerk, no legible writing or creatures.
 - `relay-route-fire`: Open night campfire beside a road with empty benches, route tokens and blank bark strips on a stone table. Peaceful indigo plains, foreground clear, no people, animals or text.
 - `road-bend-grass`: Empty night road bending through tall grass, faint warm pawprints and tiny ember flecks crossing the dirt. Gentle suspense, open foreground, no wolves, animals, people, structures or text.
+
+## Gemfall 04C — road episodes
+
+Three new location backdrops keep the expanded road episodes visually continuous.
+
+| Asset | Coverage |
+|---|---|
+| `north-road-detour.webp` | `scene_road_crew`, `check_haul_posts`, `scene_road_crew_ask_why`, `scene_road_crew_charm`, `scene_road_crew_fly` |
+| `north-signpost-fork.webp` | `scene_signposts`, `check_read_signs`, `scene_signposts_buy_map`, `scene_signposts_outsell` |
+| `north-noon-stop.webp` | `scene_rumor_fire`, `check_tall_tale`, `scene_rumor_fire_true_news`, `scene_rumor_fire_ford_news`, `scene_rumor_fire_marsh_news` |
+
+All three are new 16:9 painterly road locations exported as 1920×1080 WebP at quality 88. The storybook compositions place landmarks in the upper half and leave the lower 30 percent clear for sprites; no characters or readable text.
+
+### North road detour generation prompt
+
+Create a painterly fantasy storybook game backdrop of a northbound caravan road rerouted around a scorched hollow. A graceful curve of road and newly planted marker posts skirts a dark circular patch where a gemstone fell; open gold-green plains, distant wagon line and blue foothills. Quiet mystery, late afternoon. Keep the curved road and posts in the upper half and a clear level packed-earth verge across the lower 30 percent. No characters, animals, signs with marks, text, UI or border.
+
+### North signpost fork generation prompt
+
+Create a painterly fantasy storybook game backdrop of a confusing fork on the northbound caravan road. A tall wooden signpost surrounded by many small blank direction boards has arrows pointing in contradictory directions; the road divides around a low grassy island and rejoins in the distance. Open grassland and distant wagons. Warm late morning. Signpost in upper half; lower 30 percent is a broad level dirt apron. All boards blank. No people, animals, creatures, lettering, UI or border.
+
+### North noon stop generation prompt
+
+Create a painterly fantasy storybook game backdrop for a midday caravan rest stop on the northbound road. A grassy turnout beside a packed-earth road has a cold stone fire ring, empty log seats and a kettle stand, distant wagons at the horizon, open plains and blue sky. Friendly afternoon. Keep the rest stop in the upper half and the lower 30 percent clear and level for sprites. No people, animals, creatures, signs, text, UI or border.
+
