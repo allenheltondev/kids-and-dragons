@@ -1140,8 +1140,22 @@ export function useMyTurnKey(): string | null {
 
     const prompt = state.prompt;
     if (isPromptForPlayer(prompt, playerId, state.party) && prompt) {
-      // Votes mutate the current question, not its identity. Ignore them.
-      const stablePrompt = prompt.kind === "choice" ? { ...prompt, votes: undefined } : prompt;
+      // Progress on the current question is not a new question. Votes, a
+      // friend's offered help and the rest of the party rolling a group check
+      // all rewrite the prompt in place; only what identifies the check counts.
+      // A group check names its next roller in `characterId`, which moves as
+      // others roll, so it is left out there and kept for a single roller.
+      const stablePrompt =
+        prompt.kind === "choice"
+          ? { ...prompt, votes: undefined }
+          : prompt.kind === "roll"
+            ? {
+                ...prompt,
+                helper: undefined,
+                group: prompt.group ? true : undefined,
+                characterId: prompt.group ? undefined : prompt.characterId,
+              }
+            : prompt;
       // Revisiting the same authored scene is a *new* question, even when
       // it uses the same choice ids and narration.
       return `prompt:${state.chapterId ?? ""}:${state.visited?.length ?? 0}:${JSON.stringify(stablePrompt)}`;

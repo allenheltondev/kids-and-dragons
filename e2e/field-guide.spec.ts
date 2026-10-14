@@ -186,7 +186,8 @@ test.describe("the Field Guide", () => {
         return heroUp(await encounterOf(code), HERO);
       }, { timeout: 90_000, intervals: [1_000] })
       .toBe(true);
-    await phone.getByRole("button", { name: /^Your turn$/ }).click(TAP);
+    // The turn opens the controls by itself — no "Your turn" tap in between.
+    await expect(phone.getByRole("button", { name: /^Your turn$/ })).toHaveCount(0);
     const before = await encounterOf(code);
     expect(before).not.toBeNull();
     await phone.locator(".combat__end").first().click(TAP);
