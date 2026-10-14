@@ -6,10 +6,11 @@ scenes carry a `cast`, the TV stands those characters opposite the party, and th
 narration sits on a plate under the stage instead of over it (`content/README.md` "Who is
 on stage", `packages/client/src/world/cast.ts`).
 
-You are drawing **character figures** (Part A) and then **location backdrops** (Part B). You
-are not changing game code. You will change exactly two kinds of non-art file: `assets/manifest.json`
-(declaring what you add) and the `cast` / `art` fields of `content/chapters/*.json` (pointing scenes
-at it).
+You are drawing **character figures** (Part A), **location backdrops** (Part B), and
+**designing the peoples the story needs but canon does not have yet**, lore and figure both
+(Part C). Where this brief says "you decide", you do: make the call, write down why in the PR,
+and the review will push back if it disagrees. You are not changing game code beyond the one
+lookup table section 6 names.
 
 ---
 
@@ -25,7 +26,9 @@ can only use figures that already exist, so:
 - **Named individuals are generic.** Madame Coralie Fenn is famous for her barrel on wheels;
   on stage she is the plain merfolk figure. Pellam the Skywarden clerk is a picture of a whole
   Skywarden squad. Mother Thrum, one ford witch, is the Witch Order group of three.
-- **Some people cannot be shown at all** (section 7), so their scenes look like nobody is there.
+- **Some people cannot be shown at all**, because canon never says what kind of creature they
+  are: the Deep Hollow Cult, the whole gold-rush crowd of prospectors, drovers and caravan
+  masters, and a few more (Part C). Their scenes look like nobody is there.
 - **Places do not change.** Gemfall 1 has 46 scenes, from a lighthouse to a noodle stall to a
   caravan yard, all in front of the same Exchange skyline.
 
@@ -92,6 +95,9 @@ entries to the same word. Change nothing else in the chapter files.
 recurring individual from each kind of gap: a distinctive prop, an elder of a playable species,
 one person standing in for a group picture. Do not start the rest until the pilot is approved.
 
+Part C's lore-only proposal PR (section 6) may be opened alongside the pilot: they review
+independently.
+
 After approval, one PR per group in the table below, in order.
 
 ### A1. Elders and adults of the party's own species (the most visible mismatch)
@@ -128,8 +134,11 @@ After approval, one PR per group in the table below, in order.
 
 ### A3. One person, currently a group picture
 
-These need a canon call before you draw, see section 7: which people each one is. Draw them
-once the PR that owns this brief records the answer here.
+You decide which people each of these is. The Skywardens are a mixed order
+(`assets/entities/skywardens/assembled.png` shows several peoples in one uniform) and the Witch
+Order is a learned role open to any people (`canon/npcs.yaml`, `npc.witch_order`). Pick what
+suits each personality, keep the order's uniform or trappings, record the choice and the reason
+in the PR, and set `basis` to the order (`skywardens`, `witch_order`).
 
 | id | name(s) in content | basis | look |
 |---|---|---|---|
@@ -139,11 +148,12 @@ once the PR that owns this brief records the answer here.
 | `holloway` | Sergeant Holloway | skywardens | supply sergeant in silver and violet with a neat ledger |
 | `mother_thrum` | Mother Thrum | witch_order | ford witch; pointed hat, spectacles; bell charms |
 
-For the pilot, `pellam`: draw him as one of the peoples already shown in
-`assets/entities/skywardens/assembled.png`, in that uniform, and record the choice in the PR.
-Allen confirms or redirects at review.
-
 Where the content uses the group as a group ("Skywardens", "Warden Engineers"), leave it.
+
+The same freedom applies anywhere a stand-in above looks wrong to you once drawn (the agents who
+cast these scenes assumed, for example, that the MossHome runner and the Eldest are bigfoot,
+because MossHome is a bigfoot town). If you think a character is a different people, say so in the
+PR and draw them as that.
 
 ---
 
@@ -155,8 +165,13 @@ exactly: 1920 × 1080 WebP, quality ~88, `assets/scenes/gemfall/<id>.webp`, list
 
 **The composition rule changed.** Backdrops used to sit behind a gradient of text. Now:
 
-- The **bottom ~40%** of the screen is under the narration plate on a TV. Nothing important there.
-- The **floor line** where figures stand is about **55–65% down** the image. Keep it open and level
+- On a TV the stage raises the painting so its floor meets the feet, which puts roughly the bottom
+  fifth of the image under the narration plate, and crops a little off the top. Nothing important
+  in either.
+- The **floor line** where figures stand is **80% down the image**. The stage lines that row up
+  with the figures' feet wherever the text plate puts them (`BACKDROP_FLOOR` in
+  `packages/client/src/world/scene.ts`), so a painting whose ground is elsewhere makes everyone
+  float or sink. The walkable band should run from about 70% to the bottom. Keep it open and level
   across the full width: the party stands on the left half, the cast on the right.
 - The **landmark** goes in the **top half**, framed so the figures do not cover it.
 - **No characters, creatures or people** in a backdrop. The cast system puts them on stage, and a
@@ -181,35 +196,80 @@ on the biome. Then propose the same grouping for the next flattest chapters (gem
 
 ---
 
-## 6. What you must not change
+## 6. Part C: the missing peoples, lore and figures
 
-| Path | Rule |
+[`story-cast-missing.md`](story-cast-missing.md) lists every character the chapters put on stage
+who has no figure, with their scenes. Most are missing because **canon has no people for them**:
+
+- **The Deep Hollow Cult** (`faction.deep_hollow_cult` in `canon/factions.yaml`): Hessa Wren,
+  Wend, Hollis, the soup women, the masked choir. About 30 scenes across Gemfall 3c–8, more than
+  any other gap. Painted bark masks, soup ladles, humming crystals on strings.
+- **The gold-rush crowd**: prospectors, drovers, caravan masters, carters, gem-buyers, Dunmore,
+  Ma Ruddle, Tib (a small one in an orange hat who talks to ponies as equals).
+- **The Brassbuckle Expedition** (six in matching brass hats), **Clerk Pennywhistle**, the
+  **talking beech tree**, and the **working animals** (the cart driver's donkey, mules, ponies).
+
+**You decide what each of them is.** For each group, either:
+
+1. **Assign an existing people** (`canon/npcs.yaml` `people_ids`, or a playable species) when one
+   genuinely fits the role and canon's homelands. The gold rush draws travellers from everywhere,
+   so a mixed crowd is plausible; or
+2. **Design a new people** when none fits, or when the realm visibly lacks a kind of person the
+   story keeps needing. The play-test asked for this: the world should have more peoples in it,
+   not only more costumes on the same ones.
+
+Rules for a new people, all from canon's own `agent_instructions` (read them in `canon/npcs.yaml`):
+
+- **No humans.** The realm has none; that is a fixed design decision.
+- **No people is a villain.** The Deep Hollow Cult is a *faction*, a learned allegiance of kind,
+  sincere, misguided folk, and its members must come from more than one people, the way the Witch
+  Order's do. Do not invent a "cult species".
+- **Family-friendly, age 8**, in the house style of `assets/entities/` (asset-brief §2).
+- Distinct from every existing people in silhouette and palette. Check against the contact sheet
+  (`npm run art:sheet`).
+- The Exchange has no native people; a new people has a homeland elsewhere, chosen from the
+  biomes in `assets/manifest.json`.
+
+What a new people needs, in one PR per people:
+
+| File | What |
 |---|---|
-| `assets/entities/**`, `assets/characters/**` | never modified; they are the references |
-| `content/chapters/*.json` | only `cast[].figure`, `cast[].size` (Part A) and scene `art` (Part B) |
-| `packages/**`, `schemas/**`, `tools/**` | not at all. If the contract is wrong, say so in the PR. |
-| existing `assets/scenes/**` | not replaced |
+| `canon/npcs.yaml` | a full `npcs[]` entry with every field the existing ones carry (`id: npc.<id>`, `asset_id`, `title`, `canon_status: newly_defined`, `classification`, `sapience`, `scale`, `short_description`, `visual_identity`, `common_story_uses`, `canon_constraints`, `speech_register`, `standard_behavior`, `lore`, `relationships`), and the id added to `people_ids`. Write the `lore` as well as centaur's or selkie's: where they come from, what they are known for, why they are on the road in a gold rush. |
+| `content/field-guide.json` | regenerate it: `npm run canon:field-guide` (never hand-edit) |
+| `assets/entities/<id>/assembled.png` | the figure, on the entity contract (asset-brief §6.4), facing left |
+| `assets/entities/<id>/portrait.webp` | `npm run art:portraits` |
+| `assets/manifest.json` `entities[]` | `id`, `classification`, `primaryBiome`, `canonicalLocations`, `scale` |
+| `packages/client/src/world/cast.ts` `ENTITY_SIZES` | one line, `<id>: "<scale>"`; `cast.test.ts` fails until it matches the manifest. The only code you touch. |
+| `content/chapters/*.json` | `cast` entries for that people's characters in the scenes the appendix lists, plus `discovers: ["npc.<id>"]` on the scene where the party first meets one |
+
+Named individuals who need their own look (Hessa Wren, Tib, Ma Ruddle) then follow Part A's
+contract as `assets/cast/<id>/` figures with `basis` set to their people.
+
+**Order:** open a first, lore-only PR that proposes the whole set: for each group in the appendix,
+the existing people you assign or the new people you design, with its draft `canon/npcs.yaml`
+entry and one concept image per new people. That PR is where the decisions get reviewed, so
+make the case for each. Then one PR per people for the figures and wiring.
+
+Acceptance for every Part C PR: `npm run canon:check`, `npm run canon:field-guide` (no diff left
+after it), `npm run art:verify`, `npm run content:validate`, `npm test`, and the before/after
+screenshots from section 3.
 
 ---
 
-## 7. Open canon questions (Allen answers, not the illustrator)
+## 7. What you must not change
 
-These people appear in many scenes and have no figure because nothing says **what they are**.
-Do not draw them until this section records the answer.
-
-- **The Deep Hollow Cult**: Hessa Wren, Wend, Hollis, the soup women, the choir. In about 30
-  scenes across Gemfall 3c–8, the most of any missing group. Painted bark masks, soup ladles.
-  Which peoples are members?
-- **Prospectors, drovers, caravan masters, carters, the crying gem-buyer, Dunmore, Ma Ruddle,
-  Tib**: the gold-rush crowd. Species never stated, and the realm has no humans.
-- **The Brassbuckle Expedition** (six in matching brass hats), **Clerk Pennywhistle**, the
-  **talking beech tree**, the **cart driver's donkey**.
-- **The Skywardens and Mother Thrum** (section 4, A3): which people each individual is.
+| Path | Rule |
+|---|---|
+| `assets/entities/**`, `assets/characters/**` | existing figures are never modified; they are the references. You add new entity directories. |
+| `content/chapters/*.json` | only `cast` (Parts A and C), scene `art` (Part B) and `discovers` for a new people (Part C) |
+| `canon/*.yaml` | add entries; never rewrite an existing people's lore |
+| `packages/**`, `schemas/**`, `tools/**` | not at all, except the `ENTITY_SIZES` line in Part C. If the contract is wrong, say so in the PR. |
+| existing `assets/scenes/**` | not replaced |
 
 ---
 
 ## 8. Reporting
 
-Each PR: the figure list with ids, `basis`, `scale`, the verify output, the before/after
-screenshots, and the prompts used (append to `docs/campaigns/gemfall-illustrations.md` under a
+Each PR: the figure list with ids, `basis`, `scale`, every "you decide" call with its reason,
+the verify output, the before/after screenshots, and the prompts used (append to `docs/campaigns/gemfall-illustrations.md` under a
 new "Cast figures" heading).

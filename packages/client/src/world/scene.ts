@@ -124,6 +124,49 @@ const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / 
 const GROUND_Y = DESIGN.height * 0.88;
 /** A character's drawn height in design units at zoom 1. */
 const ACTOR_HEIGHT = DESIGN.height * 0.56;
+/**
+ * Where a backdrop's ground is, in its own design space. Every biome and scene
+ * painting keeps its walkable floor in the band from ~70% down (asset-brief
+ * §4.5), and 80% is the middle of it. `backdropFit` puts this line under the
+ * figures' feet, wherever the stage has had to move them.
+ */
+export const BACKDROP_FLOOR = DESIGN.height * 0.8;
+/** How far the painting runs under the narration plate before it ends. */
+const BACKDROP_TAIL_PX = 48;
+
+/**
+ * Scale and place the backdrop so its floor meets the figures' feet.
+ *
+ * The story stage stands above the narration plate, which on a TV puts the
+ * feet around half way down the pane. A painting simply covering the pane
+ * keeps its floor at the bottom, under the words, and the party stands on its
+ * rooftops and sky. So the painting follows the feet instead: scaled so it is
+ * at least as wide as the pane and reaches above its top, and so it runs a
+ * little way under the plate; whatever is below that is the plate's own dark.
+ *
+ * Pure, so the "nobody floats" rule is a test (scene.test.ts).
+ */
+export function backdropFit(
+  pane: { width: number; height: number },
+  feetY: number,
+  stageBottom: number,
+  bleed: number,
+): { scale: number; x: number; y: number } {
+  const cover = Math.max((pane.width + bleed * 2) / DESIGN.width, (pane.height + bleed * 2) / DESIGN.height);
+  if (!(feetY > 0)) {
+    return { scale: cover, x: (pane.width - DESIGN.width * cover) / 2, y: (pane.height - DESIGN.height * cover) / 2 };
+  }
+  const scale = Math.min(
+    cover * 3,
+    Math.max(
+      (pane.width + bleed * 2) / DESIGN.width,
+      (feetY + bleed) / BACKDROP_FLOOR,
+      (stageBottom + BACKDROP_TAIL_PX - feetY) / (DESIGN.height - BACKDROP_FLOOR),
+    ),
+  );
+  return { scale, x: (pane.width - DESIGN.width * scale) / 2, y: feetY - BACKDROP_FLOOR * scale };
+}
+
 /** How far off to the right a cast member starts their entrance. */
 const CAST_ENTRY_OFFSET = DESIGN.width * 0.18;
 /** Per-second approach rates for a cast entrance/exit and a hero turning. */
@@ -338,8 +381,12 @@ export function createScene(app: Application): PartyScene {
   boardWrap.visible = false;
   stage.addChild(backdrop, storyLayer, boardWrap);
 
+  /** The plate's dark, under wherever the painting stops. */
+  const backdropFloor = new Graphics();
   const backdropArt = drawBackdrop();
-  backdrop.addChild(backdropArt);
+  backdrop.addChild(backdropFloor, backdropArt);
+  /** The shake's overscan, kept from resize() for backdropFit. */
+  let backdropBleed = 0;
 
   /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
@@ -520,6 +567,13 @@ export function createScene(app: Application): PartyScene {
 
     storyLayer.visible = !inCombat;
     boardWrap.visible = inCombat;
+
+    // The painting's floor under the figures' feet (backdropFit). In a fight
+    // the board is the floor, and the painting just covers the pane.
+    const feetY = inCombat ? 0 : layer.y + GROUND_Y * layer.scale.y;
+    const fit = backdropFit(viewport, feetY, frame.height, backdropBleed);
+    backdropArt.scale.set(fit.scale);
+    backdropArt.position.set(fit.x, fit.y);
   }
 
   /**
@@ -697,6 +751,8 @@ export function createScene(app: Application): PartyScene {
       member.container.y = GROUND_Y;
       member.container.zIndex = GROUND_Y - 1;
       member.art.alpha = member.presence;
+      const shadow = member.container.children[0];
+      if (shadow) shadow.alpha = member.presence;
       if (member.label) member.label.alpha = member.presence;
       if (!still) {
         const bob = Math.sin(elapsed * 1.3 + member.phase);
@@ -711,6 +767,8 @@ export function createScene(app: Application): PartyScene {
     container.addChild(art);
     actorsLayer.addChild(container);
     const height = ACTOR_HEIGHT * member.scale;
+    const shadow = drawContactShadow(height);
+    container.addChildAt(shadow, 0);
     const label =
       member.name === null
         ? null
@@ -868,6 +926,10 @@ export function createScene(app: Application): PartyScene {
     container.addChild(art);
     actorsLayer.addChild(container);
 
+    // Feet on the ground: a soft contact shadow, outside `art` so it neither
+    // turns with the figure nor tips over when they are knocked down.
+    container.addChildAt(drawContactShadow(ACTOR_HEIGHT), 0);
+
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
@@ -974,14 +1036,12 @@ export function createScene(app: Application): PartyScene {
        * side means the stage can move that far in any direction and still be
        * showing backdrop.
        */
-      const bleed = Math.ceil(height * SHAKE_MAX_FRACTION) + 2;
-      const cover = Math.max(
-        (width + bleed * 2) / DESIGN.width,
-        (height + bleed * 2) / DESIGN.height,
-      );
-      backdropArt.scale.set(cover);
-      backdropArt.x = (width - DESIGN.width * cover) / 2;
-      backdropArt.y = (height - DESIGN.height * cover) / 2;
+      backdropBleed = Math.ceil(height * SHAKE_MAX_FRACTION) + 2;
+      const bleed = backdropBleed;
+      backdropFloor
+        .clear()
+        .rect(-bleed, -bleed, width + bleed * 2, height + bleed * 2)
+        .fill({ color: 0x0d0b1a });
       // The veil covers the pane, whatever the pane is right now. A margin of
       // one shake's amplitude so a jolt mid-step never shows a bright edge.
       stepVeil.clear().rect(-32, -32, width + 64, height + 64).fill({ color: 0x0a0820 });
@@ -1259,19 +1319,26 @@ export function createScene(app: Application): PartyScene {
  * flat bands in the global palette from assets/manifest.json, sized to the
  * design space so swapping in a real texture is a one-line change.
  */
+/** The shadow under a figure `height` tall, centred on its feet. */
+function drawContactShadow(height: number): Graphics {
+  return new Graphics()
+    .ellipse(0, 0, height * 0.24, height * 0.05)
+    .fill({ color: 0x0b0a14, alpha: 0.35 });
+}
+
 function drawBackdrop(): Container {
   const container = new Container();
   const g = new Graphics();
 
   g.rect(0, 0, DESIGN.width, DESIGN.height).fill({ color: 0x141033 });
-  g.ellipse(DESIGN.width * 0.5, GROUND_Y * 0.62, DESIGN.width * 0.42, DESIGN.height * 0.34)
+  g.ellipse(DESIGN.width * 0.5, BACKDROP_FLOOR * 0.62, DESIGN.width * 0.42, DESIGN.height * 0.34)
     .fill({ color: 0x2a2159, alpha: 0.7 });
-  g.ellipse(DESIGN.width * 0.18, GROUND_Y, DESIGN.width * 0.34, DESIGN.height * 0.22)
+  g.ellipse(DESIGN.width * 0.18, BACKDROP_FLOOR, DESIGN.width * 0.34, DESIGN.height * 0.22)
     .fill({ color: 0x1d2a3b, alpha: 0.8 });
-  g.ellipse(DESIGN.width * 0.84, GROUND_Y, DESIGN.width * 0.32, DESIGN.height * 0.2)
+  g.ellipse(DESIGN.width * 0.84, BACKDROP_FLOOR, DESIGN.width * 0.32, DESIGN.height * 0.2)
     .fill({ color: 0x1d2a3b, alpha: 0.8 });
-  g.rect(0, GROUND_Y, DESIGN.width, DESIGN.height - GROUND_Y).fill({ color: 0x0f1a1c });
-  g.moveTo(0, GROUND_Y).lineTo(DESIGN.width, GROUND_Y).stroke({ width: 3, color: 0x3a2a1e, alpha: 0.9 });
+  g.rect(0, BACKDROP_FLOOR, DESIGN.width, DESIGN.height - BACKDROP_FLOOR).fill({ color: 0x0f1a1c });
+  g.moveTo(0, BACKDROP_FLOOR).lineTo(DESIGN.width, BACKDROP_FLOOR).stroke({ width: 3, color: 0x3a2a1e, alpha: 0.9 });
 
   container.addChild(g);
   return container;
