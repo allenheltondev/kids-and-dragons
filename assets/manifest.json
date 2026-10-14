@@ -131,6 +131,7 @@
     { "id": "sheeple", "classification": "supporting_people", "primaryBiome": "plains", "canonicalLocations": ["plains", "sunward_fields", "exchange"], "scale": "medium" },
     { "id": "centaur", "classification": "supporting_people", "primaryBiome": "plains", "canonicalLocations": ["the_plains", "eastern_plains", "stone_crossing"], "scale": "large" },
     { "id": "faun", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields"], "scale": "medium" },
+    { "id": "burrowfolk", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields", "plains", "red_sky_foothills", "exchange"], "scale": "small_to_medium" },
     { "id": "harvest_sprite", "classification": "supporting_people", "primaryBiome": "sunward_fields", "canonicalLocations": ["sunward_fields", "enchanted_woods"], "scale": "tiny" },
     { "id": "frogfolk", "classification": "supporting_people", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh", "great_river"], "scale": "small_to_medium" },
     { "id": "boggart", "classification": "supporting_people", "primaryBiome": "whispering_marsh", "canonicalLocations": ["whispering_marsh"], "scale": "small" },
@@ -712,6 +713,24 @@
       "name": "Mother Thrum",
       "basis": "witch_order",
       "scale": "medium"
+    },
+    {
+      "id": "ma_ruddle",
+      "name": "Ma Ruddle",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "tib",
+      "name": "Tib",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "dunmore",
+      "name": "Dunmore",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
     }
   ],
 

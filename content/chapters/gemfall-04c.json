@@ -193,6 +193,12 @@
           "icon": "eye",
           "goto": "check_search"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ma_ruddle",
+          "name": "Ma Ruddle"
+        }
       ]
     },
     "scene_downbound_fly_look": {
@@ -284,6 +290,16 @@
           "label": "Thank her and walk on",
           "icon": "scroll",
           "goto": "rest_soup_tents"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ma_ruddle",
+          "name": "Ma Ruddle"
+        },
+        {
+          "figure": "cast/tib",
+          "name": "Tib"
         }
       ]
     },

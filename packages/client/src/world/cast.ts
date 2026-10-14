@@ -33,6 +33,7 @@ export const ENTITY_SIZES: Readonly<Record<string, CastSize | "variable">> = {
   sheeple: "medium",
   centaur: "large",
   faun: "medium",
+  burrowfolk: "small_to_medium",
   harvest_sprite: "tiny",
   frogfolk: "small_to_medium",
   boggart: "small",

@@ -166,6 +166,19 @@
           "icon": "rest",
           "goto": "scene_troll"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ],
+      "discovers": [
+        "npc.burrowfolk"
       ]
     },
     "check_rivals": {
@@ -181,7 +194,17 @@
       "onFailure": {
         "goto": "scene_troll",
         "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_rivals_caught": {
       "type": "story",
@@ -199,6 +222,16 @@
           "label": "Step up to the toll",
           "icon": "arrow",
           "goto": "scene_troll"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },

@@ -634,6 +634,12 @@
           "icon": "forward",
           "goto": "scene_masks_let_be"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk masked singer"
+        }
       ]
     },
     "scene_masks_let_be": {
@@ -645,6 +651,12 @@
           "label": "Back to your side of the road",
           "icon": "forward",
           "goto": "scene_evening"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk masked singer"
         }
       ]
     },
@@ -685,7 +697,13 @@
       "onFailure": {
         "goto": "scene_evening",
         "narration": "She listens kindly, all the way to the end. Then she puts her mask back on. \"I hope you're right,\" she says. \"I don't think you are.\" Her cell rolls on with a full sack."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk masked singer"
+        }
+      ]
     },
     "scene_evening": {
       "type": "story",
