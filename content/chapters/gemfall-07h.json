@@ -149,6 +149,12 @@
     "scene_warden_pass": {
       "type": "story",
       "narration": "You told the wardens the truth at the citadel, and they still trust you. A clerk stamps your pass and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Warden Clerk"
+        }
+      ],
       "choices": [
         {
           "id": "through",
@@ -168,6 +174,12 @@
     "scene_grandmother_look": {
       "type": "story",
       "narration": "A grandmother looks at your bulging packs over her knitting for a long, long time. She does not say \"No, dear.\" She does not say anything at all. Then she hands you a warm bead, because it is cold up there.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -200,6 +212,12 @@
     "scene_grandmother_look_give_one": {
       "type": "story",
       "narration": "You put one stone in her knitting basket. The needles stop. \"Thank you, dear,\" she says, and for a moment her voice is not the knitting voice at all. She digs out a second warm bead and presses it into your palm. \"One for the one you gave,\" she says. Then the needles start again.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -212,6 +230,12 @@
     "scene_grandmother_look_thank": {
       "type": "story",
       "narration": "You thank her and walk on. She says nothing. Her needles click a little faster. Twenty paces on, you realise she has not stopped looking at your packs, and that she has not blinked.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -275,6 +299,12 @@
         "npc.frogfolk"
       ],
       "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat piled with every stone the river took off somebody this season. \"Stones want to go home,\" he says. \"We only kept them until someone was going that way.\" He looks at your packs for a long time. \"Which way are you going?\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "choices": [
         {
           "id": "debt",
@@ -294,6 +324,12 @@
     "scene_ossley_debt": {
       "type": "story",
       "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. \"One stone you didn't find,\" he says. \"Give it to the boat. That's all.\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Old Ossley"
+        }
+      ],
       "choices": [
         {
           "id": "pay",
@@ -313,6 +349,12 @@
     "scene_mosshome_runner": {
       "type": "story",
       "narration": "A MossHome runner jogs up with a string of grumbling mules, loaded with everything the Woods confiscated from careless hunters. She counts the knots on your cord. Then she looks at your packs, and counts them again, slower.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "MossHome Runner"
+        }
+      ],
       "choices": [
         {
           "id": "claim",
@@ -345,6 +387,12 @@
     "scene_mosshome_runner_send_home": {
       "type": "story",
       "narration": "\"Take the stones back to the Woods,\" you say. The runner stares. Then she grins so wide the moss in her hair shifts, ties a new knot in your cord, and turns the mules round on the spot. \"The record will like that,\" she calls over her shoulder, already jogging. \"The record likes a surprise.\"",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "MossHome Runner"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -357,6 +405,12 @@
     "scene_mosshome_runner_claim": {
       "type": "story",
       "narration": "You claim everything the cord is owed. The runner unloads it all, every shovel and hat and humming stone, and counts your packs again as she does it, slower each time. \"The record will know who has these,\" she says, which is what she was told to say, and jogs off without looking back.",
+      "cast": [
+        {
+          "figure": "characters/bigfoot",
+          "name": "MossHome Runner"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -372,6 +426,11 @@
         "npc.boggart"
       ],
       "narration": "A boggart with a satchel full of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalogue. Who bought what in the marsh. Very useful, for a collector. Costs one really good sentence you overheard.\"",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "wardens_said",
@@ -404,6 +463,11 @@
     "scene_boggart_grandma_said": {
       "type": "story",
       "narration": "You tell it what Grandmother Tull said about the bell nobody rings, word for word, including the second time she said it. The boggart closes its eyes to listen and keeps them closed for some time afterwards. \"Lovely,\" it says to nobody. \"Lovely.\" The catalogue is in your hands before you notice it has let go.",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -416,6 +480,11 @@
     "scene_boggart_wardens_said": {
       "type": "story",
       "narration": "\"Acceptable losses,\" you repeat, in the captain's exact voice. The boggart shivers all over with delight and writes it down twice, once forwards and once backwards. \"Oh, that's a good one. That's a keeper.\" It hands over the catalogue without ever once looking at you.",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -431,6 +500,12 @@
         "npc.witch_order"
       ],
       "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you, and then at your packs again. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "all_of_them",
@@ -462,6 +537,12 @@
     "scene_ford_witch_dont_know": {
       "type": "story",
       "narration": "\"I don't know any more,\" you say. Mother Thrum's face softens for the first time since the ford. She keeps the stone, and ties a songbird ribbon round your wrist instead. \"That's the first true thing anyone's said to me on this hill,\" she says. \"I'll ask again. I always do.\"",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -474,6 +555,12 @@
     "scene_ford_witch_all_of_them": {
       "type": "story",
       "narration": "\"All of them,\" you say. Mother Thrum does not sigh, which is worse than if she had. She unwraps the Ford Stone and puts it in your hands, still ringing. \"Then here is one more,\" she says. \"Mind it doesn't ring you to sleep.\" It does not stop ringing. Not for you.",
+      "cast": [
+        {
+          "figure": "entities/witch_order",
+          "name": "Mother Thrum"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -522,6 +609,12 @@
         "npc.centaur"
       ],
       "narration": "The centaur relay canters past your fire and does not stop. They have heard what you are for now. \"Fat caravan tomorrow,\" one calls over her shoulder. \"We're sending it the long way. Round you.\"",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "choices": [
         {
           "id": "old_way",
@@ -548,6 +641,12 @@
     "scene_centaur_relay_fair": {
       "type": "story",
       "narration": "\"Fair enough,\" you say. She looks surprised that you did not argue, and slows to a trot for a few paces as if she might say something else. Then she does not, and the relay canters on into the dark, and the dust settles on your humming packs.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -560,6 +659,12 @@
     "scene_centaur_relay_old_way": {
       "type": "story",
       "narration": "You call after her the old road-people way, palm up, from far off, the way your family has done for longer than roads. She pulls up so hard she skids. For a long moment she looks at you, a manticore keeping the old courtesy while carrying what you carry. \"Fine,\" she says at last. \"Past you. Once. Don't make me sorry.\"",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -594,6 +699,12 @@
         "npc.merfolk"
       ],
       "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "buy_back",
@@ -618,6 +729,12 @@
     "scene_ember_too_much": {
       "type": "story",
       "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -630,6 +747,12 @@
     "scene_ember_buy_back": {
       "type": "story",
       "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
+      "cast": [
+        {
+          "figure": "entities/merfolk",
+          "name": "Madame Fenn"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -655,6 +778,11 @@
     "scene_roadside_glitter": {
       "type": "story",
       "narration": "Just before the bend, two big glittering lumps sit on a warm patch of road. Prospectors keep trying to pick them up, and keep coming back very quickly without them. The lumps look exactly like gem deposits. They also have legs, if you look.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "choices": [
         {
           "id": "read",
@@ -685,6 +813,11 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Read what the glittering lumps are trying to tell you",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "choice_the_bend",
@@ -823,6 +956,12 @@
     "choice_the_bend_relay_owes": {
       "type": "story",
       "narration": "The relay owes you one, and the relay pays its debts. The fattest caravan in the funnel comes round the hairpin on the wrong side of the road, straight to where you are standing, and the centaur leading it does not look at you once. \"Once,\" she says to the air, and is gone.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Relay Runner"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -960,6 +1099,12 @@
     "scene_handed_back": {
       "type": "story",
       "narration": "Hessa puts her mask back on and goes. In the morning you carry the stones to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. Strangely, your packs still feel heavy afterwards, as if the stones left their shape behind.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1136,6 +1281,12 @@
         "npc.centaur"
       ],
       "narration": "On the caravan road, a centaur relay runner called Brisk is coming up as you go down. She slows to a trot. \"News,\" she says, \"if you want it. Everybody up there is doing something.\" She looks at your packs. \"Without you.\"",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Brisk"
+        }
+      ],
       "choices": [
         {
           "id": "news",
@@ -1169,6 +1320,12 @@
     "walk_scene_factions_close": {
       "type": "story",
       "narration": "\"Does anybody up there know what we know?\" Brisk looks at you very hard. \"You knew,\" she says. \"You knew and you came down.\" She does not say anything else. She does not have to.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Brisk"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1181,6 +1338,12 @@
     "walk_scene_wardens_hold": {
       "type": "story",
       "narration": "\"The wardens did what you told them,\" says Brisk. \"Checkpoints on every road. Every stone confiscated and logged twice. It's working. It's ugly to watch. But they're holding.\" A warden wagon rolls past, uphill, full of stones going home.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Brisk"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1200,6 +1363,12 @@
     "walk_scene_gatherers_hold": {
       "type": "story",
       "narration": "\"The grandmothers turned gathering law inside out,\" says Brisk. \"Every stone that came down is going back up, carried by dragonlings with bells on their tails. It's slow. It's holding.\" Somewhere above you, a very small bell jingles past.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Brisk"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1219,6 +1388,12 @@
     "walk_scene_news": {
       "type": "story",
       "narration": "\"Nobody knows much,\" says Brisk. \"The wardens are guessing. The cult is singing. The dragon is being a dragon. Everybody's waiting for somebody to do something.\" She looks at your packs, then at you, and does not say anything else, which for a centaur is very loud.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Brisk"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1234,6 +1409,12 @@
         "character.dragonling"
       ],
       "narration": "At the boundary stones, a dragonling grandmother sits on the oldest stone, knitting something long and red. She looks at your humming packs. \"Take what the mountain drops,\" she says. \"Never pry at what it holds.\" Then she holds out one hand, palm up, and waits.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "give",
@@ -1280,6 +1461,12 @@
     "walk_scene_boundary_thank": {
       "type": "story",
       "narration": "You thank her, and keep walking. Her hand stays out, palm up, for a long time after you have passed. You know this because you look back, and you wish you had not.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1292,6 +1479,12 @@
     "walk_scene_boundary_give": {
       "type": "story",
       "narration": "You put a stone in her hand. She closes her fingers round it and holds it against the long red knitting as if warming it. \"Take what the mountain drops,\" she says, more softly this time. \"Thank you, dear.\" Behind you, a small bell rings a ring you have not heard before, and it is a happy one.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1304,6 +1497,12 @@
     "walk_scene_the_fuse": {
       "type": "story",
       "narration": "The grandmother puts her knitting down. Up on the mountain the bells are counting, every town at once. \"Everybody knows what the last ring means,\" she says. \"Nobody says it.\" She does not say it either. She just looks at you for a long time, and then knits faster.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "give",
@@ -1329,6 +1528,12 @@
     "walk_scene_the_fuse_give": {
       "type": "story",
       "narration": "You put a stone in her hand after all. She looks at it, and at you, and the needles stop shaking for exactly as long as it takes her to tuck it into her apron. \"Well,\" she says. \"That's one.\" Then she picks up the knitting again, and the bells go on counting.",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Grandmother"
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1391,6 +1596,12 @@
       "stat": "heart",
       "tn": 12,
       "prompt": "Give your best stone to a dragonling runner heading uphill, and ask them to hurry",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Dragonling Runner"
+        }
+      ],
       "roller": "party",
       "onSuccess": {
         "goto": "walk_ending_collectors",

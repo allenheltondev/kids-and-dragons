@@ -63,6 +63,9 @@ assets/
   entities/
     <entity-id>/assembled.png    canonical non-player creatures — single cutouts,
                                  no parts, no tiers (asset-brief §6.4)
+  cast/
+    <id>/assembled.png           named story characters' own figures, same contract
+                                 as entities (manifest.castFigures, briefs/story-cast-art.md)
   effects/
     <name>.sheet.png + .json     sprite sheets — jitter is invisible here
   biomes/
@@ -600,6 +603,7 @@ chunk that the join screen must not wait for.
 | ” | `world/scene.ts`, `world/board.ts` (Pixi) | the party standing in a scene, the figures on the combat grid |
 | `gear-portraits/<class>/<tier>/<species>.png` | `screens/CharacterPortrait.tsx` (DOM) | approved geared stills in the lobby, player sheet, dice, combat controls, and level-up |
 | `entities/<id>/assembled.png` | `world/board.ts` | monsters in a fight |
+| `entities/<id>/`, `characters/<species>/fledgling/`, `cast/<id>/` `assembled.png` | `world/scene.ts` → `setCast` (paths from `world/cast.ts`) | whoever a story scene casts, standing opposite the party (content `cast`, [briefs/story-cast-art.md](briefs/story-cast-art.md)) |
 | `biomes/<b>/bg.webp` | `world/scene.ts` → `setBiome`, and the creation preview's stage | behind the party in every story scene |
 | `biomes/<b>/tiles.png` | `world/board.ts` | the combat floor |
 | `effects/*.sheet.png` | `world/board.ts` | hits, heals, revives |
