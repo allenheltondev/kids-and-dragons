@@ -3,11 +3,11 @@ title: Unicorn
 id: character.unicorn
 type: character
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["playable", "forest", "magic", "healer"]
 scale: medium_to_large
-lore_hook: "Sworn to the forest's promises — including several the forest made before they were born."
+lore_hook: "Sworn to the forest's promises, including several the forest made before they were born."
 likes:
   - id: creature.mosshorn
     title: "Mosshorn"
@@ -57,7 +57,7 @@ ai_context:
   themes: "Playable, Forest, Magic, Healer"
   visual_style: "Equine form with a single magical horn and an expressive youthful face. Natural color and marking variation; magic appears as subtle light, plants, or path-like motifs."
   common_encounters: "Magical guide, restorer of a damaged place, impulsive young hero too confident in reading the truth."
-  lore_highlights: "Sworn to the forest's promises — including several the forest made before they were born."
+  lore_highlights: "Sworn to the forest's promises, including several the forest made before they were born."
   related_entities: "biome.enchanted_woods, location.mosshome, biome.sunward_fields, location.exchange, biome.enchanted_woods"
   writing_guidance: "Unicorns are not universally calm, elegant, wise, or correct."
   generation_hints: "Inspects changes in paths and glades, helps restore damaged places, mediates promises, investigates disturbances the forest remembers."
@@ -69,9 +69,9 @@ infobox: character
 <!-- BEGIN GENERATED: lore -->
 ## Lore
 
-> *Sworn to the forest's promises — including several the forest made before they were born.*
+> *Sworn to the forest's promises, including several the forest made before they were born.*
 
-Unicorns are the Enchanted Woods' memory made ambulatory. Where the forest remembers something — a promise kept, a harm done, a path that used to be — a unicorn goes to check on it, the way other people check on elderly relatives. They feel a broken promise the way farmers feel weather coming, and young unicorns are notorious for being certain, early and loudly, about what a feeling means.
+Unicorns are the Enchanted Woods' memory made ambulatory. Where the forest remembers something (a promise kept, a harm done, a path that used to be) a unicorn goes to check on it, the way other people check on elderly relatives. They feel a broken promise the way farmers feel weather coming, and young unicorns are notorious for being certain, early and loudly, about what a feeling means.
 
 ### For Fun
 
@@ -85,13 +85,13 @@ Earnest, direct, and allergic to lies without being allergic to kindness. A unic
 
 ### Likes
 
-- **[Mosshorn](/creatures/mosshorn/)** — The forest's health, self-propelled. Where they graze, the work is already done.
-- **[Bigfoot](/characters/bigfoot/)** — They write down what a unicorn can only feel. Between the two of them, the Woods has both a memory and a record.
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A memory in need of helping home. Tending one is considered practice for the harder promises.
+- **[Mosshorn](/creatures/mosshorn/)**: The forest's health, self-propelled. Where they graze, the work is already done.
+- **[Bigfoot](/characters/bigfoot/)**: They write down what a unicorn can only feel. Between the two of them, the Woods has both a memory and a record.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A memory in need of helping home. Tending one is considered practice for the harder promises.
 
 ### Dislikes
 
-- **[Kitsune](/characters/kitsune/)** — An illusion reads to them as a path that lies. Every unicorn knows this is unfair to kitsune. They feel bad about it. They cannot stop.
+- **[Kitsune](/characters/kitsune/)**: An illusion reads to them as a path that lies. Every unicorn knows this is unfair to kitsune. They feel bad about it. They cannot stop.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

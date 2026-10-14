@@ -3,7 +3,7 @@ title: Frostfang Peaks
 id: biome.frostfang_peaks
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["frozen_mountains", "aeries", "griffin_homeland", "cliffs", "rescue"]
 danger_level: high
@@ -114,15 +114,15 @@ The realm sleeps because the peaks do not. Rescue, watch, and weather all come d
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - Some watch-log entries reading 'nothing' carry a small feather-stroke in the margin. Asked what it marks, watch-captains say 'nothing' - in a slightly different voice.
 
 ### Neighbors
 
-- **[Glacier of Origins](/biomes/glacier_of_origins/)** — Partners in the north: the glacier remembers and the peaks respond. Every mountain rescue is half griffin speed and half yeti patience, and neither half works alone.
-- **[The Eastern Plains](/biomes/eastern_plains/)** — The plains below are where aerie trade lands and where mountain debts are repaid - a rescued caravan remembers, and the prides make sure of it.
-- **[Skullwater Cave](/locations/skullwater_cave/)** — The skull rock sits off their coast. Aerie flight rules give it a courteous margin, and no ledger records why.
+- **[Glacier of Origins](/biomes/glacier_of_origins/)**: Partners in the north: the glacier remembers and the peaks respond. Every mountain rescue is half griffin speed and half yeti patience, and neither half works alone.
+- **[The Eastern Plains](/biomes/eastern_plains/)**: The plains below are where aerie trade lands and where mountain debts are repaid - a rescued caravan remembers, and the prides make sure of it.
+- **[Skullwater Cave](/locations/skullwater_cave/)**: The skull rock sits off their coast. Aerie flight rules give it a courteous margin, and no ledger records why.
 
 ### Current Tensions
 

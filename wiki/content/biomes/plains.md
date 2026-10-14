@@ -3,7 +3,7 @@ title: The Plains
 id: biome.plains
 type: biome
 status: draft
-lastReviewed: "2026-10-13"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["central_plains", "roads", "caravans", "grassland", "crossroads"]
 danger_level: low
@@ -138,15 +138,15 @@ Neutral ground. Every people crosses the Plains, so the Plains belong to the cro
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The old east road does not end where the maps end it. Its bed runs on under the grass to the riverbank and stops at nothing, because the crossing it once met is gone - the river moved, and nobody now living knows there was ever a ford.
 
 ### Neighbors
 
-- **[Western Branch of the Great River](/features/great_river_west_branch/)** — The branch cuts the southern Plains and decides, seasonally, which roads are roads and which are waiting.
-- **[The Sunward Fields](/biomes/sunward_fields/)** — The Fields grow it and the Plains move it: the harvest road is the realm's supply line, and both regions maintain their half with the seriousness of people who have skipped a meal exactly once.
-- **[The Eastern Plains](/biomes/eastern_plains/)** — Same grass, same sky, one river and a very firm distinction between them. Each side maintains that the other's roads are almost as good.
+- **[Western Branch of the Great River](/features/great_river_west_branch/)**: The branch cuts the southern Plains and decides, seasonally, which roads are roads and which are waiting.
+- **[The Sunward Fields](/biomes/sunward_fields/)**: The Fields grow it and the Plains move it: the harvest road is the realm's supply line, and both regions maintain their half with the seriousness of people who have skipped a meal exactly once.
+- **[The Eastern Plains](/biomes/eastern_plains/)**: Same grass, same sky, one river and a very firm distinction between them. Each side maintains that the other's roads are almost as good.
 
 ### Current Tensions
 

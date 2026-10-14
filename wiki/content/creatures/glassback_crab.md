@@ -3,7 +3,7 @@ title: Glassback Crab
 id: creature.glassback_crab
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "foothills", "territorial", "burrower"]
 classification: dangerous_creature
@@ -66,7 +66,7 @@ infobox: creature
 
 > *The most patient misunderstanding in the foothills.*
 
-A glassback's shell refracts whatever color is nearby, which in the foothills is usually gemstone, which is why every treasure rush in history has included somebody trying to mine one. The crab minds enormously. It gives one warning, which is more than most prospectors deserve, and it holds no grudge afterward — off its warm ground, you have never existed.
+A glassback's shell refracts whatever color is nearby, which in the foothills is usually gemstone, which is why every treasure rush in history has included somebody trying to mine one. The crab minds enormously. It gives one warning, which is more than most prospectors deserve, and it holds no grudge afterward: off its warm ground, you have never existed.
 
 ### For Fun
 
@@ -80,31 +80,31 @@ Solitary and formal. Neighbouring crabs maintain exact, invisible borders that a
 
 ### Likes
 
-- **[Embermoth](/creatures/embermoth/)** — It finds the warm ground first and charges nothing for the information.
-- **[Dragonling](/characters/dragonling/)** — They knock on the burrow stone and wait. The only people who do.
+- **[Embermoth](/creatures/embermoth/)**: It finds the warm ground first and charges nothing for the information.
+- **[Dragonling](/characters/dragonling/)**: They knock on the burrow stone and wait. The only people who do.
 
 ### Dislikes
 
-- **[Cinder Wolf](/creatures/cinder_wolf/)** — In deep winter a pack will dig into someone else's warm burrow without so much as a wave.
+- **[Cinder Wolf](/creatures/cinder_wolf/)**: In deep winter a pack will dig into someone else's warm burrow without so much as a wave.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Brute** — Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
+**Brute**: Slow, heavy, and hard to move past. Takes a while to bring down and hits hard when it lands.
 
 | | |
 |---|---|
 | Health | 14 |
-| Guard | 12 — how hard it is to hit |
+| Guard | 12, how hard it is to hit |
 | Attack | +4 |
 | Speed | 3 steps, 1 initiative |
 | Usually | 2 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Observation** (Clever, easy) — It threatens before it charges, so the warning is the whole encounter if somebody reads it.
-- **Escape** (Quick, normal) — It stops pursuing once you are off its patch of warm ground.
+- **Observation** (Clever, easy): It threatens before it charges, so the warning is the whole encounter if somebody reads it.
+- **Escape** (Quick, normal): It stops pursuing once you are off its patch of warm ground.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

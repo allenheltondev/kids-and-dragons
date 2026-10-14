@@ -38,22 +38,22 @@ infobox: biome
 ## Related Entities
 
 ### Campaigns
-- [Echoes Beneath](/campaigns/echoes_beneath/) — biomes
+- [Echoes Beneath](/campaigns/echoes_beneath/): biomes
 
 ### Creatures
-- [Crystal Drake](/creatures/crystal_drake/) — creatures
+- [Crystal Drake](/creatures/crystal_drake/): creatures
 
 ### Factions
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — factions
-- [The Deep Hollow Cult](/factions/deep_hollow_cult/) — territory
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/): factions
+- [The Deep Hollow Cult](/factions/deep_hollow_cult/): territory
 
 ### Items
-- [Crystal Heart](/items/crystal_heart/) — items
-- [Crystal Heart](/items/crystal_heart/) — found_in
+- [Crystal Heart](/items/crystal_heart/): items
+- [Crystal Heart](/items/crystal_heart/): found_in
 
 ### Locations
-- [The Crystal Font](/locations/crystal_font/) — locations
-- [The Crystal Font](/locations/crystal_font/) — biome
+- [The Crystal Font](/locations/crystal_font/): locations
+- [The Crystal Font](/locations/crystal_font/): biome
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->

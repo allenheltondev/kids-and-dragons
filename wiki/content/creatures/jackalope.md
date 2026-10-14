@@ -3,7 +3,7 @@ title: Jackalope
 id: creature.jackalope
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "plains", "common", "fast"]
 classification: ambient_creature
@@ -84,13 +84,13 @@ Bold at a distance, gone up close. A warren that lets you get near is telling yo
 
 ### Likes
 
-- **[Centaur](/npcs/centaur/)** — They keep the roads flat and fast, and they pretend not to race back.
-- **[Faun](/npcs/faun/)** — Orchard windfalls, and nobody ever counts them.
+- **[Centaur](/npcs/centaur/)**: They keep the roads flat and fast, and they pretend not to race back.
+- **[Faun](/npcs/faun/)**: Orchard windfalls, and nobody ever counts them.
 
 ### Dislikes
 
-- **[Cinder Wolf](/creatures/cinder_wolf/)** — Fair enough, being a wolf. But a wolf ruins a perfectly good straightaway.
-- **[Kitsune](/characters/kitsune/)** — Raced one once. It turned out to be three of them, or possibly none. The warren has not recovered.
+- **[Cinder Wolf](/creatures/cinder_wolf/)**: Fair enough, being a wolf. But a wolf ruins a perfectly good straightaway.
+- **[Kitsune](/characters/kitsune/)**: Raced one once. It turned out to be three of them, or possibly none. The warren has not recovered.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->
