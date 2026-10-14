@@ -583,7 +583,7 @@
       "narration": "Mother Thrum, the ford witch, has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
@@ -629,7 +629,7 @@
       "narration": "You say whatever you think will get you the question. Mother Thrum listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
@@ -647,7 +647,7 @@
       "narration": "\"To hold it, because we can.\" Mother Thrum does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
@@ -665,7 +665,7 @@
       "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
