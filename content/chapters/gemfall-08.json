@@ -236,7 +236,7 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Race the shaking floor down the last long tube",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_keeper",
         "narration": "You run, jump, slide, and arrive at the bottom in a heap. But it is an on-time heap."

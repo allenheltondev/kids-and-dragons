@@ -839,6 +839,21 @@ describe("isPromptForPlayer", () => {
     expect(isPromptForPlayer({ ...prompt, characterId: "c_nope" }, "p_1", party)).toBe(true);
   });
 
+  it("hands a whole-party check to everyone who has not rolled yet", () => {
+    const table = [...party, makeMember({ playerId: "p_2", character: { ...party[0]!.character, id: "c_2" } })];
+    const prompt = {
+      kind: "roll" as const,
+      sceneId: "s",
+      stat: "quick" as const,
+      tn: 12,
+      prompt: "Cross together",
+      characterId: "c_2",
+      group: { pending: ["c_2"], rolls: [] },
+    };
+    expect(isPromptForPlayer(prompt, "p_2", table)).toBe(true);
+    expect(isPromptForPlayer(prompt, "p_1", table)).toBe(false);
+  });
+
   it("opens a roll to the table when the nominee's phone has dropped", () => {
     const prompt = {
       kind: "roll" as const,

@@ -621,7 +621,7 @@
       "stat": "quick",
       "tn": 8,
       "prompt": "Gather up your scattered packs before it gets dark",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_foothills_view",
         "narration": "You find everything, even the sock nobody wanted back, and climb on, late but whole."

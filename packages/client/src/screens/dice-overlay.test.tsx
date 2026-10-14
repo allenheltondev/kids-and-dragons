@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiceRoll } from "@kad/shared";
 import { useGameStore } from "../store";
 import { ROLL_HELP_TUMBLE_MS, ROLL_READ_MS, ROLL_TUMBLE_MS } from "../world/presentation";
-import { DiceOverlay, spokenRoll } from "./DiceOverlay";
+import { DiceOverlay, groupLine, spokenRoll } from "./DiceOverlay";
 
 const HELPED: DiceRoll = {
   die: 9,
@@ -62,5 +62,10 @@ describe("the dice card", () => {
     expect(spokenRoll(HELPED, "Sparklehoof", "Windstep")).toBe(
       "Sparklehoof rolled 9 plus 2 plus 3 from Windstep, 14. Success!",
     );
+  });
+
+  it("tallies a whole-party check on its last roll", () => {
+    expect(groupLine({ made: 2, of: 3, result: "success" })).toBe("2 of 3 made it. The party makes it!");
+    expect(groupLine({ made: 1, of: 3, result: "failure" })).toBe("1 of 3 made it. Not this time for the party.");
   });
 });

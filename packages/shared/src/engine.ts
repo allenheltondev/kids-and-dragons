@@ -461,6 +461,17 @@ export function applyEffects(
 // ---------------------------------------------------------------------------
 
 /**
+ * Who may be handed the die: standing and connected. A phone that has dropped
+ * is never nominated, because nobody else could roll for it and the check
+ * would wait on a player who is not there.
+ */
+function rollerPool(draft: RunState): PartyMember[] {
+  const standing = draft.party.filter((m) => !m.down);
+  const here = standing.filter((m) => m.connected);
+  return here.length > 0 ? here : standing.length > 0 ? standing : draft.party;
+}
+
+/**
  * Who rolls a check.
  *
  * `"active"` is whoever is first in the party, `"best"` is the highest score
@@ -470,11 +481,7 @@ export function applyEffects(
  * who are due the one most likely to succeed still steps up.
  */
 function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
-  // A phone that has dropped is never handed the die: nobody else could roll
-  // for it, and the check would wait on a player who is not there.
-  const standing = draft.party.filter((m) => !m.down);
-  const here = standing.filter((m) => m.connected);
-  const pool = here.length > 0 ? here : standing.length > 0 ? standing : draft.party;
+  const pool = rollerPool(draft);
   const first = pool[0];
   if (!first) throw new Illegal("ILLEGAL", "nobody is in the party to roll");
   if (scene.roller === "active") return first;
@@ -599,6 +606,19 @@ function openScenePrompt(
     }
 
     case "check": {
+      if (scene.roller === "all") {
+        const everyone = rollerPool(draft).map((m) => m.character.id);
+        draft.prompt = {
+          kind: "roll",
+          sceneId,
+          stat: scene.stat,
+          tn: scene.tn,
+          prompt: scene.prompt,
+          characterId: everyone[0] as string,
+          group: { pending: everyone, rolls: [] },
+        };
+        return undefined;
+      }
       const roller = pickRoller(draft, scene);
       draft.prompt = {
         kind: "roll",
@@ -1292,8 +1312,12 @@ export function rollerAway(
   party: readonly PartyMember[],
   prompt: Prompt & { kind: "roll" },
 ): boolean {
-  const member = party.find((m) => m.character.id === prompt.characterId);
-  return !member || !member.connected;
+  const away = (id: string): boolean => {
+    const member = party.find((m) => m.character.id === id);
+    return !member || !member.connected;
+  };
+  // A whole-party check is stuck only once *everybody* still to roll is away.
+  return prompt.group ? prompt.group.pending.every(away) : away(prompt.characterId);
 }
 
 function passStoryTurn(draft: RunState, fromPlayerId: string): void {
@@ -1402,6 +1426,63 @@ function tallyVotes(draft: RunState, votes: Record<string, string>): string {
 }
 
 /**
+ * One roll toward a whole-party check (`roller: "all"`). Everyone still pending
+ * rolls their own d20 + stat; once nobody is, half or more succeeding takes
+ * the success branch. Each roll gets its own dice card, and the last one also
+ * carries the party's tally.
+ *
+ * A pending player whose phone has dropped can be rolled for: once everybody
+ * still pending is away, any seated player's tap rolls (as themselves) in the
+ * first absent player's place, so the check cannot stall on an empty chair.
+ */
+function doGroupRoll(
+  draft: RunState,
+  playerId: string,
+  ctx: EngineContext,
+  prompt: Prompt & { kind: "roll" },
+  group: { pending: string[]; rolls: DiceRoll[] },
+): Presentation | undefined {
+  const me = memberByPlayer(draft, playerId);
+  if (!me) throw new Illegal("FORBIDDEN", "only a seated player can roll");
+  const slot = group.pending.includes(me.character.id)
+    ? me.character.id
+    : rollerAway(draft.party, prompt)
+      ? group.pending[0]
+      : undefined;
+  if (slot === undefined) {
+    throw new Illegal("ILLEGAL", `${me.character.name} has already rolled`);
+  }
+
+  const { scene } = currentScene(draft, ctx);
+  if (scene.type !== "check") throw new Illegal("ILLEGAL", "the current scene is not a check");
+
+  const result = resolveCheck(ctx.rng, {
+    characterId: me.character.id,
+    stat: scene.stat,
+    mod: me.character.stats[scene.stat],
+    tn: scene.tn,
+  });
+  group.rolls.push(result);
+  group.pending = group.pending.filter((id) => id !== slot);
+
+  if (group.pending.length > 0) {
+    prompt.characterId = group.pending[0] as string;
+    draft.lastRoll = result;
+    return { kind: "ROLL", roll: result };
+  }
+
+  const made = group.rolls.filter((r) => r.result === "success").length;
+  const of = group.rolls.length;
+  const outcome = made * 2 >= of ? "success" : "failure";
+  const last: DiceRoll = { ...result, group: { made, of, result: outcome } };
+  draft.lastRoll = last;
+  draft.prompt = null;
+  // No single roller: a branch effect aimed at "the roller" lands on the party.
+  takeBranch(draft, outcome === "success" ? scene.onSuccess : scene.onFailure, ctx);
+  return { kind: "ROLL", roll: last };
+}
+
+/**
  * Offer a friend your die on their check. One helper per check, never the
  * roller, and once per rest: the helper's die joins the roll when the roller
  * taps, sized by the helper's tier (content/rules.json `helpDie`).
@@ -1413,6 +1494,7 @@ function doHelp(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   }
   const helper = memberByPlayer(draft, playerId);
   if (!helper) throw new Illegal("FORBIDDEN", "only a seated player can help");
+  if (prompt.group) throw new Illegal("ILLEGAL", "everyone is rolling this one");
   if (helper.character.id === prompt.characterId) {
     throw new Illegal("ILLEGAL", "you cannot help your own roll");
   }
@@ -1432,6 +1514,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   if (!prompt || prompt.kind !== "roll") {
     throw new Illegal("ILLEGAL", "nothing is waiting on a roll");
   }
+  if (prompt.group) return doGroupRoll(draft, playerId, ctx, prompt, prompt.group);
   const nominated = memberByCharacter(draft, prompt.characterId);
   // The nominee's phone can drop after the prompt opens (presence changes do
   // not run through the engine). Then the check is open to anyone, and whoever

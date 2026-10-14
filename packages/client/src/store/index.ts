@@ -158,6 +158,11 @@ export function isPromptForPlayer(
     case "roll": {
       // The nominee's phone dropped: anyone at the table can roll instead.
       if (rollerAway(party, prompt)) return party.some((m) => m.playerId === playerId);
+      // A whole-party check is yours until you have rolled your own die.
+      if (prompt.group) {
+        const mine = party.find((member) => member.playerId === playerId);
+        return mine !== undefined && prompt.group.pending.includes(mine.character.id);
+      }
       const owner = party.find((member) => member.character.id === prompt.characterId);
       return owner?.playerId === playerId;
     }

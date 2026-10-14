@@ -23,6 +23,11 @@ export interface DiceRoll {
   stat?: StatId;
   /** A friend's die, already counted in `total`. Checks only. */
   help?: { characterId: string; sides: number; value: number };
+  /**
+   * On the last roll of a whole-party check (`roller: "all"`): how many made
+   * it, out of how many, and so how the party did. Half or more is a success.
+   */
+  group?: { made: number; of: number; result: "success" | "failure" };
 }
 
 /** A member of the party, as the clients see them. */
@@ -89,6 +94,12 @@ export type Prompt =
       characterId: string;
       /** Who has offered to help, and the die they will add. One per check. */
       helper?: { characterId: string; sides: number };
+      /**
+       * A whole-party check (`roller: "all"`): everyone rolls their own d20 +
+       * stat, and half or more succeeding carries the party. `pending` is who
+       * still has to roll; `characterId` is the first of them.
+       */
+      group?: { pending: string[]; rolls: DiceRoll[] };
     }
   | {
       kind: "item_swap";

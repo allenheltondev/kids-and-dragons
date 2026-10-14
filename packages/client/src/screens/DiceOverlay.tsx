@@ -107,11 +107,18 @@ export function neededLabel(roll: Pick<DiceRoll, "tn" | "result">): string {
   return isCheck ? checkTarget(roll.tn) : `Needed ${String(roll.tn)}`;
 }
 
+/** "The party: 2 of 3 made it. Success!" */
+export function groupLine(group: NonNullable<DiceRoll["group"]>): string {
+  const verdict = group.result === "success" ? "The party makes it!" : "Not this time for the party.";
+  return `${String(group.made)} of ${String(group.of)} made it. ${verdict}`;
+}
+
 /** The roll as a sentence, for speech and screen readers. */
 export function spokenRoll(roll: DiceRoll, who: string, helperName: string | null): string {
   const help =
     roll.help === undefined ? "" : ` plus ${String(roll.help.value)} from ${helperName ?? "a friend"}`;
-  return `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}${help}, ${String(roll.total)}. ${outcomeWord(roll)}`;
+  const group = roll.group === undefined ? "" : ` ${groupLine(roll.group)}`;
+  return `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}${help}, ${String(roll.total)}. ${outcomeWord(roll)}${group}`;
 }
 
 export function DiceOverlay(): ReactElement | null {
@@ -263,6 +270,14 @@ export function DiceOverlay(): ReactElement | null {
           <Icon name="guard" />
           <span>{neededLabel(roll)}</span>
         </p>
+
+        {/* The last roll of a whole-party check also says how the party did. */}
+        {roll.group === undefined ? null : (
+          <p className="dice__group" aria-hidden="true">
+            <Icon name="players" />
+            <span>{groupLine(roll.group)}</span>
+          </p>
+        )}
 
         {/* Outcome is a word plus a shape, never a colour on its own (spec §11). */}
         <p className={`dice__outcome${good ? " dice__outcome--good" : " dice__outcome--bad"}`}>

@@ -745,7 +745,7 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Stay calm and cross together",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "end_forded",
         "narration": "With friends on every side, the ford is just very wet walking. Somebody up on a wagon starts clapping as you reach the north bank."
