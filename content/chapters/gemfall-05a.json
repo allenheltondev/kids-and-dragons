@@ -66,7 +66,8 @@
           "requiresSpecies": "griffin",
           "goto": "scene_spans_from_above"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_spans_from_above": {
       "type": "story",
@@ -116,7 +117,8 @@
           "icon": "arrow",
           "goto": "scene_clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_soup_line_fix_barrow": {
       "type": "story",
@@ -128,7 +130,8 @@
           "icon": "hand",
           "goto": "scene_cult_pitch"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_cult_pitch": {
       "type": "story",
@@ -169,7 +172,8 @@
           "icon": "cake",
           "goto": "scene_cult_pitch_finish_soup"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_cult_pitch_finish_soup": {
       "type": "story",
@@ -181,7 +185,8 @@
           "icon": "cake",
           "goto": "scene_clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_cult_pitch_drop_stone": {
       "type": "story",
@@ -193,7 +198,8 @@
           "icon": "gem",
           "goto": "scene_clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_cult_pitch_say_no_kindly": {
       "type": "story",
@@ -205,7 +211,8 @@
           "icon": "heart",
           "goto": "scene_clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_clerk": {
       "type": "story",
@@ -242,7 +249,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_carter": {
       "type": "check",
@@ -263,7 +271,8 @@
       "onFailure": {
         "goto": "scene_engineers",
         "narration": "\"Promised to a buyer in the foothills,\" she says, and clicks to her mule. Gem 4117 hums away west across the bridge."
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_ledger": {
       "type": "check",
@@ -284,7 +293,8 @@
       "onFailure": {
         "goto": "scene_engineers",
         "narration": "You find a rule about goats, a rule about very large goats, and a rule about goats that are actually two children in a coat. By the time you look up, gem 4117 is across."
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_clerk_stone": {
       "type": "story",
@@ -313,7 +323,8 @@
           "icon": "arrow",
           "goto": "scene_engineers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_engineers": {
       "type": "story",
@@ -345,7 +356,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "check_outline": {
       "type": "check",
@@ -373,7 +385,8 @@
       "onFailure": {
         "goto": "scene_outline",
         "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
-      }
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_outline": {
       "type": "story",
@@ -391,7 +404,8 @@
           "icon": "rest",
           "goto": "rest_tent"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "rest_tent": {
       "type": "rest",
@@ -410,7 +424,8 @@
           "icon": "party",
           "goto": "scene_who_to_tell"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_who_to_tell": {
       "type": "choice_point",
@@ -461,7 +476,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_told_wardens": {
       "type": "story",
@@ -479,7 +495,8 @@
           "icon": "arrow",
           "goto": "scene_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_told_gatherers": {
       "type": "story",
@@ -500,7 +517,8 @@
           "icon": "arrow",
           "goto": "scene_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_kept_close": {
       "type": "story",
@@ -512,7 +530,8 @@
           "icon": "arrow",
           "goto": "scene_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_crossing": {
       "type": "choice_point",
@@ -538,7 +557,8 @@
           "requiresSpecies": "griffin",
           "goto": "scene_griffin_shortcut"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "check_span": {
       "type": "check",
@@ -553,7 +573,8 @@
       "onFailure": {
         "goto": "scene_under_bridge",
         "narration": "Halfway across, the bridge gives a long groan and the flag slams down. \"Span closed! Everybody back!\" The only other way over is the old pride ford, underneath."
-      }
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_under_bridge": {
       "type": "story",
@@ -579,7 +600,8 @@
           "icon": "swords",
           "goto": "encounter_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-pillar-shallows"
     },
     "check_wolves": {
       "type": "check",
@@ -599,7 +621,8 @@
       "onFailure": {
         "goto": "encounter_wolves",
         "narration": "The supper is gone in four seconds. The pack looks at you as if to say: is that all?"
-      }
+      },
+      "art": "scenes/gemfall/bridge-pillar-shallows"
     },
     "encounter_wolves": {
       "type": "encounter",
@@ -671,7 +694,8 @@
       ],
       "heal": 3,
       "outcome": "setback",
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/northern-bridge-foot"
     }
   },
   "llmHints": {
