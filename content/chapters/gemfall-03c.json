@@ -87,7 +87,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "scene_parade_sniff_wagons": {
       "type": "story",
@@ -99,7 +100,8 @@
           "icon": "flame",
           "goto": "scene_number_pebble"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "scene_parade_read_crowd": {
       "type": "story",
@@ -111,7 +113,8 @@
           "icon": "eye",
           "goto": "scene_number_pebble"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "scene_number_pebble": {
       "type": "story",
@@ -145,7 +148,8 @@
           "icon": "travel",
           "goto": "scene_three_cards"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_number_pebble_buy_cake": {
       "type": "story",
@@ -163,7 +167,8 @@
           "icon": "cake",
           "goto": "scene_three_cards"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_three_cards": {
       "type": "story",
@@ -203,7 +208,8 @@
           "icon": "arrow",
           "goto": "scene_soup_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-queue-market"
     },
     "check_expose": {
       "type": "check",
@@ -224,7 +230,8 @@
       "onFailure": {
         "goto": "scene_soup_line",
         "narration": "You pick the middle card with total confidence. It is a picture of a very smug fox. The crowd laughs, and so, to be fair, does she."
-      }
+      },
+      "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_exposed": {
       "type": "story",
@@ -249,7 +256,8 @@
           "icon": "arrow",
           "goto": "scene_soup_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_join_con": {
       "type": "story",
@@ -274,7 +282,8 @@
           "icon": "arrow",
           "goto": "scene_soup_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_soup_line": {
       "type": "story",
@@ -298,7 +307,8 @@
           "icon": "ear",
           "goto": "scene_soup_line_ask_crystal"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/wend-soup-tent"
     },
     "scene_soup_line_ask_crystal": {
       "type": "story",
@@ -310,7 +320,8 @@
           "icon": "ear",
           "goto": "choice_tolls"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/wend-soup-tent"
     },
     "scene_soup_line_thank_wend": {
       "type": "story",
@@ -322,7 +333,8 @@
           "icon": "heart",
           "goto": "choice_tolls"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/wend-soup-tent"
     },
     "choice_tolls": {
       "type": "choice_point",
@@ -364,7 +376,8 @@
           "icon": "heart",
           "goto": "scene_family"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "check_unmire": {
       "type": "check",
@@ -397,7 +410,8 @@
           }
         ],
         "narration": "The wagon comes out in the end, but only after everyone has sat down in the mud at least once. You will be finding mud in your ears until next week."
-      }
+      },
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "check_markers": {
       "type": "check",
@@ -412,7 +426,8 @@
       "onFailure": {
         "goto": "scene_dusk_wolves",
         "narration": "You put them all back up, beautifully, in the wrong order. A centaur runner gallops past, stops, laughs, and fixes them in about four seconds."
-      }
+      },
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "scene_markers_restored": {
       "type": "story",
@@ -437,7 +452,8 @@
           "icon": "arrow",
           "goto": "scene_dusk_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-road-ruts"
     },
     "scene_family": {
       "type": "story",
@@ -494,7 +510,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bracken-cart"
     },
     "scene_family_fix_wheel": {
       "type": "story",
@@ -517,7 +534,8 @@
           "icon": "might",
           "goto": "scene_dusk_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bracken-cart"
     },
     "scene_family_share_cake": {
       "type": "story",
@@ -540,7 +558,8 @@
           "icon": "cake",
           "goto": "scene_dusk_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bracken-cart"
     },
     "scene_family_give_pebble": {
       "type": "story",
@@ -563,7 +582,8 @@
           "icon": "hand",
           "goto": "scene_dusk_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bracken-cart"
     },
     "scene_dusk_wolves": {
       "type": "story",
@@ -595,7 +615,8 @@
           "icon": "swords",
           "goto": "encounter_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/queue-dusk-camp"
     },
     "scene_wolves_fed": {
       "type": "story",
@@ -619,7 +640,8 @@
           "icon": "lantern",
           "goto": "scene_witch_stall"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/queue-dusk-camp"
     },
     "encounter_wolves": {
       "type": "encounter",
@@ -679,7 +701,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-witch-stall"
     },
     "scene_witch_stall_sore_feet": {
       "type": "story",
@@ -697,7 +720,8 @@
           "icon": "potion",
           "goto": "scene_tuned_charm"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-witch-stall"
     },
     "scene_tuned_charm": {
       "type": "story",
@@ -745,7 +769,8 @@
           "icon": "moon",
           "goto": "scene_tuned_charm_leave_it"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-witch-stall"
     },
     "scene_tuned_charm_leave_it": {
       "type": "story",
@@ -763,7 +788,8 @@
           "icon": "moon",
           "goto": "rest_witch_fire"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-witch-stall"
     },
     "scene_tuned_charm_take_it_home": {
       "type": "story",
@@ -781,7 +807,8 @@
           "icon": "flame",
           "goto": "rest_witch_fire"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ford-witch-stall"
     },
     "check_answer": {
       "type": "check",
@@ -813,7 +840,8 @@
       "onFailure": {
         "goto": "rest_witch_fire",
         "narration": "You say something about gems and glory, and Mother Thrum's charms all go quiet at once, which feels like an answer. \"Not yet,\" she says kindly. \"Ask yourself again at the mountain.\""
-      }
+      },
+      "art": "scenes/gemfall/ford-witch-stall"
     },
     "rest_witch_fire": {
       "type": "rest",
@@ -826,7 +854,8 @@
           "icon": "drop",
           "goto": "choice_ford"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/queue-dusk-camp"
     },
     "choice_ford": {
       "type": "choice_point",
@@ -866,7 +895,8 @@
           "requiresFlag": "joined_the_con",
           "goto": "scene_surge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
     },
     "check_ford": {
       "type": "check",
@@ -881,7 +911,8 @@
       "onFailure": {
         "goto": "scene_surge",
         "narration": "Halfway across, somebody behind you shouts, and then everybody behind you shouts, and the water that was pushing at your knees is suddenly pushing at your waist."
-      }
+      },
+      "art": "scenes/gemfall/west-branch-ford"
     },
     "check_ford_easy": {
       "type": "check",
@@ -896,7 +927,8 @@
       "onFailure": {
         "goto": "scene_surge",
         "narration": "You are nearly across, with friends on every side, when a yell goes up behind you and the whole river seems to lurch at once."
-      }
+      },
+      "art": "scenes/gemfall/west-branch-ford"
     },
     "scene_surge": {
       "type": "story",
@@ -928,7 +960,8 @@
           "icon": "drop",
           "goto": "end_marsh_west"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
     },
     "check_drake_toll": {
       "type": "check",
@@ -948,7 +981,8 @@
       "onFailure": {
         "goto": "end_marsh_west",
         "narration": "One drake takes the bread. The other one wanted the bread you were holding, and it bumps you, very gently, into the deep part."
-      }
+      },
+      "art": "scenes/gemfall/west-branch-ford"
     },
     "encounter_drakes": {
       "type": "encounter",
