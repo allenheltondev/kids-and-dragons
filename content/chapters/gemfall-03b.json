@@ -556,7 +556,7 @@
     },
     "scene_toll_reeds_salute": {
       "type": "story",
-      "narration": "You stand up on the raft and give the reeds the salute the harvest sprites taught you, back in the corner row. The reeds go still. Grass is grass, and every growing thing knows that salute. They untie all at once and salute back so hard that one of them falls over. Gullet carves a tiny notch in her hat, just for you.",
+      "narration": "You stand up on the raft and give the reeds a harvest sprite salute, as smart as the little guards in the corner row. The reeds go still. Grass is grass, and every growing thing knows that salute. They untie all at once and salute back so hard that one of them falls over. Gullet carves a tiny notch in her hat, just for you.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1768,7 +1768,7 @@
       "discovers": [
         "biome.enchanted_woods"
       ],
-      "narration": "The branch grabs you and carries you west, through the marsh's outermost tangles, past floating logs (real ones, you check), until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome. Late, dripping, and in. Wring out your socks and camp.",
+      "narration": "The branch grabs you and carries you west, through the marsh's outermost tangles, past floating logs (real ones, you check), until the channels finally let go. You crawl out, soaked, onto flooded paths at the edge of the Enchanted Woods, near MossHome, the bigfoot town. Late, dripping, and in. Wring out your socks and camp.",
       "heal": 4,
       "onEnter": [
         {
@@ -1781,7 +1781,7 @@
     },
     "ending_walked_over": {
       "type": "rest",
-      "narration": "You step off the last of the mud onto a road full of wagons, and fall in behind the sausage cart. Nobody asks where you came from. Everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret in your pocket.",
+      "narration": "You step off the last of the mud onto a road full of wagons, and fall in behind the sausage cart. Nobody asks where you came from. Everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing. Camp by the roadside, muddy and pleased, with the marsh's secret humming in your ears.",
       "heal": 3,
       "onEnter": [
         {
