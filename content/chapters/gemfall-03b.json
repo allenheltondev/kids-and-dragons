@@ -630,7 +630,7 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Keep time with the frogfolk's crossing song",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "ending_forded_clean",
         "narration": "You sing badly but exactly in time, which is the part that counts."

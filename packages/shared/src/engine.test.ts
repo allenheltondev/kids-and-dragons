@@ -979,6 +979,74 @@ describe("checks", () => {
   });
 });
 
+describe("whole-party checks", () => {
+  function groupCtx(rng: Rng): EngineContext {
+    const chapter = makeChapter();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "all" } as Scene;
+    return ctx({ chapter, rng });
+  }
+  function atGroupCheck(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+      ],
+      context,
+    ).state;
+  }
+
+  it("waits for everyone, then succeeds when half or more make it", () => {
+    const context = groupCtx(fixedRng(20));
+    const start = atGroupCheck(context);
+    const [unicorn, griffin] = start.party.map((m) => m.character.id);
+    expect(start.prompt).toMatchObject({ kind: "roll", group: { pending: [unicorn, griffin], rolls: [] } });
+
+    const first = applyIntent(start, { playerId: "p_1", intent: { type: "ROLL" } }, context);
+    expect(first.presentation).toMatchObject({ kind: "ROLL" });
+    expect(first.state.prompt).toMatchObject({ kind: "roll", characterId: griffin, group: { pending: [griffin] } });
+    expect(applyIntent(first.state, { playerId: "p_1", intent: { type: "ROLL" } }, context).error?.code).toBe(
+      "ILLEGAL",
+    );
+
+    const last = applyIntent(first.state, { playerId: "p_2", intent: { type: "ROLL" } }, context);
+    expect(last.state.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
+    expect(last.state.sceneId).toBe("scene_shrine");
+  });
+
+  it("fails when fewer than half make it", () => {
+    const context = groupCtx(fixedRng(1));
+    const done = walk(
+      atGroupCheck(context),
+      [
+        { playerId: "p_1", intent: { type: "ROLL" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+      ],
+      context,
+    ).state;
+    expect(done.lastRoll?.group).toEqual({ made: 0, of: 2, result: "failure" });
+    expect(done.sceneId).toBe("scene_scratched");
+  });
+
+  it("refuses help, since everyone is rolling", () => {
+    const context = groupCtx(fixedRng(10));
+    const result = applyIntent(atGroupCheck(context), { playerId: "p_1", intent: { type: "HELP" } }, context);
+    expect(result.error?.code).toBe("ILLEGAL");
+  });
+
+  it("lets the table roll for a friend whose phone dropped", () => {
+    const context = groupCtx(fixedRng(20));
+    const first = applyIntent(atGroupCheck(context), { playerId: "p_1", intent: { type: "ROLL" } }, context).state;
+    const dropped = {
+      ...first,
+      party: first.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const done = applyIntent(dropped, { playerId: "p_1", intent: { type: "ROLL" } }, context);
+    expect(done.error).toBeUndefined();
+    expect(done.state.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
+  });
+});
+
 describe("a full walk of a chapter", () => {
   it("a gated encounter resolves through onVictory without raising a board", () => {
     /*

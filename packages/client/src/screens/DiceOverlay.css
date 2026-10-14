@@ -223,6 +223,22 @@
   transition: opacity var(--kad-dur-base, 260ms) ease-out;
 }
 
+.dice__group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+  color: var(--color-accent, #f5c86c);
+  opacity: 0;
+  transition: opacity var(--kad-dur-base, 260ms) ease-out 120ms;
+}
+
+.dice__card--settled .dice__group {
+  opacity: 1;
+}
+
 .dice__tn,
 .dice__outcome {
   display: flex;
