@@ -82,7 +82,7 @@
     },
     "scene_poling_in_say_it": {
       "type": "story",
-      "narration": "\"Something's leaking,\" you say. Gullet stops poling. The new wisps behind the ribbon all turn toward you at once, like a room full of candles noticing a draught. Gullet carves one more notch in her hat, very carefully, and starts poling again. \"Not near the wisps,\" she says. \"They remember things.\"",
+      "narration": "\"Something's leaking,\" you say. Gullet stops poling. The new wisps behind the ribbon all turn toward you at once, like a room full of candles noticing a draft. Gullet carves one more notch in her hat, very carefully, and starts poling again. \"Not near the wisps,\" she says. \"They remember things.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1219,7 +1219,7 @@
       },
       "onFailure": {
         "goto": "scene_wisp_trap",
-        "narration": "Somebody sighs. The wisp hears it, takes offence, and takes a shortcut."
+        "narration": "Somebody sighs. The wisp hears it, takes offense, and takes a shortcut."
       }
     },
     "scene_wisp_trap": {

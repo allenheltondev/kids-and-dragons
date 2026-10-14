@@ -943,7 +943,7 @@
     },
     "scene_river_view": {
       "type": "story",
-      "narration": "The road tops a rise, and there it is: Stone Crossing, giant flat stones marching across the Great River, the far end lost under hurrying brown water. On a drowned stone a grey heron stands fishing on one leg, perfectly dry, as if the river were a carpet. Down the slope, a centaur trots from post to empty post, looking for her signs.",
+      "narration": "The road tops a rise, and there it is: Stone Crossing, giant flat stones marching across the Great River, the far end lost under hurrying brown water. On a drowned stone a gray heron stands fishing on one leg, perfectly dry, as if the river were a carpet. Down the slope, a centaur trots from post to empty post, looking for her signs.",
       "choices": [
         {
           "id": "watch_heron",
@@ -1100,7 +1100,7 @@
     },
     "scene_first_story_help_ending": {
       "type": "story",
-      "narration": "Everybody suggests an ending. A dragon? A wedding? And then everyone had a sandwich? Dilly picks the sandwich. It is a very good ending. She practises it four times, and on the fourth time she bows, and the whole queue claps.",
+      "narration": "Everybody suggests an ending. A dragon? A wedding? And then everyone had a sandwich? Dilly picks the sandwich. It is a very good ending. She practices it four times, and on the fourth time she bows, and the whole queue claps.",
       "choices": [
         {
           "id": "on",
@@ -1112,7 +1112,7 @@
     },
     "scene_first_story_give_story": {
       "type": "story",
-      "narration": "You give Dilly your best story, the whole thing, beginning, middle and end. She hugs it like a kitten and runs off to practise. It is only when you reach the front that you remember: you have just given away the story you were going to tell.",
+      "narration": "You give Dilly your best story, the whole thing, beginning, middle and end. She hugs it like a kitten and runs off to practice. It is only when you reach the front that you remember: you have just given away the story you were going to tell.",
       "choices": [
         {
           "id": "on",
@@ -1425,7 +1425,7 @@
     },
     "scene_wake_fee_show_paid": {
       "type": "story",
-      "narration": "You hold up the Drake's Rate, with PAID underlined twice. The drake in the water squints at it, recognises its own handwriting, and huffs with deep professional respect. It wipes the slate clean and writes, very neatly: FRIENDS AND FAMILY RATE.",
+      "narration": "You hold up the Drake's Rate, with PAID underlined twice. The drake in the water squints at it, recognizes its own handwriting, and huffs with deep professional respect. It wipes the slate clean and writes, very neatly: FRIENDS AND FAMILY RATE.",
       "cast": [
         {
           "figure": "entities/river_drake"

@@ -1959,7 +1959,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. She looks at the three of you the way she looks at weather. \"Room for three,\" she says. \"Why should it be you?\"",
+      "narration": "At dawn the caravan yard is a sea of wagons, all pointed north. The one with the most lanterns belongs to Hesper Longstride, a centaur caravan master whose sash is stitched all over with roads. She looks your party up and down the way she looks at weather. \"Room for one more crew,\" she says. \"Why should it be you?\"",
       "cast": [
         {
           "figure": "cast/hesper",

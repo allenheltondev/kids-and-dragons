@@ -615,7 +615,7 @@
     },
     "scene_pile_sneak_leave": {
       "type": "story",
-      "narration": "Your kitsune looks at the loud stone for a long moment, memorises exactly where it is, and leaves it there. On the way back up the root-stair, a root moves out of the way to make the step easier. It did not do that on the way down.",
+      "narration": "Your kitsune looks at the loud stone for a long moment, memorizes exactly where it is, and leaves it there. On the way back up the root-stair, a root moves out of the way to make the step easier. It did not do that on the way down.",
       "choices": [
         {
           "id": "on",
@@ -1468,7 +1468,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_foothills_view",
-        "narration": "You follow them, the gatherer at your heels, to a ledge where the whole flock has settled. Every single moth is facing away from the mountain, like people with their backs to a cold draught. \"I'm telling my grandmother,\" the gatherer whispers. Then she leads you up out of the cloud."
+        "narration": "You follow them, the gatherer at your heels, to a ledge where the whole flock has settled. Every single moth is facing away from the mountain, like people with their backs to a cold draft. \"I'm telling my grandmother,\" the gatherer whispers. Then she leads you up out of the cloud."
       },
       "onFailure": {
         "goto": "scene_foothills_view",

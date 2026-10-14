@@ -1477,7 +1477,7 @@
       },
       "onFailure": {
         "goto": "scene_widest_bend",
-        "narration": "You follow the prints round and round until you realise you are following your own boot prints, following the wolf's. Embarrassing. You give up and walk straight in, and find the very middle of the bend all by yourselves."
+        "narration": "You follow the prints round and round until you realize you are following your own boot prints, following the wolf's. Embarrassing. You give up and walk straight in, and find the very middle of the bend all by yourselves."
       }
     },
     "scene_wolf_sign_cover_prints": {
