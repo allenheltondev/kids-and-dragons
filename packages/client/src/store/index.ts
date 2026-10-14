@@ -29,7 +29,7 @@ import type {
   RunState,
   WorldMap,
 } from "@kad/shared";
-import { previewContext, turnHolderAway } from "@kad/shared";
+import { previewContext, rollerAway, turnHolderAway } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
   ClientSession,
@@ -155,7 +155,12 @@ export function isPromptForPlayer(
       );
     case "ready":
       return prompt.forPlayerIds.length === 0 || prompt.forPlayerIds.includes(playerId);
-    case "roll":
+    case "roll": {
+      // The nominee's phone dropped: anyone at the table can roll instead.
+      if (rollerAway(party, prompt)) return party.some((m) => m.playerId === playerId);
+      const owner = party.find((member) => member.character.id === prompt.characterId);
+      return owner?.playerId === playerId;
+    }
     case "item_swap": {
       const owner = party.find((member) => member.character.id === prompt.characterId);
       return owner?.playerId === playerId;

@@ -470,8 +470,11 @@ export function applyEffects(
  * who are due the one most likely to succeed still steps up.
  */
 function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
+  // A phone that has dropped is never handed the die: nobody else could roll
+  // for it, and the check would wait on a player who is not there.
   const standing = draft.party.filter((m) => !m.down);
-  const pool = standing.length > 0 ? standing : draft.party;
+  const here = standing.filter((m) => m.connected);
+  const pool = here.length > 0 ? here : standing.length > 0 ? standing : draft.party;
   const first = pool[0];
   if (!first) throw new Illegal("ILLEGAL", "nobody is in the party to roll");
   if (scene.roller === "active") return first;
@@ -1273,6 +1276,19 @@ export function turnHolderAway(
   });
 }
 
+/**
+ * A check whose nominated roller has dropped (or left) is open to anyone, for
+ * the same reason as `turnHolderAway`: the chapter must not wait on a phone
+ * that is not there.
+ */
+export function rollerAway(
+  party: readonly PartyMember[],
+  prompt: Prompt & { kind: "roll" },
+): boolean {
+  const member = party.find((m) => m.character.id === prompt.characterId);
+  return !member || !member.connected;
+}
+
 function passStoryTurn(draft: RunState, fromPlayerId: string): void {
   const at = draft.party.findIndex((m) => m.playerId === fromPlayerId);
   draft.storyTurn = (at === -1 ? (draft.storyTurn ?? 0) : at) + 1;
@@ -1383,10 +1399,18 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   if (!prompt || prompt.kind !== "roll") {
     throw new Illegal("ILLEGAL", "nothing is waiting on a roll");
   }
-  const roller = memberByCharacter(draft, prompt.characterId);
-  if (!roller) throw new Illegal("NOT_FOUND", "the nominated roller has left the run");
-  if (roller.playerId !== playerId) {
-    throw new Illegal("FORBIDDEN", `it is ${roller.character.name}'s roll`);
+  const nominated = memberByCharacter(draft, prompt.characterId);
+  // The nominee's phone can drop after the prompt opens (presence changes do
+  // not run through the engine). Then the check is open to anyone, and whoever
+  // taps rolls as themselves: their stat, their turn counted.
+  const roller =
+    nominated?.playerId === playerId
+      ? nominated
+      : rollerAway(draft.party, prompt)
+        ? memberByPlayer(draft, playerId)
+        : undefined;
+  if (!roller) {
+    throw new Illegal("FORBIDDEN", `it is ${nominated?.character.name ?? "someone else"}'s roll`);
   }
 
   const { scene } = currentScene(draft, ctx);

@@ -871,6 +871,37 @@ describe("checks", () => {
     expect(result.state.checkRolls).toEqual({ [result.state.party[1]!.character.id]: 1 });
   });
 
+  it("never nominates a player whose phone has dropped", () => {
+    const context = ctx();
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    const griffinAway = {
+      ...started,
+      party: started.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const state = walk(
+      griffinAway,
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }],
+      context,
+    ).state;
+    expect(state.prompt).toMatchObject({ kind: "roll", characterId: state.party[0]!.character.id });
+  });
+
+  it("lets anyone roll, as themselves, once the nominee's phone drops", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const before = atCheck(context);
+    const dropped = {
+      ...before,
+      party: before.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const result = applyIntent(dropped, { playerId: "p_1", intent: { type: "ROLL" } }, context);
+    expect(result.error).toBeUndefined();
+    expect(result.state.lastRoll?.characterId).toBe(dropped.party[0]!.character.id);
+  });
+
   it("only the nominated character's player may roll", () => {
     const context = ctx();
     const state = atCheck(context);
