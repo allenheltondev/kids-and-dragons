@@ -366,27 +366,28 @@ describe("preview", () => {
     h.api.postPreview.mockImplementationOnce(() => new Promise<void>((resolve) => (release = resolve)));
 
     const { preview } = h.store.getState();
-    preview({ kind: "choice", choiceId: "east" });
+    preview({ kind: "choice", choiceId: "east" }, "choice:1");
     // Two more taps while the first is in the air: only the last is worth sending.
-    preview({ kind: "choice", choiceId: "west" });
-    preview(null);
+    preview({ kind: "choice", choiceId: "west" }, "choice:1");
+    preview(null, null);
     expect(h.api.postPreview).toHaveBeenCalledTimes(1);
+    expect(h.api.postPreview).toHaveBeenLastCalledWith({ kind: "choice", choiceId: "east" }, "choice:1", "tok_1");
     release();
     await vi.waitFor(() => expect(h.api.postPreview).toHaveBeenCalledTimes(2));
-    expect(h.api.postPreview).toHaveBeenLastCalledWith(null, "tok_1");
+    expect(h.api.postPreview).toHaveBeenLastCalledWith(null, null, "tok_1");
 
     // Already told: saying it again sends nothing.
-    preview(null);
+    preview(null, null);
     await Promise.resolve();
     expect(h.api.postPreview).toHaveBeenCalledTimes(2);
   });
 
-  it("keeps everybody's picks from the channel, and forgets a withdrawn one", async () => {
+  it("keeps everybody's picks with the decision they were made for, and forgets a withdrawn one", async () => {
     const h = harness(makeState({ seq: 7 }));
     await h.store.getState().joinRoom("ABCD", "Allen");
-    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: { kind: "end_turn" } });
-    expect(h.store.getState().previews).toEqual({ p_2: { kind: "end_turn" } });
-    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null });
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: { kind: "end_turn" }, context: "fight:x" });
+    expect(h.store.getState().previews).toEqual({ p_2: { preview: { kind: "end_turn" }, context: "fight:x" } });
+    h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null, context: null });
     expect(h.store.getState().previews).toEqual({});
     expect(h.store.getState().state?.seq).toBe(7);
   });

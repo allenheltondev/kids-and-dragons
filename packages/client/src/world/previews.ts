@@ -14,6 +14,7 @@ import {
   combatantById,
   currentActor,
   positionOf,
+  previewContext,
   type AbilityCatalog,
   type EncounterState,
   type IntentPreview,
@@ -22,6 +23,7 @@ import {
   type RunState,
 } from "@kad/shared";
 import { combatantLabel } from "../screens/combat-grid";
+import type { HeldPreview } from "../store/contract";
 
 export type CombatPreview = Exclude<IntentPreview, { kind: "choice" }>;
 
@@ -36,10 +38,21 @@ const NONE: TablePreviews = { combat: null, choices: {} };
 
 export function tablePreviews(
   state: RunState | null,
-  previews: Readonly<Record<string, IntentPreview>>,
+  held: Readonly<Record<string, HeldPreview>>,
 ): TablePreviews {
   // Nobody picking is the usual case, and it needs nothing read off the state.
-  if (state === null || Object.keys(previews).length === 0) return NONE;
+  if (state === null || Object.keys(held).length === 0) return NONE;
+
+  // Only picks made for the decision this screen is showing. A late one, or
+  // one whose clear was lost with a dropped phone, names a turn or question
+  // that has passed, and stays dark even if the same player is up again with
+  // the same option ids on offer. A screen still catching up (a roll held
+  // behind its animation) draws the pick the moment its state arrives.
+  const now = previewContext(state);
+  const previews: Record<string, IntentPreview> = {};
+  for (const [playerId, entry] of Object.entries(held)) {
+    if (now !== null && entry.context === now) previews[playerId] = entry.preview;
+  }
 
   const encounter = state.encounter ?? null;
   if (encounter) {

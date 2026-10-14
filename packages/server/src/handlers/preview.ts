@@ -10,7 +10,7 @@
  * highlight, never a turn.
  */
 
-import { readIntentPreview } from "@kad/shared";
+import { previewContext, readIntentPreview } from "@kad/shared";
 import type { HandlerDeps } from "./deps.ts";
 
 export type PreviewDeps = Pick<HandlerDeps, "repo" | "channel">;
@@ -20,11 +20,18 @@ export interface PreviewInput {
   runId: string;
   playerId: string;
   preview: unknown;
+  /** The decision the phone made it for (`previewContext`). */
+  context: unknown;
 }
 
 export type PreviewResult =
   | { ok: true }
-  | { ok: false; status: 400 | 403 | 404; code: "ILLEGAL" | "FORBIDDEN" | "NOT_FOUND"; message: string };
+  | {
+      ok: false;
+      status: 400 | 403 | 404 | 409;
+      code: "ILLEGAL" | "FORBIDDEN" | "NOT_FOUND" | "STALE_SEQ";
+      message: string;
+    };
 
 export async function relayPreview(input: PreviewInput, deps: PreviewDeps): Promise<PreviewResult> {
   const preview = readIntentPreview(input.preview);
@@ -39,12 +46,26 @@ export async function relayPreview(input: PreviewInput, deps: PreviewDeps): Prom
     return { ok: false, status: 403, code: "FORBIDDEN", message: "not seated at this table" };
   }
 
+  // A pick for a turn or question that has already moved on is dropped here,
+  // not relayed: it arrived late, and lighting it up now would show the table
+  // something nobody is deciding. Backing out (`null`) always goes through —
+  // clearing a highlight is never wrong.
+  let context: string | null = null;
+  if (preview !== null) {
+    const current = previewContext(state);
+    if (typeof input.context !== "string" || current === null || input.context !== current) {
+      return { ok: false, status: 409, code: "STALE_SEQ", message: "that decision has already moved on" };
+    }
+    context = current;
+  }
+
   await deps.channel.publish(state.roomCode, {
     kind: "preview",
     seq: state.seq,
     runId: state.runId,
     playerId: input.playerId,
     preview,
+    context,
   });
   return { ok: true };
 }
