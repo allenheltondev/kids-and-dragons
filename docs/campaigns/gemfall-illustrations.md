@@ -481,3 +481,14 @@ Wide 16:9 Kids & Dragons backdrop: a quiet sandy beach at the river mouth, shall
 **Eastern shore camp**
 
 Wide 16:9 Kids & Dragons backdrop: quiet evening camp on the eastern shore after crossing the Great River; driftwood lies beside a small safe glowing campfire, wet sand and shallow water catch amber light, distant open Eastern Plains fade northward, reeds and smooth stones frame the sides. Warm, slightly damp, peaceful storybook environment, detailed hand-painted gouache and watercolor. Upper-half landmark; lower 30% broad, level, open shore. No tent, building, people, animals, creatures, text, UI, frame or watermark.
+
+## Gemfall 03A — eastern landing
+
+`eastern-bank-landing.webp` covers `scene_east_landing`, `scene_east_landing_move_crates`, and `scene_east_landing_ask_question`. It shows the far bank where travelers and gem carts gather after Stone Crossing; the adjacent short overlook remains on biome art.
+
+Generated as a 16:9 painterly riverbank backdrop and exported 1920×1080 WebP, quality 88. It has flat open landing ground across the lower 30 percent, with the river and ford in the upper two thirds. No foreground characters or readable signage.
+
+### Eastern landing generation prompt
+
+Create a polished wide 16:9 painterly fantasy storybook game backdrop for the eastern landing at Stone Crossing on the Great River. A broad calm blue-brown river, flat stepping stones, a dry far bank, reeds and a dirt road with distant wagons arriving after the ford; soft morning after rain. Keep river and stones in the upper two thirds and a broad level bank in the lower 30 percent for sprites. No people, animals, creatures, signage, lettering, UI or border.
+
