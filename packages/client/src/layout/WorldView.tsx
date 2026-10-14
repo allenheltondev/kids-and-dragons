@@ -132,7 +132,7 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that
           is the room; on a phone the shell hands the world the whole screen for
-          its ~1.5s (spec §2.2) — but the overlay itself only ever fills its
+          the few seconds the card is up (spec §2.2) — but the overlay itself only ever fills its
           container, which is why it has no viewport units in it.
 
           Mounted unconditionally on purpose: it renders nothing while idle and

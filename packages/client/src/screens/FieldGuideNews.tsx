@@ -22,7 +22,7 @@ import type { PresentationEvent, ProgressionEvent } from "../store/contract";
 import { ackFieldGuideNews, useFieldGuideNews } from "../store/field-guide-news";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
 import { openGuide } from "../store/player-navigation";
-import { presentationDuration } from "../world/presentation";
+import { presentationDuration, rollCardMs } from "../world/presentation";
 import { loadFieldGuide } from "./content";
 import { TRANSFORM_BEAT_MS } from "./TransformCutscene";
 import "./FieldGuideNews.css";
@@ -159,7 +159,13 @@ function useStageQuiet(): boolean {
       const p: PresentationEvent | null = s.presentation;
       if (p && p.seq > lastPresentation) {
         lastPresentation = p.seq;
-        hold(presentationDuration(p.presentation));
+        // A roll holds the banner for the whole dice card, not just the patch:
+        // news landing over "14 + 3 = 17" would bury the number it is about.
+        hold(
+          p.presentation.kind === "ROLL"
+            ? rollCardMs(p.presentation.roll)
+            : presentationDuration(p.presentation),
+        );
       }
       const g: ProgressionEvent | null = s.progression;
       if (g && g.seq > lastProgression) {

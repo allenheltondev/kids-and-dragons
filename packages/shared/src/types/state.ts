@@ -21,6 +21,13 @@ export interface DiceRoll {
   /** Who rolled. */
   characterId: string;
   stat?: StatId;
+  /** A friend's die, already counted in `total`. Checks only. */
+  help?: { characterId: string; sides: number; value: number };
+  /**
+   * On the last roll of a whole-party check (`roller: "all"`): how many made
+   * it, out of how many, and so how the party did. Half or more is a success.
+   */
+  group?: { made: number; of: number; result: "success" | "failure" };
 }
 
 /** A member of the party, as the clients see them. */
@@ -85,6 +92,14 @@ export type Prompt =
       tn: number;
       prompt: string;
       characterId: string;
+      /** Who has offered to help, and the die they will add. One per check. */
+      helper?: { characterId: string; sides: number };
+      /**
+       * A whole-party check (`roller: "all"`): everyone rolls their own d20 +
+       * stat, and half or more succeeding carries the party. `pending` is who
+       * still has to roll; `characterId` is the first of them.
+       */
+      group?: { pending: string[]; rolls: DiceRoll[] };
     }
   | {
       kind: "item_swap";
@@ -245,6 +260,21 @@ export interface RunState {
    * somehow opened by a deployed one rolls honest dice.
    */
   playtestDie?: number | null;
+  /**
+   * How many checks each character has rolled this run, by character id. A
+   * check the party shares (`roller: "party"`) goes to whoever has rolled the
+   * fewest, so the dice go round the table instead of always landing on the
+   * character with the best stat. Kept across chapters: one evening is one
+   * rotation. Optional for runs persisted before it existed, which simply
+   * start counting from zero.
+   */
+  checkRolls?: Record<string, number>;
+  /**
+   * Characters who have helped on a check since the party last rested. Help
+   * recharges at a Rest scene and at the start of each chapter, so it is a
+   * thing you save for the roll that matters rather than tap every time.
+   */
+  helpSpent?: string[];
   /**
    * The household's Field Guide — canon id → who found it first and when
    * (epic #101, #106). A **mirror** of the household's `FIELDGUIDE` record,

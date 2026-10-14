@@ -114,7 +114,7 @@
     "check_archive_door": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Convince the archivist at the door you've seen something worth writing down",
       "cast": [
         {
@@ -754,9 +754,9 @@
     "check_regroup": {
       "type": "check",
       "stat": "quick",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Gather up your scattered packs before it gets dark",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_foothills_view",
         "narration": "You find everything, even the sock nobody wanted back, and climb on, late but whole."

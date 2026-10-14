@@ -7,7 +7,8 @@
  * Three things this file is responsible for keeping true:
  *
  * 1. **All dice roll here.** The client sends an *intent*; the server decides
- *    what happened. The `Rng` is seeded from `runId:seq`, so replaying the event
+ *    what happened. The `Rng` is seeded from `runId:seq` (behind the run's
+ *    server-only `diceSecret`, see `diceSeed`), so replaying the event
  *    log re-rolls exactly the same numbers — a replay that re-rolls differently
  *    is not a replay (§4.1, §4.3).
  * 2. **Seq is monotonic and gapless.** Every published patch takes a client from
@@ -222,8 +223,9 @@ export async function applyAction(
         // start seeds its flags from rather than starting empty. Empty for
         // every other intent — nothing else touches the chapter boundary.
         campaignFlags,
-        // Seeded per event, never per wall clock — see the header.
-        rng: deps.rng(`${input.runId}:${nextSeq}`),
+        // Seeded per event, never per wall clock — see the header. The run's
+        // secret keeps the next roll unguessable from the public run id.
+        rng: deps.rng(diceSeed(auth.run, input.runId, nextSeq)),
         now: iso(nowMs),
         // Roadmap chapter 6's playtest cheats, refused by the engine unless
         // this is true. `dev-server.ts` sets it; `lambda/runtime.ts` passes a
@@ -824,6 +826,16 @@ async function nextChapter(
     };
   }
   return { chapterId: chapter.id };
+}
+
+/**
+ * The seed for one event's dice. `runId:seq` alone is public (every screen has
+ * the run id and the seq), which made the next roll computable; the run's
+ * server-only secret in front of it is not. A run from before the secret
+ * existed keeps its old seed so its log still replays roll for roll.
+ */
+export function diceSeed(run: Pick<RunRecord, "diceSecret">, runId: string, seq: number): string {
+  return run.diceSecret ? `${run.diceSecret}:${runId}:${String(seq)}` : `${runId}:${String(seq)}`;
 }
 
 /**

@@ -475,7 +475,7 @@
     "check_rumours": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Trade a good rumor for three better ones",
       "cast": [
         {
@@ -1164,7 +1164,7 @@
     "check_signon": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Tell a caravan master the truth and mean it",
       "cast": [
         {

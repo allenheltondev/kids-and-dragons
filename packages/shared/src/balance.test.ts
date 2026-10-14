@@ -68,20 +68,18 @@ describe("hit chance", () => {
     expect(hitChance(3, 14)).toBeCloseTo(0.5, 5);
   });
 
-  it("has no crit and no automatic miss, because `resolveAttack` has neither", () => {
+  it("pins a natural 20 as a hit and a natural 1 as a miss", () => {
     /*
-     * dice.ts resolves an attack as a plain `total >= tn`. A natural 20 is only
-     * special when it clears the number anyway, and a natural 1 lands when the
-     * modifier is big enough — so the odds run flat to both ends rather than
-     * being pinned at 5% and 95% the way a d20 game usually pins them.
+     * dice.ts lets the die decide on its two ends whatever the modifier, so the
+     * odds stop at 5% and 95% rather than running flat to never and certainty.
      */
-    expect(hitChance(20, 11)).toBe(1);
-    expect(hitChance(0, 25)).toBe(0);
+    expect(hitChance(20, 11)).toBe(19 / 20);
+    expect(hitChance(0, 25)).toBe(1 / 20);
   });
 
-  it("never reports more than certainty or less than never", () => {
-    expect(hitChance(100, 11)).toBe(1);
-    expect(hitChance(-100, 11)).toBe(0);
+  it("never reports more than 19 in 20 or less than 1 in 20", () => {
+    expect(hitChance(100, 11)).toBe(19 / 20);
+    expect(hitChance(-100, 11)).toBe(1 / 20);
   });
 });
 
@@ -207,11 +205,11 @@ describe("who gets hurt", () => {
     expect(focused.heroesDown).toBe(1);
   });
 
-  it("leaves nobody down in a fight that cannot reach anybody's hit points", () => {
+  it("leaves nobody down in a fight that only a natural 20 can hurt", () => {
     const gentle = estimateEncounter([enemy({ count: 1, hp: 4, attack: -20 })], PARTY);
     expect(gentle.heroesDown).toBe(0);
     expect(gentle.knockdowns).toBe(0);
-    expect(gentle.damageTaken).toBe(0);
+    expect(gentle.damageTaken).toBeLessThan(1);
   });
 
   it("separates one hero going down four times from four heroes going down", () => {
@@ -273,7 +271,7 @@ describe("who gets hurt", () => {
     // and an author is better served by the sentence than by a round count.
     const impossible = estimateEncounter([enemy({ guard: 30 })], PARTY);
     expect(impossible.partyWiped).toBe(true);
-    expect(impossible.notes.join(" ")).toMatch(/cannot hit this at all/);
+    expect(impossible.notes.join(" ")).toMatch(/cannot hit this except on a natural 20/);
     expect(Number.isFinite(impossible.rounds)).toBe(true);
   });
 

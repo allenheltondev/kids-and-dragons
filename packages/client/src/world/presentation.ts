@@ -13,10 +13,34 @@
  * the hit). One table, two readers, no drift.
  */
 
-import type { Presentation } from "@kad/shared";
+import type { DiceRoll, Presentation } from "@kad/shared";
+
+/*
+ * The dice card's clock, here so the card (DiceOverlay), the patch gate below
+ * and the phone's world takeover (TravelLayout) all read one number.
+ *
+ * The d20 tumbles, then a helper's die (when there is one) tumbles after it so
+ * each lands on its own beat, then the sum and the outcome stay up long enough
+ * for an eight-year-old to read the maths out loud, not just see a flash.
+ */
+export const ROLL_TUMBLE_MS = 1000;
+export const ROLL_HELP_TUMBLE_MS = 800;
+export const ROLL_READ_MS = 2600;
+
+/** When the outcome is readable: every die has landed. */
+export function rollRevealMs(roll: Pick<DiceRoll, "help">): number {
+  return ROLL_TUMBLE_MS + (roll.help ? ROLL_HELP_TUMBLE_MS : 0);
+}
+
+/** How long the dice card is up in total. */
+export function rollCardMs(roll: Pick<DiceRoll, "help">): number {
+  return rollRevealMs(roll) + ROLL_READ_MS;
+}
 
 export const PRESENTATION_MS: Record<Presentation["kind"], number> = {
   SCENE_ENTER: 350,
+  // Never read: a roll's hold depends on whether a friend helped — see
+  // presentationDuration(). This is the unhelped value.
   ROLL: 1500,
   CHOICE_MADE: 200,
   // Everyone taking their places on a board that was not there a moment ago.
@@ -52,6 +76,11 @@ export function presentationDuration(presentation: Presentation): number {
       COMBAT_BEAT_MAX_MS,
       COMBAT_BEAT_BASE_MS + presentation.events.length * COMBAT_BEAT_PER_EVENT_MS,
     );
+  }
+  if (presentation.kind === "ROLL") {
+    // The world waits until every die has landed and the number has had a
+    // moment, so nobody's HP moves under a card still mid-tumble.
+    return rollRevealMs(presentation.roll) + 500;
   }
   return PRESENTATION_MS[presentation.kind] ?? 0;
 }

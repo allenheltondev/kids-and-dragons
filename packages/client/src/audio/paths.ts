@@ -120,6 +120,10 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
     brief: "Two low gentle pulses. Audibly 'not that', never harsh or buzzing.",
     seconds: 0.3,
   },
+  bonk: {
+    brief: "A cartoon bonk on the head for a natural 1: a hollow wooden knock, then a small wobbly boing. Silly, never painful.",
+    seconds: 0.7,
+  },
 };
 
 /**
