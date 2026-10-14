@@ -14,7 +14,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { ClassDef, SpeciesDef } from "@kad/shared";
 import { canUseInventoryItem } from "./PlayerPanel";
 import { HeroStrip, SpeciesStep } from "./CreationFlow";
-import { nextFace } from "./DiceOverlay";
+import { checkTarget, neededLabel, nextFace, outcomeWord } from "./DiceOverlay";
 import { isMissingArt } from "./CharacterPortrait";
 import { characterArtUrl } from "../world/art-paths";
 import manifest from "../../../../assets/manifest.json";
@@ -283,6 +283,21 @@ describe("dice scramble", () => {
     expect(seen.has(7)).toBe(false);
   });
 });
+describe("what the dice card says", () => {
+  it("names a natural 20 and a natural 1, since the die decided on its own", () => {
+    expect(outcomeWord({ die: 20, result: "success" })).toBe("Natural 20!");
+    expect(outcomeWord({ die: 1, result: "miss" })).toBe("Natural 1");
+    expect(outcomeWord({ die: 11, result: "success" })).toBe("Success!");
+  });
+
+  it("gives a check its difficulty word, and an attack only the Guard", () => {
+    expect(checkTarget(8)).toBe("Easy: needed 8");
+    expect(checkTarget(12)).toBe("Tricky: needed 12");
+    expect(checkTarget(16)).toBe("Hard: needed 16");
+    expect(neededLabel({ tn: 13, result: "hit" })).toBe("Needed 13");
+  });
+});
+
 
 describe("Icon", () => {
   it("uses painted artwork for every committed inventory icon", () => {

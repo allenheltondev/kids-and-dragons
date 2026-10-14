@@ -339,6 +339,12 @@ export interface RulesContent {
   levelXp: number[];
   /** Level at which each tier is reached. */
   tierLevels: Record<TierId, number>;
+  /**
+   * Sides on the die a helper adds to a check, by the helper's tier: the d20
+   * never changes, but the help you give grows as you do. Optional so rules
+   * written before it existed fall back to `DEFAULT_HELP_DIE` (dice.ts).
+   */
+  helpDie?: Record<TierId, number>;
   species: Record<SpeciesId, SpeciesDef>;
   classes: Record<ClassId, ClassDef>;
 }

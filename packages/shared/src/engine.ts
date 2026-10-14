@@ -81,7 +81,7 @@ import type {
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
-import { resolveCheck } from "./dice.js";
+import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter, withInventory } from "./character.js";
 import { assignPlayerColors } from "./player-colors.js";
 import { tierForLevel } from "./rules.js";
@@ -461,18 +461,40 @@ export function applyEffects(
 // Scenes
 // ---------------------------------------------------------------------------
 
-/** Who rolls a check. `roller: "party"` has no pick-a-roller prompt yet, so it
- * behaves like "best" — the party would nominate them anyway. */
-function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
+/**
+ * Who may be handed the die: standing and connected. A phone that has dropped
+ * is never nominated, because nobody else could roll for it and the check
+ * would wait on a player who is not there.
+ */
+function rollerPool(draft: RunState): PartyMember[] {
   const standing = draft.party.filter((m) => !m.down);
-  const pool = standing.length > 0 ? standing : draft.party;
+  const here = standing.filter((m) => m.connected);
+  return here.length > 0 ? here : standing.length > 0 ? standing : draft.party;
+}
+
+/**
+ * Who rolls a check.
+ *
+ * `"active"` is whoever is first in the party, `"best"` is the highest score
+ * in the check's stat, and `"party"` (the default) takes turns: whoever has
+ * rolled the fewest checks this run goes next, so every kid gets the die in
+ * their hands. Ties go to the higher stat, then party order, so among those
+ * who are due the one most likely to succeed still steps up.
+ */
+function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
+  const pool = rollerPool(draft);
   const first = pool[0];
   if (!first) throw new Illegal("ILLEGAL", "nobody is in the party to roll");
   if (scene.roller === "active") return first;
-  return pool.reduce(
-    (best, m) => (m.character.stats[scene.stat] > best.character.stats[scene.stat] ? m : best),
-    first,
-  );
+  const stat = (m: PartyMember): number => m.character.stats[scene.stat];
+  if (scene.roller === "best") {
+    return pool.reduce((best, m) => (stat(m) > stat(best) ? m : best), first);
+  }
+  const rolled = (m: PartyMember): number => draft.checkRolls?.[m.character.id] ?? 0;
+  return pool.reduce((pick, m) => {
+    if (rolled(m) !== rolled(pick)) return rolled(m) < rolled(pick) ? m : pick;
+    return stat(m) > stat(pick) ? m : pick;
+  }, first);
 }
 
 /**
@@ -548,6 +570,8 @@ function openScenePrompt(
   sceneId: SceneId,
   ctx: EngineContext,
 ): Presentation | undefined {
+  // A rest is where help recharges (doHelp).
+  if (scene.type === "rest") draft.helpSpent = [];
   switch (scene.type) {
     case "story":
     case "rest":
@@ -583,6 +607,19 @@ function openScenePrompt(
     }
 
     case "check": {
+      if (scene.roller === "all") {
+        const everyone = rollerPool(draft).map((m) => m.character.id);
+        draft.prompt = {
+          kind: "roll",
+          sceneId,
+          stat: scene.stat,
+          tn: scene.tn,
+          prompt: scene.prompt,
+          characterId: everyone[0] as string,
+          group: { pending: everyone, rolls: [] },
+        };
+        return undefined;
+      }
       const roller = pickRoller(draft, scene);
       draft.prompt = {
         kind: "roll",
@@ -832,6 +869,9 @@ function dispatch(
 
     case "ROLL":
       return doRoll(draft, playerId, ctx);
+
+    case "HELP":
+      return doHelp(draft, playerId, ctx);
 
     case "ADVANCE":
       return doAdvance(draft, ctx);
@@ -1136,6 +1176,8 @@ function doStartChapter(
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
   draft.lastRoll = null;
+  // A new chapter is a new day on the road: everyone's help is back.
+  draft.helpSpent = [];
   /*
    * The live layer's two fields, cleared for exactly the reason above them.
    *
@@ -1267,6 +1309,23 @@ export function turnHolderAway(
   });
 }
 
+/**
+ * A check whose nominated roller has dropped (or left) is open to anyone, for
+ * the same reason as `turnHolderAway`: the chapter must not wait on a phone
+ * that is not there.
+ */
+export function rollerAway(
+  party: readonly PartyMember[],
+  prompt: Prompt & { kind: "roll" },
+): boolean {
+  const away = (id: string): boolean => {
+    const member = party.find((m) => m.character.id === id);
+    return !member || !member.connected;
+  };
+  // A whole-party check is stuck only once *everybody* still to roll is away.
+  return prompt.group ? prompt.group.pending.every(away) : away(prompt.characterId);
+}
+
 function passStoryTurn(draft: RunState, fromPlayerId: string): void {
   const at = draft.party.findIndex((m) => m.playerId === fromPlayerId);
   draft.storyTurn = (at === -1 ? (draft.storyTurn ?? 0) : at) + 1;
@@ -1372,15 +1431,115 @@ function tallyVotes(draft: RunState, votes: Record<string, string>): string {
   return tied[0] as string;
 }
 
+/**
+ * One roll toward a whole-party check (`roller: "all"`). Everyone still pending
+ * rolls their own d20 + stat; once nobody is, half or more succeeding takes
+ * the success branch. Each roll gets its own dice card, and the last one also
+ * carries the party's tally.
+ *
+ * A pending player whose phone has dropped can be rolled for: once everybody
+ * still pending is away, any seated player's tap rolls (as themselves) in the
+ * first absent player's place, so the check cannot stall on an empty chair.
+ */
+function doGroupRoll(
+  draft: RunState,
+  playerId: string,
+  ctx: EngineContext,
+  prompt: Prompt & { kind: "roll" },
+  group: { pending: string[]; rolls: DiceRoll[] },
+): Presentation | undefined {
+  const me = memberByPlayer(draft, playerId);
+  if (!me) throw new Illegal("FORBIDDEN", "only a seated player can roll");
+  const slot = group.pending.includes(me.character.id)
+    ? me.character.id
+    : rollerAway(draft.party, prompt)
+      ? group.pending[0]
+      : undefined;
+  if (slot === undefined) {
+    throw new Illegal("ILLEGAL", `${me.character.name} has already rolled`);
+  }
+
+  const { scene } = currentScene(draft, ctx);
+  if (scene.type !== "check") throw new Illegal("ILLEGAL", "the current scene is not a check");
+
+  const result = resolveCheck(ctx.rng, {
+    characterId: me.character.id,
+    stat: scene.stat,
+    mod: me.character.stats[scene.stat],
+    tn: scene.tn,
+  });
+  group.rolls.push(result);
+  group.pending = group.pending.filter((id) => id !== slot);
+  // A die rolled in a group check is a turn rolled like any other: it counts
+  // toward the "fewest checks" rotation for whoever actually threw it, a
+  // stand-in for an absent friend included.
+  draft.checkRolls = {
+    ...draft.checkRolls,
+    [me.character.id]: (draft.checkRolls?.[me.character.id] ?? 0) + 1,
+  };
+
+  if (group.pending.length > 0) {
+    prompt.characterId = group.pending[0] as string;
+    draft.lastRoll = result;
+    return { kind: "ROLL", roll: result };
+  }
+
+  const made = group.rolls.filter((r) => r.result === "success").length;
+  const of = group.rolls.length;
+  const outcome = made * 2 >= of ? "success" : "failure";
+  const last: DiceRoll = { ...result, group: { made, of, result: outcome } };
+  draft.lastRoll = last;
+  draft.prompt = null;
+  // No single roller: a branch effect aimed at "the roller" lands on the party.
+  takeBranch(draft, outcome === "success" ? scene.onSuccess : scene.onFailure, ctx);
+  return { kind: "ROLL", roll: last };
+}
+
+/**
+ * Offer a friend your die on their check. One helper per check, never the
+ * roller, and once per rest: the helper's die joins the roll when the roller
+ * taps, sized by the helper's tier (content/rules.json `helpDie`).
+ */
+function doHelp(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
+  const prompt = draft.prompt;
+  if (!prompt || prompt.kind !== "roll") {
+    throw new Illegal("ILLEGAL", "there is no check to help with");
+  }
+  const helper = memberByPlayer(draft, playerId);
+  if (!helper) throw new Illegal("FORBIDDEN", "only a seated player can help");
+  if (prompt.group) throw new Illegal("ILLEGAL", "everyone is rolling this one");
+  if (helper.character.id === prompt.characterId) {
+    throw new Illegal("ILLEGAL", "you cannot help your own roll");
+  }
+  if (helper.down) throw new Illegal("ILLEGAL", `${helper.character.name} is knocked down`);
+  if (prompt.helper) throw new Illegal("ILLEGAL", "someone is already helping");
+  if (draft.helpSpent?.includes(helper.character.id)) {
+    throw new Illegal("ILLEGAL", `${helper.character.name} has already helped since the last rest`);
+  }
+  const sides = (ctx.rules.helpDie ?? DEFAULT_HELP_DIE)[helper.character.tier];
+  prompt.helper = { characterId: helper.character.id, sides };
+  draft.helpSpent = [...(draft.helpSpent ?? []), helper.character.id];
+  return undefined;
+}
+
 function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
   const prompt = draft.prompt;
   if (!prompt || prompt.kind !== "roll") {
     throw new Illegal("ILLEGAL", "nothing is waiting on a roll");
   }
-  const roller = memberByCharacter(draft, prompt.characterId);
-  if (!roller) throw new Illegal("NOT_FOUND", "the nominated roller has left the run");
-  if (roller.playerId !== playerId) {
-    throw new Illegal("FORBIDDEN", `it is ${roller.character.name}'s roll`);
+  if (prompt.group) return doGroupRoll(draft, playerId, ctx, prompt, prompt.group);
+  const nominated = memberByCharacter(draft, prompt.characterId);
+  // The nominee's phone can drop after the prompt opens (presence changes do
+  // not run through the engine). Then the check is open to anyone, and whoever
+  // taps rolls as themselves: their stat, their turn counted.
+  const roller =
+    nominated?.playerId === playerId
+      ? nominated
+      : rollerAway(draft.party, prompt)
+        ? memberByPlayer(draft, playerId)
+        : undefined;
+  if (!roller) {
+    throw new Illegal("FORBIDDEN", `it is ${nominated?.character.name ?? "someone else"}'s roll`);
   }
 
   const { scene } = currentScene(draft, ctx);
@@ -1388,14 +1547,25 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
 
   // Rolled here, in the engine, on the server. Never in the browser
   // (architecture §4.1).
+  // Nobody helps themselves: a helper who ends up rolling (their nominee's
+  // phone dropped) gets the help back instead of adding their own die.
+  const helper = prompt.helper?.characterId === roller.character.id ? undefined : prompt.helper;
+  if (prompt.helper && !helper) {
+    draft.helpSpent = (draft.helpSpent ?? []).filter((id) => id !== roller.character.id);
+  }
   const result: DiceRoll = resolveCheck(ctx.rng, {
     characterId: roller.character.id,
     stat: scene.stat,
     mod: roller.character.stats[scene.stat],
     tn: scene.tn,
+    ...(helper === undefined ? {} : { help: helper }),
   });
   draft.lastRoll = result;
   draft.prompt = null;
+  draft.checkRolls = {
+    ...draft.checkRolls,
+    [roller.character.id]: (draft.checkRolls?.[roller.character.id] ?? 0) + 1,
+  };
 
   // Both outcomes continue the story down different paths (spec §6.1).
   const branch = result.result === "success" ? scene.onSuccess : scene.onFailure;
@@ -1450,7 +1620,18 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
         `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${draft.party.length}`,
       );
     }
-    return { character: member.character, at, hp: member.hp, down: member.down };
+    // Luckstone charges come from the bag (content/items.json `rerollOnes`).
+    const rerollOnes = member.character.inventory.reduce((n, entry) => {
+      const passive = ctx.items[entry.itemId]?.passive;
+      return passive?.type === "rerollOnes" ? n + passive.perEncounter : n;
+    }, 0);
+    return {
+      character: member.character,
+      at,
+      hp: member.hp,
+      down: member.down,
+      ...(rerollOnes > 0 ? { rerollOnes } : {}),
+    };
   });
 
   const enemies: EnemyPlacement[] = [];

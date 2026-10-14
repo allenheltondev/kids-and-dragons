@@ -166,7 +166,7 @@
       "type": "check",
       "art": "scenes/gemfall/gem-gallery",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Tell the bones, gently, that you came to set things right",
       "roller": "party",
       "onSuccess": {
@@ -236,7 +236,7 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Race the shaking floor down the last long tube",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_keeper",
         "narration": "You run, jump, slide, and arrive at the bottom in a heap. But it is an on-time heap."
@@ -323,7 +323,7 @@
       "type": "check",
       "art": "scenes/gemfall/gem-gallery",
       "stat": "might",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Shove through the last stone door before the last ring",
       "roller": "party",
       "onSuccess": {

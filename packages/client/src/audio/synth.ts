@@ -51,6 +51,12 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
     { type: "square", freq: [700, 180], at: 0, duration: 0.7, gain: 0.05 },
     { type: "triangle", freq: [C5, C5], at: 1.0, duration: 0.12, gain: 0.12 },
   ],
+  // A natural 1: a hollow knock, then a little boing. Comic, not a fail buzzer.
+  bonk: [
+    { type: "triangle", freq: [520, 160], at: 0, duration: 0.14, gain: 0.2 },
+    { type: "noise", freq: [0, 0], at: 0, duration: 0.04, gain: 0.08 },
+    { type: "sine", freq: [330, 250], at: 0.12, duration: 0.45, gain: 0.09 },
+  ],
   attack: [
     { type: "sine", freq: [130, 55], at: 0, duration: 0.16, gain: 0.22 },
     { type: "noise", freq: [0, 0], at: 0, duration: 0.08, gain: 0.1 },

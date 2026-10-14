@@ -291,7 +291,7 @@
     "check_outline": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Put every clue in the right place on the floor map",
       "roller": "party",
       "onSuccess": {

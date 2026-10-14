@@ -28,7 +28,7 @@ import { GuideTab } from "./GuideTab";
  *   • The map is the one surface nothing ever pushes in front of you. It is
  *     brought up on request — "how far have we got?" — and left the moment the
  *     game needs you, like the world.
- *   • A roll takes the world for its ~1.5s wherever you were, then returns you.
+ *   • A roll takes the world while its card is up, wherever you were, then returns you.
  *   • A transformation takes it for as long as the cutscene runs. Same rule,
  *     bigger stakes: without it, spec §8.1's "single most important moment in
  *     the game" plays inside a `display: none` pane for whoever last tapped
@@ -52,11 +52,10 @@ import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
+import { rollCardMs } from "../world/presentation";
 
 type Focus = "world" | "map" | "player";
 
-/** Long enough for the die to land and be read (spec §2.2). */
-const ROLL_HOLD_MS = 2000;
 
 /**
  * A little past the last beat, so the world is not yanked away on the exact
@@ -98,10 +97,12 @@ export function TravelLayout(): React.JSX.Element {
   }, [turnKey]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
-  usePresentation("ROLL", () => {
+  // Held for as long as the dice card is up, so it can be read (spec §2.2).
+  usePresentation("ROLL", (event) => {
+    if (event.kind !== "ROLL") return;
     setRolling(true);
     if (rollTimer.current) clearTimeout(rollTimer.current);
-    rollTimer.current = setTimeout(() => setRolling(false), ROLL_HOLD_MS);
+    rollTimer.current = setTimeout(() => setRolling(false), rollCardMs(event.roll));
   });
 
   /*

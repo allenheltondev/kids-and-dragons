@@ -416,7 +416,7 @@
     "check_argue": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Out-arithmetic a Skywarden",
       "roller": "party",
       "onSuccess": {

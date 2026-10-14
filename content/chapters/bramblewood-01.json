@@ -354,7 +354,7 @@
     "check_wisps": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Talk three excited wisps into handing it over",
       "roller": "party",
       "onSuccess": {

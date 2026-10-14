@@ -339,10 +339,26 @@ describe("a roll", () => {
     // Scoped to the prompt: the stat name also appears down in the stat row.
     const prompt = screen.getByText("Can you read the runes?").closest(".prompt")!;
     expect(within(prompt as HTMLElement).getByText("clever")).toBeTruthy();
-    expect(within(prompt as HTMLElement).getByText("beat 12")).toBeTruthy();
+    expect(within(prompt as HTMLElement).getByText("Tricky: needed 12")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Roll!" }));
     expect(sent).toEqual([{ type: "ROLL" }]);
+  });
+
+  it("offers the other players a Help button with their tier's die", async () => {
+    const user = userEvent.setup();
+    const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
+    const { sent } = mount({ prompt: roll, playerId: "p_2", party: [member(), friend] });
+
+    await user.click(screen.getByRole("button", { name: "Help Sparklehoof: +d4" }));
+    expect(sent).toEqual([{ type: "HELP" }]);
+  });
+
+  it("says who is helping, and hides the button once help is spent", () => {
+    const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
+    mount({ prompt: { ...roll, helper: { characterId: "c_2", sides: 4 } }, playerId: "p_1", party: [member(), friend] });
+    expect(screen.getByText("Windstep is helping: +d4")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Help/ })).toBeNull();
   });
 
   it("will not roll twice while the first one is in flight", async () => {

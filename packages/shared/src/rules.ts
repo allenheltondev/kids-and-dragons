@@ -263,6 +263,17 @@ export function assertRulesContent(json: unknown): RulesContent {
     fail("tierLevels.fledgling", "1 — every character starts here", tierLevels.fledgling);
   }
 
+  let helpDie: Record<TierId, number> | undefined;
+  if (raw["helpDie"] !== undefined) {
+    const helpDieRaw = obj(raw["helpDie"], "helpDie");
+    helpDie = {} as Record<TierId, number>;
+    for (const tier of TIER_IDS) {
+      const sides = num(helpDieRaw[tier], `helpDie.${tier}`);
+      if (!Number.isInteger(sides) || sides < 2) fail(`helpDie.${tier}`, "a die of 2 sides or more", sides);
+      helpDie[tier] = sides;
+    }
+  }
+
   const speciesRaw = obj(raw["species"], "species");
   const species = {} as Record<SpeciesId, SpeciesDef>;
   for (const id of SPECIES_IDS) {
@@ -285,6 +296,7 @@ export function assertRulesContent(json: unknown): RulesContent {
     difficultyTn,
     levelXp,
     tierLevels,
+    ...(helpDie === undefined ? {} : { helpDie }),
     species,
     classes,
   };
