@@ -437,3 +437,29 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+## Gemfall 04C — The road that remembers
+
+Eight character-free backdrops for the Great River road chapter. Generated at 1920×1080 WebP, quality 88; open foreground is reserved for the stage. The images support the scene progression without adding named characters or creatures.
+
+| Asset | Coverage |
+|---|---|
+| `north-rush-road.webp` | Split upbound and downbound wagon lanes |
+| `quiet-road-stretch.webp` | Empty road and silent jackalope warrens |
+| `downbound-wagon-auction.webp` | Ma Ruddle's abandoned wagon auction |
+| `downbound-soup-tents.webp` | Deep Hollow's three roadside rest tents |
+| `warden-supply-stop.webp` | Skywarden supply stop on the plains road |
+| `rush-depot.webp` | Strongbox barn, forms desk and ringing box |
+| `relay-route-fire.webp` | Empty route-song campfire and trail tokens |
+| `road-bend-grass.webp` | Night road bend marked by warm pawprints |
+
+### Generation prompts
+
+- `north-rush-road`: Wide 16:9 storybook painting of a Great River north road split into two broad dirt lanes, one busy with distant wagons, one slower with returning wagons. Open level foreground road, golden plains, no legible signage, no named figures, no foreground characters or creatures.
+- `quiet-road-stretch`: Empty dirt road with several small jackalope burrow entrances and a clear uncanny silent gap around a distant gem depot. Gentle late-afternoon plains, open foreground, no jackalopes or other animals, no people, no text.
+- `downbound-wagon-auction`: Quiet roadside wagon auction with several empty wagons, a plain auction table and scattered bundles, golden plains beyond, open foreground. No people, lettering, numbers or animals.
+- `downbound-soup-tents`: Three simple Deep Hollow roadside soup tents with cots, folded blankets and bowls on tables, generous open foreground and warm dusk light. No people, readable text or animals.
+- `warden-supply-stop`: Neat roadside patrol supply stop with ration crates, folded canvas and brass scales near an open plains road. No people, uniforms, emblems, animals or writing.
+- `rush-depot`: Interior of a timber strongbox depot barn, rows of secured boxes and a long counter with an ink stamp and blank forms; one box glows softly. Open floor foreground, no clerk, no legible writing or creatures.
+- `relay-route-fire`: Open night campfire beside a road with empty benches, route tokens and blank bark strips on a stone table. Peaceful indigo plains, foreground clear, no people, animals or text.
+- `road-bend-grass`: Empty night road bending through tall grass, faint warm pawprints and tiny ember flecks crossing the dirt. Gentle suspense, open foreground, no wolves, animals, people, structures or text.
