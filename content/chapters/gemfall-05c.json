@@ -293,7 +293,7 @@
       "narration": "The tally house is full of books: every eruption the dragonlings ever counted, in neat rows of marks. Great-Gran Ashby, the oldest grandmother, opens the newest book. Since the big eruption, the Gemfall rhythm has broken completely. \"Show me what you've brought,\" she says. \"Everything.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -325,7 +325,7 @@
       "narration": "The witch's charm rings the moment you hold it up, and Great-Gran Ashby goes very still. She opens the oldest book on the shelf, the one with the cracked spine, and points to a mark drawn like a little bell. \"Same note,\" she says. \"My great-great-gran heard it too.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -343,7 +343,7 @@
       "narration": "You sing the spiral verses, and the grandmothers lay a string on the floor map, landmark by landmark. The roads curl around the gemfalls exactly the way their tally marks do. One grandmother says a word that is not allowed in the tally house.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -363,7 +363,7 @@
       "prompt": "Put every clue in the right place on the floor map",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -389,7 +389,7 @@
       "narration": "\"One more thing,\" says Great-Gran Ashby. \"The boundary stones were here first. Before the first families. Already marking the line we mark now.\" She taps the floor map. Everything since Bramblewood points one way: the stones are older than the mountain's name, and the land has always known.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -407,7 +407,7 @@
       "narration": "On the shelf sits a fresh-fallen gem on top of a very old list: the caves that are never assigned to anyone. The list is older than every grandmother on record. \"We're not hiding it,\" says Great-Gran Ashby. \"We're keeping it. There's a difference.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -456,7 +456,7 @@
       "narration": "You leave it on its list. Great-Gran Ashby looks at the gem, and at you, and nods one slow nod. \"Kept,\" she says, and squares the list underneath it with the end of her walking stick, so the two of them line up exactly. \"Some things want keeping more than they want carrying.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -474,7 +474,7 @@
       "narration": "You hold the warm rock in both hands and ask, the proper way, the way every dragonling child learns before they learn to fly. Great-Gran Ashby watches you do it with her mouth pressed tight, and then she lifts the gem off its list and sets it in your hands on top of the rock. \"Keeping,\" she says. \"Not taking. You know the difference. Don't you dare sell it.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -494,7 +494,7 @@
       "prompt": "Show Great-Gran Ashby you know the difference between keeping and taking",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -589,7 +589,7 @@
       "narration": "The grandmothers walk you to the last boundary stone. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks at each of you in turn. \"Make somebody finally listen.\" Who will you tell?",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -654,7 +654,7 @@
       "narration": "You ring your own family's bell, the pattern you learned before you could talk. For a moment nothing. Then, from three towns up the hills, faint and clear, a bell rings the pattern back, and then adds the one that means hurry home for supper. Great-Gran Ashby pretends very hard not to have heard.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -672,7 +672,7 @@
       "narration": "You write it all down for the Skywardens, neatly, the way Sergeant Holloway would like it, and a relay-runner takes it north at a gallop. Great-Gran Ashby sniffs. \"Wardens,\" she says. \"Well. They do write things down.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -690,7 +690,7 @@
       "narration": "The grandmothers ring a pattern on the bells that runs from town to town up the hills, faster than any rider. Every grandmother in the foothills knows now. Great-Gran Ashby blows her nose very loudly and pretends she has a cold.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
@@ -708,7 +708,7 @@
       "narration": "You keep the outline folded up small, in the safest pocket. Great-Gran Ashby nods slowly. \"Careful is not the same as quiet,\" she says. \"But careful is a start.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],

@@ -65,3 +65,109 @@ combat, epilogues, and mismatched chapter content. The original five backdrops w
 1440×900 and a 390×520 phone-sized world pane.
 
 The sheeple ridge was visually inspected for flock grouping, sheep-folk outfits, jackalopes, empty long grass, and an open foreground. Its WebP dimensions and format were verified; content validation and all 91 Gemfall wiring, flow, and field-guide reach tests passed.
+
+## Cast figures — story-stage pilot
+
+Generated with the built-in image generation tool on 2026-10-14, using the existing
+merfolk, fledgling dragonling, and Skywarden assembled figures as visual references.
+Production files are `assets/cast/<id>/assembled.png`: 1024×1024 RGBA with true alpha,
+three-quarter left, no ground shadows, baseline y=900. All three use `medium` scale.
+Generated outputs were 1254×1254; packaging crops to the alpha>128 figure bounds,
+uniformly fits within 940×820, horizontally centers, and places the bottom at y=900.
+No painting, alpha removal, recoloring, or replacement of existing art was used.
+
+| id | basis | scene references | design |
+|---|---|---|---|
+| coralie_fenn | merfolk | 13 | Blue merfolk in a barrel on wheels, waving, holding her green book |
+| great_gran_ashby | dragonling | 14 | Faded ivory-green scales, elongated elder muzzle, rust shawl, walking stick |
+| pellam | faun | 15 | Individual faun clerk in silver/violet Skywarden uniform, ledger and quill |
+
+Pellam is a faun because the existing mixed-order illustration already includes a
+faun, whose upright anatomy accommodates the ledger without inventing human people.
+The brief requests `basis: skywardens`, but the verifier accepts only manifest
+entities/species and Skywardens are a faction rather than a manifest entity. The
+actual species `faun` passes that contract; his order remains visible in the uniform.
+Ashby's near forepaw rests on the walking stick, with the other three feet planted;
+this is a relaxed walking-stick gesture rather than the rigging source pose.
+
+### Coralie Fenn generation prompt
+
+Create a NEW game cast figure, using the supplied merfolk image as species and house
+illustration reference. Madame Coralie Fenn: cheerful mature merfolk gem buyer, blue
+turquoise skin, fin ears, dark ocean blue hair, fish tail, riding upright inside a
+handsome wooden barrel on four small wheels. Tail belongs inside barrel, no legs.
+One hand waves toward viewer left, other holds a little closed green book without
+writing. Warm crafted storybook painting with hand drawn brown outlines and controlled
+soft cel shading, simplified readable silhouette, family friendly. Full single
+character and complete barrel, three quarter facing LEFT. 1024x1024 RGBA actual
+transparent background. Subject top around y90, wheel bottoms on y900 exactly, all
+props within x50..974. No ground shadow, no floor, no text, no border. Preserve
+recognizably merfolk anatomy and palette, modest clothing.
+
+### Great-Gran Ashby generation prompt
+
+Use case illustration-story. NEW transparent game cast figure Great-Gran Ashby, the
+oldest dragonling grandmother, same species and anatomy and green ivory scales, dark
+emerald dorsal spines, small orange membrane wings as reference dragonling. Clearly
+elderly, larger adult proportions, long kind muzzle, faded scales, gentle wrinkles,
+brisk tender alert eyes. Stout quadruped dragon, NOT humanoid, four thick legs standing,
+long tail and two small folded wings. Wears a cozy faded rust knitted shawl over
+shoulders. A gnarled walking stick rests against her near forepaw while all four feet
+remain grounded. Warm crafted hand drawn storybook illustration, brown tapered
+outlines, restrained two tone soft cel shading, tactile subtle brushwork, upper left
+light. One character full body three quarter LEFT, readable silhouette. 1024x1024 RGBA
+true transparency, NO ground shadow, no floor, no text. All within 40px margins, head
+top around y80, bottom feet at y900. Match reference anatomy and palette family but
+unmistakably grandmother.
+
+Final correction, using the first generated Ashby as the edit reference:
+
+Edit Great-Gran Ashby into unmistakably an ELDER ADULT dragon grandmother. Preserve
+ivory pale green spotted scales, charcoal emerald spines, orange wings, rust shawl,
+walking stick, left facing silhouette, warm hand painted style, transparency. Reduce
+head size relative to torso by about 20 percent and lengthen muzzle and neck, give
+subtle fine wrinkles on muzzle and eye corners, calmer smaller SOLID dark eyes with
+ONE highlight dot and simple single brows, absolutely NO eyelashes, NO white sclera
+or iris ring. Four legs remain anatomically quadruped: three planted and near front
+paw uses walking stick. Show both small wings folded rather than large open wing.
+Brisk tender expression, older and bigger rather than baby dragon in a shawl. Entire
+single cutout inside a 1024x1024 transparent canvas with clear margins, lowest
+feet/stick row at y900, no shadow or floor or lettering. Keep distinct species anatomy.
+
+### Pellam generation prompt
+
+NEW single character Pellam the Skywarden bridge clerk. Reference image shows mixed
+order: use the FAUN in the middle as species and uniform basis, NOT all three people.
+One adult faun only, curled ram horns, pointed ears, chestnut curls, small neat beard,
+furry brown goat legs with two hooves, dry precise neutral expression. Silver and
+violet Skywarden tunic and practical light armor, restrained rust red shoulder cape
+and tower emblem, no shield or sword. Huge plain leather ledger cradled securely in
+LEFT arm, poised feather pen in RIGHT hand above ledger. Pages blank, no lettering.
+Three quarter facing viewer LEFT toward heroes. Crafted warm storybook illustration
+matches supplied detailed brushwork and warm brown tapered line, controlled shading,
+upper left light. Complete character top y85, hooves exactly y900, x100..924,
+1024x1024 RGBA actual transparent background, no ground shadow, no floor, no border or
+text. One complete figure, readable at phone scale, family friendly. A conscientious
+precise clerk, not a warrior, no human legs.
+
+Final correction, using the first generated Pellam as the edit reference:
+
+Correct ONLY the facing of this single faun Skywarden clerk Pellam: turn head and
+torso to a readable three quarter LEFT orientation, his nose points toward image LEFT
+and gaze toward party standing image LEFT. Currently facing viewer right, must face
+left. Keep character identity, curled horns, two furry goat legs and hooves, silver
+violet uniform and red cape, blank huge leather ledger securely in arm and feather
+pen. Dry precise neutral expression, no smiling. Maintain full complete cutout and
+true transparent background, no ground shadow. 1024x1024 square, hooves end at y900,
+at least 40px margin. Preserve house painted illustration style, do not add any text,
+person, prop or scenery.
+
+### Pilot review captures
+
+See [before/after TV and phone captures](../review/story-cast-pilot/README.md).
+The capture harness is a local copy of `e2e/cast-shot.spec.ts`. For each figure,
+a temporary content tree makes the original chapter a single-chapter review campaign
+(index 1, route removed), preserving every scene's narration, cast, and biome. The
+room-create request selects that review campaign. This avoids playing four chapters
+to reach Ashby and Pellam while exercising the real party creation, server, cast
+renderer, narration, and playtest scene jump. Production campaigns are unchanged.
