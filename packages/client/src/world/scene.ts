@@ -793,7 +793,11 @@ export function createScene(app: Application): PartyScene {
     art.alpha = 0;
     void Assets.load<Texture>(member.url)
       .then((texture) => {
-        if (destroyed || castActors.get(member.key) !== actor || actor.leaving) return;
+        // Still the live entry for this key, even if mid-exit: setCast can
+        // call a leaving member back (A → B → A), reviving this same actor,
+        // and nothing would load its art a second time. A figure that does
+        // finish leaving is deleted from the map before it is destroyed.
+        if (destroyed || castActors.get(member.key) !== actor) return;
         const sprite = new Sprite(texture);
         sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
         // Canvas-relative, like the party's PNGs: every figure is drawn to the
