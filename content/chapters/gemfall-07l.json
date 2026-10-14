@@ -1,11 +1,11 @@
 {
-  "$comment": "Gemfall beat 7, the Tether's chapter 7 (docs/campaigns/gemfall.md, 7L). Three instruments are chapter props (tether_ledger, tether_chord, tether_question); honest ways to them are checks, double games are certain but cost a friend's trust (wardens_trust is set false when the party sells the wardens' secrets to the choir) or a stone. Every ending sets climbed_the_mountain. The seal clock is set once per path: scene_tether_holds (clock_steady), scene_tether_slips (clock_late), or ending_lost_in_echoes (clock_late, the lost-fight setback). facet_caravan is defined in gemfall-07h.",
+  "$comment": "Gemfall beat 7, the Tether's chapter 7 (docs/campaigns/gemfall.md, 7L). Three instruments are chapter props (tether_ledger, tether_chord, tether_question); honest ways to them are checks, double games are certain but cost a friend's trust (wardens_trust is set false when the party sells the wardens' secrets to the choir) or a stone. Every ending sets climbed_the_mountain. The seal clock is set once per path: scene_tether_holds (clock_steady), scene_tether_slips (clock_late), or ending_lost_in_echoes (clock_late, the lost-fight setback). facet_caravan is defined in gemfall-07h. Pacing episodes on the spine (the table's rule vote, the two scouts, the first sitting, the returning cart, the night visitor, the rope bridge, the crowds at the bend, who keeps the table) set only chapter-local flags; practiced, two_helpers and table_works open extra TN 12 ways into the test.",
   "id": "gemfall-07l",
   "campaignId": "gemfall",
   "index": 7,
   "title": "The Tether",
   "biome": "red_sky_foothills",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "route": {
     "set": "pursuit",
@@ -55,13 +55,13 @@
   "scenes": {
     "scene_the_table": {
       "type": "story",
-      "narration": "The wardens will not sit with the cult. The cult will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
+      "narration": "The wardens will not sit with the cult, the people in painted bark masks who follow Hessa from the soup tent. The masks will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
       "choices": [
         {
           "id": "wardens_first",
-          "label": "Go to the wardens first",
+          "label": "Get the table ready",
           "icon": "shield",
-          "goto": "scene_ledger"
+          "goto": "choice_the_rule"
         },
         {
           "id": "grandmothers_chair",
@@ -91,8 +91,89 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go to the wardens first",
+          "label": "Get the table ready",
           "icon": "dragonling",
+          "goto": "choice_the_rule"
+        }
+      ]
+    },
+    "choice_the_rule": {
+      "type": "choice_point",
+      "narration": "A table between two sides needs one rule, chalked on the top where everyone can read it. Only one, or nobody will remember it. Wardens and masks are already drifting over to see what you write. What is the rule?",
+      "choices": [
+        {
+          "id": "no_shouting",
+          "label": "Nobody shouts",
+          "icon": "heart",
+          "goto": "choice_the_rule_no_shouting",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rule_no_shouting",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "masks_up",
+          "label": "Masks up and faces showing at the table",
+          "icon": "eye",
+          "goto": "choice_the_rule_masks_up",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rule_masks_up",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "bring_one",
+          "label": "Everyone who sits brings one thing to share",
+          "icon": "cake",
+          "goto": "choice_the_rule_bring_one",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rule_bring_one",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "choice_the_rule_no_shouting": {
+      "type": "story",
+      "narration": "You chalk NOBODY SHOUTS across the middle of the door in big letters. Within five minutes a warden forgets and shouts, and everybody looks at the chalk, and then at him. He goes red, sits down, and pours the tea for everyone, which turns out to be the punishment.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go to the wardens",
+          "icon": "heart",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "choice_the_rule_masks_up": {
+      "type": "story",
+      "narration": "You chalk MASKS UP, FACES SHOWING. The masks look at each other for a long moment. Then a young one pushes hers up onto her head, and she has freckles, and the warden opposite blinks as if he had forgotten there were people under there. After that, the others do it too.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go to the wardens",
+          "icon": "eye",
+          "goto": "scene_ledger"
+        }
+      ]
+    },
+    "choice_the_rule_bring_one": {
+      "type": "story",
+      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a warden's biscuit tin, a pot of the masks' soup, a pencil, a lump of honeycomb, and a very old map nobody can read. People sit down just to see what is on it. That was the idea.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go to the wardens",
+          "icon": "cake",
           "goto": "scene_ledger"
         }
       ]
@@ -112,7 +193,7 @@
       "choices": [
         {
           "id": "friend",
-          "label": "You told them first, at the citadel. Ask as a friend.",
+          "label": "You told the wardens first. Ask as a friend.",
           "icon": "heart",
           "requiresFlag": "told_wardens",
           "goto": "scene_ledger_friend",
@@ -150,7 +231,7 @@
     },
     "scene_ledger_false_promise": {
       "type": "story",
-      "narration": "You promise him the choir's chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
+      "narration": "You promise him the masks' secret chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -162,13 +243,13 @@
           "id": "on",
           "label": "Up the valley to the choir",
           "icon": "moon",
-          "goto": "scene_choir"
+          "goto": "scene_two_scouts"
         }
       ]
     },
     "scene_ledger_friend": {
       "type": "story",
-      "narration": "\"You told us first,\" you say. \"At the citadel. We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
+      "narration": "\"We told you first,\" you say. \"We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -180,7 +261,7 @@
           "id": "on",
           "label": "Up the valley to the choir",
           "icon": "heart",
-          "goto": "scene_choir"
+          "goto": "scene_two_scouts"
         }
       ]
     },
@@ -197,7 +278,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_choir",
+        "goto": "scene_two_scouts",
         "narration": "Pellam reads your argument twice, frowns at it twice, and unlocks the chain. Nobody has ever seen Pellam do that. Nobody has ever seen Pellam almost smile, either, and he very nearly does.",
         "effects": [
           {
@@ -212,9 +293,105 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_choir",
+        "goto": "scene_two_scouts",
         "narration": "Pellam listens politely and says no politely. The ledger stays chained to its desk. You leave with nothing but a very clear picture of the cover."
       }
+    },
+    "scene_two_scouts": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Cadet Linnet"
+        }
+      ],
+      "narration": "Halfway up the side valley, two people step out onto the path at once, from opposite sides: a young warden cadet called Linnet, and a young mask called Rook. They glare at each other. Then they both turn to you. \"What did the other lot give you?\" they say together, and then glare at each other for saying it together.",
+      "choices": [
+        {
+          "id": "truth",
+          "label": "Tell them both the truth",
+          "icon": "heart",
+          "goto": "check_two_scouts"
+        },
+        {
+          "id": "fib",
+          "label": "Tell each one what they want to hear",
+          "icon": "moon",
+          "goto": "scene_two_scouts_fib"
+        },
+        {
+          "id": "table_stone",
+          "label": "Set the Table Stone down between them",
+          "icon": "gem",
+          "goto": "scene_two_scouts_table_stone",
+          "requiresItem": "facet_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "scouts_friends",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_two_scouts": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Cadet Linnet"
+        }
+      ],
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell two suspicious scouts the same true story at the same time",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_choir",
+        "narration": "You tell them both everything, the same way, at the same time. They listen with their arms folded. By the end their arms are not folded. Linnet holds out her hand. Rook looks at it as if it might bite, then shakes it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "scouts_friends",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_choir",
+        "narration": "You tell them the truth. They do not believe a word of it, and both stomp off to tell their bosses. But they stomp off the same way, and the last you see of them, they are arguing in a way that sounds a lot like talking."
+      }
+    },
+    "scene_two_scouts_fib": {
+      "type": "story",
+      "narration": "You tell Linnet what a warden wants to hear, and Rook what a mask wants to hear. Both of them go away happy. Later, from higher up the valley, you see them sitting on the same rock, comparing notes. They both look up at you at exactly the same moment.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the valley to the choir",
+          "icon": "moon",
+          "goto": "scene_choir"
+        }
+      ]
+    },
+    "scene_two_scouts_table_stone": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Cadet Linnet"
+        }
+      ],
+      "narration": "You set the Table Stone down on the path, the stone from the truth-table at Redspire, logged twice. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They crouch on either side of it, listening, and forget to glare. \"It's the same stone,\" says Rook. \"It's the same stone,\" says Linnet.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the valley to the choir",
+          "icon": "gem",
+          "goto": "scene_choir"
+        }
+      ]
     },
     "scene_choir": {
       "type": "story",
@@ -300,7 +477,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "kitsune",
-          "goto": "scene_road_gifts"
+          "goto": "scene_first_sitting"
         }
       ]
     },
@@ -312,7 +489,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "gem",
-          "goto": "scene_road_gifts"
+          "goto": "scene_first_sitting"
         }
       ]
     },
@@ -324,7 +501,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "scroll",
-          "goto": "scene_road_gifts"
+          "goto": "scene_first_sitting"
         }
       ]
     },
@@ -342,7 +519,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "dragonling",
-          "goto": "scene_road_gifts"
+          "goto": "scene_first_sitting"
         }
       ]
     },
@@ -353,7 +530,7 @@
       "prompt": "Convince a choir of masks to teach their chord to people who want to hold the seal, not break it",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_road_gifts",
+        "goto": "scene_first_sitting",
         "narration": "The choir argues in whispers. Then Hessa, the soup-line lady, steps forward and hums three notes, slowly, until you have them. \"Don't make me sorry,\" she says.",
         "effects": [
           {
@@ -368,9 +545,101 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_road_gifts",
+        "goto": "scene_first_sitting",
         "narration": "They sing it for you once, very fast, and then pull their masks down. You remember the first note. Only the first."
       }
+    },
+    "scene_first_sitting": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "narration": "Back at the table, it finally happens: Pellam sits down on one side, and Hessa sits down on the other. Nobody speaks. Then the ground shrugs, the sock shoots out from under the short leg, and the whole table tips toward Pellam. Hessa grabs her soup. Pellam grabs his ledger. Everyone looks at you.",
+      "choices": [
+        {
+          "id": "fix_leg",
+          "label": "Fix the wobbly leg properly",
+          "icon": "clever",
+          "goto": "check_first_sitting"
+        },
+        {
+          "id": "wobbly_side",
+          "label": "Swap seats, and take the wobbly side yourselves",
+          "icon": "hand",
+          "goto": "scene_first_sitting_wobbly_side"
+        },
+        {
+          "id": "grandmother",
+          "label": "Look at the grandmother",
+          "icon": "dragonling",
+          "goto": "scene_first_sitting_grandmother",
+          "requiresFlag": "grandmothers_chair"
+        }
+      ]
+    },
+    "check_first_sitting": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Fix a wobbly table while two sides watch you do it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "A flat stone, a bit of string and a lot of squinting. The table stands dead level. Pellam tests it with his pencil, which does not roll. Hessa tests it with her soup, which does not spill. They both nod, at the table, which is nearly the same as nodding at each other."
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "You fix it. Now it wobbles toward Hessa instead. You fix it again. Now it wobbles both ways at once. Pellam makes a small noise that might be a laugh, and Hessa definitely laughs, and somehow, after that, they both stay sitting down."
+      }
+    },
+    "scene_first_sitting_wobbly_side": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "narration": "You swap seats and sit on the wobbly side yourselves, with your elbows holding it level. It is not comfortable. Pellam notices. Hessa notices. Neither of them says anything, but both of them lean in a little, the way people do when somebody else has taken the worst chair.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold the table steady",
+          "icon": "hand",
+          "goto": "scene_road_gifts"
+        }
+      ]
+    },
+    "scene_first_sitting_grandmother": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You look at the grandmother. The grandmother looks at the table leg. Without dropping a stitch, she puts out one foot and rests it under the short corner, and leaves it there for the rest of the afternoon. Nobody, warden or mask, dares to tip the table after that.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold the table steady",
+          "icon": "dragonling",
+          "goto": "scene_road_gifts"
+        }
+      ]
     },
     "scene_road_gifts": {
       "type": "story",
@@ -406,7 +675,7 @@
         },
         {
           "id": "ford_witch",
-          "label": "The ford witch is here, with her ringing stone",
+          "label": "Mother Thrum from the ford is here, with a ringing sock",
           "icon": "charm",
           "goto": "scene_ford_witch",
           "requiresItem": "charm_ford_witch"
@@ -425,7 +694,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat full of every stone the river took off somebody this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: the frog from the reeds of the Great River, with OLD OSSLEY painted on the side of his boat, and a boat full of every stone the river took off somebody this season. He looks at your packs, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -580,7 +849,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "Mother Thrum, the ford witch, has come all the way up from the caravan queue with her wool-wrapped stone, still ringing. She has been waiting since the ford for an answer. \"I am still asking,\" she says. \"What do you actually want?\"",
+      "narration": "Mother Thrum, the witch from the ford queue, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -636,9 +905,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Evening at the table",
+          "label": "Back toward the table",
           "icon": "moon",
-          "goto": "scene_evening"
+          "goto": "scene_returning_cart"
         }
       ]
     },
@@ -654,15 +923,15 @@
       "choices": [
         {
           "id": "on",
-          "label": "Evening at the table",
+          "label": "Back toward the table",
           "icon": "crown",
-          "goto": "scene_evening"
+          "goto": "scene_returning_cart"
         }
       ]
     },
     "scene_ford_witch_hold_safe": {
       "type": "story",
-      "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\" Then she tips the ringing thing out of her sock as well, a stone from the ford, and it goes quiet in your hand.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -672,9 +941,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Evening at the table",
+          "label": "Back toward the table",
           "icon": "heart",
-          "goto": "scene_evening"
+          "goto": "scene_returning_cart"
         }
       ]
     },
@@ -735,9 +1004,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Evening at the table",
+          "label": "Back toward the table",
           "icon": "moon",
-          "goto": "scene_evening"
+          "goto": "scene_returning_cart"
         }
       ]
     },
@@ -753,9 +1022,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Evening at the table",
+          "label": "Back toward the table",
           "icon": "crown",
-          "goto": "scene_evening"
+          "goto": "scene_returning_cart"
         }
       ]
     },
@@ -771,8 +1040,111 @@
       "choices": [
         {
           "id": "on",
-          "label": "Evening at the table",
+          "label": "Back toward the table",
           "icon": "heart",
+          "goto": "scene_returning_cart"
+        }
+      ]
+    },
+    "scene_returning_cart": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "On the way back, a grandmothers' cart full of stones going home has stuck on the steep bit, and the grandmother pushing it is very small. But tomorrow is the test at the bend, and none of you has ever held a hum still in your life. There is one afternoon left. Help with the cart, or practice?",
+      "choices": [
+        {
+          "id": "push",
+          "label": "Help push the cart up the hill",
+          "icon": "might",
+          "goto": "check_returning_cart"
+        },
+        {
+          "id": "practice",
+          "label": "Practice on a small stone instead",
+          "icon": "note",
+          "goto": "scene_returning_cart_practice",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "practiced",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "both",
+          "label": "Push one-handed and practice with the other",
+          "icon": "bigfoot",
+          "goto": "scene_returning_cart_both",
+          "requiresSpecies": "bigfoot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "practiced",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_returning_cart": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Push a cart full of stones up the steep bit",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "Shoulders down, everybody push. The cart groans up the steep bit and over the top. The grandmother gives you each a warm bead from her apron, and says, \"Practice tonight, dears. You'll need it.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "hearthstone_bead",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The cart rolls back two steps for every three you push it. In the end you sit on the back of it like a seesaw while the grandmother pulls, and between you it gets over the top. She laughs so hard she has to sit down."
+      }
+    },
+    "scene_returning_cart_practice": {
+      "type": "story",
+      "narration": "You leave the cart to a passing warden and find a quiet rock. You hold a small humming stone between your hands and try to make it still. It takes all afternoon. Then, for half a breath, it stops. You all feel it at once, like a held door. Behind you, the cart gets up the hill without you.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "note",
+          "goto": "scene_evening"
+        }
+      ]
+    },
+    "scene_returning_cart_both": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "Your bigfoot puts one enormous hand on the cart and pushes it up the hill as if it were a pram, while holding a small humming stone in the other hand and frowning at it. Halfway up, the stone goes still for half a breath. The grandmother says she has never seen anything like it, and she has seen a lot.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "bigfoot",
           "goto": "scene_evening"
         }
       ]
@@ -803,10 +1175,28 @@
           "goto": "scene_ember"
         },
         {
+          "id": "between",
+          "label": "Walk the dark road between the two sides' fires",
+          "icon": "lantern",
+          "goto": "scene_evening_between"
+        },
+        {
           "id": "camp",
           "label": "Sleep under the table",
           "icon": "rest",
-          "goto": "rest_under_the_table"
+          "goto": "scene_night_visitor"
+        }
+      ]
+    },
+    "scene_evening_between": {
+      "type": "story",
+      "narration": "You walk the dark strip of road between the wardens' fires and the masks' fires. On one side, somebody is singing a counting song. On the other, somebody is singing the same tune with different words. Neither side knows. You stand in the middle and hear both at once, and it sounds like one song.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the table",
+          "icon": "lantern",
+          "goto": "scene_night_visitor"
         }
       ]
     },
@@ -834,7 +1224,7 @@
           "id": "sleep",
           "label": "Thank the relay and get some sleep",
           "icon": "rest",
-          "goto": "rest_under_the_table"
+          "goto": "scene_night_visitor"
         }
       ]
     },
@@ -853,7 +1243,7 @@
           "id": "sleep",
           "label": "Fold the list away and get some sleep",
           "icon": "scroll",
-          "goto": "rest_under_the_table"
+          "goto": "scene_night_visitor"
         }
       ]
     },
@@ -862,7 +1252,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the Ember Facet you sold her, which is right here in a velvet box, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -904,7 +1294,7 @@
           "id": "on",
           "label": "Find somewhere to sleep",
           "icon": "hand",
-          "goto": "rest_under_the_table"
+          "goto": "scene_night_visitor"
         }
       ]
     },
@@ -922,9 +1312,97 @@
           "id": "on",
           "label": "Find somewhere to sleep",
           "icon": "gem",
+          "goto": "scene_night_visitor"
+        }
+      ]
+    },
+    "scene_night_visitor": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "narration": "Late at night, Pellam comes to your table alone, with no ledger under his arm for once. He sits down carefully on the steady side. \"One question,\" he says quietly. \"Where does the choir sing at night? I only want to know.\" Across the road, a mask's fire crackles, and somebody over there is very still.",
+      "choices": [
+        {
+          "id": "tell",
+          "label": "Tell him",
+          "icon": "scroll",
+          "goto": "scene_night_visitor_tell"
+        },
+        {
+          "id": "not_mine",
+          "label": "Tell him it isn't yours to tell",
+          "icon": "heart",
+          "goto": "scene_night_visitor_not_mine"
+        },
+        {
+          "id": "invite",
+          "label": "Wave Hessa over, and let them ask each other",
+          "icon": "party",
+          "goto": "check_night_visitor"
+        }
+      ]
+    },
+    "scene_night_visitor_tell": {
+      "type": "story",
+      "narration": "You tell him. Pellam writes it down twice and thanks you, very politely, and goes back to the warden fires. Across the road, the still mask gets up and goes into a tent, and does not come out again. Nobody says anything about it in the morning. Nobody has to.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sleep under the table",
+          "icon": "scroll",
           "goto": "rest_under_the_table"
         }
       ]
+    },
+    "scene_night_visitor_not_mine": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "narration": "\"It isn't ours to tell,\" you say. Pellam looks at you for a long moment. Then he nods, takes out a small notebook, and writes one word in it. You lean over to read it. The word is FAIR. He underlines it twice and goes back to bed.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sleep under the table",
+          "icon": "heart",
+          "goto": "rest_under_the_table"
+        }
+      ]
+    },
+    "check_night_visitor": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "stat": "heart",
+      "tn": 16,
+      "prompt": "Get a warden clerk and a choir singer to ask each other their own questions",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "Hessa comes over with two cups of soup. Pellam takes one. They talk until the fire is embers, about the mountain, and the rules, and which of them is more tired. When they go back to their own sides, they say goodnight to each other. Out loud.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "Hessa comes over, but she and Pellam sit at opposite ends and only talk to you. \"Ask him why,\" says Hessa. \"Ask her what for,\" says Pellam. You pass the questions back and forth until midnight. It is slow. It is still talking."
+      }
     },
     "rest_under_the_table": {
       "type": "rest",
@@ -935,6 +1413,80 @@
           "id": "up",
           "label": "Up the switchback to the bend",
           "icon": "boot",
+          "goto": "scene_rope_bridge"
+        }
+      ]
+    },
+    "scene_rope_bridge": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "narration": "On the way to the switchback, the road crosses a deep gully on a rope bridge. It was a perfectly good bridge yesterday. Today, every time the ground shrugs, it swings gently from side to side, like a hammock with opinions. A snowhorn goat is standing in the middle of it, chewing, refusing to go either way.",
+      "choices": [
+        {
+          "id": "one_by_one",
+          "label": "Cross one at a time, quick and light",
+          "icon": "quick",
+          "goto": "check_rope_bridge"
+        },
+        {
+          "id": "roped",
+          "label": "Tie yourselves together and go slowly",
+          "icon": "ribbon",
+          "goto": "scene_rope_bridge_roped"
+        },
+        {
+          "id": "loose_knot",
+          "label": "Tie on with a knot you can undo, the way you were told",
+          "icon": "drop",
+          "goto": "scene_rope_bridge_loose_knot",
+          "requiresFlag": "loose_knot"
+        }
+      ]
+    },
+    "check_rope_bridge": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Dash across a swinging bridge between tremors",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_switchback",
+        "narration": "You wait for the swing to settle, then go, one at a time, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
+      },
+      "onFailure": {
+        "goto": "scene_switchback",
+        "narration": "Halfway over, the ground shrugs and the bridge swings, and you end up clinging to the goat, who does not mind at all. When it stops swinging, the goat walks you the rest of the way across, very slowly, like a nanny."
+      }
+    },
+    "scene_rope_bridge_roped": {
+      "type": "story",
+      "narration": "You rope yourselves together, front to back, and go over so slowly that a snail would be embarrassed. When the bridge swings, you all lean the same way at once, without even saying. Being tied to each other turns out to feel a lot like being a team. The goat lets you pass.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up to the switchback",
+          "icon": "ribbon",
+          "goto": "scene_switchback"
+        }
+      ]
+    },
+    "scene_rope_bridge_loose_knot": {
+      "type": "story",
+      "narration": "You tie yourselves to the handrail with a loose knot, the kind you can undo. Every few steps, you undo it and tie it again further along. It is slow, and very safe, and by the far side you could tie that knot in your sleep. Which was, you suspect, the point.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up to the switchback",
+          "icon": "drop",
           "goto": "scene_switchback"
         }
       ]
@@ -985,7 +1537,7 @@
     },
     "scene_switchback_fly_over": {
       "type": "story",
-      "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with the instruments still rattling in your packs.",
+      "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with your humming stones still rattling in your packs.",
       "cast": [
         {
           "figure": "entities/echo_hunter"
@@ -996,7 +1548,7 @@
           "id": "on",
           "label": "On to the worst bend",
           "icon": "griffin",
-          "goto": "choice_the_test"
+          "goto": "scene_bend_crowds"
         }
       ]
     },
@@ -1008,7 +1560,7 @@
           "id": "on",
           "label": "On to the worst bend",
           "icon": "leaf",
-          "goto": "choice_the_test"
+          "goto": "scene_bend_crowds"
         }
       ]
     },
@@ -1027,7 +1579,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "choice_the_test",
+        "goto": "scene_bend_crowds",
         "narration": "Clapping, stamping, humming, one terrible whistle. The echo hunter cannot choose, gets a headache, and backs off into the rocks. The wolf, who hates the noise even more, runs straight past you."
       },
       "onFailure": {
@@ -1054,13 +1606,97 @@
         }
       ],
       "onVictory": {
-        "goto": "choice_the_test",
+        "goto": "scene_bend_crowds",
         "narration": "The echo hunter folds itself back into the rock, sulking, and the wolf bolts down the hill. The cutting is just a cutting again."
       },
       "onDefeat": {
         "goto": "ending_lost_in_echoes",
-        "narration": "The echoes get louder and louder until you cannot hear yourselves think. You stumble back down the switchback the way you came, and the instruments rattle loose in your packs."
+        "narration": "The echoes get louder and louder until you cannot hear yourselves think. You stumble back down the switchback the way you came, and your humming stones rattle loose in your packs."
       }
+    },
+    "scene_bend_crowds": {
+      "type": "story",
+      "narration": "At the worst bend, both sides got there first. Wardens are stacking numbered boxes on one side of the road. Masks are unrolling sacks on the other. Both are planning to grab the Caravan Stone the moment it arrives, which would end your test before it starts. Far below, the caravan is coming.",
+      "choices": [
+        {
+          "id": "chalk_line",
+          "label": "Draw a line across the road: nobody crosses until you try",
+          "icon": "map",
+          "goto": "scene_bend_crowds_chalk_line"
+        },
+        {
+          "id": "helpers",
+          "label": "Ask each side for one helper",
+          "icon": "heart",
+          "goto": "check_bend_crowds"
+        },
+        {
+          "id": "scouts",
+          "label": "Wave to Linnet and Rook",
+          "icon": "party",
+          "goto": "scene_bend_crowds_scouts",
+          "requiresFlag": "scouts_friends",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "two_helpers",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "scene_bend_crowds_chalk_line": {
+      "type": "story",
+      "narration": "You draw a chalk line right across the road and stand on it. \"One breath,\" you say. \"Give us one breath to try. Then you can argue.\" The wardens look at the masks. The masks look at the wardens. Neither side wants to be the one who crossed the line first, so nobody does.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the caravan",
+          "icon": "map",
+          "goto": "choice_the_test"
+        }
+      ]
+    },
+    "check_bend_crowds": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk both sides into lending you one helper each",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_test",
+        "narration": "A warden steps over, and then, after a long pause, a mask. They stand on either side of you, not looking at each other, ready to help. It is the first time all season they have stood on the same bit of road.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "two_helpers",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_test",
+        "narration": "Both sides send their grumpiest. The two of them argue about where to stand until the caravan is nearly here. But while they are arguing, nobody else grabs anything, which is almost as good."
+      }
+    },
+    "scene_bend_crowds_scouts": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Cadet Linnet"
+        }
+      ],
+      "narration": "Linnet and Rook come running from opposite ends of the bend and stand beside you, one on each side. The wardens stare. The masks stare. Then, slowly, both sides put down their boxes and sacks, because their own people are standing with you, and you cannot grab something out from under your own people.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the caravan",
+          "icon": "party",
+          "goto": "choice_the_test"
+        }
+      ]
     },
     "choice_the_test": {
       "type": "choice_point",
@@ -1116,6 +1752,27 @@
           "goto": "check_hold"
         },
         {
+          "id": "practiced",
+          "label": "You practiced on a small stone. You know the feeling.",
+          "icon": "note",
+          "goto": "check_hold",
+          "requiresFlag": "practiced"
+        },
+        {
+          "id": "two_helpers",
+          "label": "A warden and a mask hold on with you",
+          "icon": "party",
+          "goto": "check_hold",
+          "requiresFlag": "two_helpers"
+        },
+        {
+          "id": "table_works",
+          "label": "Pellam and Hessa both nod to you to begin",
+          "icon": "heart",
+          "goto": "check_hold",
+          "requiresFlag": "table_works"
+        },
+        {
           "id": "bare_hands",
           "label": "Hold it with nothing but nerve",
           "icon": "heart",
@@ -1161,7 +1818,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "No ledger, no chord, no question. Just three of you, holding on. And for one long breath, astonishingly, it is enough."
+        "narration": "No ledger, no chord, no question. Just you, holding on. And for one long breath, astonishingly, it is enough."
       },
       "onFailure": {
         "goto": "scene_tether_slips",
@@ -1190,15 +1847,15 @@
       "choices": [
         {
           "id": "climb",
-          "label": "Carry it up the mountain",
+          "label": "Go back to the table one last time",
           "icon": "forward",
-          "goto": "rest_up_the_mountain"
+          "goto": "scene_who_keeps_table"
         }
       ]
     },
     "scene_tether_slips": {
       "type": "story",
-      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologising as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
+      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologizing as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1209,8 +1866,97 @@
       "choices": [
         {
           "id": "climb",
-          "label": "Climb anyway, and try again where it matters",
+          "label": "Go back to the table one last time",
           "icon": "forward",
+          "goto": "scene_who_keeps_table"
+        }
+      ]
+    },
+    "scene_who_keeps_table": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "narration": "Before you climb, you go back down to the Pinch one last time. Your old door is still there on its two barrels, chalk and all. People are packing up and running. But somebody has to keep the table while you are up the mountain, or there will be nothing to come back to. Who?",
+      "choices": [
+        {
+          "id": "both",
+          "label": "Ask Pellam and Hessa to keep it together",
+          "icon": "heart",
+          "goto": "check_who_keeps_table"
+        },
+        {
+          "id": "grandmother",
+          "label": "Give it to the grandmothers",
+          "icon": "dragonling",
+          "goto": "scene_who_keeps_table_grandmother"
+        },
+        {
+          "id": "ossley",
+          "label": "Whistle down the dry creek for the frog from the river",
+          "icon": "drop",
+          "goto": "scene_who_keeps_table_ossley",
+          "requiresFlag": "route_river"
+        }
+      ]
+    },
+    "check_who_keeps_table": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Ask two old rivals to look after one table",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_up_the_mountain",
+        "narration": "Pellam looks at Hessa. Hessa looks at Pellam. Then they each take one end of the old door and lift it together. \"Mind the short leg,\" says Hessa. \"I've logged the short leg,\" says Pellam. They carry it down the hill side by side."
+      },
+      "onFailure": {
+        "goto": "rest_up_the_mountain",
+        "narration": "They cannot agree whose end is the front. In the end they carry it down the hill sideways, both talking at once. But they carry it together, and they do not put it down."
+      }
+    },
+    "scene_who_keeps_table_grandmother": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You give the table to the grandmothers. Two of them tip it up, tuck it under their arms like a tray, and carry it off downhill, still knitting. \"We'll keep your chalk on it, dear,\" one of them calls back. \"Somebody will want reminding.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn and climb",
+          "icon": "dragonling",
+          "goto": "rest_up_the_mountain"
+        }
+      ]
+    },
+    "scene_who_keeps_table_ossley": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley",
+          "size": "small_to_medium"
+        }
+      ],
+      "narration": "A frog in a very old hat comes poling his flat boat up the dry creek, as if he had been waiting to be asked: the frog from the reeds of the Great River, with OLD OSSLEY painted on his boat. He looks at the table for a long time, and then lays it across his boat like a roof. \"Tables float,\" he says. That is all he says. The boat slides away down a creek with no water in it, carrying your table somewhere safe.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn and climb",
+          "icon": "drop",
           "goto": "rest_up_the_mountain"
         }
       ]
@@ -1271,7 +2017,9 @@
       "centaur_relay": "brisk, proud of the roads, delighted to be asked where something should go",
       "exchange_merchant": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
       "caravan_master": "exhausted, practical, has had a headache since the stone came aboard",
-      "pellam": "Pellam, warden ledger clerk; writes everything down twice, never smiles on duty, says no politely and means it; secretly fair"
+      "pellam": "Pellam, warden ledger clerk; writes everything down twice, never smiles on duty, says no politely and means it; secretly fair",
+      "linnet": "Cadet Linnet, a young warden scout; keen, stiff, trying to look older, softens fast",
+      "rook": "Rook, a young mask scout from the choir; prickly, quick, curious under it"
     }
   }
 }
