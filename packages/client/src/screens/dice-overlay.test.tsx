@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiceRoll } from "@kad/shared";
 import { useGameStore } from "../store";
 import { ROLL_HELP_TUMBLE_MS, ROLL_READ_MS, ROLL_TUMBLE_MS } from "../world/presentation";
-import { DiceOverlay, celebrationFor, groupLine, marginLine, spokenRoll } from "./DiceOverlay";
+import { DiceOverlay, celebrationFor, groupLine, spokenRoll } from "./DiceOverlay";
 import { burst } from "./DiceCelebration";
 
 const HELPED: DiceRoll = {
@@ -77,14 +77,6 @@ describe("the dice card", () => {
     expect(celebrationFor({ die: 5, result: "failure" })).toBe("miss");
   });
 
-  it("says by how much, in numbers a kid can check", () => {
-    expect(marginLine({ die: 11, total: 16, tn: 12, result: "success" })).toBe("Beat 12 by 4!");
-    expect(marginLine({ die: 9, total: 12, tn: 12, result: "success" })).toBe("Exactly 12. Just made it!");
-    expect(marginLine({ die: 5, total: 9, tn: 12, result: "failure" })).toBe("3 short of 12.");
-    expect(marginLine({ die: 20, total: 22, tn: 25, result: "success" })).toBe("A natural 20 always makes it!");
-    expect(marginLine({ die: 1, total: 15, tn: 8, result: "failure" })).toBe("Bonk! A natural 1 never makes it. Next time!");
-  });
-
   it("throws the same confetti for the same roll, more of it on a 20, and fans it upward", () => {
     expect(burst("success", 7)).toEqual(burst("success", 7));
     expect(burst("crit", 7).length).toBeGreaterThan(burst("success", 7).length);
@@ -98,7 +90,7 @@ describe("the dice card", () => {
     expect(document.querySelector(".celebration")).toBeNull();
     act(() => vi.advanceTimersByTime(ROLL_TUMBLE_MS + ROLL_HELP_TUMBLE_MS));
     expect(document.querySelector(".celebration--success")).not.toBeNull();
-    expect(screen.getByText("Beat 12 by 2!")).toBeTruthy();
+    expect(screen.getByText("Success!")).toBeTruthy();
   });
 
   it("bonks a natural 1: the starburst, the dizzy stars and the sound", async () => {
