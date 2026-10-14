@@ -3,7 +3,7 @@ title: The Hollow Gate
 id: location.hollow_gate
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: intentionally_undefined
 draft: true
 tags: ["ruins", "marsh", "portal", "mysterious"]
@@ -63,7 +63,7 @@ The realm's most respected closed door. Witches study it from a distance, frogfo
 
 ### Neighbors
 
-- **[Whispering Marsh](/biomes/whispering_marsh/)** — The marsh holds the Gate the way one holds a thing whose owner may return: channels routed around it, whispers thickest near it, and the frogfolk's markers giving it the widest, politest berth in the marsh.
+- **[Whispering Marsh](/biomes/whispering_marsh/)**: The marsh holds the Gate the way one holds a thing whose owner may return: channels routed around it, whispers thickest near it, and the frogfolk's markers giving it the widest, politest berth in the marsh.
 
 ### Current Tensions
 

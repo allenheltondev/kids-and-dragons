@@ -3,7 +3,7 @@ title: Cinder Wolf
 id: creature.cinder_wolf
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "foothills", "pack", "predator"]
 classification: dangerous_creature
@@ -59,7 +59,7 @@ infobox: creature
 
 > *Not a monster. Cold, mostly, and a long way from home.*
 
-Cinder wolves carry banked heat under their coats the way other packs carry nothing at all — a shared hearth that never quite goes out, fed by closeness. A pack sleeping is one animal with twelve legs. When the mountain grumbles and the prey moves, whole packs are pushed onto the roads with their hearth and their hunger, and neither one is malice.
+Cinder wolves carry banked heat under their coats the way other packs carry nothing at all, a shared hearth that never quite goes out, fed by closeness. A pack sleeping is one animal with twelve legs. When the mountain grumbles and the prey moves, whole packs are pushed onto the roads with their hearth and their hunger, and neither one is malice.
 
 ### For Fun
 
@@ -73,30 +73,30 @@ A cinder wolf pack wants nothing to do with you, and a pack that is near you any
 
 ### Likes
 
-- **[Embermoth](/creatures/embermoth/)** — A coatful of passengers, and the glow makes the den look lived-in.
+- **[Embermoth](/creatures/embermoth/)**: A coatful of passengers, and the glow makes the den look lived-in.
 
 ### Dislikes
 
-- **[Legend Dragon](/creatures/legend_dragon/)** — When it turns over in its sleep, the prey moves east and nobody eats for a week.
+- **[Legend Dragon](/creatures/legend_dragon/)**: When it turns over in its sleep, the prey moves east and nobody eats for a week.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Skirmisher** — Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
+**Skirmisher**: Fast and fragile, and there are usually three of them. Dies quickly, but gets to you first.
 
 | | |
 |---|---|
 | Health | 6 |
-| Guard | 11 — how hard it is to hit |
+| Guard | 11, how hard it is to hit |
 | Attack | +3 |
 | Speed | 5 steps, 3 initiative |
 | Usually | 3 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Distraction** (Clever, normal) — A pack on a road is a pack that has run out of prey. Give them easier prey and the road stops being interesting.
-- **Escape** (Quick, hard) — They are faster than you and they hunt together, so leaving is harder than it looks.
+- **Distraction** (Clever, normal): A pack on a road is a pack that has run out of prey. Give them easier prey and the road stops being interesting.
+- **Escape** (Quick, hard): They are faster than you and they hunt together, so leaving is harder than it looks.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

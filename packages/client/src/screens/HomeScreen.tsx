@@ -33,8 +33,8 @@ import "./HomeScreen.css";
 const CODE_SLOTS = [0, 1, 2, 3];
 
 const MODE_BLURB: Record<RoomMode, string> = {
-  party: "This screen becomes the TV — everyone joins from their phones.",
-  travel: "Phones only — everyone sees the world and their own controls.",
+  party: "This screen becomes the TV. Everyone joins from their phones.",
+  travel: "Phones only. Everyone sees the world and their own controls.",
 };
 
 const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" };

@@ -718,7 +718,7 @@ describe("waiting", () => {
   it("says when a player is knocked down, and that it is recoverable", () => {
     mount({ party: [member({ down: true, hp: 0 })] });
     expect(someStatusSays("Knocked down")).toBe(true);
-    expect(someStatusSays("a friend can help you up")).toBe(true);
+    expect(someStatusSays("A friend can help you up")).toBe(true);
   });
 
   it("echoes the narration next to the answers so they are readable together", () => {

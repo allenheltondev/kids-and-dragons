@@ -3,7 +3,7 @@ title: MossHome
 id: location.mosshome
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["forest_settlement", "living_architecture", "bigfoot", "cultivated_moss", "ancient_trees"]
 danger_level: low
@@ -96,15 +96,15 @@ The realm's memory of the west. Healers, historians, and the politely desperate 
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - One shelf of the archive is written in cultivated moss - living documents that must be watered to stay legible. One is in a strain nobody now living can read, and it is watered anyway, on schedule, because you do not let a book die for being difficult.
 
 ### Neighbors
 
-- **[Enchanted Woods](/biomes/enchanted_woods/)** — Steward and tenant at once: MossHome keeps the forest's records and the forest keeps MossHome, and the founding agreement is honored so thoroughly that neither party has needed to reread it.
-- **[Whispering Marsh](/biomes/whispering_marsh/)** — Downhill neighbors and professional colleagues: marsh herbs come up, remedies and flood-warnings go down, and the archivists trade notes with the witches in the margins of each other's books.
-- **[The Exchange](/locations/exchange/)** — The city sends its unanswerable questions west by caravan, and MossHome sends back answers, corrections, and the occasional polite observation that the question was wrong.
+- **[Enchanted Woods](/biomes/enchanted_woods/)**: Steward and tenant at once: MossHome keeps the forest's records and the forest keeps MossHome, and the founding agreement is honored so thoroughly that neither party has needed to reread it.
+- **[Whispering Marsh](/biomes/whispering_marsh/)**: Downhill neighbors and professional colleagues: marsh herbs come up, remedies and flood-warnings go down, and the archivists trade notes with the witches in the margins of each other's books.
+- **[The Exchange](/locations/exchange/)**: The city sends its unanswerable questions west by caravan, and MossHome sends back answers, corrections, and the occasional polite observation that the question was wrong.
 
 ### Current Tensions
 

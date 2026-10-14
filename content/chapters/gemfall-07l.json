@@ -55,7 +55,7 @@
   "scenes": {
     "scene_the_table": {
       "type": "story",
-      "narration": "The wardens will not sit with the cult. The cult will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
+      "narration": "The wardens will not sit with the cult. The cult will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
       "choices": [
         {
           "id": "wardens_first",
@@ -191,7 +191,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "Up a side valley the Deep Hollow choir is humming with their bark masks pushed up on their heads. They are singing the stones' own note, and the stones in your packs hum along, as if they know the words.",
+      "narration": "Up a side valley, Hessa's soup-tent people, the ones who call themselves the Deep Hollow, are humming in a ring with painted bark masks pushed up on their heads. They are singing the stones' own note, and the stones in your packs hum along, as if they know the words.",
       "choices": [
         {
           "id": "ask",
@@ -362,11 +362,18 @@
           "goto": "scene_boggart"
         },
         {
+          "id": "boggart_walked_over",
+          "label": "A boggart is sidling up with a satchel",
+          "icon": "scroll",
+          "requiresFlag": "walked_over",
+          "goto": "scene_boggart"
+        },
+        {
           "id": "ford_witch",
           "label": "The ford witch is here, with her ringing stone",
           "icon": "charm",
-          "requiresFlag": "route_rush",
-          "goto": "scene_ford_witch"
+          "goto": "scene_ford_witch",
+          "requiresItem": "charm_ford_witch"
         },
         {
           "id": "stall",
@@ -382,7 +389,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "Old Ossley is poling his flat boat up a creek with no water in it, loaded with every toll the trolls took this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
+      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: Old Ossley, the ferryman from Stone Crossing, with a boat full of every stone the river took off somebody this season. He looks at your ledger, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
       "choices": [
         {
           "id": "debt",
@@ -838,7 +845,7 @@
     },
     "scene_switchback_sprite_knots": {
       "type": "story",
-      "narration": "Tiny knots of grass, tied at ankle height, lead off the road and over the top of the cutting. Harvest sprites, this far north, still keeping their promise. You follow the knots, and the echo below you repeats your footsteps to an empty road.",
+      "narration": "Tiny knots of grass, tied at ankle height, lead off the road and over the top of the cutting. Harvest sprites, this far north, still looking out for you. You follow the knots, and the echo below you repeats your footsteps to an empty road.",
       "choices": [
         {
           "id": "on",
@@ -1045,7 +1052,7 @@
     },
     "rest_up_the_mountain": {
       "type": "rest",
-      "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying a ledger, a chord, a question, and a great deal of nerve.",
+      "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying whatever you managed to borrow, a ledger or a chord or a question, and a great deal of nerve.",
       "onEnter": [
         {
           "type": "setFlag",

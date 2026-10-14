@@ -43,7 +43,7 @@
   "scenes": {
     "scene_east_bank": {
       "type": "story",
-      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay and, very faintly, of lion. Far north there is a broken bridge and a red sky. Between here and there is pride country.",
+      "narration": "The Eastern Plains go on and on, gold grass rolling like a tablecloth somebody shook. The wind smells of warm hay and, very faintly, of lion. Far north, every caravan says, the river bridge is cracked, and the sky above it is red. Between here and there is pride country.",
       "choices": [
         {
           "id": "ride_caravans",
@@ -453,7 +453,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
+      "narration": "You make camp at the old caravan rest stop, among carts nobody has used since the stone fell. Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
       "choices": [
         {
           "id": "share_supper",
@@ -466,7 +466,7 @@
           "label": "Call for the pride escort",
           "icon": "crown",
           "requiresFlag": "escorted",
-          "goto": "rest_wolf_fire"
+          "goto": "scene_escort_answers"
         },
         {
           "id": "chase_off",
@@ -529,6 +529,18 @@
       "heal": 3,
       "outcome": "setback",
       "choices": []
+    },
+    "scene_escort_answers": {
+      "type": "story",
+      "narration": "You call out toward the ridge. Nothing, for a long moment. Then Elder Sefa's voice comes back out of the dark, from exactly as close as a pride will come to a humming pack and not one step nearer, and the cubs with her start a growl so low you feel it in your boots. Every ember eye on the road turns toward the ridge, thinks about it, and decides your fire is not worth the argument. The pack slinks round to the far side of your camp, as far from the pride as the warm will let them.",
+      "choices": [
+        {
+          "id": "settle",
+          "label": "Settle in, with the pride on the ridge",
+          "icon": "rest",
+          "goto": "rest_wolf_fire"
+        }
+      ]
     }
   },
   "llmHints": {

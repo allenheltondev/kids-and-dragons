@@ -3,7 +3,7 @@ title: Silver Otter
 id: creature.silver_otter
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "river", "playful", "indicator"]
 classification: ambient_creature
@@ -84,13 +84,13 @@ Playful with anyone who is near water and not currently a hazard. An otter that 
 
 ### Likes
 
-- **[Frogfolk](/npcs/frogfolk/)** — Pole boats are diving platforms, and a frogfolk pole has never once come down on an otter.
-- **[Boggart](/npcs/boggart/)** — The only people who understand the true worth of a really good button.
-- **[Stone Troll](/npcs/stone_troll/)** — It drops pebbles off the bridge on purpose and calls it maintenance.
+- **[Frogfolk](/npcs/frogfolk/)**: Pole boats are diving platforms, and a frogfolk pole has never once come down on an otter.
+- **[Boggart](/npcs/boggart/)**: The only people who understand the true worth of a really good button.
+- **[Stone Troll](/npcs/stone_troll/)**: It drops pebbles off the bridge on purpose and calls it maintenance.
 
 ### Dislikes
 
-- **[River Drake](/creatures/river_drake/)** — It claims the deepest pool and the toll. An otter's stones should not count as cargo.
+- **[River Drake](/creatures/river_drake/)**: It claims the deepest pool and the toll. An otter's stones should not count as cargo.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

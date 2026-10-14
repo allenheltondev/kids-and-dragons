@@ -3,7 +3,7 @@ title: Luckstone
 id: item.luckstone
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["charm", "luck", "sky_islands", "rare"]
 related:
@@ -27,7 +27,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Trinket** — Carried. It works the whole time you have it.
+**Trinket**: Carried. It works the whole time you have it.
 
 > Roll a 1? Roll it again. Once each fight.
 <!-- END GENERATED: mechanics -->

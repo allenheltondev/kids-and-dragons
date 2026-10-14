@@ -3,7 +3,7 @@ title: Selkie
 id: npc.selkie
 type: npc
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["supporting_people", "coastal", "shapeshifter", "courier"]
 classification: supporting_people
@@ -69,16 +69,16 @@ Selkies are the realm's couriers between two worlds that would otherwise only wa
 
 ### Getting Along
 
-Easy, quick, and register-shifting — a selkie talks to a merfolk elder, a dockhand, and a child in three different voices inside one minute, and means every word in all three. Their friendship is loyal and their coat is not a topic.
+Easy, quick, and register-shifting: a selkie talks to a merfolk elder, a dockhand, and a child in three different voices inside one minute, and means every word in all three. Their friendship is loyal and their coat is not a topic.
 
 ### Likes
 
-- **[Merfolk](/npcs/merfolk/)** — Kin by treaty and temperament, the temperament being reliability. With jokes.
-- **[Silver Otter](/creatures/silver_otter/)** — Kindred spirits: swimmers who understand that an errand is improved by a detour.
+- **[Merfolk](/npcs/merfolk/)**: Kin by treaty and temperament, the temperament being reliability. With jokes.
+- **[Silver Otter](/creatures/silver_otter/)**: Kindred spirits: swimmers who understand that an errand is improved by a detour.
 
 ### Dislikes
 
-- **[Boggart](/npcs/boggart/)** — No boggart has ever taken a coat. Every selkie hangs it higher near one anyway, and both peoples know it is not fair, and the shelf stays where it is.
+- **[Boggart](/npcs/boggart/)**: No boggart has ever taken a coat. Every selkie hangs it higher near one anyway, and both peoples know it is not fair, and the shelf stays where it is.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

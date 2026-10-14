@@ -3,7 +3,7 @@ title: The Open Sea
 id: biome.open_sea
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["ocean", "offshore", "deep_water", "weather", "currents"]
 danger_level: moderate
@@ -92,8 +92,8 @@ The realm's edges all end at the same neighbor. The sea is the road that owns it
 
 ### Neighbors
 
-- **[Sky Islands](/biomes/sky_islands/)** — The sea and the sky run the realm's weather between them - an arrangement no shore was consulted on.
-- **[The Sallow Wastelands](/biomes/sallow_wastelands/)** — The river's terminus is the sea's threshold: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure.
+- **[Sky Islands](/biomes/sky_islands/)**: The sea and the sky run the realm's weather between them - an arrangement no shore was consulted on.
+- **[The Sallow Wastelands](/biomes/sallow_wastelands/)**: The river's terminus is the sea's threshold: everything the current carried across the continent is laid down at the flats, and the tides sort it at leisure.
 
 ### Current Tensions
 

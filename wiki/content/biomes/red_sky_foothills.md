@@ -3,7 +3,7 @@ title: Red Sky Foothills
 id: biome.red_sky_foothills
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["volcanic_hills", "crystal_veins", "lava_tubes", "caves", "dragonling_homeland"]
 danger_level: high
@@ -141,15 +141,15 @@ Every gemstone in the realm started here, which makes the foothills the realm's 
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The boundary stones are older than the dragonlings. They were standing when the first families arrived, already marking the same line gathering law marks now; the dragonlings adopted the stones, not the other way around.
 
 ### Neighbors
 
-- **[Mount Red Sky](/locations/mount_red_sky/)** — Landlord, weather, calendar, and subject of every song. The foothills exist at the mountain's pleasure and have made a culture out of never forgetting it.
-- **[The Plains](/biomes/plains/)** — The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling.
-- **[Northern River Bridge](/routes/northern_river_bridge/)** — The one way east without wings. When the bridge queue backs up, foothill trade holds its breath.
+- **[Mount Red Sky](/locations/mount_red_sky/)**: Landlord, weather, calendar, and subject of every song. The foothills exist at the mountain's pleasure and have made a culture out of never forgetting it.
+- **[The Plains](/biomes/plains/)**: The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling.
+- **[Northern River Bridge](/routes/northern_river_bridge/)**: The one way east without wings. When the bridge queue backs up, foothill trade holds its breath.
 
 ### Current Tensions
 

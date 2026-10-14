@@ -36,7 +36,7 @@
         "creature.restless_remains"
       ],
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "The lava tube opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
+      "narration": "Above the tree line the road gives up and a lava tube takes over, a tunnel the mountain made for itself long ago. You go in. The tube opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
       "choices": [
         {
           "id": "speak_gently",
@@ -554,7 +554,7 @@
         },
         {
           "id": "forded",
-          "label": "\"We crossed the ford at the drovers' pace, with ceremony.\"",
+          "label": "\"We crossed the west branch dry-footed, with a song.\"",
           "icon": "boot",
           "requiresFlag": "forded_clean",
           "goto": "scene_q2_forded"
@@ -631,7 +631,7 @@
     "scene_q2_forded": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "\"We crossed the ford at the drovers' pace,\" you say. \"With ceremony.\" \"With the verse?\" asks the Seal-Keeper. You say yes, with the verse. \"Good,\" it says, and hums one line of it, badly, under its breath, as if it has not sung in a long time.",
+      "narration": "\"We crossed the west branch dry-footed,\" you say. \"With a song.\" \"Which song?\" asks the Seal-Keeper, so you sing it a line, and it hums the next one, badly, under its breath, as if it has not sung in a long time.",
       "choices": [
         {
           "id": "on",
@@ -930,7 +930,7 @@
         },
         {
           "id": "call_voss",
-          "label": "Call Captain Voss down, as you promised",
+          "label": "Call Captain Voss down. You stood with her plan.",
           "icon": "whistle",
           "requiresFlag": "told_wardens",
           "goto": "scene_tether_call_voss"
@@ -946,7 +946,7 @@
     "scene_tether_call_voss": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You whistle the warden's note, the one you promised, and for a long moment nothing happens. Then Captain Voss comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
+      "narration": "You shout for the wardens, as loud as three people can shout, and for a long moment nothing happens. Then Captain Voss comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
       "choices": [
         {
           "id": "on",
@@ -1090,7 +1090,7 @@
       "choices": [
         {
           "id": "collectors",
-          "label": "Lift it: seven of its brothers rode up here in your packs",
+          "label": "Lift it: its brothers rode up here in your packs",
           "icon": "gem",
           "requiresFlag": "pursuit_hoard",
           "goto": "ending_collectors",

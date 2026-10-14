@@ -3,7 +3,7 @@ title: Embermoth
 id: creature.embermoth
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ambient", "foothills", "volcanic", "indicator"]
 classification: ambient_creature
@@ -67,7 +67,7 @@ Embermoths hatch in the warm cracks of the foothills and spend their whole lives
 
 ### For Fun
 
-- Basking in spirals on freshly warmed stone, in strict order of seniority. Nobody knows how the order is decided — not even, apparently, the moths.
+- Basking in spirals on freshly warmed stone, in strict order of seniority. Nobody knows how the order is decided, not even, apparently, the moths.
 - Riding cinder wolves between warm patches like slow ferries, which the wolves have agreed to never notice.
 - Crowding a traveler's lantern in a polite ring, at exactly the distance where nobody's wings catch.
 
@@ -77,12 +77,12 @@ An embermoth fears nothing that does not stamp. They land on children, tools, dr
 
 ### Likes
 
-- **[Cinder Wolf](/creatures/cinder_wolf/)** — The warmest fur in the foothills, and it commutes.
-- **[Dragonling](/characters/dragonling/)** — They keep warming-stones by their doors and have never once swatted.
+- **[Cinder Wolf](/creatures/cinder_wolf/)**: The warmest fur in the foothills, and it commutes.
+- **[Dragonling](/characters/dragonling/)**: They keep warming-stones by their doors and have never once swatted.
 
 ### Dislikes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — A light with no heat in it. The moths regard this as a broken promise.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: A light with no heat in it. The moths regard this as a broken promise.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

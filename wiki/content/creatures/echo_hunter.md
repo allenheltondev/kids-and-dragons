@@ -3,7 +3,7 @@ title: Echo Hunter
 id: creature.echo_hunter
 type: creature
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "underground", "blind", "predator"]
 classification: dangerous_creature
@@ -15,7 +15,7 @@ likes:
   - id: npc.stone_troll
     title: "Stone Troll"
     url: "/npcs/stone_troll/"
-    because: "They knock on stone before entering a passage — in its language, the height of good manners."
+    because: "They knock on stone before entering a passage, which in its language is the height of good manners."
 dislikes:
   - id: creature.bone_crawler
     title: "Bone Crawler"
@@ -50,7 +50,7 @@ infobox: creature
 
 > *It has never seen anything in its life, and it knows the tunnels better than you know your own name.*
 
-An echo hunter's memory is a library of sound: every drip, every chamber, every visitor filed by footfall. It does not patrol so much as proofread — a new sound in a known tunnel is an error in the text, and the hunter will keep returning to the sentence until it parses. It is not cruel. It is thorough, in the dark, which can amount to the same thing for the unprepared.
+An echo hunter's memory is a library of sound: every drip, every chamber, every visitor filed by footfall. It does not patrol so much as proofread: a new sound in a known tunnel is an error in the text, and the hunter will keep returning to the sentence until it parses. It is not cruel. It is thorough, in the dark, which can amount to the same thing for the unprepared.
 
 ### For Fun
 
@@ -64,30 +64,30 @@ Entirely solitary, and by its own lights entirely polite. Approach making steady
 
 ### Likes
 
-- **[Stone Troll](/npcs/stone_troll/)** — They knock on stone before entering a passage — in its language, the height of good manners.
+- **[Stone Troll](/npcs/stone_troll/)**: They knock on stone before entering a passage, which in its language is the height of good manners.
 
 ### Dislikes
 
-- **[Bone Crawler](/creatures/bone_crawler/)** — A crowd of clattering shells is a paragraph with no punctuation. It cannot bear it.
+- **[Bone Crawler](/creatures/bone_crawler/)**: A crowd of clattering shells is a paragraph with no punctuation. It cannot bear it.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Sentinel** — The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
+**Sentinel**: The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
 
 | | |
 |---|---|
 | Health | 20 |
-| Guard | 14 — how hard it is to hit |
+| Guard | 14, how hard it is to hit |
 | Attack | +4 |
 | Speed | 3 steps, 0 initiative |
 | Usually | alone |
 
 ### Ways Past It That Are Not Fighting
 
-- **Distraction** (Clever, normal) — It hunts one repeated sound and retreats from many at once. Make the dark noisy.
-- **Escape** (Quick, hard) — Leaving in silence, which is harder than leaving.
+- **Distraction** (Clever, normal): It hunts one repeated sound and retreats from many at once. Make the dark noisy.
+- **Escape** (Quick, hard): Leaving in silence, which is harder than leaving.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

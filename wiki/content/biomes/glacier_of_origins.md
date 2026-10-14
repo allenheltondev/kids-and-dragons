@@ -3,7 +3,7 @@ title: Glacier of Origins
 id: biome.glacier_of_origins
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["ancient_ice", "river_source", "frozen_memory", "glacier", "northern"]
 danger_level: high
@@ -104,14 +104,14 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - At the bottom of one crevasse, below the oldest catalogued layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not catalogued it, because filing it would mean deciding what it is.
 
 ### Neighbors
 
-- **[Source of the Great River](/features/great_river_source/)** — The river rises from the melt, which means every region downstream is, strictly speaking, drinking the archive.
-- **[Frostfang Peaks](/biomes/frostfang_peaks/)** — The peaks handle the fast half of the north - watch, rescue, wind - and the glacier handles the slow half - memory, melt, tea. Each considers the division generous to the other.
+- **[Source of the Great River](/features/great_river_source/)**: The river rises from the melt, which means every region downstream is, strictly speaking, drinking the archive.
+- **[Frostfang Peaks](/biomes/frostfang_peaks/)**: The peaks handle the fast half of the north - watch, rescue, wind - and the glacier handles the slow half - memory, melt, tea. Each considers the division generous to the other.
 
 ### Current Tensions
 

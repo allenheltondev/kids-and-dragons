@@ -3,7 +3,7 @@ title: Mire Mimic
 id: creature.mire_mimic
 type: creature
 status: draft
-lastReviewed: "2026-08-04"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["dangerous", "marsh", "ambush", "camouflage"]
 classification: dangerous_creature
@@ -61,7 +61,7 @@ infobox: creature
 
 > *The marsh's most committed method actor, currently appearing in the role of 'ground.'*
 
-Nobody knows whether the mire mimic thinks of itself as a hunter or as a performance. It has been a log, a jetty, three different abandoned boats, and once — memorably — a small footbridge, for eleven years, during which it let every school child in the marsh cross safely and ate exactly one tax collector's satchel. Its impressions improve with study; the newest boats have a smell.
+Nobody knows whether the mire mimic thinks of itself as a hunter or as a performance. It has been a log, a jetty, three different abandoned boats, and once, memorably, a small footbridge, for eleven years, during which it let every school child in the marsh cross safely and ate exactly one tax collector's satchel. Its impressions improve with study; the newest boats have a smell.
 
 ### For Fun
 
@@ -75,32 +75,32 @@ Solitary, patient, and quietly vain. Mimics encounter each other rarely, and wha
 
 ### Likes
 
-- **[Will-o'-Wisp](/creatures/will_o_wisp/)** — It walks the audience straight to the stage, free of charge, and never once learns.
+- **[Will-o'-Wisp](/creatures/will_o_wisp/)**: It walks the audience straight to the stage, free of charge, and never once learns.
 
 ### Dislikes
 
-- **[Frogfolk](/npcs/frogfolk/)** — The marking poles are reviews, and the reviews are always bad.
-- **[Boggart](/npcs/boggart/)** — They treat its staging area as a lost-and-found and its props as inventory.
-- **[Loftmire](/creatures/loftmire/)** — A dusting, and the ground it is currently being begins to hover. There is no worse thing that can happen to a performance.
+- **[Frogfolk](/npcs/frogfolk/)**: The marking poles are reviews, and the reviews are always bad.
+- **[Boggart](/npcs/boggart/)**: They treat its staging area as a lost-and-found and its props as inventory.
+- **[Loftmire](/creatures/loftmire/)**: A dusting, and the ground it is currently being begins to hover. There is no worse thing that can happen to a performance.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Lurker** — Waits, then hits. Harder to land a blow on than it looks, and quicker than it looks.
+**Lurker**: Waits, then hits. Harder to land a blow on than it looks, and quicker than it looks.
 
 | | |
 |---|---|
 | Health | 9 |
-| Guard | 13 — how hard it is to hit |
+| Guard | 13, how hard it is to hit |
 | Attack | +3 |
 | Speed | 4 steps, 4 initiative |
 | Usually | 2 of them |
 
 ### Ways Past It That Are Not Fighting
 
-- **Observation** (Clever, normal) — It only works while it is mistaken for the ground. Naming it ends the ambush.
-- **Distraction** (Might, normal) — Strong vibration moves it off a hunting site — stamping works as well as anything.
+- **Observation** (Clever, normal): It only works while it is mistaken for the ground. Naming it ends the ambush.
+- **Distraction** (Might, normal): Strong vibration moves it off a hunting site, and stamping works as well as anything.
 <!-- END GENERATED: encounter -->
 
 <!-- BEGIN GENERATED: relationships -->

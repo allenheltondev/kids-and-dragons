@@ -3,7 +3,7 @@ title: Dragonling
 id: character.dragonling
 type: character
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["playable", "volcanic", "explorer", "heat_resistant"]
 scale: small_to_medium
@@ -71,7 +71,7 @@ infobox: character
 
 > *Small dragons. Big opinions. Absolutely no fear of the correct things.*
 
-Dragonlings grew up on ground that moves, and it shows: their communities read the mountain the way farmers read the sky, and every dragonling child knows which caves you can nap in and which ones you leave the moment the moths do. The one law of the foothills is gathering law — you take what the mountain drops and you never pry at what it holds. Stories of legend-dragon ancestry are told around every fire, and are neither confirmed nor discouraged by the fires.
+Dragonlings grew up on ground that moves, and it shows: their communities read the mountain the way farmers read the sky, and every dragonling child knows which caves you can nap in and which ones you leave the moment the moths do. The one law of the foothills is gathering law: you take what the mountain drops and you never pry at what it holds. Stories of legend-dragon ancestry are told around every fire, and are neither confirmed nor discouraged by the fires.
 
 ### For Fun
 
@@ -81,17 +81,17 @@ Dragonlings grew up on ground that moves, and it shows: their communities read t
 
 ### Getting Along
 
-Loud, warm, and communal. A dragonling settlement adopts visitors first and assesses them later, and its warning systems — bells, moths, grandmothers — extend to everyone inside the boundary stones, guest or not.
+Loud, warm, and communal. A dragonling settlement adopts visitors first and assesses them later, and its warning systems (bells, moths, grandmothers) extend to everyone inside the boundary stones, guest or not.
 
 ### Likes
 
-- **[Embermoth](/creatures/embermoth/)** — The foothills' weather service, paid in warm rocks.
-- **[Glassback Crab](/creatures/glassback_crab/)** — Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous.
-- **[Centaur](/npcs/centaur/)** — They bring the whole world to the foothills twice a season and take gemstones politely away.
+- **[Embermoth](/creatures/embermoth/)**: The foothills' weather service, paid in warm rocks.
+- **[Glassback Crab](/creatures/glassback_crab/)**: Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous.
+- **[Centaur](/npcs/centaur/)**: They bring the whole world to the foothills twice a season and take gemstones politely away.
 
 ### Dislikes
 
-- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)** — They pry at what the mountain holds. That is the one rule. There is only one rule.
+- **[The Deep Hollow Cult](/factions/deep_hollow_cult/)**: They pry at what the mountain holds. That is the one rule. There is only one rule.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

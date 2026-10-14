@@ -278,7 +278,7 @@
     },
     "rest_soup_tents": {
       "type": "rest",
-      "narration": "Beside the downbound lane, the Deep Hollow soup line has grown into rest tents. Three of them, with cots and blankets and hot bowls for anyone the rush has dropped. A ladler named Wend learns all your names by the second bowl, and somehow remembers them perfectly.",
+      "narration": "Beside the downbound lane, people in dark robes with little humming crystals on strings have put up rest tents, with DEEP HOLLOW stitched small on the flaps: three of them, with cots and blankets and hot bowls for anyone the rush has dropped. The ladler is called Wend, and Wend has all your names by the second bowl, and says them as if they had always been known.",
       "heal": 2,
       "choices": [
         {
@@ -352,7 +352,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food for the citadel at fixed rates. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
+      "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food at fixed rates for Redspire, the wardens' citadel up in the foothills. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
       "choices": [
         {
           "id": "pay",

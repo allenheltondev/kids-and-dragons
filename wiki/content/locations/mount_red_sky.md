@@ -3,7 +3,7 @@ title: Mount Red Sky
 id: location.mount_red_sky
 type: location
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["active_volcano", "gemfalls", "legendary", "ash", "lava", "unstable_power"]
 danger_level: legendary
@@ -92,14 +92,14 @@ The center of the realm by geography, gravity, and reputation. Its Gemfalls fund
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The only living things permitted in the dragon's lair are the embermoths, who dust its scales. The moths have seen more of the mountain's inside than every expedition in history combined.
 
 ### Neighbors
 
-- **[Red Sky Foothills](/biomes/red_sky_foothills/)** — The mountain provides gemstones, warning tremors, and the weather; the foothills provide gathering law, the moth-watch, and an audience. It is the realm's longest-running relationship between unequals, and it works because the smaller party does all the thinking for both.
-- **[The Expanse](/biomes/expanse/)** — The mountain closes the plateau's southern edge. Which of them is guarding which is a question the realm prefers not to need answered.
+- **[Red Sky Foothills](/biomes/red_sky_foothills/)**: The mountain provides gemstones, warning tremors, and the weather; the foothills provide gathering law, the moth-watch, and an audience. It is the realm's longest-running relationship between unequals, and it works because the smaller party does all the thinking for both.
+- **[The Expanse](/biomes/expanse/)**: The mountain closes the plateau's southern edge. Which of them is guarding which is a question the realm prefers not to need answered.
 
 ### Current Tensions
 

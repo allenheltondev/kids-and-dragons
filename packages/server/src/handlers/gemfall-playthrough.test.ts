@@ -63,10 +63,19 @@ interface Playthrough {
   playerIds: string[];
 }
 
+/**
+ * Choice ids a seed's party always takes when offered. Everything else is
+ * random. The Collection's Walk is one pursuit out of three and then one
+ * choice out of two, so leaving it to the dice makes "some party walked"
+ * a coin toss that any content change can flip; one party is held to it.
+ */
+const STEERED: Record<number, readonly string[]> = { 1: ["hoard", "walk"] };
+
 async function playCampaign(seed: number): Promise<Playthrough> {
   const rng = makeRng(`gemfall-playthrough-${seed}`);
   const random = () => rng.next();
   const pick = <T>(items: readonly T[]): T => items[Math.floor(random() * items.length)]!;
+  const steer = STEERED[seed] ?? [];
 
   const harness = makeHarness({ engine: realEngine, content });
   // The server seeds each step's dice from `runId:seq`, and a run id is a
@@ -160,7 +169,7 @@ async function playCampaign(seed: number): Promise<Playthrough> {
         continue;
       }
       if (prompt?.kind === "choice") {
-        const choiceId = pick(prompt.options).id;
+        const choiceId = (prompt.options.find((o) => steer.includes(o.id)) ?? pick(prompt.options)).id;
         const voters = prompt.forPlayerIds.length ? prompt.forPlayerIds : playerIds;
         if (prompt.vote) {
           // Everybody votes the same way; a split vote is the engine's
