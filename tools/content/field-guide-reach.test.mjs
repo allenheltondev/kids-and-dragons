@@ -88,6 +88,7 @@ const EXPECTED_REACHABLE = [
   "location.redspire_citadel",
   "location.stone_crossing",
   "npc.boggart",
+  "npc.burrowfolk",
   "npc.centaur",
   "npc.faun",
   "npc.frogfolk",

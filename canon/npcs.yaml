@@ -55,8 +55,80 @@ people_ids:
   - stone_troll
   - sheeple
   - witch_order
+  - burrowfolk
 
 npcs:
+  - id: npc.burrowfolk
+    asset_id: burrowfolk
+    title: Burrowfolk
+    canon_status: newly_defined
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting_people, fields, stone_records, prospecting]
+    scale: small_to_medium
+    short_description: >-
+      Compact, badger-like hill people whose stone records connect the farms of
+      the Sunward Fields with the oldest layers beneath them.
+    visual_identity: >-
+      Broad wedge muzzle, small round ears, bold charcoal-and-cream face bands,
+      russet body fur, broad pale digging paws, short sturdy legs and brush tail.
+      Practical mustard canvas and clay-red cloth; stone-sample satchels and
+      pocket notebooks. Upright, with two arms and two legs; never human-skinned.
+    common_story_uses: >-
+      Surveyor, prospector, patient repairer, exhausted traveler, child asking
+      an unexpectedly practical question, or neighbor who knows what lies below.
+    canon_constraints: >-
+      No people is inherently honest, greedy, good or evil. Surveying is a
+      widespread practice, not an inborn talent or mandatory occupation.
+      The Sunward Fields are a homeland, not an exclusive border; the Exchange
+      has no native or dominant people. Cult membership is an individual
+      allegiance, not a burrowfolk trait. This people does not explain the titan.
+    speech_register: >-
+      Concrete and companionable. Names the material before the conclusion,
+      asks where an object came from, and leaves room for a corrected answer.
+      Individuals may be hurried, poetic, blunt or uncertain.
+    standard_behavior: >-
+      Maintains stone and drainage records with neighboring farms, repairs
+      tools and cellar walls, shares shelter maps, and checks a promising find
+      against its place of origin before deciding what to carry away.
+    lore:
+      hook: "A stone without a place is only half a story."
+      story: >-
+        The first burrowfolk settlements grew along the low chalk and clay
+        ridges between the Sunward Fields. A flooded cellar and a dry well can
+        be the same problem viewed from different doors, so their oldest maps
+        join the ground above to the layers below. Children learn those maps
+        by carrying ordinary stones home and explaining where each was found;
+        an elder may return a dazzling specimen and keep a dull one that
+        finishes a missing layer. A home's stone shelf records its repairs,
+        visitors and mistakes, rather than its wealth.
+
+        When gemstones began falling in the north, some burrowfolk went to
+        earn money, some to bring relatives home, and some because stones
+        arriving without their layers troubled them. Their notebooks do not
+        make them wiser than their neighbors. A surveyor can mistake a rumor
+        for a map, and a tired prospector can sell tomorrow's clue for tonight's
+        meal. Ma Ruddle's lost wagon and Dunmore's embarrassed good intentions
+        are individual stories, not the character of a people.
+      pastimes:
+        - "Pebble exchanges: trade an ordinary stone and the precise story of the place it came from."
+        - "Repair circles: mend a neighbor's tool while the neighbor tells the part of its history they usually leave out."
+        - "Rain-window contests: predict which gutter will drip first, then inspect the one everyone forgot."
+      social: >-
+        A shared shelf in the village hall holds samples from common ground;
+        private shelves belong to households, and permission matters. Meals
+        accompany difficult corrections so a mistaken map need not become a
+        quarrel. These customs invite cooperation without guaranteeing it.
+      likes: []
+      dislikes: []
+    relationships:
+      primary_locations: [biome.sunward_fields]
+      secondary_locations: [biome.plains, biome.red_sky_foothills, location.exchange]
+      creatures: []
+      items: []
+
+
   - id: npc.centaur
     asset_id: centaur
     title: "Centaur"
