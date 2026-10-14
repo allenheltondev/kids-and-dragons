@@ -92,7 +92,7 @@
     },
     "scene_se_glades": {
       "type": "story",
-      "narration": "The southeastern glades are carpeted in bluebells that really do ring, very quietly, when a boot brushes them. You're early, you're dry, and the frogfolk crossing song is still stuck in everybody's head. In a pocket you find a honeycake that Gullet must have slipped in when nobody was looking.",
+      "narration": "The southeastern glades are carpeted in bluebells that really do ring, very quietly, when a boot brushes them. You're early, you're dry, and everybody can still see Gullet waving her notched hat from the far bank. In a pocket you find a honeycake that Gullet must have slipped in when nobody was looking.",
       "onEnter": [
         {
           "type": "grantItem",
@@ -111,7 +111,7 @@
     },
     "scene_flooded_paths": {
       "type": "story",
-      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
+      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome, the bigfoot town. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
       "cast": [
         {
           "figure": "cast/flood_warden",
@@ -137,7 +137,7 @@
     },
     "scene_runner_path": {
       "type": "story",
-      "narration": "A bigfoot runner comes jogging down the path toward you, a bundle of knotted cords over one shoulder. Right in front of her, the path folds itself up like a napkin and is gone. She keeps jogging, on the spot, frowning at the ferns. \"Third time today,\" she puffs. \"MossHome runner. Can't stop. Never stop. Can't get through, either.\"",
+      "narration": "A bigfoot runner comes jogging down the path toward you, a bundle of knotted cords over one shoulder. Right in front of her, the path folds itself up like a napkin and is gone. She keeps jogging, on the spot, frowning at the ferns. \"Third time today,\" she puffs. \"MossHome runner. Bigfoot town, up north. Can't stop. Never stop. Can't get through, either.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -343,7 +343,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_forest_objects",
-        "narration": "A beech tree creaks, and leans, and leans some more, until it's close enough to whisper."
+        "narration": "Something tall creaks, and leans, and leans some more, until it's close enough to whisper."
       },
       "onFailure": {
         "goto": "scene_hedge",
@@ -352,7 +352,7 @@
     },
     "scene_forest_objects": {
       "type": "story",
-      "narration": "The beech smells of rain when it whispers. It is not you the forest minds, it says. It is the stones, and what they did to the places where they fell. Where a stone landed, the glade around it is hurting. Pocket one, and the forest shuts its doors on you, just in case.",
+      "narration": "An old beech tree has bent right down to whisper, and it smells of rain. It is not you the forest minds, it says. It is the stones, and what they did to the places where they fell. Where a stone landed, the glade around it is hurting. Pocket one, and the forest shuts its doors on you, just in case.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1272,7 +1272,7 @@
       },
       "onFailure": {
         "goto": "ending_shown_the_door",
-        "narration": "The gray patches lead you in a circle, and then into a hedge, and then back to the same embarrassed toadstool. The forest has decided where you are going, and it is not the glade."
+        "narration": "The gray patches lead you in a circle, and then into a hedge, and then past an embarrassed-looking toadstool, twice. The forest has decided where you are going, and it is not the glade."
       }
     },
     "scene_glade_heart": {

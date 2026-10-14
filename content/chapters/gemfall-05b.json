@@ -45,7 +45,7 @@
       "discovers": [
         "character.bigfoot"
       ],
-      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. The bigfoot runner from the woods jogs past with a fresh bundle of cords, waves without stopping, and shouts, \"Told you! Bring your feet!\"",
+      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. The bigfoot runner from the woods jogs past with a fresh bundle of cords, waves without stopping, and shouts, \"You found it! Welcome to MossHome!\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -75,7 +75,7 @@
         },
         {
           "id": "glade_word",
-          "label": "Mention the glade you mended",
+          "label": "Mention that the worst glade is green again",
           "icon": "heart",
           "goto": "scene_mosshome_glade_word",
           "requiresFlag": "glade_mended"
@@ -345,7 +345,7 @@
     },
     "scene_spiral_pin": {
       "type": "story",
-      "narration": "You take a thorn and pin your own road: through the marsh, over the river, into the trees. Your thread runs right past three of the spiral's middles. The archivists lean in. \"You walked the edge of it all the way,\" one says. \"No wonder the paths noticed you.\" She ties a knot to remember it, then sends for the oldest archivist.",
+      "narration": "You take a thorn and pin your own road: through river and marsh, into the trees. Your thread runs right past three of the spiral's middles. The archivists lean in. \"You walked the edge of it all the way,\" one says. \"No wonder the paths noticed you.\" She ties a knot to remember it, then sends for the oldest archivist.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -413,7 +413,7 @@
     },
     "scene_knot_cords_rest": {
       "type": "story",
-      "narration": "You thank him and turn to go. Behind you, the oldest archivist tells a very old cord, not quite quietly enough, \"Didn't ask about the pile. Good manners, or no curiosity.\" The archivist walking you out stops in the doorway, sighs, and turns round. \"You'll want to know about the pile,\" she says. \"Everybody does, in the end.\"",
+      "narration": "You thank him and turn to go. Behind you, the oldest archivist tells a very old cord, not quite quietly enough, \"Didn't ask where the forest keeps what it takes. Good manners, or no curiosity.\" The archivist walking you out stops in the doorway, sighs, and turns round. \"You'll want to know where the forest keeps what it takes,\" she says. \"Everybody does, in the end.\"",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -437,7 +437,7 @@
     },
     "scene_pile_question": {
       "type": "story",
-      "narration": "The archivists look at each other. Yes, they know about the forest's pile, everything the Woods has taken off careless treasure hunters. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
+      "narration": "The archivists look at each other. Yes, the forest keeps a pile: everything the Woods has taken off careless treasure hunters, heaped up somewhere secret. Yes, they know where it is. No, they will not say. \"The pile is the forest's,\" says one. \"We only keep the record. And the record decides who it trusts.\"",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -459,7 +459,7 @@
         },
         {
           "id": "glade",
-          "label": "Tell them about the glade you mended",
+          "label": "Tell them the worst glade is green again",
           "icon": "leaf",
           "goto": "scene_pile_visit",
           "requiresFlag": "glade_mended",
@@ -907,7 +907,7 @@
     },
     "choice_elders_gatherers": {
       "type": "story",
-      "narration": "\"The grandmothers,\" says the eldest, and for the first time all evening she smiles. \"Bells carry further than cords.\" She sips. \"Tell them we said so. And tell us second.\"",
+      "narration": "\"The gatherer grandmothers,\" says the eldest, and for the first time all evening she smiles. \"They ring the bells in every foothill town, and bells carry further than cords.\" She sips. \"Tell them we said so. And tell us second.\"",
       "cast": [
         {
           "figure": "cast/mosshome_eldest",
@@ -970,7 +970,7 @@
     },
     "scene_falls_stair": {
       "type": "story",
-      "narration": "The way out of MossHome climbs the falls stair, and the falls are in a mood. Water is running over steps that should be dry, and the flood-warden in very tall boots is standing right in it, frowning at a pole marked with notches. \"Rising,\" she says. \"Then falling. All day. In time with the mountain's grumbles. Never seen that before.\"",
+      "narration": "The way out of MossHome climbs the falls stair, and the falls are in a mood. Water is running over steps that should be dry, and a bigfoot flood-warden in very tall boots is standing right in it, frowning at a pole marked with notches. \"Rising,\" she says. \"Then falling. All day. In time with the mountain's grumbles. Never seen that before.\"",
       "cast": [
         {
           "figure": "cast/flood_warden",
@@ -993,7 +993,7 @@
         },
         {
           "id": "dripping",
-          "label": "Remind her she met you dripping on the flooded paths",
+          "label": "Tell her you washed up dripping on the flooded paths",
           "icon": "drop",
           "requiresFlag": "marsh_kept_us",
           "goto": "scene_falls_stair_dripping"
@@ -1043,7 +1043,7 @@
     },
     "scene_falls_stair_dripping": {
       "type": "story",
-      "narration": "\"You!\" The flood-warden's whole face cracks into a grin. \"The soggy ones! Off the flooded paths!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she lifts each of you across the worst of the steps like parcels, one, two, three, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
+      "narration": "\"The flooded paths?\" The flood-warden's whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she lifts each of you across the worst of the steps like parcels, one, two, three, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
       "cast": [
         {
           "figure": "cast/flood_warden",
@@ -1331,7 +1331,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_cloud_gatherer",
-        "narration": "You lob the last of the MossHome biscuits down the slope. Three wolves look at each other, then at the biscuits, and decide biscuits win."
+        "narration": "You lob a handful of biscuits from your packs down the slope. Three wolves look at each other, then at the biscuits, and decide biscuits win."
       },
       "onFailure": {
         "goto": "encounter_wolves",
