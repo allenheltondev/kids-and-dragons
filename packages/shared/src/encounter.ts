@@ -441,6 +441,11 @@ export interface Combatant {
   readonly rooted: boolean;
   /** The initiative roll, kept so the client can show the order it produced. */
   readonly initiative: number;
+  /**
+   * Luckstone — attack rolls of 1 this figure may still throw again this
+   * fight. Optional because fights persisted before it existed carry none.
+   */
+  readonly rerollOnes?: number;
 }
 
 export interface EncounterState {
@@ -553,6 +558,8 @@ export interface PartyPlacement {
   /** Carried in from `RunState` — a party arrives from the last scene hurt. */
   readonly hp?: number;
   readonly down?: boolean;
+  /** Luckstone charges this hero brings in: rolls of 1 they may throw again. */
+  readonly rerollOnes?: number;
 }
 
 export interface EnemyPlacement {
@@ -689,6 +696,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       evade: false,
       rooted: false,
       initiative: 0,
+      ...(placement.rerollOnes ? { rerollOnes: placement.rerollOnes } : {}),
     });
     actors.push({ id: character.id, side: "party", x: placement.at.x, y: placement.at.y });
     seats.push({ id: character.id, side: "party", quick: character.stats.quick });
@@ -1478,15 +1486,28 @@ function applyEffect(
           rolled: false,
         };
       }
-      const roll = resolveAttack(ctx.rng, {
-        characterId: actor.id,
-        mod: actor.attackMod + input.bonus,
-        guard: recipient.guard,
-        ...(actor.attackStat === undefined ? {} : { stat: actor.attackStat }),
-      });
+      const swing = () =>
+        resolveAttack(ctx.rng, {
+          characterId: actor.id,
+          mod: actor.attackMod + input.bonus,
+          guard: recipient.guard,
+          ...(actor.attackStat === undefined ? {} : { stat: actor.attackStat }),
+        });
+      let roll = swing();
+      let working = state;
+      // Luckstone: a 1 is thrown again, once per charge per fight. Both rolls
+      // are shown, so the table sees the 1 and then the second chance.
+      if (roll.die === 1 && (actor.rerollOnes ?? 0) > 0) {
+        events.push({ type: "roll", roll });
+        working = updateCombatant(working, actorId, (c) => ({
+          ...c,
+          rerollOnes: (c.rerollOnes ?? 0) - 1,
+        }));
+        roll = swing();
+      }
       events.push({ type: "roll", roll });
-      if (roll.result !== "hit") return { state, rolled: true };
-      return { state: dealDamage(state, recipientId, effect.damage, events), rolled: true };
+      if (roll.result !== "hit") return { state: working, rolled: true };
+      return { state: dealDamage(working, recipientId, effect.damage, events), rolled: true };
     }
 
     case "damage":

@@ -349,7 +349,7 @@
     "check_chord": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Convince a choir of masks to teach their chord to people who want to hold the seal, not break it",
       "roller": "party",
       "onSuccess": {

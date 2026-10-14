@@ -45,6 +45,15 @@ export interface RunRecord {
    * Absent on runs created before it existed, which were never claimable.
    */
   lobbyFor?: string;
+  /**
+   * The secret half of every dice seed in this run (handlers/action.ts). The
+   * public half, `runId:seq`, is on every screen; without this, anybody who
+   * knew the run id could work out the next roll and stall until it was a 20.
+   * Here, not on the run state, for the same reason as `lobbyFor`: the state
+   * goes to every screen. Absent on runs created before it existed, which keep
+   * rolling from the public seed so their event logs still replay.
+   */
+  diceSecret?: string;
 }
 
 /**

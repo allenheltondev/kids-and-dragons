@@ -323,20 +323,20 @@
   font-size: var(--font-size-sm, 0.875em);
 }
 
-/* The confirm card is a raised panel with the gold "chosen" rim: this is the
-   thing you picked, held up for a second look before it commits. */
+/*
+ * The confirm row: what you picked, then Change / Do it!. Deliberately quiet —
+ * no card and no gold rim of its own. The gold already sits on the answer you
+ * picked, and a second glowing box right under it read as one more thing to
+ * choose between. Set apart from the answers by space and a rule instead, so a
+ * thumb heading for "Do it!" does not land on the option above it.
+ */
 .confirm {
   display: flex;
   flex-direction: column;
   gap: var(--space-2, 0.5em);
-  padding: var(--space-3, 0.75em);
-  border: 0;
-  border-radius: var(--radius-lg, 1.25em);
-  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 0.18em 0 var(--kad-raised-edge, #0a0814),
-    var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c);
+  margin-block-start: var(--space-3, 0.75em);
+  padding-block-start: var(--space-3, 0.75em);
+  border-block-start: 0.08em solid var(--color-border, #3a3468);
 }
 
 .confirm__what {
@@ -351,13 +351,20 @@
 .confirm__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5em);
+  justify-content: space-between;
+  gap: var(--space-3, 0.75em);
 }
 
-/* Change and Do it! share the row evenly, like the creation footer. */
+/* Change keeps its own width; the commit takes the rest, up to a point, so it
+   is the obvious button without being a slab across the whole phone. */
 .confirm__actions > * {
-  flex: 1 1 0;
+  flex: 0 0 auto;
   min-inline-size: 0;
+}
+
+.confirm__actions > .kad-button--primary {
+  flex: 0 1 12em;
+  margin-inline-start: auto;
 }
 
 /* --- The party strip (spec §6.1) --------------------------------------- */
@@ -948,7 +955,8 @@
    * bar keeps its words — they are the only place an action is named.
    */
   .confirm {
-    padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+    margin-block-start: var(--space-2, 0.5em);
+    padding-block-start: var(--space-2, 0.5em);
   }
 
   .prompt:not(.combat) .confirm__what {
@@ -1116,5 +1124,81 @@
   .choice--on,
   .confirm {
     animation: none;
+  }
+}
+
+/*
+ * Right-sizing the bag page to the phone it is on.
+ *
+ * Sized for the smallest phone, the page left a quarter of a tall one empty
+ * between the bag and Room settings while the things you tap — stats, faces,
+ * slots — stayed small. Now the bag takes whatever height is spare (its rows
+ * stretch, up to a point), and a tall pane gets bigger tiles across the board.
+ * A short phone keeps the compact sizes and does not start scrolling.
+ *
+ * A size container is safe here: the scroller's height comes from the flex
+ * column it sits in, never from its contents.
+ */
+.player__scroll {
+  container: sheet / size;
+}
+
+.inv {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.inv__grid {
+  flex: 1 0 auto;
+  grid-auto-rows: minmax(4.25em, 1fr);
+  max-block-size: 20em;
+}
+
+.inv__button,
+.inv__slot--empty {
+  min-height: 4.25em;
+}
+
+@container sheet (min-height: 34em) {
+  .stat-row__item {
+    min-block-size: var(--kad-touch-min, 2.75em);
+    padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  }
+
+  .stat-row__value {
+    font-size: var(--font-size-xl, 1.5em);
+  }
+
+  .party-strip__button {
+    inline-size: 6em;
+    padding: var(--space-2, 0.5em);
+  }
+
+  .party-strip__portrait {
+    inline-size: 3em;
+    block-size: 3.6em;
+  }
+
+  .inv__empty-mark {
+    width: 2.2em;
+    height: 2.2em;
+  }
+
+  .inv__slot-name {
+    font-size: 0.85em;
+  }
+}
+
+/* The same for a question: on a tall pane the answers are bigger targets. */
+@container prompt (min-height: 40em) {
+  .player--deciding .prompt:not(.combat) .choice {
+    min-block-size: 4.5em;
+    padding: var(--space-3, 0.75em) var(--space-4, 1em);
+  }
+
+  .player--deciding .prompt:not(.combat) .choice__icon {
+    width: 3.2em;
+    height: 3.2em;
   }
 }

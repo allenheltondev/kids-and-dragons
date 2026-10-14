@@ -19,7 +19,7 @@ import type {
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
-import { newId } from "../ids.ts";
+import { newId, newSecret } from "../ids.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
@@ -123,6 +123,7 @@ export async function createRoom(
     status: "active",
     createdAt: iso(nowMs),
     lobbyFor: input.householdId,
+    diceSecret: newSecret(),
   });
 
   // The engine owns the initial state's shape; the room owns its identity.

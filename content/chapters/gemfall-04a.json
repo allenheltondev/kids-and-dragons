@@ -211,7 +211,7 @@
     "check_greeting": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Wave first, slowly and kindly, the way the road peoples do",
       "cast": [
         {

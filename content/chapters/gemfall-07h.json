@@ -986,7 +986,7 @@
     "check_bend": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Outbid three other crowds for one humming wagon",
       "roller": "party",
       "onSuccess": {

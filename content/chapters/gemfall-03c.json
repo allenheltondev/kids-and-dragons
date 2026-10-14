@@ -208,7 +208,7 @@
     "check_expose": {
       "type": "check",
       "stat": "clever",
-      "tn": 12,
+      "tn": 16,
       "prompt": "Spot where the Sun Card really goes",
       "cast": [
         {
@@ -786,7 +786,7 @@
     "check_answer": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Tell Mother Thrum what you actually want, and mean it",
       "cast": [
         {
@@ -888,7 +888,7 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Stay calm and cross together",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "end_forded",
         "narration": "With friends on every side, the ford is just very wet walking. Somebody up on a wagon starts clapping as you reach the north bank."
@@ -933,7 +933,7 @@
     "check_drake_toll": {
       "type": "check",
       "stat": "heart",
-      "tn": 12,
+      "tn": 8,
       "prompt": "Pay the river drakes politely in bread",
       "cast": [
         {

@@ -152,15 +152,15 @@ describe("TV banner", () => {
     render(<FieldGuideBanner />);
     act(() => {
       useGameStore.setState({
-        presentation: { seq: 5, presentation: { kind: "ROLL" } } as unknown as ReturnType<typeof useGameStore.getState>["presentation"],
+        presentation: { seq: 5, presentation: { kind: "ROLL", roll: { die: 14 } } } as unknown as ReturnType<typeof useGameStore.getState>["presentation"],
       });
     });
     news("creature.moth");
     await act(async () => { await Promise.resolve(); await Promise.resolve(); });
     expect(screen.queryByRole("status")).toBeNull();
     expect(getFieldGuideNews()).toHaveLength(1);
-    // 1500ms roll + the gap
-    expect((await screen.findByRole("status", {}, { timeout: 3000 })).textContent).toContain("Embermoth");
+    // The whole dice card (rollCardMs) + the gap
+    expect((await screen.findByRole("status", {}, { timeout: 5000 })).textContent).toContain("Embermoth");
   });
 
   it("shows nothing, and fetches nothing, with no news", async () => {
