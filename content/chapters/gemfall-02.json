@@ -156,7 +156,7 @@
     },
     "scene_caravan_turned": {
       "type": "story",
-      "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there.\"",
+      "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there, all the way to Bramblewood.\"",
       "onEnter": [
         {
           "type": "grantItem",
@@ -178,7 +178,7 @@
       "discovers": [
         "creature.jackalope"
       ],
-      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming.",
+      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming. Up on the low ridge above the road, a flock of sheeple stands in one woolly knot, all staring the same way.",
       "choices": [
         {
           "id": "look_inland",
