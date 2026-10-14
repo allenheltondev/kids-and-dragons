@@ -124,7 +124,7 @@
       "narration": "On the first slope, a faun family comes trotting downhill with everything they own on their backs, including a goat. The smallest one, Tansy, stops right in front of you and holds out a tiny pink stone. \"It hums at night,\" she whispers. \"It hummed louder when the ground shook. Is it my fault?\" Her family waits for her, very politely, and very much wanting to keep running.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/tansy",
           "name": "Tansy",
           "size": "small"
         }
@@ -163,7 +163,7 @@
       "narration": "Tansy looks at the stone, and at the mountain, and at you. Then she puts it in your hand and folds your fingers over it, very seriously, like signing a contract. \"Tell it sorry from me,\" she says. Then her family is off down the slope, the goat complaining the whole way. The little stone is warm. It is yours to carry now.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/tansy",
           "name": "Tansy",
           "size": "small"
         }
@@ -182,7 +182,7 @@
       "narration": "\"It is saying hello,\" you tell her. \"Stones do that up here.\" Tansy holds it to her ear, and her face goes from worried to delighted. \"Hello,\" she whispers back to it. Then she trots off downhill after her family, holding the stone to her ear the whole way, and the goat gives you a long look that says it is not convinced.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/tansy",
           "name": "Tansy",
           "size": "small"
         }
@@ -201,7 +201,7 @@
       "narration": "You show her how the ford witch kept the Ford Stone: wrapped up snug in a thick wool sock, and kept warm. Tansy's mother pulls a sock out of a bundle at once. It is a very loud sock, striped orange and green. The pink stone goes in, and its hum goes soft as a purr. Tansy hugs the sock, and the family trots on downhill.",
       "cast": [
         {
-          "figure": "entities/faun",
+          "figure": "cast/tansy",
           "name": "Tansy",
           "size": "small"
         }

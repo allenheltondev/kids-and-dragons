@@ -437,3 +437,15 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+
+## Expanded Gemfall cast figures
+
+- **Brisk** (`assets/cast/brisk/assembled.png`): Alert bay centaur scout with a blue road sash, map and feather markers.
+- **Perrin Nine-Verse** (`assets/cast/perrin_nine_verse/assembled.png`): Russet centaur poet with sandy mane, plum coat and verse book.
+- **Bryony** (`assets/cast/bryony/assembled.png`): Mint-green dragonling collector with wings, horns and a cream pouch of tokens.
+
+The figures were generated in two isolated 2×2 cutout sheets, then separated into individual 1024×1024 RGBA figures with feet set at y=900.
+- **Lady Fleecewick** (`assets/cast/lady_fleecewick/assembled.png`): Elegant older sheeple collector with lavender curls, teal coat, jeweled brooch and ledger satchel.
+- **Cadet Linnet** (`assets/cast/cadet_linnet/assembled.png`): Slate-blue griffin Skywarden with cream face, green cadet cloak and bronze badge.
+- **Tansy** (`assets/cast/tansy/assembled.png`): Small russet faun child with yellow scarf and pink humming stone.

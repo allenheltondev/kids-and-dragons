@@ -40,3 +40,9 @@ entry for them to the scenes listed (check the narration first: some were judged
 | Deep Hollow choir / Hessa | gemfall-08 | `check_tether_cult`, `check_tether_cult_bare` | Deep Hollow Cult choir in bark masks singing a crystal chord; Hessa reads the bargain twice |
 | Caravan master | gemfall-07r | `choice_the_bend_heard_it`, `check_caravan_helped`, `check_caravan` | exhausted, practical caravan master (she) with a headache, twelve-wagon caravan, mules with cotton in their ears; species not stated |
 | Crying gem-buyer | gemfall-07r | `scene_grandmothers` | gem-buyer crying into a very expensive hat; species not stated |
+| Brisk | gemfall-07h | `walk_scene_factions` and its subsequent Brisk appearances | alert bay centaur scout with a blue road sash, map and feather markers |
+| Perrin Nine-Verse | gemfall-05c | `scene_centaur_whisper` and its follow-up scenes | russet centaur poet with sandy mane, plum coat and verse book |
+| Bryony | gemfall-07h | `scene_price_board` and its follow-up scenes | mint-green dragonling collector with wings, horns and a cream token pouch |
+| Lady Fleecewick | gemfall-07h | `scene_rival_collector`, `scene_rival_collector_trade`, `check_rival_collector`, `scene_rival_collector_pride` | older sheeple collector with lavender curls, teal coat, jeweled brooch and ledger satchel |
+| Cadet Linnet | gemfall-07l | `scene_two_scouts`, `check_two_scouts`, `scene_two_scouts_table_stone`, `scene_bend_crowds_scouts` | slate-blue griffin Skywarden with a green cadet cloak and bronze badge |
+| Tansy | gemfall-08 | `scene_faun_family`, `scene_faun_family_carry`, `scene_faun_family_hello`, `scene_faun_family_sock` | small russet faun child with a yellow scarf and pink humming stone |
