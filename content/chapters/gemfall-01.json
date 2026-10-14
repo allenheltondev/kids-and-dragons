@@ -1,11 +1,11 @@
 {
-  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). The six motive votes each land on a short result scene (scene_motive_*) before the docks, so the vote is seen to matter at the table. No combat: the Exchange is people, prices and promises. Expansion: the prologue ends on a vote (what the party was doing on the docks that night), and each pick pays off later in the chapter: the lamps open Old Wick's path over the Long Bridge, the oranges buy the sailors' rumors, the sardine feeds the gull. Further episodes: the jammed Long Bridge, the Griffin Post (whose friends can vouch for the stone), the gull, Mrs. Tuft's provision barge, Mortar's goodbye (whose word gets you hired by Hesper), and the North Gate on the way out.",
+  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). The six motive votes each land on a short result scene (scene_motive_*) before the docks, so the vote is seen to matter at the table. No combat: the Exchange is people, prices and promises. Expansion: the prologue ends on a vote (what the party was doing on the docks that night), and each pick pays off later in the chapter: the lamps open Old Wick's path over the Long Bridge, the oranges buy the sailors' rumors, the sardine feeds the gull. Further episodes: the jammed Long Bridge, the Griffin Post (whose friends can vouch for the stone), the gull, Mrs. Tuft's provision barge, Mortar's goodbye (whose word gets you hired by Hesper), and the North Gate on the way out. Second pass: a selkie family arriving on the quay (help them, and they make room for you when the Empty Chair inn is full) and the full inn itself.",
   "id": "gemfall-01",
   "campaignId": "gemfall",
   "index": 1,
   "title": "The City That Smelled Opportunity",
   "biome": "exchange",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 45,
   "xpAward": 100,
   "entry": "scene_prologue_realm",
   "objectives": [
@@ -504,7 +504,7 @@
           "id": "to_docks",
           "label": "Go and find out what gems are fetching at the docks",
           "icon": "gem",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -526,7 +526,7 @@
           "id": "to_docks",
           "label": "Go and ask the docks what they heard",
           "icon": "eye",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -553,7 +553,7 @@
           "id": "to_docks",
           "label": "Go where the news is made: the docks",
           "icon": "crown",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -579,7 +579,7 @@
           "id": "to_docks",
           "label": "Walk her down to the docks and find her a wagon",
           "icon": "shield",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -601,7 +601,7 @@
           "id": "to_docks",
           "label": "Take your first steps as new people: down to the docks",
           "icon": "leaf",
-          "goto": "scene_docks"
+          "goto": "scene_newcomers"
         }
       ]
     },
@@ -623,6 +623,118 @@
           "id": "to_docks",
           "label": "Waddle down to the docks, victorious",
           "icon": "star",
+          "goto": "scene_newcomers"
+        }
+      ]
+    },
+    "scene_newcomers": {
+      "type": "story",
+      "discovers": [
+        "npc.selkie"
+      ],
+      "narration": "On the way to the docks, a little boat bumps the quay, and off climbs a family of selkies: two grown-ups, a grandmother, and five children, carrying everything they own. They read the rush prices on the chalkboard and go very quiet. They came for a fresh start, in the same week as everybody else in the world. Nobody stops to help. Everybody is busy going north.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "carry",
+          "label": "Carry their bags to the Empty Chair inn",
+          "icon": "might",
+          "goto": "check_newcomers_carry",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "selkies_at_inn",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "plaque",
+          "label": "Show them the plaque that names a family of selkies",
+          "icon": "scroll",
+          "goto": "scene_newcomers_plaque",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "river_charm",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "fresh",
+          "label": "Tell them we're starting fresh too",
+          "icon": "leaf",
+          "requiresFlag": "motive_fresh_start",
+          "goto": "scene_newcomers_fresh",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "selkies_at_inn",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "check_newcomers_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Carry a whole family's luggage up the busiest street in the realm",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_docks",
+        "narration": "Trunks, bundles, a rocking chair and a fishbowl with a very calm fish in it: you carry the lot up the hill without dropping a thing. The selkies take a room at the Empty Chair, and the five children wave from the window until you turn the corner."
+      },
+      "onFailure": {
+        "goto": "scene_docks",
+        "narration": "Halfway up the hill the biggest trunk pops open, and out pour about a hundred knitted socks. All five children help you chase them down the street. It takes ages, and it is the most fun anybody has had all week. The selkies take a room at the Empty Chair, socks and all."
+      }
+    },
+    "scene_newcomers_plaque": {
+      "type": "story",
+      "narration": "You walk them to the seventeen brass plaques and find the one that names a family of selkies among the founders of the Exchange. The grandmother reads it twice. Then she sits down on her trunk and says, \"Well, then. We're home.\" She unties a river charm from her own wrist and ties it to yours, \"for the road north, since you're going.\"",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave goodbye and head for the docks",
+          "icon": "scroll",
+          "goto": "scene_docks"
+        }
+      ]
+    },
+    "scene_newcomers_fresh": {
+      "type": "story",
+      "narration": "\"Us too,\" you tell them, and the whole family relaxes at once, like a sail when the wind drops. You swap the only fresh-start advice you know: eat at Mortar's, ignore the chalkboards, and save the empty chair for whoever comes next. They take a room at the Empty Chair inn and promise to save one for you.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head down to the docks",
+          "icon": "leaf",
           "goto": "scene_docks"
         }
       ]
@@ -1552,7 +1664,7 @@
           "id": "to_inn",
           "label": "Find a bed for the night",
           "icon": "rest",
-          "goto": "rest_empty_chair"
+          "goto": "scene_inn_full"
         }
       ]
     },
@@ -1577,13 +1689,126 @@
           "id": "to_inn_cake",
           "label": "Find a bed for the night",
           "icon": "rest",
+          "goto": "scene_inn_full"
+        }
+      ]
+    },
+    "scene_inn_full": {
+      "type": "story",
+      "narration": "Every inn in the Exchange is full to the chimneys. At the Empty Chair, Innkeeper Flint, a stone troll in a very small nightcap, has one bed left: a cupboard under the stairs. Four other groups of prospectors want it too. Flint folds his arms. \"Best offer,\" he rumbles. How do we win the cupboard?",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "choices": [
+        {
+          "id": "story",
+          "label": "Tell the best story of the red night",
+          "icon": "heart",
+          "goto": "check_inn_story"
+        },
+        {
+          "id": "dishes",
+          "label": "Offer to wash up the supper bowls for it",
+          "icon": "drop",
+          "goto": "scene_inn_full_dishes"
+        },
+        {
+          "id": "selkies",
+          "label": "Find the selkie family upstairs",
+          "icon": "party",
+          "requiresFlag": "selkies_at_inn",
+          "goto": "scene_inn_full_selkies"
+        },
+        {
+          "id": "outbid",
+          "label": "Outbid everybody with Madame Fenn's purse",
+          "icon": "gem",
+          "requiresFlag": "ember_sold",
+          "goto": "scene_inn_full_outbid"
+        }
+      ]
+    },
+    "check_inn_story": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the red night so well a whole inn goes quiet",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "rest_empty_chair",
+        "narration": "You tell it all: the cherry-red sky, the gem-light falling, the seagull and its very surprised fish. The whole inn goes quiet. Flint wipes one eye with a dishcloth and hands you the cupboard key without a word."
+      },
+      "onFailure": {
+        "goto": "rest_empty_chair",
+        "narration": "Your story wanders off somewhere around the fish and never quite comes back. The prospectors laugh so kindly that Flint gives the cupboard to someone else and you the hayloft above the mules, which is warm, smells of apples, and is honestly nicer."
+      }
+    },
+    "scene_inn_full_dishes": {
+      "type": "story",
+      "narration": "There are three hundred supper bowls, and some of them have been used twice. You wash, dry and stack until your fingers go wrinkly as raisins and the kitchen is full of soap bubbles. At midnight Flint inspects one bowl very closely, says \"Hm,\" and hands you the key. The other prospectors are still arguing about prices.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squeeze into the cupboard",
+          "icon": "drop",
+          "goto": "rest_empty_chair"
+        }
+      ]
+    },
+    "scene_inn_full_selkies": {
+      "type": "story",
+      "narration": "The selkie family you helped today hear your voices and come thundering down the stairs. \"You'll squash in with us,\" says the grandmother, and that is the end of the argument. Their room is tiny, and eight selkies is a lot of selkie, but it is warm. The five children want a bedtime story, and they want it about you.",
+      "cast": [
+        {
+          "figure": "entities/selkie",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squash in and tell the story",
+          "icon": "party",
+          "goto": "rest_empty_chair"
+        }
+      ]
+    },
+    "scene_inn_full_outbid": {
+      "type": "story",
+      "narration": "You open Madame Fenn's clanking purse and name a number. The other prospectors go pale and wander off to sleep in the stables. Flint bites one coin to check it is real, then another to check the first one was. The cupboard is yours. It is still a cupboard, but it is the most expensive cupboard in the realm.",
+      "cast": [
+        {
+          "figure": "entities/stone_troll",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Admire your very expensive cupboard",
+          "icon": "gem",
           "goto": "rest_empty_chair"
         }
       ]
     },
     "rest_empty_chair": {
       "type": "rest",
-      "narration": "You rent the last room in the Exchange, which is a cupboard under some stairs with a lovely view of the stairs. Somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions, and all three of them are right.",
+      "narration": "Cupboard, hayloft or squashed-up room, it is warm and dry, and somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions, and all three of them are right. Tomorrow the caravans leave.",
       "heal": 2,
       "choices": [
         {
@@ -2126,7 +2351,9 @@
       "orange_captain": "the yeti captain of the Sunny Disposition, an orange ship; cheerful, orange peel in his fur, pays every debt, mostly in oranges",
       "postmaster_quill": "Postmaster Quill, a griffin with spectacles on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
       "courier_griffin": "a young courier griffin, always hungry, bows with wings out to people it will remember",
-      "mrs_tuft": "Mrs. Tuft, a sheeple grocer on a provision barge, wool full of price tags; everything comes in a jar; brisk and a little dry"
+      "mrs_tuft": "Mrs. Tuft, a sheeple grocer on a provision barge, wool full of price tags; everything comes in a jar; brisk and a little dry",
+      "selkie_grandmother": "the grandmother of a selkie family just arrived for a fresh start; brisk, warm, decides things are settled and they are",
+      "innkeeper_flint": "Innkeeper Flint, a stone troll who runs the Empty Chair inn in a very small nightcap; rumbles, folds his arms, secretly soft"
     }
   }
 }
