@@ -1412,7 +1412,7 @@
     },
     "scene_rim_lookout_send_word": {
       "type": "story",
-      "narration": "You write two short letters. One for Elder Sefa: the cubs were right, the ground is singing. One for Old Lintel: we are finding out. Bracken tucks them in her sash. \"Troll'll take a year to read it,\" she says. \"He'll hear every word, though.\" Then she is gone, south, at a gallop.",
+      "narration": "You write two short letters. One for Elder Sefa: the cubs were right, the stones really are singing. One for Old Lintel: we are finding out. Bracken tucks them in her sash. \"Troll'll take a year to read it,\" she says. \"He'll hear every word, though.\" Then she is gone, south, at a gallop.",
       "cast": [
         {
           "figure": "entities/centaur",
