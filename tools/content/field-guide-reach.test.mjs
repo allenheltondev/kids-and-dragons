@@ -98,6 +98,7 @@ const EXPECTED_REACHABLE = [
   "npc.stone_troll",
   "npc.witch_order",
   "npc.yeti",
+  "npc.boughkin",
 ];
 
 /** What no chapter reveals yet: places, peoples and creatures no campaign visits. */
@@ -140,7 +141,7 @@ describe("Field Guide reach", () => {
   });
 
   it("reaches exactly the known set of entries", () => {
-    expect(reachable).toEqual(EXPECTED_REACHABLE);
+    expect(reachable).toEqual([...EXPECTED_REACHABLE].sort());
   });
 
   it("leaves exactly the known set of entries unreachable", () => {

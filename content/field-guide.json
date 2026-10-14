@@ -1681,6 +1681,29 @@
         }
       ]
     },
+    "npc.boughkin": {
+      "id": "npc.boughkin",
+      "category": "peoples",
+      "kind": "people",
+      "title": "Boughkin",
+      "short_description": "Rare speaking beech trees of the Enchanted Woods who keep local memories in the patient language of rain, roots and returning footsteps.",
+      "scale": "very_large",
+      "classification": "supporting_people",
+      "asset_id": "boughkin",
+      "art": "/assets/entities/boughkin/portrait.webp",
+      "lore": {
+        "story": "Boughkin live chiefly among the beeches of the Enchanted Woods, where a speaking tree may stand beside a hundred silent ones. Families are known by the paths they have watched, not by a claim to own them. A grove's recollections overlap like stories told at one table: one remembers the boots, another the weather, and a third insists that everyone has forgotten the smell of the soup. Visitors carry messages between groves. Roots carry water, not every secret in the world.\nA boughkin can loosen and settle its roots over many seasons, but moving is slow and costly; most choose to remain good neighbors to one place. The gem rush reaches them as broken carts, hurried voices, altered drainage and footpaths that no longer arrive where they did. The old beech in Gemfall speaks because someone finally asks it a question, not because all trees have decided to explain the mountain. Some boughkin offer shelter freely, some negotiate, and some want to be left alone. A traveler must still ask.",
+        "pastimes": [
+          "Rain recollections: compare the sound of showers from years apart, disagreeing courteously about the best one.",
+          "Visitor verses: ask returning travelers for one line describing how a familiar road has changed.",
+          "Shade arrangements: spend a season making an especially comfortable patch of afternoon shade."
+        ],
+        "likes": [],
+        "dislikes": [],
+        "hook": "The path moved. The tree noticed who kept walking.",
+        "social": "Conversation has space for long pauses, and interrupting a tree is discourteous rather than dangerous. Permission to shelter beneath a crown is a small agreement, not a debt of obedience. Families value returning visitors while recognizing that travelers must travel."
+      }
+    },
     "npc.centaur": {
       "id": "npc.centaur",
       "category": "peoples",

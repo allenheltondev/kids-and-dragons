@@ -143,7 +143,15 @@
       "onFailure": {
         "goto": "scene_mosshorns",
         "narration": "The trees rustle something long and complicated. It might be an answer. It might be a soup recipe. You walk past the same embarrassed toadstool three times before a path finally lets you through."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/boughkin"
+        }
+      ],
+      "discovers": [
+        "npc.boughkin"
+      ]
     },
     "scene_forest_objects": {
       "type": "story",
@@ -161,6 +169,11 @@
           "label": "Thank the beech and walk on",
           "icon": "leaf",
           "goto": "scene_mosshorns"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/boughkin"
         }
       ]
     },
