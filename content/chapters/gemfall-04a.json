@@ -80,6 +80,10 @@
       ],
       "cast": [
         {
+          "figure": "entities/burrowfolk",
+          "name": "Cart driver"
+        },
+        {
           "figure": "entities/donkey",
           "name": "Cart donkey"
         }
@@ -736,6 +740,16 @@
           "requiresSpecies": "manticore",
           "goto": "scene_brass_rope_whose_road"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_brass_rope_ask_question": {
@@ -747,6 +761,16 @@
           "label": "Walk on north",
           "icon": "ear",
           "goto": "scene_relay_runner"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -760,6 +784,16 @@
           "icon": "boot",
           "goto": "scene_relay_runner"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_brass_rope_whose_road": {
@@ -771,6 +805,16 @@
           "label": "Walk on north",
           "icon": "crown",
           "goto": "scene_relay_runner"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },

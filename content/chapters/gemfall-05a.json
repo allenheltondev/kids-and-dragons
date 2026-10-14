@@ -121,6 +121,10 @@
         {
           "figure": "cast/hollis",
           "name": "Hollis"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Muddy prospector"
         }
       ]
     },
@@ -139,6 +143,10 @@
         {
           "figure": "cast/hollis",
           "name": "Hollis"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Muddy prospector"
         }
       ]
     },
@@ -764,6 +772,16 @@
           "icon": "scroll",
           "goto": "scene_brass_south_ask_question"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_brass_south_ask_what": {
@@ -775,6 +793,16 @@
           "label": "Wish them a good road home",
           "icon": "ear",
           "goto": "scene_tremor"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -788,6 +816,16 @@
           "icon": "cake",
           "goto": "scene_tremor"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_brass_south_ask_question": {
@@ -799,6 +837,16 @@
           "label": "Wish them a good road home",
           "icon": "scroll",
           "goto": "scene_tremor"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },

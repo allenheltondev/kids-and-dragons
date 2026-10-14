@@ -48,8 +48,8 @@
           "name": "Grandmother"
         },
         {
-          "figure": "entities/faun",
-          "name": "Faun prospector"
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
         }
       ],
       "choices": [
@@ -251,8 +251,8 @@
           "figure": "entities/embermoth"
         },
         {
-          "figure": "entities/faun",
-          "name": "Faun prospector"
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
         }
       ],
       "choices": [
@@ -326,8 +326,8 @@
           "figure": "entities/embermoth"
         },
         {
-          "figure": "entities/faun",
-          "name": "Faun prospector"
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
         }
       ],
       "choices": [
@@ -843,6 +843,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "choices": [
@@ -926,6 +930,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "roller": "party",
@@ -1009,6 +1017,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "choices": [
@@ -1064,6 +1076,12 @@
           "label": "Up the ridge road at last",
           "icon": "hand",
           "goto": "scene_citadel_gate"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ]
     },
@@ -2392,6 +2410,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
         }
       ],
       "choices": [

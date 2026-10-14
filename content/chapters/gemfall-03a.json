@@ -168,12 +168,17 @@
         }
       ],
       "discovers": [
-        "location.stone_crossing"
+        "location.stone_crossing",
+        "npc.burrowfolk"
       ],
       "cast": [
         {
-          "figure": "cast/brassbuckle_faun",
-          "name": "Brassbuckle faun"
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -193,8 +198,12 @@
       },
       "cast": [
         {
-          "figure": "cast/brassbuckle_faun",
-          "name": "Brassbuckle faun"
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -218,8 +227,12 @@
       ],
       "cast": [
         {
-          "figure": "cast/brassbuckle_centaur",
-          "name": "Brassbuckle centaur"
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -1062,6 +1075,16 @@
           "icon": "heart",
           "goto": "scene_skip_passes_no_thanks"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "check_small_print": {
@@ -1088,6 +1111,16 @@
           "label": "Shuffle forward in the queue",
           "icon": "arrow",
           "goto": "scene_first_story"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -1289,6 +1322,16 @@
           "icon": "eye",
           "goto": "rest_queue_camp"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "choice_camp_spot_by_water": {
@@ -1326,6 +1369,16 @@
           "requiresFlag": "camped_by_brass",
           "goto": "scene_night_rope_sit_on_rope"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "check_night_rope": {
@@ -1351,6 +1404,14 @@
           "figure": "cast/old_lintel",
           "name": "Old Lintel",
           "size": "very_large"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ],
       "choices": [
@@ -1371,6 +1432,16 @@
           "label": "Sleep till morning",
           "icon": "rest",
           "goto": "scene_wake_fee"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },

@@ -321,6 +321,20 @@
           "goto": "scene_forest_objects",
           "requiresItem": "facet_barge"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun prospector"
+        },
+        {
+          "figure": "entities/boggart",
+          "name": "Boggart prospector"
+        }
       ]
     },
     "scene_attendance_open_path": {

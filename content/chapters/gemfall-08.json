@@ -2275,6 +2275,10 @@
         {
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
         }
       ],
       "roller": "party",
@@ -2386,6 +2390,10 @@
         {
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
         }
       ],
       "roller": "party",
