@@ -1,6 +1,8 @@
 # Story cast pilot review
 
 The pilot adds Coralie Fenn, Great-Gran Ashby, and Pellam. All use medium scale.
+Ashby was corrected after review to exactly four legs (one raised foreleg,
+one planted foreleg, two hind legs); her after-captures show the corrected figure.
 Art verification: **734 passed**, no failures. Content validation: **55 passed**.
 Each figure is 1024×1024 RGBA with real alpha, minimum margin 81px, feet at y=900.
 Chapter scope comparison: exactly 42 cast figure replacements; all other fields identical.

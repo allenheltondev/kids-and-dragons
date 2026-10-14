@@ -134,6 +134,14 @@ Brisk tender expression, older and bigger rather than baby dragon in a shawl. En
 single cutout inside a 1024x1024 transparent canvas with clear margins, lowest
 feet/stick row at y900, no shadow or floor or lettering. Keep distinct species anatomy.
 
+Anatomy correction after pilot review, using the packaged Ashby as the edit reference:
+
+Edit this existing Great-Gran Ashby dragon illustration to fix an anatomical error: she currently has FIVE legs (four planted feet plus an extra raised foreleg holding the stick). Remove the extra planted FRONT leg on the far side, the leftmost planted foot directly behind the walking stick. Keep the raised near foreleg resting on the stick, ONE planted front leg below the shoulder, and TWO planted hind legs below the hips. EXACTLY FOUR limbs total: one raised foreleg, one planted foreleg, two planted hind legs. No fifth limb, no extra paw. Fill the removed limb area with transparent background and natural torso contour. Preserve her face, elder proportions, shawl, walking stick, tail, wings, scales, left-facing pose, colors, and painted style. One complete dragon on a true transparent background, no ground shadow, no text. Square canvas with clear margins. This is a targeted anatomy correction, not a redesign.
+
+The first pilot accidentally showed four planted legs plus the raised foreleg. The
+corrected production image has exactly four legs: one raised foreleg, one planted
+foreleg, and two planted hind legs. The TV and phone after-captures were refreshed.
+
 ### Pellam generation prompt
 
 NEW single character Pellam the Skywarden bridge clerk. Reference image shows mixed
