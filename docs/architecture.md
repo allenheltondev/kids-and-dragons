@@ -346,8 +346,8 @@ and the seat and publishes `{ "kind": "preview", playerId, preview }` straight t
 committed and the seq does not move — a preview that went through `applyAction` would make every
 exploratory tap a STALE_SEQ for whoever confirms next. They are live-only (never logged, never
 replayed, sent over SSE with no `id:`), so each names the decision it was made for:
-`previewContext(state)` (shared/src/preview.ts) — the combat turn as it stands (whose turn, round,
-slot, steps left, action spent) or the story question (chapter, scenes entered, scene, story turn).
+`previewContext(state)` (shared/src/preview.ts) — the combat turn as it stands (which fight, by
+`EncounterState.startedAt`, then whose turn, round, slot, steps left, action spent) or the story question (chapter, scenes entered, scene, story turn).
 The phone stamps it from its own mirror, the server refuses a pick whose decision has moved on, and
 the TV draws one only while its own state names the same decision (`client/src/world/previews.ts`).
 A late pick, or one whose clearing `null` was lost with a dropped phone, therefore never surfaces on

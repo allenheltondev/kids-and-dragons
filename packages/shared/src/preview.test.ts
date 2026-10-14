@@ -69,3 +69,28 @@ describe("previewContext", () => {
     expect(previewContext({ ...base, prompt: { kind: "roll" } } as unknown as RunState)).toBeNull();
   });
 });
+
+describe("previewContext in a fight", () => {
+  const fight = (startedAt: number | undefined) =>
+    ({
+      encounter: {
+        startedAt,
+        round: 1,
+        turnIndex: 0,
+        stepsLeft: 4,
+        actionTaken: false,
+        order: ["c_pip"],
+        openingOrder: ["c_pip"],
+        encoreActor: null,
+        combatants: [{ id: "c_pip", side: "party", down: false }],
+      },
+    }) as unknown as RunState;
+
+  it("tells two fights apart even when every turn field repeats", () => {
+    // The same hero opening round 1 of two different fights: identical turn
+    // fields, different fights. A pick left over from the first must not be
+    // the second's.
+    expect(previewContext(fight(5))).not.toBe(previewContext(fight(9)));
+    expect(previewContext(fight(5))).toBe(previewContext(fight(5)));
+  });
+});

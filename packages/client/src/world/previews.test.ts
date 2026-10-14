@@ -94,6 +94,16 @@ describe("tablePreviews — a fight", () => {
     expect(tablePreviews(state, held(state, { [otherPlayer]: { kind: "end_turn" } })).combat).toBeNull();
   });
 
+  it("ignores a pick left over from an earlier fight with identical turn fields", () => {
+    // Its clear was lost with a dropped phone; the next fight opens on the
+    // same hero, same round, same slot, same steps.
+    const first = { ...state, encounter: { ...encounter, startedAt: 5 } };
+    const second = { ...state, encounter: { ...encounter, startedAt: 9 } };
+    const orphan = held(first, { [activePlayer]: { kind: "move", to: { x: 1, y: 0 } } });
+    expect(tablePreviews(first, orphan).combat).not.toBeNull();
+    expect(tablePreviews(second, orphan).combat).toBeNull();
+  });
+
   it("ignores a late pick from before the same player's confirmed move", () => {
     const stale = held(state, { [activePlayer]: { kind: "move", to: { x: 1, y: 0 } } });
     // Same turn, same player — but the move went through and the steps moved on.
