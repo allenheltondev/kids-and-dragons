@@ -6,7 +6,7 @@ Existing peoples are retained. Hesper's embroidered road sash and Marda's grey-d
 
 Art verifier targeting the 10 new ids: **755 passed**, no failures. Content validator: **55 passed**. Semantic comparison: **76 cast replacements**, with only figure and required size fields changed. Before and after capture runs pass for all selected scenes.
 
-Captures use the real app at 1920×1080 TV and 390×844 phone. A temporary content
+Captures use the real app at 1920Ã—1080 TV and 390Ã—844 phone. A temporary content
 copy exposes each original chapter as a single-chapter review campaign at index 1
 with its route prerequisite removed; scene text, cast, and biome are unchanged.
 Production campaigns and renderer code are unchanged. Phone edge/label cropping
@@ -15,60 +15,60 @@ that every composition is approved.
 
 ## Professor Tidewell
 
-`tidewell` · selkie · medium · 3 cast entries
+`tidewell` Â· selkie Â· medium Â· 3 cast entries
 
 
 
 ## Mortar
 
-`mortar` · stone_troll · very_large · 7 cast entries
+`mortar` Â· stone_troll Â· very_large Â· 7 cast entries
 
 
 
 ## Gullet
 
-`gullet` · frogfolk · small_to_medium · 18 cast entries
+`gullet` Â· frogfolk Â· small_to_medium Â· 18 cast entries
 
 
 
 ## Old Ossley
 
-`old_ossley` · frogfolk · small_to_medium · 9 cast entries
+`old_ossley` Â· frogfolk Â· small_to_medium Â· 9 cast entries
 
 
 
 ## Old Lintel
 
-`old_lintel` · stone_troll · very_large · 8 cast entries
+`old_lintel` Â· stone_troll Â· very_large Â· 8 cast entries
 
 
 
 ## Hesper Longstride
 
-`hesper` · centaur · large · 8 cast entries
+`hesper` Â· centaur Â· large Â· 8 cast entries
 
 
 
 ## Marda Thorn
 
-`marda_thorn` · centaur · large · 7 cast entries
+`marda_thorn` Â· centaur Â· large Â· 7 cast entries
 
 
 
 ## Tobble Reedpipe
 
-`tobble` · faun · medium · 7 cast entries
+`tobble` Â· faun Â· medium Â· 7 cast entries
 
 
 
 ## Hob Thistledown
 
-`hob` · faun · medium · 6 cast entries
+`hob` Â· faun Â· medium Â· 6 cast entries
 
 
 
 ## Nan Rummage
 
-`nan_rummage` · boggart · small · 3 cast entries
+`nan_rummage` Â· boggart Â· small Â· 3 cast entries
 
 
