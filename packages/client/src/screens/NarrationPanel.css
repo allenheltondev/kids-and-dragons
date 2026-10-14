@@ -277,3 +277,32 @@
     font-size: var(--font-size-xl, 1.5em);
   }
 }
+
+/* The TV's highlight for an unconfirmed pick: arrives with a pop and keeps
+   a slow glow while the player is still deciding. */
+.narration__choice--picked {
+  animation:
+    narration-picked-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    narration-picked-glow 1.6s ease-in-out 260ms infinite;
+}
+
+@keyframes narration-picked-in {
+  from { transform: scale(0.94); }
+  to { transform: scale(1); }
+}
+
+@keyframes narration-picked-glow {
+  0%, 100% { box-shadow: 0 0 0.5em rgba(111, 230, 255, 0.25); }
+  50% { box-shadow: 0 0 1.2em rgba(111, 230, 255, 0.55); }
+}
+
+.narration__aim {
+  animation: narration-arrive 260ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .narration__choice--picked,
+  .narration__aim {
+    animation: none;
+  }
+}
