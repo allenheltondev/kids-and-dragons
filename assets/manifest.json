@@ -688,6 +688,30 @@
       "name": "Nan Rummage",
       "basis": "boggart",
       "scale": "small"
+    },
+    {
+      "id": "captain_voss",
+      "name": "Captain Voss",
+      "basis": "griffin",
+      "scale": "medium"
+    },
+    {
+      "id": "brask",
+      "name": "Engineer Brask",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "holloway",
+      "name": "Sergeant Holloway",
+      "basis": "centaur",
+      "scale": "medium"
+    },
+    {
+      "id": "mother_thrum",
+      "name": "Mother Thrum",
+      "basis": "witch_order",
+      "scale": "medium"
     }
   ],
 
