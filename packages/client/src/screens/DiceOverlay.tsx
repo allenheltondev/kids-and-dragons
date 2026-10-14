@@ -117,21 +117,6 @@ export function celebrationFor(roll: Pick<DiceRoll, "die" | "result">): Celebrat
   return GOOD.has(roll.result) ? "success" : "miss";
 }
 
-/**
- * The line under the headline that says *why*, in numbers a kid can check:
- * "Beat 12 by 4!", "3 short of 12." A natural 20 or 1 says the die decided,
- * because there the numbers alone would not explain it.
- */
-export function marginLine(roll: Pick<DiceRoll, "die" | "total" | "tn" | "result">): string {
-  if (roll.die === 20) return "A natural 20 always makes it!";
-  if (roll.die === 1) return "Bonk! A natural 1 never makes it. Next time!";
-  const by = roll.total - roll.tn;
-  if (GOOD.has(roll.result)) {
-    return by === 0 ? `Exactly ${String(roll.tn)}. Just made it!` : `Beat ${String(roll.tn)} by ${String(by)}!`;
-  }
-  return `${String(-by)} short of ${String(roll.tn)}.`;
-}
-
 /** "The party: 2 of 3 made it. Success!" */
 export function groupLine(group: NonNullable<DiceRoll["group"]>): string {
   const verdict = group.result === "success" ? "The party makes it!" : "Not this time for the party.";
@@ -312,14 +297,12 @@ export function DiceOverlay(): ReactElement | null {
           </p>
         )}
 
-        {/* Outcome is a word plus a shape, never a colour on its own (spec §11):
-            a big stamped headline, then the line that says why. */}
+        {/* Outcome is a word plus a shape, never a colour on its own (spec §11). */}
         <div className={`dice__verdict dice__verdict--${celebration}`}>
           <p className="dice__headline">
             <Icon name={good ? "check" : "close"} className="dice__headline-icon" />
             <span>{outcomeWord(roll)}</span>
           </p>
-          <p className="dice__margin">{marginLine(roll)}</p>
         </div>
 
         <ScreenReaderOnly>
