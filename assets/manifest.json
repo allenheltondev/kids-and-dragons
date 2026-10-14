@@ -568,6 +568,66 @@
       "name": "Pellam",
       "basis": "faun",
       "scale": "medium"
+    },
+    {
+      "id": "grandmother_tull",
+      "name": "Grandmother Tull",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "dragonling_grandmother",
+      "name": "Grandmother",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "mosshome_archivist",
+      "name": "Archivist",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "oldest_archivist",
+      "name": "Oldest Archivist",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "mosshome_eldest",
+      "name": "The Eldest",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "mosshome_runner",
+      "name": "MossHome Runner",
+      "basis": "bigfoot",
+      "scale": "medium_to_large"
+    },
+    {
+      "id": "flood_warden",
+      "name": "Flood-Warden",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "elder_sefa",
+      "name": "Elder Sefa",
+      "basis": "manticore",
+      "scale": "large"
+    },
+    {
+      "id": "elder_unicorn",
+      "name": "Elder Unicorn",
+      "basis": "unicorn",
+      "scale": "large"
+    },
+    {
+      "id": "tamsin",
+      "name": "Tamsin Three-Cards",
+      "basis": "kitsune",
+      "scale": "medium"
     }
   ],
 

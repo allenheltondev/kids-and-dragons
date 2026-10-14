@@ -173,7 +173,7 @@
       "narration": "Behind Burdock's stall, a kitsune in a tall hat is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
       "cast": [
         {
-          "figure": "characters/kitsune",
+          "figure": "cast/tamsin",
           "name": "Tamsin Three-Cards"
         }
       ],
@@ -212,7 +212,7 @@
       "prompt": "Spot where the Sun Card really goes",
       "cast": [
         {
-          "figure": "characters/kitsune",
+          "figure": "cast/tamsin",
           "name": "Tamsin Three-Cards"
         }
       ],
@@ -231,7 +231,7 @@
       "narration": "The kitsune, whose name turns out to be Tamsin Three-Cards, sighs and shakes the Sun Card out of her sleeve. The whole crowd gets their pebbles back. The drovers at the front of the queue have noticed you, and drovers remember faces.",
       "cast": [
         {
-          "figure": "characters/kitsune",
+          "figure": "cast/tamsin",
           "name": "Tamsin Three-Cards"
         }
       ],
@@ -256,7 +256,7 @@
       "narration": "You stand in the crowd and gasp very loudly every time somebody almost wins. Tamsin pays you with a front-of-the-queue pebble and a wink. It is shiny and it says number 1, and it is absolutely not fair.",
       "cast": [
         {
-          "figure": "characters/kitsune",
+          "figure": "cast/tamsin",
           "name": "Tamsin Three-Cards"
         }
       ],
