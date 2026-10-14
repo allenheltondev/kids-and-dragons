@@ -1126,3 +1126,79 @@
     animation: none;
   }
 }
+
+/*
+ * Right-sizing the bag page to the phone it is on.
+ *
+ * Sized for the smallest phone, the page left a quarter of a tall one empty
+ * between the bag and Room settings while the things you tap — stats, faces,
+ * slots — stayed small. Now the bag takes whatever height is spare (its rows
+ * stretch, up to a point), and a tall pane gets bigger tiles across the board.
+ * A short phone keeps the compact sizes and does not start scrolling.
+ *
+ * A size container is safe here: the scroller's height comes from the flex
+ * column it sits in, never from its contents.
+ */
+.player__scroll {
+  container: sheet / size;
+}
+
+.inv {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.inv__grid {
+  flex: 1 0 auto;
+  grid-auto-rows: minmax(4.25em, 1fr);
+  max-block-size: 20em;
+}
+
+.inv__button,
+.inv__slot--empty {
+  min-height: 4.25em;
+}
+
+@container sheet (min-height: 34em) {
+  .stat-row__item {
+    min-block-size: var(--kad-touch-min, 2.75em);
+    padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  }
+
+  .stat-row__value {
+    font-size: var(--font-size-xl, 1.5em);
+  }
+
+  .party-strip__button {
+    inline-size: 6em;
+    padding: var(--space-2, 0.5em);
+  }
+
+  .party-strip__portrait {
+    inline-size: 3em;
+    block-size: 3.6em;
+  }
+
+  .inv__empty-mark {
+    width: 2.2em;
+    height: 2.2em;
+  }
+
+  .inv__slot-name {
+    font-size: 0.85em;
+  }
+}
+
+/* The same for a question: on a tall pane the answers are bigger targets. */
+@container prompt (min-height: 40em) {
+  .player--deciding .prompt:not(.combat) .choice {
+    min-block-size: 4.5em;
+    padding: var(--space-3, 0.75em) var(--space-4, 1em);
+  }
+
+  .player--deciding .prompt:not(.combat) .choice__icon {
+    width: 3.2em;
+    height: 3.2em;
+  }
+}
