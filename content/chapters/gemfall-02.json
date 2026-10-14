@@ -203,7 +203,7 @@
     },
     "scene_walk_rows": {
       "type": "story",
-      "narration": "You walk the rows instead of through them, hopping between pumpkins like stepping stones, and find a cart track around the edge of the field. Something tiny pats your boot, very approvingly, and is gone before you can look.",
+      "narration": "You walk the rows instead of through them, hopping between pumpkins like stepping stones, and find a cart track around the edge of the field. Something tiny in an acorn helmet pats your boot, very approvingly, and is gone before you can look properly.",
       "cast": [
         {
           "figure": "cast/hob",
@@ -1098,7 +1098,7 @@
         },
         {
           "id": "wave",
-          "label": "Wave to the sprites who saw you mend the bridge",
+          "label": "Wave hello, like the bridge menders we are",
           "icon": "leaf",
           "requiresFlag": "bridge_mended",
           "goto": "scene_corner_row_wave"
@@ -1627,7 +1627,7 @@
     },
     "scene_hedge_mob_cousins": {
       "type": "story",
-      "narration": "Pib sees the sprites' medal and gasps. \"Cousins! You've met my cousins!\" The hedge opens before Pib has even finished the sentence, wide enough for a cart, and a thorn reaches out and very gently straightens the medal on your coat.",
+      "narration": "Pib sees the sprites' medal and gasps. \"Cousins! You've met my cousins!\" The hedge opens before Pib has even finished the sentence, wide enough for a cart, and a thorn reaches out and very gently straightens the little medal.",
       "cast": [
         {
           "figure": "entities/pib",
@@ -1879,7 +1879,7 @@
     },
     "scene_marda_question": {
       "type": "story",
-      "narration": "Marda listens to the whole question, all the way to the end. Then she asks one of her own, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"I believe all three rumors,\" she adds. \"That's the trouble with this season.\"",
+      "narration": "Marda pulls up a stool, which creaks. \"Here is what I ask everybody this season,\" she says, and waits for the whole answer: \"Where is it all going?\" She doesn't mean the road. \"Me, I believe all three rumors,\" she adds. \"That's the trouble with this season.\"",
       "cast": [
         {
           "figure": "cast/marda_thorn",
