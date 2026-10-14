@@ -103,7 +103,7 @@
     },
     "scene_parade_read_crowd": {
       "type": "story",
-      "narration": "Your kitsune reads the queue the way other people read a menu. That wagon is two places ahead of where it should be. That man is selling the same pebble twice. Those three are a family and that one only says she is. By the time you reach the front, you know the whole queue's business, and the queue does not know you know.",
+      "narration": "Your kitsune reads the queue the way other people read a menu. That wagon is two places ahead of where it should be. That man is selling the same pebble twice. Those three are a family and that one only says she is. By the time you are halfway up the column, you know the whole queue's business, and the queue does not know you know.",
       "choices": [
         {
           "id": "on",
@@ -115,7 +115,7 @@
     },
     "scene_spilled_pannier": {
       "type": "story",
-      "narration": "Halfway up the column, a gem wagon drops a wheel into a rut, and a pannier splits open. Little gem chips pour into the road like spilled sweets. Every head turns. The drover on the box is the lead drover himself, bringing one more wagon up to the ford, and he has a voice like a bass drum. \"MIND YOUR BOOTS!\" he booms. Somebody's dog is already sniffing the chips with great interest.",
+      "narration": "Halfway up the column, a gem wagon drops a wheel into a rut, and a pannier splits open. Little gem chips pour into the road like spilled sweets. Every head turns. The drover on the box is the lead drover, the boss of the whole river crossing up ahead, and he has a voice like a bass drum. \"MIND YOUR BOOTS!\" he booms. Somebody's dog is already sniffing the chips with great interest.",
       "choices": [
         {
           "id": "catch",
@@ -321,7 +321,7 @@
             "value": true
           }
         ],
-        "narration": "You zig when Pudding zigs and zag when she zags, and grab the bucket by its handle just as she leaps a cooking pot. Pudding thinks this was a wonderful game. From now on, wherever you go, a goat goes too."
+        "narration": "You zig when Pudding zigs and zag when she zags, and grab the bucket by its handle just as she leaps a cooking pot. Pudding thinks this was a wonderful game. For the rest of the day, wherever you go, a goat goes too."
       },
       "onFailure": {
         "goto": "scene_three_cards",
@@ -354,7 +354,7 @@
           "name": "Burdock"
         }
       ],
-      "narration": "You hold out one crumb of honeycake. Pudding stops dead, drops the bucket, and eats the crumb very delicately off your palm. Then she gazes at you with her strange goat eyes, as if you are the most important person in the world. From now on, wherever you go, a goat goes too.",
+      "narration": "You hold out one crumb of honeycake. Pudding stops dead, drops the bucket, and eats the crumb very delicately off your palm. Then she gazes at you with her strange goat eyes, as if you are the most important person in the world. For the rest of the day, wherever you go, a goat goes too.",
       "choices": [
         {
           "id": "on",
@@ -1425,7 +1425,7 @@
     },
     "rest_witch_fire": {
       "type": "rest",
-      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and somebody's goat. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, a drover is shouting numbers, and the ford is a great deal closer than it was.",
+      "narration": "You sleep in the queue with three hundred strangers, a lot of snoring, and Pudding, who wanders from fire to fire all night, eating anything left out. The little tuned charm chimes softly every time a gem wagon creaks past in the dark. Queues move at night, it turns out, because drovers never sleep. In the morning, Burdock comes to fetch Pudding home for her breakfast, and she trots off after him, very pleased with herself. A drover is shouting numbers, and the ford is a great deal closer than it was.",
       "heal": 2,
       "choices": [
         {

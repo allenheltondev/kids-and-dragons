@@ -329,7 +329,7 @@
     },
     "scene_moths_say_it": {
       "type": "story",
-      "narration": "\"Moths leaving the warm is a warning,\" says your dragonling, out loud, in the voice grandmothers use. A grandmother three tents away hears it, stops arguing with the man on her doorstep, and rings her hand bell once, sharp, toward the next town. Then she goes back to arguing. The man has not moved. Neither have the moths.",
+      "narration": "\"Moths leaving the warm is a warning,\" says your dragonling, out loud, in the voice grandmothers use. A grandmother three tents away hears it, stops in the middle of an argument, and rings her hand bell once, sharp, toward the next town. Then she goes back to arguing with a different man on her own doorstep. He has not moved. Neither have the moths.",
       "cast": [
         {
           "figure": "entities/embermoth"
@@ -395,7 +395,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Up the road to the soup tent",
+          "label": "Up the road, toward a smell of soup",
           "icon": "rest",
           "goto": "scene_claim_boulder"
         }
@@ -412,7 +412,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Up the road to the soup tent",
+          "label": "Up the road, toward a smell of soup",
           "icon": "wing",
           "goto": "scene_claim_boulder"
         }
@@ -447,7 +447,7 @@
     },
     "scene_claim_boulder": {
       "type": "story",
-      "narration": "Halfway to the soup tent, two prospectors are standing back to back on one boulder, each holding a claim flag. The boulder hums. \"Mine,\" says one. \"Mine,\" says the other. They have been saying it since breakfast, and they have each tied a bootlace round the boulder so nobody can push them off. A crowd has brought snacks.",
+      "narration": "Halfway up the road, below a soup tent you can already smell from here, two prospectors are standing back to back on one boulder, each holding a claim flag. The boulder hums. \"Mine,\" says one. \"Mine,\" says the other. They have been saying it since breakfast, and they have each tied a bootlace round the boulder so nobody can push them off. A crowd has brought snacks.",
       "choices": [
         {
           "id": "whose_first",
@@ -518,7 +518,7 @@
     },
     "scene_claim_boulder_nobodys": {
       "type": "story",
-      "narration": "You hold up the Unassigned Stone and tell them about the grandmothers' list: the stones that were never given to anybody, not ever. The two prospectors look at it for a long time. \"Nobody's,\" says one, trying out the word. \"Nobody's,\" agrees the other. They leave the boulder where it is and go and share a sandwich instead.",
+      "narration": "You hold up the Unassigned Stone and tell them about the grandmothers' very old list: the caves that are never given to anybody, not ever. The two prospectors look at it for a long time. \"Nobody's,\" says one, trying out the word. \"Nobody's,\" agrees the other. They leave the boulder where it is and go and share a sandwich instead.",
       "choices": [
         {
           "id": "on",
@@ -599,7 +599,7 @@
     },
     "scene_soup_tent_ford_soup": {
       "type": "story",
-      "narration": "\"Wend's tents, on the north road!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the queue.",
+      "narration": "\"Wend's tents, on the north road!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the whole road north.",
       "choices": [
         {
           "id": "on",
@@ -684,7 +684,7 @@
           "name": "Grandmother Tull"
         }
       ],
-      "narration": "In the morning, Grandmother Tull is teaching the bell code to a row of very small dragonlings, each with a very small bell. One ring for breakfast. Two for visitors. Three for lost goats. On the top shelf sits one more bell, wrapped up tight in a woolly sock. \"Nothing to worry about,\" says Grandmother Tull, before anybody asks.",
+      "narration": "In the morning, Grandmother Tull is teaching the bell code to a row of very small dragonlings, each with a very small bell. One ring for breakfast. Two for visitors. Three for lost goats. On the top shelf sits one more bell, wrapped up tight in a woolly sock. \"Nothing to worry about,\" says Grandmother Tull, before anybody asks. High above the town, at the top of the ridge, stands a black tower: Redspire Citadel, where the Skywardens keep their records.",
       "choices": [
         {
           "id": "learn",
@@ -1360,7 +1360,7 @@
     "scene_whole_truth": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all the Table Stone hums, logged twice. One very old line just says: the marsh gate hums the same note. Next to it, in three different handwritings: nobody knows why.",
+      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all, the gemstone on the table hums. The wardens call it the Table Stone, and Pellam has logged it twice. One very old line just says: an old stone gate, far away in a western marsh, hums the same note. Next to it, in three different handwritings: nobody knows why.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1766,7 +1766,7 @@
     "scene_reading_restore": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam reads it all back and taps the page. \"Medals. Mending. Putting things back,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
+      "narration": "Pellam reads it all back and taps the page. \"Helping. Fixing. Putting things back where they belong,\" he says. \"That adds up to one word, and the word is return.\" Captain Voss raises one eyebrow, which for her is practically a parade.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2180,7 +2180,7 @@
         "location.redspire_citadel",
         "faction.skywardens"
       ],
-      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and Pellam passes the logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
+      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and a warden clerk called Pellam passes the wardens' old watch-logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -2262,7 +2262,7 @@
     },
     "scene_shut_out_leash": {
       "type": "story",
-      "narration": "\"Hold it,\" you whisper. \"The leash.\" The pen stops. \"That's the captain's word,\" Pellam whispers, sounding puzzled, and passes out a blanket and a very small book with CAGE on the spine, which he asks you to give back in the morning.",
+      "narration": "\"Hold it,\" you whisper. \"The leash.\" The pen stops. \"That's my captain's word,\" Pellam whispers, sounding puzzled, and passes out a blanket and a very small book with CAGE on the spine, which he asks you to give back in the morning.",
       "cast": [
         {
           "figure": "cast/pellam",
