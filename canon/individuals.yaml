@@ -26,7 +26,7 @@ controlled_values:
     intentionally_undefined: "A protected mystery or open design slot."
   role:
     hedge_keeper: "Tends and opens the grown walls of a hedged town; decides who gets through."
-    innkeeper: "Runs the place travellers sleep, and knows who has passed through lately."
+    innkeeper: "Runs the place travelers sleep, and knows who has passed through lately."
     ferryman: "Takes people and goods across water for a price that is rarely money."
     archivist: "Keeps a place's records, and is the reason anybody knows what happened before."
 
@@ -95,7 +95,7 @@ individuals:
       Runs the wide-doored inn at the middle of Bramblewood and knows who has
       come through the hedges in the last month.
     visual_identity: >-
-      A grey-dappled centaur in a apron with too many pockets, ducking through
+      A gray-dappled centaur in a apron with too many pockets, ducking through
       doorways built for her and still ducking out of habit.
     speech_register: >-
       Unhurried. Asks one question, waits for the whole answer, and remembers
@@ -139,7 +139,7 @@ individuals:
       A crossing that costs something other than money. Somebody who has seen
       what goes up and down the river.
     canon_constraints: >-
-      Ossley's price is never coin and never cruel - a song, a favour, a thing
+      Ossley's price is never coin and never cruel - a song, a favor, a thing
       you were carrying anyway. He does not explain how he decides.
     standard_behavior: >-
       At the water when the stones are under, gone somewhere unspecified when
