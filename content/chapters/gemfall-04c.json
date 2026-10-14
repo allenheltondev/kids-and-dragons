@@ -366,7 +366,7 @@
       "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food at fixed rates for Redspire, the wardens' citadel up in the foothills. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/holloway",
           "name": "Sergeant Holloway"
         }
       ],
@@ -411,7 +411,7 @@
       "narration": "Your griffin and the sergeant swap sky news the way old flyers do: wind at the bridge, ash over the mountain, a storm sitting on the sea that will not come in. Holloway writes all of it down and reads it back twice. \"Useful,\" the sergeant says, and waves the patrol aside to let you through.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/holloway",
           "name": "Sergeant Holloway"
         }
       ],
@@ -429,7 +429,7 @@
       "narration": "You pay the fixed rate. Sergeant Holloway writes PAID, POLITE in the ledger and hands you a receipt, then a copy of the receipt, then a receipt for the copy. \"Arithmetic,\" the sergeant says, almost kindly. \"It's the only thing up here that isn't shouting.\"",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/holloway",
           "name": "Sergeant Holloway"
         }
       ],
@@ -449,7 +449,7 @@
       "prompt": "Out-arithmetic a Skywarden",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/holloway",
           "name": "Sergeant Holloway"
         }
       ],
@@ -695,7 +695,7 @@
       "narration": "By the time you find each other again, it is almost morning. The wolves have eaten the supplies and run off north, and Sergeant Holloway's patrol finds you and writes you down in the ledger as 'Stragglers, Muddy'. You have lost a day, but the bark strip of verses is safe, and you are all together.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/holloway",
           "name": "Sergeant Holloway"
         }
       ],

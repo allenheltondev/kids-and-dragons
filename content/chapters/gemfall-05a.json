@@ -320,7 +320,7 @@
       "narration": "In the engineers' tent, a big chalk survey of the bridge is pinned up, every crack drawn in red. Engineer Brask, who has a pencil behind each ear and a third one she has forgotten about, says the cracks came with the tremors. Then she frowns at the drawing, as if it has just said something rude.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/brask",
           "name": "Engineer Brask"
         }
       ],
@@ -354,7 +354,7 @@
       "prompt": "Plot everything you've seen since Bramblewood against the cracks",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/brask",
           "name": "Engineer Brask"
         }
       ],
@@ -380,7 +380,7 @@
       "narration": "Everything points the same way. The troll's old note, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down on a bucket.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/brask",
           "name": "Engineer Brask"
         }
       ],
@@ -398,7 +398,7 @@
       "narration": "The engineers share their tea, which is very strong and has a tremor ripple in every cup. Outside, the bridge creaks like an old ship. Rest a while. You have the outline of the truth, and now you have to decide what to do with it.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/brask",
           "name": "Engineer Brask"
         }
       ],
@@ -417,7 +417,7 @@
       "narration": "The wardens are right here: honest, careful, and already talking about acceptable losses. Out on the road, a dragonling bell-rider is heading home to the gathering towns, who have kept the mountain's rules for a thousand years. Or you could fold the map up small and keep it. Who do you tell? Everybody vote.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/brask",
           "name": "Engineer Brask"
         }
       ],
@@ -468,7 +468,7 @@
       "narration": "Brask listens to all of it, writes all of it down, and underlines the bit about the mountain three times. \"Thank you,\" she says, completely serious. \"This changes the arithmetic.\" She tears a crossing pass out of her book. It is the first thing all day anybody has given away for free.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/brask",
           "name": "Engineer Brask"
         }
       ],

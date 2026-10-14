@@ -507,7 +507,7 @@
       "narration": "It is Mother Thrum, the ford witch from the caravan queue, with her wool-wrapped stone still ringing under one arm. She looks at your packs, and then at you, and then at your packs again. \"I am still asking,\" she says. \"What do you actually want?\"",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
@@ -544,7 +544,7 @@
       "narration": "\"I don't know any more,\" you say. Mother Thrum's face softens for the first time since the ford. She keeps the stone, and ties a songbird ribbon round your wrist instead. \"That's the first true thing anyone's said to me on this hill,\" she says. \"I'll ask again. I always do.\"",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
@@ -562,7 +562,7 @@
       "narration": "\"All of them,\" you say. Mother Thrum does not sigh, which is worse than if she had. She unwraps the Ford Stone and puts it in your hands, still ringing. \"Then here is one more,\" she says. \"Mind it doesn't ring you to sleep.\" It does not stop ringing. Not for you.",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/mother_thrum",
           "name": "Mother Thrum"
         }
       ],
