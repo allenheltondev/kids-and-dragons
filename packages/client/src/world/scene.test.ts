@@ -22,7 +22,7 @@
  */
 
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { Assets, Container, Text, Texture } from "pixi.js";
+import { Assets, Container, Sprite, Text, Texture } from "pixi.js";
 import type { Application } from "pixi.js";
 import { beginEncounter, parseBoard } from "@kad/shared";
 import type { PartyMember, ResolvedCharacter } from "@kad/shared";
@@ -61,13 +61,65 @@ describe("illustrated backdrops", () => {
       scene.setBiome("plains");
       await new Promise((resolve) => setTimeout(resolve, 0));
       const backdrop = app.stage.children[0] as Container;
-      const art = backdrop.children[0] as Container;
+      // [0] is the dark under the painting; [1] the painting (backdropFit).
+      const art = backdrop.children[1] as Container;
       const count = art.children.length;
       finish(Texture.WHITE);
       await new Promise((resolve) => setTimeout(resolve, 0));
       expect(art.children.length).toBe(count);
       expect(load).toHaveBeenCalledTimes(2);
     } finally { scene.destroy(); load.mockRestore(); }
+  });
+});
+
+describe("the cast", () => {
+  const tidewell = { key: "entities/selkie|Professor Tidewell", url: "/assets/entities/selkie/assembled.png", name: "Professor Tidewell", scale: 1 };
+
+  function sprites(app: FakeApp): number {
+    let found = 0;
+    const walk = (node: Container): void => {
+      if (node.destroyed) return;
+      if (node instanceof Sprite) found += 1;
+      for (const child of node.children) walk(child as Container);
+    };
+    walk(app.stage);
+    return found;
+  }
+
+  it("still draws a member called back while their art was loading (A → B → A)", async () => {
+    let finish!: (texture: Texture) => void;
+    const load = vi.spyOn(Assets, "load").mockImplementation(
+      () => new Promise<Texture>((resolve) => { finish = resolve; }) as unknown as Promise<Record<string, unknown>>,
+    );
+    const { scene: s, app } = scene();
+    try {
+      s.setCast([tidewell]);
+      const before = sprites(app);
+      s.setCast([]); // scene B: she starts walking off
+      finish(Texture.WHITE); // her art arrives mid-exit
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      s.setCast([tidewell]); // back to A before she is gone: the same actor, revived
+      // Never loaded again, so the one load has to have landed.
+      expect(load).toHaveBeenCalledTimes(1);
+      expect(sprites(app)).toBe(before + 1);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
+  it("does not draw into a member who finished leaving", async () => {
+    let finish!: (texture: Texture) => void;
+    const load = vi.spyOn(Assets, "load").mockImplementation(
+      () => new Promise<Texture>((resolve) => { finish = resolve; }) as unknown as Promise<Record<string, unknown>>,
+    );
+    const { scene: s, app } = scene();
+    try {
+      s.setCast([tidewell]);
+      s.setCast([]);
+      app.ticker.frame(5_000); // the exit completes; the actor is destroyed
+      const before = sprites(app);
+      finish(Texture.WHITE);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(sprites(app)).toBe(before);
+    } finally { s.destroy(); load.mockRestore(); }
   });
 });
 
