@@ -712,6 +712,42 @@
       "name": "Mother Thrum",
       "basis": "witch_order",
       "scale": "medium"
+    },
+    {
+      "id": "brisk",
+      "name": "Brisk",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "perrin_nine_verse",
+      "name": "Perrin Nine-Verse",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "bryony",
+      "name": "Bryony",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "lady_fleecewick",
+      "name": "Lady Fleecewick",
+      "basis": "sheeple",
+      "scale": "medium"
+    },
+    {
+      "id": "cadet_linnet",
+      "name": "Cadet Linnet",
+      "basis": "griffin",
+      "scale": "medium"
+    },
+    {
+      "id": "tansy",
+      "name": "Tansy",
+      "basis": "faun",
+      "scale": "small_to_medium"
     }
   ],
 

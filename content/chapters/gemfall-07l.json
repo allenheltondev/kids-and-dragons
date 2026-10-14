@@ -301,7 +301,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
         }
       ],
@@ -339,7 +339,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
         }
       ],
@@ -379,7 +379,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
         }
       ],
@@ -1684,7 +1684,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
         }
       ],
