@@ -1162,7 +1162,7 @@
       "narration": "At night the centaur relay gathers at the biggest campfire to sing the route-songs: one verse for every landmark, the dangers in the chorus. This season the songs have new verses every night, faster than anyone can learn them. A centaur called Old Corran passes you the next line.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/old_corran",
           "name": "Old Corran"
         }
       ],
@@ -1195,7 +1195,7 @@
       "prompt": "Sing a route-song verse in front of everybody",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/old_corran",
           "name": "Old Corran"
         }
       ],
@@ -1220,7 +1220,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/old_corran",
           "name": "Old Corran"
         }
       ],
@@ -1238,7 +1238,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/old_corran",
           "name": "Old Corran"
         }
       ],
@@ -1257,7 +1257,7 @@
       "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark with a hoof-pick and gives it to you.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/old_corran",
           "name": "Old Corran"
         }
       ],

@@ -437,3 +437,25 @@ Create NEW single individual game cast figure Sergeant Holloway, a FEMALE GRIFFI
 NEW single individual game cast figure Mother Thrum; the supplied reference is a GROUP and you must draw ONLY the person specified, not the group. Mother Thrum is ONE elderly female BIGFOOT ford witch, using bigfoot at right of order reference as species, cream body fur and grey-streaked umber mane, kind knowing face. A soft moss-green POINTED HAT, round SPECTACLES on chain, patched ochre and moss robe, bronze BELL CHARMS clustered at belt. One hand rests on a plain short wooden staff, other holds a closed little moss-green book. Exactly TWO arms and TWO big bare feet. No other figures, no magic glow or text. Match supplied warm hand-painted fantasy storybook style, readable at 120px. Complete figure three-quarter LEFT, nose/beak and gaze point image LEFT. Relaxed neutral pose, family friendly, controlled shading, upper-left light, tapered warm brown line. 1024x1024 RGBA actual transparent background, NO floor, ground shadow, text, border, or UI. Figure top around y80, feet around y900, clear 40px margins, all props inside canvas. Verify limb count.
 
 Reference: `assets/entities/witch_order/assembled.png`.
+
+
+## Cast figures
+
+- **Mrs. Tuft** (`assets/cast/mrs_tuft/assembled.png`): One older sheeple provision-barge grocer, cream and smoke-grey wool, gentle age creases, spectacles, teal shawl, jar satchel, tiny blank price tags. Three-quarter left, full-body, transparent background.
+- **Old Wick** (`assets/cast/old_wick/assembled.png`): One very old moss-green frogfolk lamplighter with age spots, a cloudy eye, faded indigo coat, brass lamp charms and walking stick. Three-quarter left, full-body, transparent background.
+- **Postmaster Quill** (`assets/cast/postmaster_quill/assembled.png`): One individual tawny griffin postmaster with spectacles on a chain and a leather mail satchel holding blank envelopes. Three-quarter left, full-body, transparent background.
+
+- **Bracken** (`assets/cast/bracken_swiftmile/assembled.png`): Chestnut centaur relay runner, green road sash and letter-filled saddle satchel.
+- **Burdock** (`assets/cast/burdock/assembled.png`): Russet faun provisioner with leafy vest, bucket and abacus.
+- **Mother Bracken** (`assets/cast/mother_bracken/assembled.png`): Tired, polite faun mother with travel shawl, braid and bags.
+- **Littlest Bracken** (`assets/cast/littlest_bracken/assembled.png`): Small cinnamon faun child, oversized blue scarf and walking stick.
+
+These figures follow the existing painted storybook cast style. Source prompts specify species silhouette, individual role, left-facing pose, full-body framing and no scenery. The four fauns/centaurs were generated on one transparent 2×2 sheet and cropped into individual cutouts.
+
+- **Innkeeper Flint** (`assets/cast/innkeeper_flint/assembled.png`): Broad, gentle slate-grey stone troll with nightcap and apron.
+
+- **Granny Ash** (`assets/cast/granny_ash/assembled.png`): Older manticore grandmother with silver-streaked rust fur, folded wings, curled tail and patched violet shawl.
+- **Old Corran** (`assets/cast/old_corran/assembled.png`): Elderly dapple-grey centaur relay singer with silver mane and beard, wine-red shawl and wooden flute.
+- **Nim** (`assets/cast/nim/assembled.png`): Small dragonling child with vivid mint-green scales, cream belly, mint wings, horns and bell collar.
+- **Corporal Tibbet** (`assets/cast/corporal_tibbet/assembled.png`): Slate-blue griffin Skywarden with cream chest, green sash, bronze badge and clipboard.
+- **Pib** (`assets/cast/pib/assembled.png`): Tiny bramble sprite made of dark twigs, thorns and fresh leaves.

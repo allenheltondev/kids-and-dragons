@@ -102,7 +102,7 @@
       "narration": "You wave first, from far off, tail curled politely away, the way road peoples have done for longer than anybody remembers. A centaur on the ridge stops dead, puts a hand on her heart, and waves back so hard her sash ribbons tangle.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/fennick",
           "name": "Fennick"
         }
       ],
@@ -123,7 +123,7 @@
       "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice. Then she trots off ahead to check on her detour signs.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/fennick",
           "name": "Fennick"
         }
       ],
@@ -1008,7 +1008,7 @@
       "narration": "The centaur is Fennick Longstride, road-warden, and when she sees her signs she hugs them like lost puppies. She hammers each one back on its post, and on the last one she scratches a new arrow pointing at the upstream edge of the crossing, where the stones are only half under. \"For you,\" she says, and gallops off.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/fennick",
           "name": "Fennick"
         }
       ],

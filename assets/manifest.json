@@ -712,6 +712,90 @@
       "name": "Mother Thrum",
       "basis": "witch_order",
       "scale": "medium"
+    },
+    {
+      "id": "mrs_tuft",
+      "name": "Mrs. Tuft",
+      "basis": "sheeple",
+      "scale": "medium"
+    },
+    {
+      "id": "old_wick",
+      "name": "Old Wick",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "postmaster_quill",
+      "name": "Postmaster Quill",
+      "basis": "griffin",
+      "scale": "medium"
+        },
+    {
+      "id": "bracken_swiftmile",
+      "name": "Bracken",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "burdock",
+      "name": "Burdock",
+      "basis": "faun",
+      "scale": "medium"
+        },
+    {
+      "id": "fennick",
+      "name": "Fennick",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "mother_bracken",
+      "name": "Mother Bracken",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "littlest_bracken",
+      "name": "Littlest Bracken",
+      "basis": "faun",
+      "scale": "small_to_medium"
+        },
+    {
+      "id": "innkeeper_flint",
+      "name": "Innkeeper Flint",
+      "basis": "stone_troll",
+      "scale": "large"
+    },
+    {
+      "id": "pib",
+      "name": "Pib",
+      "basis": "harvest_sprite",
+      "scale": "tiny"
+    },
+    {
+      "id": "granny_ash",
+      "name": "Granny Ash",
+      "basis": "manticore",
+      "scale": "large"
+    },
+    {
+      "id": "old_corran",
+      "name": "Old Corran",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "nim",
+      "name": "Nim",
+      "basis": "dragonling",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "corporal_tibbet",
+      "name": "Corporal Tibbet",
+      "basis": "griffin",
+      "scale": "medium"
     }
   ],
 

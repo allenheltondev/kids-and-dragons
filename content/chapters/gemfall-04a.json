@@ -776,7 +776,7 @@
       "narration": "Hooves drum behind you, and a centaur thunders past, skids, and trots back. \"Bracken Swiftmile, relay,\" she pants. Her sash is stuffed with letters. \"News from the west and the middle, if you want it, news north if you're carrying any. Quick, mind. Relay waits for nobody.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -814,7 +814,7 @@
       "narration": "\"West road's strange,\" says Bracken. \"Marsh lights gossiping about a gate in the reeds that hums. Boggarts charging folk to cross their own puddles. And on the middle road the witches' bell charms keep ringing whenever a gem goes by.\" She frowns. \"Everybody's stones are humming, everywhere. Funny, that.\" Then she is gone in a cloud of dust.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -834,7 +834,7 @@
       "prompt": "Race a relay centaur to the next pride post",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -975,7 +975,7 @@
       "narration": "Before anybody can talk business, a manticore grandmother plants herself in front of you with a plate. She is Granny Ash, and this is her famous spiced grass-cake, and nobody has ever finished a slice. The cubs are watching to see if you will be the first. So is everybody else.",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -1007,7 +1007,7 @@
       "prompt": "Finish a slice of Granny Ash's spiced grass-cake",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -1033,7 +1033,7 @@
       "narration": "\"The recipe,\" says Granny Ash, very pleased to be asked, \"is grass, and fire-pepper, and patience.\" She tells you how much patience. It is a great deal of patience. By the time she has finished telling you, your slice of cake has been eaten by a cub, who is now steaming gently.",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -1051,7 +1051,7 @@
       "narration": "You dig in your packs for something to give back. As you open them, the humming gets louder, and Granny Ash takes one big step back without meaning to. Then another. She looks surprised at her own feet. \"Bless me,\" she says. \"It's not you, dear. It's whatever is singing in there.\"",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
