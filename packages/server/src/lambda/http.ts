@@ -289,7 +289,7 @@ async function postPreview(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
   if (!session) return error(401, "FORBIDDEN", "a preview needs a room session token");
   const result = await relayPreview(
-    { runId: session.runId, playerId: session.playerId, preview: req.body.preview },
+    { runId: session.runId, playerId: session.playerId, preview: req.body.preview, context: req.body.context },
     deps,
   );
   if (!result.ok) return error(result.status, result.code, result.message);

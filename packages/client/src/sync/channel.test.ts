@@ -580,7 +580,7 @@ describe("a preview on the channel", () => {
       },
     });
     withPreview.reset(makeState({ seq: 4 }), 4);
-    const message = { kind: "preview" as const, seq: 9, runId: "r_1", playerId: "p_1", preview: { kind: "end_turn" as const } };
+    const message = { kind: "preview" as const, seq: 9, runId: "r_1", playerId: "p_1", preview: { kind: "end_turn" as const }, context: "fight:x" };
     withPreview.ingest(message);
     expect(previews).toEqual([message]);
     expect(withPreview.seq).toBe(4);
@@ -589,9 +589,11 @@ describe("a preview on the channel", () => {
   });
 
   it("parses a preview, and drops a malformed one", () => {
-    const good = { kind: "preview", seq: 3, runId: "r_1", playerId: "p_1", preview: { kind: "choice", choiceId: "east" } };
+    const good = { kind: "preview", seq: 3, runId: "r_1", playerId: "p_1", preview: { kind: "choice", choiceId: "east" }, context: "choice:a" };
     expect(parseChannelMessage(JSON.stringify(good))).toEqual(good);
-    expect(parseChannelMessage(JSON.stringify({ ...good, preview: null }))).toEqual({ ...good, preview: null });
+    expect(parseChannelMessage(JSON.stringify({ ...good, preview: null }))).toEqual({ ...good, preview: null, context: null });
+    // A pick that names no decision cannot be checked against the screen.
+    expect(parseChannelMessage(JSON.stringify({ ...good, context: undefined }))).toBeNull();
     expect(parseChannelMessage(JSON.stringify({ ...good, preview: { kind: "roll" } }))).toBeNull();
     expect(parseChannelMessage(JSON.stringify({ ...good, playerId: 7 }))).toBeNull();
   });

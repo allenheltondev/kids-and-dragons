@@ -50,6 +50,12 @@ export interface ProgressionEvent {
   progression: ProgressionUpdate;
 }
 
+/** A player's live pick and the decision it was made for (`previewContext`). */
+export interface HeldPreview {
+  preview: IntentPreview;
+  context: string;
+}
+
 export interface GameStore {
   connection: ConnectionStatus;
   session: ClientSession | null;
@@ -64,7 +70,7 @@ export interface GameStore {
    * mirror: never in a snapshot, emptied on leaving or re-attaching, and
    * possibly stale, so a reader checks a preview still fits the state.
    */
-  previews: Readonly<Record<string, IntentPreview>>;
+  previews: Readonly<Record<string, HeldPreview>>;
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -128,7 +134,7 @@ export interface GameStore {
    * once it has backed out or confirmed. Fire-and-forget: a lost preview costs
    * a highlight on the TV, never a turn, so it neither retries nor reports.
    */
-  preview(preview: IntentPreview | null): void;
+  preview(preview: IntentPreview | null, context: string | null): void;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;

@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { beginEncounter, currentActor, parseBoard } from "@kad/shared";
+import { beginEncounter, currentActor, parseBoard, previewContext } from "@kad/shared";
 import type { EncounterState, IntentPreview, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { boardAim, describeCombatPreview, tablePreviews } from "./previews";
+import type { HeldPreview } from "../store/contract";
+
+/** Picks as the store holds them, each made for the decision `state` shows. */
+function held(state: RunState, picks: Record<string, IntentPreview>): Record<string, HeldPreview> {
+  const context = previewContext(state)!;
+  return Object.fromEntries(Object.entries(picks).map(([id, preview]) => [id, { preview, context }]));
+}
 
 const PIP = makeCharacter({ id: "c_pip", ownerPlayerId: "p_pip", name: "Pip" });
 const TAM = makeCharacter({ id: "c_tam", ownerPlayerId: "p_tam", name: "Tam" });
@@ -38,20 +45,30 @@ function story(): RunState {
 
 describe("tablePreviews — a story choice", () => {
   it("lists who is leaning toward each option", () => {
-    const leaning = tablePreviews(story(), {
+    const leaning = tablePreviews(story(), held(story(), {
       p_pip: { kind: "choice", choiceId: "east" },
       p_tam: { kind: "choice", choiceId: "east" },
-    });
+    }));
     expect(leaning.choices).toEqual({ east: ["Pip", "Tam"] });
     expect(leaning.combat).toBeNull();
   });
 
   it("drops a pick for an option no longer on offer", () => {
-    expect(tablePreviews(story(), { p_pip: { kind: "choice", choiceId: "north" } }).choices).toEqual({});
+    expect(tablePreviews(story(), held(story(), { p_pip: { kind: "choice", choiceId: "north" } })).choices).toEqual({});
   });
 
   it("drops a pick from somebody who is not at the table", () => {
-    expect(tablePreviews(story(), { p_ghost: { kind: "choice", choiceId: "east" } }).choices).toEqual({});
+    expect(tablePreviews(story(), held(story(), { p_ghost: { kind: "choice", choiceId: "east" } })).choices).toEqual({});
+  });
+
+  it("ignores a late pick from an earlier visit to the same question", () => {
+    // Same scene, same option ids, same player — but the story has been
+    // somewhere else in between, so the pick is for a question already answered.
+    const earlier = story();
+    const later = { ...earlier, visited: [...(earlier.visited ?? []), "brook", "s"] };
+    const stale = held(earlier, { p_pip: { kind: "choice", choiceId: "east" } });
+    expect(tablePreviews(later, stale).choices).toEqual({});
+    expect(tablePreviews(earlier, stale).choices).toEqual({ east: ["Pip"] });
   });
 });
 
@@ -68,17 +85,24 @@ describe("tablePreviews — a fight", () => {
 
   it("shows the fighter whose turn it is", () => {
     const preview: IntentPreview = { kind: "move", to: { x: 1, y: 0 } };
-    const leaning = tablePreviews(state, { [activePlayer]: preview });
+    const leaning = tablePreviews(state, held(state, { [activePlayer]: preview }));
     expect(leaning.combat?.playerId).toBe(activePlayer);
     expect(leaning.combat?.preview).toEqual(preview);
   });
 
   it("ignores everybody else, whose turn it is not", () => {
-    expect(tablePreviews(state, { [otherPlayer]: { kind: "end_turn" } }).combat).toBeNull();
+    expect(tablePreviews(state, held(state, { [otherPlayer]: { kind: "end_turn" } })).combat).toBeNull();
+  });
+
+  it("ignores a late pick from before the same player's confirmed move", () => {
+    const stale = held(state, { [activePlayer]: { kind: "move", to: { x: 1, y: 0 } } });
+    // Same turn, same player — but the move went through and the steps moved on.
+    const after = { ...state, encounter: { ...encounter, stepsLeft: encounter.stepsLeft - 1 } };
+    expect(tablePreviews(after, stale).combat).toBeNull();
   });
 
   it("ignores a story pick left over from before the fight", () => {
-    expect(tablePreviews(state, { [activePlayer]: { kind: "choice", choiceId: "east" } }).combat).toBeNull();
+    expect(tablePreviews(state, held(state, { [activePlayer]: { kind: "choice", choiceId: "east" } })).combat).toBeNull();
   });
 });
 

@@ -304,10 +304,20 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
   if (typeof candidate.seq !== "number" || typeof candidate.runId !== "string") return null;
 
   if (candidate.kind === "preview") {
-    const { playerId } = candidate as Partial<PreviewMessage>;
+    const { playerId, context } = candidate as Partial<PreviewMessage>;
     const preview = readIntentPreview((candidate as Partial<PreviewMessage>).preview ?? null);
     if (typeof playerId !== "string" || preview === undefined) return null;
-    return { kind: "preview", seq: candidate.seq, runId: candidate.runId, playerId, preview };
+    // A pick with no decision named cannot be checked against the screen, so
+    // it is not a pick at all; a clear needs none.
+    if (preview !== null && typeof context !== "string") return null;
+    return {
+      kind: "preview",
+      seq: candidate.seq,
+      runId: candidate.runId,
+      playerId,
+      preview,
+      context: preview === null ? null : (context as string),
+    };
   }
 
   if (candidate.kind === "snapshot" || (candidate.kind === undefined && candidate.state)) {
