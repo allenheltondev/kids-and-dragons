@@ -12,8 +12,10 @@ See the [generation and capture notes](../../campaigns/gemfall-illustrations.md#
 
 The phone renderer crops party members and long labels; in the longer Pellam scene,
 the cast also reaches beyond the right edge and labels overlap the narration.
-These problems are visible in both before and after captures. Fenn and Ashby read
-clearly, but Pellam needs a follow-up renderer adjustment owned by the code work.
+Left-party clipping is visible before and after. Replacing the large squad stand-in
+with the required medium individual exposes additional right-edge clipping in the
+Pellam capture. Fenn and Ashby read clearly; Pellam needs a renderer adjustment
+owned by the code work before this pilot can be approved on phones.
 This art PR preserves the required medium scale and does not change layout.
 
 ## Madame Coralie Fenn — Gemfall 1, choice_ember
