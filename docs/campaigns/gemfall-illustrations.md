@@ -181,11 +181,11 @@ to reach Ashby and Pellam while exercising the real party creation, server, cast
 renderer, narration, and playtest scene jump. Production campaigns are unchanged.
 
 
-## Cast figures — elders and adults (A1)
+## Cast figures â€” elders and adults (A1)
 
 Ten figures complete A1 after the approved Ashby pilot. Generated with the built-in
 image generation tool using the approved species and Ashby references. Production
-PNGs are 1024×1024 RGBA, feet at y=900, facing left. Packaging uses the same uniform
+PNGs are 1024Ã—1024 RGBA, feet at y=900, facing left. Packaging uses the same uniform
 alpha-bounds fit as the pilot; scale words are applied to every matching cast entry.
 
 | id | basis | scale | references |
