@@ -70,7 +70,8 @@
           "requiresFlag": "walked_over",
           "goto": "scene_out_of_marsh"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_drovers_wagon": {
       "type": "story",
@@ -82,7 +83,8 @@
           "icon": "arrow",
           "goto": "scene_empty_stretch"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_out_of_marsh": {
       "type": "story",
@@ -94,7 +96,8 @@
           "icon": "drop",
           "goto": "scene_empty_stretch"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     },
     "scene_empty_stretch": {
       "type": "story",
@@ -119,7 +122,8 @@
           "icon": "arrow",
           "goto": "scene_downbound"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/quiet-road-stretch"
     },
     "check_jackalopes": {
       "type": "check",
@@ -142,7 +146,8 @@
       "onFailure": {
         "goto": "scene_downbound",
         "narration": "You get to forty-one jackalopes, and then one of them sits up and stares at you until you lose count. It has won. You do not know what, but it has definitely won."
-      }
+      },
+      "art": "scenes/gemfall/quiet-road-stretch"
     },
     "scene_silence_follows": {
       "type": "story",
@@ -161,7 +166,8 @@
           "icon": "arrow",
           "goto": "scene_downbound"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/quiet-road-stretch"
     },
     "scene_downbound": {
       "type": "story",
@@ -193,7 +199,8 @@
           "icon": "eye",
           "goto": "check_search"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "scene_downbound_fly_look": {
       "type": "story",
@@ -217,7 +224,8 @@
           "icon": "spark",
           "goto": "scene_tib_found"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "check_relay": {
       "type": "check",
@@ -241,7 +249,8 @@
       "onFailure": {
         "goto": "rest_soup_tents",
         "narration": "The runner hears \"small orange horse\" and gallops off. Much later, word comes back that Tib turned up by himself, talking to a centaur. Ma Ruddle's thanks are tired, and her papers went in the auction pile."
-      }
+      },
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "check_search": {
       "type": "check",
@@ -256,7 +265,8 @@
       "onFailure": {
         "goto": "rest_soup_tents",
         "narration": "Every time you get close, the orange hat turns out to be a pumpkin. Much later the relay finds Tib on its own, and Ma Ruddle's papers have gone in the auction pile."
-      }
+      },
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "scene_tib_found": {
       "type": "story",
@@ -285,7 +295,8 @@
           "icon": "scroll",
           "goto": "rest_soup_tents"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "rest_soup_tents": {
       "type": "rest",
@@ -304,7 +315,8 @@
           "icon": "arrow",
           "goto": "scene_warden_patrol"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-soup-tents"
     },
     "scene_wend_pitch": {
       "type": "story",
@@ -332,7 +344,8 @@
           "icon": "moon",
           "goto": "scene_wend_pitch_say_later"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-soup-tents"
     },
     "scene_wend_pitch_say_later": {
       "type": "story",
@@ -344,7 +357,8 @@
           "icon": "moon",
           "goto": "scene_warden_patrol"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-soup-tents"
     },
     "scene_wend_pitch_say_no": {
       "type": "story",
@@ -356,7 +370,8 @@
           "icon": "hand",
           "goto": "scene_warden_patrol"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/downbound-soup-tents"
     },
     "scene_warden_patrol": {
       "type": "story",
@@ -404,7 +419,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/warden-supply-stop"
     },
     "scene_warden_patrol_griffin_logs": {
       "type": "story",
@@ -422,7 +438,8 @@
           "icon": "wing",
           "goto": "scene_depot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/warden-supply-stop"
     },
     "scene_warden_patrol_pay": {
       "type": "story",
@@ -440,7 +457,8 @@
           "icon": "check",
           "goto": "scene_depot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/warden-supply-stop"
     },
     "check_argue": {
       "type": "check",
@@ -468,7 +486,8 @@
       "onFailure": {
         "goto": "scene_depot",
         "narration": "Sergeant Holloway listens to your whole argument, writes it down in the ledger under 'Complaints, Polite', and charges you the fixed rate anyway."
-      }
+      },
+      "art": "scenes/gemfall/warden-supply-stop"
     },
     "scene_depot": {
       "type": "story",
@@ -493,7 +512,8 @@
           "icon": "arrow",
           "goto": "scene_relay_sing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/rush-depot"
     },
     "check_forms": {
       "type": "check",
@@ -508,7 +528,8 @@
       "onFailure": {
         "goto": "scene_relay_sing",
         "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
-      }
+      },
+      "art": "scenes/gemfall/rush-depot"
     },
     "scene_strongbox": {
       "type": "story",
@@ -531,7 +552,8 @@
           "icon": "note",
           "goto": "scene_relay_sing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/rush-depot"
     },
     "scene_relay_sing": {
       "type": "story",
@@ -558,7 +580,8 @@
           "icon": "ear",
           "goto": "scene_spiral"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/relay-route-fire"
     },
     "check_sing": {
       "type": "check",
@@ -586,7 +609,8 @@
       "onFailure": {
         "goto": "scene_spiral",
         "narration": "You sing the wrong verse, the one about a bridge three hundred miles away. Old Corran gently sings the right one over the top, and nobody minds at all."
-      }
+      },
+      "art": "scenes/gemfall/relay-route-fire"
     },
     "scene_spiral": {
       "type": "story",
@@ -610,7 +634,8 @@
           "icon": "travel",
           "goto": "scene_road_bend"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/relay-route-fire"
     },
     "scene_road_bend": {
       "type": "story",
@@ -642,7 +667,8 @@
           "icon": "swords",
           "goto": "encounter_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "check_sneak": {
       "type": "check",
@@ -662,7 +688,8 @@
       "onFailure": {
         "goto": "encounter_wolves",
         "narration": "A jackalope pops out of the grass right in front of you, shouts its little jackalope shout, and every wolf turns your way."
-      }
+      },
+      "art": "scenes/gemfall/road-bend-grass"
     },
     "encounter_wolves": {
       "type": "encounter",
