@@ -103,6 +103,7 @@
     },
     "scene_lighthouse": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-lighthouse",
       "discovers": [
         "npc.merfolk"
       ],
@@ -143,6 +144,7 @@
     },
     "scene_night_docks": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-docks",
       "discovers": [
         "npc.merfolk",
         "npc.yeti"
@@ -204,6 +206,7 @@
     },
     "choice_why_north": {
       "type": "choice_point",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "narration": "At a noodle stall you find the one empty chair. Every table in the Exchange keeps one, for whoever arrives next, and today that is you. Everyone in the whole city is going north. So why is our party going north? Everybody vote.",
       "cast": [
         {
@@ -295,6 +298,7 @@
     },
     "scene_motive_wealth": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "discovers": [
         "npc.stone_troll"
       ],
@@ -317,6 +321,7 @@
     },
     "scene_motive_curiosity": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "discovers": [
         "npc.stone_troll"
       ],
@@ -339,6 +344,7 @@
     },
     "scene_motive_prestige": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "discovers": [
         "npc.stone_troll",
         "npc.faun"
@@ -366,6 +372,7 @@
     },
     "scene_motive_duty": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "discovers": [
         "npc.stone_troll",
         "npc.faun"
@@ -392,6 +399,7 @@
     },
     "scene_motive_fresh_start": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "discovers": [
         "npc.stone_troll"
       ],
@@ -414,6 +422,7 @@
     },
     "scene_motive_proving": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "discovers": [
         "npc.stone_troll"
       ],
@@ -436,6 +445,7 @@
     },
     "scene_docks": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-docks",
       "discovers": [
         "npc.boggart",
         "npc.yeti"
@@ -481,6 +491,7 @@
     },
     "check_rumours": {
       "type": "check",
+      "art": "scenes/gemfall/exchange-docks",
       "stat": "clever",
       "tn": 8,
       "prompt": "Trade a good rumor for three better ones",
@@ -512,6 +523,7 @@
     },
     "scene_boggart": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-docks",
       "narration": "The boggart's rumors come in little jars with the lids screwed on tight. You pay with a button. You open the jar, and the rumor inside is: \"The mountain is grumpy.\" You already knew that. Then the boggart says it again, slower, looking sideways at the marsh road, and you realize it meant something else entirely.",
       "cast": [
         {
@@ -533,6 +545,7 @@
     },
     "scene_three_rumours": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-docks",
       "narration": "By sunset you have heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travelers through the Whispering Marsh, if they like you, and the marsh has been noisy since the red night. \"And mind the sky,\" adds the yeti. \"The courier griffins are flying so overloaded with claim letters they can barely steer.\"",
       "cast": [
         {
@@ -590,6 +603,7 @@
     },
     "scene_tavern": {
       "type": "story",
+      "art": "scenes/gemfall/empty-chair-tavern",
       "discovers": [
         "npc.selkie",
         "npc.stone_troll"
@@ -682,6 +696,7 @@
     },
     "choice_ember": {
       "type": "choice_point",
+      "art": "scenes/gemfall/exchange-quay",
       "discovers": [
         "npc.merfolk"
       ],
@@ -746,6 +761,7 @@
     },
     "choice_ember_sell_high": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-quay",
       "narration": "You name a bigger number. Madame Fenn names a smaller one. You name a bigger one again, and a second pigeon faints. In the end she pays twice what she offered, laughs so hard her barrel rolls into a bollard, and throws in a brave whistle \"for cheek, darlings.\" Then she writes your names in her little green book, twice.",
       "cast": [
         {
@@ -764,6 +780,7 @@
     },
     "scene_sold": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-quay",
       "narration": "Madame Fenn pays with a purse so heavy it clanks, and throws in a hearthstone bead \"for luck, darlings.\" Then she writes your names in a little green book. \"I never forget a good seller,\" she says, and somehow you believe her. The stone goes into her barrel, still humming, and the humming goes with it.",
       "cast": [
         {
@@ -789,6 +806,7 @@
     },
     "scene_kept": {
       "type": "story",
+      "art": "scenes/gemfall/exchange-quay",
       "narration": "You close your hand around the stone. Still warm. Madame Fenn sighs a sigh so big her barrel rocks on its wheels. \"Your loss, darlings. Or somebody's.\" The stone feels a little heavier now, the way a promise does.",
       "cast": [
         {
@@ -807,6 +825,7 @@
     },
     "scene_market": {
       "type": "story",
+      "art": "scenes/gemfall/outfitters-steps",
       "discovers": [
         "npc.faun"
       ],
@@ -870,6 +889,7 @@
     },
     "scene_market_spot_fakes": {
       "type": "story",
+      "art": "scenes/gemfall/outfitters-steps",
       "narration": "Your kitsune sniffs once and points. \"Those are bootlaces painted yellow.\" The stall-keeper next door goes very red, packs up in about four seconds, and is never seen on the Outfitters' Steps again. Tobble is so grateful he presses real quickfoot laces on you and sings your names up the whole scale.",
       "cast": [
         {
@@ -888,6 +908,7 @@
     },
     "scene_market_fresh_start": {
       "type": "story",
+      "art": "scenes/gemfall/outfitters-steps",
       "narration": "Tobble stops singing. \"A fresh start,\" he says, and for once he just speaks. He has one too, he says. He used to make boots for a duke, and then he decided he liked laces better. He sells you the laces at last year's price and sings a small verse about beginnings that nearly rhymes.",
       "cast": [
         {
@@ -906,6 +927,7 @@
     },
     "scene_market_buy_outright": {
       "type": "story",
+      "art": "scenes/gemfall/outfitters-steps",
       "narration": "You point at the best laces on the rack and pay without asking the price. Tobble is so startled he sings the price anyway, out of habit, a whole key too high. Three prospectors turn round to see who is rich. You try to look like you have always been rich.",
       "cast": [
         {
@@ -924,6 +946,7 @@
     },
     "check_haggle": {
       "type": "check",
+      "art": "scenes/gemfall/outfitters-steps",
       "stat": "clever",
       "tn": 12,
       "prompt": "Haggle with a cobbler who is singing the price",
@@ -952,6 +975,7 @@
     },
     "scene_laced": {
       "type": "story",
+      "art": "scenes/gemfall/outfitters-steps",
       "narration": "The quickfoot laces go on, and right away your feet would like to be somewhere else, quickly. Tobble sings a little verse about you. It is very flattering and mostly does not rhyme.",
       "cast": [
         {
@@ -970,6 +994,7 @@
     },
     "scene_lace_tangle": {
       "type": "story",
+      "art": "scenes/gemfall/outfitters-steps",
       "narration": "You haggle so hard that Tobble gets muddled and sells you a honeycake instead of laces. You are not sure how that happened. Neither is Tobble. It is a very good honeycake, though.",
       "cast": [
         {
@@ -1008,6 +1033,7 @@
     },
     "scene_caravan_yard": {
       "type": "story",
+      "art": "scenes/gemfall/caravan-yard",
       "discovers": [
         "npc.centaur"
       ],
@@ -1086,6 +1112,7 @@
     },
     "scene_caravan_yard_banner": {
       "type": "story",
+      "art": "scenes/gemfall/caravan-yard",
       "narration": "The banner is taller than any of you and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
       "cast": [
         {
@@ -1105,6 +1132,7 @@
     },
     "scene_caravan_yard_race": {
       "type": "story",
+      "art": "scenes/gemfall/caravan-yard",
       "discovers": [
         "npc.yeti"
       ],
@@ -1130,6 +1158,7 @@
     },
     "scene_caravan_yard_guard": {
       "type": "story",
+      "art": "scenes/gemfall/caravan-yard",
       "narration": "\"The lantern wagon,\" says Hesper, \"has been robbed twice this week and set on fire once.\" You say you will guard it anyway. She looks at you the way she looks at weather that has decided to be useful, and hands you a long pole with a hook on the end.",
       "cast": [
         {
@@ -1149,6 +1178,7 @@
     },
     "scene_caravan_yard_lift_wagon": {
       "type": "story",
+      "art": "scenes/gemfall/caravan-yard",
       "discovers": [
         "npc.faun"
       ],
@@ -1175,6 +1205,7 @@
     },
     "check_signon": {
       "type": "check",
+      "art": "scenes/gemfall/caravan-yard",
       "stat": "heart",
       "tn": 8,
       "prompt": "Tell a caravan master the truth and mean it",
