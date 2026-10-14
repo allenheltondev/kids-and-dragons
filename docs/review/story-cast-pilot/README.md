@@ -10,9 +10,11 @@ copy of `e2e/cast-shot.spec.ts`. A temporary review campaign starts each chapter
 at index 1 without its route prerequisite. Scene content and biome are unchanged.
 See the [generation and capture notes](../../campaigns/gemfall-illustrations.md#cast-figures--story-stage-pilot).
 
-The phone renderer currently crops the leftmost party member and some long labels.
-That behavior is visible in both before and after pictures. The new cast figures
-fit the right side and remain above the narration; this art PR does not change layout.
+The phone renderer crops party members and long labels; in the longer Pellam scene,
+the cast also reaches beyond the right edge and labels overlap the narration.
+These problems are visible in both before and after captures. Fenn and Ashby read
+clearly, but Pellam needs a follow-up renderer adjustment owned by the code work.
+This art PR preserves the required medium scale and does not change layout.
 
 ## Madame Coralie Fenn — Gemfall 1, choice_ember
 
