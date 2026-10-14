@@ -67,11 +67,11 @@ characters:
       Inspects changes in paths and glades, helps restore damaged places,
       mediates promises, investigates disturbances the forest remembers.
     lore:
-      hook: "Sworn to the forest's promises — including several the forest made before they were born."
+      hook: "Sworn to the forest's promises, including several the forest made before they were born."
       story: >-
         Unicorns are the Enchanted Woods' memory made ambulatory. Where the
-        forest remembers something — a promise kept, a harm done, a path that
-        used to be — a unicorn goes to check on it, the way other people check
+        forest remembers something (a promise kept, a harm done, a path that
+        used to be) a unicorn goes to check on it, the way other people check
         on elderly relatives. They feel a broken promise the way farmers feel
         weather coming, and young unicorns are notorious for being certain,
         early and loudly, about what a feeling means.
@@ -130,7 +130,7 @@ characters:
         communities read the mountain the way farmers read the sky, and every
         dragonling child knows which caves you can nap in and which ones you
         leave the moment the moths do. The one law of the foothills is
-        gathering law — you take what the mountain drops and you never pry at
+        gathering law: you take what the mountain drops and you never pry at
         what it holds. Stories of legend-dragon ancestry are told around every
         fire, and are neither confirmed nor discouraged by the fires.
       pastimes:
@@ -139,8 +139,8 @@ characters:
         - "Trading. With caravans, with each other, with anyone. A dragonling with nothing left to trade will trade the story of the last trade."
       social: >-
         Loud, warm, and communal. A dragonling settlement adopts visitors
-        first and assesses them later, and its warning systems — bells, moths,
-        grandmothers — extend to everyone inside the boundary stones, guest or
+        first and assesses them later, and its warning systems (bells, moths,
+        grandmothers) extend to everyone inside the boundary stones, guest or
         not.
       likes:
         - of: creature.embermoth
@@ -249,7 +249,7 @@ characters:
         line older than the settlement, and reading whose moss is whose is the
         first thing MossHome children learn.
       pastimes:
-        - "Keeping calendar gardens — beds planted so that what is blooming tells you the week. The garden is also the record. Do not eat the record."
+        - "Keeping calendar gardens: beds planted so that what is blooming tells you the week. The garden is also the record. Do not eat the record."
         - "Growing furniture. A good chair takes nine years, and there is no bad word in the language strong enough for someone who rushes one."
         - "Observation sits: hours of companionable stillness watching one thing. Mosshorns frequently nap against them mid-sit, which is considered peer review."
       social: >-
@@ -299,7 +299,7 @@ characters:
     lore:
       hook: "Their home moves. Their maps are songs. Their jokes have layovers."
       story: >-
-        Kitsune keep the drifting Sky Islands connected — navigators,
+        Kitsune keep the drifting Sky Islands connected: navigators,
         messengers, and story-carriers between communities that are never in
         the same place twice. Illusion, to a kitsune, is a teaching tool, a
         stage, and occasionally a way of making a point that would take too
@@ -309,17 +309,17 @@ characters:
       pastimes:
         - "Wind-mapping, which is half science and half gossip. Currents have names and reputations, and some of them are not spoken to."
         - "Illusion theater: retelling the week's news as a play, with unauthorized casting."
-        - "Leaving small illusory gifts on windowsills — a flower that lasts exactly until it is noticed."
+        - "Leaving small illusory gifts on windowsills, a flower that lasts exactly until it is noticed."
       social: >-
         Quick, curious, and generous with everything except the ending of a
         story. A kitsune promise is real; the packaging around it is where
-        the artistry lives. Do not portray every kitsune as mischievous —
+        the artistry lives. Do not portray every kitsune as mischievous;
         merely be aware the ratio is not in your favor.
       likes:
         - of: creature.cloud_whale
           because: "The islands navigate by their songs. Half the star-charts are really whale-charts, and every navigator knows it."
         - of: npc.boggart
-          because: "Finally, someone who appreciates a story with missing pieces. They trade — a tale for a secret — and both sides are certain they won."
+          because: "Finally, someone who appreciates a story with missing pieces. They trade, a tale for a secret, and both sides are certain they won."
       dislikes:
         - of: creature.mire_mimic
           because: "Impersonation without craft. One impression, performed lying down. And it keeps working, which is the insulting part."
@@ -358,7 +358,7 @@ characters:
         Manticores travel the Eastern Plains in family prides, and the roads
         east of the river are theirs in the sense that gardens belong to
         gardeners. A manticore's tail can end an argument, so pride etiquette
-        holds that it must never start one — and the famous formal greeting,
+        holds that it must never start one, and the famous formal greeting,
         performed at a distance with the tail conspicuously curled away,
         exists specifically to give strangers time to stop panicking.
       pastimes:

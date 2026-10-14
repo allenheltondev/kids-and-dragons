@@ -38,22 +38,22 @@ infobox: biome
 ## Related Entities
 
 ### Campaigns
-- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) — biomes
+- [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/): biomes
 
 ### Creatures
-- [Ember Wraith](/creatures/ember_wraith/) — creatures
+- [Ember Wraith](/creatures/ember_wraith/): creatures
 
 ### Factions
-- [The Skywardens](/factions/skywardens/) — factions
-- [The Skywardens](/factions/skywardens/) — territory
+- [The Skywardens](/factions/skywardens/): factions
+- [The Skywardens](/factions/skywardens/): territory
 
 ### Items
-- [Crimson Shard](/items/crimson_shard/) — items
-- [Crimson Shard](/items/crimson_shard/) — found_in
+- [Crimson Shard](/items/crimson_shard/): items
+- [Crimson Shard](/items/crimson_shard/): found_in
 
 ### Locations
-- [Redspire Citadel](/locations/redspire_citadel/) — locations
-- [Redspire Citadel](/locations/redspire_citadel/) — biome
+- [Redspire Citadel](/locations/redspire_citadel/): locations
+- [Redspire Citadel](/locations/redspire_citadel/): biome
 <!-- END GENERATED: relationships -->
 
 <!-- BEGIN GENERATED: ai_context -->
@@ -65,6 +65,6 @@ infobox: biome
 **Common Encounters:** Endgame zones, faction conflicts, ancient artifact retrieval
 **Lore Highlights:** 
 **Related Entities:** creature.ember_wraith, location.redspire_citadel, faction.skywardens, item.crimson_shard, campaign.dawn_of_the_red_sky, faction.skywardens, item.crimson_shard, location.redspire_citadel
-**Writing Guidance:** Always under the red sky. Never peaceful — even calm moments carry tension.
+**Writing Guidance:** Always under the red sky. Never peaceful; even calm moments carry tension.
 **Generation Hints:** Ember storms roll through every few hours, forcing shelter
 <!-- END GENERATED: ai_context -->

@@ -3,7 +3,7 @@ title: Hearthstone Bead
 id: item.hearthstone_bead
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: newly_defined
 tags: ["charm", "endurance", "bramblewood", "uncommon"]
 related:
@@ -30,7 +30,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Trinket** — Carried. It works the whole time you have it.
+**Trinket**: Carried. It works the whole time you have it.
 
 > +2 max HP.
 <!-- END GENERATED: mechanics -->

@@ -3,7 +3,7 @@ title: Sky Islands
 id: biome.sky_islands
 type: biome
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: confirmed
 tags: ["aerial", "drifting_islands", "wind", "temples", "open_sky"]
 danger_level: moderate
@@ -83,15 +83,15 @@ To the surface realm, the islands are where the weather is decided and where let
 
 ### Hidden Truths
 
-> *Creator canon — not generally known in-world. No NPC recites these.*
+> *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The foundation stones of the oldest temple are fossilized barnacle beds. Whatever the founding songs say, the islands have been sea floor, and the sea may not consider the loan closed.
 
 ### Neighbors
 
-- **[The Open Sea](/biomes/open_sea/)** — Everything dropped from an island eventually arrives in the sea, which the kitsune treat as a postal service with no return address and the sea treats as tribute.
-- **[Frostfang Peaks](/biomes/frostfang_peaks/)** — The high wind routes pass within sight of the griffin watch, and the two peoples trade weather news by signal - the realm's oldest conversation conducted entirely in flags.
-- **[The Exchange](/locations/exchange/)** — The city's docks are where island goods touch the ground, and kitsune messengers treat the place as the realm's front desk.
+- **[The Open Sea](/biomes/open_sea/)**: Everything dropped from an island eventually arrives in the sea, which the kitsune treat as a postal service with no return address and the sea treats as tribute.
+- **[Frostfang Peaks](/biomes/frostfang_peaks/)**: The high wind routes pass within sight of the griffin watch, and the two peoples trade weather news by signal - the realm's oldest conversation conducted entirely in flags.
+- **[The Exchange](/locations/exchange/)**: The city's docks are where island goods touch the ground, and kitsune messengers treat the place as the realm's front desk.
 
 ### Current Tensions
 

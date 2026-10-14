@@ -86,7 +86,7 @@
     },
     "scene_door_wild": {
       "type": "story",
-      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. Your MossHome runner waves goodbye and does not take one step farther. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
+      "narration": "The bigfoot high paths end at a mossy step that drops straight into ash. A MossHome runner coming the other way waves, and does not take one step onto the ash. The moss stops exactly where the ash starts, as if somebody drew the line with a ruler and the forest agreed to keep to it.",
       "choices": [
         {
           "id": "down",
@@ -98,7 +98,7 @@
     },
     "scene_door_rush": {
       "type": "story",
-      "narration": "You walk up the caravan road through the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
+      "narration": "You walk up the caravan road from the boundary stones, in the middle of a crowd that has no idea it just crossed anything. The grandmothers ring a bell for every pick that passes. They are ringing a lot. One of them has switched to a smaller bell to save her arm.",
       "choices": [
         {
           "id": "up",
@@ -297,7 +297,7 @@
         },
         {
           "id": "ford_soup",
-          "label": "Tell her you remember Wend's soup line at the ford",
+          "label": "Tell her you remember Wend's soup tents on the road north",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "scene_soup_tent_ford_soup",
@@ -313,7 +313,7 @@
     },
     "scene_soup_tent_ford_soup": {
       "type": "story",
-      "narration": "\"Wend's line, at the ford!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the queue.",
+      "narration": "\"Wend's tents, on the north road!\" Hessa's face lights up. \"Wend sends love. Wend sends love to everybody, but Wend did say your names.\" She ladles an extra spoonful into each bowl. It is the same soup. It tastes, oddly, like the queue.",
       "choices": [
         {
           "id": "on",
@@ -378,7 +378,7 @@
       "choices": [
         {
           "id": "morning",
-          "label": "In the morning, climb the ridge toward Redspire",
+          "label": "In the morning, climb the ridge toward the wardens' citadel",
           "icon": "forward",
           "goto": "scene_crab"
         }
@@ -421,7 +421,7 @@
           "id": "back_off",
           "label": "Back everyone off its warm ground, go the long way",
           "icon": "back",
-          "goto": "scene_citadel_gate",
+          "goto": "scene_crab_long_way",
           "effects": [
             {
               "type": "setFlag",
@@ -641,17 +641,24 @@
         },
         {
           "id": "wild_clues",
-          "label": "Show the boggart's hum, the glades and the path archive",
+          "label": "Show the wounded glades, the path archive and the knot-cord",
           "icon": "leaf",
           "requiresFlag": "route_wild",
           "goto": "scene_truth_table_wild_clues"
         },
         {
           "id": "rush_clues",
-          "label": "Show the witch's charm, route-songs and boundary tallies",
+          "label": "Show the relay's spiral verses and the boundary tallies",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "scene_truth_table_rush_clues"
+        },
+        {
+          "id": "charm",
+          "label": "Set Mother Thrum's tuned charm on the table",
+          "icon": "charm",
+          "requiresItem": "charm_ford_witch",
+          "goto": "scene_truth_table_charm"
         },
         {
           "id": "odd_ledger",
@@ -678,7 +685,7 @@
     "scene_truth_table_rush_clues": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You lay out Mother Thrum's tuned charm, the spiral verses and the boundary-stone tallies. The moment the charm touches the table it rings, and the Table Stone rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
+      "narration": "You lay out the spiral verses and the boundary-stone tallies, and Pellam lays a watch-log four hundred years old beside them. The grandmothers' tally marks and the relay's new verses curl the same way the old log does, round every place a stone has ever fallen. Captain Voss looks at the three of them side by side for a long time and says nothing, which from her is a great deal.",
       "choices": [
         {
           "id": "on",
@@ -691,7 +698,7 @@
     "scene_truth_table_wild_clues": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You lay out the boggart's hum, the wounded glades and the path archive. Pellam goes very pale and opens the oldest log on the table, the one nobody reads. One line: the marsh gate hums the same note. Beside it, in three different hands: nobody knows why. \"Well,\" says Captain Voss. \"Somebody does now.\"",
+      "narration": "You lay out the wounded glades, the path archive and the MossHome knot-cord. Pellam runs a finger down the cord, counting knots, goes very pale, and reaches for the oldest log on the table, the one nobody reads. \"Well,\" says Captain Voss. \"The forest keeps records too.\"",
       "choices": [
         {
           "id": "on",
@@ -809,7 +816,7 @@
     },
     "scene_acceptable_losses_hear_plan": {
       "type": "story",
-      "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the Table Stone is the only thing in the room making a sound.",
+      "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch, the one gap every road squeezes through, all the way down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the Table Stone is the only thing in the room making a sound.",
       "choices": [
         {
           "id": "on",
@@ -1141,7 +1148,7 @@
     "scene_declared_leash": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, Hessa's choir is humming the same three notes.",
+      "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, somebody at Hessa's soup tent is humming.",
       "choices": [
         {
           "id": "record",
@@ -1351,6 +1358,30 @@
       "heal": 3,
       "choices": [],
       "outcome": "setback"
+    },
+    "scene_crab_long_way": {
+      "type": "story",
+      "narration": "You back everybody off the warm ground, Dunmore last and grumbling, and take the goat track round the ridge instead. The crab goes back to its pebbles. The goat track is a goat's idea of a road, and by the time it brings you out on the citadel side, the sun is high and the whole morning is gone.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up the ridge road at last",
+          "icon": "hand",
+          "goto": "scene_citadel_gate"
+        }
+      ]
+    },
+    "scene_truth_table_charm": {
+      "type": "story",
+      "narration": "You set Mother Thrum's tuned charm on the table. The moment it touches the stone it rings, and the Table Stone rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
+      "choices": [
+        {
+          "id": "click",
+          "label": "Watch it all click together",
+          "icon": "eye",
+          "goto": "scene_whole_truth"
+        }
+      ]
     }
   },
   "llmHints": {

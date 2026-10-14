@@ -66,7 +66,7 @@
       <img
         class="wiki-tier-viewer__img{{ if eq . "fledgling" }} wiki-tier-viewer__img--active{{ end }}"
         src="{{ $img | relURL }}"
-        alt="{{ $.Title }} — {{ . | title }} tier"
+        alt="{{ $.Title }}, {{ . | title }} tier"
         data-tier="{{ . }}"
         loading="lazy"
       >

@@ -3,7 +3,7 @@ title: Shard of the Hollow Crown
 id: item.hollow_crown_shard
 type: item
 status: draft
-lastReviewed: "2026-08-01"
+lastReviewed: "2026-10-14"
 canon_status: intentionally_undefined
 draft: true
 tags: ["artifact", "hollow_gate", "mysterious", "legendary"]
@@ -37,7 +37,7 @@ infobox: item
 <!-- BEGIN GENERATED: mechanics -->
 ## In Your Hands
 
-**Quest** — A story item. It takes up no space in your bag.
+**Quest**: A story item. It takes up no space in your bag.
 
 > A curl of cold silver. It hums when you are close to the rest of it.
 <!-- END GENERATED: mechanics -->
