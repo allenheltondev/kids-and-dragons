@@ -733,3 +733,51 @@ The figures were generated in two isolated 2×2 cutout sheets, then separated in
 - **Lady Fleecewick** (`assets/cast/lady_fleecewick/assembled.png`): Elegant older sheeple collector with lavender curls, teal coat, jeweled brooch and ledger satchel.
 - **Cadet Linnet** (`assets/cast/cadet_linnet/assembled.png`): Slate-blue griffin Skywarden with cream face, green cadet cloak and bronze badge.
 - **Tansy** (`assets/cast/tansy/assembled.png`): Small russet faun child with yellow scarf and pink humming stone.
+
+## Issue 170 — remaining expansion speakers (2026-10-15)
+
+Generated with the built-in image-generation tool, one reference-based call per figure, with `transparent_background: true`. The source cutouts are retained in the generation library; project-ready figures are in `assets/cast/<id>/assembled.png`. The packaging script `art/source/package_gemfall_expansion_cast.py` trims transparent padding, proportionally resizes and registers the generated alpha on a 1024×1024 canvas at y=900. No painted pixels were retouched.
+
+Odo, Corbin and Posy are Burrowfolk travelers; Rook is a Burrowfolk member of the mixed-peoples Deep Hollow faction. His bark mask and crystal distinguish allegiance. Posy has a separate standing figure because her later scene puts her on foot. The selkie grandmother keeps the established seal-cloak anatomy; the path-keeper is an elder bigfoot; the young gatherer remains a quadrupedal dragonling. The courier's navy sack and lack of spectacles distinguish him from Quill.
+
+### Prompts and references
+
+**`odo`** — reference: `assets/entities/burrowfolk/assembled.png`; source: `exec-c89584e7-fa19-4427-8b48-c7c6d041f4fe.png`.
+
+Use case: illustration-story. Asset: one transparent full-body game cast cutout, 1024x1024 RGBA, three-quarter facing LEFT, relaxed standing, feet at y=900, generous transparent margin. Warm painterly storybook, hand drawn warm brown outlines, simple soft cel shading, expressive age-8-friendly face. No text, background, ground or shadow. Reference is species and house style only. Odo, a cheerful stocky adult Burrowfolk badger prospector with brown fur, cream face stripes, battered russet cap, patched indigo waistcoat. Standing beside his little wooden wheelbarrow heaped with brightly painted gravel and one warm glowing pebble. One badger only.
+
+**`corbin`** — reference: `assets/entities/burrowfolk/assembled.png`; source: `exec-59c93662-6567-4de5-ab65-fb1cb0ca4237.png`.
+
+Use case: illustration-story. Asset: one transparent full-body game cast cutout, 1024x1024 RGBA, three-quarter facing LEFT, relaxed standing, feet at y=900, generous transparent margin. Warm painterly storybook, hand drawn warm brown outlines, simple soft cel shading, expressive age-8-friendly face. No text, background, ground or shadow. Reference is species and house style only. Corbin, a tired but tender adult Burrowfolk badger father, cream face stripes, dark brown fur, faded olive traveling coat, patched leather shoulder pack, worn boots. Broad shoulders, weary kind eyes, hands open. One badger only; no child or barrow.
+
+**`posy`** — reference: `assets/entities/burrowfolk/assembled.png`; source: `exec-0375f0d3-536a-4c96-bd0d-d3c9529c7ac1.png`.
+
+Use case: illustration-story. Asset: one transparent full-body game cast cutout, 1024x1024 RGBA, three-quarter facing LEFT, relaxed standing, feet at y=900, generous transparent margin. Warm painterly storybook, hand drawn warm brown outlines, simple soft cel shading, expressive age-8-friendly face. No text, background, ground or shadow. Reference is species and house style only. Posy, a young Burrowfolk badger girl with brown fur, cream face stripes and rounded ears, worn ochre pinafore, rust-red scarf and small boots. Holding one softly glowing pink stone in both paws at her chest, hopeful serious expression. One complete standing badger child only, no adult.
+
+**`rook`** — reference: `assets/entities/burrowfolk/assembled.png`; source: `exec-1ca12e3e-9c0b-46c6-9c48-064f3544f121.png`.
+
+Rook, a prickly curious young Burrowfolk badger choir scout with cream facial stripes, a short dark plum traveling cloak, painted leaf-bark mask pushed up on the forehead so the friendly face shows, small humming rose crystal on a cord. Young adult, folded arms, curious sideways smile. One character only.
+
+**`selkie_grandmother`** — reference: `assets/entities/selkie/assembled.png`; source: `exec-f773bfdb-522f-46b7-af83-4bf7815372e3.png`.
+
+One elderly selkie grandmother welcoming newcomers, silver wavy hair, kind lined brown face and whisker freckles, seal-skin cloak with seal face and flippers like reference, teal knitted shawl, carrying a small bundled travel blanket. Stand facing LEFT, maternal, steady barefoot stance. No human replacement: visibly the seal-cloaked selkie people.
+
+**`path_keeper`** — reference: `assets/cast/oldest_archivist/assembled.png`; source: `exec-ea410f96-2bde-437b-b8de-cafd57a36e6c.png`.
+
+One old bigfoot path-keeper, sturdy cream-furred bipedal forest elder with shaggy moss-brown mane and greying beard, warm friendly face, holding an enormous open visitors book with knotted cords instead of writing and a ribbon bookmark. Full body standing facing LEFT. No bird, no box, no text.
+
+**`young_gatherer`** — reference: `assets/characters/dragonling/fledgling/assembled.png`; source: `exec-e79239bb-e33a-43e9-a63e-a7b80cb4979e.png`.
+
+One young quadrupedal dragonling girl, unmistakably same anatomy and colours as reference: pale mint scales, charcoal mane spines, orange wing membranes, cream belly. Small gathering bag strapped across back, flat loose pebbles visible at the rim; tail curled gently beside feet, folded wings, hopeful shy expression facing LEFT. Four feet on ground, no hands or clothes.
+
+**`courier_griffin`** — reference: `assets/cast/postmaster_quill/assembled.png`; source: `exec-5bd615f3-0dc9-40e5-a4ea-f5310616d02e.png`.
+
+Courier Griffin: one young working quadruped griffin, cream feather face and chest, russet wings, lion hindquarters, golden eagle forefeet, short tousled crest. No spectacles. Oversized worn navy-blue mail sack with blank envelopes and a neatly patched split seam, sling across body. Sheepish confident expression, wings folded, all four feet grounded. Match reference species but younger and distinct from postmaster.
+
+### Corbin carrying Posy — continuity correction
+
+`assets/cast/corbin_carrying_posy/assembled.png` is a pose variant generated with the built-in image-generation tool and `transparent_background: true`. References: the existing `corbin` and `posy` cutouts. Source: `exec-d640a683-7d79-4e64-9e44-3a90e72e4813.png`.
+
+It appears in `scene_posy`, `check_posy`, `scene_posy_let_keep`, and `scene_posy_medal`. The later `scene_downhill_crowd_posy` keeps the separate on-foot figures. The combined figure uses `very_large` for its occupied height, so the two stacked characters remain readable; this does not redefine the Burrowfolk people's scale. Packaged with the existing registration script; lowest opaque row y=900.
+
+Edit these two reference cast cutouts into ONE complete father-and-child cutout: Corbin carrying his small daughter Posy astride his shoulders. Preserve their exact identities, clothing, colors, painterly storybook style and three-quarter LEFT-facing orientation. Corbin is the adult Burrowfolk badger in worn olive coat, russet scarf, brown trousers and boots, shoulder bag. Posy is the small badger girl in ochre pinafore and russet scarf, boots, holding her glowing pink stone in BOTH paws in front of her chest. Posy's legs drape down either side of Corbin's neck, her seat rests firmly on his shoulders; Corbin supports her calves with both hands. She is clearly a small child, about one third his body height. Both faces visible. Corbin stands solidly with both boots on same floor line. Entire combined pair fits on a square transparent canvas with generous margin around ears, tails and boots. Genuine transparent background, NO floor, shadow, text, border or extra characters. This is one stage figure, feet bottom at y=900 on a 1024x1024 canvas; keep generous headroom.
