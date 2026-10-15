@@ -132,7 +132,7 @@ assets:
   primary: assets/biomes/sunward_fields/portrait.webp
   primaryFull: assets/biomes/sunward_fields/bg.webp
   gallery:
-    - src: assets/biomes/sunward_fields/portrait.webp
+    - src: assets/biomes/sunward_fields/tiles.png
       full: assets/biomes/sunward_fields/tiles.png
 ai_context:
   mood: "Rolling meadows, farms, orchards, and village cooperatives that produce much of the food used across the realm."

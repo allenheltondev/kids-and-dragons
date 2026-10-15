@@ -54,6 +54,9 @@ related:
   - id: location.bone_yard
     type: location
     relationship: locations
+assets:
+  primary: assets/biomes/open_sea/portrait.webp
+  primaryFull: assets/biomes/open_sea/bg.webp
 ai_context:
   mood: "The wide water surrounding the realm, reached from every coast and owned by none of them."
   themes: "Ocean, Offshore, Deep_water, Weather, Currents"

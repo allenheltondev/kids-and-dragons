@@ -61,6 +61,12 @@ related:
   - id: npc.boughkin
     type: npc
     relationship: secondary_locations
+assets:
+  primary: assets/biomes/mosshome/portrait.webp
+  primaryFull: assets/biomes/mosshome/bg.webp
+  gallery:
+    - src: assets/biomes/mosshome/tiles.png
+      full: assets/biomes/mosshome/tiles.png
 ai_context:
   mood: "The principal Bigfoot settlement, built into and alongside ancient living trees without severing the forest systems that support it."
   themes: "Forest_settlement, Living_architecture, Bigfoot, Cultivated_moss, Ancient_trees"

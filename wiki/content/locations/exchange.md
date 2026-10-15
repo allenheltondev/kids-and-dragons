@@ -106,6 +106,12 @@ related:
   - id: npc.witch_order
     type: npc
     relationship: secondary_locations
+assets:
+  primary: assets/biomes/exchange/portrait.webp
+  primaryFull: assets/biomes/exchange/bg.webp
+  gallery:
+    - src: assets/biomes/exchange/tiles.png
+      full: assets/biomes/exchange/tiles.png
 ai_context:
   mood: "A neutral coastal city where roads, ships, peoples, trade, news, and opportunities from across the realm converge."
   themes: "Coastal_city, Trade, Crossroads, Docks, Mixed_population, Stories"

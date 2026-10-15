@@ -413,9 +413,8 @@ describe('getConventionAssetPath', () => {
   });
 
   it('returns null for unsupported entity types', () => {
-    expect(getConventionAssetPath('item', 'forest_moss')).toBeNull();
+    expect(getConventionAssetPath('feature', 'great_river')).toBeNull();
     expect(getConventionAssetPath('quest', 'main_quest')).toBeNull();
-    expect(getConventionAssetPath('faction', 'druids')).toBeNull();
   });
 });
 

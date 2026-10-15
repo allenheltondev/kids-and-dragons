@@ -41,6 +41,9 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: locations
+assets:
+  primary: assets/biomes/redspire_citadel/portrait.webp
+  primaryFull: assets/biomes/redspire_citadel/bg.webp
 ai_context:
   mood: "A towering obsidian fortress perched on the highest peak of the foothills, headquarters of the Skywardens."
   themes: "Fortress, Skywardens, Highlands, Hub"

@@ -41,3 +41,5 @@ Generated for Kids & Dragons with the built-in imagegen tool. Runtime files reta
 - **name**: A blank parchment tag and quill for naming a hero.
 - **arrow**: An enchanted archery arrow for First Strike.
 - **hand**: A welcoming gloved hand for helping and healing.
+
+- **supper**: Ordinary bread, cheese and smoked sausage in a cream cloth bundle tied at the top. Dedicated Supper Bundle inventory icon; warm painted gold highlights and plum shadows, transparent 256px WebP.

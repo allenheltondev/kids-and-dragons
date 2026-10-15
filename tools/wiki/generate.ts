@@ -12,7 +12,7 @@ import path from 'node:path';
 import type { GeneratorConfig, ValidationMessage } from './types.ts';
 import { parseCanonDirectory } from './canon-parser.ts';
 import { validateCanon } from './canon-validator.ts';
-import { discoverAllAssets } from './asset-discovery.ts';
+import { discoverAssets } from './asset-discovery.ts';
 import { generatePage, getEntityPagePath, resolveConventionAssets } from './page-generator.ts';
 import { checkIncremental, updateManifest, getCanonFileMtimes } from './incremental.ts';
 import { loadChapterTexts, findAllChapterUses } from './chapter-uses.ts';
@@ -118,17 +118,6 @@ function main(): void {
     entitiesToProcess = incrementalResult.entitiesToProcess;
   }
 
-  // 9. Discover assets
-  const { results: assetResults, warnings: assetWarnings } = discoverAllAssets(
-    registry.entities,
-    assetsDir,
-  );
-  allWarnings.push(...assetWarnings);
-
-  for (const w of assetWarnings) {
-    process.stderr.write(`[warning] ${w.entityId ?? w.file}: ${w.message}\n`);
-  }
-
   // Which chapters use each entity — for the publish rule on protected
   // mysteries and the "not in a story yet" badge.
   const chapterUses = chapters.length > 0 ? findAllChapterUses(registry.entities.values(), chapters) : null;
@@ -161,11 +150,10 @@ function main(): void {
       existingContent = fs.readFileSync(pagePath, 'utf-8');
     }
 
-    // Get assets and reverse refs for this entity
-    // Prefer explicit assets from asset-discovery, then fall back to convention-based resolution
-    const discoveredAssets = assetResults.get(entityId);
-    const assets = discoveredAssets && discoveredAssets.source === 'explicit'
-      ? discoveredAssets
+    // Use the same disk conventions for primary images and galleries. Artwork
+    // is optional; the legacy plural-directory scan warned even for delivered art.
+    const assets = entity.assets?.length
+      ? discoverAssets(entity, assetsDir).result
       : resolveConventionAssets(entity, assetsDir);
     const reverseRefs = registry.reverseRefs.get(entityId) ?? [];
 
@@ -201,7 +189,7 @@ function main(): void {
   }
 
   // 11. Update manifest with current file mtimes
-  const canonMtimes = getCanonFileMtimes(canonDir, config.chaptersDir);
+  const canonMtimes = getCanonFileMtimes(canonDir, config.chaptersDir, assetsDir);
   updateManifest(manifestPath, canonMtimes);
 
   // 12. Print summary report and exit 0

@@ -55,6 +55,12 @@ related:
   - id: npc.stone_troll
     type: npc
     relationship: primary_locations
+assets:
+  primary: assets/biomes/skullwater_cave/portrait.webp
+  primaryFull: assets/biomes/skullwater_cave/bg.webp
+  gallery:
+    - src: assets/biomes/skullwater_cave/tiles.png
+      full: assets/biomes/skullwater_cave/tiles.png
 ai_context:
   mood: "A skull-shaped offshore opening that leads into a much larger underground world whose full extent has not yet been canonized."
   themes: "Offshore_cave, Underground_gateway, Skull_rock, Caverns, Unknown_depths"
