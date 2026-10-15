@@ -183,6 +183,13 @@ A scene may use a name it introduces itself: `a clerk named Pellam`, `called Gul
 Citadel`, a `cast` entry. If a scene brings a character on and does not do one of these, the
 sweep will say so at the next merge point.
 
+`when` gates count the same way (`flag`, `item`, `count` with `min` of 1 or more); `notFlag`,
+`notItem`, a `count` with only a `max`, and `partySize` prove nothing. Narration `variants` are
+checked against what their own `when` proves, but are conservatively **not** counted as showing
+a name to later scenes, since they appear only for some parties. The exceptions are an
+always-true variant, and a `replace` variant, which only guarantees what the base and the
+replacement both show. `{facets}` and `{party}` are not names.
+
 **What it cannot see.** Only capitalised names. "The jar", "your goat", "that ledger" and
 "the old woman" are invisible to it, so every merge point still needs a human read for
 references that are not names. It does not judge ordinary words (a sentence-opening capital
