@@ -1078,7 +1078,8 @@
       "narration": "At dusk, cinder wolves come and sit just past the firelight, cold and thin, with a faint warm glow under their fur. They are not hunting. They are pointedly not sitting anywhere near the gem wagons. Every campfire in the queue is arguing about whether to feed them.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -1126,7 +1127,8 @@
       "narration": "You put your supper down on a flat stone and step back. The wolves eat politely, and then the whole pack lies down in a heap by your fire, glowing like a pile of coals. It is the warmest night anybody in the queue has had all week. The road will remember this.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "onEnter": [
@@ -1150,7 +1152,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "narration": "You keep your fire small and your voices low. The wolves stay just past the light all evening, watching. Not you. The gem wagons. Every time a wagon creaks, every ear goes flat, and the pack shuffles a little farther away from it. Whatever they are worried about, it is not you.",
@@ -1505,7 +1508,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "narration": "You hold the charm out into the dark where the wolves are lying. It sings. Every wolf flattens its ears, gets up, and moves ten steps farther off, politely, like guests leaving a party early. They are not afraid of you. They are keeping away from the note.",
@@ -1722,7 +1726,8 @@
       "narration": "Halfway across, the red-scarf queue-jumpers charge into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
       "cast": [
         {
-          "figure": "entities/river_drake"
+          "figure": "entities/river_drake",
+          "count": 2
         }
       ],
       "choices": [
@@ -1761,7 +1766,8 @@
       "prompt": "Pay the river drakes politely in bread",
       "cast": [
         {
-          "figure": "entities/river_drake"
+          "figure": "entities/river_drake",
+          "count": 2
         }
       ],
       "roller": "party",
