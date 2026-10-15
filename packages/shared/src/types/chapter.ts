@@ -5,6 +5,7 @@
  * a static asset. A malformed chapter fails the build, never the play session.
  */
 
+import type { CampaignGraph } from "./campaign-graph.js";
 import type { ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
@@ -543,4 +544,17 @@ export interface Campaign {
    * starts its next chapter with an empty purse.
    */
   purseBackfill?: { coins: number; byFlag?: Record<string, number> };
+  /**
+   * Makes this a graph campaign (#192): the next chapter is chosen by the
+   * graph's edges, not by `index`. Absent — every campaign authored before it
+   * existed, Gemfall included — is an ordered campaign, played exactly as it
+   * always was. See `CampaignGraph`, `campaignMode` and
+   * docs/campaigns/graph-campaigns.md.
+   *
+   * A campaign's mode is part of its identity. Turning an ordered campaign
+   * into a graph one under attempts already in flight would strand them
+   * (their `lastIndex` names a beat, not a node), so that is a new campaign
+   * id, never an edit.
+   */
+  graph?: CampaignGraph;
 }

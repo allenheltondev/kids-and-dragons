@@ -1,0 +1,111 @@
+/**
+ * schemas/campaign.schema.json against graph campaigns (#192).
+ *
+ * The schema is the first half of the content gate and the only half an
+ * editor sees as you type, so it has to accept the declaration the authoring
+ * doc teaches and refuse the shapes the doc says do not exist. It is judged
+ * here with the same ajv settings `content:validate` uses (strict, 2020-12),
+ * against the Rift Sampler — the illustrative fixture, which deliberately
+ * lives outside content/ so nothing ships it — and against both campaigns
+ * that do ship, which must still pass untouched: an optional `graph` that
+ * broke an ordered campaign would be a Gemfall regression, not a feature.
+ */
+
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
+import { describe, expect, it } from "vitest";
+
+const REPO = fileURLToPath(new URL("../..", import.meta.url));
+const read = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8"));
+const FIXTURE = ["packages", "shared", "src", "fixtures", "rift-sampler.campaign.json"];
+
+const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
+addFormats(ajv);
+const validate = ajv.compile(read("schemas", "campaign.schema.json"));
+
+/** The schema's verdict, with its errors as `path message` lines for a readable failure. */
+function judge(campaign) {
+  const ok = validate(campaign);
+  return { ok, errors: (validate.errors ?? []).map((e) => `${e.instancePath} ${e.message}`) };
+}
+
+function bent(mutate) {
+  const campaign = read(...FIXTURE);
+  mutate(campaign);
+  return judge(campaign);
+}
+
+describe("the shipped ordered campaigns", () => {
+  it.each(["gemfall", "the-hollow-crown"])("%s still validates, with no graph", (id) => {
+    const campaign = read("content", "campaigns", `${id}.json`);
+    expect(campaign.graph).toBeUndefined();
+    const { ok, errors } = judge(campaign);
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+});
+
+describe("the Rift Sampler", () => {
+  it("validates", () => {
+    const { ok, errors } = judge(read(...FIXTURE));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content: no campaigns/ file carries it", () => {
+    // The loader and content:validate read content/campaigns/*.json and
+    // nothing else, so living outside it is what keeps the fixture off the
+    // lobby. Guard the obvious way it could end up there.
+    const { id } = read(...FIXTURE);
+    expect(() => read("content", "campaigns", `${id}.json`)).toThrow();
+  });
+});
+
+describe("what the schema refuses", () => {
+  it("a version this build does not read", () => {
+    expect(bent((c) => (c.graph.version = 2)).ok).toBe(false);
+  });
+
+  it("a graph missing entry, nodes or edges", () => {
+    for (const key of ["entry", "nodes", "edges", "version"]) {
+      expect(bent((c) => delete c.graph[key]).ok, key).toBe(false);
+    }
+  });
+
+  it("an edge kind that is not forward, sideways or return", () => {
+    expect(bent((c) => (c.graph.edges["to-orchard"].kind = "backward")).ok).toBe(false);
+  });
+
+  it("a revisit policy it does not know", () => {
+    expect(bent((c) => (c.graph.nodes.quarry.revisit = "sometimes")).ok).toBe(false);
+  });
+
+  it("the reserved extension names until their issues define them", () => {
+    // #196 gives an edge `rift`; until then an author cannot use it early
+    // and have the meaning change under them.
+    expect(bent((c) => (c.graph.edges["to-orchard"].rift = { type: "one-way" })).ok).toBe(false);
+    expect(bent((c) => (c.graph.nodes.quarry.state = {})).ok).toBe(false);
+  });
+
+  it("a guard that reads the party rather than the journey", () => {
+    // `item` is a chapter Condition field. A graph decision must come out the
+    // same on any evening, for any phones, so it is not one here.
+    expect(bent((c) => (c.graph.edges["to-orchard"].when = { item: "lens" })).ok).toBe(false);
+  });
+
+  it("an effect it does not know, or one missing its target", () => {
+    expect(bent((c) => (c.graph.edges["to-orchard"].effects = [{ type: "grantItem", itemId: "x" }])).ok).toBe(false);
+    expect(bent((c) => (c.graph.edges["to-orchard"].effects = [{ type: "unlock" }])).ok).toBe(false);
+  });
+
+  it("a malformed node or edge id", () => {
+    expect(bent((c) => (c.graph.nodes["Big Hall"] = { chapter: "sampler-tower" })).ok).toBe(false);
+  });
+
+  it("locked, once and irreversible as anything but true", () => {
+    for (const key of ["locked", "once", "irreversible"]) {
+      expect(bent((c) => (c.graph.edges["to-orchard"][key] = false)).ok, key).toBe(false);
+    }
+  });
+});

@@ -1,0 +1,120 @@
+{
+  "$comment": "Graph campaign fixture (#192). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It exists to show every part of the declaration once - a branch, a sideways move, a return edge closing a cycle, a guarded edge, a locked edge and its unlock, a once edge, an irreversible claim, a variant, each revisit policy, and two endings - and campaign-graph.test.ts and tools/content/campaign-graph-schema.test.mjs hold it to the schema and the parser. docs/campaigns/graph-campaigns.md walks through it.",
+  "id": "rift-sampler",
+  "title": "The Rift Sampler",
+  "blurb": "A waystone, an orchard, a mill and a quarry, and two ways for the evening to end. Not a story: a map of every kind of path.",
+  "chapters": [
+    "sampler-waystone",
+    "sampler-orchard",
+    "sampler-orchard-flooded",
+    "sampler-mill",
+    "sampler-quarry",
+    "sampler-tower",
+    "sampler-dawn-gate",
+    "sampler-long-road-home"
+  ],
+  "graph": {
+    "version": 1,
+    "entry": "waystone",
+    "flags": ["mill_wheel_turning", "found_the_lens"],
+    "nodes": {
+      "waystone": {
+        "$comment": "The hub. Played once; every return afterwards walks straight through to the exit choice.",
+        "chapter": "sampler-waystone",
+        "title": "The Waystone",
+        "revisit": "pass"
+      },
+      "orchard": {
+        "$comment": "Replayed on return, and once the mill wheel turns the orchard is a different chapter (a different biome: flooded).",
+        "chapter": "sampler-orchard",
+        "title": "The Orchard",
+        "variants": [{ "chapter": "sampler-orchard-flooded", "when": { "flag": "mill_wheel_turning" } }]
+      },
+      "mill": {
+        "$comment": "Closed once completed: the wheel only needs starting once.",
+        "chapter": "sampler-mill",
+        "title": "The Old Mill",
+        "revisit": "closed"
+      },
+      "quarry": {
+        "chapter": "sampler-quarry",
+        "title": "The Quarry"
+      },
+      "tower": {
+        "chapter": "sampler-tower",
+        "title": "The Lens Tower"
+      },
+      "dawn-gate": {
+        "chapter": "sampler-dawn-gate",
+        "ending": { "title": "The Dawn Gate" }
+      },
+      "long-road-home": {
+        "chapter": "sampler-long-road-home",
+        "ending": { "title": "The Long Road Home" }
+      }
+    },
+    "edges": {
+      "to-orchard": { "from": "waystone", "to": "orchard", "kind": "forward", "label": "Down to the orchard" },
+      "to-quarry": {
+        "$comment": "The quarry road washes out behind the party: one crossing per attempt.",
+        "from": "waystone",
+        "to": "quarry",
+        "kind": "forward",
+        "label": "Up the quarry road",
+        "once": true
+      },
+      "orchard-to-mill": {
+        "from": "orchard",
+        "to": "mill",
+        "kind": "sideways",
+        "label": "Along the stream to the mill"
+      },
+      "mill-to-orchard": {
+        "$comment": "Starting the wheel floods the orchard and opens the tower door; the way back closes the orchard-mill cycle.",
+        "from": "mill",
+        "to": "orchard",
+        "kind": "return",
+        "label": "Back to the orchard",
+        "effects": [
+          { "type": "setFlag", "flag": "mill_wheel_turning" },
+          { "type": "unlock", "edge": "orchard-to-tower" }
+        ]
+      },
+      "orchard-to-waystone": { "from": "orchard", "to": "waystone", "kind": "return", "label": "Back to the waystone" },
+      "orchard-to-tower": {
+        "$comment": "Seen from the start, so the party knows the door is there; opened by the mill.",
+        "from": "orchard",
+        "to": "tower",
+        "kind": "forward",
+        "label": "Through the tower door",
+        "locked": true,
+        "blocked": "shown"
+      },
+      "quarry-to-tower": {
+        "$comment": "Guarded: only a party whose quarry chapter found the lens knows the climb exists. Hidden otherwise.",
+        "from": "quarry",
+        "to": "tower",
+        "kind": "forward",
+        "label": "Climb to the tower",
+        "when": { "flag": "found_the_lens" }
+      },
+      "quarry-to-home": {
+        "$comment": "Offered only after a quarry setback: the early, gentler ending.",
+        "from": "quarry",
+        "to": "long-road-home",
+        "kind": "forward",
+        "label": "Take the long road home",
+        "when": { "outcome": "setback" },
+        "irreversible": true
+      },
+      "quarry-to-waystone": { "from": "quarry", "to": "waystone", "kind": "return", "label": "Back down to the waystone" },
+      "tower-to-dawn": {
+        "from": "tower",
+        "to": "dawn-gate",
+        "kind": "forward",
+        "label": "Open the Dawn Gate",
+        "irreversible": true
+      }
+    }
+  }
+}
