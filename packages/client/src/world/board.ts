@@ -373,6 +373,8 @@ export function createBoardLayer(): BoardLayer {
   /** What the tiles were last built from, so update() rebuilds only on change. */
   let builtTerrain: readonly string[] | null = null;
   let builtBiome: string | null = null;
+  /** The fight the actors were last synced for (`EncounterState.startedAt`). */
+  let builtFight: number | null | undefined = undefined;
   /** The last moves drawn, as a cheap signature. */
   let movesKey = "";
 
@@ -602,6 +604,16 @@ export function createBoardLayer(): BoardLayer {
   function syncActors(current: BoardViewState): void {
     const { encounter } = current;
     const seen = new Set<string>();
+    /*
+     * A new fight starts every figure's facing fresh, even one whose id the
+     * last fight also used (heroes always, `wisp#1` often): the board
+     * outlives fights, and a facing earned in the last one would otherwise
+     * carry into this one, where a refreshed TV or the phone grid would
+     * start it from scratch and disagree.
+     */
+    const fight = encounter.startedAt ?? null;
+    const newFight = fight !== builtFight;
+    builtFight = fight;
 
     for (const combatant of encounter.combatants) {
       // Positions live once, on the board's actors (grid.ts). A beaten enemy
@@ -622,6 +634,9 @@ export function createBoardLayer(): BoardLayer {
         if (end && (end.x !== feet.x || end.y !== feet.y)) existing.route = [];
         const facing = facingFor(encounter, combatant.id);
         if (facing !== null) existing.facing = facing === "right" ? -1 : 1;
+        else if (newFight) existing.facing = 1;
+        // A new fight arrives already facing; turning is for mid-fight.
+        if (newFight) existing.art.scale.x = existing.facing;
         // This module draws what it is given and keeps nothing of its own
         // (see the header), and a name is state like any other.
         //

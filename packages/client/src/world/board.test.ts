@@ -481,6 +481,28 @@ describe("facing on both surfaces", () => {
   });
 });
 
+describe("facing across fights", () => {
+  it("starts a new fight's figures fresh, even when their ids repeat", () => {
+    // Fight one: she faces the wisp on her right. Fight two reuses both ids
+    // and starts her straight above it: she is drawn as painted, facing left,
+    // at once, rather than keeping the last fight's turn.
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    draw([hero], { ...encounter, startedAt: 1 });
+    expect(layer.facings()["c_1"]).toBe(-1);
+    const second: EncounterState = {
+      ...encounter,
+      startedAt: 2,
+      board: {
+        ...encounter.board,
+        actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 5, y: 2 } : a)),
+      },
+    };
+    draw([hero], second);
+    expect(layer.facings()["c_1"]).toBe(1);
+  });
+});
+
 describe("update", () => {
   it("draws the same board twice without drawing it twice", () => {
     // `update` runs on every patch, and patches arrive constantly. Anything

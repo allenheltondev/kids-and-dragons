@@ -138,7 +138,16 @@ export function CombatControls(): ReactElement | null {
   const send = useSend();
 
   const [selection, setSelection] = useState<Selection>(IDLE);
-  const lastFacing = useRef<Record<string, Facing>>({});
+  /*
+   * The facing each figure was last drawn with, for this fight only. Ids
+   * repeat from one fight to the next (heroes always, `wisp#1` often), so a
+   * facing kept past the fight it was earned in would start the next one
+   * turned for no reason; the TV board starts each fight fresh too.
+   */
+  const lastFacing = useRef<{ fight: number | null; facing: Record<string, Facing> }>({
+    fight: null,
+    facing: {},
+  });
   /**
    * A commit is on its way, or has landed on the server and its patch has not
    * reached this phone yet (a combat beat holds the patch for up to a few
@@ -207,8 +216,10 @@ export function CombatControls(): ReactElement | null {
 
   // The facing each figure was last drawn with, so a figure straight above
   // or below its nearest foe keeps it, exactly as the TV board does.
-  const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current);
-  for (const cell of cells) if (cell.occupant) lastFacing.current[cell.occupant.id] = cell.occupant.facing;
+  const fight = encounter.startedAt ?? null;
+  if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
+  const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
+  for (const cell of cells) if (cell.occupant) lastFacing.current.facing[cell.occupant.id] = cell.occupant.facing;
 
   // The consumables this turn could spend the action on (§7.2's fourth
   // universal action). Hidden, never disabled: gone once the action is spent,
@@ -485,6 +496,24 @@ export function CombatControls(): ReactElement | null {
         })}
       </div>
       </div>
+
+      {/*
+        The board's squares are hidden from screen readers (a map of buttons
+        and blanks is noise read aloud), and with them every figure's hearts.
+        This list says it in words instead: everyone in the fight, their
+        hearts, and who is knocked down, on every turn. Text only, no
+        buttons, so it adds nothing to tap.
+      */}
+      <ul className="kad-sr-only" aria-label="Everyone in the fight">
+        {encounter.combatants.map((c) => (
+          <li key={c.id}>
+            {c.id === me.character.id ? `You (${c.name})` : combatantLabel(c)}
+            {c.side === "enemy" ? ", enemy" : ""}
+            {c.down ? ": knocked down" : `: ${c.hp} of ${c.maxHp} hearts`}
+            {c.id === active?.id ? ", taking a turn" : ""}
+          </li>
+        ))}
+      </ul>
 
       {/* What the board's marks mean, once, under the board. */}
       <ul className="combat__legend" aria-hidden="true">
