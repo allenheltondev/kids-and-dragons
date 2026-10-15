@@ -48,6 +48,7 @@
 
 import { Assets, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
 import type {
+  Board,
   Combatant,
   EncounterEvent,
   EncounterState,
@@ -80,7 +81,7 @@ import {
   nameplateLabel,
   type NameplateBox,
 } from "./nameplate";
-import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, facingFor, tileVariant } from "./board-math";
+import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, facingFor, naturalPath, tileVariant } from "./board-math";
 import type { BoardAim } from "./previews";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -149,6 +150,16 @@ const WALK_CYCLE_S = 4 / 12;
 /** Close enough to the target tile to stop walking, in board pixels. */
 const ARRIVED_PX = BOARD_TILE_PX * 0.06;
 
+/**
+ * A walk follows its route a square at a time, at this speed, rather than
+ * gliding straight to the destination. Diagonals cost one step (spec §7.1),
+ * and watching a hero cut corner to corner is how the table learns that a
+ * far-looking square was only four steps away.
+ */
+const ROUTE_SPEED_PX = BOARD_TILE_PX * 7;
+/** How long a footprint stays on a square the walk crossed. */
+const TRAIL_LIFE_S = 1.6;
+
 /** Everything `update()` needs, gathered by PixiStage from the store. */
 export interface BoardViewState {
   readonly encounter: EncounterState;
@@ -179,6 +190,8 @@ export interface BoardLayer {
   /** Each figure's drawn `art.scale.x`, by id: 1 as drawn (facing left),
       -1 turned to face right, in between while turning. For tests. */
   facings(): Record<string, number>;
+  /** The footprints still on the floor, in board pixels. For tests. */
+  trailMarks(): { x: number; y: number }[];
   destroy(): void;
 }
 
@@ -224,6 +237,19 @@ interface BoardActor {
    * whoever is nearest rather than staring at the left edge all fight.
    */
   facing: 1 | -1;
+  /**
+   * The squares still to cross on a walk, as board-pixel feet positions,
+   * nearest first. While non-empty the figure walks them at a steady pace
+   * and drops a footprint on each; empty, it eases to `targetX/Y` as before.
+   */
+  route: { x: number; y: number }[];
+}
+
+/** A footprint on a square a walk crossed, fading out. */
+interface TrailMark {
+  x: number;
+  y: number;
+  age: number;
 }
 
 interface Floater {
@@ -236,6 +262,8 @@ interface Floater {
 interface PendingBeat {
   at: number;
   event: EncounterEvent;
+  /** A walk's squares, worked out when the sequence arrived (`playEvents`). */
+  route?: readonly Position[];
 }
 
 /** The smallest share of the figure's height its art may fill on the board. */
@@ -324,7 +352,10 @@ export function createBoardLayer(): BoardLayer {
    */
   const nameLayer = new Container();
   const floatLayer = new Container();
-  container.addChild(tilesLayer, highlightLayer, actorsLayer, nameLayer, floatLayer);
+  // Footprints on the floor, under every figure and over the reach glow.
+  const trailLayer = new Graphics();
+  container.addChild(tilesLayer, highlightLayer, trailLayer, actorsLayer, nameLayer, floatLayer);
+  const trail: TrailMark[] = [];
 
   const activeRing = new Graphics();
   activeRing.visible = false;
@@ -484,6 +515,7 @@ export function createBoardLayer(): BoardLayer {
       selfMoving: false,
       sinceStep: 0,
       facing: facingFor(current.encounter, combatant.id) === "right" ? -1 : 1,
+      route: [],
     };
     // Arrive already facing the right way; turning is for mid-fight.
     art.scale.x = actor.facing;
@@ -584,6 +616,10 @@ export function createBoardLayer(): BoardLayer {
         existing.down = combatant.down;
         existing.targetX = feet.x;
         existing.targetY = feet.y;
+        // A walk still on its way to where the patch says is left to finish;
+        // a route to anywhere else is stale and gives way to the patch.
+        const end = existing.route[existing.route.length - 1];
+        if (end && (end.x !== feet.x || end.y !== feet.y)) existing.route = [];
         const facing = facingFor(encounter, combatant.id);
         if (facing !== null) existing.facing = facing === "right" ? -1 : 1;
         // This module draws what it is given and keeps nothing of its own
@@ -721,7 +757,7 @@ export function createBoardLayer(): BoardLayer {
     actors.get(actorId)?.rive?.fire(trigger);
   }
 
-  function playBeat(event: EncounterEvent): void {
+  function playBeat(event: EncounterEvent, route?: readonly Position[]): void {
     // The clip, if this beat plays one. The whole table — including the beats
     // that deliberately play nothing, and why — is `clipForBeat` in
     // board-math.ts, pure so it can be asserted rather than watched.
@@ -738,6 +774,11 @@ export function createBoardLayer(): BoardLayer {
           const feet = feetOf(event.to);
           actor.targetX = feet.x;
           actor.targetY = feet.y;
+          // A walk takes its route, square by square; a shove is a straight
+          // push. The route was worked out when the sequence arrived
+          // (`playEvents`), never here: by the time a beat plays on a slow
+          // frame, the patch behind it may already have landed.
+          actor.route = event.type === "moved" && route ? route.slice(1).map(feetOf) : [];
           /*
            * Under its own power, or pushed? Only the first plays a walk, and
            * `tick` is what plays it — re-triggering the cycle for as long as
@@ -812,8 +853,10 @@ export function createBoardLayer(): BoardLayer {
     playEvents(events, totalMs) {
       if (destroyed) return;
       const offsets = beatOffsetsMs(events.length, totalMs);
+      const routes = view ? walkRoutes(view.encounter.board, events) : [];
       events.forEach((event, i) => {
-        pending.push({ at: clock + (offsets[i] ?? 0) / 1000, event });
+        const route = routes[i];
+        pending.push({ at: clock + (offsets[i] ?? 0) / 1000, event, ...(route ? { route } : {}) });
       });
     },
 
@@ -828,15 +871,33 @@ export function createBoardLayer(): BoardLayer {
         const beat = pending[i];
         if (beat && beat.at <= clock) {
           pending.splice(i, 1);
-          playBeat(beat.event);
+          playBeat(beat.event, beat.route);
         } else {
           i += 1;
         }
       }
 
       for (const actor of actors.values()) {
-        actor.container.x = approach(actor.container.x, actor.targetX, WALK_RATE, dtSeconds);
-        actor.container.y = approach(actor.container.y, actor.targetY, WALK_RATE, dtSeconds);
+        const next = actor.route[0];
+        if (next) {
+          // Square by square at a steady pace, a footprint on each one.
+          const dx = next.x - actor.container.x;
+          const dy = next.y - actor.container.y;
+          const left = Math.hypot(dx, dy);
+          const stride = ROUTE_SPEED_PX * dtSeconds;
+          if (left <= stride) {
+            actor.container.x = next.x;
+            actor.container.y = next.y;
+            actor.route.shift();
+            trail.push({ x: next.x, y: next.y, age: 0 });
+          } else {
+            actor.container.x += (dx / left) * stride;
+            actor.container.y += (dy / left) * stride;
+          }
+        } else {
+          actor.container.x = approach(actor.container.x, actor.targetX, WALK_RATE, dtSeconds);
+          actor.container.y = approach(actor.container.y, actor.targetY, WALK_RATE, dtSeconds);
+        }
         actor.container.zIndex = actor.container.y;
         // The name lives in its own layer, so it has to be carried rather than
         // dragged: it follows the eased position, not the target, or it would
@@ -911,6 +972,20 @@ export function createBoardLayer(): BoardLayer {
         activeRing.visible = false;
       }
 
+      // Footprints fade where they were left.
+      for (let i = trail.length - 1; i >= 0; i--) {
+        const mark = trail[i];
+        if (!mark) continue;
+        mark.age += dtSeconds;
+        if (mark.age >= TRAIL_LIFE_S) trail.splice(i, 1);
+      }
+      trailLayer.clear();
+      for (const mark of trail) {
+        trailLayer
+          .ellipse(mark.x, mark.y, BOARD_TILE_PX * 0.22, BOARD_TILE_PX * 0.1)
+          .fill({ color: 0xffc95c, alpha: 0.85 * (1 - mark.age / TRAIL_LIFE_S) });
+      }
+
       for (let i = floaters.length - 1; i >= 0; i--) {
         const floater = floaters[i];
         if (!floater) continue;
@@ -936,9 +1011,14 @@ export function createBoardLayer(): BoardLayer {
       return Object.fromEntries([...actors.values()].map((a) => [a.id, a.art.scale.x]));
     },
 
+    trailMarks() {
+      return trail.map((m) => ({ x: m.x, y: m.y }));
+    },
+
     destroy() {
       destroyed = true;
       pending.length = 0;
+      trail.length = 0;
       for (const floater of floaters) floater.text.destroy();
       floaters.length = 0;
       for (const actor of actors.values()) {
@@ -965,6 +1045,35 @@ export function createBoardLayer(): BoardLayer {
  * without) its biome sheet. Checkered so single steps are countable, blocked
  * hatched so a wall reads by shape, not shade (spec §11).
  */
+/**
+ * The squares each walk in a sequence crosses, by event index, start included.
+ *
+ * Worked out the moment a sequence arrives, against the board in view, which
+ * at that moment is always the one from before it: the patch waits behind the
+ * presentation (sync/channel.ts). Walks are replayed in order on a scratch
+ * board, so in a monster round the second wisp's route goes round where the
+ * first one ended up. A shove moves the board without a route; anything that
+ * cannot be routed (a figure the board no longer has) simply has none, and
+ * slides straight.
+ */
+export function walkRoutes(
+  board: Board,
+  events: readonly EncounterEvent[],
+): (readonly Position[] | undefined)[] {
+  let working = board;
+  return events.map((event) => {
+    if (event.type !== "moved" && event.type !== "shoved") return undefined;
+    const from = working.actors.find((a) => a.id === event.actorId);
+    if (!from) return undefined;
+    const path = event.type === "moved" ? naturalPath(working, from, event.to) : null;
+    working = {
+      ...working,
+      actors: working.actors.map((a) => (a.id === event.actorId ? { ...a, x: event.to.x, y: event.to.y } : a)),
+    };
+    return path ?? undefined;
+  });
+}
+
 function drawFallbackTiles(layer: Container, encounter: EncounterState): void {
   layer.removeChildren().forEach((child) => child.destroy({ children: true }));
   const { board } = encounter;

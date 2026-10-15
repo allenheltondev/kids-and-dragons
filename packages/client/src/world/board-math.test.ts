@@ -6,10 +6,10 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { beginEncounter, parseBoard } from "@kad/shared";
+import { beginEncounter, findPath, parseBoard } from "@kad/shared";
 import type { EncounterSetup, EncounterState, EnemySpec, ResolvedCharacter } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
-import { beatOffsetsMs, clipForBeat, facingFor, tileVariant } from "./board-math";
+import { beatOffsetsMs, clipForBeat, facingFor, naturalPath, tileVariant } from "./board-math";
 
 describe("tileVariant", () => {
   it("is deterministic and always names one of the sheet's four variants", () => {
@@ -204,5 +204,48 @@ describe("facingFor", () => {
     };
     expect(facingFor(nobody, "c_hero")).toBeNull();
     expect(facingFor(fight([{ spec: wisp, at: { x: 4, y: 2 } }]), "nobody")).toBeNull();
+  });
+});
+
+describe("naturalPath", () => {
+  const open = parseBoard(["........", "........", "........", "........", "........"]);
+  const withMover = (board: ReturnType<typeof parseBoard>, at: { x: number; y: number }, others: { id: string; side: "party" | "enemy"; x: number; y: number }[] = []) => ({
+    ...board,
+    actors: [{ id: "me", side: "party" as const, ...at }, ...others],
+  });
+
+  it("walks a level route level, rather than up a row and back down", () => {
+    const board = withMover(open, { x: 0, y: 2 });
+    expect(naturalPath(board, { x: 0, y: 2 }, { x: 4, y: 2 })).toEqual([
+      { x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 },
+    ]);
+  });
+
+  it("costs exactly what the shared path-finder charges, on every square of a board", () => {
+    // Same rules, different tie-break: the step count must never differ, or
+    // the walk would cross more squares than the glow said it could.
+    const walls = parseBoard(["........", "..#..#..", "..#..#..", "........", "........"]);
+    const others = [
+      { id: "ally", side: "party" as const, x: 1, y: 2 },
+      { id: "foe", side: "enemy" as const, x: 4, y: 3 },
+    ];
+    const board = withMover(walls, { x: 0, y: 2 }, others);
+    for (let y = 0; y < 5; y++) {
+      for (let x = 0; x < 8; x++) {
+        const shared = findPath(board, { x: 0, y: 2 }, { x, y });
+        const natural = naturalPath(board, { x: 0, y: 2 }, { x, y });
+        expect(natural?.length ?? null).toBe(shared?.length ?? null);
+      }
+    }
+  });
+
+  it("crosses a friend but never a foe, and never finishes on anybody", () => {
+    const board = withMover(open, { x: 0, y: 0 }, [
+      { id: "ally", side: "party", x: 1, y: 0 },
+      { id: "foe", side: "enemy", x: 3, y: 0 },
+    ]);
+    expect(naturalPath(board, { x: 0, y: 0 }, { x: 2, y: 0 })).toEqual([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }]);
+    expect(naturalPath(board, { x: 0, y: 0 }, { x: 4, y: 0 })).not.toContainEqual({ x: 3, y: 0 });
+    expect(naturalPath(board, { x: 0, y: 0 }, { x: 1, y: 0 })).toBeNull();
   });
 });
