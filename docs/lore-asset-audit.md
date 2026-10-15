@@ -11,7 +11,8 @@ Audited 2026-10-15 against origin/main at `1f95445f` (PR #185). Read all 11 cano
 - Wave 2 validation: 232 wiki/icon/cast/art-path tests passed, tools typecheck passed, Hugo and client production builds passed; rendered HTML image links checked for individuals, locations, items, factions and Open Sea.
 - Wave 3 complete: five background-only environments declared separately from tactical kits; inventory reports 5/5 story environments and 23/23 canon place coverage, including missing or undeclared backdrop detection. Scene illustrations remain 70/70 after moving the two ocean backgrounds into the dedicated environment declaration. Asset inventory prose refreshed.
 - Final validation for waves 1–3: 235 focused tests, full workspace typecheck, all 55 content checks, and whitespace checks passed. Wiki and client production builds passed in wave 2.
-- Remaining: wave 4, 30 class rig variants.
+- Wave 4a: five Bigfoot rigs packaged from unchanged recut anatomy: Starweaver Radiant/Mythic and Songkeeper Sworn/Radiant/Mythic, with pinned builds and gameplay selectors. Remaining class variants: 25.
+- The old Unicorn mask workflow was rejected after walk/attack review showed duplicated limbs; no Unicorn candidate is declared or enabled. Other species require base-mask review before repeating that workflow.
 
 ## Original findings: missing or borrowed artwork
 
@@ -62,4 +63,4 @@ The prose snapshot in docs/asset-inventory.md is stale: it says 6/72 class varia
 1. Paint the Supper Bundle icon; decide the Open Sea and Whirlpool scene briefs.
 2. Wire existing location, individual, item, and faction images into wiki discovery.
 3. Declare the three background-only environments explicitly and decide which need tactical kits.
-4. Complete the 30 class rig variants; refresh the inventory prose and add canon-to-asset coverage reporting.
+4. Complete the remaining 25 class rig variants after base-mask review; inventory prose and canon coverage reporting are now updated.

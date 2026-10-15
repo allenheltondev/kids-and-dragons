@@ -209,8 +209,8 @@ describe("class rig variants", () => {
   });
 
   it("keeps every undeclared combination on its species rig", () => {
-    expect(characterWorldArtUrl("bigfoot", "radiant", "starweaver")).toBe(
-      characterArtUrl("bigfoot", "radiant"),
+    expect(characterWorldArtUrl("unicorn", "radiant", "starweaver")).toBe(
+      characterArtUrl("unicorn", "radiant"),
     );
   });
 
