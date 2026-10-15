@@ -24,7 +24,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   beginEncounter,
@@ -360,6 +360,48 @@ describe("whose turn it is", () => {
       });
     });
     expect(facesRight()).toBe(true);
+  });
+
+  it("starts every figure's facing fresh at a new fight, even with the same ids", () => {
+    // Fight one: the hero faces the wisp on her right. Fight two reuses both
+    // ids and starts her straight above it, with nobody sideways to face: a
+    // fresh figure is drawn as it is painted, facing left, as on the TV.
+    const { container } = mount({ encounter: { ...encounterWith(), startedAt: 1 } });
+    const facesRight = () =>
+      container.querySelector(".combat__cell--party")!.classList.contains("combat__cell--faces-right");
+    expect(facesRight()).toBe(true);
+    const current = useGameStore.getState().state!;
+    const second = encounterWith({ party: [{ character: character(), at: { x: 2, y: 1 } }] });
+    act(() => {
+      useGameStore.setState({ state: { ...current, encounter: { ...second, startedAt: 2 } } });
+    });
+    expect(facesRight()).toBe(false);
+  });
+
+  it("reads everyone's hearts to a screen reader, on every turn", () => {
+    // The squares are hidden from assistive tech, and the hearts with them.
+    // The list says it in words, buttons-free, even on a monster's turn.
+    const base = encounterWith({
+      enemies: [
+        { spec: wisp(), at: { x: 2, y: 2 } },
+        { spec: wisp(), at: { x: 2, y: 3 } },
+      ],
+    });
+    const hurt = {
+      ...base,
+      combatants: base.combatants.map((c) =>
+        c.id === "wisp#2" ? { ...c, hp: 0, down: true } : c.side === "party" ? { ...c, hp: 7 } : c,
+      ),
+    };
+    const wispIndex = hurt.order.findIndex((id) => id === "wisp#1");
+    mount({ encounter: { ...hurt, turnIndex: wispIndex } });
+
+    const list = screen.getByRole("list", { name: "Everyone in the fight" });
+    const rows = within(list).getAllByRole("listitem").map((li) => li.textContent);
+    expect(rows).toContain("You (Sparklehoof): 7 of 10 hearts");
+    expect(rows).toContain("Bramblewisp 1, enemy: 6 of 6 hearts, taking a turn");
+    expect(rows).toContain("Bramblewisp 2, enemy: knocked down");
+    expect(within(list).queryAllByRole("button")).toEqual([]);
   });
 
   it("turns figures to face the nearest opponent", () => {
