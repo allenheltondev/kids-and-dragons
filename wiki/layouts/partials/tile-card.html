@@ -22,6 +22,7 @@
     {{ with $hook }}
     <span class="wiki-tile-card__hook">{{ . | plainify | truncate 96 }}</span>
     {{ end }}
+    {{ if (partial "story-status.html" .).unmet }}<span class="wiki-tile-card__chip wiki-tile-card__chip--unmet">Not in a story yet</span>{{ end }}
     {{ with .Params.danger_level }}<span class="wiki-tile-card__chip wiki-tile-card__chip--{{ . }}">{{ partial "title-case.html" . }}</span>{{ end }}
   </span>
 </a>

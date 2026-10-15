@@ -5,6 +5,7 @@ type: route
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-05a"]
 tags: []
 related:
   - id: feature.great_river

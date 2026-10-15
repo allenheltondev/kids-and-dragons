@@ -5,6 +5,7 @@ type: feature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-04a", "gemfall-04c", "gemfall-05a"]
 tags: []
 related:
   - id: biome.plains

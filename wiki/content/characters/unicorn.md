@@ -5,6 +5,7 @@ type: character
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-03b", "gemfall-04b", "gemfall-04c", "gemfall-07h", "gemfall-07r"]
 tags: ["playable", "forest", "magic", "healer"]
 scale: medium_to_large
 lore_hook: "Sworn to the forest's promises, including several the forest made before they were born."

@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-03a", "gemfall-04a", "gemfall-05a"]
 tags: ["eastern_grassland", "manticore_homeland", "roads", "prides", "caravans"]
 danger_level: moderate
 regional_relationships:

@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c"]
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
 danger_level: moderate
 regional_relationships:

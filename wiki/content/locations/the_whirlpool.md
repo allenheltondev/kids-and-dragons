@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: []
 tags: ["ocean", "hazard", "current", "offshore"]
 related:
   - id: biome.open_sea

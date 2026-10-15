@@ -29,10 +29,15 @@
         <p class="entity-kicker">
           <span class="wiki-badge wiki-badge--{{ $type }}">{{ index $kinds $type | default (humanize $type) }}</span>
           {{ with .Params.danger_level }}<span class="wiki-badge wiki-badge--danger-{{ . }}">{{ partial "title-case.html" . }} danger</span>{{ end }}
-          {{ with .Params.canon_status }}{{ if ne . "confirmed" }}<span class="wiki-badge wiki-badge--draft">{{ partial "title-case.html" . }}</span>{{ end }}{{ end }}
+          {{ $story := partial "story-status.html" . }}
+          {{ if $story.unmet }}<span class="wiki-badge wiki-badge--unmet" title="No chapter uses this yet. It is waiting for a future campaign.">Not in a story yet</span>{{ end }}
+          {{ if eq .Params.canon_status "intentionally_undefined" }}<span class="wiki-badge wiki-badge--mystery" title="Canon keeps the full truth of this one a secret, on purpose.">Still a mystery</span>{{ end }}
         </p>
         <h1>{{ .Title }}</h1>
         {{ with .Params.lore_hook }}<p class="entity-hook">{{ . }}</p>{{ end }}
+        {{ with $story.titles }}
+        <p class="entity-met">Met in {{ delimit (first 4 .) ", " (cond (gt (len .) 4) ", " " and ") }}{{ if gt (len .) 4 }}, and {{ sub (len .) 4 }} more {{ cond (eq (sub (len .) 4) 1) "chapter" "chapters" }}{{ end }}.</p>
+        {{ end }}
         {{ with .Params.tags }}
         <div class="entity-tags" aria-label="Tags">
           {{ range . }}<span class="tag">{{ partial "title-case.html" . }}</span>{{ end }}

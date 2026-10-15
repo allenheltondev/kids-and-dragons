@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-03b", "gemfall-04b", "gemfall-08"]
 tags: ["tool", "light", "enchanted_woods", "common"]
 related:
   - id: biome.enchanted_woods

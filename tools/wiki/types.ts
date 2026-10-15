@@ -173,4 +173,10 @@ export interface PageGeneratorOptions {
    * your hands, which the lore fields deliberately never say.
    */
   items?: Record<string, import('./page-generator.ts').ItemEntry>;
+  /**
+   * Ids of the chapters that use this entity (tools/wiki/chapter-uses.ts).
+   * Undefined means "not known" — no chapters were read — and changes
+   * nothing; an empty array means the chapters were read and none use it.
+   */
+  playedIn?: string[];
 }

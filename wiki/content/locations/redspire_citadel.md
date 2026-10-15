@@ -5,7 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
-draft: true
+played_in: ["gemfall-05b", "gemfall-06"]
 tags: ["fortress", "skywardens", "highlands", "hub"]
 regional_relationships:
   - id: biome.red_sky_foothills

@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-05a", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["coastal_city", "trade", "crossroads", "docks", "mixed_population", "stories"]
 danger_level: low
 regional_relationships:

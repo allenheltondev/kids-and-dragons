@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03c", "gemfall-04b", "gemfall-05a", "gemfall-06", "gemfall-07r", "gemfall-08"]
 tags: ["supporting_people", "fields", "farming", "music"]
 classification: supporting_people
 scale: medium

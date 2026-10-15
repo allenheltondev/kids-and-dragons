@@ -1,0 +1,18 @@
+{{/*
+  Whether a page's subject is in a story yet, from `played_in` (the chapters
+  that use it, written by tools/wiki/chapter-uses.ts). Returns a dict:
+    known    true when the generator read the chapters for this page
+    unmet    true when no chapter uses it yet (badge "Not in a story yet")
+    titles   the chapter titles that use it, in play order
+  Heroes, campaigns and quests never take the badge: the heroes are always
+  the party, and a campaign is a story rather than something in one.
+*/}}
+{{- $known := isset .Params "played_in" -}}
+{{- $ids := .Params.played_in | default slice -}}
+{{- $type := .Params.type | default "" -}}
+{{- $unmet := and $known (eq (len $ids) 0) (not (in (slice "character" "campaign" "quest") $type)) -}}
+{{- $titles := slice -}}
+{{- range $ids -}}
+  {{- with index site.Data.game.chapters . -}}{{- $titles = $titles | append .title -}}{{- end -}}
+{{- end -}}
+{{- return (dict "known" $known "unmet" $unmet "titles" $titles) -}}

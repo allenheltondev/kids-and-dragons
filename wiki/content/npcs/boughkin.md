@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-04b"]
 tags: ["supporting_people", "woods", "trees", "memory", "rain"]
 classification: supporting_people
 scale: very_large
