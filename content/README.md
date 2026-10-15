@@ -58,6 +58,11 @@ that the reference chapter below does not:
   the Harvest Stone — is declared there, even the ones that select no chapter. `content:validate`
   lets a chapter gate on those without setting them itself, and refuses any path that sets two
   members of one set (the engine would quietly keep neither).
+- **Text and choices that depend on the party.** `when` on a choice, `variants` on a scene or
+  branch, and the `{facets}` / `{party}` tokens. `content:validate` fails a bad flag, item,
+  range, token, or overlapping `replace`. The patterns (absence, scaling, callbacks with a
+  fallback, party size) are in
+  [gemfall-authoring.md §5](../docs/campaigns/gemfall-authoring.md#5-writing-for-the-party-you-have).
 - **Facets as quest items.** Quest items outlive the chapter that grants them, which is what makes
   a collection collectable.
 
@@ -95,6 +100,10 @@ Whoever writes the first authored chapter should give it an ending that declares
 
 ## Conventions the schema cannot state
 
+- **Player-facing text uses US spelling** (color, gray, traveled, center, defense, realize, mom,
+  cozy). `tools/content/spelling.test.mjs` scans narration, labels, prompts, names, descriptions,
+  and `variants[].text` in chapters, the generated JSON here, and `canon/*.yaml`, never ids, and
+  fails naming file, line, field, and the fix. Exceptions: "Sunbloom Draught", "afterwards".
 - **Icons are short slugs** (`fist`, `wing`, `eye`, `spark`, `hand`, `flame`, `key`, …), never file
   paths. The client resolves a slug to an inline SVG, so every element gets an icon (spec §11).
   One slug namespace covers rules, choices, and items alike, so there is exactly one icon lookup

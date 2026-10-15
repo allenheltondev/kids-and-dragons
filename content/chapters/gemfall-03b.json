@@ -791,7 +791,7 @@
       "choices": [
         {
           "id": "take",
-          "label": "Pick up the Barge Stone",
+          "label": "Pick up the real gem",
           "icon": "gem",
           "goto": "scene_act_closed_take",
           "effects": [
@@ -974,7 +974,7 @@
     },
     "scene_fog_bank_listen": {
       "type": "story",
-      "narration": "You all close your eyes. Far behind you, the ribbon bells are jingling as wisps brush past them. Keep the jingling at your backs and you are in the main channel. Gullet steers by your pointing fingers without a word, and the stumps slide by, one at a time, like sleepy cows. Then, ahead in the fog, a new sound: somebody grumbling.",
+      "narration": "You close your eyes. Far behind you, the ribbon bells are jingling as wisps brush past them. Keep the jingling at your backs and you are in the main channel. Gullet steers by your pointing fingers without a word, and the stumps slide by, one at a time, like sleepy cows. Then, ahead in the fog, a new sound: somebody grumbling.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1425,7 +1425,7 @@
         },
         {
           "id": "hum",
-          "label": "Hum its note back to it, all together",
+          "label": "Hum its note back to it",
           "icon": "note",
           "goto": "check_gate_hum"
         },
@@ -1456,15 +1456,15 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hum the Gate's note back to it, all together, all on the same note",
+      "prompt": "Hum the Gate's note back to it, all on the same note",
       "roller": "all",
       "onSuccess": {
         "goto": "scene_nan_washtub",
-        "narration": "You all hum. For one long breath your note and the Gate's note are the same note, and every knotted reed around you shivers at once. Nothing opens. Nothing changes. But you could swear the hum is a little softer afterwards, like a kettle that has been taken off the boil."
+        "narration": "You hum. For one long breath your note and the Gate's note are the same note, and every knotted reed around you shivers at once. Nothing opens. Nothing changes. But you could swear the hum is a little softer afterwards, like a kettle that has been taken off the boil."
       },
       "onFailure": {
         "goto": "scene_nan_washtub",
-        "narration": "You all hum, and you all hum different notes, and a frog on the old steps corrects you, loudly, with the right one. The Gate ignores the whole performance magnificently. You will remember that frog for the rest of your lives."
+        "narration": "You hum, and the notes wobble all over the place, and a frog on the old steps corrects you, loudly, with the right one. The Gate ignores the whole performance magnificently. You will remember that frog for the rest of your lives."
       }
     },
     "choice_gate_record_count": {
@@ -1602,7 +1602,7 @@
       },
       "onFailure": {
         "goto": "ending_walked_over",
-        "narration": "You heave. The cart doesn't. Then three wagon drivers jump down to help, and the goose supervises, and between all of you it squelches free. The sausage seller gives everybody half a sausage each, which is the rush's idea of fair."
+        "narration": "You heave. The cart doesn't. Then three wagon drivers jump down to help, and the goose supervises, and between everybody it squelches free. The sausage seller gives everybody half a sausage each, which is the rush's idea of fair."
       }
     },
     "scene_reed_edge_reeds": {
@@ -1652,7 +1652,7 @@
         },
         {
           "id": "hop",
-          "label": "Hop the weir stones yourselves",
+          "label": "Hop across the weir stones on foot",
           "icon": "quick",
           "goto": "check_ford_hop"
         },

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { reachableScenes, validateChapter, visibleChoices } from "./chapter-graph.js";
+import {
+  countPartyItems,
+  evaluateCondition,
+  reachableScenes,
+  validateChapter,
+  visibleChoices,
+} from "./chapter-graph.js";
 import { resolveCharacter } from "./character.js";
 import type { Chapter, Choice } from "./types/chapter.js";
 import type { ResolvedCharacter } from "./types/domain.js";
@@ -219,5 +225,182 @@ describe("visibleChoices", () => {
     const before = [...CHOICES];
     visibleChoices(CHOICES, party);
     expect(CHOICES).toEqual(before);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Conditions — `when` on choices (#158)
+// ---------------------------------------------------------------------------
+
+describe("evaluateCondition", () => {
+  /** A member carrying exactly these slotted and quest items. */
+  function holding(id: string, slotted: string[], quest: string[] = []): ResolvedCharacter {
+    const member = resolved({ id });
+    member.inventory = slotted.map((itemId) => ({ itemId, kind: "trinket" as const }));
+    member.questItems = [...quest];
+    return member;
+  }
+
+  const solo = (slotted: string[] = [], quest: string[] = [], flags: Record<string, boolean> = {}) => ({
+    members: [holding("c_1", slotted, quest)],
+    flags,
+  });
+
+  const seats = (n: number) => ({
+    members: Array.from({ length: n }, (_, i) => holding(`c_${i + 1}`, [])),
+  });
+
+  it("holds for an absent or empty condition", () => {
+    expect(evaluateCondition(undefined, solo())).toBe(true);
+    expect(evaluateCondition({}, solo())).toBe(true);
+  });
+
+  it("flag holds only when the flag is set true", () => {
+    expect(evaluateCondition({ flag: "crossing" }, solo([], [], { crossing: true }))).toBe(true);
+    expect(evaluateCondition({ flag: "crossing" }, solo([], [], { crossing: false }))).toBe(false);
+    expect(evaluateCondition({ flag: "crossing" }, solo())).toBe(false);
+    // No flags record at all is the same as none set.
+    expect(evaluateCondition({ flag: "crossing" }, { members: [] })).toBe(false);
+  });
+
+  it("notFlag holds when the flag is unset or false", () => {
+    expect(evaluateCondition({ notFlag: "crossing" }, solo())).toBe(true);
+    expect(evaluateCondition({ notFlag: "crossing" }, solo([], [], { crossing: false }))).toBe(true);
+    expect(evaluateCondition({ notFlag: "crossing" }, solo([], [], { crossing: true }))).toBe(false);
+  });
+
+  it("item holds when anyone carries it, slotted or quest", () => {
+    expect(evaluateCondition({ item: "rusted_key" }, solo(["rusted_key"]))).toBe(true);
+    expect(evaluateCondition({ item: "rusted_key" }, solo([], ["rusted_key"]))).toBe(true);
+    expect(evaluateCondition({ item: "rusted_key" }, solo(["lantern"]))).toBe(false);
+    const pair = { members: [holding("c_1", []), holding("c_2", [], ["rusted_key"])] };
+    expect(evaluateCondition({ item: "rusted_key" }, pair)).toBe(true);
+  });
+
+  it("notItem holds when nobody carries it", () => {
+    expect(evaluateCondition({ notItem: "rusted_key" }, solo())).toBe(true);
+    expect(evaluateCondition({ notItem: "rusted_key" }, solo([], ["rusted_key"]))).toBe(false);
+    const pair = { members: [holding("c_1", []), holding("c_2", ["rusted_key"])] };
+    expect(evaluateCondition({ notItem: "rusted_key" }, pair)).toBe(false);
+  });
+
+  describe("count", () => {
+    const facets = (n: number) => solo([], Array.from({ length: n }, (_, i) => `facet_${i}`));
+
+    it("min: holds at the bound and above, fails one below", () => {
+      const cond = { count: { of: "facet_*", min: 2 } };
+      expect(evaluateCondition(cond, facets(1))).toBe(false);
+      expect(evaluateCondition(cond, facets(2))).toBe(true);
+      expect(evaluateCondition(cond, facets(3))).toBe(true);
+    });
+
+    it("max: holds at the bound and below, fails one above", () => {
+      const cond = { count: { of: "facet_*", max: 2 } };
+      expect(evaluateCondition(cond, facets(1))).toBe(true);
+      expect(evaluateCondition(cond, facets(2))).toBe(true);
+      expect(evaluateCondition(cond, facets(3))).toBe(false);
+    });
+
+    it("min and max together bound a range", () => {
+      const cond = { count: { of: "facet_*", min: 2, max: 3 } };
+      expect([1, 2, 3, 4].map((n) => evaluateCondition(cond, facets(n)))).toEqual([
+        false,
+        true,
+        true,
+        false,
+      ]);
+    });
+
+    it("max: 0 means has none", () => {
+      const cond = { count: { of: "facet_*", max: 0 } };
+      expect(evaluateCondition(cond, facets(0))).toBe(true);
+      expect(evaluateCondition(cond, facets(1))).toBe(false);
+    });
+
+    it("a prefix ending in * matches by prefix only", () => {
+      const party = solo(["lantern"], ["facet_ember", "facet_ford", "facetless", "ember_facet"]);
+      expect(countPartyItems(party, "facet_*")).toBe(2);
+      expect(evaluateCondition({ count: { of: "facet_*", min: 2, max: 2 } }, party)).toBe(true);
+    });
+
+    it("an exact id counts 0 or 1", () => {
+      expect(countPartyItems(solo([], ["facet_ember"]), "facet_ember")).toBe(1);
+      expect(countPartyItems(solo([], ["facet_ember"]), "facet_ford")).toBe(0);
+      expect(evaluateCondition({ count: { of: "facet_ember", min: 1 } }, solo(["facet_ember"]))).toBe(true);
+    });
+
+    it("a list counts the listed ids the party holds", () => {
+      const party = solo(["lantern"], ["facet_ember", "facet_glade"]);
+      expect(countPartyItems(party, ["facet_ember", "facet_ford", "lantern"])).toBe(2);
+      expect(evaluateCondition({ count: { of: ["facet_ember", "facet_ford"], min: 2 } }, party)).toBe(false);
+      expect(evaluateCondition({ count: { of: ["facet_ember", "lantern"], min: 2 } }, party)).toBe(true);
+      // A duplicated id in the list is still one item.
+      expect(countPartyItems(party, ["facet_ember", "facet_ember"])).toBe(1);
+    });
+
+    it("counts an item two members hold, or one member holds twice, once", () => {
+      const party = {
+        members: [
+          holding("c_1", ["lantern", "lantern"], ["facet_ember"]),
+          holding("c_2", ["lantern"], ["facet_ember"]),
+        ],
+      };
+      expect(countPartyItems(party, "facet_*")).toBe(1);
+      expect(countPartyItems(party, "lantern")).toBe(1);
+      expect(countPartyItems(party, "*")).toBe(2);
+      expect(evaluateCondition({ count: { of: "facet_*", min: 2 } }, party)).toBe(false);
+    });
+  });
+
+  describe("partySize", () => {
+    it("min: both sides of the bound", () => {
+      expect(evaluateCondition({ partySize: { min: 3 } }, seats(2))).toBe(false);
+      expect(evaluateCondition({ partySize: { min: 3 } }, seats(3))).toBe(true);
+    });
+
+    it("max: both sides of the bound", () => {
+      expect(evaluateCondition({ partySize: { max: 1 } }, seats(1))).toBe(true);
+      expect(evaluateCondition({ partySize: { max: 1 } }, seats(2))).toBe(false);
+    });
+  });
+
+  it("ANDs every field present", () => {
+    const party = solo([], ["facet_ember"], { crossing: true });
+    expect(evaluateCondition({ flag: "crossing", item: "facet_ember", partySize: { max: 1 } }, party)).toBe(true);
+    expect(evaluateCondition({ flag: "crossing", item: "facet_ford" }, party)).toBe(false);
+    expect(evaluateCondition({ flag: "crossing", notFlag: "crossing" }, party)).toBe(false);
+    expect(evaluateCondition({ item: "facet_ember", count: { of: "facet_*", min: 2 } }, party)).toBe(false);
+  });
+});
+
+describe("visibleChoices with `when`", () => {
+  const GATED: Choice[] = [
+    { id: "on", label: "Go on", icon: "arrow", goto: "a" },
+    { id: "two", label: "Set two stones", icon: "gem", goto: "b", when: { count: { of: "facet_*", min: 2 } } },
+    { id: "none", label: "Empty-handed", icon: "hand", goto: "c", when: { count: { of: "facet_*", max: 0 } } },
+    // `when` is checked on top of the requires* gates, never instead of them.
+    {
+      id: "both",
+      label: "Both",
+      icon: "eye",
+      goto: "d",
+      requiresFlag: "found_shrine",
+      when: { partySize: { min: 2 } },
+    },
+  ];
+
+  it("hides a choice whose condition fails, and keeps authored order", () => {
+    const member = resolved({});
+    expect(visibleChoices(GATED, { members: [member] }).map((c) => c.id)).toEqual(["on", "none"]);
+    member.questItems = ["facet_ember", "facet_ford"];
+    expect(visibleChoices(GATED, { members: [member] }).map((c) => c.id)).toEqual(["on", "two"]);
+  });
+
+  it("requires both the requires* gate and the condition", () => {
+    const one = { members: [resolved({})], flags: { found_shrine: true } };
+    expect(visibleChoices(GATED, one).map((c) => c.id)).not.toContain("both");
+    const two = { members: [resolved({}), resolved({ id: "c_2" })], flags: {} };
+    expect(visibleChoices(GATED, two).map((c) => c.id)).not.toContain("both");
+    expect(visibleChoices(GATED, { ...two, flags: { found_shrine: true } }).map((c) => c.id)).toContain("both");
   });
 });

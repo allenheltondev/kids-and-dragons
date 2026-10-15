@@ -576,6 +576,10 @@ function liveNarration(
   if (!scene) return null;
   const authored = authoredLine(scene);
   if (authored.trim().length === 0) return null;
+  // Narration variants or `{tokens}` (#159) made the engine's text depend on
+  // the party; a live line written from the bare authored text would drop
+  // that, so the composed words stand.
+  if (!after.narration.endsWith(authored)) return null;
 
   const live = deps.narrator.take(arrival, {
     runId: after.runId,
@@ -592,7 +596,7 @@ function liveNarration(
   // The branch's own line, recovered by subtraction rather than by threading it
   // through — the engine already joined the two and this is the seam it used.
   const whole = after.narration;
-  const transition = whole.endsWith(authored) ? whole.slice(0, whole.length - authored.length).trim() : "";
+  const transition = whole.slice(0, whole.length - authored.length).trim();
   return transition.length > 0 ? `${transition}\n\n${live}` : live;
 }
 

@@ -771,6 +771,37 @@ describe("species gating at the prompt (architecture §5)", () => {
     const result = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }, context);
     expect(result.error?.code).toBe("ILLEGAL");
   });
+
+  it("refuses a `when`-hidden choice exactly as it refuses a requiresItem-hidden one (#158)", () => {
+    const chapter = makeChapter();
+    const clearing = chapter.scenes["scene_clearing"] as StoryScene;
+    clearing.choices = [
+      ...clearing.choices,
+      { id: "by_key", label: "Use the key", icon: "key", goto: "scene_shrine", requiresItem: "rusted_key" },
+      {
+        id: "by_facets",
+        label: "Set the stones",
+        icon: "gem",
+        goto: "scene_shrine",
+        when: { count: { of: "facet_*", min: 2 } },
+      },
+    ];
+    const context = ctx({ chapter });
+    const state = started(context, [{ playerId: "p_1", intent: CREATE_UNICORN }]);
+    if (state.prompt?.kind !== "choice") throw new Error("expected a choice prompt");
+    // Hidden, not disabled: neither is offered at all.
+    expect(state.prompt.options.map((o) => o.id)).toEqual(["squeeze"]);
+    expect(currentChoices(state, chapter).map((c) => c.id)).toEqual(["squeeze"]);
+
+    const choose = (choiceId: string) =>
+      applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId } }, context);
+    const byItem = choose("by_key");
+    const byWhen = choose("by_facets");
+    expect(byItem.error?.code).toBe("ILLEGAL");
+    expect(byWhen.error?.code).toBe(byItem.error?.code);
+    expect(byWhen.error?.message).toBe(byItem.error?.message.replace("by_key", "by_facets"));
+    expect(byWhen.state).toEqual(state);
+  });
 });
 
 describe("story turns (spec §6.1)", () => {
@@ -2851,5 +2882,107 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     );
     expect(result.error?.code).toBe("ILLEGAL");
     expect(result.state.party[0]!.character.inventory.map((e) => e.itemId)).toContain("firecracker");
+  });
+});
+
+describe("narration variants and tokens (#159)", () => {
+  /** The fixture chapter with variants and tokens on the shrine and the failed squeeze. */
+  function chapterWithVariants(): Chapter {
+    const chapter = makeChapter();
+    const shrine = chapter.scenes["scene_shrine"] as StoryScene;
+    shrine.variants = [
+      // The shrine's own onEnter grants the key, so this holds on arrival.
+      { when: { item: "rusted_key" }, text: "The key hums for {party}." },
+      { when: { flag: "never_set" }, text: "This never reads." },
+      { when: { count: { of: "facet_*", max: 0 } }, text: "Nothing glitters yet.", at: "start" },
+    ];
+    shrine.choices = [
+      { id: "east", label: "Lead {party} east ({facets} facets)", icon: "arrow", goto: "encounter_wisps" },
+    ];
+    const squeeze = chapter.scenes["check_squeeze"];
+    if (squeeze?.type !== "check") throw new Error("fixture changed");
+    squeeze.onFailure.variants = [
+      { when: { partySize: { min: 2 } }, text: "Luckily, {party} pull each other free." },
+      { when: { partySize: { max: 1 } }, text: "You pull yourself free." },
+    ];
+    return chapter;
+  }
+
+  function atClearing(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+  }
+
+  it("leaves narration exactly as authored when a scene has no variants or tokens", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    expect(atClearing(context).narration).toBe("A wall of thorns twice your height.");
+  });
+
+  it("composes scene variants after onEnter, in order, and fills tokens in text and labels", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    const state = walk(
+      atClearing(context),
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }],
+      context,
+    ).state;
+    expect(state.sceneId).toBe("scene_shrine");
+    expect(state.narration).toBe(
+      [
+        "Nothing glitters yet.",
+        "A small stone shrine, half-swallowed by roots.",
+        "The key hums for both of you.",
+      ].join("\n\n"),
+    );
+    if (state.prompt?.kind !== "choice") throw new Error("expected a choice prompt");
+    expect(state.prompt.options.map((o) => o.label)).toEqual(["Lead both of you east (no facets)"]);
+  });
+
+  it("shows branch narration variants on the scene the branch leads to", () => {
+    const context = ctx({ chapter: chapterWithVariants(), rng: fixedRng(1) });
+    const state = walk(
+      atClearing(context),
+      [
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+      ],
+      context,
+    ).state;
+    expect(state.sceneId).toBe("scene_scratched");
+    expect(state.narration).toBe(
+      [
+        "You get through, but the thorns take their toll.",
+        "Luckily, both of you pull each other free.",
+        "Scratched, but through.",
+      ].join("\n\n"),
+    );
+  });
+
+  it("stores the composed text, so a reload mid-scene reads the same words", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    const state = walk(
+      atClearing(context),
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }],
+      context,
+    ).state;
+
+    // A reload is a fresh copy of the persisted JSON.
+    const reloaded = JSON.parse(JSON.stringify(state)) as RunState;
+    expect(reloaded.narration).toBe(state.narration);
+    expect(reloaded.prompt).toEqual(state.prompt);
+
+    // And it is not recomputed against a party that has since changed: the
+    // words were fixed when the scene opened.
+    for (const member of reloaded.party) member.character.questItems = ["facet_ember"];
+    const reconnected = applyIntent(
+      reloaded,
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+      context,
+    ).state;
+    expect(reconnected.sceneId).toBe("scene_shrine");
+    expect(reconnected.narration).toBe(state.narration);
+    expect(reconnected.narration).not.toContain("{");
   });
 });
