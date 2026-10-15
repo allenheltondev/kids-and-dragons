@@ -49,6 +49,10 @@ for (const mode of ["travel", "party"] as const) {
       await tray.getByRole("button", { name: /^Map$/ }).click();
       await expect(page.getByRole("button", { name: /^Atlas$/ })).toHaveAttribute("aria-pressed", "true");
       await expect(page.getByRole("button", { name: "Read about The Sunward Fields" })).toBeVisible();
+      await page.getByRole("button", { name: "About Enchanted Woods", exact: true }).click();
+      await expect(page.getByRole("dialog", { name: "Enchanted Woods" })).toContainText("ancient living forest");
+      await page.getByRole("button", { name: "Close", exact: true }).click();
+      await expect(page.getByRole("dialog")).toHaveCount(0);
       const closer = page.getByRole("button", { name: "Closer", exact: true });
       while (await closer.isEnabled()) await closer.click();
       await expect(page.locator('[data-patch="northwest"]')).toBeAttached();

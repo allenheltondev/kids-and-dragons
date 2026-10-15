@@ -72,6 +72,8 @@ export function WorldMapPanel(): ReactElement {
   const setRouteId = (next: string | null) => updateAtlasView(scope, { routeId: next, center: null });
   const setShowRoutes = (next: boolean) => updateAtlasView(scope, { showRoutes: next });
   const [entryId, setEntryId] = useState<string | null>(null);
+  /** The region whose card is open over the map, by place id. */
+  const [cardId, setCardId] = useState<string | null>(null);
   const [guide, setGuide] = useState<FieldGuide | null>(null);
   const [guideFailed, setGuideFailed] = useState(false);
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
@@ -99,6 +101,15 @@ export function WorldMapPanel(): ReactElement {
     if (id) markFieldGuideSeen(id);
     setEntryId(id);
   };
+  const cardPlace = cardId ? Object.values(world?.places ?? {}).find((known) => known.id === cardId) : undefined;
+  const cardRegion = cardId ? Object.values(world?.regions ?? {}).find((known) => known.placeId === cardId) : undefined;
+
+  useEffect(() => {
+    if (!cardId) return;
+    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setCardId(null); };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [cardId]);
 
   useEffect(() => {
     const view = viewport.current;
@@ -141,6 +152,7 @@ export function WorldMapPanel(): ReactElement {
   // A new chapter is a new country: start from the whole realm again.
   useEffect(() => {
     setEntryId(null);
+    setCardId(null);
   }, [scope]);
 
   if (state === null || chapterId === null) {
@@ -220,7 +232,25 @@ export function WorldMapPanel(): ReactElement {
         </aside>
       ) : null}
 
+      {cardPlace ? (
+        <aside className="atlas__card" role="dialog" aria-labelledby="atlas-card-title" data-place={cardPlace.id}>
+          <div className="atlas__card-head">
+            <h3 className="atlas__card-title" id="atlas-card-title">{cardPlace.title}</h3>
+            <Button variant="ghost" size="md" icon={<Icon name="close" />} aria-label="Close" onClick={() => setCardId(null)} />
+          </div>
+          {cardRegion ? <p className="atlas__card-text">{cardRegion.description}</p> : null}
+          {discoveries[cardPlace.id] ? (
+            <Button variant="secondary" size="md" block
+              onClick={() => { setCardId(null); selectEntry(cardPlace.id); }}>Read in Field Guide</Button>
+          ) : <p className="atlas__card-hint">Not explored yet.</p>}
+        </aside>
+      ) : null}
+
       <div className="atlas__viewport kad-scroll" ref={viewport} data-zoom={zoom}
+        onClick={(event) => {
+          // A tap on the painting itself puts the card away; a tap on a label opens one.
+          if (!(event.target as Element).closest("button")) setCardId(null);
+        }}
         onScroll={(event) => {
           const view = event.currentTarget;
           const sheet = view.firstElementChild as HTMLElement | null;
@@ -282,14 +312,18 @@ export function WorldMapPanel(): ReactElement {
             const isDiscovered = Boolean(discoveries[known.id]);
             // Small-scale labels wait until zoomed in.
             if (step === 0 && known.kind === "location") return null;
-            return isDiscovered ? (
-              <button key={known.id} type="button" className="atlas__landmark kad-focusable"
+            // Regions open their card, found or not; a found site goes straight to its entry.
+            const isRegion = known.kind === "biome";
+            return (
+              <button key={known.id} type="button"
+                className={`atlas__landmark kad-focusable${isDiscovered ? "" : " atlas__landmark--region"}`}
                 style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}
-                onClick={() => selectEntry(known.id)} aria-label={`Read about ${known.title}`}>
+                aria-pressed={isRegion ? cardId === known.id : undefined}
+                onClick={() => (isRegion ? setCardId(known.id) : selectEntry(known.id))}
+                aria-label={isRegion ? `About ${known.title}` : `Read about ${known.title}`}>
                 {known.title}
               </button>
-            ) : <span key={known.id} className="atlas__landmark atlas__landmark--region"
-              style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}>{known.title}</span>;
+            );
           })}
           {place && partyAnchor ? (
             <div
@@ -318,7 +352,9 @@ export function WorldMapPanel(): ReactElement {
                 ))}
               </span>
               <span className="atlas__label">
-                <span className="atlas__place">{place.title}</span>
+                {place.kind === "biome" ? <button type="button" className="atlas__place atlas__place--button kad-focusable"
+                  aria-label={`About ${place.title}`} onClick={() => setCardId(place.id)}>{place.title}</button>
+                  : <span className="atlas__place">{place.title}</span>}
                 <span className="atlas__here">You are here</span>
                 {discoveries[place.id] ? <button type="button" className="atlas__read kad-focusable"
                   onClick={() => selectEntry(place.id)} aria-label={`Read about ${place.title}`}>Field Guide</button> : null}
