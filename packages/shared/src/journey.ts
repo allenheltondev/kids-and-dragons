@@ -9,7 +9,8 @@
  *   - **enter** a node (a fresh attempt at the entry, or by taking an edge):
  *     a new visit, `visits[node]` + 1, the variant resolved on arrival;
  *   - **complete** the visit (its chapter run settled): `completions[node]`
- *     + 1, the outcome recorded, the journey flags read back from the run;
+ *     + 1, the outcome recorded, the journey flags read back from the run,
+ *     and the node's `onComplete` rules applied (#198, world state);
  *   - **take an exit** (only once the visit is done): the edge counted, its
  *     effects applied, and then the destination entered.
  *
@@ -49,7 +50,10 @@ import type { Campaign, ChapterOutcome } from "./types/chapter.js";
 import type {
   EdgeId,
   GraphEffect,
+  FactId,
+  FactValue,
   JourneyExitView,
+  JourneyFactView,
   JourneyPlaceView,
   JourneyState,
   JourneyView,
@@ -59,6 +63,7 @@ import type {
 import {
   arrivalAt,
   chapterAtNode,
+  completionEffects,
   exitAvailability,
   exitsFrom,
   type Arrival,
@@ -66,6 +71,7 @@ import {
   type GraphExit,
   type ParsedCampaignGraph,
 } from "./campaign-graph.js";
+import { readFact, storedFacts, worldFacts, writeFact } from "./world-state.js";
 
 /**
  * The version of the stored journey record (`JourneyState.version`) this
@@ -220,7 +226,18 @@ function setFlag(
   }
 }
 
+/**
+ * An edge's effects, or a completed node's `onComplete` effects (#198), in
+ * order. World facts are written through their declarations (`writeFact`):
+ * a counter clamps, and a fact the graph does not declare is left alone — the
+ * parser refuses such a write, so only a hand-built journey could ask.
+ *
+ * The facts written are stored as values on the journey (`JourneyFacts.facts`)
+ * — a new record each time, never the declaration's or the previous
+ * journey's, so nothing outside this attempt's next journey changes.
+ */
 function applyEffects(
+  graph: ParsedCampaignGraph,
   journey: JourneyState,
   effects: readonly GraphEffect[] | undefined,
   campaign: JourneyCampaign | undefined,
@@ -228,9 +245,18 @@ function applyEffects(
   if (!effects || effects.length === 0) return journey;
   const flags = { ...(journey.flags ?? {}) };
   const edges = { ...(journey.edges ?? {}) };
+  const facts: Record<FactId, FactValue> = { ...(storedFacts(journey) as Record<FactId, FactValue>) };
   let touchedFlags = false;
   let touchedEdges = false;
+  let touchedFacts = false;
   for (const effect of effects) {
+    if (effect.type === "setFact" || effect.type === "adjustFact") {
+      const declared = graph.facts[effect.fact];
+      if (!declared) continue;
+      facts[effect.fact] = writeFact(declared, readFact(declared, facts[effect.fact]), effect);
+      touchedFacts = true;
+      continue;
+    }
     if (effect.type === "setFlag") {
       setFlag(flags, effect.flag, effect.value ?? true, campaign);
       touchedFlags = true;
@@ -246,6 +272,7 @@ function applyEffects(
     ...journey,
     ...(touchedFlags ? { flags } : {}),
     ...(touchedEdges ? { edges } : {}),
+    ...(touchedFacts ? { facts } : {}),
   };
 }
 
@@ -474,7 +501,7 @@ export function completeVisit(
   const paid = journey.chaptersCompleted ?? [];
   const firstCompletion = !paid.includes(journey.chapter);
   const ended = node.ending !== undefined;
-  const next: JourneyState = {
+  const settled: JourneyState = {
     ...journey,
     completions: bump(journey.completions, journey.node),
     outcomes: { ...(journey.outcomes ?? {}), [journey.node]: report.outcome },
@@ -483,6 +510,9 @@ export function completeVisit(
     status: ended ? "ended" : "choosing",
     ...(ended ? { ending: journey.node } : {}),
   };
+  // The node's completion rules (#198) read the journey the chapter has just
+  // produced — this outcome, the flags it handed back — and write the world.
+  const next = applyEffects(graph, settled, completionEffects(graph, journey.node, settled), campaign);
   return { ok: true, duplicate: false, journey: next, firstCompletion, ended };
 }
 
@@ -535,6 +565,7 @@ export function takeExit(
   }
 
   const crossed = applyEffects(
+    graph,
     {
       ...journey,
       traversed: bump(journey.traversed, report.edge),
@@ -603,12 +634,17 @@ export function journeyView(
           .filter((exit) => exit.visible)
           .map((exit) => {
             const edge = graph.edges[exit.edge]!;
-            const arrival = arrivalAt(graph, exit.to, journey);
+            // An available exit is answered by the crossing itself, so the
+            // edge's own effects count: a world fact it writes can turn the
+            // destination's variant — and with it a variant's `revisit`
+            // (#198) — before the party arrives. A blocked exit cannot be
+            // crossed, and is told what the place is now.
+            const crossing = exit.availability.available ? simulateCrossing(graph, journey, exit.edge, campaign) : null;
+            const arrival = crossing?.arrival ?? arrivalAt(graph, exit.to, journey);
             const label =
               edge.label ??
               (arrival === "new" ? (graph.nodes[exit.to]?.title ?? "Somewhere new") : placeTitle(exit.to));
-            const changed =
-              exit.availability.available && arrival === "replay" && foundChanged(graph, journey, exit.edge, campaign);
+            const changed = crossing !== null && foundChanged(journey, crossing);
             return {
               edge: exit.edge,
               to: exit.to,
@@ -623,6 +659,7 @@ export function journeyView(
             };
           });
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
+  const facts = visibleFacts(graph, journey);
   const places: JourneyPlaceView[] = graph.nodeOrder
     .filter((node) => count(journey.visits, node) > 0)
     .map((node) => ({
@@ -643,7 +680,24 @@ export function journeyView(
       ? { reachedEnding: { node: ending, title: graph.nodes[ending]?.ending?.title ?? placeTitle(ending) } }
       : {}),
     places,
+    ...(facts.length > 0 ? { facts } : {}),
   };
+}
+
+/**
+ * The world facts the players may see (#198): those declared `visible`, in
+ * authored order, with their values read through the declaration. A fact not
+ * declared visible is never sent to a phone — the author's surprise stays one
+ * — and a graph with no visible fact sends no `facts` key at all.
+ */
+function visibleFacts(graph: ParsedCampaignGraph, journey: JourneyState): JourneyFactView[] {
+  const values = worldFacts(graph.facts, journey);
+  return graph.factOrder
+    .filter((id) => graph.facts[id]!.visible === true)
+    .map((id) => {
+      const fact = graph.facts[id]!;
+      return { id, domain: fact.domain, label: fact.label ?? id, type: fact.type, value: values[id]! };
+    });
 }
 
 /**
@@ -658,12 +712,24 @@ export function journeyView(
  * is not news. A refusal (cannot happen for an available exit) is "no".
  */
 function foundChanged(
+  journey: JourneyState,
+  crossing: { arrival: Exclude<Arrival, "closed">; chapter: string },
+): boolean {
+  // Only a place already finished can be found different. A `"pass"` arrival
+  // counts too (#198): the restored village is walked through, not replayed,
+  // but it is not the village the party left.
+  if (crossing.arrival === "new") return false;
+  return !(journey.chaptersCompleted ?? []).includes(crossing.chapter);
+}
+
+/** What crossing `edge` would be — arrival and the chapter resolved — or null when it cannot be crossed. */
+function simulateCrossing(
   graph: ParsedCampaignGraph,
   journey: JourneyState,
   edge: EdgeId,
   campaign?: JourneyCampaign,
-): boolean {
+): { arrival: Exclude<Arrival, "closed">; chapter: string } | null {
   const crossed = takeExit(graph, journey, { edge, visit: journey.visit }, campaign);
-  if (!crossed.ok || crossed.duplicate) return false;
-  return !(journey.chaptersCompleted ?? []).includes(crossed.journey.chapter);
+  if (!crossed.ok || crossed.duplicate) return null;
+  return { arrival: crossed.arrival, chapter: crossed.journey.chapter };
 }

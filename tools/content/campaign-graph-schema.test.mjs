@@ -109,3 +109,46 @@ describe("what the schema refuses", () => {
     }
   });
 });
+
+describe("world state (#198)", () => {
+  const WORLD = ["packages", "shared", "src", "fixtures", "world-state.campaign.json"];
+  const world = (mutate) => {
+    const campaign = read(...WORLD);
+    mutate(campaign);
+    return judge(campaign);
+  };
+
+  it("the Ash Wyrm Sampler validates", () => {
+    const { ok, errors } = judge(read(...WORLD));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content either", () => {
+    expect(() => read("content", "campaigns", `${read(...WORLD).id}.json`)).toThrow();
+  });
+
+  it("refuses a fact of a type or domain it does not know, or with another type's fields", () => {
+    expect(world((c) => (c.graph.facts["ford-path"].type = "maybe")).ok).toBe(false);
+    expect(world((c) => (c.graph.facts["ford-path"].domain = "weather")).ok).toBe(false);
+    expect(world((c) => (c.graph.facts["river-folk"].values = ["a", "b"])).ok).toBe(false);
+    expect(world((c) => delete c.graph.facts["mill-village"].initial).ok).toBe(false);
+    expect(world((c) => (c.graph.facts["mill-village"].values = ["standing"])).ok).toBe(false);
+    expect(world((c) => (c.graph.facts["ford-path"].visible = false)).ok).toBe(false);
+  });
+
+  it("refuses fact effects without their value, and an adjustment of nothing", () => {
+    expect(world((c) => (c.graph.edges["to-village"].effects = [{ type: "setFact", fact: "ford-path" }])).ok).toBe(false);
+    expect(world((c) => (c.graph.edges["to-village"].effects = [{ type: "adjustFact", fact: "river-folk", by: 0 }])).ok).toBe(false);
+  });
+
+  it("refuses a fact test with a key it does not know, and a visit ordinal below 1", () => {
+    expect(world((c) => (c.graph.edges["to-village"].when = { facts: { "river-folk": { above: 1 } } })).ok).toBe(false);
+    expect(world((c) => (c.graph.edges["to-village"].when = { visit: { min: 0 } })).ok).toBe(false);
+    expect(world((c) => (c.graph.edges["to-village"].when = { visit: {} })).ok).toBe(false);
+  });
+
+  it("refuses a variant revisit of closed, and a completion rule with no effects", () => {
+    expect(world((c) => (c.graph.nodes.village.variants[0].revisit = "closed")).ok).toBe(false);
+    expect(world((c) => (c.graph.nodes.lair.onComplete = [{ when: { outcome: "success" } }])).ok).toBe(false);
+  });
+});
