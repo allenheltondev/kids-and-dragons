@@ -65,3 +65,59 @@ describe("the lobby's campaign premise", () => {
     expect(screen.queryByText(PREMISE)).toBeNull();
   });
 });
+
+describe("the shared screen's line about where a graph campaign stands (#195)", () => {
+  const journey = {
+    node: "orchard",
+    title: "The Orchard",
+    visit: 1,
+    status: "choosing" as const,
+    chapter: "sampler-orchard",
+    exits: [],
+  };
+
+  it("says where the party is deciding from, instead of a chapter number", () => {
+    mount({
+      campaign: { ...FIRST, id: "rift-sampler", title: "The Rift Sampler", next: null, journey },
+      party: [makeMember()],
+    });
+    expect(screen.getByText("Deciding where to go from The Orchard")).toBeTruthy();
+    expect(screen.queryByText(/Chapter \d/)).toBeNull();
+  });
+
+  it("an ordered campaign still gets its chapter line", () => {
+    mount({ campaign: FIRST, party: [makeMember()] });
+    expect(screen.getByText("Chapter 1: The City That Smelled Opportunity")).toBeTruthy();
+    expect(screen.queryByText(/Deciding where to go/)).toBeNull();
+  });
+});
+
+/*
+ * The lineup is what the room watches fill up, so nothing one player does on
+ * their phone may reflow anybody's card: readying up and dropping out only
+ * change what is visible in seats that are always there.
+ */
+describe("a lobby card", () => {
+  const card = (overrides: Parameters<typeof makeMember>[0]) => {
+    mount({ party: [makeMember(overrides)] });
+    const li = document.querySelector(".lobby-member")!;
+    cleanup();
+    return li;
+  };
+  const shape = (li: Element) =>
+    [...li.querySelectorAll(".lobby-member__status > *")].map((chip) => chip.textContent);
+
+  it("keeps both readiness words in the cell and only swaps which shows", () => {
+    const waiting = card({ ready: false });
+    const ready = card({ ready: true });
+    expect(shape(waiting)).toEqual(shape(ready));
+    expect(waiting.querySelector(".lobby-member__chip--off")?.textContent).toBe("Ready");
+    expect(ready.querySelector(".lobby-member__chip--off")?.textContent).toBe("Getting ready");
+  });
+
+  it("pins Away to the portrait instead of adding a row to the card", () => {
+    const away = card({ connected: false });
+    expect(away.querySelector(".lobby-member__seat")?.textContent).toContain("Away");
+    expect(away.querySelector(".lobby-member__status")?.textContent).not.toContain("Away");
+  });
+});

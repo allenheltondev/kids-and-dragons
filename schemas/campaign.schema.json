@@ -152,6 +152,16 @@
           "items": {
             "$ref": "#/$defs/flag"
           }
+        },
+        "facts": {
+          "description": "World facts (#198): typed, bounded, attempt-scoped values the journey carries beside its flags \u2014 a place displaced or restored, a threat sleeping or cleared, favours owed, a road open. Written by edge effects and node onComplete rules, read by guards and variants. Keyed by stable fact id, in authored order.",
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/graphId"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/worldFact"
+          }
         }
       }
     },
@@ -198,6 +208,40 @@
               },
               "when": {
                 "$ref": "#/$defs/graphCondition"
+              },
+              "revisit": {
+                "description": "Re-entering the (completed) node while this variant is the place: replay or pass, overriding the node's revisit (#198).",
+                "enum": [
+                  "replay",
+                  "pass"
+                ]
+              }
+            }
+          }
+        },
+        "onComplete": {
+          "description": "Completion rules (#198): when the node's chapter completes, every rule whose `when` holds (read after the outcome is recorded and the journey flags read back) applies its effects, in order.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "effects"
+            ],
+            "properties": {
+              "$comment": {
+                "type": "string"
+              },
+              "when": {
+                "$ref": "#/$defs/graphCondition"
+              },
+              "effects": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/graphEffect"
+                }
               }
             }
           }
@@ -485,6 +529,75 @@
             "success",
             "setback"
           ]
+        },
+        "visit": {
+          "description": "The subject node's visit ordinal is within these bounds (inclusive): on an edge, the visit to `from` being finished; on a variant, the visit being begun; in onComplete, the visit completing.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "facts": {
+          "description": "World facts, each tested: a bare value (equals), or { in, not, min, max } \u2014 every key present must hold. A fact never written reads as its initial.",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/graphId"
+          },
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/factValue"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "minProperties": 1,
+                "properties": {
+                  "in": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/$defs/graphId"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ]
+                    }
+                  },
+                  "not": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/$defs/graphId"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "min": {
+                    "type": "integer"
+                  },
+                  "max": {
+                    "type": "integer"
+                  }
+                }
+              }
+            ]
+          }
         }
       }
     },
@@ -527,6 +640,168 @@
               "$ref": "#/$defs/graphId"
             }
           }
+        },
+        {
+          "description": "Sets a world fact (#198) to a value in its domain.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "fact",
+            "value"
+          ],
+          "properties": {
+            "type": {
+              "const": "setFact"
+            },
+            "fact": {
+              "$ref": "#/$defs/graphId"
+            },
+            "value": {
+              "$ref": "#/$defs/factValue"
+            }
+          }
+        },
+        {
+          "description": "Moves a counter world fact (#198) by a non-zero integer, clamped to its bounds.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "fact",
+            "by"
+          ],
+          "properties": {
+            "type": {
+              "const": "adjustFact"
+            },
+            "fact": {
+              "$ref": "#/$defs/graphId"
+            },
+            "by": {
+              "type": "integer",
+              "not": {
+                "const": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "worldFact": {
+      "description": "WorldFact (packages/shared/src/types/campaign-graph.ts). An enum (one of 2-12 states), a counter (integers min..max, span at most 20) or a flag. `domain` groups it for the tools and screens; `visible` shows it to the players.",
+      "type": "object",
+      "required": [
+        "domain",
+        "type"
+      ],
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "domain": {
+          "enum": [
+            "locale",
+            "threat",
+            "alliance",
+            "route",
+            "consequence"
+          ]
+        },
+        "type": {
+          "enum": [
+            "enum",
+            "counter",
+            "flag"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visible": {
+          "const": true
+        },
+        "values": true,
+        "initial": true,
+        "min": true,
+        "max": true
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "enum"
+            },
+            "values": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 12,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/graphId"
+              }
+            },
+            "initial": {
+              "$ref": "#/$defs/graphId"
+            },
+            "min": false,
+            "max": false
+          },
+          "required": [
+            "values",
+            "initial"
+          ]
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "counter"
+            },
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer"
+            },
+            "initial": {
+              "type": "integer"
+            },
+            "values": false
+          },
+          "required": [
+            "min",
+            "max",
+            "initial"
+          ]
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "flag"
+            },
+            "initial": {
+              "type": "boolean"
+            },
+            "values": false,
+            "min": false,
+            "max": false
+          }
+        }
+      ]
+    },
+    "factValue": {
+      "description": "A world fact's value: an enum state, a counter's integer, a flag's boolean.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/graphId"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
         }
       ]
     }

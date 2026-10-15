@@ -663,6 +663,86 @@ describe("the lint search", () => {
 });
 
 // ---------------------------------------------------------------------------
+// With world state (#198) and navigation (#195)
+// ---------------------------------------------------------------------------
+
+describe("rifts and world state", () => {
+  /** The hub's completion seals a ward (a world fact) on success; the rift opens on it. */
+  function warded(rift: GraphRift): Campaign {
+    const c = campaign(rift);
+    c.graph!.facts = {
+      ward: { domain: "consequence", type: "enum", values: ["intact", "broken"], initial: "intact" },
+    } as never;
+    c.graph!.nodes.hub!.onComplete = [
+      { when: { outcome: "success" }, effects: [{ type: "setFact", fact: "ward", value: "broken" }] },
+    ] as never;
+    return c;
+  }
+
+  it("a world fact written by a completion rule opens a triggered rift — at age 0", () => {
+    const graph = parsed(warded({ opensWhen: { facts: { ward: "broken" } } as never, lasts: { unit: "chapters", count: 1 } }));
+    const broken = atHub(graph);
+    expect(broken.facts).toEqual({ ward: "broken" });
+    // Opened by the completion's own rule, after the chapter's tick: still open at the choice.
+    expect(broken.rifts?.shimmer).toEqual({ status: "open" });
+    expect(exitAvailability(graph, "shimmer", broken)).toEqual({ available: true });
+    const failed = play(graph, startJourney(graph), {}, "setback");
+    expect(riftBlock(graph, "shimmer", failed)).toBe("rift-dormant");
+  });
+
+  it("the lint follows the fact into the rift: only the setback strands the party", () => {
+    const graph = parsed(warded({ opensWhen: { facts: { ward: "broken" } } as never }));
+    // The hub is passed through on return, and its only way out is the rift.
+    const found = lintCampaignGraph(graph).findings.find((f) => f.code === "STRANDED");
+    expect(found?.message).toContain("(setback)");
+    expect(found?.message).toContain("a rift that has not opened");
+  });
+
+  it("a flicker and a visit test on one node share its count, and both read true", () => {
+    // Variant on the hub's 3rd+ visit; the rift flickers 1 on / 1 off. Neither strands anybody.
+    const c = campaign({ unstable: { flicker: { open: 1, shut: 1 } } }, plainTwin);
+    c.chapters.push("c-hub-late");
+    c.graph!.nodes.hub!.revisit = "replay"; // so its later visits play, and the variant is met
+    c.graph!.nodes.hub!.variants = [{ chapter: "c-hub-late", when: { visit: { min: 3 } } }] as never;
+    const result = lintCampaignGraph(parsed(c));
+    expect(result.findings).toEqual([]);
+  });
+});
+
+describe("rifts on the navigation view", () => {
+  it("a hidden destination is never simulated, so never `changed`", () => {
+    // The far place changes (a variant) once the party has been there; the
+    // rift's view would say so — if its destination were known.
+    const c = campaign({ reveal: "when-crossed", uses: 3 }, plainTwin);
+    c.chapters.push("c-far-changed");
+    c.graph!.nodes.far!.variants = [{ chapter: "c-far-changed", when: { completed: "far" } }];
+    const graph = parsed(c);
+    const back = go(graph, play(graph, go(graph, atHub(graph), "hub-to-far")), "far-to-hub");
+    const [shimmer, twin] = journeyView(graph, back).exits;
+    expect(twin).toMatchObject({ edge: "hub-to-far", to: "far", arrival: "replay", changed: true });
+    expect(shimmer).toEqual({
+      edge: "shimmer",
+      to: "",
+      kind: "forward",
+      label: HIDDEN_RIFT_LABEL,
+      available: true,
+      arrival: "new",
+      rift: { status: "open", usesLeft: 3 },
+      hiddenDestination: true,
+    });
+  });
+
+  it("drawing the view moves nothing: the simulated crossing of a single-use rift leaves it whole", () => {
+    const graph = graphWith({ uses: 1 });
+    const hub = atHub(graph);
+    const before = JSON.stringify(hub);
+    expect(journeyView(graph, hub).exits[0]).toMatchObject({ available: true, rift: { usesLeft: 1 } });
+    expect(JSON.stringify(hub)).toBe(before);
+    expect(exitAvailability(graph, "shimmer", hub)).toEqual({ available: true });
+  });
+});
+
+// ---------------------------------------------------------------------------
 // The fixture
 // ---------------------------------------------------------------------------
 

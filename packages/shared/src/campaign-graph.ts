@@ -18,7 +18,9 @@
  *
  * Type imports only, because tools/content/validate.mjs loads this file
  * directly under Node (as it does condition-lint.ts) and Node strips types
- * but resolves no `.js`-for-`.ts` imports.
+ * but resolves no `.js`-for-`.ts` imports. The one exception is
+ * `./world-state.ts` (#198), itself import-free, spelled with its extension
+ * the way the lint spells this file, so the chain stays loadable.
  *
  * ---------------------------------------------------------------------------
  * WHAT THIS DELIBERATELY DOES NOT DO
@@ -45,12 +47,24 @@ import type {
   GraphEffect,
   GraphNode,
   GraphRift,
+  FactId,
+  FactValue,
   JourneyFacts,
   NodeId,
+  NodeVariant,
   RevisitPolicy,
   RiftState,
   RiftStatus,
+  WorldFact,
 } from "./types/campaign-graph.js";
+import {
+  factDeclarationProblems,
+  factEffectProblems,
+  factTestHolds,
+  factTestProblems,
+  readFact,
+  storedFacts,
+} from "./world-state.ts";
 
 /** The declaration version this build reads (`CampaignGraph.version`). */
 export const CAMPAIGN_GRAPH_VERSION = 1;
@@ -123,6 +137,13 @@ export interface ParsedCampaignGraph {
   endings: NodeId[];
   /** Every journey flag (`journeyFlags`), sorted. */
   flags: string[];
+  /**
+   * The world facts (#198), keyed by id in authored order — `{}` for a graph
+   * that declares none, so a reader never has to ask whether there are any.
+   */
+  facts: Record<FactId, WorldFact>;
+  /** Fact ids in authored order. */
+  factOrder: FactId[];
 }
 
 /**
@@ -211,6 +232,33 @@ export function parseCampaignGraph(
   const edgeSet = new Set(edgeOrder);
   const played = new Set<string>();
 
+  // World facts (#198) first: guards and effects below are checked against
+  // them, and only a well-declared fact can be — a test of a fact whose
+  // domain is itself broken would be judged against nonsense. A badly
+  // declared fact is reported once, here, and names of it elsewhere are
+  // skipped rather than reported again as dangling.
+  const rawFacts: unknown = declaration.facts;
+  const facts: Record<FactId, WorldFact> = {};
+  const brokenFacts = new Set<FactId>();
+  if (rawFacts !== undefined && !isRecord(rawFacts)) {
+    fail("/facts", "facts must be an object keyed by fact id");
+  } else if (rawFacts !== undefined) {
+    for (const [id, fact] of Object.entries(rawFacts)) {
+      const found = factDeclarationProblems(fact);
+      for (const { path, problem } of found) fail(`/facts/${seg(id)}${path}`, problem);
+      if (found.length === 0) facts[id] = fact as WorldFact;
+      else brokenFacts.add(id);
+    }
+  }
+  const factOrder = Object.keys(facts);
+
+  const checkFactName = (path: string, id: string): WorldFact | null => {
+    const fact = facts[id];
+    if (fact) return fact;
+    if (!brokenFacts.has(id)) fail(path, `"${id}" is not a world fact (declare it in graph.facts)`);
+    return null;
+  };
+
   const checkCondition = (path: string, raw: unknown) => {
     if (raw === undefined) return;
     if (!isRecord(raw)) {
@@ -218,6 +266,28 @@ export function parseCampaignGraph(
       return;
     }
     const cond = raw as GraphCondition;
+    if (cond.visit !== undefined) {
+      const visit: unknown = cond.visit;
+      const bound = (value: unknown) => value === undefined || (Number.isInteger(value) && (value as number) >= 1);
+      if (!isRecord(visit) || (visit.min === undefined && visit.max === undefined)) {
+        fail(`${path}/visit`, "visit is { min?, max? } with at least one of them");
+      } else if (!bound(visit.min) || !bound(visit.max) || Object.keys(visit).some((key) => key !== "min" && key !== "max")) {
+        fail(`${path}/visit`, "visit's min and max are positive integers (a visit ordinal starts at 1)");
+      }
+    }
+    if (cond.facts !== undefined) {
+      if (!isRecord(cond.facts)) {
+        fail(`${path}/facts`, "facts is an object of fact id to test");
+      } else {
+        for (const [id, test] of Object.entries(cond.facts)) {
+          const fact = checkFactName(`${path}/facts/${seg(id)}`, id);
+          if (!fact) continue;
+          for (const found of factTestProblems(fact, test)) {
+            fail(`${path}/facts/${seg(id)}${found.path}`, found.problem);
+          }
+        }
+      }
+    }
     for (const key of ["flag", "notFlag"] as const) {
       const flag = cond[key];
       if (flag !== undefined && !declaredFlags.has(flag)) {
@@ -244,6 +314,25 @@ export function parseCampaignGraph(
     played.add(chapter);
   };
 
+  /** An edge's or a completion rule's effects: every name resolves, every fact write fits its fact. */
+  const checkEffects = (at: string, raw: unknown) => {
+    (Array.isArray(raw) ? (raw as GraphEffect[]) : []).forEach((effect, i) => {
+      const path = `${at}/${i}`;
+      if (effect?.type === "setFlag") {
+        if (!declaredFlags.has(effect.flag)) {
+          fail(`${path}/flag`, `"${effect.flag}" is not a journey flag (declare it in graph.flags or a routeSets entry)`);
+        }
+      } else if (effect?.type === "unlock" || effect?.type === "lock") {
+        if (!edgeSet.has(effect.edge)) fail(`${path}/edge`, `no edge "${effect.edge}"`);
+      } else if (effect?.type === "setFact" || effect?.type === "adjustFact") {
+        const fact = checkFactName(`${path}/fact`, effect.fact);
+        if (fact) for (const found of factEffectProblems(fact, effect)) fail(`${path}${found.path}`, found.problem);
+      } else {
+        fail(`${path}/type`, `unknown graph effect ${JSON.stringify((effect as { type?: unknown })?.type)}`);
+      }
+    });
+  };
+
   if (typeof declaration.entry !== "string" || !nodeSet.has(declaration.entry)) {
     fail("/entry", `entry ${JSON.stringify(declaration.entry)} is not a node`);
   }
@@ -262,6 +351,19 @@ export function parseCampaignGraph(
     (Array.isArray(typed.variants) ? typed.variants : []).forEach((variant, i) => {
       checkChapter(`${at}/variants/${i}/chapter`, variant?.chapter);
       checkCondition(`${at}/variants/${i}/when`, variant?.when);
+      // A closed node is never re-entered, so a variant saying how to
+      // re-enter it says something that can never happen (#198).
+      if (variant?.revisit !== undefined && typed.revisit === "closed") {
+        fail(`${at}/variants/${i}/revisit`, `"${id}" is closed once completed, so it is never revisited and a variant's revisit cannot apply`);
+      }
+    });
+    (Array.isArray(typed.onComplete) ? typed.onComplete : []).forEach((rule, i) => {
+      if (!isRecord(rule)) {
+        fail(`${at}/onComplete/${i}`, "a completion rule must be an object");
+        return;
+      }
+      checkCondition(`${at}/onComplete/${i}/when`, rule.when);
+      checkEffects(`${at}/onComplete/${i}/effects`, rule.effects);
     });
     if (typed.ending !== undefined) endings.push(id);
     nodes[id] = { ...typed, revisit: typed.revisit ?? "replay" };
@@ -289,18 +391,7 @@ export function parseCampaignGraph(
     }
     if (nodeSet.has(typed.to)) entrances[typed.to]!.push(id);
     checkCondition(`${at}/when`, typed.when);
-    (Array.isArray(typed.effects) ? typed.effects : []).forEach((effect: GraphEffect, i) => {
-      const path = `${at}/effects/${i}`;
-      if (effect?.type === "setFlag") {
-        if (!declaredFlags.has(effect.flag)) {
-          fail(`${path}/flag`, `"${effect.flag}" is not a journey flag (declare it in graph.flags or a routeSets entry)`);
-        }
-      } else if (effect?.type === "unlock" || effect?.type === "lock") {
-        if (!edgeSet.has(effect.edge)) fail(`${path}/edge`, `no edge "${effect.edge}"`);
-      } else {
-        fail(`${path}/type`, `unknown graph effect ${JSON.stringify((effect as { type?: unknown })?.type)}`);
-      }
-    });
+    checkEffects(`${at}/effects`, typed.effects);
     if (typed.rift !== undefined) checkRift(id, typed, rawEdges, fail, checkCondition);
     edges[id] = { ...typed, blocked: typed.blocked ?? "hidden" };
   }
@@ -330,6 +421,8 @@ export function parseCampaignGraph(
       entrances,
       endings,
       flags,
+      facts,
+      factOrder,
     },
     problems,
   };
@@ -430,16 +523,43 @@ const count = (record: Readonly<Record<string, number>> | undefined, id: string)
  * or empty condition holds — `evaluateCondition`'s rule, over the journey
  * instead of the party.
  *
- * `subject` is the node `outcome` reads: an edge's `from`, or a variant's own
- * node. Without one, a condition carrying `outcome` does not hold — there is
- * nothing for it to be about.
+ * `subject` is the node `outcome` and `visit` read: an edge's `from`, or a
+ * variant's (or completion rule's) own node. Without one, a condition carrying
+ * either does not hold — there is nothing for it to be about.
+ *
+ * `context` (#198) carries what the journey alone cannot say:
+ *
+ * - `facts` — the graph's world fact declarations, so a fact never written
+ *   reads as its `initial` and a stored value is read through its
+ *   declaration (`readFact`). Without them a `facts` test reads the stored
+ *   value raw, and a fact never written passes no test: a reader that has not
+ *   said what the world starts as cannot know. Every caller in this file
+ *   passes them.
+ * - `visit` — the subject's visit ordinal, when it is not `visits[subject]`:
+ *   a variant is read on arrival, *before* the visit it chooses for is
+ *   counted, so `chapterAtNode` says which visit that will be.
  */
 export function evaluateGraphCondition(
   cond: GraphCondition | undefined,
   journey: JourneyFacts,
   subject?: NodeId,
+  context: GraphConditionContext = {},
 ): boolean {
   if (!cond) return true;
+  if (cond.visit !== undefined) {
+    if (subject === undefined) return false;
+    const ordinal = context.visit ?? count(journey.visits, subject);
+    if (cond.visit.min !== undefined && ordinal < cond.visit.min) return false;
+    if (cond.visit.max !== undefined && ordinal > cond.visit.max) return false;
+  }
+  if (cond.facts !== undefined) {
+    const stored = storedFacts(journey);
+    for (const [id, test] of Object.entries(cond.facts)) {
+      const declared = context.facts?.[id];
+      const value = declared ? readFact(declared, stored[id]) : (stored[id] as FactValue | undefined);
+      if (!factTestHolds(test, value)) return false;
+    }
+  }
   const flags = journey.flags ?? {};
   if (cond.flag !== undefined && flags[cond.flag] !== true) return false;
   if (cond.notFlag !== undefined && flags[cond.notFlag] === true) return false;
@@ -453,6 +573,14 @@ export function evaluateGraphCondition(
     if (subject === undefined || journey.outcomes?.[subject] !== cond.outcome) return false;
   }
   return true;
+}
+
+/** What `evaluateGraphCondition` needs beyond the journey (#198). */
+export interface GraphConditionContext {
+  /** The world fact declarations (`ParsedCampaignGraph.facts`). */
+  facts?: Readonly<Record<FactId, WorldFact>>;
+  /** The subject's visit ordinal, when it is not `visits[subject]`. */
+  visit?: number;
 }
 
 /**
@@ -485,7 +613,9 @@ export function exitAvailability(
   if (graph.nodes[edge.to]?.revisit === "closed" && count(journey.completions, edge.to) > 0) {
     return { available: false, reason: "closed" };
   }
-  if (!evaluateGraphCondition(edge.when, journey, edge.from)) return { available: false, reason: "guard" };
+  if (!evaluateGraphCondition(edge.when, journey, edge.from, { facts: graph.facts })) {
+    return { available: false, reason: "guard" };
+  }
   const rift = riftBlock(graph, edgeId, journey);
   if (rift !== null) return { available: false, reason: rift };
   return { available: true };
@@ -533,12 +663,41 @@ export function exitsFrom(graph: ParsedCampaignGraph, node: NodeId, journey: Jou
  *
  * Every case but `"closed"` is a **new visit**: entering always counts.
  * Resuming a visit already under way is not entering, and never comes here.
+ *
+ * The policy is the node's `revisit`, unless the place currently is a variant
+ * that says otherwise (#198, `NodeVariant.revisit`): the restored village is
+ * walked through, the raging lair is played again. Read like the variant
+ * itself, against the journey as it stands on arrival — so a screen asking
+ * *before* an edge's effects apply (`JourneyExitView.arrival`) is told what
+ * the place is now, which the edge may yet change.
  */
 export type Arrival = "new" | "replay" | "pass" | "closed";
 
 export function arrivalAt(graph: ParsedCampaignGraph, node: NodeId, journey: JourneyFacts): Arrival {
   if (count(journey.completions, node) === 0) return "new";
-  return graph.nodes[node]?.revisit ?? "replay";
+  const declared = graph.nodes[node];
+  if (!declared) return "replay";
+  if (declared.revisit === "closed") return "closed";
+  return variantAtNode(graph, node, journey)?.variant.revisit ?? declared.revisit;
+}
+
+/**
+ * The variant the place is on arrival — the first whose `when` holds, in
+ * authored order — with its index, or null for the node's own chapter.
+ *
+ * Read for the visit about to begin: `visit` tests (#198) see the ordinal the
+ * entry will get (`visits[node] + 1`), because entering is what counts it.
+ */
+export function variantAtNode(
+  graph: ParsedCampaignGraph,
+  node: NodeId,
+  journey: JourneyFacts,
+): { index: number; variant: NodeVariant } | null {
+  const declared = graph.nodes[node];
+  if (!declared) return null;
+  const context = { facts: graph.facts, visit: count(journey.visits, node) + 1 };
+  const index = (declared.variants ?? []).findIndex((each) => evaluateGraphCondition(each.when, journey, node, context));
+  return index === -1 ? null : { index, variant: declared.variants![index]! };
 }
 
 /**
@@ -550,8 +709,21 @@ export function arrivalAt(graph: ParsedCampaignGraph, node: NodeId, journey: Jou
 export function chapterAtNode(graph: ParsedCampaignGraph, node: NodeId, journey: JourneyFacts): string | null {
   const declared = graph.nodes[node];
   if (!declared) return null;
-  const variant = (declared.variants ?? []).find((each) => evaluateGraphCondition(each.when, journey, node));
-  return variant?.chapter ?? declared.chapter;
+  return variantAtNode(graph, node, journey)?.variant.chapter ?? declared.chapter;
+}
+
+/**
+ * The effects completing `node`'s visit owes (#198, `GraphNode.onComplete`):
+ * every rule whose `when` holds, judged all against the same journey — the
+ * one the completion has just produced (outcome recorded, flags read back) —
+ * with their effects concatenated in authored order. The runtime applies
+ * them (`completeVisit`); the lint applies them the same way.
+ */
+export function completionEffects(graph: ParsedCampaignGraph, node: NodeId, journey: JourneyFacts): GraphEffect[] {
+  const context = { facts: graph.facts };
+  return (graph.nodes[node]?.onComplete ?? [])
+    .filter((rule) => evaluateGraphCondition(rule.when, journey, node, context))
+    .flatMap((rule) => rule.effects);
 }
 
 // ---------------------------------------------------------------------------
@@ -629,7 +801,7 @@ export function riftState(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: J
   const stored = storedRift(journey.rifts?.[owner]) ?? storedRift(journey.rifts?.[edgeId]);
   let state: RiftState = stored ?? { status: rift.opensWhen ? "dormant" : "open" };
   if (state.status === "dormant" && rift.opensWhen) {
-    if (evaluateGraphCondition(rift.opensWhen, journey, graph.edges[owner]!.from)) {
+    if (evaluateGraphCondition(rift.opensWhen, journey, graph.edges[owner]!.from, { facts: graph.facts })) {
       state = {
         ...state,
         status: "open",
@@ -656,7 +828,7 @@ export function riftBlock(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: J
   const edge = graph.edges[edgeId]!;
   const rift = edge.rift!;
   if (rift.opensWhen && rift.persistent !== true && state.latched !== true) {
-    if (!evaluateGraphCondition(rift.opensWhen, journey, graph.edges[riftOwner(graph, edgeId)]!.from)) {
+    if (!evaluateGraphCondition(rift.opensWhen, journey, graph.edges[riftOwner(graph, edgeId)]!.from, { facts: graph.facts })) {
       return "rift-dormant";
     }
   }

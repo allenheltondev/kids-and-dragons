@@ -7,10 +7,10 @@
  */
 
 /*
- * Flex rather than fixed grid rows: the knocked-down banner comes and goes
- * (spec §7.3), and a row template would hand the scroller `auto` whenever it
- * was absent — which quietly breaks scrolling in the smallest pane, the one
- * case this file exists to get right.
+ * Flex rather than fixed grid rows: the prompt and the sheet take turns in
+ * the pane (`hidden`), and a row template would hand the scroller `auto`
+ * whenever the other was the one showing — which quietly breaks scrolling in
+ * the smallest pane, the one case this file exists to get right.
  */
 .player {
   container-type: inline-size;
@@ -81,7 +81,22 @@
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
+  min-inline-size: 0;
   font-size: var(--font-size-sm, 0.875em);
+  white-space: nowrap;
+}
+
+/* Knocked down, in the level line's seat: one line, whatever the phone, so
+   the strip is the same height up or down. */
+.sheet__down {
+  color: var(--color-accent, #ffc95c);
+  font-weight: 700;
+}
+
+.sheet__down-text {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sheet__tier {
@@ -138,30 +153,17 @@
   background: var(--color-success, #4ad991);
 }
 
-.player__down {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
-  border-bottom: 0.08em solid var(--color-accent, #ffc95c);
-  background: color-mix(in srgb, var(--color-accent, #ffc95c) 16%, transparent);
-  color: var(--color-accent, #ffc95c);
-  font-weight: 700;
-}
-
 /* --- Prompt ------------------------------------------------------------ */
 
 /*
- * The prompt wins the pane. It takes what it needs up to 70% of the height and
- * scrolls inside that — a four-option choice must never push the confirm bar
- * off the bottom of a 40%-of-a-phone pane, and the sheet below is reference
- * material that can always be scrolled to.
+ * The prompt wins the pane, and scrolls inside it. It used to stop at 70% to
+ * leave the sheet room below, but the two never share the pane any more (the
+ * bag is `hidden` while the prompt shows), so the cap only scrolled a Rest
+ * scene's "Do it!" out of sight above an empty strip.
  */
 .player__prompt {
-  flex: 0 1 auto;
-  max-block-size: 70%;
+  flex: 1 1 auto;
+  min-block-size: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: var(--space-3, 0.75em);
@@ -304,23 +306,20 @@
   gap: var(--space-2, 0.5em);
 }
 
-/* Always rendered, empty when there is nothing to mark. */
+/* Always rendered, empty when there is nothing to mark — and a fixed square,
+   because with six answers the trail is a row of its own, and the check
+   arriving grew it. */
 .choice__mark {
   display: grid;
   place-items: center;
   inline-size: 1.2em;
+  block-size: 1.2em;
   color: var(--color-primary, #7c5cff);
 }
 
-.choice__votes {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1, 0.25em);
-  padding: var(--space-1, 0.25em) var(--space-2, 0.5em);
-  border-radius: var(--radius-pill, 999em);
-  background: var(--color-surface-sunken, #120f26);
+/* Vote ticks (VoteTicks.tsx) sit in the trail at a fixed width. */
+.choice__trail .kad-vote-ticks {
   color: var(--color-text-muted, #b7b0d8);
-  font-size: var(--font-size-sm, 0.875em);
 }
 
 /*
@@ -346,6 +345,16 @@
   margin: 0;
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
+}
+
+/* One line, so picking a long answer after a short one does not grow the bar
+   and lift the answers above it. The full label is lit up in the list. A
+   fight's bar is the only place its action is named, so it keeps every word. */
+.prompt:not(.combat) .confirm__what > span {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .confirm__actions {
@@ -555,6 +564,63 @@
   margin: 0;
   color: var(--color-text-muted, #b7b0d8);
   font-size: var(--font-size-md, 1em);
+}
+
+/*
+ * Seats the size of a big button (components.css `.kad-button--lg`: the touch
+ * floor × 1.25, at --kad-text-lg), written in these boxes' own ems. Whatever
+ * stands in one — the button, or a line of text clamped to two — the box is
+ * the same height, so what comes and goes there never moves its neighbours.
+ */
+.player__task-slot,
+.player__start,
+.prompt--help {
+  --player-seat: calc(var(--kad-touch-min, 2.75em) * 1.25 * 1.25);
+}
+
+.player__task-slot {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  block-size: var(--player-seat);
+}
+
+.player__start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-block-size: var(--player-seat);
+}
+
+.player__task-slot .player__waiting > span,
+.player__start-wait > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.prompt--help {
+  justify-content: center;
+  min-block-size: var(--player-seat);
+}
+
+/* "Windstep is helping: +d6" keeps its line from the start (PlayerPanel). */
+.prompt__helper {
+  flex-wrap: nowrap;
+}
+
+.prompt__helper > span {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prompt__helper--empty {
+  visibility: hidden;
 }
 
 /* --- Sheet + inventory ------------------------------------------------- */
@@ -1076,14 +1142,20 @@
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
 
 /* The lobby's "Ready to play" sits at the foot of the sheet (after Room
-   settings, which already pushes itself down with `margin-block-start: auto`)
-   and stays in reach there while a long bag scrolls past above it. */
+   settings, which already pushes itself down with `margin-block-start: auto`,
+   or pushing itself down when there is none) and stays in reach there while
+   a long bag scrolls past above it. */
 .player__task-entry--foot {
   position: sticky;
   inset-block-end: 0;
   z-index: 1;
   flex: none;
+  margin-block-start: auto;
   box-shadow: 0 -0.75em 1em rgb(13 11 26 / 70%);
+}
+
+.player__room-settings + .player__task-entry--foot {
+  margin-block-start: 0;
 }
 
 /*
@@ -1120,6 +1192,13 @@
   animation: prompt-confirm 260ms cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
 }
 
+/* Empty (ConfirmBar): the seat stays and the bar does not show. No slide
+   while empty, so it is taking the class away that plays it. */
+.confirm--empty {
+  visibility: hidden;
+  animation: none;
+}
+
 @keyframes prompt-confirm {
   from { transform: translateY(1.2em); opacity: 0; }
   to { transform: none; opacity: 1; }
@@ -1138,9 +1217,13 @@
  *
  * Sized for the smallest phone, the page left a quarter of a tall one empty
  * between the bag and Room settings while the things you tap — stats, faces,
- * slots — stayed small. Now the bag takes whatever height is spare (its rows
- * stretch, up to a point), and a tall pane gets bigger tiles across the board.
- * A short phone keeps the compact sizes and does not start scrolling.
+ * slots — stayed small. So a tall pane gets bigger tiles across the board, and
+ * a short phone keeps the compact sizes and does not start scrolling.
+ *
+ * The bag's rows are sized by the pane, never stretched into whatever height
+ * is spare: they used to be, and opening an item's card under the grid took
+ * its room back out of the tiles, shrinking the one under your finger. Spare
+ * room goes above Room settings instead (`margin-block-start: auto`).
  *
  * A size container is safe here: the scroller's height comes from the flex
  * column it sits in, never from its contents.
@@ -1150,15 +1233,14 @@
 }
 
 .inv {
-  flex: 1 0 auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
 }
 
 .inv__grid {
-  flex: 1 0 auto;
-  grid-auto-rows: minmax(4.25em, 1fr);
-  max-block-size: 20em;
+  flex: 0 0 auto;
+  grid-auto-rows: minmax(4.25em, auto);
 }
 
 .inv__button,
@@ -1184,6 +1266,11 @@
   .party-strip__portrait {
     inline-size: 3em;
     block-size: 3.6em;
+  }
+
+  .inv__button,
+  .inv__slot--empty {
+    min-height: 5.5em;
   }
 
   .inv__empty-mark {

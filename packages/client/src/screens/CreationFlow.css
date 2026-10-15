@@ -93,7 +93,12 @@
   min-inline-size: 0;
 }
 
+/* ...and a label too long for its half ("Play as Thistlewhisker") is cut, not
+   spilled over the button beside it. */
 .creation__foot .kad-button__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -129,19 +134,39 @@
   min-width: 0;
 }
 
+/*
+ * Both lines are one line, always, and cut rather than wrap. The strip sits
+ * above the scrolling body, so every line it gains or loses moves the cards
+ * below it — a long typed name wrapping would push the field you are typing in.
+ */
 .creation-hero__name {
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 800;
   line-height: 1.1;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .creation-hero__meta {
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
+  min-width: 0;
+  block-size: 1lh;
   font-size: var(--font-size-sm, 0.875em);
   line-height: 1.25;
+  white-space: nowrap;
+}
+
+.creation-hero__meta > .kad-icon {
+  flex: 0 0 auto;
+}
+
+.creation-hero__meta > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* --- Species: the portrait is the button -------------------------------- */
@@ -275,6 +300,15 @@
   font-weight: 700;
 }
 
+/* The check's seat, held empty until the card is chosen — the same rule as
+   `.creation-option__mark` below, so choosing never rewraps a title. */
+.creation-card__mark {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  inline-size: 1em;
+}
+
 .creation-card__blurb {
   font-size: var(--font-size-sm, 0.875em);
   line-height: 1.35;
@@ -328,6 +362,10 @@
 .creation-stats__budget--done {
   border-color: var(--color-success, #5fd6a0);
   color: var(--color-success, #5fd6a0);
+}
+
+.creation-stats__reset--idle {
+  visibility: hidden;
 }
 
 .creation-stats__list {
@@ -478,6 +516,12 @@
   .creation-options > :last-child:nth-child(3n + 1) {
     grid-column: 1 / -1;
   }
+}
+
+/* One per row, the full width each: a name has room to sit on one line, so
+   rerolling the names never changes how tall the list is. */
+.creation-options.creation-options--stack {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .creation-option {

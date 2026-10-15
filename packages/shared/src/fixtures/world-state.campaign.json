@@ -1,0 +1,151 @@
+{
+  "$comment": "World-state fixture (#198). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It exists to show world facts once each - an enum locale, an enum threat, a counter alliance, a hidden route flag and a visible consequence - written by node completion rules and an edge effect, read by edge guards and by node variants, and the mill village's four faces on revisit: standing (first visit), market day (a later visit while it stands), displaced (after the wyrm wakes), restored (walked through, never replayed). world-state.test.ts holds it to the parser, the runtime and the lint, packages/server/src/handlers/world-state.test.ts plays it through the server, and tools/content/campaign-graph-schema.test.mjs holds it to the schema;docs/campaigns/graph-campaigns.md (World state) walks through it.",
+  "id": "world-state-sampler",
+  "title": "The Ash Wyrm Sampler",
+  "blurb": "A crossroads, a mill village and a sleeping wyrm. Wake it, and the village is not where you left it.",
+  "chapters": [
+    "ws-crossroads",
+    "ws-village",
+    "ws-village-market",
+    "ws-village-displaced",
+    "ws-village-restored",
+    "ws-lair",
+    "ws-lair-raging",
+    "ws-high-pass",
+    "ws-ford"
+  ],
+  "graph": {
+    "version": 1,
+    "entry": "crossroads",
+    "flags": ["befriended_river_folk"],
+    "facts": {
+      "mill-village": {
+        "$comment": "A locale with three states. Which one it is chooses the village's chapter on every entry.",
+        "domain": "locale",
+        "type": "enum",
+        "values": ["standing", "displaced", "restored"],
+        "initial": "standing",
+        "label": "The mill village",
+        "visible": true
+      },
+      "ash-wyrm": {
+        "domain": "threat",
+        "type": "enum",
+        "values": ["sleeping", "raging", "cleared"],
+        "initial": "sleeping",
+        "label": "The ash wyrm",
+        "visible": true
+      },
+      "river-folk": {
+        "$comment": "An alliance as a bounded counter: favours owed, nought to three. A fourth favour still reads three.",
+        "domain": "alliance",
+        "type": "counter",
+        "min": 0,
+        "max": 3,
+        "initial": 0,
+        "label": "Favours of the river folk",
+        "visible": true
+      },
+      "ford-path": {
+        "$comment": "A route the party finds by sneaking past the sleeping wyrm. Not visible: the way across the ford is a surprise until it opens.",
+        "domain": "route",
+        "type": "flag",
+        "label": "The path to the ford"
+      },
+      "scorched-orchard": {
+        "$comment": "A consequence nothing reads: the world remembers it and the players see it.",
+        "domain": "consequence",
+        "type": "flag",
+        "initial": false,
+        "label": "The orchard burned",
+        "visible": true
+      }
+    },
+    "nodes": {
+      "crossroads": {
+        "$comment": "The hub. Played once; every return walks straight through to the exit choice.",
+        "chapter": "ws-crossroads",
+        "title": "The Crossroads",
+        "revisit": "pass"
+      },
+      "village": {
+        "$comment": "The revisit node. First match wins: restored (and then walked through, never replayed), displaced, a market day on any later visit while it stands, else the first visit's chapter.",
+        "chapter": "ws-village",
+        "title": "The Mill Village",
+        "variants": [
+          { "chapter": "ws-village-restored", "when": { "facts": { "mill-village": "restored" } }, "revisit": "pass" },
+          { "chapter": "ws-village-displaced", "when": { "facts": { "mill-village": "displaced" } } },
+          { "chapter": "ws-village-market", "when": { "visit": { "min": 2 } } }
+        ],
+        "onComplete": [
+          {
+            "$comment": "A chapter reaches the world through a journey flag: it sets befriended_river_folk, the graph turns that into a favour and clears the flag for next time.",
+            "when": { "flag": "befriended_river_folk" },
+            "effects": [
+              { "type": "adjustFact", "fact": "river-folk", "by": 1 },
+              { "type": "setFlag", "flag": "befriended_river_folk", "value": false }
+            ]
+          }
+        ]
+      },
+      "lair": {
+        "chapter": "ws-lair",
+        "title": "The Ash Wyrm's Lair",
+        "variants": [{ "chapter": "ws-lair-raging", "when": { "facts": { "ash-wyrm": "raging" } } }],
+        "onComplete": [
+          {
+            "$comment": "Falling short at the sleeping wyrm wakes it: the village is displaced and the orchard burns.",
+            "when": { "outcome": "setback", "facts": { "ash-wyrm": "sleeping" } },
+            "effects": [
+              { "type": "setFact", "fact": "ash-wyrm", "value": "raging" },
+              { "type": "setFact", "fact": "mill-village", "value": "displaced" },
+              { "type": "setFact", "fact": "scorched-orchard", "value": true }
+            ]
+          },
+          {
+            "when": { "outcome": "success", "facts": { "ash-wyrm": "sleeping" } },
+            "effects": [{ "type": "setFact", "fact": "ford-path", "value": true }]
+          },
+          {
+            "when": { "outcome": "success", "facts": { "ash-wyrm": "raging" } },
+            "effects": [{ "type": "setFact", "fact": "ash-wyrm", "value": "cleared" }]
+          },
+          {
+            "$comment": "Every rule reads the same journey, so this one still sees the wyrm raging after the rule above clears it.",
+            "when": { "outcome": "success", "facts": { "ash-wyrm": "raging", "mill-village": "displaced" } },
+            "effects": [{ "type": "setFact", "fact": "mill-village", "value": "restored" }]
+          }
+        ]
+      },
+      "high-pass": { "chapter": "ws-high-pass", "ending": { "title": "Over the High Pass" } },
+      "ford": { "chapter": "ws-ford", "ending": { "title": "Across the Ford" } }
+    },
+    "edges": {
+      "to-village": { "from": "crossroads", "to": "village", "kind": "forward", "label": "Down to the mill village" },
+      "to-lair": {
+        "from": "crossroads",
+        "to": "lair",
+        "kind": "forward",
+        "label": "Up to the wyrm's lair",
+        "when": { "facts": { "ash-wyrm": { "not": "cleared" } } }
+      },
+      "village-to-crossroads": { "from": "village", "to": "crossroads", "kind": "return" },
+      "lair-to-crossroads": { "from": "lair", "to": "crossroads", "kind": "return" },
+      "to-high-pass": {
+        "from": "crossroads",
+        "to": "high-pass",
+        "kind": "forward",
+        "when": { "facts": { "ash-wyrm": "cleared" } },
+        "blocked": "shown"
+      },
+      "to-ford": {
+        "$comment": "The ferry costs a favour.",
+        "from": "crossroads",
+        "to": "ford",
+        "kind": "forward",
+        "when": { "facts": { "ford-path": true, "river-folk": { "min": 1 } } },
+        "effects": [{ "type": "adjustFact", "fact": "river-folk", "by": -1 }]
+      }
+    }
+  }
+}

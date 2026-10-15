@@ -9,7 +9,8 @@
  *   - **enter** a node (a fresh attempt at the entry, or by taking an edge):
  *     a new visit, `visits[node]` + 1, the variant resolved on arrival;
  *   - **complete** the visit (its chapter run settled): `completions[node]`
- *     + 1, the outcome recorded, the journey flags read back from the run;
+ *     + 1, the outcome recorded, the journey flags read back from the run,
+ *     and the node's `onComplete` rules applied (#198, world state);
  *   - **take an exit** (only once the visit is done): the edge counted, its
  *     effects applied, and then the destination entered.
  *
@@ -53,7 +54,11 @@ import type { Campaign, ChapterOutcome } from "./types/chapter.js";
 import type {
   EdgeId,
   GraphEffect,
+  FactId,
+  FactValue,
   JourneyExitView,
+  JourneyFactView,
+  JourneyPlaceView,
   JourneyState,
   JourneyView,
   NodeId,
@@ -62,6 +67,7 @@ import type {
 import {
   arrivalAt,
   chapterAtNode,
+  completionEffects,
   exitAvailability,
   exitsFrom,
   type Arrival,
@@ -70,6 +76,7 @@ import {
   type ParsedCampaignGraph,
 } from "./campaign-graph.js";
 import { crossRift, riftDestinationRevealed, riftView, settleRifts, tickRifts } from "./rifts.js";
+import { readFact, storedFacts, worldFacts, writeFact } from "./world-state.js";
 
 /**
  * The version of the stored journey record (`JourneyState.version`) this
@@ -224,7 +231,18 @@ function setFlag(
   }
 }
 
+/**
+ * An edge's effects, or a completed node's `onComplete` effects (#198), in
+ * order. World facts are written through their declarations (`writeFact`):
+ * a counter clamps, and a fact the graph does not declare is left alone — the
+ * parser refuses such a write, so only a hand-built journey could ask.
+ *
+ * The facts written are stored as values on the journey (`JourneyFacts.facts`)
+ * — a new record each time, never the declaration's or the previous
+ * journey's, so nothing outside this attempt's next journey changes.
+ */
 function applyEffects(
+  graph: ParsedCampaignGraph,
   journey: JourneyState,
   effects: readonly GraphEffect[] | undefined,
   campaign: JourneyCampaign | undefined,
@@ -232,9 +250,18 @@ function applyEffects(
   if (!effects || effects.length === 0) return journey;
   const flags = { ...(journey.flags ?? {}) };
   const edges = { ...(journey.edges ?? {}) };
+  const facts: Record<FactId, FactValue> = { ...(storedFacts(journey) as Record<FactId, FactValue>) };
   let touchedFlags = false;
   let touchedEdges = false;
+  let touchedFacts = false;
   for (const effect of effects) {
+    if (effect.type === "setFact" || effect.type === "adjustFact") {
+      const declared = graph.facts[effect.fact];
+      if (!declared) continue;
+      facts[effect.fact] = writeFact(declared, readFact(declared, facts[effect.fact]), effect);
+      touchedFacts = true;
+      continue;
+    }
     if (effect.type === "setFlag") {
       setFlag(flags, effect.flag, effect.value ?? true, campaign);
       touchedFlags = true;
@@ -250,6 +277,7 @@ function applyEffects(
     ...journey,
     ...(touchedFlags ? { flags } : {}),
     ...(touchedEdges ? { edges } : {}),
+    ...(touchedFacts ? { facts } : {}),
   };
 }
 
@@ -480,10 +508,10 @@ export function completeVisit(
   const ended = node.ending !== undefined;
   // Rifts (#196): the chapter that just settled is one tick of the session
   // clock for every timed rift that was open while it played — then the
-  // completion, then whatever it opened or ended (`rifts.ts`, "when a rift
-  // moves").
+  // completion and its rules, then whatever they opened or ended (`rifts.ts`,
+  // "when a rift moves").
   const aged = tickRifts(graph, journey, "chapters");
-  const next: JourneyState = {
+  const settled: JourneyState = {
     ...aged,
     completions: bump(journey.completions, journey.node),
     outcomes: { ...(journey.outcomes ?? {}), [journey.node]: report.outcome },
@@ -492,6 +520,10 @@ export function completeVisit(
     status: ended ? "ended" : "choosing",
     ...(ended ? { ending: journey.node } : {}),
   };
+  // The node's completion rules (#198) read the journey the chapter has just
+  // produced — this outcome, the flags it handed back — and write the world;
+  // a rift that world opens (#196) opens now, at age 0.
+  const next = applyEffects(graph, settled, completionEffects(graph, journey.node, settled), campaign);
   return { ok: true, duplicate: false, journey: settleRifts(graph, next), firstCompletion, ended };
 }
 
@@ -549,6 +581,7 @@ export function takeExit(
   // all in the one journey this returns, so it commits whole or not at all.
   const moved = tickRifts(graph, crossRift(graph, journey, report.edge), "visits");
   const crossed = applyEffects(
+    graph,
     {
       ...moved,
       traversed: bump(journey.traversed, report.edge),
@@ -589,11 +622,27 @@ export const HIDDEN_RIFT_LABEL = "Into the rift";
  * The journey as the screens draw it (`CampaignView.journey`). `titleOf`
  * turns a chapter id into its title, for nodes and exits without their own;
  * without it (or for a chapter it does not know) the node id stands in.
+ * `campaign` is `takeExit`'s: the route sets that make a `setFlag` effect a
+ * fork, needed here only to ask what a crossing *would* find on arrival.
+ *
+ * What it must not do is spoil (#195). Three rules, each the answer to "what
+ * does a kid who has not been there learn from this?":
+ *
+ * - **An unexplored exit's label is the author's.** The edge's `label`, else
+ *   the destination's own map `title`, else a neutral "Somewhere new" - never
+ *   the destination's *chapter* title, which names the story beat ("The
+ *   Dragon's Secret") the way a map label does not. A place the party has
+ *   finished is theirs to name, so there the chapter title is fine.
+ * - **`changed` is a flag, not a variant.** It says the place would be found
+ *   different, not how, and only for a place already finished.
+ * - **Hidden blocked exits are absent** (`exitsFrom`'s `visible`), as they
+ *   were; `places` lists only nodes the party has entered.
  */
 export function journeyView(
   graph: ParsedCampaignGraph,
   journey: JourneyState,
   titleOf: (chapterId: string) => string | undefined = () => undefined,
+  campaign?: JourneyCampaign,
 ): JourneyView {
   const placeTitle = (node: NodeId): string =>
     graph.nodes[node]?.title ?? titleOf(graph.nodes[node]?.chapter ?? "") ?? node;
@@ -607,22 +656,52 @@ export function journeyView(
             const rift = riftView(graph, exit.edge, journey);
             // A rift whose destination the players have not learned (#196)
             // must not be named by anything sent to a phone: not `to`, not a
-            // title-derived label, not an arrival that says "been there".
+            // title-derived label, not an arrival that says "been there", not
+            // `changed`. Its crossing is not even simulated — what it would
+            // find is exactly what the view may not say.
             const hidden = !riftDestinationRevealed(graph, exit.edge, journey);
+            // An available exit is answered by the crossing itself, so the
+            // edge's own effects count: a world fact it writes can turn the
+            // destination's variant — and with it a variant's `revisit`
+            // (#198) — before the party arrives. A blocked exit cannot be
+            // crossed, and is told what the place is now.
+            const crossing =
+              exit.availability.available && !hidden ? simulateCrossing(graph, journey, exit.edge, campaign) : null;
+            const arrival = hidden ? "new" : (crossing?.arrival ?? arrivalAt(graph, exit.to, journey));
+            const label =
+              edge.label ??
+              (hidden
+                ? HIDDEN_RIFT_LABEL
+                : arrival === "new"
+                  ? (graph.nodes[exit.to]?.title ?? "Somewhere new")
+                  : placeTitle(exit.to));
+            const changed = crossing !== null && foundChanged(journey, crossing);
             return {
               edge: exit.edge,
               to: hidden ? "" : exit.to,
               kind: exit.kind,
-              label: edge.label ?? (hidden ? HIDDEN_RIFT_LABEL : placeTitle(exit.to)),
+              label,
               available: exit.availability.available,
               ...(exit.availability.available ? {} : { reason: exit.availability.reason }),
-              arrival: hidden ? "new" : arrivalAt(graph, exit.to, journey),
+              arrival,
               ...(edge.irreversible === true ? { irreversible: true as const } : {}),
+              ...(edge.once === true ? { once: true as const } : {}),
+              ...(changed ? { changed: true as const } : {}),
               ...(rift ? { rift } : {}),
               ...(hidden ? { hiddenDestination: true as const } : {}),
             };
           });
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
+  const facts = visibleFacts(graph, journey);
+  const places: JourneyPlaceView[] = graph.nodeOrder
+    .filter((node) => count(journey.visits, node) > 0)
+    .map((node) => ({
+      node,
+      title: placeTitle(node),
+      visits: count(journey.visits, node),
+      completed: count(journey.completions, node) > 0,
+      ...(node === journey.node ? { here: true as const } : {}),
+    }));
   return {
     node: journey.node,
     title: placeTitle(journey.node),
@@ -633,5 +712,57 @@ export function journeyView(
     ...(ending !== undefined
       ? { reachedEnding: { node: ending, title: graph.nodes[ending]?.ending?.title ?? placeTitle(ending) } }
       : {}),
+    places,
+    ...(facts.length > 0 ? { facts } : {}),
   };
+}
+
+/**
+ * The world facts the players may see (#198): those declared `visible`, in
+ * authored order, with their values read through the declaration. A fact not
+ * declared visible is never sent to a phone — the author's surprise stays one
+ * — and a graph with no visible fact sends no `facts` key at all.
+ */
+function visibleFacts(graph: ParsedCampaignGraph, journey: JourneyState): JourneyFactView[] {
+  const values = worldFacts(graph.facts, journey);
+  return graph.factOrder
+    .filter((id) => graph.facts[id]!.visible === true)
+    .map((id) => {
+      const fact = graph.facts[id]!;
+      return { id, domain: fact.domain, label: fact.label ?? id, type: fact.type, value: values[id]! };
+    });
+}
+
+/**
+ * Would taking `edge` find its (already finished) destination different?
+ *
+ * Asked of `takeExit` itself rather than re-derived, so edge effects - the
+ * mill wheel the crossing starts - count exactly as they will on the real
+ * crossing: the chapter the destination would resolve to, against the
+ * chapters this attempt has completed. "Different" is "a chapter the party has
+ * never played" (`chaptersCompleted`): the journey keeps no per-place
+ * "last played", and a place that flips back to a version they already played
+ * is not news. A refusal (cannot happen for an available exit) is "no".
+ */
+function foundChanged(
+  journey: JourneyState,
+  crossing: { arrival: Exclude<Arrival, "closed">; chapter: string },
+): boolean {
+  // Only a place already finished can be found different. A `"pass"` arrival
+  // counts too (#198): the restored village is walked through, not replayed,
+  // but it is not the village the party left.
+  if (crossing.arrival === "new") return false;
+  return !(journey.chaptersCompleted ?? []).includes(crossing.chapter);
+}
+
+/** What crossing `edge` would be — arrival and the chapter resolved — or null when it cannot be crossed. */
+function simulateCrossing(
+  graph: ParsedCampaignGraph,
+  journey: JourneyState,
+  edge: EdgeId,
+  campaign?: JourneyCampaign,
+): { arrival: Exclude<Arrival, "closed">; chapter: string } | null {
+  const crossed = takeExit(graph, journey, { edge, visit: journey.visit }, campaign);
+  if (!crossed.ok || crossed.duplicate) return null;
+  return { arrival: crossed.arrival, chapter: crossed.journey.chapter };
 }

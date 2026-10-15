@@ -71,12 +71,12 @@ async function createCharacter(page: Page, species: string, name: string): Promi
  */
 async function endTurn(page: Page): Promise<void> {
   await openPlayerTask(page);
-  const ready = page.locator(".combat .choice").filter({ hasText: /get ready/i });
+  const ready = page.locator(".combat .combat__answers:not([inert]) .choice").filter({ hasText: /get ready/i });
   if ((await ready.count()) > 0) {
     await ready.first().click({ timeout: 5_000 }).catch(() => {});
     return;
   }
-  await page.locator(".combat__end").first().click({ timeout: 5_000 }).catch(() => {});
+  await page.locator(".combat__answers:not([inert]) .combat__end").first().click({ timeout: 5_000 }).catch(() => {});
 }
 
 test.describe("the Field Guide", () => {
