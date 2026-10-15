@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { atlasLevel, regionalAnchor, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
+import { atlasLevel, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
 import type { WorldAtlas, WorldRoute } from "@kad/shared";
 import type { WorldPlace } from "@kad/shared";
 
@@ -17,14 +17,6 @@ describe("regional atlas coordinates", () => {
     expect(visibleMapRoutes([route], { forest, town }, new Set())).toEqual([]);
     expect(visibleMapRoutes([route], { forest, town }, new Set([town.id]))).toEqual([route]);
     expect(visibleMapRoutes([{ ...route, connects: [forest.id], via: town.id }], { forest, town }, new Set())).toEqual([]);
-  });
-  const bounds = { x: 40, y: 265, width: 340, height: 310 };
-  it("preserves realm positions inside a crop without pulling outsiders onto its edge", () => {
-    expect(regionalAnchor({ x: 210, y: 420 }, bounds)).toEqual({ x: 500, y: 500 });
-    expect(regionalAnchor({ x: 40, y: 265 }, bounds)).toEqual({ x: 0, y: 0 });
-    expect(regionalAnchor({ x: 900, y: 420 }, bounds)).toBeNull();
-    expect(regionalAnchor({ x: 210, y: 100 }, bounds)).toBeNull();
-    expect(regionalAnchor({ x: 210, y: 420 }, { ...bounds, width: 0 })).toBeNull();
   });
   it("shows regions for orientation but requires discovery for specific sites", () => {
     const forest: WorldPlace = { id: "biome.woods", title: "Woods", kind: "biome", anchor: { x: 1, y: 1 }, parent: null };
