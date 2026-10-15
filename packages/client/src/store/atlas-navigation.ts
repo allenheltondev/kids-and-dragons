@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import type { WorldAnchor } from "@kad/shared";
 
 interface AtlasView {
@@ -17,8 +18,19 @@ export function updateAtlasView(scope: string, patch: Partial<AtlasView>): void 
   useNavigation.setState((state) => ({ scope, view: { ...(state.scope === scope ? state.view : INITIAL), ...patch } }));
 }
 
-export function useAtlasNavigation(scope: string): AtlasView {
-  const view = useNavigation((state) => state.scope === scope ? state.view : INITIAL);
+/** Read only when restoring/recentering, not as a render subscription. */
+export function getAtlasCenter(scope: string): WorldAnchor | null {
+  const state = useNavigation.getState();
+  return state.scope === scope ? state.view.center : null;
+}
+
+export function useAtlasNavigation(scope: string): Omit<AtlasView, "center"> {
+  // Scroll saves must not render the whole atlas. Keep only visual settings
+  // reactive, with stable selector identity while just the center changes.
+  const view = useNavigation(useShallow((state) => {
+    const settings = state.scope === scope ? state.view : INITIAL;
+    return { step: settings.step, regionId: settings.regionId, routeId: settings.routeId, showRoutes: settings.showRoutes };
+  }));
   useEffect(() => {
     if (useNavigation.getState().scope !== scope) updateAtlasView(scope, INITIAL);
   }, [scope]);

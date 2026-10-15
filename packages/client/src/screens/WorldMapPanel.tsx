@@ -25,7 +25,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type { FieldGuide, WorldMap, WorldPlace } from "@kad/shared";
 import { useChapter, useParty, useRunState, useWorld, useGameStore } from "../store";
-import { updateAtlasView, useAtlasNavigation } from "../store/atlas-navigation";
+import { getAtlasCenter, updateAtlasView, useAtlasNavigation } from "../store/atlas-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { atlasLevel, regionalAnchor, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
 import { FieldGuideDetail } from "./FieldGuideDetail";
@@ -67,7 +67,7 @@ export function WorldMapPanel(): ReactElement {
   const runId = useGameStore((store) => store.session?.runId ?? "");
   const chapterId = state?.chapterId ?? null;
   const scope = JSON.stringify([runId, chapterId]);
-  const { step, regionId, routeId, showRoutes, center } = useAtlasNavigation(scope);
+  const { step, regionId, routeId, showRoutes } = useAtlasNavigation(scope);
   const setStep = (next: number | ((value: number) => number)) => updateAtlasView(scope, { step: typeof next === "function" ? next(step) : next, center: null });
   const setRegionId = (next: string | null) => updateAtlasView(scope, { regionId: next, center: null });
   const setRouteId = (next: string | null) => updateAtlasView(scope, { routeId: next, center: null });
@@ -135,7 +135,7 @@ export function WorldMapPanel(): ReactElement {
     // `scrollTo` is absent on elements in jsdom; the tests are not about panning.
     if (!view || typeof view.scrollTo !== "function") return;
     if (world?.atlas && canvasWidth <= 0) return;
-    const focus = center ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ??
+    const focus = getAtlasCenter(scope) ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ??
       (world?.atlas && regionPlace ? regionPlace.anchor : null);
     view.scrollTo({
       left: focus ? focus.x / 1000 * canvasWidth - view.clientWidth / 2 : pin ? pin.offsetLeft - view.clientWidth / 2 : 0,
