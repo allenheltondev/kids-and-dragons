@@ -124,8 +124,29 @@
 .atlas__route-line { stroke: #f9d782; stroke-width: 3px; }
 .atlas__routes [data-accuracy="approximate"] .atlas__route-line { stroke-dasharray: 8 7; }
 .atlas__route--selected .atlas__route-line { stroke: #ffffff; stroke-width: 4px; }
+/* The painting's box. Isolated, so nothing inside it (the strip, the pins)
+   can paint over the card or the entry, which sit above it in `.atlas`. */
+.atlas__stage {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+/* The strip's one-line height is kept clear at the top of the painting, so
+   at rest it hides nothing; the painting scrolls up under it. */
+.atlas__stage--routes .atlas__viewport {
+  padding-block-start: calc(var(--kad-text-sm, 0.875em) * (2.75 + 0.8));
+}
+/* Over the painting, not above it: however many lines it grows to, the
+   viewport under it keeps its size, so the map never rescales for it. */
 .atlas__route-controls {
-  flex: 0 0 auto;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 2;
+  box-shadow: 0 0.3em 0.8em rgb(0 0 0 / 35%);
   display: flex;
   align-items: center;
   flex-wrap: wrap;

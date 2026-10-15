@@ -89,6 +89,32 @@ describe("FieldGuide (new marker)", () => {
   });
 });
 
+describe("FieldGuide tabs", () => {
+  it("come back on the tab you left after reading an entry", async () => {
+    setFieldGuideDiscoveries({ "creature.a": find(), "place.a": find() });
+    const user = userEvent.setup();
+    act(() => { openGuide(); });
+    const { unmount } = render(<FieldGuideIndex guide={guide} />);
+    await user.click(screen.getByRole("tab", { name: "Places" }));
+    await user.click(screen.getByRole("button", { name: /Glimmer Marsh/ }));
+    // Opening an entry unmounts the index; this is the index coming back.
+    unmount();
+    render(<FieldGuideIndex guide={guide} />);
+    expect(screen.getByRole("tab", { name: "Places" }).getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("start from the first tab again once the guide is closed", async () => {
+    const user = userEvent.setup();
+    act(() => { openGuide(); });
+    const { unmount } = render(<FieldGuideIndex guide={guide} />);
+    await user.click(screen.getByRole("tab", { name: "Places" }));
+    unmount();
+    act(() => { setPlayerSection("bag"); });
+    render(<FieldGuideIndex guide={guide} />);
+    expect(screen.getByRole("tab", { name: "Creatures" }).getAttribute("aria-selected")).toBe("true");
+  });
+});
+
 describe("FieldGuide shell", () => {
   it("renders the placeholder detail with a way back to the index", async () => {
     vi.stubGlobal("fetch", async () => ({ ok: true, json: async () => guide }) as unknown as Response);

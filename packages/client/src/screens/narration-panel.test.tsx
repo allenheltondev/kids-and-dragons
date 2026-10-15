@@ -137,6 +137,13 @@ describe("announcing a hand-off (spec §9.4)", () => {
     expect(screen.getAllByText("Thistle").length).toBeGreaterThan(0);
   });
 
+  it("shows it up top, off the plate, so an offer cannot push the story up", () => {
+    const { container } = mount({ trades: [OFFER] });
+    const trade = container.querySelector(".narration__trade");
+    expect(trade?.closest(".narration__head")).not.toBeNull();
+    expect(trade?.closest(".narration__plate")).toBeNull();
+  });
+
   it("says nothing at all when nothing is being passed around", () => {
     mount({ trades: [] });
     expect(spoken.some((t) => t.includes("wants to give"))).toBe(false);
@@ -260,11 +267,13 @@ describe("the story turn (spec §6.1)", () => {
   });
 
   it("names nobody once the turn holder's phone has dropped", () => {
-    mount({
+    const { container } = mount({
       ...storyChoice(["p_2"]),
       party: [PARTY[0]!, { ...PARTY[1]!, connected: false }],
     });
     expect(screen.queryByText(/turn to choose/)).toBeNull();
+    // But the line keeps its seat, so the drop cannot move the story.
+    expect(container.querySelector(".narration__turn.narration__turn--empty")).not.toBeNull();
   });
 });
 
@@ -295,17 +304,31 @@ describe("what somebody has picked but not confirmed", () => {
     expect(picked).toHaveLength(1);
     expect(picked[0]?.textContent).toContain("Go west");
     expect(picked[0]?.textContent).not.toContain("Thistle");
-    expect(container.querySelector(".narration__voters")).toBeNull();
+    expect(container.querySelector(".kad-vote-tick--on")).toBeNull();
   });
 
-  it("names who has locked in a vote, on the option they chose, as the phones do", () => {
+  it("ticks who has locked in a vote, on the option they chose, as the phones do", () => {
     const { container } = mount({ prompt: { ...vote.prompt, votes: { p_2: "west" } } });
-    const voters = container.querySelectorAll(".narration__voters");
-    expect(voters).toHaveLength(1);
-    expect(voters[0]?.closest(".narration__choice")?.textContent).toContain("Go west");
-    expect(voters[0]?.textContent).toContain("Thistle");
+    const on = container.querySelectorAll(".kad-vote-tick--on");
+    expect(on).toHaveLength(1);
+    expect(on[0]?.closest(".narration__choice")?.textContent).toContain("Go west");
+    // A tick, not a name — but the name is still there for screen readers.
+    expect(on[0]?.closest(".narration__choice")?.querySelector(".kad-sr-only")?.textContent).toContain(
+      "Thistle",
+    );
     // Locked in is not a pick still being made: no cyan highlight for it.
     expect(container.querySelector(".narration__choice--picked")).toBeNull();
+  });
+
+  it("draws every voter's seat on every option, so a vote cannot grow a pill", () => {
+    const before = mount(vote).container;
+    const seats = (root: HTMLElement) =>
+      [...root.querySelectorAll(".narration__choice")].map((c) => c.querySelectorAll(".kad-vote-tick").length);
+    const empty = seats(before);
+    expect(empty).toEqual([PARTY.length, PARTY.length]);
+    cleanup();
+    const after = mount({ prompt: { ...vote.prompt, votes: { p_2: "west" } } }).container;
+    expect(seats(after)).toEqual(empty);
   });
 
   it("stays dark for a pick made for an earlier question", () => {
@@ -330,6 +353,14 @@ describe("a fight", () => {
       encounter: { round: 1, turnOrder: [], combatants: [] } as never,
     });
     expect(container.querySelector(".narration--fight")).not.toBeNull();
+  });
+
+  it("holds the aim line's seat while nobody is aiming", () => {
+    const { container } = mount({
+      sceneType: "encounter",
+      encounter: { round: 1, turnOrder: [], combatants: [] } as never,
+    });
+    expect(container.querySelector(".narration__aim.narration__aim--empty")).not.toBeNull();
   });
 
   it("is a full panel outside one", () => {

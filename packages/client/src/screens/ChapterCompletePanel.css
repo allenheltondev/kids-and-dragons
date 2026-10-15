@@ -15,6 +15,9 @@
   background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.82));
   color: var(--color-text, #f4f0ff);
   overflow-y: auto;
+  /* On a phone's world pane this can scroll; the gutter is held either way so
+     a scrollbar turning up cannot narrow the cards and rewrap them. */
+  scrollbar-gutter: stable;
 }
 
 .complete__head {

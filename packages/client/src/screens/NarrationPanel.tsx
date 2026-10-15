@@ -17,6 +17,7 @@ import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../s
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
+import { VoteTicks } from "./VoteTicks";
 import { chapterHeading } from "./campaign-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
@@ -64,9 +65,15 @@ export function NarrationPanel(): ReactElement | null {
    * that is where the table looks to find out. Named only while the holder is
    * at the table — once their phone drops, anyone may answer for them, and
    * the screen should not tell the room to wait on somebody who cannot tap.
+   *
+   * The line's seat lasts as long as the turn does, whoever is holding it:
+   * a phone dropping and coming back only hides and shows the name, so it
+   * cannot push the story down a line and back up again.
    */
+  const turnPrompt =
+    prompt !== null && prompt.kind === "choice" && !prompt.vote && prompt.forPlayerIds.length === 1;
   const turnName =
-    prompt !== null && prompt.kind === "choice" && !prompt.vote && prompt.forPlayerIds.length === 1 && !turnHolderAway(party, prompt)
+    turnPrompt && !turnHolderAway(party, prompt)
       ? party.find((m) => m.playerId === prompt.forPlayerIds[0])?.character.name ?? null
       : null;
 
@@ -200,6 +207,30 @@ export function NarrationPanel(): ReactElement | null {
             <span>{chapterHeading(state) ?? prettyChapter(state.chapterId)}</span>
           </h2>
         )}
+
+        {/*
+          Hand-offs in the air (spec §9.4). On the shared screen for the same
+          reason the choices are: the buttons belong to the phones, but the table
+          should be able to see what is being passed around without reading over
+          somebody's shoulder. Read-only, like everything else on WorldView.
+
+          Up here rather than on the plate: an offer is two other people's
+          business, and it used to arrive under the story and push the words
+          the room was reading up the screen.
+        */}
+        {trades.length === 0 ? null : (
+          <ul className="narration__trades">
+            {trades.map((offer) => (
+              <li className="narration__trade" key={offer.id}>
+                <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
+                <span>
+                  <b>{nameOfPlayer(offer.fromPlayerId)}</b> offers{" "}
+                  {nameOfItem(offer.itemId)} to <b>{nameOfPlayer(offer.toPlayerId)}</b>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </header>
 
       {/*
@@ -210,8 +241,10 @@ export function NarrationPanel(): ReactElement | null {
       */}
       <div className="narration__plate" ref={plate}>
         <div className="narration__story">
-          {choices !== null && choices.length > 0 && turnName !== null ? (
-            <p className="narration__turn">{turnName}&rsquo;s turn to choose</p>
+          {choices !== null && choices.length > 0 && turnPrompt ? (
+            <p className={`narration__turn${turnName === null ? " narration__turn--empty" : ""}`}>
+              {turnName === null ? "\u00a0" : <>{turnName}&rsquo;s turn to choose</>}
+            </p>
           ) : null}
           <p className="narration__body" key={narration}>
             {narration}
@@ -228,12 +261,14 @@ export function NarrationPanel(): ReactElement | null {
               // A hover is a light, not a name: it only lights the option, so a
               // name appearing and disappearing cannot rewrap the label.
               const leaningNow = (leaning.choices[choice.id] ?? []).length > 0;
-              // A locked vote is named, the same as on the phones (PlayerPanel).
-              const voters =
-                prompt?.kind === "choice" && prompt.votes !== undefined
-                  ? Object.entries(prompt.votes)
+              // A locked vote is a tick in the voter's color, the same as on
+              // the phones (PlayerPanel): a seat per voter, drawn from the
+              // start, so a vote landing cannot grow the pill and rewrap the row.
+              const votedIds =
+                prompt?.kind === "choice"
+                  ? Object.entries(prompt.votes ?? {})
                       .filter(([, choiceId]) => choiceId === choice.id)
-                      .map(([playerId]) => nameOfPlayer(playerId))
+                      .map(([playerId]) => playerId)
                   : [];
               return (
                 <li
@@ -242,11 +277,15 @@ export function NarrationPanel(): ReactElement | null {
                 >
                   <Icon name={choice.icon} />
                   <span>{choice.label}</span>
-                  {voters.length > 0 ? (
-                    <span className="narration__voters">
-                      <Icon name="vote" />
-                      <span>{voters.join(", ")}</span>
-                    </span>
+                  {prompt?.kind === "choice" && prompt.vote ? (
+                    <VoteTicks
+                      className="narration__voters"
+                      voterIds={
+                        prompt.forPlayerIds.length > 0 ? prompt.forPlayerIds : party.map((m) => m.playerId)
+                      }
+                      votedIds={votedIds}
+                      party={party}
+                    />
                   ) : null}
                 </li>
               );
@@ -258,13 +297,26 @@ export function NarrationPanel(): ReactElement | null {
           The fighter whose turn it is, mid-pick: the board rings what they are
           aiming at, and this names it, because a ring alone does not say
           *which* power is about to land.
+
+          Its seat is held for the whole fight and the pick only fills it, on
+          one line: a fighter tapping about on their phone must not shove the
+          caption up and down the board under everybody else.
         */}
-        {leaning.combat !== null && state.encounter ? (
-          <p className="narration__aim" role="status">
+        {state.encounter ? (
+          <p
+            className={`narration__aim${leaning.combat === null ? " narration__aim--empty" : ""}`}
+            role="status"
+          >
             <Icon name="hand" />
             <span>
-              <b>{leaning.combat.name}</b>:{" "}
-              {describeCombatPreview(leaning.combat.preview, state.encounter, abilities, items)}
+              {leaning.combat === null ? (
+                "\u00a0"
+              ) : (
+                <>
+                  <b>{leaning.combat.name}</b>:{" "}
+                  {describeCombatPreview(leaning.combat.preview, state.encounter, abilities, items)}
+                </>
+              )}
             </span>
           </p>
         ) : null}
@@ -275,26 +327,6 @@ export function NarrationPanel(): ReactElement | null {
             <span>{prompt.prompt}</span>
           </p>
         ) : null}
-
-        {/*
-          Hand-offs in the air (spec §9.4). On the shared screen for the same
-          reason the choices are: the buttons belong to the phones, but the table
-          should be able to see what is being passed around without reading over
-          somebody's shoulder. Read-only, like everything else on WorldView.
-        */}
-        {trades.length === 0 ? null : (
-          <ul className="narration__trades">
-            {trades.map((offer) => (
-              <li className="narration__trade" key={offer.id}>
-                <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
-                <span>
-                  <b>{nameOfPlayer(offer.fromPlayerId)}</b> offers{" "}
-                  {nameOfItem(offer.itemId)} to <b>{nameOfPlayer(offer.toPlayerId)}</b>
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </section>
   );

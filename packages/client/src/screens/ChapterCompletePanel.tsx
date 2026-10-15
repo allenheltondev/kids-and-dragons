@@ -34,7 +34,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { speak } from "@kad/shared";
 import type { TierId } from "@kad/shared";
-import { useItems, useParty, useProgression, useRunState } from "../store";
+import { useGameStore, useItems, useParty, useProgression, useRunState } from "../store";
+import type { ProgressionEvent } from "../store/contract";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { campaignEndHeading, campaignEndLine } from "./campaign-copy";
@@ -42,24 +43,48 @@ import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
 
+/** Who levelled up and who crossed a tier, by character id. */
+interface Grown {
+  leveled: Record<string, number>;
+  transformed: Record<string, string>;
+}
+
+/** `grown` with one progression update's awards on top — the same object back
+    when the update says nothing new, so a replay costs no render. */
+function withAwards(grown: Grown, event: ProgressionEvent | null): Grown {
+  let next = grown;
+  for (const award of event?.progression.awards ?? []) {
+    const { characterId, leveledTo, newTier } = award;
+    if (leveledTo !== undefined && next.leveled[characterId] !== leveledTo) {
+      next = { ...next, leveled: { ...next.leveled, [characterId]: leveledTo } };
+    }
+    if (newTier !== undefined && next.transformed[characterId] !== newTier) {
+      next = { ...next, transformed: { ...next.transformed, [characterId]: newTier } };
+    }
+  }
+  return next;
+}
+
 export function ChapterCompletePanel(): ReactElement {
   useEnsureContent();
   const state = useRunState();
   const party = useParty();
   const items = useItems();
-  const [leveled, setLeveled] = useState<Record<string, number>>({});
-  const [transformed, setTransformed] = useState<Record<string, string>>({});
+  /*
+   * Seeded from the store on the first render, not only from the subscription
+   * below: the update that ended the chapter has normally landed before this
+   * panel mounts, and delivered in an effect the chips arrived a frame after
+   * the cards and pushed everything under them down. The subscription replays
+   * the same update on mount (a no-op now) and carries any later one.
+   */
+  const [grown, setGrown] = useState<Grown>(() =>
+    withAwards({ leveled: {}, transformed: {} }, useGameStore.getState().progression),
+  );
+  const { leveled, transformed } = grown;
 
   useProgression(
     useCallback((event) => {
-      for (const award of event.progression.awards ?? []) {
-        if (award.leveledTo !== undefined) {
-          setLeveled((prev) => ({ ...prev, [award.characterId]: award.leveledTo! }));
-        }
-        if (award.newTier !== undefined) {
-          setTransformed((prev) => ({ ...prev, [award.characterId]: award.newTier! }));
-        }
-      }
+      setGrown((prev) => withAwards(prev, event));
     }, []),
   );
 
