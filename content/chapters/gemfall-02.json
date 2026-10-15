@@ -1554,7 +1554,7 @@
       "narration": "Outside Bramblewood's tall hedges, a mob of treasure hunters is camped and shouting, \"Open up! Let us through!\" The hedges are not listening. Along the wall, a small thorny sprite with a satchel too big for them is trimming one leaf at a time and narrating it. \"I'm Pib,\" they say. \"I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?\"",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1624,7 +1624,7 @@
       "narration": "You step up to the hedge and bow. Far back from the shouting, the three sheeple bow too. Then all three throw back their heads in perfect silence. For a minute, nothing happens. Then sheeple start arriving at the edge of the clearing: ten, twenty, thirty, all in the same hat, all bowing to the hedge at once. \"Please may we come in,\" they say, slightly out of step. The mob is so surprised it stops shouting. Pib drops their shears. The hedge has never been asked that politely by that many people, ever. It opens a path wide enough for all of you, and the flock trots in too, very pleased with itself.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         },
@@ -1646,7 +1646,7 @@
       "narration": "Pib sees the sprites' medal and gasps. \"Cousins! You've met my cousins!\" The hedge opens before Pib has even finished the sentence, wide enough for a cart, and a thorn reaches out and very gently straightens the little medal.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1665,7 +1665,7 @@
       "narration": "You take a brush each and trim with Pib, one leaf at a time, for a very long time. Pib narrates all of it. Somewhere around the four hundredth leaf, the hedge gives a long rustle, like a cat deciding to like you, and a small gap opens at exactly your height. The mob does not notice. Pib is beside themself with pride.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1686,7 +1686,7 @@
       "prompt": "Say why you came, plainly enough for a hedge to hear",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1713,7 +1713,7 @@
       "narration": "Pib sighs and offers you a thorn-cleaning brush you did not ask for. \"Let's try again. Properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the time you reach the other end the mob outside has shouted itself hoarse.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1732,7 +1732,7 @@
       "narration": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of the inn they stop and dig in the big satchel. Out come three things you did not ask for. \"I can only spare one,\" says Pib. \"The hedge says you should choose it together.\" Which one? Everybody vote.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1763,7 +1763,7 @@
       "narration": "Pib pins the thistle on your coat and steps back to admire it. \"Prickly,\" they say, satisfied. \"But only on the outside. Like a hedge.\" The thistle stands up very straight, as if it is proud to be chosen.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1789,7 +1789,7 @@
       "narration": "Pib hands over a soft gray owl feather on a little clasp. \"An owl left it in the hedge in the spring,\" they say, \"and the hedge has been keeping it for somebody clever. The hedge thinks it might be you. It isn't sure.\" The feather tickles. It seems to be thinking it over.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }
@@ -1815,7 +1815,7 @@
       "narration": "Pib drops a smooth pebble with a hole in it into your hand. \"For luck,\" they say. \"When things go wrong, you look through the hole, and they go a bit less wrong. That's how I do the tricky bits of hedge.\" Pib shows you by looking at you through it, very seriously, for a long time.",
       "cast": [
         {
-          "figure": "entities/pib",
+          "figure": "cast/pib",
           "name": "Pib",
           "size": "tiny"
         }

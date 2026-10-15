@@ -569,7 +569,7 @@
       "narration": "You catch Nim just as Pepper is leaving. She listens to all of it, rings her bell once, high and clear, and says, \"Grandmother is going to say she told everyone.\" Then she gallops north with your news, and Pepper, for once, does not argue.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/nim",
           "name": "Nim"
         }
       ],
@@ -941,7 +941,7 @@
       "narration": "A very small, very fast pony has stopped dead in the road and will not take one more step toward the gem carts. On its back a dragonling about your size is ringing a bell at it, crossly. \"Come ON, Pepper.\" She is Nim, a bell-rider for the gathering towns up north, and she is very late.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/nim",
           "name": "Nim"
         }
       ],
@@ -973,7 +973,7 @@
       "narration": "You put your hands gently over Pepper's ears and lead her past the humming carts, one slow step at a time. Pepper allows this, as long as you also scratch her nose. \"Grandmother says the ponies always know first,\" Nim tells you. \"Grandmother says a lot of things. She is usually right. It's very annoying.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/nim",
           "name": "Nim"
         }
       ],
@@ -994,7 +994,7 @@
       "prompt": "Talk a frightened pony past the humming carts",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/nim",
           "name": "Nim"
         }
       ],
@@ -1014,7 +1014,7 @@
       "narration": "You bow and ring an imaginary bell three times, high, low, high, the way they do in the gathering towns. Nim squeaks. \"You're from the towns!\" Even Pepper looks impressed. Nim walks with you all the way to the bridge foot, telling you which grandmothers are feuding this year. It is most of them.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/nim",
           "name": "Nim"
         }
       ],
@@ -1115,7 +1115,7 @@
       "narration": "Outside the engineers' tent stands Corporal Tibbet, who is very new, very junior, and very serious. His helmet is too big. \"No entry,\" he says, \"without a pass. Or a reason. A good reason. In writing.\" He holds out a clipboard. It already has a pencil on a string.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/corporal_tibbet",
           "name": "Corporal Tibbet"
         }
       ],
@@ -1149,7 +1149,7 @@
       "prompt": "Convince a very serious corporal to let you in",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/corporal_tibbet",
           "name": "Corporal Tibbet"
         }
       ],
@@ -1169,7 +1169,7 @@
       "narration": "You write your reason on his clipboard, in your best letters: WE THINK THE STONES ARE OLDER THAN THE MOUNTAIN. Tibbet reads it. He reads it again. He goes slightly pale under the big helmet, and holds the tent flap open for you without another word.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/corporal_tibbet",
           "name": "Corporal Tibbet"
         }
       ],
@@ -1188,7 +1188,7 @@
       "narration": "You show Tibbet the Clerk's Stone, tag 4117, with WITH THEM written in Pellam's hand. Tibbet reads the tag, stands up very straight, and salutes the stone. Then, because he is not sure, he salutes you too. \"Logged goods may pass,\" he says, and opens the flap.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/corporal_tibbet",
           "name": "Corporal Tibbet"
         }
       ],
@@ -1536,7 +1536,7 @@
       "narration": "On the rim stands a centaur road marker, freshly painted: REDSPIRE, ONE DAY. Below, the foothills glitter with campfires. Then hooves drum up the road behind you, and Bracken Swiftmile skids to a stop, sash stuffed with letters. \"Relay waits for nobody,\" she pants. \"But it does catch up. Anything going south?\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -1568,7 +1568,7 @@
       "narration": "You write two short letters. One for Elder Sefa: the cubs were right, the stones really are singing. One for Old Lintel: we are finding out. Bracken tucks them in her sash. \"Troll'll take a year to read it,\" she says. \"He'll hear every word, though.\" Then she is gone, south, at a gallop.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -1589,7 +1589,7 @@
       "prompt": "Count the rush's campfires in the foothills below",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -1609,7 +1609,7 @@
       "narration": "You climb high into the red evening. Far off, on the highest peak of the foothills, stands a tall black citadel, shining like a wet stone: Redspire, where the wardens keep their records. Every road in the foothills seems to lead to it. You glide back down and tell Bracken. She already knew, but she lets you tell her anyway.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
