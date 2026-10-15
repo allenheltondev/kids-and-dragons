@@ -8,6 +8,8 @@
  * both the exact functions the server re-runs to validate (encounter.ts);
  * everything else is an inert cell or simply absent. Nothing is ever disabled:
  * a greyed-out button is a question an eight-year-old has to ask somebody.
+ * The one dimmed moment is right after a tap: the cards stay where they were,
+ * inert, under "Doing it…", until the board catches up (see `pending`).
  *
  * A tap *does* the thing. A gold square walks you there; a card with nothing
  * to aim does it; a card that needs aiming asks "who?" or "where?", and the
@@ -32,10 +34,17 @@
  * become the taps; on anybody else's it is a map to think over. Above it,
  * what just happened: every roll, hit and miss of the last beat, in words,
  * because a d20 that nobody sees is not a d20.
+ *
+ * The board keeps its size for the whole turn. It takes whatever height the
+ * pane has left, so anything around it that grew or shrank on a tap used to
+ * resize the map under the finger aiming at it. So everything around it has a
+ * seat that does not change: the title row, the log, the legend, and the dock
+ * under the board — one line for the hint or the question, and the cards
+ * below it, held at the tallest they have been this turn.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties, ReactElement, ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, MouseEvent, ReactElement, ReactNode, RefObject } from "react";
 import type {
   AbilityCatalog,
   ClientIntent,
@@ -52,6 +61,7 @@ import {
   UNIVERSAL_ABILITIES,
   combatantById,
   currentActor,
+  currentActorId,
   legalActions,
   legalItemTargets,
   legalMoves,
@@ -116,6 +126,26 @@ export function cardColumns(count: number): 1 | 2 | 3 {
 }
 
 /**
+ * Drawn but unseen: the style for something that comes and goes inside a
+ * seat that must not. `visibility` keeps its room and takes it out of the
+ * tab order and the screen reader's reading, so nothing beside it moves.
+ */
+function seat(shown: boolean): CSSProperties | undefined {
+  return shown ? undefined : { visibility: "hidden" };
+}
+
+/**
+ * One turn, start to finish: which fight, whose turn, which round. Unlike
+ * `turnKey` it does not change when a step or the action is spent, because
+ * what hangs off it (the card columns, the dock's height) must hold still
+ * across exactly those taps.
+ */
+function turnOf(encounter: EncounterState | null): string {
+  if (!encounter) return "none";
+  return [encounter.startedAt, currentActorId(encounter), encounter.round, encounter.turnIndex].join(":");
+}
+
+/**
  * One line of "what just happened", already in words. Built when the beat
  * arrives rather than at render, because the names come from the encounter
  * as it stood *then* — the patch behind the beat may hand the clock on.
@@ -152,10 +182,28 @@ export function CombatControls(): ReactElement | null {
    * A commit is on its way, or has landed on the server and its patch has not
    * reached this phone yet (a combat beat holds the patch for up to a few
    * seconds, world/presentation.ts). Either way the board is no longer the one
-   * the next tap would be made against, so the tappables step aside until the
-   * turn key changes. A refused send clears it, so the turn is never stuck.
+   * the next tap would be made against, so nothing takes a tap until the turn
+   * key changes: the gold squares go, and the cards stay where they are but
+   * inert. Taking the cards away instead shrank the dock and grew the board on
+   * every step, then put them back with their deal-in replayed. A refused
+   * send clears it, so the turn is never stuck.
    */
   const [pending, setPending] = useState(false);
+  /*
+   * The same flag, readable the instant it is set. Two taps can land before
+   * React re-renders — on Go!, on a card, on anything in the dock — and the
+   * second one still runs the first render's handler, where `pending` is
+   * false. This is what makes a commit go out once.
+   */
+  const sending = useRef(false);
+  /*
+   * Cards to a row, held for the turn. Stepping beside a monster adds Attack
+   * and stepping away takes it off, which re-dealt every card into a new
+   * shape mid-turn. The count only goes up within a turn: a card leaving
+   * never re-deals the rest, and a card arriving adds a column at most once.
+   */
+  const columnsSeen = useRef<{ turn: string; columns: 1 | 2 | 3 }>({ turn: "", columns: 1 });
+  const dockRef = useRef<HTMLDivElement>(null);
   // The grid draws each monster's portrait, which hangs off the chapter. A
   // Party Mode phone draws no board of its own, so nothing else fetched it.
   useEnsureChapter();
@@ -167,14 +215,20 @@ export function CombatControls(): ReactElement | null {
   useEffect(() => {
     setSelection(IDLE);
     setPending(false);
+    sending.current = false;
   }, [key]);
 
   const dispatch = useCallback(
     async (intent: ClientIntent) => {
+      if (sending.current) return;
+      sending.current = true;
       setPending(true);
       setSelection(IDLE);
       const ok = await send(intent);
-      if (!ok) setPending(false);
+      if (!ok) {
+        sending.current = false;
+        setPending(false);
+      }
     },
     [send],
   );
@@ -184,6 +238,7 @@ export function CombatControls(): ReactElement | null {
   useSharePreview(previewOf(selection));
 
   const beats = useBeats(encounter, me?.character.id ?? null);
+  useTallestThisTurn(dockRef, turnOf(encounter));
 
   if (!encounter || !me) return null;
 
@@ -192,10 +247,14 @@ export function CombatControls(): ReactElement | null {
   const deciding = myTurn && !pending;
 
   // The rules boundary, verbatim (see the header). The catalog rides the same
-  // content fetch as the rules; until both land the cards simply wait.
+  // content fetch as the rules; until both land the cards simply wait. Read on
+  // the whole turn, pending or not: while a tap is on its way the cards are
+  // the ones it was made from, still on screen and inert (see `pending`).
   const actions =
-    deciding && rules && abilities ? legalActions(encounter, combatContext(rules, abilities)) : [];
-  const moves = deciding ? legalMoves(encounter) : [];
+    myTurn && rules && abilities ? legalActions(encounter, combatContext(rules, abilities)) : [];
+  const moves = myTurn ? legalMoves(encounter) : [];
+  // The gold squares, though, go the moment a tap is on its way.
+  const walkTiles = deciding && selection.step === "idle" ? moves : [];
 
   // What the grid offers this render: move destinations, or the still-unpicked
   // tiles of the ability being aimed. Never both — one question at a time.
@@ -204,9 +263,7 @@ export function CombatControls(): ReactElement | null {
       ? selection.action.tiles.filter(
           (tile) => !selection.picked.some((p) => samePosition(p, tile)),
         )
-      : selection.step === "idle"
-        ? moves
-        : [];
+      : walkTiles;
   const selectedTiles: readonly Position[] =
     selection.step === "tile"
       ? selection.picked
@@ -226,13 +283,13 @@ export function CombatControls(): ReactElement | null {
   // and a card whose use the server would refuse — a thrown item with no
   // monster in range, a heal at full health, a bonus no better than the one
   // in place — never appears at all (useItemInCombat's exact refusals).
-  const throwTargets = deciding ? legalItemTargets(encounter, me.character.id) : [];
+  const throwTargets = myTurn ? legalItemTargets(encounter, me.character.id) : [];
   const myCombatant = combatantById(encounter, me.character.id);
   // One card per kind of item, however many of it are in the bag: two
   // Sunbloom Draughts are one choice, and a second card for the same thing
   // is a row the pane has to find room for.
   const usableItems: { itemId: string; def: ItemDef; count: number }[] = [];
-  if (deciding && !encounter.actionTaken && myCombatant) {
+  if (myTurn && !encounter.actionTaken && myCombatant) {
     for (const entry of me.character.inventory) {
       const def = items?.[entry.itemId];
       const effect = def?.effect;
@@ -254,6 +311,10 @@ export function CombatControls(): ReactElement | null {
    */
   const bagFolded = usableItems.length > 1 && actions.length + usableItems.length > MAX_LOOSE_CARDS;
   const cardCount = actions.length + (bagFolded ? 1 : usableItems.length);
+  const thisTurn = turnOf(encounter);
+  if (columnsSeen.current.turn !== thisTurn) columnsSeen.current = { turn: thisTurn, columns: 1 };
+  const columns = Math.max(columnsSeen.current.columns, cardColumns(cardCount)) as 1 | 2 | 3;
+  columnsSeen.current.columns = columns;
 
   function commitAction(
     action: LegalAction,
@@ -378,14 +439,14 @@ export function CombatControls(): ReactElement | null {
    * nothing on it at all (no card, no item), which a catalog could produce.
    */
   const canEnd =
-    deciding &&
+    myTurn &&
     selection.step === "idle" &&
     ((encounter.actionTaken && moves.length > 0) ||
       (!encounter.actionTaken && actions.length === 0 && usableItems.length === 0));
 
-  const hint = !deciding
-    ? null
-    : selection.step !== "idle"
+  const hint = pending
+    ? "Doing it…"
+    : !deciding
       ? null
       : encounter.actionTaken
         ? moves.length > 0
@@ -395,23 +456,34 @@ export function CombatControls(): ReactElement | null {
           ? "Walk on a gold square, or pick one thing."
           : "Pick one thing to do.";
 
+  // How many figures the who-step offers in all, picked or not, so the list
+  // keeps its columns while picks leave it.
+  const targetPool =
+    selection.step === "target" ? selection.action.targets.length : targetIds.length;
+
   return (
     <div className="prompt combat">
+      {/* The title row and the waiting line swap at every turn, in a seat of
+          the same height (CombatPanel.css), so neither moves the board. */}
       {myTurn ? (
         <h3 className="prompt__title combat__title">
           <Icon name="swords" />
-          <span>Your turn, {me.character.name}!</span>
-          {!encounter.actionTaken || moves.length > 0 ? (
-            <span className="kad-chip combat__steps">
-              <Icon name="steps" />
-              {encounter.stepsLeft} step{encounter.stepsLeft === 1 ? "" : "s"}
+          <span className="combat__line">Your turn, {me.character.name}!</span>
+          {/* Steps left, kept on the row when there are none to spend; the
+              "s" keeps its room at 1 step, so 2 → 1 does not shift a thing. */}
+          <span className="kad-chip combat__steps" style={seat(!encounter.actionTaken || moves.length > 0)}>
+            <Icon name="steps" />
+            {/* One span: the chip is a flex row, and a bare "s" beside it was
+                its own item, set off by the chip's gap as "step s". */}
+            <span>
+              {encounter.stepsLeft} step<span style={seat(encounter.stepsLeft !== 1)}>s</span>
             </span>
-          ) : null}
+          </span>
         </h3>
       ) : (
-        <p className="player__waiting" role="status">
+        <p className="player__waiting combat__waiting" role="status">
           <Icon name="waiting" />
-          <span>
+          <span className="combat__line">
             {active
               ? active.side === "party"
                 ? `It's ${combatantLabel(active)}'s turn.`
@@ -422,8 +494,9 @@ export function CombatControls(): ReactElement | null {
       )}
 
       {/* What the last beat did, in words and numbers: every roll on the
-          table, whoever threw it. The one place the d20 shows on a phone. */}
-      {beats.length > 0 ? <BeatLog beats={beats} /> : null}
+          table, whoever threw it. The one place the d20 shows on a phone.
+          There from the fight's first moment, empty until a beat lands. */}
+      <BeatLog beats={beats} />
 
       {/*
         The board. Tappable cells are real <button>s; everything else is an
@@ -515,92 +588,133 @@ export function CombatControls(): ReactElement | null {
         ))}
       </ul>
 
-      {/* What the board's marks mean, once, under the board. */}
+      {/* What the board's marks mean, once, under the board. The same words
+          on every turn, and the walking key keeps its place when there is
+          nowhere to walk, so the legend never rewraps. */}
       <ul className="combat__legend" aria-hidden="true">
-        <li><span className="combat__key combat__key--you" />{myTurn ? "You" : "Whose turn"}</li>
+        <li><span className="combat__key combat__key--you" />Whose turn</li>
         <li><span className="combat__key combat__key--friend" />Friend</li>
         <li><span className="combat__key combat__key--enemy" />Enemy</li>
-        {moves.length > 0 ? <li><span className="combat__key combat__key--walk" />You can walk here</li> : null}
+        <li style={seat(walkTiles.length > 0)}><span className="combat__key combat__key--walk" />You can walk here</li>
       </ul>
 
-      {myTurn && active ? (
-        <>
-          {/*
-            Under the board, one thing at a time, in the same spot: the cards,
-            or the who/where question the tapped card asks. Swapping in place
-            rather than stacking is what keeps the thumb where it was and the
-            pane where it was — nothing new ever appears below the fold.
-          */}
-          {pending ? (
-            <p className="combat__hint" role="status">
-              <Icon name="waiting" />
-              <span>Doing it…</span>
-            </p>
-          ) : null}
-
-          {hint ? (
-            <p className="combat__hint">
-              <Icon name="forward" />
-              <span>{hint}</span>
-            </p>
-          ) : null}
-
-          {selection.step === "idle" && cardCount > 0 ? (
-            <ul className="prompt__options combat__actions" data-columns={cardColumns(cardCount)}>
-              {actions.map((action) => (
-                <li key={action.abilityId}>
-                  <button
-                    type="button"
-                    className="choice kad-tap kad-focusable"
-                    onClick={() => tapAction(action)}
-                  >
-                    <span className="choice__icon">
-                      <Icon name={action.icon} size="1.8em" />
-                    </span>
-                    <span className="choice__text">
-                      <span className="choice__label">{action.name}</span>
-                      {summaryOf(action.abilityId, abilities) ? (
-                        <span className="choice__sub">{summaryOf(action.abilityId, abilities)}</span>
-                      ) : null}
-                    </span>
-                  </button>
-                </li>
-              ))}
-              {bagFolded ? (
-                <li key="bag">
-                  <button
-                    type="button"
-                    className="choice kad-tap kad-focusable"
-                    onClick={() => setSelection({ step: "items" })}
-                  >
-                    <span className="choice__icon">
-                      <Icon name="bag" size="1.8em" />
-                    </span>
-                    <span className="choice__text">
-                      <span className="choice__label">Use an item</span>
-                      <span className="choice__sub">Pick something from your bag.</span>
-                    </span>
-                  </button>
-                </li>
-              ) : (
-                usableItems.map((item) => (
-                  <ItemCard
-                    key={`item-${item.itemId}`}
-                    item={item}
-                    onTap={tapItem}
-                    compact={cardColumns(cardCount) > 1}
-                  />
-                ))
-              )}
-            </ul>
-          ) : null}
-
-          {/* The bag, opened in place of the cards: same spot, same thumb. */}
-          {selection.step === "items" ? (
-            <div className="combat__aim">
+      {myTurn ? (
+        /*
+          The dock: everything under the board on your turn, in two seats
+          that never trade places. The top one is one line — the hint, "Doing
+          it…", or the question a tapped card asks — and the one under it
+          holds the answers: the cards, the bag, the figures to pick. The dock
+          keeps the tallest height it has had this turn (useTallestThisTurn),
+          so a tap can swap what is in it but never resize the board above.
+        */
+        <div className="combat__dock" ref={dockRef}>
+          <div className="combat__seat">
+            {selection.step === "items" ? (
               <AskRow icon="bag" onChange={() => setSelection(IDLE)}>
                 Use an item: which one?
               </AskRow>
+            ) : selection.step === "tile" ? (
+              <AskRow icon={selection.action.icon} onChange={() => setSelection(IDLE)}>
+                {selection.action.name}: tap a glowing tile.
+                {(selection.action.tileCount ?? 1) > 1
+                  ? ` (${selection.picked.length + 1} of ${selection.action.tileCount})`
+                  : ""}
+              </AskRow>
+            ) : aimingWho !== null ? (
+              <AskRow
+                icon={aimingWho.icon}
+                onChange={() => setSelection(IDLE)}
+                go={
+                  // "Up to N": once one is picked, stopping early is allowed.
+                  // Its seat is held from the first pick's question on.
+                  selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
+                    ? {
+                        shown: selection.picked.length > 0,
+                        onGo: () => commitAction(selection.action, selection.picked),
+                      }
+                    : undefined
+                }
+              >
+                {aimingWho.name}: who?
+                {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
+                  ? ` (${selection.picked.length + 1} of ${Math.min(
+                      selection.action.maxTargets ?? 1,
+                      selection.action.targets.length,
+                    )})`
+                  : ""}
+              </AskRow>
+            ) : (
+              <p className="combat__hint" role="status">
+                {hint ? (
+                  <>
+                    <Icon name={pending ? "waiting" : "forward"} />
+                    <span className="combat__line">{hint}</span>
+                  </>
+                ) : null}
+              </p>
+            )}
+          </div>
+
+          {/* Inert while a tap is on its way: still there, so nothing moves,
+              but no tap, focus or screen-reader stop lands on it. The capture
+              guard is for a browser too old to know `inert`. */}
+          <div
+            className={`combat__answers${pending ? " combat__answers--pending" : ""}`}
+            inert={pending}
+            onClickCapture={pending ? swallowTap : undefined}
+          >
+            {selection.step === "idle" && cardCount > 0 ? (
+              <ul className="prompt__options combat__actions" data-columns={columns}>
+                {actions.map((action) => (
+                  <li key={action.abilityId}>
+                    <button
+                      type="button"
+                      className="choice kad-tap kad-focusable"
+                      onClick={() => tapAction(action)}
+                    >
+                      <span className="choice__icon">
+                        <Icon name={action.icon} size="1.8em" />
+                      </span>
+                      <span className="choice__text">
+                        <span className="choice__label">{action.name}</span>
+                        {summaryOf(action.abilityId, abilities) ? (
+                          <span className="choice__sub">{summaryOf(action.abilityId, abilities)}</span>
+                        ) : null}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+                {bagFolded ? (
+                  <li key="bag">
+                    <button
+                      type="button"
+                      className="choice kad-tap kad-focusable"
+                      onClick={() => setSelection({ step: "items" })}
+                    >
+                      <span className="choice__icon">
+                        <Icon name="bag" size="1.8em" />
+                      </span>
+                      <span className="choice__text">
+                        <span className="choice__label">Use an item</span>
+                        <span className="choice__sub">Pick something from your bag.</span>
+                      </span>
+                    </button>
+                  </li>
+                ) : (
+                  usableItems.map((item) => (
+                    <ItemCard
+                      key={`item-${item.itemId}`}
+                      item={item}
+                      onTap={tapItem}
+                      compact={columns > 1}
+                    />
+                  ))
+                )}
+              </ul>
+            ) : null}
+
+            {/* The bag, opened in place of the cards: same spot, same thumb. */}
+            {selection.step === "items" ? (
               <ul className="prompt__options combat__actions" data-columns={cardColumns(usableItems.length)}>
                 {usableItems.map((item) => (
                   <ItemCard
@@ -611,45 +725,10 @@ export function CombatControls(): ReactElement | null {
                   />
                 ))}
               </ul>
-            </div>
-          ) : null}
+            ) : null}
 
-          {canEnd ? (
-            <Button
-              variant="secondary"
-              size="md"
-              block
-              className="combat__end"
-              icon={<Icon name="forward" />}
-              onClick={() => void dispatch({ type: "END_TURN" })}
-            >
-              End my turn
-            </Button>
-          ) : null}
-
-          {selection.step === "tile" ? (
-            <div className="combat__aim">
-              <AskRow icon={selection.action.icon} onChange={() => setSelection(IDLE)}>
-                {selection.action.name}: tap a glowing tile.
-                {(selection.action.tileCount ?? 1) > 1
-                  ? ` (${selection.picked.length + 1} of ${selection.action.tileCount})`
-                  : ""}
-              </AskRow>
-            </div>
-          ) : null}
-
-          {aimingWho !== null ? (
-            <div className="combat__aim">
-              <AskRow icon={aimingWho.icon} onChange={() => setSelection(IDLE)}>
-                {aimingWho.name}: who?
-                {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
-                  ? ` (${selection.picked.length + 1} of ${Math.min(
-                      selection.action.maxTargets ?? 1,
-                      selection.action.targets.length,
-                    )})`
-                  : ""}
-              </AskRow>
-              <ul className="prompt__options combat__targets" data-columns={targetIds.length >= 3 ? 2 : 1}>
+            {aimingWho !== null ? (
+              <ul className="prompt__options combat__targets" data-columns={targetPool >= 3 ? 2 : 1}>
                 {targetIds.map((targetId) => {
                   const target = combatantById(encounter, targetId);
                   if (!target) return null;
@@ -674,44 +753,91 @@ export function CombatControls(): ReactElement | null {
                   );
                 })}
               </ul>
-              {/* "Up to N": once one is picked, stopping early is allowed. */}
-              {selection.step === "target" && selection.picked.length > 0 ? (
-                <Button
-                  variant="primary"
-                  size="md"
-                  icon={<Icon name="check" />}
-                  onClick={() => commitAction(selection.action, selection.picked)}
-                >
-                  That's everyone. Go!
-                </Button>
-              ) : null}
-            </div>
-          ) : null}
-        </>
+            ) : null}
+
+            {canEnd ? (
+              <Button
+                variant="secondary"
+                size="md"
+                block
+                className="combat__end"
+                icon={<Icon name="forward" />}
+                onClick={() => void dispatch({ type: "END_TURN" })}
+              >
+                End my turn
+              </Button>
+            ) : null}
+          </div>
+        </div>
       ) : null}
     </div>
   );
 }
 
+/** Stops a tap before any button under it hears it (the pending guard). */
+function swallowTap(event: MouseEvent): void {
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+/**
+ * Holds an element at the tallest it has been this turn. What the dock holds
+ * changes with every tap — cards, a question and its figures, "Doing it…" —
+ * and each was a different height, which the board, taking whatever is left,
+ * paid for by changing size under the player's finger. Growing is allowed (a
+ * bigger question has to fit); getting shorter waits for the next turn.
+ */
+function useTallestThisTurn(ref: RefObject<HTMLElement | null>, turn: string): void {
+  const tallest = useRef<{ el: HTMLElement | null; turn: string; px: number }>({ el: null, turn, px: 0 });
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (tallest.current.el !== el || tallest.current.turn !== turn) {
+      tallest.current = { el, turn, px: 0 };
+      el.style.minBlockSize = "";
+    }
+    const px = el.getBoundingClientRect().height;
+    if (px > tallest.current.px) {
+      tallest.current.px = px;
+      el.style.minBlockSize = `${px}px`;
+    }
+  });
+}
+
 /**
  * The question an aimed card asks, with its way back on the same row: a
- * Change button on a row of its own was a row the board had to give up.
+ * Change button on a row of its own was a row the board had to give up. An
+ * up-to-N card's Go sits there too, its seat held until the first pick.
  */
 function AskRow({
   icon,
   onChange,
+  go,
   children,
 }: {
   icon: string;
   onChange: () => void;
+  go?: { shown: boolean; onGo: () => void } | undefined;
   children: ReactNode;
 }): ReactElement {
   return (
     <div className="combat__ask-row">
       <p className="prompt__sub combat__ask">
         <Icon name={icon} />
-        <span>{children}</span>
+        <span className="combat__line">{children}</span>
       </p>
+      {go ? (
+        <Button
+          variant="primary"
+          size="md"
+          icon={<Icon name="check" />}
+          aria-label="That's everyone. Go!"
+          style={seat(go.shown)}
+          onClick={go.onGo}
+        >
+          Go!
+        </Button>
+      ) : null}
       <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={onChange}>
         Change
       </Button>
@@ -1001,6 +1127,9 @@ function BeatLog({ beats }: { beats: readonly Beat[] }): ReactElement {
   }, [beats]);
   return (
     <ol className="combat__log" aria-label="What just happened" ref={ref}>
+      {/* The box is up from the first moment of the fight; empty, it read as
+          something broken. */}
+      {beats.length === 0 ? <li className="combat__beat combat__beat--quiet">The fight is on!</li> : null}
       {beats.map((beat) => (
         <li key={beat.key} className={`combat__beat combat__beat--${beat.tone}`}>
           {beat.roll ? (

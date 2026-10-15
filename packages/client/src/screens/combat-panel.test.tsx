@@ -470,7 +470,7 @@ describe("a tap does the thing (spec §11)", () => {
     expect(sent).toEqual([{ type: "END_TURN" }]);
   });
 
-  it("steps the tappables aside while a commit is on its way, then clears on a refusal", async () => {
+  it("holds the cards in place, inert, while a commit is on its way, then clears on a refusal", async () => {
     const user = userEvent.setup();
     let release = (ok: boolean): void => void ok;
     const send = vi.fn(
@@ -482,19 +482,25 @@ describe("a tap does the thing (spec §11)", () => {
     mount({ characters: [character({ actions: ["shout"] })] });
     useGameStore.setState({ send });
 
-    await user.click(card("Shout"));
+    const shout = card("Shout");
+    await user.click(shout);
     expect(send).toHaveBeenCalledTimes(1);
-    // Nothing to double-tap: the cards and the tiles are gone, not disabled,
-    // and the phone says why.
-    expect(screen.queryByRole("button", { name: "Shout" })).toBeNull();
+    // Nothing to double-tap, and nothing moves: the card is the same node it
+    // was (not re-dealt), inside an inert box, and a second tap sends nothing.
+    // The gold squares go, and the hint's own line says why.
+    expect(card("Shout")).toBe(shout);
+    expect(shout.closest("[inert]")).not.toBeNull();
+    await user.click(shout);
+    expect(send).toHaveBeenCalledTimes(1);
     expect(screen.queryAllByRole("button", { name: /^Move to column/ })).toEqual([]);
-    expect(screen.getByText("Doing it…")).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toContain("Doing it…");
 
     // A refusal (a stale phone) hands the turn back rather than sticking.
     await act(async () => {
       release(false);
     });
-    expect(screen.getByRole("button", { name: "Shout" })).toBeTruthy();
+    expect(card("Shout").closest("[inert]")).toBeNull();
+    expect(screen.getAllByRole("button", { name: /^Move to column/ }).length).toBeGreaterThan(0);
   });
 });
 
@@ -575,6 +581,37 @@ describe("aiming", () => {
     await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
     await user.click(screen.getByRole("button", { name: /Go!/ }));
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "volley", targetId: "wisp#1" }]);
+  });
+
+  it("sends Go once, however fast it is tapped twice before the board catches up", async () => {
+    // The worst case: both taps land before React has re-rendered, so the
+    // second one still finds Go! on screen and the handler from the first.
+    const user = userEvent.setup();
+    const send = vi.fn(() => new Promise<boolean>(() => {}));
+    const archer = character({ actions: ["volley"] });
+    mount({
+      characters: [archer],
+      encounter: encounterWith({
+        party: [{ character: archer, at: { x: 1, y: 2 } }],
+        enemies: [
+          { spec: wisp(), at: { x: 2, y: 2 } },
+          { spec: wisp(), at: { x: 2, y: 3 } },
+        ],
+      }),
+    });
+    useGameStore.setState({ send });
+
+    await user.click(card("Volley"));
+    await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
+    const go = screen.getByRole("button", { name: /Go!/ });
+    act(() => {
+      go.click();
+      go.click();
+    });
+    expect(send).toHaveBeenCalledTimes(1);
+    // And the question row is gone with it: nothing left to Change mid-send.
+    expect(screen.queryByRole("button", { name: /Go!/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Change" })).toBeNull();
   });
 
   it("collects two tiles for a two-tile ability, keeping the first one lit", async () => {
@@ -687,7 +724,8 @@ describe("aiming", () => {
 describe("only legal taps exist (§7.2)", () => {
   it("never renders a disabled control — a greyed button is a question", async () => {
     // The rule from the module header. `disabled` appears nowhere in this
-    // panel: a commit in flight hides the tappables rather than greying them.
+    // panel: a commit in flight makes the cards inert for that moment, under
+    // "Doing it…", and never marks a button disabled.
     mount({ characters: [character({ actions: ["strike", "shout"] })] });
     const disabled = screen.getAllByRole("button").filter((b) => b.hasAttribute("disabled"));
     expect(disabled).toEqual([]);
@@ -851,6 +889,56 @@ describe("fitting every card on one screen", () => {
 });
 
 // ---------------------------------------------------------------------------
+// The board keeps its size for the turn
+// ---------------------------------------------------------------------------
+
+describe("the board keeps its size for the turn", () => {
+  /*
+   * The board takes whatever height the pane has left, so anything around it
+   * that comes and goes resizes the map mid-turn. jsdom has no layout to
+   * measure, so these pin the seats instead: things are kept and hidden,
+   * not removed, and the card rows hold their shape.
+   */
+  it("keeps the cards' columns for the whole turn when one goes away", () => {
+    mount({ characters: [character({ actions: ["strike"] })] });
+    const columns = () => document.querySelector(".combat__actions")?.getAttribute("data-columns");
+    // Attack (the wisp is beside her), Strike and Get Ready: two to a row.
+    expect(screen.getByRole("button", { name: /^Attack/ })).toBeTruthy();
+    expect(columns()).toBe("2");
+
+    // She steps away: Attack goes, and two cards alone would be one to a
+    // row. Same turn, so the same two columns.
+    const current = useGameStore.getState().state!;
+    const enc = current.encounter!;
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...current,
+          encounter: {
+            ...enc,
+            stepsLeft: enc.stepsLeft - 2,
+            board: { ...enc.board, actors: enc.board.actors.map((a) => (a.id === "c_hero" ? { ...a, x: 0, y: 0 } : a)) },
+          },
+        },
+      });
+    });
+    expect(screen.queryByRole("button", { name: /^Attack/ })).toBeNull();
+    expect(columns()).toBe("2");
+  });
+
+  it("keeps the steps chip and the walking key in their seats once there is nowhere to walk", () => {
+    const base = encounterWith();
+    const { container } = mount({ encounter: { ...base, stepsLeft: 0, actionTaken: true } });
+    const chip = container.querySelector<HTMLElement>(".combat__steps")!;
+    const walkKey = container.querySelector(".combat__key--walk")!.parentElement!;
+    expect(chip.style.visibility).toBe("hidden");
+    expect(walkKey.style.visibility).toBe("hidden");
+    // And the hint's line is still there, empty, rather than gone.
+    expect(screen.getByRole("status").textContent).toBe("");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // The turn boundary
 // ---------------------------------------------------------------------------
 
@@ -1004,14 +1092,18 @@ describe("what just happened", () => {
     const log = screen.getByRole("list", { name: "What just happened" });
     expect(log.textContent).toContain("You take 3. 7 left.");
 
-    // And a fight that ends takes its log with it.
+    // And a fight that ends takes its log with it. The next one starts with
+    // the box already in its place, holding only its opening line, so its
+    // first beat moves nothing.
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: null } });
     });
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: { ...encounterWith(), startedAt: 99 } } });
     });
-    expect(screen.queryByRole("list", { name: "What just happened" })).toBeNull();
+    const fresh = screen.getByRole("list", { name: "What just happened" });
+    expect(within(fresh).getAllByRole("listitem").map((li) => li.textContent)).toEqual(["The fight is on!"]);
+    expect(fresh.textContent).not.toContain("You take 3");
   });
 
   it("shows the last beat on the phone, and the d20 as its parts", () => {

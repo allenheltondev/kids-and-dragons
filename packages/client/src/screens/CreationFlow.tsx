@@ -87,7 +87,9 @@ function OptionCard({
       <span className="creation-card__text">
         <span className="creation-card__title">
           {title}
-          {selected ? <Icon name="check" label="Chosen" /> : null}
+          <span className="creation-card__mark">
+            {selected ? <Icon name="check" label="Chosen" /> : null}
+          </span>
         </span>
         {children}
       </span>
@@ -137,7 +139,9 @@ export function SpeciesStep({
             <span className="creation-species__text">
               <span className="creation-card__title">
                 {def.name}
-                {selected ? <Icon name="check" label="Chosen" /> : null}
+                <span className="creation-card__mark">
+                  {selected ? <Icon name="check" label="Chosen" /> : null}
+                </span>
               </span>
               <span className="creation-card__blurb kad-muted">{def.blurb}</span>
               <span className="creation-card__line">
@@ -160,6 +164,12 @@ export function SpeciesStep({
 }
 
 // ---------------------------------------------------------------------------
+
+/** "Gentle, stubborn, and impossible to scratch." from the full blurb. */
+function firstSentence(text: string): string {
+  const end = text.search(/[.!?](\s|$)/);
+  return end === -1 ? text : text.slice(0, end + 1);
+}
 
 /**
  * The hero so far, pinned above every screen after the species is chosen.
@@ -194,9 +204,12 @@ export function HeroStrip({
         {/* Before there is a name the species *is* the name, so the second line
             drops it rather than saying "Unicorn / Unicorn Thornguard". */}
         <span className="creation-hero__name">{trimmed === "" ? species.name : trimmed}</span>
+        {/* One line in every state. The whole blurb ran to three lines until a
+            class was picked and then dropped to one, so the strip shrank and
+            the class cards jumped up under the tap that chose one. */}
         <span className="creation-hero__meta kad-muted">
           {klass === null ? (
-            <span>{species.blurb}</span>
+            <span>{firstSentence(species.blurb)}</span>
           ) : (
             <>
               <Icon name={klass.id} />
@@ -270,6 +283,7 @@ function StatsStep({
   onRemove: (stat: StatId) => void;
   onReset: () => void;
 }): ReactElement {
+  const nothingSpent = sumStats(assigned) === 0;
   return (
     <div className="creation-stats">
       <p className={`creation-stats__budget${remaining === 0 ? " creation-stats__budget--done" : ""}`}>
@@ -336,11 +350,20 @@ function StatsStep({
         })}
       </ul>
 
-      {sumStats(assigned) > 0 ? (
-        <Button variant="ghost" size="md" icon={<Icon name="shuffle" />} onClick={onReset}>
-          Start the points over
-        </Button>
-      ) : null}
+      {/* Always laid out, shown only once there is something to start over.
+          Unmounting it on a reset shortened the scroll, and a pane scrolled
+          to the bottom jumped back under the finger that tapped it. */}
+      <Button
+        className={nothingSpent ? "creation-stats__reset--idle" : ""}
+        variant="ghost"
+        size="md"
+        icon={<Icon name="shuffle" />}
+        onClick={onReset}
+        disabled={nothingSpent}
+        aria-hidden={nothingSpent || undefined}
+      >
+        Start the points over
+      </Button>
     </div>
   );
 }
@@ -362,15 +385,18 @@ function StatsStep({
 
 function OptionRow({
   legend,
+  stack = false,
   children,
 }: {
   legend: string;
+  /** One choice per row, for labels whose length changes under the player. */
+  stack?: boolean;
   children: ReactNode;
 }): ReactElement {
   return (
     <fieldset className="creation-fieldset">
       <legend className="creation-legend kad-label">{legend}</legend>
-      <div className="creation-options">{children}</div>
+      <div className={`creation-options${stack ? " creation-options--stack" : ""}`}>{children}</div>
     </fieldset>
   );
 }
@@ -591,7 +617,10 @@ export function CreationFlow(): ReactElement {
             {/* "Surprise me" is part of the same question as the suggestions,
                 so it sits with them rather than floating between two groups. */}
             <div className="creation-name__pick">
-              <OptionRow legend="Pick a name">
+              {/* Stacked: two abreast, each reroll wrapped a different name
+                  onto two lines, and "Surprise me" hopped up and down under
+                  the finger tapping it again. */}
+              <OptionRow legend="Pick a name" stack>
                 {suggestions.map((suggestion) => (
                   <OptionButton
                     key={suggestion}
@@ -640,7 +669,7 @@ export function CreationFlow(): ReactElement {
         ) : null}
 
         {error === null ? null : (
-          <p className="kad-chip kad-chip--bad" role="alert">
+          <p className="kad-chip kad-chip--bad kad-chip--wrap" role="alert">
             <Icon name="close" />
             <span>{error}</span>
           </p>

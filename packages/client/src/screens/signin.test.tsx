@@ -17,6 +17,7 @@ import type { PartyMember } from "@kad/shared";
 import { hasIcon } from "./icons";
 import { KeepsakeLantern } from "./KeepsakeLantern";
 import {
+  KeepsakeError,
   KeepsakeOffer,
   OfferStep,
   SignInFlow,
@@ -147,6 +148,18 @@ describe("shouldOfferKeepsake", () => {
 
   it("stays silent before anybody has a character to keep", () => {
     expect(shouldOfferKeepsake(true, false, 0)).toBe(false);
+  });
+});
+
+describe("KeepsakeError", () => {
+  it("keeps its seat, and its alert region, when nothing has gone wrong", () => {
+    // Mounting the message into a centred panel moved the field and the
+    // buttons; the seat is there first, and only its contents change.
+    const quiet = renderToStaticMarkup(<KeepsakeError error={null} />);
+    expect(quiet).toBe('<div class="keepsake__error-seat" role="alert"></div>');
+    const loud = renderToStaticMarkup(<KeepsakeError error="That code is not right." />);
+    expect(loud).toContain('class="keepsake__error-seat" role="alert"');
+    expect(loud).toContain("That code is not right.");
   });
 });
 
