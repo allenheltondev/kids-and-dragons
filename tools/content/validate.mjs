@@ -1149,6 +1149,58 @@ function checkWorld(rep, file, world) {
     rep.fail(f, "/image/src", `${world.image.src} is not in the repo`, "The map is the painting; ship it under assets/world/.");
     ok = false;
   }
+  const sheets = [];
+  for (const [slug, region] of Object.entries(world.regions ?? {})) {
+    const at = `/regions/${slug}`;
+    const fail = (message) => { rep.fail(f, at, message); ok = false; };
+    if (world.places[slug]?.id !== region.placeId) fail("regional sheet must reference its canonical place");
+    const b = region.bounds;
+    if (b.x + b.width > 1000 || b.y + b.height > 1000) fail("regional bounds extend outside the realm");
+    sheets.push([at, region]);
+  }
+  let previousWidth = 0;
+  for (const [index, level] of (world.atlas?.levels ?? []).entries()) {
+    if (level.image.width <= previousWidth) { rep.fail(f, "/atlas/levels", "atlas levels must increase in resolution"); ok = false; }
+    previousWidth = level.image.width;
+    if (Math.abs(level.image.height - level.image.width * world.atlas.image.height / world.atlas.image.width) > 1) {
+      rep.fail(f, "/atlas/levels", "atlas levels must preserve the master aspect ratio"); ok = false;
+    }
+    sheets.push([`/atlas/levels/${index}`, level]);
+  }
+  if (world.atlas && previousWidth !== world.atlas.image.width) {
+    rep.fail(f, "/atlas/levels", "atlas needs its native resolution level"); ok = false;
+  }
+  const patchIds = new Set();
+  for (const [index, patch] of (world.atlas?.patches ?? []).entries()) {
+    const at = `/atlas/patches/${index}`;
+    if (patchIds.has(patch.id) || patch.bounds.x + patch.bounds.width > 1000 || patch.bounds.y + patch.bounds.height > 1000) {
+      rep.fail(f, at, "detail sections need unique ids and bounds inside the realm"); ok = false;
+    }
+    patchIds.add(patch.id);
+    sheets.push([at, patch]);
+  }
+  const knownPlaces = new Set(Object.values(world.places).map((place) => place.id));
+  const routeIds = new Set();
+  for (const route of world.routes ?? []) {
+    if (routeIds.has(route.id) || [...route.connects, ...(route.via ? [route.via] : [])].some((id) => !knownPlaces.has(id))) {
+      rep.fail(f, "/routes", "route ids must be unique and all endpoints must be mapped places"); ok = false;
+    }
+    routeIds.add(route.id);
+  }
+  for (const [at, region] of sheets) {
+    const fail = (message) => { rep.fail(f, at, message); ok = false; };
+    let area = 0;
+    for (const [index, tile] of region.tiles.entries()) {
+      if (!existsSync(join(ROOT, tile.src.replace(/^\//, "")))) fail(`missing tile ${tile.src}`);
+      if (tile.x + tile.width > region.image.width || tile.y + tile.height > region.image.height) fail("tile extends outside its sheet");
+      area += tile.width * tile.height;
+      for (const earlier of region.tiles.slice(0, index)) {
+        if (tile.x < earlier.x + earlier.width && earlier.x < tile.x + tile.width &&
+            tile.y < earlier.y + earlier.height && earlier.y < tile.y + tile.height) fail("regional tiles overlap");
+      }
+    }
+    if (area !== region.image.width * region.image.height) fail("regional tiles must cover the entire sheet without gaps");
+  }
   if (ok) rep.ok(`${f}  world map  (${Object.keys(world.places).length} places, painting present)`);
 }
 

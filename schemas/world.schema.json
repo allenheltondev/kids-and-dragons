@@ -2,44 +2,494 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kids-and-dragons.local/schemas/world.schema.json",
   "title": "WorldMap",
-  "description": "content/world.json, generated from canon by `npm run canon:world`. Mirrors packages/shared/src/types/world.ts WorldMap; where the two disagree the TypeScript type wins. Anchors are canon's normalized 1000×1000 label anchors (canon/geography.yaml, world_metadata).",
+  "description": "content/world.json, generated from canon by `npm run canon:world`. Mirrors packages/shared/src/types/world.ts WorldMap; where the two disagree the TypeScript type wins. Anchors are canon's normalized 1000\u00c3\u20141000 label anchors (canon/geography.yaml, world_metadata).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["title", "image", "places"],
+  "required": [
+    "title",
+    "image",
+    "places"
+  ],
   "properties": {
-    "$comment": { "type": "string" },
-    "title": { "type": "string", "minLength": 1 },
+    "$comment": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
     "image": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["src", "width", "height"],
+      "required": [
+        "src",
+        "width",
+        "height"
+      ],
       "properties": {
-        "src": { "type": "string", "pattern": "^/assets/" },
-        "width": { "type": "integer", "minimum": 1 },
-        "height": { "type": "integer", "minimum": 1 }
+        "src": {
+          "type": "string",
+          "pattern": "^/assets/"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "regions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "placeId",
+          "bounds",
+          "description",
+          "image",
+          "tiles"
+        ],
+        "properties": {
+          "placeId": {
+            "type": "string",
+            "pattern": "^(biome|location)\\.[a-z][a-z0-9_]*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bounds": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ],
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1000
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1000
+              }
+            }
+          },
+          "image": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "width",
+              "height"
+            ],
+            "properties": {
+              "width": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "tiles": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "src",
+                "x",
+                "y",
+                "width",
+                "height"
+              ],
+              "properties": {
+                "src": {
+                  "type": "string",
+                  "pattern": "^/assets/world/atlas/[a-z0-9_/.-]+\\.webp$"
+                },
+                "x": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "y": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        }
       }
     },
     "places": {
       "type": "object",
-      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "title", "kind", "anchor", "parent"],
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "anchor",
+          "parent"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^(biome|location)\\.[a-z][a-z0-9_]*$" },
-          "title": { "type": "string", "minLength": 1 },
-          "kind": { "enum": ["biome", "location"] },
+          "id": {
+            "type": "string",
+            "pattern": "^(biome|location)\\.[a-z][a-z0-9_]*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "biome",
+              "location"
+            ]
+          },
           "anchor": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["x", "y"],
+            "required": [
+              "x",
+              "y"
+            ],
             "properties": {
-              "x": { "type": "number", "minimum": 0, "maximum": 1000 },
-              "y": { "type": "number", "minimum": 0, "maximum": 1000 }
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000
+              }
             }
           },
-          "parent": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$" }
+          "parent": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "atlas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image",
+        "levels"
+      ],
+      "properties": {
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "width",
+            "height"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "levels": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sheet"
+          }
+        },
+        "patches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "bounds",
+              "image",
+              "tiles"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "bounds": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "x",
+                  "y",
+                  "width",
+                  "height"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000
+                  },
+                  "width": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 1000
+                  },
+                  "height": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 1000
+                  }
+                }
+              },
+              "image": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "width",
+                  "height"
+                ],
+                "properties": {
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              },
+              "tiles": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "src",
+                    "x",
+                    "y",
+                    "width",
+                    "height"
+                  ],
+                  "properties": {
+                    "src": {
+                      "type": "string",
+                      "pattern": "^/assets/world/atlas/[a-z0-9_/.-]+\\.webp$"
+                    },
+                    "x": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "y": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "width": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "height": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "connects",
+          "travelModes",
+          "accuracy",
+          "points"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^route\\.[a-z][a-z0-9_]*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connects": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^(biome|location)\\.[a-z][a-z0-9_]*$"
+            }
+          },
+          "via": {
+            "type": "string",
+            "pattern": "^(biome|location)\\.[a-z][a-z0-9_]*$"
+          },
+          "travelModes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "foot",
+                "caravan",
+                "sea",
+                "aerial",
+                "subterranean"
+              ]
+            }
+          },
+          "accuracy": {
+            "enum": [
+              "mapped",
+              "approximate"
+            ]
+          },
+          "points": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 256,
+            "items": {
+              "$ref": "#/properties/places/additionalProperties/properties/anchor"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sheet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image",
+        "tiles"
+      ],
+      "properties": {
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "width",
+            "height"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "tiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "src",
+              "x",
+              "y",
+              "width",
+              "height"
+            ],
+            "properties": {
+              "src": {
+                "type": "string",
+                "pattern": "^/assets/world/atlas/[a-z0-9_/.-]+\\.webp$"
+              },
+              "x": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "y": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
         }
       }
     }

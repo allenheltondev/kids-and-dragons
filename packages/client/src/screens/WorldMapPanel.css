@@ -107,6 +107,85 @@
   -webkit-user-drag: none;
 }
 
+.atlas__regions {
+  display: flex;
+  gap: var(--kad-space-2);
+  padding: var(--kad-space-2);
+  overflow-x: auto;
+  flex: 0 0 auto;
+  background: var(--kad-bg);
+}
+.atlas__regions button { white-space: nowrap; flex: 0 0 auto; }
+.atlas__regions [aria-pressed="true"] { outline: 2px solid var(--kad-accent); outline-offset: -2px; }
+.atlas__region-note {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--kad-space-2);
+  font-size: var(--kad-text-sm);
+  background: var(--kad-bg);
+  max-block-size: 5em;
+  overflow: auto;
+}
+.atlas__tile { position: absolute; display: block; user-select: none; }
+.atlas__underlay { position: absolute; inset: 0; }
+.atlas__detail-patch {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  /* Transitions retain the shared master at section edges; tile edges within
+     each section come from one image and need no masking. */
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent), linear-gradient(to bottom, transparent, black 4%, black 96%, transparent);
+  mask-composite: intersect;
+}
+.atlas__routes { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; overflow: hidden; }
+.atlas__route-line, .atlas__route-halo { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.atlas__route-halo { stroke: #182625; stroke-width: 7px; opacity: 0.85; }
+.atlas__route-line { stroke: #f9d782; stroke-width: 3px; }
+.atlas__routes [data-accuracy="approximate"] .atlas__route-line { stroke-dasharray: 8 7; }
+.atlas__route--selected .atlas__route-line { stroke: #ffffff; stroke-width: 4px; }
+.atlas__route-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4em 1em;
+  max-block-size: 9em;
+  overflow: auto;
+  padding: 0.4em 0.75em;
+  background: var(--kad-bg);
+  font-size: var(--kad-text-sm);
+}
+.atlas__route-controls label { display: flex; align-items: center; min-block-size: 2.75em; gap: 0.5em; }
+.atlas__route-controls details { flex-basis: 100%; }
+.atlas__route-controls summary { cursor: pointer; min-block-size: 2.75em; }
+.atlas__route-choice { font: inherit; color: var(--kad-ink); background: var(--kad-bg-raised); border: 1px solid var(--kad-border); border-radius: 0.4em; min-block-size: 2.75em; padding: 0.4em; margin: 0.2em; cursor: pointer; }
+.atlas__route-choice[aria-pressed="true"] { outline: 2px solid var(--kad-accent); }
+.atlas__route-info { flex-basis: 100%; margin: 0; }
+.atlas__landmark {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  max-inline-size: 12em;
+  padding: 0.5em;
+  min-block-size: 2.75em;
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-sm);
+  color: var(--kad-ink);
+  background: var(--kad-bg);
+  font: inherit;
+  font-size: var(--kad-text-sm);
+  cursor: pointer;
+}
+.atlas__landmark--region { opacity: 0.85; min-block-size: 0; cursor: default; }
+.atlas__read { pointer-events: auto; min-block-size: 2.75em; cursor: pointer; font: inherit; }
+.atlas__entry {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: var(--kad-space-4);
+  overflow: auto;
+  background: var(--kad-bg);
+}
+
 /* --- The party, standing on the realm ----------------------------------------------- */
 
 .atlas__pin {

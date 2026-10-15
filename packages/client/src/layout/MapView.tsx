@@ -10,9 +10,9 @@
  *
  * Two maps answer two questions, and a flip at the top chooses:
  *
- *   World — the realm painting, the party's faces on the chapter's country.
+ *   Atlas — the continuous realm, discoveries and geographic routes.
  *           "Where in the world are we?"
- *   Route — tonight's chapter as a trail, the scenes played named and the
+ *   Story trail — tonight's chapter, the scenes played named and the
  *           road ahead in fog. "How far through the story are we?"
  *
  * World is first because it is the picture; the route is the itinerary. The
@@ -50,7 +50,7 @@ export function MapView(): React.JSX.Element {
           onClick={() => setKind("world")}
         >
           <Icon name="map" />
-          <span>World</span>
+          <span>Atlas</span>
         </button>
         <button
           type="button"
@@ -59,7 +59,7 @@ export function MapView(): React.JSX.Element {
           onClick={() => setKind("route")}
         >
           <Icon name="steps" />
-          <span>Route</span>
+          <span>Story trail</span>
         </button>
       </nav>
       <div className="kad-map__host" data-map={kind}>

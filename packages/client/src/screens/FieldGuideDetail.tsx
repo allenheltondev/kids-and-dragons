@@ -55,7 +55,9 @@ const prettify = (kind: string) => {
 };
 
 /** The detail screen for one discovered entry. Renders nothing about an undiscovered one. */
-export function FieldGuideDetail({ guide, entryId }: { guide: FieldGuideData; entryId: string }) {
+export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, backLabel = "Back to the guide" }: {
+  guide: FieldGuideData; entryId: string; onSelect?: (id: string | null) => void; backLabel?: string;
+}) {
   const discoveries = useFieldGuideDiscoveries();
   const party = useParty();
   const entry = guide.entries[entryId];
@@ -68,7 +70,7 @@ export function FieldGuideDetail({ guide, entryId }: { guide: FieldGuideData; en
   const danger = entry.danger_level ? (DANGER_LABELS[entry.danger_level] ?? prettify(entry.danger_level)) : undefined;
   const size = entry.scale ? (SCALE_LABELS[entry.scale] ?? prettify(entry.scale)) : undefined;
   const link = (id: string, title: string): ReactNode => (
-    <EntryLink guide={guide} discoveries={discoveries} id={id} title={title} />
+    <EntryLink guide={guide} discoveries={discoveries} id={id} title={title} onSelect={onSelect} />
   );
 
   const spoken = [
@@ -140,8 +142,8 @@ export function FieldGuideDetail({ guide, entryId }: { guide: FieldGuideData; en
         </p>
       </div>
       <Button className="field-guide__back" variant="secondary" size="md" block
-        icon={<Icon name="back" />} onClick={() => selectGuideEntry(null)}>
-        Back to the guide
+        icon={<Icon name="back" />} onClick={() => onSelect(null)}>
+        {backLabel}
       </Button>
     </>
   );
@@ -182,15 +184,16 @@ function Opinions({ title, items, link }: {
  * A cross-link. Discovered: opens that entry. In the guide but undiscovered:
  * "???" (the real title is never rendered). Not in the guide: plain text.
  */
-function EntryLink({ guide, discoveries, id, title }: {
+function EntryLink({ guide, discoveries, id, title, onSelect }: {
   guide: FieldGuideData; discoveries: FieldGuideDiscoveries; id: string; title: string;
+  onSelect: (id: string | null) => void;
 }) {
   const target: FieldGuideEntry | undefined = guide.entries[id];
   if (!target) return <>{title}</>;
   if (!discoveries[id]) return <span className="fgd__unknown">???</span>;
   return (
     <button type="button" className="fgd__link"
-      onClick={() => { markFieldGuideSeen(id); selectGuideEntry(id); }}>
+      onClick={() => { markFieldGuideSeen(id); onSelect(id); }}>
       {target.title}
     </button>
   );
