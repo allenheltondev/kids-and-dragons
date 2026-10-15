@@ -108,7 +108,7 @@ export function sceneChoices(scene: Scene): Choice[] {
   }
 }
 
-function isGated(choice: Choice): boolean {
+export function isGated(choice: Choice): boolean {
   return (
     choice.requiresSpecies !== undefined ||
     choice.requiresFlag !== undefined ||
