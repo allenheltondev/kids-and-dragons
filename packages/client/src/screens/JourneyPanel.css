@@ -1,0 +1,228 @@
+/*
+ * JourneyPanel - a graph campaign's "where to next?" (#195).
+ *
+ * `em` against the phone pane, like the rest of PlayerView, and the same
+ * raised-card look as PlayerPanel's `.choice` so a way on reads as one of the
+ * game's choices rather than a new kind of control. Every tappable thing is at
+ * least --touch-min tall; nothing relies on hover; nothing moves unless the
+ * player has not asked it not to.
+ */
+
+.journey {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  min-width: 0;
+}
+
+.journey__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+  color: var(--color-accent, #ffc95c);
+}
+
+/* Focus is moved here on purpose when the party moves; it is not a control. */
+.journey__heading:focus-visible,
+.journey-confirm__title:focus-visible {
+  outline: 0.12em solid var(--color-focus, #ffc95c);
+  outline-offset: 0.15em;
+}
+
+.journey__here {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.journey__here > .kad-icon {
+  flex: 0 0 auto;
+  margin-top: 0.15em;
+}
+
+.journey__exits,
+.journey__places-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* --- One way on --------------------------------------------------------- */
+
+.journey-exit {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-3, 0.75em);
+  border: 0;
+  border-radius: var(--radius-lg, 1.25em);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.journey-exit--open {
+  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)),
+    0 0.18em 0 var(--kad-raised-edge, #0a0814),
+    0 0.4em 0.8em rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition:
+    transform var(--kad-dur-fast, 120ms) var(--kad-ease, ease-out),
+    box-shadow var(--kad-dur-fast, 120ms) var(--kad-ease, ease-out);
+}
+
+.journey-exit--open:active {
+  transform: translateY(0.12em);
+}
+
+.journey-exit--open:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* A place that will not be as the party left it gets the gold rim as well as
+   the words, so it stands out without the colour carrying the news. */
+.journey-exit--changed {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0.18em 0 var(--kad-raised-edge, #0a0814),
+    0 0 0 0.12em var(--color-accent, #ffc95c);
+}
+
+/* Drawn, not tappable: flat and dashed, so it can never be mistaken for a button. */
+.journey-exit--blocked {
+  border: 0.1em dashed var(--color-border, #3a3468);
+  background: transparent;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.journey-exit__icon {
+  display: grid;
+  place-items: center;
+  width: 2.4em;
+  height: 2.4em;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: radial-gradient(circle at 50% 35%, #1d1838, var(--color-surface-sunken, #0c0917));
+  box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), inset 0 0.3em 0.6em rgba(0, 0, 0, 0.5);
+  color: var(--color-accent, #ffc95c);
+}
+
+.journey-exit--blocked .journey-exit__icon {
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.journey-exit__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  min-width: 0;
+}
+
+.journey-exit__label {
+  overflow-wrap: anywhere;
+}
+
+.journey-exit__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 0.25em);
+}
+
+/* Chips wrap their words rather than run off a narrow pane. */
+.journey-exit__chips .kad-chip,
+.journey-place .kad-chip {
+  white-space: normal;
+}
+
+.journey-exit__why {
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+/* --- "Are you sure?" ---------------------------------------------------- */
+
+.journey-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+  border: 0.12em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface-sunken, #120f26);
+}
+
+.journey-confirm__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.journey-confirm__warning {
+  margin: 0;
+  font-weight: 700;
+}
+
+.journey-confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5em);
+}
+
+.journey-confirm__actions > * {
+  flex: 1 1 8em;
+}
+
+/* --- Places you've been ------------------------------------------------- */
+
+.journey__places-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.journey__places-list {
+  padding-top: var(--space-2, 0.5em);
+}
+
+.journey-place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  min-height: var(--touch-min, 3em);
+}
+
+.journey-place__name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-exit--open {
+    transition: none;
+  }
+
+  .journey-exit--open:active {
+    transform: none;
+  }
+}

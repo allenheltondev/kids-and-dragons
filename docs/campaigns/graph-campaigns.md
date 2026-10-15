@@ -15,7 +15,8 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > **Status.** The declaration, its schema, its parser and the load-time checks exist (#192), and
 > so does the journey runtime (#194, [§6](#the-runtime-194)): a graph campaign can be started,
 > played node by node, its exits chosen (`CHOOSE_EXIT`), and its journey is saved on the
-> household's attempt. The navigation screens are #195. No graph campaign ships; the only one in
+> household's attempt. The navigation screen exists too (#195, [§6](#navigation-195)). No graph
+> campaign ships; the only one in
 > the repo is the [Rift Sampler](#7-the-rift-sampler) fixture, which lives outside `content/`.
 
 ---
@@ -372,6 +373,33 @@ exits in authored order — `edge`, `to`, `kind`, `label`, `available`, `reason?
 while choosing. For a completed attempt, `journey` shows the ending reached and `next` the fresh
 start a replay would begin.
 
+### Navigation (#195)
+
+The phones draw `CampaignView.journey` as `JourneyPanel` (`packages/client/src/screens/JourneyPanel.tsx`),
+mounted in the lobby **instead of** the "Begin" button and the "Chapter N" line, and only when the
+lobby's campaign carries a `journey` - an ordered campaign never does, so its lobby, completion
+screen and Begin button are exactly what they were. The shared screen says one line about where the
+party stands (`journeyLine`); the choosing happens on the phones.
+
+What the view adds for it, all optional so later views can add more beside them:
+
+| Field | Meaning |
+|---|---|
+| `JourneyView.places` | Every node the party has **entered**, in authored order: `node`, `title`, `visits`, `completed`, `here?`. An unexplored place is never listed. |
+| `JourneyExitView.once` | The edge is `once`: one crossing per attempt. |
+| `JourneyExitView.changed` | On an available exit to a place already finished: the chapter the crossing would resolve there (after the edge's own effects) is one the party has never played. A flag, never which variant. |
+| `JourneyExitView.label` | An **unexplored** destination with no edge `label` shows the node's `title`, else "Somewhere new" - never its chapter's title, which names the story beat. |
+
+How a way is drawn: an available way is a button, with chips for *Onward / Side trip / Head back*
+and *Unexplored / Been here / It has changed*; a blocked-but-`"shown"` way is plain words with a
+kid-friendly reason (`exitBlockedLine` - it says it is shut or finished, never what would open it);
+hidden blocked ways are absent, as ever. An `irreversible` or `once` way asks first ("You won't be
+able to come back this way." / "You can only go this way one time.") and sends nothing until "Yes,
+go". One tap on a way sends `CHOOSE_EXIT` then `CONTINUE_CAMPAIGN` - two intents that are each safe
+to repeat - except into a `"pass"` place, which has nothing to play and so is a choice again. If the
+second intent is refused or lost the party simply stands at its next stop with a "Go to ..." button,
+the same place a returning session finds it.
+
 **Versioning.** `JourneyState.version` is the stored record's (`JOURNEY_VERSION = 1`), separate in
 meaning from the declaration's. A later change to what a saved journey means bumps it and adds a
 rung to `migrateJourney`; a row from a newer build is refused (CONTINUE, START_CHAPTER and
@@ -437,7 +465,7 @@ its issue defines it. Where each attaches:
 |---|---|
 | #193 validation | `ParsedCampaignGraph` (adjacency already built); hooks into `checkGraphCampaign` in `tools/content/validate.mjs`. Uses `kind` to tell an intentional revisit from an accidental cycle. |
 | #194 runtime | **Done** ([the runtime](#the-runtime-194)): `JourneyState` stored on `CampaignProgressRecord.journey`; `journey.ts` (`startJourney`, `completeVisit`, `takeExit`, `currentPlayable`, `readJourney`/`migrateJourney`, `journeyView`); `ContentStore.graph`; `RunState.journeyVisit`; `CHOOSE_EXIT`; `CampaignView.journey`. |
-| #195 navigation UX | `CampaignView.journey` (`JourneyView`: visible exits with label, availability, reason, arrival, `irreversible`) and the `CHOOSE_EXIT` intent; underneath, `exitsFrom` / `arrivalAt`. |
+| #195 navigation UX | **Done** ([navigation](#navigation-195)): `CampaignView.journey` (`JourneyView`: visible exits with label, availability, reason, arrival, `irreversible`, `once`, `changed`; `places`) and the `CHOOSE_EXIT` intent, drawn by `JourneyPanel`; underneath, `exitsFrom` / `arrivalAt`. A new exit field (a rift's summary) or view field (a visible world fact) is optional and the panel ignores what it does not know. |
 | #196 rift links | a new optional `rift` on `GraphEdge` (one-way, single-use, timed, triggered, unstable, persistent, linked). `once` is the counting part of single-use; a rift adds the rest. New `ExitBlock` reasons go *after* the existing four. |
 | #197 rift actions | new `GraphEffect` types beside `unlock`/`lock`; per-edge state widens `JourneyFacts.edges`. |
 | #198 world state | new `GraphCondition` fields read by `variants[].when` and edge `when`; the variant selection rule stays first-match. |

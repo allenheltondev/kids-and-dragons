@@ -516,6 +516,11 @@ describe("journeyView", () => {
           arrival: "new",
         },
       ],
+      // The places the party has been, and only those (the mill is not listed).
+      places: [
+        { node: "waystone", title: "The Waystone", visits: 1, completed: true },
+        { node: "orchard", title: "The Orchard", visits: 1, completed: true, here: true },
+      ],
     });
   });
 
@@ -529,5 +534,65 @@ describe("journeyView", () => {
     const quarry = play(go(play(startJourney(GRAPH)), "to-quarry"), "setback");
     const home = journeyView(GRAPH, quarry).exits.find((e) => e.edge === "quarry-to-home");
     expect(home).toMatchObject({ irreversible: true, label: "Take the long road home" });
+  });
+
+  it("marks a one-use way, and an irreversible one, for the screen to ask about", () => {
+    const waystone = play(startJourney(GRAPH));
+    const quarry = journeyView(GRAPH, waystone).exits.find((e) => e.edge === "to-quarry");
+    expect(quarry).toMatchObject({ once: true, arrival: "new" });
+    expect(quarry).not.toHaveProperty("irreversible");
+    expect(journeyView(GRAPH, waystone).exits.find((e) => e.edge === "to-orchard")).not.toHaveProperty("once");
+  });
+
+  it("lists only the places entered, in authored order, with the party's whereabouts", () => {
+    const view = journeyView(GRAPH, play(go(play(startJourney(GRAPH)), "to-quarry")));
+    expect(view.places).toEqual([
+      { node: "waystone", title: "The Waystone", visits: 1, completed: true },
+      { node: "quarry", title: "The Quarry", visits: 1, completed: true, here: true },
+    ]);
+    // Nothing unexplored leaks: no orchard, mill, tower or ending.
+    expect(JSON.stringify(view)).not.toMatch(/mill|tower|dawn/i);
+  });
+
+  it("counts a return as another visit to the same place", () => {
+    const back = go(play(go(play(startJourney(GRAPH)), "to-orchard")), "orchard-to-waystone");
+    expect(journeyView(GRAPH, back).places?.find((p) => p.node === "waystone")).toMatchObject({ visits: 2 });
+  });
+
+  it("says a finished place would be found changed only when its chapter would differ", () => {
+    // Back to the orchard before the wheel turns: the same orchard, no news.
+    const waystone = go(play(go(play(startJourney(GRAPH)), "to-orchard")), "orchard-to-waystone");
+    const same = journeyView(GRAPH, waystone).exits.find((e) => e.edge === "to-orchard");
+    expect(same).toMatchObject({ arrival: "replay" });
+    expect(same).not.toHaveProperty("changed");
+
+    // Starting the mill wheel (the return edge's own effect) floods it.
+    const mill = play(go(play(go(play(startJourney(GRAPH)), "to-orchard")), "orchard-to-mill"));
+    const flooded = journeyView(GRAPH, mill).exits.find((e) => e.edge === "mill-to-orchard");
+    expect(flooded).toMatchObject({ arrival: "replay", changed: true });
+    // ...and says nothing about *how*: no chapter or variant id rides on the view.
+    expect(JSON.stringify(flooded)).not.toMatch(/flooded/);
+
+    // Once the party has played the flooded orchard it is just the orchard again.
+    const orchard = play(go(mill, "mill-to-orchard"));
+    expect(journeyView(GRAPH, orchard).exits.some((e) => e.changed)).toBe(false);
+  });
+
+  it("does not name an unexplored place the author did not label", () => {
+    const campaign = sampler();
+    const edges = campaign.graph!.edges;
+    delete edges["to-quarry"]!.label;
+    delete campaign.graph!.nodes["quarry"]!.title;
+    const graph = parsed(campaign);
+    const waystone = play(startJourney(graph), "success", {}, graph);
+    const titleOf = (id: string) => (id === "sampler-quarry" ? "The Quarry Of Secrets" : undefined);
+    const unexplored = journeyView(graph, waystone, titleOf).exits.find((e) => e.edge === "to-quarry");
+    expect(unexplored?.label).toBe("Somewhere new");
+
+    // A node title is a map label the author chose to show.
+    campaign.graph!.nodes["quarry"]!.title = "The Quarry";
+    expect(journeyView(parsed(campaign), waystone, titleOf).exits.find((e) => e.edge === "to-quarry")?.label).toBe(
+      "The Quarry",
+    );
   });
 });
