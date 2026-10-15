@@ -275,6 +275,45 @@ describe("nameplates on the board", () => {
 // The update contract
 // ---------------------------------------------------------------------------
 
+describe("facing", () => {
+  it("stands each side facing the other, and turns round when the fight moves", () => {
+    // Art is drawn facing left. The hero at (0,0) has the wisp at (5,5) on
+    // her right, so she arrives turned; the wisp's nearest hero is on its
+    // left, so it stands as drawn.
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    expect(layer.facings()).toEqual({ c_1: -1, "wisp#1": 1 });
+
+    // She walks past the wisp. The turn is eased, not snapped: a frame in it
+    // is between the two, and a second later she has turned round.
+    const past: EncounterState = {
+      ...encounter,
+      board: {
+        ...encounter.board,
+        actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 5, y: 3 } : a)),
+      },
+    };
+    draw([hero], past);
+    // Same column as the wisp: straight above it, so she keeps facing right.
+    expect(layer.facings()["c_1"]).toBe(-1);
+    const beyond: EncounterState = {
+      ...past,
+      board: {
+        ...past.board,
+        actors: past.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 5, y: 3 } : a.id === "wisp#1" ? { ...a, x: 2, y: 3 } : a)),
+      },
+    };
+    draw([hero], beyond);
+    layer.tick(1 / 60);
+    const mid = layer.facings()["c_1"]!;
+    expect(mid).toBeGreaterThan(-1);
+    expect(mid).toBeLessThan(1);
+    for (let i = 0; i < 120; i++) layer.tick(1 / 60);
+    expect(layer.facings()["c_1"]).toBeCloseTo(1, 2);
+    expect(layer.facings()["wisp#1"]).toBeCloseTo(-1, 2);
+  });
+});
+
 describe("update", () => {
   it("draws the same board twice without drawing it twice", () => {
     // `update` runs on every patch, and patches arrive constantly. Anything

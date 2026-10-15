@@ -9,6 +9,7 @@
 
 import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
 import { currentActorId, enemyArtId } from "@kad/shared";
+import { facingFor, type Facing } from "../world/board-math";
 
 export interface GridOccupant {
   readonly id: string;
@@ -19,6 +20,10 @@ export interface GridOccupant {
   readonly icon: string;
   /** The combat clock is on this figure. */
   readonly active: boolean;
+  /** Hearts left, written in the square's corner. */
+  readonly hp: number;
+  /** Which way the figure faces: toward the nearest opponent (board-math.ts). */
+  readonly facing: Facing;
 }
 
 export interface GridCell {
@@ -79,6 +84,9 @@ export function gridCells(
       name: combatantLabel(combatant),
       icon: combatantIcon(combatant, party),
       active: combatant.id === activeId,
+      hp: combatant.hp,
+      // Art is drawn facing left; nobody sideways to face keeps it that way.
+      facing: facingFor(encounter, combatant.id) ?? "left",
     });
   }
 

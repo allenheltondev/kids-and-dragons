@@ -13,21 +13,6 @@
  * so a tap never pushes the pane and the thumb never has to chase a button.
  */
 
-.combat__party {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Same size as the icon it replaced, so the HP chips keep their height. */
-.combat__face {
-  inline-size: 1.6em;
-  block-size: 1.6em;
-}
-
 .combat__hp {
   display: inline-flex;
   align-items: center;
@@ -51,12 +36,7 @@
   font-size: var(--font-size-sm, 0.875em);
 }
 
-/*
- * The enemies' row, under the party's: a portrait, the name with its
- * ordinal, and hearts as a number. "How is the fight going" used to need a
- * look at the TV or a tap into a target list; now it is the second line of
- * every phone, on every turn, including the turns that are not yours.
- */
+/* A monster's portrait in the target list. */
 .combat__enemy-art {
   inline-size: 1.6em;
   block-size: 1.6em;
@@ -67,19 +47,6 @@
 .combat__enemy-art--large {
   inline-size: 2em;
   block-size: 2em;
-}
-
-.combat .combat__enemies .combat__enemy-art {
-  inline-size: 1.3em;
-  block-size: 1.3em;
-}
-
-.combat__enemy--down {
-  opacity: 0.7;
-}
-
-.combat__enemy--down > span:first-of-type {
-  text-decoration: line-through;
 }
 
 /*
@@ -268,6 +235,17 @@
   object-fit: cover;
 }
 
+/*
+ * Facing the nearest opponent (board-math.ts facingFor). The art is drawn
+ * facing left; `scale` rather than `transform`, because the arrival pop
+ * below animates `transform` and would undo a flip written there.
+ */
+.combat__cell--faces-right .combat__cell-face,
+.combat__cell--faces-right .combat__cell-art,
+.combat__cell--faces-right > .kad-icon {
+  scale: -1 1;
+}
+
 .combat__cell--down .combat__cell-face,
 .combat__cell--down .combat__cell-art,
 .combat__cell--down > .kad-icon {
@@ -325,22 +303,6 @@
  */
 .combat.prompt {
   gap: var(--space-2, 0.5em);
-}
-
-/* Names stay — three of one species are told apart by them — but tight. */
-.combat .combat__party {
-  gap: var(--space-1, 0.25em);
-  font-size: var(--font-size-sm, 0.875em);
-}
-
-.combat .combat__party > .kad-chip {
-  gap: 0.25em;
-  padding: 0.15em 0.45em;
-}
-
-.combat .combat__party .combat__face {
-  inline-size: 1.3em;
-  block-size: 1.3em;
 }
 
 /*
@@ -418,6 +380,28 @@
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
 }
 
+/*
+ * Three cards or more (a class action unlocked, an item in the bag) would
+ * push the last one under the fold with the board above them. They go two
+ * to a row, icon and name only: the names are a word or two, the icon is
+ * the thing an eight-year-old reads first (spec §1.5), and the sentence is
+ * what the card does *after* you tap it — the who? step still says.
+ */
+.combat .combat__actions:has(> li:nth-child(3)) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2, 0.5em);
+}
+
+.combat .combat__actions:has(> li:nth-child(3)) .choice {
+  min-block-size: var(--touch-min, 3em);
+  padding: var(--space-2, 0.5em);
+}
+
+.combat .combat__actions:has(> li:nth-child(3)) .choice__sub {
+  display: none;
+}
+
 .choice__text {
   display: flex;
   flex-direction: column;
@@ -454,7 +438,8 @@
 .combat .combat__grid {
   /* As big as the pane's height allows once the turn header, the legend,
      the hint and the cards have their rows (about 14.5em between them, with
-     gaps), and never wider than the pane. On a tall phone that is
+     gaps), and never wider than the pane. On somebody else's turn there are
+     no cards and the board simply takes the width. On a tall phone that is
      width-bound and the board floats in the middle; on a short one it is
      height-bound and just fits. The pane scrolls only if a phone is shorter
      than any we know. */

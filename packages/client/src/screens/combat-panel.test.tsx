@@ -24,7 +24,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   beginEncounter,
@@ -279,9 +279,10 @@ describe("whose turn it is", () => {
     mount({ encounter: { ...encounter, turnIndex: wispIndex } });
 
     expect(screen.getByRole("status").textContent).toContain("Bramblewisp");
-    // No board, no cards — the whole input half is absent, not disabled.
-    expect(screen.queryByRole("grid")).toBeNull();
-    expect(screen.queryByRole("button", { name: END })).toBeNull();
+    // The board stays — it is the map to plan the next turn on — but not one
+    // of its squares is a button, and there are no cards: absent, not disabled.
+    expect(screen.getByRole("grid")).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toEqual([]);
   });
 
   it("renders nothing at all once the fight is over", () => {
@@ -296,21 +297,11 @@ describe("whose turn it is", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("shows the party's HP even when it is not your turn", () => {
-    // A Party Mode phone has no other view of the board, so this row is the
-    // fight's one piece of shared state a controller has to carry.
-    const encounter = encounterWith();
-    const wispIndex = encounter.order.findIndex((id) => id.startsWith("wisp"));
-    mount({ encounter: { ...encounter, turnIndex: wispIndex } });
-
-    const party = screen.getByRole("list", { name: "The party" });
-    expect(within(party).getByText("Sparklehoof")).toBeTruthy();
-    expect(party.textContent).toContain("10/10");
-  });
-
-  it("shows every enemy's HP while waiting, with the ordinal that tells them apart", () => {
-    // "How is the fight going" used to need the TV or a tap into a target
-    // list. Now it is the second row of every phone.
+  it("writes everyone's HP on their square, on every turn", () => {
+    // A Party Mode phone has no other view of the board, so the board is the
+    // fight's whole shared state — and "which one is nearly done" is read off
+    // the map rather than looked up. Checked on a monster's turn, when there
+    // is nothing else on the pane to carry it.
     const base = encounterWith({
       enemies: [
         { spec: wisp(), at: { x: 2, y: 2 } },
@@ -319,23 +310,26 @@ describe("whose turn it is", () => {
     });
     const hurt = {
       ...base,
-      combatants: base.combatants.map((c) => (c.id === "wisp#2" ? { ...c, hp: 2 } : c)),
+      combatants: base.combatants.map((c) =>
+        c.id === "wisp#2" ? { ...c, hp: 2 } : c.side === "party" ? { ...c, hp: 7 } : c,
+      ),
     };
     const wispIndex = hurt.order.findIndex((id) => id.startsWith("wisp"));
-    mount({ encounter: { ...hurt, turnIndex: wispIndex } });
+    const { container } = mount({ encounter: { ...hurt, turnIndex: wispIndex } });
 
-    const enemies = screen.getByRole("list", { name: "The enemies" });
-    const rows = within(enemies).getAllByRole("listitem").map((li) => li.textContent);
-    expect(rows[0]).toContain("Bramblewisp 1");
-    expect(rows[0]).toContain("6/6");
-    expect(rows[1]).toContain("Bramblewisp 2");
-    expect(rows[1]).toContain("2/6");
+    const hp = (selector: string) =>
+      [...container.querySelectorAll(selector)].map((cell) => cell.querySelector(".combat__cell-hp")?.textContent);
+    expect(hp(".combat__cell--party")).toEqual(["7"]);
+    expect(hp(".combat__cell--enemy")).toEqual(["6", "2"]);
   });
 
-  it("writes each enemy's HP on its square of the board", () => {
+  it("turns figures to face the nearest opponent", () => {
+    // Art is drawn facing left. The hero at (1,2) has the wisp at (2,2) on
+    // her right, so she turns; the wisp's nearest hero is on its left, so it
+    // stays as drawn.
     const { container } = mount();
-    const enemyCell = container.querySelector(".combat__cell--enemy")!;
-    expect(enemyCell.querySelector(".combat__cell-hp")?.textContent).toBe("6");
+    expect(container.querySelector(".combat__cell--party")?.classList.contains("combat__cell--faces-right")).toBe(true);
+    expect(container.querySelector(".combat__cell--enemy")?.classList.contains("combat__cell--faces-right")).toBe(false);
   });
 });
 
