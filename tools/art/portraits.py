@@ -152,9 +152,20 @@ def main() -> int:
     for entity in mf["entities"]:
         eid = entity["id"]
         targets.append(((eid,), ("entities", eid), FIGURE_FILE))
-    for biome in mf["biomes"]:
-        bid = biome if isinstance(biome, str) else biome["id"]
+    # Background-only destinations also serve wiki pages without a tactical kit.
+    biome_ids = {b if isinstance(b, str) else b["id"] for b in mf["biomes"]}
+    biome_root = os.path.join(ROOT, "assets", "biomes")
+    biome_ids.update(name for name in os.listdir(biome_root)
+                     if os.path.isfile(os.path.join(biome_root, name, BACKDROP_FILE)))
+    for bid in sorted(biome_ids):
         targets.append(((bid,), ("biomes", bid), BACKDROP_FILE))
+    for category in ("cast", "items"):
+        category_root = os.path.join(ROOT, "assets", category)
+        if not os.path.isdir(category_root):
+            continue
+        for name in sorted(os.listdir(category_root)):
+            if os.path.isfile(os.path.join(category_root, name, FIGURE_FILE)):
+                targets.append(((name,), (category, name), FIGURE_FILE))
 
     written = 0
     skipped = 0

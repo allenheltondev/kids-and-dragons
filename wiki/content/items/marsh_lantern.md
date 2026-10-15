@@ -11,6 +11,9 @@ related:
   - id: biome.whispering_marsh
     type: biome
     relationship: found_in
+assets:
+  primary: assets/items/marsh_lantern/portrait.webp
+  primaryFull: assets/items/marsh_lantern/assembled.png
 ai_context:
   mood: "A ghostly green lantern that cuts through supernatural fog and reveals hidden paths."
   themes: "Tool, Light, Swamp, Common"

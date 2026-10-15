@@ -187,9 +187,10 @@ export function biomeBackdropUrl(biome: string): string {
   return `/assets/biomes/${biome}/bg.webp`;
 }
 
-/** Scene illustrations use asset-relative ids, e.g. scenes/gemfall/hollow-gate. */
+/** Scene illustrations or a story-only biome background, without changing combat terrain. */
 export function sceneBackdropUrl(art: string): string | null {
-  return /^scenes\/[a-z0-9_-]+\/[a-z0-9_-]+$/.test(art) ? `/assets/${art}.webp` : null;
+  return /^(?:scenes\/[a-z0-9_-]+\/[a-z0-9_-]+|biomes\/[a-z0-9_]+\/bg)$/.test(art)
+    ? `/assets/${art}.webp` : null;
 }
 
 /** Story art follows the scene; combat always uses the chapter's terrain. */

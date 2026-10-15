@@ -54,6 +54,9 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: factions
+assets:
+  primary: assets/entities/skywardens/portrait.webp
+  primaryFull: assets/entities/skywardens/assembled.png
 ai_context:
   mood: "An ancient order of knights sworn to watch the red sky and protect the realm from what lies beyond it."
   themes: "Military, Order, Protectors, Highlands"

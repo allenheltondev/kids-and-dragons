@@ -39,6 +39,9 @@ related:
   - id: item.hearthstone_bead
     type: item
     relationship: found_in
+assets:
+  primary: assets/biomes/bramblewood/portrait.webp
+  primaryFull: assets/biomes/bramblewood/bg.webp
 ai_context:
   mood: "A hedged town about two thirds of the way through the Sunward Fields, furthest from the Exchange."
   themes: "Town, Hedges, Sunward_fields, Waystop"
