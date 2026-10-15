@@ -36,9 +36,51 @@ export function sceneCuesFor(previous: RunState | null, next: RunState | null): 
   return out;
 }
 
+/** Chapters whose citadel track starts at a gate scene. Every scene reachable from the gate plays the track. */
+const CITADEL_GATES: Record<string, { gate: string; track: string }> = {
+  "gemfall-06": { gate: "scene_citadel_gate", track: "gemfall-citadel" },
+};
+
+const citadelSceneCache = new WeakMap<Chapter, Set<string>>();
+
+/** Every `goto` target in a scene, at any depth: choices, check outcomes, and encounter victories all route through `goto`. */
+function gotoTargets(node: unknown, out: string[] = []): string[] {
+  if (Array.isArray(node)) node.forEach((child) => gotoTargets(child, out));
+  else if (node && typeof node === "object") {
+    for (const [key, value] of Object.entries(node)) {
+      if (key === "goto" && typeof value === "string") out.push(value);
+      else gotoTargets(value, out);
+    }
+  }
+  return out;
+}
+
+/** Scenes the party can reach from `start` by following the chapter graph, so a new scene inherits its track without a name rule. */
+export function reachableScenes(chapter: Chapter, start: string): Set<string> {
+  const seen = new Set<string>();
+  const pending = [start];
+  while (pending.length > 0) {
+    const id = pending.pop()!;
+    const scene = chapter.scenes[id];
+    if (seen.has(id) || !scene) continue;
+    seen.add(id);
+    pending.push(...gotoTargets(scene));
+  }
+  return seen;
+}
+
+function citadelScenes(chapter: Chapter, gate: string): Set<string> {
+  let scenes = citadelSceneCache.get(chapter);
+  if (!scenes) {
+    scenes = reachableScenes(chapter, gate);
+    citadelSceneCache.set(chapter, scenes);
+  }
+  return scenes;
+}
+
 export function musicForScene(chapter: Chapter | null, state: RunState | null): string | null {
   if (!state || ["lobby", "creation"].includes(state.phase) || chapter?.id !== state.chapterId) return null;
-  if (state.chapterId === "gemfall-06" && state.sceneId &&
-    /^(scene_(citadel_gate|truth_table|whole_truth|reading_|who_to_tell|what_for)|rest_end)/.test(state.sceneId)) return "gemfall-citadel";
+  const citadel = chapter ? CITADEL_GATES[chapter.id] : undefined;
+  if (chapter && citadel && state.sceneId && citadelScenes(chapter, citadel.gate).has(state.sceneId)) return citadel.track;
   return chapter?.biome ?? null;
 }
