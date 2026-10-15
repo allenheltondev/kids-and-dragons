@@ -622,3 +622,53 @@ Generated with the built-in image-generation tool. Six character-free 1920×1080
 **Abandoned caravan rest:** Old grassland rest stop with a few long-unused empty wooden carts and covered wagons parked off-road, quiet broken fence posts, and a cold fire ring; open plains beneath blue night sky. Gentle tension, safe storybook gouache/watercolor. Landmark upper half, lower 30% open level grass and dirt. No wolves, creatures, characters, buildings, text, UI, border or watermark.
 
 **Pride night fire:** Single warm campfire on open pride-country grass below a low dark ridge; stars above distant gold plains, ridge curves around the camp, small amber gem glows faintly near the far horizon. Peaceful storybook watercolor/gouache, indigo night and amber firelight. Ridge and fire upper half; lower 30% open level earth. No people, animals, cubs, creatures, shelters, text, UI, frame or watermark.
+## Gemfall 04C — The road that remembers
+
+Eight character-free backdrops for the Great River road chapter. Generated at 1920×1080 WebP, quality 88; open foreground is reserved for the stage. The images support the scene progression without adding named characters or creatures.
+
+| Asset | Coverage |
+|---|---|
+| `north-rush-road.webp` | Split upbound and downbound wagon lanes |
+| `quiet-road-stretch.webp` | Empty road and silent jackalope warrens |
+| `downbound-wagon-auction.webp` | Ma Ruddle's abandoned wagon auction |
+| `downbound-soup-tents.webp` | Deep Hollow's three roadside rest tents |
+| `warden-supply-stop.webp` | Skywarden supply stop on the plains road |
+| `rush-depot.webp` | Strongbox barn, forms desk and ringing box |
+| `relay-route-fire.webp` | Empty route-song campfire and trail tokens |
+| `road-bend-grass.webp` | Night road bend marked by warm pawprints |
+
+### Generation prompts
+
+- `north-rush-road`: Wide 16:9 storybook painting of a Great River north road split into two broad dirt lanes, one busy with distant wagons, one slower with returning wagons. Open level foreground road, golden plains, no legible signage, no named figures, no foreground characters or creatures.
+- `quiet-road-stretch`: Empty dirt road with several small jackalope burrow entrances and a clear uncanny silent gap around a distant gem depot. Gentle late-afternoon plains, open foreground, no jackalopes or other animals, no people, no text.
+- `downbound-wagon-auction`: Quiet roadside wagon auction with several empty wagons, a plain auction table and scattered bundles, golden plains beyond, open foreground. No people, lettering, numbers or animals.
+- `downbound-soup-tents`: Three simple Deep Hollow roadside soup tents with cots, folded blankets and bowls on tables, generous open foreground and warm dusk light. No people, readable text or animals.
+- `warden-supply-stop`: Neat roadside patrol supply stop with ration crates, folded canvas and brass scales near an open plains road. No people, uniforms, emblems, animals or writing.
+- `rush-depot`: Interior of a timber strongbox depot barn, rows of secured boxes and a long counter with an ink stamp and blank forms; one box glows softly. Open floor foreground, no clerk, no legible writing or creatures.
+- `relay-route-fire`: Open night campfire beside a road with empty benches, route tokens and blank bark strips on a stone table. Peaceful indigo plains, foreground clear, no people, animals or text.
+- `road-bend-grass`: Empty night road bending through tall grass, faint warm pawprints and tiny ember flecks crossing the dirt. Gentle suspense, open foreground, no wolves, animals, people, structures or text.
+
+## Gemfall 04C — road episodes
+
+Three new location backdrops keep the expanded road episodes visually continuous.
+
+| Asset | Coverage |
+|---|---|
+| `north-road-detour.webp` | `scene_road_crew`, `check_haul_posts`, `scene_road_crew_ask_why`, `scene_road_crew_charm`, `scene_road_crew_fly` |
+| `north-signpost-fork.webp` | `scene_signposts`, `check_read_signs`, `scene_signposts_buy_map`, `scene_signposts_outsell` |
+| `north-noon-stop.webp` | `scene_rumor_fire`, `check_tall_tale`, `scene_rumor_fire_true_news`, `scene_rumor_fire_ford_news`, `scene_rumor_fire_marsh_news` |
+
+All three are new 16:9 painterly road locations exported as 1920×1080 WebP at quality 88. The storybook compositions place landmarks in the upper half and leave the lower 30 percent clear for sprites; no characters or readable text.
+
+### North road detour generation prompt
+
+Create a painterly fantasy storybook game backdrop of a northbound caravan road rerouted around a scorched hollow. A graceful curve of road and newly planted marker posts skirts a dark circular patch where a gemstone fell; open gold-green plains, distant wagon line and blue foothills. Quiet mystery, late afternoon. Keep the curved road and posts in the upper half and a clear level packed-earth verge across the lower 30 percent. No characters, animals, signs with marks, text, UI or border.
+
+### North signpost fork generation prompt
+
+Create a painterly fantasy storybook game backdrop of a confusing fork on the northbound caravan road. A tall wooden signpost surrounded by many small blank direction boards has arrows pointing in contradictory directions; the road divides around a low grassy island and rejoins in the distance. Open grassland and distant wagons. Warm late morning. Signpost in upper half; lower 30 percent is a broad level dirt apron. All boards blank. No people, animals, creatures, lettering, UI or border.
+
+### North noon stop generation prompt
+
+Create a painterly fantasy storybook game backdrop for a midday caravan rest stop on the northbound road. A grassy turnout beside a packed-earth road has a cold stone fire ring, empty log seats and a kettle stand, distant wagons at the horizon, open plains and blue sky. Friendly afternoon. Keep the rest stop in the upper half and the lower 30 percent clear and level for sprites. No people, animals, creatures, signs, text, UI or border.
+
