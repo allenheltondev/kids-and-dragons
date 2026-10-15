@@ -1,5 +1,5 @@
 {
-  "$comment": "Class rift interaction fixture (#199). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. One mandatory goal - getting through the sealed rift to the far shore - that every party composition can reach its own way: a Starweaver senses the rift, studies at the star tower, attunes to it and later weaves it toward Starfall Glade (a progression earned through the campaign, kept as the world fact `attunement`); a Thornguard forces the seal (and leaves it torn: the far shore plays a harder chapter); a Songkeeper sings it calm; a Duskrunner scouts a hidden shadow path; anyone carrying a Mosslight Jar holds it to the seal; and a party with none of them befriends the hermit, who opens it for them - the ungated way the lint (CLASS_GATED_ONLY_PATH) requires. class-rifts.test.ts walks it; packages/server/src/handlers/class-rifts.test.ts plays it through the server; docs/campaigns/graph-campaigns.md (Class rift interaction) walks through it.",
+  "$comment": "Class rift interaction fixture (#199). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. One mandatory goal - getting through the sealed rift to the far shore - that every party composition can reach its own way: a Starweaver senses the rift, studies at the star tower, attunes to it and later weaves it toward Starfall Glade (a progression earned through the campaign, kept as the world fact `attunement`); a Thornguard forces the seal (and leaves it torn: the far shore plays a harder chapter; and the party strained: a Guard -1 burden buff for the next fight); a Songkeeper sings it calm; a Duskrunner scouts a hidden shadow path; anyone carrying a Mosslight Jar holds it to the seal; and a party with none of them befriends the hermit, who opens it for them - the ungated way the lint (CLASS_GATED_ONLY_PATH) requires. class-rifts.test.ts walks it; packages/server/src/handlers/class-rifts.test.ts plays it through the server; docs/campaigns/graph-campaigns.md (Class rift interaction) walks through it.",
   "id": "rift-classes",
   "title": "The Sealed Rift",
   "blurb": "A camp, a star tower, a hermit's hut and a rift sealed shut. Every party gets through its own way. Not a story: a map of class rift interaction.",
@@ -16,6 +16,18 @@
   "graph": {
     "version": 1,
     "entry": "camp",
+    "buffs": {
+      "seal-strain": {
+        "$comment": "The Thornguard's cost (#199 with #200): forcing the seal leaves the party bruised - Guard -1 in the next fight, gone after one fight or a rest. A burden is a buff with a negative amount.",
+        "label": "Seal Strain",
+        "kind": "guard",
+        "amount": -1,
+        "target": "party",
+        "duration": { "scope": "encounter" },
+        "stack": "refresh",
+        "expiresOn": ["rest"]
+      }
+    },
     "facts": {
       "attunement": {
         "$comment": "The Starweaver's progression: sense (+1), study at the star tower (+1), attune (needs 2, gives +1), weave (needs 3). Journey state, so it is stored with the attempt and is there next evening.",
@@ -110,7 +122,10 @@
                 "id": "force",
                 "requires": { "anyClass": ["thornguard"] },
                 "label": "Force the seal open",
-                "effects": [{ "type": "setFact", "fact": "veil", "value": "torn" }]
+                "effects": [
+                  { "type": "setFact", "fact": "veil", "value": "torn" },
+                  { "type": "grantBuff", "buff": "seal-strain" }
+                ]
               },
               {
                 "id": "calm",

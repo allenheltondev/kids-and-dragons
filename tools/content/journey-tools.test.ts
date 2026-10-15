@@ -600,6 +600,32 @@ describe("checkJourneySave — classifying a stored journey", () => {
     expect(check.issues[0]!.path).toBe(`/rifts/${riftId}`);
   });
 
+  it("reads held temporary buffs (#200) as the runtime does: real ones ok, junk ignored, a non-list impossible", () => {
+    const buffs = subject("rift-buffs").graph;
+    const held = { ...startJourney(buffs), buffs: [{ id: "rift-shield", stacks: 1, encountersLeft: 2, grantedAt: { node: "spring", visit: 1 } }] };
+    expect(checkJourneySave(buffs, JSON.parse(JSON.stringify(held)))).toMatchObject({ verdict: "ok", issues: [] });
+    const odd = {
+      ...startJourney(buffs),
+      buffs: [
+        { id: "rift-surge", stacks: 4, encountersLeft: 1 },
+        { id: "old-boon", stacks: 1, encountersLeft: 1 },
+        { id: "rift-fury", stacks: 0, encountersLeft: 1 },
+        { id: "rift-surge", stacks: 1, encountersLeft: 1 },
+      ],
+    };
+    const check = checkJourneySave(buffs, JSON.parse(JSON.stringify(odd)));
+    expect(check.verdict).toBe("ok");
+    expect(check.issues.map((i) => [i.severity, i.path])).toEqual([
+      ["warning", "/buffs/0"],
+      ["warning", "/buffs/1"],
+      ["warning", "/buffs/2"],
+      ["warning", "/buffs/3"],
+    ]);
+    expect(checkJourneySave(buffs, JSON.parse(JSON.stringify({ ...startJourney(buffs), buffs: { "rift-shield": 1 } }))).verdict).toBe(
+      "impossible",
+    );
+  });
+
   it("the CLI checks a save file and exits non-zero when it is broken", () => {
     const dir = fs.mkdtempSync(path.join(process.env.TMPDIR ?? "/tmp", "journey-save-"));
     try {

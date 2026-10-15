@@ -252,6 +252,10 @@ describe("one goal, every party its own way", () => {
     const graph = parsed();
     let j = act(graph, atTheGate(graph), { action: "open", way: "force", edge: "veil-rift" }, party(["thornguard"]));
     expect(j.facts?.veil).toBe("torn");
+    // The shove has a tactical cost (#200): a burden — a buff with a negative
+    // amount — the party carries into the next fight.
+    expect(j.buffs).toEqual([{ id: "seal-strain", stacks: 1, encountersLeft: 1, grantedAt: { node: "rift-gate", visit: j.visit } }]);
+    expect(journeyView(graph, j).buffs?.map((buff) => [buff.id, buff.amount])).toEqual([["seal-strain", -1]]);
     const shore = takeExit(graph, j, { edge: "veil-rift", visit: j.visit });
     expect(shore.ok && shore.journey.chapter).toBe("rc-far-shore-torn");
     j = ending(graph, j);

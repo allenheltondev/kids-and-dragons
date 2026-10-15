@@ -1,0 +1,91 @@
+{
+  "$comment": "Temporary buffs fixture (#200). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It declares one buff of each kind and each duration scope, every stacking mode, both targets, every expiry, and a tradeoff (a boon granted beside the burden that pays for it) - granted by a completion rule and by edge effects. buffs.test.ts holds it to the parser, the runtime and the lint, packages/server/src/handlers/buffs.test.ts plays it through the server, and tools/content/campaign-graph-schema.test.mjs holds it to the schema; docs/campaigns/graph-campaigns.md (Temporary buffs) walks through it.",
+  "id": "rift-buffs-sampler",
+  "title": "The Humming Spring",
+  "blurb": "A spring that hums with rift energy, a den with something in it, and a dawn beyond.",
+  "chapters": ["rb-camp", "rb-spring", "rb-den", "rb-dawn"],
+  "graph": {
+    "version": 1,
+    "entry": "camp",
+    "buffs": {
+      "rift-shield": {
+        "$comment": "Guard for the next two fights, gone the moment a fight is lost. Granted again, it starts its two fights over.",
+        "label": "Rift Shield",
+        "kind": "guard",
+        "amount": 1,
+        "duration": { "scope": "encounters", "count": 2 },
+        "stack": "refresh",
+        "expiresOn": ["defeat"]
+      },
+      "rift-surge": {
+        "$comment": "Harder hits for one hero's first two turns of the next fight. Drinking again stacks it, to +2 at most.",
+        "label": "Rift Surge",
+        "kind": "damage",
+        "amount": 1,
+        "target": "one",
+        "duration": { "scope": "turns", "count": 2 },
+        "stack": "add",
+        "maxStacks": 2,
+        "cap": 2
+      },
+      "rift-fury": {
+        "$comment": "The rift's price, part one: a sharp eye for the next fight...",
+        "label": "Rift Fury",
+        "kind": "roll",
+        "amount": 2,
+        "duration": { "scope": "encounter" },
+        "stack": "ignore",
+        "expiresOn": ["travel", "setback"]
+      },
+      "rift-fray": {
+        "$comment": "...part two: and frayed nerves for the same fight. Granted together, on the same edge.",
+        "label": "Frayed Nerves",
+        "kind": "guard",
+        "amount": -1,
+        "duration": { "scope": "encounter" },
+        "stack": "ignore",
+        "expiresOn": ["travel", "setback"]
+      },
+      "fleet-step": {
+        "$comment": "Lighter feet for one fight, until the party next rests.",
+        "label": "Fleet Step",
+        "kind": "move",
+        "amount": 1,
+        "duration": { "scope": "encounter" },
+        "expiresOn": ["rest"]
+      }
+    },
+    "nodes": {
+      "camp": { "chapter": "rb-camp", "title": "The Camp", "revisit": "pass" },
+      "spring": {
+        "chapter": "rb-spring",
+        "title": "The Humming Spring",
+        "onComplete": [
+          { "effects": [{ "type": "grantBuff", "buff": "rift-shield" }, { "type": "grantBuff", "buff": "rift-surge" }] }
+        ]
+      },
+      "den": { "chapter": "rb-den", "title": "The Den" },
+      "dawn": { "chapter": "rb-dawn", "title": "Dawn", "ending": { "title": "Dawn over the Spring" } }
+    },
+    "edges": {
+      "camp-to-spring": {
+        "from": "camp",
+        "to": "spring",
+        "kind": "forward",
+        "label": "Down to the humming spring",
+        "effects": [{ "type": "grantBuff", "buff": "fleet-step" }]
+      },
+      "camp-to-den": { "from": "camp", "to": "den", "kind": "forward", "label": "The long way to the den" },
+      "spring-to-den": {
+        "from": "spring",
+        "to": "den",
+        "kind": "forward",
+        "label": "Step through the rift",
+        "effects": [{ "type": "grantBuff", "buff": "rift-fury" }, { "type": "grantBuff", "buff": "rift-fray" }]
+      },
+      "spring-to-camp": { "from": "spring", "to": "camp", "kind": "return" },
+      "den-to-camp": { "from": "den", "to": "camp", "kind": "return" },
+      "den-to-dawn": { "from": "den", "to": "dawn", "kind": "forward", "when": { "outcome": "success" }, "label": "Out into the dawn" }
+    }
+  }
+}

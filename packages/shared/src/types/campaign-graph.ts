@@ -40,6 +40,7 @@
 
 import type { Arrival, ExitBlock } from "../campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
+import type { ActiveBuff, BuffDef, BuffId, JourneyBuffView } from "./buffs.js";
 import type { ClassId } from "./domain.js";
 
 /** A node's key in `CampaignGraph.nodes`. Stable: saves name it. */
@@ -111,6 +112,17 @@ export interface CampaignGraph {
    * #198 — so adding the field bumps nothing.
    */
   facts?: Record<FactId, WorldFact>;
+  /**
+   * Temporary buffs this campaign's rift energy can grant (#200): guard,
+   * damage, movement or roll bonuses that last a few turns or fights and are
+   * gone. Keyed by stable buff id. Granted by the `grantBuff` effect, stored
+   * on the attempt's journey, applied only inside fights. See `BuffDef` and
+   * "Temporary buffs" in graph-campaigns.md.
+   *
+   * Absent means a graph that grants none — every graph written before #200 —
+   * so adding the field bumps nothing.
+   */
+  buffs?: Record<BuffId, BuffDef>;
 }
 
 /** A world fact's key in `CampaignGraph.facts`. Stable: saves name it. */
@@ -795,7 +807,13 @@ export type GraphEffect =
   | { type: "closeRift"; edge: EdgeId }
   | { type: "stabilizeRift"; edge: EdgeId }
   /** `to` is the rift's own `to` or one of its declared `redirects`. */
-  | { type: "redirectRift"; edge: EdgeId; to: NodeId };
+  | { type: "redirectRift"; edge: EdgeId; to: NodeId }
+  /**
+   * Grants a declared temporary buff (#200) — or, for one the party already
+   * holds, refreshes, stacks or ignores it as the buff's `stack` says. Never
+   * read by a guard: a buff changes fights, not where the party can go.
+   */
+  | { type: "grantBuff"; buff: BuffId };
 
 /**
  * What the journey remembers, as guards and exit availability read it.
@@ -912,11 +930,20 @@ export interface JourneyState extends JourneyFacts {
   /**
    * The rift action most recently taken (#197), and the visit it was taken
    * on: `lastExit`'s idempotence for `RIFT_ACTION`. The same
-   * `(node, visit, action, edge, to)` reported again is the same action —
+   * `(node, visit, action, edge, to, way)` (#199) reported again is the same action —
    * answered as done, never applied twice — wherever the journey has got to
    * since. Absent until the first action.
    */
   lastAction?: { node: NodeId; visit: number; action: RiftActionKind; edge: EdgeId; to?: NodeId; way?: string };
+  /**
+   * The temporary buffs the party holds (#200), in the order they were first
+   * granted. Attempt-scoped like everything here, and never a guard's
+   * business. Seeded into each chapter run (`RunState.buffs`), spent by its
+   * fights, and read back when the visit completes — the journey flags'
+   * carry rule. Absent or empty: none, which is every journey saved before
+   * #200 and every one whose buffs have run out.
+   */
+  buffs?: ActiveBuff[];
 }
 
 /**
@@ -959,6 +986,11 @@ export interface JourneyView {
    * world has changed. Present only when the graph declares a visible fact.
    */
   facts?: JourneyFactView[];
+  /**
+   * The temporary buffs the party holds (#200), with what each adds and how
+   * long it has left. Present only while there is one.
+   */
+  buffs?: JourneyBuffView[];
   /**
    * What the party may do to a rift here (#197), while `status` is
    * `"choosing"`: only actions that are offered right now (their rule's
