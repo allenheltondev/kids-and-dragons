@@ -1,0 +1,1013 @@
+/**
+ * Graph campaigns — can the declaration actually be walked? (#193)
+ *
+ * `parseCampaignGraph` (campaign-graph.ts) answers "does every name in the
+ * declaration point at something". This file answers the question after it:
+ * given a graph whose names all resolve, can a party get from the entry to an
+ * ending, and is there any way to get *stuck* on the way? It reads the
+ * `ParsedCampaignGraph` that function produces and never the raw JSON.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY IT RUNS THE SAME RULES THE RUNTIME WILL
+ *
+ * A hand-rolled approximation of "which doors are open" would be a second
+ * implementation of the rule `exitAvailability` already is, and the two would
+ * drift: the validator would bless graphs the server then strands a party in,
+ * or reject graphs the server would walk fine. So the softlock search below
+ * does not re-derive anything. It builds a `JourneyFacts` for every abstract
+ * state and asks `exitsFrom`, `arrivalAt` and `chapterAtNode` — the same
+ * helpers #194's transitions and #195's screens call — and applies an edge's
+ * effects the way the doc says they apply. Where it simplifies, it simplifies
+ * *what it tracks*, never what a guard means.
+ *
+ * Imports `./campaign-graph.ts` with its extension because
+ * tools/content/validate.mjs loads this file straight under Node, which strips
+ * types but resolves no `.js`-for-`.ts` specifiers (the reason
+ * campaign-graph.ts itself imports only types). The one runtime import is
+ * therefore spelled the way Node needs it.
+ *
+ * ---------------------------------------------------------------------------
+ * THE CHECKS
+ *
+ * Static (read off the edges, guards ignored — "possibly reachable"):
+ *
+ * - `UNREACHABLE_NODE`            no chain of edges leads from the entry here.
+ * - `NO_ENDING_REACHABLE`         no ending is reachable from the entry.
+ * - `DEAD_END`                    a non-ending node with no exits at all.
+ * - `CANNOT_FINISH`               reachable, has exits, but every route out
+ *                                 circles back without ever reaching an ending.
+ * - `UNINTENTIONAL_CYCLE`         a cycle with no `return` edge in it.
+ * - `LOCKED_EDGE_NEVER_UNLOCKED`  `locked: true` and no edge has an `unlock`
+ *                                 effect for it.
+ * - `GUARD_CONTRADICTION`         one guard that cannot hold (flag and notFlag
+ *                                 the same flag, visited and notVisited the
+ *                                 same node, ...).
+ * - `GUARD_FLAG_NEVER_SET` (warn) a guard needs a flag that no edge effect and
+ *                                 no chapter on the graph can set true.
+ *
+ * Dynamic (an exhaustive search of what a party can have done — below):
+ *
+ * - `STRANDED`                    a state with a non-ending node and no
+ *                                 available exit, with the path that gets there.
+ * - `TRAPPED`                     a state that still has exits but from which
+ *                                 no ending can ever be reached (a `once` edge
+ *                                 spent, a closed place completed, a `lock`).
+ * - `NO_ENDING_WINNABLE`          the search finishes and no ending is entered.
+ * - `NODE_NEVER_ENTERED`          the search finishes and a node (an ending, for
+ *                                 `ENDING_NEVER_REACHED`) is never entered.
+ * - `EDGE_NEVER_AVAILABLE` (warn) an edge out of an entered node that no state
+ *                                 ever offers.
+ * - `IRREVERSIBLE_NOT`            an edge marked `irreversible` after which its
+ *                                 `from` node can be entered again.
+ * - `SEARCH_TRUNCATED` (warn)     the state cap was hit; the "never" and
+ *                                 "cannot finish" checks above are skipped
+ *                                 because they would be guesses.
+ *
+ * Errors are things the party can hit or the author plainly got wrong.
+ * Warnings are things that are probably wrong but strand nobody: they go to
+ * `content:validate`'s warning list and not to the server loader.
+ *
+ * ---------------------------------------------------------------------------
+ * THE SEARCH, AND WHAT IT ASSUMES
+ *
+ * An abstract state is a node (the party is at the exit choice there) plus the
+ * parts of the journey that can change what happens next. Everything else is
+ * projected away so that the state space stays small:
+ *
+ * - a flag is tracked only if some guard reads it;
+ * - a node's visited / completed facts only if a guard reads them, or the node
+ *   is `pass` / `closed` (which `arrivalAt` and `exitAvailability` read);
+ * - a node's latest outcome only if an `outcome` guard is about it;
+ * - an edge's traversed fact only if a guard reads it or it is `once`;
+ * - an edge's lock override only if an effect names it.
+ *
+ * Entering a node runs the chapter, and a chapter's result is not the graph's
+ * to know, so completion BRANCHES: both outcomes ("success", "setback") are
+ * explored wherever an outcome is read, and
+ *
+ *   **chapters are the only thing that writes journey flags besides edge
+ *   effects, and the explorer knows them only through `chapterFlags`.**
+ *
+ * For a chapter it can describe (`chapterFlagWrites`: the `setFlag` effects in
+ * its scenes), a flag it never writes keeps its value, and one it can set true
+ * may come out true or unchanged. For a chapter it cannot (no provider, or the
+ * provider returns `undefined` — a placeholder fixture chapter, a chapter that
+ * failed to load) EVERY tracked flag may come out either way: the conservative
+ * reading, which can only make the search find *more* states, so an
+ * "unreachable" or "cannot finish" verdict is never an artifact of ignorance.
+ * (A reported STRANDED can, in principle, be one a real chapter would not
+ * produce; the message gives the path so the author can judge.) Chapters are
+ * assumed to write flags only on completion, as the doc says, and a variant is
+ * chosen by `chapterAtNode` exactly as on arrival.
+ *
+ * Route-set forks: when a `routeSets` map is passed, setting a member true
+ * clears the others, for edge effects and chapter results alike.
+ *
+ * The search is breadth-first, so every path it reports is a shortest one. It
+ * stops at `maxStates` states (default 50,000, ample for a few dozen nodes);
+ * past that it says so rather than guess.
+ */
+
+import type { Chapter } from "./types/chapter.js";
+import type {
+  EdgeId,
+  GraphCondition,
+  JourneyFacts,
+  NodeId,
+} from "./types/campaign-graph.js";
+import {
+  arrivalAt,
+  chapterAtNode,
+  exitsFrom,
+  type ExitBlock,
+  type ParsedCampaignGraph,
+} from "./campaign-graph.ts";
+
+// ---------------------------------------------------------------------------
+// Public shape
+// ---------------------------------------------------------------------------
+
+export type GraphFindingCode =
+  | "UNREACHABLE_NODE"
+  | "NO_ENDING_REACHABLE"
+  | "DEAD_END"
+  | "CANNOT_FINISH"
+  | "UNINTENTIONAL_CYCLE"
+  | "LOCKED_EDGE_NEVER_UNLOCKED"
+  | "GUARD_CONTRADICTION"
+  | "GUARD_FLAG_NEVER_SET"
+  | "STRANDED"
+  | "TRAPPED"
+  | "NO_ENDING_WINNABLE"
+  | "NODE_NEVER_ENTERED"
+  | "ENDING_NEVER_REACHED"
+  | "EDGE_NEVER_AVAILABLE"
+  | "IRREVERSIBLE_NOT"
+  | "SEARCH_TRUNCATED"
+  | "DUPLICATE_KEY";
+
+export interface GraphFinding {
+  /** Stable: tests, docs and any tool that filters key on this. */
+  code: GraphFindingCode;
+  severity: "error" | "warning";
+  /** A JSON pointer inside the campaign, like `parseCampaignGraph`'s problems. */
+  path: string;
+  /** What is wrong, naming the node/edge. */
+  message: string;
+  /** What to change. */
+  hint: string;
+}
+
+/** The flags a chapter can write when it completes (see the file comment). */
+export interface ChapterFlagWrites {
+  /** Flags some effect in the chapter can set true. */
+  setsTrue: readonly string[];
+  /** Flags some effect in the chapter can set false. */
+  setsFalse: readonly string[];
+}
+
+export interface GraphLintOptions {
+  /**
+   * What a chapter can do to the journey's flags, by chapter id. Omitted, or
+   * `undefined` for a chapter, means "unknown": it may write any flag either way.
+   */
+  chapterFlags?: (chapter: string) => ChapterFlagWrites | undefined;
+  /** The campaign's `routeSets`, so a fork clears its siblings as it does in play. */
+  routeSets?: Readonly<Record<string, readonly string[]>>;
+  /** State cap for the search. Default {@link DEFAULT_MAX_STATES}. */
+  maxStates?: number;
+}
+
+export interface GraphLintResult {
+  findings: GraphFinding[];
+  /** How the search went: states visited, and whether it ran to completion. */
+  search: { states: number; complete: boolean };
+}
+
+export const DEFAULT_MAX_STATES = 50_000;
+
+/**
+ * The `setFlag` effects anywhere in a chapter, as {@link ChapterFlagWrites}.
+ *
+ * A structural walk rather than a read of `onEnter`/`choices`/`onSuccess`..:
+ * the shape of "where effects live" is chapter.ts's to change, and a walk that
+ * finds `{ type: "setFlag", flag }` wherever it is cannot fall behind it.
+ */
+export function chapterFlagWrites(chapter: Pick<Chapter, "scenes">): ChapterFlagWrites {
+  const setsTrue = new Set<string>();
+  const setsFalse = new Set<string>();
+  const walk = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      for (const each of value) walk(each);
+    } else if (typeof value === "object" && value !== null) {
+      const record = value as Record<string, unknown>;
+      if (record.type === "setFlag" && typeof record.flag === "string") {
+        (record.value === false ? setsFalse : setsTrue).add(record.flag);
+      }
+      for (const each of Object.values(record)) walk(each);
+    }
+  };
+  walk(chapter.scenes);
+  return { setsTrue: [...setsTrue].sort(), setsFalse: [...setsFalse].sort() };
+}
+
+// ---------------------------------------------------------------------------
+// Duplicate keys
+// ---------------------------------------------------------------------------
+
+/**
+ * Keys that appear twice in one JSON object, with their JSON pointer.
+ *
+ * `JSON.parse` keeps the last of two equal keys and says nothing, so two
+ * nodes (or two edges) with one id become one — the first silently vanishes,
+ * along with every edge that was meant to reach it. Only the file text can
+ * show it, which is why this reads text and the other checks read the parsed
+ * graph.
+ */
+export function duplicateJsonKeys(text: string): { path: string; key: string }[] {
+  type Frame = { kind: "object"; keys: Set<string>; key: string | null } | { kind: "array"; index: number };
+  const found: { path: string; key: string }[] = [];
+  const stack: Frame[] = [];
+  /** The pointer to `key` in the innermost object: its ancestors' current keys, then it. */
+  const pointer = (key: string): string => {
+    const parts = stack.slice(0, -1).map((frame) => (frame.kind === "object" ? frame.key ?? "" : String(frame.index)));
+    parts.push(key);
+    return parts.map((part) => `/${part.replace(/~/g, "~0").replace(/\//g, "~1")}`).join("");
+  };
+  let expectKey = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i]!;
+    if (ch === "{") {
+      stack.push({ kind: "object", keys: new Set(), key: null });
+      expectKey = true;
+    } else if (ch === "[") {
+      stack.push({ kind: "array", index: 0 });
+      expectKey = false;
+    } else if (ch === "}" || ch === "]") {
+      stack.pop();
+      expectKey = false;
+    } else if (ch === ",") {
+      const top = stack[stack.length - 1];
+      if (top?.kind === "array") top.index += 1;
+      expectKey = top?.kind === "object";
+    } else if (ch === '"') {
+      let end = i + 1;
+      while (end < text.length && text[end] !== '"') end += text[end] === "\\" ? 2 : 1;
+      const top = stack[stack.length - 1];
+      if (top?.kind === "object" && expectKey) {
+        let key: string;
+        try {
+          key = JSON.parse(text.slice(i, end + 1)) as string;
+        } catch {
+          key = text.slice(i + 1, end);
+        }
+        if (top.keys.has(key)) found.push({ path: pointer(key), key });
+        top.keys.add(key);
+        top.key = key;
+        expectKey = false;
+      }
+      i = end;
+    }
+  }
+  return found;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+const ids = (value: string | string[] | undefined): string[] =>
+  value === undefined ? [] : Array.isArray(value) ? value : [value];
+
+const seg = (key: string): string => key.replace(/~/g, "~0").replace(/\//g, "~1");
+const nodePath = (id: NodeId): string => `/graph/nodes/${seg(id)}`;
+const edgePath = (id: EdgeId): string => `/graph/edges/${seg(id)}`;
+const quoted = (list: readonly string[]): string => list.map((each) => `"${each}"`).join(", ");
+
+/** A guard, where it lives, and the node its `outcome` is about. */
+interface Guard {
+  path: string;
+  cond: GraphCondition;
+  subject: NodeId;
+  /** What the guard gates, for a message: `exit "x"` / `variant 0 of "y"`. */
+  what: string;
+  edge?: EdgeId;
+}
+
+function guardsOf(graph: ParsedCampaignGraph): Guard[] {
+  const guards: Guard[] = [];
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    if (edge.when) {
+      guards.push({ path: `${edgePath(id)}/when`, cond: edge.when, subject: edge.from, what: `exit "${id}"`, edge: id });
+    }
+  }
+  for (const id of graph.nodeOrder) {
+    (graph.nodes[id]!.variants ?? []).forEach((variant, i) => {
+      guards.push({
+        path: `${nodePath(id)}/variants/${i}/when`,
+        cond: variant.when,
+        subject: id,
+        what: `variant ${i} of "${id}"`,
+      });
+    });
+  }
+  return guards;
+}
+
+/** Nodes reached from `starts` by `next`, in discovery order, each with its BFS depth. */
+function bfs(starts: readonly NodeId[], next: (node: NodeId) => readonly NodeId[]): Map<NodeId, number> {
+  const depth = new Map<NodeId, number>();
+  const queue: NodeId[] = [];
+  for (const start of starts) {
+    if (!depth.has(start)) {
+      depth.set(start, 0);
+      queue.push(start);
+    }
+  }
+  for (let head = 0; head < queue.length; head += 1) {
+    const node = queue[head]!;
+    for (const to of next(node)) {
+      if (!depth.has(to)) {
+        depth.set(to, depth.get(node)! + 1);
+        queue.push(to);
+      }
+    }
+  }
+  return depth;
+}
+
+// ---------------------------------------------------------------------------
+// The lint
+// ---------------------------------------------------------------------------
+
+export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLintOptions = {}): GraphLintResult {
+  const findings: GraphFinding[] = [];
+  const add = (finding: GraphFinding): void => void findings.push(finding);
+  const error = (code: GraphFindingCode, path: string, message: string, hint: string): void =>
+    add({ code, severity: "error", path, message, hint });
+  const warn = (code: GraphFindingCode, path: string, message: string, hint: string): void =>
+    add({ code, severity: "warning", path, message, hint });
+
+  const successors = (node: NodeId): NodeId[] => (graph.exits[node] ?? []).map((id) => graph.edges[id]!.to);
+  const predecessors = (node: NodeId): NodeId[] => (graph.entrances[node] ?? []).map((id) => graph.edges[id]!.from);
+  /** Nodes already explained by a static finding; the search does not repeat them. */
+  const explained = new Set<NodeId>();
+
+  // --- reachability, guards ignored --------------------------------------
+  const fromEntry = bfs([graph.entry], successors);
+  for (const id of graph.nodeOrder) {
+    if (fromEntry.has(id)) continue;
+    explained.add(id);
+    const incoming = graph.entrances[id] ?? [];
+    error(
+      "UNREACHABLE_NODE",
+      nodePath(id),
+      `node "${id}" cannot be reached from the entry "${graph.entry}"${
+        incoming.length > 0
+          ? `: its only ways in (${quoted(incoming)}) start at nodes the entry cannot reach either`
+          : ": no edge leads to it"
+      }`,
+      `Add an edge from a node the party can reach to "${id}", or delete the node (and its chapter from "chapters").`,
+    );
+  }
+
+  const reachableEndings = graph.endings.filter((id) => fromEntry.has(id));
+  if (reachableEndings.length === 0) {
+    error(
+      "NO_ENDING_REACHABLE",
+      "/graph/nodes",
+      `no ending (${quoted(graph.endings)}) can be reached from the entry "${graph.entry}", so no attempt could ever complete`,
+      "Connect the story to an ending: add a forward edge from the last place the party can reach to an ending node.",
+    );
+  }
+
+  // --- dead ends and traps, guards ignored -------------------------------
+  const canFinish = bfs(graph.endings, predecessors);
+  for (const id of graph.nodeOrder) {
+    if (!fromEntry.has(id) || graph.nodes[id]!.ending !== undefined) continue;
+    if ((graph.exits[id] ?? []).length === 0) {
+      explained.add(id);
+      error(
+        "DEAD_END",
+        nodePath(id),
+        `node "${id}" is not an ending and has no exits, so a party that gets here is stuck for good`,
+        `Add an edge out of "${id}" (a "return" edge to the hub is usual), or make it an ending by adding "ending": { "title": ... }.`,
+      );
+    } else if (!canFinish.has(id) && reachableEndings.length > 0) {
+      explained.add(id);
+      error(
+        "CANNOT_FINISH",
+        nodePath(id),
+        `node "${id}" is reachable but no chain of its exits ever reaches an ending: its routes only lead to ${quoted(
+          [...bfs([id], successors).keys()].filter((each) => each !== id),
+        )} and back`,
+        `Give "${id}" (or a node it leads to) an edge toward an ending, or a "return" edge back into the part of the map that has one.`,
+      );
+    }
+  }
+
+  // --- cycles: only through a return edge --------------------------------
+  lintCycles(graph, fromEntry, error);
+
+  // --- locked edges nothing unlocks ---------------------------------------
+  const unlocked = new Set<EdgeId>();
+  for (const id of graph.edgeOrder) {
+    for (const effect of graph.edges[id]!.effects ?? []) {
+      if (effect.type === "unlock") unlocked.add(effect.edge);
+    }
+  }
+  const knownDead = new Set<EdgeId>();
+  for (const id of graph.edgeOrder) {
+    if (graph.edges[id]!.locked === true && !unlocked.has(id)) {
+      knownDead.add(id);
+      error(
+        "LOCKED_EDGE_NEVER_UNLOCKED",
+        edgePath(id),
+        `edge "${id}" is locked and no edge has an "unlock" effect for it, so it can never be taken`,
+        `Add { "type": "unlock", "edge": "${id}" } to the effects of the edge that opens it, or remove "locked" from "${id}".`,
+      );
+    }
+  }
+
+  // --- guards that cannot hold ---------------------------------------------
+  const guards = guardsOf(graph);
+  for (const guard of guards) {
+    const why = contradiction(guard.cond, guard.subject);
+    if (why === null) continue;
+    if (guard.edge !== undefined) knownDead.add(guard.edge);
+    error(
+      "GUARD_CONTRADICTION",
+      guard.path,
+      `the guard on ${guard.what} can never hold: ${why}`,
+      "Fix the guard: a condition is every field at once, so two fields that disagree can never both be true. Split it into two edges if you meant either.",
+    );
+  }
+
+  // --- flags nothing can set ------------------------------------------------
+  const chapterWrites = (chapter: string): ChapterFlagWrites | undefined => options.chapterFlags?.(chapter);
+  const settable = new Set<string>();
+  for (const id of graph.edgeOrder) {
+    for (const effect of graph.edges[id]!.effects ?? []) {
+      if (effect.type === "setFlag" && effect.value !== false) settable.add(effect.flag);
+    }
+  }
+  const everyChapter = new Set<string>();
+  for (const id of graph.nodeOrder) {
+    everyChapter.add(graph.nodes[id]!.chapter);
+    for (const variant of graph.nodes[id]!.variants ?? []) everyChapter.add(variant.chapter);
+  }
+  for (const chapter of everyChapter) {
+    const writes = chapterWrites(chapter);
+    if (writes === undefined) for (const flag of graph.flags) settable.add(flag);
+    else for (const flag of writes.setsTrue) settable.add(flag);
+  }
+  for (const guard of guards) {
+    if (guard.cond.flag !== undefined && !settable.has(guard.cond.flag)) {
+      if (guard.edge !== undefined) knownDead.add(guard.edge);
+      warn(
+        "GUARD_FLAG_NEVER_SET",
+        `${guard.path}/flag`,
+        `${guard.what} needs flag "${guard.cond.flag}", but no edge effect and no chapter in this graph ever sets it, so it can never apply`,
+        `Add a setFlag "${guard.cond.flag}" effect to an edge, or a setFlag choice to one of the chapters the party plays first; or drop the guard.`,
+      );
+    }
+  }
+
+  // --- the search -----------------------------------------------------------
+  const search = explore(graph, options, chapterWrites);
+  lintSearch(graph, search, { explained, knownDead, fromEntry, error, warn });
+
+  return { findings, search: { states: search.states.length, complete: search.complete } };
+}
+
+// ---------------------------------------------------------------------------
+// Guards that contradict themselves
+// ---------------------------------------------------------------------------
+
+function contradiction(cond: GraphCondition, subject: NodeId): string | null {
+  if (cond.flag !== undefined && cond.flag === cond.notFlag) {
+    return `it needs flag "${cond.flag}" both set and not set`;
+  }
+  const overlap = (a: string[], b: string[]) => a.find((each) => b.includes(each));
+  const visitedAndNot = overlap(ids(cond.visited), ids(cond.notVisited));
+  if (visitedAndNot) return `it needs "${visitedAndNot}" both visited and not visited`;
+  const doneAndNot = overlap(ids(cond.completed), ids(cond.notCompleted));
+  if (doneAndNot) return `it needs "${doneAndNot}" both completed and not completed`;
+  const doneNeverVisited = overlap(ids(cond.completed), ids(cond.notVisited));
+  if (doneNeverVisited) return `it needs "${doneNeverVisited}" completed but never visited`;
+  const takenAndNot = overlap(ids(cond.traversed), ids(cond.notTraversed));
+  if (takenAndNot) return `it needs edge "${takenAndNot}" both taken and not taken`;
+  if (cond.outcome !== undefined) {
+    if (ids(cond.notCompleted).includes(subject) || ids(cond.notVisited).includes(subject)) {
+      return `it needs an outcome from "${subject}" and also that "${subject}" was never ${
+        ids(cond.notCompleted).includes(subject) ? "completed" : "visited"
+      }`;
+    }
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Cycles
+// ---------------------------------------------------------------------------
+
+type Report = (code: GraphFindingCode, path: string, message: string, hint: string) => void;
+
+/**
+ * A cycle is intentional only through a `return` edge (the doc's rule), so
+ * the graph with its return edges removed must be acyclic. Its strongly
+ * connected components with more than one node, or one node with a self-loop,
+ * are the offenders. One finding per component, naming a real cycle through it
+ * and the edge most likely to be the back edge (the one that points at a node
+ * no deeper than where it starts, counting from the entry).
+ */
+function lintCycles(graph: ParsedCampaignGraph, depthFromEntry: Map<NodeId, number>, error: Report): void {
+  const forward = (node: NodeId): EdgeId[] =>
+    (graph.exits[node] ?? []).filter((id) => graph.edges[id]!.kind !== "return");
+
+  // Tarjan's strongly connected components over the non-return edges.
+  const index = new Map<NodeId, number>();
+  const low = new Map<NodeId, number>();
+  const onStack = new Set<NodeId>();
+  const stack: NodeId[] = [];
+  const components: NodeId[][] = [];
+  let counter = 0;
+  const visit = (node: NodeId): void => {
+    index.set(node, counter);
+    low.set(node, counter);
+    counter += 1;
+    stack.push(node);
+    onStack.add(node);
+    for (const id of forward(node)) {
+      const to = graph.edges[id]!.to;
+      if (!index.has(to)) {
+        visit(to);
+        low.set(node, Math.min(low.get(node)!, low.get(to)!));
+      } else if (onStack.has(to)) {
+        low.set(node, Math.min(low.get(node)!, index.get(to)!));
+      }
+    }
+    if (low.get(node) === index.get(node)) {
+      const component: NodeId[] = [];
+      for (;;) {
+        const top = stack.pop()!;
+        onStack.delete(top);
+        component.push(top);
+        if (top === node) break;
+      }
+      components.push(component);
+    }
+  };
+  for (const node of graph.nodeOrder) if (!index.has(node)) visit(node);
+
+  for (const component of components) {
+    const members = new Set(component);
+    const inside = (id: EdgeId): boolean => {
+      const edge = graph.edges[id]!;
+      return edge.kind !== "return" && members.has(edge.from) && members.has(edge.to);
+    };
+    const edgesInside = graph.edgeOrder.filter(inside);
+    if (component.length === 1 && !edgesInside.some((id) => graph.edges[id]!.from === graph.edges[id]!.to)) continue;
+
+    const depth = (node: NodeId): number => depthFromEntry.get(node) ?? Number.POSITIVE_INFINITY;
+    const back =
+      edgesInside.find((id) => depth(graph.edges[id]!.to) <= depth(graph.edges[id]!.from)) ?? edgesInside[0]!;
+    const backEdge = graph.edges[back]!;
+
+    // The rest of the cycle: the shortest way from where `back` lands to where it started.
+    const via = new Map<NodeId, EdgeId>();
+    const queue = [backEdge.to];
+    const seen = new Set(queue);
+    for (let head = 0; head < queue.length; head += 1) {
+      const node = queue[head]!;
+      for (const id of edgesInside) {
+        const edge = graph.edges[id]!;
+        if (edge.from !== node || seen.has(edge.to)) continue;
+        seen.add(edge.to);
+        via.set(edge.to, id);
+        queue.push(edge.to);
+      }
+    }
+    const cycle: EdgeId[] = [];
+    for (let at = backEdge.from; at !== backEdge.to; ) {
+      const id = via.get(at);
+      if (id === undefined) break;
+      cycle.unshift(id);
+      at = graph.edges[id]!.from;
+    }
+    cycle.push(back);
+    const walk = [backEdge.to, ...cycle.map((id) => graph.edges[id]!.to)].map((each) => `"${each}"`).join(" -> ");
+
+    error(
+      "UNINTENTIONAL_CYCLE",
+      edgePath(back),
+      `the party can loop ${walk} using only forward and sideways edges (${quoted(cycle)}); a loop is only intentional through a "return" edge`,
+      `If going back is meant, set "kind": "return" on "${back}" (the edge that closes the loop); otherwise remove or redirect it.`,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The search
+// ---------------------------------------------------------------------------
+
+interface Step {
+  edge: EdgeId | null;
+  label: string;
+}
+
+interface SearchState {
+  node: NodeId;
+  /** The attempt completed here: an ending was entered. */
+  ended: boolean;
+  facts: JourneyFacts;
+  parent: number;
+  step: Step;
+}
+
+interface Search {
+  states: SearchState[];
+  /** succ[i] = the states reachable from state i by one exit (and its completion). */
+  succ: { to: number; edge: EdgeId }[][];
+  /** Non-ending states whose every exit is unavailable, with why. */
+  stranded: { state: number; blocks: { edge: EdgeId; reason: ExitBlock }[] }[];
+  everAvailable: Set<EdgeId>;
+  entered: Set<NodeId>;
+  complete: boolean;
+}
+
+function explore(
+  graph: ParsedCampaignGraph,
+  options: GraphLintOptions,
+  chapterWrites: (chapter: string) => ChapterFlagWrites | undefined,
+): Search {
+  const max = options.maxStates ?? DEFAULT_MAX_STATES;
+  const routeSets = Object.values(options.routeSets ?? {});
+
+  // --- what to track (see the file comment) ------------------------------
+  const flags = new Set<string>();
+  const visited = new Set<NodeId>();
+  const completed = new Set<NodeId>();
+  const outcomes = new Set<NodeId>();
+  const traversed = new Set<EdgeId>();
+  const overrides = new Set<EdgeId>();
+  for (const { cond, subject } of guardsOf(graph)) {
+    if (cond.flag !== undefined) flags.add(cond.flag);
+    if (cond.notFlag !== undefined) flags.add(cond.notFlag);
+    for (const node of [...ids(cond.visited), ...ids(cond.notVisited)]) visited.add(node);
+    for (const node of [...ids(cond.completed), ...ids(cond.notCompleted)]) completed.add(node);
+    for (const edge of [...ids(cond.traversed), ...ids(cond.notTraversed)]) traversed.add(edge);
+    if (cond.outcome !== undefined) outcomes.add(subject);
+  }
+  // A fork couples its members: setting one clears the rest, so a tracked
+  // flag's siblings can change it even though no guard reads them.
+  for (const members of routeSets) {
+    if (members.some((member) => flags.has(member))) for (const member of members) flags.add(member);
+  }
+  for (const id of graph.nodeOrder) {
+    if (graph.nodes[id]!.revisit !== "replay") completed.add(id);
+  }
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    if (edge.once === true) traversed.add(id);
+    for (const effect of edge.effects ?? []) {
+      if (effect.type !== "setFlag") overrides.add(effect.edge);
+    }
+  }
+  // `outcome` guards read `completed` implicitly (never completed matches
+  // neither outcome); the outcome is recorded with the completion.
+  for (const id of outcomes) completed.add(id);
+
+  const tracked = {
+    flags: [...flags].sort(),
+    visited: [...visited].sort(),
+    completed: [...completed].sort(),
+    outcomes: [...outcomes].sort(),
+    traversed: [...traversed].sort(),
+    overrides: [...overrides].sort(),
+  };
+
+  // An ending is where the attempt stops: what the journey held on the way is
+  // no longer a distinction worth a state of its own.
+  const keyOf = (node: NodeId, ended: boolean, f: JourneyFacts): string =>
+    ended ? `${node}!` : [
+      node,
+      tracked.flags.map((id) => (f.flags?.[id] === true ? 1 : 0)).join(""),
+      tracked.visited.map((id) => (f.visits?.[id] ? 1 : 0)).join(""),
+      tracked.completed.map((id) => (f.completions?.[id] ? 1 : 0)).join(""),
+      tracked.outcomes.map((id) => (f.outcomes?.[id] === "success" ? "s" : f.outcomes?.[id] === "setback" ? "f" : "-")).join(""),
+      tracked.traversed.map((id) => (f.traversed?.[id] ? 1 : 0)).join(""),
+      tracked.overrides.map((id) => (f.edges?.[id] === "open" ? "o" : f.edges?.[id] === "locked" ? "l" : "-")).join(""),
+    ].join("|");
+
+  const clone = (f: JourneyFacts): JourneyFacts => ({
+    visits: { ...f.visits },
+    completions: { ...f.completions },
+    outcomes: { ...f.outcomes },
+    traversed: { ...f.traversed },
+    edges: { ...f.edges },
+    flags: { ...f.flags },
+  });
+
+  /** Setting a route-set member clears its siblings, as in play. */
+  const setFlag = (f: JourneyFacts, flag: string, value: boolean, keep: ReadonlySet<string> = new Set()): void => {
+    f.flags![flag] = value;
+    if (!value) return;
+    for (const members of routeSets) {
+      if (!members.includes(flag)) continue;
+      for (const other of members) if (other !== flag && !keep.has(other)) f.flags![other] = false;
+    }
+  };
+
+  // --- transitions ----------------------------------------------------------
+  interface Arrival {
+    facts: JourneyFacts;
+    ended: boolean;
+    label: string;
+  }
+
+  /**
+   * Entering `node`: a new visit, then the chapter runs (unless the node is an
+   * ending, or a `pass` revisit that begins done) and settles — every way it
+   * can settle is a separate arrival.
+   */
+  const arrive = (before: JourneyFacts, node: NodeId): Arrival[] => {
+    const how = arrivalAt(graph, node, before);
+    const facts = clone(before);
+    if (tracked.visited.includes(node)) facts.visits![node] = 1;
+    if (graph.nodes[node]!.ending !== undefined) return [{ facts, ended: true, label: "ending" }];
+    if (how === "pass" || how === "closed") return [{ facts, ended: false, label: "passed through" }];
+
+    const writes = chapterWrites(chapterAtNode(graph, node, facts) ?? "");
+    const choices = tracked.flags.map((flag): boolean[] => {
+      const now = facts.flags![flag] === true;
+      if (writes === undefined) return [now, !now];
+      const out = [now];
+      if (writes.setsTrue.includes(flag) && !now) out.push(true);
+      if (writes.setsFalse.includes(flag) && now) out.push(false);
+      return out;
+    });
+    const outcomeChoices: (("success" | "setback") | undefined)[] = tracked.outcomes.includes(node)
+      ? ["success", "setback"]
+      : [undefined];
+
+    const arrivals: Arrival[] = [];
+    const assign = (at: number, picked: boolean[]): void => {
+      if (at < tracked.flags.length) {
+        for (const value of choices[at]!) assign(at + 1, [...picked, value]);
+        return;
+      }
+      for (const outcome of outcomeChoices) {
+        const next = clone(facts);
+        const notes: string[] = [];
+        const gained = new Set<string>();
+        tracked.flags.forEach((flag, i) => {
+          if (picked[i]! && !(facts.flags![flag] === true)) gained.add(flag);
+        });
+        tracked.flags.forEach((flag, i) => {
+          if (picked[i]! !== (facts.flags![flag] === true)) {
+            if (picked[i]!) setFlag(next, flag, true, gained);
+            else next.flags![flag] = false;
+            notes.push(`${picked[i]! ? "+" : "-"}${flag}`);
+          }
+        });
+        if (tracked.completed.includes(node)) next.completions![node] = 1;
+        if (outcome !== undefined) {
+          next.outcomes![node] = outcome;
+          notes.unshift(outcome);
+        }
+        arrivals.push({ facts: next, ended: false, label: notes.join(", ") });
+      }
+    };
+    assign(0, []);
+    return arrivals;
+  };
+
+  /** The journey after an edge's effects and the crossing itself, before arrival. */
+  const cross = (before: JourneyFacts, edgeId: EdgeId): JourneyFacts => {
+    const facts = clone(before);
+    for (const effect of graph.edges[edgeId]!.effects ?? []) {
+      if (effect.type === "setFlag") {
+        if (tracked.flags.includes(effect.flag)) setFlag(facts, effect.flag, effect.value !== false);
+      } else if (tracked.overrides.includes(effect.edge)) {
+        facts.edges![effect.edge] = effect.type === "unlock" ? "open" : "locked";
+      }
+    }
+    if (tracked.traversed.includes(edgeId)) facts.traversed![edgeId] = 1;
+    return facts;
+  };
+
+  // --- breadth-first -----------------------------------------------------------
+  const search: Search = {
+    states: [],
+    succ: [],
+    stranded: [],
+    everAvailable: new Set(),
+    entered: new Set(),
+    complete: true,
+  };
+  const index = new Map<string, number>();
+  const intern = (node: NodeId, arrival: Arrival, parent: number, step: Step): number | null => {
+    const key = keyOf(node, arrival.ended, arrival.facts);
+    const known = index.get(key);
+    if (known !== undefined) return known;
+    if (search.states.length >= max) {
+      search.complete = false;
+      return null;
+    }
+    const id = search.states.length;
+    index.set(key, id);
+    search.states.push({ node, ended: arrival.ended, facts: arrival.facts, parent, step });
+    search.succ.push([]);
+    search.entered.add(node);
+    return id;
+  };
+
+  for (const arrival of arrive({}, graph.entry)) {
+    intern(graph.entry, arrival, -1, { edge: null, label: arrival.label });
+  }
+  for (let head = 0; head < search.states.length; head += 1) {
+    const state = search.states[head]!;
+    if (state.ended) continue;
+    const exits = exitsFrom(graph, state.node, state.facts);
+    const open = exits.filter((exit) => exit.availability.available);
+    if (open.length === 0) {
+      search.stranded.push({
+        state: head,
+        blocks: exits.map((exit) => ({
+          edge: exit.edge,
+          reason: exit.availability.available ? "guard" : exit.availability.reason,
+        })),
+      });
+      continue;
+    }
+    for (const exit of open) {
+      search.everAvailable.add(exit.edge);
+      const crossed = cross(state.facts, exit.edge);
+      for (const arrival of arrive(crossed, exit.to)) {
+        const to = intern(exit.to, arrival, head, { edge: exit.edge, label: arrival.label });
+        if (to !== null) search.succ[head]!.push({ to, edge: exit.edge });
+      }
+    }
+    if (!search.complete) break;
+  }
+  return search;
+}
+
+/** `a -[e1]-> b (setback) -[e2]-> c`, the shortest way to state `at`. */
+function describePath(search: Search, at: number): string {
+  const steps: string[] = [];
+  for (let i = at; i !== -1; i = search.states[i]!.parent) {
+    const state = search.states[i]!;
+    const note = state.step.label !== "" && state.step.label !== "passed through" && state.step.label !== "ending" ? ` (${state.step.label})` : "";
+    steps.unshift(state.step.edge === null ? `start at "${state.node}"${note}` : `-[${state.step.edge}]-> "${state.node}"${note}`);
+  }
+  return steps.join(" ");
+}
+
+function lintSearch(
+  graph: ParsedCampaignGraph,
+  search: Search,
+  ctx: {
+    explained: Set<NodeId>;
+    knownDead: Set<EdgeId>;
+    fromEntry: Map<NodeId, number>;
+    error: Report;
+    warn: Report;
+  },
+): void {
+  const { explained, knownDead, fromEntry, error, warn } = ctx;
+  const { states, succ } = search;
+
+  if (!search.complete) {
+    warn(
+      "SEARCH_TRUNCATED",
+      "/graph",
+      `the softlock search stopped after ${states.length} states, so "never reachable", "cannot finish" and trap checks were skipped`,
+      "Simplify the graph's guards (fewer flags, fewer outcome-dependent exits), or raise the state cap for this check.",
+    );
+  }
+
+  // --- stranded: no exit at all ------------------------------------------
+  const strandedNodes = new Set<NodeId>();
+  const strandedStates = new Set<number>();
+  for (const { state, blocks } of search.stranded) {
+    strandedStates.add(state);
+    const node = states[state]!.node;
+    if (explained.has(node) || strandedNodes.has(node)) continue;
+    strandedNodes.add(node);
+    const why = blocks
+      .map(({ edge, reason }) => `"${edge}" is ${{ locked: "locked", spent: "already used (once)", closed: "closed (its target is a completed revisit: closed node)", guard: "guarded and its condition does not hold" }[reason]}`)
+      .join("; ");
+    error(
+      "STRANDED",
+      nodePath(node),
+      `a party can be stranded at "${node}": after ${describePath(search, state)}, every exit is unavailable (${why})`,
+      `Give "${node}" an exit that is always open (usually an unguarded "return" edge to the hub), or make whatever it waits on (an unlock, a flag, a different outcome) reachable before the party gets here.`,
+    );
+  }
+
+  if (!search.complete) return;
+
+  // --- an ending, ever? ----------------------------------------------------
+  const endedStates = states.map((state, i) => (state.ended ? i : -1)).filter((i) => i >= 0);
+  if (endedStates.length === 0) {
+    if (graph.endings.some((id) => fromEntry.has(id))) {
+      error(
+        "NO_ENDING_WINNABLE",
+        "/graph/nodes",
+        `an ending is connected to the entry, but no play-through can enter one: every route to ${quoted(graph.endings)} is closed by a lock, a guard, a spent "once" edge or a closed place`,
+        "Check the edges into the endings: a guard that can never hold, a lock nothing opens, or a once/closed rule that uses up the only way.",
+      );
+    }
+    return;
+  }
+
+  // --- trapped: exits remain, but no ending is left to reach ---------------
+  const reverse: number[][] = states.map(() => []);
+  succ.forEach((list, from) => list.forEach(({ to }) => reverse[to]!.push(from)));
+  const winnable = new Set<number>(endedStates);
+  const queue = [...endedStates];
+  for (let head = 0; head < queue.length; head += 1) {
+    for (const before of reverse[queue[head]!]!) {
+      if (!winnable.has(before)) {
+        winnable.add(before);
+        queue.push(before);
+      }
+    }
+  }
+  const trappedNodes = new Set<NodeId>();
+  states.forEach((state, i) => {
+    if (winnable.has(i) || state.ended || strandedStates.has(i)) return;
+    const entering = state.parent === -1 || winnable.has(state.parent);
+    if (!entering) return;
+    if (explained.has(state.node) || strandedNodes.has(state.node) || trappedNodes.has(state.node)) return;
+    trappedNodes.add(state.node);
+    error(
+      "TRAPPED",
+      nodePath(state.node),
+      `a party can reach a point of no return at "${state.node}": after ${describePath(search, i)}, exits remain but none can lead to an ending any more`,
+      `Something on that path used up the way forward (a "once" edge, a completed "closed" place, a "lock" effect, a flag set the wrong way). Keep a way to an ending open: drop "once"/"closed", or add an unguarded edge that always leads on.`,
+    );
+  });
+
+  // --- places and doors nothing ever uses ---------------------------------
+  for (const id of graph.nodeOrder) {
+    if (!fromEntry.has(id) || search.entered.has(id) || explained.has(id)) continue;
+    const isEnding = graph.nodes[id]!.ending !== undefined;
+    error(
+      isEnding ? "ENDING_NEVER_REACHED" : "NODE_NEVER_ENTERED",
+      nodePath(id),
+      `${isEnding ? "ending" : "node"} "${id}" is connected by edges (${quoted(graph.entrances[id] ?? [])}) but no play-through can ever enter it: each of them is locked, guarded, spent or closed whenever the party stands at its start`,
+      `Look at those edges' "locked", "when" and "once": one of them needs to be satisfiable on a path the party can walk.`,
+    );
+  }
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    if (search.everAvailable.has(id) || knownDead.has(id) || !search.entered.has(edge.from)) continue;
+    warn(
+      "EDGE_NEVER_AVAILABLE",
+      edgePath(id),
+      `edge "${id}" is never available: in every play-through that reaches "${edge.from}" it is locked, guarded off, spent or closed`,
+      `Check "${id}"'s "locked", "when" and "once"; if it is meant to be unreachable, delete it.`,
+    );
+  }
+
+  // --- irreversible: a claim about the way back -----------------------------
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    if (edge.irreversible !== true) continue;
+    const seeds = new Set<number>();
+    succ.forEach((list) => list.forEach((each) => each.edge === id && seeds.add(each.to)));
+    const from = new Map<number, number>();
+    const walk = [...seeds];
+    walk.forEach((seed) => from.set(seed, -1));
+    let back = -1;
+    for (let head = 0; head < walk.length && back === -1; head += 1) {
+      const at = walk[head]!;
+      if (states[at]!.node === edge.from) {
+        back = at;
+        break;
+      }
+      for (const { to } of succ[at]!) {
+        if (!from.has(to)) {
+          from.set(to, at);
+          walk.push(to);
+        }
+      }
+    }
+    if (back === -1) continue;
+    const route: string[] = [];
+    for (let at = back; at !== -1; at = from.get(at)!) {
+      const via = states[at]!;
+      route.unshift(`"${via.node}"`);
+    }
+    error(
+      "IRREVERSIBLE_NOT",
+      edgePath(id),
+      `edge "${id}" is marked irreversible, but after taking it the party can get back to "${edge.from}" (${route.join(" -> ")})`,
+      `Either the claim is wrong (remove "irreversible" from "${id}") or the way back is: remove it, or guard/lock/once it so it is closed after "${id}".`,
+    );
+  }
+}

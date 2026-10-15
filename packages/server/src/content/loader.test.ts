@@ -389,6 +389,19 @@ describe("graph campaigns (#192)", () => {
     ]);
   });
 
+  it("refuses at startup a graph whose every name resolves but whose party can be stranded (#193)", async () => {
+    // The glade is no longer an ending: a party that reaches it has no exit.
+    const stranding = {
+      ...graph,
+      nodes: { clearing: graph.nodes.clearing, glade: { chapter: "glade-01" }, dawn: { chapter: "glade-01", ending: { title: "x" } } },
+    };
+    const error = await loadContent(await withCampaign({ graph: stranding })).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ContentError);
+    if (!(error instanceof ContentError)) return;
+    expect(error.problems.join("\n")).toMatch(/\/graph\/nodes\/glade: DEAD_END: node "glade" is not an ending and has no exits/);
+    expect(error.problems.join("\n")).toMatch(/\/graph\/nodes\/dawn: UNREACHABLE_NODE/);
+  });
+
   it("refuses a graph version this build cannot read rather than guessing at it", async () => {
     await expect(loadContent(await withCampaign({ graph: { ...graph, version: 2 } }))).rejects.toThrow(
       /graph version 2 is not one this build reads/,
