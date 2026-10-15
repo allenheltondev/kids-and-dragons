@@ -3,7 +3,7 @@ title: Glassback Crab
 id: creature.glassback_crab
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["dangerous", "foothills", "territorial", "burrower"]
 classification: dangerous_creature
@@ -76,7 +76,7 @@ A glassback's shell refracts whatever color is nearby, which in the foothills is
 
 ### Getting Along
 
-Solitary and formal. Neighbouring crabs maintain exact, invisible borders that are renegotiated once a year in a ceremony that looks exactly like two rocks facing each other for a day.
+Solitary and formal. Neighboring crabs maintain exact, invisible borders that are renegotiated once a year in a ceremony that looks exactly like two rocks facing each other for a day.
 
 ### Likes
 

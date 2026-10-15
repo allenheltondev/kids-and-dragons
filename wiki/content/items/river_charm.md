@@ -3,7 +3,7 @@ title: River Charm
 id: item.river_charm
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["charm", "travel", "stone_crossing", "common"]
 related:
@@ -16,7 +16,7 @@ related:
 ai_context:
   mood: "A holed river stone on a cord. Water wore the hole, which is the whole reason it is worth anything."
   themes: "Charm, Travel, Stone_crossing, Common"
-  visual_style: "Flat grey pebble with a clean round hole through it, strung on braided river grass."
+  visual_style: "Flat gray pebble with a clean round hole through it, strung on braided river grass."
   common_encounters: "A parting gift for someone with a long way to go."
   lore_highlights: ""
   related_entities: "location.stone_crossing, individual.old_ossley"

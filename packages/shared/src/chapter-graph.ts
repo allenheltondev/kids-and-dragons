@@ -25,7 +25,7 @@ import type {
   Scene,
   SceneId,
 } from "./types/chapter.js";
-import { conditionRefs, lintChapterText } from "./condition-lint.js";
+import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -42,6 +42,7 @@ export type IssueCode =
   | "UNKNOWN_ITEM"
   | "ITEM_KIND_MISMATCH"
   | "BAD_CONDITION"
+  | "UNBACKED_COST"
   | "NO_SCENES";
 
 export interface ChapterIssue {
@@ -241,6 +242,19 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
       });
     }
 
+    // A choice that takes an item or spends coins must only be offered to a
+    // party that has them; otherwise the story narrates a gift nobody gave.
+    for (const choice of choices) {
+      for (const problem of unbackedCosts(choice)) {
+        issues.push({
+          severity: "error",
+          code: "UNBACKED_COST",
+          message: `scene "${sceneId}" choice "${choice.id}" ${problem}`,
+          sceneId,
+        });
+      }
+    }
+
     // Item references.
     if (catalog) {
       for (const effect of sceneEffects(scene)) {
@@ -268,6 +282,19 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
           }
         }
       }
+      for (const effect of sceneEffects(scene)) {
+        if (effect.type !== "takeItem") continue;
+        for (const id of typeof effect.itemId === "string" ? [effect.itemId] : effect.itemId) {
+          if (!catalog[id]) {
+            issues.push({
+              severity: "error",
+              code: "UNKNOWN_ITEM",
+              message: `scene "${sceneId}" takes unknown item "${id}"`,
+              sceneId,
+            });
+          }
+        }
+      }
       for (const choice of choices) {
         if (choice.requiresItem && !catalog[choice.requiresItem]) {
           issues.push({
@@ -279,6 +306,10 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
         }
       }
     }
+  }
+
+  for (const { path, problem } of unbackedSceneCharges(chapter)) {
+    issues.push({ severity: "error", code: "UNBACKED_COST", message: `${path}: ${problem}`, sceneId: path.split("/")[2] });
   }
 
   // --- conditions, variants and tokens (#160) -----------------------------
@@ -377,6 +408,8 @@ export function reachableScenes(chapter: Chapter): Set<SceneId> {
 export interface ChoiceParty {
   members: readonly ResolvedCharacter[];
   flags?: Record<string, boolean>;
+  /** The party's purse (`RunState.coins`). Absent reads as empty. */
+  coins?: number;
 }
 
 function speciesMatches(choice: Choice, party: ChoiceParty): boolean {
@@ -451,6 +484,7 @@ export function evaluateCondition(cond: Condition | undefined, party: ChoicePart
   if (cond.count !== undefined && !within(countPartyItems(party, cond.count.of), cond.count)) {
     return false;
   }
+  if (cond.coins !== undefined && !within(party.coins ?? 0, cond.coins)) return false;
   if (cond.partySize !== undefined && !within(party.members.length, cond.partySize)) return false;
   return true;
 }

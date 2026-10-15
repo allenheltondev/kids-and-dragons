@@ -166,6 +166,14 @@ export interface EngineContext {
    * campaign with no routed beat.
    */
   campaignFlags?: Readonly<Record<string, boolean>>;
+  /**
+   * The party's purse as the campaign attempt left it
+   * (`CampaignProgressRecord.coins`), seeded into `RunState.coins` when a
+   * chapter starts — for the same reason as `campaignFlags`: the coins earned
+   * on one evening are still in the pack on the next. Absent keeps whatever
+   * the run already holds.
+   */
+  campaignCoins?: number;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -234,6 +242,7 @@ export function createRunState(input: CreateRunInput): RunState {
     prompt: null,
     lastRoll: null,
     flags: {},
+    coins: 0,
     xpEarned: 0,
     chapterOutcome: null,
     bonuses: [],
@@ -292,8 +301,12 @@ function requireScene(chapter: Chapter, sceneId: SceneId): Scene {
   return scene;
 }
 
-function party(state: RunState): { members: ResolvedCharacter[]; flags: Record<string, boolean> } {
-  return { members: state.party.map((m) => m.character), flags: state.flags };
+function party(state: RunState): {
+  members: ResolvedCharacter[];
+  flags: Record<string, boolean>;
+  coins: number;
+} {
+  return { members: state.party.map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
 }
 
 function touch(draft: RunState, ctx: EngineContext): void {
@@ -375,6 +388,26 @@ function heal(member: PartyMember, amount: number): void {
   if (member.hp > 0) member.down = false;
 }
 
+/**
+ * Removes one copy of the first of `ids` anybody in the party holds, slotted
+ * bag first and quest items second, through `setBag` so a trinket handed over
+ * takes its bonus with it. Holding none of them is a no-op.
+ */
+function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineContext): void {
+  for (const itemId of typeof ids === "string" ? [ids] : ids) {
+    const bagHolder = draft.party.find((m) => hasItem(m.character.inventory, itemId));
+    if (bagHolder) {
+      setBag(bagHolder, removeItem(bagHolder.character.inventory, itemId), ctx);
+      return;
+    }
+    const questHolder = draft.party.find((m) => m.character.questItems.includes(itemId));
+    if (questHolder) {
+      questHolder.character.questItems = questHolder.character.questItems.filter((id) => id !== itemId);
+      return;
+    }
+  }
+}
+
 function applyEffectsDraft(
   draft: RunState,
   effects: readonly Effect[] | undefined,
@@ -412,6 +445,20 @@ function applyEffectsDraft(
         }
         break;
       }
+
+      case "grantCoins":
+        draft.coins = (draft.coins ?? 0) + effect.amount;
+        break;
+
+      case "spendCoins":
+        // Never below zero. The choice is gated on affording it; if it was not,
+        // the party pays what it has rather than going into debt.
+        draft.coins = Math.max(0, (draft.coins ?? 0) - effect.amount);
+        break;
+
+      case "takeItem":
+        takeItem(draft, effect.itemId, ctx);
+        break;
 
       case "grantItem": {
         const candidates =
@@ -567,6 +614,32 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
 
 /** Opens the prompt a scene is waiting on. Returns a completion presentation
  * when the scene turns out to end the chapter. */
+/**
+ * Re-gates an open choice prompt against the party as it is now.
+ *
+ * `openScenePrompt` filters the choices once, when the scene opens, but the
+ * party can change while the prompt waits: a player eats the only supper
+ * bundle (USE_ITEM), trades the honeycake away, or a member leaves. An option
+ * whose cost is no longer covered would otherwise still be tappable, and its
+ * `takeItem` / `spendCoins` would quietly do nothing while the story narrates
+ * the gift. So after every intent the options are recomputed, and a vote cast
+ * for an option that has gone is withdrawn, leaving that player to vote again.
+ */
+function refreshChoicePrompt(draft: RunState, ctx: EngineContext): void {
+  const prompt = draft.prompt;
+  if (!prompt || prompt.kind !== "choice" || prompt.sceneId !== draft.sceneId) return;
+  const scene = ctx.chapter && ctx.chapter.id === draft.chapterId ? ctx.chapter.scenes[prompt.sceneId] : undefined;
+  if (!scene || (scene.type !== "story" && scene.type !== "rest" && scene.type !== "choice_point")) return;
+  const who = party(draft);
+  const live = visibleChoices(scene.choices, who);
+  const liveIds = new Set(live.map((c) => c.id));
+  if (prompt.options.length === live.length && prompt.options.every((o) => liveIds.has(o.id))) return;
+  prompt.options = live.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon }));
+  if (prompt.votes) {
+    prompt.votes = Object.fromEntries(Object.entries(prompt.votes).filter(([, id]) => liveIds.has(id)));
+  }
+}
+
 function openScenePrompt(
   draft: RunState,
   scene: Scene,
@@ -828,6 +901,7 @@ export function applyIntent(
     const presentation = dispatch(draft, envelope, rolling, effects);
     if (loaded?.spent()) draft.playtestDie = null;
     pruneTrades(draft);
+    refreshChoicePrompt(draft, ctx);
     touch(draft, ctx);
     return {
       state: draft,
@@ -1212,6 +1286,8 @@ function doStartChapter(
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
+  // The purse is not chapter-scoped: see `EngineContext.campaignCoins`.
+  draft.coins = ctx.campaignCoins ?? draft.coins ?? 0;
   draft.lastRoll = null;
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];
@@ -1296,6 +1372,12 @@ function doChoose(
 
   const choice = sceneChoices(scene).find((c) => c.id === winning);
   if (!choice) throw new Illegal("NOT_FOUND", `scene "${sceneId}" has no choice "${winning}"`);
+  // The prompt's options are re-gated after every intent (refreshChoicePrompt),
+  // so this only fires if that ever misses a path. A choice whose item or
+  // coins are gone must not run its effects for nothing and narrate the gift.
+  if (!visibleChoices([choice], party(draft)).length) {
+    throw new Illegal("ILLEGAL", `"${winning}" is no longer something this party can do`);
+  }
 
   // The marker moves on from whoever just had it — the chooser on a Story
   // beat (who may have stood in for an absent turn holder), the holder on a

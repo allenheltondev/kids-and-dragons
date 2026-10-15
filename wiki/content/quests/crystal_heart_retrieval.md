@@ -3,7 +3,7 @@ title: Crystal Heart Retrieval
 id: quest.crystal_heart_retrieval
 type: quest
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["side_quest", "exploration", "underground", "mystery"]

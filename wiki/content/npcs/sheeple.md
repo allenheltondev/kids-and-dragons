@@ -3,7 +3,7 @@ title: Sheeple
 id: npc.sheeple
 type: npc
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["supporting_people", "plains", "flock", "skittish"]
 classification: supporting_people
@@ -51,7 +51,7 @@ assets:
 ai_context:
   mood: "Friendly, skittish sheep-folk of the Plains who live, think, and do everything as a flock, are never fewer than three, and never have names."
   themes: "Supporting_people, Plains, Flock, Skittish"
-  visual_style: "Upright woolly sheep-folk on two hooves, about 4 feet tall, with the tallest males reaching 4.6 feet. Soft round faces, curled horns on some, and fleece in cream, grey, brown, and black. Clothes are felted from the flock's own wool into shapes no tailor would make: stacked hats with many brims, ring-collars like floats, barrel-wraps, cone-shaped leg cozies, tassels hung from the horns. Everyone in a flock wears the same outfit. Always shown in groups of three or more."
+  visual_style: "Upright woolly sheep-folk on two hooves, about 4 feet tall, with the tallest males reaching 4.6 feet. Soft round faces, curled horns on some, and fleece in cream, gray, brown, and black. Clothes are felted from the flock's own wool into shapes no tailor would make: stacked hats with many brims, ring-collars like floats, barrel-wraps, cone-shaped leg cozies, tassels hung from the horns. Everyone in a flock wears the same outfit. Always shown in groups of three or more."
   common_encounters: "A friendly flock that starts copying the party's cleverest member, sheeple that seem to appear from nowhere because a trio called the Gather nobody else could hear, thirty witnesses who all saw the same thing because one of them did."
   lore_highlights: "Nobody in the flock has ever had the first idea. The flock has had all of them."
   related_entities: "biome.plains, biome.sunward_fields, location.exchange, biome.plains"

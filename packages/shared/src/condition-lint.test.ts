@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { isGated, validateChapter } from "./chapter-graph.js";
-import { mutuallyExclusive, unknownTokens } from "./condition-lint.js";
+import { mutuallyExclusive, unbackedCosts, unbackedSceneCharges, unknownTokens } from "./condition-lint.js";
 import { makeChapter, makeItems } from "./test-fixtures.js";
 import type { Chapter, StoryScene } from "./types/chapter.js";
 
@@ -26,6 +26,104 @@ describe("a `when` is a gate", () => {
       for (const c of scene.choices) c.when = { partySize: { min: 1 } };
     });
     expect(codes(validateChapter(chapter, items))).toContain("DEAD_END");
+  });
+});
+
+describe("a cost is a gate", () => {
+  const base = { id: "c", label: "x", icon: "a", goto: "g" };
+
+  it("accepts a take backed by requiresItem, when.item, or a matching count", () => {
+    expect(unbackedCosts({ ...base, requiresItem: "honeycake", effects: [{ type: "takeItem", itemId: "honeycake" }] })).toEqual([]);
+    expect(unbackedCosts({ ...base, when: { item: "honeycake" }, effects: [{ type: "takeItem", itemId: "honeycake" }] })).toEqual([]);
+    expect(
+      unbackedCosts({
+        ...base,
+        when: { count: { of: ["supper_bundle", "honeycake"], min: 1 } },
+        effects: [{ type: "takeItem", itemId: ["supper_bundle", "honeycake"] }],
+      }),
+    ).toEqual([]);
+  });
+
+  it("names a take or a spend the party is not promised to afford", () => {
+    expect(unbackedCosts({ ...base, effects: [{ type: "takeItem", itemId: "honeycake" }] })).toHaveLength(1);
+    expect(
+      unbackedCosts({
+        ...base,
+        when: { count: { of: ["honeycake"], min: 1 } },
+        effects: [{ type: "takeItem", itemId: ["supper_bundle", "honeycake"] }],
+      }),
+    ).toHaveLength(1);
+    expect(unbackedCosts({ ...base, effects: [{ type: "spendCoins", amount: 2 }] })).toHaveLength(1);
+    expect(unbackedCosts({ ...base, when: { coins: { min: 1 } }, effects: [{ type: "spendCoins", amount: 2 }] })).toHaveLength(1);
+    expect(unbackedCosts({ ...base, when: { coins: { min: 2 } }, effects: [{ type: "spendCoins", amount: 2 }] })).toEqual([]);
+  });
+
+  it("counts a check's dearest outcome as a cost of every choice into it", () => {
+    const chapter = makeChapter();
+    const check = chapter.scenes["check_squeeze"];
+    if (check?.type !== "check") throw new Error("fixture changed");
+    check.onSuccess.effects = [{ type: "spendCoins", amount: 1 }];
+    check.onFailure.effects = [{ type: "spendCoins", amount: 2 }];
+    const entry = chapter.scenes[chapter.entry];
+    if (entry?.type !== "story") throw new Error("fixture changed");
+    const squeeze = entry.choices.find((c) => c.id === "squeeze")!;
+
+    // Ungated, and gated too low: both are a free roll at the goods.
+    expect(unbackedSceneCharges(chapter).map((p) => p.path)).toEqual([`/scenes/${chapter.entry}/choices/0`]);
+    squeeze.when = { coins: { min: 1 } };
+    expect(unbackedSceneCharges(chapter)).toHaveLength(1);
+    squeeze.when = { coins: { min: 2 } };
+    expect(unbackedSceneCharges(chapter)).toEqual([]);
+    expect(codes(validateChapter(chapter, items))).not.toContain("UNBACKED_COST");
+  });
+
+  it("refuses a charging scene reached by a branch, which nothing can gate", () => {
+    const chapter = makeChapter();
+    const scratched = chapter.scenes["scene_scratched"];
+    if (!scratched) throw new Error("fixture changed");
+    scratched.onEnter = [{ type: "spendCoins", amount: 1 }];
+    expect(unbackedSceneCharges(chapter).map((p) => p.path)).toContain("/scenes/check_squeeze/onFailure");
+  });
+
+  it("refuses two takes that could reach the same item, which no gate can back", () => {
+    const twice = unbackedCosts({
+      ...base,
+      when: { item: "supper_bundle" },
+      effects: [
+        { type: "takeItem", itemId: "supper_bundle" },
+        { type: "takeItem", itemId: "supper_bundle" },
+      ],
+    });
+    expect(twice.some((p) => p.includes("more than once"))).toBe(true);
+    // Overlapping preference lists count too.
+    const overlap = unbackedCosts({
+      ...base,
+      when: { count: { of: ["supper_bundle", "honeycake"], min: 1 } },
+      effects: [
+        { type: "takeItem", itemId: ["supper_bundle", "honeycake"] },
+        { type: "takeItem", itemId: "honeycake" },
+      ],
+    });
+    expect(overlap.some((p) => p.includes('takes "honeycake" more than once'))).toBe(true);
+    // Two different items, each gated, are fine.
+    expect(
+      unbackedCosts({
+        ...base,
+        requiresItem: "honeycake",
+        when: { item: "supper_bundle" },
+        effects: [
+          { type: "takeItem", itemId: "honeycake" },
+          { type: "takeItem", itemId: "supper_bundle" },
+        ],
+      }),
+    ).toEqual([]);
+  });
+
+  it("fails the chapter", () => {
+    const chapter = withShrine((scene) => {
+      scene.choices[0]!.effects = [{ type: "spendCoins", amount: 3 }];
+    });
+    expect(codes(validateChapter(chapter, items))).toContain("UNBACKED_COST");
   });
 });
 

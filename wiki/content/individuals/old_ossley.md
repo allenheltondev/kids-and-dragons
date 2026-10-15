@@ -3,7 +3,7 @@ title: Old Ossley
 id: individual.old_ossley
 type: individual
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["stone_crossing", "river", "frogfolk", "crossing"]
 related:
@@ -26,7 +26,7 @@ ai_context:
   common_encounters: "A crossing that costs something other than money. Somebody who has seen what goes up and down the river."
   lore_highlights: ""
   related_entities: "biome.plains, creature.silver_otter, creature.river_drake, item.river_charm"
-  writing_guidance: "Ossley's price is never coin and never cruel - a song, a favour, a thing you were carrying anyway. He does not explain how he decides."
+  writing_guidance: "Ossley's price is never coin and never cruel - a song, a favor, a thing you were carrying anyway. He does not explain how he decides."
   generation_hints: "At the water when the stones are under, gone somewhere unspecified when they are not."
 layout: individuals
 infobox: individual

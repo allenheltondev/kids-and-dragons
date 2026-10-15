@@ -3,7 +3,7 @@ title: The Sallow Wastelands
 id: biome.sallow_wastelands
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["coastal_lowland", "brackish", "mudflats", "saltrot", "unstable_ground"]
 danger_level: high
@@ -54,7 +54,7 @@ assets:
 ai_context:
   mood: "The humid, brackish coastal lowland where the Glacierflow loses its strength before the sea - mudflats, shallow shifting channels, stunted vegetation, and ground that cannot be trusted twice. Travelers commonly call the region the Saltrot."
   themes: "Coastal_lowland, Brackish, Mudflats, Saltrot, Unstable_ground"
-  visual_style: "Grey-green flats under a hazy sky: silt banks, salt-crusted pools, drowned and stunted trees, channels that braid and rebraid with the floods, and the pale gleam of the Bone Yard at the river mouth."
+  visual_style: "Gray-green flats under a hazy sky: silt banks, salt-crusted pools, drowned and stunted trees, channels that braid and rebraid with the floods, and the pale gleam of the Bone Yard at the river mouth."
   common_encounters: "Hard travel over unstable ground, salvage and flotsam stories, seasonal flood danger, guides who read the flats, approaches to the Bone Yard, and journeys where the land itself is the obstacle."
   lore_highlights: "The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent."
   related_entities: "location.bone_yard, feature.great_river, biome.open_sea, biome.eastern_plains, biome.open_sea, location.bone_yard, creature.bone_crawler, creature.restless_remains, location.bone_yard"

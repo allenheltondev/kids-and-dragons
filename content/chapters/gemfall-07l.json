@@ -1370,10 +1370,19 @@
           "goto": "scene_ember_buy_back",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 10
+            },
+            {
               "type": "grantQuestItem",
               "itemId": "facet_ember"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 10
+            }
+          }
         },
         {
           "id": "wave",

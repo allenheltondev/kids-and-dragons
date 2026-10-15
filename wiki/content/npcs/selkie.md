@@ -3,7 +3,7 @@ title: Selkie
 id: npc.selkie
 type: npc
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["supporting_people", "coastal", "shapeshifter", "courier"]
 classification: supporting_people

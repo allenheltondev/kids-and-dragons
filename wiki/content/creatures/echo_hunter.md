@@ -3,7 +3,7 @@ title: Echo Hunter
 id: creature.echo_hunter
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["dangerous", "underground", "blind", "predator"]
 classification: dangerous_creature
@@ -56,7 +56,7 @@ An echo hunter's memory is a library of sound: every drip, every chamber, every 
 
 - Re-listening to favorite chambers the way a person rereads a good book.
 - Adjusting a tunnel's drip pattern, one moved pebble at a time, until the chamber sounds right. This can take years. The hunter has years.
-- Following an interesting new sound for days at a courteous distance, cataloguing.
+- Following an interesting new sound for days at a courteous distance, cataloging.
 
 ### Getting Along
 
@@ -74,7 +74,7 @@ Entirely solitary, and by its own lights entirely polite. Approach making steady
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Sentinel**: The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
+**Sentinel**: The hardest thing in an ordinary fight. Slow, very well armored, and it does not leave.
 
 | | |
 |---|---|

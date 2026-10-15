@@ -3,7 +3,7 @@ title: Owlfeather Clasp
 id: item.owlfeather_clasp
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["charm", "clever", "enchanted_woods", "common"]
 related:
@@ -20,7 +20,7 @@ ai_context:
   common_encounters: "Worn by anyone whose job is to notice things."
   lore_highlights: ""
   related_entities: "biome.enchanted_woods, location.mosshome"
-  writing_guidance: "The feather must be found, never plucked. A plucked one goes grey within a day and stops turning."
+  writing_guidance: "The feather must be found, never plucked. A plucked one goes gray within a day and stops turning."
   generation_hints: "Turns slowly toward the source of any sound worth hearing."
 layout: items
 infobox: item

@@ -3,7 +3,7 @@ title: Kitsune
 id: character.kitsune
 type: character
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["playable", "sky", "illusion", "clever"]
 scale: small_to_medium

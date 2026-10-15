@@ -3,7 +3,7 @@ title: Jackalope
 id: creature.jackalope
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["ambient", "plains", "common", "fast"]
 classification: ambient_creature
@@ -80,7 +80,7 @@ Nobody knows whether the antlers came first or the attitude. Jackalopes treat th
 
 ### Getting Along
 
-Bold at a distance, gone up close. A warren that lets you get near is telling you the neighbourhood is safe; an empty stretch of good road is telling you something else.
+Bold at a distance, gone up close. A warren that lets you get near is telling you the neighborhood is safe; an empty stretch of good road is telling you something else.
 
 ### Likes
 

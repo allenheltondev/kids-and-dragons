@@ -113,6 +113,7 @@ function whenLabels(when: Condition): string[] {
     const of = Array.isArray(when.count.of) ? `[${when.count.of.join(", ")}]` : when.count.of;
     out.push(`has ${rangeLabel(when.count)} ${of}`);
   }
+  if (when.coins !== undefined) out.push(`purse ${rangeLabel(when.coins)} coins`);
   if (when.partySize !== undefined) out.push(`party ${rangeLabel(when.partySize)}`);
   return out;
 }

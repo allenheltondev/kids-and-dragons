@@ -3,7 +3,7 @@ title: Stone Troll
 id: npc.stone_troll
 type: npc
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["supporting_people", "river", "bridgekeeper", "masonry"]
 classification: supporting_people

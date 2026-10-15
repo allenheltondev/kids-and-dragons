@@ -3,7 +3,7 @@ title: The Eastern Plains
 id: biome.eastern_plains
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["eastern_grassland", "manticore_homeland", "roads", "prides", "caravans"]
 danger_level: moderate
@@ -79,6 +79,9 @@ related:
   - id: route.stone_crossing
     type: route
     relationship: connects
+  - id: item.supper_bundle
+    type: item
+    relationship: found_in
   - id: location.stone_crossing
     type: location
     relationship: biome
@@ -106,7 +109,7 @@ ai_context:
   visual_style: "Broad yellow-green grasslands, low ridges, winding roads, scattered trees, pride markers, camps, distant hills, and a hard eastern coastline."
   common_encounters: "Road patrols, caravan escort, territorial misunderstandings, riddles and formal challenges, long-distance pursuit, migration, and threats visible long before they arrive."
   lore_highlights: "The accepted account is that the prides and the grass arrived together and have been taking care of each other since: the manticore homeland is not fenced or defended so much as walked, generation after generation, until the walking became the border."
-  related_entities: "location.stone_crossing, biome.red_sky_foothills, biome.plains, biome.sunward_fields, feature.great_river, biome.frostfang_peaks, location.stone_crossing, character.manticore, npc.centaur, creature.jackalope, biome.sallow_wastelands, campaign.gemfall, character.griffin, character.manticore, creature.jackalope, feature.great_river, route.northern_river_bridge, route.stone_crossing, location.stone_crossing, location.stone_crossing, location.skullwater_cave, npc.centaur, npc.stone_troll"
+  related_entities: "location.stone_crossing, biome.red_sky_foothills, biome.plains, biome.sunward_fields, feature.great_river, biome.frostfang_peaks, location.stone_crossing, character.manticore, npc.centaur, creature.jackalope, biome.sallow_wastelands, campaign.gemfall, character.griffin, character.manticore, creature.jackalope, feature.great_river, route.northern_river_bridge, route.stone_crossing, item.supper_bundle, location.stone_crossing, location.stone_crossing, location.skullwater_cave, npc.centaur, npc.stone_troll"
   writing_guidance: "Do not merge the Eastern Plains with the central Plains. Manticores are not inherently hostile, and threatening anatomy is not shorthand for villainy."
   generation_hints: "Pride routes, patrols, caravans, and seasonal gathering grounds structure movement across the open region."
 layout: biomes
@@ -183,6 +186,9 @@ East of the river, safe passage is a manticore promise, and the realm has learne
 
 ### Features
 - [The Great River](/features/great_river/) `Separated By` `Reaches`
+
+### Items
+- [Supper Bundle](/items/supper_bundle/) `Found In`
 
 ### Locations
 - [Skullwater Cave](/locations/skullwater_cave/) `Coast Near`

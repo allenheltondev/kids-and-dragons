@@ -3,7 +3,7 @@ title: Sky Islands
 id: biome.sky_islands
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["aerial", "drifting_islands", "wind", "temples", "open_sky"]
 danger_level: moderate

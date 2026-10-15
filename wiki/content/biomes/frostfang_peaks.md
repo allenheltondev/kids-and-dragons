@@ -3,7 +3,7 @@ title: Frostfang Peaks
 id: biome.frostfang_peaks
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["frozen_mountains", "aeries", "griffin_homeland", "cliffs", "rescue"]
 danger_level: high

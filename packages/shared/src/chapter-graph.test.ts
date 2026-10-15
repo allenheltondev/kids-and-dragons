@@ -250,6 +250,14 @@ describe("evaluateCondition", () => {
     members: Array.from({ length: n }, (_, i) => holding(`c_${i + 1}`, [])),
   });
 
+  it("coins bounds read the party purse, and no purse is an empty one", () => {
+    const purse = (coins: number) => ({ ...solo(), coins });
+    expect(evaluateCondition({ coins: { min: 3 } }, purse(3))).toBe(true);
+    expect(evaluateCondition({ coins: { min: 3 } }, purse(2))).toBe(false);
+    expect(evaluateCondition({ coins: { max: 0 } }, purse(0))).toBe(true);
+    expect(evaluateCondition({ coins: { min: 1 } }, solo())).toBe(false);
+  });
+
   it("holds for an absent or empty condition", () => {
     expect(evaluateCondition(undefined, solo())).toBe(true);
     expect(evaluateCondition({}, solo())).toBe(true);

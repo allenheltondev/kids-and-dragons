@@ -1598,11 +1598,25 @@
       "roller": "all",
       "onSuccess": {
         "goto": "ending_walked_over",
-        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands round sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly."
+        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands round sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
       },
       "onFailure": {
         "goto": "ending_walked_over",
-        "narration": "You heave. The cart doesn't. Then three wagon drivers jump down to help, and the goose supervises, and between everybody it squelches free. The sausage seller gives everybody half a sausage each, which is the rush's idea of fair."
+        "narration": "You heave. The cart doesn't. Then three wagon drivers jump down to help, and the goose supervises, and between everybody it squelches free. The sausage seller gives everybody half a sausage each, which is the rush's idea of fair.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
       }
     },
     "scene_reed_edge_reeds": {
@@ -1615,6 +1629,13 @@
           "icon": "clever",
           "goto": "ending_walked_over"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
       ]
     },
     "scene_reed_edge_prospectors": {
@@ -1626,6 +1647,13 @@
           "label": "Step onto the road with friends",
           "icon": "party",
           "goto": "ending_walked_over"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },

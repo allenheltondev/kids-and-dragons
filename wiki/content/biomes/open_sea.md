@@ -3,7 +3,7 @@ title: The Open Sea
 id: biome.open_sea
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["ocean", "offshore", "deep_water", "weather", "currents"]
 danger_level: moderate
