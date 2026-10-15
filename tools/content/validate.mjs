@@ -29,6 +29,7 @@ import addFormats from "ajv-formats";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { campaignMode, journeyFlags, parseCampaignGraph } from "../../packages/shared/src/campaign-graph.ts";
+import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -1042,7 +1043,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     }
   }
 
-  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, f, campaign, chaptersById, fail, ok);
+  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok);
 
   /*
    * Beats are the save unit and the player sees "Chapter 3 of 6" - a gap here is
@@ -1141,11 +1142,18 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
  * (`parseCampaignGraph`, the same check the server makes at startup), and
  * that no chapter still claims a routed beat nothing would ever read.
  *
- * Deliberately only that. Whether the graph can be *walked* — every node
- * reachable, no softlock, every cycle intentional — is #193's, and hangs off
- * the parsed graph here.
+ * Once every name resolves, the graph is *walked* (#193,
+ * packages/shared/src/campaign-graph-lint.ts): reachability, dead ends,
+ * unintentional cycles, `irreversible` claims, locked edges nothing opens, and
+ * a search over journey states for a party that can be stranded. Errors fail
+ * the build; warnings print. The file text is read once more for a repeated
+ * node or edge id, which `JSON.parse` would silently merge.
+ *
+ * Ordered campaigns never get here (checkCampaign returns to its beat rules
+ * first), so Gemfall's output is untouched.
  */
-function checkGraphCampaign(rep, f, campaign, chaptersById, fail, okSoFar) {
+function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar) {
+  const f = rel(file);
   let ok = okSoFar;
   campaign.chapters.forEach((id, i) => {
     if (chaptersById.get(id)?.route) {
@@ -1157,14 +1165,36 @@ function checkGraphCampaign(rep, f, campaign, chaptersById, fail, okSoFar) {
       ok = false;
     }
   });
+  for (const { path, key } of duplicateJsonKeys(readFileSync(file, "utf8"))) {
+    fail(path, `DUPLICATE_KEY: "${key}" appears twice in the same object, so JSON keeps only the last`, "Give each node and each edge its own id; the first one is silently dropped.");
+    ok = false;
+  }
   const { graph, problems } = parseCampaignGraph(campaign);
   for (const { path, problem } of problems) {
     fail(path, problem);
     ok = false;
   }
+  let walked = "";
+  if (graph) {
+    // A chapter that did not load is unknown to the search (it may set any
+    // flag), the conservative reading; a loaded one is read for its setFlags.
+    const { findings, search } = lintCampaignGraph(graph, {
+      chapterFlags: (id) => (chaptersById.has(id) ? chapterFlagWrites(chaptersById.get(id)) : undefined),
+      routeSets: campaign.routeSets,
+    });
+    for (const finding of findings) {
+      if (finding.severity === "error") {
+        fail(finding.path, `${finding.code}: ${finding.message}`, finding.hint);
+        ok = false;
+      } else {
+        rep.warn(`${f} ${finding.path}  ${finding.code}: ${finding.message}`, finding.hint);
+      }
+    }
+    walked = search.complete ? `, walked ${search.states} state(s)` : "";
+  }
   if (ok && graph) {
     rep.ok(
-      `${f}  campaign  (graph v${graph.version}: ${graph.nodeOrder.length} node(s), ${graph.edgeOrder.length} edge(s), ${graph.endings.length} ending(s))`,
+      `${f}  campaign  (graph v${graph.version}: ${graph.nodeOrder.length} node(s), ${graph.edgeOrder.length} edge(s), ${graph.endings.length} ending(s)${walked})`,
     );
   }
   return ok;
