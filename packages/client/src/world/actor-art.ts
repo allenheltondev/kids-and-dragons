@@ -20,7 +20,8 @@
  * stages keep importing one module.
  */
 
-import { Graphics } from "pixi.js";
+import { Graphics, type Texture } from "pixi.js";
+import { ANCHOR_X, ANCHOR_Y } from "./art-paths";
 
 export {
   ANCHOR_X,
@@ -91,4 +92,142 @@ export function drawPlaceholder(height: number): Graphics {
   });
 
   return g;
+}
+
+/**
+ * Where a figure actually touches the ground inside its canvas, as fractions
+ * of the canvas height measured from the anchor. The contract puts the ground
+ * line at y = 900, and the art keeps to it, but nothing puts the *feet* at
+ * x = 512: an old man leaning on a stick stands left of centre, a gem buyer
+ * hunched over a sack stands well right of it. A shadow drawn at the anchor
+ * lands beside such a figure, and a figure beside its shadow is floating.
+ *
+ * `x` is the middle of the painted pixels along the bottom of the figure;
+ * `halfWidth` their half-span. `y` is the average height of the lowest pixel
+ * in each of those columns — in a three-quarter view the far feet stand
+ * higher than the near ones, and the shadow belongs among all of them, not in
+ * front of the nearest. `lift` is how far the lowest pixel sits above the
+ * ground line — 0 for anything standing, more for a cloud whale.
+ */
+export interface Footprint {
+  x: number;
+  y: number;
+  halfWidth: number;
+  lift: number;
+}
+
+/** How much of the figure counts as "the feet", from its lowest pixel up:
+    deep enough to take in a quadruped's far hooves. */
+const FOOT_BAND = 0.08;
+/** Resolution the alpha is sampled at — 4 canvas pixels a cell at 1024. */
+const FOOT_SAMPLE = 256;
+
+const footprints = new WeakMap<object, Footprint | null>();
+
+/**
+ * Measured once per texture from a small copy of its alpha. Null when it
+ * cannot be measured (no DOM canvas, a tainted image, an empty canvas), and
+ * the caller falls back to a shadow centred on the anchor.
+ */
+export function measureFootprint(texture: Texture): Footprint | null {
+  const source = texture.source?.resource as CanvasImageSource | undefined;
+  if (!source || typeof document === "undefined") return null;
+  const known = footprints.get(source as object);
+  if (known !== undefined) return known;
+  let found: Footprint | null = null;
+  try {
+    const size = FOOT_SAMPLE;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (ctx) {
+      ctx.drawImage(source, 0, 0, size, size);
+      const alpha = ctx.getImageData(0, 0, size, size).data;
+      const solid = (x: number, y: number): boolean => (alpha[(y * size + x) * 4 + 3] ?? 0) > 64;
+      let bottom = -1;
+      for (let y = size - 1; y >= 0 && bottom < 0; y--) {
+        for (let x = 0; x < size; x++) {
+          if (solid(x, y)) {
+            bottom = y;
+            break;
+          }
+        }
+      }
+      if (bottom >= 0) {
+        const top = Math.max(0, bottom - Math.ceil(FOOT_BAND * size));
+        let left = size;
+        let right = -1;
+        let lowSum = 0;
+        let columns = 0;
+        for (let x = 0; x < size; x++) {
+          for (let y = bottom; y >= top; y--) {
+            if (solid(x, y)) {
+              left = Math.min(left, x);
+              right = Math.max(right, x);
+              lowSum += y + 1;
+              columns += 1;
+              break;
+            }
+          }
+        }
+        // Canvases are square, so a fraction of the width is one of the height.
+        found = {
+          x: (left + right + 1) / 2 / size - ANCHOR_X,
+          y: lowSum / columns / size - ANCHOR_Y,
+          halfWidth: (right + 1 - left) / 2 / size,
+          lift: Math.max(0, ANCHOR_Y - (bottom + 1) / size),
+        };
+      }
+    }
+  } catch {
+    found = null;
+  }
+  footprints.set(source as object, found);
+  return found;
+}
+
+/**
+ * The soft dark patch under a figure `height` pixels tall (its canvas height
+ * on screen), drawn around its own origin so the caller can slide it under
+ * the feet. Three stacked ellipses rather than a blur filter: a darker core
+ * right where the feet press down is what reads as contact, and the wider,
+ * fainter rings soften the edge without a filter pass on the TV.
+ *
+ * `squash` is the ellipse's depth over its width — the camera's angle on the
+ * ground. Unknown art gets a modest shadow centred on the anchor.
+ */
+export function drawContactShadow(
+  height: number,
+  footprint: Footprint | null,
+  squash: number,
+  strength = 1,
+): Graphics {
+  const g = new Graphics();
+  const halfWidth = Math.min(
+    0.32 * height,
+    Math.max(0.07 * height, (footprint?.halfWidth ?? 0.16) * height * 1.05),
+  );
+  // Off the ground, the shadow stays on the ground line and fades and
+  // tightens with the height of the hover. On it, it sits among the feet.
+  const lift = footprint?.lift ?? 0;
+  const airborne = Math.max(0.3, 1 - lift * 4);
+  const centreY = lift > 0.02 ? 0 : Math.min(0, Math.max(-0.06, footprint?.y ?? 0)) * height;
+  const alpha = strength * airborne;
+  const rings: [number, number][] = [
+    [1.25, 0.16],
+    [1.0, 0.2],
+    [0.65, 0.3],
+  ];
+  for (const [spread, a] of rings) {
+    const rx = halfWidth * spread * (0.6 + 0.4 * airborne);
+    g.ellipse(0, centreY, rx, rx * squash).fill({ color: 0x0b0a14, alpha: a * alpha });
+  }
+  return g;
+}
+
+/** Where under the anchor a shadow for `footprint` goes, in pixels for a
+    figure whose canvas is `height` tall on screen. */
+export function shadowOffset(height: number, footprint: Footprint | null): number {
+  return (footprint?.x ?? 0) * height;
 }

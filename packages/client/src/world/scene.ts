@@ -71,7 +71,11 @@ import {
   biomeBackdropUrl,
   characterArtUrl,
   characterWorldArtUrl,
+  drawContactShadow,
   drawPlaceholder,
+  measureFootprint,
+  shadowOffset,
+  type Footprint,
 } from "./actor-art";
 import { sceneBackdropUrl } from "./art-paths";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
@@ -302,6 +306,11 @@ interface Actor {
    * and FALLEN_* pose below stay away from it.
    */
   rive: RiveActorHandle | null;
+  /** The contact shadow, a sibling of `art` so it neither turns nor falls. */
+  shadow: Graphics;
+  /** How far right of the anchor the feet are, as drawn (facing left). The
+      shadow follows `art.scale.x` across, so it stays under them on a turn. */
+  shadowX: number;
 }
 
 /** Somebody standing opposite the party (world/cast.ts). */
@@ -310,6 +319,7 @@ interface CastActor {
   container: Container;
   art: Container;
   label: Text | null;
+  shadow: Graphics;
   scale: number;
   /** Where layout wants them, in design units. */
   x: number;
@@ -712,6 +722,7 @@ export function createScene(app: Application): PartyScene {
       // Turning to face whoever is here: a quick squash through edge-on, which
       // reads as the figure turning round rather than flipping.
       actor.art.scale.x = approach(actor.art.scale.x, facing, TURN_RATE, dt);
+      actor.shadow.x = actor.shadowX * actor.art.scale.x;
       if (actor.rive) {
         // The rig owns the acting: idle is a clip, the fall is down/down_loop
         // driven by the contract's knockedDown boolean, and the procedural
@@ -719,6 +730,7 @@ export function createScene(app: Application): PartyScene {
         // applies — presence is the scene's fact, not the rig's.
         actor.rive.setKnockedDown(actor.down);
         actor.rive.tick(dt);
+        actor.art.scale.y = 1;
         actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
         continue;
       }
@@ -727,12 +739,17 @@ export function createScene(app: Application): PartyScene {
         // for someone to come get them.
         actor.art.rotation = approach(actor.art.rotation, FALLEN_ROTATION, DOWN_RATE, dt);
         actor.art.y = approach(actor.art.y, ACTOR_HEIGHT * 0.18, DOWN_RATE, dt);
+        actor.art.scale.y = approach(actor.art.scale.y, 1, DOWN_RATE, dt);
         actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dt);
         continue;
       }
+      // Breathing, not bobbing: the art is anchored at the feet, so a
+      // stretch on y swells the body and leaves the feet on their shadow.
+      // Lifting the whole figure is what made the lineup look like it hovered.
       const bob = Math.sin(elapsed * 1.6 + actor.phase);
       actor.art.rotation = approach(actor.art.rotation, bob * 0.02, BOB_RATE, dt);
-      actor.art.y = bob * ACTOR_HEIGHT * 0.012;
+      actor.art.y = approach(actor.art.y, 0, DOWN_RATE, dt);
+      actor.art.scale.y = 1 + bob * 0.015;
       actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
     }
   }
@@ -751,12 +768,12 @@ export function createScene(app: Application): PartyScene {
       member.container.y = GROUND_Y;
       member.container.zIndex = GROUND_Y - 1;
       member.art.alpha = member.presence;
-      const shadow = member.container.children[0];
-      if (shadow) shadow.alpha = member.presence;
+      member.shadow.alpha = member.presence;
       if (member.label) member.label.alpha = member.presence;
       if (!still) {
+        // Breathing about the feet — see the party's bob in tick().
         const bob = Math.sin(elapsed * 1.3 + member.phase);
-        member.art.y = bob * ACTOR_HEIGHT * member.scale * 0.01;
+        member.art.scale.y = 1 + bob * 0.012;
       }
     }
   }
@@ -767,7 +784,9 @@ export function createScene(app: Application): PartyScene {
     container.addChild(art);
     actorsLayer.addChild(container);
     const height = ACTOR_HEIGHT * member.scale;
-    const shadow = drawContactShadow(height);
+    // Fitted to the feet once the art is here and can be measured; until
+    // then, a modest one at the anchor (it fades in with the figure anyway).
+    const shadow = drawContactShadow(height, null, SCENE_SHADOW_SQUASH);
     container.addChildAt(shadow, 0);
     const label =
       member.name === null
@@ -782,6 +801,7 @@ export function createScene(app: Application): PartyScene {
       container,
       art,
       label,
+      shadow,
       scale: member.scale,
       x: DESIGN.width,
       presence: 0,
@@ -804,6 +824,7 @@ export function createScene(app: Application): PartyScene {
         // same 1024 canvas, so scale alone says sprite or centaur.
         sprite.scale.set(height / texture.height);
         art.addChild(sprite);
+        actor.shadow = refitShadow(container, actor.shadow, height, measureFootprint(texture));
       })
       .catch(() => {
         /* nobody there is better than a broken image; the validator guards the path */
@@ -932,7 +953,8 @@ export function createScene(app: Application): PartyScene {
 
     // Feet on the ground: a soft contact shadow, outside `art` so it neither
     // turns with the figure nor tips over when they are knocked down.
-    container.addChildAt(drawContactShadow(ACTOR_HEIGHT), 0);
+    const shadow = drawContactShadow(ACTOR_HEIGHT, null, SCENE_SHADOW_SQUASH);
+    container.addChildAt(shadow, 0);
 
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
@@ -961,6 +983,8 @@ export function createScene(app: Application): PartyScene {
       x: 0,
       y: GROUND_Y,
       rive: null,
+      shadow,
+      shadowX: 0,
     };
 
     /*
@@ -983,6 +1007,9 @@ export function createScene(app: Application): PartyScene {
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
+          const footprint = measureFootprint(texture);
+          actor.shadow = refitShadow(container, actor.shadow, ACTOR_HEIGHT, footprint);
+          actor.shadowX = shadowOffset(ACTOR_HEIGHT, footprint);
         })
         .catch(() => {
           /* keep the placeholder: a missing tier must never blank the stage */
@@ -1332,11 +1359,26 @@ export function createScene(app: Application): PartyScene {
  * flat bands in the global palette from assets/manifest.json, sized to the
  * design space so swapping in a real texture is a one-line change.
  */
-/** The shadow under a figure `height` tall, centred on its feet. */
-function drawContactShadow(height: number): Graphics {
-  return new Graphics()
-    .ellipse(0, 0, height * 0.24, height * 0.05)
-    .fill({ color: 0x0b0a14, alpha: 0.35 });
+/** How deep the lineup's ground shadows are for their width: the story
+    camera looks along the ground, so they are flatter than the board's. */
+const SCENE_SHADOW_SQUASH = 0.2;
+
+/**
+ * Swap `old` for a shadow fitted to `footprint`, in the same slot under the
+ * art and at the same fade, and return it.
+ */
+function refitShadow(
+  container: Container,
+  old: Graphics,
+  height: number,
+  footprint: Footprint | null,
+): Graphics {
+  const fitted = drawContactShadow(height, footprint, SCENE_SHADOW_SQUASH);
+  fitted.x = shadowOffset(height, footprint);
+  fitted.alpha = old.alpha;
+  container.addChildAt(fitted, container.getChildIndex(old));
+  old.destroy();
+  return fitted;
 }
 
 function drawBackdrop(): Container {
