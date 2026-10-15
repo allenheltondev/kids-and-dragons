@@ -1555,6 +1555,12 @@
           "icon": "scroll",
           "goto": "scene_caravan_won"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
       ]
     },
     "choice_the_bend_relay_owes": {
@@ -1584,6 +1590,12 @@
           "label": "Lift the Caravan Stone",
           "icon": "note",
           "goto": "scene_caravan_won"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
         }
       ]
     },
@@ -1817,6 +1829,12 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
       ]
     },
     "scene_sold": {
@@ -1828,6 +1846,12 @@
           "label": "Try to sleep",
           "icon": "forward",
           "goto": "scene_dawn_bell"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
         }
       ]
     },

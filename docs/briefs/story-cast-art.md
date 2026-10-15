@@ -206,7 +206,8 @@ who has no figure, with their scenes. Most are missing because **canon has no pe
   any other gap. Painted bark masks, soup ladles, humming crystals on strings.
 - **The gold-rush crowd**: prospectors, drovers, caravan masters, carters, gem-buyers, Dunmore,
   Ma Ruddle, Tib (a small one in an orange hat who talks to ponies as equals).
-- **The Brassbuckle Expedition** (six in matching brass hats), **Clerk Pennywhistle**, the
+- **The Brassbuckle Expedition** (six Burrowfolk in matching brass hats; the scout and
+  recordkeeper represent them on stage), **Clerk Pennywhistle**, the
   **talking beech tree**, and the **working animals** (the cart driver's donkey, mules, ponies).
 
 **You decide what each of them is.** For each group, either:

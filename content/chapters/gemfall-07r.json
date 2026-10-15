@@ -303,6 +303,10 @@
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        },
+        {
+          "figure": "cast/crying_gem_buyer",
+          "name": "Crying gem-buyer"
         }
       ],
       "choices": [
@@ -862,6 +866,20 @@
           "icon": "forward",
           "goto": "scene_masks_let_be"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
+        }
       ]
     },
     "scene_masks_let_be": {
@@ -873,6 +891,20 @@
           "label": "Back to your pile",
           "icon": "forward",
           "goto": "choice_haul"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/soup_woman",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -913,7 +945,21 @@
       "onFailure": {
         "goto": "choice_haul",
         "narration": "She listens kindly, all the way to the end. Then she puts her mask back on. \"I hope you're right,\" she says. \"I don't think you are.\" Her cell rolls on with a full sack."
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
+        }
+      ]
     },
     "choice_haul": {
       "type": "choice_point",
@@ -1613,6 +1659,16 @@
           "icon": "note",
           "goto": "scene_caravan_won"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        },
+        {
+          "figure": "entities/mule",
+          "name": "Road mule"
+        }
       ]
     },
     "choice_the_bend_relay": {
@@ -1648,7 +1704,17 @@
       "onFailure": {
         "goto": "scene_caravan_lost",
         "narration": "She almost says yes. Then the ground lurches, the mules bolt, and in the muddle a masked wagoneer steers the middle wagon off up a side track."
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        },
+        {
+          "figure": "entities/mule",
+          "name": "Road mule"
+        }
+      ]
     },
     "check_caravan": {
       "type": "check",
@@ -1663,7 +1729,17 @@
       "onFailure": {
         "goto": "scene_caravan_lost",
         "narration": "She has heard a lot of stories this season. She does not believe yours. While you are still arguing, a masked wagoneer quietly steers the middle wagon off up a side track."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/mule",
+          "name": "Road mule"
+        },
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
+      ]
     },
     "scene_caravan_won": {
       "type": "story",

@@ -11,7 +11,6 @@ entry for them to the scenes listed (check the narration first: some were judged
 | Boy on a ladder | gemfall-01 | `scene_night_docks` | a boy on a ladder rubbing out the rope price and chalking a bigger one |
 | Two stone trolls bouncers | gemfall-01 | `scene_tavern` | two very polite stone trolls carrying Tidewell out, table and all (not cast: would duplicate figure and they leave at once) |
 | Door voice (crown borrower) | bramblewood-01 | `scene_door_listen` | very small, embarrassed voice behind a round door in a hill; kind unknown, unseen |
-| Brassbuckle Expedition | gemfall-03a | `scene_queue`, `check_rivals`, `scene_rivals_caught` | six people in matching brass hats, smooth and smiling, quietly moving the queue rope |
 | Wend | gemfall-03c | `scene_soup_line`, `scene_soup_line_ask_crystal`, `scene_soup_line_thank_wend` | Deep Hollow soup ladler in dark robes with a faintly humming crystal on a string; gentle, generous, 'kindness first' |
 | Wend | gemfall-04c | `rest_soup_tents`, `scene_wend_pitch`, `scene_wend_pitch_say_later`, `scene_wend_pitch_say_no` | Deep Hollow ladler in dark robes with a humming crystal on a string; gentle and warm |
 | Lead Drover | gemfall-03c | `choice_ford` | lead drover with a slow booming voice singing the crossing verse beside the first wagon |
