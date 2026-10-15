@@ -165,6 +165,14 @@ export interface EngineContext {
    * campaign with no routed beat.
    */
   campaignFlags?: Readonly<Record<string, boolean>>;
+  /**
+   * The party's purse as the campaign attempt left it
+   * (`CampaignProgressRecord.coins`), seeded into `RunState.coins` when a
+   * chapter starts — for the same reason as `campaignFlags`: the coins earned
+   * on one evening are still in the pack on the next. Absent keeps whatever
+   * the run already holds.
+   */
+  campaignCoins?: number;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -233,6 +241,7 @@ export function createRunState(input: CreateRunInput): RunState {
     prompt: null,
     lastRoll: null,
     flags: {},
+    coins: 0,
     xpEarned: 0,
     chapterOutcome: null,
     bonuses: [],
@@ -291,8 +300,12 @@ function requireScene(chapter: Chapter, sceneId: SceneId): Scene {
   return scene;
 }
 
-function party(state: RunState): { members: ResolvedCharacter[]; flags: Record<string, boolean> } {
-  return { members: state.party.map((m) => m.character), flags: state.flags };
+function party(state: RunState): {
+  members: ResolvedCharacter[];
+  flags: Record<string, boolean>;
+  coins: number;
+} {
+  return { members: state.party.map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
 }
 
 function touch(draft: RunState, ctx: EngineContext): void {
@@ -374,6 +387,26 @@ function heal(member: PartyMember, amount: number): void {
   if (member.hp > 0) member.down = false;
 }
 
+/**
+ * Removes one copy of the first of `ids` anybody in the party holds, slotted
+ * bag first and quest items second, through `setBag` so a trinket handed over
+ * takes its bonus with it. Holding none of them is a no-op.
+ */
+function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineContext): void {
+  for (const itemId of typeof ids === "string" ? [ids] : ids) {
+    const bagHolder = draft.party.find((m) => hasItem(m.character.inventory, itemId));
+    if (bagHolder) {
+      setBag(bagHolder, removeItem(bagHolder.character.inventory, itemId), ctx);
+      return;
+    }
+    const questHolder = draft.party.find((m) => m.character.questItems.includes(itemId));
+    if (questHolder) {
+      questHolder.character.questItems = questHolder.character.questItems.filter((id) => id !== itemId);
+      return;
+    }
+  }
+}
+
 function applyEffectsDraft(
   draft: RunState,
   effects: readonly Effect[] | undefined,
@@ -411,6 +444,20 @@ function applyEffectsDraft(
         }
         break;
       }
+
+      case "grantCoins":
+        draft.coins = (draft.coins ?? 0) + effect.amount;
+        break;
+
+      case "spendCoins":
+        // Never below zero. The choice is gated on affording it; if it was not,
+        // the party pays what it has rather than going into debt.
+        draft.coins = Math.max(0, (draft.coins ?? 0) - effect.amount);
+        break;
+
+      case "takeItem":
+        takeItem(draft, effect.itemId, ctx);
+        break;
 
       case "grantItem": {
         const candidates =
@@ -1211,6 +1258,8 @@ function doStartChapter(
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
+  // The purse is not chapter-scoped: see `EngineContext.campaignCoins`.
+  draft.coins = ctx.campaignCoins ?? draft.coins ?? 0;
   draft.lastRoll = null;
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];

@@ -529,6 +529,22 @@ describe("conditions, variants and tokens", { timeout: 30_000 }, () => {
     expect(result.code).toBe(0);
   }, 15_000);
 
+  it("refuses a choice that spends or takes what it does not gate on", () => {
+    const result = withChapter((chapter) => {
+      const scene = entryOf(chapter);
+      const goto = scene.choices[0].goto;
+      scene.choices.push(
+        { id: "pay", label: "Pay", icon: "coin", goto, effects: [{ type: "spendCoins", amount: 2 }] },
+        { id: "give", label: "Give", icon: "cake", goto, effects: [{ type: "takeItem", itemId: "honeycake" }] },
+        { id: "lose", label: "Lose", icon: "cake", goto, requiresItem: "honeycake", effects: [{ type: "takeItem", itemId: "no_such_item" }] },
+      );
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("spends 2 coins but is not gated");
+    expect(result.out).toContain('takes "honeycake" but is not gated');
+    expect(result.out).toContain('item "no_such_item" is not in content/items.json');
+  }, 15_000);
+
   it("catches an unknown flag in when.flag", () => {
     const result = withChapter((chapter) => addChoice(chapter, { flag: "never_set_anywhere" }));
     expect(result.code).not.toBe(0);

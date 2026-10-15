@@ -15,6 +15,21 @@ export type GrantTarget = "roller" | "party" | (string & {});
 export type Effect =
   | { type: "grantItem"; itemId: string; to?: GrantTarget }
   | { type: "grantQuestItem"; itemId: string }
+  /**
+   * Removes one copy of an item from whoever in the party holds it: the cake
+   * that was shared, the stone that was handed over. A list is an order of
+   * preference ("a supper bundle, or failing that a honeycake"), and the first
+   * id anybody holds is the one taken. Holding none is a no-op, which is why
+   * `content:validate` insists the choice carrying it is gated on holding it.
+   */
+  | { type: "takeItem"; itemId: string | string[] }
+  /** Adds to the party's purse (`RunState.coins`). */
+  | { type: "grantCoins"; amount: number }
+  /**
+   * Takes from the party's purse, never below zero. Gate the choice on
+   * `when: { coins: { min } }` so a party that cannot pay never sees it.
+   */
+  | { type: "spendCoins"; amount: number }
   | { type: "damage"; amount: number; to?: GrantTarget }
   | { type: "heal"; amount: number; to?: GrantTarget }
   | { type: "grantXp"; amount: number }
@@ -42,6 +57,8 @@ export interface Condition {
    * of exact ids. Bounds are inclusive; `max: 0` means "has none".
    */
   count?: { of: string | string[]; min?: number; max?: number };
+  /** How many coins are in the party's purse. Bounds are inclusive. */
+  coins?: { min?: number; max?: number };
   /** How many members are seated, connected or not. Bounds are inclusive. */
   partySize?: { min?: number; max?: number };
 }

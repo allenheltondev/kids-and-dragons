@@ -1094,11 +1094,20 @@
           "goto": "scene_soup_tent_coins",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
               "type": "setFlag",
               "flag": "funded_the_break",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
         }
       ],
       "cast": [

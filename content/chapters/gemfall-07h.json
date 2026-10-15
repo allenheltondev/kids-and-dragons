@@ -1114,10 +1114,19 @@
           "goto": "scene_ember_buy_back",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 10
+            },
+            {
               "type": "grantQuestItem",
               "itemId": "facet_ember"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 10
+            }
+          }
         },
         {
           "id": "too_much",
@@ -1336,13 +1345,35 @@
           "id": "buy",
           "label": "Pay him a fair price for it",
           "icon": "gem",
-          "goto": "scene_milestone_boy_buy"
+          "goto": "scene_milestone_boy_buy",
+          "when": {
+            "coins": {
+              "min": 4
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 4
+            }
+          ]
         },
         {
           "id": "fare",
           "label": "Pay his fare home, and let him keep his stone",
           "icon": "heart",
-          "goto": "scene_milestone_boy_fare"
+          "goto": "scene_milestone_boy_fare",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            }
+          ]
         },
         {
           "id": "fresh_start",
@@ -1350,6 +1381,12 @@
           "icon": "feather",
           "goto": "scene_milestone_boy_fresh_start",
           "requiresFlag": "motive_fresh_start"
+        },
+        {
+          "id": "walk_down",
+          "label": "Tell him you can't buy it, and walk him to the wagons",
+          "icon": "hand",
+          "goto": "scene_milestone_boy_walk_down"
         }
       ]
     },
@@ -1385,6 +1422,18 @@
           "id": "on",
           "label": "On toward the bend",
           "icon": "feather",
+          "goto": "scene_roadside_glitter"
+        }
+      ]
+    },
+    "scene_milestone_boy_walk_down": {
+      "type": "story",
+      "narration": "You tell him you can't buy his stone, and you are sorry. Alder nods like he expected it. You walk him down to the wagons anyway, and a drover going home says he can ride on the tailboard for a song. Alder sings it. It is a very long song, and by the end of it the whole wagon is singing along.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On toward the bend",
+          "icon": "heart",
           "goto": "scene_roadside_glitter"
         }
       ]
@@ -1931,6 +1980,10 @@
           "icon": "gem",
           "goto": "scene_sold",
           "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 30
+            },
             {
               "type": "setFlag",
               "flag": "funded_the_break",

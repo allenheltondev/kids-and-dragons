@@ -620,11 +620,20 @@
           "goto": "scene_wend_pitch_coin",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 1
+            },
+            {
               "type": "setFlag",
               "flag": "funded_the_break",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          }
         }
       ],
       "art": "scenes/gemfall/downbound-soup-tents",
@@ -831,11 +840,20 @@
           "goto": "scene_warden_patrol_pay",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
               "type": "setFlag",
               "flag": "met_the_wardens",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
         },
         {
           "id": "argue",
@@ -935,7 +953,18 @@
           "id": "buy_map",
           "label": "Buy one of his maps",
           "icon": "scroll",
-          "goto": "scene_signposts_buy_map"
+          "goto": "scene_signposts_buy_map",
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 1
+            }
+          ]
         },
         {
           "id": "read_signs",

@@ -485,7 +485,7 @@
     },
     "rest_waystation": {
       "type": "rest",
-      "narration": "The centaurs feed you oat-cakes and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -515,7 +515,14 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/centaur-sash-barn"
+      "art": "scenes/gemfall/centaur-sash-barn",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ]
     },
     "rest_waystation_with_escort": {
       "type": "story",
@@ -627,7 +634,25 @@
           "id": "share_supper",
           "label": "Toss them your supper",
           "icon": "cake",
-          "goto": "check_wolves"
+          "goto": "check_wolves",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         },
         {
           "id": "call_escort",
@@ -1493,7 +1518,13 @@
           "label": "Offer them a honeycake",
           "icon": "cake",
           "requiresItem": "honeycake",
-          "goto": "scene_jackalope_wall_honeycake"
+          "goto": "scene_jackalope_wall_honeycake",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "honeycake"
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/pride-stone-crater"

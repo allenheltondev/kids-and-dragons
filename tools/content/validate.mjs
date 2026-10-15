@@ -26,7 +26,7 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-import { conditionRefs, lintChapterText } from "../../packages/shared/src/condition-lint.ts";
+import { conditionRefs, lintChapterText, unbackedCosts } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
@@ -684,6 +684,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       // false is, for every consumer, a flag nothing ever sets.
       if (effect.type === "setFlag" && (effect.value ?? true) === true) flagsSet.add(effect.flag);
       if (!effect.itemId) continue;
+      if (effect.type === "takeItem") {
+        for (const id of Array.isArray(effect.itemId) ? effect.itemId : [effect.itemId]) {
+          if (!items?.[id]) fail(`${at}/itemId`, `item "${id}" is not in content/items.json`);
+        }
+        continue;
+      }
       const item = items?.[effect.itemId];
       if (!item) {
         fail(`${at}/itemId`, `item "${effect.itemId}" is not in content/items.json`);
@@ -717,6 +723,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       choiceIds.add(choice.id);
 
       if (!choice.icon?.trim()) fail(`${at}/icon`, "icon slug is empty - no interactive element ships without an icon (spec §11)");
+
+      // A choice that takes an item or spends coins is offered only to a party
+      // that has them, or the story narrates a gift nobody gave.
+      for (const problem of unbackedCosts(choice)) {
+        fail(`${at}`, `choice "${choice.id}" ${problem}`, "hidden, never greyed: gate the choice so a party without it never sees it");
+      }
 
       if (choice.requiresItem && !items?.[choice.requiresItem]) {
         fail(`${at}/requiresItem`, `item "${choice.requiresItem}" is not in content/items.json`);
