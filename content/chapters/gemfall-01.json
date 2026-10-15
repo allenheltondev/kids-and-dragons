@@ -130,7 +130,8 @@
           "icon": "moon",
           "goto": "scene_red_sky"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_prologue_party_oranges": {
       "type": "story",
@@ -142,7 +143,8 @@
           "icon": "hand",
           "goto": "scene_red_sky"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_prologue_party_lamps": {
       "type": "story",
@@ -163,7 +165,8 @@
           "icon": "lantern",
           "goto": "scene_red_sky"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-long-bridge"
     },
     "scene_prologue_party_cards": {
       "type": "story",
@@ -175,7 +178,8 @@
           "icon": "spark",
           "goto": "scene_red_sky"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_red_sky": {
       "type": "story",
@@ -231,7 +235,8 @@
           "icon": "arrow",
           "goto": "scene_stampede"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-lighthouse"
     },
     "scene_harbour_wall": {
       "type": "story",
@@ -256,6 +261,10 @@
         {
           "figure": "entities/yeti",
           "name": "Fishmonger"
+        },
+        {
+          "figure": "cast/rope_shop_boy",
+          "name": "Rope-shop boy"
         }
       ],
       "choices": [
@@ -265,7 +274,8 @@
           "icon": "eye",
           "goto": "scene_stampede"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_stampede": {
       "type": "story",
@@ -336,7 +346,8 @@
           "requiresSpecies": "bigfoot",
           "goto": "scene_long_bridge_wade"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-long-bridge"
     },
     "check_bridge_squeeze": {
       "type": "check",
@@ -351,7 +362,8 @@
       "onFailure": {
         "goto": "choice_why_north",
         "narration": "The crowd swallows you up and carries you the whole way across without your feet touching the ground once. It sets you down very politely, facing the wrong way, right beside the noodle stall."
-      }
+      },
+      "art": "scenes/gemfall/exchange-long-bridge"
     },
     "scene_long_bridge_barge": {
       "type": "story",
@@ -363,7 +375,8 @@
           "icon": "drop",
           "goto": "choice_why_north"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-long-bridge"
     },
     "scene_long_bridge_lamp_path": {
       "type": "story",
@@ -381,7 +394,8 @@
           "icon": "lantern",
           "goto": "choice_why_north"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-long-bridge"
     },
     "scene_long_bridge_wade": {
       "type": "story",
@@ -393,7 +407,8 @@
           "icon": "boot",
           "goto": "choice_why_north"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-long-bridge"
     },
     "choice_why_north": {
       "type": "choice_point",
@@ -484,7 +499,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_motive_wealth": {
       "type": "story",
@@ -506,7 +522,8 @@
           "icon": "gem",
           "goto": "scene_newcomers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_motive_curiosity": {
       "type": "story",
@@ -528,7 +545,8 @@
           "icon": "eye",
           "goto": "scene_newcomers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_motive_prestige": {
       "type": "story",
@@ -555,7 +573,8 @@
           "icon": "crown",
           "goto": "scene_newcomers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_motive_duty": {
       "type": "story",
@@ -581,7 +600,8 @@
           "icon": "shield",
           "goto": "scene_newcomers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_motive_fresh_start": {
       "type": "story",
@@ -603,7 +623,8 @@
           "icon": "leaf",
           "goto": "scene_newcomers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_motive_proving": {
       "type": "story",
@@ -625,7 +646,8 @@
           "icon": "star",
           "goto": "scene_newcomers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_newcomers": {
       "type": "story",
@@ -680,7 +702,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "check_newcomers_carry": {
       "type": "check",
@@ -701,7 +724,8 @@
       "onFailure": {
         "goto": "scene_docks",
         "narration": "Halfway up the hill the biggest trunk pops open, and out pour about a hundred knitted socks. All five children help you chase them down the street. It takes ages, and it is the most fun anybody has had all week. The selkies take a room at the Empty Chair, socks and all."
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_newcomers_plaque": {
       "type": "story",
@@ -796,7 +820,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_docks_sailors": {
       "type": "story",
@@ -814,7 +839,8 @@
           "icon": "ear",
           "goto": "scene_three_rumours"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "check_rumours": {
       "type": "check",
@@ -845,7 +871,8 @@
       "onFailure": {
         "goto": "scene_three_rumours",
         "narration": "Nobody wants your rumor. In the end you trade your lunch for theirs, which is a fair price, because their rumors are better than your lunch."
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_boggart": {
       "type": "story",
@@ -866,7 +893,8 @@
           "icon": "ear",
           "goto": "scene_three_rumours"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_three_rumours": {
       "type": "story",
@@ -884,7 +912,8 @@
           "icon": "arrow",
           "goto": "scene_griffin_post"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_griffin_post": {
       "type": "story",
@@ -932,7 +961,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-griffin-post"
     },
     "check_post_sort": {
       "type": "check",
@@ -960,7 +990,8 @@
       "onFailure": {
         "goto": "scene_gutter_glint",
         "narration": "You sort the letters beautifully, into all the wrong sacks. A letter for a duke is now going to a duck. Quill sighs, says it will all come out in the wash, and stuffs everything into one enormous sack anyway."
-      }
+      },
+      "art": "scenes/gemfall/exchange-griffin-post"
     },
     "scene_griffin_post_feed": {
       "type": "story",
@@ -978,7 +1009,8 @@
           "icon": "heart",
           "goto": "scene_gutter_glint"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-griffin-post"
     },
     "scene_griffin_post_shop": {
       "type": "story",
@@ -996,7 +1028,8 @@
           "icon": "griffin",
           "goto": "scene_gutter_glint"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-griffin-post"
     },
     "scene_gutter_glint": {
       "type": "story",
@@ -1095,7 +1128,8 @@
           ],
           "goto": "scene_gull_dive_outfly"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "check_gull_grab": {
       "type": "check",
@@ -1110,7 +1144,8 @@
       "onFailure": {
         "goto": "scene_tavern",
         "narration": "The gull is quicker. It snatches the stone, flaps three circles over the market, finds it is much heavier than a fish, and drops it down the chimney of the nearest tavern. You run in after it and fish it out of the ashes, still warm, and only a little sooty."
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_gull_dive_bread": {
       "type": "story",
@@ -1122,7 +1157,8 @@
           "icon": "cake",
           "goto": "scene_tavern"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_gull_dive_sardine": {
       "type": "story",
@@ -1134,7 +1170,8 @@
           "icon": "drop",
           "goto": "scene_tavern"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_gull_dive_outfly": {
       "type": "story",
@@ -1146,7 +1183,8 @@
           "icon": "wing",
           "goto": "scene_tavern"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "scene_tavern": {
       "type": "story",
@@ -1188,7 +1226,8 @@
           "icon": "gem",
           "goto": "choice_ember"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
     },
     "scene_scholar_believed": {
       "type": "story",
@@ -1302,7 +1341,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "choice_ember_sell_high": {
       "type": "story",
@@ -1320,7 +1360,8 @@
           "icon": "gem",
           "goto": "scene_sold"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "scene_sold": {
       "type": "story",
@@ -1345,7 +1386,8 @@
           "icon": "boot",
           "goto": "scene_provisions"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "scene_kept": {
       "type": "story",
@@ -1363,7 +1405,8 @@
           "icon": "boot",
           "goto": "scene_provisions"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "scene_provisions": {
       "type": "story",
@@ -1431,7 +1474,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "scene_provisions_honey": {
       "type": "story",
@@ -1449,7 +1493,8 @@
           "icon": "cake",
           "goto": "scene_market"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_provisions_sunbloom": {
       "type": "story",
@@ -1467,7 +1512,8 @@
           "icon": "potion",
           "goto": "scene_market"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_provisions_mosslight": {
       "type": "story",
@@ -1485,7 +1531,8 @@
           "icon": "lantern",
           "goto": "scene_market"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_provisions_stone": {
       "type": "story",
@@ -1503,7 +1550,8 @@
           "icon": "gem",
           "goto": "scene_market"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_market": {
       "type": "story",
@@ -1566,7 +1614,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_market_spot_fakes": {
       "type": "story",
@@ -1584,7 +1633,8 @@
           "icon": "eye",
           "goto": "scene_laced"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_market_fresh_start": {
       "type": "story",
@@ -1602,7 +1652,8 @@
           "icon": "leaf",
           "goto": "scene_laced"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_market_buy_outright": {
       "type": "story",
@@ -1620,7 +1671,8 @@
           "icon": "boot",
           "goto": "scene_laced"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "check_haggle": {
       "type": "check",
@@ -1648,7 +1700,8 @@
       "onFailure": {
         "goto": "scene_lace_tangle",
         "narration": "You haggle so hard that Tobble loses his place in the song and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper."
-      }
+      },
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_laced": {
       "type": "story",
@@ -1666,7 +1719,8 @@
           "icon": "rest",
           "goto": "scene_inn_full"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_lace_tangle": {
       "type": "story",
@@ -1691,7 +1745,8 @@
           "icon": "rest",
           "goto": "scene_inn_full"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
     },
     "scene_inn_full": {
       "type": "story",
@@ -1729,7 +1784,8 @@
           "requiresFlag": "ember_sold",
           "goto": "scene_inn_full_outbid"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
     },
     "check_inn_story": {
       "type": "check",
@@ -1750,7 +1806,8 @@
       "onFailure": {
         "goto": "rest_empty_chair",
         "narration": "Your story wanders off somewhere around the fish and never quite comes back. The prospectors laugh so kindly that Flint gives the cupboard to someone else and you the hayloft above the mules, which is warm, smells of apples, and is honestly nicer."
-      }
+      },
+      "art": "scenes/gemfall/empty-chair-tavern"
     },
     "scene_inn_full_dishes": {
       "type": "story",
@@ -1768,7 +1825,8 @@
           "icon": "drop",
           "goto": "rest_empty_chair"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
     },
     "scene_inn_full_selkies": {
       "type": "story",
@@ -1786,7 +1844,8 @@
           "icon": "party",
           "goto": "rest_empty_chair"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
     },
     "scene_inn_full_outbid": {
       "type": "story",
@@ -1804,7 +1863,8 @@
           "icon": "gem",
           "goto": "rest_empty_chair"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
     },
     "rest_empty_chair": {
       "type": "rest",
@@ -1876,7 +1936,8 @@
           "requiresItem": "facet_ember",
           "goto": "scene_last_noodles_listen"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_last_noodles_ask": {
       "type": "story",
@@ -1895,7 +1956,8 @@
           "icon": "ear",
           "goto": "scene_caravan_yard"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_last_noodles_gift": {
       "type": "story",
@@ -1914,7 +1976,8 @@
           "icon": "heart",
           "goto": "scene_caravan_yard"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_last_noodles_bowl": {
       "type": "story",
@@ -1933,7 +1996,8 @@
           "icon": "cake",
           "goto": "scene_caravan_yard"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_last_noodles_listen": {
       "type": "story",
@@ -1952,7 +2016,8 @@
           "icon": "gem",
           "goto": "scene_caravan_yard"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "scene_caravan_yard": {
       "type": "story",
@@ -2044,7 +2109,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     },
     "scene_caravan_yard_banner": {
       "type": "story",
@@ -2063,7 +2129,8 @@
           "icon": "crown",
           "goto": "scene_hired"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     },
     "scene_caravan_yard_race": {
       "type": "story",
@@ -2088,7 +2155,8 @@
           "icon": "star",
           "goto": "scene_hired"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     },
     "scene_caravan_yard_guard": {
       "type": "story",
@@ -2107,7 +2175,8 @@
           "icon": "shield",
           "goto": "scene_hired"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     },
     "scene_caravan_yard_lift_wagon": {
       "type": "story",
@@ -2133,7 +2202,8 @@
           "icon": "fist",
           "goto": "scene_hired"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     },
     "scene_caravan_yard_mortar": {
       "type": "story",
@@ -2152,7 +2222,8 @@
           "icon": "lantern",
           "goto": "scene_hired"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     },
     "check_signon": {
       "type": "check",
@@ -2181,7 +2252,8 @@
       "onFailure": {
         "goto": "scene_turnip_wagon",
         "narration": "You get muddled halfway through and say \"um\" eleven times. Hesper is kind about it. Hesper is also busy."
-      }
+      },
+      "art": "scenes/gemfall/caravan-yard"
     },
     "scene_hired": {
       "type": "story",
@@ -2257,7 +2329,8 @@
           "requiresFlag": "listened_to_scholar",
           "goto": "scene_north_gate_tidewell"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-north-gate"
     },
     "check_leaving_bell": {
       "type": "check",
@@ -2272,7 +2345,8 @@
       "onFailure": {
         "goto": "rest_northbound",
         "narration": "You haul on the rope, and the rope hauls back. Up you go, dangling under the bell like the world's most surprised clapper. It rings anyway. The whole gate cheers, and Hesper waits, very patiently, for you to come down."
-      }
+      },
+      "art": "scenes/gemfall/exchange-north-gate"
     },
     "scene_north_gate_wave": {
       "type": "story",
@@ -2284,7 +2358,8 @@
           "icon": "heart",
           "goto": "rest_northbound"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-north-gate"
     },
     "scene_north_gate_look": {
       "type": "story",
@@ -2296,7 +2371,8 @@
           "icon": "eye",
           "goto": "rest_northbound"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-north-gate"
     },
     "scene_north_gate_tidewell": {
       "type": "story",
@@ -2314,7 +2390,8 @@
           "icon": "scroll",
           "goto": "rest_northbound"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-north-gate"
     },
     "rest_northbound": {
       "type": "rest",

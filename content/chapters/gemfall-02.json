@@ -107,6 +107,10 @@
         {
           "figure": "cast/hob",
           "name": "Hob Thistledown"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Rush drover"
         }
       ],
       "choices": [
@@ -145,6 +149,10 @@
         {
           "figure": "cast/hob",
           "name": "Hob Thistledown"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Rush drover"
         }
       ],
       "choices": [
@@ -163,6 +171,10 @@
         {
           "figure": "cast/hob",
           "name": "Hob Thistledown"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Rush drover"
         }
       ],
       "choices": [
@@ -183,6 +195,10 @@
         {
           "figure": "cast/hob",
           "name": "Hob Thistledown"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Rush drover"
         }
       ],
       "roller": "party",
