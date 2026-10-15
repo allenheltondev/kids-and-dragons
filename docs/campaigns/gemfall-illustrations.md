@@ -438,6 +438,135 @@ NEW single individual game cast figure Mother Thrum; the supplied reference is a
 
 Reference: `assets/entities/witch_order/assembled.png`.
 
+## Gemfall 1 — seven story locations
+
+Generated with the built-in image tool using the existing Exchange biome as the
+architecture and painterly style reference. Production exports are 1920×1080 RGB
+WebP, quality 88. Sources are 1672×941; a one-row crop at the top yields 1672×940,
+then a Lanczos resize provides the export dimensions. The floor band remains at
+80%, open across the width; there are no painted characters or creatures.
+
+The outdoor scholar scenes, cupboard-under-stairs rest, market gutter/glint scenes, and moving northbound hired/turnip wagons retain biome art because the requested tavern/quay/yard backdrop would contradict their narration. The tavern interior therefore covers scene_tavern only. Prologue, city-wide views and the Sunward Fields camp also retain existing art.
+
+| Asset | Scenes |
+|---|---|
+| exchange-lighthouse | `scene_lighthouse` |
+| exchange-docks | `scene_night_docks`, `scene_docks`, `check_rumours`, `scene_boggart`, `scene_three_rumours` |
+| exchange-noodle-stall | `choice_why_north`, `scene_motive_wealth`, `scene_motive_curiosity`, `scene_motive_prestige`, `scene_motive_duty`, `scene_motive_fresh_start`, `scene_motive_proving` |
+| empty-chair-tavern | `scene_tavern` |
+| exchange-quay | `choice_ember`, `choice_ember_sell_high`, `scene_sold`, `scene_kept` |
+| outfitters-steps | `scene_market`, `scene_market_spot_fakes`, `scene_market_fresh_start`, `scene_market_buy_outright`, `check_haggle`, `scene_laced`, `scene_lace_tangle` |
+| caravan-yard | `scene_caravan_yard`, `scene_caravan_yard_banner`, `scene_caravan_yard_race`, `scene_caravan_yard_guard`, `scene_caravan_yard_lift_wagon`, `check_signon` |
+
+All seven new files pass explicit WebP/1920×1080/RGB and manifest/reference checks. Content validation: 55 passed. Existing Gemfall wiring and art-path tests: 37 passed. The shared art-verifier checks pass (725); that verifier does not inspect scene backdrops, so the separate file checks and captures are the evidence for these images. Semantic comparison confirms only 31 scene art fields changed. Before and after Playwright captures passed for all seven locations.
+
+[Backdrops and TV/phone comparison gallery](../review/gemfall-one-places/README.md).
+
+### exchange-lighthouse generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: The TOP viewing deck INSIDE the Exchange lighthouse, a circular cream stone lantern room with brass lens and lamp high at one side, broad arched windows in upper half overlooking deep blue harbor at night and far northern horizon faintly cherry-red with a few threads of gem-light. No bathtub or keeper. A broad level stone floor spans full width from 70% down, with the standing floor row at exactly80%. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+### exchange-docks generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: Exchange harbor docks in soft blue twilight, tied sailing ships, timber piers, cream-stone warehouses and lanterns, closed wooden rumor jars and rope coils arranged on stalls at far edges. Ships masts and warehouse skyline in upper half. Broad empty level stone-and-timber dock apron across full width from70% down, floor row at80%. No prices, signs, text, fish, birds or other creatures. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+### exchange-noodle-stall generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: A cozy Exchange noodle stall under ochre fabric awning, oversized cook's iron pot and ladle hanging behind a service counter, wooden dining tables and a single conspicuously empty chair tucked at back SIDE, shelves with bowls and noodles. Warm inviting cream stone market arches behind. Stall and awning in upper half, tables far back, spacious EMPTY level cobbled foreground across entire width70% to bottom, standing row80%. No cook, diners, lettering or menu text. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+### empty-chair-tavern generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: INSIDE the Empty Chair tavern at the Exchange, warm timber beams, cream-stone walls, amber lamps, wooden tables well behind the action area each with an empty chair, a broad open doorway to rainy blue night at one side, room cozy but spacious. Main architectural landmark fireplace and empty tables in upper half. Clear EMPTY level wooden floor runs entire width from70% to bottom, standing row80%. No patrons, scholars, staff, creatures, menu, signage or text. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+### exchange-quay generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: Exchange gem-buyers' quay, elegant cream-stone harbor arcade and colorful jewel merchant canopies high in background, bowls of subtle red blue amber polished gems on distant counter, sea glimpsed through arches, blue city roofs above. Mooring bollards at far margins only. Spacious level sunlit cobbled quay across full width from70% down, standing row80%, left and right halves completely clear. No merchant, barrel character, gulls, prices, writing or text. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+### outfitters-steps generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: Outfitters' Steps at the Exchange, stepped shopping lane rises in upper half between cream-stone shops, boots rope and thick colorful laces displayed at distant stalls, blue tile roofs, warm daylight. Steps begin WELL BEHIND the standing area, never under characters. Broad level stone landing spans entire foreground full width70% to bottom, standing row80%. No cobbler, shoppers, pony, text or sign lettering. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+### caravan-yard generation prompt
+
+Use case illustration-story. NEW wide landscape 16:9 game environment backdrop, 1920x1080 intended export. Use supplied Exchange city image for house painted style, cream-stone architecture and blue roofs, but draw this distinct LOCATION: Exchange caravan yard at DAWN, several stationary wooden wagons pointed north, one lantern wagon with many unlit brass lanterns and a tall plain teal banner with no writing, cream-stone city gate and blue roofs high behind, warm pale sunrise. All wagons and landmarks in upper half, carts at rear and margins. Broad empty LEVEL hard-packed earth staging apron across entire width from70% to bottom, standing row80%. No horses, oxen, people, animals, wheels in foreground, text or creatures. Painterly dimensional warm storybook craft, soft brushwork and rich controlled colors, family friendly age8. Landmark in TOP HALF, unobstructed level standing band bottom30% across FULL WIDTH, floor line80% down. Bottom fifth will be under narration, top edge may be cropped, keep crucial elements away from edges. No characters, people, creatures, animals, statue figures, lettering, border, UI or shadow silhouettes. The stage adds its own actors, so environment only.
+
+## Gemfall 1 — expansion locations
+
+Three additional backdrops cover the Long Bridge, Griffin Post and North Gate episodes. The prologue stays on the established docks image except Old Wick's bridge-lamp scene; the plaque walk and single rooftop discovery use biome art because they are brief transitions with no recurring set.
+
+| Asset | Coverage |
+|---|---|
+| `exchange-long-bridge.webp` | `scene_prologue_party_lamps`, `scene_long_bridge`, `check_bridge_squeeze`, `scene_long_bridge_barge`, `scene_long_bridge_lamp_path`, `scene_long_bridge_wade` |
+| `exchange-griffin-post.webp` | `scene_griffin_post`, `check_post_sort`, `scene_griffin_post_feed`, `scene_griffin_post_shop` |
+| `exchange-north-gate.webp` | `scene_north_gate`, `check_leaving_bell`, `scene_north_gate_wave`, `scene_north_gate_look`, `scene_north_gate_tidewell` |
+
+Generated with the built-in image tool. Each is a new 16:9 Exchange location, exported as 1920×1080 WebP at quality 88. Composition keeps the landmark in the top half and a clear level floor in the lower 30 percent; no characters or readable text.
+
+### Long Bridge generation prompt
+
+Create a polished landscape 16:9 fantasy storybook game backdrop for the Long Bridge in the Exchange. A broad ancient cream-stone arch bridge crosses a blue canal, with round lamp posts, blue-roofed cream-stone buildings and the harbor beyond. Camera at character eye-height on the bridge, perspective toward a distant noodle stall; lower 30 percent is broad unobstructed flat stone walkway, floor contact around 80 percent. Bridge arch and lamps in top half. Warm dimensional storybook painting, soft pale morning light. No people, creatures, animals, silhouettes, signage, words, UI, border, foreground props or shadows. Full bleed, mobile-safe crop.
+
+### Griffin Post generation prompt
+
+Create a polished landscape 16:9 fantasy storybook game backdrop of the Griffin Post in the Exchange. A tall elegant cream-stone tower with round windows and slate-blue roof rises in the upper half, with a small rooftop landing ledge, blank mail sacks on a distant bench and brass weather vane; neighboring blue-roofed buildings frame it. Sunny late afternoon with harbor haze. View from open courtyard looking up; lower 30 percent is unobstructed pale cobblestone plaza, floor around 80 percent. No people, griffins, birds, creatures, silhouettes, readable marks, signage, lettering, UI or border.
+
+### North Gate generation prompt
+
+Create a polished landscape 16:9 painterly fantasy storybook game backdrop of the North Gate of the Exchange, viewed from inside the city toward a great open cream-stone archway with a bronze leaving bell and worn rope. Beyond the arch, a green road winds through fields toward a distant enormous mountain with a tiny red summit glow; blue-roofed city towers frame it. Hopeful early morning farewell, warm detailed painting. Keep arch, bell, mountain in top half and a broad level cobbled road in the lower 30 percent, floor around 80 percent. No characters, creatures, animals, silhouettes, signage, words, UI, border or weapons.
+## Gemfall 03A — Great River crossing
+
+Generated with the built-in image-generation tool. Production files are WebP, 1920×1080, quality 88. Every illustration has an open level foreground band for the party and cast; landmarks sit above it. No people or creatures are painted into the backdrops.
+
+| Asset | Coverage |
+|---|---|
+| `east-road-markers.webp` | East road, missing marker stump, and river approach |
+| `stone-crossing-queue.webp` | Queue and waiting camp before the Great River stepping stones |
+| `lintel-toll-stone.webp` | First toll stone and the old stone crossing |
+| `drake-rock-shelf.webp` | Empty shelf under the bridge with the humming gem and discarded finds |
+| `drowned-crossing-bank.webp` | Submerged final stones and ferry landing |
+| `river-mouth-shore.webp` | Eastern river-mouth beach and distant Bone Yard ridge |
+| `eastern-shore-camp.webp` | Driftwood camp after the crossing |
+
+### Generation prompts
+
+**East road markers**
+
+Wide 16:9 Kids & Dragons Gemfall environment backdrop: the old east road runs beside the Great River through broad open grassland, with a little stump where a mile marker was removed and a plain porridge pot resting on it. The road bends toward distant crossing stones. Tactile watercolor and gouache storybook painting, warm natural light, muted green, river blue, earth and stone palette. Road and river in the upper half; keep the walkable band from 70% to the bottom broad, level and open across the width. No people, creatures, animals, readable marks, UI, border or watermark.
+
+**Stone crossing queue**
+
+Wide 16:9 Kids & Dragons Gemfall storybook environment: a very long, slow queue gathers before Stone Crossing, where enormous flat stepping stones span the Great River's narrowest point; a simple rope guides the line, a tiny empty soup counter and blank rolled map stand far at the edges. River and broad crossing are the upper-half landmark. Hand-painted gouache, warm daylight, tactile river stone and grass, friendly humor. Keep lower 30% and center foreground open and level for separate characters. No people, creatures, animals, text, signs, UI, frame or watermark.
+
+**Lintel toll stone**
+
+Wide 16:9 storybook environment: the first giant flat basalt slab of Stone Crossing rests at the broad river edge, with a wide palm-shaped patch of moss from years of use; enormous flat stones extend across the river. A small empty nest rests on a far ledge. Warm sunlight, dimensional watercolor and gouache, riverbank plants. Landmark upper-middle; lower 30% is open level stone and bank for separate cast. No people, characters, creatures, animals, writing, UI, frame or watermark.
+
+**Drake rock shelf**
+
+Wide landscape 16:9 Kids & Dragons environment: beneath a high river bridge is an empty broad rock shelf above flowing water; scattered fish bones, three rusted boat hinges, one smooth polished pebble, and a softly glowing humming gem sit on it. A plain blank slate leans against the rock. Cool bridge shadow, sunlight shimmering from the river; detailed painted storybook landscape. Upper-half bridge and shelf landmark; lower 30% open, flat riverbank floor. No drake, animals, people, creatures, text or symbols, UI, frame or watermark.
+
+**Drowned crossing bank**
+
+Wide 16:9 storybook scene: a shallow river crossing, giant flat stones marching into fast brown water with the final stretch submerged; a simple flat-bottom ferry nudges a reed-lined bank. Clear, lively but safe water. Painted reeds, rounded stones, soft reflections and warm overcast light. Upper-half landmark; lower 30% broad, level and unobstructed for separate figures. No people, animals, boatman, characters, creatures, text, UI, border or watermark.
+
+**River mouth shore**
+
+Wide 16:9 Kids & Dragons backdrop: a quiet sandy beach at the river mouth, shallow river and reeds, with a distant mist-softened Bone Yard ridge and pale fossils in a few neat spirals. An empty flat-bottom boat may rest at the reed edge. Warm soft morning light, inviting gouache and watercolor, calm curious mood. Open level beach foreground from 70% to bottom; fossil landmark in upper half and away from center foreground. No people, animals, creatures, skeletons, text, UI, border or watermark.
+
+**Eastern shore camp**
+
+Wide 16:9 Kids & Dragons backdrop: quiet evening camp on the eastern shore after crossing the Great River; driftwood lies beside a small safe glowing campfire, wet sand and shallow water catch amber light, distant open Eastern Plains fade northward, reeds and smooth stones frame the sides. Warm, slightly damp, peaceful storybook environment, detailed hand-painted gouache and watercolor. Upper-half landmark; lower 30% broad, level, open shore. No tent, building, people, animals, creatures, text, UI, frame or watermark.
+
+## Gemfall 03A — eastern landing
+
+`eastern-bank-landing.webp` covers `scene_east_landing`, `scene_east_landing_move_crates`, and `scene_east_landing_ask_question`. It shows the far bank where travelers and gem carts gather after Stone Crossing; the adjacent short overlook remains on biome art.
+
+Generated as a 16:9 painterly riverbank backdrop and exported 1920×1080 WebP, quality 88. It has flat open landing ground across the lower 30 percent, with the river and ford in the upper two thirds. No foreground characters or readable signage.
+
+### Eastern landing generation prompt
+
+Create a polished wide 16:9 painterly fantasy storybook game backdrop for the eastern landing at Stone Crossing on the Great River. A broad calm blue-brown river, flat stepping stones, a dry far bank, reeds and a dirt road with distant wagons arriving after the ford; soft morning after rain. Keep river and stones in the upper two thirds and a broad level bank in the lower 30 percent for sprites. No people, animals, creatures, signage, lettering, UI or border.
+
 ## Gemfall 03C — Ford queue and camp
 
 Generated with the built-in image-generation tool. Each scene illustration is a 1920×1080 WebP at quality 88. The paintings contain no characters or creatures; each keeps a level open foreground for the stage. The queue moves from the rutted caravan road, through its roadside market and camp, to the west branch ford.

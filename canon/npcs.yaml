@@ -49,13 +49,86 @@ people_ids:
   - frogfolk
   - boggart
   - yeti
+  - boughkin
   - merfolk
   - selkie
   - stone_troll
   - sheeple
   - witch_order
+  - burrowfolk
 
 npcs:
+  - id: npc.burrowfolk
+    asset_id: burrowfolk
+    title: Burrowfolk
+    canon_status: newly_defined
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting_people, fields, stone_records, prospecting]
+    scale: small_to_medium
+    short_description: >-
+      Compact, badger-like hill people whose stone records connect the farms of
+      the Sunward Fields with the oldest layers beneath them.
+    visual_identity: >-
+      Broad wedge muzzle, small round ears, bold charcoal-and-cream face bands,
+      russet body fur, broad pale digging paws, short sturdy legs and brush tail.
+      Practical mustard canvas and clay-red cloth; stone-sample satchels and
+      pocket notebooks. Upright, with two arms and two legs; never human-skinned.
+    common_story_uses: >-
+      Surveyor, prospector, patient repairer, exhausted traveler, child asking
+      an unexpectedly practical question, or neighbor who knows what lies below.
+    canon_constraints: >-
+      No people is inherently honest, greedy, good or evil. Surveying is a
+      widespread practice, not an inborn talent or mandatory occupation.
+      The Sunward Fields are a homeland, not an exclusive border; the Exchange
+      has no native or dominant people. Cult membership is an individual
+      allegiance, not a burrowfolk trait. This people does not explain the titan.
+    speech_register: >-
+      Concrete and companionable. Names the material before the conclusion,
+      asks where an object came from, and leaves room for a corrected answer.
+      Individuals may be hurried, poetic, blunt or uncertain.
+    standard_behavior: >-
+      Maintains stone and drainage records with neighboring farms, repairs
+      tools and cellar walls, shares shelter maps, and checks a promising find
+      against its place of origin before deciding what to carry away.
+    lore:
+      hook: "A stone without a place is only half a story."
+      story: >-
+        The first burrowfolk settlements grew along the low chalk and clay
+        ridges between the Sunward Fields. A flooded cellar and a dry well can
+        be the same problem viewed from different doors, so their oldest maps
+        join the ground above to the layers below. Children learn those maps
+        by carrying ordinary stones home and explaining where each was found;
+        an elder may return a dazzling specimen and keep a dull one that
+        finishes a missing layer. A home's stone shelf records its repairs,
+        visitors and mistakes, rather than its wealth.
+
+        When gemstones began falling in the north, some burrowfolk went to
+        earn money, some to bring relatives home, and some because stones
+        arriving without their layers troubled them. Their notebooks do not
+        make them wiser than their neighbors. A surveyor can mistake a rumor
+        for a map, and a tired prospector can sell tomorrow's clue for tonight's
+        meal. Ma Ruddle's lost wagon and Dunmore's embarrassed good intentions
+        are individual stories, not the character of a people.
+      pastimes:
+        - "Pebble exchanges: trade an ordinary stone and the precise story of the place it came from."
+        - "Repair circles: mend a neighbor's tool while the neighbor tells the part of its history they usually leave out."
+        - "Rain-window contests: predict which gutter will drip first, then inspect the one everyone forgot."
+      social: >-
+        A shared shelf in the village hall holds samples from common ground;
+        private shelves belong to households, and permission matters. Meals
+        accompany difficult corrections so a mistaken map need not become a
+        quarrel. These customs invite cooperation without guaranteeing it.
+      likes: []
+      dislikes: []
+    relationships:
+      primary_locations: [biome.sunward_fields]
+      secondary_locations: [biome.plains, biome.red_sky_foothills, location.exchange]
+      creatures: []
+      items: []
+
+
   - id: npc.centaur
     asset_id: centaur
     title: "Centaur"
@@ -357,6 +430,77 @@ npcs:
     relationships:
       primary_locations: [biome.whispering_marsh]
       secondary_locations: [biome.enchanted_woods, location.exchange]
+      creatures: []
+      items: []
+
+  - id: npc.boughkin
+    asset_id: boughkin
+    title: Boughkin
+    canon_status: newly_defined
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting_people, woods, trees, memory, rain]
+    scale: very_large
+    short_description: >-
+      Rare speaking beech trees of the Enchanted Woods who keep local memories
+      in the patient language of rain, roots and returning footsteps.
+    visual_identity: >-
+      Smooth silver-grey beech trunk, a subtle knot-and-bark face, broad copper
+      and moss-green leaf crown, thick listening branches and buttress roots.
+      A complete tree silhouette, without human torso, hands or furry limbs.
+      Different individuals vary in age, shape and season; not a forest backdrop.
+    common_story_uses: >-
+      Local witness, patient neighbor, rain-scented adviser, keeper of a changed
+      path, or speaker who notices a question travelers have walked past.
+    canon_constraints: >-
+      Not every tree is sapient. Boughkin are a people, not the voice of every
+      woodland, a moral authority, or a collective mind. They know places they
+      have lived beside and reports they have heard, not everything in the
+      realm. An ordinary beech remains an ordinary beech. They do not reveal
+      the protected history or identity of the titan. Homeland is concentration,
+      not an absolute boundary. No human people are introduced.
+    speech_register: >-
+      Unhurried and sensory: distinguishes the rain that fell yesterday from
+      the rain someone remembers. Asks a listener to stand still for the end
+      of a sentence. Individual trees may be funny, curt, anxious or welcoming.
+    standard_behavior: >-
+      Listens to nearby paths, exchanges news through visits rather than an
+      omniscient root network, shelters neighbors by agreement, and points out
+      small changes travelers have mistaken for familiar ground.
+    lore:
+      hook: "The path moved. The tree noticed who kept walking."
+      story: >-
+        Boughkin live chiefly among the beeches of the Enchanted Woods, where
+        a speaking tree may stand beside a hundred silent ones. Families are
+        known by the paths they have watched, not by a claim to own them.
+        A grove's recollections overlap like stories told at one table: one
+        remembers the boots, another the weather, and a third insists that
+        everyone has forgotten the smell of the soup. Visitors carry messages
+        between groves. Roots carry water, not every secret in the world.
+
+        A boughkin can loosen and settle its roots over many seasons, but
+        moving is slow and costly; most choose to remain good neighbors to
+        one place. The gem rush reaches them as broken carts, hurried voices,
+        altered drainage and footpaths that no longer arrive where they did.
+        The old beech in Gemfall speaks because someone finally asks it a
+        question, not because all trees have decided to explain the mountain.
+        Some boughkin offer shelter freely, some negotiate, and some want to
+        be left alone. A traveler must still ask.
+      pastimes:
+        - "Rain recollections: compare the sound of showers from years apart, disagreeing courteously about the best one."
+        - "Visitor verses: ask returning travelers for one line describing how a familiar road has changed."
+        - "Shade arrangements: spend a season making an especially comfortable patch of afternoon shade."
+      social: >-
+        Conversation has space for long pauses, and interrupting a tree is
+        discourteous rather than dangerous. Permission to shelter beneath a
+        crown is a small agreement, not a debt of obedience. Families value
+        returning visitors while recognizing that travelers must travel.
+      likes: []
+      dislikes: []
+    relationships:
+      primary_locations: [biome.enchanted_woods]
+      secondary_locations: [location.mosshome]
       creatures: []
       items: []
 
@@ -756,3 +900,4 @@ npcs:
       secondary_locations: [biome.enchanted_woods, location.exchange, biome.sunward_fields]
       creatures: []
       items: []
+
