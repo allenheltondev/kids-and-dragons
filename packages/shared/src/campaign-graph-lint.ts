@@ -55,7 +55,9 @@
  * - `RIFT_REVEAL_MOOT` (warn)     `reveal: "when-open"` on a rift open from the
  *                                 start hides nothing.
  *
- * A rift's `opensWhen` is a guard like any other for the checks above.
+ * A rift's `opensWhen` is a guard like any other for the checks above, and so
+ * is a rift action rule's `when` (#197). A redirectable rift is a way to each
+ * of its declared destinations for reachability, dead ends and cycles.
  *
  * Dynamic (an exhaustive search of what a party can have done — below):
  *
@@ -75,6 +77,10 @@
  *                                 its `when` never holds on an entry that
  *                                 plays the node, or an earlier variant
  *                                 always wins first (#198).
+ * - `RIFT_ACTION_NEVER_OFFERED` (warn) a rift action rule (#197) the party is
+ *                                 never offered where it stands.
+ * - `RIFT_EFFECT_ON_FINAL` (warn) a rift effect (#197) that every time it runs
+ *                                 meets a used-up, expired or collapsed rift.
  * - `SEARCH_TRUNCATED` (warn)    the state cap was hit; the "never" and
  *                                 "cannot finish" checks above are skipped
  *                                 because they would be guesses.
@@ -109,7 +115,16 @@
  * - every rift's lifecycle (#196): status, age, latch, and crossings counted
  *   only up to the highest threshold that reads them (`uses`,
  *   `collapsesAfter`) — a rift is moved by the same `rifts.ts` functions in
- *   the same order as `journey.ts` moves it (cross, tick, settle).
+ *   the same order as `journey.ts` moves it (cross, tick, settle); and what a
+ *   rift action changes (#197): steadied, found, revealed, redirected.
+ *
+ * Besides the exits, a choosing state has the party's **rift actions**
+ * (#197, `riftActionsFrom` — the runtime's own list) as transitions: the
+ * party stays put, the rift and the action's effects change, and the state
+ * after is explored like any other. So a single-use rift whose only way on
+ * is "steady it first", a `fallback` edge (offered only when nothing else
+ * is), and a party that could close its last door are all judged on what the
+ * party can actually do. "Stranded" means no exit *and* no action.
  *
  * Effects are applied wherever the runtime applies them: an edge's when it is
  * crossed, a node's `onComplete` rules (#198) when its chapter completes, each
@@ -157,7 +172,9 @@ import type {
 import {
   arrivalAt,
   completionEffects,
+  edgeDestinations,
   exitsFrom,
+  RIFT_ACTION_KINDS,
   riftOwner,
   riftState,
   variantAtNode,
@@ -165,6 +182,7 @@ import {
   type ParsedCampaignGraph,
 } from "./campaign-graph.ts";
 import { crossRift, settleRifts, tickRifts } from "./rifts.ts";
+import { applyRiftEffect, isRiftEffect, riftActionChange, riftActionsFrom, riftEffectCanApply } from "./rift-actions.ts";
 import { factTestValues, initialFact, readFact, storedFacts, writeFact } from "./world-state.ts";
 
 // ---------------------------------------------------------------------------
@@ -194,7 +212,9 @@ export type GraphFindingCode =
   | "VARIANT_NEVER_CHOSEN"
   | "RIFT_ONE_WAY_HAS_WAY_BACK"
   | "RIFT_ONCE_AND_USES"
-  | "RIFT_REVEAL_MOOT";
+  | "RIFT_REVEAL_MOOT"
+  | "RIFT_EFFECT_ON_FINAL"
+  | "RIFT_ACTION_NEVER_OFFERED";
 
 export interface GraphFinding {
   /** Stable: tests, docs and any tool that filters key on this. */
@@ -362,6 +382,20 @@ function guardsOf(graph: ParsedCampaignGraph): Guard[] {
         edge: id,
       });
     }
+    // A rift action's rule (#197) is a guard on when the party may take it —
+    // judged against the rift's `from`, like the edge's own `when`. Not tied
+    // to the edge (`edge` absent): an action never offered is not an exit
+    // never available.
+    for (const kind of RIFT_ACTION_KINDS) {
+      const rule = edge.rift?.actions?.[kind];
+      if (!rule?.when) continue;
+      guards.push({
+        path: `${edgePath(id)}/rift/actions/${kind}/when`,
+        cond: rule.when,
+        subject: edge.from,
+        what: `rift action "${kind}" on "${id}"`,
+      });
+    }
   }
   for (const id of graph.nodeOrder) {
     (graph.nodes[id]!.variants ?? []).forEach((variant, i) => {
@@ -391,12 +425,31 @@ function guardsOf(graph: ParsedCampaignGraph): Guard[] {
  * this / set this", and a completion rule is as much an answer as an edge.
  */
 function effectsOf(graph: ParsedCampaignGraph): GraphEffect[] {
-  const effects: GraphEffect[] = [];
-  for (const id of graph.edgeOrder) effects.push(...(graph.edges[id]!.effects ?? []));
-  for (const id of graph.nodeOrder) {
-    for (const rule of graph.nodes[id]!.onComplete ?? []) effects.push(...rule.effects);
+  return [...effectSites(graph).keys()];
+}
+
+/**
+ * Every effect the graph can apply, with where it is written — an edge's, a
+ * node's completion rule's (#198), or a rift action's own (#197). Keyed by
+ * the effect object itself: the runtime's readers (`completionEffects`, an
+ * edge's `effects`, a rule's `effects`) hand back the declaration's own
+ * objects, so the search can say *which* effect it just applied.
+ */
+function effectSites(graph: ParsedCampaignGraph): Map<GraphEffect, string> {
+  const sites = new Map<GraphEffect, string>();
+  const add = (effects: readonly GraphEffect[] | undefined, at: string) =>
+    (effects ?? []).forEach((effect, i) => sites.set(effect, `${at}/${i}`));
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    add(edge.effects, `${edgePath(id)}/effects`);
+    for (const kind of RIFT_ACTION_KINDS) {
+      add(edge.rift?.actions?.[kind]?.effects, `${edgePath(id)}/rift/actions/${kind}/effects`);
+    }
   }
-  return effects;
+  for (const id of graph.nodeOrder) {
+    (graph.nodes[id]!.onComplete ?? []).forEach((rule, i) => add(rule.effects, `${nodePath(id)}/onComplete/${i}/effects`));
+  }
+  return sites;
 }
 
 /** Nodes reached from `starts` by `next`, in discovery order, each with its BFS depth. */
@@ -433,8 +486,16 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
   const warn = (code: GraphFindingCode, path: string, message: string, hint: string): void =>
     add({ code, severity: "warning", path, message, hint });
 
-  const successors = (node: NodeId): NodeId[] => (graph.exits[node] ?? []).map((id) => graph.edges[id]!.to);
-  const predecessors = (node: NodeId): NodeId[] => (graph.entrances[node] ?? []).map((id) => graph.edges[id]!.from);
+  // A redirectable rift (#197) is a way to each of its declared destinations,
+  // so "possibly reachable" counts every one of them.
+  const successors = (node: NodeId): NodeId[] =>
+    (graph.exits[node] ?? []).flatMap((id) => edgeDestinations(graph.edges[id]!));
+  const incoming = new Map<NodeId, NodeId[]>();
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    for (const to of edgeDestinations(edge)) incoming.set(to, [...(incoming.get(to) ?? []), edge.from]);
+  }
+  const predecessors = (node: NodeId): NodeId[] => incoming.get(node) ?? [];
   /** Nodes already explained by a static finding; the search does not repeat them. */
   const explained = new Set<NodeId>();
 
@@ -683,15 +744,17 @@ function lintRifts(graph: ParsedCampaignGraph, error: Report, warn: Report): voi
     const rift = edge.rift;
     if (!rift) continue;
     if (rift.oneWay === true) {
+      // Wherever it can be turned to lead (#197), no rift may lead straight back.
+      const ends = edgeDestinations(edge);
       const back = graph.edgeOrder.find((other) => {
         const each = graph.edges[other]!;
-        return other !== id && each.rift !== undefined && each.from === edge.to && each.to === edge.from;
+        return other !== id && each.rift !== undefined && ends.includes(each.from) && edgeDestinations(each).includes(edge.from);
       });
       if (back !== undefined) {
         error(
           "RIFT_ONE_WAY_HAS_WAY_BACK",
           `${edgePath(id)}/rift/oneWay`,
-          `rift "${id}" is one-way, but rift "${back}" leads straight back from "${edge.to}" to "${edge.from}"`,
+          `rift "${id}" is one-way, but rift "${back}" leads straight back from "${graph.edges[back]!.from}" to "${edge.from}"`,
           `Drop "oneWay" from "${id}" (and link the two with "linkedTo" if they are one two-way rift), or make "${back}" an ordinary edge.`,
         );
       }
@@ -730,8 +793,17 @@ type Report = (code: GraphFindingCode, path: string, message: string, hint: stri
  * no deeper than where it starts, counting from the entry).
  */
 function lintCycles(graph: ParsedCampaignGraph, depthFromEntry: Map<NodeId, number>, error: Report): void {
-  const forward = (node: NodeId): EdgeId[] =>
-    (graph.exits[node] ?? []).filter((id) => graph.edges[id]!.kind !== "return");
+  // An arc per edge and destination: a redirectable rift (#197) is a way to
+  // each of its declared destinations, and a loop through any of them counts.
+  interface Arc {
+    id: EdgeId;
+    from: NodeId;
+    to: NodeId;
+  }
+  const arcs: Arc[] = graph.edgeOrder
+    .filter((id) => graph.edges[id]!.kind !== "return")
+    .flatMap((id) => edgeDestinations(graph.edges[id]!).map((to) => ({ id, from: graph.edges[id]!.from, to })));
+  const forward = (node: NodeId): Arc[] => arcs.filter((arc) => arc.from === node);
 
   // Tarjan's strongly connected components over the non-return edges.
   const index = new Map<NodeId, number>();
@@ -746,8 +818,7 @@ function lintCycles(graph: ParsedCampaignGraph, depthFromEntry: Map<NodeId, numb
     counter += 1;
     stack.push(node);
     onStack.add(node);
-    for (const id of forward(node)) {
-      const to = graph.edges[id]!.to;
+    for (const { to } of forward(node)) {
       if (!index.has(to)) {
         visit(to);
         low.set(node, Math.min(low.get(node)!, low.get(to)!));
@@ -770,47 +841,40 @@ function lintCycles(graph: ParsedCampaignGraph, depthFromEntry: Map<NodeId, numb
 
   for (const component of components) {
     const members = new Set(component);
-    const inside = (id: EdgeId): boolean => {
-      const edge = graph.edges[id]!;
-      return edge.kind !== "return" && members.has(edge.from) && members.has(edge.to);
-    };
-    const edgesInside = graph.edgeOrder.filter(inside);
-    if (component.length === 1 && !edgesInside.some((id) => graph.edges[id]!.from === graph.edges[id]!.to)) continue;
+    const arcsInside = arcs.filter((arc) => members.has(arc.from) && members.has(arc.to));
+    if (component.length === 1 && !arcsInside.some((arc) => arc.from === arc.to)) continue;
 
     const depth = (node: NodeId): number => depthFromEntry.get(node) ?? Number.POSITIVE_INFINITY;
-    const back =
-      edgesInside.find((id) => depth(graph.edges[id]!.to) <= depth(graph.edges[id]!.from)) ?? edgesInside[0]!;
-    const backEdge = graph.edges[back]!;
+    const back = arcsInside.find((arc) => depth(arc.to) <= depth(arc.from)) ?? arcsInside[0]!;
 
     // The rest of the cycle: the shortest way from where `back` lands to where it started.
-    const via = new Map<NodeId, EdgeId>();
-    const queue = [backEdge.to];
+    const via = new Map<NodeId, Arc>();
+    const queue = [back.to];
     const seen = new Set(queue);
     for (let head = 0; head < queue.length; head += 1) {
       const node = queue[head]!;
-      for (const id of edgesInside) {
-        const edge = graph.edges[id]!;
-        if (edge.from !== node || seen.has(edge.to)) continue;
-        seen.add(edge.to);
-        via.set(edge.to, id);
-        queue.push(edge.to);
+      for (const arc of arcsInside) {
+        if (arc.from !== node || seen.has(arc.to)) continue;
+        seen.add(arc.to);
+        via.set(arc.to, arc);
+        queue.push(arc.to);
       }
     }
-    const cycle: EdgeId[] = [];
-    for (let at = backEdge.from; at !== backEdge.to; ) {
-      const id = via.get(at);
-      if (id === undefined) break;
-      cycle.unshift(id);
-      at = graph.edges[id]!.from;
+    const cycle: Arc[] = [];
+    for (let at = back.from; at !== back.to; ) {
+      const arc = via.get(at);
+      if (arc === undefined) break;
+      cycle.unshift(arc);
+      at = arc.from;
     }
     cycle.push(back);
-    const walk = [backEdge.to, ...cycle.map((id) => graph.edges[id]!.to)].map((each) => `"${each}"`).join(" -> ");
+    const walk = [back.to, ...cycle.map((arc) => arc.to)].map((each) => `"${each}"`).join(" -> ");
 
     error(
       "UNINTENTIONAL_CYCLE",
-      edgePath(back),
-      `the party can loop ${walk} using only forward and sideways edges (${quoted(cycle)}); a loop is only intentional through a "return" edge`,
-      `If going back is meant, set "kind": "return" on "${back}" (the edge that closes the loop); otherwise remove or redirect it.`,
+      edgePath(back.id),
+      `the party can loop ${walk} using only forward and sideways edges (${quoted(cycle.map((arc) => arc.id))}); a loop is only intentional through a "return" edge`,
+      `If going back is meant, set "kind": "return" on "${back.id}" (the edge that closes the loop); otherwise remove or redirect it.`,
     );
   }
 }
@@ -822,6 +886,8 @@ function lintCycles(graph: ParsedCampaignGraph, depthFromEntry: Map<NodeId, numb
 interface Step {
   edge: EdgeId | null;
   label: string;
+  /** A rift action taken where the party stands (#197): `stabilize "e"`. */
+  action?: string;
 }
 
 interface SearchState {
@@ -843,6 +909,13 @@ interface Search {
   entered: Set<NodeId>;
   /** `node#index` of every variant a played entry chose (`#-1`: the node's own chapter). */
   variantsChosen: Set<string>;
+  /** `edge/kind` of every rift action ever offered (#197). */
+  actionsOffered: Set<string>;
+  /**
+   * Every rift effect the search applied (#197), by where it is written:
+   * whether it ever met a rift it could act on (`riftEffectCanApply`).
+   */
+  riftEffects: Map<string, boolean>;
   complete: boolean;
 }
 
@@ -947,7 +1020,10 @@ function explore(
       .map((id) => {
         const state = riftState(graph, id, f)!;
         const crossings = Math.min(state.crossings ?? 0, crossingCap.get(id)!);
-        return `${state.status}${crossings}.${state.age ?? 0}${state.latched ? "L" : ""}`;
+        // What an action changes (#197) is state too: steadied, found,
+        // revealed (a redirect is offered only once it is), and turned.
+        const acted = `${state.stable ? "S" : ""}${state.discovered ? "D" : ""}${state.revealed ? "R" : ""}${state.to ?? ""}`;
+        return `${state.status}${crossings}.${state.age ?? 0}${state.latched ? "L" : ""}${acted}`;
       })
       .join(",");
 
@@ -988,6 +1064,17 @@ function explore(
    */
   const applyTracked = (f: JourneyFacts, effects: readonly GraphEffect[]): void => {
     for (const effect of effects) {
+      if (isRiftEffect(effect)) {
+        // A rift action (#197), as `applyEffects` applies it: in order, on the
+        // journey the effects before it left — and noted, so an effect that
+        // only ever meets a used-up rift can be told apart from one that acts.
+        const site = sites.get(effect);
+        if (site !== undefined) {
+          search.riftEffects.set(site, (search.riftEffects.get(site) ?? false) || riftEffectCanApply(graph, f, effect));
+        }
+        f.rifts = applyRiftEffect(graph, f, effect).rifts;
+        continue;
+      }
       if (effect.type === "setFlag") {
         if (tracked.flags.includes(effect.flag)) setFlag(f, effect.flag, effect.value !== false);
       } else if (effect.type === "unlock" || effect.type === "lock") {
@@ -1102,6 +1189,7 @@ function explore(
   };
 
   // --- breadth-first -----------------------------------------------------------
+  const sites = effectSites(graph);
   const search: Search = {
     states: [],
     succ: [],
@@ -1109,6 +1197,8 @@ function explore(
     everAvailable: new Set(),
     entered: new Set(),
     variantsChosen: new Set(),
+    actionsOffered: new Set(),
+    riftEffects: new Map(),
     complete: true,
   };
   const index = new Map<string, number>();
@@ -1136,7 +1226,27 @@ function explore(
     if (state.ended) continue;
     const exits = exitsFrom(graph, state.node, state.facts);
     const open = exits.filter((exit) => exit.availability.available);
-    if (open.length === 0) {
+    // The party's rift actions (#197) are transitions too: the party stays
+    // where it is, still choosing, with the rift (and whatever the action's
+    // effects wrote) changed — exactly `takeRiftAction`. A place with no way
+    // out but an action that opens one is not stranded; the state after the
+    // action is judged on its own.
+    const offers = riftActionsFrom(graph, state.node, state.facts);
+    for (const offer of offers) {
+      search.actionsOffered.add(`${offer.edge}/${offer.action}`);
+      const change = riftActionChange(graph, state.facts, offer.action, offer.edge, offer.to);
+      if (!change.ok) continue;
+      const acted = clone(change.journey);
+      applyTracked(acted, offer.rule.effects ?? []);
+      const name = `${offer.action} "${offer.edge}"${offer.to !== undefined ? ` toward "${offer.to}"` : ""}`;
+      const to = intern(state.node, { facts: settleRifts(graph, acted), ended: false, label: "" }, head, {
+        edge: null,
+        label: "",
+        action: name,
+      });
+      if (to !== null && to !== head) search.succ[head]!.push({ to, edge: `~${offer.action}:${offer.edge}` });
+    }
+    if (open.length === 0 && offers.length === 0) {
       search.stranded.push({
         state: head,
         blocks: exits.map((exit) => ({
@@ -1171,6 +1281,7 @@ const BLOCKED_BECAUSE: Record<ExitBlock, string> = {
   "rift-consumed": "a rift already used up (uses)",
   "rift-expired": "a rift whose time ran out (lasts)",
   "rift-collapsed": "a rift that collapsed (unstable)",
+  fallback: "a fallback, and another way is open",
 };
 
 /** `a -[e1]-> b (setback) -[e2]-> c`, the shortest way to state `at`. */
@@ -1179,7 +1290,13 @@ function describePath(search: Search, at: number): string {
   for (let i = at; i !== -1; i = search.states[i]!.parent) {
     const state = search.states[i]!;
     const note = state.step.label !== "" && state.step.label !== "passed through" && state.step.label !== "ending" ? ` (${state.step.label})` : "";
-    steps.unshift(state.step.edge === null ? `start at "${state.node}"${note}` : `-[${state.step.edge}]-> "${state.node}"${note}`);
+    steps.unshift(
+      state.step.action !== undefined
+        ? `~(${state.step.action})~>`
+        : state.step.edge === null
+          ? `start at "${state.node}"${note}`
+          : `-[${state.step.edge}]-> "${state.node}"${note}`,
+    );
   }
   return steps.join(" ");
 }
@@ -1197,6 +1314,7 @@ function lintSearch(
 ): void {
   const { explained, knownDead, fromEntry, error, warn } = ctx;
   const { states, succ } = search;
+  const actionsDeclared = graph.edgeOrder.some((id) => graph.edges[id]!.rift?.actions !== undefined);
 
   if (!search.complete) {
     warn(
@@ -1221,7 +1339,9 @@ function lintSearch(
     error(
       "STRANDED",
       nodePath(node),
-      `a party can be stranded at "${node}": after ${describePath(search, state)}, every exit is unavailable (${why})`,
+      `a party can be stranded at "${node}": after ${describePath(search, state)}, every exit is unavailable (${why})${
+        actionsDeclared ? " and no rift action is offered" : ""
+      }`,
       `Give "${node}" an exit that is always open (usually an unguarded "return" edge to the hub), or make whatever it waits on (an unlock, a flag, a different outcome) reachable before the party gets here.`,
     );
   }
@@ -1287,8 +1407,37 @@ function lintSearch(
     warn(
       "EDGE_NEVER_AVAILABLE",
       edgePath(id),
-      `edge "${id}" is never available: in every play-through that reaches "${edge.from}" it is locked, guarded off, spent, closed or a shut rift`,
-      `Check "${id}"'s "locked", "when", "once" and "rift"; if it is meant to be unreachable, delete it.`,
+      `edge "${id}" is never available: in every play-through that reaches "${edge.from}" it is locked, guarded off, spent, closed or a shut rift${
+        edge.fallback === true ? ", or a fallback another way always makes unneeded" : ""
+      }`,
+      `Check "${id}"'s "locked", "when", "once", "rift" and "fallback"; if it is meant to be unreachable, delete it.`,
+    );
+  }
+
+  // Rift actions (#197) the party is never offered, and rift effects that
+  // only ever meet a rift they cannot act on: both say something the
+  // play-through never does. Warnings — neither strands anybody (the search
+  // has already said so if a missing action does).
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    if (!search.entered.has(edge.from)) continue;
+    for (const kind of RIFT_ACTION_KINDS) {
+      if (!edge.rift?.actions?.[kind] || search.actionsOffered.has(`${id}/${kind}`)) continue;
+      warn(
+        "RIFT_ACTION_NEVER_OFFERED",
+        `${edgePath(id)}/rift/actions/${kind}`,
+        `the "${kind}" action on rift "${id}" is never offered: whenever the party stands at "${edge.from}", its "when" does not hold or it would change nothing (the rift is already so, used up, or persistent)`,
+        `Check the rule's "when" and the rift's lifecycle; if the party is never meant to ${kind} it, delete the rule.`,
+      );
+    }
+  }
+  for (const [site, applies] of search.riftEffects) {
+    if (applies) continue;
+    warn(
+      "RIFT_EFFECT_ON_FINAL",
+      site,
+      `this rift effect never does anything: every time it runs, its rift is already used up, expired or collapsed (or, closing it, open and persistent)`,
+      "Final rifts stay final. Move the effect to before the rift ends (an earlier edge or completion rule), or drop it.",
     );
   }
 
