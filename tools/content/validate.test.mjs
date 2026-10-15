@@ -498,3 +498,152 @@ describe("story cast (`cast`)", () => {
     expect(result.out).toContain("the same cast member twice");
   });
 });
+
+// ---------------------------------------------------------------------------
+// #160 - conditions, variants and tokens. A malformed `when` fails the build,
+// never the play session.
+
+describe("conditions, variants and tokens", () => {
+  const entryOf = (chapter) => chapter.scenes[chapter.entry];
+  const addChoice = (chapter, when) => {
+    const scene = entryOf(chapter);
+    const goto = scene.choices[0].goto;
+    scene.choices.push({ id: "extra_when", label: "Extra", icon: "arrow", goto, when });
+  };
+  const withVariants = (variants, extra) =>
+    withChapter((chapter) => {
+      entryOf(chapter).variants = variants;
+      extra?.(chapter);
+    });
+
+  it("accepts well-formed conditions, variants and tokens", () => {
+    const result = withVariants(
+      [
+        { when: { count: { of: "facet_*", max: 0 } }, text: "Your packs are humming, {party}.", replace: true },
+        { when: { count: { of: "facet_*", min: 1 } }, text: "{facets} great stones glow.", at: "start" },
+        { when: { partySize: { max: 1 } }, text: "Alone, you steady yourself." },
+      ],
+      (chapter) => addChoice(chapter, { notItem: "facet_ember", partySize: { min: 1 } }),
+    );
+    expect(result.out).toContain("PASS");
+    expect(result.code).toBe(0);
+  }, 15_000);
+
+  it("catches an unknown flag in when.flag", () => {
+    const result = withChapter((chapter) => addChoice(chapter, { flag: "never_set_anywhere" }));
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain('flag "never_set_anywhere" is never set');
+  });
+
+  it("catches an unknown flag in notFlag and in a variant", () => {
+    const a = withChapter((chapter) => addChoice(chapter, { notFlag: "never_set_anywhere" }));
+    expect(a.code).not.toBe(0);
+    expect(a.out).toContain("never_set_anywhere");
+    const b = withVariants([{ when: { flag: "typo_flag" }, text: "x" }]);
+    expect(b.code).not.toBe(0);
+    expect(b.out).toContain('flag "typo_flag" is never set');
+  });
+
+  it("allows a carried route-set flag in when and in notFlag", () => {
+    const dir = copyTree();
+    const chapter = readJson(dir, "content", "chapters", "gemfall-08.json");
+    const scene = chapter.scenes[chapter.entry];
+    scene.variants = [
+      { when: { flag: "ember_kept" }, text: "You kept the Ember." },
+      { when: { notFlag: "ember_kept" }, text: "You did not." },
+    ];
+    writeJson(dir, ["content", "chapters", "gemfall-08.json"], chapter);
+    const result = validate(dir);
+    expect(result.out).toContain("PASS");
+    expect(result.code).toBe(0);
+  }, 15_000);
+
+  it("catches an unknown item in item and notItem", () => {
+    const a = withChapter((chapter) => addChoice(chapter, { item: "no_such_item" }));
+    expect(a.code).not.toBe(0);
+    expect(a.out).toContain('item "no_such_item" is not in content/items.json');
+    const b = withVariants([{ when: { notItem: "no_such_item" }, text: "x" }]);
+    expect(b.code).not.toBe(0);
+    expect(b.out).toContain('item "no_such_item" is not in content/items.json');
+  });
+
+  it("catches a count prefix that matches no item, and an unknown exact or listed id", () => {
+    const prefix = withVariants([{ when: { count: { of: "zzz_*", min: 1 } }, text: "x" }]);
+    expect(prefix.code).not.toBe(0);
+    expect(prefix.out).toContain('prefix "zzz_*" matches no item');
+    const exact = withVariants([{ when: { count: { of: "no_such_item", min: 1 } }, text: "x" }]);
+    expect(exact.out).toContain('item "no_such_item" is not in content/items.json');
+    const listed = withVariants([{ when: { count: { of: ["facet_ember", "no_such_item"], min: 1 } }, text: "x" }]);
+    expect(listed.out).toContain('item "no_such_item" is not in content/items.json');
+  });
+
+  it("catches min above max", () => {
+    const count = withVariants([{ when: { count: { of: "facet_*", min: 3, max: 1 } }, text: "x" }]);
+    expect(count.code).not.toBe(0);
+    expect(count.out).toContain("min 3 is above max 1");
+    const size = withChapter((chapter) => addChoice(chapter, { partySize: { min: 4, max: 2 } }));
+    expect(size.code).not.toBe(0);
+    expect(size.out).toContain("min 4 is above max 2");
+  });
+
+  it("catches an unknown token in narration, variant text, a label and a check prompt", () => {
+    const narration = withChapter((chapter) => {
+      entryOf(chapter).narration += " {oops}";
+    });
+    expect(narration.code).not.toBe(0);
+    expect(narration.out).toContain('unknown token "{oops}"');
+    const variant = withVariants([{ when: {}, text: "Hello {nope}" }]);
+    expect(variant.out).toContain('unknown token "{nope}"');
+    const label = withChapter((chapter) => {
+      entryOf(chapter).choices[0].label = "Go {bad}";
+    });
+    expect(label.out).toContain('unknown token "{bad}"');
+    const prompt = withChapter((chapter) => {
+      const check = Object.values(chapter.scenes).find((s) => s.type === "check");
+      check.prompt = `${check.prompt} {worse}`;
+    });
+    expect(prompt.out).toContain('unknown token "{worse}"');
+  });
+
+  it("catches two replace variants that can overlap", () => {
+    const result = withVariants([
+      { when: { count: { of: "facet_*", max: 1 } }, text: "a", replace: true },
+      { when: { count: { of: "facet_*", max: 2 } }, text: "b", replace: true },
+    ]);
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("can both match");
+  });
+
+  it("allows replace variants it can show are exclusive", () => {
+    for (const variants of [
+      [
+        { when: { count: { of: "facet_*", max: 0 } }, text: "a", replace: true },
+        { when: { count: { of: "facet_*", min: 1 } }, text: "b", replace: true },
+      ],
+      [
+        { when: { partySize: { max: 1 } }, text: "a", replace: true },
+        { when: { partySize: { min: 2 } }, text: "b", replace: true },
+      ],
+      [
+        { when: { item: "facet_ember" }, text: "a", replace: true },
+        { when: { notItem: "facet_ember" }, text: "b", replace: true },
+      ],
+    ]) {
+      const result = withVariants(variants);
+      expect(result.out).toContain("PASS");
+    }
+  }, 30_000);
+
+  it("still demands one ungated choice: a scene whose every choice has a when is a dead end", () => {
+    const result = withChapter((chapter) => {
+      for (const choice of entryOf(chapter).choices) choice.when = { partySize: { min: 1 } };
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("every choice is gated");
+  });
+
+  it("rejects a malformed condition shape at the schema", () => {
+    const result = withChapter((chapter) => addChoice(chapter, { flagg: "x" }));
+    expect(result.code).not.toBe(0);
+  });
+});
