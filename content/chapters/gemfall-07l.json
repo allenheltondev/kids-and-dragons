@@ -56,6 +56,17 @@
     "scene_the_table": {
       "type": "story",
       "narration": "The wardens will not sit with the cult, the people in painted bark masks who follow Hessa from the soup tent. The masks will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "The wardens will not sit with the cult, the people in painted bark masks who follow Hessa from the soup tent. The masks will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourself. The ground shakes and the table wobbles, and you fold a sock under the short leg."
+        }
+      ],
       "choices": [
         {
           "id": "wardens_first",
@@ -399,6 +410,17 @@
         "faction.deep_hollow_cult"
       ],
       "narration": "Up a side valley, Hessa's soup-tent people, the ones who call themselves the Deep Hollow, are humming in a ring with painted bark masks pushed up on their heads. They are singing the stones' own note, and the stones in your packs hum along, as if they know the words.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Your {facets} great stones hum loudest of all. A few of the singers glance at each other and lower their voices, as if they cannot decide whether to sing with you or ask your pardon."
+        }
+      ],
       "choices": [
         {
           "id": "ask",
@@ -444,7 +466,7 @@
         },
         {
           "id": "pay_stone",
-          "label": "Pay them with a stone from your pack",
+          "label": "Pay them with a rush gem from your pack",
           "icon": "gem",
           "goto": "scene_choir_pay_stone",
           "effects": [
@@ -511,7 +533,7 @@
     },
     "scene_choir_pay_stone": {
       "type": "story",
-      "narration": "You pay with a stone from your pack. The choir passes it from hand to hand, humming, and the stone hums back, and then it is in a sack and gone. They teach you the chord. The pack is one stone lighter and you can feel exactly where it used to sit.",
+      "narration": "You pay with a rush gem from your pack. The choir passes it from hand to hand, humming, and the stone hums back, and then it is in a sack and gone. They teach you the chord. The pack is one gem lighter and you can feel exactly where it used to sit.",
       "choices": [
         {
           "id": "on",
@@ -637,7 +659,7 @@
         },
         {
           "id": "wobbly_side",
-          "label": "Swap seats, and take the wobbly side yourselves",
+          "label": "Swap seats, and take the wobbly side",
           "icon": "hand",
           "goto": "scene_first_sitting_wobbly_side"
         },
@@ -680,6 +702,17 @@
         }
       ],
       "narration": "You swap seats and sit on the wobbly side yourselves, with your elbows holding it level. It is not comfortable. Pellam notices. Hessa notices. Neither of them says anything, but both of them lean in a little, the way people do when somebody else has taken the worst chair.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You swap seats and sit on the wobbly side yourself, with your elbows holding it level. It is not comfortable. Pellam notices. Hessa notices. Neither of them says anything, but both of them lean in a little, the way people do when somebody else has taken the worst chair."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1124,7 +1157,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "On the way back, a grandmothers' cart full of stones going home has stuck on the steep bit, and the grandmother pushing it is very small. But tomorrow is the test at the bend, and none of you has ever held a hum still in your life. There is one afternoon left. Help with the cart, or practice?",
+      "narration": "On the way back, a grandmothers' cart full of stones going home has stuck on the steep bit, and the grandmother pushing it is very small. But tomorrow is the test at the bend, and you have never held a hum still in your life. There is one afternoon left. Help with the cart, or practice?",
       "choices": [
         {
           "id": "push",
@@ -1175,7 +1208,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "scene_evening",
-        "narration": "Shoulders down, everybody push. The cart groans up the steep bit and over the top. The grandmother gives you each a warm bead from her apron, and says, \"Practice tonight, dears. You'll need it.\"",
+        "narration": "Shoulders down, everybody push. The cart groans up the steep bit and over the top. The grandmother hands a warm bead from her apron to every hand, and says, \"Practice tonight, dears. You'll need it.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -1191,7 +1224,7 @@
     },
     "scene_returning_cart_practice": {
       "type": "story",
-      "narration": "You leave the cart to a passing warden and find a quiet rock. You hold a small humming stone between your hands and try to make it still. It takes all afternoon. Then, for half a breath, it stops. You all feel it at once, like a held door. Behind you, the cart gets up the hill without you.",
+      "narration": "You leave the cart to a passing warden and find a quiet rock. You hold a small humming stone between your hands and try to make it still. It takes all afternoon. Then, for half a breath, it stops. You feel it at once, like a held door. Behind you, the cart gets up the hill without you.",
       "choices": [
         {
           "id": "on",
@@ -1322,7 +1355,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new gold label, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1436,7 +1469,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "\"It isn't ours to tell,\" you say. Pellam looks at you for a long moment. Then he nods, takes out a small notebook, and writes one word in it. You lean over to read it. The word is FAIR. He underlines it twice and goes back to bed.",
+      "narration": "\"It isn't your secret to tell,\" you say. Pellam looks at you for a long moment. Then he nods, takes out a small notebook, and writes one word in it. You lean over to read it. The word is FAIR. He underlines it twice and goes back to bed.",
       "choices": [
         {
           "id": "on",
@@ -1476,7 +1509,7 @@
     },
     "rest_under_the_table": {
       "type": "rest",
-      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot at the same moment, and stand there not looking at each other until somebody says please. Patch each other up. The teapot survives.",
+      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot at the same moment, and stand there not looking at each other until somebody says please. Patch up your scrapes. The teapot survives.",
       "heal": 3,
       "choices": [
         {
@@ -1489,6 +1522,9 @@
     },
     "scene_rope_bridge": {
       "type": "story",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
@@ -1498,13 +1534,13 @@
       "choices": [
         {
           "id": "one_by_one",
-          "label": "Cross one at a time, quick and light",
+          "label": "Cross quick and light, between tremors",
           "icon": "quick",
           "goto": "check_rope_bridge"
         },
         {
           "id": "roped",
-          "label": "Tie yourselves together and go slowly",
+          "label": "Rope up and go slowly",
           "icon": "ribbon",
           "goto": "scene_rope_bridge_roped"
         },
@@ -1530,7 +1566,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_switchback",
-        "narration": "You wait for the swing to settle, then go, one at a time, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
+        "narration": "You wait for the swing to settle, then go, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
       },
       "onFailure": {
         "goto": "scene_switchback",
@@ -1540,6 +1576,17 @@
     "scene_rope_bridge_roped": {
       "type": "story",
       "narration": "You rope yourselves together, front to back, and go over so slowly that a snail would be embarrassed. When the bridge swings, you all lean the same way at once, without even saying. Being tied to each other turns out to feel a lot like being a team. The goat lets you pass.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You tie the rope around your waist and the other end to the handrail, and go over so slowly that a snail would be embarrassed. When the bridge swings, you lean with it. Being tied to something solid turns out to feel a lot like having a friend. The goat lets you pass."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1551,7 +1598,7 @@
     },
     "scene_rope_bridge_loose_knot": {
       "type": "story",
-      "narration": "You tie yourselves to the handrail with a loose knot, the kind you can undo. Every few steps, you undo it and tie it again further along. It is slow, and very safe, and by the far side you could tie that knot in your sleep. Which was, you suspect, the point.",
+      "narration": "You tie on to the handrail with a loose knot, the kind you can undo. Every few steps, you undo it and tie it again further along. It is slow, and very safe, and by the far side you could tie that knot in your sleep. Which was, you suspect, the point.",
       "choices": [
         {
           "id": "on",
@@ -1579,7 +1626,7 @@
       "choices": [
         {
           "id": "racket",
-          "label": "Make a racket, all of you at once",
+          "label": "Make a racket, everything at once",
           "icon": "clever",
           "goto": "check_echoes"
         },
@@ -1686,7 +1733,7 @@
     },
     "scene_bend_crowds": {
       "type": "story",
-      "narration": "At the worst bend, both sides got there first. Wardens are stacking numbered boxes on one side of the road. Masks are unrolling sacks on the other. Both are planning to grab the Caravan Stone the moment it arrives, which would end your test before it starts. Far below, the caravan is coming.",
+      "narration": "At the worst bend, both sides got there first. Wardens are stacking numbered boxes on one side of the road. Masks are unrolling sacks on the other. Both are planning to grab the caravan's big stone the moment it arrives, which would end your test before it starts. Far below, the caravan is coming.",
       "choices": [
         {
           "id": "chalk_line",
@@ -1771,6 +1818,36 @@
     "choice_the_test": {
       "type": "choice_point",
       "narration": "At the worst bend, the fattest caravan in the funnel is coming, and the stone in its middle wagon hums so loudly the mules wear earmuffs. If you can hold that one stone's hum still for one breath, you can hold anything. Wardens on one side, masks on the other, both watching you.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Your packs hold only rush gems, and they hum along with everything. But both camps have set small stones out on their tables for tuning, and nobody would mind if you borrowed some."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "The great stones in your packs lean toward the wagon, humming, the way iron filings lean toward a magnet."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "All {facets} great stones in your packs lean toward the wagon at once. It is like tuning a whole choir against a single voice, and the choir is yours."
+        }
+      ],
       "choices": [
         {
           "id": "question",
@@ -1843,6 +1920,18 @@
           "requiresFlag": "table_works"
         },
         {
+          "id": "borrowed",
+          "label": "Borrow small stones from both camps, and tune with those",
+          "icon": "hand",
+          "goto": "choice_the_test_borrowed",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          }
+        },
+        {
           "id": "bare_hands",
           "label": "Hold it with nothing but nerve",
           "icon": "heart",
@@ -1850,11 +1939,23 @@
         }
       ]
     },
+    "choice_the_test_borrowed": {
+      "type": "story",
+      "narration": "A warden hands you a small gray stone from the cage tray. A mask hands you a small red one from her soup sack. Neither of them looks at the other while they do it. You hold one in each hand and let them hum against each other until they find the same note, and then you have an instrument, borrowed from both sides. The caravan is almost here.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold the hum",
+          "icon": "hand",
+          "goto": "check_hold"
+        }
+      ]
+    },
     "check_hold_easy": {
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Ask the Caravan Stone what it actually wants, and listen for the answer",
+      "prompt": "Ask the stone in the wagon what it actually wants, and listen for the answer",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
@@ -1869,7 +1970,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hold the Caravan Stone's hum still for one whole breath",
+      "prompt": "Hold the wagon stone's hum still for one whole breath",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
@@ -1884,7 +1985,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 16,
-      "prompt": "Hold the Caravan Stone's hum still with no instruments at all",
+      "prompt": "Hold the wagon stone's hum still with no instruments at all",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
@@ -1898,6 +1999,37 @@
     "scene_tether_holds": {
       "type": "story",
       "narration": "The caravan master climbs down, hands you the Caravan Stone in both arms, and says, \"Please keep it. It's been humming at me for a month.\" A warden writes something in a notebook. A mask takes off her mask. For a moment, everyone is looking at the same thing: you.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 1
+            }
+          },
+          "text": "It is the only great stone in your packs, and it hums like a small, loud heart."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 2,
+              "max": 4
+            }
+          },
+          "text": "It settles in among the others, and the great stones in your packs hum back at it like old friends."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "That makes {facets} great stones now. The Caravan Stone slots into the hum like the last voice in a choir, and the mules, who have heard a lot of humming this month, look impressed."
+        }
+      ],
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -1957,6 +2089,36 @@
         }
       ],
       "narration": "Before you climb, you go back down to the Pinch one last time. Your old door is still there on its two barrels, chalk and all. People are packing up and running. But somebody has to keep the table while you are up the mountain, or there will be nothing to come back to. Who?",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "The only stones you carry are rush gems, humming along. You look at the old door and think it may be the greatest thing you have made."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "The great stones in your packs hum faintly, as if they want to stay and watch over the table too."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "{facets} great stones hum in your packs, loud enough that wardens and masks both look over. It is the sound of a whole realm trying to stay in one piece."
+        }
+      ],
       "choices": [
         {
           "id": "both",
@@ -2040,6 +2202,26 @@
     "rest_up_the_mountain": {
       "type": "rest",
       "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying whatever you managed to borrow, a ledger or a chord or a question, and a great deal of nerve.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Nothing in your packs but rush gems, humming along. You have the tune, and the tune will have to do."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "{facets} great stones hum in your packs and climb with you. The mountain can hear you coming."
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
