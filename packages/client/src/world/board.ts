@@ -68,8 +68,13 @@ import {
   biomeTilesUrl,
   characterArtUrl,
   characterWorldArtUrl,
+  drawContactShadow,
   drawPlaceholder,
   enemyArtUrl,
+  breathingShadowScale,
+  measureFootprint,
+  shadowOffset,
+  type Footprint,
 } from "./actor-art";
 
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
@@ -198,6 +203,11 @@ export interface BoardLayer {
 interface BoardActor {
   container: Container;
   art: Container;
+  /** The contact shadow, a sibling of `art` (see makeActor). */
+  shadow: Graphics;
+  /** How far right of the anchor the feet are, as drawn (facing left). The
+      shadow follows `art.scale.x` across, so it stays under them on a turn. */
+  shadowX: number;
   id: string;
   side: "party" | "enemy";
   down: boolean;
@@ -313,12 +323,17 @@ function smallArtBoost(texture: Texture): number {
   return boost;
 }
 
-function drawShadow(side: string): Graphics {
-  const shadow = new Graphics();
-  shadow
-    .ellipse(0, 0, BOARD_TILE_PX * 0.34, BOARD_TILE_PX * 0.11)
-    .fill({ color: 0x0b0a14, alpha: side === "party" ? 0.32 : 0.28 });
-  return shadow;
+/** The board looks down on its squares, so its shadows are rounder than the
+    lineup's. */
+const BOARD_SHADOW_SQUASH = 0.3;
+
+/**
+ * A figure's shadow on its square: fitted to the feet when the art has been
+ * measured, a modest one at the anchor otherwise (a rig, a placeholder).
+ * `height` is the figure's canvas height on screen.
+ */
+function drawShadow(side: string, height: number, footprint: Footprint | null): Graphics {
+  return drawContactShadow(height, footprint, BOARD_SHADOW_SQUASH, side === "party" ? 1 : 0.9);
 }
 
 /** How long a figure's art may take before its stand-in is drawn instead. */
@@ -471,7 +486,7 @@ export function createBoardLayer(): BoardLayer {
     // flat cutout *on* the board rather than pasted over it.
     // Hidden until there is a figure to cast it: a shadow on an empty tile
     // while the art loads read as a hole in the board.
-    const shadow = drawShadow(combatant.side);
+    const shadow = drawShadow(combatant.side, ACTOR_HEIGHT, null);
     shadow.visible = false;
     actorContainer.addChild(shadow, art);
     actorsLayer.addChild(actorContainer);
@@ -506,6 +521,8 @@ export function createBoardLayer(): BoardLayer {
     const actor: BoardActor = {
       container: actorContainer,
       art,
+      shadow,
+      shadowX: 0,
       id: combatant.id,
       side: combatant.side,
       down: combatant.down,
@@ -542,12 +559,22 @@ export function createBoardLayer(): BoardLayer {
           // flame by design) and drew as a speck from the sofa. Grow it about
           // the feet until it reads as a figure; art that already does is
           // untouched.
-          sprite.scale.set((ACTOR_HEIGHT / CANVAS.height) * smallArtBoost(texture));
+          const height = ACTOR_HEIGHT * smallArtBoost(texture);
+          sprite.scale.set(height / CANVAS.height);
           clearTimeout(reveal);
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
-          shadow.visible = true;
+          // Refit the shadow to where this figure's feet really are: most art
+          // does not stand on the canvas centre line, and a shadow beside the
+          // feet is what made figures look like they were hovering.
+          const footprint = measureFootprint(texture);
+          const fitted = drawShadow(combatant.side, height, footprint);
+          actorContainer.addChildAt(fitted, actorContainer.getChildIndex(actor.shadow));
+          actor.shadow.destroy();
+          actor.shadow = fitted;
+          actor.shadowX = shadowOffset(height, footprint);
+          fitted.x = actor.shadowX * art.scale.x;
           // Fades up through the same easing that stands a fallen figure back
           // up (tick), so a figure arrives rather than appearing.
           if (!actor.down) art.alpha = 0;
@@ -557,7 +584,7 @@ export function createBoardLayer(): BoardLayer {
           // blank the board.
           clearTimeout(reveal);
           if (!placeholder.destroyed) placeholder.visible = true;
-          if (!shadow.destroyed) shadow.visible = true;
+          if (!actor.shadow.destroyed) actor.shadow.visible = true;
         });
     };
 
@@ -593,7 +620,7 @@ export function createBoardLayer(): BoardLayer {
         art.alpha = 1;
         rive.setKnockedDown(actor.down);
         art.addChild(rive.sprite);
-        shadow.visible = true;
+        actor.shadow.visible = true;
         actor.rive = rive;
       })
       .catch(loadCutout);
@@ -925,6 +952,7 @@ export function createBoardLayer(): BoardLayer {
         // edge-on, which reads as the figure turning round rather than
         // flipping (the lineup does the same, scene.ts).
         actor.art.scale.x = approach(actor.art.scale.x, actor.facing, TURN_RATE, dtSeconds);
+        actor.shadow.x = actor.shadowX * actor.art.scale.x;
         if (actor.rive) {
           // The rig owns the fall: `knockedDown` walks it through `down` into
           // the `down_loop` breathing hold and back out through `revive`
@@ -955,6 +983,8 @@ export function createBoardLayer(): BoardLayer {
           }
 
           actor.rive.tick(dtSeconds);
+          // Breathing with the idle: tighter as the body rises off its feet.
+          actor.shadow.scale.set(breathingShadowScale(actor.down ? 0 : actor.rive.breath()));
           continue;
         }
         if (actor.down) {
