@@ -38,7 +38,8 @@ function main(): void {
     ? Object.fromEntries(Object.entries(itemsFile).filter(([id]) => !id.startsWith('$')))
     : undefined;
   // Every chapter, to say which entities the stories actually use.
-  const chapters = loadChapterTexts(path.resolve('content', 'chapters'));
+  const chaptersDir = path.resolve('content', 'chapters');
+  const chapters = loadChapterTexts(chaptersDir);
   const assetsDir = path.resolve('assets');
   const contentDir = path.resolve('wiki', 'content');
   const manifestPath = path.resolve('wiki', '.gen-manifest.json');
@@ -49,6 +50,7 @@ function main(): void {
     contentDir,
     manifestPath,
     forceAll,
+    chaptersDir,
   };
 
   // 3. Check if canon directory exists — fatal error if not
@@ -199,7 +201,7 @@ function main(): void {
   }
 
   // 11. Update manifest with current file mtimes
-  const canonMtimes = getCanonFileMtimes(canonDir);
+  const canonMtimes = getCanonFileMtimes(canonDir, config.chaptersDir);
   updateManifest(manifestPath, canonMtimes);
 
   // 12. Print summary report and exit 0
