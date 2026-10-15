@@ -339,6 +339,29 @@ describe("whose turn it is", () => {
     expect(nearness(3, 3)).toBeCloseTo(0.5);
   });
 
+  it("keeps a figure's facing when its foe is straight above or below, as the TV does", () => {
+    // The hero at (1,2) faces the wisp on her right. She steps to (2,1),
+    // straight above it: nobody is sideways to face, so she stays turned.
+    const { container } = mount();
+    const facesRight = () =>
+      container.querySelector(".combat__cell--party")!.classList.contains("combat__cell--faces-right");
+    expect(facesRight()).toBe(true);
+    const current = useGameStore.getState().state!;
+    const enc = current.encounter!;
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...current,
+          encounter: {
+            ...enc,
+            board: { ...enc.board, actors: enc.board.actors.map((a) => (a.id === "c_hero" ? { ...a, x: 2, y: 1 } : a)) },
+          },
+        },
+      });
+    });
+    expect(facesRight()).toBe(true);
+  });
+
   it("turns figures to face the nearest opponent", () => {
     // Art is drawn facing left. The hero at (1,2) has the wisp at (2,2) on
     // her right, so she turns; the wisp's nearest hero is on its left, so it
@@ -903,6 +926,50 @@ describe("what just happened", () => {
     ]);
     // Good news green, bad news red (shape and words carry it too: spec §11).
     expect(beats.map((b) => b.tone)).toEqual(["good", "good", "plain", "bad"]);
+  });
+
+  it("keeps the opening monster round when it arrives before the fight does", () => {
+    /*
+     * The channel delivers ENCOUNTER_BEGAN, with any monster turns that ran
+     * before the first hero's, ahead of the patch that puts the encounter in
+     * state. The log must still hold that round once the fight appears.
+     */
+    const fight = { ...encounterWith(), startedAt: 42 };
+    mount({ encounter: fight });
+    const current = useGameStore.getState().state!;
+    act(() => {
+      useGameStore.setState({ state: { ...current, encounter: null } });
+    });
+    act(() => {
+      useGameStore.setState({
+        presentation: {
+          seq: 43,
+          presentation: {
+            kind: "ENCOUNTER_BEGAN",
+            mapId: "thicket",
+            firstActorId: "c_hero",
+            events: [
+              { type: "roll", roll: roll({ characterId: "wisp#1", die: 16, mod: 3, total: 19, tn: 12, stat: undefined }) },
+              { type: "damage", actorId: "c_hero", amount: 3, hp: 7 },
+            ],
+          },
+        },
+      });
+    });
+    act(() => {
+      useGameStore.setState({ state: { ...current, encounter: fight } });
+    });
+    const log = screen.getByRole("list", { name: "What just happened" });
+    expect(log.textContent).toContain("You take 3. 7 left.");
+
+    // And a fight that ends takes its log with it.
+    act(() => {
+      useGameStore.setState({ state: { ...current, encounter: null } });
+    });
+    act(() => {
+      useGameStore.setState({ state: { ...current, encounter: { ...encounterWith(), startedAt: 99 } } });
+    });
+    expect(screen.queryByRole("list", { name: "What just happened" })).toBeNull();
   });
 
   it("shows the last beat on the phone, and the d20 as its parts", () => {
