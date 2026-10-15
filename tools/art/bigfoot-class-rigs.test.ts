@@ -18,5 +18,10 @@ describe('Bigfoot class recut anatomy', () => {
       if (!part.startsWith('$')) expect(joints[part], part).toEqual(pivot);
     }
     expect(JSON.parse(readFileSync(`art/rig/${characterClass}-${tier}-bigfoot.rig.json`, 'utf8')).underpaint).toBe(0);
+    const config = JSON.parse(readFileSync(`art/rig/${characterClass}-${tier}-bigfoot.rig.json`, 'utf8'));
+    const manifest = JSON.parse(readFileSync('assets/manifest.json', 'utf8'));
+    const declared = manifest.rigVariants.find((variant: { class: string; tier: string; species: string }) =>
+      variant.class === characterClass && variant.tier === tier && variant.species === 'bigfoot');
+    expect(declared.parts).toEqual(config.zOrder);
   });
 });
