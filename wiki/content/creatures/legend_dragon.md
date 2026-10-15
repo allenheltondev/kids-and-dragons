@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-08"]
 tags: ["legendary", "volcano", "sapient", "ancient"]
 classification: legendary_beast
 danger_level: legendary

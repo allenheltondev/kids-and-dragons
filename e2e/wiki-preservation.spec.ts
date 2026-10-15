@@ -34,7 +34,7 @@ test.describe('Preservation: Desktop Sidebar (Req 3.1)', () => {
   for (const viewport of desktopViewports) {
     test(`sidebar renders at 260px CSS width with sticky positioning at ${viewport.width}px`, async ({ page }) => {
       await page.setViewportSize(viewport);
-      await page.goto('/creatures/ember_wraith/');
+      await page.goto('/creatures/cinder_wolf/');
       await page.waitForLoadState('domcontentloaded');
 
       const sidebar = page.locator('#wiki-sidebar');
@@ -57,7 +57,7 @@ test.describe('Preservation: Desktop Sidebar (Req 3.1)', () => {
 
   test('sidebar contains section navigation links', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     const sectionLinks = page.locator('.wiki-sidebar__section-link');
@@ -85,7 +85,7 @@ test.describe('Preservation: Desktop Sidebar (Req 3.1)', () => {
 test.describe('Preservation: Biome Page Structure (Req 3.2)', () => {
   const biomePages = [
     '/biomes/enchanted_woods/',
-    '/biomes/crimson_highlands/',
+    '/biomes/sky_islands/',
     '/biomes/frostfang_peaks/',
   ];
 
@@ -161,7 +161,7 @@ test.describe('Preservation: Character Page Structure (Req 3.3)', () => {
  */
 test.describe('Preservation: Entity Page Components (Req 3.4)', () => {
   const entityPages = [
-    '/creatures/ember_wraith/',
+    '/creatures/cinder_wolf/',
     '/biomes/enchanted_woods/',
     '/characters/bigfoot/',
   ];
@@ -193,7 +193,7 @@ test.describe('Preservation: Entity Page Components (Req 3.4)', () => {
 
   test('creature infobox renders with data fields', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     // Creature infobox should be present
@@ -203,7 +203,7 @@ test.describe('Preservation: Entity Page Components (Req 3.4)', () => {
     // Should have infobox title
     const title = page.locator('.wiki-infobox__title');
     await expect(title).toBeVisible();
-    await expect(title).toContainText('Ember Wraith');
+    await expect(title).toContainText('Cinder Wolf');
   });
 });
 
@@ -216,7 +216,7 @@ test.describe('Preservation: Entity Page Components (Req 3.4)', () => {
 test.describe('Preservation: Mobile Search Overlay (Req 3.5)', () => {
   test('search toggle button is visible on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     // Search toggle button should be visible on mobile
@@ -230,7 +230,7 @@ test.describe('Preservation: Mobile Search Overlay (Req 3.5)', () => {
 
   test('search toggle button is hidden on desktop', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     // Search toggle should be hidden on desktop
@@ -252,7 +252,7 @@ test.describe('Preservation: Mobile Search Overlay (Req 3.5)', () => {
 test.describe('Preservation: Theme Toggle (Req 3.6)', () => {
   test('theme toggle button is present and functional', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     // Theme toggle button should exist
@@ -283,7 +283,7 @@ test.describe('Preservation: Theme Toggle (Req 3.6)', () => {
 
   test('theme persists across page navigation', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     // Toggle to dark mode explicitly
@@ -309,7 +309,7 @@ test.describe('Preservation: Theme Toggle (Req 3.6)', () => {
 
   test('theme toggle works on mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     const themeToggle = page.locator('#theme-toggle');
@@ -394,7 +394,7 @@ test.describe('Preservation: Tile Card Hover Animations (Req 3.7)', () => {
  */
 test.describe('Preservation: Non-Biome Entity Infoboxes (Req 3.8)', () => {
   const creaturePages = [
-    { path: '/creatures/ember_wraith/', name: 'Ember Wraith' },
+    { path: '/creatures/cinder_wolf/', name: 'Cinder Wolf' },
     { path: '/creatures/frost_wyrm/', name: 'Frost Wyrm' },
     { path: '/creatures/jackalope/', name: 'Jackalope' },
   ];

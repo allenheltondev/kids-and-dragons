@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: []
 tags: ["ocean", "offshore", "deep_water", "weather", "currents"]
 danger_level: moderate
 regional_relationships:

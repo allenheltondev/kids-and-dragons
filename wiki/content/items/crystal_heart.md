@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["artifact", "crystal", "magical", "legendary"]
 related:
   - id: location.skullwater_cave

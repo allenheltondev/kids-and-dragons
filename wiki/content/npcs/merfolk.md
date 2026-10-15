@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["supporting_people", "ocean", "reef", "alliance"]
 classification: supporting_people
 scale: medium

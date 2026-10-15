@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-04a", "gemfall-04b", "gemfall-04c", "gemfall-05a", "gemfall-06", "gemfall-07h", "gemfall-07r"]
 tags: ["provision", "healing", "bramblewood", "common"]
 related:
   - id: location.bramblewood

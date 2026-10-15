@@ -5,7 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
-draft: true
+played_in: ["gemfall-03b"]
 tags: ["artifact", "hollow_gate", "mysterious", "legendary"]
 related:
   - id: location.hollow_gate

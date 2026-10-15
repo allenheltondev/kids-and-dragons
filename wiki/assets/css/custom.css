@@ -970,6 +970,10 @@ html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
 .wiki-badge--danger-high      { background: rgba(255, 107, 129, 0.16); color: var(--wiki-danger); border-color: rgba(255, 107, 129, 0.45); }
 .wiki-badge--danger-legendary { background: linear-gradient(90deg, rgba(245, 200, 108, 0.25), rgba(255, 107, 129, 0.25)); color: var(--wiki-gold); border-color: var(--wiki-gold); }
 .wiki-badge--draft            { background: transparent; color: var(--wiki-text-faint); border-style: dashed; }
+/* Waiting for a future campaign: present, but quieter than everything the
+ * party can actually meet. */
+.wiki-badge--unmet            { background: transparent; color: var(--wiki-text-secondary); border: 1px dashed var(--wiki-border-strong); }
+.wiki-badge--mystery          { background: var(--wiki-accent-soft); color: var(--wiki-accent); border-color: color-mix(in srgb, var(--wiki-accent) 45%, transparent); }
 
 .tag,
 .wiki-tag {
@@ -1165,6 +1169,12 @@ html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
   color: var(--wiki-text-secondary);
 }
 
+.wiki-tile-card__chip--unmet {
+  background: transparent;
+  border: 1px dashed var(--wiki-border-strong);
+  color: var(--wiki-text-secondary);
+}
+
 .wiki-tile-card__chip--low { color: var(--wiki-success); }
 .wiki-tile-card__chip--moderate { color: var(--wiki-warn); }
 .wiki-tile-card__chip--high,
@@ -1249,6 +1259,12 @@ html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
 .entity-head h1 {
   margin: 0.4rem 0 0.2rem;
   text-shadow: 0 2px 12px color-mix(in srgb, var(--wiki-bg) 70%, transparent);
+}
+
+.entity-met {
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+  color: var(--wiki-text-secondary);
 }
 
 .entity-kicker {

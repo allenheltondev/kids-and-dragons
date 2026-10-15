@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["ancient_ice", "river_source", "frozen_memory", "glacier", "northern"]
 danger_level: high
 regional_relationships:

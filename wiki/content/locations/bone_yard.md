@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-03a"]
 tags: ["ancient_remains", "forbidden", "supernatural", "river_mouth", "saltrot"]
 danger_level: high
 regional_relationships:

@@ -5,6 +5,7 @@ type: character
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03c", "gemfall-04a", "gemfall-04c", "gemfall-05a", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["playable", "mountain", "flight", "scout"]
 scale: medium_to_large
 lore_hook: "Half eagle, half lion, entirely certain you should not have climbed that."
