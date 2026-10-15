@@ -29,6 +29,14 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > (`journey-ci`) is the one CI plays. Rift energy can grant [temporary buffs](#temporary-buffs-200)
 > (#200) — guard, damage, movement or roll bonuses (or burdens) that last a few turns or fights,
 > never written to a character; the [Humming Spring](#the-humming-spring-fixture) fixture shows them.
+>
+> **Epic #191 is complete: all of #192–#203 landed.** Rift actions can be
+> [class ways](#class-rift-interaction-199) (#199), fights can happen
+> [in the rift](#environmental-combat-201) (#201), and the
+> [Continental Rift vertical slice](#the-continental-rift-vertical-slice-203) (#203) puts every part
+> together and is played end to end, across evenings, with and without a Starweaver — while
+> Gemfall is held to the build before the epic. **To write a graph campaign, start with the
+> [authoring guide](./graph-campaigns-authoring.md)**; this document is the contract it teaches.
 
 ---
 
@@ -1544,6 +1552,39 @@ it can be walked at all, which is checked here.
 
 ---
 
+## The Continental Rift vertical slice (#203)
+
+The epic's integration gate: one small graph campaign that uses everything above **together**, and
+the proof that it plays end to end while Gemfall plays exactly as it did before any of it.
+
+- **The slice** — [`packages/shared/src/fixtures/continental-rift.campaign.json`](../../packages/shared/src/fixtures/continental-rift.campaign.json)
+  (`continental-rift-slice`), with real, short, playable chapters and a board in
+  [`fixtures/continental-rift/`](../../packages/shared/src/fixtures/continental-rift/). Six places
+  (the Exchange, the Whispering Marsh, the Glacier of Origins, the Frostfang Peaks, and two endings),
+  nine ways, three world facts, three buffs, a single-use rift with a Starweaver's `sense`, a sealed
+  rift with Starweaver / Songkeeper / ally ways, and an environmental fight whose rescue becomes a
+  world fact. Not content: nothing ships it, and no lobby can offer it.
+- **Played** — [`packages/server/src/handlers/continental-rift.test.ts`](../../packages/server/src/handlers/continental-rift.test.ts)
+  loads it through the shipping loader (a scratch content root) and plays it with real handlers
+  across several evenings — new rooms, one attempt row, a chapter resumed mid-fight, a phone dropped
+  and rejoined — for a table with a Starweaver, one without, and one that opens nothing; each reaches
+  an ending.
+- **Gated** — [`tools/content/continental-rift.test.ts`](../../tools/content/continental-rift.test.ts):
+  schemas; `content:validate` on a copy of the real tree with the slice dropped into `content/` (no
+  failure, no warning); the lint with the slice's own chapters (no finding); every table composition
+  explored and replayed; `content:journey --playtest` clean; the guide's diagram current. The journey
+  CI gate walks it like every fixture.
+- **Gemfall** — [`packages/server/src/handlers/gemfall-compat.test.ts`](../../packages/server/src/handlers/gemfall-compat.test.ts)
+  compares Gemfall with the build *before* the epic (57c63ba8): file digests, all 48 chapter endings,
+  every road and pursuit across eight evenings, the setback limit, an oldest-shape attempt row, a run
+  saved mid-fight by the old build resuming identically, legacy rows through both repositories, and
+  the graph intents refused.
+
+The walkthrough — the diagram, which part demonstrates which exit criterion, and the three tables'
+evenings — is in the [authoring guide](./graph-campaigns-authoring.md#the-vertical-slice-walked-through).
+
+---
+
 ## 7. The Rift Sampler
 
 [`packages/shared/src/fixtures/rift-sampler.campaign.json`](../../packages/shared/src/fixtures/rift-sampler.campaign.json)
@@ -1691,7 +1732,7 @@ its issue defines it. Where each attaches:
 | #200 temporary buffs | **Done** — [Temporary buffs](#temporary-buffs-200): `graph.buffs`, the `grantBuff` effect, `JourneyState.buffs`, `RunState.buffs` (seeded via `EngineContext.campaignBuffs`), `EncounterState.buffs` read through `buffBonus`, `JourneyView.buffs`, `BUFF_NEVER_GRANTED`. No guard reads a buff. |
 | #201 environmental combat | **Done** — [Environmental combat](#environmental-combat-201): optional `environment` on a chapter's encounter scene (rift clock, hazards, timed exits, a rescue, relocations), `onEscape` / `onTimeout` branches, `endTurnWithEvents`, `EncounterState.environment`, `Combatant.escaped`, `checkEncounterEnvironment`. Consequences reach the graph as flags read back on completion and turned into facts, rift effects or buffs by `onComplete` rules; a place that changes with world state is a node variant. |
 | #202 inspection | **Done** — [Inspection and playtest tooling](#inspection-and-playtest-tooling-202): `npm run content:journey`, `exploreCampaignGraph` (the lint's explorer, exported), `checkJourneySave`. A new exit-blocking reason or journey state must be tracked by `explore` first; the playtest's replay then holds the lint to the runtime. |
-| #203 vertical slice | a real graph campaign under a **new** campaign id, never Gemfall. |
+| #203 vertical slice | **Done** — [the Continental Rift vertical slice](#the-continental-rift-vertical-slice-203): a fixture graph campaign under a **new** id (`continental-rift-slice`), never Gemfall and never shipped, played end to end through the server; Gemfall held to the pre-epic build (`gemfall-compat.test.ts`); the [authoring guide](./graph-campaigns-authoring.md). The first *shipping* graph campaign is content work, under its own id, in `content/`. |
 
 A change of *meaning* to anything above bumps `CampaignGraph.version`; adding an optional field
 whose absence means today's behavior does not.

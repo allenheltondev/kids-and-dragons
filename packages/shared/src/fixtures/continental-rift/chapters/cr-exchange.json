@@ -1,0 +1,24 @@
+{
+  "$comment": "Continental Rift slice placeholder (#203) - NOT content, never shipped. The entry: the Exchange's arrivals shelf, torn open.",
+  "id": "cr-exchange",
+  "campaignId": "continental-rift-slice",
+  "index": 1,
+  "title": "The Shelf of Returns",
+  "biome": "exchange",
+  "estimatedMinutes": 5,
+  "xpAward": 100,
+  "entry": "scene_arrivals",
+  "scenes": {
+    "scene_arrivals": {
+      "type": "story",
+      "narration": "The Exchange keeps a shelf for things the sea brings back. This morning the air above it has torn open, and cold wind blows out of the tear.",
+      "choices": [{ "id": "look", "label": "Look into the tear", "icon": "eye", "goto": "scene_tear" }]
+    },
+    "scene_tear": {
+      "type": "story",
+      "narration": "Snow drifts out of the tear and settles on the shelf. Somewhere on the other side, ice is creaking.",
+      "choices": [],
+      "outcome": "success"
+    }
+  }
+}

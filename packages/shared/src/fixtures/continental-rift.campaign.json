@@ -1,0 +1,239 @@
+{
+  "$comment": "The Continental Rift technical vertical slice (#203) — NOT CONTENT and NOT A CAMPAIGN THAT SHIPS: it lives outside content/, so neither the loader nor content:validate ever sees it, no lobby can offer it, and its chapters (packages/shared/src/fixtures/continental-rift/) are short playable placeholders written to exercise the engine, not the story. It is the epic's (#191) end-to-end proof: one small map that uses every part of the graph runtime together. The Exchange's arrivals shelf has torn open into a single-use rift to the Glacier of Origins, a Starweaver can sense where it leads, and crossing it charges the party for the next fight; the glacier's cracking ice shelf is an environmental fight whose rescue befriends the yeti readers; going back down the Great River finds the Exchange changed (the source has woken and the harbour is flooded), the used-up rift refused and the long road north open instead; and the sealed rift into the glacier's heart opens for a Starweaver who has studied the stars on the Frostfang Peaks, for a Songkeeper who sings to it, or for any party the yeti readers owe. Two endings. packages/server/src/handlers/continental-rift.test.ts plays it across several evenings with and without a Starweaver; tools/content/continental-rift.test.ts holds it to the schemas, the chapter checks and the lint; docs/campaigns/graph-campaigns-authoring.md walks through it.",
+  "id": "continental-rift-slice",
+  "title": "The Continental Rift (vertical slice)",
+  "blurb": "A torn shelf at the Exchange, a glacier at the top of the world, and a river that remembers. A technical slice of the nonlinear campaign engine, not a story that ships.",
+  "chapters": [
+    "cr-exchange",
+    "cr-exchange-flooded",
+    "cr-marsh",
+    "cr-glacier",
+    "cr-peaks",
+    "cr-heart",
+    "cr-delta"
+  ],
+  "graph": {
+    "version": 1,
+    "entry": "exchange",
+    "flags": ["reader_freed", "flood_seen"],
+    "facts": {
+      "attunement": {
+        "$comment": "The Starweaver's progression (#199), kept as journey state: sensing the shelf rift (+1) and studying the stars on the Frostfang Peaks (+1) earn the attunement the heart seal asks for (2); attuning it raises it to 3. Stored on the attempt row, so it is there on the next evening whoever comes.",
+        "domain": "consequence",
+        "type": "counter",
+        "min": 0,
+        "max": 3,
+        "initial": 0,
+        "label": "Rift attunement",
+        "visible": true
+      },
+      "great-river": {
+        "$comment": "The world changing downstream (#198): whatever happens at the glacier, the source wakes, and the river that runs from it to the Exchange is in spate. The Exchange's flooded variant reads it.",
+        "domain": "locale",
+        "type": "enum",
+        "values": ["steady", "surging"],
+        "initial": "steady",
+        "label": "The Great River",
+        "visible": true
+      },
+      "yeti-readers": {
+        "$comment": "The alliance the environmental fight earns (#201 into #198): freeing the trapped reader sets the chapter flag reader_freed, and the glacier's completion rule turns it into this fact. Friends open the heart seal for any party: the ungated way the lint (CLASS_GATED_ONLY_PATH) asks for beside the class ways.",
+        "domain": "alliance",
+        "type": "enum",
+        "values": ["strangers", "friends"],
+        "initial": "strangers",
+        "label": "The yeti readers",
+        "visible": true
+      }
+    },
+    "buffs": {
+      "rift-spark": {
+        "$comment": "Rift energy from crossing the shelf rift (#200): +1 on every hero's attack rolls in the next fight.",
+        "label": "Rift Spark",
+        "kind": "roll",
+        "amount": 1,
+        "target": "party",
+        "duration": { "scope": "encounter" },
+        "stack": "refresh"
+      },
+      "marsh-mettle": {
+        "$comment": "The side trip's reward: the boggarts' marsh-mud steadies the party for the next fight.",
+        "label": "Marsh Mettle",
+        "kind": "guard",
+        "amount": 1,
+        "target": "party",
+        "duration": { "scope": "encounters", "count": 1 },
+        "stack": "ignore"
+      },
+      "starlight-ward": {
+        "$comment": "The Starweaver's attunement leaves the party wrapped in starlight: Guard +1 in the next fight (the heart's).",
+        "label": "Starlight Ward",
+        "kind": "guard",
+        "amount": 1,
+        "target": "party",
+        "duration": { "scope": "encounters", "count": 1 },
+        "stack": "refresh",
+        "expiresOn": ["defeat"]
+      }
+    },
+    "nodes": {
+      "exchange": {
+        "$comment": "The entry, and the revisit that changes: once the river surges, coming back plays the flooded harbour (once - the completion rule remembers it was seen), and otherwise the Exchange is a hub the party walks through.",
+        "chapter": "cr-exchange",
+        "title": "The Exchange",
+        "revisit": "pass",
+        "variants": [
+          {
+            "chapter": "cr-exchange-flooded",
+            "when": { "facts": { "great-river": "surging" }, "notFlag": "flood_seen" },
+            "revisit": "replay"
+          }
+        ],
+        "onComplete": [
+          { "when": { "facts": { "great-river": "surging" } }, "effects": [{ "type": "setFlag", "flag": "flood_seen" }] }
+        ]
+      },
+      "marsh": {
+        "$comment": "A side trip from the Exchange (sideways). Its completion grants a buff the next fight uses.",
+        "chapter": "cr-marsh",
+        "title": "The Whispering Marsh",
+        "revisit": "pass",
+        "onComplete": [{ "effects": [{ "type": "grantBuff", "buff": "marsh-mettle" }] }]
+      },
+      "glacier": {
+        "$comment": "The environmental fight on the cracking ice shelf. Every completion wakes the river; freeing the yeti reader makes the readers friends. A pass hub once done.",
+        "chapter": "cr-glacier",
+        "title": "The Glacier of Origins",
+        "revisit": "pass",
+        "onComplete": [
+          { "effects": [{ "type": "setFact", "fact": "great-river", "value": "surging" }] },
+          { "when": { "flag": "reader_freed" }, "effects": [{ "type": "setFact", "fact": "yeti-readers", "value": "friends" }] }
+        ]
+      },
+      "peaks": {
+        "$comment": "A side trip from the glacier (sideways), played once (closed). Studying the stars from the summit is the campaign-earned half of the Starweaver's attunement; any party can play it, only a Starweaver can use it.",
+        "chapter": "cr-peaks",
+        "title": "The Frostfang Peaks",
+        "revisit": "closed",
+        "onComplete": [{ "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }] }]
+      },
+      "heart": {
+        "chapter": "cr-heart",
+        "title": "The Heart of the Glacier",
+        "ending": { "title": "The River's First Song" }
+      },
+      "delta": {
+        "chapter": "cr-delta",
+        "title": "The River Mouth",
+        "ending": { "title": "Home on the Meltwater" }
+      }
+    },
+    "edges": {
+      "exchange-to-marsh": {
+        "from": "exchange",
+        "to": "marsh",
+        "kind": "sideways",
+        "label": "Take the Marsh Approach"
+      },
+      "marsh-to-exchange": {
+        "from": "marsh",
+        "to": "exchange",
+        "kind": "return",
+        "label": "Back to the Exchange"
+      },
+      "shelf-rift": {
+        "$comment": "The single-use rift (#196): one crossing and it is consumed for good, drawn as used up from then on. Its destination is hidden until crossed - unless a Starweaver senses it first (#199, discover), which also raises the attunement. Crossing grants the Rift Spark (#200).",
+        "from": "exchange",
+        "to": "glacier",
+        "kind": "forward",
+        "label": "Step into the tear above the arrivals shelf",
+        "blocked": "shown",
+        "effects": [{ "type": "grantBuff", "buff": "rift-spark" }],
+        "rift": {
+          "uses": 1,
+          "reveal": "when-crossed",
+          "actions": {
+            "discover": [
+              {
+                "id": "sense",
+                "requires": { "anyClass": ["starweaver"] },
+                "label": "Sense where the tear leads",
+                "hint": "A Starweaver could feel where this tear goes.",
+                "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }]
+              }
+            ]
+          }
+        }
+      },
+      "exchange-north": {
+        "$comment": "The long road back to the glacier, once the party has been there: the way on after the shelf rift is used up.",
+        "from": "exchange",
+        "to": "glacier",
+        "kind": "forward",
+        "label": "The long road north",
+        "when": { "completed": "glacier" }
+      },
+      "exchange-to-delta": {
+        "from": "exchange",
+        "to": "delta",
+        "kind": "forward",
+        "label": "Ride the flood out to the river mouth",
+        "when": { "facts": { "great-river": "surging" } }
+      },
+      "glacier-to-peaks": {
+        "from": "glacier",
+        "to": "peaks",
+        "kind": "sideways",
+        "label": "Climb toward the Frostfang Peaks"
+      },
+      "peaks-to-glacier": {
+        "from": "peaks",
+        "to": "glacier",
+        "kind": "return",
+        "label": "Back down to the glacier"
+      },
+      "meltwater-home": {
+        "from": "glacier",
+        "to": "exchange",
+        "kind": "return",
+        "label": "Ride the meltwater down the Great River"
+      },
+      "origin-seal": {
+        "$comment": "The sealed rift into the glacier's heart (#196, #197, #199). Asleep until someone has stood in the heart, so from here only an action opens it - and who can take each way differs: a Starweaver attuned enough (and the attuning wraps the party in starlight), a Songkeeper, or anyone the yeti readers owe.",
+        "from": "glacier",
+        "to": "heart",
+        "kind": "forward",
+        "label": "The sealed blue door in the ice",
+        "blocked": "shown",
+        "rift": {
+          "opensWhen": { "visited": "heart" },
+          "actions": {
+            "open": [
+              {
+                "id": "attune",
+                "requires": { "anyClass": ["starweaver"] },
+                "when": { "facts": { "attunement": { "min": 2 } } },
+                "label": "Attune to the seal and open it",
+                "hint": "A Starweaver who has studied the stars could open this.",
+                "effects": [
+                  { "type": "adjustFact", "fact": "attunement", "by": 1 },
+                  { "type": "grantBuff", "buff": "starlight-ward" }
+                ]
+              },
+              {
+                "id": "hum",
+                "requires": { "anyClass": ["songkeeper"] },
+                "label": "Hum the ice's own note until the seal parts"
+              },
+              {
+                "id": "readers",
+                "when": { "facts": { "yeti-readers": "friends" } },
+                "label": "Ask the yeti readers to open the seal"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

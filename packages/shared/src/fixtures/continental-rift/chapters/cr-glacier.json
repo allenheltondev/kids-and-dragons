@@ -1,0 +1,91 @@
+{
+  "$comment": "Continental Rift slice placeholder (#203) - NOT content, never shipped. The environmental fight (#201) on the cracking ice shelf, adapted from the Drowned Ferry sandbox: a four-round collapse clock, a line of rift frost, a crack in the glacier wall open until round 4, and a yeti reader to free. Freeing the reader sets the journey flag reader_freed, which the glacier node's completion rule turns into the yeti-readers world fact. The Rift Spark (and Marsh Mettle, if the party took the side trip) is spent here.",
+  "id": "cr-glacier",
+  "campaignId": "continental-rift-slice",
+  "index": 2,
+  "title": "The Cracking Shelf",
+  "biome": "glacier_of_origins",
+  "estimatedMinutes": 10,
+  "xpAward": 150,
+  "entry": "scene_shelf",
+  "objectives": [
+    { "id": "free_reader", "label": "Free the trapped yeti reader", "flag": "reader_freed", "xp": 25 }
+  ],
+  "scenes": {
+    "scene_shelf": {
+      "type": "story",
+      "narration": "You step out onto an ice shelf at the top of the world. A yeti reader is stuck in a crack beside the glacier wall, and two frost wisps drift up out of the snow.",
+      "choices": [{ "id": "stand", "label": "Stand your ground", "icon": "swords", "goto": "fight_shelf" }]
+    },
+    "fight_shelf": {
+      "type": "encounter",
+      "map": "cr_ice_shelf",
+      "narration": "The shelf groans. Every round, the crack in the wall grows narrower.",
+      "enemies": [
+        { "id": "frost_wisp", "name": "Frost Wisp", "creature": "will_o_wisp", "count": 2 }
+      ],
+      "environment": {
+        "clock": { "rounds": 4, "label": "The ice shelf cracks", "onExpire": "collapse" },
+        "hazards": [
+          {
+            "id": "rift-frost",
+            "kind": "rift",
+            "label": "Rift frost",
+            "tiles": [{ "x": 4, "y": 1 }, { "x": 4, "y": 2 }, { "x": 4, "y": 3 }, { "x": 4, "y": 4 }, { "x": 4, "y": 5 }, { "x": 4, "y": 6 }],
+            "damage": 1
+          }
+        ],
+        "exits": [
+          {
+            "id": "wall-crack",
+            "label": "The crack in the glacier wall",
+            "tiles": [{ "x": 0, "y": 6 }, { "x": 0, "y": 7 }],
+            "closesRound": 4
+          }
+        ],
+        "rescue": {
+          "name": "the trapped yeti reader",
+          "at": { "x": 1, "y": 6 },
+          "effects": [{ "type": "setFlag", "flag": "reader_freed" }]
+        }
+      },
+      "onVictory": { "goto": "scene_held", "narration": "The last frost wisp crumbles into snow." },
+      "onDefeat": { "goto": "scene_slid", "narration": "The shelf tips, and you slide." },
+      "onEscape": {
+        "goto": "scene_through",
+        "narration": "You squeeze through the crack as it grinds shut.",
+        "variants": [
+          { "when": { "flag": "reader_freed" }, "text": "The yeti reader squeezes through after you, blinking." },
+          { "when": { "notFlag": "reader_freed" }, "text": "Behind you, the reader is still stuck in the ice." }
+        ]
+      },
+      "onTimeout": { "goto": "scene_collapse", "narration": "The whole shelf breaks away with a roar." }
+    },
+    "scene_held": {
+      "type": "story",
+      "narration": "The shelf is quiet. Far below, you hear meltwater begin to run.",
+      "variants": [{ "when": { "flag": "reader_freed" }, "text": "The reader bows and says the readers will remember you." }],
+      "choices": [],
+      "outcome": "success"
+    },
+    "scene_through": {
+      "type": "story",
+      "narration": "Inside the glacier wall it is blue and still. Far below, you hear meltwater begin to run.",
+      "choices": [],
+      "outcome": "success"
+    },
+    "scene_slid": {
+      "type": "story",
+      "narration": "You wake at the bottom of the shelf, cold and sore. The wisps are gone.",
+      "choices": [],
+      "outcome": "setback"
+    },
+    "scene_collapse": {
+      "type": "story",
+      "narration": "The shelf throws you into a snowdrift and slides away down the mountain.",
+      "variants": [{ "when": { "notFlag": "reader_freed" }, "text": "The reader went with it." }],
+      "choices": [],
+      "outcome": "setback"
+    }
+  }
+}
