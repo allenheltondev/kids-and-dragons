@@ -1,0 +1,134 @@
+/* No layout box: the existing phone shells retain their sizing and scroll. */
+.phone-magic { display: contents; }
+
+[data-phone-magic] :is(button, a[href], summary, input, select, textarea, [role="button"], [role="tab"]):focus-visible {
+  outline: 0.16em solid var(--kad-gold);
+  outline-offset: 0.2em;
+}
+
+[data-phone-magic] :is(input, select, textarea):focus {
+  border-color: var(--kad-gold);
+}
+
+/* The bottom menu keeps a visible home for the current destination, even
+   after touch focus leaves. Keyboard focus adds an inset ring so the shelf
+   cannot crop it and it stays distinct from the selected destination. */
+[data-phone-magic] .kad-tray__tab {
+  transition: background-color 180ms ease-out, box-shadow 180ms ease-out;
+}
+
+[data-phone-magic] .kad-tray__tab--on {
+  background: linear-gradient(to top, rgba(245, 200, 108, 0.13), transparent);
+  box-shadow: inset 0 -0.15rem 0 var(--kad-gold);
+}
+
+[data-phone-magic] .kad-tray__tab:focus-visible {
+  outline-offset: -0.18rem;
+  background-color: rgba(190, 178, 255, 0.16);
+  box-shadow: inset 0 0 0 0.08rem rgba(245, 200, 108, 0.45), 0 0 0.8rem rgba(190, 178, 255, 0.2);
+}
+
+[data-phone-magic] .kad-tray__tab:focus-visible .kad-tray__object {
+  translate: 0 -0.12rem;
+  filter: saturate(1.1) brightness(1.15) drop-shadow(0 0 0.35rem rgba(245, 200, 108, 0.5));
+}
+
+[data-phone-magic] .kad-tray__tab:focus-visible .kad-tray__object::before {
+  opacity: 1;
+}
+
+[data-phone-magic] .kad-tray__tab:focus-visible .kad-tray__label {
+  color: var(--kad-gold);
+  text-shadow: 0 0 0.5rem rgba(245, 200, 108, 0.5);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Selections settle once; persistent gold rims remain the source of truth. */
+  [data-phone-magic] :is(.creation-species, .creation-card, .creation-option, .inv__button, .field-guide__tab) {
+    transition: border-color 180ms ease-out, background-color 180ms ease-out,
+      box-shadow 180ms ease-out;
+  }
+
+  [data-phone-magic] :is(.creation-species--on, .creation-card--on, .creation-option--on, .inv__button--on),
+  [data-phone-magic] .field-guide__tab[aria-selected="true"] {
+    animation: phone-choice-magic 300ms ease-out;
+  }
+
+  /* These panels mount on request. No keys, remounts or focus changes needed. */
+  [data-phone-magic] :is(.creation__body > :not([role="alert"]), .item-detail, .give:not(.give--waiting),
+    .sheetview, .field-guide__detail, .keepsake__panel),
+  [data-phone-magic] .player__scroll:not([hidden]),
+  [data-phone-magic] .player__room-settings[open] > :not(summary) {
+    animation: phone-view-magic 240ms ease-out;
+  }
+
+  [data-phone-magic] .creation__pip--on {
+    animation: phone-step-magic 320ms ease-out;
+  }
+
+  [data-phone-magic] .sheet__hp-fill {
+    transition: inline-size 320ms ease-out;
+  }
+
+  [data-phone-magic] .kad-tray__object {
+    transition: transform var(--kad-dur-base) var(--kad-ease-out),
+      filter var(--kad-dur-base) var(--kad-ease-out), translate 180ms ease-out;
+  }
+
+  [data-phone-magic] .kad-tray__tab:focus-visible {
+    animation: phone-menu-focus 380ms ease-out;
+  }
+
+  [data-phone-magic] :is(button, a[href], summary, input, select, textarea, [role="button"], [role="tab"]):focus-visible {
+    animation: phone-focus-magic 420ms ease-out;
+  }
+
+  [data-phone-magic] :is(.kad-travel__pane, .kad-party__pane)[data-showing="true"],
+  [data-phone-magic] .kad-surface--player > .player-view__creation:not([hidden]) {
+    animation: phone-view-magic 240ms ease-out;
+  }
+
+  [data-phone-magic] .kad-tray__tab--on .kad-tray__object::before {
+    animation: phone-halo-magic 380ms ease-out;
+  }
+}
+
+@keyframes phone-choice-magic {
+  from { box-shadow: 0 0 0.8em rgba(245, 200, 108, 0.5); }
+}
+
+@keyframes phone-step-magic {
+  from { scale: 0.9; }
+  60% { scale: 1.1; }
+  to { scale: 1; }
+}
+
+/* Higher specificity preserves the inset ring throughout the shimmer. */
+@keyframes phone-menu-focus {
+  from { background-color: rgba(245, 200, 108, 0.28); }
+  to { background-color: rgba(190, 178, 255, 0.16); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-phone-magic] .kad-tray__tab:focus-visible .kad-tray__object {
+    translate: none;
+  }
+}
+
+@keyframes phone-focus-magic {
+  from { outline-offset: 0.4em; box-shadow: 0 0 0.9em rgba(245, 200, 108, 0.5); }
+  to { outline-offset: 0.2em; }
+}
+
+@keyframes phone-view-magic {
+  from { opacity: 0.65; translate: 0 0.35em; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes phone-halo-magic {
+  from { scale: 0.7; opacity: 0.4; }
+  65% { scale: 1.12; }
+  to { scale: 1; opacity: 1; }
+}
