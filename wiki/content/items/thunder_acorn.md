@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01"]
 tags: ["thrown", "noise", "enchanted_woods", "uncommon"]
 related:
   - id: biome.enchanted_woods

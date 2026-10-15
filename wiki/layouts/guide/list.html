@@ -1,0 +1,23 @@
+{{ define "main" }}
+{{/* How to Play: the overview, then its pages in reading order as cards
+     carrying each page's painted icon. */}}
+<article class="article-page">
+  <header class="wiki-section-banner">
+    {{ with .Params.icon }}<img class="wiki-section-banner__icon" src="{{ . | relURL }}" alt="" width="72" height="72">{{ end }}
+    <div>
+      <h1 class="wiki-section-banner__title">{{ .Title }}</h1>
+      {{ with .Params.description }}<p class="wiki-section-banner__lede">{{ . }}</p>{{ end }}
+    </div>
+  </header>
+  <div class="wiki-start-grid" style="margin-bottom: var(--wiki-space-2xl)">
+    {{ range .Pages.ByWeight }}
+    <a class="wiki-start-card" href="{{ .RelPermalink }}">
+      {{ with .Params.icon }}<img class="wiki-start-card__icon" src="{{ . | relURL }}" alt="" width="64" height="64" loading="lazy">{{ end }}
+      <span class="wiki-start-card__title">{{ .Title }}</span>
+      <span class="wiki-start-card__desc">{{ .Params.description }}</span>
+    </a>
+    {{ end }}
+  </div>
+  <div class="prose">{{ .Content }}</div>
+</article>
+{{ end }}

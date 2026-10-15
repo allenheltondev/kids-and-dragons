@@ -6,6 +6,7 @@ status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
+played_in: []
 tags: ["side_quest", "exploration", "underground", "mystery"]
 related:
   - id: item.crystal_heart

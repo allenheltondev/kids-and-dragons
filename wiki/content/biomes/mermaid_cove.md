@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["warm_water", "coral_reefs", "lagoon", "alliance", "island"]
 danger_level: moderate
 regional_relationships:

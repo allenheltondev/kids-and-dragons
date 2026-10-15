@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-01", "gemfall-02", "gemfall-04a"]
 tags: ["charm", "clever", "enchanted_woods", "common"]
 related:
   - id: biome.enchanted_woods

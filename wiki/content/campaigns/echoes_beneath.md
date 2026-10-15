@@ -6,6 +6,7 @@ status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
+played_in: []
 tags: ["side_campaign", "underground", "mystery", "cult"]
 related:
   - id: faction.deep_hollow_cult

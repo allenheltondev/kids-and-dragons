@@ -690,6 +690,7 @@ function generateFrontMatter(
   assets: AssetResult,
   relatedEntries: RelatedEntry[],
   allEntities: Map<string, CanonEntity>,
+  playedIn?: string[],
 ): string {
   const lines: string[] = ['---'];
 
@@ -702,9 +703,18 @@ function generateFrontMatter(
   // Canon status
   if (entity.canonStatus) {
     lines.push(`canon_status: ${entity.canonStatus}`);
-    if (entity.canonStatus === 'intentionally_undefined') {
+    // A protected mystery stays unpublished until a chapter brings it on
+    // stage. Once the party can meet it, the family can look it up; canon
+    // keeps its hidden_truths empty, so publishing it spoils nothing.
+    if (entity.canonStatus === 'intentionally_undefined' && !(playedIn && playedIn.length > 0)) {
       lines.push(`draft: true`);
     }
+  }
+
+  // Which chapters use it. Drives the "not in a story yet" badge and the
+  // page's "Met in" line; absent when no chapters were read.
+  if (playedIn) {
+    lines.push(`played_in: [${playedIn.map((id) => `"${id}"`).join(', ')}]`);
   }
 
   // Tags
@@ -1148,7 +1158,7 @@ export function generatePage(
   options: PageGeneratorOptions,
   allEntities: CanonRegistry | Map<string, CanonEntity>,
 ): { content: string; warnings: ValidationMessage[] } {
-  const { entity, assets, reverseRefs, existingContent, bestiary, bands, items } = options;
+  const { entity, assets, reverseRefs, existingContent, bestiary, bands, items, playedIn } = options;
   const warnings: ValidationMessage[] = [];
 
   // Resolve the entities map from either a CanonRegistry or a plain Map
@@ -1159,7 +1169,7 @@ export function generatePage(
   const relatedEntries = buildRelatedEntries(entity, reverseRefs, entitiesMap);
 
   // Generate front matter
-  const frontMatter = generateFrontMatter(entity, assets, relatedEntries, entitiesMap);
+  const frontMatter = generateFrontMatter(entity, assets, relatedEntries, entitiesMap, playedIn);
 
   // Generate section contents
   const loreContent = generateLoreSection(entity, entitiesMap);

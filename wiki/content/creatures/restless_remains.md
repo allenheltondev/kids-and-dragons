@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-08"]
 tags: ["supernatural", "bone_yard", "rare", "guardian"]
 classification: supernatural_manifestation
 danger_level: high

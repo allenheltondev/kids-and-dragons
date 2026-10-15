@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-03a", "gemfall-04a", "gemfall-04b", "gemfall-05a", "gemfall-05c", "gemfall-06", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["supporting_people", "fields", "stone_records", "prospecting"]
 classification: supporting_people
 scale: small_to_medium

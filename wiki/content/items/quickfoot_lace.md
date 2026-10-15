@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-01"]
 tags: ["charm", "quick", "exchange", "common"]
 related:
   - id: location.exchange

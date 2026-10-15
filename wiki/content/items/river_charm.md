@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-01", "gemfall-03a"]
 tags: ["charm", "travel", "stone_crossing", "common"]
 related:
   - id: location.stone_crossing

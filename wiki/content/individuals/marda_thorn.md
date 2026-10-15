@@ -5,6 +5,7 @@ type: individual
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-02"]
 tags: ["bramblewood", "inn", "centaur", "waystop"]
 related:
   - id: individual.pib

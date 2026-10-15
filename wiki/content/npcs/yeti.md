@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01"]
 tags: ["supporting_people", "glacier", "memory_keeper", "patient"]
 classification: supporting_people
 scale: large

@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-03c", "gemfall-04a", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["cultural_order", "cross_species", "magic", "tradition"]
 classification: cultural_order
 scale: variable

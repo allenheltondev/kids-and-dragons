@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["tool", "light", "swamp", "common"]
 related:
   - id: biome.whispering_marsh

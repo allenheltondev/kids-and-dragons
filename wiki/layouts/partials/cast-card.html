@@ -1,0 +1,14 @@
+{{/* One cast member: their stage figure, their name, and what they are —
+     linked to that people's (or species') page when the wiki has one. A
+     cast member with a page of their own (Named Folk) links there instead. */}}
+{{ $own := site.GetPage (printf "/individuals/%s" .id) }}
+{{ $kind := or (site.GetPage (printf "/npcs/%s" .basis)) (site.GetPage (printf "/characters/%s" .basis)) }}
+<figure class="wiki-cast-card" id="cast-{{ .id }}">
+  <div class="wiki-cast-card__art">
+    {{ partial "thumb.html" (dict "path" (printf "cast/%s/assembled.png" .id) "width" 180 "alt" .name "full" true) }}
+  </div>
+  <figcaption>
+    <span class="wiki-cast-card__name">{{ with $own }}<a href="{{ .RelPermalink }}">{{ $.name }}</a>{{ else }}{{ .name }}{{ end }}</span>
+    <span class="wiki-cast-card__kind">{{ with $kind }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ else }}{{ humanize .basis }}{{ end }}</span>
+  </figcaption>
+</figure>
