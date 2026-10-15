@@ -244,3 +244,69 @@ describe("the allow-list", () => {
     expect(out.noReason).toEqual(["a/b/Blank"]);
   });
 });
+
+/* ------------------------------------------------------------------------- */
+/* #160: `when` gates, narration variants, text tokens.                       */
+
+describe("when conditions and variants", () => {
+  const run = (c) => analyseCampaign({ id: "x", chapters: [c.id], routeSets: {} }, [c]);
+  const grant = (itemId) => ({ type: "grantItem", itemId, to: "party" });
+  /** Two ways to `m`; only the left one shows Pellam and sets/grants something. */
+  const fork = (mScene, leftEffects = []) =>
+    chapter("c1", 1, {
+      start: scene("Begin.", [go("a", "A"), go("b", "B")]),
+      a: scene("You meet Pellam on the stairs.", [go("m", "On", { effects: leftEffects })]),
+      b: scene("You meet nobody.", [go("m")]),
+      m: mScene,
+      end: scene("Done."),
+      primer: PRIMER,
+    });
+  const ask = (when) => scene("A landing.", [go("end", "Ask Pellam about it", when ? { when } : {}), go("end", "Leave")]);
+
+  it("treats when.flag, when.item and when.count (min >= 1) like requiresFlag / requiresItem", () => {
+    expect(run(fork(ask({ flag: "met" }), [set("met")])).findings).toEqual([]);
+    expect(run(fork(ask({ item: "pass" }), [grant("pass")])).findings).toEqual([]);
+    expect(run(fork(ask({ count: { of: "pass", min: 1 } }), [grant("pass")])).findings).toEqual([]);
+    expect(run(fork(ask({ count: { of: ["pass", "seal"], min: 1 } }), [grant("pass"), grant("seal")])).findings).toEqual([]);
+  });
+
+  it("proves nothing from notFlag, notItem, count max, or partySize", () => {
+    for (const when of [{ notFlag: "x" }, { notItem: "pass" }, { count: { of: "pass", max: 0 } }, { partySize: { min: 2 } }, undefined]) {
+      expect(run(fork(ask(when), [set("met")])).findings.map((f) => f.key)).toEqual(["c1/m/Pellam"]);
+    }
+  });
+
+  it("drops a when-gated choice that can never hold", () => {
+    expect(run(fork(ask({ flag: "never_set" }))).findings).toEqual([]);
+  });
+
+  it("checks names in variant text against what the variant's own when proves", () => {
+    const withVariant = (when) =>
+      fork(scene("A landing.", [go("end")], { variants: [{ when, text: "Pellam waves." }] }), [set("met")]);
+    expect(run(withVariant({ flag: "met" })).findings).toEqual([]);
+    expect(run(withVariant({ partySize: { min: 2 } })).findings.map((f) => f.key)).toEqual(["c1/m/Pellam"]);
+    expect(run(withVariant({ flag: "never_set" })).findings).toEqual([]);
+  });
+
+  it("does not count variant text as showing a name downstream, unless always true or replacing", () => {
+    const after = (variants) =>
+      chapter("c1", 1, {
+        start: scene("Begin.", [go("a", "A"), go("b", "B")]),
+        a: scene("You meet Pellam.", [go("m")]),
+        b: scene("You meet nobody.", [go("m")], variants ? { variants } : {}),
+        m: scene("A landing.", [go("n")]),
+        n: scene("You wave at Pellam."),
+        primer: PRIMER,
+      });
+    const conditional = [{ when: { flag: "x" }, text: "Pellam is here too." }];
+    expect(run(after(conditional)).findings.map((f) => f.key)).toContain("c1/n/Pellam");
+    expect(run(after([{ when: {}, text: "Pellam is here too." }])).findings).toEqual([]);
+    // A replacing variant stands in for the base: it cannot make up for a base that skips the name.
+    expect(run(after([{ when: { flag: "x" }, text: "Pellam is here too.", replace: true }])).findings.map((f) => f.key)).toContain("c1/n/Pellam");
+  });
+
+  it("does not read {facets} or {party} as names", () => {
+    expect([...extractNames("You hold {facets} and tell {party} about it.", { lower: new Set(), midCaps: new Set(["Facets", "Party"]) })]).toEqual([]);
+    expect([...introducedNames("called {party}")]).toEqual([]);
+  });
+});
