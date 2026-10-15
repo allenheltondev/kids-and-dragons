@@ -26,6 +26,7 @@ import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type {
   Campaign,
+  CampaignView,
   ClientIntent,
   InventoryEntry,
   ItemCatalog,
@@ -1582,5 +1583,128 @@ describe("the Field Guide section", () => {
     act(() => { setPlayerSection("guide"); });
     act(() => { dismissPlayerSheet(); });
     expect(usePlayerNavigation.getState()).toMatchObject({ section: "bag", guideEntry: null });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Graph campaigns in the lobby (#195)
+// ---------------------------------------------------------------------------
+
+describe("choosing where to go in a graph campaign", () => {
+  const orchard: CampaignView = {
+    id: "rift-sampler",
+    title: "The Rift Sampler",
+    chapters: 2,
+    next: null,
+    journey: {
+      node: "orchard",
+      title: "The Orchard",
+      visit: 1,
+      status: "choosing",
+      chapter: "sampler-orchard",
+      exits: [
+        {
+          edge: "orchard-to-mill",
+          to: "mill",
+          kind: "sideways",
+          label: "Along the stream to the mill",
+          available: true,
+          arrival: "new",
+        },
+        {
+          edge: "orchard-to-waystone",
+          to: "waystone",
+          kind: "return",
+          label: "Back to the waystone",
+          available: true,
+          arrival: "pass",
+        },
+        {
+          edge: "orchard-to-tower",
+          to: "tower",
+          kind: "forward",
+          label: "Through the tower door",
+          available: false,
+          reason: "locked",
+          arrival: "new",
+        },
+      ],
+      places: [{ node: "orchard", title: "The Orchard", visits: 1, completed: true, here: true }],
+    },
+  };
+
+  const ready = [member({ ready: true })];
+
+  it("draws the map in place of Begin, once everyone is ready", () => {
+    mount({ phase: "lobby", party: ready });
+    serverSends({ campaign: orchard });
+    expect(screen.getByRole("heading", { name: "Where to next?" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Begin the adventure|Play chapter/ })).toBeNull();
+  });
+
+  it("waits for the whole party, as Begin does", () => {
+    mount({ phase: "lobby", party: [member({ ready: false })] });
+    serverSends({ campaign: orchard });
+    expect(screen.queryByRole("heading", { name: "Where to next?" })).toBeNull();
+  });
+
+  it("goes there in one tap: CHOOSE_EXIT, then CONTINUE_CAMPAIGN", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ phase: "lobby", party: ready });
+    serverSends({ campaign: orchard });
+    await user.click(screen.getByRole("button", { name: /Along the stream to the mill/ }));
+    expect(sent).toEqual([
+      { type: "CHOOSE_EXIT", edgeId: "orchard-to-mill", visit: 1, campaignId: "rift-sampler" },
+      { type: "CONTINUE_CAMPAIGN", campaignId: "rift-sampler" },
+    ]);
+  });
+
+  it("only chooses when the way leads through a place with nothing to play", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ phase: "lobby", party: ready });
+    serverSends({ campaign: orchard });
+    await user.click(screen.getByRole("button", { name: /Back to the waystone/ }));
+    // A "pass" arrival is already done: the next thing is another choice.
+    expect(sent).toEqual([
+      { type: "CHOOSE_EXIT", edgeId: "orchard-to-waystone", visit: 1, campaignId: "rift-sampler" },
+    ]);
+  });
+
+  it("does not continue when the choice was refused", async () => {
+    const user = userEvent.setup();
+    const { sent, send } = mount({ phase: "lobby", party: ready });
+    send.mockImplementation(async (intent: ClientIntent) => {
+      sent.push(intent);
+      return false;
+    });
+    serverSends({ campaign: orchard });
+    await user.click(screen.getByRole("button", { name: /Along the stream to the mill/ }));
+    expect(sent.map((intent) => intent.type)).toEqual(["CHOOSE_EXIT"]);
+  });
+
+  it("offers to play where the party stands when it is already there", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ phase: "lobby", party: ready });
+    serverSends({
+      campaign: {
+        ...orchard,
+        next: { index: 2, title: "The Mill" },
+        journey: { ...orchard.journey!, status: "playing", exits: [], node: "mill", title: "The Old Mill" },
+      },
+    });
+    await user.click(screen.getByRole("button", { name: "Go to The Old Mill" }));
+    expect(sent).toEqual([{ type: "CONTINUE_CAMPAIGN", campaignId: "rift-sampler" }]);
+  });
+
+  it("leaves an ordered campaign exactly as it was: Begin, no map", () => {
+    // Gemfall never carries `journey`, so the whole graph path is unreachable.
+    mount({ phase: "lobby", party: ready });
+    serverSends({
+      campaign: { id: "c", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } },
+    });
+    expect(screen.getByText("Chapter 4: The Pride Roads")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Play chapter 4/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Where to next?" })).toBeNull();
+    expect(document.querySelector(".journey")).toBeNull();
   });
 });
