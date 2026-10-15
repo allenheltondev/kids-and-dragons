@@ -55,6 +55,8 @@ export type CueId =
   | "victory"
   // UI feedback. Deliberately tiny — a tap should sound like a tap.
   | "tap"
+  // A map card opening: a paper flick and a tiny sparkle.
+  | "page-turn"
   | "error";
 
 export type AmbienceId = "gate-hum" | "cavern-air";
