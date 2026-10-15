@@ -152,13 +152,19 @@
 .lobby__lineup {
   display: grid;
   /* 12.5em, not 13: four of these and their gaps come to 52.25em, inside the
-     54em the TV gives the party (EntryScene.css), so a full party is one row. */
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5em), 1fr));
+     54em the TV gives the party (EntryScene.css), so a full party is one row.
+     auto-fill, not auto-fit: the empty seats keep their columns, so each card
+     is the width it will be with a full party from the moment it arrives and
+     somebody joining does not resize everyone already there. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5em), 1fr));
   gap: var(--space-3, 0.75em);
   margin: 0;
   padding: 0;
   list-style: none;
   overflow-y: auto;
+  /* A phone's pane may have to scroll a full party; the gutter is held either
+     way so the bar arriving cannot narrow the cards and rewrap the names. */
+  scrollbar-gutter: stable;
   min-block-size: 0;
 }
 
@@ -180,6 +186,24 @@
 /* Ready is a border *and* a chip; the chip carries the icon and the word. */
 .lobby-member--ready {
   border-color: var(--color-success, #5fd6a0);
+}
+
+/* Holds the portrait and pins the Away badge to it. */
+.lobby-member__seat {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+}
+
+/* Over the foot of the portrait, a size down, so it takes no room. */
+.lobby-member__away {
+  position: absolute;
+  inset-block-end: -0.35em;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  gap: var(--space-1, 0.25em);
+  padding: 0.1em 0.4em;
+  font-size: 0.7em;
 }
 
 /* A well the character stands in, a little taller than it is wide: the art is
@@ -227,12 +251,19 @@
 }
 
 .lobby-member__status {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-1, 0.25em);
+  display: grid;
+  justify-items: end;
   flex: 0 0 auto;
   margin-inline-start: auto;
+}
+
+/* Both chips in the same cell; see MemberCard. */
+.lobby-member__status > * {
+  grid-area: 1 / 1;
+}
+
+.lobby-member__chip--off {
+  visibility: hidden;
 }
 
 .lobby__waiting {

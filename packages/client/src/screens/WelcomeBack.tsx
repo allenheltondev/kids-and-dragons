@@ -114,7 +114,9 @@ export function WelcomeBack(): ReactElement {
                   <span className="creation-card__text">
                     <span className="creation-card__title">
                       <span>{h.name}</span>
-                      {on ? <Icon name="check" label="Chosen" /> : null}
+                      <span className="creation-card__mark">
+                        {on ? <Icon name="check" label="Chosen" /> : null}
+                      </span>
                     </span>
                     <span className="creation-card__line kad-muted">
                       <Icon name={h.class} />
@@ -130,7 +132,7 @@ export function WelcomeBack(): ReactElement {
         </ul>
 
         {refused ? (
-          <p className="kad-chip kad-chip--bad" role="alert">
+          <p className="kad-chip kad-chip--bad kad-chip--wrap" role="alert">
             <Icon name="close" />
             <span>That hero could not join this game. Try another, or make someone new.</span>
           </p>

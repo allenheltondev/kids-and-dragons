@@ -184,4 +184,33 @@ describe("ordered settlement writes no journey", () => {
     });
     expect(Object.keys(settlement.campaignView!).sort()).toEqual(ORDERED_VIEW_KEYS);
   });
+
+  it("carries no world state (#198): no facts, no completion rules, nothing but the road", async () => {
+    // World facts are a graph declaration's, written by its edges and node
+    // completion rules. An ordered campaign has neither, so a run whose flags
+    // happen to look like a world write settles exactly as any other.
+    for (const id of ["gemfall", "the-hollow-crown"]) {
+      expect(content.campaign(id)).not.toHaveProperty("graph");
+      expect(content.graph(id)).toBeNull();
+    }
+    const harness = makeHarness({
+      content: makeContent({ chapters: [makeChapter(), { ...makeChapter(), id: "beat-02", index: 2 }], campaigns: [CAMPAIGN] }),
+    });
+    const { householdId } = await seedHousehold(harness, 1);
+    const finished = {
+      runId: "r_1",
+      campaignId: CAMPAIGN.id,
+      chapterId: "bramblewood-01",
+      sceneId: "scene_ending",
+      chapterOutcome: "success",
+      bonuses: [],
+      xpEarned: 150,
+      flags: { road_river: true, befriended_river_folk: true },
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(finished, harness.deps, householdId);
+    expect(settlement.campaignProgress).not.toHaveProperty("journey");
+    expect(settlement.campaignProgress?.routeFlags).toEqual({ road_river: true });
+    expect(settlement.campaignView).not.toHaveProperty("journey");
+  });
 });

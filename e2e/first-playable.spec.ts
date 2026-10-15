@@ -169,8 +169,10 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
   // spent turn ends on its own (engine `finishTurnIfSpent`). Bounded rather
   // than `while (true)`, because a driver that cannot get out of a step
   // should fail the test loudly instead of spinning inside a helper.
+  // Scoped to live answers: right after a tap the cards stay on screen,
+  // dimmed and inert, until the update lands — not something to tap again.
   for (let step = 0; step < 2; step += 1) {
-    const targets = panel.locator(".combat__targets button");
+    const targets = panel.locator(".combat__answers:not([inert]) .combat__targets button");
     if ((await targets.count()) > 0) {
       // First target, whoever it is — for Attack that is an enemy, for Help Up
       // it is the fallen friend, and the server only ever offers legal ones.
@@ -182,7 +184,7 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
       return true;
     }
 
-    const cards = panel.locator(".prompt__options > li > button");
+    const cards = panel.locator(".combat__answers:not([inert]) .prompt__options > li > button");
     const labels = await cards.allInnerTexts().catch(() => [] as string[]);
     /*
      * Priorities, in table order. **Help Up first**: §7.3 makes picking a
@@ -205,7 +207,7 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
     const pick = help >= 0 ? help : attack >= 0 ? attack : ready;
     if (pick < 0) {
       // Only offered when there is nothing else to do; one tap, no confirm.
-      const end = panel.locator(".combat__end");
+      const end = panel.locator(".combat__answers:not([inert]) .combat__end");
       if (!(await end.isVisible().catch(() => false))) return false;
       await end.click({ timeout: 3_000 }).catch(() => {});
       await page.waitForTimeout(500);
@@ -575,10 +577,10 @@ test.describe("first playable", () => {
         commit. Clicks are tolerant — a miss is retried by the next driver
         pass. */
     async function tryAttack(page: Page): Promise<boolean> {
-      const card = page.locator(".combat .choice").filter({ hasText: /^attack/i });
+      const card = page.locator(".combat .combat__answers:not([inert]) .choice").filter({ hasText: /^attack/i });
       if ((await card.count()) === 0) return false;
       await card.first().click({ timeout: 4_000 }).catch(() => {});
-      await page.locator(".combat__targets button").first().click({ timeout: 4_000 }).catch(() => {});
+      await page.locator(".combat__answers:not([inert]) .combat__targets button").first().click({ timeout: 4_000 }).catch(() => {});
       await page.waitForTimeout(800);
       return true;
     }
@@ -642,11 +644,11 @@ test.describe("first playable", () => {
        * there is no card at all, or steps are left after the action.
        */
       const pass = async () => {
-        const ready = page.locator(".combat .choice").filter({ hasText: /get ready/i });
+        const ready = page.locator(".combat .combat__answers:not([inert]) .choice").filter({ hasText: /get ready/i });
         if ((await ready.count()) > 0) {
           await ready.first().click({ timeout: 4_000 }).catch(() => {});
         } else {
-          await page.locator(".combat__end").first().click({ timeout: 4_000 }).catch(() => {});
+          await page.locator(".combat__answers:not([inert]) .combat__end").first().click({ timeout: 4_000 }).catch(() => {});
         }
         await page.waitForTimeout(600);
       };

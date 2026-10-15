@@ -44,6 +44,11 @@
  *                                 same node, ...).
  * - `GUARD_FLAG_NEVER_SET` (warn) a guard needs a flag that no edge effect and
  *                                 no chapter on the graph can set true.
+ * - `FACT_VALUE_NEVER_SET` (warn) a world fact's state that is not its initial
+ *                                 and that no effect ever writes (#198); for a
+ *                                 counter, a counter nothing ever moves.
+ * - `FACT_UNUSED` (warn)          a world fact no guard reads and the players
+ *                                 are not shown (`visible`).
  * - `RIFT_ONE_WAY_HAS_WAY_BACK`   a `oneWay` rift with a rift edge straight back
  *                                 (#196: the claim, checked).
  * - `RIFT_ONCE_AND_USES` (warn)   `once` and `rift.uses` count the same crossings.
@@ -66,7 +71,11 @@
  *                                 ever offers.
  * - `IRREVERSIBLE_NOT`            an edge marked `irreversible` after which its
  *                                 `from` node can be entered again.
- * - `SEARCH_TRUNCATED` (warn)     the state cap was hit; the "never" and
+ * - `VARIANT_NEVER_CHOSEN` (warn) a node variant no play-through ever plays:
+ *                                 its `when` never holds on an entry that
+ *                                 plays the node, or an earlier variant
+ *                                 always wins first (#198).
+ * - `SEARCH_TRUNCATED` (warn)    the state cap was hit; the "never" and
  *                                 "cannot finish" checks above are skipped
  *                                 because they would be guesses.
  *
@@ -87,11 +96,25 @@
  * - a node's latest outcome only if an `outcome` guard is about it;
  * - an edge's traversed fact only if a guard reads it or it is `once`;
  * - an edge's lock override only if an effect names it;
+ * - a world fact's value (#198) only if some guard reads it — its domain is
+ *   bounded (`WorldFact`), so tracking one multiplies the state space by at
+ *   most its number of values;
+ * - a node's visit *count* only if a `visit` test is about it, capped just
+ *   past the largest bound any such test names (beyond it, every count reads
+ *   the same) — or if a flickering rift (#196) leaves it, whose rhythm reads
+ *   the count modulo its period. One count serves both: below `cap + period`
+ *   it is exact, and from there it steps back by `period`, which keeps every
+ *   `visit` test's reading (all counts ≥ cap read alike) and every flicker's
+ *   (the count mod period is kept);
  * - every rift's lifecycle (#196): status, age, latch, and crossings counted
  *   only up to the highest threshold that reads them (`uses`,
  *   `collapsesAfter`) — a rift is moved by the same `rifts.ts` functions in
- *   the same order as `journey.ts` moves it (cross, tick, settle);
- * - a flickering rift's `from` visit ordinal, modulo its rhythm.
+ *   the same order as `journey.ts` moves it (cross, tick, settle).
+ *
+ * Effects are applied wherever the runtime applies them: an edge's when it is
+ * crossed, a node's `onComplete` rules (#198) when its chapter completes, each
+ * completion branch judged separately (`completionEffects`, the runtime's
+ * own reading).
  *
  * Entering a node runs the chapter, and a chapter's result is not the graph's
  * to know, so completion BRANCHES: both outcomes ("success", "setback") are
@@ -123,20 +146,26 @@
 import type { Chapter } from "./types/chapter.js";
 import type {
   EdgeId,
+  FactId,
+  FactValue,
   GraphCondition,
+  GraphEffect,
   JourneyFacts,
   NodeId,
+  WorldFact,
 } from "./types/campaign-graph.js";
 import {
   arrivalAt,
-  chapterAtNode,
+  completionEffects,
   exitsFrom,
   riftOwner,
   riftState,
+  variantAtNode,
   type ExitBlock,
   type ParsedCampaignGraph,
 } from "./campaign-graph.ts";
 import { crossRift, settleRifts, tickRifts } from "./rifts.ts";
+import { factTestValues, initialFact, readFact, storedFacts, writeFact } from "./world-state.ts";
 
 // ---------------------------------------------------------------------------
 // Public shape
@@ -160,6 +189,9 @@ export type GraphFindingCode =
   | "IRREVERSIBLE_NOT"
   | "SEARCH_TRUNCATED"
   | "DUPLICATE_KEY"
+  | "FACT_VALUE_NEVER_SET"
+  | "FACT_UNUSED"
+  | "VARIANT_NEVER_CHOSEN"
   | "RIFT_ONE_WAY_HAS_WAY_BACK"
   | "RIFT_ONCE_AND_USES"
   | "RIFT_REVEAL_MOOT";
@@ -340,8 +372,31 @@ function guardsOf(graph: ParsedCampaignGraph): Guard[] {
         what: `variant ${i} of "${id}"`,
       });
     });
+    (graph.nodes[id]!.onComplete ?? []).forEach((rule, i) => {
+      if (!rule.when) return;
+      guards.push({
+        path: `${nodePath(id)}/onComplete/${i}/when`,
+        cond: rule.when,
+        subject: id,
+        what: `completion rule ${i} of "${id}"`,
+      });
+    });
   }
   return guards;
+}
+
+/**
+ * Every effect the graph can apply, wherever it lives: an edge's, or a node's
+ * completion rule's (#198). The static checks ask "does anything ever unlock
+ * this / set this", and a completion rule is as much an answer as an edge.
+ */
+function effectsOf(graph: ParsedCampaignGraph): GraphEffect[] {
+  const effects: GraphEffect[] = [];
+  for (const id of graph.edgeOrder) effects.push(...(graph.edges[id]!.effects ?? []));
+  for (const id of graph.nodeOrder) {
+    for (const rule of graph.nodes[id]!.onComplete ?? []) effects.push(...rule.effects);
+  }
+  return effects;
 }
 
 /** Nodes reached from `starts` by `next`, in discovery order, each with its BFS depth. */
@@ -441,10 +496,8 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
 
   // --- locked edges nothing unlocks ---------------------------------------
   const unlocked = new Set<EdgeId>();
-  for (const id of graph.edgeOrder) {
-    for (const effect of graph.edges[id]!.effects ?? []) {
-      if (effect.type === "unlock") unlocked.add(effect.edge);
-    }
+  for (const effect of effectsOf(graph)) {
+    if (effect.type === "unlock") unlocked.add(effect.edge);
   }
   const knownDead = new Set<EdgeId>();
   for (const id of graph.edgeOrder) {
@@ -462,7 +515,7 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
   // --- guards that cannot hold ---------------------------------------------
   const guards = guardsOf(graph);
   for (const guard of guards) {
-    const why = contradiction(guard.cond, guard.subject);
+    const why = contradiction(guard.cond, guard.subject, graph.facts);
     if (why === null) continue;
     if (guard.edge !== undefined) knownDead.add(guard.edge);
     error(
@@ -476,10 +529,8 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
   // --- flags nothing can set ------------------------------------------------
   const chapterWrites = (chapter: string): ChapterFlagWrites | undefined => options.chapterFlags?.(chapter);
   const settable = new Set<string>();
-  for (const id of graph.edgeOrder) {
-    for (const effect of graph.edges[id]!.effects ?? []) {
-      if (effect.type === "setFlag" && effect.value !== false) settable.add(effect.flag);
-    }
+  for (const effect of effectsOf(graph)) {
+    if (effect.type === "setFlag" && effect.value !== false) settable.add(effect.flag);
   }
   const everyChapter = new Set<string>();
   for (const id of graph.nodeOrder) {
@@ -503,6 +554,9 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
     }
   }
 
+  // --- world facts (#198) -----------------------------------------------------
+  lintFacts(graph, guards, warn);
+
   // --- rift declarations (#196) -------------------------------------------
   lintRifts(graph, error, warn);
 
@@ -517,9 +571,24 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
 // Guards that contradict themselves
 // ---------------------------------------------------------------------------
 
-function contradiction(cond: GraphCondition, subject: NodeId): string | null {
+function contradiction(
+  cond: GraphCondition,
+  subject: NodeId,
+  facts: Readonly<Record<FactId, WorldFact>>,
+): string | null {
   if (cond.flag !== undefined && cond.flag === cond.notFlag) {
     return `it needs flag "${cond.flag}" both set and not set`;
+  }
+  // A world fact's domain is bounded (#198), so "can this test ever pass" is a
+  // question with a finite answer: no value of the fact passes it.
+  for (const [id, test] of Object.entries(cond.facts ?? {})) {
+    const fact = facts[id];
+    if (fact && factTestValues(fact, test).length === 0) {
+      return `no value of fact "${id}" passes its test ${JSON.stringify(test)}`;
+    }
+  }
+  if (cond.visit?.min !== undefined && cond.visit.max !== undefined && cond.visit.min > cond.visit.max) {
+    return `it needs visit ${cond.visit.min} or later and also visit ${cond.visit.max} or earlier`;
   }
   const overlap = (a: string[], b: string[]) => a.find((each) => b.includes(each));
   const visitedAndNot = overlap(ids(cond.visited), ids(cond.notVisited));
@@ -538,6 +607,64 @@ function contradiction(cond: GraphCondition, subject: NodeId): string | null {
     }
   }
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// World facts (#198)
+// ---------------------------------------------------------------------------
+
+/**
+ * A declared fact the graph never uses as declared: a state nothing can put
+ * it in (the guard reading it — or the variant it would choose — is dead), a
+ * counter nothing moves, a fact nobody reads or sees. Warnings: none of them
+ * strands a party, and a guard that depends on one is caught by the search as
+ * an edge never available or a variant never chosen.
+ */
+function lintFacts(graph: ParsedCampaignGraph, guards: readonly Guard[], warn: Report): void {
+  const written = new Map<FactId, FactValue[]>();
+  const moved = new Set<FactId>();
+  for (const effect of effectsOf(graph)) {
+    if (effect.type === "setFact") written.set(effect.fact, [...(written.get(effect.fact) ?? []), effect.value]);
+    if (effect.type === "adjustFact") moved.add(effect.fact);
+  }
+  const read = new Set<FactId>();
+  for (const guard of guards) for (const id of Object.keys(guard.cond.facts ?? {})) read.add(id);
+
+  for (const id of graph.factOrder) {
+    const fact = graph.facts[id]!;
+    const path = `/graph/facts/${seg(id)}`;
+    if (!read.has(id) && fact.visible !== true) {
+      warn(
+        "FACT_UNUSED",
+        path,
+        `world fact "${id}" is never read by a guard, a variant or a completion rule, and the players are not shown it`,
+        `Read it in a "when" ({ "facts": { "${id}": ... } }), mark it "visible": true, or delete it.`,
+      );
+    }
+    const sets = written.get(id) ?? [];
+    if (fact.type === "counter") {
+      if (!moved.has(id) && sets.every((value) => value === fact.initial)) {
+        warn(
+          "FACT_VALUE_NEVER_SET",
+          path,
+          `counter "${id}" never changes: no adjustFact moves it and no setFact sets it away from ${fact.initial}`,
+          `Add an { "type": "adjustFact", "fact": "${id}", "by": 1 } effect where the story moves it, or delete the fact.`,
+        );
+      }
+      continue;
+    }
+    const initial = initialFact(fact);
+    const states: FactValue[] = fact.type === "enum" ? fact.values : [false, true];
+    states.forEach((value, i) => {
+      if (value === initial || sets.includes(value)) return;
+      warn(
+        "FACT_VALUE_NEVER_SET",
+        fact.type === "enum" ? `${path}/values/${i}` : path,
+        `world fact "${id}" can never be ${JSON.stringify(value)}: it starts ${JSON.stringify(initial)} and no setFact writes ${JSON.stringify(value)}`,
+        `Add { "type": "setFact", "fact": "${id}", "value": ${JSON.stringify(value)} } to the edge or completion rule that changes it, or drop the state.`,
+      );
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -714,6 +841,8 @@ interface Search {
   stranded: { state: number; blocks: { edge: EdgeId; reason: ExitBlock }[] }[];
   everAvailable: Set<EdgeId>;
   entered: Set<NodeId>;
+  /** `node#index` of every variant a played entry chose (`#-1`: the node's own chapter). */
+  variantsChosen: Set<string>;
   complete: boolean;
 }
 
@@ -732,6 +861,9 @@ function explore(
   const outcomes = new Set<NodeId>();
   const traversed = new Set<EdgeId>();
   const overrides = new Set<EdgeId>();
+  const facts = new Set<FactId>();
+  /** Node → the count past which every `visit` test about it reads the same. */
+  const visitCaps = new Map<NodeId, number>();
   for (const { cond, subject } of guardsOf(graph)) {
     if (cond.flag !== undefined) flags.add(cond.flag);
     if (cond.notFlag !== undefined) flags.add(cond.notFlag);
@@ -739,6 +871,11 @@ function explore(
     for (const node of [...ids(cond.completed), ...ids(cond.notCompleted)]) completed.add(node);
     for (const edge of [...ids(cond.traversed), ...ids(cond.notTraversed)]) traversed.add(edge);
     if (cond.outcome !== undefined) outcomes.add(subject);
+    for (const id of Object.keys(cond.facts ?? {})) if (graph.facts[id]) facts.add(id);
+    if (cond.visit !== undefined) {
+      const cap = Math.max(cond.visit.min ?? 1, (cond.visit.max ?? 0) + 1);
+      visitCaps.set(subject, Math.max(visitCaps.get(subject) ?? 1, cap));
+    }
   }
   // A fork couples its members: setting one clears the rest, so a tracked
   // flag's siblings can change it even though no guard reads them.
@@ -746,14 +883,18 @@ function explore(
     if (members.some((member) => flags.has(member))) for (const member of members) flags.add(member);
   }
   for (const id of graph.nodeOrder) {
-    if (graph.nodes[id]!.revisit !== "replay") completed.add(id);
+    const node = graph.nodes[id]!;
+    // A variant's own `revisit` (#198) makes completion matter as much as the
+    // node's does: `arrivalAt` reads it either way.
+    if (node.revisit !== "replay" || (node.variants ?? []).some((variant) => variant.revisit !== undefined)) {
+      completed.add(id);
+    }
   }
   for (const id of graph.edgeOrder) {
-    const edge = graph.edges[id]!;
-    if (edge.once === true) traversed.add(id);
-    for (const effect of edge.effects ?? []) {
-      if (effect.type !== "setFlag") overrides.add(effect.edge);
-    }
+    if (graph.edges[id]!.once === true) traversed.add(id);
+  }
+  for (const effect of effectsOf(graph)) {
+    if (effect.type === "unlock" || effect.type === "lock") overrides.add(effect.edge);
   }
   // `outcome` guards read `completed` implicitly (never completed matches
   // neither outcome); the outcome is recorded with the completion.
@@ -761,8 +902,9 @@ function explore(
 
   // Rifts (#196): every rift's state is a fact (once per linked pair), its
   // crossings counted only as far as a threshold reads them; and a flickering
-  // rift reads the visit ordinal of its `from`, which is tracked modulo the
-  // rhythm (every flicker out of that node shares one period, their lcm).
+  // rift reads the visit count of its `from` modulo its rhythm (every flicker
+  // out of that node shares one period, their lcm), which shares the node's
+  // tracked count with any `visit` test (see the file comment).
   const rifts = graph.edgeOrder.filter((id) => graph.edges[id]!.rift !== undefined && riftOwner(graph, id) === id);
   const crossingCap = new Map<EdgeId, number>();
   for (const id of rifts) {
@@ -770,14 +912,15 @@ function explore(
     crossingCap.set(id, Math.max(rift.uses ?? 0, rift.unstable?.collapsesAfter ?? 0));
   }
   const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
-  const period = new Map<NodeId, number>();
+  const visitPeriods = new Map<NodeId, number>();
   for (const id of graph.edgeOrder) {
     const edge = graph.edges[id]!;
     const flicker = edge.rift?.unstable?.flicker;
     if (!flicker) continue;
     const length = flicker.open + flicker.shut;
-    const before = period.get(edge.from) ?? 1;
-    period.set(edge.from, (before * length) / gcd(before, length));
+    const before = visitPeriods.get(edge.from) ?? 1;
+    visitPeriods.set(edge.from, (before * length) / gcd(before, length));
+    if (!visitCaps.has(edge.from)) visitCaps.set(edge.from, 1);
   }
 
   const tracked = {
@@ -787,8 +930,16 @@ function explore(
     outcomes: [...outcomes].sort(),
     traversed: [...traversed].sort(),
     overrides: [...overrides].sort(),
+    facts: graph.factOrder.filter((id) => facts.has(id)),
+    visitCounts: [...visitCaps.keys()].sort(),
     rifts,
-    flickers: [...period.keys()].sort(),
+  };
+
+  /** The next tracked visit count: exact below `cap + period`, then stepping back by `period`. */
+  const nextVisitCount = (node: NodeId, count: number): number => {
+    const period = visitPeriods.get(node) ?? 1;
+    const next = count + 1;
+    return next >= visitCaps.get(node)! + period ? next - period : next;
   };
 
   const riftKey = (f: JourneyFacts): string =>
@@ -811,12 +962,11 @@ function explore(
       tracked.outcomes.map((id) => (f.outcomes?.[id] === "success" ? "s" : f.outcomes?.[id] === "setback" ? "f" : "-")).join(""),
       tracked.traversed.map((id) => (f.traversed?.[id] ? 1 : 0)).join(""),
       tracked.overrides.map((id) => (f.edges?.[id] === "open" ? "o" : f.edges?.[id] === "locked" ? "l" : "-")).join(""),
+      tracked.facts.map((id) => JSON.stringify(readFact(graph.facts[id]!, f.facts?.[id]))).join(","),
+      tracked.visitCounts.map((id) => f.visits?.[id] ?? 0).join(","),
       riftKey(f),
-      tracked.flickers.map((id) => f.visits?.[id] ?? 0).join(","),
     ].join("|");
 
-  // Rift records are replaced, never mutated (`rifts.ts`), so a shallow copy
-  // of the map is a copy.
   const clone = (f: JourneyFacts): JourneyFacts => ({
     visits: { ...f.visits },
     completions: { ...f.completions },
@@ -824,8 +974,30 @@ function explore(
     traversed: { ...f.traversed },
     edges: { ...f.edges },
     flags: { ...f.flags },
+    facts: { ...storedFacts(f) } as Record<FactId, FactValue>,
+    // Rift records are replaced, never mutated (`rifts.ts`), so a shallow
+    // copy of the map is a copy.
     rifts: { ...f.rifts },
   });
+
+  /**
+   * Effects, as the runtime applies them (`journey.ts` `applyEffects`), to the
+   * tracked parts of the journey only: an untracked flag, override or fact is
+   * read by no guard, so writing it could only split states nothing tells
+   * apart.
+   */
+  const applyTracked = (f: JourneyFacts, effects: readonly GraphEffect[]): void => {
+    for (const effect of effects) {
+      if (effect.type === "setFlag") {
+        if (tracked.flags.includes(effect.flag)) setFlag(f, effect.flag, effect.value !== false);
+      } else if (effect.type === "unlock" || effect.type === "lock") {
+        if (tracked.overrides.includes(effect.edge)) f.edges![effect.edge] = effect.type === "unlock" ? "open" : "locked";
+      } else if (tracked.facts.includes(effect.fact)) {
+        const fact = graph.facts[effect.fact]!;
+        f.facts![effect.fact] = writeFact(fact, readFact(fact, f.facts![effect.fact]), effect);
+      }
+    }
+  };
 
   /** Setting a route-set member clears its siblings, as in play. */
   const setFlag = (f: JourneyFacts, flag: string, value: boolean, keep: ReadonlySet<string> = new Set()): void => {
@@ -850,21 +1022,27 @@ function explore(
    * can settle is a separate arrival.
    */
   const arrive = (before: JourneyFacts, node: NodeId): Arrival[] => {
+    // Read the place as the runtime does (`enter`): on the journey as it
+    // stands on arrival, before the new visit is counted.
     const how = arrivalAt(graph, node, before);
+    const variant = variantAtNode(graph, node, before);
     const entering = clone(before);
-    const rhythm = period.get(node);
-    if (rhythm !== undefined) entering.visits![node] = ((entering.visits![node] ?? 0) % rhythm) + 1;
-    else if (tracked.visited.includes(node)) entering.visits![node] = 1;
+    if (tracked.visitCounts.includes(node)) {
+      entering.visits![node] = nextVisitCount(node, entering.visits![node] ?? 0);
+    } else if (tracked.visited.includes(node)) {
+      entering.visits![node] = 1;
+    }
+    if (how !== "pass" && how !== "closed") search.variantsChosen.add(`${node}#${variant?.index ?? -1}`);
     if (graph.nodes[node]!.ending !== undefined) return [{ facts: entering, ended: true, label: "ending" }];
-    // Entering may open a rift (`visited` in an `opensWhen`) — settled as
-    // `takeExit` settles, after the arrival.
+    // Entering may open a rift (`visited` in an `opensWhen`, #196) — settled
+    // as `takeExit` settles, after the arrival.
     const facts = settleRifts(graph, entering);
     if (how === "pass" || how === "closed") return [{ facts, ended: false, label: "passed through" }];
     // The chapter about to play is a tick of every open "chapters" rift's
     // clock, counted before its results, as `completeVisit` counts it.
     const aged = tickRifts(graph, facts, "chapters");
 
-    const writes = chapterWrites(chapterAtNode(graph, node, facts) ?? "");
+    const writes = chapterWrites(variant?.variant.chapter ?? graph.nodes[node]!.chapter);
     const choices = tracked.flags.map((flag): boolean[] => {
       const now = facts.flags![flag] === true;
       if (writes === undefined) return [now, !now];
@@ -902,6 +1080,10 @@ function explore(
           next.outcomes![node] = outcome;
           notes.unshift(outcome);
         }
+        // The node's completion rules (#198), judged on the journey this
+        // completion produced — the runtime's own reading of them.
+        applyTracked(next, completionEffects(graph, node, next));
+        // …and then whatever the completion opened or ended (#196).
         arrivals.push({ facts: settleRifts(graph, next), ended: false, label: notes.join(", ") });
       }
     };
@@ -912,15 +1094,9 @@ function explore(
   /** The journey after an edge's effects and the crossing itself, before arrival. */
   const cross = (before: JourneyFacts, edgeId: EdgeId): JourneyFacts => {
     // The rift counts the crossing, then every timed "visits" rift ages a
-    // move — before the edge's own effects, as `takeExit` orders it.
+    // move — before the edge's own effects, as `takeExit` orders it (#196).
     const facts = clone(tickRifts(graph, crossRift(graph, before, edgeId), "visits"));
-    for (const effect of graph.edges[edgeId]!.effects ?? []) {
-      if (effect.type === "setFlag") {
-        if (tracked.flags.includes(effect.flag)) setFlag(facts, effect.flag, effect.value !== false);
-      } else if (tracked.overrides.includes(effect.edge)) {
-        facts.edges![effect.edge] = effect.type === "unlock" ? "open" : "locked";
-      }
-    }
+    applyTracked(facts, graph.edges[edgeId]!.effects ?? []);
     if (tracked.traversed.includes(edgeId)) facts.traversed![edgeId] = 1;
     return facts;
   };
@@ -932,6 +1108,7 @@ function explore(
     stranded: [],
     everAvailable: new Set(),
     entered: new Set(),
+    variantsChosen: new Set(),
     complete: true,
   };
   const index = new Map<string, number>();
@@ -1113,6 +1290,21 @@ function lintSearch(
       `edge "${id}" is never available: in every play-through that reaches "${edge.from}" it is locked, guarded off, spent, closed or a shut rift`,
       `Check "${id}"'s "locked", "when", "once" and "rift"; if it is meant to be unreachable, delete it.`,
     );
+  }
+
+  // A variant is how a place changes on a revisit (#198): one no play-through
+  // ever plays is a changed encounter nobody will meet.
+  for (const id of graph.nodeOrder) {
+    if (!search.entered.has(id) || explained.has(id)) continue;
+    (graph.nodes[id]!.variants ?? []).forEach((variant, i) => {
+      if (search.variantsChosen.has(`${id}#${i}`)) return;
+      warn(
+        "VARIANT_NEVER_CHOSEN",
+        `${nodePath(id)}/variants/${i}`,
+        `variant ${i} of "${id}" ("${variant.chapter}") is never played: whenever the party enters "${id}" to play it, its "when" does not hold or an earlier variant's does`,
+        `Check the variant's "when" against what the party can have done by then (and the variants before it — the first that holds wins); if it is meant to be unreachable, delete it.`,
+      );
+    });
   }
 
   // --- irreversible: a claim about the way back -----------------------------
