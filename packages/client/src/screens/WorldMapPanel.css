@@ -107,38 +107,6 @@
   -webkit-user-drag: none;
 }
 
-/* One picker, not a row of buttons: a dozen regions never fit a phone's width. */
-.atlas__regions {
-  display: flex;
-  align-items: center;
-  gap: var(--kad-space-2);
-  padding: var(--kad-space-2) var(--kad-space-4);
-  flex: 0 0 auto;
-  background: var(--kad-bg);
-  font-size: var(--kad-text-sm);
-  font-weight: var(--kad-weight-bold);
-}
-.atlas__region-pick {
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  min-block-size: 2.75em;
-  padding: 0 0.6em;
-  font: inherit;
-  font-size: var(--kad-text-md);
-  color: var(--kad-ink);
-  background: var(--kad-bg-raised);
-  border: 1px solid var(--kad-border-strong);
-  border-radius: var(--kad-radius-md);
-}
-.atlas__region-note {
-  flex: 0 0 auto;
-  margin: 0;
-  padding: var(--kad-space-2);
-  font-size: var(--kad-text-sm);
-  background: var(--kad-bg);
-  max-block-size: 5em;
-  overflow: auto;
-}
 .atlas__tile { position: absolute; display: block; user-select: none; }
 .atlas__underlay { position: absolute; inset: 0; }
 .atlas__detail-patch {

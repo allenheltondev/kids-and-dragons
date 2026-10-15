@@ -1,12 +1,4 @@
-import type { WorldAnchor, WorldAtlas, WorldBounds, WorldPlace, WorldRoute } from "@kad/shared";
-
-/** Transform the realm frame into a regional frame; never clamp outsiders. */
-export function regionalAnchor(anchor: WorldAnchor, bounds: WorldBounds): WorldAnchor | null {
-  if (bounds.width <= 0 || bounds.height <= 0) return null;
-  const x = (anchor.x - bounds.x) / bounds.width;
-  const y = (anchor.y - bounds.y) / bounds.height;
-  return x < 0 || x > 1 || y < 0 || y > 1 ? null : { x: x * 1000, y: y * 1000 };
-}
+import type { WorldAtlas, WorldPlace, WorldRoute } from "@kad/shared";
 
 /** Choose the smallest level that can supply the displayed pixels. */
 export function atlasLevel(atlas: WorldAtlas, targetWidth: number): WorldAtlas["levels"][number] {

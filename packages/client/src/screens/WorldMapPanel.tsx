@@ -27,7 +27,7 @@ import type { FieldGuide, WorldMap, WorldPlace } from "@kad/shared";
 import { useChapter, useParty, useRunState, useWorld, useGameStore } from "../store";
 import { getAtlasCenter, updateAtlasView, useAtlasNavigation } from "../store/atlas-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
-import { atlasLevel, regionalAnchor, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
+import { atlasLevel, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
 import { FieldGuideDetail } from "./FieldGuideDetail";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
 import { Button } from "../ui/Button";
@@ -67,9 +67,8 @@ export function WorldMapPanel(): ReactElement {
   const runId = useGameStore((store) => store.session?.runId ?? "");
   const chapterId = state?.chapterId ?? null;
   const scope = JSON.stringify([runId, chapterId]);
-  const { step, regionId, routeId, showRoutes } = useAtlasNavigation(scope);
+  const { step, routeId, showRoutes } = useAtlasNavigation(scope);
   const setStep = (next: number | ((value: number) => number)) => updateAtlasView(scope, { step: typeof next === "function" ? next(step) : next, center: null });
-  const setRegionId = (next: string | null) => updateAtlasView(scope, { regionId: next, center: null });
   const setRouteId = (next: string | null) => updateAtlasView(scope, { routeId: next, center: null });
   const setShowRoutes = (next: boolean) => updateAtlasView(scope, { showRoutes: next });
   const [entryId, setEntryId] = useState<string | null>(null);
@@ -84,17 +83,14 @@ export function WorldMapPanel(): ReactElement {
   const place = ready ? placeOf(world, chapter.biome) : null;
   const zoomSteps = world?.atlas ? ATLAS_ZOOM_STEPS : ZOOM_STEPS;
   const zoom = zoomSteps[step] ?? 1;
-  const region = regionId ? world?.regions?.[regionId] : undefined;
-  const regionPlace = regionId ? world?.places[regionId] : undefined;
-  const crop = world?.atlas ? undefined : region;
-  const partyAnchor = place ? (crop ? regionalAnchor(place.anchor, crop.bounds) : place.anchor) : null;
-  const image = world?.atlas?.image ?? crop?.image ?? world?.image;
+  const partyAnchor = place?.anchor ?? null;
+  const image = world?.atlas?.image ?? world?.image;
   const aspect = image ? image.width / image.height : 1;
   // Cover the pane at the first step: neighbors fill the screen, with no sheet gutters.
   const canvasWidth = Math.max(viewportSize.width, viewportSize.height * aspect) * zoom;
   const level = world?.atlas ? atlasLevel(world.atlas, canvasWidth * (globalThis.devicePixelRatio || 1)) : null;
-  const tiles = level?.tiles ?? crop?.tiles;
-  const tileImage = level?.image ?? crop?.image;
+  const tiles = level?.tiles;
+  const tileImage = level?.image;
   const discovered = new Set(Object.keys(discoveries));
   const routes = world ? visibleMapRoutes(world.routes ?? [], world.places, discovered) : [];
   const atDetail = step === zoomSteps.length - 1;
@@ -135,13 +131,12 @@ export function WorldMapPanel(): ReactElement {
     // `scrollTo` is absent on elements in jsdom; the tests are not about panning.
     if (!view || typeof view.scrollTo !== "function") return;
     if (world?.atlas && canvasWidth <= 0) return;
-    const focus = getAtlasCenter(scope) ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ??
-      (world?.atlas && regionPlace ? regionPlace.anchor : null);
+    const focus = getAtlasCenter(scope) ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ?? null;
     view.scrollTo({
       left: focus ? focus.x / 1000 * canvasWidth - view.clientWidth / 2 : pin ? pin.offsetLeft - view.clientWidth / 2 : 0,
       top: focus ? focus.y / 1000 * canvasWidth / aspect - view.clientHeight / 2 : pin ? pin.offsetTop - view.clientHeight / 2 : 0,
     });
-  }, [zoom, place?.id, regionId, canvasWidth, routeId, scope]);
+  }, [zoom, place?.id, canvasWidth, routeId, scope]);
 
   // A new chapter is a new country: start from the whole realm again.
   useEffect(() => {
@@ -203,22 +198,6 @@ export function WorldMapPanel(): ReactElement {
         </div>
       </header>
 
-      {world.regions && Object.keys(world.regions).length > 0 ? (
-        <label className="atlas__regions">
-          <span>Region</span>
-          <select className="atlas__region-pick kad-focusable" value={regionId ?? ""}
-            onChange={(event) => {
-              const id = event.target.value || null;
-              setRegionId(id); setStep(id && world.atlas ? 1 : 0); setEntryId(null); setRouteId(null);
-            }}>
-            <option value="">Whole realm</option>
-            {Object.keys(world.regions).map((id) => (
-              <option key={id} value={id}>{world.places[id]?.title ?? id}</option>
-            ))}
-          </select>
-        </label>
-      ) : null}
-      {region ? <p className="atlas__region-note">{regionPlace?.title}: {region.description}</p> : null}
       {(world.routes?.length ?? 0) > 0 ? <div className="atlas__route-controls">
         <label><input type="checkbox" checked={showRoutes} onChange={(event) => setShowRoutes(event.target.checked)} /> Routes</label>
         {atDetail ? <span>Solid: mapped · Dashed: approximate</span> : <span>Routes appear at the closest zoom.</span>}
@@ -289,7 +268,7 @@ export function WorldMapPanel(): ReactElement {
             </div>
           )) : null}
           {atDetail && showRoutes ? <svg className="atlas__routes" aria-hidden="true"
-            viewBox={crop ? `${crop.bounds.x} ${crop.bounds.y} ${crop.bounds.width} ${crop.bounds.height}` : "0 0 1000 1000"}
+            viewBox="0 0 1000 1000"
             preserveAspectRatio="none">
             {routes.map((route) => <g key={route.id} data-route={route.id} data-accuracy={route.accuracy}
               className={routeId === route.id ? "atlas__route--selected" : undefined}>
@@ -298,11 +277,11 @@ export function WorldMapPanel(): ReactElement {
             </g>)}
           </svg> : null}
           {visibleMapPlaces(world.places, new Set(Object.keys(discoveries))).map((known) => {
-            const anchor = crop ? regionalAnchor(known.anchor, crop.bounds) : known.anchor;
-            if (!anchor || known.id === place?.id) return null;
+            const anchor = known.anchor;
+            if (known.id === place?.id) return null;
             const isDiscovered = Boolean(discoveries[known.id]);
-            // Small-scale labels wait until zoomed in; region framing keeps them sparse.
-            if (!region && step === 0 && known.kind === "location") return null;
+            // Small-scale labels wait until zoomed in.
+            if (step === 0 && known.kind === "location") return null;
             return isDiscovered ? (
               <button key={known.id} type="button" className="atlas__landmark kad-focusable"
                 style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}

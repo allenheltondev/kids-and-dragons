@@ -45,7 +45,7 @@ export interface WorldMap {
   places: Record<string, WorldPlace>;
   /** Optional regional sheets. Older content packs still render the realm. */
   regions?: Record<string, WorldRegion>;
-  /** Continuous realm tile pyramid; region buttons focus this same canvas. */
+  /** Continuous realm tile pyramid: the whole realm on one pannable canvas. */
   atlas?: WorldAtlas;
   routes?: WorldRoute[];
 }
