@@ -34,5 +34,6 @@
     "seal_clock": ["clock_steady", "clock_stirring", "clock_late"],
     "cult": ["refused_the_cult", "funded_the_break"]
   },
-  "setbackLimit": 4
+  "setbackLimit": 4,
+  "purseBackfill": { "coins": 6, "byFlag": { "ember_sold": 15 } }
 }

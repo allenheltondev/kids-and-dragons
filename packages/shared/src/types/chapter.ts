@@ -529,4 +529,12 @@ export interface Campaign {
    * without either touching code.
    */
   setbackLimit?: number;
+  /**
+   * The purse to hand a campaign attempt that was already past its first
+   * chapter when the party purse was introduced, and so never saved one.
+   * `coins` is the base; `byFlag` adds an amount for each carried route flag
+   * the attempt holds (Gemfall's Ember sale). Absent means such an attempt
+   * starts its next chapter with an empty purse.
+   */
+  purseBackfill?: { coins: number; byFlag?: Record<string, number> };
 }
