@@ -5,6 +5,11 @@
  * to determine which entities need regeneration. Identifies changed files
  * and their direct dependents (entities in other files that reference
  * entities from changed files).
+ *
+ * Chapter files are tracked in the same manifest. Every page carries
+ * `played_in` (the chapters that use its entity), and a chapter can bring any
+ * entity on stage or take it off, so a changed, added or removed chapter
+ * regenerates every page rather than guessing which ones it touched.
  */
 
 import fs from 'node:fs';
@@ -143,7 +148,7 @@ export function checkIncremental(
   }
 
   const manifest = readManifest(config.manifestPath);
-  const canonFiles = getCanonFiles(config.canonDir);
+  const canonFiles = getTrackedFiles(config.canonDir, config.chaptersDir);
 
   // If no manifest exists (first run or incompatible version), process everything
   if (manifest === null) {
@@ -188,7 +193,19 @@ export function checkIncremental(
       hasChanges: false,
       changedFiles: [],
       entitiesToProcess: new Set(),
-      message: 'No updates needed — all canon files unchanged since last run',
+      message: 'No updates needed — canon and chapter files unchanged since last run',
+    };
+  }
+
+  // A chapter change can move any entity's `played_in`: regenerate them all.
+  const chapterPrefix = config.chaptersDir ? `${chaptersRel(config.canonDir, config.chaptersDir)}/` : null;
+  const changedChapters = chapterPrefix ? changedFiles.filter((f) => f.startsWith(chapterPrefix)) : [];
+  if (changedChapters.length > 0) {
+    return {
+      hasChanges: true,
+      changedFiles,
+      entitiesToProcess: new Set(registry.entities.keys()),
+      message: `${changedChapters.length} chapter file(s) changed: regenerating all ${registry.entities.size} entities`,
     };
   }
 
@@ -204,12 +221,13 @@ export function checkIncremental(
 }
 
 /**
- * Get the current mtime (epoch ms) for all canon files.
- * Used to write the manifest after a successful run.
+ * Get the current mtime (epoch ms) for all canon files, and for every chapter
+ * file when `chaptersDir` is given. Used to write the manifest after a
+ * successful run.
  */
-export function getCanonFileMtimes(canonDir: string): Map<string, number> {
+export function getCanonFileMtimes(canonDir: string, chaptersDir?: string): Map<string, number> {
   const mtimes = new Map<string, number>();
-  const files = getCanonFiles(canonDir);
+  const files = getTrackedFiles(canonDir, chaptersDir);
 
   for (const relPath of files) {
     const absPath = path.resolve(canonDir, '..', relPath);
@@ -222,6 +240,27 @@ export function getCanonFileMtimes(canonDir: string): Map<string, number> {
   }
 
   return mtimes;
+}
+
+/** content/chapters as a path relative to the repository root (canon's parent). */
+function chaptersRel(canonDir: string, chaptersDir: string): string {
+  return path.relative(path.resolve(canonDir, '..'), chaptersDir).replaceAll('\\', '/');
+}
+
+/**
+ * Every file the manifest tracks, relative to the repository root: the canon
+ * YAML, plus the chapter JSON when a chapters directory is given.
+ */
+function getTrackedFiles(canonDir: string, chaptersDir?: string): string[] {
+  const files = getCanonFiles(canonDir);
+  if (!chaptersDir) return files;
+  try {
+    const rel = chaptersRel(canonDir, chaptersDir);
+    const chapters = fs.readdirSync(chaptersDir).filter((f) => f.endsWith('.json')).sort();
+    return [...files, ...chapters.map((f) => `${rel}/${f}`)];
+  } catch {
+    return files;
+  }
 }
 
 /**

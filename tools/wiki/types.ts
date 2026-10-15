@@ -14,6 +14,12 @@ export interface GeneratorConfig {
   manifestPath: string;
   /** When true, skip incremental check and regenerate everything. */
   forceAll?: boolean;
+  /**
+   * Path to content/chapters/. Every page records which chapters use its
+   * entity (`played_in`), so a chapter change regenerates every page. Absent,
+   * only canon files are tracked.
+   */
+  chaptersDir?: string;
 }
 
 /** Summary result of a Generator run. */
