@@ -86,7 +86,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryony",
           "name": "Bryony",
           "size": "small"
         }
@@ -118,7 +118,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryony",
           "name": "Bryony",
           "size": "small"
         }
@@ -147,7 +147,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryony",
           "name": "Bryony",
           "size": "small"
         }
@@ -166,7 +166,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryony",
           "name": "Bryony",
           "size": "small"
         }
@@ -348,7 +348,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/lady_fleecewick",
           "name": "Lady Fleecewick"
         }
       ],
@@ -389,7 +389,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/lady_fleecewick",
           "name": "Lady Fleecewick"
         }
       ],
@@ -407,7 +407,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/lady_fleecewick",
           "name": "Lady Fleecewick"
         }
       ],
@@ -435,7 +435,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/sheeple",
+          "figure": "cast/lady_fleecewick",
           "name": "Lady Fleecewick"
         }
       ],
@@ -2106,7 +2106,7 @@
       "narration": "On the caravan road, a centaur relay runner called Brisk is coming up as you go down. She slows to a trot. \"News,\" she says, \"if you want it. Everybody up there is doing something.\" She looks at your packs. \"Without you.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/brisk",
           "name": "Brisk"
         }
       ],
@@ -2145,7 +2145,7 @@
       "narration": "\"Does anybody up there know what we know?\" Brisk looks at you very hard. \"You knew,\" she says. \"You knew and you came down.\" She does not say anything else. She does not have to.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/brisk",
           "name": "Brisk"
         }
       ],
@@ -2163,7 +2163,7 @@
       "narration": "\"The wardens did what you told them,\" says Brisk. \"Checkpoints on every road. Every stone confiscated and logged twice. It's working. It's ugly to watch. But they're holding.\" A warden wagon rolls past, uphill, full of stones going home.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/brisk",
           "name": "Brisk"
         }
       ],
@@ -2188,7 +2188,7 @@
       "narration": "\"The grandmothers turned gathering law inside out,\" says Brisk. \"Every stone that came down is going back up, carried by dragonlings with bells on their tails. It's slow. It's holding.\" Somewhere above you, a very small bell jingles past.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/brisk",
           "name": "Brisk"
         }
       ],
@@ -2213,7 +2213,7 @@
       "narration": "\"Nobody knows much,\" says Brisk. \"The wardens are guessing. The cult is singing. The dragon is being a dragon. Everybody's waiting for somebody to do something.\" She looks at your packs, then at you, and does not say anything else, which for a centaur is very loud.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/brisk",
           "name": "Brisk"
         }
       ],

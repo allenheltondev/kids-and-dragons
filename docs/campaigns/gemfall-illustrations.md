@@ -722,3 +722,14 @@ These figures follow the existing painted storybook cast style. Source prompts s
 - **Nim** (`assets/cast/nim/assembled.png`): Small dragonling child with vivid mint-green scales, cream belly, mint wings, horns and bell collar.
 - **Corporal Tibbet** (`assets/cast/corporal_tibbet/assembled.png`): Slate-blue griffin Skywarden with cream chest, green sash, bronze badge and clipboard.
 - **Pib** (`assets/cast/pib/assembled.png`): Tiny bramble sprite made of dark twigs, thorns and fresh leaves.
+
+## Expanded Gemfall cast figures
+
+- **Brisk** (`assets/cast/brisk/assembled.png`): Alert bay centaur scout with a blue road sash, map and feather markers.
+- **Perrin Nine-Verse** (`assets/cast/perrin_nine_verse/assembled.png`): Russet centaur poet with sandy mane, plum coat and verse book.
+- **Bryony** (`assets/cast/bryony/assembled.png`): Mint-green dragonling collector with wings, horns and a cream pouch of tokens.
+
+The figures were generated in two isolated 2×2 cutout sheets, then separated into individual 1024×1024 RGBA figures with feet set at y=900.
+- **Lady Fleecewick** (`assets/cast/lady_fleecewick/assembled.png`): Elegant older sheeple collector with lavender curls, teal coat, jeweled brooch and ledger satchel.
+- **Cadet Linnet** (`assets/cast/cadet_linnet/assembled.png`): Slate-blue griffin Skywarden with cream face, green cadet cloak and bronze badge.
+- **Tansy** (`assets/cast/tansy/assembled.png`): Small russet faun child with yellow scarf and pink humming stone.
