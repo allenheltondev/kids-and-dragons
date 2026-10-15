@@ -54,10 +54,12 @@ import type {
   NodeVariant,
   RevisitPolicy,
   RiftActionKind,
+  RiftActionRule,
   RiftState,
   RiftStatus,
   WorldFact,
 } from "./types/campaign-graph.js";
+import type { ClassId } from "./types/domain.js";
 import {
   factDeclarationProblems,
   factEffectProblems,
@@ -548,6 +550,44 @@ export function isRiftEffectType(type: unknown): type is RiftEffect["type"] {
 }
 
 /**
+ * Every class a `PartyRequirement` may name (#199). The class *catalog* is
+ * content (content/rules.json, `ClassId`); this is the list the declaration
+ * is checked against without loading it — rules.test.ts holds the two equal.
+ */
+export const PARTY_CLASS_IDS: readonly ClassId[] = ["thornguard", "duskrunner", "starweaver", "songkeeper"];
+
+/** One way to take a rift action (#199): its rule, its `id`, and where it is written. */
+export interface RiftActionWay {
+  rule: RiftActionRule;
+  /** The rule's `id` — `RIFT_ACTION.way`; absent for a kind's lone unnamed rule. */
+  way?: string;
+  /** Its JSON pointer suffix under the rift: `actions/open` or `actions/open/2`. */
+  at: string;
+}
+
+/**
+ * The ways a rift offers one action (#199), in authored order: a kind's lone
+ * rule, or each rule of its list. Every reader of `GraphRift.actions` goes
+ * through this, so the single-rule form (#197) and the list form cannot be
+ * read two ways.
+ */
+export function riftActionWays(rift: GraphRift | undefined, kind: RiftActionKind): RiftActionWay[] {
+  const declared = rift?.actions?.[kind];
+  if (declared === undefined) return [];
+  const list = Array.isArray(declared) ? declared : [declared];
+  return list.map((rule, i) => ({
+    rule,
+    ...(rule.id !== undefined ? { way: rule.id } : {}),
+    at: Array.isArray(declared) ? `actions/${kind}/${i}` : `actions/${kind}`,
+  }));
+}
+
+/** Every rule of every action a rift declares (#199), kind by kind. */
+export function riftActionRules(rift: GraphRift | undefined): RiftActionRule[] {
+  return RIFT_ACTION_KINDS.flatMap((kind) => riftActionWays(rift, kind).map((each) => each.rule));
+}
+
+/**
  * Every destination a rift can lead to: its `to`, then its declared
  * `redirects` (#197). For an ordinary edge, just `to`. The static checks walk
  * all of them, because a redirect is a way the party can go.
@@ -629,19 +669,94 @@ function checkRiftActions(
       fail(path, `unknown rift action ${JSON.stringify(kind)} (one of ${RIFT_ACTION_KINDS.join(", ")})`);
       continue;
     }
-    if (!isRecord(rule)) {
-      fail(path, "a rift action's rule must be an object");
-      continue;
-    }
-    checkCondition(`${path}/when`, rule.when);
-    checkEffects(`${path}/effects`, rule.effects);
-    if (rule.label !== undefined && (typeof rule.label !== "string" || rule.label.trim() === "")) {
-      fail(`${path}/label`, "a label is the words on the button");
-    }
     if (kind === "redirect" && rift.redirects === undefined) {
       fail(path, `"${id}" declares no redirects, so there is nowhere to turn it`);
     }
+    // A list of ways (#199): each a rule, each named, no name twice — the
+    // name is what the party's tap and the stored `lastAction` carry.
+    if (Array.isArray(rule)) {
+      if (rule.length === 0) fail(path, "a list of ways needs at least one rule");
+      const named = new Set<string>();
+      rule.forEach((each: unknown, i) => {
+        const at = `${path}/${i}`;
+        if (!checkRiftActionRule(at, each, fail, checkCondition, checkEffects)) return;
+        const way = (each as RiftActionRule).id;
+        if (way === undefined) fail(`${at}/id`, "every way in a list needs an id, so the party's choice can name it");
+        else if (named.has(way)) fail(`${at}/id`, `"${way}" names two ways to ${kind} "${id}"`);
+        if (way !== undefined) named.add(way);
+      });
+      continue;
+    }
+    checkRiftActionRule(path, rule, fail, checkCondition, checkEffects);
   }
+}
+
+/** A way's id: the graph id pattern, so it reads like every other stored name. */
+const WAY_ID = /^[a-z0-9]+([-_][a-z0-9]+)*$/;
+
+/** One `RiftActionRule` (#197, #199). False when it is not even an object. */
+function checkRiftActionRule(
+  path: string,
+  rule: unknown,
+  fail: (path: string, problem: string) => void,
+  checkCondition: (path: string, raw: unknown) => void,
+  checkEffects: (path: string, raw: unknown) => void,
+): boolean {
+  if (!isRecord(rule)) {
+    fail(path, "a rift action's rule must be an object");
+    return false;
+  }
+  checkCondition(`${path}/when`, rule.when);
+  checkEffects(`${path}/effects`, rule.effects);
+  if (rule.label !== undefined && (typeof rule.label !== "string" || rule.label.trim() === "")) {
+    fail(`${path}/label`, "a label is the words on the button");
+  }
+  if (rule.id !== undefined && (typeof rule.id !== "string" || !WAY_ID.test(rule.id))) {
+    fail(`${path}/id`, `a way's id is lowercase words joined by - or _ (got ${JSON.stringify(rule.id)})`);
+  }
+  if (rule.hint !== undefined && (typeof rule.hint !== "string" || rule.hint.trim() === "")) {
+    fail(`${path}/hint`, "a hint is the words a party that cannot take this way is shown");
+  }
+  if (rule.requires !== undefined) checkPartyRequirement(`${path}/requires`, rule.requires, fail);
+  else if (rule.hint !== undefined) {
+    fail(`${path}/hint`, "a hint is for a party that cannot take this way, and a way with no requires is anyone's");
+  }
+  return true;
+}
+
+/**
+ * A `PartyRequirement` (#199): known classes, item ids, each list non-empty
+ * and without repeats, at least one field. Whether an item id is in the
+ * catalog is content's question (`content:validate`), not the graph's.
+ */
+function checkPartyRequirement(path: string, raw: unknown, fail: (path: string, problem: string) => void): void {
+  if (!isRecord(raw)) {
+    fail(path, "requires must be an object (anyClass, anyItem)");
+    return;
+  }
+  const keys = Object.keys(raw).filter((key) => key !== "$comment");
+  if (keys.length === 0) fail(path, "requires asks nothing; drop it, or name a class or an item");
+  for (const key of keys) {
+    if (key !== "anyClass" && key !== "anyItem") fail(`${path}/${seg(key)}`, `unknown requirement "${key}" (anyClass, anyItem)`);
+  }
+  const list = (key: "anyClass" | "anyItem", known?: readonly string[]): void => {
+    const value = raw[key];
+    if (value === undefined) return;
+    if (!Array.isArray(value) || value.length === 0) {
+      fail(`${path}/${key}`, `${key} must be a non-empty list`);
+      return;
+    }
+    const seen = new Set<unknown>();
+    value.forEach((each: unknown, i) => {
+      if (typeof each !== "string" || each === "") fail(`${path}/${key}/${i}`, "must be an id");
+      else if (known && !known.includes(each)) {
+        fail(`${path}/${key}/${i}`, `no class "${each}" (one of ${known.join(", ")})`);
+      } else if (seen.has(each)) fail(`${path}/${key}/${i}`, `"${each}" is listed twice`);
+      seen.add(each);
+    });
+  };
+  list("anyClass", PARTY_CLASS_IDS);
+  list("anyItem");
 }
 
 // ---------------------------------------------------------------------------

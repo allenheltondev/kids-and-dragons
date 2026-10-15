@@ -227,8 +227,15 @@ export function checkJourneySave(graph: ParsedCampaignGraph, raw: unknown): Save
   if (j.lastAction !== undefined) {
     // The rift action idempotence key (#197), held to `lastExit`'s rules.
     const last = j.lastAction;
-    if (!isRecord(last) || typeof last.edge !== "string" || typeof last.node !== "string" || typeof last.action !== "string" || !Number.isInteger(last.visit)) {
-      error("impossible", "/lastAction", `"lastAction" must be { node, visit, action, edge, to? }`);
+    if (
+      !isRecord(last) ||
+      typeof last.edge !== "string" ||
+      typeof last.node !== "string" ||
+      typeof last.action !== "string" ||
+      !Number.isInteger(last.visit) ||
+      (last.way !== undefined && typeof last.way !== "string")
+    ) {
+      error("impossible", "/lastAction", `"lastAction" must be { node, visit, action, edge, to?, way? }`);
     } else if (!edgeIds.has(last.edge)) {
       warn("dangling", "/lastAction/edge", `the last rift action names edge "${last.edge}", which this campaign does not have`);
     } else if (graph.edges[last.edge]!.from !== last.node) {

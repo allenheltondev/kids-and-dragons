@@ -41,6 +41,7 @@ import {
   exploreCampaignGraph,
   lintCampaignGraph,
   parseCampaignGraph,
+  riftActionRules,
   startJourney,
   takeExit,
 } from "@kad/shared";
@@ -130,6 +131,29 @@ describe("the gate — every graph campaign in the repo", () => {
         expect(report.covered.nodes).toEqual(s.graph!.nodeOrder);
         expect(report.covered.edges).toEqual(s.graph!.edgeOrder);
         expect(report.covered.endings).toEqual(s.graph!.endings);
+      });
+
+      // A rift action way that needs a hero (#199) is an extra road, never the
+      // only one: a table with none of them is explored as itself, and the
+      // explorer's way to an ending is replayed through the runtime with that
+      // table judged at every action, as the server judges it.
+      const gated = s.graph
+        ? s.graph.edgeOrder.some((id) => riftActionRules(s.graph!.edges[id]!.rift).some((rule) => rule.requires !== undefined))
+        : false;
+      it.runIf(gated)("is winnable by a table with no gated hero and nothing to carry, through the runtime", () => {
+        const nobody = { classes: [], items: [] };
+        const { search, coverage } = exploreRoutes(s.graph!, { ...explorerOptions(s), party: nobody });
+        expect(coverage.complete).toBe(true);
+        expect(coverage.endingsReached).toBeGreaterThan(0);
+        expect(coverage.softlocks).toEqual([]);
+        const report = playtest(s.graph!, s.campaign, {
+          chapterFlags: explorerOptions(s).chapterFlags,
+          random: { seed: 3, runs: 10 },
+          replay: { search, coverage },
+          party: nobody,
+        });
+        expect(report.violations).toEqual([]);
+        expect(report.covered.endings.length).toBeGreaterThan(0);
       });
 
       it("renders a diagram and an outline that name every node and edge", () => {

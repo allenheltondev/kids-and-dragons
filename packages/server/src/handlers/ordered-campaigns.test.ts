@@ -153,6 +153,10 @@ describe("Gemfall, played with the journey runtime in the build", () => {
       expect(acted).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
       expect(acted.ok ? "" : acted.error?.message).toContain("no map");
     }
+    // …and naming a way (#199) changes nothing: the campaign is refused before any party is judged.
+    const way = await send({ type: "RIFT_ACTION", action: "open", edgeId: "to-orchard", visit: 1, way: "attune", campaignId: "gemfall" });
+    expect(way).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(way.ok ? "" : way.error?.message).toContain("no map");
     expect((await harness.repo.getState(created.value.runId))!.seq).toBe(seq);
     expect(await harness.repo.getCampaignProgress(householdId, "gemfall")).toEqual(attempt);
     expect(await harness.repo.getCampaignProgress(householdId, "gemfall")).not.toHaveProperty("journey");
