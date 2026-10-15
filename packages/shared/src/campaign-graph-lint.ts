@@ -44,6 +44,13 @@
  *                                 same node, ...).
  * - `GUARD_FLAG_NEVER_SET` (warn) a guard needs a flag that no edge effect and
  *                                 no chapter on the graph can set true.
+ * - `RIFT_ONE_WAY_HAS_WAY_BACK`   a `oneWay` rift with a rift edge straight back
+ *                                 (#196: the claim, checked).
+ * - `RIFT_ONCE_AND_USES` (warn)   `once` and `rift.uses` count the same crossings.
+ * - `RIFT_REVEAL_MOOT` (warn)     `reveal: "when-open"` on a rift open from the
+ *                                 start hides nothing.
+ *
+ * A rift's `opensWhen` is a guard like any other for the checks above.
  *
  * Dynamic (an exhaustive search of what a party can have done — below):
  *
@@ -79,7 +86,12 @@
  *   is `pass` / `closed` (which `arrivalAt` and `exitAvailability` read);
  * - a node's latest outcome only if an `outcome` guard is about it;
  * - an edge's traversed fact only if a guard reads it or it is `once`;
- * - an edge's lock override only if an effect names it.
+ * - an edge's lock override only if an effect names it;
+ * - every rift's lifecycle (#196): status, age, latch, and crossings counted
+ *   only up to the highest threshold that reads them (`uses`,
+ *   `collapsesAfter`) — a rift is moved by the same `rifts.ts` functions in
+ *   the same order as `journey.ts` moves it (cross, tick, settle);
+ * - a flickering rift's `from` visit ordinal, modulo its rhythm.
  *
  * Entering a node runs the chapter, and a chapter's result is not the graph's
  * to know, so completion BRANCHES: both outcomes ("success", "setback") are
@@ -119,9 +131,12 @@ import {
   arrivalAt,
   chapterAtNode,
   exitsFrom,
+  riftOwner,
+  riftState,
   type ExitBlock,
   type ParsedCampaignGraph,
 } from "./campaign-graph.ts";
+import { crossRift, settleRifts, tickRifts } from "./rifts.ts";
 
 // ---------------------------------------------------------------------------
 // Public shape
@@ -144,7 +159,10 @@ export type GraphFindingCode =
   | "EDGE_NEVER_AVAILABLE"
   | "IRREVERSIBLE_NOT"
   | "SEARCH_TRUNCATED"
-  | "DUPLICATE_KEY";
+  | "DUPLICATE_KEY"
+  | "RIFT_ONE_WAY_HAS_WAY_BACK"
+  | "RIFT_ONCE_AND_USES"
+  | "RIFT_REVEAL_MOOT";
 
 export interface GraphFinding {
   /** Stable: tests, docs and any tool that filters key on this. */
@@ -300,6 +318,17 @@ function guardsOf(graph: ParsedCampaignGraph): Guard[] {
     const edge = graph.edges[id]!;
     if (edge.when) {
       guards.push({ path: `${edgePath(id)}/when`, cond: edge.when, subject: edge.from, what: `exit "${id}"`, edge: id });
+    }
+    // A triggered rift's `opensWhen` is a guard on when it opens (#196),
+    // judged against its owner's `from` — once per linked pair.
+    if (edge.rift?.opensWhen && riftOwner(graph, id) === id) {
+      guards.push({
+        path: `${edgePath(id)}/rift/opensWhen`,
+        cond: edge.rift.opensWhen,
+        subject: edge.from,
+        what: `rift "${id}" opening`,
+        edge: id,
+      });
     }
   }
   for (const id of graph.nodeOrder) {
@@ -474,6 +503,9 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
     }
   }
 
+  // --- rift declarations (#196) -------------------------------------------
+  lintRifts(graph, error, warn);
+
   // --- the search -----------------------------------------------------------
   const search = explore(graph, options, chapterWrites);
   lintSearch(graph, search, { explained, knownDead, fromEntry, error, warn });
@@ -506,6 +538,54 @@ function contradiction(cond: GraphCondition, subject: NodeId): string | null {
     }
   }
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Rift declarations (#196)
+// ---------------------------------------------------------------------------
+
+/**
+ * What `parseCampaignGraph` leaves to the lint about rifts: claims checked
+ * against the rest of the graph, and properties that say nothing. Whether a
+ * rift can strand anybody (used up, expired, collapsed, never opening) is the
+ * search's — it tracks rift state like any other journey fact.
+ */
+function lintRifts(graph: ParsedCampaignGraph, error: Report, warn: Report): void {
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    const rift = edge.rift;
+    if (!rift) continue;
+    if (rift.oneWay === true) {
+      const back = graph.edgeOrder.find((other) => {
+        const each = graph.edges[other]!;
+        return other !== id && each.rift !== undefined && each.from === edge.to && each.to === edge.from;
+      });
+      if (back !== undefined) {
+        error(
+          "RIFT_ONE_WAY_HAS_WAY_BACK",
+          `${edgePath(id)}/rift/oneWay`,
+          `rift "${id}" is one-way, but rift "${back}" leads straight back from "${edge.to}" to "${edge.from}"`,
+          `Drop "oneWay" from "${id}" (and link the two with "linkedTo" if they are one two-way rift), or make "${back}" an ordinary edge.`,
+        );
+      }
+    }
+    if (edge.once === true && rift.uses !== undefined) {
+      warn(
+        "RIFT_ONCE_AND_USES",
+        `${edgePath(id)}/once`,
+        `edge "${id}" is "once" and its rift has "uses": both count the same crossings, and "once" wins at 1`,
+        `Remove "once" from "${id}" and say it with "rift": { "uses": 1 }.`,
+      );
+    }
+    if (rift.reveal === "when-open" && rift.opensWhen === undefined) {
+      warn(
+        "RIFT_REVEAL_MOOT",
+        `${edgePath(id)}/rift/reveal`,
+        `rift "${id}" hides its destination until it opens, but it has no "opensWhen" and is open from the start, so nothing is ever hidden`,
+        `Use "reveal": "when-crossed" to keep the destination a surprise, or give the rift an "opensWhen".`,
+      );
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -679,6 +759,27 @@ function explore(
   // neither outcome); the outcome is recorded with the completion.
   for (const id of outcomes) completed.add(id);
 
+  // Rifts (#196): every rift's state is a fact (once per linked pair), its
+  // crossings counted only as far as a threshold reads them; and a flickering
+  // rift reads the visit ordinal of its `from`, which is tracked modulo the
+  // rhythm (every flicker out of that node shares one period, their lcm).
+  const rifts = graph.edgeOrder.filter((id) => graph.edges[id]!.rift !== undefined && riftOwner(graph, id) === id);
+  const crossingCap = new Map<EdgeId, number>();
+  for (const id of rifts) {
+    const rift = graph.edges[id]!.rift!;
+    crossingCap.set(id, Math.max(rift.uses ?? 0, rift.unstable?.collapsesAfter ?? 0));
+  }
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+  const period = new Map<NodeId, number>();
+  for (const id of graph.edgeOrder) {
+    const edge = graph.edges[id]!;
+    const flicker = edge.rift?.unstable?.flicker;
+    if (!flicker) continue;
+    const length = flicker.open + flicker.shut;
+    const before = period.get(edge.from) ?? 1;
+    period.set(edge.from, (before * length) / gcd(before, length));
+  }
+
   const tracked = {
     flags: [...flags].sort(),
     visited: [...visited].sort(),
@@ -686,7 +787,18 @@ function explore(
     outcomes: [...outcomes].sort(),
     traversed: [...traversed].sort(),
     overrides: [...overrides].sort(),
+    rifts,
+    flickers: [...period.keys()].sort(),
   };
+
+  const riftKey = (f: JourneyFacts): string =>
+    tracked.rifts
+      .map((id) => {
+        const state = riftState(graph, id, f)!;
+        const crossings = Math.min(state.crossings ?? 0, crossingCap.get(id)!);
+        return `${state.status}${crossings}.${state.age ?? 0}${state.latched ? "L" : ""}`;
+      })
+      .join(",");
 
   // An ending is where the attempt stops: what the journey held on the way is
   // no longer a distinction worth a state of its own.
@@ -699,8 +811,12 @@ function explore(
       tracked.outcomes.map((id) => (f.outcomes?.[id] === "success" ? "s" : f.outcomes?.[id] === "setback" ? "f" : "-")).join(""),
       tracked.traversed.map((id) => (f.traversed?.[id] ? 1 : 0)).join(""),
       tracked.overrides.map((id) => (f.edges?.[id] === "open" ? "o" : f.edges?.[id] === "locked" ? "l" : "-")).join(""),
+      riftKey(f),
+      tracked.flickers.map((id) => f.visits?.[id] ?? 0).join(","),
     ].join("|");
 
+  // Rift records are replaced, never mutated (`rifts.ts`), so a shallow copy
+  // of the map is a copy.
   const clone = (f: JourneyFacts): JourneyFacts => ({
     visits: { ...f.visits },
     completions: { ...f.completions },
@@ -708,6 +824,7 @@ function explore(
     traversed: { ...f.traversed },
     edges: { ...f.edges },
     flags: { ...f.flags },
+    rifts: { ...f.rifts },
   });
 
   /** Setting a route-set member clears its siblings, as in play. */
@@ -734,10 +851,18 @@ function explore(
    */
   const arrive = (before: JourneyFacts, node: NodeId): Arrival[] => {
     const how = arrivalAt(graph, node, before);
-    const facts = clone(before);
-    if (tracked.visited.includes(node)) facts.visits![node] = 1;
-    if (graph.nodes[node]!.ending !== undefined) return [{ facts, ended: true, label: "ending" }];
+    const entering = clone(before);
+    const rhythm = period.get(node);
+    if (rhythm !== undefined) entering.visits![node] = ((entering.visits![node] ?? 0) % rhythm) + 1;
+    else if (tracked.visited.includes(node)) entering.visits![node] = 1;
+    if (graph.nodes[node]!.ending !== undefined) return [{ facts: entering, ended: true, label: "ending" }];
+    // Entering may open a rift (`visited` in an `opensWhen`) — settled as
+    // `takeExit` settles, after the arrival.
+    const facts = settleRifts(graph, entering);
     if (how === "pass" || how === "closed") return [{ facts, ended: false, label: "passed through" }];
+    // The chapter about to play is a tick of every open "chapters" rift's
+    // clock, counted before its results, as `completeVisit` counts it.
+    const aged = tickRifts(graph, facts, "chapters");
 
     const writes = chapterWrites(chapterAtNode(graph, node, facts) ?? "");
     const choices = tracked.flags.map((flag): boolean[] => {
@@ -759,7 +884,7 @@ function explore(
         return;
       }
       for (const outcome of outcomeChoices) {
-        const next = clone(facts);
+        const next = clone(aged);
         const notes: string[] = [];
         const gained = new Set<string>();
         tracked.flags.forEach((flag, i) => {
@@ -777,7 +902,7 @@ function explore(
           next.outcomes![node] = outcome;
           notes.unshift(outcome);
         }
-        arrivals.push({ facts: next, ended: false, label: notes.join(", ") });
+        arrivals.push({ facts: settleRifts(graph, next), ended: false, label: notes.join(", ") });
       }
     };
     assign(0, []);
@@ -786,7 +911,9 @@ function explore(
 
   /** The journey after an edge's effects and the crossing itself, before arrival. */
   const cross = (before: JourneyFacts, edgeId: EdgeId): JourneyFacts => {
-    const facts = clone(before);
+    // The rift counts the crossing, then every timed "visits" rift ages a
+    // move — before the edge's own effects, as `takeExit` orders it.
+    const facts = clone(tickRifts(graph, crossRift(graph, before, edgeId), "visits"));
     for (const effect of graph.edges[edgeId]!.effects ?? []) {
       if (effect.type === "setFlag") {
         if (tracked.flags.includes(effect.flag)) setFlag(facts, effect.flag, effect.value !== false);
@@ -855,6 +982,20 @@ function explore(
   return search;
 }
 
+/** Every `ExitBlock`, as a STRANDED message explains it. */
+const BLOCKED_BECAUSE: Record<ExitBlock, string> = {
+  locked: "locked",
+  spent: "already used (once)",
+  closed: "closed (its target is a completed revisit: closed node)",
+  guard: "guarded and its condition does not hold",
+  "rift-dormant": "a rift that has not opened (its opensWhen does not hold)",
+  "rift-faded": "a rift flickered shut on this visit",
+  "rift-closed": "a closed rift",
+  "rift-consumed": "a rift already used up (uses)",
+  "rift-expired": "a rift whose time ran out (lasts)",
+  "rift-collapsed": "a rift that collapsed (unstable)",
+};
+
 /** `a -[e1]-> b (setback) -[e2]-> c`, the shortest way to state `at`. */
 function describePath(search: Search, at: number): string {
   const steps: string[] = [];
@@ -898,7 +1039,7 @@ function lintSearch(
     if (explained.has(node) || strandedNodes.has(node)) continue;
     strandedNodes.add(node);
     const why = blocks
-      .map(({ edge, reason }) => `"${edge}" is ${{ locked: "locked", spent: "already used (once)", closed: "closed (its target is a completed revisit: closed node)", guard: "guarded and its condition does not hold" }[reason]}`)
+      .map(({ edge, reason }) => `"${edge}" is ${BLOCKED_BECAUSE[reason]}`)
       .join("; ");
     error(
       "STRANDED",
@@ -959,8 +1100,8 @@ function lintSearch(
     error(
       isEnding ? "ENDING_NEVER_REACHED" : "NODE_NEVER_ENTERED",
       nodePath(id),
-      `${isEnding ? "ending" : "node"} "${id}" is connected by edges (${quoted(graph.entrances[id] ?? [])}) but no play-through can ever enter it: each of them is locked, guarded, spent or closed whenever the party stands at its start`,
-      `Look at those edges' "locked", "when" and "once": one of them needs to be satisfiable on a path the party can walk.`,
+      `${isEnding ? "ending" : "node"} "${id}" is connected by edges (${quoted(graph.entrances[id] ?? [])}) but no play-through can ever enter it: each of them is locked, guarded, spent, closed or a shut rift whenever the party stands at its start`,
+      `Look at those edges' "locked", "when", "once" and "rift": one of them needs to be satisfiable on a path the party can walk.`,
     );
   }
   for (const id of graph.edgeOrder) {
@@ -969,8 +1110,8 @@ function lintSearch(
     warn(
       "EDGE_NEVER_AVAILABLE",
       edgePath(id),
-      `edge "${id}" is never available: in every play-through that reaches "${edge.from}" it is locked, guarded off, spent or closed`,
-      `Check "${id}"'s "locked", "when" and "once"; if it is meant to be unreachable, delete it.`,
+      `edge "${id}" is never available: in every play-through that reaches "${edge.from}" it is locked, guarded off, spent, closed or a shut rift`,
+      `Check "${id}"'s "locked", "when", "once" and "rift"; if it is meant to be unreachable, delete it.`,
     );
   }
 

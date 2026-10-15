@@ -42,6 +42,9 @@ describe("the shipped ordered campaigns", () => {
       const campaign = content.campaign(id)!;
       expect(campaign).toBeTruthy();
       expect(content.graph(id)).toBeNull();
+      // Rift lifecycles (#196) live on graph edges and a graph journey's
+      // `rifts`; an ordered campaign has neither, so nothing of them applies.
+      expect(JSON.stringify(campaign)).not.toContain('"rift":');
       const deps = makeHarness({ content }).deps;
       const fresh = campaignView(campaign, null, deps);
       expect(Object.keys(fresh).sort()).toEqual(ORDERED_VIEW_KEYS);

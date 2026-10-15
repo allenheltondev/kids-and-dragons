@@ -503,3 +503,96 @@ describe("sessions, rooms and races", () => {
     expect(journey.visit).toBe(1);
   });
 });
+
+/**
+ * The sampler with its quarry road made a rift (#196): single-use, and
+ * nobody knows where it leads until they have been.
+ */
+function riftSampler(): Campaign {
+  const campaign = sampler();
+  const graph = structuredClone(campaign.graph!);
+  const { once: _once, ...road } = graph.edges["to-quarry"]!;
+  graph.edges["to-quarry"] = { ...road, blocked: "shown", rift: { uses: 1, reveal: "when-crossed" } };
+  return { ...campaign, graph };
+}
+
+describe("rifts (#196)", () => {
+  it("the screens are told a rift is there, but not where it goes", async () => {
+    const { harness, householdId, players } = await world(riftSampler());
+    const a = await room(harness, householdId, players[0]!.principal);
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    const exit = (await a.state()).campaign?.journey?.exits.find((e) => e.edge === "to-quarry");
+    expect(exit).toEqual({
+      edge: "to-quarry",
+      to: "",
+      kind: "forward",
+      label: "Up the quarry road",
+      available: true,
+      arrival: "new",
+      rift: { status: "open", usesLeft: 1 },
+      hiddenDestination: true,
+    });
+    expect(JSON.stringify((await a.state()).campaign?.journey)).not.toContain("Title of sampler-quarry");
+  });
+
+  it("a single-use crossing is one party move: the double tap is answered, not a second crossing", async () => {
+    const { harness, householdId, players, attempt } = await world(riftSampler());
+    const a = await room(harness, householdId, players[0]!.principal);
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    await a.must({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 });
+    const after = (await attempt())!;
+    expect(after.journey?.rifts).toEqual({ "to-quarry": { status: "consumed", crossings: 1, revealed: true } });
+
+    const seq = (await a.state()).seq;
+    expect(await a.send({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 })).toEqual({ ok: true, seq });
+    expect(await attempt()).toEqual(after);
+  });
+
+  it("two phones crossing the same single-use rift at once cross it once", async () => {
+    const { harness, householdId, players, attempt } = await world(riftSampler());
+    const a = await room(harness, householdId, players[0]!.principal);
+    const b = await room(harness, householdId, players[1]!.principal);
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    const [ra, rb] = await Promise.all([
+      a.send({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 }),
+      b.send({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 }),
+    ]);
+    expect(ra.ok || rb.ok).toBe(true);
+    // Whoever lost the write retries, and meets the crossing as a duplicate.
+    const loser = ra.ok ? b : a;
+    expect((await loser.send({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 })).ok).toBe(true);
+    expect((await attempt())!.journey).toMatchObject({
+      node: "quarry",
+      traversed: { "to-quarry": 1 },
+      rifts: { "to-quarry": { status: "consumed", crossings: 1 } },
+    });
+  });
+
+  it("a session resumed after the crossing finds the rift used up — and knows now where it led", async () => {
+    const { harness, householdId, players } = await world(riftSampler());
+    const monday = await room(harness, householdId, players[0]!.principal);
+    await monday.must({ type: "CONTINUE_CAMPAIGN" });
+    await monday.finish();
+    await monday.must({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 });
+
+    // Thursday: a new room plays the quarry and walks back to the waystone.
+    const thursday = await room(harness, householdId, players[1]!.principal);
+    await thursday.must({ type: "CONTINUE_CAMPAIGN" });
+    expect((await thursday.state()).chapterId).toBe("sampler-quarry");
+    await thursday.finish();
+    expect((await thursday.exit("quarry-to-waystone")).ok).toBe(true);
+    const exit = (await thursday.state()).campaign?.journey?.exits.find((e) => e.edge === "to-quarry");
+    expect(exit).toMatchObject({
+      to: "quarry",
+      available: false,
+      reason: "rift-consumed",
+      rift: { status: "consumed" },
+    });
+    expect(exit).not.toHaveProperty("hiddenDestination");
+    const refused = await thursday.exit("to-quarry");
+    expect(refused.ok ? "" : refused.error?.message).toContain("rift-consumed");
+  });
+});

@@ -548,6 +548,13 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
           flags: { mill_wheel_turning: true },
           chaptersCompleted: ["sampler-waystone", "sampler-orchard", "sampler-mill", "sampler-orchard-flooded"],
           lastExit: { node: "mill", visit: 1, edge: "mill-to-orchard" },
+          // Rift lifecycles (#196): a store that dropped one would reopen a
+          // used-up rift on the next evening.
+          rifts: {
+            "to-quarry": { status: "consumed", crossings: 1, revealed: true },
+            "twin-a": { status: "open", crossings: 1, age: 2, latched: true },
+            "twin-b": { status: "open", crossings: 1, age: 2, latched: true },
+          },
         };
         const attempt = {
           householdId: "h_1",

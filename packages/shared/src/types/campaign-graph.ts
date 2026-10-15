@@ -232,6 +232,146 @@ export interface GraphEdge {
    * locked door is part of the place, and knowing it is there is the point.
    */
   blocked?: "hidden" | "shown";
+  /**
+   * Makes this edge a **rift** (#196): a stateful link with a lifecycle of
+   * its own — it may wait to open, be used up, run out of time, flicker,
+   * collapse, or hide where it leads. Absent means an ordinary edge, exactly
+   * as before. See `GraphRift`, and "Rifts" in graph-campaigns.md.
+   */
+  rift?: GraphRift;
+}
+
+// ---------------------------------------------------------------------------
+// Rifts (#196)
+// ---------------------------------------------------------------------------
+
+/**
+ * The clocks a timed rift can run on. Both are counted in moments the
+ * journey already has (§6) — there is no wall clock anywhere in a journey,
+ * because a party resuming on Thursday must find the rift exactly as Monday
+ * left it, however long the week was.
+ *
+ * - `"visits"` — places entered: one tick each time the party takes any
+ *   exit and arrives somewhere (a pass-through counts; it is a move).
+ * - `"chapters"` — chapters completed: one tick each time a visit's chapter
+ *   settles. A chapter is authored to be one sitting, so this is the
+ *   *session* clock — "the rift lasts two evenings" — without reading a date.
+ *
+ * Turn-by-turn time inside an encounter is #201's (environmental combat): a
+ * rift that closes "in three rounds" would tick during a chapter, which
+ * nothing here does. `tickRifts` is the hook it would call with a new unit.
+ */
+export type RiftClockUnit = "visits" | "chapters";
+
+/**
+ * A rift's declaration: composable properties, every one optional. An empty
+ * `rift: {}` is a rift with no rules — open from the start, forever — which
+ * is still worth saying, because the screens draw a rift as one.
+ *
+ * Each property alone, in the words of the lifecycle (`RiftStatus`):
+ *
+ * - `opensWhen` (**triggered**) — `"dormant"` until this holds, then
+ *   `"open"`. Unless `persistent`, an open triggered rift is only *crossable*
+ *   while the condition still holds (it reads `"rift-dormant"` otherwise);
+ *   its lifecycle does not go backwards.
+ * - `persistent` — once open, it stays open for good: its `opensWhen` is no
+ *   longer consulted and nothing (no rift action, #197) closes it. It
+ *   therefore cannot also be used up, timed or unstable (refused).
+ * - `uses: n` (**single-use** at 1) — `"consumed"` after the party has
+ *   crossed it n times. One crossing is one coordinated party move: the
+ *   whole party crosses with the exit, never one hero.
+ * - `lasts` (**timed**) — `"expired"` once `count` ticks of `unit` have
+ *   passed since it opened.
+ * - `unstable` — `flicker`: there only on some visits to its `from`, by a
+ *   fixed rhythm; `collapsesAfter: n`: `"collapsed"` after n crossings.
+ *   Deterministic, never random: the rhythm reads the visit ordinal.
+ * - `linkedTo` (**linked**) — names its partner rift. The two are one rift
+ *   with two mouths: one shared state, so crossing either counts against
+ *   both and whatever ends one ends the other. Must be mutual, and the two
+ *   must declare the same lifecycle (`opensWhen`, `persistent`, `uses`,
+ *   `lasts`, `unstable`). A pair of opposite edges is a two-way rift.
+ * - `oneWay` — the promise that there is no rift back: refused with a
+ *   partner that is its own way back, and checked against every other rift
+ *   edge (`RIFT_ONE_WAY_HAS_WAY_BACK`). Movement on an edge is always one
+ *   way; this is the claim the screens (#195) show the players.
+ * - `reveal` — when the players learn where it leads: `"always"` (default),
+ *   `"when-open"` (hidden while dormant) or `"when-crossed"` (hidden until
+ *   the party has been through). A hidden destination is blanked in the
+ *   journey view, never sent to a phone.
+ */
+export interface GraphRift {
+  oneWay?: true;
+  /** Crossings before it is consumed; `1` is single-use. */
+  uses?: number;
+  /** How long it stays open once open. */
+  lasts?: { unit: RiftClockUnit; count: number };
+  /**
+   * Dormant until this holds. Read against the journey like an edge guard,
+   * with the edge's `from` as the subject (for a linked pair, the `from` of
+   * the pair's first id in sort order, so both mouths agree).
+   */
+  opensWhen?: GraphCondition;
+  unstable?: {
+    /**
+     * Open on `open` visits to `from`, then gone for `shut`, repeating:
+     * visit ordinal v is open when `(v - 1) mod (open + shut) < open`. The
+     * same visit always gives the same answer, so a resumed session sees
+     * the rift exactly as it was left.
+     */
+    flicker?: { open: number; shut: number };
+    /** Crossings before it collapses. */
+    collapsesAfter?: number;
+  };
+  /** Once open, open for good. */
+  persistent?: true;
+  /** The partner rift: two mouths, one state. Must name this edge back. */
+  linkedTo?: EdgeId;
+  /** When the destination is shown. Default `"always"`. */
+  reveal?: "always" | "when-open" | "when-crossed";
+}
+
+/**
+ * Where a rift is in its life. The lifecycle only moves forward:
+ *
+ * ```
+ *   dormant ──(opensWhen holds / openRift)──▶ open
+ *      │                                      │ ├─(crossings = uses)──────────▶ consumed   ┐
+ *      │                                      │ ├─(age = lasts.count)─────────▶ expired    ├ final
+ *      │                                      │ ├─(crossings = collapsesAfter)▶ collapsed  ┘
+ *      └──────────(closeRift)──────────▶ closed ◀─(closeRift)┘
+ *                                         └──(openRift)──▶ open
+ * ```
+ *
+ * - `"consumed"`, `"expired"`, `"collapsed"` are **final**: no transition
+ *   leaves them, not even an explicit open (#197) — a used-up rift that
+ *   comes back is a different edge.
+ * - `"closed"` is a stop, not an end: only an explicit `openRift` (#197's
+ *   action) reopens it. Nothing derived — no condition, no clock — does.
+ * - `"open"` is the lifecycle, not the moment: a non-persistent triggered
+ *   rift whose condition stops holding, or an unstable one in a shut flicker,
+ *   is still `"open"` but cannot be crossed right now (`RiftBlock`).
+ */
+export type RiftStatus = "dormant" | "open" | "closed" | "consumed" | "expired" | "collapsed";
+
+/**
+ * A rift's stored state (`JourneyFacts.rifts`), keyed by edge id; a linked
+ * pair keeps the same record under both ids. Absent means "as declared": open
+ * from the start, or dormant if `opensWhen` — and a reader settles it on the
+ * way (`riftState`), so an unwritten record and a written one never disagree.
+ */
+export interface RiftState {
+  status: RiftStatus;
+  /** Times crossed (by either mouth of a linked pair). Absent = 0. */
+  crossings?: number;
+  /** Ticks of its `lasts` clock since it opened. Timed rifts only. */
+  age?: number;
+  /** Its destination has been revealed by an action (#197), whatever `reveal` says. */
+  revealed?: true;
+  /**
+   * Opened by an explicit action (`openRift`, #197) rather than by its
+   * condition: the condition no longer gates crossing it.
+   */
+  latched?: true;
 }
 
 /**
@@ -319,6 +459,12 @@ export interface JourneyFacts {
   edges?: Record<EdgeId, "open" | "locked">;
   /** Journey flags: `CampaignGraph.flags` and `routeSets` members. */
   flags?: Record<string, boolean>;
+  /**
+   * Rift lifecycles (#196), by edge id; absent entries read as declared
+   * (`RiftState`). Moved only by `rifts.ts`. A record for an edge that is no
+   * longer a rift is ignored.
+   */
+  rifts?: Record<EdgeId, RiftState>;
 }
 
 /**
@@ -416,15 +562,48 @@ export interface JourneyView {
 /** One drawn exit (`JourneyView.exits`). */
 export interface JourneyExitView {
   edge: EdgeId;
+  /** The destination — `""` while `hiddenDestination` (#196). */
   to: NodeId;
   kind: GraphEdgeKind;
-  /** The edge's `label`, else the destination's title. */
+  /**
+   * The edge's `label`, else the destination's title. While
+   * `hiddenDestination`, the authored `label` (the author's words, which must
+   * not name the place) or a generic one — never the destination's title.
+   */
   label: string;
   available: boolean;
   /** Why not, when `available` is false (`ExitBlock`). */
   reason?: ExitBlock;
-  /** What crossing would be (`arrivalAt`): a new place, a replay, a pass-through. */
+  /**
+   * What crossing would be (`arrivalAt`): a new place, a replay, a
+   * pass-through. While `hiddenDestination` it is `"new"` — all the party
+   * knows — rather than a hint about somewhere they have been.
+   */
   arrival: Arrival;
   /** Authored `irreversible` — #195 warns before the crossing. */
   irreversible?: true;
+  /** The exit is a rift (#196): its lifecycle as the screen needs it. */
+  rift?: JourneyRiftView;
+  /**
+   * A rift whose destination the players have not learned yet (`reveal`):
+   * `to` is blank and `label`/`arrival` say nothing about the place.
+   */
+  hiddenDestination?: true;
+}
+
+/** A rift exit's lifecycle, as a screen draws it (`JourneyExitView.rift`). */
+export interface JourneyRiftView {
+  /** Its lifecycle status (`RiftStatus`); `reason` says why it cannot be crossed now. */
+  status: RiftStatus;
+  /** With `uses`: crossings left before it is consumed. */
+  usesLeft?: number;
+  /** A timed rift that is open: ticks left before it expires. */
+  expiresIn?: { unit: RiftClockUnit; count: number };
+  /** With `unstable.collapsesAfter`: crossings left before it collapses. */
+  collapsesIn?: number;
+  oneWay?: true;
+  unstable?: true;
+  persistent?: true;
+  /** One of a linked pair: crossing it counts for its partner too. */
+  linked?: true;
 }
