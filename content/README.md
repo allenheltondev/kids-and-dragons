@@ -80,6 +80,19 @@ chosen by edge. That contract is
 illustrative one is a test fixture outside `content/`. A campaign's mode is part of its identity, so
 turning an existing campaign into a graph is a new campaign id, never an edit.
 
+Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, not inspected):
+
+- `npm run content:validate` — parses the declaration and lints it (unreachable places, dead ends,
+  softlocks, rifts that strand a party).
+- `npm run content:journey -- --campaign <file-or-id>` — an outline of the places, doors and
+  endings; `--format mermaid|dot|json` for a diagram or script-ready data; route coverage (what is
+  reachable, the shortest way to each ending, what a used-up door leaves behind, where a party can
+  get stuck); `--playtest` / `--walk` / `--path` to drive the real runtime and check its invariants;
+  `--save file.json` to check a stored journey. See
+  [Inspection and playtest tooling (#202)](../docs/campaigns/graph-campaigns.md#inspection-and-playtest-tooling-202).
+- `npm run content:graph` and `npm run content:continuity` are the *chapter*-level tools and
+  are unchanged by any of this.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference

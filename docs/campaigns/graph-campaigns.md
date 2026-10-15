@@ -22,6 +22,9 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > [Ash Wyrm Sampler](#the-ash-wyrm-sampler) and [Rift Lifecycle](#the-rift-lifecycle-fixture)
 > fixtures, which live outside `content/`. Edges can be [rifts](#rifts-196) (#196): links with
 > lifecycles of their own — triggered, single-use, timed, unstable, persistent, linked.
+> `npm run content:journey` draws a graph, reports its route coverage and drives the runtime along
+> it ([tooling](#inspection-and-playtest-tooling-202), #202); a small fixture of its own
+> (`journey-ci`) is the one CI plays.
 
 ---
 
@@ -773,6 +776,109 @@ combined on a three-place map.
 
 ---
 
+## Inspection and playtest tooling (#202)
+
+Validation (#193) says whether a graph *can* be walked; this is what you use to *look* at one, to
+find the route you meant to be there, and to prove the runtime keeps its promises along it.
+
+```
+npm run content:journey -- --campaign rift-sampler                  # outline + lint + route coverage
+npm run content:journey -- --campaign rift-sampler --format mermaid # also dot, json (stdout is only the diagram)
+npm run content:journey -- --campaign rift-sampler --playtest       # replay + 25 seeded random walks
+npm run content:journey -- --campaign rift-sampler --walk random --seed 7 --runs 100
+npm run content:journey -- --campaign rift-sampler --path to-orchard,orchard-to-mill:setback
+npm run content:journey -- --campaign rift-sampler --save saved-journey.json
+npm run content:journey -- --all                                    # every graph campaign
+```
+
+`--campaign` takes a path or an id (fixtures in `packages/shared/src/fixtures/*.campaign.json`
+first, then `content/campaigns`); fixtures need no chapter files. An ordered campaign is skipped
+with a line saying so, and `content:graph` (the chapter viewer) is not touched. Exit status is 1
+for a lint error, a broken invariant or a broken save, 2 for a usage error.
+
+### The diagram
+
+Nodes are boxes (entry bold green, endings stadium-shaped and gold, `closed` places greyed and
+dashed, `pass` hubs say so); edges are labelled with their id and tags (`once`, `irreversible`,
+`locked`, `guarded`, `rift`). Forward edges are solid, **sideways** thick blue, **return** grey and
+labelled `(return)`, **`once`** amber, **`irreversible`** thick red, and every **rift** dashed.
+Mermaid renders in a GitHub comment; DOT feeds `dot -Tsvg`. Output is deterministic (authored
+order), so a diff of two renderings is a diff of two campaigns.
+
+```mermaid
+flowchart LR
+  n_camp["The Camp<br/>revisit: pass"]
+  n_keep["The Keep"]
+  n_ford["The Ford"]
+  n_camp -->|"camp-to-ford<br/>once"| n_ford
+  n_camp -.->|"camp-to-keep<br/>rift"| n_keep
+  linkStyle 0 stroke:#d68910
+  linkStyle 1 stroke:#2874a6,stroke-dasharray:6 4
+```
+
+### Route coverage
+
+Read straight off the explorer behind the lint (`exploreCampaignGraph`, which `lintCampaignGraph`
+runs): the same search, so the report and `content:validate` cannot disagree about what is
+reachable. It reports
+
+- **nodes** entered, edges traversable and endings reachable by *some* playthrough, with the
+  shortest path to each (the path says which chapter results it relies on: `(success, +found_the_lens)`);
+- **unreachable** nodes (no chain of edges) and **never entered** ones (edges lead there, but each
+  is shut whenever the party could use it);
+- **used-up links**: every `once` edge and rift that can be spent, how many reachable states it is
+  spent in, the shortest way to spend it, and whether an ending is still reachable from *all* of
+  them;
+- **softlocks**: `stranded` (a state with no open exit at a non-ending) and `trapped` (exits remain
+  but no ending can ever be reached), each with the path, or "no playthrough reaches an ending".
+
+### Playtest
+
+Drives the real transitions — `startJourney`, `completeVisit`, `takeExit` — and checks, after every
+step: the journey is JSON-identical after a round trip and `readJourney` accepts it; `checkJourneySave`
+finds nothing wrong; no counter goes backwards; the current visit is the latest counted; a final rift
+stays final; a `choosing` visit at a non-ending has an open exit and an `ended` journey is at an
+ending; and every completion and exit reported *twice* is a no-op the second time. Strategies:
+
+- `--walk random --seed N --runs K` — seeded, deterministic, prefers doors not yet taken;
+- `--path a,b:setback,c` — scripted (chapters succeed and set every flag they can unless an entry
+  says `:setback`); an exit the runtime would refuse is reported (`SCRIPT_BLOCKED`, with why);
+- `--walk replay` — the explorer's shortest path to every ending, every edge and every used-up
+  link, replayed through the runtime. After each step the runtime must be where the explorer said
+  (node, flags, lock overrides, world facts, completions, every rift's lifecycle:
+  `EXPLORER_DIVERGES`), and a used-up link must be *refused* with the reason the explorer gave
+  (`SPENT_LINK_NOT_REFUSED`). That is the check that the lint is faithful to the runtime.
+- `--playtest` is `--walk all` with the defaults.
+
+A failing walk prints its trail, which `--path` replays by hand.
+
+### `checkJourneySave`
+
+`checkJourneySave(graph, raw)` (`tools/content/journey-save.ts`) classifies a stored journey, using
+`readJourney` for the load decision so the two cannot disagree. Verdicts: `ok`; `unreadable`;
+`future-version` (written by a newer build); `unknown-node` (a renamed id, a migration); `dangling`
+(loads, but names edges or rifts the graph does not have — the runtime ignores them); `impossible`
+(loads, but no legal sequence of transitions could have written it: an ended journey at a non-ending,
+a `choosing` visit that never completed, a `once` edge taken twice, a chapter the node does not play,
+a rift record with no valid status, ...). Flags and world facts the graph does not declare, or values
+outside a fact's domain, are warnings (ignored or coerced by design) and leave the verdict `ok`.
+
+### The CI gate
+
+`tools/content/journey-tools.test.ts` (run by `npm test`) lints, explores and plays every graph
+fixture and every graph campaign under `content/campaigns` — so the first shipped graph campaign
+arrives already covered — and requires: no lint error, a complete search, every node, edge and ending
+covered, no softlock, no broken invariant, nothing unreachable. `journey-ci.campaign.json` is the
+small fixture with a sideways move, a revisited hub, a changing place, a single-use road and a
+single-use rift; broken graphs built in the test prove unreachable nodes and softlocks are reported
+with their paths. Gemfall and the Hollow Crown are asserted ordered and skipped.
+
+This does **not** repeat #167: the continuity sweep (`content:continuity`) checks the prose of
+ordered campaigns for names no route showed the party, and still does. What a graph adds is whether
+it can be walked at all, which is checked here.
+
+---
+
 ## 7. The Rift Sampler
 
 [`packages/shared/src/fixtures/rift-sampler.campaign.json`](../../packages/shared/src/fixtures/rift-sampler.campaign.json)
@@ -914,7 +1020,7 @@ its issue defines it. Where each attaches:
 | #199 class rift interaction | edge-level requirements and actions; must stay journey-deterministic or say explicitly why not. A class action that changes the world writes a world fact (a `setFact`/`adjustFact` in its effects), so guards, variants and the lint see it like any other. |
 | #200 temporary buffs | `GraphEffect` granting attempt-scoped buffs, stored on `JourneyState`. |
 | #201 environmental combat | node-level (or variant-level) encounter modifiers. A modifier that depends on world state is best keyed by a variant whose `when` reads the fact (the variant *is* the changed place), or by a modifier `when: GraphCondition` evaluated with `{ facts: graph.facts }`. |
-| #202 inspection | `ParsedCampaignGraph` + `JourneyState`. |
+| #202 inspection | **Done** — [Inspection and playtest tooling](#inspection-and-playtest-tooling-202): `npm run content:journey`, `exploreCampaignGraph` (the lint's explorer, exported), `checkJourneySave`. A new exit-blocking reason or journey state must be tracked by `explore` first; the playtest's replay then holds the lint to the runtime. |
 | #203 vertical slice | a real graph campaign under a **new** campaign id, never Gemfall. |
 
 A change of *meaning* to anything above bumps `CampaignGraph.version`; adding an optional field
@@ -940,6 +1046,7 @@ From `@kad/shared` (and importable directly by `.mjs` tools — type imports onl
 | `completionEffects(graph, node, journey)` | the effects of the node's `onComplete` rules that hold |
 | `readFact(fact, raw)`, `worldFacts(facts, journey)`, `initialFact`, `factDomainValues`, `factTestHolds`, `factTestValues`, `writeFact`, `FACT_DOMAINS`, `MAX_COUNTER_SPAN`, `MAX_ENUM_VALUES` | `world-state.ts` (#198): reading, testing and writing one fact |
 | `lintCampaignGraph(graph, { chapterFlags?, routeSets?, maxStates? })` | `{ findings: { code, severity, path, message, hint }[], search: { states, complete } }` |
+| `exploreCampaignGraph(graph, options)` | the lint's explored state graph itself (`GraphSearch`: states in breadth-first order with parents, successor edges, stranded states) for tools (#202) |
 | `chapterFlagWrites(chapter)` | `{ setsTrue, setsFalse }` — what a chapter can write to the journey, for `chapterFlags` |
 | `duplicateJsonKeys(text)` | repeated keys in one JSON object, by pointer |
 | Types | `CampaignGraph`, `GraphNode`, `GraphEdge`, `GraphEdgeKind`, `RevisitPolicy`, `NodeVariant`, `GraphEnding`, `GraphCondition`, `GraphEffect`, `JourneyFacts`, `JourneyState`, `VisitStatus`, `JourneyView`, `JourneyExitView`, `NodeId`, `EdgeId`; #198: `FactId`, `FactDomain`, `FactValue`, `WorldFact` (`EnumFact` \| `CounterFact` \| `FlagFact`), `FactTest`, `CompletionRule`, `JourneyFactView`, `GraphConditionContext` |

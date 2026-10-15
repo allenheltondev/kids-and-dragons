@@ -1344,3 +1344,26 @@ function lintSearch(
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// The explored state graph, for tools (#202)
+// ---------------------------------------------------------------------------
+
+/**
+ * The search `lintCampaignGraph` runs, handed back as it is: every abstract
+ * state in breadth-first order (so the first state at a node is a shortest
+ * way there, and following `parent` links spells that way), the successor
+ * edges between them, and the states with no way out.
+ *
+ * Exported so the inspection and playtest tooling (`tools/content/journey-*.ts`,
+ * #202) reads the explorer the lint reads and cannot drift from it. A second
+ * breadth-first search over the same rules would be exactly the kind of
+ * approximation this file's header warns about. Read-only by convention: the
+ * states' `facts` are the explorer's own.
+ */
+export type GraphSearch = Search;
+export type GraphSearchState = SearchState;
+
+export function exploreCampaignGraph(graph: ParsedCampaignGraph, options: GraphLintOptions = {}): GraphSearch {
+  return explore(graph, options, (chapter) => options.chapterFlags?.(chapter));
+}
