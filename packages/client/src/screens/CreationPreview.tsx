@@ -86,10 +86,15 @@ export function CreationPreview(): ReactElement {
           <Icon name="party" />
           <span>Making heroes</span>
         </h2>
-        {/* A div, not a p — Spinner renders a block, invalid inside a <p>. */}
+        {/* A div, not a p — Spinner renders a block, invalid inside a <p>.
+            The spinner has a seat whether or not it is spinning, and the
+            words are one line, so stepping through creation never rewraps
+            the header and nudges the hero down. */}
         <div className="preview__hint kad-muted" role="status">
-          {draft.submitting ? <Spinner /> : null}
-          <span>{draft.submitting ? "Bringing them to life…" : STEP_HINT[draft.step]}</span>
+          <span className="preview__hint-spin">{draft.submitting ? <Spinner /> : null}</span>
+          <span className="preview__hint-text">
+            {draft.submitting ? "Bringing them to life…" : STEP_HINT[draft.step]}
+          </span>
         </div>
       </header>
 
@@ -173,9 +178,18 @@ export function CreationPreview(): ReactElement {
         </div>
       </div>
 
-      {party.length === 0 ? null : (
-        <ul className="preview__done">
-          {party.map((member) => (
+      {/* Who has finished. The row is here from the start, held open by an
+          empty seat until the first hero is done, and never wraps: somebody
+          else finishing used to grow it and shrink the stage under the hero
+          you were still making. */}
+      <ul className="preview__done">
+        {party.length === 0 ? (
+          <li className="kad-chip preview__done-seat" aria-hidden="true">
+            <span className="preview__done-art" />
+            <span>{"\u00a0"}</span>
+          </li>
+        ) : (
+          party.map((member) => (
             <li className="kad-chip kad-chip--ok" key={member.playerId}>
               <CharacterPortrait
                 species={member.character.species}
@@ -183,12 +197,12 @@ export function CreationPreview(): ReactElement {
                 characterClass={member.character.class}
                 className="preview__done-art"
               />
-              <span>{member.character.name}</span>
+              <span className="preview__done-name">{member.character.name}</span>
               <Icon name="check" />
             </li>
-          ))}
-        </ul>
-      )}
+          ))
+        )}
+      </ul>
     </section>
   );
 }

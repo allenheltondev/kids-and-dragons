@@ -137,6 +137,13 @@ describe("announcing a hand-off (spec §9.4)", () => {
     expect(screen.getAllByText("Thistle").length).toBeGreaterThan(0);
   });
 
+  it("shows it up top, off the plate, so an offer cannot push the story up", () => {
+    const { container } = mount({ trades: [OFFER] });
+    const trade = container.querySelector(".narration__trade");
+    expect(trade?.closest(".narration__head")).not.toBeNull();
+    expect(trade?.closest(".narration__plate")).toBeNull();
+  });
+
   it("says nothing at all when nothing is being passed around", () => {
     mount({ trades: [] });
     expect(spoken.some((t) => t.includes("wants to give"))).toBe(false);
@@ -260,11 +267,13 @@ describe("the story turn (spec §6.1)", () => {
   });
 
   it("names nobody once the turn holder's phone has dropped", () => {
-    mount({
+    const { container } = mount({
       ...storyChoice(["p_2"]),
       party: [PARTY[0]!, { ...PARTY[1]!, connected: false }],
     });
     expect(screen.queryByText(/turn to choose/)).toBeNull();
+    // But the line keeps its seat, so the drop cannot move the story.
+    expect(container.querySelector(".narration__turn.narration__turn--empty")).not.toBeNull();
   });
 });
 
@@ -344,6 +353,14 @@ describe("a fight", () => {
       encounter: { round: 1, turnOrder: [], combatants: [] } as never,
     });
     expect(container.querySelector(".narration--fight")).not.toBeNull();
+  });
+
+  it("holds the aim line's seat while nobody is aiming", () => {
+    const { container } = mount({
+      sceneType: "encounter",
+      encounter: { round: 1, turnOrder: [], combatants: [] } as never,
+    });
+    expect(container.querySelector(".narration__aim.narration__aim--empty")).not.toBeNull();
   });
 
   it("is a full panel outside one", () => {

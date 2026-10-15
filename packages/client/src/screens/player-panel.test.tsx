@@ -233,6 +233,34 @@ describe("a choice", () => {
     expect(sent).toEqual([{ type: "CHOOSE", choiceId: "east" }]);
   });
 
+  it("holds the confirm bar's seat from the start, invisible and inert until a pick", async () => {
+    /*
+     * The answers are bottom-anchored, so a bar that arrived with the pick
+     * lifted the option just tapped out from under the thumb. The seat is the
+     * same element before and after; only whether it shows changes. Hidden, it
+     * is out of the accessibility tree too — the one "Do it!" a test or a
+     * screen reader can find is the live one.
+     */
+    const user = userEvent.setup();
+    mount({ prompt: choicePrompt() });
+    const seat = document.querySelector(".prompt .confirm") as HTMLElement;
+    expect(seat.classList.contains("confirm--empty")).toBe(true);
+    expect(seat.getAttribute("aria-hidden")).toBe("true");
+    expect(seat.hasAttribute("inert")).toBe(true);
+    expect(screen.queryByRole("button", { name: "Do it!" })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: /Take the east path/ }));
+    expect(document.querySelector(".prompt .confirm")).toBe(seat);
+    expect(seat.classList.contains("confirm--empty")).toBe(false);
+    expect(seat.hasAttribute("aria-hidden")).toBe(false);
+    expect(seat.hasAttribute("inert")).toBe(false);
+    expect(screen.getAllByRole("button", { name: "Do it!" })).toHaveLength(1);
+
+    await user.click(screen.getByRole("button", { name: "Change" }));
+    expect(document.querySelector(".prompt .confirm")).toBe(seat);
+    expect(seat.classList.contains("confirm--empty")).toBe(true);
+  });
+
   it("marks the pending option as pressed, so the tap is visible before it commits", async () => {
     const user = userEvent.setup();
     mount({ prompt: choicePrompt() });
@@ -360,6 +388,28 @@ describe("a roll", () => {
     expect(sent).toEqual([{ type: "HELP" }]);
   });
 
+  it("says whose check it is on the way in from the bag", () => {
+    const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
+    mount({ prompt: roll, playerId: "p_2", party: [member(), friend] });
+    act(() => dismissPlayerSheet());
+    expect(screen.getByRole("button", { name: "Help Sparklehoof" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "View the fight" })).toBeNull();
+  });
+
+  it("keeps the helper's line seated before anyone helps", () => {
+    // A friend's help lands while the roller is reading; the line is there
+    // from the start, so arriving it fills a seat rather than lifting Roll!.
+    const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
+    mount({ prompt: roll, playerId: "p_1", party: [member(), friend] });
+    const seat = document.querySelector(".prompt__helper") as HTMLElement;
+    expect(seat.classList.contains("prompt__helper--empty")).toBe(true);
+
+    serverSends({ prompt: { ...roll, helper: { characterId: "c_2", sides: 4 } } });
+    expect(document.querySelector(".prompt__helper")).toBe(seat);
+    expect(seat.classList.contains("prompt__helper--empty")).toBe(false);
+    expect(seat.textContent).toContain("Windstep is helping: +d4");
+  });
+
   it("says who is helping, and hides the button once help is spent", () => {
     const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });
     mount({ prompt: { ...roll, helper: { characterId: "c_2", sides: 4 } }, playerId: "p_1", party: [member(), friend] });
@@ -418,14 +468,19 @@ describe("an item swap", () => {
     });
   }
 
-  it("shows no confirm bar until something is actually chosen", () => {
+  it("offers no confirm until something is actually chosen", () => {
     /*
      * `undefined` is the un-answered state. If it were collapsed with `null`
      * the bar would be up from the first render reading "Leave it behind",
-     * one tap from throwing away what the party just earned.
+     * one tap from throwing away what the party just earned. The bar keeps
+     * its seat (see "a choice"), but empty, unreadable and untappable.
      */
     mountSwap();
     expect(screen.queryByRole("button", { name: "Yes, do that" })).toBeNull();
+    const seat = document.querySelector(".prompt .confirm") as HTMLElement;
+    expect(seat.classList.contains("confirm--empty")).toBe(true);
+    expect(seat.hasAttribute("inert")).toBe(true);
+    expect(seat.textContent).not.toContain("Leave it behind");
   });
 
   it("sends null for 'leave it behind' — not undefined, not a missing field", async () => {
@@ -495,6 +550,20 @@ describe("readying up", () => {
     await user.click(screen.getByRole("button", { name: "Wait, not yet" }));
     expect(sent[1]).toEqual({ type: "READY", ready: false });
     expect(usePlayerNavigation.getState().section).toBe("bag");
+  });
+
+  it("keeps the way back out in its seat while the first tap is in flight", async () => {
+    // Disabled until the server agrees, rather than absent: the row it sits in
+    // does not open up between the tap and the answer.
+    const user = userEvent.setup();
+    mount({ phase: "lobby" });
+    useGameStore.setState({ send: vi.fn(() => new Promise<boolean>(() => undefined)) });
+    act(() => setPlayerSection("bag"));
+
+    await user.click(screen.getByRole("button", { name: "Ready to play" }));
+    const back = screen.getByRole("button", { name: "Wait, not yet" });
+    expect(back.hasAttribute("disabled")).toBe(true);
+    expect(screen.queryByRole("button", { name: "I'm ready!" })).toBeNull();
   });
 
   it("puts Ready to play at the foot of the lobby sheet", () => {
@@ -741,6 +810,11 @@ describe("waiting", () => {
     mount({ party: [member({ down: true, hp: 0 })] });
     expect(someStatusSays("Knocked down")).toBe(true);
     expect(someStatusSays("A friend can help you up")).toBe(true);
+    // In the identity strip, in the level line's seat, rather than a banner
+    // between the strip and the question that pushed the question down.
+    const line = screen.getByText(/Knocked down/).closest(".sheet__meta");
+    expect(line?.closest(".sheet")).not.toBeNull();
+    expect(screen.queryByText(/^Level \d/)).toBeNull();
   });
 
   it("echoes the narration next to the answers so they are readable together", () => {
@@ -1046,6 +1120,15 @@ describe("being offered an item", () => {
 
     await user.click(screen.getByRole("button", { name: /No thanks/ }));
     expect(sent).toEqual([{ type: "RESOLVE_TRADE", tradeId: "t1", accept: false }]);
+  });
+
+  it("lands below the scene's own question, not above it", () => {
+    // An offer arrives whenever a friend taps; above the choices it pushed
+    // the answers somebody was reading down the pane.
+    offeredToMe({ prompt: choicePrompt() });
+    const question = screen.getByText("What do you do?").closest(".prompt")!;
+    const offer = screen.getByText(/wants to give you/).closest(".prompt")!;
+    expect(question.compareDocumentPosition(offer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("shows somebody else's offer to neither of the wrong phones", () => {
