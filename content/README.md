@@ -63,6 +63,10 @@ that the reference chapter below does not:
   range, token, or overlapping `replace`. The patterns (absence, scaling, callbacks with a
   fallback, party size) are in
   [gemfall-authoring.md §5](../docs/campaigns/gemfall-authoring.md#5-writing-for-the-party-you-have).
+- **Costs that cost.** A party purse (`grantCoins` / `spendCoins`, gated by `when.coins`) and
+  `takeItem` for the cake that was shared or the supper thrown to the wolves. A choice that
+  spends or takes without a matching gate fails `content:validate`. See
+  [gemfall-authoring.md §3](../docs/campaigns/gemfall-authoring.md#coins-and-food-are-real).
 - **Facets as quest items.** Quest items outlive the chapter that grants them, which is what makes
   a collection collectable.
 

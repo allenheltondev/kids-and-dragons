@@ -8,7 +8,7 @@
  * `validateChapter`; they walk conditions with `conditionRefs` from here.
  */
 
-import type { Branch, Chapter, Condition, NarrationVariant, Scene } from "./types/chapter.js";
+import type { Branch, Chapter, Choice, Condition, NarrationVariant, Scene } from "./types/chapter.js";
 
 /**
  * Every token the engine fills, by name (`{facets}` -> `"facets"`); narration.ts
@@ -140,7 +140,7 @@ const sameOf = (a: string | string[], b: string | string[]) =>
  * Conservative: true only when the two conditions can **never** hold at the
  * same time. False means "cannot show it", not "overlap exists". Recognised:
  * a flag against its own `notFlag`, an item against its own `notItem`,
- * disjoint `partySize` ranges, and disjoint `count` ranges over the same `of`.
+ * disjoint `partySize` or `coins` ranges, and disjoint `count` ranges over the same `of`.
  */
 export function mutuallyExclusive(a: Condition, b: Condition): boolean {
   if (a.flag !== undefined && a.flag === b.notFlag) return true;
@@ -148,6 +148,7 @@ export function mutuallyExclusive(a: Condition, b: Condition): boolean {
   if (a.item !== undefined && a.item === b.notItem) return true;
   if (b.item !== undefined && b.item === a.notItem) return true;
   if (a.partySize && b.partySize && disjoint(a.partySize, b.partySize)) return true;
+  if (a.coins && b.coins && disjoint(a.coins, b.coins)) return true;
   if (a.count && b.count && sameOf(a.count.of, b.count.of) && disjoint(a.count, b.count)) return true;
   return false;
 }
@@ -169,6 +170,12 @@ export function lintChapterText(chapter: Chapter): LintProblem[] {
       problems.push({
         path: `${path}/count`,
         problem: `count min ${String(when.count.min)} is above max ${String(when.count.max)}, so it can never hold`,
+      });
+    }
+    if (when.coins && empty(when.coins)) {
+      problems.push({
+        path: `${path}/coins`,
+        problem: `coins min ${String(when.coins.min)} is above max ${String(when.coins.max)}, so it can never hold`,
       });
     }
     if (when.partySize && empty(when.partySize)) {
@@ -209,5 +216,128 @@ export function lintChapterText(chapter: Chapter): LintProblem[] {
     }
   }
 
+  return problems;
+}
+
+/**
+ * What a choice costs that its gates do not promise the party has. A
+ * `takeItem` must be backed by `requiresItem`, `when.item`, or a `when.count`
+ * over exactly the same ids with `min >= 1`; a `spendCoins` by
+ * `when.coins.min` at least as large as the total spent. Returns one sentence
+ * per problem, empty when the choice is honest.
+ */
+export function unbackedCosts(choice: Choice): string[] {
+  const problems: string[] = [];
+  let spent = 0;
+  // Gates count distinct items, not copies (`countPartyItems`), so one held
+  // bundle satisfies a gate however many takes ride behind it. Two takes that
+  // could reach the same id would have the second silently take nothing.
+  const takenBefore = new Set<string>();
+  for (const effect of choice.effects ?? []) {
+    if (effect.type !== "takeItem") continue;
+    const ids = typeof effect.itemId === "string" ? [effect.itemId] : effect.itemId;
+    const repeated = ids.filter((id) => takenBefore.has(id));
+    if (repeated.length > 0) {
+      problems.push(
+        `takes "${repeated.join(" or ")}" more than once, and no gate can promise two copies (gates count distinct items); use one takeItem per item`,
+      );
+    }
+    for (const id of ids) takenBefore.add(id);
+  }
+  for (const effect of choice.effects ?? []) {
+    if (effect.type === "spendCoins") spent += effect.amount;
+    if (effect.type !== "takeItem") continue;
+    const ids = typeof effect.itemId === "string" ? [effect.itemId] : effect.itemId;
+    const when = choice.when;
+    const single = ids.length === 1 ? ids[0] : undefined;
+    const countOf = when?.count?.of;
+    const countIds = countOf === undefined ? undefined : typeof countOf === "string" ? [countOf] : countOf;
+    const backed =
+      (single !== undefined && (choice.requiresItem === single || when?.item === single)) ||
+      (countIds !== undefined &&
+        (when?.count?.min ?? 0) >= 1 &&
+        !countIds.some((id) => id.endsWith("*")) &&
+        countIds.length === ids.length &&
+        countIds.every((id) => ids.includes(id)));
+    if (!backed) {
+      problems.push(
+        `takes "${ids.join(" or ")}" but is not gated on holding it (requiresItem, when.item, or when.count over the same ids with min >= 1)`,
+      );
+    }
+  }
+  if (spent > 0 && (choice.when?.coins?.min ?? 0) < spent) {
+    problems.push(`spends ${spent} coins but is not gated on when.coins.min >= ${spent}`);
+  }
+  return problems;
+}
+
+/** Coins spent by these effects. */
+function coinsSpent(effects: readonly { type: string; amount?: number }[] | undefined): number {
+  let spent = 0;
+  for (const e of effects ?? []) if (e.type === "spendCoins") spent += e.amount ?? 0;
+  return spent;
+}
+
+/**
+ * Coins a scene charges just for being entered: its `onEnter`, plus the
+ * dearest of its outcome branches (a check's success or failure, a fight's
+ * victory or defeat), because the party cannot pick which one it gets.
+ */
+export function sceneCharge(scene: Scene): number {
+  const branches: (Branch | undefined)[] =
+    scene.type === "check"
+      ? [scene.onSuccess, scene.onFailure]
+      : scene.type === "encounter"
+        ? [scene.onVictory, scene.onDefeat]
+        : [];
+  return coinsSpent(scene.onEnter) + Math.max(0, ...branches.map((b) => coinsSpent(b?.effects)));
+}
+
+/**
+ * The charge a scene makes on arrival must be backed by every way in: each
+ * choice leading there is gated on `when.coins.min` covering its own spend
+ * plus the charge, and nothing else (a branch, the chapter entry) may lead
+ * there, since nothing gates those. Without this a haggle check that charges
+ * on both outcomes would hand a broke party the goods for free.
+ */
+export function unbackedSceneCharges(chapter: Chapter): { path: string; problem: string }[] {
+  const problems: { path: string; problem: string }[] = [];
+  const charge = new Map<string, number>();
+  for (const [id, scene] of Object.entries(chapter.scenes)) {
+    const c = sceneCharge(scene);
+    if (c > 0) charge.set(id, c);
+  }
+  if (charge.size === 0) return problems;
+  if (charge.has(chapter.entry)) {
+    problems.push({ path: `/scenes/${chapter.entry}`, problem: `the entry scene charges ${String(charge.get(chapter.entry))} coins, and nothing gates a chapter's start` });
+  }
+  for (const [id, scene] of Object.entries(chapter.scenes)) {
+    if (scene.type === "story" || scene.type === "rest" || scene.type === "choice_point") {
+      scene.choices.forEach((c, i) => {
+        const due = charge.get(c.goto);
+        if (due === undefined) return;
+        const total = due + coinsSpent(c.effects);
+        if ((c.when?.coins?.min ?? 0) < total) {
+          problems.push({
+            path: `/scenes/${id}/choices/${String(i)}`,
+            problem: `choice "${c.id}" leads to "${c.goto}", which charges ${String(due)} coins, but is not gated on when.coins.min >= ${String(total)}`,
+          });
+        }
+      });
+    } else {
+      const branches: [string, Branch | undefined][] =
+        scene.type === "check"
+          ? [["onSuccess", scene.onSuccess], ["onFailure", scene.onFailure]]
+          : [["onVictory", scene.onVictory], ["onDefeat", scene.onDefeat]];
+      for (const [key, b] of branches) {
+        if (b && charge.has(b.goto)) {
+          problems.push({
+            path: `/scenes/${id}/${key}`,
+            problem: `leads to "${b.goto}", which charges coins, and a branch cannot be gated on the purse`,
+          });
+        }
+      }
+    }
+  }
   return problems;
 }

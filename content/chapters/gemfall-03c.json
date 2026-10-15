@@ -218,11 +218,20 @@
           "goto": "scene_number_pebble_buy_cake",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 3
+            },
+            {
               "type": "grantItem",
               "itemId": "honeycake",
               "to": "party"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          }
         },
         {
           "id": "pocket_pebble",
@@ -963,6 +972,10 @@
           "goto": "scene_family_share_cake",
           "effects": [
             {
+              "type": "takeItem",
+              "itemId": "honeycake"
+            },
+            {
               "type": "setFlag",
               "flag": "helped_family",
               "value": true
@@ -1073,7 +1086,25 @@
           "id": "feed",
           "label": "Share your supper with them",
           "icon": "heart",
-          "goto": "scene_wolves_fed"
+          "goto": "scene_wolves_fed",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         },
         {
           "id": "leave_be",

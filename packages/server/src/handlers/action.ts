@@ -41,6 +41,7 @@ import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
   expectedIndex,
   joinOrStartAttempt,
+  purseFor,
   newCharacterWrite,
   prepareStatPointSpend,
   settleChapterCompletion,
@@ -145,6 +146,7 @@ export async function applyAction(
    * road are they on" is one fact, not two.
    */
   let campaignFlags: Record<string, boolean> = {};
+  let campaignCoins: number | undefined;
   let campaignAttemptId: string | null = null;
   let startedAttempt: StartedAttempt | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
@@ -153,6 +155,7 @@ export async function applyAction(
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
     campaignFlags = road.flags;
+    campaignCoins = road.coins;
     if (road.campaign) {
       // Join the household's active attempt, or start one — so this room
       // carries the id of the attempt it began under (progression.ts).
@@ -223,6 +226,8 @@ export async function applyAction(
         // start seeds its flags from rather than starting empty. Empty for
         // every other intent — nothing else touches the chapter boundary.
         campaignFlags,
+        // The purse, carried the same way. Undefined outside a campaign.
+        ...(campaignCoins === undefined ? {} : { campaignCoins }),
         // Seeded per event, never per wall clock — see the header. The run's
         // secret keeps the next roll unguessable from the public run id.
         rng: deps.rng(diceSeed(auth.run, input.runId, nextSeq)),
@@ -762,7 +767,12 @@ async function roadTo(
   householdId: string,
   deps: HandlerDeps,
 ): Promise<
-  | { flags: Record<string, boolean>; campaign: boolean; attempt: CampaignProgressRecord | null }
+  | {
+      flags: Record<string, boolean>;
+      coins?: number;
+      campaign: boolean;
+      attempt: CampaignProgressRecord | null;
+    }
   | { refusal: string }
 > {
   const campaign = deps.content.campaign(chapter.campaignId);
@@ -799,7 +809,10 @@ async function roadTo(
       refusal: `this party's road through beat ${chapter.index} is "${road.id}", not "${chapter.id}"`,
     };
   }
-  return { flags, campaign: true, attempt };
+  // The purse rides with the road (see `purseFor`, which also backfills an
+  // attempt saved before the purse existed).
+  const coins = purseFor(campaign, attempt);
+  return { flags, coins, campaign: true, attempt };
 }
 
 /**

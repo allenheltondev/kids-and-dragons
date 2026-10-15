@@ -3,7 +3,7 @@ title: The Hollow Gate
 id: location.hollow_gate
 type: location
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["ruins", "marsh", "portal", "mysterious"]

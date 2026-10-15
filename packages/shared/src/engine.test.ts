@@ -2255,6 +2255,154 @@ describe("effects", () => {
     expect(state.xpEarned).toBe(50);
   });
 
+  it("fills and spends the party purse, never below zero", () => {
+    const context = ctx();
+    let state = applyEffects(seatedParty(context), [{ type: "grantCoins", amount: 6 }], context);
+    expect(state.coins).toBe(6);
+    state = applyEffects(state, [{ type: "spendCoins", amount: 4 }], context);
+    expect(state.coins).toBe(2);
+    state = applyEffects(state, [{ type: "spendCoins", amount: 5 }], context);
+    expect(state.coins).toBe(0);
+  });
+
+  it("takes an item from whoever holds it, first preference first", () => {
+    const context = ctx();
+    let state = applyEffects(
+      seatedParty(context),
+      [
+        { type: "grantItem", itemId: "sunbloom_draught", to: "p_2" },
+        { type: "grantItem", itemId: "brave_whistle", to: "p_1" },
+        { type: "grantItem", itemId: "brave_whistle", to: "p_1" },
+      ],
+      context,
+    );
+    // Preference order, not bag order: the whistle is wanted first.
+    state = applyEffects(state, [{ type: "takeItem", itemId: ["brave_whistle", "sunbloom_draught"] }], context);
+    expect(state.party[0]!.character.inventory.map((e) => e.itemId)).toEqual(["brave_whistle"]);
+    expect(state.party[1]!.character.inventory.map((e) => e.itemId)).toEqual(["sunbloom_draught"]);
+
+    // Falls through to the next id once the first is gone.
+    state = applyEffects(state, [{ type: "takeItem", itemId: ["firecracker", "sunbloom_draught"] }], context);
+    expect(state.party[1]!.character.inventory).toEqual([]);
+
+    // Holding none of them is a no-op, not an error.
+    const before = state;
+    state = applyEffects(state, [{ type: "takeItem", itemId: "firecracker" }], context);
+    expect(state.party).toEqual(before.party);
+  });
+
+  it("takes a quest item, and a trinket's bonus goes with it", () => {
+    const context = ctx();
+    let state = applyEffects(
+      seatedParty(context),
+      [
+        { type: "grantQuestItem", itemId: "rusted_key" },
+        { type: "grantItem", itemId: "oak_token", to: "p_1" },
+      ],
+      context,
+    );
+    const withToken = state.party[0]!.character;
+    state = applyEffects(
+      state,
+      [
+        { type: "takeItem", itemId: "rusted_key" },
+        { type: "takeItem", itemId: "oak_token" },
+      ],
+      context,
+    );
+    expect(state.party.flatMap((m) => m.character.questItems)).not.toContain("rusted_key");
+    expect(state.party[0]!.character.inventory).toEqual([]);
+    expect(state.party[0]!.character.maxHp).toBeLessThanOrEqual(withToken.maxHp);
+  });
+
+  it("keeps the purse across a chapter start, seeded from the campaign when given", () => {
+    const start: ClientIntent = { type: "START_CHAPTER", chapterId: "bramblewood-01" };
+    const carried = applyEffects(seatedParty(ctx()), [{ type: "grantCoins", amount: 7 }], ctx());
+    const kept = applyIntent(carried, { playerId: "p_1", intent: start }, ctx());
+    expect(kept.state.coins).toBe(7);
+    const seeded = applyIntent(carried, { playerId: "p_1", intent: start }, ctx({ campaignCoins: 3 }));
+    expect(seeded.state.coins).toBe(3);
+  });
+
+  describe("a cost that is spent while the prompt waits", () => {
+    /** The clearing, plus a choice that hands over the party's draught. */
+    function clearingWithGift(type: "story" | "choice_point"): Chapter {
+      const chapter = makeChapter();
+      const clearing = chapter.scenes["scene_clearing"] as StoryScene;
+      chapter.scenes["scene_clearing"] = {
+        ...clearing,
+        type,
+        choices: [
+          ...clearing.choices,
+          {
+            id: "gift",
+            label: "Leave the draught for the shrine",
+            icon: "potion",
+            goto: "scene_shrine",
+            when: { item: "sunbloom_draught" },
+            effects: [{ type: "takeItem", itemId: "sunbloom_draught" }],
+          },
+        ],
+      } as Scene;
+      return chapter;
+    }
+
+    function atClearing(context: EngineContext): RunState {
+      let state = seatedParty(context);
+      state = applyEffects(
+        state,
+        [
+          { type: "grantItem", itemId: "sunbloom_draught", to: "p_1" },
+          { type: "damage", amount: 4, to: "p_1" },
+        ],
+        context,
+      );
+      state = applyIntent(state, { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }, context).state;
+      expect(state.prompt?.kind === "choice" && state.prompt.options.map((o) => o.id)).toContain("gift");
+      return state;
+    }
+
+    it("drops the option once the item is gone, and refuses a late tap on it", () => {
+      const context = ctx({ chapter: clearingWithGift("story") });
+      const drunk = applyIntent(
+        atClearing(context),
+        { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+        context,
+      );
+      expect(drunk.error).toBeUndefined();
+      const prompt = drunk.state.prompt;
+      expect(prompt?.kind === "choice" && prompt.options.map((o) => o.id)).not.toContain("gift");
+
+      const chooser = prompt?.kind === "choice" ? (prompt.forPlayerIds[0] ?? "p_1") : "p_1";
+      const late = applyIntent(drunk.state, { playerId: chooser, intent: { type: "CHOOSE", choiceId: "gift" } }, context);
+      expect(late.error?.code).toBe("ILLEGAL");
+      expect(late.state.sceneId).toBe("scene_clearing");
+    });
+
+    it("withdraws a vote cast for it, so the vote cannot carry it", () => {
+      const context = ctx({ chapter: clearingWithGift("choice_point") });
+      const voted = applyIntent(
+        atClearing(context),
+        { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "gift" } },
+        context,
+      );
+      expect(voted.error).toBeUndefined();
+      expect(voted.state.prompt?.kind === "choice" && voted.state.prompt.votes).toEqual({ p_2: "gift" });
+
+      const drunk = applyIntent(
+        voted.state,
+        { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+        context,
+      ).state;
+      expect(drunk.prompt?.kind === "choice" && drunk.prompt.votes).toEqual({});
+
+      // The vote finishes on what the party can still do.
+      let state = applyIntent(drunk, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context).state;
+      state = applyIntent(state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context).state;
+      expect(state.sceneId).toBe("check_squeeze");
+    });
+  });
+
   it("knocks characters down instead of killing them, and never ends the run", () => {
     const context = ctx();
     const state = applyEffects(seatedParty(context), [{ type: "damage", amount: 99, to: "party" }], context);

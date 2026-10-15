@@ -608,6 +608,12 @@
   font-weight: 700;
 }
 
+/* The party purse sits at the far end of the bag's heading. */
+.inv__purse {
+  margin-inline-start: auto;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
 .inv__quest-heading {
   font-size: var(--font-size-sm, 0.875em);
   color: var(--color-text-muted, #b7b0d8);

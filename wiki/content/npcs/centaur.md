@@ -3,7 +3,7 @@ title: Centaur
 id: npc.centaur
 type: npc
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["supporting_people", "plains", "caravan", "guide"]
 classification: supporting_people

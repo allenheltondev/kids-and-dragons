@@ -496,7 +496,13 @@
           "label": "Offer it a honeycake, the way the ferrymen do",
           "icon": "cake",
           "requiresItem": "honeycake",
-          "goto": "scene_drake_deal"
+          "goto": "scene_drake_deal",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "honeycake"
+            }
+          ]
         },
         {
           "id": "grab",

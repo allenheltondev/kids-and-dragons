@@ -3,7 +3,7 @@ title: The Deep Hollow Cult
 id: faction.deep_hollow_cult
 type: faction
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["cult", "underground", "mystical", "antagonist"]
@@ -55,7 +55,7 @@ ai_context:
   mood: "A secretive group of scholars and mystics who believe the Crystal Heart holds the key to rewriting the world's broken laws."
   themes: "Cult, Underground, Mystical, Antagonist"
   visual_style: "Dark robes with glowing crystal inlays, faceless masks with a single eye slit."
-  common_encounters: "Antagonist faction, knowledge brokers, morally grey opposition."
+  common_encounters: "Antagonist faction, knowledge brokers, morally gray opposition."
   lore_highlights: "They looked at the red sky and asked the question everyone else is sworn not to."
   related_entities: "location.skullwater_cave, faction.skywardens, quest.crystal_heart_retrieval, campaign.echoes_beneath, item.crystal_heart, campaign.echoes_beneath, campaign.gemfall, quest.crystal_heart_retrieval"
   writing_guidance: "Not purely evil; motivated by a desire to fix the world. Methods are extreme."

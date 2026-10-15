@@ -692,6 +692,13 @@ locked out of something they can see.
 or a specific `playerId`. If the recipient's six slots are full, the client prompts to swap or leave —
 the grant never silently fails and never silently overflows.
 
+What a choice costs is an effect too, so a story that says the party paid or shared actually
+takes something. `takeItem` removes one copy of an item from whoever holds it (a list means "the
+first of these anybody has"). `grantCoins` and `spendCoins` change the party's shared purse
+(`RunState.coins`), which the campaign attempt carries from one chapter to the next. A choice with
+a cost is gated on the party having it, through `requiresItem` or `when` (`item`, `count`,
+`coins`), so a party that can't pay never sees that choice. `content:validate` enforces the gate.
+
 An enemy names the canon creature it is one of and inherits everything else — `count`, `name`, `art`
 and all five stats — from `content/bestiary.json`, the generated projection of `canon/creatures.yaml`
 ([canon contract](canon-contract.md) D9). A stat written in the chapter is an override; retuning a

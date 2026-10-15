@@ -207,7 +207,10 @@
             "damage",
             "heal",
             "grantXp",
-            "setFlag"
+            "setFlag",
+            "takeItem",
+            "grantCoins",
+            "spendCoins"
           ]
         }
       },
@@ -365,6 +368,92 @@
               },
               "value": {
                 "type": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "takeItem"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "itemId"
+            ],
+            "properties": {
+              "itemId": {
+                "description": "One id, or a list in order of preference: the first one anybody holds is taken.",
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/itemId"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "#/$defs/itemId"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "grantCoins"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "amount"
+            ],
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 200
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "spendCoins"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "amount"
+            ],
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 200
               }
             }
           }
@@ -1040,6 +1129,21 @@
                 }
               ]
             },
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "coins": {
+          "description": "Coins in the party's purse. Bounds inclusive.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
             "min": {
               "type": "integer",
               "minimum": 0

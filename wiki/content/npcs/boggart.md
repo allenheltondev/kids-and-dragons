@@ -3,7 +3,7 @@ title: Boggart
 id: npc.boggart
 type: npc
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "collector", "secretive"]
 classification: supporting_people
@@ -75,7 +75,7 @@ Boggarts collect what the world drops: buttons, keys, bells, sounds, secrets. A 
 
 ### For Fun
 
-- Cataloguing, by systems that change weekly, are internally perfect, and have never once been explained to an outsider.
+- Cataloging, by systems that change weekly, are internally perfect, and have never once been explained to an outsider.
 - Connoisseurship of overheard sentences. A really good one is retold at boggart gatherings for years, with attribution.
 - Silent trade meets with silver otters, where nothing is said and everything is appraised.
 - Walking under a thinning loftmire with a wide basket, which is the closest a boggart gets to farming and is discussed in exactly those terms.

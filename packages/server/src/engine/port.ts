@@ -71,6 +71,11 @@ export interface EngineContext {
    * depends on, not an implementation detail to be discovered.
    */
   campaignFlags?: Readonly<Record<string, boolean>>;
+  /**
+   * The party's purse as this campaign attempt left it, seeded into the run
+   * when a chapter starts. Absent keeps whatever the run holds.
+   */
+  campaignCoins?: number;
 }
 
 export interface IntentInput {

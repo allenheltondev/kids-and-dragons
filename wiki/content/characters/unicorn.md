@@ -3,7 +3,7 @@ title: Unicorn
 id: character.unicorn
 type: character
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["playable", "forest", "magic", "healer"]
 scale: medium_to_large

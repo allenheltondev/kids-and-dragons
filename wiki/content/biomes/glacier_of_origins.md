@@ -3,7 +3,7 @@ title: Glacier of Origins
 id: biome.glacier_of_origins
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["ancient_ice", "river_source", "frozen_memory", "glacier", "northern"]
 danger_level: high
@@ -86,7 +86,7 @@ The name is the accepted account: the Great River begins here, and by yeti recko
 
 ### Recorded History
 
-History here is not written but excavated: the yetis read events out of the ice, name meltwater years the way other peoples name children, and serve the important ones as tea. The reading rooms' catalogue runs back further than every archive in the realm combined, and the yetis will show you, slowly.
+History here is not written but excavated: the yetis read events out of the ice, name meltwater years the way other peoples name children, and serve the important ones as tea. The reading rooms' catalog runs back further than every archive in the realm combined, and the yetis will show you, slowly.
 
 ### Cultural Significance
 
@@ -106,7 +106,7 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 
 > *Creator canon, not generally known in-world. No NPC recites these.*
 
-- At the bottom of one crevasse, below the oldest catalogued layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not catalogued it, because filing it would mean deciding what it is.
+- At the bottom of one crevasse, below the oldest cataloged layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not cataloged it, because filing it would mean deciding what it is.
 
 ### Neighbors
 
@@ -120,8 +120,8 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 
 ### Story Hooks
 
-- A newly melted memory shows the river leaving by a different valley. The yetis have re-catalogued it three times, which is yeti for alarm.
-- One meltwater year is never served as tea and never named. The vintage exists; the catalogue simply moves past it, and the politeness is glacial in every sense.
+- A newly melted memory shows the river leaving by a different valley. The yetis have re-cataloged it three times, which is yeti for alarm.
+- One meltwater year is never served as tea and never named. The vintage exists; the catalog simply moves past it, and the politeness is glacial in every sense.
 <!-- END GENERATED: lore -->
 
 <!-- BEGIN GENERATED: relationships -->

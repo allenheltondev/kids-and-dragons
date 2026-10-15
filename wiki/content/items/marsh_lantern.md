@@ -3,7 +3,7 @@ title: Marsh Lantern
 id: item.marsh_lantern
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["tool", "light", "swamp", "common"]
 related:

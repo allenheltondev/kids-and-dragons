@@ -180,11 +180,20 @@
           "goto": "scene_cult_pitch_drop_stone",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 1
+            },
+            {
               "type": "setFlag",
               "flag": "funded_the_break",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          }
         },
         {
           "id": "finish_soup",
@@ -662,7 +671,25 @@
           "id": "offer_food",
           "label": "Leave them your supper and tiptoe past",
           "icon": "cake",
-          "goto": "check_wolves"
+          "goto": "check_wolves",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         },
         {
           "id": "push_through",
@@ -784,11 +811,27 @@
           "goto": "scene_brass_south_share_supper",
           "effects": [
             {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            },
+            {
               "type": "setFlag",
               "flag": "brass_map",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          }
         },
         {
           "id": "ask_question",

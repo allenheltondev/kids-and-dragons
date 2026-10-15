@@ -1241,10 +1241,19 @@
           "goto": "scene_ember_buy_back",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 10
+            },
+            {
               "type": "grantQuestItem",
               "itemId": "facet_ember"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 10
+            }
+          }
         },
         {
           "id": "wave",
@@ -1507,7 +1516,16 @@
           "id": "easier_way",
           "label": "Give them an easier way down",
           "icon": "clever",
-          "goto": "check_wolves"
+          "goto": "check_wolves",
+          "when": {
+            "item": "supper_bundle"
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "supper_bundle"
+            }
+          ]
         },
         {
           "id": "stand",

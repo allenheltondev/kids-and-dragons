@@ -48,7 +48,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "The caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. Every Sunward child knows what a stopped song means: somebody has seen something worth stopping for.",
+      "narration": "The caravan cook pushes a supper bundle into your pack \"for the road, crew,\" and the caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. Every Sunward child knows what a stopped song means: somebody has seen something worth stopping for.",
       "choices": [
         {
           "id": "look",
@@ -61,6 +61,13 @@
           "label": "Ask the faun with the flute what she saw",
           "icon": "ear",
           "goto": "scene_song_stops_ask"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },
@@ -335,7 +342,18 @@
           "id": "buy",
           "label": "Buy eggs for the family at the back",
           "icon": "heart",
-          "goto": "scene_egg_stall_buy"
+          "goto": "scene_egg_stall_buy",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 3
+            }
+          ]
         },
         {
           "id": "queue",
@@ -649,9 +667,18 @@
       "choices": [
         {
           "id": "feed",
-          "label": "Leave the sausages out and back away slowly",
+          "label": "Leave your supper bundle out and back away slowly",
           "icon": "heart",
-          "goto": "check_wolf_kind"
+          "goto": "check_wolf_kind",
+          "when": {
+            "item": "supper_bundle"
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "supper_bundle"
+            }
+          ]
         },
         {
           "id": "shoo",
@@ -671,7 +698,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Put down a string of sausages without looking like a snack",
+      "prompt": "Put down your supper bundle without looking like a snack",
       "cast": [
         {
           "figure": "entities/cinder_wolf"
@@ -680,7 +707,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_plank_bridge",
-        "narration": "The wolves eat every sausage, curl up into one warm gray heap with eight legs, and watch you go. They are not tame. But they will remember you.",
+        "narration": "The wolves eat every crumb and the sausage too, curl up into one warm gray heap with eight legs, and watch you go. They are not tame. But they will remember you.",
         "effects": [
           {
             "type": "setFlag",
@@ -691,7 +718,7 @@
       },
       "onFailure": {
         "goto": "encounter_wolves",
-        "narration": "You trip on the sausages. The wolves decide you are part of the offer."
+        "narration": "You trip over your own supper bundle. The wolves decide you are part of the offer."
       }
     },
     "encounter_wolves": {

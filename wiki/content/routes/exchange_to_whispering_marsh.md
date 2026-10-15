@@ -3,7 +3,7 @@ title: Exchange–Marsh Approach
 id: route.exchange_to_whispering_marsh
 type: route
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: []
 related:
