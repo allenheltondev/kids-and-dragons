@@ -611,7 +611,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles you each a bowl, asks your names, and remembers them. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
+      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
       "choices": [
         {
           "id": "ask_cure",
@@ -773,7 +773,7 @@
     },
     "rest_warm_stones": {
       "type": "rest",
-      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cozy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch each other up, and sleep.",
+      "narration": "A dragonling town lets you sleep on the warming-stones by its doors, which are exactly as cozy as they sound. Grandmother Tull rings the night bell, the ordinary one, and says the other ring, the one nobody uses, is nothing to worry about. She says it twice. Share out your things, patch up any scrapes, and sleep.",
       "cast": [
         {
           "figure": "cast/grandmother_tull",
@@ -1138,7 +1138,7 @@
     "scene_crab_thanks_fly_ahead": {
       "type": "story",
       "art": "scenes/gemfall/redspire-citadel",
-      "narration": "You fly ahead up the ridge and land on the citadel wall, which is apparently not allowed. The warden on the gate looks up, looks at the ledger in his hand, and sighs. By the time the rest of you reach the top, the gate is already open and a clerk is already waiting with two ledgers.",
+      "narration": "You fly ahead up the ridge and land on the citadel wall, which is apparently not allowed. The warden on the gate looks up, looks at the ledger in his hand, and sighs. By the time the climb is done, the gate is already open and a clerk is already waiting with two ledgers.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1492,7 +1492,7 @@
     "scene_whole_truth": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all, the gemstone on the table hums. The wardens call it the Table Stone, and Pellam has logged it twice. One very old line just says: an old stone gate, far away in a western marsh, hums the same note. Next to it, in three different handwritings: nobody knows why.",
+      "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all, the gemstone on the table hums. The wardens have given it a name and a number, and Pellam has logged it twice. One very old line just says: an old stone gate, far away in a western marsh, hums the same note. Next to it, in three different handwritings: nobody knows why.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1502,7 +1502,7 @@
       "choices": [
         {
           "id": "take_stone",
-          "label": "Ask to carry the Table Stone (Pellam logs it a third time)",
+          "label": "Ask to carry the stone (Pellam logs it a third time)",
           "icon": "gem",
           "goto": "scene_whole_truth_take_stone",
           "effects": [
@@ -1519,7 +1519,7 @@
         },
         {
           "id": "leave_stone",
-          "label": "Leave the Table Stone where it is, in warden custody",
+          "label": "Leave the stone where it is, in warden custody",
           "icon": "hand",
           "goto": "scene_whole_truth_leave_stone"
         }
@@ -1528,7 +1528,7 @@
     "scene_whole_truth_leave_stone": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You leave the Table Stone where it is. Captain Voss nods once. \"Custody,\" she says, and Pellam writes CUSTODY beside both earlier entries, so it has now been logged three times without going anywhere. The stone hums on in the middle of the table, as if it had never expected to leave.",
+      "narration": "You leave the stone where it is. Captain Voss nods once. \"Custody,\" she says, and Pellam writes CUSTODY beside both earlier entries, so it has now been logged three times without going anywhere. The stone hums on in the middle of the table, as if it had never expected to leave.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1565,7 +1565,7 @@
     },
     "scene_acceptable_losses": {
       "type": "story",
-      "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast. The Table Stone hums a little louder, as if it disagrees.",
+      "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast. The humming stone hums a little louder, as if it disagrees.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1614,7 +1614,7 @@
     },
     "scene_acceptable_losses_hear_plan": {
       "type": "story",
-      "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch, the one gap every road squeezes through, all the way down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the Table Stone is the only thing in the room making a sound.",
+      "narration": "You hear the whole plan before you say anything. Roads closed from the Pinch, the one gap every road squeezes through, all the way down. Three towns emptied, bells and all. Every stone that comes up the mountain confiscated and every one that comes down it stopped. It is careful, and it is honest, and when the captain finishes, the humming stone is the only thing in the room making a sound.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1809,7 +1809,7 @@
     },
     "scene_ledger": {
       "type": "story",
-      "narration": "Pellam opens a fresh page and dips his pen. \"Before anybody decides anything,\" he says, \"the record. What have you been doing, all this way?\" The whole room waits. Even the Table Stone seems to hum more quietly.",
+      "narration": "Pellam opens a fresh page and dips his pen. \"Before anybody decides anything,\" he says, \"the record. What have you been doing, all this way?\" The whole room waits. Even the humming stone seems to hum more quietly.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1892,6 +1892,36 @@
           "icon": "note",
           "requiresFlag": "heard_hessa",
           "goto": "scene_reading_leash"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "The page beside your names stays short. Pellam writes down a hum, and not much else."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 3
+            }
+          },
+          "text": "Beside your names Pellam lists the great stones you carry: {facets} so far, each one logged twice."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 4
+            }
+          },
+          "text": "Pellam has to turn to a second page for the great stones you carry: {facets}, and every one of them logged twice."
         }
       ]
     },
@@ -2247,7 +2277,7 @@
     "scene_declared_restore": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "\"Put it back,\" you say. \"Every stone.\" The Table Stone hums one clear note, as if it heard. Captain Voss does something nobody in the citadel has seen: she unfolds her arms. \"Then we'll need every stone that came down,\" she says. \"Tomorrow they start coming back up. Rest.\"",
+      "narration": "\"Put it back,\" you say. \"Every stone.\" The humming stone hums one clear note, as if it heard. Captain Voss does something nobody in the citadel has seen: she unfolds her arms. \"Then we'll need every stone that came down,\" she says. \"Tomorrow they start coming back up. Rest.\"",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2284,7 +2314,7 @@
     },
     "scene_undeclared": {
       "type": "story",
-      "narration": "Nobody says anything. Pellam waits, pen up, then writes it down anyway: no answer means the Reckoning, putting it all back the hard way, with nobody promised to help. \"Hardest road there is,\" says Captain Voss. \"Freest, too.\" She very nearly smiles, and the Table Stone hums as if it approves of the silence.",
+      "narration": "Nobody says anything. Pellam waits, pen up, then writes it down anyway: no answer means the Reckoning, putting it all back the hard way, with nobody promised to help. \"Hardest road there is,\" says Captain Voss. \"Freest, too.\" She very nearly smiles, and the humming stone hums as if it approves of the silence.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2477,7 +2507,7 @@
     },
     "scene_truth_table_charm": {
       "type": "story",
-      "narration": "You set Mother Thrum's tuned charm on the table. The moment it touches the stone it rings, and the Table Stone rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
+      "narration": "You set Mother Thrum's tuned charm on the table. The moment it touches the stone it rings, and the stone on the table rings back, and every warden in the room stops writing at once. Captain Voss waits for the note to die. It takes a long time.",
       "cast": [
         {
           "figure": "entities/skywardens",

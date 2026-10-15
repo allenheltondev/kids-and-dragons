@@ -207,7 +207,10 @@
             "damage",
             "heal",
             "grantXp",
-            "setFlag"
+            "setFlag",
+            "takeItem",
+            "grantCoins",
+            "spendCoins"
           ]
         }
       },
@@ -368,6 +371,92 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "takeItem"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "itemId"
+            ],
+            "properties": {
+              "itemId": {
+                "description": "One id, or a list in order of preference: the first one anybody holds is taken.",
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/itemId"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "#/$defs/itemId"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "grantCoins"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "amount"
+            ],
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 200
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "spendCoins"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "required": [
+              "amount"
+            ],
+            "properties": {
+              "amount": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 200
+              }
+            }
+          }
         }
       ]
     },
@@ -523,6 +612,9 @@
         },
         "effects": {
           "$ref": "#/$defs/effects"
+        },
+        "when": {
+          "$ref": "#/$defs/condition"
         }
       }
     },
@@ -548,6 +640,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "variants": {
+          "$ref": "#/$defs/variants"
         }
       }
     },
@@ -767,6 +862,9 @@
         },
         "endsCampaign": {
           "$ref": "#/$defs/endsCampaign"
+        },
+        "variants": {
+          "$ref": "#/$defs/variants"
         }
       }
     },
@@ -830,6 +928,9 @@
         },
         "onFailure": {
           "$ref": "#/$defs/branch"
+        },
+        "variants": {
+          "$ref": "#/$defs/variants"
         }
       }
     },
@@ -879,6 +980,9 @@
         },
         "endsCampaign": {
           "$ref": "#/$defs/endsCampaign"
+        },
+        "variants": {
+          "$ref": "#/$defs/variants"
         }
       }
     },
@@ -924,6 +1028,9 @@
         },
         "endsCampaign": {
           "$ref": "#/$defs/endsCampaign"
+        },
+        "variants": {
+          "$ref": "#/$defs/variants"
         }
       }
     },
@@ -980,6 +1087,122 @@
           "description": "The chapter-4 gate (chapter.ts). The engine's combat is built, but until the phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a scene nobody can tap \u2014 so a gated encounter resolves straight through onVictory. Turning the fight on is deleting this line.",
           "const": "victory"
         }
+      }
+    },
+    "condition": {
+      "description": "Condition in chapter.ts. Every field present must hold (ANDed); an empty condition always holds. The validator checks flags and items against content.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "flag": {
+          "$ref": "#/$defs/flag"
+        },
+        "notFlag": {
+          "$ref": "#/$defs/flag"
+        },
+        "item": {
+          "$ref": "#/$defs/itemId"
+        },
+        "notItem": {
+          "$ref": "#/$defs/itemId"
+        },
+        "count": {
+          "description": "Distinct item ids the party holds that match `of`: an exact id, a prefix ending in `*`, or a list of exact ids. Bounds inclusive; max 0 means none.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "of"
+          ],
+          "properties": {
+            "of": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*\\*?$"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/itemId"
+                  }
+                }
+              ]
+            },
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "coins": {
+          "description": "Coins in the party's purse. Bounds inclusive.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "partySize": {
+          "description": "Seated members, connected or not. Bounds inclusive.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "narrationVariant": {
+      "description": "NarrationVariant in chapter.ts. Extra narration shown when `when` holds; `replace` drops the base text.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "when",
+        "text"
+      ],
+      "properties": {
+        "when": {
+          "$ref": "#/$defs/condition"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "enum": [
+            "start",
+            "end"
+          ]
+        },
+        "replace": {
+          "type": "boolean"
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/narrationVariant"
       }
     }
   }

@@ -3,7 +3,7 @@ title: Mermaid Cove
 id: biome.mermaid_cove
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["warm_water", "coral_reefs", "lagoon", "alliance", "island"]
 danger_level: moderate

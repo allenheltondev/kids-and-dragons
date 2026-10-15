@@ -3,7 +3,7 @@ title: Sunbloom Draught
 id: item.sunbloom_draught
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["provision", "healing", "sunward_fields", "uncommon"]
 related:

@@ -3,7 +3,7 @@ title: Frost Wyrm
 id: creature.frost_wyrm
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["dangerous", "mountain", "ice", "predator"]
 classification: dangerous_creature
@@ -80,7 +80,7 @@ A frost wyrm defends the tunnel, never the mountain. It holds no grudges because
 <!-- BEGIN GENERATED: encounter -->
 ## In a Fight
 
-**Sentinel**: The hardest thing in an ordinary fight. Slow, very well armoured, and it does not leave.
+**Sentinel**: The hardest thing in an ordinary fight. Slow, very well armored, and it does not leave.
 
 | | |
 |---|---|

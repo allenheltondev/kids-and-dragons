@@ -3,7 +3,7 @@ title: Shard of the Hollow Crown
 id: item.hollow_crown_shard
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["artifact", "hollow_gate", "mysterious", "legendary"]

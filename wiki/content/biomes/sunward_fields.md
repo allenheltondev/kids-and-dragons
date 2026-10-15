@@ -3,7 +3,7 @@ title: The Sunward Fields
 id: biome.sunward_fields
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
@@ -109,6 +109,9 @@ related:
   - id: location.bramblewood
     type: location
     relationship: biome
+  - id: npc.burrowfolk
+    type: npc
+    relationship: primary_locations
   - id: npc.centaur
     type: npc
     relationship: secondary_locations
@@ -136,7 +139,7 @@ ai_context:
   visual_style: "Gold-green fields, hedgerows, orchards, wind-bent grain, irrigation channels, farmsteads, communal barns, roads, and warm evening light."
   common_encounters: "Harvest problems, village festivals, missing livestock, weather threats, cooperative work, food shortages, local mysteries, and the consequences of trouble elsewhere reaching ordinary families."
   lore_highlights: "The accepted account is that the river made the Fields and the fauns merely negotiated: the floods left the finest soil in the realm, and the first cooperatives tamed the water one ditch at a time until the argument became an irrigation system."
-  related_entities: "location.exchange, location.stone_crossing, location.bramblewood, biome.eastern_plains, feature.great_river, biome.plains, biome.whispering_marsh, location.exchange, location.stone_crossing, npc.faun, npc.harvest_sprite, creature.jackalope, campaign.gemfall, character.unicorn, character.dragonling, creature.jackalope, feature.great_river, route.stone_crossing, route.exchange_to_sunward_fields, individual.pib, item.sunbloom_draught, item.honeycake, item.songbird_ribbon, item.hearthstone_bead, location.exchange, location.exchange, location.stone_crossing, location.bramblewood, npc.centaur, npc.faun, npc.harvest_sprite, npc.sheeple, npc.witch_order"
+  related_entities: "location.exchange, location.stone_crossing, location.bramblewood, biome.eastern_plains, feature.great_river, biome.plains, biome.whispering_marsh, location.exchange, location.stone_crossing, npc.faun, npc.harvest_sprite, creature.jackalope, campaign.gemfall, character.unicorn, character.dragonling, creature.jackalope, feature.great_river, route.stone_crossing, route.exchange_to_sunward_fields, individual.pib, item.sunbloom_draught, item.honeycake, item.songbird_ribbon, item.hearthstone_bead, location.exchange, location.exchange, location.stone_crossing, location.bramblewood, npc.burrowfolk, npc.centaur, npc.faun, npc.harvest_sprite, npc.sheeple, npc.witch_order"
   writing_guidance: "The Fields are not generic open plains. Agriculture, villages, irrigation, and communal work should shape both visuals and stories."
   generation_hints: "Work follows planting and harvest seasons. Communities share labor, maintain water and roads, and respond quickly when weather, magic, or pests threaten the realm's food supply."
 layout: biomes
@@ -228,6 +231,7 @@ The realm eats because the Fields work. Every region knows it, the Fields never 
 - [The Exchange](/locations/exchange/) `Locations` `Nearby Sites` `Biome` `Adjacent To`
 
 ### Npcs
+- [Burrowfolk](/npcs/burrowfolk/) `Primary Locations`
 - [Centaur](/npcs/centaur/) `Secondary Locations`
 - [Faun](/npcs/faun/) `Supporting Peoples` `Primary Locations`
 - [Harvest Sprite](/npcs/harvest_sprite/) `Supporting Peoples` `Primary Locations`

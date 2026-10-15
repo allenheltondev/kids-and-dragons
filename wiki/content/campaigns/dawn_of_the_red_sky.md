@@ -3,7 +3,7 @@ title: Dawn of the Red Sky
 id: campaign.dawn_of_the_red_sky
 type: campaign
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["main_campaign", "highlands", "epic", "skywardens"]

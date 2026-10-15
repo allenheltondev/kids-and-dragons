@@ -409,7 +409,7 @@ This is a hard architectural rule, tested in CI with the live layer stubbed out.
 - **TTS-ready from day one.** All narration and choice text flows through a `speak()` seam that is a no-op in v1 and can be wired to a TTS engine later without touching game code.
 - **No timers on decisions.** Nothing is lost by thinking about it.
 - **Colorblind-safe status indicators** — status effects and item rarity use shape + icon, never color alone.
-- **Undo on non-committal taps.** Selecting a target is confirmable; only the confirm is final.
+- **A tap does the thing, and the surface makes it safe.** No confirm step in a fight: a gold square walks you there (a step is cheap), a card that needs aiming asks who or where, and only legal answers are ever on screen. The one tap worth protecting, giving a turn away, has no button: once the action is spent the turn ends on its own, and Get Ready is how you pass.
 - **Big touch targets.** Phone UI assumes a small hand and imprecise taps — and stays that way in Travel Mode's compressed layout.
 
 ---

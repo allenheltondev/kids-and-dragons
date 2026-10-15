@@ -214,7 +214,7 @@
         },
         {
           "id": "handcart",
-          "label": "Do it yourselves, with a handcart and a sign",
+          "label": "Do it on your own, with a handcart and a sign",
           "icon": "hand",
           "goto": "check_handcart"
         }
@@ -441,6 +441,36 @@
           "goto": "scene_noon_shake_harvest",
           "requiresItem": "facet_harvest"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Your own packs hum, but none of the runaways are yours. They are all strangers' stones, and they seem to know the way better than you do."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "The great stones in your packs tug at their straps, wanting to follow. You hold on tight."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Your packs go wild. The great stones in them rattle and strain at the straps, and you have to sit on one pack to keep it from rolling off after the rest."
+        }
       ]
     },
     "check_noon_shake": {
@@ -568,7 +598,7 @@
     },
     "scene_ossley_debt": {
       "type": "story",
-      "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. He presses one plain, wet stone into your hand: \"Carry this one up yourselves. When you put it down, say thank you to the river.\"",
+      "narration": "Ossley takes a long time to answer, which is how Ossley answers. His price is not coin. It never was. He presses one plain, wet stone into your hand: \"Carry this one up with your own hands. When you put it down, say thank you to the river.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1048,11 +1078,56 @@
           "label": "Build a sledge out of a broken door",
           "icon": "clever",
           "goto": "check_haul_sledge"
+        },
+        {
+          "id": "others",
+          "label": "Carry strangers' stones up the hill, one trip at a time",
+          "icon": "hand",
+          "goto": "choice_haul_others",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          }
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "None of the pile is yours, only what strangers have trusted you with."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "A few great stones of your own ride on top of the pile, humming louder the nearer the hill gets."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Your own great stones are the loudest in the pile, and they tug uphill like a team of eager dogs."
         }
       ]
     },
     "check_haul_goat": {
       "type": "check",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
@@ -1068,7 +1143,7 @@
       },
       "onFailure": {
         "goto": "scene_evening",
-        "narration": "The goat sits down. It will not move. In the end you pull the cart yourselves, and the goat rides on top of the stones, looking very pleased with itself, all the way to the shelter."
+        "narration": "The goat sits down. It will not move. In the end you pull the cart on your own, and the goat rides on top of the stones, looking very pleased with itself, all the way to the shelter."
       }
     },
     "check_haul_carry": {
@@ -1101,9 +1176,21 @@
         "narration": "The sledge works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
       }
     },
+    "choice_haul_others": {
+      "type": "story",
+      "narration": "Your own arms are empty, so you fill them with everybody else's. Travelers press sacks into your arms and tell you which camp they came from. You climb, set a sack down in the way-shelter's yard, and climb down for another. Nobody keeps count of the trips. By dusk the yard is full, and the stones hum like they know who carried them.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look over the yard",
+          "icon": "hand",
+          "goto": "scene_evening"
+        }
+      ]
+    },
     "scene_evening": {
       "type": "story",
-      "narration": "Evening on the Pinch. Your stones are stacked safe in the way-shelter's yard, humming. Below you, campfires pop up all along the road like a string of beads, and the ground keeps shrugging, a little more often than this morning.",
+      "narration": "Evening on the Pinch. The going-home stones are stacked safe in the way-shelter's yard, humming. Below you, campfires pop up all along the road like a string of beads, and the ground keeps shrugging, a little more often than this morning.",
       "choices": [
         {
           "id": "relay_sing",
@@ -1130,6 +1217,36 @@
           "label": "Go up to the way-shelter to sleep",
           "icon": "rest",
           "goto": "scene_last_moth"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "None of the stones in the yard are yours, but they hum just as loudly, and nobody asks whose they were."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "A few great stones from your own packs sit among them, humming along."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "The great stones from your own packs hum loudest, a whole choir in one heap."
         }
       ]
     },
@@ -1175,7 +1292,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new gold label, FIRST STONE OF THE REALM, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1190,10 +1307,19 @@
           "goto": "scene_ember_buy_back",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 10
+            },
+            {
               "type": "grantQuestItem",
               "itemId": "facet_ember"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 10
+            }
+          }
         },
         {
           "id": "wave",
@@ -1223,7 +1349,7 @@
     },
     "scene_ember_buy_back": {
       "type": "story",
-      "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
+      "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The stone is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1337,7 +1463,7 @@
     },
     "rest_way_shelter": {
       "type": "rest",
-      "narration": "The dragonling way-shelter has its bell tied up with ribbon so nobody rings it by accident. There is soup, and a cat, and a whole wall of children's drawings of the mountain. Patch each other up. Tomorrow is the worst bend.",
+      "narration": "The dragonling way-shelter has its bell tied up with ribbon so nobody rings it by accident. There is soup, and a cat, and a whole wall of children's drawings of the mountain. Patch up your scrapes. Tomorrow is the worst bend.",
       "heal": 2,
       "choices": [
         {
@@ -1403,7 +1529,10 @@
     },
     "scene_morning_slide_goat_path": {
       "type": "story",
-      "narration": "There is a goat path above the slide, about as wide as a sandwich. You go round in single file, holding hands, not looking down. A snowhorn goat coming the other way stops, considers you, and steps politely aside onto what appears to be nothing at all.",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
+      "narration": "There is a goat path above the slide, about as wide as a sandwich. You go round in single file, one careful step at a time, not looking down. A snowhorn goat coming the other way stops, considers you, and steps politely aside onto what appears to be nothing at all.",
       "choices": [
         {
           "id": "on",
@@ -1453,7 +1582,16 @@
           "id": "easier_way",
           "label": "Give them an easier way down",
           "icon": "clever",
-          "goto": "check_wolves"
+          "goto": "check_wolves",
+          "when": {
+            "item": "supper_bundle"
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "supper_bundle"
+            }
+          ]
         },
         {
           "id": "stand",
@@ -1479,7 +1617,7 @@
     },
     "scene_switchback_fly_round": {
       "type": "story",
-      "narration": "You go up, find a side path the wolves have not thought of, and talk the others along it one careful step at a time. The pack streams down the main road beneath you in a long gray ribbon, and one wolf glances up, and decides you are not worth the climb.",
+      "narration": "You go up, find a side path the wolves have not thought of, and lead everyone along it one careful step at a time. The pack streams down the main road beneath you in a long gray ribbon, and one wolf glances up, and decides you are not worth the climb.",
       "choices": [
         {
           "id": "on",
@@ -1765,7 +1903,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_caravan_won",
-        "narration": "The caravan master looks at you, at your friends, at the shaking ground, and sighs a sigh that goes all the way down to her boots. \"Fine. Take it. It's been giving me headaches.\""
+        "narration": "The caravan master looks at you, at the help behind you, at the shaking ground, and sighs a sigh that goes all the way down to her boots. \"Fine. Take it. It's been giving me headaches.\""
       },
       "onFailure": {
         "goto": "scene_caravan_lost",
@@ -1837,7 +1975,7 @@
     },
     "scene_caravan_lost": {
       "type": "story",
-      "narration": "The masks have the Caravan Stone. A cell of masks drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
+      "narration": "The masks have the humming stone. A cell of masks drives it away up the side track, and one of them waves to you, apologetically. Behind them the ground stops shrugging and starts shaking, slow and steady, like a drum.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -2013,11 +2151,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_tree_line",
-        "narration": "Up and up and up, two steps at a time. You reach the top with your legs wobbling and your hearts thumping, well ahead of the dark."
+        "narration": "Up and up and up, two steps at a time. You reach the top with your legs wobbling and your heart thumping, well ahead of the dark."
       },
       "onFailure": {
         "goto": "rest_tree_line",
-        "narration": "Halfway up, a tremor shakes loose a shower of little stones. You press yourselves flat against the rock and wait, and then climb on carefully, one step at a time, and reach the top dusty but together, just as the light turns orange."
+        "narration": "Halfway up, a tremor shakes loose a shower of little stones. You press flat against the rock and wait, and then climb on carefully, one step at a time, and reach the top dusty but whole, just as the light turns orange."
       }
     },
     "choice_last_climb_old_path": {
@@ -2034,7 +2172,7 @@
     },
     "choice_last_climb_moth": {
       "type": "story",
-      "narration": "The little embermoth lifts off and flies ahead of you, up neither path, along a ledge nobody else had noticed. It glows at every turn so you can find it. At the tree line it circles your heads once, like a thank you, and flies on up the mountain, toward home.",
+      "narration": "The little embermoth lifts off and flies ahead of you, up neither path, along a ledge nobody else had noticed. It glows at every turn so you can find it. At the tree line it circles above you once, like a thank you, and flies on up the mountain, toward home.",
       "choices": [
         {
           "id": "on",
@@ -2055,7 +2193,28 @@
         }
       ],
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "replace": true,
+          "text": "At the tree line you stop and look back. Everyone else on the road is running downhill: wagons, wardens, masks, a man with an empty wheelbarrow. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, with your hands empty and your packs humming, to see what you can still do."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Every great stone you carry hums all the way up, one voice after another, like a choir climbing a stair."
+        }
+      ]
     },
     "ending_scattered": {
       "type": "rest",

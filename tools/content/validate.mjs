@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
+import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
@@ -683,6 +684,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       // false is, for every consumer, a flag nothing ever sets.
       if (effect.type === "setFlag" && (effect.value ?? true) === true) flagsSet.add(effect.flag);
       if (!effect.itemId) continue;
+      if (effect.type === "takeItem") {
+        for (const id of Array.isArray(effect.itemId) ? effect.itemId : [effect.itemId]) {
+          if (!items?.[id]) fail(`${at}/itemId`, `item "${id}" is not in content/items.json`);
+        }
+        continue;
+      }
       const item = items?.[effect.itemId];
       if (!item) {
         fail(`${at}/itemId`, `item "${effect.itemId}" is not in content/items.json`);
@@ -698,8 +705,10 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
     // Requirements *hide* a choice rather than greying it out (architecture §5),
     // so a scene where every choice is gated shows some parties nothing to tap.
-    // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts.
-    const gated = (c) => c.requiresSpecies !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined;
+    // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts
+    // (isGated); a `when` counts as a gate there too. Kept inline because
+    // chapter-graph.ts cannot be loaded straight under Node.
+    const gated = (c) => c.requiresSpecies !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
     if ((scene.choices ?? []).length > 0 && scene.choices.every(gated)) {
       fail(`/scenes/${id}/choices`, "every choice is gated - a party matching none of the requirements sees nothing to tap");
     }
@@ -714,6 +723,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       choiceIds.add(choice.id);
 
       if (!choice.icon?.trim()) fail(`${at}/icon`, "icon slug is empty - no interactive element ships without an icon (spec §11)");
+
+      // A choice that takes an item or spends coins is offered only to a party
+      // that has them, or the story narrates a gift nobody gave.
+      for (const problem of unbackedCosts(choice)) {
+        fail(`${at}`, `choice "${choice.id}" ${problem}`, "hidden, never greyed: gate the choice so a party without it never sees it");
+      }
 
       if (choice.requiresItem && !items?.[choice.requiresItem]) {
         fail(`${at}/requiresItem`, `item "${choice.requiresItem}" is not in content/items.json`);
@@ -808,6 +823,38 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
           `map "${scene.map}" is not in content/maps/`,
           mapIds.size ? `maps available: ${[...mapIds].sort().join(", ")}` : "content/maps/ is empty",
         );
+      }
+    }
+  }
+
+  // --- #160: conditions, variants and tokens. A malformed `when` fails here,
+  // at the build, rather than at the table.
+  for (const problem of lintChapterText(chapter)) fail(problem.path, problem.problem, problem.hint);
+  // Coins a scene charges on arrival (onEnter, or any check/fight outcome) are
+  // a cost of every way in, so they need the same purse gate as a choice's own.
+  for (const problem of unbackedSceneCharges(chapter)) {
+    fail(problem.path, problem.problem, "gate each choice into it on when.coins.min, and reach it only through choices");
+  }
+  for (const { path, when } of conditionRefs(chapter)) {
+    for (const key of ["flag", "notFlag"]) {
+      if (when[key]) flagsRequired.push([when[key], `${path}/${key}`]);
+    }
+    for (const key of ["item", "notItem"]) {
+      if (when[key] && !items?.[when[key]]) fail(`${path}/${key}`, `item "${when[key]}" is not in content/items.json`);
+    }
+    const of = when.count?.of;
+    if (of !== undefined) {
+      const catalog = Object.keys(items ?? {});
+      if (Array.isArray(of)) {
+        for (const id of of) {
+          if (!items?.[id]) fail(`${path}/count/of`, `item "${id}" is not in content/items.json`);
+        }
+      } else if (of.endsWith("*")) {
+        if (!catalog.some((id) => id.startsWith(of.slice(0, -1)))) {
+          fail(`${path}/count/of`, `prefix "${of}" matches no item in content/items.json`);
+        }
+      } else if (!items?.[of]) {
+        fail(`${path}/count/of`, `item "${of}" is not in content/items.json`);
       }
     }
   }
@@ -1011,6 +1058,16 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
    * than inferred from the files that happen to exist.
    */
   const routeSets = campaign.routeSets ?? {};
+
+  // A backfill flag is read off the attempt's saved flags, and only route-set
+  // members are ever saved. Anything else would silently never pay.
+  const carriedFlags = new Set(Object.values(routeSets).flat());
+  for (const flag of Object.keys(campaign.purseBackfill?.byFlag ?? {})) {
+    if (!carriedFlags.has(flag)) {
+      fail("/purseBackfill/byFlag", `"${flag}" is not in any routeSets entry, so no saved attempt ever holds it`);
+    }
+  }
+
   for (const index of ordered) {
     const members = beats.get(index);
     const routed = members.filter((chapter) => chapter.route);

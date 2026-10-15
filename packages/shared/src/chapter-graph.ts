@@ -20,10 +20,12 @@
 import type {
   Chapter,
   Choice,
+  Condition,
   Effect,
   Scene,
   SceneId,
 } from "./types/chapter.js";
+import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -39,6 +41,8 @@ export type IssueCode =
   | "DUPLICATE_CHOICE_ID"
   | "UNKNOWN_ITEM"
   | "ITEM_KIND_MISMATCH"
+  | "BAD_CONDITION"
+  | "UNBACKED_COST"
   | "NO_SCENES";
 
 export interface ChapterIssue {
@@ -108,11 +112,13 @@ export function sceneChoices(scene: Scene): Choice[] {
   }
 }
 
-function isGated(choice: Choice): boolean {
+export function isGated(choice: Choice): boolean {
   return (
     choice.requiresSpecies !== undefined ||
     choice.requiresFlag !== undefined ||
-    choice.requiresItem !== undefined
+    choice.requiresItem !== undefined ||
+    // A `when` hides the choice for some parties, however loose it looks.
+    choice.when !== undefined
   );
 }
 
@@ -236,6 +242,19 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
       });
     }
 
+    // A choice that takes an item or spends coins must only be offered to a
+    // party that has them; otherwise the story narrates a gift nobody gave.
+    for (const choice of choices) {
+      for (const problem of unbackedCosts(choice)) {
+        issues.push({
+          severity: "error",
+          code: "UNBACKED_COST",
+          message: `scene "${sceneId}" choice "${choice.id}" ${problem}`,
+          sceneId,
+        });
+      }
+    }
+
     // Item references.
     if (catalog) {
       for (const effect of sceneEffects(scene)) {
@@ -263,6 +282,19 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
           }
         }
       }
+      for (const effect of sceneEffects(scene)) {
+        if (effect.type !== "takeItem") continue;
+        for (const id of typeof effect.itemId === "string" ? [effect.itemId] : effect.itemId) {
+          if (!catalog[id]) {
+            issues.push({
+              severity: "error",
+              code: "UNKNOWN_ITEM",
+              message: `scene "${sceneId}" takes unknown item "${id}"`,
+              sceneId,
+            });
+          }
+        }
+      }
       for (const choice of choices) {
         if (choice.requiresItem && !catalog[choice.requiresItem]) {
           issues.push({
@@ -270,6 +302,50 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
             code: "UNKNOWN_ITEM",
             message: `scene "${sceneId}" choice "${choice.id}" requires unknown item "${choice.requiresItem}"`,
             sceneId,
+          });
+        }
+      }
+    }
+  }
+
+  for (const { path, problem } of unbackedSceneCharges(chapter)) {
+    issues.push({ severity: "error", code: "UNBACKED_COST", message: `${path}: ${problem}`, sceneId: path.split("/")[2] });
+  }
+
+  // --- conditions, variants and tokens (#160) -----------------------------
+  for (const problem of lintChapterText(chapter)) {
+    issues.push({
+      severity: "error",
+      code: "BAD_CONDITION",
+      message: `${problem.path}: ${problem.problem}`,
+      sceneId: problem.path.split("/")[2],
+    });
+  }
+  if (catalog) {
+    for (const { path, when } of conditionRefs(chapter)) {
+      const named = [when.item, when.notItem, ...(typeof when.count?.of === "string" || !when.count ? [] : when.count.of)];
+      for (const id of named) {
+        if (id !== undefined && !catalog[id]) {
+          issues.push({
+            severity: "error",
+            code: "UNKNOWN_ITEM",
+            message: `${path} names unknown item "${id}"`,
+            sceneId: path.split("/")[2],
+          });
+        }
+      }
+      const of = when.count?.of;
+      if (typeof of === "string") {
+        const prefix = of.endsWith("*");
+        const matches = prefix
+          ? Object.keys(catalog).some((id) => id.startsWith(of.slice(0, -1)))
+          : of in catalog;
+        if (!matches) {
+          issues.push({
+            severity: "error",
+            code: "UNKNOWN_ITEM",
+            message: `${path}/count/of "${of}" matches no item in the catalog`,
+            sceneId: path.split("/")[2],
           });
         }
       }
@@ -332,6 +408,8 @@ export function reachableScenes(chapter: Chapter): Set<SceneId> {
 export interface ChoiceParty {
   members: readonly ResolvedCharacter[];
   flags?: Record<string, boolean>;
+  /** The party's purse (`RunState.coins`). Absent reads as empty. */
+  coins?: number;
 }
 
 function speciesMatches(choice: Choice, party: ChoiceParty): boolean {
@@ -342,13 +420,73 @@ function speciesMatches(choice: Choice, party: ChoiceParty): boolean {
   return party.members.some((m) => wanted.includes(m.species));
 }
 
-function itemMatches(choice: Choice, party: ChoiceParty): boolean {
-  if (choice.requiresItem === undefined) return true;
-  const itemId = choice.requiresItem;
+function partyHolds(party: ChoiceParty, itemId: string): boolean {
   return party.members.some(
     (m) =>
       m.inventory.some((e) => e.itemId === itemId) || m.questItems.includes(itemId),
   );
+}
+
+function itemMatches(choice: Choice, party: ChoiceParty): boolean {
+  if (choice.requiresItem === undefined) return true;
+  return partyHolds(party, choice.requiresItem);
+}
+
+/**
+ * Every distinct item id the party holds between them, inventory and quest
+ * items alike. A set, so an item two members both carry is one item.
+ */
+export function partyItemIds(party: ChoiceParty): Set<string> {
+  const ids = new Set<string>();
+  for (const m of party.members) {
+    for (const entry of m.inventory) ids.add(entry.itemId);
+    for (const id of m.questItems) ids.add(id);
+  }
+  return ids;
+}
+
+/**
+ * How many distinct item ids the party holds that match `of`: an exact id, a
+ * prefix ending in `*` (`"facet_*"`), or a list of exact ids.
+ */
+export function countPartyItems(party: ChoiceParty, of: string | readonly string[]): number {
+  const held = partyItemIds(party);
+  if (Array.isArray(of)) return new Set(of.filter((id) => held.has(id))).size;
+  const pattern = of as string;
+  if (pattern.endsWith("*")) {
+    const prefix = pattern.slice(0, -1);
+    let n = 0;
+    for (const id of held) if (id.startsWith(prefix)) n += 1;
+    return n;
+  }
+  return held.has(pattern) ? 1 : 0;
+}
+
+function within(n: number, bounds: { min?: number; max?: number }): boolean {
+  return (bounds.min === undefined || n >= bounds.min) && (bounds.max === undefined || n <= bounds.max);
+}
+
+/**
+ * Does `cond` hold for this party and these flags? Every field present must
+ * hold (they are ANDed); an absent or empty condition holds.
+ *
+ * The one evaluator: choice gating (`when`) and narration variants both call
+ * it, so "the party has two facets" means the same thing everywhere. Pure — it
+ * reads the party and flags and nothing else.
+ */
+export function evaluateCondition(cond: Condition | undefined, party: ChoiceParty): boolean {
+  if (!cond) return true;
+  const flags = party.flags ?? {};
+  if (cond.flag !== undefined && flags[cond.flag] !== true) return false;
+  if (cond.notFlag !== undefined && flags[cond.notFlag] === true) return false;
+  if (cond.item !== undefined && !partyHolds(party, cond.item)) return false;
+  if (cond.notItem !== undefined && partyHolds(party, cond.notItem)) return false;
+  if (cond.count !== undefined && !within(countPartyItems(party, cond.count.of), cond.count)) {
+    return false;
+  }
+  if (cond.coins !== undefined && !within(party.coins ?? 0, cond.coins)) return false;
+  if (cond.partySize !== undefined && !within(party.members.length, cond.partySize)) return false;
+  return true;
 }
 
 /**
@@ -368,6 +506,7 @@ export function visibleChoices(
     (choice) =>
       speciesMatches(choice, party) &&
       itemMatches(choice, party) &&
-      (choice.requiresFlag === undefined || flags[choice.requiresFlag] === true),
+      (choice.requiresFlag === undefined || flags[choice.requiresFlag] === true) &&
+      evaluateCondition(choice.when, party),
   );
 }

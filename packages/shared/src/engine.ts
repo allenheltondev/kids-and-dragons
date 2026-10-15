@@ -47,6 +47,7 @@ import type {
   Effect,
   EncounterMap,
   EndingScene,
+  NarrationVariant,
   Scene,
   SceneId,
 } from "./types/chapter.js";
@@ -59,6 +60,7 @@ import {
   currentActor,
   currentActorId,
   legalActions,
+  legalMoves,
   useItemInCombat,
   type AbilityCatalog,
   type CombatActionRequest,
@@ -87,6 +89,7 @@ import { assignPlayerColors } from "./player-colors.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
+import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
 
 // ---------------------------------------------------------------------------
@@ -163,6 +166,14 @@ export interface EngineContext {
    * campaign with no routed beat.
    */
   campaignFlags?: Readonly<Record<string, boolean>>;
+  /**
+   * The party's purse as the campaign attempt left it
+   * (`CampaignProgressRecord.coins`), seeded into `RunState.coins` when a
+   * chapter starts — for the same reason as `campaignFlags`: the coins earned
+   * on one evening are still in the pack on the next. Absent keeps whatever
+   * the run already holds.
+   */
+  campaignCoins?: number;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -231,6 +242,7 @@ export function createRunState(input: CreateRunInput): RunState {
     prompt: null,
     lastRoll: null,
     flags: {},
+    coins: 0,
     xpEarned: 0,
     chapterOutcome: null,
     bonuses: [],
@@ -289,8 +301,12 @@ function requireScene(chapter: Chapter, sceneId: SceneId): Scene {
   return scene;
 }
 
-function party(state: RunState): { members: ResolvedCharacter[]; flags: Record<string, boolean> } {
-  return { members: state.party.map((m) => m.character), flags: state.flags };
+function party(state: RunState): {
+  members: ResolvedCharacter[];
+  flags: Record<string, boolean>;
+  coins: number;
+} {
+  return { members: state.party.map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
 }
 
 function touch(draft: RunState, ctx: EngineContext): void {
@@ -372,6 +388,26 @@ function heal(member: PartyMember, amount: number): void {
   if (member.hp > 0) member.down = false;
 }
 
+/**
+ * Removes one copy of the first of `ids` anybody in the party holds, slotted
+ * bag first and quest items second, through `setBag` so a trinket handed over
+ * takes its bonus with it. Holding none of them is a no-op.
+ */
+function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineContext): void {
+  for (const itemId of typeof ids === "string" ? [ids] : ids) {
+    const bagHolder = draft.party.find((m) => hasItem(m.character.inventory, itemId));
+    if (bagHolder) {
+      setBag(bagHolder, removeItem(bagHolder.character.inventory, itemId), ctx);
+      return;
+    }
+    const questHolder = draft.party.find((m) => m.character.questItems.includes(itemId));
+    if (questHolder) {
+      questHolder.character.questItems = questHolder.character.questItems.filter((id) => id !== itemId);
+      return;
+    }
+  }
+}
+
 function applyEffectsDraft(
   draft: RunState,
   effects: readonly Effect[] | undefined,
@@ -409,6 +445,20 @@ function applyEffectsDraft(
         }
         break;
       }
+
+      case "grantCoins":
+        draft.coins = (draft.coins ?? 0) + effect.amount;
+        break;
+
+      case "spendCoins":
+        // Never below zero. The choice is gated on affording it; if it was not,
+        // the party pays what it has rather than going into debt.
+        draft.coins = Math.max(0, (draft.coins ?? 0) - effect.amount);
+        break;
+
+      case "takeItem":
+        takeItem(draft, effect.itemId, ctx);
+        break;
 
       case "grantItem": {
         const candidates =
@@ -564,6 +614,32 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
 
 /** Opens the prompt a scene is waiting on. Returns a completion presentation
  * when the scene turns out to end the chapter. */
+/**
+ * Re-gates an open choice prompt against the party as it is now.
+ *
+ * `openScenePrompt` filters the choices once, when the scene opens, but the
+ * party can change while the prompt waits: a player eats the only supper
+ * bundle (USE_ITEM), trades the honeycake away, or a member leaves. An option
+ * whose cost is no longer covered would otherwise still be tappable, and its
+ * `takeItem` / `spendCoins` would quietly do nothing while the story narrates
+ * the gift. So after every intent the options are recomputed, and a vote cast
+ * for an option that has gone is withdrawn, leaving that player to vote again.
+ */
+function refreshChoicePrompt(draft: RunState, ctx: EngineContext): void {
+  const prompt = draft.prompt;
+  if (!prompt || prompt.kind !== "choice" || prompt.sceneId !== draft.sceneId) return;
+  const scene = ctx.chapter && ctx.chapter.id === draft.chapterId ? ctx.chapter.scenes[prompt.sceneId] : undefined;
+  if (!scene || (scene.type !== "story" && scene.type !== "rest" && scene.type !== "choice_point")) return;
+  const who = party(draft);
+  const live = visibleChoices(scene.choices, who);
+  const liveIds = new Set(live.map((c) => c.id));
+  if (prompt.options.length === live.length && prompt.options.every((o) => liveIds.has(o.id))) return;
+  prompt.options = live.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon }));
+  if (prompt.votes) {
+    prompt.votes = Object.fromEntries(Object.entries(prompt.votes).filter(([, id]) => liveIds.has(id)));
+  }
+}
+
 function openScenePrompt(
   draft: RunState,
   scene: Scene,
@@ -584,7 +660,8 @@ function openScenePrompt(
       }
       // Hidden, never disabled (architecture §5). A scene where this comes back
       // empty is an authoring bug that validateChapter reports as a DEAD_END.
-      const options = visibleChoices(scene.choices, party(draft));
+      const who = party(draft);
+      const options = visibleChoices(scene.choices, who);
       const isVote = scene.type === "choice_point";
       // choice_point puts it to the party (spec §6.1). A story beat is one
       // player's call, taken in turns, so it is not a race to the first tap.
@@ -594,7 +671,9 @@ function openScenePrompt(
       draft.prompt = {
         kind: "choice",
         sceneId,
-        options: options.map((c) => ({ id: c.id, label: c.label, icon: c.icon })),
+        // Labels take tokens (never variants), filled here so the phones
+        // render the prompt as-is and a reload shows the same words (#159).
+        options: options.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon })),
         forPlayerIds: isVote
           ? draft.party.map((m) => m.playerId)
           : turn
@@ -614,7 +693,7 @@ function openScenePrompt(
           sceneId,
           stat: scene.stat,
           tn: scene.tn,
-          prompt: scene.prompt,
+          prompt: fillTokens(scene.prompt, party(draft)),
           characterId: everyone[0] as string,
           group: { pending: everyone, rolls: [] },
         };
@@ -626,7 +705,7 @@ function openScenePrompt(
         sceneId,
         stat: scene.stat,
         tn: scene.tn,
-        prompt: scene.prompt,
+        prompt: fillTokens(scene.prompt, party(draft)),
         characterId: roller.character.id,
       };
       return undefined;
@@ -641,14 +720,7 @@ function openScenePrompt(
          * of the branch's, so the beat still reads even though the board
          * never goes up.
          */
-        const narration = [scene.narration, scene.onVictory.narration]
-          .filter(Boolean)
-          .join("\n\n");
-        return takeBranch(
-          draft,
-          { ...scene.onVictory, ...(narration ? { narration } : {}) },
-          ctx,
-        );
+        return takeBranch(draft, scene.onVictory, ctx, undefined, scene.narration);
       }
       // An encounter waits on a ready-up before the board goes up. That pause
       // is deliberate: three phones have to swap to a combat UI, and a fight
@@ -660,11 +732,45 @@ function openScenePrompt(
   }
 }
 
+/**
+ * The line that explains *how you got here*: a branch's narration and its
+ * variants, plus (for an auto-resolved fight) the encounter's own text in
+ * front of it.
+ */
+interface Transition {
+  narration?: string;
+  variants?: NarrationVariant[];
+  /** Shown before the branch's text, unconditionally. */
+  lead?: string;
+}
+
+/**
+ * The scene's narration as the table reads it (#159): the branch's line (with
+ * its variants) above the scene's own text (with its variants), then the
+ * `{facets}` / `{party}` tokens filled. Evaluated against the party as it is
+ * now — the caller runs this after the scene's `onEnter`.
+ */
+function composeSceneNarration(draft: RunState, scene: Scene, transition?: Transition): string {
+  const who = party(draft);
+  const base =
+    scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
+  const authored = scene.type === "encounter" ? base : composeNarration(base, scene.variants, who);
+  const branchLine = transition
+    ? [transition.lead, composeNarration(transition.narration ?? "", transition.variants, who)]
+        .filter((part): part is string => !!part)
+        .join("\n\n")
+    : "";
+  // A branch's narration is the line that explains *how you got here*; showing
+  // it above the destination's text is how it reads at the table.
+  const whole = branchLine ? `${branchLine}\n\n${authored}`.trim() : authored;
+  return fillTokens(whole, who);
+}
+
 function enterSceneDraft(
   draft: RunState,
   sceneId: SceneId,
   ctx: EngineContext,
-  transitionNarration?: string,
+  transition?: Transition,
 ): Presentation | undefined {
   const chapter = requireChapter(ctx);
   const scene = requireScene(chapter, sceneId);
@@ -688,12 +794,6 @@ function enterSceneDraft(
   draft.trades = [];
   draft.phase = scene.type === "encounter" ? "encounter" : scene.type === "check" ? "check" : "scene";
 
-  const authored =
-    scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
-  // A branch's narration is the line that explains *how you got here*; showing
-  // it above the destination's text is how it reads at the table.
-  draft.narration = transitionNarration ? `${transitionNarration}\n\n${authored}`.trim() : authored;
-
   /*
    * The trail, for the end-of-chapter recap (roadmap chapter 7).
    *
@@ -715,6 +815,11 @@ function enterSceneDraft(
   if (scene.type === "rest" && scene.heal) {
     for (const member of draft.party) heal(member, scene.heal);
   }
+
+  // Composed after `onEnter`, on purpose: variants and tokens read the party
+  // as it is when the scene opens, so an item this scene grants counts (#159).
+  // Stored rather than recomputed, so a reload mid-scene reads the same words.
+  draft.narration = composeSceneNarration(draft, scene, transition);
 
   const enter: Presentation = {
     kind: "SCENE_ENTER",
@@ -749,9 +854,14 @@ function takeBranch(
   branch: Branch,
   ctx: EngineContext,
   rollerCharacterId?: string,
+  lead?: string,
 ): Presentation | undefined {
   applyEffectsDraft(draft, branch.effects, ctx, rollerCharacterId);
-  return enterSceneDraft(draft, branch.goto, ctx, branch.narration);
+  return enterSceneDraft(draft, branch.goto, ctx, {
+    ...(lead ? { lead } : {}),
+    ...(branch.narration !== undefined ? { narration: branch.narration } : {}),
+    ...(branch.variants ? { variants: branch.variants } : {}),
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -791,6 +901,7 @@ export function applyIntent(
     const presentation = dispatch(draft, envelope, rolling, effects);
     if (loaded?.spent()) draft.playtestDie = null;
     pruneTrades(draft);
+    refreshChoicePrompt(draft, ctx);
     touch(draft, ctx);
     return {
       state: draft,
@@ -1175,6 +1286,8 @@ function doStartChapter(
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
+  // The purse is not chapter-scoped: see `EngineContext.campaignCoins`.
+  draft.coins = ctx.campaignCoins ?? draft.coins ?? 0;
   draft.lastRoll = null;
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];
@@ -1259,6 +1372,12 @@ function doChoose(
 
   const choice = sceneChoices(scene).find((c) => c.id === winning);
   if (!choice) throw new Illegal("NOT_FOUND", `scene "${sceneId}" has no choice "${winning}"`);
+  // The prompt's options are re-gated after every intent (refreshChoicePrompt),
+  // so this only fires if that ever misses a path. A choice whose item or
+  // coins are gone must not run its effects for nothing and narrate the gift.
+  if (!visibleChoices([choice], party(draft)).length) {
+    throw new Illegal("ILLEGAL", `"${winning}" is no longer something this party can do`);
+  }
 
   // The marker moves on from whoever just had it — the chooser on a Story
   // beat (who may have stood in for an absent turn holder), the holder on a
@@ -1709,7 +1828,7 @@ function doCombatMove(
   draft: RunState,
   playerId: string,
   to: Position,
-  _ctx: EngineContext,
+  ctx: EngineContext,
 ): Presentation | undefined {
   const encounter = requireTurn(draft, playerId);
   const result = moveTo(encounter, to);
@@ -1717,7 +1836,9 @@ function doCombatMove(
   // from a board that has since moved on. Say so and let it resync.
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
-  return combatPresentation(result.events);
+  // Twin Step's second walk is the only move that can be a turn's last act;
+  // when it is, the turn ends here rather than waiting to be told.
+  return finishTurnIfSpent(draft, ctx, result.events);
 }
 
 function doCombatAction(
@@ -1737,9 +1858,7 @@ function doCombatAction(
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
-  // The fight may have just ended on that swing. The branch waits behind
-  // the ordered roll/damage/down events rather than replacing them.
-  return combatPresentation(result.events, settleEncounter(draft, ctx));
+  return finishTurnIfSpent(draft, ctx, result.events);
 }
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
@@ -1754,6 +1873,44 @@ function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Prese
 /** The slice of `EngineContext` a combat call needs. */
 function combatCtx(ctx: EngineContext) {
   return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+}
+
+/**
+ * Closes out a turn that has nothing left in it.
+ *
+ * §7.2 is "move up to your steps, then take one action", and once the action
+ * is spent the only thing a phone could still send is END_TURN. Asking for
+ * that tap was two more taps on every turn (the button, then its confirm), so
+ * the engine now hands the clock on itself the moment the active hero has
+ * neither an action nor a legal step left: the action is taken and
+ * `legalMoves` is empty, which already knows about Twin Step's extra walk.
+ *
+ * It runs the monsters' turns in the same intent, so what reaches the table
+ * is one ordered sequence: the hero's swing, then the wisps' answer, then any
+ * branch the fight's end takes. END_TURN stays for the turn a player chooses
+ * to give up early (steps left after acting, or nothing worth doing).
+ *
+ * The fight may have ended on the action itself. `settleEncounter` runs
+ * either way, after the enemy turns when there were any, and the branch waits
+ * behind the ordered roll/damage/down events rather than replacing them.
+ */
+function finishTurnIfSpent(
+  draft: RunState,
+  ctx: EngineContext,
+  events: readonly EncounterEvent[],
+): Presentation | undefined {
+  const encounter = draft.encounter;
+  let all = events;
+  if (
+    encounter &&
+    encounterOutcome(encounter) === "ongoing" &&
+    encounter.actionTaken &&
+    legalMoves(encounter).length === 0
+  ) {
+    draft.encounter = endTurn(encounter);
+    all = [...events, ...runEnemyTurns(draft, ctx)];
+  }
+  return combatPresentation(all, settleEncounter(draft, ctx));
 }
 
 /** Keeps combat spectacle ordered without making it authoritative state. */
@@ -1970,9 +2127,9 @@ function doUseItem(
 
     setBag(member, held.inventory, ctx);
     draft.encounter = applied.state;
-    // The throw may have felled the last wisp; the branch waits behind the
-    // damage beats, exactly as it does for an attack.
-    return combatPresentation(applied.events, settleEncounter(draft, ctx));
+    // A consumable spends the same one action an attack does, and so ends
+    // the turn the same way.
+    return finishTurnIfSpent(draft, ctx, applied.events);
   }
 
   if (def.effect && def.effect.type !== "heal") {

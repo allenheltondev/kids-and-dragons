@@ -3,7 +3,7 @@ title: Mosslight Jar
 id: item.mosslight_jar
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["tool", "light", "enchanted_woods", "common"]
 related:

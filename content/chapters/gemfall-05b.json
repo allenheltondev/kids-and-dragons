@@ -84,7 +84,7 @@
     },
     "scene_mosshome_feet": {
       "type": "story",
-      "narration": "Before anybody knocks, you all wipe your feet on the welcome moss by the archive door. Then, to be safe, you wipe them again. The door flies open. An archivist stands there with her hand over her heart. \"Twice,\" she breathes. \"Nobody from outside ever wipes twice.\" She lets you straight in, and tells two other archivists about it on the way.",
+      "narration": "Before anybody knocks, you wipe your feet on the welcome moss by the archive door. Then, to be safe, you wipe them again. The door flies open. An archivist stands there with her hand over her heart. \"Twice,\" she breathes. \"Nobody from outside ever wipes twice.\" She lets you straight in, and tells two other archivists about it on the way.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -1043,7 +1043,7 @@
     },
     "scene_falls_stair_dripping": {
       "type": "story",
-      "narration": "\"The flooded paths?\" The flood-warden's whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she lifts each of you across the worst of the steps like parcels, one after another, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
+      "narration": "\"The flooded paths?\" The flood-warden's whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she scoops you up and carries you across the worst of the steps like laundry, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
       "cast": [
         {
           "figure": "cast/flood_warden",
@@ -1094,11 +1094,20 @@
           "goto": "scene_soup_tent_coins",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
               "type": "setFlag",
               "flag": "funded_the_break",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
         }
       ],
       "cast": [
@@ -1199,7 +1208,7 @@
       },
       "onFailure": {
         "goto": "scene_halfway_hut",
-        "narration": "You tap a plank. It says CREAK. You all say AAH. Then it turns out to be perfectly fine, it is just a very dramatic plank. You cross with hearts thumping, and laugh about it all the way to the other side."
+        "narration": "You tap a plank. It says CREAK. You say AAH. Then it turns out to be perfectly fine, it is just a very dramatic plank. You cross with hearts thumping, and laugh about it all the way to the other side."
       }
     },
     "check_bridge_rope": {
@@ -1292,7 +1301,7 @@
       },
       "onFailure": {
         "goto": "scene_high_paths",
-        "narration": "The knotted pages are like trying to read a jumper. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you each a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
+        "narration": "The knotted pages are like trying to read a jumper. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
       }
     },
     "scene_high_paths": {
@@ -1426,7 +1435,7 @@
       "discovers": [
         "creature.embermoth"
       ],
-      "narration": "Past the wolves the path climbs into cloud, and in it, sitting on a rock with her tail wrapped round her knees, is a young dragonling with a gathering bag. \"I'm not lost,\" she says at once. \"I'm waiting for the cloud to go.\" A flock of embermoths drifts past you both, glowing, heading south, away from the mountain. She stares. \"They never go that way.\"",
+      "narration": "Past the wolves the path climbs into cloud, and in it, sitting on a rock with her tail wrapped round her knees, is a young dragonling with a gathering bag. \"I'm not lost,\" she says at once. \"I'm waiting for the cloud to go.\" A flock of embermoths drifts past, glowing, heading south, away from the mountain. She stares. \"They never go that way.\"",
       "cast": [
         {
           "figure": "cast/young_gatherer",

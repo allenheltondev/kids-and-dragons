@@ -3,7 +3,7 @@ title: Frogfolk
 id: npc.frogfolk
 type: npc
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["supporting_people", "marsh", "amphibious", "navigator"]
 classification: supporting_people
@@ -22,7 +22,7 @@ likes:
   - id: npc.boggart
     title: "Boggart"
     url: "/npcs/boggart/"
-    because: "Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
+    because: "Neighbors. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done."
 dislikes:
   - id: creature.mire_mimic
     title: "Mire Mimic"
@@ -81,7 +81,7 @@ Reserved and precise, with a hospitality that consists of getting you where you 
 
 - **[Silver Otter](/creatures/silver_otter/)**: The river's other honest professionals. Boats and otters have traded right-of-way for a hundred years without one collision.
 - **[Stone Troll](/npcs/stone_troll/)**: Water people who keep their crossings. A kinship of maintenance.
-- **[Boggart](/npcs/boggart/)**: Neighbours. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done.
+- **[Boggart](/npcs/boggart/)**: Neighbors. The frogfolk keep the paths; the boggarts keep everything that leaves them. The marsh works because both halves are done.
 
 ### Dislikes
 

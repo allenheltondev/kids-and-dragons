@@ -3,7 +3,7 @@ title: Mount Red Sky
 id: location.mount_red_sky
 type: location
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["active_volcano", "gemfalls", "legendary", "ash", "lava", "unstable_power"]
 danger_level: legendary

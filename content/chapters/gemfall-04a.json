@@ -344,7 +344,7 @@
       "choices": [
         {
           "id": "write_question",
-          "label": "Write the question in the ledger yourselves",
+          "label": "Write the question in the ledger in your own hand",
           "icon": "scroll",
           "goto": "choice_cub_nap",
           "effects": [
@@ -485,7 +485,7 @@
     },
     "rest_waystation": {
       "type": "rest",
-      "narration": "The centaurs feed you oat-cakes and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -515,7 +515,14 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/centaur-sash-barn"
+      "art": "scenes/gemfall/centaur-sash-barn",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ]
     },
     "rest_waystation_with_escort": {
       "type": "story",
@@ -547,7 +554,7 @@
       "choices": [
         {
           "id": "take_stone",
-          "label": "Take the Pride Stone",
+          "label": "Take the humming gem",
           "icon": "gem",
           "goto": "scene_take_stone"
         },
@@ -627,7 +634,25 @@
           "id": "share_supper",
           "label": "Toss them your supper",
           "icon": "cake",
-          "goto": "check_wolves"
+          "goto": "check_wolves",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         },
         {
           "id": "call_escort",
@@ -688,7 +713,7 @@
     },
     "rest_pride_fire": {
       "type": "rest",
-      "narration": "Pride fire is the best fire. The cubs fall asleep on your boots, and the elders tell the story of the riddle nobody can answer. Out in the dark the Pride Stone hums in its crater, alone. North, tomorrow, the broken bridge.",
+      "narration": "Pride fire is the best fire. The cubs fall asleep on your boots, and the elders tell the story of the riddle nobody can answer. Out in the dark the gem you left hums in its crater, alone. North, tomorrow, the broken bridge.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -1040,7 +1065,7 @@
     },
     "scene_pride_greeting_cubs_introduce": {
       "type": "story",
-      "narration": "The two cubs march you up to the elder like prizes. \"We caught them,\" says the big one. \"They didn't even see us,\" says the little one. The elder looks at you over their heads, and you look back, and both of you keep a perfectly straight face. \"Then they had better come to the fire,\" she says.",
+      "narration": "The two cubs march you up to the elder like prizes. \"We caught them,\" says the big one. \"They didn't even see us,\" says the little one. The elder looks at you over their heads, and you look back, and you and the elder both keep a perfectly straight face. \"Then they had better come to the fire,\" she says.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -1316,7 +1341,7 @@
       },
       "onFailure": {
         "goto": "scene_waystation",
-        "narration": "The post is heavier than it looks, and it looks very heavy. You all wobble, and it ends up planted slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
+        "narration": "The post is heavier than it looks, and it looks very heavy. You wobble, and it ends up planted slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
       },
       "art": "scenes/gemfall/pride-marker-road"
     },
@@ -1367,7 +1392,7 @@
     },
     "scene_waystation_letters_arrived": {
       "type": "story",
-      "narration": "The whole barn turns round. \"The griffin from the letters!\" Somebody takes the spools out of her mouth to shake your hand. Bracken's letters are already pinned up on the wall, and the centaurs have been waiting for you so they could start the big table. They pull out a stool for each of you.",
+      "narration": "The whole barn turns round. \"The griffin from the letters!\" Somebody takes the spools out of her mouth to shake your hand. Bracken's letters are already pinned up on the wall, and the centaurs have been waiting for you so they could start the big table. They pull out a stool for everybody.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -1493,7 +1518,13 @@
           "label": "Offer them a honeycake",
           "icon": "cake",
           "requiresItem": "honeycake",
-          "goto": "scene_jackalope_wall_honeycake"
+          "goto": "scene_jackalope_wall_honeycake",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "honeycake"
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/pride-stone-crater"
@@ -1589,7 +1620,7 @@
       },
       "onFailure": {
         "goto": "scene_widest_bend",
-        "narration": "You follow the prints round and round until you realize you are following your own boot prints, following the wolf's. Embarrassing. You give up and walk straight in, and find the very middle of the bend all by yourselves."
+        "narration": "You follow the prints round and round until you realize you are following your own boot prints, following the wolf's. Embarrassing. You give up and walk straight in, and find the very middle of the bend all on your own."
       },
       "art": "scenes/gemfall/pride-stone-crater"
     },

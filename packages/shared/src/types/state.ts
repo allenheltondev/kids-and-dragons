@@ -77,7 +77,10 @@ export type Prompt =
   | {
       kind: "choice";
       sceneId: SceneId;
-      /** Choices already filtered for party eligibility. */
+      /**
+       * Choices already filtered for party eligibility (`requires*` and
+       * `when`), with label tokens already filled (#159).
+       */
       options: { id: string; label: string; icon: string }[];
       /** Empty means anyone may answer. */
       forPlayerIds: string[];
@@ -159,7 +162,14 @@ export interface RunState {
   chapterInfo?: { index: number; title: string } | null;
   sceneId: SceneId | null;
   sceneType: SceneType | null;
-  /** Rendered narration for the current scene (authored, or LLM-validated). */
+  /**
+   * Rendered narration for the current scene (authored, or LLM-validated).
+   *
+   * Composed once, when the scene opens: branch narration and the scene's own,
+   * each with its matching `variants` applied, then `{facets}` / `{party}`
+   * filled (narration.ts, #159). Stored, never recomputed by a client, so a
+   * reload mid-scene shows the same words.
+   */
   narration: string;
   art: string | null;
   party: PartyMember[];
@@ -167,6 +177,16 @@ export interface RunState {
   lastRoll: DiceRoll | null;
   /** Story flags set by effects, scoped to the run. */
   flags: Record<string, boolean>;
+  /**
+   * The party's shared purse. One purse, not one per character, for the same
+   * reason XP is never individual: what the party can afford is a table
+   * decision. Unlike `flags` it outlives the chapter, through
+   * `EngineContext.campaignCoins` and `CampaignProgressRecord.coins`.
+   *
+   * Optional because RunState is persisted as plain JSON and a run written
+   * before the purse existed has to keep loading; read it as `?? 0`.
+   */
+  coins?: number;
   xpEarned: number;
   /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null

@@ -5,24 +5,13 @@
  * case: ~40% of a phone in Travel Mode. Same rules as every screen — no
  * viewport units, `em`/`%` against the surface, and touch targets that do not
  * shrink (spec §11). The grid cells are the documented exception: ten columns
- * cannot each be 3em on a phone, and the select-then-confirm flow is what
- * makes an imprecise tap free to undo.
+ * cannot each be 3em on a phone, and a step is the cheapest thing in the game
+ * to spend by mistake.
+ *
+ * Nothing here ever appears *below* what is already on screen: the area under
+ * the board swaps between the cards and the question a card asks, in place,
+ * so a tap never pushes the pane and the thumb never has to chase a button.
  */
-
-.combat__party {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Same size as the icon it replaced, so the HP chips keep their height. */
-.combat__face {
-  inline-size: 1.6em;
-  block-size: 1.6em;
-}
 
 .combat__hp {
   display: inline-flex;
@@ -31,10 +20,145 @@
   font-variant-numeric: tabular-nums;
 }
 
-.combat__meters {
-  display: flex;
+.combat__hp--down {
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+/* Steps left, on the title row's far end: the one number a turn starts with. */
+.combat__title {
   flex-wrap: wrap;
-  gap: var(--space-2, 0.5em);
+}
+
+.combat__steps {
+  margin-inline-start: auto;
+  gap: 0.3em;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+/* A monster's portrait in the target list. */
+.combat__enemy-art {
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  border-radius: 0.3em;
+  object-fit: cover;
+}
+
+.combat__enemy-art--large {
+  inline-size: 2em;
+  block-size: 2em;
+}
+
+/*
+ * Hearts in the square's corner. A number, never a bar (spec §11), small
+ * enough to leave the face readable and big enough to read at a tile's size.
+ */
+.combat__cell-hp {
+  position: absolute;
+  inset-block-end: 2%;
+  inset-inline-start: 3%;
+  min-inline-size: 1.4em;
+  padding-inline: 0.2em;
+  border-radius: 0.5em;
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  font-size: 0.55em;
+  font-weight: 900;
+  line-height: 1.5;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * What just happened. The roll is the thing that was missing: a d20 the
+ * server threw and nobody saw. One list, the latest beat only, each line a
+ * sentence or a roll drawn as its parts — the die, the bonus and its stat,
+ * the total, the Guard it had to beat, the verdict.
+ */
+.combat__log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  list-style: none;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-inline-start: 0.3em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #120f26);
+  font-size: var(--font-size-sm, 0.875em);
+  /* About three lines. A crowded round scrolls, newest at the bottom, and
+     the older lines fade out at the top rather than cutting off mid-word. */
+  max-block-size: 5.6em;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.2em);
+}
+
+.combat__beat {
+  line-height: 1.3;
+}
+
+.combat__beat--good {
+  color: var(--color-success, #4ad991);
+}
+
+.combat__beat--bad {
+  color: var(--color-danger, #ff6b6b);
+}
+
+.combat__roll {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--color-text, #f4f1ff);
+  font-variant-numeric: tabular-nums;
+}
+
+.combat__roll-who {
+  font-weight: 800;
+}
+
+.combat__roll-die {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0 0.4em;
+  border-radius: 0.4em;
+  background: var(--color-surface, #191534);
+  color: var(--color-accent, #ffc95c);
+  font-size: 1.2em;
+  font-weight: 900;
+}
+
+.combat__roll-mod,
+.combat__roll-total {
+  font-weight: 700;
+}
+
+.combat__roll-stat {
+  color: var(--color-text-muted, #b7b0d8);
+  font-weight: 600;
+}
+
+.combat__roll-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0 0.5em;
+  border-radius: var(--radius-pill, 999em);
+  font-weight: 800;
+}
+
+.combat__roll-verdict--hit {
+  background: color-mix(in srgb, var(--color-success, #4ad991) 25%, transparent);
+  color: var(--color-success, #4ad991);
+}
+
+.combat__roll-verdict--miss {
+  background: color-mix(in srgb, var(--color-text-muted, #b7b0d8) 20%, transparent);
+  color: var(--color-text-muted, #b7b0d8);
 }
 
 /*
@@ -111,6 +235,17 @@
   object-fit: cover;
 }
 
+/*
+ * Facing the nearest opponent (board-math.ts facingFor). The art is drawn
+ * facing left; `scale` rather than `transform`, because the arrival pop
+ * below animates `transform` and would undo a flip written there.
+ */
+.combat__cell--faces-right .combat__cell-face,
+.combat__cell--faces-right .combat__cell-art,
+.combat__cell--faces-right > .kad-icon {
+  scale: -1 1;
+}
+
 .combat__cell--down .combat__cell-face,
 .combat__cell--down .combat__cell-art,
 .combat__cell--down > .kad-icon {
@@ -129,20 +264,17 @@
   color: var(--color-text, #f4f1ff);
 }
 
-/* A square you can walk to: a big gold dot, the one mark on the board that
-   means "tap me". The old footprints glyph was a few pixels of detail. */
+/* A square you can walk to: a gold dot, the one mark on the board that
+   means "tap me". Its size says how far: a big dot one step away, shrinking
+   to a small one at the edge of the reach (`--nearness`, 1 → 0). Diagonals
+   cost one step, so the reach is a square, and without this its corners
+   looked as close as the squares beside you. */
 .combat__dot {
-  inline-size: 38%;
-  block-size: 38%;
+  inline-size: calc(20% + 30% * var(--nearness, 1));
+  block-size: calc(20% + 30% * var(--nearness, 1));
   border-radius: 50%;
   background: var(--color-accent, #ffc95c);
   box-shadow: 0 0 0.35em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
-}
-
-.combat__cell--selected .combat__dot {
-  inline-size: 58%;
-  block-size: 58%;
-  background: var(--color-primary, #7c5cff);
 }
 
 .combat__cell--selected {
@@ -155,11 +287,8 @@
   gap: var(--space-2, 0.5em);
 }
 
-.combat__targets {
-  max-block-size: 14em;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
+/* At most four enemies or three friends, two to a row from three: the list
+   always fits, so it never needs a scroll box of its own. */
 
 /*
  * Fitting a fight on a phone without scrolling (PlayerPanel "deciding"): the
@@ -170,64 +299,38 @@
   gap: var(--space-2, 0.5em);
 }
 
-/* Names stay — three of one species are told apart by them — but tight. */
-.combat .combat__party {
-  gap: var(--space-1, 0.25em);
-  font-size: var(--font-size-sm, 0.875em);
-}
-
-.combat .combat__party > .kad-chip {
-  gap: 0.25em;
-  padding: 0.15em 0.45em;
-}
-
-.combat .combat__party .combat__face {
-  inline-size: 1.3em;
-  block-size: 1.3em;
-}
-
 /*
- * The two steps of a turn (§7.2): a numbered heading and one line saying what
- * to tap. A finished step keeps its place with a tick, so the order stays
- * readable after the move has been made.
+ * One line under the board saying what to tap, where the two numbered steps
+ * used to be: the headings cost two rows and said the same thing.
  */
-.combat__step {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15em;
-}
-
-.combat__step-title {
+.combat__hint {
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: var(--font-size-md, 1em);
-  font-weight: 800;
-}
-
-.combat__step-num {
-  display: inline-grid;
-  place-items: center;
-  inline-size: 1.5em;
-  block-size: 1.5em;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--color-accent, #ffc95c);
-  color: var(--kad-accent-ink, #0d0b1a);
-  font-size: 0.9em;
-  font-weight: 900;
-}
-
-.combat__step-hint {
-  margin: 0;
-  padding-inline-start: 2em;
   color: var(--color-text-muted, #b7b0d8);
   font-size: var(--font-size-sm, 0.875em);
 }
 
-.combat__step--done .combat__step-num {
-  background: var(--color-ok, #6fd39b);
+.combat__ask {
+  font-weight: 700;
+}
+
+/* The question and its Change button share one row. */
+.combat__ask-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
+}
+
+.combat__ask-row > .combat__ask {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.combat__ask-row > .kad-button {
+  flex: 0 0 auto;
 }
 
 /* What the board's marks mean, in the same shapes the board draws. */
@@ -281,6 +384,62 @@
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
 }
 
+/*
+ * Cards to a row, by how many there are (CombatPanel `cardColumns`). Two to
+ * a row from three cards, three to a row from five: icon and name only, the
+ * icon is what an eight-year-old reads first (spec §1.5), and the sentence
+ * is what the card does *after* you tap it, which the who? step still says.
+ * Every row saved is a row the board keeps.
+ */
+.combat .prompt__options[data-columns="2"],
+.combat .prompt__options[data-columns="3"] {
+  display: grid;
+  gap: var(--space-2, 0.5em);
+}
+
+.combat .prompt__options[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.combat .prompt__options[data-columns="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.combat .prompt__options[data-columns="2"] .choice,
+.combat .prompt__options[data-columns="3"] .choice {
+  min-block-size: var(--touch-min, 3em);
+  padding: var(--space-2, 0.5em);
+}
+
+.combat .prompt__options[data-columns="2"] .choice__sub,
+.combat .prompt__options[data-columns="3"] .choice__sub {
+  display: none;
+}
+
+/* Three to a row is too narrow for icon beside name: icon over name. */
+.combat .prompt__options[data-columns="3"] .choice {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: var(--space-1, 0.25em);
+  text-align: center;
+}
+
+.combat .prompt__options[data-columns="3"] .choice__text {
+  align-items: center;
+  text-align: center;
+}
+
+.combat .prompt__options[data-columns="3"] .choice__label {
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.15;
+}
+
+/* Two of the same item: one card, and how many. */
+.combat__count {
+  color: var(--color-text-muted, #b7b0d8);
+  font-weight: 600;
+}
+
 .choice__text {
   display: flex;
   flex-direction: column;
@@ -310,18 +469,78 @@
 }
 
 /*
- * The board gives up width before anything scrolls: on a short pane it is
- * sized by the pane's height (10 × 8 cells, so width is 1.25 × height),
- * centred, and never wider than the pane.
+ * No scrolling, by construction. The fight fills the pane as a column; every
+ * row but the board takes the height it needs, and the board takes what is
+ * left (`flex: 1 1 0`), then sizes itself inside that box as a size
+ * container: as wide as the pane, or as wide as the box's height allows for
+ * the map's shape, whichever is smaller. More cards make a smaller board,
+ * never a taller pane. The old way subtracted a guessed height for
+ * everything else (12.5em, then 14.5em, then 20.5em with the log), and any
+ * turn with more on it than the guess overflowed.
  */
+.player--deciding .combat.prompt {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.combat__board {
+  flex: 1 1 0;
+  /* A floor, so a pane crowded past any phone we know keeps a usable map
+     rather than a postage stamp; below it the pane would scroll. */
+  min-block-size: 8em;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
 .combat .combat__grid {
-  /* As big as the pane's height allows once the turn header, the chips and
-     the cards have their rows (about 12.5em between them, with gaps), and
-     never wider than the pane. On a tall phone that is width-bound and the
-     board floats in the middle; on a short one it is height-bound and just
-     fits. The pane scrolls only if a phone is shorter than any we know. */
-  inline-size: min(100%, (100cqh - 12.5em) * 1.25);
-  margin-inline: auto;
+  /* The grid's padding and gaps add a little height on top of its square
+     cells, hence the 0.7em. */
+  inline-size: min(100cqw, (100cqh - 0.7em) * var(--cols, 10) / var(--rows, 8));
+}
+
+/*
+ * A short pane (a small phone in Travel Mode): everything but the board gets
+ * tighter, so the board keeps a size a finger can use. The legend goes (the
+ * squares carry faces and colours of their own), the roll log keeps its last
+ * two lines, and the cards shrink their padding and icon tiles. Touch targets
+ * stay at the 3em minimum (spec §11).
+ */
+@container prompt (max-height: 34em) {
+  .combat.prompt {
+    gap: var(--space-1, 0.25em);
+  }
+
+  .combat > .prompt__title {
+    font-size: var(--font-size-md, 1em);
+  }
+
+  .combat__legend {
+    display: none;
+  }
+
+  .combat__log {
+    max-block-size: 3.6em;
+    padding-block: var(--space-1, 0.25em);
+  }
+
+  .combat .prompt__options {
+    gap: var(--space-1, 0.25em);
+  }
+
+  .combat .prompt__options .choice {
+    padding: var(--space-1, 0.25em) var(--space-2, 0.5em);
+  }
+
+  .combat .prompt__options .choice__icon {
+    width: 1.6em;
+    height: 1.6em;
+  }
+
+  .combat .prompt__options[data-columns="3"] .choice {
+    gap: 0;
+    padding: var(--space-1, 0.25em);
+  }
 }
 
 /*
@@ -338,11 +557,6 @@
 @keyframes combat-dot-breathe {
   0%, 100% { transform: scale(0.85); opacity: 0.8; }
   50% { transform: scale(1.05); opacity: 1; }
-}
-
-/* The one you picked pops to its bigger purple self. */
-.combat__cell--selected .combat__dot {
-  animation: combat-pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 /* A figure arriving on a square — the board's first draw, a step, a shove. */
@@ -382,9 +596,9 @@
   animation: combat-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* A step finished: its number becomes a tick with a little bounce. */
-.combat__step--done .combat__step-num {
-  animation: combat-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+/* A fresh beat in the log slides in, so a new roll is noticed. */
+.combat__beat {
+  animation: combat-rise 300ms ease-out both;
 }
 
 /* "Your turn" arrives rather than appears. */
@@ -403,14 +617,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .combat__cell--walk .combat__dot,
-  .combat__cell--selected .combat__dot,
   .combat__cell-face,
   .combat__cell-art,
   .combat__cell > .kad-icon,
   .combat__cell--active,
   .combat__cell--aim > .kad-icon,
   .combat__down-badge,
-  .combat__step--done .combat__step-num,
+  .combat__beat,
   .combat > .prompt__title,
   .combat__end {
     animation: none;
