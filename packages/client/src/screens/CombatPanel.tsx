@@ -31,7 +31,7 @@
  * of the last beat, in words, because a d20 that nobody sees is not a d20.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type {
   AbilityCatalog,
@@ -376,10 +376,14 @@ export function CombatControls(): ReactElement | null {
       {beats.length > 0 ? <BeatLog beats={beats} /> : null}
 
       {/*
-       * Both sides at a glance — number first, bar never (spec §11). Faces
-       * here, glyphs on the grid below: this row is *who*, the grid is a map,
-       * and a map marker has to stay a shape you can read at a tile's size.
+       * Both sides at a glance — number first, bar never (spec §11). While
+       * waiting: faces and names, since this is a Party Mode phone's only view
+       * of the fight. On your own turn the board below carries every figure
+       * with its hearts in the corner, and these rows would push the cards
+       * under the fold — the one scroll the turn screen must never need.
        */}
+      {!myTurn ? (
+      <>
       <ul className="combat__party" aria-label="The party">
         {partyCombatants.map((c) => {
           const member = party.find((m) => m.character.id === c.id);
@@ -412,6 +416,8 @@ export function CombatControls(): ReactElement | null {
           </li>
         ))}
       </ul>
+      </>
+      ) : null}
 
       {myTurn && active ? (
         <>
@@ -876,8 +882,14 @@ export function rollWords(roll: DiceRoll): string {
 }
 
 function BeatLog({ beats }: { beats: readonly Beat[] }): ReactElement {
+  // The newest line is the one that matters; a long round scrolls to it.
+  const ref = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [beats]);
   return (
-    <ol className="combat__log" aria-label="What just happened">
+    <ol className="combat__log" aria-label="What just happened" ref={ref}>
       {beats.map((beat) => (
         <li key={beat.key} className={`combat__beat combat__beat--${beat.tone}`}>
           {beat.roll ? (
