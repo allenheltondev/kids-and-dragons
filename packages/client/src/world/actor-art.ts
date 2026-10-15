@@ -226,6 +226,21 @@ export function drawContactShadow(
   return g;
 }
 
+/**
+ * How much a contact shadow tightens per unit of breath — the fraction a
+ * figure is stretched up from its feet. At the top of an idle breath (~0.018)
+ * the shadow is about 7% smaller, which reads as the body lifting off the
+ * ground a little without the feet ever leaving it.
+ */
+const SHADOW_BREATH = 4;
+
+/** The scale for a contact shadow under a figure breathing `breath` (see
+    `SHADOW_BREATH`). A breath below rest — the lineup's exhale — spreads it a
+    touch; anything past a deep breath either way is held there. */
+export function breathingShadowScale(breath: number): number {
+  return 1 - Math.max(-0.05, Math.min(0.05, breath)) * SHADOW_BREATH;
+}
+
 /** Where under the anchor a shadow for `footprint` goes, in pixels for a
     figure whose canvas is `height` tall on screen. */
 export function shadowOffset(height: number, footprint: Footprint | null): number {

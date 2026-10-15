@@ -147,6 +147,13 @@ export interface RigHandle {
   setKnockedDown(down: boolean): void;
   /** Fire one of the contract's nine triggers by name. Unknown names are ignored. */
   fire(trigger: string): void;
+  /**
+   * How far the figure is stretched up from its feet as of the last tick: 0 at
+   * rest, about 0.018 at the top of an idle breath. The idle never lifts the
+   * feet — the rig's root sits on the ground line and scales — so this is what
+   * a contact shadow tightens with. 0 when the rig has no `body` node.
+   */
+  breath(): number;
   destroy(): void;
 }
 
@@ -230,6 +237,18 @@ export async function createRig(
     const drawnRenderer = renderer;
     const drawnArtboard = artboard;
     const drawnMachine = machine;
+    /*
+     * The rig's root bone, named `body` by every generated rig. Its world
+     * transform's vertical scale is the idle's breath. A rig without one just
+     * reports 0 rather than failing the figure.
+     */
+    let body: any = null;
+    try {
+      body = artboard.node?.("body") ?? null;
+    } catch {
+      body = null;
+    }
+    let breath = 0;
 
     const draw = (): void => {
       drawnRenderer.clear();
@@ -255,6 +274,12 @@ export async function createRig(
         if (destroyed) return;
         drawnMachine.advance(dtSeconds);
         drawnArtboard.advance(dtSeconds);
+        if (body) {
+          const stretch = (body.worldTransform?.()?.yy ?? 1) - 1;
+          // Clamped: a fall rotates the root, and its yy then says nothing
+          // about breathing.
+          breath = Number.isFinite(stretch) ? Math.max(0, Math.min(0.05, stretch)) : 0;
+        }
         draw();
       },
       setKnockedDown(down: boolean): void {
@@ -265,6 +290,9 @@ export async function createRig(
       fire(trigger: string): void {
         if (destroyed) return;
         triggers.get(trigger)?.fire();
+      },
+      breath(): number {
+        return destroyed ? 0 : breath;
       },
       destroy(): void {
         if (destroyed) return;
