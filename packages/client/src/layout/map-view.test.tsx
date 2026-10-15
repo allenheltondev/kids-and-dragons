@@ -62,19 +62,19 @@ describe("the map's two faces", () => {
     expect(container.querySelector(".trail")).toBeNull();
 
     act(() => {
-      screen.getByRole("button", { name: /route/i }).click();
+      screen.getByRole("button", { name: /story trail/i }).click();
     });
     expect(showing(container)).toBe("route");
     expect(container.querySelector(".trail")).not.toBeNull();
     expect(container.querySelector(".atlas")).toBeNull();
-    expect(screen.getByRole("button", { name: /route/i }).getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByRole("button", { name: /world/i }).getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByRole("button", { name: /story trail/i }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /^atlas$/i }).getAttribute("aria-pressed")).toBe("false");
   });
 
   it("remembers the last map across a close and reopen", () => {
     const first = mount();
     act(() => {
-      screen.getByRole("button", { name: /route/i }).click();
+      screen.getByRole("button", { name: /story trail/i }).click();
     });
     expect(showing(first.container)).toBe("route");
     first.unmount();
@@ -84,7 +84,7 @@ describe("the map's two faces", () => {
 
     // Leave it the way the next test expects to find it.
     act(() => {
-      screen.getByRole("button", { name: /world/i }).click();
+      screen.getByRole("button", { name: /^atlas$/i }).click();
     });
   });
 });

@@ -13,7 +13,7 @@ import { describe, expect, it } from "vitest";
 import { loadCanon } from "./index.js";
 import { buildRegistry } from "./registry.js";
 import { parseCanon } from "./parse.js";
-import { Creature, Biome, Individual, Item } from "./taxonomies.js";
+import { Creature, Biome, Individual, Item, Route } from "./taxonomies.js";
 import type {
   Creature as CreatureEntity,
   Individual as IndividualEntity,
@@ -40,6 +40,12 @@ const BANDS = bandTable(
 );
 
 describe("canon corpus", () => {
+  it("requires bounded route geometry with an explicit accuracy", () => {
+    const route = registry.byId.get("route.stone_crossing");
+    expect(Route.safeParse(route).success).toBe(true);
+    expect(Route.safeParse({ ...route, map_path: { accuracy: "mapped", points: [{ x: 1, y: 2 }] } }).success).toBe(false);
+    expect(Route.safeParse({ ...route, map_path: { accuracy: "mapped", points: [{ x: 1, y: 2 }, { x: 1001, y: 3 }] } }).success).toBe(false);
+  });
   it("parses and validates every entity, with every reference resolving", () => {
     const real = errors(registry);
     expect(real.map((issue) => `${issue.file} ${issue.id ?? ""} ${issue.message}`)).toEqual([]);

@@ -1,0 +1,280 @@
+{
+  "eastern_plains": {
+    "placeId": "biome.eastern_plains",
+    "bounds": {
+      "x": 619.8347107438017,
+      "y": 320.06773920406437,
+      "width": 320.06010518407214,
+      "height": 339.5427603725656
+    },
+    "image": {
+      "width": 426,
+      "height": 401
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/eastern_plains/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 426,
+        "height": 401
+      }
+    ]
+  },
+  "enchanted_woods": {
+    "placeId": "biome.enchanted_woods",
+    "bounds": {
+      "x": 39.81968444778362,
+      "y": 265.02963590177814,
+      "width": 340.34560480841475,
+      "height": 309.9068585944115
+    },
+    "image": {
+      "width": 453,
+      "height": 366
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/enchanted_woods/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 453,
+        "height": 366
+      }
+    ]
+  },
+  "expanse": {
+    "placeId": "biome.expanse",
+    "bounds": {
+      "x": 259.9549211119459,
+      "y": 0.0,
+      "width": 450.03756574004507,
+      "height": 270.1100762066046
+    },
+    "image": {
+      "width": 599,
+      "height": 319
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/expanse/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 319
+      },
+      {
+        "src": "/assets/world/atlas/expanse/512-0.webp",
+        "x": 512,
+        "y": 0,
+        "width": 87,
+        "height": 319
+      }
+    ]
+  },
+  "frostfang_peaks": {
+    "placeId": "biome.frostfang_peaks",
+    "bounds": {
+      "x": 649.8873027798647,
+      "y": 120.23708721422523,
+      "width": 329.82719759579265,
+      "height": 289.5850973751059
+    },
+    "image": {
+      "width": 439,
+      "height": 342
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/frostfang_peaks/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 439,
+        "height": 342
+      }
+    ]
+  },
+  "glacier_of_origins": {
+    "placeId": "biome.glacier_of_origins",
+    "bounds": {
+      "x": 649.8873027798647,
+      "y": 0.0,
+      "width": 299.77460555972954,
+      "height": 209.99153259949196
+    },
+    "image": {
+      "width": 399,
+      "height": 248
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/glacier_of_origins/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 399,
+        "height": 248
+      }
+    ]
+  },
+  "mermaid_cove": {
+    "placeId": "biome.mermaid_cove",
+    "bounds": {
+      "x": 549.962434259955,
+      "y": 790.008467400508,
+      "width": 290.00751314800897,
+      "height": 209.99153259949196
+    },
+    "image": {
+      "width": 386,
+      "height": 248
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/mermaid_cove/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 386,
+        "height": 248
+      }
+    ]
+  },
+  "plains": {
+    "placeId": "biome.plains",
+    "bounds": {
+      "x": 320.06010518407214,
+      "y": 399.6613039796782,
+      "width": 329.82719759579265,
+      "height": 259.9491955969517
+    },
+    "image": {
+      "width": 439,
+      "height": 307
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/plains/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 439,
+        "height": 307
+      }
+    ]
+  },
+  "red_sky_foothills": {
+    "placeId": "biome.red_sky_foothills",
+    "bounds": {
+      "x": 280.2404207362885,
+      "y": 239.62743437764604,
+      "width": 379.4139744552968,
+      "height": 290.4318374259102
+    },
+    "image": {
+      "width": 505,
+      "height": 343
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/red_sky_foothills/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 505,
+        "height": 343
+      }
+    ]
+  },
+  "sallow_wastelands": {
+    "placeId": "biome.sallow_wastelands",
+    "bounds": {
+      "x": 649.8873027798647,
+      "y": 669.7713801862828,
+      "width": 350.1126972201352,
+      "height": 330.2286198137172
+    },
+    "image": {
+      "width": 466,
+      "height": 390
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/sallow_wastelands/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 466,
+        "height": 390
+      }
+    ]
+  },
+  "sky_islands": {
+    "placeId": "biome.sky_islands",
+    "bounds": {
+      "x": 0.0,
+      "y": 99.91532599491956,
+      "width": 310.29301277235163,
+      "height": 270.1100762066046
+    },
+    "image": {
+      "width": 413,
+      "height": 319
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/sky_islands/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 413,
+        "height": 319
+      }
+    ]
+  },
+  "sunward_fields": {
+    "placeId": "biome.sunward_fields",
+    "bounds": {
+      "x": 299.77460555972954,
+      "y": 580.0169348010161,
+      "width": 350.1126972201352,
+      "height": 309.9068585944115
+    },
+    "image": {
+      "width": 466,
+      "height": 366
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/sunward_fields/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 466,
+        "height": 366
+      }
+    ]
+  },
+  "whispering_marsh": {
+    "placeId": "biome.whispering_marsh",
+    "bounds": {
+      "x": 0.0,
+      "y": 509.73751058425063,
+      "width": 399.69947407963934,
+      "height": 290.4318374259102
+    },
+    "image": {
+      "width": 532,
+      "height": 343
+    },
+    "tiles": [
+      {
+        "src": "/assets/world/atlas/whispering_marsh/0-0.webp",
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 343
+      },
+      {
+        "src": "/assets/world/atlas/whispering_marsh/512-0.webp",
+        "x": 512,
+        "y": 0,
+        "width": 20,
+        "height": 343
+      }
+    ]
+  }
+}

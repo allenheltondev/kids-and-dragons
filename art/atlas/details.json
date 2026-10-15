@@ -1,0 +1,6 @@
+{
+  "northwest": { "source": "art/source/atlas-northwest-detail-v1.png", "bounds": { "x": 0, "y": 0, "width": 500, "height": 500 } },
+  "northeast": { "source": "art/source/atlas-northeast-detail-v1.png", "bounds": { "x": 500, "y": 0, "width": 500, "height": 500 } },
+  "southwest": { "source": "art/source/atlas-southwest-detail-v1.png", "bounds": { "x": 0, "y": 500, "width": 500, "height": 500 } },
+  "southeast": { "source": "art/source/atlas-southeast-detail-v1.png", "bounds": { "x": 500, "y": 500, "width": 500, "height": 500 } }
+}

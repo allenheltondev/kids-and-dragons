@@ -9,6 +9,7 @@ import { defineConfig } from "@playwright/test";
  * downloads; drop it and the browser it wants gets fetched instead.
  */
 const CHROMIUM = process.env.KAD_CHROMIUM ?? undefined;
+const BASE_URL = process.env.KAD_E2E_BASE_URL ?? "http://localhost:5173";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -27,7 +28,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "list" : "line",
   use: {
-    baseURL: "http://localhost:5173",
+    baseURL: BASE_URL,
     trace: "retain-on-failure",
     ...(CHROMIUM ? { launchOptions: { executablePath: CHROMIUM } } : {}),
   },
@@ -37,12 +38,12 @@ export default defineConfig({
     // reference campaign rather than following whatever the lobby launches.
     env: { VITE_LAUNCH_CAMPAIGN: "the-hollow-crown" },
     // Wait for the API through Vite, so a fast client boot cannot race the server.
-    url: "http://localhost:5173/api/health",
+    url: new URL("/api/health", BASE_URL).href,
     // Locally, reuse the dev server you already have running. On CI there
     // should never be one — if something is already on :5173 it is a leaked
     // process from an earlier step, and testing against it would silently
     // test the wrong build. Fail loudly there instead.
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI && !process.env.KAD_E2E_BASE_URL,
     timeout: 120_000,
   },
 });

@@ -1,0 +1,444 @@
+{
+  "image": {
+    "width": 1331,
+    "height": 1181
+  },
+  "levels": [
+    {
+      "image": {
+        "width": 512,
+        "height": 454
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/realm/512/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 454
+        }
+      ]
+    },
+    {
+      "image": {
+        "width": 665,
+        "height": 590
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/realm/665/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/665/512-0.webp",
+          "x": 512,
+          "y": 0,
+          "width": 153,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/665/0-512.webp",
+          "x": 0,
+          "y": 512,
+          "width": 512,
+          "height": 78
+        },
+        {
+          "src": "/assets/world/atlas/realm/665/512-512.webp",
+          "x": 512,
+          "y": 512,
+          "width": 153,
+          "height": 78
+        }
+      ]
+    },
+    {
+      "image": {
+        "width": 1331,
+        "height": 1181
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/realm/1331/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/512-0.webp",
+          "x": 512,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/1024-0.webp",
+          "x": 1024,
+          "y": 0,
+          "width": 307,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/0-512.webp",
+          "x": 0,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/512-512.webp",
+          "x": 512,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/1024-512.webp",
+          "x": 1024,
+          "y": 512,
+          "width": 307,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/0-1024.webp",
+          "x": 0,
+          "y": 1024,
+          "width": 512,
+          "height": 157
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/512-1024.webp",
+          "x": 512,
+          "y": 1024,
+          "width": 512,
+          "height": 157
+        },
+        {
+          "src": "/assets/world/atlas/realm/1331/1024-1024.webp",
+          "x": 1024,
+          "y": 1024,
+          "width": 307,
+          "height": 157
+        }
+      ]
+    }
+  ],
+  "patches": [
+    {
+      "id": "northwest",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 500,
+        "height": 500
+      },
+      "image": {
+        "width": 1333,
+        "height": 1180
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/detail/northwest/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/512-0.webp",
+          "x": 512,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/1024-0.webp",
+          "x": 1024,
+          "y": 0,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/0-512.webp",
+          "x": 0,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/512-512.webp",
+          "x": 512,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/1024-512.webp",
+          "x": 1024,
+          "y": 512,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/0-1024.webp",
+          "x": 0,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/512-1024.webp",
+          "x": 512,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/northwest/1024-1024.webp",
+          "x": 1024,
+          "y": 1024,
+          "width": 309,
+          "height": 156
+        }
+      ]
+    },
+    {
+      "id": "northeast",
+      "bounds": {
+        "x": 500,
+        "y": 0,
+        "width": 500,
+        "height": 500
+      },
+      "image": {
+        "width": 1333,
+        "height": 1180
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/detail/northeast/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/512-0.webp",
+          "x": 512,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/1024-0.webp",
+          "x": 1024,
+          "y": 0,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/0-512.webp",
+          "x": 0,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/512-512.webp",
+          "x": 512,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/1024-512.webp",
+          "x": 1024,
+          "y": 512,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/0-1024.webp",
+          "x": 0,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/512-1024.webp",
+          "x": 512,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/northeast/1024-1024.webp",
+          "x": 1024,
+          "y": 1024,
+          "width": 309,
+          "height": 156
+        }
+      ]
+    },
+    {
+      "id": "southwest",
+      "bounds": {
+        "x": 0,
+        "y": 500,
+        "width": 500,
+        "height": 500
+      },
+      "image": {
+        "width": 1333,
+        "height": 1180
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/detail/southwest/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/512-0.webp",
+          "x": 512,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/1024-0.webp",
+          "x": 1024,
+          "y": 0,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/0-512.webp",
+          "x": 0,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/512-512.webp",
+          "x": 512,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/1024-512.webp",
+          "x": 1024,
+          "y": 512,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/0-1024.webp",
+          "x": 0,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/512-1024.webp",
+          "x": 512,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/southwest/1024-1024.webp",
+          "x": 1024,
+          "y": 1024,
+          "width": 309,
+          "height": 156
+        }
+      ]
+    },
+    {
+      "id": "southeast",
+      "bounds": {
+        "x": 500,
+        "y": 500,
+        "width": 500,
+        "height": 500
+      },
+      "image": {
+        "width": 1333,
+        "height": 1180
+      },
+      "tiles": [
+        {
+          "src": "/assets/world/atlas/detail/southeast/0-0.webp",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/512-0.webp",
+          "x": 512,
+          "y": 0,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/1024-0.webp",
+          "x": 1024,
+          "y": 0,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/0-512.webp",
+          "x": 0,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/512-512.webp",
+          "x": 512,
+          "y": 512,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/1024-512.webp",
+          "x": 1024,
+          "y": 512,
+          "width": 309,
+          "height": 512
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/0-1024.webp",
+          "x": 0,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/512-1024.webp",
+          "x": 512,
+          "y": 1024,
+          "width": 512,
+          "height": 156
+        },
+        {
+          "src": "/assets/world/atlas/detail/southeast/1024-1024.webp",
+          "x": 1024,
+          "y": 1024,
+          "width": 309,
+          "height": 156
+        }
+      ]
+    }
+  ]
+}
