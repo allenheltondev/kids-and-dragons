@@ -66,7 +66,8 @@
           "requiresSpecies": "griffin",
           "goto": "scene_spans_from_above"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_spans_from_above": {
       "type": "story",
@@ -126,7 +127,8 @@
           "figure": "entities/burrowfolk",
           "name": "Muddy prospector"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_soup_line_fix_barrow": {
       "type": "story",
@@ -148,7 +150,8 @@
           "figure": "entities/burrowfolk",
           "name": "Muddy prospector"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_cult_pitch": {
       "type": "story",
@@ -190,6 +193,7 @@
           "goto": "scene_cult_pitch_finish_soup"
         }
       ],
+      "art": "scenes/gemfall/hollis-soup-queue",
       "cast": [
         {
           "figure": "cast/hollis",
@@ -208,6 +212,7 @@
           "goto": "scene_nim_pony"
         }
       ],
+      "art": "scenes/gemfall/hollis-soup-queue",
       "cast": [
         {
           "figure": "cast/hollis",
@@ -226,6 +231,7 @@
           "goto": "scene_nim_pony"
         }
       ],
+      "art": "scenes/gemfall/hollis-soup-queue",
       "cast": [
         {
           "figure": "cast/hollis",
@@ -244,6 +250,7 @@
           "goto": "scene_nim_pony"
         }
       ],
+      "art": "scenes/gemfall/hollis-soup-queue",
       "cast": [
         {
           "figure": "cast/hollis",
@@ -286,7 +293,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_carter": {
       "type": "check",
@@ -315,7 +323,8 @@
       "onFailure": {
         "goto": "scene_survey_guard",
         "narration": "\"Promised to a buyer in the foothills,\" she says, and clicks to her mule. Gem 4117 hums away west across the bridge."
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_ledger": {
       "type": "check",
@@ -336,7 +345,8 @@
       "onFailure": {
         "goto": "scene_survey_guard",
         "narration": "You find a rule about goats, a rule about very large goats, and a rule about goats that are actually two children in a coat. By the time you look up, gem 4117 is across."
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_clerk_stone": {
       "type": "story",
@@ -365,7 +375,8 @@
           "icon": "arrow",
           "goto": "scene_survey_guard"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_engineers": {
       "type": "story",
@@ -411,7 +422,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "check_outline": {
       "type": "check",
@@ -439,7 +451,8 @@
       "onFailure": {
         "goto": "scene_outline",
         "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
-      }
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_outline": {
       "type": "story",
@@ -457,7 +470,8 @@
           "icon": "rest",
           "goto": "choice_stones_on_table"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "rest_tent": {
       "type": "rest",
@@ -476,7 +490,8 @@
           "icon": "party",
           "goto": "scene_who_to_tell"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_who_to_tell": {
       "type": "choice_point",
@@ -527,7 +542,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_told_wardens": {
       "type": "story",
@@ -545,7 +561,8 @@
           "icon": "arrow",
           "goto": "scene_span_question"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_told_gatherers": {
       "type": "story",
@@ -563,7 +580,8 @@
           "icon": "arrow",
           "goto": "scene_span_question"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_kept_close": {
       "type": "story",
@@ -575,7 +593,8 @@
           "icon": "arrow",
           "goto": "scene_span_question"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_crossing": {
       "type": "choice_point",
@@ -608,7 +627,8 @@
           "requiresSpecies": "griffin",
           "goto": "scene_griffin_shortcut"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "check_span": {
       "type": "check",
@@ -623,7 +643,8 @@
       "onFailure": {
         "goto": "scene_under_bridge",
         "narration": "Halfway across, the bridge gives a long groan and the flag slams down. \"Span closed! Everybody back!\" The only other way over is the old pride ford, underneath."
-      }
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_under_bridge": {
       "type": "story",
@@ -649,7 +670,8 @@
           "icon": "swords",
           "goto": "encounter_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-pillar-shallows"
     },
     "check_wolves": {
       "type": "check",
@@ -669,7 +691,8 @@
       "onFailure": {
         "goto": "encounter_wolves",
         "narration": "The supper is gone in four seconds. The pack looks at you as if to say: is that all?"
-      }
+      },
+      "art": "scenes/gemfall/bridge-pillar-shallows"
     },
     "encounter_wolves": {
       "type": "encounter",
@@ -741,7 +764,8 @@
       ],
       "heal": 3,
       "outcome": "setback",
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_brass_south": {
       "type": "story",
@@ -773,6 +797,7 @@
           "goto": "scene_brass_south_ask_question"
         }
       ],
+      "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
           "figure": "entities/burrowfolk",
@@ -795,6 +820,7 @@
           "goto": "scene_tremor"
         }
       ],
+      "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
           "figure": "entities/burrowfolk",
@@ -817,6 +843,7 @@
           "goto": "scene_tremor"
         }
       ],
+      "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
           "figure": "entities/burrowfolk",
@@ -839,6 +866,7 @@
           "goto": "scene_tremor"
         }
       ],
+      "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
           "figure": "entities/burrowfolk",
@@ -873,7 +901,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "check_crates": {
       "type": "check",
@@ -888,7 +917,8 @@
       "onFailure": {
         "goto": "scene_soup_line",
         "narration": "The crates topple straight past your hands and land, thump, thump, thump, in a hay cart. Nothing breaks. One of them bursts open, and it is full of socks. \"Not that one,\" says the tired carter. \"The humming ones are underneath.\" One tag says 4117."
-      }
+      },
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_tremor_look_down": {
       "type": "story",
@@ -900,7 +930,8 @@
           "icon": "eye",
           "goto": "scene_soup_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
     },
     "scene_nim_pony": {
       "type": "story",
@@ -934,7 +965,8 @@
           "requiresSpecies": "dragonling",
           "goto": "scene_nim_pony_bell_greeting"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_nim_pony_hold_pony": {
       "type": "story",
@@ -952,7 +984,8 @@
           "icon": "hand",
           "goto": "scene_old_marks"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_pony": {
       "type": "check",
@@ -973,7 +1006,8 @@
       "onFailure": {
         "goto": "scene_old_marks",
         "narration": "You talk to Pepper. Pepper talks back, loudly, and sits down in the road like a dog. In the end Nim gets off and you all push from behind, and Pepper walks on past the carts with her nose in the air, pretending she was always going to."
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_nim_pony_bell_greeting": {
       "type": "story",
@@ -991,7 +1025,8 @@
           "icon": "whistle",
           "goto": "scene_old_marks"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_old_marks": {
       "type": "story",
@@ -1023,7 +1058,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_rubbing": {
       "type": "check",
@@ -1045,7 +1081,8 @@
       "onFailure": {
         "goto": "scene_clerk",
         "narration": "Paper, charcoal, rub. What comes out is a perfect picture of a warden's boot, because a warden was standing on the corner of your paper. She asks if she can keep it. You let her."
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_old_marks_palm": {
       "type": "story",
@@ -1057,7 +1094,8 @@
           "icon": "ear",
           "goto": "scene_clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_old_marks_read_marks": {
       "type": "story",
@@ -1069,7 +1107,8 @@
           "icon": "eye",
           "goto": "scene_clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_survey_guard": {
       "type": "story",
@@ -1100,7 +1139,8 @@
           "requiresItem": "facet_clerks",
           "goto": "scene_survey_guard_clerks_stone"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "check_tibbet": {
       "type": "check",
@@ -1121,7 +1161,8 @@
       "onFailure": {
         "goto": "scene_crack_string",
         "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you round the side of the tent."
-      }
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_survey_guard_write_it": {
       "type": "story",
@@ -1139,7 +1180,8 @@
           "icon": "scroll",
           "goto": "scene_crack_string"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_survey_guard_clerks_stone": {
       "type": "story",
@@ -1157,7 +1199,8 @@
           "icon": "gem",
           "goto": "scene_crack_string"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_crack_string": {
       "type": "story",
@@ -1175,7 +1218,8 @@
           "icon": "eye",
           "goto": "scene_crack_string_read_chalk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "check_string": {
       "type": "check",
@@ -1190,7 +1234,8 @@
       "onFailure": {
         "goto": "scene_engineers",
         "narration": "A breeze catches the string and it wiggles like a worm. You try again. It wiggles more. The apprentice laughs, measures it herself in a moment, and chalks the mark. \"A hair wider than yesterday,\" she says. \"Always is.\""
-      }
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_crack_string_read_chalk": {
       "type": "story",
@@ -1202,7 +1247,8 @@
           "icon": "eye",
           "goto": "scene_engineers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_engineers_rubbing": {
       "type": "story",
@@ -1220,7 +1266,8 @@
           "icon": "scroll",
           "goto": "scene_outline"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "choice_stones_on_table": {
       "type": "choice_point",
@@ -1251,7 +1298,8 @@
           "requiresItem": "facet_pride",
           "goto": "choice_stones_on_table_pride_stone"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "choice_stones_on_table_lay_out": {
       "type": "story",
@@ -1269,7 +1317,8 @@
           "icon": "gem",
           "goto": "rest_tent"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "choice_stones_on_table_keep_shut": {
       "type": "story",
@@ -1287,7 +1336,8 @@
           "icon": "key",
           "goto": "rest_tent"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "choice_stones_on_table_pride_stone": {
       "type": "story",
@@ -1305,7 +1355,8 @@
           "icon": "crown",
           "goto": "rest_tent"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "scene_span_question": {
       "type": "story",
@@ -1330,7 +1381,8 @@
           "requiresFlag": "river_took_us",
           "goto": "scene_span_question_river_asked"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_span_question_answer": {
       "type": "story",
@@ -1342,7 +1394,8 @@
           "icon": "heart",
           "goto": "scene_pack_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_span_question_ask_back": {
       "type": "story",
@@ -1354,7 +1407,8 @@
           "icon": "ear",
           "goto": "scene_pack_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_span_question_river_asked": {
       "type": "story",
@@ -1366,7 +1420,8 @@
           "icon": "drop",
           "goto": "scene_pack_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_pack_crossing": {
       "type": "story",
@@ -1397,7 +1452,8 @@
           "requiresItem": "ossley_reed_knot",
           "goto": "scene_pack_crossing_reed_knot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_pack_crossing_carry": {
       "type": "story",
@@ -1415,7 +1471,8 @@
           "icon": "hand",
           "goto": "scene_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_pack_crossing_cart": {
       "type": "story",
@@ -1433,7 +1490,8 @@
           "icon": "travel",
           "goto": "scene_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_pack_crossing_reed_knot": {
       "type": "story",
@@ -1451,7 +1509,8 @@
           "icon": "drop",
           "goto": "scene_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "check_span_quiet": {
       "type": "check",
@@ -1466,7 +1525,8 @@
       "onFailure": {
         "goto": "scene_under_bridge",
         "narration": "The east rail is steadier, but not steady enough. Halfway over, the bridge groans and the flag slams down. \"Span closed! Everybody back!\" The only other way over is the old pride ford, underneath."
-      }
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     },
     "scene_rim_lookout": {
       "type": "story",
@@ -1500,7 +1560,8 @@
           "requiresSpecies": "griffin",
           "goto": "scene_rim_lookout_fly_redspire"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/redspire-rim-lookout"
     },
     "scene_rim_lookout_send_word": {
       "type": "story",
@@ -1518,7 +1579,8 @@
           "icon": "scroll",
           "goto": "rest_end"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/redspire-rim-lookout"
     },
     "check_fires": {
       "type": "check",
@@ -1539,7 +1601,8 @@
       "onFailure": {
         "goto": "rest_end",
         "narration": "One, two, three... you lose count at three hundred and something, when a cloud moves and a whole valley of fires appears at once. \"More than stars,\" says Bracken, and that will have to do. She trots off south with your news."
-      }
+      },
+      "art": "scenes/gemfall/redspire-rim-lookout"
     },
     "scene_rim_lookout_fly_redspire": {
       "type": "story",
@@ -1557,7 +1620,8 @@
           "icon": "wing",
           "goto": "rest_end"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/redspire-rim-lookout"
     }
   },
   "llmHints": {
