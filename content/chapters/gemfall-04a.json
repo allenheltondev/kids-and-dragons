@@ -65,7 +65,8 @@
           "icon": "arrow",
           "goto": "scene_brass_rope"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_caravan_dry": {
       "type": "story",
@@ -77,7 +78,18 @@
           "icon": "arrow",
           "goto": "scene_brass_rope"
         }
-      ]
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Cart driver"
+        },
+        {
+          "figure": "entities/donkey",
+          "name": "Cart donkey"
+        }
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_mouthlands_walk": {
       "type": "story",
@@ -96,7 +108,8 @@
           "icon": "arrow",
           "goto": "scene_brass_rope"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_pride_road": {
       "type": "choice_point",
@@ -129,7 +142,8 @@
           "requiresSpecies": "griffin",
           "goto": "scene_bend_from_above"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_embermoths": {
       "type": "story",
@@ -159,7 +173,8 @@
           "icon": "crown",
           "goto": "scene_cub_scouts"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_bend_from_above": {
       "type": "story",
@@ -221,7 +236,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "check_greeting": {
       "type": "check",
@@ -250,7 +266,8 @@
       "onFailure": {
         "goto": "scene_granny_cake",
         "narration": "Everybody waves at once with both arms, like people drowning in grass. The elder blinks, decides you meant well, and lets you sit at the edge of camp."
-      }
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_hospitality": {
       "type": "story",
@@ -285,7 +302,8 @@
           "icon": "rest",
           "goto": "scene_granny_cake"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_pride_camp": {
       "type": "story",
@@ -310,7 +328,8 @@
           "icon": "arrow",
           "goto": "choice_cub_nap"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_riddle_account": {
       "type": "story",
@@ -342,7 +361,8 @@
           "icon": "clever",
           "goto": "check_old_riddle"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "check_old_riddle": {
       "type": "check",
@@ -371,7 +391,8 @@
       "onFailure": {
         "goto": "choice_cub_nap",
         "narration": "You guess \"a teapot.\" It is not a teapot. Several famous careers have ended on that riddle, so you are in very good company."
-      }
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_waystation": {
       "type": "story",
@@ -405,7 +426,8 @@
           "requiresFlag": "ran_relay",
           "goto": "scene_waystation_letters_arrived"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "check_sashes": {
       "type": "check",
@@ -433,7 +455,8 @@
       "onFailure": {
         "goto": "scene_spiral",
         "narration": "The sashes tangle into one enormous woolly knot. The oldest centaur sighs, untangles it in about a minute, and lays them out for you, tutting."
-      }
+      },
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "scene_spiral": {
       "type": "story",
@@ -457,7 +480,8 @@
           "icon": "map",
           "goto": "scene_spiral_mark_falls"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "rest_waystation": {
       "type": "rest",
@@ -490,7 +514,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "rest_waystation_with_escort": {
       "type": "story",
@@ -513,7 +538,8 @@
           "icon": "crown",
           "goto": "scene_dawn_moths"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_widest_bend": {
       "type": "story",
@@ -531,7 +557,8 @@
           "icon": "leaf",
           "goto": "scene_leave_stone"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_take_stone": {
       "type": "story",
@@ -554,7 +581,8 @@
           "icon": "flame",
           "goto": "scene_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_leave_stone": {
       "type": "story",
@@ -580,7 +608,8 @@
           "icon": "flame",
           "goto": "rest_pride_fire"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_wolves": {
       "type": "story",
@@ -613,7 +642,8 @@
           "icon": "swords",
           "goto": "encounter_wolves"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/abandoned-caravan-rest"
     },
     "check_wolves": {
       "type": "check",
@@ -633,7 +663,8 @@
       "onFailure": {
         "goto": "encounter_wolves",
         "narration": "They take the supper. Then they come back for the fire."
-      }
+      },
+      "art": "scenes/gemfall/abandoned-caravan-rest"
     },
     "encounter_wolves": {
       "type": "encounter",
@@ -670,7 +701,8 @@
         }
       ],
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/pride-night-fire"
     },
     "rest_wolf_fire": {
       "type": "rest",
@@ -681,14 +713,16 @@
         }
       ],
       "heal": 3,
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/abandoned-caravan-rest"
     },
     "rest_scattered": {
       "type": "rest",
       "narration": "Nobody is hurt. The wolves just wanted the warm more than you did. You spend the night squashed under a cart cover, and the morning finds your camp spread across a mile of grass. It takes all day to find everything. The Pride Stone hums the whole time, as if it is not sorry at all.",
       "heal": 3,
       "outcome": "setback",
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/abandoned-caravan-rest"
     },
     "scene_escort_answers": {
       "type": "story",
@@ -705,7 +739,8 @@
           "icon": "rest",
           "goto": "rest_wolf_fire"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-night-fire"
     },
     "scene_brass_rope": {
       "type": "story",
@@ -730,6 +765,17 @@
           "requiresSpecies": "manticore",
           "goto": "scene_brass_rope_whose_road"
         }
+      ],
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_brass_rope_ask_question": {
@@ -741,6 +787,17 @@
           "label": "Walk on north",
           "icon": "ear",
           "goto": "scene_relay_runner"
+        }
+      ],
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -754,6 +811,17 @@
           "icon": "boot",
           "goto": "scene_relay_runner"
         }
+      ],
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_brass_rope_whose_road": {
@@ -766,6 +834,17 @@
           "icon": "crown",
           "goto": "scene_relay_runner"
         }
+      ],
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "scene_relay_runner": {
@@ -776,7 +855,7 @@
       "narration": "Hooves drum behind you, and a centaur thunders past, skids, and trots back. \"Bracken Swiftmile, relay,\" she pants. Her sash is stuffed with letters. \"News from the west and the middle, if you want it, news north if you're carrying any. Quick, mind. Relay waits for nobody.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -807,14 +886,15 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_relay_runner_news_west": {
       "type": "story",
       "narration": "\"West road's strange,\" says Bracken. \"Marsh lights gossiping about a gate in the reeds that hums. Boggarts charging folk to cross their own puddles. And on the middle road the witches' bell charms keep ringing whenever a gem goes by.\" She frowns. \"Everybody's stones are humming, everywhere. Funny, that.\" Then she is gone in a cloud of dust.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -825,7 +905,8 @@
           "icon": "ear",
           "goto": "scene_pride_road"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "check_race": {
       "type": "check",
@@ -834,7 +915,7 @@
       "prompt": "Race a relay centaur to the next pride post",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
@@ -846,7 +927,8 @@
       "onFailure": {
         "goto": "scene_pride_road",
         "narration": "Bracken is a centaur. She reaches the post, reads her letters, eats an apple, and waves you in. \"Not bad for two legs,\" she says kindly, and tells you the relay news anyway: on every road in the realm, the stones are humming."
-      }
+      },
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_relay_runner_carry_letters": {
       "type": "story",
@@ -858,7 +940,8 @@
           "icon": "wing",
           "goto": "scene_pride_road"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_cub_scouts": {
       "type": "story",
@@ -895,7 +978,8 @@
           "icon": "ear",
           "goto": "scene_cub_scouts_ask_why"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_cub_scouts_pretend": {
       "type": "story",
@@ -913,7 +997,8 @@
           "icon": "eye",
           "goto": "scene_pride_greeting"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_cub_scouts_play_rocks": {
       "type": "story",
@@ -931,7 +1016,8 @@
           "icon": "leaf",
           "goto": "scene_pride_greeting"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_cub_scouts_ask_why": {
       "type": "story",
@@ -949,7 +1035,8 @@
           "icon": "ear",
           "goto": "scene_pride_greeting"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_pride_greeting_cubs_introduce": {
       "type": "story",
@@ -968,14 +1055,15 @@
           "icon": "crown",
           "goto": "scene_granny_cake"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_granny_cake": {
       "type": "story",
       "narration": "Before anybody can talk business, a manticore grandmother plants herself in front of you with a plate. She is Granny Ash, and this is her famous spiced grass-cake, and nobody has ever finished a slice. The cubs are watching to see if you will be the first. So is everybody else.",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -998,7 +1086,8 @@
           "icon": "hand",
           "goto": "scene_granny_cake_share_back"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "check_cake": {
       "type": "check",
@@ -1007,7 +1096,7 @@
       "prompt": "Finish a slice of Granny Ash's spiced grass-cake",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -1026,14 +1115,15 @@
       "onFailure": {
         "goto": "scene_pride_camp",
         "narration": "Bite, chew, and steam comes out of your ears. Actual steam. You have to stop halfway and drink a whole bucket of water. Granny Ash is delighted. She has never seen anyone steam before, and she tells everybody, all evening."
-      }
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_granny_cake_recipe": {
       "type": "story",
       "narration": "\"The recipe,\" says Granny Ash, very pleased to be asked, \"is grass, and fire-pepper, and patience.\" She tells you how much patience. It is a great deal of patience. By the time she has finished telling you, your slice of cake has been eaten by a cub, who is now steaming gently.",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -1044,14 +1134,15 @@
           "icon": "scroll",
           "goto": "scene_pride_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_granny_cake_share_back": {
       "type": "story",
       "narration": "You dig in your packs for something to give back. As you open them, the humming gets louder, and Granny Ash takes one big step back without meaning to. Then another. She looks surprised at her own feet. \"Bless me,\" she says. \"It's not you, dear. It's whatever is singing in there.\"",
       "cast": [
         {
-          "figure": "characters/manticore",
+          "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
@@ -1062,7 +1153,8 @@
           "icon": "hand",
           "goto": "scene_pride_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "choice_cub_nap": {
       "type": "choice_point",
@@ -1107,7 +1199,8 @@
           "requiresItem": "ossley_reed_knot",
           "goto": "choice_cub_nap_reed_knot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "choice_cub_nap_packs_away": {
       "type": "story",
@@ -1119,7 +1212,8 @@
           "icon": "boot",
           "goto": "scene_moving_marker"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "check_lullaby": {
       "type": "check",
@@ -1141,7 +1235,8 @@
       "onFailure": {
         "goto": "scene_moving_marker",
         "narration": "Everybody starts singing a different song at once. It is so awful that the cubs laugh until they are worn out, and fall asleep in a heap, still giggling. Elder Sefa says that counts."
-      }
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "choice_cub_nap_lintel_story": {
       "type": "story",
@@ -1153,7 +1248,8 @@
           "icon": "scroll",
           "goto": "scene_moving_marker"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "choice_cub_nap_reed_knot": {
       "type": "story",
@@ -1165,7 +1261,8 @@
           "icon": "drop",
           "goto": "scene_moving_marker"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
     },
     "scene_moving_marker": {
       "type": "story",
@@ -1204,7 +1301,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "check_marker_post": {
       "type": "check",
@@ -1219,7 +1317,8 @@
       "onFailure": {
         "goto": "scene_waystation",
         "narration": "The post is heavier than it looks, and it looks very heavy. You all wobble, and it ends up planted slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
-      }
+      },
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_moving_marker_ask_where": {
       "type": "story",
@@ -1231,7 +1330,8 @@
           "icon": "map",
           "goto": "scene_waystation"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_moving_marker_fly_line": {
       "type": "story",
@@ -1243,7 +1343,8 @@
           "icon": "wing",
           "goto": "scene_waystation"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_waystation_stitch_first": {
       "type": "story",
@@ -1261,7 +1362,8 @@
           "icon": "feather",
           "goto": "check_sashes"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "scene_waystation_letters_arrived": {
       "type": "story",
@@ -1279,7 +1381,8 @@
           "icon": "wing",
           "goto": "check_sashes"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "scene_spiral_mark_falls": {
       "type": "story",
@@ -1297,7 +1400,8 @@
           "icon": "map",
           "goto": "rest_waystation"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
     },
     "scene_dawn_moths": {
       "type": "story",
@@ -1323,7 +1427,8 @@
           "icon": "quick",
           "goto": "check_moth"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_dawn_moths_let_pass": {
       "type": "story",
@@ -1335,7 +1440,8 @@
           "icon": "rest",
           "goto": "scene_jackalope_wall"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "check_moth": {
       "type": "check",
@@ -1355,7 +1461,8 @@
       "onFailure": {
         "goto": "scene_jackalope_wall",
         "narration": "You miss. You miss again. On the third try an embermoth lands on your nose all by itself, glows very brightly, and makes you sneeze. Then it hurries south after the others, away from the mountain, as fast as it can go."
-      }
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_jackalope_wall": {
       "type": "story",
@@ -1388,7 +1495,8 @@
           "requiresItem": "honeycake",
           "goto": "scene_jackalope_wall_honeycake"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "check_jackalopes": {
       "type": "check",
@@ -1408,7 +1516,8 @@
       "onFailure": {
         "goto": "scene_wolf_sign",
         "narration": "Hands, knees, and then somebody puts a hand on a tail. One jackalope squeaks, and all fifty jump at once, straight up, like popcorn, and land again in exactly the same places. You crawl the rest of the way pink with embarrassment."
-      }
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_jackalope_wall_ask_oldest": {
       "type": "story",
@@ -1425,7 +1534,8 @@
           "icon": "ear",
           "goto": "scene_wolf_sign"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_jackalope_wall_honeycake": {
       "type": "story",
@@ -1442,7 +1552,8 @@
           "icon": "cake",
           "goto": "scene_wolf_sign"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_wolf_sign": {
       "type": "story",
@@ -1463,7 +1574,8 @@
           "icon": "hand",
           "goto": "scene_wolf_sign_cover_prints"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "check_wolf_prints": {
       "type": "check",
@@ -1478,7 +1590,8 @@
       "onFailure": {
         "goto": "scene_widest_bend",
         "narration": "You follow the prints round and round until you realize you are following your own boot prints, following the wolf's. Embarrassing. You give up and walk straight in, and find the very middle of the bend all by yourselves."
-      }
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_wolf_sign_cover_prints": {
       "type": "story",
@@ -1490,7 +1603,8 @@
           "icon": "hand",
           "goto": "scene_widest_bend"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     }
   },
   "llmHints": {
