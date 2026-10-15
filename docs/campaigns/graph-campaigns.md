@@ -685,9 +685,9 @@ moments the journey already has:
 | `"chapters"` | every chapter completed (a pass-through plays none) | the **session clock**: a chapter is one sitting, so "for two evenings" |
 
 The age counts from the moment the rift **opened** (for an untriggered rift, the start of the
-attempt). Turn-by-turn timing inside an encounter is #201's (environmental combat): the parser
-refuses any other unit today, and `tickRifts(graph, journey, unit)` is the hook a turn clock would
-call.
+attempt). The parser refuses any other unit. Turn-by-turn timing inside an encounter is #201's
+[rift clock](#environmental-combat-201), which deliberately does **not** call `tickRifts`: a fight
+never moves the journey; a flag its ending sets does, through the node's `onComplete` rules.
 
 ### When a rift moves, and what a crossing is
 
@@ -1248,6 +1248,197 @@ fights against a digest taken before buffs existed.
 
 ---
 
+## Environmental combat (#201)
+
+A fight can happen **in** a rift rather than beside one: the tear closes on a visible clock, the
+ground burns, a way out opens for two rounds and shuts, somebody is caught on the far side, and the
+rift spits a monster next to the exit. An encounter scene declares this as an optional
+`environment` (`EncounterEnvironment` in [`types/chapter.ts`](../../packages/shared/src/types/chapter.ts),
+`encounterEnvironment` in `schemas/chapter.schema.json`); the rules are
+[`environment.ts`](../../packages/shared/src/environment.ts) and `endTurnWithEvents` in
+[`encounter.ts`](../../packages/shared/src/encounter.ts). **Opt-in per scene**: a scene without
+`environment` — every scene before #201, and every one of Gemfall's sixteen chapters and The Hollow
+Crown's — fights exactly as it always did (the #200 digest of seeded Gemfall fights in
+`ordered-campaigns.test.ts` is unchanged, and the same file asserts no shipped ordered encounter
+declares one). Chapters are campaign-agnostic files, so an environment is legal in any chapter; it
+is authored for graph campaigns, and no shipped chapter has one. Adding the fields bumped nothing.
+
+```jsonc
+"fight_rift": {
+  "type": "encounter", "map": "rift_ferry", "enemies": [ … ],
+  "environment": {
+    "clock":   { "rounds": 4, "label": "The rift closes", "onExpire": "collapse" },
+    "hazards": [{ "id": "rift-fire", "kind": "fire", "label": "Rift fire",
+                  "tiles": [{ "x": 3, "y": 2 }, { "x": 3, "y": 3 }], "damage": 2 }],
+    "exits":   [{ "id": "north-tear", "label": "The tear in the air",
+                  "tiles": [{ "x": 4, "y": 0 }, { "x": 5, "y": 0 }], "opensRound": 2, "closesRound": 4 }],
+    "rescue":  { "name": "Pip the ferry-sprite", "at": { "x": 1, "y": 7 },
+                 "effects": [{ "type": "setFlag", "flag": "pip_rescued" }] },
+    "relocate": [{ "round": 3, "enemy": "shade#2", "to": { "x": 6, "y": 1 } }]
+  },
+  "onVictory": { "goto": "scene_held" },
+  "onDefeat":  { "goto": "scene_swept" },
+  "onEscape":  { "goto": "scene_through", "variants": [{ "when": { "notFlag": "pip_rescued" }, "text": "Behind you, Pip's lantern winks out." }] },
+  "onTimeout": { "goto": "scene_collapse" }
+}
+```
+
+| Part | Meaning |
+|---|---|
+| `clock: { rounds, label, onExpire, surge? }` | The **visible timer**, in rounds (one full turn order — the marker coming back round), 1–12. When round `rounds + 1` would start: `"collapse"` ends the fight (`onTimeout`); `"surge"` lets it go on, and every round that starts past the clock costs every hero still on the board `surge` hearts (1–3, default 1). The phone says "The rift closes in 3 rounds", "… at the end of this round!", "… — now!". |
+| `hazards: [{ id, kind, label, tiles, damage, fromRound?, untilRound? }]` | Ground that hurts. A figure — **hero or monster** — that **ends its turn** on an active hazard tile takes `damage` (1–5). Walking across is free. `kind` (`fire` / `thorns` / `rift`) picks the glyph and nothing else. Not a hit: Brace does not redirect it, a ward does not shave it, but a hero it drops is knocked down by the ordinary rule. |
+| `exits: [{ id, label, tiles, opensRound?, closesRound? }]` | Timed ways out. A hero still standing who **ends a turn** on an open exit tile steps through: off the board, out of the turn order, nobody's target (`Combatant.escaped`). A monster never leaves. When every hero still standing is through, the fight ends in an **escape** (`onEscape`). |
+| `rescue: { name, at, byRound?, effects? }` | Somebody to save. The captive's tile is walled for the fight. A hero who **ends a turn** beside them (eight directions) frees them and the tile opens. Not freed by the end of `byRound` (default: the clock's last round; without either, never) — lost. `effects` apply **when the fight ends, if they were freed**, before the branch's own. |
+| `relocate: [{ round, enemy, to }]` | At the start of `round` (≥ 2), enemy `enemy` — a derived id, `<spec id>#<n>` — is moved to `to`, if it still stands and the tile is free; otherwise nothing happens. |
+
+### When the place acts — turn ends and round starts, nothing else
+
+Every rule fires at exactly one of two moments, inside `endTurnWithEvents` (which `endTurn` now
+calls; the engine uses it so the events reach the table):
+
+1. **A turn ending** (a real turn — not an Encore action): the captive is freed → a hazard bites →
+   an exit takes the hero. In that order, so one stop can free Pip *and* go, and a hazard that
+   drops a hero keeps them from leaving.
+2. **Each round starting**: the clock runs out (a `riftClock` beat) → the captive's deadline passes
+   → a surge hurts → relocations. If a surge drops the hero the clock had just reached, the turn
+   passes on like any knockdown.
+
+Never during a move or an action. `moveTo`, `performAction`, `legalMoves` and `legalActions` — the
+one legality gate the phones and the server share — are unchanged, so an environment only adds
+consequences *between* the decisions the base game already offers. That is the line "don't rewrite
+base combat" is drawn on, and it is one a child can plan around: *walk across the fire, don't stop
+on it*. The base loop changed in three places only, each reading a field that is absent on every
+fight without an environment: an escaped figure is skipped by the turn cursor (`currentActor`,
+`settleCursor`, Encore), and is not a target (`legalTargetsFor`, the `allies` scope).
+
+Beats (`EncounterEvent`): `hazard`, `escaped`, `freed`, `captiveLost`, `relocated`, `riftClock`,
+`surge` — followed by ordinary `damage` / `down` for the hurt. A fight without an environment emits
+none of them, ever.
+
+### Four ways out
+
+`encounterOutcome` gains two answers, only on a fight with an environment:
+
+| Outcome | When | Branch |
+|---|---|---|
+| `"victory"` | every monster is down | `onVictory` |
+| `"escaped"` | at least one hero went through an exit, and every other hero is through or down | `onEscape` |
+| `"defeat"` | every hero is down, none got out | `onDefeat` |
+| `"timedOut"` | a `"collapse"` clock ran out with the fight still on | `onTimeout` |
+
+Checked in that order. **An escape outranks a wipe**: the heroes who got out pull the fallen
+through after them — nobody is ever left lying on the board (§7.3). Only the captive can be left
+behind. The checker requires `onEscape` exactly when there are exits and `onTimeout` exactly when
+the clock collapses; at runtime a missing one falls back to `onDefeat` (`outcomeBranch`), so a
+hand-built scene can never strand a run. Damage is carried out of the fight as always. For buffs
+(#200), an escape or a timeout is **not a defeat**: buffs that end on defeat survive a retreat.
+
+### Tactical costs
+
+The point is choices with prices, all visible before they are paid:
+
+- **Leave now or save Pip.** Going straight for the tear leaves the captive behind — their `effects`
+  never apply (the sandbox's `pip_rescued` stays unset; the branch's variants say so).
+- **Fight or flee.** Holding the landing pays `onVictory`; a timely retreat is a different ending,
+  not a loss — but it is a *different* ending.
+- **Stopping on the fire** costs hearts; so does staying past a surge clock, every round.
+- **The clock is the one thing that always moves.** A `"collapse"` clock that runs out takes the
+  choice away (`onTimeout`), and loses the captive with it.
+- **The rift rearranges the board**: a relocation can drop a monster beside the way out.
+
+### Consequences in the graph — flags, then `onComplete`
+
+The encounter never touches the journey. A chapter reports its results the way it always has: run
+flags, read back into the journey on completion if the graph declares them, then the node's
+**`onComplete` rules** turn them into world facts, rift effects and buffs ([World state](#world-state-198),
+[Rift actions](#rift-actions-197), [Temporary buffs](#temporary-buffs-200)):
+
+```jsonc
+"flags": ["pip_rescued", "ferry_collapsed"],   // graph.flags: carried into the journey
+"ferry": { "chapter": "rift-skirmish", "onComplete": [
+  { "when": { "flag": "pip_rescued" },     "effects": [{ "type": "setFact", "fact": "ferry_sprite", "value": "saved" }] },
+  { "when": { "flag": "ferry_collapsed" }, "effects": [{ "type": "closeRift", "edge": "ferry-rift" }] }
+] }
+```
+
+with `"onTimeout": { "goto": "scene_collapse", "effects": [{ "type": "setFlag", "flag": "ferry_collapsed" }] }`
+in the chapter. Two decisions follow from that:
+
+- **No automatic `encounter:<id>:escaped` flags.** Which ending a fight took is already said by
+  the branch it took, and a branch's `effects` (or the rescue's) set exactly the flag the author
+  names — one way to say "the party did the thing", the rule `ChapterObjective` already lives by.
+  (A colon-shaped name could not be declared as a journey flag anyway.) The rescue flag can also be
+  a chapter **objective**, which the sandbox uses.
+- **No `riftClock.rift` link to a journey rift, and no `tickRifts` from inside a fight.** The
+  journey moves only in its own transitions — a completed visit is one write — so a fight that
+  closed a journey rift mid-chapter would break one-session completion (a resumed or abandoned run
+  would have moved the journey anyway). The route is the flag above: the timeout's branch sets it,
+  completion reads it back, the node's rule closes, collapses or redirects the rift. `tickRifts`'s
+  units stay `visits` and `chapters`.
+
+### Persistence
+
+`EncounterState.environment` is `{ spec, expired, rescue? }` — a **copy of the authored
+environment** plus what has happened to it — and `Combatant.escaped?: true`. Both ride in
+`RunState.encounter` and survive a JSON round trip, so a phone that reloads mid-fight resumes the
+same clock, the same open exits and the same captive; the phones draw from it without loading the
+chapter. A fight persisted before #201 has neither key and plays as before.
+
+### What the players see
+
+The combat panel (`CombatPanel.tsx`, words in `environment-copy.ts`) shows, above the board, a list
+"The rift" — one line per part, each with a glyph: the clock (hourglass, bold in its last round),
+each exit ("The tear is open: end your turn on it to escape. It closes after this round!"), the
+rescue ("Free Pip: end your turn next to them. 2 rounds left."), each hazard ("Rift fire: stopping
+on it costs 2 hearts."). On the grid, each marked square carries its glyph — flame, thorn or spark
+for a hazard, an arrow for an exit, a heart filling the captive's square — with a dashed border for
+a hazard and a doubled one for an exit, drawn faint while not yet active; a walkable square's
+button names the mark ("Move to column 5, row 1: The tear in the air, open: stop here to
+escape"). The legend lists the marks present. The beat log puts every environmental beat into
+words. Nothing is told apart by colour alone. Nothing appears in a fight without an environment.
+
+### Checks
+
+| Check | Where |
+|---|---|
+| Shape: parts, kinds, counts in range (clock 1–12 rounds, damage 1–5, surge 1–3), tiles on the 10×8 board, relocation `<id>#<n>` from round 2 | `schemas/chapter.schema.json` |
+| `checkEncounterEnvironment(scene, map?)`: `onEscape` iff exits, `onTimeout` iff a collapse clock; windows that can happen (an exit opening, a deadline or a relocation after a collapse; closing before opening); ids unique; tiles on open ground, off party spawns (exits, hazards), the captive off every spawn; exits, hazards and the captive never sharing a tile; a relocation naming a real enemy; with the map, every exit and the captive reachable from the party | `validateChapter` (map-free rules, `BAD_ENVIRONMENT`), `content:validate` and the server loader (with the map) |
+| The new branches are scene-graph edges: their targets exist, are reachable, reach an ending; their effects' flags count as set, their narration and variants are linted | `chapter-graph.ts`, `validate.mjs`, `condition-lint.ts`, the loader, `continuity.mjs`, `route-paths.mjs` |
+
+### The Drowned Ferry sandbox
+
+[`packages/shared/src/fixtures/rift-skirmish.chapter.json`](../../packages/shared/src/fixtures/rift-skirmish.chapter.json)
+and its board [`rift-skirmish.map.json`](../../packages/shared/src/fixtures/rift-skirmish.map.json)
+(map id `rift_ferry`) — not content: outside `content/`, listed by no campaign, never shipped. One
+fight with a four-round collapse clock, a line of rift fire, a tear open in rounds 2–4, Pip to free
+(an objective worth bonus XP), and a shade relocated beside the tear in round 3. Four endings.
+`encounter-environment.test.ts` checks it and plays it through the engine on rigged dice: **victory**
+(both shades beaten), **rescue + escape** (one hero frees Pip, both reach the tear: `pip_rescued`
+set, objective paid), **escape without rescue** (the cost: Pip left behind) and **timeout** (Pip
+lost, `onTimeout`) — then feeds the rescue and timeout runs' flags and outcomes through
+`completeVisit` on a two-node graph whose `onComplete` rules turn them into world facts (Pip
+`saved` / the landing `collapsed`). `tools/content/encounter-environment.test.mjs` holds the schema and
+`content:validate` to it.
+
+### Deferred (not in #201)
+
+- **The TV board** does not draw hazards, exits or the captive (the captive's walled square shows
+  as blocked terrain there); the phones carry the information. A TV overlay is the next step.
+- **Enemy AI** does not know about hazards, exits or the captive: monsters stop in the fire and
+  never guard the way out.
+- **Hazard effects other than damage** (slow, root, push), **several captives**, captives that can
+  be attacked, and objectives other than a rescue.
+- **Environment keyed on world state.** Use a node *variant* whose `when` reads the fact — the
+  variant is a different chapter, so the changed place carries its own environment. A modifier
+  `when: GraphCondition` on the environment itself would need the journey inside a run, which runs
+  do not carry (facts are not seeded into chapter runs).
+- **Environmental number overlays** (a node-wide −1 Guard in the storm): would ride the #200 seam
+  (`buffBonus`) as setup buffs; not needed by anything here.
+- **The chapter-complete screen** does not list which ending the fight took; the branch's
+  narration says it.
+
+---
+
 ## Inspection and playtest tooling (#202)
 
 Validation (#193) says whether a graph *can* be walked; this is what you use to *look* at one, to
@@ -1498,7 +1689,7 @@ its issue defines it. Where each attaches:
 | #198 world state | **Done** — [World state](#world-state-198): `graph.facts` (typed, bounded, `domain`-tagged, `visible`), `GraphCondition.facts` / `visit`, `setFact` / `adjustFact`, node `onComplete` rules, variant `revisit`, `JourneyFacts.facts`, `JourneyView.facts`, and the lint's search over fact values. The variant selection rule stays first-match. |
 | #199 class rift interaction | **Done** — [Class rift interaction](#class-rift-interaction-199): a kind of `rift.actions` may list several ways (`RiftActionRule.id`), each with `requires` (`PartyRequirement`: `anyClass`, `anyItem`) checked by the server against the seated party and `hint`; `RIFT_ACTION.way`, `lastAction.way`, refusal `"party-cannot"`; `JourneyRiftActionView.way`/`needs`/`hint`/`unmet` judged on the phone (`riftActionsForParty`); progression as world facts; the lint's `CLASS_GATED_ONLY_PATH`. Not done: requirements on plain edges (an exit only a class may take) — the same `requires` and the same class pass would carry over, with `exitsFrom` left journey-only. |
 | #200 temporary buffs | **Done** — [Temporary buffs](#temporary-buffs-200): `graph.buffs`, the `grantBuff` effect, `JourneyState.buffs`, `RunState.buffs` (seeded via `EngineContext.campaignBuffs`), `EncounterState.buffs` read through `buffBonus`, `JourneyView.buffs`, `BUFF_NEVER_GRANTED`. No guard reads a buff. |
-| #201 environmental combat | node-level (or variant-level) encounter modifiers. A modifier that depends on world state is best keyed by a variant whose `when` reads the fact (the variant *is* the changed place), or by a modifier `when: GraphCondition` evaluated with `{ facts: graph.facts }`. |
+| #201 environmental combat | **Done** — [Environmental combat](#environmental-combat-201): optional `environment` on a chapter's encounter scene (rift clock, hazards, timed exits, a rescue, relocations), `onEscape` / `onTimeout` branches, `endTurnWithEvents`, `EncounterState.environment`, `Combatant.escaped`, `checkEncounterEnvironment`. Consequences reach the graph as flags read back on completion and turned into facts, rift effects or buffs by `onComplete` rules; a place that changes with world state is a node variant. |
 | #202 inspection | **Done** — [Inspection and playtest tooling](#inspection-and-playtest-tooling-202): `npm run content:journey`, `exploreCampaignGraph` (the lint's explorer, exported), `checkJourneySave`. A new exit-blocking reason or journey state must be tracked by `explore` first; the playtest's replay then holds the lint to the runtime. |
 | #203 vertical slice | a real graph campaign under a **new** campaign id, never Gemfall. |
 

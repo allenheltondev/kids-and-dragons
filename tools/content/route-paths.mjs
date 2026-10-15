@@ -33,6 +33,8 @@ function exits(scene) {
       return [
         [scene.onVictory.goto, scene.onVictory.effects ?? []],
         [scene.onDefeat.goto, scene.onDefeat.effects ?? []],
+        // An environmental fight's other endings (#201).
+        ...[scene.onEscape, scene.onTimeout].filter(Boolean).map((b) => [b.goto, b.effects ?? []]),
       ];
     default:
       return (scene.choices ?? []).map((choice) => [choice.goto, choice.effects ?? []]);

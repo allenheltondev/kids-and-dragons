@@ -111,7 +111,9 @@ function armsOf(scene: Scene): { arms: Arm[]; decided: boolean } {
       };
     case "encounter":
       return {
-        arms: [scene.onVictory, scene.onDefeat].map((b) => ({ to: b.goto, gain: facetGain(b.effects) })),
+        arms: [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout]
+          .filter((b): b is NonNullable<typeof b> => b !== undefined)
+          .map((b) => ({ to: b.goto, gain: facetGain(b.effects) })),
         decided: false,
       };
     default:

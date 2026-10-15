@@ -54,7 +54,7 @@ import type {
 import {
   beginEncounter,
   encounterOutcome,
-  endTurn,
+  endTurnWithEvents,
   moveTo,
   performAction,
   currentActor,
@@ -66,9 +66,11 @@ import {
   type CombatActionRequest,
   type EncounterState,
   type EncounterEvent,
+  type EncounterOutcome,
   type EnemyPlacement,
   type PartyPlacement,
 } from "./encounter.js";
+import { outcomeBranch } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
@@ -1820,7 +1822,14 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
 
   draft.encounter = {
     ...beginEncounter(
-      { board: parseBoard(map.rows), party, enemies, ...(buffs.length > 0 ? { buffs } : {}) },
+      {
+        board: parseBoard(map.rows),
+        party,
+        enemies,
+        ...(buffs.length > 0 ? { buffs } : {}),
+        // The place fighting back (#201) — only a scene that declared one.
+        ...(scene.environment ? { environment: scene.environment } : {}),
+      },
       combatCtx(ctx),
     ),
     // The step this fight began on. Unique per fight and replayed identically
@@ -1913,10 +1922,13 @@ function doCombatAction(
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
   const encounter = requireTurn(draft, playerId);
-  draft.encounter = endTurn(encounter);
+  // What the place did as the turn ended (#201) — nothing, without an
+  // environment — goes first in the queue, before the monsters' answer.
+  const ended = endTurnWithEvents(encounter);
+  draft.encounter = ended.state;
   // Handing over may hand over to a monster, and monsters do not wait to be
   // asked. Their entire run is one ordered animation queue.
-  const events = runEnemyTurns(draft, ctx);
+  const events = [...ended.events, ...runEnemyTurns(draft, ctx)];
   return combatPresentation(events, settleEncounter(draft, ctx));
 }
 
@@ -1957,8 +1969,9 @@ function finishTurnIfSpent(
     encounter.actionTaken &&
     legalMoves(encounter).length === 0
   ) {
-    draft.encounter = endTurn(encounter);
-    all = [...events, ...runEnemyTurns(draft, ctx)];
+    const ended = endTurnWithEvents(encounter);
+    draft.encounter = ended.state;
+    all = [...events, ...ended.events, ...runEnemyTurns(draft, ctx)];
   }
   return combatPresentation(all, settleEncounter(draft, ctx));
 }
@@ -2006,8 +2019,9 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
       // walk to a tile `moveTo` then refuses — and swing at a hero it never
       // actually reached.
       enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: encounter.stepsLeft },
+      // A hero through a rift exit (#201) is off the board, and no target.
       party: encounter.combatants
-        .filter((c) => c.side === "party")
+        .filter((c) => c.side === "party" && !c.escaped)
         .map((c) => ({
           id: c.id,
           at: positionOfActor(encounter!, c.id),
@@ -2036,7 +2050,9 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
         events.push(...swung.events);
       }
     }
-    encounter = endTurn(encounter);
+    const ended = endTurnWithEvents(encounter);
+    encounter = ended.state;
+    events.push(...ended.events);
   }
 
   draft.encounter = encounter;
@@ -2090,9 +2106,12 @@ function carryDamageOut(draft: RunState, encounter: EncounterState): void {
  * `draft.encounter`. A run without buffs — every ordered campaign's — is left
  * without the key.
  */
-function spendBuffs(draft: RunState, outcome: "victory" | "defeat" | "ongoing"): void {
+function spendBuffs(draft: RunState, outcome: EncounterOutcome): void {
   if (draft.buffs === undefined) return;
-  draft.buffs = spendRunBuffs(draft.buffs, outcome);
+  // Getting out through a rift exit, or being thrown out when it collapses
+  // (#201), ends the fight without losing it: not a defeat, so a buff that
+  // ends on defeat survives a retreat.
+  draft.buffs = spendRunBuffs(draft.buffs, outcome === "defeat" ? "defeat" : outcome === "ongoing" ? "ongoing" : "victory");
 }
 
 function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
@@ -2107,7 +2126,15 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "no encounter is running");
   draft.encounter = null;
-  return takeBranch(draft, outcome === "victory" ? scene.onVictory : scene.onDefeat, ctx);
+  // A captive freed during the fight (#201) is a story fact however the fight
+  // ended — won, lost, escaped or collapsed — so the rescue's own effects land
+  // before the branch's, and the branch (and its narration variants) can read
+  // them. A captive still waiting, or lost, is simply left behind.
+  const rescue = scene.environment?.rescue;
+  if (rescue?.effects && encounter.environment?.rescue === "freed") {
+    applyEffectsDraft(draft, rescue.effects, ctx);
+  }
+  return takeBranch(draft, outcomeBranch(scene, outcome), ctx);
 }
 
 function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefined {

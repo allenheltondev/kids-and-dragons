@@ -62,6 +62,7 @@ import {
   combatantById,
   currentActor,
   currentActorId,
+  environmentView,
   legalActions,
   legalItemTargets,
   legalMoves,
@@ -85,7 +86,26 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
-import { combatantIcon, combatantLabel, enemyPortraitUrl, gridCells, turnKey, type GridOccupant } from "./combat-grid";
+import {
+  combatantIcon,
+  combatantLabel,
+  enemyPortraitUrl,
+  gridCells,
+  turnKey,
+  type GridFeature,
+  type GridOccupant,
+} from "./combat-grid";
+import {
+  CAPTIVE_ICON,
+  CLOCK_ICON,
+  EXIT_ICON,
+  clockLine,
+  exitLine,
+  hazardIcon,
+  hazardLine,
+  rescueLine,
+  tileWords,
+} from "./environment-copy";
 import type { Facing } from "../world/board-math";
 import "./shared.css";
 import "./CombatPanel.css";
@@ -499,6 +519,11 @@ export function CombatControls(): ReactElement | null {
           nothing here moves an ordered campaign's board. */}
       <BuffList rows={combatBuffRows(encounter.buffs, me.character.id)} title="Your rift powers" />
 
+      {/* The place fighting back (#201): the rift clock, the way out, who
+          needs saving, what burns. Absent in every fight without an
+          environment, so nothing here moves an ordinary board. */}
+      <EnvironmentStatus encounter={encounter} />
+
       {/* What the last beat did, in words and numbers: every roll on the
           table, whoever threw it. The one place the d20 shows on a phone.
           There from the fight's first moment, empty until a beat lands. */}
@@ -537,8 +562,13 @@ export function CombatControls(): ReactElement | null {
             cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
             cell.occupant?.down ? " combat__cell--down" : "",
             cell.occupant?.facing === "right" ? " combat__cell--faces-right" : "",
+            cell.feature ? ` combat__cell--${cell.feature.kind}` : "",
+            cell.feature && !cell.feature.active ? " combat__cell--quiet" : "",
           ].join("");
           const figure = cell.occupant ? <CellFigure occupant={cell.occupant} /> : null;
+          // The environment's mark (#201): a glyph in the corner, its shape
+          // the meaning — the captive fills the square, being somebody.
+          const mark = cell.feature ? <FeatureMark feature={cell.feature} /> : null;
           if (cell.tappable) {
             const aiming = selection.step === "tile";
             return (
@@ -550,9 +580,12 @@ export function CombatControls(): ReactElement | null {
                 data-x={cell.x}
                 data-y={cell.y}
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
-                aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}`}
+                aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
+                  cell.feature ? `: ${tileWords(cell.feature)}` : ""
+                }`}
                 onClick={() => tapTile({ x: cell.x, y: cell.y })}
               >
+                {mark}
                 {figure ??
                   (aiming ? (
                     <Icon name="spark" size="70%" />
@@ -569,6 +602,7 @@ export function CombatControls(): ReactElement | null {
           }
           return (
             <span key={cellKey} className={`combat__cell${marks}`} aria-hidden="true">
+              {mark}
               {figure}
             </span>
           );
@@ -602,6 +636,12 @@ export function CombatControls(): ReactElement | null {
         <li><span className="combat__key combat__key--friend" />Friend</li>
         <li><span className="combat__key combat__key--enemy" />Enemy</li>
         <li style={seat(walkTiles.length > 0)}><span className="combat__key combat__key--walk" />You can walk here</li>
+        {legendFeatures(cells).map((feature) => (
+          <li key={`${feature.kind}:${feature.label}`}>
+            <Icon name={feature.icon} />
+            {tileWords({ ...feature, active: true })}
+          </li>
+        ))}
       </ul>
 
       {myTurn ? (
@@ -781,6 +821,59 @@ export function CombatControls(): ReactElement | null {
 }
 
 /** Stops a tap before any button under it hears it (the pending guard). */
+/**
+ * The rift, in words (#201): one line per thing the environment is doing,
+ * each with its glyph — the clock first, because it is the one that changes
+ * every round. Nothing at all in a fight without an environment.
+ */
+function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactElement | null {
+  const view = environmentView(encounter);
+  if (!view) return null;
+  const lines: { key: string; icon: string; text: string; urgent?: boolean }[] = [];
+  if (view.clock) {
+    lines.push({
+      key: "clock",
+      icon: CLOCK_ICON,
+      text: clockLine(view.clock),
+      urgent: view.clock.expired || view.clock.roundsLeft <= 1,
+    });
+  }
+  for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
+  if (view.rescue) lines.push({ key: "rescue", icon: CAPTIVE_ICON, text: rescueLine(view.rescue) });
+  for (const hazard of view.hazards) {
+    lines.push({ key: `hazard:${hazard.id}`, icon: hazardIcon(hazard.kind), text: hazardLine(hazard) });
+  }
+  return (
+    <ul className="combat__env" aria-label="The rift" aria-live="polite">
+      {lines.map((line) => (
+        <li key={line.key} className={`combat__env-line${line.urgent ? " combat__env-line--urgent" : ""}`}>
+          <Icon name={line.icon} />
+          <span>{line.text}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** The environment's glyph on a square: the captive fills it, the rest sit in a corner. */
+function FeatureMark({ feature }: { feature: GridFeature }): ReactElement {
+  return (
+    <span className={`combat__feature combat__feature--${feature.kind}`} aria-hidden="true">
+      <Icon name={feature.icon} size="100%" />
+    </span>
+  );
+}
+
+/** One legend entry per kind of mark on the board, in board order. */
+function legendFeatures(cells: readonly { feature?: GridFeature }[]): GridFeature[] {
+  const seen = new Map<string, GridFeature>();
+  for (const cell of cells) {
+    const f = cell.feature;
+    if (f && !seen.has(`${f.kind}:${f.label}`)) seen.set(`${f.kind}:${f.label}`, f);
+  }
+  return [...seen.values()];
+}
+
 function swallowTap(event: MouseEvent): void {
   event.preventDefault();
   event.stopPropagation();
@@ -1105,12 +1198,46 @@ export function describeBeats(
       case "encore":
         out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} another action!`, tone: "good" });
         return;
+      // The place fighting back (#201).
+      case "hazard": {
+        const who = name(event.actorId);
+        out.push({
+          key,
+          text: `${event.label} ${who === "You" ? "burns you" : `hurts ${who}`}!`,
+          tone: isParty(encounter, event.actorId) ? "bad" : "good",
+        });
+        return;
+      }
+      case "escaped": {
+        const who = name(event.actorId);
+        out.push({ key, text: `${who} ${who === "You" ? "step" : "steps"} through the rift!`, tone: "good" });
+        return;
+      }
+      case "freed":
+        out.push({ key, text: `${name(event.byId)} freed ${captiveName(encounter)}!`, tone: "good" });
+        return;
+      case "captiveLost":
+        out.push({ key, text: `${captiveName(encounter)} is lost to the rift.`, tone: "bad" });
+        return;
+      case "relocated":
+        out.push({ key, text: `The rift throws ${name(event.actorId)} somewhere new!`, tone: "plain" });
+        return;
+      case "riftClock":
+        out.push({ key, text: event.onExpire === "collapse" ? "The rift is closing!" : "The rift is surging!", tone: "bad" });
+        return;
+      case "surge":
+        out.push({ key, text: `The rift surges: everyone still here loses ${event.amount}.`, tone: "bad" });
+        return;
       case "moved":
       case "walled":
         return;
     }
   });
   return out;
+}
+
+function captiveName(encounter: EncounterState): string {
+  return encounter.environment?.spec.rescue?.name ?? "the captive";
 }
 
 function isParty(encounter: EncounterState, id: string): boolean {
