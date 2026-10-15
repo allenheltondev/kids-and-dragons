@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { execFileSync } from 'node:child_process';
 import {
   readManifest,
   updateManifest,
@@ -206,7 +207,7 @@ describe('checkIncremental', () => {
   it('returns all entities when forceAll is true', () => {
     // Write a manifest with current mtimes (no changes)
     const manifestPath = path.join(tempDir, 'manifest.json');
-    const mtimes = getCanonFileMtimes(canonDir);
+    const mtimes = getCanonFileMtimes(canonDir, undefined, path.join(fixturesDir, 'assets'));
     updateManifest(manifestPath, mtimes);
 
     const config = buildConfig(manifestPath, true);
@@ -218,7 +219,7 @@ describe('checkIncremental', () => {
 
   it('returns no changes when all files match the manifest', () => {
     const manifestPath = path.join(tempDir, 'manifest.json');
-    const mtimes = getCanonFileMtimes(canonDir);
+    const mtimes = getCanonFileMtimes(canonDir, undefined, path.join(fixturesDir, 'assets'));
     updateManifest(manifestPath, mtimes);
 
     const config = buildConfig(manifestPath);
@@ -250,7 +251,7 @@ describe('checkIncremental', () => {
 
   it('identifies dependents when only one file changed', () => {
     const manifestPath = path.join(tempDir, 'manifest.json');
-    const mtimes = getCanonFileMtimes(canonDir);
+    const mtimes = getCanonFileMtimes(canonDir, undefined, path.join(fixturesDir, 'assets'));
 
     // Set all files to current mtimes except creatures.yaml (set to old)
     const modifiedMtimes = new Map(mtimes);
@@ -293,7 +294,7 @@ describe('checkIncremental', () => {
 
   it('detects removed files as changes', () => {
     const manifestPath = path.join(tempDir, 'manifest.json');
-    const mtimes = getCanonFileMtimes(canonDir);
+    const mtimes = getCanonFileMtimes(canonDir, undefined, path.join(fixturesDir, 'assets'));
     // Add a file that no longer exists
     mtimes.set('canon/deleted.yaml', 9999999999999);
     updateManifest(manifestPath, mtimes);
@@ -352,7 +353,7 @@ describe('checkIncremental — chapters', () => {
     registry = buildTestRegistry();
     writeChapter('ch-01.json', { id: 'ch-01', scenes: {} });
     age('ch-01.json');
-    updateManifest(manifestPath, getCanonFileMtimes(canonDir, chaptersDir));
+    updateManifest(manifestPath, getCanonFileMtimes(canonDir, chaptersDir, config().assetsDir));
   });
 
   afterEach(() => {
@@ -392,9 +393,92 @@ describe('checkIncremental — chapters', () => {
   });
 
   it('regenerates once from a manifest written before chapters were tracked', () => {
-    updateManifest(manifestPath, getCanonFileMtimes(canonDir));
+    updateManifest(manifestPath, getCanonFileMtimes(canonDir, undefined, config().assetsDir));
     const result = checkIncremental(config(), registry);
     expect(result.hasChanges).toBe(true);
     expect(result.entitiesToProcess.size).toBe(registry.entities.size);
   });
+});
+
+
+describe('incremental artwork delivery', () => {
+  let root: string;
+  let config: GeneratorConfig;
+  let registry: CanonRegistry;
+  const saveInputs = () => updateManifest(config.manifestPath,
+    getCanonFileMtimes(config.canonDir, config.chaptersDir, config.assetsDir));
+
+  beforeEach(() => {
+    root = makeTempDir();
+    fs.cpSync(canonDir, path.join(root, 'canon'), { recursive: true });
+    config = {
+      canonDir: path.join(root, 'canon'), assetsDir: path.join(root, 'assets'),
+      contentDir: path.join(root, 'wiki/content'), manifestPath: path.join(root, 'wiki/.gen-manifest.json'),
+    };
+    fs.mkdirSync(path.join(config.assetsDir, 'biomes/enchanted_woods'), { recursive: true });
+    registry = parseCanonDirectory(config.canonDir).registry;
+    saveInputs();
+  });
+  afterEach(() => removeTempDir(root));
+
+  it('does not rebuild unchanged inputs', () => {
+    expect(checkIncremental(config, registry).hasChanges).toBe(false);
+  });
+
+  it.each(['bg.webp', 'portrait.webp', 'tiles.png'])(
+    'regenerates shared pages when %s is added', filename => {
+      fs.writeFileSync(path.join(config.assetsDir, 'biomes/enchanted_woods', filename), 'image');
+      const result = checkIncremental(config, registry);
+      expect(result.hasChanges).toBe(true);
+      expect(result.entitiesToProcess).toEqual(new Set(registry.entities.keys()));
+      expect(result.changedFiles).toContain(`assets/biomes/enchanted_woods/${filename}`);
+    },
+  );
+
+  it('detects backdated replacements and deletions', () => {
+    const image = path.join(config.assetsDir, 'biomes/enchanted_woods/bg.webp');
+    fs.writeFileSync(image, 'first');
+    saveInputs();
+    fs.writeFileSync(image, 'replacement');
+    const past = new Date(Date.now() - 60000);
+    fs.utimesSync(image, past, past);
+    expect(checkIncremental(config, registry).entitiesToProcess.size).toBe(registry.entities.size);
+    saveInputs();
+    expect(checkIncremental(config, registry).hasChanges).toBe(false);
+    fs.unlinkSync(image);
+    expect(checkIncremental(config, registry).entitiesToProcess.size).toBe(registry.entities.size);
+  });
+
+  it('tracks the asset manifest but ignores non-image build artifacts', () => {
+    fs.writeFileSync(path.join(config.assetsDir, 'notes.txt'), 'not artwork');
+    expect(checkIncremental(config, registry).hasChanges).toBe(false);
+    fs.writeFileSync(path.join(config.assetsDir, 'manifest.json'), '{}');
+    expect(checkIncremental(config, registry).entitiesToProcess.size).toBe(registry.entities.size);
+  });
+
+  it('updates page links after art-only delivery without --force', () => {
+    const generate = () => execFileSync(process.execPath,
+      [path.resolve('node_modules/tsx/dist/cli.mjs'), path.resolve('tools/wiki/generate.ts')],
+      { cwd: root, encoding: 'utf8', stdio: 'pipe' });
+    const page = () => fs.readFileSync(path.join(config.contentDir, 'biomes/enchanted_woods.md'), 'utf8');
+    fs.unlinkSync(config.manifestPath);
+    generate();
+    expect(page()).not.toContain('  primary:');
+    const image = path.join(config.assetsDir, 'biomes/enchanted_woods/bg.webp');
+    fs.writeFileSync(image, 'image');
+    generate();
+    expect(page()).toContain('  primary: assets/biomes/enchanted_woods/bg.webp');
+    const preview = path.join(config.assetsDir, 'biomes/enchanted_woods/portrait.webp');
+    fs.writeFileSync(preview, 'preview');
+    generate();
+    expect(page()).toContain('  primary: assets/biomes/enchanted_woods/portrait.webp');
+    expect(page()).toContain('  primaryFull: assets/biomes/enchanted_woods/bg.webp');
+    fs.unlinkSync(preview);
+    generate();
+    expect(page()).toContain('  primary: assets/biomes/enchanted_woods/bg.webp');
+    fs.unlinkSync(image);
+    generate();
+    expect(page()).not.toContain('  primary:');
+    expect(generate()).toContain('No updates needed');
+  }, 20000);
 });

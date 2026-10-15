@@ -189,7 +189,7 @@ function main(): void {
   }
 
   // 11. Update manifest with current file mtimes
-  const canonMtimes = getCanonFileMtimes(canonDir, config.chaptersDir);
+  const canonMtimes = getCanonFileMtimes(canonDir, config.chaptersDir, assetsDir);
   updateManifest(manifestPath, canonMtimes);
 
   // 12. Print summary report and exit 0
