@@ -95,6 +95,10 @@ Whoever writes the first authored chapter should give it an ending that declares
 
 ## Conventions the schema cannot state
 
+- **Player-facing text uses US spelling** (color, gray, traveled, center, defense, realize, mom,
+  cozy). `tools/content/spelling.test.mjs` scans narration, labels, prompts, names, descriptions,
+  and `variants[].text` in chapters, the generated JSON here, and `canon/*.yaml`, never ids, and
+  fails naming file, line, field, and the fix. Exceptions: "Sunbloom Draught", "afterwards".
 - **Icons are short slugs** (`fist`, `wing`, `eye`, `spark`, `hand`, `flame`, `key`, …), never file
   paths. The client resolves a slug to an inline SVG, so every element gets an icon (spec §11).
   One slug namespace covers rules, choices, and items alike, so there is exactly one icon lookup
