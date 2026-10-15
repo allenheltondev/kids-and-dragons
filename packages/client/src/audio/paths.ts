@@ -117,8 +117,8 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
     seconds: 0.08,
   },
   "page-turn": {
-    brief: "A quick soft paper flick, like turning a page in an old explorer's journal, with one tiny sparkle at the end.",
-    seconds: 0.5,
+    brief: "A quick soft paper flick, like turning a page in an old explorer's journal. Just the swish, no chime.",
+    seconds: 0.3,
   },
   error: {
     brief: "Two low gentle pulses. Audibly 'not that', never harsh or buzzing.",

@@ -87,10 +87,7 @@ const cueVoices: Partial<Record<CueId, Voice[]>> = {
     ...[261.63, 329.63, 392].map((freq, i) => ({ at: 0.43, duration: 0.92, freq, gain: 0.16, swell: true, pan: (i - 1) * 0.25, partials: [[1, 1], [2, 0.16], [3, 0.04]] as [number, number][] })),
   ],
   tap: wood(0, 0.09, 750).map((v) => ({ ...v, duration: 0.06 })),
-  "page-turn": [
-    { at: 0, duration: 0.2, freq: 0, noise: true, cutoff: 3200, highpass: 700, gain: 0.1, swell: true },
-    bell(1318.51, 0.16, 0.32, 0.05, 0.2),
-  ],
+  "page-turn": [{ at: 0, duration: 0.2, freq: 0, noise: true, cutoff: 3200, highpass: 700, gain: 0.1, swell: true }],
   error: [0, 0.14].map((at) => ({ at, duration: 0.13, freq: 196, endFreq: 174.61, gain: 0.16, attack: 0.012 })),
 };
 
