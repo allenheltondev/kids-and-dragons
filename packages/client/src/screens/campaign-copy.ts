@@ -10,7 +10,7 @@
  * a souvenir, never a loss screen.
  */
 
-import type { CampaignView, JourneyExitView, JourneyView, RunState } from "@kad/shared";
+import type { CampaignView, JourneyExitView, JourneyRiftActionView, JourneyView, RunState } from "@kad/shared";
 
 /** "Chapter 4: The Pride Roads", or null when there is nothing to name. */
 export function nextChapterLine(view: CampaignView | null | undefined): string | null {
@@ -124,9 +124,62 @@ export function exitBlockedLine(reason: JourneyExitView["reason"] | undefined): 
       return "That place is finished, so there's no going back in.";
     case "guard":
       return "Not yet. Something has to happen first.";
+    // Rifts (#196, #197): what the shimmer is doing, in a child's words. Never
+    // the word "rift" in a reason (the chips already say what it is), and
+    // never what would wake it.
+    case "rift-dormant":
+      return "It hasn't woken up yet.";
+    case "rift-faded":
+      return "It has faded for now. It might come back.";
+    case "rift-closed":
+      return "It has been shut.";
+    case "rift-consumed":
+      return "It's all used up.";
+    case "rift-expired":
+      return "It faded away for good.";
+    case "rift-collapsed":
+      return "It crumbled away.";
+    case "fallback":
+      return "There's another way open right now.";
     default:
       return "You can't go this way right now.";
   }
+}
+
+/** The icon on a rift action's button (#197) - icon + words, never the icon alone. */
+export function riftActionIcon(action: JourneyRiftActionView["action"]): string {
+  switch (action) {
+    case "discover":
+      return "eye";
+    case "open":
+      return "key";
+    case "close":
+      return "close";
+    case "stabilize":
+      return "shield";
+    case "redirect":
+      return "shuffle";
+  }
+}
+
+/** True when a rift action asks "are you sure?" first: a close nothing can undo (#197). */
+export function riftActionNeedsConfirm(action: Pick<JourneyRiftActionView, "irreversible">): boolean {
+  return action.irreversible === true;
+}
+
+/** The warning before a rift action that cannot be undone. */
+export function riftActionWarning(_action: Pick<JourneyRiftActionView, "action">): string {
+  return "Once it's shut, it won't open again.";
+}
+
+/**
+ * What the phones say when a party has nowhere to go and nothing to try
+ * (`JourneyView.stuck`, #197). The content checks make it unreachable, so it
+ * only follows a campaign changing under a save; the line is honest about it
+ * and points at the one person who can help, without blaming the players.
+ */
+export function journeyStuckLine(): string {
+  return "Every way from here is shut right now. That isn't your fault - ask a grown-up for help.";
 }
 
 /** True when the way asks "are you sure?" before the party crosses it. */

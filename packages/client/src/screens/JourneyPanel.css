@@ -32,7 +32,8 @@
   outline-offset: 0.15em;
 }
 
-.journey__here {
+.journey__here,
+.journey__stuck {
   display: flex;
   align-items: flex-start;
   gap: var(--space-2, 0.5em);
@@ -40,12 +41,20 @@
   color: var(--color-text-muted, #b7b0d8);
 }
 
-.journey__here > .kad-icon {
+/* Nowhere to go and nothing to try (#197): said in plain words, never as an empty list. */
+.journey__stuck {
+  color: var(--color-text, #f4f1ff);
+  font-weight: 700;
+}
+
+.journey__here > .kad-icon,
+.journey__stuck > .kad-icon {
   flex: 0 0 auto;
   margin-top: 0.15em;
 }
 
 .journey__exits,
+.journey__actions,
 .journey__places-list {
   display: flex;
   flex-direction: column;
