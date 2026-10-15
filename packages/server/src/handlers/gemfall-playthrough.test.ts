@@ -280,6 +280,11 @@ describe("Gemfall can be played from the Exchange to the mountain", () => {
       const opening = content.chapter("gemfall-01")!;
       for (const id of chapterStartDiscoveries(opening, content.world())) expect(run.book).toHaveProperty([id]);
       expect(Object.keys(run.book).length).toBeGreaterThan(0);
+      // The snowhorn goat (#169). The Tether's rope bridge puts it on stage on
+      // every road through 07l, so a Tether run always finds it. On the Restore
+      // it is optional (borrow it for the haul, or take the goat path round the
+      // slide), so only those runs are held to it, below.
+      if (run.chapters.includes("gemfall-07l")) expect(run.book).toHaveProperty(["creature.snowhorn_goat"]);
       if (run.status === "complete") {
         // A finished campaign toured one chapter per beat, in order — all
         // eight, or seven when the Collection took the Walk at the tree line.
@@ -297,6 +302,8 @@ describe("Gemfall can be played from the Exchange to the mountain", () => {
     for (const id of ["gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-07r", "gemfall-07h", "gemfall-07l"]) {
       expect(visited, `no run entered ${id}`).toContain(id);
     }
+    // And the Restore's goat (#169) was met by some run that took a goat road.
+    expect(runs.some((r) => r.chapters.includes("gemfall-07r") && "creature.snowhorn_goat" in r.book)).toBe(true);
     // And at least one Collection party took the Walk and finished there.
     expect(runs.some((r) => r.status === "complete" && r.chapters.length === 7)).toBe(true);
   });
