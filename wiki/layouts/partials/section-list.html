@@ -24,36 +24,26 @@
   {{ with .Params.order }}{{ $pages = sort $pages . }}{{ end }}
   {{ if $pages }}
   <div class="wiki-tile-grid{{ with .Params.tiles }} wiki-tile-grid--{{ . }}{{ end }}">
-    {{ range $pages }}
-    {{ $art := partial "art-for.html" . }}
-    <a href="{{ .RelPermalink }}" class="wiki-tile-card">
-      {{ if $art.path }}
-      <div class="wiki-tile-card__image{{ if hasSuffix $art.path "bg.webp" }} wiki-tile-card__image--scene{{ else if hasSuffix $art.path ".webp" }}{{ if not (hasSuffix $art.path "portrait.webp") }} wiki-tile-card__image--scene{{ end }}{{ end }}">
-        {{ partial "thumb.html" (dict "path" $art.path "width" 280 "alt" "") }}
-      </div>
-      {{ else if $art.icon }}
-      <div class="wiki-tile-card__image wiki-tile-card__image--icon">
-        <img src="{{ $art.icon | relURL }}" alt="" loading="lazy" width="120" height="120">
-      </div>
-      {{ else }}
-      <div class="wiki-tile-card__placeholder" aria-hidden="true">
-        {{ partial "tile-placeholder-icon.html" . }}
-      </div>
-      {{ end }}
-      <span class="wiki-tile-card__body">
-        <span class="wiki-tile-card__name">{{ .Title }}</span>
-        {{ $hook := or .Params.lore_hook .Params.short_description .Description }}
-        {{/* An item with no hook still says what it does, in the game's words. */}}
-        {{ if and (not $hook) (eq .Params.type "item") }}{{ with index site.Data.game.items (path.Base (strings.TrimSuffix "/" .RelPermalink)) }}{{ $hook = .text }}{{ end }}{{ end }}
-        {{ with $hook }}
-        <span class="wiki-tile-card__hook">{{ . | plainify | truncate 96 }}</span>
-        {{ end }}
-        {{ with .Params.danger_level }}<span class="wiki-tile-card__chip wiki-tile-card__chip--{{ . }}">{{ partial "title-case.html" . }}</span>{{ end }}
-      </span>
-    </a>
-    {{ end }}
+    {{ range $pages }}{{ partial "tile-card.html" . }}{{ end }}
   </div>
   {{ else if not .Content }}
   <p class="text-secondary">No pages in this section yet.</p>
+  {{ end }}
+
+  {{/* Neighbouring sections a reader would expect to find here. Canon files
+       wild creatures and thinking peoples apart; a family browsing
+       "creatures" for the sheeple should still find them. */}}
+  {{ range .Params.also }}
+  {{ $other := site.GetPage (printf "/%s" .section) }}
+  {{ $more := sort (where site.RegularPages "Section" .section) "Title" }}
+  {{ if and $other $more }}
+  <section class="wiki-also" aria-label="{{ .title }}">
+    <h2 class="wiki-also__title">{{ .title }} <a href="{{ $other.RelPermalink }}">All {{ len $more }} →</a></h2>
+    {{ with .lede }}<p class="wiki-muted">{{ . }}</p>{{ end }}
+    <div class="wiki-tile-grid">
+      {{ range $more }}{{ partial "tile-card.html" . }}{{ end }}
+    </div>
+  </section>
+  {{ end }}
   {{ end }}
 </div>

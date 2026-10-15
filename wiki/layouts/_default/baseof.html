@@ -6,7 +6,9 @@
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
   <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.lore_hook }}{{ . }}{{ else }}The wiki for Kids &amp; Dragons, a family adventure game set in the Realm of Red Sky.{{ end }}{{ end }}">
   <meta name="theme-color" content="#0d0b1a">
-  <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+  <link rel="icon" href="{{ "favicon.ico" | relURL }}" sizes="16x16 32x32 48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ "favicon-32x32.png" | relURL }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ "apple-touch-icon.png" | relURL }}">
   {{/* Nunito is the rounded face the app uses on every platform that lacks
        ui-rounded; Fraunces is the storybook serif for titles and lore. */}}
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,7 +55,7 @@
   <footer class="site-footer">
     <div class="site-footer__inner">
       <a href="{{ site.Home.RelPermalink }}" class="site-footer__crest" aria-label="{{ site.Params.brand.name }} wiki home">
-        {{ partial "crest.html" (dict "width" 140) }}
+        {{ partial "crest.html" (dict "size" 64 "class" "wiki-logo--footer") }}
       </a>
       <p class="site-footer__line">
         The wiki for <strong>{{ site.Params.brand.name }}</strong>, a tap-to-play family adventure for the TV and your phones,

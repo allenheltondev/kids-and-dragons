@@ -33,8 +33,20 @@ module:
       target: assets/painted   # resizable: the crest is 1120px wide at source
     - source: ../packages/client/src/assets/attributes
       target: static/painted/attributes
-    - source: ../packages/client/public/favicon.svg
-      target: static/favicon.svg
+    # The approved dragon mark as the site's icons (assets/brand/README.md).
+    # Mounted over the theme's root icons, which browsers request by name.
+    - source: ../assets/brand/favicon.ico
+      target: static/favicon.ico
+    - source: ../assets/brand/dragon-16.png
+      target: static/favicon-16x16.png
+    - source: ../assets/brand/dragon-32.png
+      target: static/favicon-32x32.png
+    - source: ../assets/brand/dragon-180.png
+      target: static/apple-touch-icon.png
+    - source: ../assets/brand/dragon-192.png
+      target: static/android-chrome-192x192.png
+    - source: ../assets/brand/dragon-512.png
+      target: static/android-chrome-512x512.png
     - source: ../art/reference
       target: static/map     # world map art served at /map/
     - source: ../canon
@@ -66,7 +78,9 @@ params:
   brand:
     name: "Kids & Dragons"
     world: "Realm of Red Sky"
-    crest: "painted/kids-and-dragons-crest.webp"
+    # The dragon mark, paired with the live-text wordmark (partials/crest.html)
+    # as the app's home screen does. Resized at build time from the master.
+    mark: "art/brand/dragon-mark.png"
   # The sidebar, grouped the way a family would look for things. A section
   # listed here and missing from content/ is skipped; a section in content/
   # with pages but missing here lands in "More" so nothing is ever orphaned.

@@ -25,10 +25,9 @@ on:
       - "wiki/**"
       - "tools/wiki/**"
       - "assets/**"
-      # The wiki wears the app's painted UI (crest, tray objects, badges) —
+      # The wiki wears the app's painted UI (tray objects, badges, item icons) —
       # wiki/hugo.yaml mounts it from the client package.
       - "packages/client/src/assets/**"
-      - "packages/client/public/favicon.svg"
       - ".github/workflows/wiki-deploy.yml"
   workflow_dispatch:
 

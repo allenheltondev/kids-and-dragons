@@ -476,23 +476,77 @@ td:first-child {
   color: var(--wiki-shelf-ink);
 }
 
-.wiki-navbar__crest {
+/* The logo lockup: the approved dragon mark beside the live-text wordmark,
+ * set the way the app's home screen sets it (tight, heavy, gold ampersand). */
+.wiki-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+}
+
+.wiki-logo__mark {
   display: block;
-  height: 56px;
-  width: auto;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  flex: 0 0 auto;
+  height: auto;
+  filter: drop-shadow(0 0.15em 0.35em rgba(8, 7, 17, 0.5));
   transition: transform var(--wiki-transition);
 }
 
-.wiki-navbar__title:hover .wiki-navbar__crest {
-  transform: rotate(-2deg) scale(1.04);
+.wiki-logo__word {
+  font-family: var(--wiki-font-body);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-align: left;
+  color: var(--wiki-shelf-ink);
+}
+
+.wiki-logo__amp {
+  color: #ffe8a3;
+}
+
+html:not(.dark) .wiki-logo--nav .wiki-logo__amp,
+html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
+  color: var(--wiki-gold);
+}
+
+.wiki-logo--nav .wiki-logo__word {
+  font-size: 1.3rem;
+}
+
+.wiki-navbar__title:hover .wiki-logo__mark {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.wiki-logo--hero {
+  gap: clamp(0.75rem, 3vw, 1.5rem);
+}
+
+.wiki-logo--hero .wiki-logo__mark {
+  width: clamp(5.5rem, 22vw, 9.5rem);
+  animation: wiki-crest-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wiki-logo--hero .wiki-logo__word {
+  font-size: clamp(2.2rem, 8vw, 4rem);
+  color: #f4f1ff;
+  /* the app's legibility recipe: a dark outline, then a lift */
+  text-shadow:
+    -0.04em -0.04em 0 #2a1458, 0.04em -0.04em 0 #2a1458,
+    -0.04em 0.04em 0 #2a1458, 0.04em 0.04em 0 #2a1458,
+    0 0.1em 0.4em rgba(8, 7, 17, 0.7);
+  animation: wiki-crest-in 900ms 120ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wiki-logo--footer .wiki-logo__word {
+  font-size: 1.6rem;
 }
 
 .wiki-navbar__title-full,
 .wiki-navbar__title-short {
   font-family: var(--wiki-font-heading);
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--wiki-gold);
@@ -1115,6 +1169,26 @@ td:first-child {
 .wiki-tile-card__chip--moderate { color: var(--wiki-warn); }
 .wiki-tile-card__chip--high,
 .wiki-tile-card__chip--legendary { color: var(--wiki-danger); }
+
+.wiki-also {
+  margin-top: var(--wiki-space-2xl);
+  padding-top: var(--wiki-space-xl);
+  border-top: 1px solid var(--wiki-border);
+}
+
+.wiki-also__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0 0 0.3rem;
+}
+
+.wiki-also__title a {
+  margin-left: auto;
+  font-family: var(--wiki-font-body);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
 
 /* --------------------------------------------------------------------------
  * 9. Entity pages
@@ -2239,13 +2313,8 @@ a.wiki-roster__card:hover {
     linear-gradient(to bottom, rgba(13, 11, 26, 0.2) 0%, rgba(13, 11, 26, 0.65) 100%);
 }
 
-.wiki-hero__crest {
-  display: block;
-  width: min(100%, 460px);
-  height: auto;
-  margin: 0 auto;
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.6));
-  animation: wiki-crest-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+.wiki-hero .wiki-logo {
+  justify-content: center;
 }
 
 @keyframes wiki-crest-in {
@@ -2718,10 +2787,9 @@ a.wiki-stats__item:hover {
   margin: 0 auto;
 }
 
-.site-footer__crest img {
-  width: 140px;
-  height: auto;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+.site-footer__crest,
+.site-footer__crest:hover {
+  text-decoration: none;
 }
 
 .site-footer__line {
@@ -2965,8 +3033,13 @@ a.wiki-stats__item:hover {
     justify-content: flex-start;
   }
 
-  .wiki-navbar__crest {
-    height: 46px;
+  .wiki-logo--nav .wiki-logo__mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .wiki-logo--nav .wiki-logo__word {
+    font-size: 1.05rem;
   }
 
   .wiki-navbar__title-full {
@@ -3150,5 +3223,10 @@ a.wiki-stats__item:hover {
 @media (max-width: 399px) {
   .wiki-tile-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* No room for the words on the smallest phones: the mark carries it. */
+  .wiki-logo--nav .wiki-logo__word {
+    display: none;
   }
 }
