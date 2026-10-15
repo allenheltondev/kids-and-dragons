@@ -116,6 +116,12 @@
           "icon": "arrow",
           "goto": "scene_nim_pony"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Muddy prospector"
+        }
       ]
     },
     "scene_soup_line_fix_barrow": {
@@ -127,6 +133,12 @@
           "label": "Take a bowl yourselves",
           "icon": "hand",
           "goto": "scene_cult_pitch"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Muddy prospector"
         }
       ]
     },
