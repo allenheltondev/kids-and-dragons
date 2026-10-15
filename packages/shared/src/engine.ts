@@ -613,6 +613,32 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
 
 /** Opens the prompt a scene is waiting on. Returns a completion presentation
  * when the scene turns out to end the chapter. */
+/**
+ * Re-gates an open choice prompt against the party as it is now.
+ *
+ * `openScenePrompt` filters the choices once, when the scene opens, but the
+ * party can change while the prompt waits: a player eats the only supper
+ * bundle (USE_ITEM), trades the honeycake away, or a member leaves. An option
+ * whose cost is no longer covered would otherwise still be tappable, and its
+ * `takeItem` / `spendCoins` would quietly do nothing while the story narrates
+ * the gift. So after every intent the options are recomputed, and a vote cast
+ * for an option that has gone is withdrawn, leaving that player to vote again.
+ */
+function refreshChoicePrompt(draft: RunState, ctx: EngineContext): void {
+  const prompt = draft.prompt;
+  if (!prompt || prompt.kind !== "choice" || prompt.sceneId !== draft.sceneId) return;
+  const scene = ctx.chapter && ctx.chapter.id === draft.chapterId ? ctx.chapter.scenes[prompt.sceneId] : undefined;
+  if (!scene || (scene.type !== "story" && scene.type !== "rest" && scene.type !== "choice_point")) return;
+  const who = party(draft);
+  const live = visibleChoices(scene.choices, who);
+  const liveIds = new Set(live.map((c) => c.id));
+  if (prompt.options.length === live.length && prompt.options.every((o) => liveIds.has(o.id))) return;
+  prompt.options = live.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon }));
+  if (prompt.votes) {
+    prompt.votes = Object.fromEntries(Object.entries(prompt.votes).filter(([, id]) => liveIds.has(id)));
+  }
+}
+
 function openScenePrompt(
   draft: RunState,
   scene: Scene,
@@ -874,6 +900,7 @@ export function applyIntent(
     const presentation = dispatch(draft, envelope, rolling, effects);
     if (loaded?.spent()) draft.playtestDie = null;
     pruneTrades(draft);
+    refreshChoicePrompt(draft, ctx);
     touch(draft, ctx);
     return {
       state: draft,
@@ -1344,6 +1371,12 @@ function doChoose(
 
   const choice = sceneChoices(scene).find((c) => c.id === winning);
   if (!choice) throw new Illegal("NOT_FOUND", `scene "${sceneId}" has no choice "${winning}"`);
+  // The prompt's options are re-gated after every intent (refreshChoicePrompt),
+  // so this only fires if that ever misses a path. A choice whose item or
+  // coins are gone must not run its effects for nothing and narrate the gift.
+  if (!visibleChoices([choice], party(draft)).length) {
+    throw new Illegal("ILLEGAL", `"${winning}" is no longer something this party can do`);
+  }
 
   // The marker moves on from whoever just had it — the chooser on a Story
   // beat (who may have stood in for an absent turn holder), the holder on a

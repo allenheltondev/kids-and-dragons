@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { isGated, validateChapter } from "./chapter-graph.js";
-import { mutuallyExclusive, unbackedCosts, unknownTokens } from "./condition-lint.js";
+import { mutuallyExclusive, unbackedCosts, unbackedSceneCharges, unknownTokens } from "./condition-lint.js";
 import { makeChapter, makeItems } from "./test-fixtures.js";
 import type { Chapter, StoryScene } from "./types/chapter.js";
 
@@ -56,6 +56,33 @@ describe("a cost is a gate", () => {
     expect(unbackedCosts({ ...base, effects: [{ type: "spendCoins", amount: 2 }] })).toHaveLength(1);
     expect(unbackedCosts({ ...base, when: { coins: { min: 1 } }, effects: [{ type: "spendCoins", amount: 2 }] })).toHaveLength(1);
     expect(unbackedCosts({ ...base, when: { coins: { min: 2 } }, effects: [{ type: "spendCoins", amount: 2 }] })).toEqual([]);
+  });
+
+  it("counts a check's dearest outcome as a cost of every choice into it", () => {
+    const chapter = makeChapter();
+    const check = chapter.scenes["check_squeeze"];
+    if (check?.type !== "check") throw new Error("fixture changed");
+    check.onSuccess.effects = [{ type: "spendCoins", amount: 1 }];
+    check.onFailure.effects = [{ type: "spendCoins", amount: 2 }];
+    const entry = chapter.scenes[chapter.entry];
+    if (entry?.type !== "story") throw new Error("fixture changed");
+    const squeeze = entry.choices.find((c) => c.id === "squeeze")!;
+
+    // Ungated, and gated too low: both are a free roll at the goods.
+    expect(unbackedSceneCharges(chapter).map((p) => p.path)).toEqual([`/scenes/${chapter.entry}/choices/0`]);
+    squeeze.when = { coins: { min: 1 } };
+    expect(unbackedSceneCharges(chapter)).toHaveLength(1);
+    squeeze.when = { coins: { min: 2 } };
+    expect(unbackedSceneCharges(chapter)).toEqual([]);
+    expect(codes(validateChapter(chapter, items))).not.toContain("UNBACKED_COST");
+  });
+
+  it("refuses a charging scene reached by a branch, which nothing can gate", () => {
+    const chapter = makeChapter();
+    const scratched = chapter.scenes["scene_scratched"];
+    if (!scratched) throw new Error("fixture changed");
+    scratched.onEnter = [{ type: "spendCoins", amount: 1 }];
+    expect(unbackedSceneCharges(chapter).map((p) => p.path)).toContain("/scenes/check_squeeze/onFailure");
   });
 
   it("fails the chapter", () => {

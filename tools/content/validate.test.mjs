@@ -557,6 +557,15 @@ describe("conditions, variants and tokens", { timeout: 30_000 }, () => {
     expect(result.out).toContain('item "no_such_item" is not in content/items.json');
   }, 15_000);
 
+  it("refuses a check that charges coins behind an ungated choice", () => {
+    const result = withChapter((chapter) => {
+      const check = Object.values(chapter.scenes).find((scene) => scene.type === "check");
+      check.onFailure.effects = [...(check.onFailure.effects ?? []), { type: "spendCoins", amount: 2 }];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("which charges 2 coins, but is not gated on when.coins.min >= 2");
+  }, 15_000);
+
   it("catches an unknown flag in when.flag", () => {
     const result = withChapter((chapter) => addChoice(chapter, { flag: "never_set_anywhere" }));
     expect(result.code).not.toBe(0);

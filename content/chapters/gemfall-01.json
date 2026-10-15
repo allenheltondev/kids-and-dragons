@@ -1623,7 +1623,12 @@
           "id": "haggle",
           "label": "Haggle with Tobble",
           "icon": "note",
-          "goto": "check_haggle"
+          "goto": "check_haggle",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
         },
         {
           "id": "buy_outright",
@@ -1684,6 +1689,25 @@
               "to": "party"
             }
           ]
+        },
+        {
+          "id": "keep_coins",
+          "label": "Keep your coins and go and find a bed",
+          "icon": "boot",
+          "goto": "scene_market_keep_coins"
+        }
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
+    },
+    "scene_market_keep_coins": {
+      "type": "story",
+      "narration": "You leave the laces on the rack and keep your coins in your pocket. Tobble does not mind a bit. He sings you all the way down the steps anyway, one key lower with every step, until he is humming and you are at the bottom. Your old laces will have to do.",
+      "choices": [
+        {
+          "id": "to_inn",
+          "label": "Find a bed for the night",
+          "icon": "rest",
+          "goto": "scene_inn_full"
         }
       ],
       "art": "scenes/gemfall/outfitters-steps"
