@@ -177,6 +177,24 @@ export function variantsReaching(chapter: Chapter): Map<string, NarrationVariant
   return byScene;
 }
 
+/**
+ * Scenes of `chapter` where a count-gated variant (any `when.count`, not just
+ * the finale's band) held for the party and its text was composed in. This is
+ * how a chapter's "the haul shows" wording is told to have reached the table.
+ */
+export function countVariantScenesShown(lines: readonly AuditLine[], chapter: Chapter): Set<string> {
+  const reaching = variantsReaching(chapter);
+  const shown = new Set<string>();
+  for (const line of lines) {
+    if (line.chapterId !== chapter.id || line.kind !== "narration") continue;
+    for (const variant of reaching.get(line.sceneId) ?? []) {
+      if (!variant.when.count || !evaluateCondition(variant.when, line.party)) continue;
+      if (line.text.includes(fillTokens(variant.text, line.party))) shown.add(line.sceneId);
+    }
+  }
+  return shown;
+}
+
 function bandOffences(lines: readonly AuditLine[], chapter: Chapter): Offender[] {
   const out: Offender[] = [];
   const reaching = variantsReaching(chapter);
@@ -208,6 +226,11 @@ function bandOffences(lines: readonly AuditLine[], chapter: Chapter): Offender[]
   }
   for (const region of BAND_REGIONS) {
     if (shown.has(region)) continue;
+    // The Seal-Keeper is met only on some roads (a failed race check goes
+    // straight to `ending_last_ring`), so the keeper is owed band text only to
+    // a party that actually visited a keeper scene. The climb and the ending
+    // are on every road and stay required.
+    if (region === "keeper" && !keeperSeen) continue;
     out.push({
       rule: "band_text_missing",
       chapterId: chapter.id,
