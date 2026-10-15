@@ -2315,6 +2315,12 @@
       "name": "Courier Griffin",
       "basis": "griffin",
       "scale": "medium"
+    },
+    {
+      "id": "corbin_carrying_posy",
+      "name": "Corbin and Posy",
+      "basis": "burrowfolk",
+      "scale": "very_large"
     }
   ],
   "globalPalette": {
